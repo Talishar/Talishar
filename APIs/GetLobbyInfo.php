@@ -97,9 +97,6 @@ if ($handler) {
     }
   }
 
-  CardArrayCheckReverse($response->deck->weapons);
-  CardArrayCheckReverse($response->deck->hands);
-
   $response->format = $format;
 
   $response->deck->cards = GetArray($handler);
@@ -107,7 +104,14 @@ if ($handler) {
   $response->deck->chestSB = GetArray($handler);
   $response->deck->armsSB = GetArray($handler);
   $response->deck->legsSB = GetArray($handler);
-  $response->deck->offhandSB = GetArray($handler);
+  $offhandSB = GetArray($handler);
+  $response->deck->offhandSB = [];
+  for ($i = 0; $i < count($offhandSB); ++$i) {
+    $offhand = new stdClass();
+    $offhand->id = $offhandSB[$i];
+    $offhand->is1H = Is1H($offhand->id);
+    array_push($response->deck->offhandSB, $offhand);
+  }
   $weaponSB = GetArray($handler);
   $response->deck->weaponSB = [];
   for ($i = 0; $i < count($weaponSB); ++$i) {
@@ -117,49 +121,19 @@ if ($handler) {
     array_push($response->deck->weaponSB, $weapon);
   }
   $response->deck->cardsSB = GetArray($handler);
-  $response->deck->quiverSB = GetArray($handler);
+  $quiverSB = GetArray($handler);
+  $response->deck->quiverSB = [];
+  for ($i = 0; $i < count($quiverSB); ++$i) {
+    $quiver = new stdClass();
+    $quiver->id = $quiverSB[$i];
+    $quiver->is1H = Is1H($quiver->id);
+    array_push($response->deck->quiverSB, $quiver);
+  }
   $response->deck->handsSB = array_merge($response->deck->weaponSB, $response->deck->offhandSB, $response->deck->quiverSB);
-
-  CardArrayCheckReverse($response->deck->weaponSB);
-  CardArrayCheckReverse($response->deck->handsSB);
 
   fclose($handler);
 }
 
-
-
 echo json_encode($response);
+
 exit;
-
-function CardArrayCheckReverse($array)
-{
-  for($i=count($array)-1; $i>0; --$i)
-  {
-    $reverseArt = ReverseArt($array[$i]->id);
-    if($reverseArt == $array[$i]->id) continue;
-    for($j=$i-1; $j>=0; --$j)
-    {
-      if($array[$i]->id == $array[$j]->id) $array[$i]->id = $reverseArt;
-    }
-  }
-}
-
-function ReverseArt($cardID)
-{
-  switch ($cardID) {
-    case "WTR078":
-      return "CRU049";
-    case "CRU004":
-      return "CRU005";
-    case "CRU051":
-      return "CRU052";
-    case "CRU079":
-      return "CRU080";
-    case "DYN069":
-      return "DYN070";
-    case "DYN115":
-      return "DYN116";
-    default:
-      return $cardID;
-  }
-}

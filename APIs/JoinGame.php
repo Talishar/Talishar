@@ -195,6 +195,7 @@ if ($decklink != "") {
       } else if ($cardType == "W") {
         $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
         for ($j = 0; $j < $numMainBoard; ++$j) {
+          if($j > 0) $id = ReverseArt($id);
           if ($weapon1 == "") $weapon1 = $id;
           else if ($weapon2 == "") $weapon2 = $id;
           else {
@@ -203,6 +204,7 @@ if ($decklink != "") {
           }
         }
         for ($j = 0; $j < $numSideboard; ++$j) {
+          if($numMainBoard > 0 || $j > 0) $id = ReverseArt($id);
           if ($weaponSideboard != "") $weaponSideboard .= " ";
           $weaponSideboard .= $id;
         }
@@ -714,6 +716,27 @@ function IsBanned($cardID, $format)
       break;
     default:
       return false;
+  }
+}
+
+
+function ReverseArt($cardID)
+{
+  switch ($cardID) {
+    case "WTR078":
+      return "CRU049";
+    case "CRU004":
+      return "CRU005";
+    case "CRU051":
+      return "CRU052";
+    case "CRU079":
+      return "CRU080";
+    case "DYN069":
+      return "DYN070";
+    case "DYN115":
+      return "DYN116";
+    default:
+      return $cardID;
   }
 }
 
