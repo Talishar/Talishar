@@ -1779,6 +1779,22 @@ function IsSpecificAuraAttacking($player, $index)
     return true;
   }
 
+  function BaseAttackModifiers($attackValue)
+  {
+    global $combatChainState, $CCS_LinkBaseAttack, $currentTurnEffects, $mainPlayer;
+    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
+    {
+      if($currentTurnEffects[$i+1] != $mainPlayer) continue;
+      if(!IsCombatEffectActive($currentTurnEffects[$i])) continue;
+      switch($currentTurnEffects[$i])
+      {
+        case "EVR094": case "EVR095": case "EVR096": $attackValue = floor($attackValue/2); break;
+        default: break;
+      }
+    }
+    return $attackValue;
+  }
+
   function GetDefaultLayerTarget()
   {
     global $layers, $combatChain, $currentPlayer;
