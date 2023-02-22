@@ -65,7 +65,7 @@ $isMobile = IsMobile();
 <head>
   <meta charset="utf-8">
   <title>Talishar</title>
-  <link rel="stylesheet" href="./css/menuStyles.css">
+  <link rel="stylesheet" href="./css/menuStyles2.css">
 </head>
 
 <script>
