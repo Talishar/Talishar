@@ -1488,10 +1488,28 @@ function CurrentEffectPlayAbility($cardID, $from)
             $remove = 1;
           }
           break;
+        default:
+          break;
+      }
+      if ($remove == 1) RemoveCurrentTurnEffect($i);
+    }
+  }
+  $currentTurnEffects = array_values($currentTurnEffects); //In case any were removed
+  return false;
+}
+
+function CurrentEffectPlayOrActivateAbility($cardID, $from)
+{
+  global $currentTurnEffects, $currentPlayer;
+
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $remove = 0;
+    if ($currentTurnEffects[$i + 1] == $currentPlayer) {
+      switch ($currentTurnEffects[$i]) {
         case "MON153":
         case "MON154":
           $cardType = CardType($cardID);
-          if (($cardType == "AA" || $cardType == "W") && (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer))) {
+          if (($cardType == "AA" || $cardType == "W" || $cardType == "T") && (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer))) {
             GiveAttackGoAgain();
             $remove = 1;
           }

@@ -223,6 +223,7 @@
     $number = intval(substr($cardID, 3));
     if($number <= 87) return "LIGHT";
     else if($number >= 119 && $number <= 220) return "SHADOW";
+    else if($number == 520) return "SHADOW";
     else return "NONE";
   }
 

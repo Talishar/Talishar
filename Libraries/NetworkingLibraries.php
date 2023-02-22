@@ -1895,6 +1895,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   }
   //Resolve Effects
   if (!$isBlock) {
+    CurrentEffectPlayOrActivateAbility($cardID, $from);
     if ($from != "PLAY") {
       CurrentEffectPlayAbility($cardID, $from);
       ArsenalPlayCardAbilities($cardID);
