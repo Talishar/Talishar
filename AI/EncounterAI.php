@@ -1,5 +1,9 @@
 <?php
 
+include "EncounterPriorityValues.php";
+include "EncounterPriorityLogic.php";
+include "EncounterPlayLogic.php";
+
 function EncounterAI()
 {
   global $currentPlayer, $p2CharEquip, $decisionQueue, $mainPlayer, $mainPlayerGamestateStillBuilt, $combatChain;
@@ -74,112 +78,21 @@ function EncounterAI()
       }
       else if($turn[0] == "M" && $mainPlayer == $currentPlayer)//AIs turn
       {
-        $cardPlayed = false;
-        if(count($hand) > 0) //Are there cards in hand?
+        $priorityValues = GeneratePriorityValues($hand, $character, $arsenal, 1); //returns a sorted list of the potential actions
+        $found = false;
+        do {
+          $checking = $priorityValues[count($priorityValues)-1];
+          array_pop($priorityValues);
+          //WriteLog("CardID=" . $checking[0] . ", Where=" . $checking[1] . ", Index=" . $checking[2] . ", Priority=" . $checking[3]);
+          if(CardIsPlayable($checking, $hand, $resources)) $found = true;
+        } while (count($priorityValues) > 0 && !$found);
+        if($found == true)
         {
-          $APV = GenerateAPV($hand, $character);
-          $alreadyCheckedHand = 10.0; //larger than the highest possible AP
-          $EPV = GenerateEPV($character);
-          $alreadyCheckedEquipment = 10.0; //larger than the highest possible AP
-          $arsePV = FromArsenalActionPriority($arsenal[0], $character[0]);
-          /*WriteLog("APV[0] = " . $APV[0]);
-          WriteLog("APV[1] = " . $APV[1]);
-          WriteLog("APV[2] = " . $APV[2]);*/
-          for($i = 0; $i < count($EPV); $i += CharacterPieces()) { $totalOptions += 1; } //available equipment
-          for($i = 0; $i < count($hand); ++$i) { $totalOptions +=1; } //available hand
-          $totalOptions +=1; //available arsenal
-          for($i = 0; $i < $totalOptions; ++$i)
-          {
-            $nextActionIndex = GetNextAction($APV, $alreadyCheckedHand);
-            $nextAbilityIndex = GetNextAbility($EPV, $alreadyCheckedEquipment);
-            /*WriteLog($hand[$nextActionIndex] . " " . $APV[$nextActionIndex]);
-            WriteLog($character[$nextAbilityIndex] . " " . $EPV[$nextActionIndex]);*/
-            if($arsePV >= $EPV[$nextAbilityIndex] && $arsePV >= $APV[$nextActionIndex]) //If the arsenal has the highest priority
-            {
-              if(IsArsenalPlayable($hand, $arsenal, $arsePV)) //and if it's playable
-              {
-                ProcessInput($currentPlayer, 5, "", 0, 0, "");
-                CacheCombatResult();
-                $cardPlayed = true;
-                break;
-              }
-            }
-            else
-            {
-              if($EPV[$nextAbilityIndex] < $APV[$nextActionIndex]) //if the next highest card is higher than the next highest weapon
-              {
-                if(IsCardPlayable($hand, $APV, $nextActionIndex)) //Is there enough pitch in hand to play the card?
-                {
-                  ProcessInput($currentPlayer, 27, "", $nextActionIndex, 0, "");
-                  CacheCombatResult();
-                  $cardPlayed = true;
-                  break;
-                }
-                else $alreadyCheckedHand = $APV[$nextActionIndex];
-              }
-              else //if the next highest equipment is higher than the next highest weapon
-              {
-                if(IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character))//Is there enough pitch in hand to play the equipment?
-                {
-                  if(CardSubtype($character[$nextAbilityIndex]) == "Bow" ) {
-                    if(count($hand) == 0) continue;
-                    $isBowActive = true;
-                  }
-                  ProcessInput($currentPlayer, 3, "", CharacterPieces(), $nextAbilityIndex, "");
-                  CacheCombatResult();
-                }
-                else $alreadyCheckedEquipment = $EPV[$nextAbilityIndex];
-              }
-            }
-          } //NOTE TO SELF: TRY REMOVING THIS NEXT SEGMENT, I DON'T ACTUALLY KNOW IF IT'S NEEDED
-          if(!IsCardPlayable($hand, $APV, $nextActionIndex) && !IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character) && !IsArsenalPlayable($hand, $arsenal, $arsePV)) PassInput();
-          /*$alreadyCheckedEquipment = 10.0;
-          for($i = 0; $i < count($EPV); $i += CharacterPieces())
-          {
-            if(IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character))
-            {
-              if(CardSubtype($character[$nextAbilityIndex]) == "Bow" ) { $isBowActive = true; }
-              ProcessInput($currentPlayer, 3, "", CharacterPieces(), $nextAbilityIndex, "");
-              CacheCombatResult();
-            }
-            else $alreadyCheckedEquipment = $EPV[$nextAbilityIndex];
-          }
-          if($cardPlayed) continue;
-          PassInput();*/
+          if(CardSubtype($checking[0]) == "Bow" ) $isBowActive = true;
+          PlayCardAttempt($checking);
         }
-        else //no cards in hand. does the same as above without checking hand
+        else
         {
-          $EPV = GenerateEPV($character);
-          $alreadyCheckedEquipment = 10.0;
-          $arsePV = FromArsenalActionPriority($arsenal[0], $character[0]);
-          $totalOptions = 1;
-          for($i = 0; $i < count($EPV); $i += CharacterPieces()) { $totalOptions += 1; }
-          for($i = 0; $i < $totalOptions; ++$i)
-          {
-            $nextAbilityIndex = GetNextAbility($EPV, $alreadyCheckedEquipment);
-            if($arsePV >= $EPV[$nextAbilityIndex])
-            {
-              if(IsArsenalPlayable($hand, $arsenal, $arsePV))
-              {
-                ProcessInput($currentPlayer, 5, "", 0, 0, "");
-                CacheCombatResult();
-                $cardPlayed = true;
-                break;
-              }
-            }
-            else
-            {
-              if(IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character))
-              {
-                if(CardSubtype($character[$nextAbilityIndex]) != "Bow" ) {
-                  ProcessInput($currentPlayer, 3, "", CharacterPieces(), $nextAbilityIndex, "");
-                  CacheCombatResult();
-                }
-              }
-              else $alreadyCheckedEquipment = $EPV[$nextAbilityIndex];
-            }
-          }
-          if($cardPlayed) continue;
           PassInput();
         }
       }
@@ -639,8 +552,8 @@ function BlockPriority($cardId, $heroId)
         switch($cardId) {
           case "EVR075": return 0.2;
           case "ARC028": return 0.1;
-          case "ARC031": case "CRU111": case "CRU108": case "CRU103": case "ARC022": case "ARC013": case "DYN097": case "ARC025": return 10.2; 
-          default: return 0; //All blues that block for 3. All weighted evenly, but tries to hold onto one. 
+          case "ARC031": case "CRU111": case "CRU108": case "CRU103": case "ARC022": case "ARC013": case "DYN097": case "ARC025": return 10.2;
+          default: return 0; //All blues that block for 3. All weighted evenly, but tries to hold onto one.
         }
       }
     default: return 0;
@@ -968,6 +881,7 @@ function PitchPriority($cardId, $heroId)
         case "MON284": return 0.5;
         case "MON285": return 1.5;
         case "MON286": return 2.5;
+        case "UPR092": return 0.5;
         default: return 0;
       }
     case "ROGUE004":
@@ -1074,8 +988,8 @@ function PitchPriority($cardId, $heroId)
         {
           switch($cardId) {
             case "DYN097": case "ARC013": return 2.2;
-            case "CRU111": case "CRU108": case "CRU103": case "ARC022": 
-            case "EVR075": case "ARC025": case "ARC028": case "ARC031": 
+            case "CRU111": case "CRU108": case "CRU103": case "ARC022":
+            case "EVR075": case "ARC025": case "ARC028": case "ARC031":
               return 2.1;
             default: return 0;
           }
@@ -1212,8 +1126,8 @@ function ToArsenalPriority($cardId, $heroId)
         {
           switch($cardId) {
             case "DYN097": return 2.2;
-            case "CRU111": case "CRU108": case "CRU103": case "ARC022": 
-            case "ARC013": case "EVR075": case "ARC025": case "ARC028": case "ARC031": 
+            case "CRU111": case "CRU108": case "CRU103": case "ARC022":
+            case "ARC013": case "EVR075": case "ARC025": case "ARC028": case "ARC031":
               return 2.1;
             default: return 0;
           }

@@ -88,7 +88,7 @@ function EncounterDescription()
     case 120:
       if($encounter[1] == "BeforeFight") return "You emerge in the noticeably cleaner streets of Metrix. Just as you're emerging, a mailman sees you and panics, attempting to attack you.";
       else if($encounter[1] == "AfterFight") return "You killed a poor mailman. You heartless monster! Oh well, no use dwelling on the past, now that you're out of the city it's time to move towards your objective.";
-    
+
     case 201: return "You found a battlefield. Choose what you want to do.";
     case 202: return "You found a library. Choose what you want to do.";
     case 203: return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
@@ -148,8 +148,8 @@ function InitializeEncounter($player)
       break;
     case 006:
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
-      //AddDecisionQueue("SETENCOUNTER", $player, "119-BeforeFight");
-      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      AddDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
+      //AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
       //AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
