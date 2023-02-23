@@ -330,7 +330,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Visit_a_local_library": //library
             PrependDecisionQueue("SETENCOUNTER", $player, "202-PickMode");
             break;
-          case "Enter_a_nearby_Temple": //Enlightenment
+          case "Enter_a_nearby_temple": //Enlightenment
             PrependDecisionQueue("SETENCOUNTER", $player, "205-PickMode");
             break;
           case "Take_the_scenic_route_through_the_back_streets": //Stealthy Stabber
