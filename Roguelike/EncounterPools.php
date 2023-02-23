@@ -12,9 +12,11 @@ encounter[6] = majesticCard% (1-100, the higher it is, the more likely a majesti
 encounter[7] = background chosen
 */
 
-function GetPool($type, $hero, $rarity, $background)
-{
-  if($type == "Light")
+
+function GetPool($type, $hero, $rarity, $background){
+  WriteLog($type." ".$rarity." ".$background);
+  return GetPool2(array($type, $rarity, $background));
+  /*if($type == "Light")
   {
     switch($rarity)
     {
@@ -289,6 +291,73 @@ function GetPool($type, $hero, $rarity, $background)
                 );
               }
       }
-  }
+  }*/
 }
+
+//Input a list of parameters
+function GetPool2($arrayParameters){
+
+  $CardRewardPool = array(
+    array("WTR043", "Class", "Majestic", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR044", "Class", "Majestic", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR045", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR046", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR047", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR048", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"), //Disable
+    array("WTR049", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR050", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR051", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"), //Staunch Response
+    array("WTR052", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR053", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR054", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"), //Blessing of Deliverance
+    array("WTR055", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR056", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR057", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"), //Buckling Blow
+    array("WTR058", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR059", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+    //TODO WTR060-WTR062 Cartilage Crush - Add when the AI can have taxes
+    //TODO WTR063-WTR065 Crush Confidence - Add when the AI can handle losing hero card effects and activated abilities
+    array("WTR066", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"), //Debilitate
+    array("WTR067", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR068", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR069", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"), //Emerging Power
+    array("WTR070", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR071", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR072", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"), //Stonewall Confidence
+    array("WTR073", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR074", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+  );
+  
+  $returnPool = array(); // Create an empty list of cards to be returned
+  $sizeParameters = count($arrayParameters);
+  $paramCheck = new SplFixedArray($sizeParameters); //Create a shadow of the parameters...
+  for ($i = 0; $i < $sizeParameters; $i++){ //... The same length as the list of parameters
+    $paramCheck[$i] = false;
+  }
+  $eligible = true;
+  for($i = 0; $i < count($CardRewardPool); $i++){
+    $eligible = true;
+    for($j = 0; $j < $sizeParameters; $j++){
+      $paramCheck[$j] = false;
+    }
+    for($j = 0; $j < $sizeParameters; $j++){
+      for($k = 1; $k < count($CardRewardPool[$i]); $k++){
+        if($arrayParameters[$j] == $CardRewardPool[$i][$k]){//If we find the tag, ...
+          $paramCheck[$j] = true; 
+          break; //... Move on to next tag
+        }
+      }
+      if(!$paramCheck[$j]){
+        $eligible = false;
+        break;
+      }
+    }
+    if($eligible) {
+      array_push($returnPool, $CardRewardPool[$i][0]); //This line only reached if 
+    }
+    return $returnPool;
+  } 
+}
+
+
 ?>
