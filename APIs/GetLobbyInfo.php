@@ -105,31 +105,23 @@ if ($handler) {
   $response->deck->armsSB = GetArray($handler);
   $response->deck->legsSB = GetArray($handler);
   $offhandSB = GetArray($handler);
-  $response->deck->offhandSB = [];
-  for ($i = 0; $i < count($offhandSB); ++$i) {
-    $offhand = new stdClass();
-    $offhand->id = $offhandSB[$i];
-    $offhand->is1H = Is1H($offhand->id);
-    array_push($response->deck->offhandSB, $offhand);
-  }
   $weaponSB = GetArray($handler);
-  $response->deck->weaponSB = [];
-  for ($i = 0; $i < count($weaponSB); ++$i) {
-    $weapon = new stdClass();
-    $weapon->id = $weaponSB[$i];
-    $weapon->is1H = Is1H($weapon->id);
-    array_push($response->deck->weaponSB, $weapon);
-  }
   $response->deck->cardsSB = GetArray($handler);
   $quiverSB = GetArray($handler);
-  $response->deck->quiverSB = [];
-  for ($i = 0; $i < count($quiverSB); ++$i) {
-    $quiver = new stdClass();
-    $quiver->id = $quiverSB[$i];
-    $quiver->is1H = Is1H($quiver->id);
-    array_push($response->deck->quiverSB, $quiver);
+  $handsSB = array_merge($weaponSB, $offhandSB, $quiverSB);
+  $response->deck->handsSB = [];
+  for ($i = 0; $i < count($handsSB); ++$i) {
+    $handItem = new stdClass();
+    $handItem->id = $handsSB[$i];
+    $subtype = CardSubtype($handItem->id);
+    $numHands = 2;
+    if($subtype == "Quiver") $numHands = 0;
+    else if($subtype == "Off-Hand") $numHands = 1;
+    else if(Is1H($handItem->id)) $numHands = 1;
+    $handItem->numHands = $numHands;
+    $handItem->is1H = Is1H($handItem->id);
+    array_push($response->deck->handsSB, $handItem);
   }
-  $response->deck->handsSB = array_merge($response->deck->weaponSB, $response->deck->offhandSB, $response->deck->quiverSB);
 
   fclose($handler);
 }
