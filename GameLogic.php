@@ -5605,12 +5605,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $currentTime = round(microtime(true) * 1000);
       SetCachePiece($gameName, 2, $currentTime);
       SetCachePiece($gameName, 3, $currentTime);
+      unlink("./Games/" . $gameName . "/gamestateBackup.txt");
+      unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
+      unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
       include "MenuFiles/ParseGamefile.php";
       header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID");
       exit;
     case "REMATCH":
       global $GameStatus_Rematch, $inGameStatus;
-      if($lastResult == "YES") $inGameStatus = $GameStatus_Rematch;
+      if($lastResult == "YES")
+      {
+        $inGameStatus = $GameStatus_Rematch;
+        unlink("./Games/" . $gameName . "/gamestateBackup.txt");
+        unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
+        unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
+      }
       return 0;
     case "IMPERIALWARHORN":
       $otherPlayer = ($player == 1 ? 2 : 1);
