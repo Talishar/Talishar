@@ -230,23 +230,20 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $skipWriteGamestate = true;
         break;
       }
+      $input = [];
       for ($i = 0; $i < count($chkInput); ++$i) {
-        $found = 0;
-        for ($j = 0; $j < count($options); ++$j) {
-          if ($chkInput[$i] == $options[$j]) {
-            $found = 1;
-            break;
-          }
-        }
-        if (!$found) {
+        if ($chkInput[$i] < 0 || $chkInput[$i] >= count($options)) {
           WriteLog("You selected option " . $chkInput[$i] . " but that was not one of the original options. Reverting gamestate prior to that effect.");
           RevertGamestate();
           $skipWriteGamestate = true;
           break;
         }
+        else {
+          array_push($input, $options[$chkInput[$i]]);
+        }
       }
       if (!$skipWriteGamestate) {
-        ContinueDecisionQueue($chkInput);
+        ContinueDecisionQueue($input);
       }
       break;
     case 20: //YESNO
