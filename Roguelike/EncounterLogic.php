@@ -154,6 +154,13 @@ function GeneratePool($selected, $type, $rarity = "-")
   }
   $pool = GetPool($type, $encounter[3], $rarity, $encounter[7]);
   $generatedPool = [];
+  
+  /*$options = GetOptions($selected, count($pool));
+  for($i = 0; $i < count($options); $i++){
+    $generatedPool[$i] = $pool[$i];
+  }
+  return $generatedPool;*/
+
   for($i = 0; $i < count($pool); ++$i)
   {
     $found = false;
@@ -163,7 +170,7 @@ function GeneratePool($selected, $type, $rarity = "-")
     }
     if(!$found) array_push($generatedPool, $pool[$i]);
   }
-  return $generatedPool;
+  return $generatedPool; 
 }
 
 function GetRandomArmor($type) //TODO combine this with GetRandomCards()

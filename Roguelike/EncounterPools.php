@@ -15,6 +15,7 @@ encounter[7] = background chosen
 
 function GetPool($type, $hero, $rarity, $background){
   WriteLog($type." ".$rarity." ".$background);
+  if(($hero == "Bravo" || $hero == "Dorinthea") && $type == "Talent") $type = "Class";
   return GetPool2(array($type, $rarity, $background));
   /*if($type == "Light")
   {
@@ -326,6 +327,11 @@ function GetPool2($arrayParameters){
     array("WTR072", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"), //Stonewall Confidence
     array("WTR073", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
     array("WTR074", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+
+    array("WTR074", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR074", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR074", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+
   );
   
   $returnPool = array(); // Create an empty list of cards to be returned
@@ -342,22 +348,29 @@ function GetPool2($arrayParameters){
     }
     for($j = 0; $j < $sizeParameters; $j++){
       for($k = 1; $k < count($CardRewardPool[$i]); $k++){
-        if($arrayParameters[$j] == $CardRewardPool[$i][$k]){//If we find the tag, ...
+        if($arrayParameters[$j] == $CardRewardPool[$i][$k]){
           $paramCheck[$j] = true; 
-          break; //... Move on to next tag
         }
       }
-      if(!$paramCheck[$j]){
+      if($paramCheck[$j] == false){
         $eligible = false;
         break;
       }
     }
     if($eligible) {
-      array_push($returnPool, $CardRewardPool[$i][0]); //This line only reached if 
+      array_push($returnPool, $CardRewardPool[$i][0]); 
     }
+  }
+    WriteLog(ArrayAsString($returnPool));
     return $returnPool;
-  } 
 }
-
+function ArrayAsString($arrayToBeStringed){
+  $outString = "";
+  for($i = 0; $i < count($arrayToBeStringed); $i++){
+    if($i != 0) $outString .= ", ";
+    $outString .= $arrayToBeStringed[$i];
+  }
+  return $outString;
+}
 
 ?>
