@@ -109,7 +109,6 @@
 
   function EVREffectAttackModifier($cardID)
   {
-    global $combatChainState, $CCS_LinkBaseAttack;
     $params = explode(",", $cardID);
     $cardID = $params[0];
     if(count($params) > 1) $parameter = $params[1];
@@ -141,7 +140,6 @@
       case "EVR091": return 3;
       case "EVR092": return 2;
       case "EVR093": return 1;
-      case "EVR094": case "EVR095": case "EVR096": return floor($combatChainState[$CCS_LinkBaseAttack]/2) * -1;
       case "EVR100": return 3;
       case "EVR101": return 2;
       case "EVR102": return 1;
@@ -472,7 +470,7 @@
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CROWNOFREFLECTION", 1);
-        AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
         return "Lets you destroy an aura and play a new one.";
@@ -601,7 +599,7 @@
         if($from == "PLAY"){
           GainHealth(2, $currentPlayer);
         }
-        return "Gain 2 health.";
+        return "";
       case "EVR184":
         if($from == "PLAY"){
           LookAtHand($otherPlayer);

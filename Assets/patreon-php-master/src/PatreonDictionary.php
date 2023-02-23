@@ -46,7 +46,6 @@ enum ContentCreators : string
 
   public function HeroOverlayURL($heroID): string
   {
-    include_once "./CardDictionary.php";
     switch($this->value)
     {
       case "0": //WatchFlake
@@ -78,6 +77,7 @@ enum PatreonCampaign : string
   case EternalOracles = "3";
   case Luminaris = "4";
   case FABLAB = "5";
+  case OnHit = "6";
   case Talishar = "7198186";
   case PushThePoint = "7579026";
   case GoAgainGaming = "7329070";
@@ -145,6 +145,7 @@ enum PatreonCampaign : string
       case "3": return "Eternal Oracles";
       case "4": return "Luminaris";
       case "5": return "FAB-LAB";
+      case "6": return "OnHit";
       case "7198186": return "Talishar";
       case "7579026": return "Push the Point";
       case "7329070": return "Go Again Gaming";
@@ -183,6 +184,7 @@ enum PatreonCampaign : string
       case "3": return ($userName == "DeadSummer");
       case "4": return ($userName == "LeoLeo");
       case "5": return ($userName == "XIR");
+      case "6": return ($userName == "wackzitt" || $userName == "RainyDays" || $userName == "HelpMeJace2");
       case "7198186": return false;
       case "7579026": return ($userName == "Hamsack" || $userName == "BigMedSi" || $userName == "Tripp");
       case "7329070": return ($userName == "GoAgainGamingAz");
@@ -221,6 +223,7 @@ enum PatreonCampaign : string
       case "3": return "42";
       case "4": return "45";
       case "5": return "46";
+      case "6": return "48";
       case "7198186": return "1,2,3,4,5,6,7,8";
       case "7579026": return "9";
       case "7329070": return "10,11,12,13,14,15,16";

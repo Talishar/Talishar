@@ -11,11 +11,9 @@ if (isset($_POST["submit"])) {
   $username = $_POST["userID"];
   $password = $_POST["password"];
   $rememberMe = isset($_POST["rememberMe"]);
-
   try {
     AttemptPasswordLogin($username, $password, $rememberMe);
   } catch (\Exception $e) { }
-
 } else {
 	header("location: ../Login.php");
   exit();

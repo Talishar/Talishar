@@ -1,7 +1,6 @@
 <?php
 
 include 'Libraries/HTTPLibraries.php';
-include 'Classes/Deck.php';
 
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
@@ -26,6 +25,10 @@ $windowWidth = intval(TryGet("windowWidth", 0));
 $windowHeight = intval(TryGet("windowHeight", 0));
 $lastCurrentPlayer = intval(TryGet("lastCurrentPlayer", 0));
 
+if (($playerID == 1 || $playerID == 2) && $authKey == "") {
+  if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+}
+
 include "HostFiles/Redirector.php";
 include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
@@ -34,6 +37,7 @@ SetHeaders();
 
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $opponentDisconnected = false;
+$opponentInactive = false;
 
 $currentTime = round(microtime(true) * 1000);
 if ($isGamePlayer) {
@@ -73,6 +77,14 @@ while ($lastUpdate != 0 && ($lastCurrentPlayer == 0 || $lastCurrentCachePiece ==
       $lastUpdate = 0;
       $opponentDisconnected = true;
     }
+    //Handle server timeout
+    $lastUpdateTime = $cacheArr[5];
+    if ($currentTime - $lastUpdateTime > 90000 && $cacheArr[11] != "1")//90 seconds
+    {
+      SetCachePiece($gameName, 12, "1");
+      $opponentInactive = true;
+      $lastUpdate = 0;
+    }
   }
   ++$count;
   if ($count == 100) break;
@@ -95,6 +107,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     include_once "./APIKeys/APIKeys.php";
     PlayerLoseHealth($otherP, GetHealth($otherP));
     include "WriteGamestate.php";
+  }
+  else if($opponentInactive && !IsGameOver()) {
+    $currentPlayerActivity = 2;
+    WriteLog("The current player is inactive.");
+    include "WriteGamestate.php";
+    GamestateUpdated($gameName);
   }
 
   if ($turn[0] == "REMATCH" && intval($playerID) != 3) {
@@ -310,61 +328,16 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("</span>");
 
   //Deduplicate current turn effects
-  $friendlyEffectsArr = [];
-  $opponentEffectsArr = [];
+  $friendlyEffects = "";
+  $opponentEffects = "";
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
-    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) $arr = &$friendlyEffectsArr;
-    else $arr = &$opponentEffectsArr;
-    if (!array_key_exists($cardID, $arr)) {
-      $arr[$cardID] = [];
-    }
-    if (!array_key_exists($currentTurnEffects[$i], $arr[$cardID])) $arr[$cardID][$currentTurnEffects[$i]] = 1;
-    else ++$arr[$cardID][$currentTurnEffects[$i]];
-  }
-
-  //Display Current Turn Effects
-  $friendlyEffects = "";
-  $opponentEffects = "";
-  foreach ($friendlyEffectsArr as $key => $effectArr) {
-    $max = 0;
-    foreach ($effectArr as $effectCount) {
-      if ($effectCount > $max) $max = $effectCount;
-    }
-    if (IsEffectTileable($key)) {
-      $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid blue;'>";
-      $effect .= Card($key, "crops", 65, 0, 1, counters: $max);
-      $effect .= "</div>";
-      $friendlyEffects .= $effect;
-    } else {
-      for ($i = 0; $i < $max; ++$i) {
-        $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid blue;'>";
-        $effect .= Card($key, "crops", 65, 0, 1);
-        $effect .= "</div>";
-        $friendlyEffects .= $effect;
-      }
-    }
-  }
-
-  foreach ($opponentEffectsArr as $key => $effectArr) {
-    $max = 0;
-    foreach ($effectArr as $effectCount) {
-      if ($effectCount > $max) $max = $effectCount;
-    }
-    if (IsEffectTileable($key)) {
-      $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid red;'>";
-      $effect .= Card($key, "crops", 65, 0, 1, counters: $max);
-      $effect .= "</div>";
-      $opponentEffects .= $effect;
-    } else {
-      for ($i = 0; $i < $max; ++$i) {
-        $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid red;'>";
-        $effect .= Card($key, "crops", 65, 0, 1);
-        $effect .= "</div>";
-        $opponentEffects .= $effect;
-      }
-    }
+    $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid blue;'>";
+    $effect .= Card($cardID, "crops", 65, 0, 1);
+    $effect .= "</div>";
+    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) $friendlyEffects .= $effect;
+    else $opponentEffects .= $effect;
   }
 
   echo ("<div style='position:fixed; height:100%; width:100px; left:0px; top:0px;'>");
@@ -781,41 +754,27 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $caption = "<div>Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".") . "</div>";
     if (GetDQHelpText() != "-") $caption = "<div>" . implode(" ", explode("_", GetDQHelpText())) . "</div>";
     $content .= CreateForm($playerID, "Submit", 19, count($options));
-
-    if ($turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MAYMULTICHOOSETEXT") {
-      $content .= "<table style='border-spacing:0; border-collapse: collapse;'>";
-      for ($i = 0; $i < count($options); ++$i) {
-        $content .= "<tr><th style='text-align: left;'>";
-        $content .= CreateCheckbox($i, strval($options[$i]), -1, false, implode(" ", explode("_", strval($options[$i]))));
-        $content .= "</th>";
-        $content .= "</tr>";
-      }
-      $content .= "</table>";
-      $content .= "</form>";
-      $content .= "</div>";
-      echo CreatePopup("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
-    } else {
-      $content .= "<table style='border-spacing:0; border-collapse: collapse;'><tr>";
-      for ($i = 0; $i < count($options); ++$i) {
-        $content .= "<td>";
-        $content .= CreateCheckbox($i, strval($options[$i]));
-        $content .= "</td>";
-      }
-      $content .= "</tr><tr>";
-      for ($i = 0; $i < count($options); ++$i) {
-        $content .= "<td>";
-        $content .= "<div class='container'>";
-        if ($turn[0] == "MULTICHOOSEDISCARD") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($myDiscard[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
-        else if ($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($theirDiscard[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
-        else if ($turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MAYMULTICHOOSEHAND") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($myHand[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
-        else if ($turn[0] == "MULTICHOOSEDECK") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($myDeck[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
-        else if ($turn[0] == "MULTICHOOSETHEIRDECK") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($theirDeck[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
-        $content .= "<div class='overlay'><div class='text'>Select</div></div></div>";
-        $content .= "</td>";
-      }
-      $content .= "</tr></table></form></div>";
-      echo CreatePopup("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
+    $content .= "<table style='border-spacing:0; border-collapse: collapse;'><tr>";
+    for ($i = 0; $i < count($options); ++$i) {
+      $content .= "<td>";
+      $content .= CreateCheckbox($i, strval($i));
+      $content .= "</td>";
     }
+    $content .= "</tr><tr>";
+    for ($i = 0; $i < count($options); ++$i) {
+      $content .= "<td>";
+      $content .= "<div class='container'>";
+      if ($turn[0] == "MULTICHOOSEDISCARD") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($myDiscard[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
+      else if ($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($theirDiscard[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
+      else if ($turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MAYMULTICHOOSEHAND") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($myHand[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
+      else if ($turn[0] == "MULTICHOOSEDECK") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($myDeck[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
+      else if ($turn[0] == "MULTICHOOSETHEIRDECK") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($theirDeck[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
+      else if ($turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MAYMULTICHOOSETEXT") $content .= implode(" ", explode("_", strval($options[$i])));
+      $content .= "<div class='overlay'><div class='text'>Select</div></div></div>";
+      $content .= "</td>";
+    }
+    $content .= "</tr></table></form></div>";
+    echo CreatePopup("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
   }
 
   //Opponent hand
@@ -1052,8 +1011,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if (IsCasterMode()) $handContents .= ClientRenderedCard(cardNumber: $myHand[$i], controller: 2);
       else $handContents .= ClientRenderedCard(cardNumber: $MyCardBack, controller: 2);
     } else {
-      if ($playerID == $currentPlayer && $turn[0] == "CHOOSEHANDCANCEL") $playable = !IsPitchRestricted($myHand[$i], $restriction, "HAND", -1);
-      elseif ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+      if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
       else $playable = false;
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
       $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
@@ -1483,18 +1441,6 @@ function IsTileable($cardID)
     case "EVR195":
     case "UPR043":
     case "DYN243":
-      return true;
-    default:
-      return false;
-  }
-}
-
-function IsEffectTileable($cardID)
-{
-  switch ($cardID) {
-    case "WTR075":
-      return true;
-    case "ELE173":
       return true;
     default:
       return false;

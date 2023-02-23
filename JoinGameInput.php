@@ -96,7 +96,8 @@ if ($decklink != "") {
   curl_close($curl);
 
   if ($apiDeck === FALSE) {
-    echo  '<b>' . "⚠️ Deckbuilder API for this deck returns no data: " . implode("/", $decklink) . '</b>';
+    if(is_array($decklink)) echo  '<b>' . "⚠️ Deckbuilder API for this deck returns no data: " . implode("/", $decklink) . '</b>';
+    else echo  '<b>' . "⚠️ Deckbuilder API for this deck returns no data: " . implode("/", $decklink) . '</b>';
     WriteGameFile();
     LogDeckLoadFailure("API returned no data");
     exit;
@@ -121,6 +122,7 @@ if ($decklink != "") {
     if ($playerID == 1) $p1Matchups = $deckObj->{'matchups'};
     else if ($playerID == 2) $p2Matchups = $deckObj->{'matchups'};
   }
+  $deckFormat = (isset($deckObj->{'format'}) ? $deckObj->{'format'} : "");
   $cards = $deckObj->{'cards'};
   $deckCards = "";
   $sideboardCards = "";
@@ -129,6 +131,7 @@ if ($decklink != "") {
   $armsSideboard = "";
   $legsSideboard = "";
   $offhandSideboard = "";
+  $quiverSideboard = "";
   $unsupportedCards = "";
   $bannedCard = "";
   $character = "";
@@ -137,6 +140,7 @@ if ($decklink != "") {
   $arms = "";
   $legs = "";
   $offhand = "";
+  $quiver = "";
   $weapon1 = "";
   $weapon2 = "";
   $weaponSideboard = "";
@@ -175,7 +179,8 @@ if ($decklink != "") {
       } else if ($cardType == "C") {
         $character = $id;
       } else if ($cardType == "W") {
-        for ($j = 0; $j < ($count - $numSideboard); ++$j) {
+        $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
+        for ($j = 0; $j < $numMainBoard; ++$j) {
           if ($weapon1 == "") $weapon1 = $id;
           else if ($weapon2 == "") $weapon2 = $id;
           else {
@@ -226,6 +231,13 @@ if ($decklink != "") {
                 $offhandSideboard .= $id;
               }
               break;
+            case "Quiver":
+              if ($quiver == "") $quiver = $id;
+              else {
+                if ($quiverSideboard != "") $quiverSideboard .= " ";
+                $quiverSideboard .= $id;
+              }
+              break;
             default:
               break;
           }
@@ -251,6 +263,10 @@ if ($decklink != "") {
             case "Off-Hand":
               if ($offhandSideboard != "") $offhandSideboard .= " ";
               $offhandSideboard .= $id;
+              break;
+            case "Quiver":
+              if ($quiverSideboard != "") $quiverSideboard .= " ";
+              $quiverSideboard .= $id;
               break;
             default:
               break;
@@ -338,6 +354,7 @@ if ($decklink != "") {
   if ($weapon1 != "") $charString .= " " . $weapon1;
   if ($weapon2 != "") $charString .= " " . $weapon2;
   if ($offhand != "") $charString .= " " . $offhand;
+  if ($quiver != "") $charString .= " " . $quiver;
   if ($head != "") $charString .= " " . $head;
   if ($chest != "") $charString .= " " . $chest;
   if ($arms != "") $charString .= " " . $arms;
@@ -350,7 +367,8 @@ if ($decklink != "") {
   fwrite($deckFile, $legsSideboard . "\r\n");
   fwrite($deckFile, $offhandSideboard . "\r\n");
   fwrite($deckFile, $weaponSideboard . "\r\n");
-  fwrite($deckFile, $sideboardCards);
+  fwrite($deckFile, $sideboardCards . "\r\n");
+  fwrite($deckFile, $quiverSideboard);
   fclose($deckFile);
   copy($filename, "./Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
 
@@ -368,7 +386,7 @@ if ($decklink != "") {
     //Save deck
     include_once './includes/functions.inc.php';
     include_once "./includes/dbh.inc.php";
-    addFavoriteDeck($_SESSION["userid"], $decklink, $deckName, $character);
+    addFavoriteDeck($_SESSION["userid"], $decklink, $deckName, $character, $deckFormat);
   }
 } else {
   $character = "";
@@ -705,6 +723,10 @@ function IsBanned($cardID, $format)
         case "MON239":
         case "CRU141":
         case "ELE114":
+        case "MON266": case "MON267": case "MON268":
+        case "ELE003":
+        case "ELE172":
+        case "UPR139":
           return true;
         default:
           return false;

@@ -67,7 +67,8 @@ function JSONRenderedCard(
   $isFrozen = NULL,
   $gem = NULL,
   $countersMap = new stdClass(), // new object for counters
-  $label = NULL
+  $label = NULL,
+  $facing = NULL
 ) {
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -123,6 +124,7 @@ function JSONRenderedCard(
     'isFrozen' => $isFrozen,
     'countersMap' => $countersMap,
     'label' => $label,
+    'facing' => $facing,
   ];
 
   if ($gem != NULL) {
@@ -672,7 +674,7 @@ function BanishUI($from = "")
       $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i)); //Display banished cards that are playable
     else // if($from != "HAND")
     {
-      if (PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i]))
+      if (PlayableFromBanish($banish[$i], $banish[$i+1]) || AbilityPlayableFromBanish($banish[$i]))
         $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));
       else if ($from != "HAND")
         $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
@@ -695,15 +697,16 @@ function BanishUIMinimal($from = "")
       if ($rv != "") $rv .= "|";
       if ($playerID == 3) ClientRenderedCard(cardNumber: $MyCardBack, overlay: 1, controller: $playerID);
       else $rv .= ClientRenderedCard(cardNumber: $banish[$i], overlay: 1, controller: $playerID);
-    } else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") {
-      if ($rv != "") $rv .= "|";
-      $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
-    } else {
-      if (PlayableFromBanish($banish[$i]) || (AbilityPlayableFromBanish($banish[$i]) && IsPlayable($banish[$i], $turn[0], "BANISH", $i) && $playerID == $mainPlayer)) {
+    }
+    else {
+      if ($action > 0) {
         if ($rv != "") $rv .= "|";
         $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
-      } else if ($from != "HAND")
+      }
+      else if ($from != "HAND")
+      {
         $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
+      }
     }
   }
   return $rv;
@@ -721,13 +724,10 @@ function TheirBanishUIMinimal($from = "")
     if ($mod == "INT") {
       if ($rv != "") $rv .= "|";
       $rv .= ClientRenderedCard(cardNumber: $TheirCardBack, overlay: 1, controller: $playerID);
-    } else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") {
-      if ($rv != "") $rv .= "|";
-      $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
     } else {
-      if (PlayableFromBanish($banish[$i]) || (AbilityPlayableFromBanish($banish[$i]) && IsPlayable($banish[$i], $turn[0], "BANISH", $i) && $otherPlayer == $mainPlayer)) {
+      if ($otherPlayer == $mainPlayer && IsPlayable($banish[$i], $turn[0], "BANISH", $i, $restriction, $otherPlayer)) {
         if ($rv != "") $rv .= "|";
-        $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
+        $rv .= ClientRenderedCard(cardNumber: $banish[$i], controller: $otherPlayer);
       } else if ($from != "HAND")
         $rv .= Card($banish[$i], "concat", $size, 0, 1, 0);
     }
@@ -741,7 +741,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $mod = "-")
   if ($playerID != $currentPlayer) return 0;
   if ($turn[0] == "B") return ($isPlayable ? 6 : 0);
   if ($from == "BANISH") {
-    if (($isPlayable || PlayableFromBanish($cardID)) && (($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119"))) return 7;
+    if ($isPlayable || PlayableFromBanish($cardID, $mod)) return 7;
     if (HasBloodDebt($cardID)) return 2;
     if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
     if ($isPlayable && ComboActive($cardID)) return 5;

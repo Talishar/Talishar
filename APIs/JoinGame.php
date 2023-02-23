@@ -7,6 +7,7 @@ include_once "../APIKeys/APIKeys.php";
 include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
 
+<<<<<<< HEAD
 $response = new stdClass();
 
 session_start();
@@ -23,11 +24,38 @@ if(!isset($decksToTry)) $decksToTry = TryPOST("decksToTry");//This is only used 
 if(!isset($favoriteDeck)) $favoriteDeck = TryPOST("favoriteDeck", "0");//Set this to "on" to save the provided deck link to your favorites
 if(!isset($favoriteDeckLink)) $favoriteDeckLink = TryPOST("favoriteDecks", "0");//This one is kind of weird. It's the favorite deck index, then the string "<fav>" then the favorite deck link
 if(!isset($matchup)) $matchup = TryPOST("matchup", "");//The matchup link
+=======
+SetHeaders();
+
+$response = new stdClass();
+
+session_start();
+if (!isset($gameName)) {
+  $_POST = json_decode(file_get_contents('php://input'), true);
+  $gameName = $_POST["gameName"];
+}
+if (!IsGameNameValid($gameName)) {
+  $response->error = "Invalid game name.";
+  echo (json_encode($response));
+  exit;
+}
+if (!isset($playerID)) $playerID = intval($_POST["playerID"]);
+if (!isset($deck)) $deck = TryPOST("deck"); //This is for limited game modes (see JoinGameInput.php)
+if (!isset($decklink)) $decklink = TryPOST("fabdb", ""); //Deck builder decklink
+if (!isset($decksToTry)) $decksToTry = TryPOST("decksToTry"); //This is only used if there's no favorite deck or decklink. 1 = ira
+if (!isset($favoriteDeck)) $favoriteDeck = TryPOST("favoriteDeck", false); //Set this to true to save the provided deck link to your favorites
+if (!isset($favoriteDeckLink)) $favoriteDeckLink = TryPOST("favoriteDecks", "0"); //This one is kind of weird. It's the favorite deck index, then the string "<fav>" then the favorite deck link
+if (!isset($matchup)) $matchup = TryPOST("matchup", ""); //The matchup link
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
 $starterDeck = false;
 
 if ($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "") {
   $response->error = "Another player has already joined the game.";
+<<<<<<< HEAD
   echo(json_encode($response));
+=======
+  echo (json_encode($response));
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
   exit;
 }
 if ($decklink == "" && $deck == "" && $favoriteDeckLink == "0") {
@@ -46,7 +74,11 @@ if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
 
 if ($deck == "" && !IsDeckLinkValid($decklink)) {
   $response->error = "Deck URL is not valid: " . $decklink;
+<<<<<<< HEAD
   echo(json_encode($response));
+=======
+  echo (json_encode($response));
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
   exit;
 }
 
@@ -62,7 +94,11 @@ if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
     $response->error = "Another player has already joined the game.";
   }
   WriteGameFile();
+<<<<<<< HEAD
   echo(json_encode($response));
+=======
+  echo (json_encode($response));
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
   exit;
 }
 
@@ -102,7 +138,11 @@ if ($decklink != "") {
   if ($apiDeck === FALSE) {
     WriteGameFile();
     $response->error = "Deckbuilder API for this deck returns no data: " . implode("/", $decklink);
+<<<<<<< HEAD
     echo(json_encode($response));
+=======
+    echo (json_encode($response));
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
     LogDeckLoadFailure("API returned no data");
     exit;
   }
@@ -110,6 +150,7 @@ if ($decklink != "") {
   // if has message forbidden error out.
   if ($apiInfo['http_code'] == 403) {
     $response->error = "API FORBIDDEN! Invalid or missing token to access API: " . $apiLink . " The response from the deck hosting service was: " . $apiDeck;
+<<<<<<< HEAD
     echo(json_encode($response));
     LogDeckLoadFailure("Missing API Key");
     die();
@@ -121,11 +162,33 @@ if ($decklink != "") {
     LogDeckLoadFailure("Failed to retrieve deck from API.");
     exit;
   }
+=======
+    echo (json_encode($response));
+    LogDeckLoadFailure("Missing API Key");
+    die();
+  }
+  if ($deckObj == null) {
+    $response->error = 'Deck object is null. Failed to retrieve deck from API.';
+    echo (json_encode($response));
+    LogDeckLoadFailure("Failed to retrieve deck from API.");
+    exit;
+  }
+  if(!isset($deckObj->{'name'}))
+  {
+    $response->error = 'Deck is invalid. Failed to retrieve deck from API.';
+    echo (json_encode($response));
+    exit;
+  }
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
   $deckName = $deckObj->{'name'};
   if (isset($deckObj->{'matchups'})) {
     if ($playerID == 1) $p1Matchups = $deckObj->{'matchups'};
     else if ($playerID == 2) $p2Matchups = $deckObj->{'matchups'};
   }
+<<<<<<< HEAD
+=======
+  $deckFormat = (isset($deckObj->{'format'}) ? $deckObj->{'format'} : "");
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
   $cards = $deckObj->{'cards'};
   $deckCards = "";
   $sideboardCards = "";
@@ -134,6 +197,10 @@ if ($decklink != "") {
   $armsSideboard = "";
   $legsSideboard = "";
   $offhandSideboard = "";
+<<<<<<< HEAD
+=======
+  $quiverSideboard = "";
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
   $unsupportedCards = "";
   $bannedCard = "";
   $character = "";
@@ -142,6 +209,10 @@ if ($decklink != "") {
   $arms = "";
   $legs = "";
   $offhand = "";
+<<<<<<< HEAD
+=======
+  $quiver = "";
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
   $weapon1 = "";
   $weapon2 = "";
   $weaponSideboard = "";
@@ -160,10 +231,17 @@ if ($decklink != "") {
         $id = explode("-", $id)[0];
       } else if ($isFaBMeta) {
         $id = $cards[$i]->{'identifier'};
+<<<<<<< HEAD
       } else if(isset($cards[$i]->{'cardIdentifier'})) {
         $id = $cards[$i]->{'cardIdentifier'};
       }
       if($id == "") continue;
+=======
+      } else if (isset($cards[$i]->{'cardIdentifier'})) {
+        $id = $cards[$i]->{'cardIdentifier'};
+      }
+      if ($id == "") continue;
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
       $id = GetAltCardID($id);
       $cardType = CardType($id);
       $cardSet = substr($id, 0, 3);
@@ -180,7 +258,13 @@ if ($decklink != "") {
       } else if ($cardType == "C") {
         $character = $id;
       } else if ($cardType == "W") {
+<<<<<<< HEAD
         for ($j = 0; $j < ($count - $numSideboard); ++$j) {
+=======
+        $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
+        for ($j = 0; $j < $numMainBoard; ++$j) {
+          if($j > 0) $id = ReverseArt($id);
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
           if ($weapon1 == "") $weapon1 = $id;
           else if ($weapon2 == "") $weapon2 = $id;
           else {
@@ -189,6 +273,10 @@ if ($decklink != "") {
           }
         }
         for ($j = 0; $j < $numSideboard; ++$j) {
+<<<<<<< HEAD
+=======
+          if($numMainBoard > 0 || $j > 0) $id = ReverseArt($id);
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
           if ($weaponSideboard != "") $weaponSideboard .= " ";
           $weaponSideboard .= $id;
         }
@@ -231,6 +319,16 @@ if ($decklink != "") {
                 $offhandSideboard .= $id;
               }
               break;
+<<<<<<< HEAD
+=======
+            case "Quiver":
+              if ($quiver == "") $quiver = $id;
+              else {
+                if ($quiverSideboard != "") $quiverSideboard .= " ";
+                $quiverSideboard .= $id;
+              }
+              break;
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
             default:
               break;
           }
@@ -257,6 +355,13 @@ if ($decklink != "") {
               if ($offhandSideboard != "") $offhandSideboard .= " ";
               $offhandSideboard .= $id;
               break;
+<<<<<<< HEAD
+=======
+            case "Quiver":
+              if ($quiverSideboard != "") $quiverSideboard .= " ";
+              $quiverSideboard .= $id;
+              break;
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
             default:
               break;
           }
@@ -276,33 +381,50 @@ if ($decklink != "") {
     }
   } else {
     $response->error = "Decklist link invalid.";
+<<<<<<< HEAD
     echo(json_encode($response));
+=======
+    echo (json_encode($response));
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
     LogDeckLoadFailure("Decklist link invalid.");
     exit;
   }
 
   if ($unsupportedCards != "") {
     $response->error = "The following cards are not yet supported: " . $unsupportedCards;
+<<<<<<< HEAD
     echo(json_encode($response));
     header("Location: MainMenu.php");
+=======
+    echo (json_encode($response));
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
     exit;
   }
 
   if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc")) {
     $response->error = "Young heroes are not legal in Classic Constructed";
+<<<<<<< HEAD
     echo(json_encode($response));
     header("Location: MainMenu.php");
+=======
+    echo (json_encode($response));
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
     exit;
   }
 
   if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz")) {
     $response->error = "Adult heroes are not legal in Blitz";
+<<<<<<< HEAD
     echo(json_encode($response));
+=======
+    echo (json_encode($response));
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
     exit;
   }
 
   if ($bannedCard != "") {
     $response->error = "The following cards are banned: " . $bannedCard;
+<<<<<<< HEAD
     echo(json_encode($response));
     exit;
   }
@@ -328,6 +450,12 @@ if ($decklink != "") {
   }
   */
 
+=======
+    echo (json_encode($response));
+    exit;
+  }
+
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
   //We have the decklist, now write to file
   $filename = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
   $deckFile = fopen($filename, "w");
@@ -335,6 +463,10 @@ if ($decklink != "") {
   if ($weapon1 != "") $charString .= " " . $weapon1;
   if ($weapon2 != "") $charString .= " " . $weapon2;
   if ($offhand != "") $charString .= " " . $offhand;
+<<<<<<< HEAD
+=======
+  if ($quiver != "") $charString .= " " . $quiver;
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
   if ($head != "") $charString .= " " . $head;
   if ($chest != "") $charString .= " " . $chest;
   if ($arms != "") $charString .= " " . $arms;
@@ -347,9 +479,16 @@ if ($decklink != "") {
   fwrite($deckFile, $legsSideboard . "\r\n");
   fwrite($deckFile, $offhandSideboard . "\r\n");
   fwrite($deckFile, $weaponSideboard . "\r\n");
+<<<<<<< HEAD
   fwrite($deckFile, $sideboardCards);
   fclose($deckFile);
   copy($filename, "./Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
+=======
+  fwrite($deckFile, $sideboardCards . "\r\n");
+  fwrite($deckFile, $quiverSideboard);
+  fclose($deckFile);
+  copy($filename, "../Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
 
   if (isset($_SESSION["userid"])) {
     include_once '../includes/functions.inc.php';
@@ -361,6 +500,7 @@ if ($decklink != "") {
     }
   }
 
+<<<<<<< HEAD
   if ($favoriteDeck == "on" && isset($_SESSION["userid"])) {
     //Save deck
     include_once '../includes/functions.inc.php';
@@ -369,6 +509,22 @@ if ($decklink != "") {
   }
 }
 
+=======
+  if ($favoriteDeck && isset($_SESSION["userid"])) {
+    //Save deck
+    include_once '../includes/functions.inc.php';
+    include_once "../includes/dbh.inc.php";
+    addFavoriteDeck($_SESSION["userid"], $decklink, $deckName, $character, $deckFormat);
+  }
+}
+
+if (!isset($character) || $character == "") {
+  $response->error = "There is no character. Something went wrong with parsing your deck.";
+  echo (json_encode($response));
+  exit;
+}
+
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
 if ($matchup == "") {
   if ($playerID == 2) {
 
@@ -382,11 +538,19 @@ if ($matchup == "") {
     while ($p1roll == $p2roll && $tries > 0) {
       $p1roll = rand(1, 6) + rand(1, 6);
       $p2roll = rand(1, 6) + rand(1, 6);
+<<<<<<< HEAD
       WriteLog("Player 1 rolled $p1roll and Player 2 rolled $p2roll.");
       --$tries;
     }
     $firstPlayerChooser = ($p1roll > $p2roll ? 1 : 2);
     WriteLog("Player $firstPlayerChooser chooses who goes first.");
+=======
+      WriteLog("Player 1 rolled $p1roll and Player 2 rolled $p2roll.", path: "../");
+      --$tries;
+    }
+    $firstPlayerChooser = ($p1roll > $p2roll ? 1 : 2);
+    WriteLog("Player $firstPlayerChooser chooses who goes first.", path: "../");
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
     $gameStatus = $MGS_ChooseFirstPlayer;
     $joinerIP = $_SERVER['REMOTE_ADDR'];
   }
@@ -423,8 +587,18 @@ if ($matchup == "") {
   }
 }
 
+<<<<<<< HEAD
 session_write_close();
 //header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");//Uncomment for testing
+=======
+$response->message = "success";
+$response->gameName = $gameName;
+$response->playerID = $playerID;
+$response->authKey = $playerID == 1 ? $p1Key : ($playerID == 2 ? $p2Key : '');
+echo (json_encode($response));
+
+session_write_close();
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
 
 
 function ParseDraftFab($deck, $filename)
@@ -631,7 +805,13 @@ function IsBanned($cardID, $format)
         case "CRU141":
         case "EVR037":
         case "EVR123": // Aether Wildfire
+<<<<<<< HEAD
         case "UPR113": case "UPR114": case "UPR115": // Aether Icevein
+=======
+        case "UPR113":
+        case "UPR114":
+        case "UPR115": // Aether Icevein
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
         case "UPR139": // Hypothermia
           return true;
         default:
@@ -700,6 +880,30 @@ function IsBanned($cardID, $format)
   }
 }
 
+<<<<<<< HEAD
+=======
+
+function ReverseArt($cardID)
+{
+  switch ($cardID) {
+    case "WTR078":
+      return "CRU049";
+    case "CRU004":
+      return "CRU005";
+    case "CRU051":
+      return "CRU052";
+    case "CRU079":
+      return "CRU080";
+    case "DYN069":
+      return "DYN070";
+    case "DYN115":
+      return "DYN116";
+    default:
+      return $cardID;
+  }
+}
+
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
 function LogDeckLoadFailure($failure)
 {
   global $gameName, $decklink;

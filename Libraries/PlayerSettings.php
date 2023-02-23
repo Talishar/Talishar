@@ -145,6 +145,7 @@ function GetCardBack($player)
     case 45: return "CBLuminaris";
     case 46: return "CBFaBLab";
     case 47: return "CBCardAdvantage";
+    case 48: return "CBOnHit";
     default: return "CardBack";
   }
 }
@@ -247,6 +248,7 @@ function IsStreamerMode($player)
 
 function ChangeSetting($player, $setting, $value, $playerId="")
 {
+  global $SET_MuteChat;
   /*
   global $SET_ManualMode;
 
@@ -264,10 +266,17 @@ function ChangeSetting($player, $setting, $value, $playerId="")
   {
     $settings = &GetSettings($player);
     $settings[$setting] = $value;
-  }
-  else
-  {
-
+    if($setting == $SET_MuteChat)
+    {
+      if($value == "1")
+      {
+        ClearLog(1);
+        WriteLog("Chat disabled by player " . $player);
+      }
+      else {
+        WriteLog("Chat enabled by player " . $player);
+      }
+    }
   }
   if($playerId != "" && SaveSettingInDatabase($setting)) SaveSetting($playerId, $setting, $value);
 }

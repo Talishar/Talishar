@@ -21,6 +21,7 @@ function RemovePermanent($player, $index)
 
 function DestroyPermanent($player, $index)
 {
+  if($index == -1) return;
   $index = intval($index);
   $permanents = &GetPermanents($player);
   $cardID = $permanents[$index];

@@ -193,9 +193,16 @@
       ProcessDecisionQueue();
     }
     else {
-      $turn[0] = "A";
+      $turn[0] = "D";
       $currentPlayer = $mainPlayer;
-      for($i=0; $i<LayerPieces(); ++$i) array_shift($layers);//Get rid of defense step layer
+      for($i=count($layers)-LayerPieces(); $i >= 0; $i-=LayerPieces())
+      {
+        if($layers[$i] == "DEFENDSTEP" || ($layers[$i] == "LAYER" && $layers[$i+2] == "PHANTASM"))
+        {
+          for($j=$i; $j<($i+LayerPieces()); ++$j) unset($layers[$j]);
+        }
+      }
+      $layers = array_values($layers);
     }
   }
 

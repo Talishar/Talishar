@@ -125,6 +125,8 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
   $firstPlayer = 1;
   $firstPlayerChooser = ($winner == 1 ? 2 : 1);
+  $p1SideboardSubmitted = "0";
+  $p2SideboardSubmitted = (IsPlayerAI(2) ? "1" : "0");
   WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
   WriteGameFile();
   $turn[0] = "REMATCH";
@@ -154,6 +156,12 @@ if (!IsGameOver()) {
 if (!$skipWriteGamestate) {
   //if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGamestate();
   //else UpdateGameState(1);
+  if(!IsModeAsync($mode))
+  {
+    if(GetCachePiece($gameName, 12) == "1") WriteLog("Current player is active again.");
+    SetCachePiece($gameName, 12, "0");
+    $currentPlayerActivity = 0;
+  }
   DoGamestateUpdate();
   include "WriteGamestate.php";
 }

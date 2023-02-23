@@ -98,7 +98,7 @@
     {
       AddSoul($cardID, $mainPlayer, "DECK");
       GainHealth(1, $mainPlayer);
-      WriteLog("It's a Light card, so it goes in the soul and gain 1 health.");
+      WriteLog("Lumina Ascension put a Light card in Soul.");
     }
     else
     {

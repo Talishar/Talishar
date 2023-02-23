@@ -313,7 +313,6 @@ function AuraStartTurnAbilities()
         if(PlayerHasLessHealth($mainPlayer))
         {
           GainHealth(2, $mainPlayer);
-          WriteLog("Gained 2 health from Never Yield.");
         }
         if(PlayerHasFewerEquipment($mainPlayer))
         {
@@ -329,7 +328,6 @@ function AuraStartTurnAbilities()
         if ($auras[$i] == "DYN033") $amount = 3;
         else if ($auras[$i] == "DYN034") $amount = 2;
         else $amount = 1;
-        WriteLog(CardLink($auras[$i], $auras[$i]) . " give " . $amount . " health to target hero.");
         GainHealth($amount, $mainPlayer);
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
@@ -419,6 +417,7 @@ function AuraStartTurnAbilities()
 function AuraBeginEndPhaseAbilities()
 {
   global $mainPlayer;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
@@ -493,6 +492,34 @@ function AuraBeginEndPhaseAbilities()
         break;
       case "DYN244":
         MyDrawCard();
+        $remove = 1;
+        break;
+      case $CID_BloodRotPox:
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_3_to_avoid_taking_2_damage", 0, 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSTAKEDAMAGE", $mainPlayer, 2);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "3", 1);
+        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "3", 1);
+        AddDecisionQueue("PITFALLTRAP", $mainPlayer, "-", 1);
+        $remove = 1;
+        break;
+      case $CID_Inertia:
+        $deck = &GetDeck($mainPlayer);
+        $arsenal = &GetArsenal($mainPlayer);
+        while(count($arsenal) > 0)
+        {
+          array_push($deck, $arsenal[0]);
+          RemoveArsenal($mainPlayer, 0);
+        }
+        $hand = &GetHand($mainPlayer);
+        while(count($hand) > 0)
+        {
+          array_push($deck, $hand[0]);
+          RemoveHand($mainPlayer, 0);
+        }
+        $remove = 1;
+        break;
+      case $CID_Frailty:
         $remove = 1;
         break;
       default:
@@ -822,7 +849,8 @@ function AuraHitEffects($attackID)
 
 function AuraAttackModifiers($index)
 {
-  global $combatChain;
+  global $combatChain, $combatChainState, $CCS_AttackPlayedFrom;
+  global $CID_Frailty;
   $modifier = 0;
   $player = $combatChain[$index + 1];
   $otherPlayer = ($player == 1 ? 2 : 1);
@@ -832,6 +860,11 @@ function AuraAttackModifiers($index)
       case "ELE117":
         if (CardType($combatChain[$index]) == "AA") {
           $modifier += 3;
+        }
+        break;
+      case $CID_Frailty:
+        if (IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS") {
+          $modifier -= 1;
         }
         break;
       default:

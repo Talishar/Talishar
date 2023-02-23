@@ -230,23 +230,20 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $skipWriteGamestate = true;
         break;
       }
+      $input = [];
       for ($i = 0; $i < count($chkInput); ++$i) {
-        $found = 0;
-        for ($j = 0; $j < count($options); ++$j) {
-          if ($chkInput[$i] == $options[$j]) {
-            $found = 1;
-            break;
-          }
-        }
-        if (!$found) {
+        if ($chkInput[$i] < 0 || $chkInput[$i] >= count($options)) {
           WriteLog("You selected option " . $chkInput[$i] . " but that was not one of the original options. Reverting gamestate prior to that effect.");
           RevertGamestate();
           $skipWriteGamestate = true;
           break;
         }
+        else {
+          array_push($input, $options[$chkInput[$i]]);
+        }
       }
       if (!$skipWriteGamestate) {
-        ContinueDecisionQueue($chkInput);
+        ContinueDecisionQueue($input);
       }
       break;
     case 20: //YESNO
@@ -530,22 +527,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       AddDecisionQueue("YESNO", $otherPlayer, "if you want a Rematch?");
       AddDecisionQueue("REMATCH", $otherPlayer, "-", 1);
       ProcessDecisionQueue();
-      break;
-    case 100005: //Current player inactive
-      if($isSimulation) return;
-      $char = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
-      if ($char[0] != "DUMMY") {
-        $currentPlayerActivity = 2;
-        WriteLog("The current player is inactive.");
-      }
-      break;
-    case 100006: //Current player active
-      if($isSimulation) return;
-      $char = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
-      if ($char[0] != "DUMMY") {
-        $currentPlayerActivity = 0;
-        WriteLog("The current player is active again.");
-      }
       break;
     case 100007: //Claim Victory when opponent is inactive
       if($isSimulation) return;
@@ -1831,7 +1812,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $turn, $combatChain, $currentPlayer, $defPlayer, $combatChainState, $CCS_AttackPlayedFrom, $CS_PlayIndex;
   global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex, $CS_NumAttacks, $CCS_NumChainLinks, $CCS_LinkBaseAttack;
-  global $currentTurnEffectsFromCombat, $CCS_WeaponIndex, $CS_EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
+  global $CCS_WeaponIndex, $CS_EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
   global $CS_NumDragonAttacks, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks, $CCS_IsBoosted;
   global $SET_PassDRStep;
 
@@ -1850,13 +1831,12 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
     if ($index == 0) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
-      $currentTurnEffectsFromCombat = [];
       $combatChainState[$CCS_AttackPlayedFrom] = $from;
       $chainClosed = ProcessAttackTarget();
       ++$combatChainState[$CCS_NumChainLinks];
       $baseAttackSet = CurrentEffectBaseAttackSet($cardID);
       $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
-      $combatChainState[$CCS_LinkBaseAttack] = $attackValue;
+      $combatChainState[$CCS_LinkBaseAttack] = BaseAttackModifiers($attackValue);
       $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
       if ($definedCardType == "AA" && $attackValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
       if ($definedCardType == "AA" && (SearchCharacterActive($currentPlayer, "CRU002") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects("CRU002-SHIYANA", $currentPlayer))) && $attackValue >= 6) KayoStaticAbility();
@@ -1912,6 +1892,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   }
   //Resolve Effects
   if (!$isBlock) {
+    CurrentEffectPlayOrActivateAbility($cardID, $from);
     if ($from != "PLAY") {
       CurrentEffectPlayAbility($cardID, $from);
       ArsenalPlayCardAbilities($cardID);

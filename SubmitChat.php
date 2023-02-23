@@ -42,15 +42,24 @@ $filteredChatText = str_replace("cock", "****", $filteredChatText);
 $filteredChatText = str_replace("bitch", "****", $filteredChatText);
 $filteredChatText = str_replace("retard", "****", $filteredChatText);
 $filteredChatText = str_replace("idiot", "****", $filteredChatText);
+<<<<<<< HEAD
+=======
+$filteredChatText = str_replace("faggot", "****", $filteredChatText);
+$filteredChatText = str_replace("kill yourself", "****", $filteredChatText);
+$filteredChatText = str_replace("die in a fire", "****", $filteredChatText);
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
 
 $filename = "./Games/" . $gameName . "/gamelog.txt";
 $handler = fopen($filename, "a");
 $output = "<span style='font-weight:bold; color:<PLAYER" . $playerID . "COLOR>;'>" . $displayName . ": </span>" . $filteredChatText;
 fwrite($handler, $output . "\r\n");
+<<<<<<< HEAD
 if($chatText != $filteredChatText && !isset($_SESSION["isPatron"]))
 {
   fwrite($handler, "<span style='color:red;'>A message from the developers:</span> Talishar is a fan-made project. We spend a lot of time making this site because it makes us happy to bring joy to you all. If you want to see the site continue to be supported, please don't harass each other.\r\n");
 }
+=======
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
 if(GetCachePiece($gameName, 11) >= 3) fwrite($handler, "The lobby is reactivated.\r\n");
 fclose($handler);
 

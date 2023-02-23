@@ -10,6 +10,7 @@ include "LandmarkAbilities.php";
 include "CharacterAbilities.php";
 include "WeaponLogic.php";
 include "MZLogic.php";
+include "Classes/Deck.php";
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
 {
@@ -89,6 +90,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
     return RVDPlayAbility($cardID, $from, $resourcesPaid);
   } else if ($set == "DYN") {
     return DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  } else if ($set == "OUT") {
+    return OUTPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   } else {
     return ROGUEPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   }
@@ -173,6 +176,8 @@ function ProcessHitEffect($cardID)
     return UPRHitEffect($cardID);
   } else if ($set == "DYN") {
     return DYNHitEffect($cardID);
+  } else if ($set == "OUT") {
+    return OUTHitEffect($cardID);
   }
   switch ($cardID) {
     default:
@@ -645,6 +650,10 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "DYN148": return 3;
     case "DYN149": return 2;
     case "DYN150": return 1;
+    case "OUT021": case "OUT022": case "OUT023": return 3;
+    case "OUT042": return 3;
+    case "OUT043": return 2;
+    case "OUT044": return 1;
     default:
       return 0;
   }
@@ -1096,6 +1105,8 @@ function SelfCostModifier($cardID)
       $numHypers += CountItem("DYN111", $currentPlayer);
       $numHypers += CountItem("DYN112", $currentPlayer);
       return $numHypers > 0 ? -1 : 0;
+    case "OUT056": case "OUT057": case "OUT058":
+      return (ComboActive($cardID) ? -2 : 0);
     default:
       return 0;
   }
@@ -1376,6 +1387,24 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
             $remove = 1;
           }
           break;
+        case "OUT231":
+          if ($type == "COMBAT") {
+            if($preventable) $damage -= 4;
+            $remove = 1;
+          }
+          break;
+        case "OUT232":
+          if ($type == "COMBAT") {
+            if($preventable) $damage -= 3;
+            $remove = 1;
+          }
+          break;
+        case "OUT233":
+          if ($type == "COMBAT") {
+            if($preventable) $damage -= 2;
+            $remove = 1;
+          }
+          break;
         default:
           break;
       }
@@ -1459,10 +1488,28 @@ function CurrentEffectPlayAbility($cardID, $from)
             $remove = 1;
           }
           break;
+        default:
+          break;
+      }
+      if ($remove == 1) RemoveCurrentTurnEffect($i);
+    }
+  }
+  $currentTurnEffects = array_values($currentTurnEffects); //In case any were removed
+  return false;
+}
+
+function CurrentEffectPlayOrActivateAbility($cardID, $from)
+{
+  global $currentTurnEffects, $currentPlayer;
+
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $remove = 0;
+    if ($currentTurnEffects[$i + 1] == $currentPlayer) {
+      switch ($currentTurnEffects[$i]) {
         case "MON153":
         case "MON154":
           $cardType = CardType($cardID);
-          if (($cardType == "AA" || $cardType == "W") && (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer))) {
+          if (($cardType == "AA" || $cardType == "W" || $cardType == "T") && (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer))) {
             GiveAttackGoAgain();
             $remove = 1;
           }
@@ -3517,6 +3564,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       BanishCardForPlayer($lastResult, $player, "-", $parameter);
       return $lastResult;
     case "MULTIBANISH":
+      if($lastResult == "") return $lastResult;
       $cards = explode(",", $lastResult);
       $params = explode(",", $parameter);
       if(count($params) < 3) array_push($params, "");
@@ -4643,14 +4691,24 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "INVERTEXISTENCE":
+      if($lastResult == "")
+      {
+        WriteLog("No cards were selected, so Invert Existence did not banish any cards.");
+        return $lastResult;
+      }
       $cards = explode(",", $lastResult);
       $numAA = 0;
       $numNAA = 0;
+      $message = "Invert existence banished ";
       for ($i = 0; $i < count($cards); ++$i) {
         $type = CardType($cards[$i]);
         if ($type == "AA") ++$numAA;
         else if ($type == "A") ++$numNAA;
+        if($i >= 1) $message .= ", ";
+        if($i != 0 && $i == count($cards) - 1) $message .= "and ";
+        $message .= CardLink($cards[$i], $cards[$i]);
       }
+      WriteLog($message . ".");
       if ($numAA == 1 && $numNAA == 1) DealArcane(2, 0, "PLAYCARD", "MON158", true, $player);
       return $lastResult;
     case "ROUSETHEANCIENTS":
@@ -4673,6 +4731,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $card = array_shift($deck);
       LoseHealth(1, $player);
+      WriteLog("Player " . $player . " lost 1 health.");
       if (AttackValue($card) >= 6) {
         WriteLog(CardLink("CRU007", "CRU007") . " banished " . CardLink($card, $card) . " and was added to hand.");
         BanishCardForPlayer($card, $player, "DECK", "-");
@@ -5546,12 +5605,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $currentTime = round(microtime(true) * 1000);
       SetCachePiece($gameName, 2, $currentTime);
       SetCachePiece($gameName, 3, $currentTime);
+      unlink("./Games/" . $gameName . "/gamestateBackup.txt");
+      unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
+      unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
       include "MenuFiles/ParseGamefile.php";
       header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID");
       exit;
     case "REMATCH":
       global $GameStatus_Rematch, $inGameStatus;
-      if($lastResult == "YES") $inGameStatus = $GameStatus_Rematch;
+      if($lastResult == "YES")
+      {
+        $inGameStatus = $GameStatus_Rematch;
+        unlink("./Games/" . $gameName . "/gamestateBackup.txt");
+        unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
+        unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
+      }
       return 0;
     case "IMPERIALWARHORN":
       $otherPlayer = ($player == 1 ? 2 : 1);

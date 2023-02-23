@@ -12,6 +12,10 @@
 9 - Last current cache piece (possibly defunct?)
 10 - Is Replay
 11 - Number P2 disconnects
+<<<<<<< HEAD
+=======
+12 - Current player status (0 = active, 1 = inactive)
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
 */
 
 // $useRedis = getenv('REDIS_ENABLED') ?? false;

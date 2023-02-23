@@ -1,7 +1,7 @@
 <?php
 
-include "ParseGamestate.php";
-include "WriteLog.php";
+//include "ParseGamestate.php";
+//include "WriteLog.php";
 
 array_push($layerPriority, ShouldHoldPriority(1));
 array_push($layerPriority, ShouldHoldPriority(2));
@@ -22,7 +22,7 @@ StatsStartTurn();
 $MakeStartTurnBackup = false;
 $MakeStartGameBackup = false;
 
-WriteLog("If you see a bug, use the Report Bug button in the menu. There is also a manual control mode to help correct the game state.");
+//WriteLog("If you see a bug, use the Report Bug button in the menu. There is also a manual control mode to help correct the game state.");
 
 if ($p2Char[0] == "DUMMY") {
   SetCachePiece($gameName, 3, "99999999999999");
@@ -76,12 +76,12 @@ if(SearchCharacterForCard(2, "DYN234")) {
 if (SearchCharacterForCard(1, "DYN026")) {
   $index = FindCharacterIndex(1, "DYN026");
   $p1Char[$index + 4] = -2;
-  WriteLog("When you equip " . CardLink("DYN026", "DYN026") . " it gets two -1 counters.");
+  //WriteLog("When you equip " . CardLink("DYN026", "DYN026") . " it gets two -1 counters.");
 }
 if (SearchCharacterForCard(2, "DYN026")) {
   $index = FindCharacterIndex(2, "DYN026");
   $p2Char[$index + 4] = -2;
-  WriteLog("When you equip " . CardLink("DYN026", "DYN026") . " it gets two -1 counters.");
+  //WriteLog("When you equip " . CardLink("DYN026", "DYN026") . " it gets two -1 counters.");
 }
 
 AddDecisionQueue("SHUFFLEDECK", 1, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck

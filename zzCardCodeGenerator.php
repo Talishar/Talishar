@@ -1,6 +1,13 @@
 <?php
 
+<<<<<<< HEAD
   $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/v5.0.0/json/english/card.json";
+=======
+  include './zzImageConverter.php';
+
+  //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/v5.0.0/json/english/card.json";
+  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/outsiders/json/english/card.json";
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
   $curl = curl_init();
   $headers = array(
     "Content-Type: application/json",
@@ -29,7 +36,12 @@
   GenerateFunction($cardArray, $handler, "PitchValue", "pitch", "1");
   GenerateFunction($cardArray, $handler, "CardCost", "cost", "0");
   GenerateFunction($cardArray, $handler, "CardSubtype", "subtype", "");
+<<<<<<< HEAD
   GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20", true);
+=======
+  GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20", true);//Also images
+  GenerateFunction($cardArray, $handler, "Rarity", "rarity", "C");
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
 
   fwrite($handler, "?>");
 
@@ -49,10 +61,12 @@
     $cardsSeen = [];
     for($i=0; $i<count($cardArray); ++$i)
     {
+      $cardRarity = "NA";
       $cardPrintings = [];
       if($cardArray[$i]->name == "Nitro Mechanoid") continue;//This is due to the data set not yet differentiating faces
       for($j=0; $j<count($cardArray[$i]->printings); ++$j)
       {
+        $cardRarity = $cardArray[$i]->printings[$j]->rarity;
         $cardID = $cardArray[$i]->printings[$j]->id;
         $set = substr($cardID, 0, 3);
         if(!in_array($set, $originalSets)) continue;
@@ -101,6 +115,23 @@
         else if($propertyName == "health")
         {
           $data = $cardArray[$i]->health;
+          CheckImage($cardID);
+        }
+        else if($propertyName == "rarity")
+        {
+          $data = $cardRarity;
+        }
+        else if($propertyName == "subtype")
+        {
+          $data = "";
+          for($j=0; $j<count($cardArray[$i]->types); ++$j)
+          {
+            if(!IsCardType($cardArray[$i]->types[$j]) && !IsClass($cardArray[$i]->types[$j]) && !IsTalent($cardArray[$i]->types[$j]) && !IsHandedness($cardArray[$i]->types[$j]))
+            {
+              if($data != "") $data .= ",";
+              $data .= $cardArray[$i]->types[$j];
+            }
+          }
         }
         else if($propertyName == "subtype")
         {
@@ -232,4 +263,8 @@
     }
   }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
 ?>

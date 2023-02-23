@@ -609,10 +609,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
         MainDrawCard();
         PummelHit();
       }
-      if ($source == "DYN612") {
-        GainHealth($damage, $mainPlayer);
-        WriteLog("Player " . $mainPlayer . " gains " . $damage . " life.", $mainPlayer);
-      }
+      if ($source == "DYN612") GainHealth($damage, $mainPlayer);
     }
 
     AuraDamageTakenAbilities($Auras, $damage);
@@ -644,6 +641,7 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
     case "MYITEMS": $source = &GetItems($player); break;
     case "MYAURAS": $source = &GetAuras($player); break;
   }
+  if($zone == "MYCHAR" && $source[$index+1] == 0) return;
   $cardID = $source[$index];
   $spellVoidAmount = SpellVoidAmount($cardID, $player);
   if($spellVoidAmount > 0)
@@ -725,8 +723,13 @@ function GainHealth($amount, $player)
   if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog(CardLink("MON229","MON229") . " prevented you from gaining health."); return; }
   if(SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140"))
   {
-    if($health > $otherHealth) return false;
+    if($health > $otherHealth)
+    {
+      WriteLog("Reaping Blade prevented player " . $player . " from gaining " . $amount . " health.");
+      return false;
+    }
   }
+  WriteLog("Player " . $player . " gained " . $amount . " health.");
   $health += $amount;
   return true;
 }
@@ -1230,8 +1233,11 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   if($from == "BANISH")
   {
     $banish = GetBanish($currentPlayer);
-    $mod = explode("-", $banish[$index+1])[0];
-    if(($cardType == "I" && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212")) || $mod == "INST" || $mod == "ARC119") return true;
+    if($index < count($banish))
+    {
+      $mod = explode("-", $banish[$index+1])[0];
+      if(($cardType == "I" && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212")) || $mod == "INST" || $mod == "ARC119") return true;
+    }
   }
   if(GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
@@ -1771,6 +1777,22 @@ function IsSpecificAuraAttacking($player, $index)
       return false;
     }
     return true;
+  }
+
+  function BaseAttackModifiers($attackValue)
+  {
+    global $combatChainState, $CCS_LinkBaseAttack, $currentTurnEffects, $mainPlayer;
+    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
+    {
+      if($currentTurnEffects[$i+1] != $mainPlayer) continue;
+      if(!IsCombatEffectActive($currentTurnEffects[$i])) continue;
+      switch($currentTurnEffects[$i])
+      {
+        case "EVR094": case "EVR095": case "EVR096": $attackValue = floor($attackValue/2); break;
+        default: break;
+      }
+    }
+    return $attackValue;
   }
 
   function GetDefaultLayerTarget()

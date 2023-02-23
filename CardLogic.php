@@ -3,11 +3,11 @@
 include "CardDictionary.php";
 include "CoreLogic.php";
 
-function PummelHit($player = -1)
+function PummelHit($player = -1, $passable = false)
 {
   global $defPlayer;
   if ($player == -1) $player = $defPlayer;
-  AddDecisionQueue("FINDINDICES", $player, "HAND");
+  AddDecisionQueue("FINDINDICES", $player, "HAND", ($passable ? 1 : 0));
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard", 1);
   AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
   AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
@@ -528,9 +528,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 
   switch ($parameter) {
     case "WTR000":
-      if (IHaveLessHealth()) {
-        if (GainHealth(1, $player)) WriteLog(CardLink($parameter, $parameter) . " gained 1 health.");
-      }
+      if(IHaveLessHealth()) GainHealth(1, $player);
       break;
     case "WTR001": case "WTR002": case "RVD001":
       WriteLog(CardLink($parameter, $parameter) . " Intimidates.");
@@ -903,10 +901,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("COMBATCHAINBUFFPOWER", $player, "2", 1);
       break;
     case "UPR194": case "UPR195": case "UPR196":
-      if (PlayerHasLessHealth($player)) {
-        GainHealth(1, $player);
-        WriteLog(CardLink($parameter, $parameter) . " gives 1 health.");
-      }
+      if (PlayerHasLessHealth($player)) GainHealth(1, $player);
       break;
     case "UPR203": case "UPR204": case "UPR205":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));

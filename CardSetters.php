@@ -20,7 +20,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer;
   $rv = -1;
   if ($player == "") $player = $currentPlayer;
-  AddEvent("BANISH", $cardID);
+  AddEvent("BANISH", ($modifier == "INT" ? "CardBack" : $cardID));
   if (($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
     WriteLog(CardLink($cardID, $cardID) . " was banished from your deck face up by an action card. Gained 1 action point.");
     ++$actionPoints;
@@ -113,18 +113,13 @@ function AddPlayerHand($cardID, $player, $from)
   array_push($hand, $cardID);
 }
 
-function RemoveHand($cardID, $player)
+function RemoveHand($player, $index)
 {
   $hand = &GetHand($player);
-  for ($i = count($hand) - HandPieces(); $i >= 0; $i -= HandPieces()) {
-    if ($hand[$i] == $cardID) {
-      for ($j = $i + HandPieces() - 1; $j >= $i; --$j) {
-        unset($hand[$j]);
-      }
-      $hand = array_values($hand);
-      break;
-    }
+  for ($j = $index + HandPieces() - 1; $j >= $index; --$j) {
+    unset($hand[$j]);
   }
+  $hand = array_values($hand);
 }
 
 function GainResources($player, $amount)
@@ -260,7 +255,6 @@ function BanishFromSpecificSoul(&$soul, $player)
 {
   if (count($soul) == 0) return;
   $cardID = array_shift($soul);
-  AddEvent("BANISH", $cardID);
   BanishCardForPlayer($cardID, $player, "SOUL", "SOUL");
 }
 

@@ -395,7 +395,7 @@ function WTRAbilityCost($cardID)
         MyDrawCard();
         $hand = GetHand($currentPlayer); //Get hand size after draw for correct health gain
         if($from == "ARS") GainHealth(count($hand), $currentPlayer);
-        return "Draws 2 cards" . ($from == "ARS" ? " and gained " . count($hand) . " health" : "") . ".";
+        return "";
       case "WTR161":
         if(count(GetDeck($currentPlayer)) == 0) {
           $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
@@ -418,7 +418,6 @@ function WTRAbilityCost($cardID)
           {
             GainHealth(2, $currentPlayer);
             $actionPoints += 1;
-            $rv .= " and gained you 2 health.";
           }
           else if($roll <= 6)
           {
@@ -459,9 +458,9 @@ function WTRAbilityCost($cardID)
           $actionPoints += 2;
         }
         return "";
-      case "WTR173": GainHealth(3, $currentPlayer); return "Sigil of Solace gained 3 health.";
-      case "WTR174": GainHealth(2, $currentPlayer); return "Sigil of Solace gained 2 health.";
-      case "WTR175": GainHealth(1, $currentPlayer); return "Sigil of Solace gained 1 health.";
+      case "WTR173": GainHealth(3, $currentPlayer); return "";
+      case "WTR174": GainHealth(2, $currentPlayer); return "";
+      case "WTR175": GainHealth(1, $currentPlayer); return "";
       case "WTR182": case "WTR183": case "WTR184":
         PlayMyAura("WTR225");
         return "Creates a Quicken token.";
@@ -552,7 +551,7 @@ function WTRAbilityCost($cardID)
     }
     RevealCards($cards, $mainPlayer);//CanReveal called
     GainHealth($lifegain, $mainPlayer);
-    return "Blessing of Deliverance gained " . $lifegain . " life.";
+    return "";
   }
 
   function KatsuHit()

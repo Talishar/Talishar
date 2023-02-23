@@ -37,6 +37,7 @@ if (($playerID == 1 || $playerID == 2) && $authKey == "") {
 
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $opponentDisconnected = false;
+$opponentInactive = false;
 
 $currentTime = round(microtime(true) * 1000);
 if ($isGamePlayer) {
@@ -72,6 +73,14 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $lastUpdate = 0;
       $opponentDisconnected = true;
     }
+    //Handle server timeout
+    $lastUpdateTime = GetCachePiece($gameName, 6);
+    if ($currentTime - $lastUpdateTime > 90000 && GetCachePiece($gameName, 12) != "1") //90 seconds
+    {
+      SetCachePiece($gameName, 12, "1");
+      $opponentInactive = true;
+      $lastUpdate = 0;
+    }
   }
   ++$count;
   if ($count == 100) break;
@@ -96,6 +105,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     include_once "./includes/functions.inc.php";
     PlayerLoseHealth($otherP, GetHealth($otherP));
     include "WriteGamestate.php";
+  } else if ($opponentInactive && !IsGameOver()) {
+    $currentPlayerActivity = 2;
+    WriteLog("The current player is inactive.");
+    include "WriteGamestate.php";
+    GamestateUpdated($gameName);
   }
 
   if ($turn[0] == "REMATCH") {
@@ -173,10 +187,34 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $combatChainReactions = array();
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     if ($i == 0) {
-      $activeChainLink->attackingCard = JSONRenderedCard(cardNumber: $combatChain[$i], controller: $combatChain[$i + 1]);
+
+      // vars for active chain link: Is there an action?
+      $action = $currentPlayer == $playerID &&
+        $turn[0] != "P" &&
+        $currentPlayer == $combatChain[$i + 1] &&
+        AbilityPlayableFromCombatChain($combatChain[$i]) &&
+        IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
+
+      // $borderColor = $combatChain[$i + 1] == $playerID ? 1 : 2;
+      $borderColor = $action == 21 ? 1 : null;
+
+      $countersMap = new stdClass();
+      if (SearchCurrentTurnEffects("AIM", $mainPlayer) && CardSubType($combatChain[$i]) == "Arrow") $countersMap->aim = 1;
+
+      $activeChainLink->attackingCard = JSONRenderedCard(
+        cardNumber: $combatChain[$i],
+        controller: $combatChain[$i + 1],
+        action: $action,
+        actionDataOverride: '0',
+        borderColor: $borderColor,
+        countersMap: $countersMap,
+      );
       continue;
     }
-    array_push($combatChainReactions, JSONRenderedCard(cardNumber: $combatChain[$i], controller: $combatChain[$i + 1]));
+    array_push($combatChainReactions, JSONRenderedCard(
+      cardNumber: $combatChain[$i],
+      controller: $combatChain[$i + 1]
+    ));
   }
   $activeChainLink->reactions = $combatChainReactions;
   $activeChainLink->attackTarget = GetAttackTarget();
@@ -255,10 +293,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $opponentBanishArr = array();
   for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
     $cardID = $theirBanish[$i];
-    if($theirBanish[$i+1] == "INT") $cardID = "CardBack";
+    if ($theirBanish[$i + 1] == "INT") $cardID = "CardBack";
     array_push($opponentBanishArr, JSONRenderedCard($cardID));
   }
   $response->opponentBanish = $opponentBanishArr;
+  if (TalentContains($theirCharacter[0], "SHADOW")) {
+    $response->opponentBloodDebtCount = SearchCount(SearchBanish($otherPlayer, "", "", -1, -1, "", "", true));
+    $response->isOpponentBloodDebtImmune = IsImmuneToBloodDebt($otherPlayer);
+  }
 
   //Now display their character and equipment
   $numWeapons = 0;
@@ -342,6 +384,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     array_push($playerBanishArr, JSONRenderedCard($banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i)));
   }
   $response->playerBanish = $playerBanishArr;
+  if (TalentContains($myCharacter[0], "SHADOW")) {
+    $response->myBloodDebtCount = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
+    $response->amIBloodDebtImmune = IsImmuneToBloodDebt($playerID);
+  }
 
   //Now display my character and equipment
   $numWeapons = 0;
@@ -377,8 +423,18 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($theirArsenal != "") {
     for ($i = 0; $i < count($theirArsenal); $i += ArsenalPieces()) {
       if ($theirArsenal[$i + 1] == "UP") {
-        array_push($theirArse, JSONRenderedCard(cardNumber: $theirArsenal[$i], controller: ($playerID == 1 ? 2 : 1)));
-      } else array_push($theirArse, (JSONRenderedCard(cardNumber: $TheirCardBack, controller: ($playerID == 1 ? 2 : 1))));
+        array_push($theirArse, JSONRenderedCard(
+          cardNumber: $theirArsenal[$i],
+          controller: ($playerID == 1 ? 2 : 1),
+          facing: $theirArsenal[$i + 1],
+          countersMap: (object) ["counters" => $theirArsenal[$i + 3]]
+        ));
+      } else array_push($theirArse, (JSONRenderedCard(
+        cardNumber: $TheirCardBack,
+        controller: ($playerID == 1 ? 2 : 1),
+        facing: $theirArsenal[$i + 1],
+        countersMap: (object) ["counters" => $theirArsenal[$i + 3]]
+      )));
     }
   }
   $response->opponentArse = $theirArse;
@@ -388,15 +444,30 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($myArsenal != "") {
     for ($i = 0; $i < count($myArsenal); $i += ArsenalPieces()) {
       if ($playerID == 3 && $myArsenal[$i + 1] != "UP") {
-        array_push($myArse, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
+        array_push($myArse, JSONRenderedCard(
+          cardNumber: $MyCardBack,
+          controller: 2,
+          facing: $myArsenal[$i + 1],
+          countersMap: (object) ["counters" => $myArsenal[$i + 3]]
+        ));
       } else {
-        if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myArsenal[$i], $turn[0], "ARS", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+        if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myArsenal[$i], $turn[0], "ARS", $i, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
         else $playable = false;
-        $border = CardBorderColor($myArsenal[$i], "HAND", $playable);
+        $border =
+          CardBorderColor($myArsenal[$i], "ARS", $playable);
         $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? 5 : 0);
         if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
         $actionDataOverride = (($actionType == 16 || $actionType == 27) ? strval($i) : "");
-        array_push($myArse, JSONRenderedCard(cardNumber: $myArsenal[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction));
+        array_push($myArse, JSONRenderedCard(
+          cardNumber: $myArsenal[$i],
+          action: $actionTypeOut,
+          borderColor: $border,
+          actionDataOverride: $actionDataOverride,
+          controller: $playerID,
+          restriction: $restriction,
+          facing: $myArsenal[$i + 1],
+          countersMap: (object) ["counters" => $myArsenal[$i + 3]]
+        ));
       }
     }
   }
@@ -425,7 +496,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i < count($theirAuras); $i += AuraPieces()) {
     $type = CardType($theirAuras[$i]);
     $sType = CardSubType($theirAuras[$i]);
-    array_push($theirAurasOutput, JSONRenderedCard(cardNumber: $theirAuras[$i], overlay: ($theirAuras[$i + 1] != 2 ? 1 : 0), counters: $theirAuras[$i + 2], controller: $otherPlayer, type: $type, sType: $sType, gem:$theirAuras[$i+8]));
+    array_push($theirAurasOutput, JSONRenderedCard(cardNumber: $theirAuras[$i], actionDataOverride: strval($i), overlay: ($theirAuras[$i + 1] != 2 ? 1 : 0), counters: $theirAuras[$i + 2], controller: $otherPlayer, type: $type, sType: $sType, gem: $theirAuras[$i + 8]));
   }
   $response->opponentAuras = $theirAurasOutput;
 
@@ -434,7 +505,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i < count($theirItems); $i += ItemPieces()) {
     $type = CardType($theirItems[$i]);
     $sType = CardSubType($theirItems[$i]);
-    array_push($theirItemsOutput, JSONRenderedCard(cardNumber: $theirItems[$i], overlay: ($theirItems[$i + 2] != 2 ? 1 : 0), counters: $theirItems[$i + 1], controller: $otherPlayer, type: $type, sType: $sType, gem:$theirItems[$i+6]));
+    array_push($theirItemsOutput, JSONRenderedCard(cardNumber: $theirItems[$i], actionDataOverride: strval($i), overlay: ($theirItems[$i + 2] != 2 ? 1 : 0), counters: $theirItems[$i + 1], controller: $otherPlayer, type: $type, sType: $sType, gem: $theirItems[$i + 6]));
   }
   $response->opponentItems = $theirItemsOutput;
 
@@ -470,11 +541,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       controller: $playerID,
       type: $type,
       sType: $sType,
-      isFrozen: ($myAllies[$i + 3] == 1)));
+      isFrozen: ($myAllies[$i + 3] == 1)
+    ));
   }
   $response->playerAllies = $myAlliesOutput;
 
   //my auras
+  $auraTileMap = [];
   $myAurasOutput = array();
   for ($i = 0; $i < count($myAuras); $i += AuraPieces()) {
     $playable = ($currentPlayer == $playerID ? $myAuras[$i + 1] == 2 && IsPlayable($myAuras[$i], $turn[0], "PLAY", $i, $restriction) : false);
@@ -484,6 +557,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $action = $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0;
     $type = CardType($myAuras[$i]);
     $sType = CardSubType($myAuras[$i]);
+    $gem = $myAuras[$i + 7];
+    if(isset($auraTileMap[$myAuras[$i]])) $gem = $auraTileMap[$myAuras[$i]];
+    else $auraTileMap[$myAuras[$i]] = $gem;
     array_push($myAurasOutput, JSONRenderedCard(
       cardNumber: $myAuras[$i],
       overlay: ($myAuras[$i + 1] != 2 ? 1 : 0),
@@ -494,11 +570,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       type: $type,
       actionDataOverride: strval($i),
       sType: $sType,
-      gem:$myAuras[$i+7]));
+      gem: $gem
+    ));
   }
   $response->playerAuras = $myAurasOutput;
 
   //my items
+  $itemTileMap = [];
   $myItemsOutput = array();
   for ($i = 0; $i < count($myItems); $i += ItemPieces()) {
     $type = CardType($myItems[$i]);
@@ -507,8 +585,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $border = CardBorderColor($myItems[$i], "PLAY", $playable);
     $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? 10 : 0);
     if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
-    $actionDataOverride = ($actionTypeOut == 10 ? strval($i) : "");
-    array_push($myItemsOutput, JSONRenderedCard(cardNumber: $myItems[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, overlay: ($myItems[$i + 2] != 2 ? 1 : 0), counters: $myItems[$i + 1], controller: $otherPlayer, type: $type, sType: $sType, gem:$myItems[$i+5], restriction:$restriction));
+    $actionDataOverride = strval($i);
+    $gem = $myItems[$i + 5];
+    if(isset($itemTileMap[$myItems[$i]])) $gem = $itemTileMap[$myItems[$i]];
+    else $itemTileMap[$myItems[$i]] = $gem;
+    array_push($myItemsOutput, JSONRenderedCard(cardNumber: $myItems[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, overlay: ($myItems[$i + 2] != 2 ? 1 : 0), counters: $myItems[$i + 1], controller: $otherPlayer, type: $type, sType: $sType, gem: $gem, restriction: $restriction));
   }
   $response->playerItems = $myItemsOutput;
 
@@ -523,67 +604,38 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->playerPermanents = $myPermanentsOutput;
 
+  //Landmarks
+  $landmarksOutput = array();
+  for ($i = 0; $i < count($landmarks); $i += LandmarkPieces()) {
+    $type = CardType($landmarks[$i]);
+    $sType = CardSubType($landmarks[$i]);
+    array_push($landmarksOutput, JSONRenderedCard(cardNumber: $landmarks[$i], type: $type, sType: $sType));
+  }
+  $response->landmarks = $landmarksOutput;
+
   // Chat Log
   // TODO: Not have as HTML, have custom string so cards can be parsed the other end safely.
   $response->chatLog = JSONLog($gameName, $playerID);
 
   // Deduplicate current turn effects
-  $playerEffectsArr = [];
-  $opponentEffectsArr = [];
+  $playerEffects = array();
+  $opponentEffects = array();
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
-    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) $arr = &$playerEffectsArr;
-    else $arr = &$opponentEffectsArr;
-    if (!array_key_exists($cardID, $arr)) {
-      $arr[$cardID] = [];
-    }
-    if (!array_key_exists($currentTurnEffects[$i], $arr[$cardID])) $arr[$cardID][$currentTurnEffects[$i]] = 1;
-    else ++$arr[$cardID][$currentTurnEffects[$i]];
-  }
-
-  // Array of opponent effects
-  $opponentEffects = array();
-  foreach ($opponentEffectsArr as $key => $effectArr) {
-    $max = 0;
-    foreach ($effectArr as $effectCount) {
-      if ($effectCount > $max) $max = $effectCount;
-    }
-    if (IsEffectTileable($key)) {
-      array_push($opponentEffects, JSONRenderedCard($key, counters: $max));
-    } else {
-      for ($i = 0; $i < $max; ++$i) {
-        array_push($opponentEffects, JSONRenderedCard($key));
-      }
-    }
+    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) array_push($playerEffects, JSONRenderedCard($cardID));
+    else array_push($opponentEffects, JSONRenderedCard($cardID));
   }
   $response->opponentEffects = $opponentEffects;
-
-  // Array of player effects
-  $playerEffects = array();
-  foreach ($playerEffectsArr as $key => $effectArr) {
-    $max = 0;
-    foreach ($effectArr as $effectCount) {
-      if ($effectCount > $max) $max = $effectCount;
-    }
-    if (IsEffectTileable($key)) {
-      array_push($playerEffects, JSONRenderedCard($key, counters: $max));
-    } else {
-      for ($i = 0; $i < $max; ++$i) {
-        array_push($playerEffects, JSONRenderedCard($key));
-      }
-    }
-  }
   $response->playerEffects = $playerEffects;
 
   //Events
   $newEvents = new stdClass();
   $newEvents->eventArray = array();
-  for($i=0; $i<count($events); $i+=EventPieces())
-  {
+  for ($i = 0; $i < count($events); $i += EventPieces()) {
     $thisEvent = new stdClass();
     $thisEvent->eventType = $events[$i];
-    $thisEvent->eventValue = $events[$i+1];
+    $thisEvent->eventValue = $events[$i + 1];
     array_push($newEvents->eventArray, $thisEvent);
   }
   $response->newEvents = $newEvents;
@@ -702,7 +754,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     for ($i = 0; $i < count($options); ++$i) {
       array_push($playerInputButtons, CreateButtonAPI($playerID, $options[$i], 7, $options[$i], "24px"));
     }
-    $playerInputPopup->popup = CreatePopupAPI("DYNPITCH", [], 0, 1, "Choose ". TypeToPlay($turn[0]), 1, "");
+    $playerInputPopup->popup = CreatePopupAPI("DYNPITCH", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "");
   }
 
   if ($turn[0] == "PAYORDISCARD" && $turn[1] == $playerID) {
@@ -1134,36 +1186,9 @@ function GetZoneTop($zone)
   }
 }
 
-function IsTileable($cardID)
-{
-  switch ($cardID) {
-    case "WTR075":
-    case "ARC112":
-    case "CRU197":
-    case "MON186":
-    case "ELE111":
-    case "UPR043":
-      return true;
-    default:
-      return false;
-  }
-}
-
 function GetPhaseHelptext()
 {
   global $turn;
   $defaultText = "Choose " . TypeToPlay($turn[0]);
   return (GetDQHelpText() != "-" ? implode(" ", explode("_", GetDQHelpText())) : $defaultText);
-}
-
-function IsEffectTileable($cardID)
-{
-  switch ($cardID) {
-    case "WTR075":
-      return true;
-    case "ELE173":
-      return true;
-    default:
-      return false;
-  }
 }

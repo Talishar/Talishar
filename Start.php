@@ -13,6 +13,7 @@ include "Libraries/UILibraries2.php";
 include "AI/CombatDummy.php";
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
+include_once "./MenuFiles/StartHelper.php";
 ob_end_clean();
 
 $gameName = $_GET["gameName"];
@@ -94,27 +95,26 @@ $p1Hero = GetCachePiece($gameName, 7);
 $p2Hero = GetCachePiece($gameName, 8);
 $currentPlayer = 0;
 $isReplay = 0;
+<<<<<<< HEAD
 WriteCache($gameName, ($currentUpdate + 1) . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $currentPlayer . "!" . $isReplay . "!0"); //Initialize SHMOP cache for this game
+=======
+WriteCache($gameName, ($currentUpdate + 1) . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $currentPlayer . "!" . $isReplay . "!0!0"); //Initialize SHMOP cache for this game
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
 
 ob_start();
+include "ParseGamestate.php";
 include "StartEffects.php";
 ob_end_clean();
-
-$gameStateTries = 0;
-while (!file_exists($filename) && $gameStateTries < 10) {
-  usleep(100000); //100ms
-  ++$gameStateTries;
-}
-
 //Update the game file to show that the game has started and other players can join to spectate
 $gameStatus = $MGS_GameStarted;
 WriteGameFile();
 
 //header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=1&authKey=$p1Key");
-header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=1");
+header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=$playerID");
 
 exit;
 
+<<<<<<< HEAD
 function initializePlayerState($handler, $deckHandler, $player)
 {
   global $p1IsPatron, $p2IsPatron, $p1IsChallengeActive, $p2IsChallengeActive, $p1id, $p2id;
@@ -220,5 +220,7 @@ function GetArray($handler)
   if ($line == "") return [];
   return explode(" ", $line);
 }
+=======
+>>>>>>> 1ef0ba3a750457c881a809d2569d3200f0cb5504
 
 ?>
