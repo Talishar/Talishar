@@ -146,6 +146,7 @@ function GetCardBack($player)
     case 46: return "CBFaBLab";
     case 47: return "CBCardAdvantage";
     case 48: return "CBOnHit";
+    case 49: return "CBSecondCycle";
     default: return "CardBack";
   }
 }
@@ -473,6 +474,32 @@ function IsTeamCardAdvantage($userID)
     case "infamousb":
     case "FatFabJesus":
     case "MisterPNP":
+      return true;
+    default:
+      break;
+  }
+  return false;
+}
+
+function IsTeamSecondCycle($userID)
+{
+  switch($userID)
+  {
+    case "The4thAWOL":
+    case "Beserk":
+    case "Dudebroski":
+    case "Deathstalker182":
+    case "TryHardYeti":
+    case "Fledermausmann":
+    case "Kymo13":
+    case "Loganninty7":
+    case "flamedog3":
+    case "Swankypants":
+    case "Blazing for Lethal?":
+    case "Jeztus":
+    case "gokkar":
+    case "Kernalxklink":
+    case "OotTheMonk":
       return true;
     default:
       break;
