@@ -202,7 +202,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             array_push($deck, "EVR024", "WTR065", "WTR066", "CRU035", "WTR206", "MON293");
             break;
           case "The_Reclusive_Blacksmith":
-            $encounter[7] = "Titan's Fist";
+            $encounter[7] = "TitanFist";
             array_push($character, "ELE202", "DYN026"); //Titan's Fist and Seasoned Saviour
             array_push($deck, "DYN031", "DYN038", "WTR063", "WTR064", "ARC202", "WTR212");
             break;

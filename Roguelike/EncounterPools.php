@@ -17,7 +17,8 @@ function GetPool($type, $hero, $rarity, $background){
   WriteLog($type." ".$rarity." ".$background);
   if(($hero == "Bravo" || $hero == "Dorinthea") && $type == "Talent") $type = "Class";
   return GetPool2(array($type, $rarity, $background));
-  /*if($type == "Light")
+  /*
+  if($type == "Light")
   {
     switch($rarity)
     {
@@ -239,7 +240,7 @@ function GetPool($type, $hero, $rarity, $background){
                   "EVR000", "EVR021", "EVR022", "EVR023",
                 );
               }
-            case "Titan's Fist":
+            case "TitanFist":
               //Off-hand buffers are added to this pool.
               switch($rarity){
                 case "Common": return array(
@@ -292,45 +293,75 @@ function GetPool($type, $hero, $rarity, $background){
                 );
               }
       }
-  }*/
+  } */
 }
 
 //Input a list of parameters
-function GetPool2($arrayParameters){
+function GetPool($arrayParameters){
 
   $CardRewardPool = array(
-    array("WTR043", "Class", "Majestic", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR044", "Class", "Majestic", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR045", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR046", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR047", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR048", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"), //Disable
-    array("WTR049", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR050", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR051", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"), //Staunch Response
-    array("WTR052", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR053", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR054", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"), //Blessing of Deliverance
-    array("WTR055", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR056", "Class", "Rare", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR057", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"), //Buckling Blow
-    array("WTR058", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR059", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR043", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"),
+    array("WTR044", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"),
+    array("WTR045", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("WTR046", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("WTR047", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("WTR048", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Disable
+    array("WTR049", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("WTR050", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("WTR051", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Staunch Response
+    array("WTR052", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("WTR053", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("WTR054", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Blessing of Deliverance
+    array("WTR055", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("WTR056", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("WTR057", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Buckling Blow
+    array("WTR058", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("WTR059", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
     //TODO WTR060-WTR062 Cartilage Crush - Add when the AI can have taxes
     //TODO WTR063-WTR065 Crush Confidence - Add when the AI can handle losing hero card effects and activated abilities
-    array("WTR066", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"), //Debilitate
-    array("WTR067", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR068", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR069", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"), //Emerging Power
-    array("WTR070", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR071", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR072", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"), //Stonewall Confidence
-    array("WTR073", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR074", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR066", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Debilitate
+    array("WTR067", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("WTR068", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("WTR069", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Emerging Power
+    array("WTR070", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("WTR071", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("WTR072", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Stonewall Confidence
+    array("WTR073", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("WTR074", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
 
-    array("WTR074", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR074", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
-    array("WTR074", "Class", "Common", "Anothos", "Titan's Fist", "Sledge"),
+    array("WTR118", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR119", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR120", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //120-122 are Supers. I'm putting them in the majestic queue
+    array("WTR121", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR122", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR123", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Overpower
+    array("WTR124", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR125", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR126", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Steelblade Shunt
+    array("WTR127", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR128", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR129", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Warrior's Valor
+    array("WTR130", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR131", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR132", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Ironsong Response
+    array("WTR133", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR134", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR135", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Biting Blade
+    array("WTR136", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR137", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR138", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Stroke of Foresight
+    array("WTR139", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR140", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR141", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Sharpern Steel
+    array("WTR142", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR143", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR144", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Driving Blade
+    array("WTR145", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR146", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR147", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Nature's Path Pilgrimage
+    array("WTR148", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR149", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe")
+    
 
   );
   
@@ -364,6 +395,7 @@ function GetPool2($arrayParameters){
     WriteLog(ArrayAsString($returnPool));
     return $returnPool;
 }
+
 function ArrayAsString($arrayToBeStringed){
   $outString = "";
   for($i = 0; $i < count($arrayToBeStringed); $i++){
