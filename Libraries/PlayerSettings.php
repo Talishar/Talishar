@@ -499,7 +499,6 @@ function IsTeamSecondCycle($userID)
     case "Jeztus":
     case "gokkar":
     case "Kernalxklink":
-    case "OotTheMonk":
       return true;
     default:
       break;
