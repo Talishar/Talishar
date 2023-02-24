@@ -666,17 +666,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "DYN230": case "DYN231": case "DYN232":
-      if (CanRevealCards($currentPlayer)) {
-        $deck = GetDeck($currentPlayer);
-        if (count($deck) == 0) return "Your deck is empty. Nothing was revealed.";
-        if (PitchValue($deck[0]) == PitchValue($cardID)) {
+      $deck = new Deck($currentPlayer);
+
+      if ($deck->Reveal(1)) {
+        if (PitchValue($deck->Top()) == PitchValue($cardID)) {
           PlayAura("MON104", $currentPlayer, 1, true);
-          return "Reveals " . CardLink($deck[0], $deck[0]) . " and creates a " . CardLink("MON104", "MON104");
-        } else {
-          return "Reveals " . CardLink($deck[0], $deck[0]);
-        }
+        } 
       }
-      return "Reveal has been prevented.";
+      return "";
     case "DYN235":
       BottomDeckDraw();
       return CardLink($cardID, $cardID) . " let you sink a card.";
