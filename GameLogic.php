@@ -2292,7 +2292,9 @@ function OnBlockResolveEffects()
       }
       break;
   }
+  $blockedFromHand = 0;
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+    if($combatChain[$i+2] == "HAND") ++$blockedFromHand;
     switch ($combatChain[$i]) {
       case "EVR018":
         if (!IsAllyAttacking()) {
@@ -2337,6 +2339,10 @@ function OnBlockResolveEffects()
       default:
         break;
     }
+  }
+  if($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "ELE174", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer)))
+  {
+    AddLayer("TRIGGER", $mainPlayer, "ELE174");
   }
 }
 
@@ -2417,20 +2423,6 @@ function OnBlockEffects($index, $from)
       break;
     default:
       break;
-  }
-  $mainCharacter = &GetPlayerCharacter($mainPlayer);
-  for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
-    if ($mainCharacter[$i + 1] != 2) continue;
-    switch ($mainCharacter[$i]) {
-      case "ELE174":
-        if ($from == "HAND" && IsCharacterActive($mainPlayer, $i)) {
-          if (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer)) {
-            AddLayer("TRIGGER", $mainPlayer, $mainCharacter[$i]);
-          }
-        }
-      default:
-        break;
-    }
   }
 }
 

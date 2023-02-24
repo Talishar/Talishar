@@ -1189,9 +1189,10 @@ function GamblersGloves($player, $origPlayer, $fromDQ)
   }
 }
 
-function IsCharacterAbilityActive($player, $index)
+function IsCharacterAbilityActive($player, $index, $checkGem=false)
 {
   $character = &GetPlayerCharacter($player);
+  if($checkGem && $character[$index+9] == 0) return false;
   return $character[$index+1] == 2;
 }
 

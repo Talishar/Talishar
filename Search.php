@@ -245,11 +245,11 @@ function SearchEquipNegCounter(&$character)
   return $equipList;
 }
 
-function SearchCharacterActive($player, $cardID)
+function SearchCharacterActive($player, $cardID, $checkGem=false)
 {
   $index = FindCharacterIndex($player, $cardID);
   if ($index == -1) return false;
-  return IsCharacterAbilityActive($player, $index);
+  return IsCharacterAbilityActive($player, $index, $checkGem);
 }
 
 function SearchCharacterForCard($player, $cardID)
