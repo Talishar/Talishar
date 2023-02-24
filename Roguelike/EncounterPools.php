@@ -807,7 +807,6 @@ function GetPool3($arrayParameters){
       array_push($returnPool, $CardRewardPool[$i][0]); 
     }
   }
-    WriteLog(ArrayAsString($returnPool));
     return $returnPool;
 }
 
