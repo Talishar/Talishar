@@ -445,7 +445,41 @@ function GetPool2($arrayParameters){
     array("EVR066", "Class", "Common", "Saber", "Hatchet"), //Outland Skirmish - 1H weapon
     array("EVR067", "Class", "Common", "Saber", "Hatchet"),
     array("EVR068", "Class", "Common", "Saber", "Hatchet"),
-    //TODO: All the other sets
+
+    array("DYN028", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Buckle
+    array("DYN029", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Never Yield
+    array("DYN030", "Class", "Rare", "TitanFist"), //Shield Bash - Limited to Titanfist for off-hand synergy
+    array("DYN031", "Class", "Rare", "TitanFist"),
+    array("DYN032", "Class", "Rare", "TitanFist"),
+    array("DYN033", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Blessing of Patience
+    array("DYN034", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("DYN035", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("DYN036", "Class", "Rare", "TitanFist"), //Shield Wall - Limited to Titanfist for off-hand synergy, this one honestly could be in all pools but I chose to limit for now
+    array("DYN037", "Class", "Rare", "TitanFist"),
+    array("DYN038", "Class", "Rare", "TitanFist"),
+    array("DYN039", "Class", "Rare", "TitanFist"), //Reinforce Steel - Limited to Titanfist for off-hand synergy
+    array("DYN040", "Class", "Rare", "TitanFist"),
+    array("DYN041", "Class", "Rare", "TitanFist"),
+    array("DYN042", "Class", "Rare", "TitanFist"), //Withstand - Limited to Titanfist for off-hand synergy
+    array("DYN043", "Class", "Rare", "TitanFist"),
+    array("DYN044", "Class", "Rare", "TitanFist"),
+
+    array("DYN071", "Class", "Majestic", "Hatchet", "Battleaxe"), //Cleave - Since there aren't any Ally cards yet, I could see omitting this, but the buff is still playable so I'm keeping it
+    array("DYN072", "Class", "Majestic", "Hatchet", "Battleaxe"),
+    array("DYN073", "Class", "Rare", "Hatchet", "Battleaxe"), //Blessing of Steel
+    array("DYN074", "Class", "Rare", "Hatchet", "Battleaxe"),
+    array("DYN075", "Class", "Rare", "Hatchet", "Battleaxe"),
+    array("DYN076", "Class", "Rare", "Hatchet", "Battleaxe"), //Precision Press
+    array("DYN077", "Class", "Rare", "Hatchet", "Battleaxe"),
+    array("DYN078", "Class", "Rare", "Hatchet", "Battleaxe"),
+    array("DYN079", "Class", "Common", "Hatchet", "Battleaxe"), //Puncture
+    array("DYN080", "Class", "Common", "Hatchet", "Battleaxe"),
+    array("DYN081", "Class", "Common", "Hatchet", "Battleaxe"),
+    array("DYN082", "Class", "Common", "Hatchet", "Battleaxe"), //Felling Swing
+    array("DYN083", "Class", "Common", "Hatchet", "Battleaxe"),
+    array("DYN084", "Class", "Common", "Hatchet", "Battleaxe"),
+    //DYN085-087 Visit the Imperial Forge - I've decided to omit these, since armor isn't hugely relevant right now and I don't know how the AI can handle piercing. It feels like this card would only be good in an exploitative manner
+
   );
   
   $returnPool = array(); // Create an empty list of cards to be returned
