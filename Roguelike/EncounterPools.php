@@ -14,9 +14,10 @@ encounter[7] = background chosen
 
 
 function GetPool($type, $hero, $rarity, $background){
-  WriteLog($type." ".$rarity." ".$background);
   if(($hero == "Bravo" || $hero == "Dorinthea") && $type == "Talent") $type = "Class";
-  return GetPool2(array($type, $rarity, $background));
+  if($type == "Class") return GetPool2(array($type, $rarity, $background));
+  else if($type == "Generic") return GetPool3(array($rarity));
+  else return ("WTR224"); //Cracked Bauble as a default, but we shouldn't see this
 
   //Don't delete this stuff
   /*
@@ -363,6 +364,88 @@ function GetPool2($arrayParameters){
     array("WTR147", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Nature's Path Pilgrimage
     array("WTR148", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
     array("WTR149", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+
+    array("CRU026", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Mangle
+    array("CRU027", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Righteous Cleansing
+    array("CRU028", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Stamp Authority
+    array("CRU029", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Towering Titan
+    array("CRU030", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("CRU031", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("CRU032", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Crush the Weak
+    array("CRU033", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("CRU034", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("CRU035", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Chokeslam    
+    array("CRU036", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("CRU037", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("CRU038", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Emerging Dominance
+    array("CRU039", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("CRU040", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("CRU041", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Blessing of Serenity
+    array("CRU042", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("CRU043", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+
+    array("CRU082", "Class", "Majestic", "Saber", "Dawnblade"), //Twinning Blade - Only Swords
+    array("CRU083", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Unified Decree
+    array("CRU084", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Spoils of War
+    //Dauntless - Can be added when the AI can handle taxes
+    array("CRU088", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Out for Blood
+    array("CRU089", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("CRU090", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("CRU091", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Hit and Run
+    array("CRU092", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("CRU093", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("CRU094", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Push Forward
+    array("CRU095", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("CRU096", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+
+    array("MON109", "Class", "Majestic", "Hatchet", "Battleaxe"), //Spill Blood - Only Axes
+    array("MON110", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Dusk Path Pilgrimage
+    array("MON111", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("MON112", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("MON113", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Plow Through
+    array("MON114", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("MON115", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("MON116", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Second Swing
+    array("MON117", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("MON118", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+
+    array("ELE205", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Tear Asunder
+    array("ELE206", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Embolden
+    array("ELE207", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("ELE208", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    //ELE209 - Thump - Can the AI handle this? I haven't tested it yet. TODO Test it
+
+    array("EVR021", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"),
+    array("EVR022", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"),
+    //EVR023 Nerves of Steel - I think this one is situational enough that we can omit it for now
+    array("EVR024", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Thunder Quake
+    array("EVR025", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("EVR026", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("EVR027", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Macho Grande
+    array("EVR028", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("EVR029", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("EVR030", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Seismic Stir
+    array("EVR031", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("EVR032", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("EVR033", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Steadfast
+    array("EVR034", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("EVR035", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("EVR054", "Class", "Majestic", "Dawnblade", "Battleaxe"), //Shatter
+    //EVR055 Blood on Her Hands - Not playable in any of our heroes
+    array("EVR056", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Oath of Steel
+    array("EVR057", "Class", "Rare", "Saber", "Dawnblade"), //Slice and Dice - Sword / Dagger only
+    array("EVR058", "Class", "Rare", "Saber", "Dawnblade"),
+    array("EVR059", "Class", "Rare", "Saber", "Dawnblade"),
+    array("EVR060", "Class", "Common", "Saber", "Hatchet"), //Blade Runner - 1H weapon
+    array("EVR061", "Class", "Common", "Saber", "Hatchet"),
+    array("EVR062", "Class", "Common", "Saber", "Hatchet"),
+    array("EVR063", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //In the Swing
+    array("EVR064", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("EVR065", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("EVR066", "Class", "Common", "Saber", "Hatchet"), //Outland Skirmish - 1H weapon
+    array("EVR067", "Class", "Common", "Saber", "Hatchet"),
+    array("EVR068", "Class", "Common", "Saber", "Hatchet"),
+    //TODO: All the other sets
   );
   
   $returnPool = array(); // Create an empty list of cards to be returned
@@ -392,7 +475,6 @@ function GetPool2($arrayParameters){
       array_push($returnPool, $CardRewardPool[$i][0]); 
     }
   }
-    WriteLog(ArrayAsString($returnPool));
     return $returnPool;
 }
 function GetPool3($arrayParameters){
@@ -432,7 +514,7 @@ function GetPool3($arrayParameters){
     array("WTR188", "Common"), //Raging Onslaught
     array("WTR189", "Common"),
     array("WTR190", "Common"),
-    array("WTR191", "Common"), //Scar for a Scar
+    array("WTR191", "Common"), //Scar for a Scar - Notably reprinted in UPR, and omitted there
     array("WTR192", "Common"), 
     array("WTR193", "Common"),
     array("WTR194", "Common"), //Scour the Battlescape
@@ -623,7 +705,45 @@ function GetPool3($arrayParameters){
     //EVER176 through EVER193 are all potions. 
     //I decided to omit all the potions for now, but feel free to add some/all
 
-    //TODO: Uprising and Dynasty
+    array("UPR187", "Majestic"), //Erase Face
+    array("UPR188", "Majestic"), //Vipox
+    array("UPR189", "Majestic"), //That All You Got?
+    array("UPR190", "Majestic"), //Fog Down
+    array("UPR191", "Rare"), //Flex
+    array("UPR192", "Rare"),
+    array("UPR193", "Rare"),
+    array("UPR194", "Rare"), //Fyendal's Fighting Spirit
+    array("UPR195", "Rare"),
+    array("UPR196", "Rare"),
+    array("UPR197", "Rare"), //Sift
+    array("UPR198", "Rare"),
+    array("UPR199", "Rare"),
+    array("UPR200", "Rare"), //Strategic Planning
+    array("UPR201", "Rare"),
+    array("UPR202", "Rare"),
+    array("UPR203", "Common"), //Brothers in Arms
+    array("UPR204", "Common"),
+    array("UPR205", "Common"),
+    array("UPR206", "Common"), //Critical Strike
+    array("UPR207", "Common"),
+    array("UPR208", "Common"),
+    //UPR209-UPR211 Scar for a Scar - Reprinted from WTR
+    array("UPR212", "Common"), //Trade In
+    array("UPR213", "Common"),
+    array("UPR214", "Common"),
+    array("UPR215", "Common"), //Healing Balm
+    array("UPR216", "Common"),
+    array("UPR217", "Common"),
+    array("UPR218", "Common"), //Sigil of Protection
+    array("UPR219", "Common"),
+    array("UPR220", "Common"),
+    array("UPR221", "Common"), //Oasis Respite
+    array("UPR222", "Common"),
+    array("UPR223", "Common"),
+
+    array("DYN240", "Majestic"), //Imperial Edict
+    array("DYN241", "Majestic"), //Imperial Ledger
+    array("DYN242", "Majestic"), //Imperial Warhorn
   );
   
   $returnPool = array(); // Create an empty list of cards to be returned
