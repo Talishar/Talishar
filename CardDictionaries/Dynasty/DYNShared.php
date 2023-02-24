@@ -593,18 +593,17 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $rv .= " and gain +1 power";
       }
       return $rv . ".";
+
     case "DYN188": case "DYN189": case "DYN190":
-      if (CanRevealCards($currentPlayer)) {
-        $deck = GetDeck($currentPlayer);
-        if (count($deck) == 0) return "Your deck is empty. Nothing was revealed.";
-        if (PitchValue($deck[0]) == PitchValue($cardID)) {
+      $deck = new Deck($currentPlayer);
+      
+      if ($deck->Reveal(1)) {
+        if (PitchValue($deck->Top()) == PitchValue($cardID)) {
           PlayAura("ARC112", $currentPlayer, 1, true);
-          return "Reveals " . CardLink($deck[0], $deck[0]) . " and creates a " . CardLink("ARC112", "ARC112");
-        } else {
-          return "Reveals " . CardLink($deck[0], $deck[0]);
         }
       }
-      return "Reveal has been prevented.";
+      return "";
+      
     case "DYN192":
       DealArcane(1, 1, "ABILITY", $cardID, resolvedTarget: $target);
       AddDecisionQueue("SURGENTAETHERTIDE", $currentPlayer, "-");
