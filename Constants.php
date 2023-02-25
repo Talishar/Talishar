@@ -165,9 +165,10 @@ function ChainLinksPieces()
 //1 - Total Attack
 //2 - Talents
 //3 - Class
+//4 - List of names
 function ChainLinkSummaryPieces()
 {
-  return 4;
+  return 5;
 }
 
 function DecisionQueuePieces()

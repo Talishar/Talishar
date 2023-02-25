@@ -1802,6 +1802,8 @@ function IsCombatEffectActive($cardID)
     return UPRCombatEffectActive($cardID, $attackID);
   } else if ($set == "DYN") {
     return DYNCombatEffectActive($cardID, $attackID);
+  } else if ($set == "OUT") {
+    return OUTCombatEffectActive($cardID, $attackID);
   }
   switch ($cardID) {
     default:
