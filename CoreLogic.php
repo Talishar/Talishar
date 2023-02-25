@@ -1891,3 +1891,37 @@ function SameWeaponEquippedTwice()
   if (count($weaponIndex) > 1 && $char[$weaponIndex[0]] == $char[$weaponIndex[1]]) return true;
   return false;
 }
+
+function GetCurrentAttackNames()
+{
+  global $combatChain, $currentTurnEffects, $mainPlayer;
+  $names = [];
+  if(count($combatChain) == 0) return $names;
+  array_push($names, CardName($combatChain[0]));
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
+  {
+    $effectArr = explode(",", $currentTurnEffects[$i]);
+    if($currentTurnEffects[$i+1] != $mainPlayer || !IsCombatEffectActive($effectArr[0]) || IsCombatEffectLimited($i)) continue;
+    switch($effectArr[0])
+    {
+      case "OUT049":
+        $name = (count($effectArr) > 1 ? $effectArr[1] : "N/A");
+        array_push($names, $name);
+        break;
+      default: break;
+    }
+  }
+  return $names;
+}
+
+function SerializeCurrentAttackNames()
+{
+  $names = GetCurrentAttackNames();
+  $serializedNames = "";
+  for($i=0; $i<count($names); ++$i)
+  {
+    if($serializedNames != "") $serializedNames .= ",";
+    $serializedNames .= GamestateSanitize($names[$i]);
+  }
+  return $serializedNames;
+}

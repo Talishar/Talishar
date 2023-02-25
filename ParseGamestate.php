@@ -14,8 +14,15 @@ ParseGamestate();
 
 function GamestateSanitize($input)
 {
-  $output = str_replace(",", "|", $input);
+  $output = str_replace(",", "<44>", $input);
   $output = str_replace(" ", "_", $output);
+  return $output;
+}
+
+function GamestateUnsanitize($input)
+{
+  $output = str_replace("<44>", ",", $input);
+  $output = str_replace("_", " ", $output);
   return $output;
 }
 

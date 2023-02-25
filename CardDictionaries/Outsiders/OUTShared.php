@@ -45,7 +45,7 @@ function OUTAbilityCost($cardID)
     $cardID = $idArr[0];
     switch ($cardID)
     {
-
+      case "OUT049": return CardType($attackID) == "AA";
       default: return false;
     }
   }
