@@ -82,6 +82,14 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT052-");
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
         return "";
+      case "OUT056": case "OUT057": case "OUT058":
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:comboOnly=true");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Combo to banish from your graveyard");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<-", 1);
+        return "";
       case "OUT096":
         $deck = new Deck($currentPlayer);
         if($deck->Reveal())
