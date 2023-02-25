@@ -777,6 +777,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo CreatePopup("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
   }
 
+  if($turn[0] == "INPUTCARDNAME")
+  {
+    $caption = "<div>Enter a card name</div>";
+    $content = CreateTextForm($playerID, "Submit", 30);
+    echo CreatePopup("INPUTCARDNAME", [], 0, 1, $caption, 1, $content);
+  }
+
   //Opponent hand
   $handContents = "";
   $handLeft = "calc(50% - " . ((count($theirHand) * ($cardWidth + 15)) / 2) . "px)";

@@ -12,6 +12,13 @@ if(!isset($filepath)) $filepath = "./Games/" . $gameName . "/";
 
 ParseGamestate();
 
+function GamestateSanitize($input)
+{
+  $output = str_replace(",", "|", $input);
+  $output = str_replace(" ", "_", $output);
+  return $output;
+}
+
 function ParseGamestate($useRedis = false)
 {
   global $gameName, $playerHealths;

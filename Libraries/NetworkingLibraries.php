@@ -1,5 +1,5 @@
 <?php
-function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput, $isSimulation=false)
+function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput, $isSimulation=false, $inputText="")
 {
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $p1PlayerRating, $p2PlayerRating, $redirectPath, $CS_PlayedAsInstant;
@@ -355,6 +355,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         echo ("Choose top opponent " . $turn[0] . " Invalid Input<BR>");
         return false;
       }
+      break;
+    case 30://String input
+      WriteLog($inputText);
+      ContinueDecisionQueue(GamestateSanitize($inputText));
       break;
     case 99: //Pass
       if (CanPassPhase($turn[0])) {

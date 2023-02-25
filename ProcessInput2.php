@@ -39,6 +39,7 @@ for ($i = 0; $i < $chkCount; ++$i) {
   $chk = isset($_GET[("chk" . $i)]) ? $_GET[("chk" . $i)] : "";
   if ($chk != "") array_push($chkInput, $chk);
 }
+$inputText = isset($_GET["inputText"]) ? $_GET["inputText"] : "";
 
 SetHeaders();
 
@@ -112,7 +113,7 @@ if ((IsPatron(1) || IsPatron(2)) && !IsReplay()) {
 }
 
 //Now we can process the command
-ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput);
+ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput, false, $inputText);
 
 ProcessMacros();
 if ($inGameStatus == $GameStatus_Rematch) {

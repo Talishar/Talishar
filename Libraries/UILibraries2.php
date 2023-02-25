@@ -394,6 +394,18 @@ function CreateForm($playerID, $caption, $mode, $count)
   return $rv;
 }
 
+function CreateTextForm($playerID, $caption, $mode)
+{
+  global $gameName;
+  $rv = "<form>";
+  $rv .= "<input type='button' onclick='textSubmit(" . $mode . ")' value='" . $caption . "'>";
+  $rv .= "<input type='hidden' id='gameName' name='gameName' value='" . $gameName . "'>";
+  $rv .= "<input type='hidden' id='playerID' name='playerID' value='" . $playerID . "'>";
+  $rv .= "<input type='hidden' id='mode' name='mode' value='" . $mode . "'>";
+  $rv .= "<input type='text' id='inputText' name='inputText' onkeypress='suppressEventPropagation(event)'>";
+  return $rv;
+}
+
 //input = ?
 //value = ?
 //immediateSubmitMode = If set, add onchange event to submit immediately instead of form submit

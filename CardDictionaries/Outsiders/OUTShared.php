@@ -4,6 +4,7 @@ function OUTAbilityCost($cardID)
 {
   switch($cardID)
   {
+    case "OUT049": return 1;
     case "OUT096": return 3;
     default: return 0;
   }
@@ -13,6 +14,7 @@ function OUTAbilityCost($cardID)
   {
     switch ($cardID)
     {
+      case "OUT049": return "I";
       case "OUT096": return "I";
       default: return "";
     }
@@ -65,6 +67,11 @@ function OUTAbilityCost($cardID)
     $rv = "";
     switch ($cardID)
     {
+      case "OUT049":
+        AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT049,");
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "-");
+        return "";
       case "OUT096":
         $deck = new Deck($currentPlayer);
         if($deck->Reveal())
