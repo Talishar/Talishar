@@ -19,6 +19,11 @@ class Deck {
     return count($this->deck);
   }
 
+  function Remove($index) {
+    unset($this->deck[$index]);
+    $this->deck = array_values($this->deck);
+  }
+
   function Reveal($revealCount=1) {
     // Code the reveal x number of cards from the top of the deck
     if (CanRevealCards($this->playerID)) {

@@ -5291,6 +5291,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for ($i = 0; $i < count($lastResultArr); ++$i) {
         $mzIndex = explode("-", $lastResultArr[$i]);
         switch ($mzIndex[0]) {
+          case "MYDECK":
+            $zone = &GetMZZone($player, $mzIndex[0]);
+            BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
+            break;
           case "MYDISCARD":
             $zone = &GetMZZone($player, $mzIndex[0]);
             BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
@@ -5365,6 +5369,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             break;
           case "THEIRAURAS":
             RemoveAura($otherPlayer, $mzIndex[1]);
+            break;
+          case "MYDECK":
+            $deck = new Deck($player);
+            $deck->Remove($mzIndex[1]);
             break;
           default:
             break;

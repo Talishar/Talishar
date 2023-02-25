@@ -193,6 +193,19 @@ function SearchDeckForCard($player, $card1, $card2 = "", $card3 = "")
   return $cardList;
 }
 
+function SearchDeckByName($player, $name)
+{
+  $deck = &GetDeck($player);
+  $cardList = "";
+  for ($i = 0; $i < count($deck); $i += DeckPieces()) {
+    if (CardName($deck[$i]) == $name) {
+      if ($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
+    }
+  }
+  return $cardList;
+}
+
 function SearchDiscardForCard($player, $card1, $card2 = "", $card3 = "")
 {
   $discard = &GetDiscard($player);
@@ -847,6 +860,7 @@ function SearchMultizone($player, $searches)
     $searchArr = explode(":", $unionSearches[$i]);
     $zone = $searchArr[0];
     $isCardID = false;
+    $isSameName = false;
     if (count($searchArr) > 1) //Means there are conditions
     {
       $conditions = explode(";", $searchArr[1]);
@@ -929,6 +943,17 @@ function SearchMultizone($player, $searches)
             $rv = CombineSearches($rv, $searchResult);
             $isCardID = true;
             break;
+          case "sameName":
+            $name = CardName($condition[1]);
+            switch($zone)
+            {
+              case "MYDECK": $searchResult = SearchDeckByName($player, $name); break;
+              default: break;
+            }
+            $rv = SearchMultiZoneFormat($searchResult, $zone);
+            //$rv = CombineSearches($rv, $searchResult);
+            $isSameName = true;
+            break;
           default:
             break;
         }
@@ -936,7 +961,7 @@ function SearchMultizone($player, $searches)
     }
     $searchPlayer = (substr($zone, 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1));
     $searchResult = "";
-    if(!$isCardID)
+    if(!$isCardID && !$isSameName)
     {
       switch ($zone) {
         case "MYHAND":
