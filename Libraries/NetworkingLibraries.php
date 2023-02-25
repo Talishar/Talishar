@@ -833,7 +833,7 @@ function ResolveCombatDamage($damageDone)
 
 function FinalizeChainLink($chainClosed = false)
 {
-  global $turn, $actionPoints, $combatChain, $mainPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_LastAttack, $CCS_DamageDealt;
+  global $turn, $actionPoints, $combatChain, $mainPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
   global $CS_AnotherWeaponGainedGoAgain;
   UpdateGameState($currentPlayer);
@@ -909,7 +909,6 @@ function FinalizeChainLink($chainClosed = false)
     ++$mainClassState[$CS_AtksWWeapon];
     if (CardSubtype($combatChain[0]) == "Sword") ++$mainClassState[$CS_NumSwordAttacks];
   }
-  $combatChainState[$CCS_LastAttack] = $combatChain[0];
   SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
 
   $combatChain = [];

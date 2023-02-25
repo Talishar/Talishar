@@ -264,7 +264,7 @@ $CS_HitsWithSword = 65;
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
 $CCS_WeaponIndex = 1;
-$CCS_LastAttack = 2;
+$CCS_LastAttack = 2;//Deprecated -- use chain link summary instead, it has all of them
 $CCS_NumHits = 3;
 $CCS_DamageDealt = 4;
 $CCS_HitsInRow = 5;
@@ -299,7 +299,7 @@ $CCS_CachedNumDefendedFromHand = 33;
 
 function ResetCombatChainState()
 {
-  global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_LastAttack, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
+  global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
   global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainAttackBuff, $CCS_ChainLinkHitEffectsPrevented;
   global $CCS_NumBoosted, $CCS_NextBoostBuff, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_NumChainLinks, $CCS_AttackTarget;
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
@@ -309,7 +309,6 @@ function ResetCombatChainState()
   if (count($chainLinks) > 0) WriteLog("The combat chain was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;
-  $combatChainState[$CCS_LastAttack] = "NA";
   $combatChainState[$CCS_NumHits] = 0;
   $combatChainState[$CCS_DamageDealt] = 0;
   $combatChainState[$CCS_HitsInRow] = 0;

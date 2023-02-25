@@ -1822,11 +1822,10 @@ function HasCombo($cardID)
 
 function ComboActive($cardID = "")
 {
-  global $combatChainState, $CCS_LastAttack, $combatChain, $chainLinkSummary;
+  global $combatChainState, $combatChain, $chainLinkSummary;
   if ($cardID == "" && count($combatChain) > 0) $cardID = $combatChain[0];
   if ($cardID == "") return false;
   if(count($chainLinkSummary) == 0) return false;//No combat active if no previous chain links
-  $LA = $combatChainState[$CCS_LastAttack];
   $lastAttackNames = explode(",", $chainLinkSummary[count($chainLinkSummary)-ChainLinkSummaryPieces()+4]);
   for($i=0; $i<count($lastAttackNames); ++$i)
   {
