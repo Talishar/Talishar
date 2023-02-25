@@ -956,6 +956,8 @@ function EffectAttackModifier($cardID)
     return UPREffectAttackModifier($cardID);
   } else if ($set == "DYN") {
     return DYNEffectAttackModifier($cardID);
+  } else if ($set == "OUT") {
+    return OUTEffectAttackModifier($cardID);
   }
   switch ($cardID) {
     default:
@@ -1955,6 +1957,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN154":
       return true;
+    case "OUT052": return true;
     default:
       return false;
   }
@@ -2196,7 +2199,8 @@ function RemoveEffectsOnChainClose()
   global $currentTurnEffects;
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = 0;
-    switch ($currentTurnEffects[$i]) {
+    $effectArr = explode("-", $currentTurnEffects[$i]);
+    switch ($effectArr[0]) {
       case "CRU106":
       case "CRU107":
       case "CRU108":
@@ -2224,16 +2228,17 @@ function RemoveEffectsOnChainClose()
         $remove = 1;
         break;
       case "DYN095": case "DYN096": case "DYN097":
-        $remove = 1;
-        break;
       case "DYN119": case "DYN120": case "DYN122":
       case "DYN124": case "DYN125": case "DYN126":
       case "DYN127": case "DYN128": case "DYN129":
       case "DYN133": case "DYN134": case "DYN135":
-      case "DYN136": case "DYN137": case "DYN138":  //Contracts visualization
+      case "DYN136": case "DYN137": case "DYN138":
       case "DYN139": case "DYN140": case "DYN141":
       case "DYN142": case "DYN143": case "DYN144":
       case "DYN145": case "DYN146": case "DYN147":
+        $remove = 1;
+        break;
+      case "OUT052":
         $remove = 1;
         break;
       default:

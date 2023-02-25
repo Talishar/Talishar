@@ -1892,6 +1892,16 @@ function SameWeaponEquippedTwice()
   return false;
 }
 
+function IsCurrentAttackName($name)
+{
+  $names = GetCurrentAttackNames();
+  for($i=0; $i<count($names); ++$i)
+  {
+    if($name == $names[$i]) return true;
+  }
+  return false;
+}
+
 function GetCurrentAttackNames()
 {
   global $combatChain, $currentTurnEffects, $mainPlayer;
@@ -1900,7 +1910,7 @@ function GetCurrentAttackNames()
   array_push($names, CardName($combatChain[0]));
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
-    $effectArr = explode(",", $currentTurnEffects[$i]);
+    $effectArr = explode("-", $currentTurnEffects[$i]);
     if($currentTurnEffects[$i+1] != $mainPlayer || !IsCombatEffectActive($effectArr[0]) || IsCombatEffectLimited($i)) continue;
     switch($effectArr[0])
     {

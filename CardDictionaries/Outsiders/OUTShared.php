@@ -28,12 +28,13 @@ function OUTAbilityCost($cardID)
     }
   }
 
-  function OutEffectAttackModifier($cardID)
+  function OUTEffectAttackModifier($cardID)
   {
     $idArr = explode("-", $cardID);
     $cardID = $idArr[0];
     switch ($cardID)
     {
+      case "OUT052": return 1;
       default: return 0;
     }
   }
@@ -46,6 +47,7 @@ function OUTAbilityCost($cardID)
     switch ($cardID)
     {
       case "OUT049": return CardType($attackID) == "AA";
+      case "OUT052": return count($idArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($idArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
       default: return false;
     }
@@ -72,7 +74,12 @@ function OUTAbilityCost($cardID)
     {
       case "OUT049":
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
-        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT049,");
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT049-");
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
+        return "";
+      case "OUT052":
+        AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT052-");
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
         return "";
       case "OUT096":
@@ -158,7 +165,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
         AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Head_Jab,Surging_Strike,Twin_Twisters");
-        AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . ",");
+        AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . "-");
         AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-");
         break;
       default: break;
