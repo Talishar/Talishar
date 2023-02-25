@@ -3163,6 +3163,9 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       WriteLog(CardLink($cardID, $cardID) . " banished a card from under itself.");
       BanishCardForPlayer("DYN492a", $currentPlayer, "-"); // TODO: Temporary until we can actually banish the cards that were put under
       break;
+    case "OUT049":
+      DestroyCharacter($currentPlayer, $cardIndex);
+      break;
     default:
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used
