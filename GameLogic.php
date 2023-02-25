@@ -5326,16 +5326,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
       return $lastResult;
     case "MZREMOVE":
+      //TODO: Make each removal function return the card ID that was removed, so you know what it was
+      //Previously this was returning the MZ index, which is useless once you're removed the card -- it's something else now
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);
       for ($i = 0; $i < count($lastResultArr); ++$i) {
         $mzIndex = explode("-", $lastResultArr[$i]);
         switch ($mzIndex[0]) {
           case "MYDISCARD":
-            RemoveGraveyard($player, $mzIndex[1]);
+            $lastResult = RemoveGraveyard($player, $mzIndex[1]);
             break;
           case "THEIRDISCARD":
-            RemoveGraveyard($otherPlayer, $mzIndex[1]);
+            $lastResult = RemoveGraveyard($otherPlayer, $mzIndex[1]);
             break;
           case "MYBANISH":
             RemoveBanish($player, $mzIndex[1]);
