@@ -558,7 +558,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $type = CardType($myAuras[$i]);
     $sType = CardSubType($myAuras[$i]);
     $gem = $myAuras[$i + 7];
-    if(isset($auraTileMap[$myAuras[$i]])) $gem = $auraTileMap[$myAuras[$i]];
+    if (isset($auraTileMap[$myAuras[$i]])) $gem = $auraTileMap[$myAuras[$i]];
     else $auraTileMap[$myAuras[$i]] = $gem;
     array_push($myAurasOutput, JSONRenderedCard(
       cardNumber: $myAuras[$i],
@@ -587,7 +587,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
     $actionDataOverride = strval($i);
     $gem = $myItems[$i + 5];
-    if(isset($itemTileMap[$myItems[$i]])) $gem = $itemTileMap[$myItems[$i]];
+    if (isset($itemTileMap[$myItems[$i]])) $gem = $itemTileMap[$myItems[$i]];
     else $itemTileMap[$myItems[$i]] = $gem;
     array_push($myItemsOutput, JSONRenderedCard(cardNumber: $myItems[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, overlay: ($myItems[$i + 2] != 2 ? 1 : 0), counters: $myItems[$i + 1], controller: $otherPlayer, type: $type, sType: $sType, gem: $gem, restriction: $restriction));
   }
@@ -802,6 +802,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       ) array_push($playerInputButtons, CreateButtonAPI($otherPlayer, "Top", 29, $options[$i], "20px"));
     }
     $playerInputPopup->popup = CreatePopupAPI("CHOOSETOPOPPONENT", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "", cardsArray: $optCards);
+  }
+
+  if ($turn[0] == "INPUTCARDNAME") {
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = CreatePopupAPI("INPUTCARDNAME", [], 0, 1, "Name a card");
   }
 
   if ($turn[0] == "HANDTOPBOTTOM" && $turn[1] == $playerID) {
