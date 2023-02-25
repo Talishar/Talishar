@@ -654,6 +654,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "OUT042": return 3;
     case "OUT043": return 2;
     case "OUT044": return 1;
+    case "OUT051": return (ComboActive() ? 2 : 0);
     default:
       return 0;
   }

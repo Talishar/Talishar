@@ -283,6 +283,11 @@ function CardClass($cardID)
       if ($number >= 212 && $number <= 233) return "ILLUSIONIST";
       else if ($number == 612) return "ILLUSIONIST";
       else return "GENERIC";
+    case "OUT":
+      if ($number >= 1 && $number <= 42) return "ASSASSIN";
+      else if ($number >= 45 && $number <= 68) return "NINJA";
+      else if ($number >= 89 && $number <= 103) return "RANGER";
+      else return "GENERIC";
     default:
       return 0;
   }
@@ -1816,6 +1821,9 @@ function HasCombo($cardID)
     case "DYN056": case "DYN057": case "DYN058":
     case "DYN059": case "DYN060": case "DYN061":
       return true;
+    case "OUT051":
+    case "OUT056": case "OUT057": case "OUT058":
+      return true;
   }
   return false;
 }
@@ -1886,6 +1894,9 @@ function ComboActive($cardID = "")
       case "DYN056": case "DYN057": case "DYN058":
       case "DYN059": case "DYN060": case "DYN061":
         if($lastAttackName == "Crouching Tiger") return true;
+        break;
+      case "OUT051":
+        if($lastAttackName == "Bonds of Ancestry") return true;
         break;
       case "OUT056": case "OUT057": case "OUT058":
         return str_contains($lastAttackName, "Gustwave");
