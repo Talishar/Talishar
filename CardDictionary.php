@@ -1888,7 +1888,7 @@ function ComboActive($cardID = "")
         if($lastAttackName == "Crouching Tiger") return true;
         break;
       case "OUT056": case "OUT057": case "OUT058":
-        return str_contains(CardName($lastAttackName), "Gustwave");
+        return str_contains($lastAttackName, "Gustwave");
     }
   }
   return false;
