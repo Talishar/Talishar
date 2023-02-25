@@ -1921,6 +1921,8 @@ case "7":
 return "C";
 case "2":
 return "AR";
+case "9":
+return "E";
 default: return "AA";
 }
 case "8":
@@ -5697,8 +5699,18 @@ default: return 0;
 }
 case "5":
 switch($cardID[5]) {
+case "1":
+return 2;
+case "2":
+return 3;
 case "6":
 return 4;
+default: return 0;
+}
+case "6":
+switch($cardID[5]) {
+case "8":
+return 3;
 default: return 0;
 }
 default: return 0;
@@ -7345,6 +7357,8 @@ case "6":
 return -1;
 case "7":
 return -1;
+case "9":
+return 1;
 default: return 3;
 }
 case "8":
@@ -7359,6 +7373,18 @@ case "0":
 return -1;
 case "6":
 return -1;
+default: return 3;
+}
+case "5":
+switch($cardID[5]) {
+case "2":
+return 2;
+default: return 3;
+}
+case "6":
+switch($cardID[5]) {
+case "8":
+return 2;
 default: return 3;
 }
 default: return 3;
@@ -11479,6 +11505,8 @@ case "7":
 return "Benji, the Piercing Wind";
 case "2":
 return "Razor's Edge";
+case "9":
+return "Mask of Many Faces";
 default: return "";
 }
 case "8":
@@ -11517,8 +11545,18 @@ default: return "";
 }
 case "5":
 switch($cardID[5]) {
+case "1":
+return "Dishonor";
+case "2":
+return "Head Leads the Tail";
 case "6":
 return "Bonds of Ancestry";
+default: return "";
+}
+case "6":
+switch($cardID[5]) {
+case "8":
+return "Be Like Water";
 default: return "";
 }
 default: return "";
@@ -15723,6 +15761,8 @@ case "6":
 return 0;
 case "7":
 return 0;
+case "9":
+return 0;
 default: return 1;
 }
 case "8":
@@ -15737,6 +15777,12 @@ case "0":
 return 0;
 case "6":
 return 0;
+default: return 1;
+}
+case "5":
+switch($cardID[5]) {
+case "1":
+return 3;
 default: return 1;
 }
 default: return 1;
@@ -20289,6 +20335,8 @@ default: return 0;
 }
 case "5":
 switch($cardID[5]) {
+case "2":
+return 1;
 case "6":
 return 2;
 default: return 0;
@@ -21479,6 +21527,8 @@ case "6":
 return "Young";
 case "7":
 return "Young";
+case "9":
+return "Head";
 default: return "";
 }
 case "9":
@@ -23486,6 +23536,10 @@ default: return "C";
 }
 case "5":
 switch($cardID[5]) {
+case "1":
+return "M";
+case "2":
+return "M";
 case "6":
 return "R";
 default: return "C";
