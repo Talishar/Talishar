@@ -1293,6 +1293,8 @@ function HasBladeBreak($cardID)
     case "DYN152":
     case "DYN171":
       return true;
+    case "OUT049":
+      return true;
     default:
       return false;
   }
