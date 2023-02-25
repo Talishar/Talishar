@@ -70,7 +70,7 @@ function OUTAbilityCost($cardID)
       case "OUT049":
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT049,");
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "-");
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
         return "";
       case "OUT096":
         $deck = new Deck($currentPlayer);
