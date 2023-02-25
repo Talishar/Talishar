@@ -357,6 +357,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 30://String input
+      $cardName = CardName(strtoupper($inputText));
+      if($cardName != "") $inputText = $cardName;
       WriteLog($inputText);
       ContinueDecisionQueue(GamestateSanitize($inputText));
       break;
