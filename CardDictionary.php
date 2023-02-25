@@ -1820,68 +1820,75 @@ function HasCombo($cardID)
 
 function ComboActive($cardID = "")
 {
-  global $combatChainState, $CCS_LastAttack, $combatChain;
+  global $combatChainState, $CCS_LastAttack, $combatChain, $chainLinkSummary;
   if ($cardID == "" && count($combatChain) > 0) $cardID = $combatChain[0];
   if ($cardID == "") return false;
+  if(count($chainLinkSummary) == 0) return false;//No combat active if no previous chain links
   $LA = $combatChainState[$CCS_LastAttack];
-  if ($LA == "NA") return false;
-  switch ($cardID) {
-    case "WTR081":
-      return $LA == "WTR083";
-    case "WTR083":
-      return $LA == "WTR110" || $LA == "WTR111" || $LA == "WTR112";
-    case "WTR084":
-      return $LA == "WTR104" || $LA == "WTR105" || $LA == "WTR106";
-    case "WTR085":
-      return $LA == "WTR095" || $LA == "WTR096" || $LA == "WTR097";
-    case "WTR086":
-    case "WTR087":
-    case "WTR088":
-      return $LA == "WTR095" || $LA == "WTR096" || $LA == "WTR097";
-    case "WTR089":
-    case "WTR090":
-    case "WTR091":
-      return $LA == "WTR104" || $LA == "WTR105" || $LA == "WTR106";
-    case "WTR095":
-    case "WTR096":
-    case "WTR097":
-      return $LA == "WTR098" || $LA == "WTR099" || $LA == "WTR100";
-    case "WTR104":
-    case "WTR105":
-    case "WTR106":
-      return $LA == "WTR101" || $LA == "WTR102" || $LA == "WTR103";
-    case "WTR110":
-    case "WTR111":
-    case "WTR112":
-      return $LA == "WTR107" || $LA == "WTR108" || $LA == "WTR109";
-    case "CRU054":
-      return $LA == "CRU057" || $LA == "CRU058" || $LA == "CRU059";
-    case "CRU055":
-      return $LA == "CRU055" || $LA == "CRU060" || $LA == "CRU061" || $LA == "CRU062";
-    case "CRU056":
-      return $LA == "CRU057" || $LA == "CRU058" || $LA == "CRU059";
-    case "CRU057":
-    case "CRU058":
-    case "CRU059":
-      return $LA == "CRU066" || $LA == "CRU067" || $LA == "CRU068";
-    case "CRU060":
-    case "CRU061":
-    case "CRU062":
-      return $LA == "CRU069" || $LA == "CRU070" || $LA == "CRU071";
-    case "EVR038":
-      return $LA == "CRU060" || $LA == "CRU061" || $LA == "CRU062" || $LA == "CRU055";
-    case "EVR040":
-      return $LA == "EVR041" || $LA == "EVR042" || $LA == "EVR043";
-    case "EVR041":
-    case "EVR042":
-    case "EVR043":
-      return $LA == "EVR041" || $LA == "EVR042" || $LA == "EVR043";
-    case "DYN047":
-    case "DYN056": case "DYN057": case "DYN058":
-    case "DYN059": case "DYN060": case "DYN061":
-      return $LA == "DYN065";
-    case "OUT056": case "OUT057": case "OUT058":
-      return str_contains(CardName($LA), "Gustwave");
+  $lastAttackNames = explode(",", $chainLinkSummary[count($chainLinkSummary)-ChainLinkSummaryPieces()+4]);
+  for($i=0; $i<count($lastAttackNames); ++$i)
+  {
+    $lastAttackName = GamestateUnsanitize($lastAttackNames[$i]);
+    switch ($cardID) {
+      case "WTR081":
+        if($lastAttackName == "Mugenshi: RELEASE") return true;
+        break;
+      case "WTR083":
+        if($lastAttackName == "Whelming Gustwave") return true;
+        break;
+      case "WTR084":
+        if($lastAttackName == "Rising Knee Thrust") return true;
+        break;
+      case "WTR085":
+        if($lastAttackName == "Open the Center") return true;
+        break;
+      case "WTR086": case "WTR087": case "WTR088":
+        if($lastAttackName == "Open the Center") return true;
+        break;
+      case "WTR089": case "WTR090": case "WTR091":
+        if($lastAttackName == "Rising Knee Thrust") return true;
+        break;
+      case "WTR095": case "WTR096": case "WTR097":
+        if($lastAttackName == "Head Jab") return true;
+        break;
+      case "WTR104": case "WTR105": case "WTR106":
+        if($lastAttackName == "Leg Tap") return true;
+        break;
+      case "WTR110": case "WTR111": case "WTR112":
+        if($lastAttackName == "Surging Strike") return true;
+        break;
+      case "CRU054":
+        if($lastAttackName == "Crane Dance") return true;
+        break;
+      case "CRU055":
+        if($lastAttackName == "Rushing River" || $lastAttackName == "Flood of Force") return true;
+        break;
+      case "CRU056":
+        if($lastAttackName == "Crane Dance") return true;
+        break;
+      case "CRU057": case "CRU058": case "CRU059":
+        if($lastAttackName == "Soulbead Strike") return true;
+        break;
+      case "CRU060": case "CRU061": case "CRU062":
+        if($lastAttackName == "Torrent of Tempo") return true;
+        break;
+      case "EVR038":
+        if($lastAttackName == "Rushing River" || $lastAttackName == "Flood of Force") return true;
+        break;
+      case "EVR040":
+        if($lastAttackName == "Hundred Winds") return true;
+        break;
+      case "EVR041": case "EVR042": case "EVR043":
+        if($lastAttackName == "Hundred Winds") return true;
+        break;
+      case "DYN047":
+      case "DYN056": case "DYN057": case "DYN058":
+      case "DYN059": case "DYN060": case "DYN061":
+        if($lastAttackName == "Crouching Tiger") return true;
+        break;
+      case "OUT056": case "OUT057": case "OUT058":
+        return str_contains(CardName($lastAttackName), "Gustwave");
+    }
   }
   return false;
 }
