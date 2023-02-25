@@ -46,6 +46,7 @@ function OUTAbilityCost($cardID)
     switch ($cardID)
     {
       case "OUT049": return CardType($attackID) == "AA";
+      case "OUT068": case "OUT069": case "OUT070": return true;
       default: return false;
     }
   }
@@ -54,7 +55,9 @@ function OUTAbilityCost($cardID)
   {
     switch ($cardID)
     {
+      case "OUT052": return true;
       case "OUT056": case "OUT057": case "OUT058": return ComboActive($cardID);
+      case "OUT068": case "OUT069": case "OUT070": return true;
       case "OUT160": return true;
       default: return false;
     }
@@ -148,6 +151,15 @@ function OUTAbilityCost($cardID)
         break;
       case "OUT039": case "OUT040": case "OUT041":
         if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+        break;
+      case "OUT068": case "OUT069": case "OUT070":
+        AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give this a name", 0, 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
+        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+        AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Head_Jab,Surging_Strike,Twin_Twisters");
+        AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . ",");
+        AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-");
         break;
       default: break;
     }

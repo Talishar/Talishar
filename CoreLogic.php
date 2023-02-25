@@ -1908,6 +1908,10 @@ function GetCurrentAttackNames()
         $name = (count($effectArr) > 1 ? $effectArr[1] : "N/A");
         array_push($names, $name);
         break;
+      case "OUT068": case "OUT069": case "OUT070":
+        $name = (count($effectArr) > 1 ? $effectArr[1] : "N/A");
+        array_push($names, $name);
+        break;
       default: break;
     }
   }
