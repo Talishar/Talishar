@@ -779,7 +779,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   if($turn[0] == "INPUTCARDNAME")
   {
-    $caption = "<div>Enter a card name</div>";
+    $caption = "<div>Enter a card name or ID</div>";
     $content = CreateTextForm($playerID, "Submit", 30);
     echo CreatePopup("INPUTCARDNAME", [], 0, 1, $caption, 1, $content);
   }
