@@ -98,6 +98,7 @@ function EncounterDescription()
       $health = &GetZone(1, "Health");
       if($health[0] > 1) return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game.'";
       else return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game. But it seems you have nothing to offer me, so I must take my leave.'";
+    case 208: return "You meet a migrating trader, who holds up a small stone, but doesn't let you get a close look at it. \"Greetings Bounty Hunter, I have an amazing deal for you. Two gold pieces and this powerful stone can be yours.\"";
 
     default: return "No encounter text.";
   }
@@ -203,6 +204,12 @@ function InitializeEncounter($player)
       AddDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
+    case 208:
+      if($encounter[9] >= 2) AddDecisionQueue("BUTTONINPUT", $player, "Trade_2_gold_pieces_for_the_stone,Decline_his_offer_and_move_on");
+      else AddDecisionQueue("BUTTONINPUT", $player, "Decline_his_offer_and_move_on");
+      AddDecisionQueue("ROCKS", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
     case 209:
       AddDecisionQueue("SHOP", $player, GetShop());
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
@@ -268,6 +275,8 @@ function EncounterImage()
       return "MON081_cropped.png";
     case 206:
       return "CRU188_cropped.png";
+    case 208:
+      return "UPR212_cropped.png";
 
     default: return "CRU054_cropped.png";
   }

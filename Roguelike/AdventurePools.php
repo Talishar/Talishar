@@ -57,8 +57,8 @@ function GetNextEncounter() //TODO overhaul this whole function and children
 
 function RandomEvent()
 {
-  $commonEvents = array("Explore_some_nearby_ruins", "Visit_a_local_library", "Enter_a_nearby_temple");
-  $rareEvents = array("Explore_some_nearby_ruins", "Enter_a_nearby_temple");
+  $commonEvents = array("Explore_some_nearby_ruins", "Visit_a_local_library", "Enter_a_nearby_temple", "Talk_to_a_wandering_trader");
+  $rareEvents = array("Explore_some_nearby_ruins", "Enter_a_nearby_temple", "Talk_to_a_wandering_trader");
   $majesticEvents = array("Explore_some_nearby_ruins", "Visit_a_local_library", "Enter_a_nearby_temple");
   $randEvent = rand(1,100);
   if($randEvent > 90)
