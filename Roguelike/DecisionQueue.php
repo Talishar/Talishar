@@ -351,6 +351,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Take_the_scenic_route_through_the_back_streets": //Stealthy Stabber
             PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight"); 
             break;
+          case "Make_your_way_up_through_Metrix": //Combustible Courier
+            PrependDecisionQueue("SETENCOUNTER", $player, "120-BeforeFight");
+            break;
           case "Venture_into_the_forest_and_attempt_to_sneak_past": //Ravenous Rabble
             PrependDecisionQueue("SETENCOUNTER", $player, "102-BeforeFight");
             break;
@@ -368,9 +371,6 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Brave_the_bridge":
             PrependDecisionQueue("SETENCOUNTER", $player, "119-BeforeFight");
-            break;
-          case "Make_your_way_up_through_Metrix":
-            PrependDecisionQueue("SETENCOUNTER", $player, "120-BeforeFight");
             break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");

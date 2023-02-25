@@ -472,9 +472,9 @@ function GetPool2($arrayParameters){
     array("DYN076", "Class", "Rare", "Hatchet", "Battleaxe"), //Precision Press
     array("DYN077", "Class", "Rare", "Hatchet", "Battleaxe"),
     array("DYN078", "Class", "Rare", "Hatchet", "Battleaxe"),
-    array("DYN079", "Class", "Common", "Hatchet", "Battleaxe"), //Puncture
-    array("DYN080", "Class", "Common", "Hatchet", "Battleaxe"),
-    array("DYN081", "Class", "Common", "Hatchet", "Battleaxe"),
+    array("DYN079", "Class", "Common", "Saber", "Dawnblade"), //Puncture - Swords/Dagger only
+    array("DYN080", "Class", "Common", "Saber", "Dawnblade"),
+    array("DYN081", "Class", "Common", "Saber", "Dawnblade"),
     array("DYN082", "Class", "Common", "Hatchet", "Battleaxe"), //Felling Swing
     array("DYN083", "Class", "Common", "Hatchet", "Battleaxe"),
     array("DYN084", "Class", "Common", "Hatchet", "Battleaxe"),
