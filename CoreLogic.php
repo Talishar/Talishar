@@ -1939,3 +1939,8 @@ function SerializeCurrentAttackNames()
   }
   return $serializedNames;
 }
+
+function IsChainLinkName($name)
+{
+  global $chainLinkSummary;
+}

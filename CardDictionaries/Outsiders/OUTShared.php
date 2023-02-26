@@ -149,7 +149,7 @@ function OUTAbilityCost($cardID)
 
   function OUTHitEffect($cardID)
   {
-    global $mainPlayer, $defPlayer;
+    global $mainPlayer, $defPlayer, $chainLinkSummary;
     global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
     $attackID = $combatChain[0];
     switch ($cardID)
@@ -171,6 +171,17 @@ function OUTAbilityCost($cardID)
         break;
       case "OUT039": case "OUT040": case "OUT041":
         if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+        break;
+      case "OUT051":
+        $char = &GetPlayerCharacter($defPlayer);
+        $hasSurgingStrike = false; $hasBondsOfAncestry = false; $hasBondsOfAncestry = false;
+        for($i=0; $i<count($chainLinkSummary); $i+=ChainLinkSummaryPieces())
+        {
+
+        }
+        if($char[0] == "DUMMY") WriteLog("Combat Dummies have no honor.");
+        else if($char[0] == "DUMMYDISHONORED") WriteLog("Those who have been dishonored have nothing left to lose.");
+        else $char[0] = "DUMMYDISHONORED";
         break;
       case "OUT068": case "OUT069": case "OUT070":
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give this a name", 0, 1);

@@ -75,6 +75,7 @@ function CardType($cardID)
     case "DYN612": return "-";
     case "LGS125": case "LGS126": case "LGS127": return "T";
     case "DUMMY":
+    case "DUMMYDISHONORED":
       return "C";
     default:
       return "";
