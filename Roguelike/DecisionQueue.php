@@ -354,6 +354,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Make_your_way_up_through_Metrix": //Combustible Courier
             PrependDecisionQueue("SETENCOUNTER", $player, "120-BeforeFight");
             break;
+          case "Catch_a_ferry_across_the_lake": //TESTING Rune Scholar
+            PrependDecisionQueue("SETENCOUNTER", $player, "107-BeforeFight");
+            break;
           case "Venture_into_the_forest_and_attempt_to_sneak_past": //Ravenous Rabble
             PrependDecisionQueue("SETENCOUNTER", $player, "102-BeforeFight");
             break;
