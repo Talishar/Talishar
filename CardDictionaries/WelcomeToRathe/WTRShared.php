@@ -280,8 +280,9 @@ function WTRAbilityCost($cardID)
         if(CountPitch(GetPitch($currentPlayer), 0, 0)) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         return "";
       case "WTR082":
+        if(CardName($combatChain[0]) == "Bonds of Ancestry") WriteLog("Your ancestors reward you for your loyalty.");
         MyDrawCard();
-        return "Draws a card.";
+        return "";
       case "WTR092": case "WTR093": case "WTR094":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives the next blocking Combo card +2 this turn.";
