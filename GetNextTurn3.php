@@ -149,7 +149,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
   if ($playerID != 3 && $authKey != $targetAuth) {
-    $response->errorMessage = "999999ENDTIMESTAMP";
+    $response->errorMessage = "Invalid Authkey";
     echo (json_encode($response));
     exit;
   }
