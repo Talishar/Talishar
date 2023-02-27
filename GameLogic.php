@@ -5813,6 +5813,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "CARDDISCARDED":
       CardDiscarded($player, $lastResult, $parameter);
       return $lastResult;
+    case "AMULETOFECHOES":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      switch ($lastResult) {
+        case "Target_Opponent":
+          PummelHit($otherPlayer);
+          PummelHit($otherPlayer);
+          break;
+        case "Target_Yourself":
+          PummelHit($player);
+          PummelHit($player);
+          break;
+        default:
+          break;
+      }
+      return "";
     default:
       return "NOTSTATIC";
   }

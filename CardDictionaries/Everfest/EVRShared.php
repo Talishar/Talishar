@@ -555,9 +555,17 @@
       case "EVR177":
         if($from == "PLAY")
         {
-          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-          PummelHit($otherPlayer);
-          PummelHit($otherPlayer);
+          if (ShouldAutotargetOpponent($currentPlayer)) {
+            $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+            PummelHit($otherPlayer);
+            PummelHit($otherPlayer);
+          }
+          else
+          {
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
+            AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
+            AddDecisionQueue("AMULETOFECHOES", $currentPlayer, "<-", 1);
+          }
         }
         return "";
       case "EVR178":

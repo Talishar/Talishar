@@ -1082,11 +1082,16 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVR177":
       $restricted = false;
       if ($from == "PLAY") {
-        $cardNamesPlayed = explode(",", GetClassState($otherPlayer, $CS_NamesOfCardsPlayed));
-        foreach (array_count_values($cardNamesPlayed) as $name => $count) {
-          if ($count > 1) $dups[] = $name;
+        $hasDuplicate = false;
+        $cardNames = explode(",", GetClassState($otherPlayer, $CS_NamesOfCardsPlayed));
+        foreach (array_count_values($cardNames) as $name => $count) {
+          if ($count > 1) $hasDuplicate = true;
         }
-        if (empty($dups)) $restricted = true;
+        $cardNames = explode(",", GetClassState($player, $CS_NamesOfCardsPlayed));
+        foreach (array_count_values($cardNames) as $name => $count) {
+          if ($count > 1) $hasDuplicate = true;
+        }
+        if (!$hasDuplicate) $restricted = true;
       }
       return $restricted;
     case "EVR178":
