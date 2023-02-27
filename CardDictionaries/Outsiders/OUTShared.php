@@ -83,17 +83,19 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
         return "";
       case "OUT056": case "OUT057": case "OUT058":
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:comboOnly=true");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Combo to banish from your graveyard");
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
-        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MYDECK:sameName=", 1);
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZBANISH", $currentPlayer, "DECK,TCC," . $currentPlayer, 1);
-        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        //AddDecisionQueue("WRITELOG", $currentPlayer, "<-", 1);
+        if(ComboActive())
+        {
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:comboOnly=true");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Combo to banish from your graveyard");
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MYDECK:sameName=", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZBANISH", $currentPlayer, "DECK,TCC," . $currentPlayer, 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        }
         return "";
       case "OUT096":
         $deck = new Deck($currentPlayer);
