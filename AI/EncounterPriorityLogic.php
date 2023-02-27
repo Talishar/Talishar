@@ -3,27 +3,44 @@
 function GeneratePriorityValues($hand, $character, $arsenal, $type) //TODO: add items, auras, allies, banish, and permanents //TODO: Make this function able to be called for all sources, blocking, actions, pitching, etc.
 {
   $priorityArray = [];
-  //array's pushed into this array are as follows: [CardID, Where, Index in location, Priority Value]
-  for($i = 0; $i < count($hand); ++$i)
+  switch($type)
   {
-    array_push($priorityArray, array($hand[$i], "Hand", $i, GetPriority($hand[$i], $character[0], $type)));
+    case "Block": return SortPriorityArray(ResolvePriorityArray(ResolvePriorityArray(PushArray(PushArray($priorityArray, "Hand", $hand, $character, 0), "Character", $character, $character, 0), 10, 0, 2), 11, 0, 2));
+    case "Action": return SortPriorityArray(ResolvePriorityArray(PushArray(PushArray(PushArray($priorityArray, "Hand", $hand, $character, 1), "Character", $character, $character, 1), "Arsenal", $arsenal, $character, 2), 10, "Unplayed", 0));
+    case "Pitch":
+    default: WriteLog("ERROR: Priority Value type case not implemented in AI. Please submit a bug report."); return $priorityArray;
   }
-  for($i = 0; $i < count($character); $i += CharacterPieces())
-  {
-    array_push($priorityArray, array($character[$i], "Character", $i, GetPriority($character[$i], $character[0], $type)));
-  }
-  if($type == 1 || $type == 3) ++$type;
-  for($i = 0; $i < count($arsenal); $i += ArsenalPieces())
-  {
-    array_push($priorityArray, array($arsenal[$i], "Arsenal", $i, GetPriority($arsenal[$i], $character[0], $type)));
-  }
-  return sortPriorityArray($priorityArray);
 }
 
-function sortPriorityArray($priorityArray)
+function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
 {
-  do
-	{
+  switch($zone)
+  {
+    case "Hand":
+      for($i = 0; $i < count($zoneArr); ++$i)
+      {
+        array_push($priorityArray, array($zoneArr[$i], "Hand", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex))); //array's pushed into this array are as follows: [CardID, Where, Index in location, Priority Value]
+      }
+      return $priorityArray;
+    case "Arsenal":
+      for($i = 0; $i < count($zoneArr); $i += ArsenalPieces())
+      {
+        array_push($priorityArray, array($zoneArr[$i], "Arsenal", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)));
+      }
+      return $priorityArray;
+    case "Character":
+      for($i = 0; $i < count($zoneArr); $i += CharacterPieces())
+      {
+        array_push($priorityArray, array($zoneArr[$i], "Character", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)));
+      }
+      return $priorityArray;
+    default: return $priorityArray;
+  }
+}
+
+function SortPriorityArray($priorityArray)
+{
+  do {
 		$swapped = false;
 		for($i = 0, $c = count($priorityArray) - 1; $i < $c; ++$i)
 		{
@@ -33,9 +50,45 @@ function sortPriorityArray($priorityArray)
 				$swapped = true;
 			}
 		}
-	}
-	while($swapped);
+	} while($swapped);
 return $priorityArray;
+}
+
+function ResolvePriorityArray($priorityArray, $range, $destinationPrime, $destinationSecondary, $amount = 1) //this is going to resolve the various 10, 11, 12, and beyond values TODO: Implement this function
+{
+  for($i = 0; $i < $amount; $i++)
+  {
+    $index = 0;
+    $found = false;
+    for($j = 0; $j < count($priorityArray); ++$j)
+    {
+      if($priorityArray[$j][3] >= $priorityArray[$index][3] && $range + 0.1 <= $priorityArray[$j][3] && $priorityArray[$j][3] <= $range + 0.9)
+      {
+        $index = $j;
+        $found = true;
+      }
+    }
+    if(!$found) return $priorityArray;
+    if($destinationPrime == "Unplayed") $priorityArray[$index][3] = 0;
+    else
+    {
+      $indexValue = $priorityArray[$index][3] - (int) $priorityArray[$index][3];
+      $priorityArray[$index][3] = $destinationPrime + $indexValue;
+    }
+  }
+  for($k = 0; $k < count($priorityArray); ++$k)
+  {
+    if($range + 0.1 <= $priorityArray[$k][3] && $priorityArray[$k][3] <= $range + 0.9)
+    {
+      if($destinationSecondary == "Unplayed") $priorityArray[$k][3] = 0;
+      else
+      {
+        $indexValue = $priorityArray[$k][3] - (int) $priorityArray[$k][3];
+        $priorityArray[$k][3] = $destinationSecondary + $indexValue;
+      }
+    }
+  }
+  return $priorityArray;
 }
 
 ?>

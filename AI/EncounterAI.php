@@ -54,35 +54,32 @@ function EncounterAI()
       }
       else if($turn[0] == "B")//The player is attacking the AI
       {
-        if(count($hand) > 0) //are there cards in hand?
+        $priorityValues = GeneratePriorityValues($hand, $character, $arsenal, "Block");
+        LogPriorityArray($priorityValues);
+        do {
+          $checking = $priorityValues[count($priorityValues)-1];
+          array_pop($priorityValues); //grabs the last item in the array (highest priority), and removes it from the array
+          //WriteLog("CardID=" . $checking[0] . ", Where=" . $checking[1] . ", Index=" . $checking[2] . ", Priority=" . $checking[3]);
+          if(CardIsBlockable($checking)) $found = true;
+        } while (count($priorityValues) > 0 && !$found);
+        $health = &GetHealth($currentPlayer);
+        if($found == true && ((CachedTotalAttack() - CachedTotalBlock() >= $health && $checking[3] != 0) || (CachedTotalAttack() - CachedTotalBlock() >= BlockValue($checking[0]) && 2.1 <= $checking[3] && $checking[3] <= 2.9)))
         {
-          $BPV = GenerateBPV($hand, $character);
-          $health = &GetHealth($currentPlayer);
-          $cardToBlock = GetNextBlock($BPV); //what am I blocking with next?
-          if($BPV[$cardToBlock] !=0 ) //do I have a card in hand that can block?
-          {
-            if(count($hand) > 0 && CachedTotalAttack() - CachedTotalBlock() >= $health) //Is it lethal?
-            {
-              ProcessInput($currentPlayer, 27, "", $cardToBlock, 0, "");
-              CacheCombatResult();
-            }
-            else if(count($hand) > 0 && CachedTotalAttack() - CachedTotalBlock() >= BlockValue($hand[$cardToBlock]) && 2.1 <= $BPV[$cardToBlock] && $BPV[$cardToBlock] <= 2.9) //Is it an efficient block with a card that desires to be blocked with?
-            {
-              ProcessInput($currentPlayer, 27, "", $cardToBlock, 0, "");
-              CacheCombatResult();
-            }
-          }
-          else PassInput();
+          BlockCardAttempt($checking);
         }
-        else PassInput();
+        else
+        {
+          PassInput();
+        }
       }
       else if($turn[0] == "M" && $mainPlayer == $currentPlayer)//AIs turn
       {
-        $priorityValues = GeneratePriorityValues($hand, $character, $arsenal, 1); //returns a sorted list of the potential actions
+        $priorityValues = GeneratePriorityValues($hand, $character, $arsenal, "Action"); //returns a sorted list of the potential actions and where they're from, sorted by priority
+        //LogPriorityArray($priorityValues);
         $found = false;
         do {
           $checking = $priorityValues[count($priorityValues)-1];
-          array_pop($priorityValues);
+          array_pop($priorityValues); //grabs the last item in the array (highest priority), and removes it from the array
           //WriteLog("CardID=" . $checking[0] . ", Where=" . $checking[1] . ", Index=" . $checking[2] . ", Priority=" . $checking[3]);
           if(CardIsPlayable($checking, $hand, $resources)) $found = true;
         } while (count($priorityValues) > 0 && !$found);
@@ -191,6 +188,14 @@ function EncounterAI()
 function IsEncounterAI($enemyHero)
 {
   return str_contains($enemyHero, "ROGUE");
+}
+
+function LogPriorityArray($priorityArray)
+{
+  for($i = 0; $i < count($priorityArray); ++$i)
+  {
+    WriteLog("[" . $priorityArray[$i][0] . "," . $priorityArray[$i][1] . "," . $priorityArray[$i][2] . "," . $priorityArray[$i][3] . "]");
+  }
 }
 
 function IsCardPlayable($hand, $APV, $playIndex)
@@ -882,6 +887,7 @@ function PitchPriority($cardId, $heroId)
         case "MON285": return 1.5;
         case "MON286": return 2.5;
         case "UPR092": return 0.5;
+        case "ARC045": return 0.5;
         default: return 0;
       }
     case "ROGUE004":

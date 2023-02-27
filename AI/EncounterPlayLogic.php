@@ -1,7 +1,22 @@
 <?php
 
+function CardIsBlockable($checking)
+{
+  global $combatChain, $combatChainState, $CCS_NumChainLinks;
+  switch($combatChain[0])
+  {
+    case "CRU054": return !(ComboActive() == 1 && CardCost($checking[0]) < $combatChainState[$CCS_NumChainLinks]);
+    case "CRU056": return false; //I have no idea how to make Heron's Flight work, so I'm just gonna say it's unblockable. This is so edge case that no one will know for a while lmfaooooo
+    case "CRU057":
+    case "CRU058":
+    case "CRU059": return !(ComboActive() == 1 && AttackValue($checking[0]) > $combatChainState[$CCS_NumChainLinks]);
+    default: return true;
+  }
+}
+
 function CardIsPlayable($checking, $hand, $resources)
 {
+  if(CardIsPrevented($checking[0])) return false;
   switch($checking[1])
   {
     case "Hand":
@@ -9,15 +24,17 @@ function CardIsPlayable($checking, $hand, $resources)
       $baseCost = CardCost($checking[0]);
       break;
     case "Arsenal":
+      if(ArsenalIsFrozen($checking)) return false;
       $index = -1;
       $baseCost = CardCost($checking[0]);
       break;
     case "Character":
+      if(CharacterIsUsed($checking)) return false;
       $index = -1;
       $baseCost = AbilityCost($checking[0]);
       break;
     default:
-      WriteLog("checking an uncheckable card for playability");
+      WriteLog("ERROR: AI is checking an uncheckable card for playability. Please submit a bug report.");
       return false;
   }
   $finalCost = $baseCost + RogSelfCostMod($checking[0]) + RogCharacterCostMod($checking[0]) + RogAuraCostMod($checking[0]) + RogEffectCostMod($checking[0]);
@@ -182,6 +199,56 @@ function RogEffectCostMod($cardID)
   return $costModifier;
 }
 
+function CardIsPrevented($cardID)
+{
+  global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID, $turn;
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    if ($currentTurnEffects[$i + 1] == $currentPlayer) {
+      switch ($currentTurnEffects[$i]) {
+        case "CRU032":
+        case "CRU033":
+        case "CRU034": return AttackValue($cardID) <= 3 && $turn[0] = "M";
+        case "ELE035": return CardCost($cardID) == 0 && ($turn[0] = "M" || $turn[0] = "P");
+        default:
+          break;
+      }
+    }
+  }
+}
+
+function CharacterIsUsed($checking)
+{
+  global $currentPlayer;
+  $character = &GetPlayerCharacter($currentPlayer);
+  if($character[$checking[2]+5] < 1 || $character[$checking[2]+1] != 2) return true;
+  else return false;
+}
+
+function ArsenalIsFrozen($checking)
+{
+  global $currentPlayer;
+  $arsenal = &GetArsenal($currentPlayer);
+  if($arsenal[$checking[2]+4] == 1) return true;
+  else return false;
+}
+
+function BlockCardAttempt($attempt)
+{
+  global $currentPlayer;
+  switch($attempt[1])
+  {
+    case "Hand":
+      ProcessInput($currentPlayer, 27, "", $attempt[2], 0, "");
+      CacheCombatResult();
+      break;
+    case "Character":
+      ProcessInput($currentPlayer, 3, "", $attempt[2], 0, "");
+      CacheCombatResult();
+      break;
+    default: WriteLog("ERROR: AI attempting to block with an unblockable card. Please log a bug report."); break;
+  }
+}
+
 function PlayCardAttempt($attempt)
 {
   global $currentPlayer;
@@ -199,6 +266,7 @@ function PlayCardAttempt($attempt)
       ProcessInput($currentPlayer, 3, "", $attempt[2], 0, "");
       CacheCombatResult();
       break;
+    default: WriteLog("ERROR: AI attempting to play an unplayable card. Please log a bug report."); break;
   }
 }
 ?>
