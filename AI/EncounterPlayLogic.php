@@ -1,48 +1,78 @@
 <?php
 
-function CardIsBlockable($checking)
+//Every single function with the exception of the PlayCardAttempt() functions at the bottom of this file are entirely used to make sure the card/ability the AI wants to play is actually legal before it attempts anything.
+//This might be a bit to dig through, but you don't really need to understand any of this to create priority arrays.
+//If you do have questions though, just ping me, @Etasus, and I can help you out.
+
+function CardIsBlockable($storedPriorityNode)
 {
   global $combatChain, $combatChainState, $CCS_NumChainLinks;
   switch($combatChain[0])
   {
-    case "CRU054": return !(ComboActive() == 1 && CardCost($checking[0]) < $combatChainState[$CCS_NumChainLinks]);
+    case "CRU054": return !(ComboActive() && CardCost($storedPriorityNode[0]) < $combatChainState[$CCS_NumChainLinks]);
     case "CRU056": return false; //I have no idea how to make Heron's Flight work, so I'm just gonna say it's unblockable. This is so edge case that no one will know for a while lmfaooooo
     case "CRU057":
     case "CRU058":
-    case "CRU059": return !(ComboActive() == 1 && AttackValue($checking[0]) > $combatChainState[$CCS_NumChainLinks]);
+    case "CRU059": return !(ComboActive() && AttackValue($storedPriorityNode[0]) > $combatChainState[$CCS_NumChainLinks]);
     default: return true;
   }
 }
 
-function CardIsPlayable($checking, $hand, $resources)
+function CardIsPlayable($storedPriorityNode, $hand, $resources)
 {
-  if(CardIsPrevented($checking[0])) return false;
-  switch($checking[1])
+  if(CardIsPrevented($storedPriorityNode[0])) return false;
+  switch($storedPriorityNode[1])
   {
     case "Hand":
-      $index = $checking[2];
-      $baseCost = CardCost($checking[0]);
+      $index = $storedPriorityNode[2];
+      $baseCost = CardCost($storedPriorityNode[0]);
       break;
     case "Arsenal":
-      if(ArsenalIsFrozen($checking)) return false;
+      if(ArsenalIsFrozen($storedPriorityNode)) return false;
       $index = -1;
-      $baseCost = CardCost($checking[0]);
+      $baseCost = CardCost($storedPriorityNode[0]);
       break;
     case "Character":
-      if(CharacterIsUsed($checking)) return false;
+      if(CharacterIsUsed($storedPriorityNode)) return false;
       $index = -1;
-      $baseCost = AbilityCost($checking[0]);
+      $baseCost = AbilityCost($storedPriorityNode[0]);
       break;
     default:
-      WriteLog("ERROR: AI is checking an uncheckable card for playability. Please submit a bug report.");
+      WriteLog("ERROR: AI is storedPriorityNode an uncheckable card for playability. Please log a bug report.");
       return false;
   }
-  $finalCost = $baseCost + RogSelfCostMod($checking[0]) + RogCharacterCostMod($checking[0]) + RogAuraCostMod($checking[0]) + RogEffectCostMod($checking[0]);
+  $finalCost = $baseCost + RogSelfCostMod($storedPriorityNode[0]) + RogCharacterCostMod($storedPriorityNode[0]) + RogAuraCostMod($storedPriorityNode[0]) + RogEffectCostMod($storedPriorityNode[0]);
+  $totalPitch = $resources[0];
   for($i = 0; $i < count($hand); ++$i)
   {
     if($i != $index) $totalPitch = $totalPitch + PitchValue($hand[$i]);
   }
   return $finalCost <= $totalPitch;
+}
+
+function ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)
+{
+  return CardIsPlayable($storedPriorityNode, $hand, $resources) && ReactionRequirementsMet($storedPriorityNode);
+}
+
+function CardIsPitchable($storedPriorityNode)
+{
+  global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID, $turn;
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    if ($currentTurnEffects[$i + 1] == $currentPlayer) {
+      switch ($currentTurnEffects[$i]) {
+        case "ELE035": return CardCost($storedPriorityNode[0]) != 0;
+        default:
+          break;
+      }
+    }
+  }
+  return true;
+}
+
+function CardIsArsenalable($storedPriorityNode)
+{
+  return true; //currently there are no cards in the game that prevent something from being arsenaled. When there is, this is an easy entry point to set it up.
 }
 
 function RogSelfCostMod($cardID)
@@ -127,7 +157,7 @@ function RogAuraCostMod($cardID)
 function RogEffectCostMod($cardID)
 {
   global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID;
-  $from = "-"; //I currently don'e want to figure out how "from" works, so I'm just gonna do this and hope for the best. If something breaks, we'll fix it.
+  $from = "-"; //I currently don't want to figure out how "from" works, so I'm just gonna do this and hope for the best. If something breaks, we'll fix it.
   $costModifier = 0;
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
@@ -207,66 +237,135 @@ function CardIsPrevented($cardID)
       switch ($currentTurnEffects[$i]) {
         case "CRU032":
         case "CRU033":
-        case "CRU034": return AttackValue($cardID) <= 3 && $turn[0] = "M";
-        case "ELE035": return CardCost($cardID) == 0 && ($turn[0] = "M" || $turn[0] = "P");
+        case "CRU034": return AttackValue($cardID) <= 3;
+        case "ELE035": return CardCost($cardID) == 0;
         default:
           break;
       }
     }
   }
+  return false;
 }
 
-function CharacterIsUsed($checking)
+function CharacterIsUsed($storedPriorityNode)
 {
   global $currentPlayer;
   $character = &GetPlayerCharacter($currentPlayer);
-  if($character[$checking[2]+5] < 1 || $character[$checking[2]+1] != 2) return true;
+  if($character[$storedPriorityNode[2]+5] < 1 || $character[$storedPriorityNode[2]+1] != 2) return true;
   else return false;
 }
 
-function ArsenalIsFrozen($checking)
+function ArsenalIsFrozen($storedPriorityNode)
 {
   global $currentPlayer;
   $arsenal = &GetArsenal($currentPlayer);
-  if($arsenal[$checking[2]+4] == 1) return true;
+  if($arsenal[$storedPriorityNode[2]+4] == 1) return true;
   else return false;
 }
 
-function BlockCardAttempt($attempt)
+function ReactionRequirementsMet($storedPriorityNode)
+{
+  global $combatChain, $combatChainState, $CCS_NumChainLinks, $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_AtksWWeapon;
+  switch($storedPriorityNode[0])
+  {
+    case "WTR080": return HasCombo($combatChain[0]);
+    case "WTR082": return CardType($combatChain[0]) == "AA" && ClassContains($combatChain[0], "NINJA", $mainPlayer);
+    case "WTR118":
+    case "WTR120":
+    case "WTR121":
+    case "WTR123": case "WTR124": case "WTR125":
+    case "WTR132": case "WTR133": case "WTR134":
+    case "WTR135": case "WTR136": case "WTR137":
+    case "WTR138": case "WTR139": case "WTR140": return CardType($combatChain[0]) == "W";
+    case "WTR154": return CardType($combatChain[0]) == "AA" && CardCost($CombatChain[0]) <= 1;
+    case "WTR206": case "WTR207": case "WTR208": return CardSubtype($combatChain[0]) == "Club" || CardSubtype($combatChain[0]) == "Hammer" || (CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) >= 2);
+    case "WTR209": case "WTR210": case "WTR211": return CardSubtype($combatChain[0]) == "Sword" || CardSubtype($combatChain[0]) == "Dagger" || (CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) <= 1);
+    case "CRU082": return CardSubtype($combatChain[0]) == "Sword";
+    case "CRU083":
+    case "CRU088": case "CRU089": case "CRU090": return CardType($combatChain[0]) == "W";
+    case "CRU186": return CardType($combatChain[0]) == "AA";
+    case "MON057": case "MON058": case "MON059": return true;
+    case "ELE225": return CardType($combatChain[0]) == "AA" && GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0;
+    case "EVR054": return CardType($combatChain[0]) == "W" && !Is1H($combatChain[0]);
+    case "EVR060": case "EVR061": case "EVR062": return CardType($combatChain[0]) == "W" && Is1H($combatChain[0]);
+    case "EVR063": case "EVR064": case "EVR065": return GetClassState($currentPlayer, $CS_AtksWWeapon) >= 1;
+    case "DVR013":
+    case "DVR014":
+    case "DVR023": return CardSubtype($combatChain[0]) == "Sword";
+    case "UPR050": return CardType($combatChain[0]) == "AA" && (ClassContains($combatChain[0], "NINJA", $mainPlayer) || TalentContains($combatChain[0], "DRACONIC", $mainPlayer));
+    case "UPR087": return CardType($combatChain[0]) == "AA";
+    case "UPR159": return CardType($combatChain[0]) == "AA" && AttackValue($combatChain[0]) <= 2;
+    case "UPR162": case "UPR163": case "UPR164": return CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) == 0;
+    case "DYN079": case "DYN080": case "DYN081": return CardSubtype($combatChain[0]) == "Sword" || CardSubtype($combatChain[0]) == "Dagger";
+    case "DYN117": case "DYN118": return ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) && CardType($combatChain[0]) == "AA";
+    case "DYN148": case "DYN149": case "DYN150": return ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) && CardType($combatChain[0]) == "AA" && ContractType($combatChain[0]) != "";
+    default: return false;
+  }
+}
+
+
+//This is just a way for me to seperate the actual act of playing a card from the main AI function block. They basically just check where the card is being played from, and then make the relevant inputs.
+function BlockCardAttempt($storedPriorityNode)
 {
   global $currentPlayer;
-  switch($attempt[1])
+  switch($storedPriorityNode[1])
   {
     case "Hand":
-      ProcessInput($currentPlayer, 27, "", $attempt[2], 0, "");
+      ProcessInput($currentPlayer, 27, "", $storedPriorityNode[2], 0, "");
       CacheCombatResult();
       break;
     case "Character":
-      ProcessInput($currentPlayer, 3, "", $attempt[2], 0, "");
+      ProcessInput($currentPlayer, 3, "", $storedPriorityNode[2], 0, "");
       CacheCombatResult();
       break;
     default: WriteLog("ERROR: AI attempting to block with an unblockable card. Please log a bug report."); break;
   }
 }
 
-function PlayCardAttempt($attempt)
+function PlayCardAttempt($storedPriorityNode)
 {
   global $currentPlayer;
-  switch($attempt[1])
+  switch($storedPriorityNode[1])
   {
     case "Hand":
-      ProcessInput($currentPlayer, 27, "", $attempt[2], 0, "");
+      ProcessInput($currentPlayer, 27, "", $storedPriorityNode[2], 0, "");
       CacheCombatResult();
       break;
     case "Arsenal":
-      ProcessInput($currentPlayer, 5, "", $attempt[2], 0, "");
+      ProcessInput($currentPlayer, 5, "", $storedPriorityNode[2], 0, "");
       CacheCombatResult();
       break;
     case "Character":
-      ProcessInput($currentPlayer, 3, "", $attempt[2], 0, "");
+      ProcessInput($currentPlayer, 3, "", $storedPriorityNode[2], 0, "");
       CacheCombatResult();
       break;
     default: WriteLog("ERROR: AI attempting to play an unplayable card. Please log a bug report."); break;
+  }
+}
+
+function PitchCardAttempt($storedPriorityNode)
+{
+  global $currentPlayer;
+  switch($storedPriorityNode[1])
+  {
+    case "Hand":
+      ProcessInput($currentPlayer, 27, "", $storedPriorityNode[2], 0, "");
+      CacheCombatResult();
+      break;
+    default: WriteLog("ERROR: AI attempting to pitch an unpitchable card. Please log a bug report."); break;
+  }
+}
+
+function ArsenalCardAttempt($storedPriorityNode)
+{
+  global $currentPlayer;
+  switch($storedPriorityNode[1])
+  {
+    case "Hand":
+      ProcessInput($currentPlayer, 4, "", $storedPriorityNode[0], 0, "");
+      CacheCombatResult();
+      break;
+    default: WriteLog("ERROR: AI attempting to arsenal an unarsenalable card. Please log a bug report."); break;
   }
 }
 ?>

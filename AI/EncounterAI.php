@@ -18,11 +18,7 @@ function EncounterAI()
       $character = &GetPlayerCharacter($currentPlayer);
       $arsenal = &GetArsenal($currentPlayer);
       $resources = &GetResources($currentPlayer);
-      /*WriteLog("hand[0] = " . $hand[0]);
-      WriteLog("hand[1] = " . $hand[1]);
-      WriteLog("hand[2] = " . $hand[2]);
-      WriteLog("character[0] = " . $character[0]);
-      WriteLog("resources[0] = " . $resources[0]);*/
+      //LogHandArray($hand);
       if(count($decisionQueue) > 0)
       {
         if($isBowActive)//was the last action a bow action?
@@ -35,7 +31,7 @@ function EncounterAI()
           {
             if(CardSubtype($hand[0]) == "Arrow")
             {
-              if(FromArsenalActionPriority($hand[$largestIndex], $character[0]) <= FromArsenalActionPriority($hand[$i], $character[0]))
+              if(GetPriority($hand[$largestIndex], $character[0], 2) <= GetPriority($hand[$i], $character[0], 2))
               {
                 $largestIndex = $i;
                 $optionIndex = $index;
@@ -54,18 +50,21 @@ function EncounterAI()
       }
       else if($turn[0] == "B")//The player is attacking the AI
       {
-        $priorityValues = GeneratePriorityValues($hand, $character, $arsenal, "Block");
-        LogPriorityArray($priorityValues);
-        do {
-          $checking = $priorityValues[count($priorityValues)-1];
-          array_pop($priorityValues); //grabs the last item in the array (highest priority), and removes it from the array
-          //WriteLog("CardID=" . $checking[0] . ", Where=" . $checking[1] . ", Index=" . $checking[2] . ", Priority=" . $checking[3]);
-          if(CardIsBlockable($checking)) $found = true;
-        } while (count($priorityValues) > 0 && !$found);
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, "Block"); //Generate the priority values array. Found in EncounterPriorityLogic.php
+        //LogPriorityArray($priortyArray);
+        $found = false;
+        while (count($priortyArray) > 0 && !$found) { //Grabs items from the array until it finds one it can play.
+          $storedPriorityNode = $priortyArray[count($priortyArray)-1];
+          array_pop($priortyArray); //grabs the last item in the array (highest priority), and removes it from the array, storing it in $storedPriorityNode
+          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
+          if(CardIsBlockable($storedPriorityNode)) $found = true; //If the card can be played/blocked with/activated. Found in EncounterPlayLogic.php
+        }
         $health = &GetHealth($currentPlayer);
-        if($found == true && ((CachedTotalAttack() - CachedTotalBlock() >= $health && $checking[3] != 0) || (CachedTotalAttack() - CachedTotalBlock() >= BlockValue($checking[0]) && 2.1 <= $checking[3] && $checking[3] <= 2.9)))
+        //If something was found, that thing is able to block (not prio 0), and either the attack is lethal or the AI wants to block with it efficiently, it attempts to block. Otherwise it passes.
+        if($found == true && $storedPriorityNode[3] != 0 &&
+((CachedTotalAttack() - CachedTotalBlock() >= $health && $storedPriorityNode[3] != 0) || (CachedTotalAttack() - CachedTotalBlock() >= BlockValue($storedPriorityNode[0]) && 2.1 <= $storedPriorityNode[3] && $storedPriorityNode[3] <= 2.9)))
         {
-          BlockCardAttempt($checking);
+          BlockCardAttempt($storedPriorityNode); //attempts to play the card. Found in EncounterPlayLogic.php;
         }
         else
         {
@@ -74,19 +73,19 @@ function EncounterAI()
       }
       else if($turn[0] == "M" && $mainPlayer == $currentPlayer)//AIs turn
       {
-        $priorityValues = GeneratePriorityValues($hand, $character, $arsenal, "Action"); //returns a sorted list of the potential actions and where they're from, sorted by priority
-        //LogPriorityArray($priorityValues);
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, "Action");
+        //LogPriorityArray($priortyArray);
         $found = false;
-        do {
-          $checking = $priorityValues[count($priorityValues)-1];
-          array_pop($priorityValues); //grabs the last item in the array (highest priority), and removes it from the array
-          //WriteLog("CardID=" . $checking[0] . ", Where=" . $checking[1] . ", Index=" . $checking[2] . ", Priority=" . $checking[3]);
-          if(CardIsPlayable($checking, $hand, $resources)) $found = true;
-        } while (count($priorityValues) > 0 && !$found);
-        if($found == true)
+        while (count($priortyArray) > 0 && !$found) {
+          $storedPriorityNode = $priortyArray[count($priortyArray)-1];
+          array_pop($priortyArray);
+          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
+          if(CardIsPlayable($storedPriorityNode, $hand, $resources)) $found = true;
+        }
+        if($found == true && $storedPriorityNode[3] != 0)
         {
-          if(CardSubtype($checking[0]) == "Bow" ) $isBowActive = true;
-          PlayCardAttempt($checking);
+          if(CardSubtype($storedPriorityNode[0]) == "Bow" ) $isBowActive = true;
+          PlayCardAttempt($storedPriorityNode);
         }
         else
         {
@@ -95,54 +94,43 @@ function EncounterAI()
       }
       else if($turn[0] == "A" && $mainPlayer == $currentPlayer)//attack reaction phase
       {
-        $arsePV = FromArsenalReactionPriority($arsenal[0], $character[0]);
-        if(count($hand) > 0) //if there is a card in hand
-        {
-          $RPV = generateRPV($hand, $character);
-          $alreadyChecked = 10.0;
-          for($i = 0; $i < count($hand)+1; ++$i) //for each card in hand and in the arsenal, check them
-          {
-            $cardIndex = GetNextReaction($RPV, $alreadyChecked);
-            if($arsePV >= $RPV[$cardIndex]) //if the arsenal has a higher priority
-            {
-              if(IsArsenalPlayable($hand, $arsenal, $arsePV)) //and it's playable
-              {
-                ProcessInput($currentPlayer, 5, "", 0, 0, "");
-                CacheCombatResult();
-              }
-            }
-            else //if the next card in hand has a higher priority
-            {
-              if(IsCardPlayable($hand, $RPV, $cardIndex)) //Is there enough pitch in hand to play the card?
-              {
-                ProcessInput($currentPlayer, 27, "", $cardIndex, 0, "");
-                CacheCombatResult();
-              }
-              else $alreadyChecked = $APV[$cardIndex];
-            }
-          }
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, "Reaction");
+        //LogPriorityArray($priortyArray);
+        $found = false;
+        while (count($priortyArray) > 0 && !$found) {
+          $storedPriorityNode = $priortyArray[count($priortyArray)-1];
+          array_pop($priortyArray);
+          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
+          if(ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)) $found = true;
         }
-        if(IsArsenalPlayable($hand, $arsenal, $arsePV)) //if there's no hand, it'll play the arsenal instead, if it can
+        if($found == true && $storedPriorityNode[3] != 0)
         {
-          ProcessInput($currentPlayer, 5, "", 0, 0, "");
-          CacheCombatResult();
+          PlayCardAttempt($storedPriorityNode);
         }
-        PassInput();
+        else
+        {
+          PassInput();
+        }
       }
       else if($turn[0] == "P" && $mainPlayer == $currentPlayer)//pitch phase
       {
-        if(count($hand) > 0) //if there are cards in hand
-        {
-          $PPV = GeneratePPV($hand, $character);
-          $cardToPitch = GetNextPitch($PPV);
-          if($PPV[$cardToPitch] != 0) //choose the biggest pitch priority and pitch it if able
-          {
-            ProcessInput($currentPlayer, 27, "", $cardToPitch, 0, "");
-            CacheCombatResult();
-          }
-          else PassInput();
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, "Pitch");
+        //LogPriorityArray($priortyArray);
+        $found = false;
+        while (count($priortyArray) > 0 && !$found) {
+          $storedPriorityNode = $priortyArray[count($priortyArray)-1];
+          array_pop($priortyArray);
+          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
+          if(CardIsPitchable($storedPriorityNode)) $found = true;
         }
-        else PassInput();
+        if($found == true && $storedPriorityNode[3] != 0)
+        {
+          PitchCardAttempt($storedPriorityNode);
+        }
+        else
+        {
+          PassInput();
+        }
       }
       else if($turn[0] == "PDECK" && $mainPlayer == $currentPlayer)//choosing which card to bottom from pitch
       {
@@ -152,19 +140,22 @@ function EncounterAI()
       }
       else if($turn[0] == "ARS" && $mainPlayer = $currentPlayer)//choose a card to arsenal
       {
-        if(count($hand) > 0)
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, "ToArsenal");
+        //LogPriorityArray($priortyArray);
+        $found = false;
+        while (count($priortyArray) > 0 && !$found) {
+          $storedPriorityNode = $priortyArray[count($priortyArray)-1];
+          array_pop($priortyArray);
+          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
+          if(CardIsArsenalable($storedPriorityNode)) $found = true;
+        }
+        if($found == true && $storedPriorityNode[3] != 0)
         {
-          $index = 0;
-          for($i = 0; $i < count($hand); ++$i)
-          {
-            if(ToArsenalPriority($hand[$index], $character[0]) <= ToArsenalPriority($hand[$i], $character[0])) { $index = $i; }
-          }
-          if(ToArsenalPriority($hand[$index], $character[0]) != 0)
-          {
-            ProcessInput($currentPlayer, 4, "", $hand[$index], 0, "");
-            CacheCombatResult();
-          }
-          else PassInput();
+          ArsenalCardAttempt($storedPriorityNode);
+        }
+        else
+        {
+          PassInput();
         }
       }
       else
@@ -198,6 +189,17 @@ function LogPriorityArray($priorityArray)
   }
 }
 
+function LogHandArray($hand)
+{
+  $rv = "Hand=[";
+  for($i = 0; $i < count($hand); ++$i)
+  {
+    if($i != 0) $rv.=",";
+    $rv.=$hand[$i];
+  }
+  WriteLog($rv . "]");
+}
+/*
 function IsCardPlayable($hand, $APV, $playIndex)
 {
   global $currentPlayer;
@@ -414,7 +416,7 @@ Block Priority works out as following:
 10.1-10.9 -> One of these won't be blocked with per hand. The rest will be blocked with.
 11.1-11.9 -> One of these won't be blocked with per hand. The rest will be blocked with.
 */
-
+/*
 function BlockPriority($cardId, $heroId)
 {
   switch($heroId)
@@ -571,7 +573,7 @@ Action Priority works out as following:
 0.1 -> 1.9 Will be played. Higher cards played first
 10.1 -> 10.9 One of these will not be played. The remainder will attempt to be played. This allows for fusion and guarenteed arsenal
 */
-
+/*
 function ActionPriority($cardId, $heroId)
 {
   switch($heroId)
@@ -737,7 +739,7 @@ function ActionPriority($cardId, $heroId)
               {
                 if($grave[$i] == "CRU181") ++$spentTomes;
               }
-              if($spentTomes >= 3 || $totalTomes >= 3) return 1.9;*/
+              if($spentTomes >= 3 || $totalTomes >= 3) return 1.9;*//*
               if($totalTomes >= 3) return 1.9;
               else return 0;
             case "EVR041": return 1.7;
@@ -797,7 +799,7 @@ Reaction Priority works out as following:
 2.1 -> 2.9 Will play to an attack action chain link (do not put an AR in this number if it can't be played to at least one attack in the deck (ie: don't put razor here if it there is even a single 2+ cost attack))
 10.1 -> 10.9 Will play to either a weapon or an attack chain link (If there is a single card in the deck that can't be targeted, don't include the AR in this section) (It will prioritize more restrictive ARs if possible)
 */
-
+/*
 function ReactionPriority($cardId, $heroId)
 {
   switch($heroId)
@@ -875,7 +877,7 @@ Pitch Priority works out as following:
 2.1 -> 2.9 Blue cards, will pitch first
 NOTE: there is no mechanical differences between 0.x, 1.x, and 2.x. It is entirely seperated for organizational reasons
 */
-
+/*
 function PitchPriority($cardId, $heroId)
 {
   switch($heroId)
@@ -1009,7 +1011,7 @@ To Arsenal Priority works out as following:
 0 -> Will never arsenal this card (stops things like resources from being put in Arsenal)
 0.1 -> 1.9 Will arsenal this card. Higher values take precedent
 */
-
+/*
 function ToArsenalPriority($cardId, $heroId)
 {
   switch($heroId)
@@ -1147,7 +1149,7 @@ From Arsenal Action Priority works out as following:
 0 -> Will not or cannot play this card from the arsenal (reactions get 0, wrong phase to play them)
 0.1 -> 1.9 Will play this card from arsenal during the main phase (It will prioritize cards from arsenal with the same priority value as cards from hand or equipment)
 */
-
+/*
 function FromArsenalActionPriority($cardId, $heroId)
 {
   switch($heroId)
@@ -1280,7 +1282,7 @@ function FromArsenalActionPriority($cardId, $heroId)
                 {
                   if($grave[$i] == "CRU181") ++$spentTomes;
                 }
-                if($spentTomes >= 3 || $totalTomes >= 3) return 1.9;*/
+                if($spentTomes >= 3 || $totalTomes >= 3) return 1.9;*//*
                 if($totalTomes >= 3) return 1.9;
                 else return 0;
               case "EVR041": return 1.7;
@@ -1314,7 +1316,7 @@ From Arsenal Reaction Priority works out as following: (It's exactly the same as
 2.1 -> 2.9 Will play to an attack action chain link (do not put an AR in this number if it can't be played to at least one attack in the deck (ie: don't put razor here if it there is even a single 2+ cost attack))
 10.1 -> 10.9 Will play to either a weapon or an attack chain link (If there is a single card in the deck that can't be targeted, don't include the AR in this section) (It will prioritize more restrictive ARs if possible)
 */
-
+/*
 function FromArsenalReactionPriority($cardId, $heroId)
 {
   switch($heroId)
@@ -1382,5 +1384,5 @@ function FromArsenalReactionPriority($cardId, $heroId)
       //case "ROGUE020": return 0;
     default: return 0;
   }
-}
+}*/
 ?>

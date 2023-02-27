@@ -1,25 +1,34 @@
 <?php
 
-function GeneratePriorityValues($hand, $character, $arsenal, $type) //TODO: add items, auras, allies, banish, and permanents //TODO: Make this function able to be called for all sources, blocking, actions, pitching, etc.
+//$storedPriorityNode values:
+//[0] -> CardID
+//[1] -> Where it's being played from (Hand, Arsenal, and Character(weapons, equipment, hero) implemented)
+//[2] -> Index of the location it's being played from
+//[3] -> Priority Value
+
+//This function is super complicated, let me run you through it.
+function GeneratePriorityValues($hand, $character, $arsenal, $type) //TODO: add items, auras, allies, banish, and permanents
 {
-  $priorityArray = [];
+  $priorityArray = []; //Creates an empty array to push things into, then checks what type of priority array is being created.
   switch($type)
   {
-    case "Block": return SortPriorityArray(ResolvePriorityArray(ResolvePriorityArray(PushArray(PushArray($priorityArray, "Hand", $hand, $character, 0), "Character", $character, $character, 0), 10, 0, 2), 11, 0, 2));
-    case "Action": return SortPriorityArray(ResolvePriorityArray(PushArray(PushArray(PushArray($priorityArray, "Hand", $hand, $character, 1), "Character", $character, $character, 1), "Arsenal", $arsenal, $character, 2), 10, "Unplayed", 0));
-    case "Pitch":
+    case "Block": return SortPriorityArray(ResolvePriorityArray(ResolvePriorityArray(PushArray(PushArray($priorityArray, "Hand", $hand, $character, 0), "Character", $character, $character, 0), 10, 0, 2), 11, 0, 2)); //The block case pushes in Hand values, then pushes in Equipment values, then resolves 10 values, then resolves 11 values, and finally sorts the array
+    case "Action": return SortPriorityArray(ResolvePriorityArray(PushArray(PushArray(PushArray($priorityArray, "Hand", $hand, $character, 1), "Character", $character, $character, 1), "Arsenal", $arsenal, $character, 2), 10, "Unplayed", 0)); //The action case pushes in Hand values, then Character values, then Arsenal values, then resolves 10 values, and finally sorts the array
+    case "Pitch": return SortPriorityArray(PushArray($priorityArray, "Hand", $hand, $character, 5)); //The pitch case pushes in Hand values and sorts the array
+    case "ToArsenal": return SortPriorityArray(PushArray($priorityArray, "Hand", $hand, $character, 6)); //The toarsenal case pushes in Hand values and sorts the array
+    case "Reaction": return SortPriorityArray(ResolvePriorityArray(PushArray(PushArray(PushArray($priorityArray, "Hand", $hand, $character, 3), "Character", $character, $character, 3), "Arsenal", $arsenal, $character, 4), 10, "Unplayed", 0)); //the reaction case pushes in Hand Values, then Character values, then Arsenal values, then resolves 10 values, and finally sorts the array
     default: WriteLog("ERROR: Priority Value type case not implemented in AI. Please submit a bug report."); return $priorityArray;
   }
 }
 
-function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
+function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex) //this function takes the following arguments: The array that it's pushing into, the name of the zone it's grabbing values from, the array of that zone, the character array, and an index it's using to grab values (SEE: EncounterPriorityValues.php)
 {
   switch($zone)
   {
     case "Hand":
-      for($i = 0; $i < count($zoneArr); ++$i)
+      for($i = 0; $i < count($zoneArr); ++$i) //for each item in the respective source location, it pushes in a storedPriorityNode array. See the top of this function for the definition of each index. The priority is stolen from EncounterPriorityValues.php, see that file for more details
       {
-        array_push($priorityArray, array($zoneArr[$i], "Hand", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex))); //array's pushed into this array are as follows: [CardID, Where, Index in location, Priority Value]
+        array_push($priorityArray, array($zoneArr[$i], "Hand", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)));
       }
       return $priorityArray;
     case "Arsenal":
@@ -38,7 +47,7 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
   }
 }
 
-function SortPriorityArray($priorityArray)
+function SortPriorityArray($priorityArray) //this is just a bubblesort method to sort the array. It is sorted such that the first item in the array is the smallest and the last item is the largest
 {
   do {
 		$swapped = false;
@@ -54,7 +63,7 @@ function SortPriorityArray($priorityArray)
 return $priorityArray;
 }
 
-function ResolvePriorityArray($priorityArray, $range, $destinationPrime, $destinationSecondary, $amount = 1) //this is going to resolve the various 10, 11, 12, and beyond values TODO: Implement this function
+function ResolvePriorityArray($priorityArray, $range, $destinationPrime, $destinationSecondary, $amount = 1) //This resolves a portion of the array for use. It takes a number of items in the array within range.1-range.9 equal to the amount passed in, and resolves it to destinationPrime.X; it then resolves any additional values of the range to destinationSecondary.X
 {
   for($i = 0; $i < $amount; $i++)
   {
