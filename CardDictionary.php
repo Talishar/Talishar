@@ -471,6 +471,7 @@ function BlockValue($cardID)
     case "MON400": case "MON401": case "MON402": return 0;
     case "DYN492a": return -1;
     case "DYN492b": return 5;
+    case "DUMMYDISHONORED": return -1;
     default:
       return 3;
   }
