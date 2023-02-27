@@ -26,7 +26,12 @@ if (!is_numeric($playerID)) {
   exit;
 }
 
-$authKey = TryGet("authKey", "");
+$authKey = "";
+if (($playerID == 1 || $playerID == 2) && isset($_COOKIE["lastAuthKey"])) {
+  $authKey = $_COOKIE["lastAuthKey"];
+}
+if($authKey == "") $authKey = TryGet("authKey", "");
+
 $lastUpdate = intval(TryGet("lastUpdate", 0));
 $windowWidth = intval(TryGet("windowWidth", 0));
 $windowHeight = intval(TryGet("windowHeight", 0));
