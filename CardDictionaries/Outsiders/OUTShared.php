@@ -176,14 +176,12 @@ function OUTAbilityCost($cardID)
         break;
       case "OUT051":
         $char = &GetPlayerCharacter($defPlayer);
-        $hasSurgingStrike = false; $hasBondsOfAncestry = false; $hasBondsOfAncestry = false;
-        for($i=0; $i<count($chainLinkSummary); $i+=ChainLinkSummaryPieces())
+        if(HasAttackName("Surging Strike") && HasAttackName("Descendent Gustwave") && HasAttackName("Bonds of Ancestry"))
         {
-
+          if($char[0] == "DUMMY") WriteLog("Combat Dummies have no honor.");
+          else if($char[0] == "DUMMYDISHONORED") WriteLog("Those who have been dishonored have nothing left to lose.");
+          else $char[0] = "DUMMYDISHONORED";
         }
-        if($char[0] == "DUMMY") WriteLog("Combat Dummies have no honor.");
-        else if($char[0] == "DUMMYDISHONORED") WriteLog("Those who have been dishonored have nothing left to lose.");
-        else $char[0] = "DUMMYDISHONORED";
         break;
       case "OUT068": case "OUT069": case "OUT070":
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give this a name", 0, 1);

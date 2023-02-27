@@ -1940,7 +1940,16 @@ function SerializeCurrentAttackNames()
   return $serializedNames;
 }
 
-function IsChainLinkName($name)
+function HasAttackName($name)
 {
   global $chainLinkSummary;
+  for($i=0; $i<count($chainLinkSummary); $i+=ChainLinkSummaryPieces())
+  {
+    $names = explode(",", $chainLinkSummary[$i+4]);
+    for($j=0; $j<count($names); ++$j)
+    {
+      if($name == GamestateUnsanitize($names[$j])) return true;
+    }
+  }
+  return false;
 }
