@@ -332,7 +332,7 @@ function BorderColorMap($code)
   }
 }
 
-function CreateButton($playerID, $caption, $mode, $input, $size = "", $image = "", $tooltip = "", $fullRefresh = false, $fullReload = false, $prompt = "")
+function CreateButton($playerID, $caption, $mode, $input, $size = "", $image = "", $tooltip = "", $fullRefresh = false, $fullReload = false, $prompt = "", $useInput=false)
 {
   global $gameName, $authKey;
 
@@ -348,8 +348,10 @@ function CreateButton($playerID, $caption, $mode, $input, $size = "", $image = "
 
   if ($image != "")
     $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick='" . $onClick . "'>";
+  else if($useInput)
+    $rv = "<input type='button' value='$caption' title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick='" . $onClick . "'></input>";
   else
-    $rv = "<button class='button' title='$tooltip' " . ($size != "" ? "style='font-size:$size; width:' " : "") . " onclick='" . $onClick . "'>" . $caption . "</button>";
+    $rv = "<button class='button' title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick='" . $onClick . "'>" . $caption . "</button>";
 
   return $rv;
 }
