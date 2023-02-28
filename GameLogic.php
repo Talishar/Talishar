@@ -2108,6 +2108,10 @@ function CharacterStartTurnAbility($index)
     case "ROGUE018":
       PlayAura("ELE109", $mainPlayer);
       break;
+    case "ROGUE010":
+      PlayAura("ARC112", $mainPlayer);
+      PlayAura("ARC112", $mainPlayer);
+      break;
     default:
       break;
   }
