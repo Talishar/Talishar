@@ -236,7 +236,7 @@ function PrependLayer($cardID, $player, $parameter, $target = "-", $additionalCo
 
 function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-")
 {
-  global $layers;
+  global $layers, $dqState;
   //Layers are on a stack, so you need to push things on in reverse order
   array_unshift($layers, GetUniqueId());
   array_unshift($layers, $uniqueID);
@@ -245,6 +245,13 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
   array_unshift($layers, $parameter);
   array_unshift($layers, $player);
   array_unshift($layers, $cardID);
+  if($cardID == "TRIGGER")
+  {
+    $orderableIndex = intval($dqState[8]);
+    if($orderableIndex == -1) $dqState[8] = 0;
+    else $dqState[8] += LayerPieces();
+  }
+  else $dqState[8] = -1;//If it's not a trigger, it's not orderable
   return count($layers);//How far it is from the end
 }
 
@@ -293,7 +300,6 @@ function ProcessDecisionQueue()
     $dqState[5] = "-"; //Decision queue multizone indices
     $dqState[6] = "0"; //Damage dealt
     $dqState[7] = "0"; //Target
-    //array_unshift($turn, "-", "-", "-");
   }
   ContinueDecisionQueue("");
 }
@@ -309,6 +315,7 @@ function CloseDecisionQueue()
   $dqState[5] = "-"; //Clear Decision queue multizone indices
   $dqState[6] = "0"; //Damage dealt
   $dqState[7] = "0"; //Target
+  $dqState[8] = "-1"; //Orderable index (what layer after which triggers can be reordered)
   $decisionQueue = [];
   if (($turn[0] == "D" || $turn[0] == "A") && count($combatChain) == 0) {
     $currentPlayer = $mainPlayer;
