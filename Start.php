@@ -105,9 +105,8 @@ ob_end_clean();
 $gameStatus = $MGS_GameStarted;
 WriteGameFile();
 
-//header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=1&authKey=$p1Key");
-//header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=$playerID");
-header("Location: http://localhost:5173/game/play/$gameName?playerID=$playerID&gameName=$gameName");
+if($roguelikeGameID == "") header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=$playerID");
+else header("Location: http://localhost:5173/game/play/$gameName?playerID=$playerID&gameName=$gameName");
 
 exit;
 
