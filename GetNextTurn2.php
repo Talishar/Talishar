@@ -418,8 +418,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   echo ("</div>"); //Combat chain div
 
-
-  //if($turn[0] == "INSTANT" && ($playerID == $turn[1] || count($layers) > 0))
   if (count($layers) > 0) {
     $content = "";
     $content .= "<div style='font-size:24px; margin-left:5px; margin-bottom:5px; margin-top:5px;'><b>Layers</b>&nbsp;<i style='font-size:16px; margin-right: 5px;'>(Priority settings can be adjusted in the menu)</i></div>";
@@ -429,9 +427,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $content .= "&nbsp;Attack Target: " . GetMZCardLink($defPlayer, $attackTarget);
       }
     }
+    if($dqState[8] != -1) $content .= "<div style='margin-left:5px;'><i style='font-size:16px;'>For more info about trigger ordering, see rule 1.10.2c of the <a href='http://fabjud.ge/cr' target='_blank'>comprehensive rulebook</a>.</i></div>";
     $content .= "<div style='margin-left:1px; margin-top:3px; margin-bottom:5px' display:inline;'>";
     $nbTiles = 0;
     for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
+      $content .= "<div style='display:inline; max-width:" . $cardSize . "px;'>";
       $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" ? $layers[$i + 2] : $layers[$i]);
       $layersColor = $layers[$i + 1] == $playerID ? 1 : 2;
       if ($playerID == 3) $layersColor = $layers[$i + 1] == $otherPlayer ? 2 : 1;
@@ -445,6 +445,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $nbTiles = 0;
         $content .= Card($layerName, "concat", $cardSize, 0, 1, 0, $layersColor, controller: $layers[$i + 1]);
       }
+      if($layers[$i] == "TRIGGER" && $dqState[8] >= $i && $playerID == $mainPlayer)
+      {
+        if($i < $dqState[8]) $content .= "<span style='position:relative; left:-110px; top:-20px; z-index:10000;'>" . CreateButton($playerID, "<", 31, $i, "18px", useInput:true) . "</span>";
+        if($i > 0) $content .= "<span style='position:relative; left:-65px; top:-20px; z-index:10000;'>" . CreateButton($playerID, ">", 32, $i, "18px", useInput:true) . "</span>";
+      }
+      $content .= "</div>";
     }
     $content .= "</div>";
     echo CreatePopup("INSTANT", [], 0, 1, "", 1, $content, "./", false, true);

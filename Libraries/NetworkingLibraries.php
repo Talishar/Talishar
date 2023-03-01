@@ -3,6 +3,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
 {
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $p1PlayerRating, $p2PlayerRating, $redirectPath, $CS_PlayedAsInstant;
+  global $dqState, $layers;
   global $roguelikeGameID;
   switch ($mode) {
     case 0: break; //Deprecated
@@ -360,6 +361,30 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardName = CardName(strtoupper($inputText));
       if($cardName != "") $inputText = $cardName;
       ContinueDecisionQueue(GamestateSanitize($inputText));
+      break;
+    case 31: //Move layer deeper
+      $index = $buttonInput;
+      if($index >= $dqState[8]) break;
+      $layer = [];
+      for($i=$index; $i<$index+LayerPieces(); ++$i) array_push($layer, $layers[$i]);
+      $counter = 0;
+      for($i=$index + LayerPieces(); $i<($index + LayerPieces()*2); ++$i)
+      {
+        $layers[$i-LayerPieces()] = $layers[$i];
+        $layers[$i] = $layer[$counter++];
+      }
+      break;
+    case 32: //Move layer up
+      $index = $buttonInput;
+      if($index == 0) break;
+      $layer = [];
+      for($i=$index; $i<$index+LayerPieces(); ++$i) array_push($layer, $layers[$i]);
+      $counter = 0;
+      for($i=$index - LayerPieces(); $i<$index; ++$i)
+      {
+        $layers[$i+LayerPieces()] = $layers[$i];
+        $layers[$i] = $layer[$counter++];
+      }
       break;
     case 99: //Pass
       if (CanPassPhase($turn[0])) {
