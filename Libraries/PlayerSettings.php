@@ -147,6 +147,7 @@ function GetCardBack($player)
     case 47: return "CBCardAdvantage";
     case 48: return "CBOnHit";
     case 49: return "CBSecondCycle";
+    case 50: return "CBRavenousBabble";
     default: return "CardBack";
   }
 }
