@@ -447,8 +447,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
       if($layers[$i] == "TRIGGER" && $dqState[8] >= $i && $playerID == $mainPlayer)
       {
-        $content .= "<span style='position:relative; left:-110px; top:-20px; z-index:10000;'>" . CreateButton($playerID, "<", 26, "-", "18px", useInput:true) . "</span>";
-        $content .= "<span style='position:relative; left:-65px; top:-20px; z-index:10000;'>" . CreateButton($playerID, ">", 99, "-", "18px", useInput:true) . "</span>";
+        if($i < $dqState[8]) $content .= "<span style='position:relative; left:-110px; top:-20px; z-index:10000;'>" . CreateButton($playerID, "<", 31, $i, "18px", useInput:true) . "</span>";
+        if($i > 0) $content .= "<span style='position:relative; left:-65px; top:-20px; z-index:10000;'>" . CreateButton($playerID, ">", 32, $i, "18px", useInput:true) . "</span>";
       }
       $content .= "</div>";
     }
