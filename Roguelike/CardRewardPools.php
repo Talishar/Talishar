@@ -618,7 +618,7 @@ function GetPool3($arrayParameters){
     array("ARC194", "Common"), //Rifting
     array("ARC195", "Common"),
     array("ARC196", "Common"),
-    array("ARC197", "Common"),//Vigor Rush
+    array("ARC197", "Common"), //Vigor Rush
     array("ARC198", "Common"),
     array("ARC199", "Common"),
     array("ARC200", "Common"), //Fate Foreseen

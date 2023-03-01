@@ -113,7 +113,7 @@ if(CardSet($p2Char[0]) == "ROG") {
 
   //Runeblade Scholar
   if ($p2Char[0] == "ROGUE010") {
-    PutPermanentIntoPlay(1, "ARC163"); //For the main player, not the scholar
+    PutItemIntoPlayForPlayer("ARC163", 1); //Rusted Relic for the main player, not the scholar
   }
 }
 
