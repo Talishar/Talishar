@@ -1498,6 +1498,12 @@ function PayAdditionalCosts($cardID, $from)
   }
   switch ($cardID) {
     case "WTR159":
+      $hand = &GetHand($currentPlayer);
+      if (count($hand) == 0) {
+        WriteLog("You do not have a card to sink. Reverting gamestate.");
+        RevertGamestate();
+        return;
+      }
       BottomDeck();
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Draw_a_Card,Buff_Power,Go_Again");
