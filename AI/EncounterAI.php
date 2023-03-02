@@ -18,6 +18,8 @@ function EncounterAI()
       $character = &GetPlayerCharacter($currentPlayer);
       $arsenal = &GetArsenal($currentPlayer);
       $resources = &GetResources($currentPlayer);
+      $items = &GetItems($currentPlayer);
+      $allies = &GetAllies($currentPlayer);
       //LogHandArray($hand);
       if(count($decisionQueue) > 0)
       {
@@ -50,7 +52,7 @@ function EncounterAI()
       }
       else if($turn[0] == "B")//The player is attacking the AI
       {
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, "Block"); //Generate the priority values array. Found in EncounterPriorityLogic.php
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Block"); //Generate the priority values array. Found in EncounterPriorityLogic.php
         //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) { //Grabs items from the array until it finds one it can play.
@@ -73,7 +75,7 @@ function EncounterAI()
       }
       else if($turn[0] == "M" && $mainPlayer == $currentPlayer)//AIs turn
       {
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, "Action");
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Action");
         //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) {
@@ -94,7 +96,7 @@ function EncounterAI()
       }
       else if($turn[0] == "A" && $mainPlayer == $currentPlayer)//attack reaction phase
       {
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, "Reaction");
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Reaction");
         //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) {
@@ -114,7 +116,7 @@ function EncounterAI()
       }
       else if($turn[0] == "P" && $mainPlayer == $currentPlayer)//pitch phase
       {
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, "Pitch");
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Pitch");
         //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) {
@@ -140,7 +142,7 @@ function EncounterAI()
       }
       else if($turn[0] == "ARS" && $mainPlayer = $currentPlayer)//choose a card to arsenal
       {
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, "ToArsenal");
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "ToArsenal");
         //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) {

@@ -37,6 +37,14 @@ function CardIsPlayable($storedPriorityNode, $hand, $resources)
       $index = -1;
       $baseCost = AbilityCost($storedPriorityNode[0]);
       break;
+    case "Item":
+      $index = -1;
+      $baseCost = AbilityCost($storedPriorityNode[0]);
+      break;
+    case "Ally":
+      $index = -1;
+      $baseCost = AbilityCost($storedPriorityNode[0]);
+      break;
     default:
       WriteLog("ERROR: AI is storedPriorityNode an uncheckable card for playability. Please log a bug report.");
       return false;
@@ -339,7 +347,15 @@ function PlayCardAttempt($storedPriorityNode)
       ProcessInput($currentPlayer, 3, "", $storedPriorityNode[2], 0, "");
       CacheCombatResult();
       break;
-    default: WriteLog("ERROR: AI attempting to play an unplayable card. Please log a bug report."); break;
+    case "Item":
+      ProcessInput($currentPlayer, 10, "", $storedPriorityNode[2], 0, "");
+      CacheCombatResult();
+      break;
+    case "Ally":
+      ProcessInput($currentPlayer, 24, "", $storedPriorityNode[2], 0, "");
+      CacheCombatResult();
+      break;
+    default: WriteLog("ERROR: AI attempting to play an unplayable card. Please log a bug report."); PassInput(); break;
   }
 }
 

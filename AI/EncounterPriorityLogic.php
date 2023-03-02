@@ -7,16 +7,35 @@
 //[3] -> Priority Value
 
 //This function is super complicated, let me run you through it.
-function GeneratePriorityValues($hand, $character, $arsenal, $type) //TODO: add items, auras, allies, banish, and permanents
+function GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $type) //TODO: add items, auras, allies, banish, and permanents
 {
   $priorityArray = []; //Creates an empty array to push things into, then checks what type of priority array is being created.
   switch($type)
   {
-    case "Block": return SortPriorityArray(ResolvePriorityArray(ResolvePriorityArray(PushArray(PushArray($priorityArray, "Hand", $hand, $character, 0), "Character", $character, $character, 0), 10, 0, 2), 11, 0, 2)); //The block case pushes in Hand values, then pushes in Equipment values, then resolves 10 values, then resolves 11 values, and finally sorts the array
-    case "Action": return SortPriorityArray(ResolvePriorityArray(PushArray(PushArray(PushArray($priorityArray, "Hand", $hand, $character, 1), "Character", $character, $character, 1), "Arsenal", $arsenal, $character, 2), 10, "Unplayed", 0)); //The action case pushes in Hand values, then Character values, then Arsenal values, then resolves 10 values, and finally sorts the array
-    case "Pitch": return SortPriorityArray(PushArray($priorityArray, "Hand", $hand, $character, 5)); //The pitch case pushes in Hand values and sorts the array
-    case "ToArsenal": return SortPriorityArray(PushArray($priorityArray, "Hand", $hand, $character, 6)); //The toarsenal case pushes in Hand values and sorts the array
-    case "Reaction": return SortPriorityArray(ResolvePriorityArray(PushArray(PushArray(PushArray($priorityArray, "Hand", $hand, $character, 3), "Character", $character, $character, 3), "Arsenal", $arsenal, $character, 4), 10, "Unplayed", 0)); //the reaction case pushes in Hand Values, then Character values, then Arsenal values, then resolves 10 values, and finally sorts the array
+    case "Block":
+      $priorityArray = PushArray(PushArray($priorityArray, "Hand", $hand, $character, 0), "Character", $character, $character, 0);
+      $priorityArray = ResolvePriorityArray(ResolvePriorityArray($priorityArray, 10, 0, 2), 11, 0, 2);
+      $priorityArray = SortPriorityArray(FirstTurnResolution($priorityArray, $character));
+      return $priorityArray; //The block case pushes in Hand values, then pushes in Equipment values, then resolves 10 values, then resolves 11 values, and finally sorts the array
+    case "Action":
+      $priorityArray = PushArray(PushArray(PushArray($priorityArray, "Hand", $hand, $character, 1), "Character", $character, $character, 1), "Arsenal", $arsenal, $character, 2);
+      $priorityArray = PushArray(PushArray($priorityArray, "Items", $items, $character, 7), "Allies", $allies, $character, 7);
+      $priorityArray = ResolvePriorityArray($priorityArray, 10, "Unplayed", 0);
+      $priorityArray = SortPriorityArray($priorityArray);
+      return $priorityArray; //The action case pushes in Hand values, then Character values, then Arsenal values, then resolves 10 values, and finally sorts the array
+    case "Pitch":
+      $priorityArray = PushArray($priorityArray, "Hand", $hand, $character, 5);
+      $priorityArray = SortPriorityArray($priorityArray);
+      return $priorityArray; //The pitch case pushes in Hand values and sorts the array
+    case "ToArsenal":
+      $priorityArray = PushArray($priorityArray, "Hand", $hand, $character, 6);
+      $priorityArray = SortPriorityArray($priorityArray);
+      return $priorityArray; //The toarsenal case pushes in Hand values and sorts the array
+    case "Reaction":
+      $priorityArray = PushArray(PushArray(PushArray($priorityArray, "Hand", $hand, $character, 3), "Character", $character, $character, 3), "Arsenal", $arsenal, $character, 4);
+      $priorityArray = ResolvePriorityArray($priorityArray, 10, "Unplayed", 0);
+      $priorityArray = SortPriorityArray($priorityArray);
+      return $priorityArray; //the reaction case pushes in Hand Values, then Character values, then Arsenal values, then resolves 10 values, and finally sorts the array
     default: WriteLog("ERROR: Priority Value type case not implemented in AI. Please submit a bug report."); return $priorityArray;
   }
 }
@@ -43,6 +62,18 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex) 
         array_push($priorityArray, array($zoneArr[$i], "Character", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)));
       }
       return $priorityArray;
+    case "Items":
+      for($i = 0; $i < count($zoneArr); $i += ItemPieces())
+      {
+        array_push($priorityArray, array($zoneArr[$i], "Item", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)));
+      }
+      return $priorityArray;
+    case "Allies":
+    for($i = 0; $i < count($zoneArr); $i += AllyPieces())
+      {
+        array_push($priorityArray, array($zoneArr[$i], "Ally", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)));
+      }
+    return $priorityArray;
     default: return $priorityArray;
   }
 }
@@ -94,6 +125,23 @@ function ResolvePriorityArray($priorityArray, $range, $destinationPrime, $destin
       {
         $indexValue = $priorityArray[$k][3] - (int) $priorityArray[$k][3];
         $priorityArray[$k][3] = $destinationSecondary + $indexValue;
+      }
+    }
+  }
+  return $priorityArray;
+}
+
+function FirstTurnResolution($priorityArray, $character)
+{
+  global $currentTurn;
+  if($currentTurn == 1 && EncounterBlocksFirstTurn($character[0]))
+  {
+    for($i = 0; $i < count($priorityArray); ++$i)
+    {
+      if($priorityArray[$i][3] != 0 && $priorityArray[$i][1] != "Character")
+      {
+        $indexValue = $priorityArray[$i][3] - (int) $priorityArray[$i][3];
+        $priorityArray[$i][3] = 2.0 + $indexValue;
       }
     }
   }
