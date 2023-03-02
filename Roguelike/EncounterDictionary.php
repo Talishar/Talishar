@@ -149,7 +149,7 @@ function InitializeEncounter($player)
       break;
     case 006:
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
-      //AddDecisionQueue("SETENCOUNTER", $player, "106-BeforeFight");
+      //AddDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
