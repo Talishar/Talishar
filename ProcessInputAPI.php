@@ -98,6 +98,35 @@ switch ($mode) {
     }
     $response->message = "Settings changed successfully.";
     break;
+  case 33: //Fully re-order layers
+    //First validate
+    $isValid = true;
+    if(count($submission->layers) < $dqState[8]/LayerPieces()) { $response->error = "Not enough layers."; $isValid = false; break; }
+    for($i=0; $i<count($submission->layers); ++$i)
+    {
+      $layerID = $submission->layers[$i];
+      if($layerID % LayerPieces() != 0) { $response->error = "Not a layer ID."; $isValid = false; break; }
+      if($layerID < 0 || $layerID > $dqState[8]) { $response->error = "Layer ID out of range."; $isValid = false; break; }
+      for($j=$i+1; $j<count($submission->layers); ++$j)
+      {
+        if($layerID == $submission->layers[$j]) { $response->error = "Layer ID is duplicated."; $isValid = false; break; }
+      }
+    }
+    //Now if it's valid, do the swap
+    $newLayers = [];
+    for($i=0; $i<count($submission->layers); ++$i)
+    {
+      for($j=$submission->layers[$i]; $j<$submission->layers[$i]+LayerPieces(); ++$j)
+      {
+        array_push($newLayers, $layers[$j]);
+      }
+    }
+    for($i=$dqState[8]+LayerPieces(); $i<$dqState[8]+LayerPieces()*2; ++$i)
+    {
+      array_push($newLayers, $layers[$i]);
+    }
+    $layers = $newLayers;
+    break;
   default: break;
 }
 echo(json_encode($response));

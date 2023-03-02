@@ -386,6 +386,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $layers[$i] = $layer[$counter++];
       }
       break;
+    case 33: //Fully re-order layers
+      break;
     case 99: //Pass
       if (CanPassPhase($turn[0])) {
         PassInput(false);
