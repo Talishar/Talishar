@@ -232,7 +232,7 @@ function CharacterIntellect($cardID)
     case "ROGUE008": return 4;
     case "ROGUE006": return 3;
     case "ROGUE009": return 3;
-    case "ROGUE010": return 3;
+    case "ROGUE010": return 4;
     case "ROGUE013": return 4;
     case "ROGUE014": return 3;
     case "ROGUE015": return 0;

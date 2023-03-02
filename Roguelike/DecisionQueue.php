@@ -315,6 +315,18 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           }
           return 1;
+      case "ROCKS":
+        switch($lastResult)
+        {
+          case "Trade_2_gold_pieces_for_the_stone":
+            $encounter = &GetZone($player, "Encounter");
+            $encounter[9] -= 2;
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(1, "ResourceGems"));
+            break;
+          case "Decline_his_offer_and_move_on":
+            break;
+        }
+        return 1;
       case "CROSSROADS":
         switch($lastResult)
         {
@@ -333,8 +345,17 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Enter_a_nearby_temple": //Enlightenment
             PrependDecisionQueue("SETENCOUNTER", $player, "205-PickMode");
             break;
+          case "Talk_to_a_wandering_trader": //Rocks
+            PrependDecisionQueue("SETENCOUNTER", $player, "208-PickMode");
+            break;
           case "Take_the_scenic_route_through_the_back_streets": //Stealthy Stabber
             PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight"); 
+            break;
+          case "Make_your_way_up_through_Metrix": //Combustible Courier
+            PrependDecisionQueue("SETENCOUNTER", $player, "120-BeforeFight");
+            break;
+          case "Catch_a_ferry_across_the_lake": //TESTING Rune Scholar
+            PrependDecisionQueue("SETENCOUNTER", $player, "107-BeforeFight");
             break;
           case "Venture_into_the_forest_and_attempt_to_sneak_past": //Ravenous Rabble
             PrependDecisionQueue("SETENCOUNTER", $player, "102-BeforeFight");
@@ -353,9 +374,6 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Brave_the_bridge":
             PrependDecisionQueue("SETENCOUNTER", $player, "119-BeforeFight");
-            break;
-          case "Make_your_way_up_through_Metrix":
-            PrependDecisionQueue("SETENCOUNTER", $player, "120-BeforeFight");
             break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");

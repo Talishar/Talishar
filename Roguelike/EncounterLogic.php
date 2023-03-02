@@ -109,6 +109,10 @@ function GetRandomCards($number = 4, $special = "-", $specialType = "-")
     }
     return $resultStr;
   }
+  else if($special == "ResourceGems"){ //Used by ROCKS event, only returns one
+    $poolResources = array("WTR000", "ARC000", "EVR000", "CRU000", "UPR000", "DVR027", "WTR224", "ARC218", "MON306", "ELE237", "UPR224"); //5 cracked baubles to weight them as more likely to occur. 11 options equally likely
+    return $poolResources[rand(0, count($poolResources) - 1)];
+  }
   else //default. This is used in the combat encounter rewards. Literally everything passed into the function is ignored.
   {
     $result = [];
@@ -224,7 +228,7 @@ function GetRandomDeckCard($player, $special = "") //TODO add in a seperate spec
   }
   if ($special == "ALL") return $fullList; // By default, this is all we need
   elseif($special == 4) {
-    WriteLog($fullList);
+    //WriteLog($fullList);
     $deckNoPowers = explode(",", $fullList);
     $options = GetOptions(4, 0, count($deckNoPowers) - 1, 1); //If empty cards keep showing up, maybe get rid of the '- 1' in front of count(#deckNoPowers)
     $return = "";
