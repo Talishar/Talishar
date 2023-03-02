@@ -256,9 +256,19 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" ? $layers[$i + 2] : $layers[$i]);
     array_push($layerContents, JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]));
   }
+  $reorderableLayers = array();
+  for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
+    $layer = new stdClass();
+    $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" ? $layers[$i + 2] : $layers[$i]);
+    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]);
+    $layer->layerID = $i;
+    $layer->isReorderable = $i < $dqState[8];
+    array_push($reorderableLayers, $layer);
+  }
   $target = GetAttackTarget();
   $layerObject->target = $target;
   $layerObject->layerContents = $layerContents;
+  $layerObject->reorderableLayers = $reorderableLayers;
   $response->layerDisplay = $layerObject;
 
   //Opponent Hand
