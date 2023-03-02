@@ -273,7 +273,7 @@ function ArsenalIsFrozen($storedPriorityNode)
 
 function ReactionRequirementsMet($storedPriorityNode)
 {
-  global $combatChain, $combatChainState, $CCS_NumChainLinks, $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_AtksWWeapon;
+  global $combatChain, $combatChainState, $CCS_NumChainLinks, $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_AtksWWeapon, $CS_NumFusedIce, $CS_NumFusedEarth, $CS_NumFusedLightning;
   switch($storedPriorityNode[0])
   {
     case "WTR080": return HasCombo($combatChain[0]);
@@ -307,6 +307,10 @@ function ReactionRequirementsMet($storedPriorityNode)
     case "DYN079": case "DYN080": case "DYN081": return CardSubtype($combatChain[0]) == "Sword" || CardSubtype($combatChain[0]) == "Dagger";
     case "DYN117": case "DYN118": return ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) && CardType($combatChain[0]) == "AA";
     case "DYN148": case "DYN149": case "DYN150": return ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) && CardType($combatChain[0]) == "AA" && ContractType($combatChain[0]) != "";
+    case "ELE143": return GetClassState($player, $CS_NumFusedEarth) > 0;
+    case "ELE172": return GetClassState($player, $CS_NumFusedIce) > 0;
+    case "ELE183": case "ELE184": case "ELE185": return CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) <= 1;
+    case "ELE201": return GetClassState($player, $CS_NumFusedLightning) > 0;
     default: return false;
   }
 }
