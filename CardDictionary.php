@@ -1220,7 +1220,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
 function IsDefenseReactionPlayable($cardID, $from)
 {
   global $combatChain, $mainPlayer;
-  if ($combatChain[0] == "ARC159" && CardType($cardID) == "DR") return false;
+  if (($combatChain[0] == "ARC159" || $combatChain[0] == "OUT015" || $combatChain[0] == "OUT016" || $combatChain[0] == "OUT016") && CardType($cardID) == "DR") return false;
   if ($combatChain[0] == "MON245") if (!ExudeConfidenceReactionsPlayable()) return false;
   if ($from == "HAND" && CardSubType($combatChain[0]) == "Arrow" && SearchCharacterForCard($mainPlayer, "EVR087")) return false;
   if (CurrentEffectPreventsDefenseReaction($from)) return false;

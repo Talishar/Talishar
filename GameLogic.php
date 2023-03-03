@@ -2958,6 +2958,7 @@ function IsDominateActive()
           }
         }
       return $hasDominate;
+    case "OUT027": case "OUT028": case "OUT029": return true;
     default:
       break;
   }
@@ -2982,6 +2983,7 @@ function HasDominate ($cardID)
     case "EVR038": return (ComboActive() ? true : false);
     case "EVR076": case "EVR077": case "EVR078": return $combatChainState[$CCS_NumBoosted] > 0;
     case "EVR110": case "EVR111": case "EVR112": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
+    case "OUT027": case "OUT028": case "OUT029": return true;
     default: break;
   }
   return false;
