@@ -170,6 +170,18 @@ function OUTAbilityCost($cardID)
     $attackID = $combatChain[0];
     switch ($cardID)
     {
+      case "OUT013":
+        if(HasPlayedAttackReaction())
+        {
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a pitch value");
+          AddDecisionQueue("BUTTONINPUT", $mainPlayer, "1,2,3");
+          AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "THEIRHAND:pitch=");
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "<-");
+          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("MZBANISH", $mainPlayer, "HAND,-," . $defPlayer, 1);
+          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        }
+        break;
       case "OUT021":
         if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
         break;
