@@ -1098,11 +1098,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $playable = ($currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false);
       $border = CardBorderColor($myItems[$i], "PLAY", $playable);
       echo ("<div style='position:relative; display: inline-block;'>");
-      echo (Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i + 2] != 2 ? 1 : 0, $border, $myItems[$i + 1], strval($i), "", false, 0, 0, 0, "ITEMS", controller: $playerID) . "&nbsp");
+      echo (Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, ItemOverlay($myItems[$i], $myItems[$i + 2], $myItems[$i + 3]), $border, $myItems[$i + 1], strval($i), "", false, 0, 0, 0, "ITEMS", controller: $playerID) . "&nbsp");
       DisplayPriorityGem($myItems[$i + 5], "ITEMS-" . $i);
       echo ("</div>");
     }
   }
+
   $myAllies = GetAllies($playerID);
   if (count($myAllies) > 0) {
     for ($i = 0; $i < count($myAllies); $i += AllyPieces()) {
@@ -1306,6 +1307,12 @@ function PlayableCardBorderColor($cardID)
 {
   if (HasReprise($cardID) && RepriseActive()) return 3;
   return 0;
+}
+
+function ItemOverlay($item, $isReady, $numUses)
+{
+  if($item == "EVR070" && $numUses < 3) return 1;
+  return ($isReady != 2 ? 1 : 0);
 }
 
 function ChoosePopup($zone, $options, $mode, $caption = "", $zoneSize = 1)

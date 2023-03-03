@@ -599,7 +599,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $gem = $myItems[$i + 5];
     if (isset($itemTileMap[$myItems[$i]])) $gem = $itemTileMap[$myItems[$i]];
     else $itemTileMap[$myItems[$i]] = $gem;
-    array_push($myItemsOutput, JSONRenderedCard(cardNumber: $myItems[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, overlay: ($myItems[$i + 2] != 2 ? 1 : 0), counters: $myItems[$i + 1], controller: $otherPlayer, type: $type, sType: $sType, gem: $gem, restriction: $restriction));
+    array_push($myItemsOutput, JSONRenderedCard(cardNumber: $myItems[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, overlay: ItemOverlay($myItems[$i], $myItems[$i + 2], $myItems[$i + 3]), counters: $myItems[$i + 1], controller: $otherPlayer, type: $type, sType: $sType, gem: $gem, restriction: $restriction));
   }
   $response->playerItems = $myItemsOutput;
 
@@ -1076,6 +1076,12 @@ function ChoosePopup($zone, $options, $mode, $caption = "", $zoneSize = 1)
   }
 
   return CreatePopupAPI("CHOOSEZONE", [], 0, 1, $caption, 1, "", cardsArray: $cardList);
+}
+
+function ItemOverlay($item, $isReady, $numUses)
+{
+  if($item == "EVR070" && $numUses < 3) return 1;
+  return ($isReady != 2 ? 1 : 0);
 }
 
 function GetCharacterLeft($cardType, $cardSubType)
