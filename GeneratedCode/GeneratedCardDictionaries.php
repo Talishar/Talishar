@@ -1939,6 +1939,14 @@ case "6":
 return "E";
 default: return "AA";
 }
+case "0":
+switch($cardID[5]) {
+case "1":
+return "C";
+case "2":
+return "C";
+default: return "AA";
+}
 case "2":
 switch($cardID[5]) {
 case "1":
@@ -5683,9 +5691,19 @@ case "T":
 switch($cardID[3]) {
 case "0":
 switch($cardID[4]) {
+case "1":
+switch($cardID[5]) {
+case "3":
+return 6;
+case "5":
+return 3;
+default: return 0;
+}
 case "2":
 switch($cardID[5]) {
 case "4":
+return 3;
+case "7":
 return 3;
 default: return 0;
 }
@@ -7372,6 +7390,14 @@ switch($cardID[5]) {
 case "0":
 return -1;
 case "6":
+return -1;
+default: return 3;
+}
+case "0":
+switch($cardID[5]) {
+case "1":
+return -1;
+case "2":
 return -1;
 default: return 3;
 }
@@ -10590,7 +10616,7 @@ return "Voltaire, Strike Twice";
 case "5":
 return "Frost Lock";
 case "6":
-return "Light It Up";
+return "Light it Up";
 case "7":
 return "Ice Storm";
 case "8":
@@ -11523,6 +11549,22 @@ case "6":
 return "Quiver of Rustling Leaves";
 default: return "";
 }
+case "0":
+switch($cardID[5]) {
+case "1":
+return "Uzuri, Switchblade";
+case "2":
+return "Uzuri";
+default: return "";
+}
+case "1":
+switch($cardID[5]) {
+case "3":
+return "Shake Down";
+case "5":
+return "Back Stab";
+default: return "";
+}
 case "2":
 switch($cardID[5]) {
 case "1":
@@ -11533,6 +11575,8 @@ case "3":
 return "Spike with Inertia";
 case "4":
 return "Infect";
+case "7":
+return "Isolate";
 default: return "";
 }
 case "3":
@@ -15776,6 +15820,14 @@ switch($cardID[5]) {
 case "0":
 return 0;
 case "6":
+return 0;
+default: return 1;
+}
+case "0":
+switch($cardID[5]) {
+case "1":
+return 0;
+case "2":
 return 0;
 default: return 1;
 }
@@ -20323,6 +20375,12 @@ case "T":
 switch($cardID[3]) {
 case "0":
 switch($cardID[4]) {
+case "1":
+switch($cardID[5]) {
+case "3":
+return 2;
+default: return 0;
+}
 case "2":
 switch($cardID[5]) {
 case "1":
@@ -21539,6 +21597,12 @@ case "6":
 return "Quiver";
 default: return "";
 }
+case "0":
+switch($cardID[5]) {
+case "2":
+return "Young";
+default: return "";
+}
 default: return "";
 }
 case "1":
@@ -22177,6 +22241,7 @@ case "UPR102": return 36;
 case "DYN001": return 15;
 case "DYN025": return 22;
 case "DYN113": return 40;
+case "OUT001": return 40;
 default: return 20;}
 }
 
@@ -23522,6 +23587,22 @@ case "0":
 return "T";
 case "6":
 return "M";
+default: return "C";
+}
+case "0":
+switch($cardID[5]) {
+case "1":
+return "T";
+case "2":
+return "T";
+default: return "C";
+}
+case "1":
+switch($cardID[5]) {
+case "3":
+return "M";
+case "5":
+return "R";
 default: return "C";
 }
 case "2":
