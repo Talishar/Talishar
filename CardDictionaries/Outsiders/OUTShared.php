@@ -14,6 +14,7 @@ function OUTAbilityCost($cardID)
   {
     switch ($cardID)
     {
+      case "OUT001": case "OUT002": return "AR";
       case "OUT049": return "I";
       case "OUT096": return "I";
       default: return "";
@@ -67,11 +68,24 @@ function OUTAbilityCost($cardID)
 
   function OUTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer, $CS_PlayIndex, $mainPlayer;
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $combatChain, $combatChainState, $CCS_LinkBaseAttack;
     global $CID_Frailty;
     $rv = "";
     switch ($cardID)
     {
+      case "OUT001": case "OUT002":
+        $banish = &GetBanish($currentPlayer);
+        $index = -1;
+        for($i=0; $i<count($banish); $i+=BanishPieces()) if($banish[$i+1] == "UZURI") $index = $i;
+        if($index == -1) return "Uzuri's knife is re-sheathed.";
+        if(CardType($banish[$index]) != "AA") { $banish[$index+1] = "-"; return "Uzuri was bluffing."; }
+        if(CardCost($banish[$index]) > 2) { $banish[$index+1] = "-"; return "Uzuri was bluffing."; }
+        $deck = &GetDeck($currentPlayer);
+        array_push($deck, $combatChain[0]);
+        $combatChain[0] = $banish[$index];
+        $combatChainState[$CCS_LinkBaseAttack] = AttackValue($combatChain[0]);
+        RemoveBanish($currentPlayer, $index);
+        return "";
       case "OUT049":
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT049-");

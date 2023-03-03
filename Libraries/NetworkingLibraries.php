@@ -1636,21 +1636,9 @@ function PayAdditionalCosts($cardID, $from)
     case "MON035":
       AddDecisionQueue("VOFTHEVANGUARD", $currentPlayer, "-");
       break;
-    case "MON042":
-    case "MON043":
-    case "MON044":
-    case "MON045":
-    case "MON046":
-    case "MON047":
-    case "MON048":
-    case "MON049":
-    case "MON050":
-    case "MON051":
-    case "MON052":
-    case "MON053":
-    case "MON054":
-    case "MON055":
-    case "MON056":
+    case "MON042": case "MON043": case "MON044": case "MON045": case "MON046": case "MON047":
+    case "MON048": case "MON049": case "MON050": case "MON051": case "MON052": case "MON053":
+    case "MON054": case "MON055": case "MON056":
       Charge();
       break;
     case "MON062":
@@ -1658,29 +1646,12 @@ function PayAdditionalCosts($cardID, $from)
       BanishFromSoul($currentPlayer);
       BanishFromSoul($currentPlayer);
       break;
-    case "MON126":
-    case "MON127":
-    case "MON128":
-    case "MON129":
-    case "MON130":
-    case "MON131":
-    case "MON132":
-    case "MON133":
-    case "MON134":
-    case "MON141":
-    case "MON142":
-    case "MON143":
+    case "MON126": case "MON127": case "MON128": case "MON129": case "MON130": case "MON131":
+    case "MON132": case "MON133": case "MON134": case "MON141": case "MON142": case "MON143":
       if (RandomBanish3GY()) AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
-    case "MON135":
-    case "MON136":
-    case "MON137":
-    case "MON147":
-    case "MON148":
-    case "MON149":
-    case "MON150":
-    case "MON151":
-    case "MON152":
+    case "MON135": case "MON136": case "MON137": case "MON147": case "MON148": case "MON149":
+    case "MON150": case "MON151": case "MON152":
       RandomBanish3GY();
       break;
     case "MON156":
@@ -1841,6 +1812,13 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,-", 1);
       AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-PHOENIXBANISH", 1);
+      break;
+    case "OUT001": case "OUT002":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Uzuri", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZBANISH", $currentPlayer, "HAND,UZURI," . $currentPlayer, 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       break;
     default:
       break;

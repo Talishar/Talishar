@@ -1209,6 +1209,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $index = FindCharacterIndex($currentPlayer, "DYN492a");
       $character = &GetPlayerCharacter($currentPlayer);
       return $character[$index + 2] <= 0;
+    case "OUT001": case "OUT002": return count($combatChain) == 0 || !HasStealth($combatChain[0]);
     case "OUT021": case "OUT022": case "OUT023":
     case "OUT042": case "OUT043": case "OUT044":
       return count($combatChain) == 0 || !HasStealth($combatChain[0]);
