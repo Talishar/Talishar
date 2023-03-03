@@ -3614,6 +3614,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       CombatChainPowerModifier($lastResult, $parameter);
       return $lastResult;
     case "COMBATCHAINBUFFDEFENSE":
+      WriteLog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " had it's defense buffed by " . $parameter . ".");
       $combatChain[$lastResult + 6] += $parameter;
       return $lastResult;
     case "COMBATCHAINDEBUFFDEFENSE":
