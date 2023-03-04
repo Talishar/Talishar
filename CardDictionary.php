@@ -1268,50 +1268,21 @@ function IsStaticType($cardType, $from = "", $cardID = "")
 function HasBladeBreak($cardID)
 {
   switch ($cardID) {
-    case "WTR079":
-      return true;
-    case "WTR150":
-      return true;
-    case "WTR155":
-    case "WTR156":
-    case "WTR157":
-    case "WTR158":
-      return true;
+    case "WTR079": case "WTR150": case "WTR155": case "WTR156": case "WTR157": case "WTR158": return true;
     case "ARC041":
       return true;
     case "CRU122":
       return true;
     case "MON060":
       return true;
-    case "ELE144":
-      return true;
-    case "ELE204":
-      return true;
-    case "ELE213":
-      return true;
-    case "ELE224":
-      return true;
-    case "EVR037":
-      return true;
-    case "EVR086":
-      return true;
-    case "DVR003":
-    case "DVR006":
-      return true;
-    case "RVD003":
-      return true;
-    case "UPR136":
-      return true;
-    case "UPR158":
-      return true;
-    case "UPR182":
-      return true;
-    case "DYN045":
-    case "DYN152":
-    case "DYN171":
-      return true;
-    case "OUT049":
-      return true;
+    case "ELE144": case "ELE204": case "ELE213": case "ELE224": return true;
+    case "EVR037": case "EVR086": return true;
+    case "DVR003": case "DVR006": return true;
+    case "RVD003": return true;
+    case "UPR136": case "UPR158": case "UPR182": return true;
+    case "DYN045": case "DYN152": case "DYN171": return true;
+    case "OUT049": return true;
+    case "OUT158": return true;
     default:
       return false;
   }
