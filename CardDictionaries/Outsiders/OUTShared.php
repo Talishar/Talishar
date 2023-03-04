@@ -351,6 +351,19 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . "-");
         AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-");
         break;
+      case "OUT101":
+        if(SearchCurrentTurnEffects("AIM", $mainPlayer)) {
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a pitch value", 1);
+          AddDecisionQueue("BUTTONINPUT", $mainPlayer, "1,2,3", 1);
+          AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+          AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "OUT101-", 1);
+          AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $defPlayer, "<-", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{0}", 1);
+          AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "Cannot_pitch_", 1);
+          AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "_resource_cards_this_turn_and_next", 1);
+          AddDecisionQueue("WRITELOG", $mainPlayer, "<-", 1);
+        }
+        break;
       case "OUT124": case "OUT125": case "OUT126":
         if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
         break;

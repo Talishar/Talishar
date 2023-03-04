@@ -846,6 +846,22 @@ function IsPitchRestricted($cardID, &$restriction, $from = "", $index = -1)
     $restriction = "ELE035";
     return true;
   }
+  $pitchValue = PitchValue($cardID);
+  if($pitchValue == 1 && SearchCurrentTurnEffects("OUT101-1", $playerID))
+  {
+    $restriction = "OUT101";
+    return true;
+  }
+  else if($pitchValue == 2 && SearchCurrentTurnEffects("OUT101-2", $playerID))
+  {
+    $restriction = "OUT101";
+    return true;
+  }
+  else if($pitchValue == 3 && SearchCurrentTurnEffects("OUT101-3", $playerID))
+  {
+    $restriction = "OUT101";
+    return true;
+  }
   return false;
 }
 
