@@ -84,9 +84,10 @@ function CardType($cardID)
 
 function CardSubType($cardID)
 {
+  global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
   if(!$cardID) return "";
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM")
+  if($set != "ROG" && $set != "DUM" && $set != "LGS")
   {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardSubtype($cardID);
@@ -115,6 +116,7 @@ function CardSubType($cardID)
       case "UPR551": return "Ally";
       case "DYN612": return "Angel,Ally";
       case "LGS125": case "LGS126": case "LGS127": return "Aura";
+      case $CID_BloodRotPox: case $CID_Frailty: case $CID_Inertia: return "Aura";
       return "";
   }
 }
@@ -1213,6 +1215,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "OUT021": case "OUT022": case "OUT023":
     case "OUT042": case "OUT043": case "OUT044":
       return count($combatChain) == 0 || !HasStealth($combatChain[0]);
+    case "OUT162": case "OUT163": case "OUT164":
+      return $from == "HAND";
     default:
       return false;
   }

@@ -218,6 +218,13 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . "-");
         AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-");
         break;
+      case "OUT162": case "OUT163": case "OUT164":
+        if(IsHeroAttackTarget())
+        {
+          AddDecisionQueue("CHOOSECARD", $mainPlayer, $CID_BloodRotPox . "," . $CID_Frailty . "," . $CID_Inertia);
+          AddDecisionQueue("PUTPLAY", $defPlayer, "-", 1);
+        }
+        break;
       default: break;
     }
   }
