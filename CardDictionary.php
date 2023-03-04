@@ -1234,7 +1234,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "OUT154": case "OUT155": case "OUT156":
       if (count($combatChain) == 0) return true;
       $subtype = CardSubtype($combatChain[0]);
-      if ($subtype == "Dagger" || (CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) <= 2)) return false;
+      if ($subtype == "Dagger" || (CardType($combatChain[0]) == "AA" && AttackValue($combatChain[0]) <= 2)) return false;
       return true;
     case "OUT162": case "OUT163": case "OUT164":
       return $from == "HAND";
