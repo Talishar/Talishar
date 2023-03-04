@@ -1200,9 +1200,7 @@ function CurrentEffectCostModifiers($cardID, $from)
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $remove = 0;
       switch ($currentTurnEffects[$i]) {
-        case "WTR060":
-        case "WTR061":
-        case "WTR062":
+        case "WTR060": case "WTR061": case "WTR062":
           if (IsAction($cardID)) {
             $costModifier += 1;
             $remove = 1;
@@ -1225,9 +1223,7 @@ function CurrentEffectCostModifiers($cardID, $from)
             $costModifier -= 1;
           }
           break;
-        case "CRU085-2":
-        case "CRU086-2":
-        case "CRU087-2":
+        case "CRU085-2": case "CRU086-2": case "CRU087-2":
           if (CardType($cardID) == "DR") {
             $costModifier += 1;
             $remove = 1;
@@ -1245,9 +1241,7 @@ function CurrentEffectCostModifiers($cardID, $from)
             $remove = 1;
           }
           break;
-        case "ARC060":
-        case "ARC061":
-        case "ARC062":
+        case "ARC060": case "ARC061": case "ARC062":
           if (CardType($cardID) == "AA" || GetAbilityType($cardID, -1, $from) == "AA") {
             $costModifier += 1;
             $remove = 1;
@@ -1256,9 +1250,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "ELE035-1":
           $costModifier += 1;
           break;
-        case "ELE038":
-        case "ELE039":
-        case "ELE040":
+        case "ELE038": case "ELE039": case "ELE040":
           $costModifier += 1;
           break;
         case "ELE144":
@@ -1277,9 +1269,7 @@ function CurrentEffectCostModifiers($cardID, $from)
             if ($currentTurnEffects[$i + 3] <= 0) $remove = 1;
           }
           break;
-        case "UPR075":
-        case "UPR076":
-        case "UPR077":
+        case "UPR075": case "UPR076": case "UPR077":
           if (GetClassState($currentPlayer, $CS_PlayUniqueID) == $currentTurnEffects[$i + 2]) {
             --$costModifier;
             $remove = 1;
@@ -1288,6 +1278,12 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "UPR166":
           if (IsStaticType(CardType($cardID), $from, $cardID) && DelimStringContains(CardSubType($cardID), "Staff")) {
             $costModifier -= 3;
+            $remove = 1;
+          }
+          break;
+        case "OUT011":
+          if (CardType($cardID) == "AR") {
+            $costModifier -= 1;
             $remove = 1;
           }
           break;
@@ -2100,7 +2096,7 @@ function CharacterStartTurnAbility($index)
         AddCurrentTurnEffect("EVR019", $mainPlayer);
       }
       break;
-    case "DYN117": case "DYN118":
+    case "DYN117": case "DYN118": case "OUT011":
       $discardIndex = SearchDiscardForCard($mainPlayer, $mainCharacter[$index]);
       if($mainCharacter[$index+1] == 0 && CountItem("EVR195", $mainPlayer) >= 2 && $discardIndex != "") {
         AddDecisionQueue("COUNTSILVERS", $mainPlayer, "");
@@ -3121,6 +3117,9 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       --$character[$cardIndex + 2];
       WriteLog(CardLink($cardID, $cardID) . " banished a card from under itself.");
       BanishCardForPlayer("DYN492a", $currentPlayer, "-"); // TODO: Temporary until we can actually banish the cards that were put under
+      break;
+    case "OUT011":
+      DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "OUT049": case "OUT158":
       DestroyCharacter($currentPlayer, $cardIndex);
@@ -5802,6 +5801,8 @@ function CharacterTriggerInGraveyard($cardID)
 {
   switch ($cardID) {
     case "DYN117": case "DYN118":
+      return true;
+    case "OUT011":
       return true;
     default:
       return false;

@@ -6,6 +6,7 @@ function OUTAbilityCost($cardID)
   {
     case "OUT007": return 2;
     case "OUT009": return 2;
+    case "OUT011": return 0;
     case "OUT049": return 1;
     case "OUT093": return 1;
     case "OUT096": return 3;
@@ -22,6 +23,7 @@ function OUTAbilityCost($cardID)
       case "OUT001": case "OUT002": return "AR";
       case "OUT007": return "AA";
       case "OUT009": return "AA";
+      case "OUT011": return "AR";
       case "OUT049": return "I";
       case "OUT093": return "I";
       case "OUT096": return "I";
@@ -91,7 +93,7 @@ function OUTAbilityCost($cardID)
 
   function OUTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $combatChain, $combatChainState, $CCS_LinkBaseAttack;
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $defPlayer, $combatChain, $combatChainState, $CCS_LinkBaseAttack;
     global $CID_Frailty, $CID_BloodRotPox, $CID_Inertia;
     $rv = "";
     switch ($cardID)
@@ -109,6 +111,15 @@ function OUTAbilityCost($cardID)
         $combatChain[0] = $banish[$index];
         $combatChainState[$CCS_LinkBaseAttack] = AttackValue($combatChain[0]);
         RemoveBanish($currentPlayer, $index);
+        return "";
+      case "OUT011":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "OUT014":
+        for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+        {
+          if($combatChain[$i+1] == $defPlayer) PlayAura($CID_BloodRotPox, $defPlayer);
+        }
         return "";
       case "OUT033": case "OUT034": case "OUT035":
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
@@ -352,6 +363,7 @@ function OUTAbilityCost($cardID)
       case "OUT015": case "OUT016": case "OUT017":
       case "OUT024": case "OUT025": case "OUT026":
       case "OUT027": case "OUT028": case "OUT029":
+      case "OUT030": case "OUT031": case "OUT032":
       case "OUT033": case "OUT034": case "OUT035":
       case "OUT036": case "OUT037": case "OUT038":
       case "OUT039": case "OUT040": case "OUT041":
