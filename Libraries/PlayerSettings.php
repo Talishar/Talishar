@@ -496,7 +496,7 @@ function IsTeamSecondCycle($userID)
     case "Loganninty7":
     case "flamedog3":
     case "Swankypants":
-    case "Blazing for Lethal?":
+    case "Blazing For Lethal?":
     case "Jeztus":
     case "gokkar":
     case "Kernalxklink":
