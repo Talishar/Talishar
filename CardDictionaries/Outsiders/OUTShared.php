@@ -40,6 +40,7 @@ function OUTAbilityCost($cardID)
     $cardID = $idArr[0];
     switch ($cardID)
     {
+      case "OUT033": case "OUT034": case "OUT035": return 1;
       case "OUT052": return 1;
       default: return 0;
     }
@@ -52,6 +53,7 @@ function OUTAbilityCost($cardID)
     $cardID = $idArr[0];
     switch ($cardID)
     {
+      case "OUT033": case "OUT034": case "OUT035": return HasStealth($attackID);
       case "OUT049": return CardType($attackID) == "AA";
       case "OUT052": return count($idArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($idArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
@@ -92,6 +94,9 @@ function OUTAbilityCost($cardID)
         $combatChain[0] = $banish[$index];
         $combatChainState[$CCS_LinkBaseAttack] = AttackValue($combatChain[0]);
         RemoveBanish($currentPlayer, $index);
+        return "";
+      case "OUT033": case "OUT034": case "OUT035":
+        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         return "";
       case "OUT049":
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
@@ -283,6 +288,7 @@ function OUTAbilityCost($cardID)
       case "OUT015": case "OUT016": case "OUT017":
       case "OUT024": case "OUT025": case "OUT026":
       case "OUT027": case "OUT028": case "OUT029":
+      case "OUT033": case "OUT034": case "OUT035":
       case "OUT036": case "OUT037": case "OUT038":
       case "OUT039": case "OUT040": case "OUT041":
         return true;
