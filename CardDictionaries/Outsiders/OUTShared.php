@@ -7,6 +7,7 @@ function OUTAbilityCost($cardID)
     case "OUT049": return 1;
     case "OUT093": return 1;
     case "OUT096": return 3;
+    case "OUT139": return 0;
     case "OUT158": return 1;
     default: return 0;
   }
@@ -20,6 +21,7 @@ function OUTAbilityCost($cardID)
       case "OUT049": return "I";
       case "OUT093": return "I";
       case "OUT096": return "I";
+      case "OUT139": return "AR";
       case "OUT158": return "A";
       default: return "";
     }
@@ -166,6 +168,9 @@ function OUTAbilityCost($cardID)
           for($i=0; $i<$numDraw; ++$i) Draw($mainPlayer);
           WriteLog("Attacker discarded their hand and drew $numDraw cards.");
         }
+        return "";
+      case "OUT139":
+        ThrowWeapon("Dagger");
         return "";
       case "OUT148":
         if(DelimStringContains($additionalCosts, "PAY1"))
