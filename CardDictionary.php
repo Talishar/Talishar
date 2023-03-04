@@ -1291,40 +1291,13 @@ function HasBladeBreak($cardID)
 function HasBattleworn($cardID)
 {
   switch ($cardID) {
-    case "WTR004": case "WTR005":
-    case "WTR041": case "WTR042":
-      return true;
-    case "WTR080":
-      return true;
-    case "WTR116": case "WTR117":
-      return true;
-    case "ARC004":
-      return true;
-    case "ARC078":
-      return true;
-    case "ARC150":
-      return true;
-    case "CRU053":
-      return true;
-    case "MON107": case "MON108":
-      return true;
-    case "MON122":
-      return true;
-    case "MON230":
-      return true;
-    case "EVR001":
-      return true;
-    case "EVR053":
-      return true;
-    case "DVR005":
-      return true;
-    case "DYN006":
-    case "DYN026":
-    case "DYN046":
-    case "DYN089":
-    case "DYN117":
-    case "DYN118":
-      return true;
+    case "WTR004": case "WTR005": case "WTR041": case "WTR042": case "WTR080": case "WTR116": case "WTR117": return true;
+    case "ARC004": case "ARC078": case "ARC150": return true;
+    case "CRU053": return true;
+    case "MON107": case "MON108": case "MON122": case "MON230": return true;
+    case "EVR001": case "EVR053": return true;
+    case "DVR005": return true;
+    case "DYN006": case "DYN026": case "DYN046": case "DYN089": case "DYN117": case "DYN118": return true;
     default:
       return false;
   }
@@ -1333,21 +1306,11 @@ function HasBattleworn($cardID)
 function HasTemper($cardID)
 {
   switch ($cardID) {
-    case "CRU025":
-      return true;
-    case "CRU081":
-      return true;
-    case "CRU141":
-      return true;
-    case "EVR018":
-      return true;
-    case "EVR020":
-      return true;
-    case "UPR084":
-      return true;
-    case "DYN027":
-    case "DYN492b":
-      return true;
+    case "CRU025": case "CRU081": case "CRU141": return true;
+    case "EVR018": return true;
+    case "EVR020": return true;
+    case "UPR084": return true;
+    case "DYN027": case "DYN492b": return true;
     default:
       return false;
   }
