@@ -238,6 +238,11 @@ function OUTAbilityCost($cardID)
     $attackID = $combatChain[0];
     switch ($cardID)
     {
+      case "OUT012":
+        $deck = new Deck($defPlayer);
+        $deckCard = $deck->Top(true);
+        BanishCardForPlayer($deckCard, $mainPlayer, "THEIRDECK", "NT", $cardID);
+        break;
       case "OUT013":
         if(HasPlayedAttackReaction())
         {
@@ -301,6 +306,7 @@ function OUTAbilityCost($cardID)
   {
     switch($cardID)
     {
+      case "OUT012":
       case "OUT015": case "OUT016": case "OUT017":
       case "OUT024": case "OUT025": case "OUT026":
       case "OUT027": case "OUT028": case "OUT029":
