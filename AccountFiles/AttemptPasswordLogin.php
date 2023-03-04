@@ -15,6 +15,6 @@ if (isset($_POST["submit"])) {
     AttemptPasswordLogin($username, $password, $rememberMe);
   } catch (\Exception $e) { }
 } else {
-	header("location: ../Login.php");
+	echo("Login failed; please check your username and password.");
   exit();
 }
