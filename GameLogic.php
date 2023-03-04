@@ -3006,49 +3006,28 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     }
   }
   switch ($cardID) {
-    case "WTR005":
+    case "WTR005": case "WTR042": case "WTR080":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "WTR042":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
-    case "WTR080":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
+    case "WTR037": case "WTR038":
+        $character[$cardIndex + 1] = 2;
+        break;
     case "WTR150":
       $character[$cardIndex + 2] -= 3;
       break;
-    case "WTR151":
-    case "WTR152":
-    case "WTR153":
-    case "WTR154":
+    case "WTR151": case "WTR152": case "WTR153": case "WTR154":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "ARC003":
       $character[$cardIndex + 1] = 2;
       break;
-    case "ARC005":
-    case "ARC042":
-    case "ARC079":
-    case "ARC116":
-    case "ARC117":
-    case "ARC151":
-    case "ARC153":
-    case "ARC154":
+    case "ARC005": case "ARC042": case "ARC079": case "ARC116": case "ARC117": case "ARC151": case "ARC153": case "ARC154":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "ARC113":
-    case "ARC114":
-    case "WTR037":
-    case "WTR038":
+    case "ARC113": case "ARC114":
       $character[$cardIndex + 1] = 2;
       break;
-    case "CRU006":
-    case "CRU025":
-    case "CRU081":
-    case "CRU102":
-    case "CRU122":
-    case "CRU141":
+    case "CRU006": case "CRU025": case "CRU081": case "CRU102": case "CRU122": case "CRU141":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "CRU024":
@@ -3067,29 +3046,14 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       $character[$cardIndex + 1] = 1;
       ++$character[$cardIndex + 2];
       break;
-    case "MON061":
-    case "MON090":
-    case "MON108":
-    case "MON188":
-    case "MON230":
-    case "MON238":
-    case "MON239":
-    case "MON240":
-    case "DVR005":
+    case "MON061": case "MON090": case "MON108": case "MON188": case "MON230": case "MON238": case "MON239": case "MON240":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "MON029":
     case "MON030":
       $character[$cardIndex + 1] = 2; //It's not limited to once
       break;
-    case "ELE116":
-    case "ELE145":
-    case "ELE214":
-    case "ELE225":
-    case "ELE233":
-    case "ELE234":
-    case "ELE235":
-    case "ELE236":
+    case "ELE116": case "ELE145": case "ELE214": case "ELE225": case "ELE233": case "ELE234": case "ELE235": case "ELE236":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "ELE173":
@@ -3099,22 +3063,16 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1;
       break;
-    case "EVR053":
-    case "EVR103":
-    case "EVR137":
+    case "EVR053": case "EVR103": case "EVR137":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "DVR004":
+    case "DVR004": case "DVR005":
+      DestroyCharacter($currentPlayer, $cardIndex);
+      break;
     case "RVD004":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "UPR004":
-    case "UPR047":
-    case "UPR085":
-    case "UPR125":
-    case "UPR137":
-    case "UPR159":
-    case "UPR167":
+    case "UPR004": case "UPR047": case "UPR085": case "UPR125": case "UPR137": case "UPR159": case "UPR167":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "UPR151":
@@ -3149,7 +3107,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       WriteLog(CardLink($cardID, $cardID) . " banished a card from under itself.");
       BanishCardForPlayer("DYN492a", $currentPlayer, "-"); // TODO: Temporary until we can actually banish the cards that were put under
       break;
-    case "OUT049":
+    case "OUT049": case "OUT158":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     default:
