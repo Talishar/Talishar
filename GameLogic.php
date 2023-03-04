@@ -1814,71 +1814,21 @@ function IsCombatEffectPersistent($cardID)
     }
   }
   switch ($cardID) {
-    case "WTR007":
-      return true;
-    case "WTR038":
-    case "WTR039":
-      return true;
+    case "WTR007": case "WTR038": case "WTR039": return true;
     case "ARC047":
       return true;
     case "ARC160-1":
       return true;
-    case "ARC170-1":
-    case "ARC171-1":
-    case "ARC172-1":
+    case "ARC170-1": case "ARC171-1": case "ARC172-1":
       return true;
-    case "CRU025":
-      return true;
-    case "CRU053":
-      return true;
-    case "CRU084-2":
-      return true;
-    case "CRU105":
-      return true;
-    case "CRU122":
-      return true;
-    case "CRU124":
-      return true;
-    case "CRU188":
-      return true;
-    case "MON034":
-      return true;
-    case "MON087":
-      return true;
-    case "MON089":
-      return true;
-    case "MON108":
-      return true;
-    case "MON109":
-      return true;
-    case "MON218":
-      return true;
-    case "MON239":
-      return true;
-    case "MON245":
-      return true;
-    case "ELE044":
-    case "ELE045":
-    case "ELE046":
-      return true;
-    case "ELE047":
-    case "ELE048":
-    case "ELE049":
-      return true;
-    case "ELE050":
-    case "ELE051":
-    case "ELE052":
-      return true;
-    case "ELE059":
-    case "ELE060":
-    case "ELE061":
-      return true;
-    case "ELE066-HIT":
-      return true;
-    case "ELE067":
-    case "ELE068":
-    case "ELE069":
-      return true;
+    case "CRU025": case "CRU053": case "CRU084-2": case "CRU105": case "CRU122": case "CRU124": case "CRU188": return true;
+    case "MON034": case "MON087": case "MON089": case "MON108": case "MON109": case "MON218": case "MON239": case "MON245": return true;
+    case "ELE044": case "ELE045": case "ELE046": return true;
+    case "ELE047": case "ELE048": case "ELE049": return true;
+    case "ELE050": case "ELE051": case "ELE052": return true;
+    case "ELE059": case "ELE060": case "ELE061": return true;
+    case "ELE066-HIT": return true;
+    case "ELE067": case "ELE068": case "ELE069": return true;
     case "ELE091-BUFF":
     case "ELE091-GA":
       return true;
@@ -1887,38 +1837,23 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "ELE143":
       return true;
-    case "ELE151-HIT":
-    case "ELE152-HIT":
-    case "ELE153-HIT":
-      return true;
+    case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": return true;
     case "ELE173":
       return true;
-    case "ELE198":
-    case "ELE199":
-    case "ELE200":
-      return true;
+    case "ELE198": case "ELE199": case "ELE200": return true;
     case "ELE203":
       return true;
     case "EVR001":
       return true;
     case "EVR019":
       return true;
-    case "EVR066-1":
-    case "EVR067-1":
-    case "EVR068-1":
-      return true;
+    case "EVR066-1": case "EVR067-1": case "EVR068-1": return true;
     case "EVR090":
       return true;
     case "EVR160":
       return true;
-    case "EVR164":
-    case "EVR165":
-    case "EVR166":
-      return true;
-    case "EVR170-1":
-    case "EVR171-1":
-    case "EVR172-1":
-      return true;
+    case "EVR164": case "EVR165": case "EVR166": return true;
+    case "EVR170-1": case "EVR171-1": case "EVR172-1": return true;
     case "EVR186":
       return true;
     case "DVR008-1":
@@ -1947,7 +1882,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN154":
       return true;
-    case "OUT052": return true;
+    case "OUT052": case "OUT141": return true;
     default:
       return false;
   }
@@ -3121,7 +3056,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "OUT011":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "OUT049": case "OUT158":
+    case "OUT049": case "OUT141": case "OUT158":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     default:
