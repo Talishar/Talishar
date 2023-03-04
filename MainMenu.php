@@ -165,9 +165,9 @@ if ($canSeeQueue) {
 
       <div style="vertical-align:middle; position: relative;">
         <h3>Outsiders</h3>
-        All spoiled cards as of Wreck Havoc implemented except:<BR>
-          Barbed Undertow, Wreck Havoc<BR>
-          Last updated: 1:03PM CST
+        All spoiled cards as of Toxicity implemented except:<BR>
+          Barbed Undertow, Wreck Havoc, Amnesia, Bleed Out, Toxicity, Nerve Scalpel<BR>
+          Last updated: 3:57PM CST
         <br>
       </div>
       <BR>
