@@ -6,6 +6,7 @@ function OUTAbilityCost($cardID)
   {
     case "OUT049": return 1;
     case "OUT096": return 3;
+    case "OUT158": return 1;
     default: return 0;
   }
 }
@@ -17,6 +18,7 @@ function OUTAbilityCost($cardID)
       case "OUT001": case "OUT002": return "AR";
       case "OUT049": return "I";
       case "OUT096": return "I";
+      case "OUT158": return "A";
       default: return "";
     }
   }
@@ -25,6 +27,7 @@ function OUTAbilityCost($cardID)
   {
     switch ($cardID)
     {
+      case "OUT158": return true;
       default: return false;
     }
   }
@@ -50,6 +53,7 @@ function OUTAbilityCost($cardID)
       case "OUT049": return CardType($attackID) == "AA";
       case "OUT052": return count($idArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($idArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
+      case "OUT158": return CardType($attackID) == "AA";
       default: return false;
     }
   }
@@ -133,6 +137,9 @@ function OUTAbilityCost($cardID)
           for($i=0; $i<$numDraw; ++$i) Draw($mainPlayer);
           WriteLog("Attacker discarded their hand and drew $numDraw cards.");
         }
+        return "";
+      case "OUT158":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "OUT160":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);

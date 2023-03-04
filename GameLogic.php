@@ -664,21 +664,16 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 function EffectHitEffect($cardID)
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $combatChain, $CCS_DamageDealt;
+  global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
   if (CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   switch ($cardID) {
-    case "WTR129":
-    case "WTR130":
-    case "WTR131":
+    case "WTR129": case "WTR130": case "WTR131":
       GiveAttackGoAgain();
       break;
-    case "WTR147":
-    case "WTR148":
-    case "WTR149":
+    case "WTR147": case "WTR148": case "WTR149":
       NaturesPathPilgrimageHit();
       break;
-    case "ARC170-1":
-    case "ARC171-1":
-    case "ARC172-1":
+    case "ARC170-1": case "ARC171-1": case "ARC172-1":
       MainDrawCard();
       return 1;
     case "CRU124":
@@ -700,14 +695,10 @@ function EffectHitEffect($cardID)
     case "MON034":
       LuminaAscensionHit();
       break;
-    case "MON081":
-    case "MON082":
-    case "MON083":
+    case "MON081": case "MON082": case "MON083":
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
       break;
-    case "MON110":
-    case "MON111":
-    case "MON112":
+    case "MON110": case "MON111": case "MON112":
       DuskPathPilgrimageHit();
       break;
     case "MON193":
@@ -719,9 +710,7 @@ function EffectHitEffect($cardID)
         LoseHealth(1, $defPlayer);
       }
       break;
-    case "MON299":
-    case "MON300":
-    case "MON301":
+    case "MON299": case "MON300": case "MON301":
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
       break;
     case "ELE003":
@@ -754,9 +743,7 @@ function EffectHitEffect($cardID)
         }
       }
       break;
-    case "ELE019":
-    case "ELE020":
-    case "ELE021":
+    case "ELE019": case "ELE020": case "ELE021":
       if (IsHeroAttackTarget()) {
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put at the bottom of the deck", 1);
@@ -765,9 +752,7 @@ function EffectHitEffect($cardID)
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
       break;
-    case "ELE022":
-    case "ELE023":
-    case "ELE024":
+    case "ELE022": case "ELE023": case "ELE024":
       if (IsHeroAttackTarget()) {
         PlayAura("ELE111", $defPlayer);
       }
@@ -783,9 +768,7 @@ function EffectHitEffect($cardID)
         DamageTrigger($defPlayer, 1, "ATTACKHIT");
       }
       break;
-    case "ELE047":
-    case "ELE048":
-    case "ELE049":
+    case "ELE047": case "ELE048": case "ELE049":
       if (IsHeroAttackTarget()) {
         DamageTrigger($defPlayer, 1, "ATTACKHIT");
       }
@@ -798,9 +781,7 @@ function EffectHitEffect($cardID)
         DamageTrigger($defPlayer, 3, "ATTACKHIT");
       }
       break;
-    case "ELE151-HIT":
-    case "ELE152-HIT":
-    case "ELE153-HIT":
+    case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT":
       if (IsHeroAttackTarget()) {
         PlayAura("ELE111", $defPlayer);
       }
@@ -828,16 +809,12 @@ function EffectHitEffect($cardID)
         DamageTrigger($defPlayer, 1, "ATTACKHIT");
       }
       return 1;
-    case "ELE195":
-    case "ELE196":
-    case "ELE197":
+    case "ELE195": case "ELE196": case "ELE197":
       if (IsHeroAttackTarget()) {
         DamageTrigger($defPlayer, 1, "ATTACKHIT");
       }
       break;
-    case "ELE198":
-    case "ELE199":
-    case "ELE200":
+    case "ELE198": case "ELE199": case "ELE200":
       if (IsHeroAttackTarget()) {
         if ($cardID == "ELE198") $damage = 3;
         else if ($cardID == "ELE199") $damage = 2;
@@ -858,15 +835,11 @@ function EffectHitEffect($cardID)
         AddCurrentTurnEffectFromCombat("ELE215", $defPlayer); //Doesn't do anything just show it in the effects
       }
       break;
-    case "EVR047-1":
-    case "EVR048-1":
-    case "EVR049-1":
+    case "EVR047-1": case "EVR048-1": case "EVR049-1":
       $idArr = explode("-", $cardID);
       AddCurrentTurnEffectFromCombat($idArr[0] . "-2", $mainPlayer);
       break;
-    case "EVR066-1":
-    case "EVR067-1":
-    case "EVR068-1":
+    case "EVR066-1": case "EVR067-1": case "EVR068-1":
       PutItemIntoPlayForPlayer("CRU197", $mainPlayer);
       return 1;
     case "EVR161-1":
@@ -884,9 +857,7 @@ function EffectHitEffect($cardID)
       PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2);
       RemoveCurrentEffect($mainPlayer, $cardID);
       break;
-    case "EVR170-1":
-    case "EVR171-1":
-    case "EVR172-1":
+    case "EVR170-1": case "EVR171-1": case "EVR172-1":
       if (IsHeroAttackTarget()) {
         AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMSMAX,2");
         AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);
@@ -926,6 +897,13 @@ function EffectHitEffect($cardID)
         else if ($cardID == "DYN186-HIT") $amount = 2;
         else $amount = 1;
         PlayAura("ARC112", $mainPlayer, $amount, true);
+      }
+      break;
+    case "OUT158":
+      if(IsHeroAttackTarget())
+      {
+        AddDecisionQueue("CHOOSECARD", $mainPlayer, $CID_BloodRotPox . "," . $CID_Frailty . "," . $CID_Inertia);
+        AddDecisionQueue("PUTPLAY", $defPlayer, "-", 1);
       }
       break;
     default:
