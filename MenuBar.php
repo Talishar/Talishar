@@ -28,7 +28,7 @@ $isMobile = IsMobile();
   <link rel="stylesheet" href="./css/menuStyles2.css">
   <style>
     body {
-      background-image: url('Images/background_DYN.jpg');
+      background-image: url('Images/outsiders-background.jpg');
       background-position: top center;
       background-repeat: no-repeat;
       background-size: cover;
@@ -134,7 +134,7 @@ $isMobile = IsMobile();
   </style>
 </head>
 
-<body style="background-image: url('./Images/background.jpg');">
+<body style="background-image: url('./Images/outsiders-background.jpg');">
 
   <div style='width: 100%'>
     <nav class='NavBarDiv'>

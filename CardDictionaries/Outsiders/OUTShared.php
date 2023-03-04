@@ -12,6 +12,7 @@ function OUTAbilityCost($cardID)
     case "OUT093": return 1;
     case "OUT096": return 3;
     case "OUT139": return 0;
+    case "OUT141": return 2;
     case "OUT158": return 1;
     default: return 0;
   }
@@ -30,6 +31,7 @@ function OUTAbilityCost($cardID)
       case "OUT093": return "I";
       case "OUT096": return "I";
       case "OUT139": return "AR";
+      case "OUT141": return "A";
       case "OUT158": return "A";
       default: return "";
     }
@@ -39,6 +41,7 @@ function OUTAbilityCost($cardID)
   {
     switch ($cardID)
     {
+      case "OUT141": return true;
       case "OUT158": return true;
       default: return false;
     }
@@ -53,6 +56,7 @@ function OUTAbilityCost($cardID)
       case "OUT033": case "OUT034": case "OUT035": return 1;
       case "OUT052": return 1;
       case "OUT124": case "OUT125": case "OUT126": return 1;
+      case "OUT141": return 1;
       case "OUT195": case "OUT196": case "OUT197": return 1;
       default: return 0;
     }
@@ -73,6 +77,7 @@ function OUTAbilityCost($cardID)
       case "OUT052": return count($idArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($idArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
       case "OUT124": case "OUT125": case "OUT126": return true;
+      case "OUT141": return CardSubType($attackID) == "Dagger";
       case "OUT158": return CardType($attackID) == "AA";
       case "OUT195": case "OUT196": case "OUT197": return true;
       default: return false;
@@ -201,6 +206,9 @@ function OUTAbilityCost($cardID)
         }
       case "OUT139":
         ThrowWeapon("Dagger");
+        return "";
+      case "OUT141":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "OUT148":
         if(DelimStringContains($additionalCosts, "PAY1"))
@@ -359,6 +367,9 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("CHOOSECARD", $mainPlayer, $CID_BloodRotPox . "," . $CID_Frailty . "," . $CID_Inertia);
           AddDecisionQueue("PUTPLAY", $defPlayer, "-", 1);
         }
+        break;
+      case "OUT204": case "OUT205": case "OUT206":
+        PlayAura("DYN244", $mainPlayer);//Ponder
         break;
       default: break;
     }

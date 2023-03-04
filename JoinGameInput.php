@@ -633,6 +633,10 @@ function GetAltCardID($cardID)
 
 function IsBanned($cardID, $format)
 {
+  if($format == "compblitz" || $format == "compcc")
+  {
+    if(substr($cardID, 0, 3) == "OUT") return true;
+  }
   switch ($format) {
 
       //  The following cards are banned in Blitz:

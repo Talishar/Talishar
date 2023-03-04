@@ -1238,6 +1238,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return true;
     case "OUT162": case "OUT163": case "OUT164":
       return $from == "HAND";
+    case "OUT168": case "OUT169": case "OUT170":
+      return $from == "HAND";
     default:
       return false;
   }
@@ -1302,7 +1304,7 @@ function HasBladeBreak($cardID)
     case "RVD003": return true;
     case "UPR136": case "UPR158": case "UPR182": return true;
     case "DYN045": case "DYN152": case "DYN171": return true;
-    case "OUT049": case "OUT139": case "OUT158": return true;
+    case "OUT049": case "OUT139": case "OUT141": case "OUT158": return true;
     default:
       return false;
   }
