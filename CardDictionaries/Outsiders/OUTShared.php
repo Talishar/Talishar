@@ -245,7 +245,7 @@ function OUTAbilityCost($cardID)
 
   function OUTHitEffect($cardID)
   {
-    global $mainPlayer, $defPlayer, $chainLinkSummary;
+    global $mainPlayer, $defPlayer, $combatChain, $chainLinks, $chainLinkSummary;
     global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
     $attackID = $combatChain[0];
     switch ($cardID)
@@ -305,6 +305,15 @@ function OUTAbilityCost($cardID)
         break;
       case "OUT124": case "OUT125": case "OUT126":
         if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+        break;
+      case "OUT142":
+        $numDaggerHits = 0;
+        for($i=0; $i<count($chainLinks); ++$i)
+        {
+          if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
+        }
+        if($numDaggerHits > 0) WriteLog("Player " . $defPlayer . " lost " . $numDaggerHits . " life from " . CardLink("OUT142", "OUT142"));
+        LoseHealth($numDaggerHits, $defPlayer);
         break;
       case "OUT162": case "OUT163": case "OUT164":
         if(IsHeroAttackTarget())
