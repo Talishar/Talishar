@@ -376,6 +376,17 @@ function ResetCombatChainState()
   $chainLinkSummary = [];
 }
 
+function AttackReplaced()
+{
+  global $combatChainState;
+  global $CCS_CurrentAttackGainedGoAgain, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBaseAttack;
+  $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
+  $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
+  $combatChainState[$CCS_AttackPlayedFrom] = "BANISH";//Right now only Uzuri can do this
+  $combatChainState[$CCS_LinkBaseAttack] = 0;
+  CleanUpCombatEffects();
+}
+
 function ResetChainLinkState()
 {
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt, $CCS_GoesWhereAfterLinkResolves;

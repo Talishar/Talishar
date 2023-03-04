@@ -920,16 +920,8 @@ function FinalizeChainLink($chainClosed = false)
   array_push($chainLinkSummary, SerializeCurrentAttackNames());
 
   //Clean up combat effects that were used and are one-time
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
-    $effectArr = explode(",", $currentTurnEffects[$i]);
-    if (IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0])) {
-      --$currentTurnEffects[$i + 3];
-      if ($currentTurnEffects[$i + 3] == 0) RemoveCurrentTurnEffect($i);
-    }
-  }
-
+  CleanUpCombatEffects();
   CopyCurrentTurnEffectsFromCombat();
-
 
   //Don't change state until the end, in case it changes what effects are active
   if (CardType($combatChain[0]) == "W" && !$chainClosed) {
@@ -945,6 +937,18 @@ function FinalizeChainLink($chainClosed = false)
     FinalizeAction();
   } else {
     ResetChainLinkState();
+  }
+}
+
+function CleanUpCombatEffects()
+{
+  global $currentTurnEffects;
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+    $effectArr = explode(",", $currentTurnEffects[$i]);
+    if (IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0])) {
+      --$currentTurnEffects[$i + 3];
+      if ($currentTurnEffects[$i + 3] == 0) RemoveCurrentTurnEffect($i);
+    }
   }
 }
 
