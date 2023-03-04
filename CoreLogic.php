@@ -423,8 +423,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
       }
     }
     switch ($characterID) {
-      case "ARC075":
-      case "ARC076":
+      case "ARC075": case "ARC076": //Viserai
         if (!IsStaticType(CardType($cardID), $from, $cardID) && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
@@ -434,15 +433,12 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddLayer("TRIGGER", $currentPlayer, "CRU161");
         }
         break;
-      case "ELE062":
-      case "ELE063":
+      case "ELE062": case "ELE063":
         if (CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2 && $from != "PLAY") {
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
-      case "EVR120":
-      case "UPR102":
-      case "UPR103":
+      case "EVR120": case "UPR102": case "UPR103": //Iyslander
         if ($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
@@ -464,6 +460,14 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         if(ContractType($cardID) != "")
         {
           AddLayer("TRIGGER", $currentPlayer, $characterID);
+        }
+        break;
+      case "OUT003":
+        if(HasStealth($cardID))
+        {
+          WriteLog("Arakni gives the attack Go Again.");
+          GiveAttackGoAgain();
+          $character[$i + 1] = 1;//Once per turn
         }
         break;
       default:
