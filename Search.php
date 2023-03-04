@@ -154,6 +154,7 @@ function SearchLayerDQ($player, $param)
   $pitch = -1;
   $specOnly = false;
   $maxAttack = -1;
+  $minAttack = -1;
   $maxDef = -1;
   $frozenOnly = false;
   $hasNegCounters = false;
@@ -164,7 +165,7 @@ function SearchLayerDQ($player, $param)
     if ($paramArray[$i] == "TYPE") $type = $paramArray[$i + 1];
     else if ($paramArray[$i] == "MAXCOST") $maxCost = $paramArray[$i + 1];
   }
-  return SearchInner($layers, $player, "LAYER", LayerPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly);
+  return SearchInner($layers, $player, "LAYER", LayerPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack);
 }
 
 function SearchHandForCard($player, $card)
