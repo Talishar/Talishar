@@ -351,6 +351,9 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("PUTPLAY", $defPlayer, "-", 1);
         }
         break;
+      case "OUT204": case "OUT205": case "OUT206":
+        PlayAura("DYN244", $mainPlayer);//Ponder
+        break;
       default: break;
     }
   }
