@@ -287,9 +287,11 @@ function CardClass($cardID)
       else if ($number == 612) return "ILLUSIONIST";
       else return "GENERIC";
     case "OUT":
-      if ($number >= 1 && $number <= 42) return "ASSASSIN";
-      else if ($number >= 45 && $number <= 68) return "NINJA";
-      else if ($number >= 89 && $number <= 103) return "RANGER";
+      if ($number >= 1 && $number <= 44) return "ASSASSIN";
+      else if ($number >= 45 && $number <= 88) return "NINJA";
+      else if ($number >= 89 && $number <= 138) return "RANGER";
+      else if ($number >= 139 && $number <= 156) return "ASSASSIN,NINJA";
+      else if ($number >= 157 && $number <= 170) return "ASSASSIN,RANGER";
       else return "GENERIC";
     default:
       return 0;
