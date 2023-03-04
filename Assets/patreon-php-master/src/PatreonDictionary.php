@@ -215,7 +215,7 @@ enum PatreonCampaign : string
       case "9370276": return ($userName == "TheTablePitYT" || $userName == "TunaTCG");
       case "9404423": return ($userName == "TCGTed");
       case "8040288": return IsTeamCardAdvantage($userName);
-      case "10147920": return ($userName == "RavenousBabble" || $userName == "Ardy" || $userName == "Jargowsky" || $userName == "nick52cost" || $userName == "Boomerang" || $userName == "Matthias" || $userName == "Repas801");
+      case "10147920": return ($userName == "RavenousBabble" || $userName == "Arty" || $userName == "jargowsky" || $userName == "Nick52cost" || $userName == "Boomerang" || $userName == "matthias" || $userName == "Repas801");
       default: return "";
     }
   }
