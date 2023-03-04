@@ -663,9 +663,11 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "DYN148": return 3;
     case "DYN149": return 2;
     case "DYN150": return 1;
-    case "OUT007":
+    case "OUT005": case "OUT006":
       return NumEquipBlock() > 0 ? 1 : 0;
-    case "OUT009":
+    case "OUT007": case "OUT007":
+      return NumEquipBlock() > 0 ? 1 : 0;
+    case "OUT009": case "OUT008":
       return NumEquipBlock() > 0 ? 1 : 0;
     case "OUT021": case "OUT022": case "OUT023": return 3;
     case "OUT042": return 3;
@@ -981,11 +983,15 @@ function EffectBlockModifier($cardID, $index)
       return ($cardType == "AA" ? -1 : 0);
     case "ELE203":
       return ($combatChain[$index] == "ELE203" ? 1 : 0);
-    case "OUT007":
+    case "OUT005": case "OUT006":
+      $cardType = CardType($combatChain[$index]);
+      $cardBlock = BlockValue($combatChain[$index]);
+      return ($cardType == "AR" || $cardType == "DR" ? -1 : 0);
+    case "OUT007": case "OUT008":
       $cardType = CardType($combatChain[$index]);
       $cardBlock = BlockValue($combatChain[$index]);
       return ($cardType == "A" ? -1 : 0);
-    case "OUT009":
+    case "OUT009": case "OUT010":
       $cardType = CardType($combatChain[$index]);
       $cardBlock = BlockValue($combatChain[$index]);
       return ($cardType == "E" ? -1 : 0);
