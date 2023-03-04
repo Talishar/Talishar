@@ -69,6 +69,7 @@ function OUTAbilityCost($cardID)
       case "OUT052": return true;
       case "OUT056": case "OUT057": case "OUT058": return ComboActive($cardID);
       case "OUT068": case "OUT069": case "OUT070": return true;
+      case "OUT148": return true;
       case "OUT159": case "OUT160": return true;//Tomes
       default: return false;
     }
@@ -162,6 +163,12 @@ function OUTAbilityCost($cardID)
           DiscardHand($mainPlayer);
           for($i=0; $i<$numDraw; ++$i) Draw($mainPlayer);
           WriteLog("Attacker discarded their hand and drew $numDraw cards.");
+        }
+        return "";
+      case "OUT148":
+        if(DelimStringContains($additionalCosts, "PAY1"))
+        {
+          ThrowWeapon("Dagger");
         }
         return "";
       case "OUT158":
@@ -295,6 +302,22 @@ function OUTAbilityCost($cardID)
       default:
         return false;
     }
+  }
+
+  function ThrowWeapon($subtype)
+  {
+    global $currentPlayer;
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype);
+    AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
+    AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
+    AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "1-", 1);
+    AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-DAMAGE", 1);
+    AddDecisionQueue("DEALDAMAGE", $otherPlayer, "<-", 1);
+    AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
+    AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
+    AddDecisionQueue("HITEFFECT", $otherPlayer, "<-", 1);
   }
 
 ?>

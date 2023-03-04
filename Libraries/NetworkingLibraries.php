@@ -1437,15 +1437,11 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
       AddDecisionQueue("SOULREAPING", $currentPlayer, "-", 1);
       break;
-    case "MON257":
-    case "MON258":
-    case "MON259":
+    case "MON257": case "MON258": case "MON259":
       HandToTopDeck($currentPlayer);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "MON257", 1);
       break;
-    case "EVR161":
-    case "EVR162":
-    case "EVR163":
+    case "EVR161": case "EVR162": case "EVR163":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "LIFEOFPARTY");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
@@ -1621,12 +1617,10 @@ function PayAdditionalCosts($cardID, $from)
         $character[$index + 2] = 0;
       }
       break;
-    case "MON001":
-    case "MON002":
+    case "MON001": case "MON002":
       BanishFromSoul($currentPlayer);
       break;
-    case "MON029":
-    case "MON030":
+    case "MON029": case "MON030":
       BanishFromSoul($currentPlayer);
       break;
     case "MON033":
@@ -1823,6 +1817,13 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZBANISH", $currentPlayer, "HAND,UZURI," . $currentPlayer, 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      break;
+    case "OUT148":
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how much to pay for " . CardLink($cardID, $cardID));
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0,1");
+      AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
+      AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
+      AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-PAY1", 1);
       break;
     default:
       break;

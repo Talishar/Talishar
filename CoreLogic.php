@@ -1562,6 +1562,7 @@ function DestroyCharacter($player, $index)
   $cardID = $char[$index];
   AddGraveyard($cardID, $player, "CHAR");
   CharacterDestroyEffect($cardID, $player);
+  return $cardID;
 }
 
 function RemoveArsenalEffects($player, $cardToReturn){

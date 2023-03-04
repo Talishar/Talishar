@@ -596,14 +596,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
     case "DYN188": case "DYN189": case "DYN190":
       $deck = new Deck($currentPlayer);
-      
+
       if ($deck->Reveal(1)) {
         if (PitchValue($deck->Top()) == PitchValue($cardID)) {
           PlayAura("ARC112", $currentPlayer, 1, true);
         }
       }
       return "";
-      
+
     case "DYN192":
       DealArcane(1, 1, "ABILITY", $cardID, resolvedTarget: $target);
       AddDecisionQueue("SURGENTAETHERTIDE", $currentPlayer, "-");
@@ -671,7 +671,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if ($deck->Reveal(1)) {
         if (PitchValue($deck->Top()) == PitchValue($cardID)) {
           PlayAura("MON104", $currentPlayer, 1, true);
-        } 
+        }
       }
       return "";
     case "DYN235":
@@ -772,14 +772,9 @@ function DYNHitEffect($cardID)
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{0}", 1);
       AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       break;
-    case "DYN115":
+    case "DYN115": case "DYN116":
       if (IsHeroAttackTarget()) {
-        AddCurrentTurnEffectFromCombat($cardID, $defPlayer);
-      }
-      break;
-    case "DYN116":
-      if (IsHeroAttackTarget()) {
-        AddCurrentTurnEffectFromCombat($cardID, $defPlayer);
+        AddCurrentTurnEffect($cardID, $defPlayer);
       }
       break;
     case "DYN117":

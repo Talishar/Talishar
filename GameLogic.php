@@ -4803,7 +4803,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           DestroyItemForPlayer($player, $index);
           break;
         case "MYCHAR":
-          DestroyCharacter($player, $index);
+          return DestroyCharacter($player, $index);
           break;
         default:
           break;
@@ -5716,6 +5716,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "PASSTAKEDAMAGE":
       if($lastResult == "PASS") DamageTrigger($player, $parameter, "DAMAGE");
       return $lastResult;
+    case "HITEFFECT":
+      ProcessHitEffect($parameter);
+      return $parameter;
     case "PLASMAMAINLINE":
       $items = &GetItems($player);
       $params = explode(",", $parameter);
