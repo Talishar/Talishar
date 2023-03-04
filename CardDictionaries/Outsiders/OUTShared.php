@@ -4,6 +4,7 @@ function OUTAbilityCost($cardID)
 {
   switch($cardID)
   {
+    case "OUT011": return 0;
     case "OUT049": return 1;
     case "OUT093": return 1;
     case "OUT096": return 3;
@@ -18,6 +19,7 @@ function OUTAbilityCost($cardID)
     switch ($cardID)
     {
       case "OUT001": case "OUT002": return "AR";
+      case "OUT011": return "AR";
       case "OUT049": return "I";
       case "OUT093": return "I";
       case "OUT096": return "I";
@@ -101,6 +103,9 @@ function OUTAbilityCost($cardID)
         $combatChain[0] = $banish[$index];
         $combatChainState[$CCS_LinkBaseAttack] = AttackValue($combatChain[0]);
         RemoveBanish($currentPlayer, $index);
+        return "";
+      case "OUT011":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "OUT014":
         for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
