@@ -164,10 +164,10 @@ if ($canSeeQueue) {
     <div style='vertical-align:middle; text-align:center;'>
 
       <div style="vertical-align:middle; position: relative;">
-        <h3>Big changes to matchmaking!</h3>
-        <h4 style="margin-left:5%; margin-right:5%;">Login is now required for matchmaking</h4>
-        <BR>
-        If logged out, you can still make private games to play with friends, against yourself in multiple tabs, or against the bot! We've also added Clash as a supported format.
+        <h3>Outsiders</h3>
+        All spoiled cards as of Wreck Havoc implemented except:<BR>
+          Barbed Undertow, Wreck Havoc<BR>
+          Last updated: 1:03PM CST
         <br>
       </div>
       <BR>
