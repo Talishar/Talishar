@@ -43,6 +43,7 @@ function OUTAbilityCost($cardID)
       case "OUT033": case "OUT034": case "OUT035": return 1;
       case "OUT052": return 1;
       case "OUT124": return 1;
+      case "OUT195": case "OUT196": case "OUT197": return 1;
       default: return 0;
     }
   }
@@ -60,6 +61,7 @@ function OUTAbilityCost($cardID)
       case "OUT068": case "OUT069": case "OUT070": return true;
       case "OUT124": return true;
       case "OUT158": return CardType($attackID) == "AA";
+      case "OUT195": case "OUT196": case "OUT197": return true;
       default: return false;
     }
   }
@@ -222,6 +224,13 @@ function OUTAbilityCost($cardID)
         PlayAura("DYN244", $currentPlayer);
         PlayAura($CID_Frailty, $otherPlayer);
         return "";
+      case "OUT195": case "OUT196": case "OUT197":
+        if(DelimStringContains($additionalCosts, "BANISH1ATTACK"))
+        {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          GiveAttackGoAgain();
+        }
+        return "";
       case "OUT231": case "OUT232": case "OUT233":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         PlayAura("DYN244", $currentPlayer);
@@ -237,6 +246,11 @@ function OUTAbilityCost($cardID)
     $attackID = $combatChain[0];
     switch ($cardID)
     {
+      case "OUT012":
+        $deck = new Deck($defPlayer);
+        $deckCard = $deck->Top(true);
+        BanishCardForPlayer($deckCard, $mainPlayer, "THEIRDECK", "NT", $cardID);
+        break;
       case "OUT013":
         if(HasPlayedAttackReaction())
         {
@@ -303,6 +317,7 @@ function OUTAbilityCost($cardID)
   {
     switch($cardID)
     {
+      case "OUT012":
       case "OUT015": case "OUT016": case "OUT017":
       case "OUT024": case "OUT025": case "OUT026":
       case "OUT027": case "OUT028": case "OUT029":
