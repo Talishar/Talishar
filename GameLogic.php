@@ -275,7 +275,7 @@ function DoSurgeEffect($cardID, $player, $target)
 
 function ChainLinkBeginResolutionEffects()
 {
-  global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex;
+  global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex, $CID_BloodRotPox;
   if (CardType($combatChain[0]) == "W") {
     $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
     $index = $combatChainState[$CCS_WeaponIndex];
@@ -300,6 +300,19 @@ function ChainLinkBeginResolutionEffects()
         }
       }
     }
+  }
+  switch($combatChain[0])
+  {
+    case "OUT168": case "OUT169": case "OUT170":
+      for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
+      {
+        if($combatChain[$i+1] != $defPlayer || $combatChain[$i+2] != "HAND") continue;
+        WriteLog("Virulent Touch creates a Bloodrot Pox from being blocked from hand.");
+        PlayAura($CID_BloodRotPox, $defPlayer);
+        break;
+      }
+      break;
+    default: break;
   }
 }
 

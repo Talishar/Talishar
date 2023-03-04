@@ -1238,6 +1238,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return true;
     case "OUT162": case "OUT163": case "OUT164":
       return $from == "HAND";
+    case "OUT168": case "OUT169": case "OUT170":
+      return $from == "HAND";
     default:
       return false;
   }
