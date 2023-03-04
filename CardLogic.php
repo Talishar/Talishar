@@ -1127,10 +1127,11 @@ function TopDeckToArsenal($player)
   WriteLog("The top card of player " . $player . "'s deck was put in their arsenal.");
 }
 
-function DestroyArsenal($player)
+function DestroyArsenal($player, $index=-1)
 {
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if($index > -1 && $index != $i) continue;
     WriteLog(CardLink($arsenal[$i], $arsenal[$i]) . " was destroyed from the arsenal.");
     AddGraveyard($arsenal[$i], $player, "ARS");
   }

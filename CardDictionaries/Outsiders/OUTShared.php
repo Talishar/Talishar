@@ -368,6 +368,13 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("PUTPLAY", $defPlayer, "-", 1);
         }
         break;
+      case "OUT198": case "OUT199": case "OUT200":
+        SetArsenalFacing("UP", $defPlayer);
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS:type=DR");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to destroy", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
+        break;
       case "OUT204": case "OUT205": case "OUT206":
         PlayAura("DYN244", $mainPlayer);//Ponder
         break;

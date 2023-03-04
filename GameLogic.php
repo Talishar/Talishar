@@ -384,36 +384,26 @@ function ProcessCrushEffect($cardID)
       case "WTR045":
         AddNextTurnEffect($cardID, $defPlayer);
         break;
-      case "WTR057":
-      case "WTR058":
-      case "WTR059":
-        AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
-        AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-        AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
-        break;
-      case "WTR060":
-      case "WTR061":
-      case "WTR062":
-        AddNextTurnEffect($cardID, $defPlayer);
-        break;
-      case "WTR063":
-      case "WTR064":
-      case "WTR065":
-        $defCharacter[1] = 3;
-        break;
-      case "WTR066":
-      case "WTR067":
-      case "WTR068":
-        AddNextTurnEffect($cardID, $defPlayer);
-        break;
-      case "WTR050":
-      case "WTR049":
-      case "WTR048":
+      case "WTR048": case "WTR049": case "WTR050":
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put at the bottom of the deck", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZADDBOTDECK", $mainPlayer, "-", 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        break;
+      case "WTR057": case "WTR058": case "WTR059":
+        AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
+        AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+        AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
+        break;
+      case "WTR060": case "WTR061": case "WTR062":
+        AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "WTR063": case "WTR064": case "WTR065":
+        $defCharacter[1] = 3;
+        break;
+      case "WTR066": case "WTR067": case "WTR068":
+        AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "CRU026":
         AddDecisionQueue("FINDINDICES", $mainPlayer, "CRU026");
@@ -432,14 +422,10 @@ function ProcessCrushEffect($cardID)
         AddDecisionQueue("SHOWBANISHEDCARD", $defPlayer, "-", 1);
         AddDecisionQueue("RIGHTEOUSCLEANSING", $mainPlayer, "<-", 1);
         break;
-      case "CRU032":
-      case "CRU033":
-      case "CRU034":
+      case "CRU032": case "CRU033": case "CRU034":
         AddNextTurnEffect("CRU032", $defPlayer);
         break;
-      case "CRU035":
-      case "CRU036":
-      case "CRU037":
+      case "CRU035": case "CRU036": case "CRU037":
         AddNextTurnEffect("CRU035", $defPlayer);
         break;
       default:
@@ -5144,7 +5130,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
-
     case "MZDESTROY":
       $lastResultArr = explode(",", $lastResult);
       $params = explode(",", $parameter);
@@ -5169,6 +5154,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             break;
           case "THEIRITEMS":
             DestroyItemForPlayer($otherPlayer, $mzIndex[1]);
+            break;
+          case "MYARS":
+            DestroyArsenal($player, $mzIndex[1]);
+            break;
+          case "THEIRARS":
+            DestroyArsenal($otherPlayer, $mzIndex[1]);
             break;
           case "LANDMARK":
             DestroyLandmark($mzIndex[1]);

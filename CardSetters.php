@@ -190,6 +190,7 @@ function SetArsenalFacing($facing, $player)
       return $arsenal[$i];
     }
   }
+  return "";
 }
 
 function RemoveArsenal($player, $index)
