@@ -83,7 +83,7 @@ function OUTAbilityCost($cardID)
 
   function OUTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $combatChain, $combatChainState, $CCS_LinkBaseAttack;
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $defPlayer, $combatChain, $combatChainState, $CCS_LinkBaseAttack;
     global $CID_Frailty, $CID_BloodRotPox, $CID_Inertia;
     $rv = "";
     switch ($cardID)
@@ -101,6 +101,12 @@ function OUTAbilityCost($cardID)
         $combatChain[0] = $banish[$index];
         $combatChainState[$CCS_LinkBaseAttack] = AttackValue($combatChain[0]);
         RemoveBanish($currentPlayer, $index);
+        return "";
+      case "OUT014":
+        for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+        {
+          if($combatChain[$i+1] == $defPlayer) PlayAura($CID_BloodRotPox, $defPlayer);
+        }
         return "";
       case "OUT033": case "OUT034": case "OUT035":
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
