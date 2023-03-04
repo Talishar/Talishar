@@ -4,6 +4,8 @@ function OUTAbilityCost($cardID)
 {
   switch($cardID)
   {
+    case "OUT007": return 2;
+    case "OUT009": return 2;
     case "OUT011": return 0;
     case "OUT049": return 1;
     case "OUT093": return 1;
@@ -19,6 +21,8 @@ function OUTAbilityCost($cardID)
     switch ($cardID)
     {
       case "OUT001": case "OUT002": return "AR";
+      case "OUT007": return "AA";
+      case "OUT009": return "AA";
       case "OUT011": return "AR";
       case "OUT049": return "I";
       case "OUT093": return "I";
@@ -59,6 +63,8 @@ function OUTAbilityCost($cardID)
     $cardID = $idArr[0];
     switch ($cardID)
     {
+      case "OUT007": return NumNonAttackActionBlocking() > 0;
+      case "OUT009": return NumEquipBlock() > 0;
       case "OUT033": case "OUT034": case "OUT035": return HasStealth($attackID);
       case "OUT049": return CardType($attackID) == "AA";
       case "OUT052": return count($idArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($idArr[1]));
@@ -74,6 +80,8 @@ function OUTAbilityCost($cardID)
   {
     switch ($cardID)
     {
+      case "OUT007": return true;
+      case "OUT009": return true;
       case "OUT052": return true;
       case "OUT056": case "OUT057": case "OUT058": return ComboActive($cardID);
       case "OUT068": case "OUT069": case "OUT070": return true;
@@ -261,6 +269,16 @@ function OUTAbilityCost($cardID)
     $attackID = $combatChain[0];
     switch ($cardID)
     {
+      case "OUT007":
+        if (IsHeroAttackTarget()) {
+          AddCurrentTurnEffect($cardID, $defPlayer);
+        }
+        break;
+      case "OUT009":
+        if (IsHeroAttackTarget()) {
+          AddCurrentTurnEffect($cardID, $defPlayer);
+        }
+        break;
       case "OUT012":
         $deck = new Deck($defPlayer);
         $deckCard = $deck->Top(true);
