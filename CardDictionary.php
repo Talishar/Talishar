@@ -658,6 +658,18 @@ function GetResolvedAbilityType($cardID, $from="-")
   }
 }
 
+function GetResolvedAbilityName($cardID, $from="-")
+{
+  global $currentPlayer, $CS_AbilityIndex;
+  $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
+  $abilityNames = GetAbilityNames($cardID);
+  if ($abilityNames == "" || $abilityIndex == "-") return "";
+  else {
+    $abilityNames = explode(",", $abilityNames);
+    return $abilityNames[$abilityIndex];
+  }
+}
+
 function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "")
 {
   global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
