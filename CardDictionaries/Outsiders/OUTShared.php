@@ -67,7 +67,7 @@ function OUTAbilityCost($cardID)
       case "OUT052": return true;
       case "OUT056": case "OUT057": case "OUT058": return ComboActive($cardID);
       case "OUT068": case "OUT069": case "OUT070": return true;
-      case "OUT160": return true;
+      case "OUT159": case "OUT160": return true;//Tomes
       default: return false;
     }
   }
@@ -75,7 +75,7 @@ function OUTAbilityCost($cardID)
   function OUTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer, $CS_PlayIndex, $mainPlayer, $combatChain, $combatChainState, $CCS_LinkBaseAttack;
-    global $CID_Frailty;
+    global $CID_Frailty, $CID_BloodRotPox, $CID_Inertia;
     $rv = "";
     switch ($cardID)
     {
@@ -161,6 +161,25 @@ function OUTAbilityCost($cardID)
         return "";
       case "OUT158":
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "OUT159":
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        if(!ArsenalFull($currentPlayer))
+        {
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+          AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+          AddDecisionQueue("ADDARSENALFACEDOWN", $currentPlayer, "GY", 1);
+        }
+        if(!ArsenalFull($otherPlayer))
+        {
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+          AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+          AddDecisionQueue("ADDARSENALFACEDOWN", $otherPlayer, "GY", 1);
+        }
+        PlayAura("DYN244", $currentPlayer);//Ponder
+        PlayAura($CID_BloodRotPox, $otherPlayer);
         return "";
       case "OUT160":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
