@@ -42,6 +42,7 @@ function OUTAbilityCost($cardID)
     {
       case "OUT033": case "OUT034": case "OUT035": return 1;
       case "OUT052": return 1;
+      case "OUT124": return 1;
       default: return 0;
     }
   }
@@ -57,6 +58,7 @@ function OUTAbilityCost($cardID)
       case "OUT049": return CardType($attackID) == "AA";
       case "OUT052": return count($idArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($idArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
+      case "OUT124": return true;
       case "OUT158": return CardType($attackID) == "AA";
       default: return false;
     }
@@ -163,6 +165,12 @@ function OUTAbilityCost($cardID)
           DiscardHand($mainPlayer);
           for($i=0; $i<$numDraw; ++$i) Draw($mainPlayer);
           WriteLog("Attacker discarded their hand and drew $numDraw cards.");
+        }
+        return "";
+      case "OUT124":
+        if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          return "has +1.";
         }
         return "";
       case "OUT148":
@@ -276,6 +284,9 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Head_Jab,Surging_Strike,Twin_Twisters");
         AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . "-");
         AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-");
+        break;
+      case "OUT124":
+        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
         break;
       case "OUT162": case "OUT163": case "OUT164":
         if(IsHeroAttackTarget())
