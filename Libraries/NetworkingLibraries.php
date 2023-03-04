@@ -1821,6 +1821,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:maxAttack=1;minAttack=1");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-BANISH1ATTACK", 1);
       break;
     default:
       break;
