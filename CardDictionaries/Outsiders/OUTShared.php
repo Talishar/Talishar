@@ -340,6 +340,7 @@ function OUTAbilityCost($cardID)
       case "OUT015": case "OUT016": case "OUT017":
       case "OUT024": case "OUT025": case "OUT026":
       case "OUT027": case "OUT028": case "OUT029":
+      case "OUT030": case "OUT031": case "OUT032":
       case "OUT033": case "OUT034": case "OUT035":
       case "OUT036": case "OUT037": case "OUT038":
       case "OUT039": case "OUT040": case "OUT041":
