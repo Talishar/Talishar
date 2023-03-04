@@ -613,6 +613,8 @@ function GetAbilityTypes($cardID)
   switch ($cardID) {
     case "ARC003": case "CRU101":
       return "A,AA";
+    case "OUT093":
+      return "I,I";
     default:
       return "";
   }
@@ -628,6 +630,8 @@ function GetAbilityNames($cardID, $index = -1)
       $rv = "Add_a_steam_counter";
       if ($character[$index + 2] > 0) $rv .= ",Attack";
       return $rv;
+    case "OUT093":
+      return "Load,Aim";
     default:
       return "";
   }
@@ -1560,16 +1564,12 @@ function DoesEffectGrantDominate($cardID)
 function CharacterNumUsesPerTurn($cardID)
 {
   switch ($cardID) {
-    case "WTR038": case "WTR039":
-      return 999;
-    case "ELE034":
-      return 2;
-    case "UPR183":
-    case "DYN001":
-    case "DYN193":
-      return 999;
-    case "DYN492a":
-      return 999;
+    case "WTR038": case "WTR039": return 999;
+    case "ELE034": return 2;
+    case "UPR183": return 999;
+    case "DYN001": case "DYN193": return 999;
+    case "DYN492a": return 999;
+    case "OUT093": return 2;
     default:
       return 1;
   }
