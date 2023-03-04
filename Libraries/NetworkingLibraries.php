@@ -1537,23 +1537,17 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SHOWSELECTEDMODE", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
-    case "WTR179":
-    case "WTR180":
-    case "WTR181":
+    case "WTR179": case "WTR180": case "WTR181":
       $indices = SearchHand($currentPlayer, "", "", -1, 2);
       AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, $indices);
       AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-");
       break;
-    case "WTR182":
-    case "WTR183":
-    case "WTR184":
+    case "WTR182": case "WTR183": case "WTR184":
       $indices = SearchHand($currentPlayer, "", "", 1, 0);
       AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, $indices);
       AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-");
       break;
-    case "WTR185":
-    case "WTR186":
-    case "WTR187":
+    case "WTR185": case "WTR186": case "WTR187":
       $indices = SearchDiscardForCard($currentPlayer, "WTR218", "WTR219", "WTR220");
       if ($indices == "") {
         return "No Nimblism to banish.";
@@ -1563,9 +1557,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
       AddDecisionQueue("NIMBLESTRIKE", $currentPlayer, "-", 1);
       break;
-    case "WTR197":
-    case "WTR198":
-    case "WTR199":
+    case "WTR197": case "WTR198": case "WTR199":
       $indices = SearchDiscardForCard($currentPlayer, "WTR221", "WTR222", "WTR223");
       if ($indices == "") {
         return "No Sloggism to banish.";
@@ -1824,6 +1816,11 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
       AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-PAY1", 1);
+      break;
+    case "OUT195": case "OUT196": case "OUT197":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:maxAttack=1;minAttack=1");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       break;
     default:
       break;
