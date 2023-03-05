@@ -619,6 +619,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "OUT043": return 2;
     case "OUT044": return 1;
     case "OUT051": return (ComboActive() ? 2 : 0);
+    case "OUT133": case "OUT134": case "OUT135": return NumCardsDefended() < 2 ? 3 : 0;
     case "OUT154": return 3;
     case "OUT155": return 2;
     case "OUT156": return 1;
@@ -2445,6 +2446,16 @@ function NumNonEquipmentDefended()
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     $cardType = CardType($combatChain[$i]);
     if ($combatChain[$i + 1] == $defPlayer && $cardType != "E" && $cardType != "C") ++$number;
+  }
+  return $number;
+}
+
+function NumCardsDefended()
+{
+  global $combatChain, $defPlayer;
+  $number = 0;
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if ($combatChain[$i + 1] == $defPlayer) ++$number;
   }
   return $number;
 }
