@@ -2221,7 +2221,8 @@ function OnBlockResolveEffects()
         }
         break;
       case "MON241": case "MON242": case "MON243":
-      case "MON244": case "RVD005": case "RVD006": // Pay 1 -> Get 2 Defense
+      case "MON244": case "RVD005": case "RVD006":
+      case "OUT174":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "ELE203": // Rampart of the Ram's Head
@@ -4135,6 +4136,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $combatChain[$parameter]);
       $character[$index + 4] += 2;
+      return $lastResult;
+    case "VAMBRACE":
+      $character = &GetPlayerCharacter($player);
+      $index = FindCharacterIndex($player, $combatChain[$parameter]);
+      $character[$index + 4] += 1;
       return $lastResult;
     case "ARTOFWAR":
       global $currentPlayer, $combatChain, $defPlayer;
