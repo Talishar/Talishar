@@ -229,7 +229,7 @@ function OUTAbilityCost($cardID)
       case "OUT105":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "OUT106": case "OUT107": case "OUT108":
+      case "OUT107":
         if(NumAttackReactionsPlayed() > 0)
         {
           $deck = new Deck($mainPlayer);
@@ -282,7 +282,7 @@ function OUTAbilityCost($cardID)
         if(!ArsenalFull($currentPlayer))
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-          AddDecisionQueue("CHOOSEHAND", $currentPlayer, "2-", 1);
+          AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
           AddDecisionQueue("ADDARSENALFACEDOWN", $currentPlayer, "GY", 1);
         }
