@@ -425,6 +425,10 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
         break;
+      case "OUT201": case "OUT202": case "OUT203":
+        $hand = &GetHand($defPlayer);
+        if(count($hand) >= 4) PummelHit($defPlayer);
+        break;
       case "OUT204": case "OUT205": case "OUT206":
         PlayAura("DYN244", $mainPlayer);//Ponder
         break;
