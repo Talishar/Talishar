@@ -153,11 +153,11 @@ function ARCGenericHitEffect($cardID)
       AddCurrentTurnEffect($cardID, $mainPlayer);
       break;
     case "ARC179": case "ARC180": case "ARC181":
-      AddDecisionQueue("FINDINDICES", $mainPlayer, "GYNAA");
-      AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
-      AddDecisionQueue("REMOVEMYDISCARD", $mainPlayer, "-", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:type=A");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a non-attack action card to put on top of your deck");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
-      AddDecisionQueue("SHOWSELECTEDCARD", $mainPlayer, "-", 1);
       break;
     case "ARC182": case "ARC183":  case "ARC184":
       OptMain(2);
