@@ -102,6 +102,7 @@ function OUTAbilityCost($cardID)
       case "OUT052": return true;
       case "OUT056": case "OUT057": case "OUT058": return ComboActive($cardID);
       case "OUT068": case "OUT069": case "OUT070": return true;
+      case "OUT074": case "OUT075": case "OUT076": return true;
       case "OUT105": return true;
       case "OUT145": case "OUT146": case "OUT147": return true;
       case "OUT148": return true;
