@@ -481,4 +481,15 @@ function OUTAbilityCost($cardID)
     return $damage;
   }
 
+  function NumAttackReactionsPlayed()
+  {
+    global $combatChain, $mainPlayer;
+    $numReactions = 0;
+    for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
+    {
+      if($combatChain[$i+1] == $mainPlayer && (CardType($combatChain[$i]) == "AR" || GetAbilityType($combatChain[$i]) == "AR")) ++$numReactions;
+    }
+    return $numReactions;
+  }
+
 ?>
