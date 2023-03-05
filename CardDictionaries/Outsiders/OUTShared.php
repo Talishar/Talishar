@@ -101,7 +101,7 @@ function OUTAbilityCost($cardID)
       case "OUT005": case "OUT006": return true;
       case "OUT007": case "OUT008": return true;
       case "OUT009": case "OUT010": return true;
-      case "OUT052": return true;
+      case "OUT052": case "OUT053": return true;
       case "OUT056": case "OUT057": case "OUT058": return ComboActive($cardID);
       case "OUT068": case "OUT069": case "OUT070": return true;
       case "OUT074": case "OUT075": case "OUT076": return true;
@@ -445,6 +445,9 @@ function OUTAbilityCost($cardID)
           else if($char[0] == "DUMMYDISHONORED") WriteLog("Those who have been dishonored have nothing left to lose.");
           else $char[0] = "DUMMYDISHONORED";
         }
+        break;
+      case "OUT053":
+        KatsuHit();
         break;
       case "OUT059": case "OUT060": case "OUT061":
         if(ComboActive() && IsHeroAttackTarget())
