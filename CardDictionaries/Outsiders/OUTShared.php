@@ -57,6 +57,7 @@ function OUTAbilityCost($cardID)
       case "OUT052": return 1;
       case "OUT124": case "OUT125": case "OUT126": return 1;
       case "OUT141": return 1;
+      case "OUT186": return (-1 * $idArr[1]);
       case "OUT195": case "OUT196": case "OUT197": return 1;
       default: return 0;
     }
@@ -80,6 +81,7 @@ function OUTAbilityCost($cardID)
       case "OUT141": return CardSubType($attackID) == "Dagger";
       case "OUT158": return CardType($attackID) == "AA";
       case "OUT165": case "OUT166": case "OUT167": return ClassContains($attackID, "ASSASSIN", $mainPlayer) || ClassContains($attackID, "RANGER", $mainPlayer);
+      case "OUT186": return true;
       case "OUT195": case "OUT196": case "OUT197": return true;
       default: return false;
     }
@@ -265,6 +267,26 @@ function OUTAbilityCost($cardID)
       case "OUT165": case "OUT166": case "OUT167":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Your opponent loses life if your next assassin or ranger attack hits.";
+      case "OUT186":
+        if(!CanRevealCards($currentPlayer)) { AddCurrentTurnEffect("OUT186-7", $currentPlayer); return "You cannot reveal cards so Gore Belching gets -7."; }
+        $deck = &GetDeck($currentPlayer);
+        $cardsToReveal = "";
+        for($i=0; $i<count($deck); ++$i)
+        {
+          if($cardsToReveal != "") $cardsToReveal .= ",";
+          $cardsToReveal .= $deck[$i];
+          if(CardType($deck[$i]) == "AA")
+          {
+            BanishCardForPlayer($deck[$i], $currentPlayer, "DECK", "-", "OUT186");
+            AddCurrentTurnEffect("OUT186-" . AttackValue($deck[$i]), $currentPlayer);
+            unset($deck[$i]);
+            $deck = array_values($deck);
+            break;
+          }
+        }
+        RevealCards($cardsToReveal);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        return "";
       case "OUT195": case "OUT196": case "OUT197":
         if(DelimStringContains($additionalCosts, "BANISH1ATTACK"))
         {
