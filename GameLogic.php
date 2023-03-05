@@ -876,6 +876,11 @@ function EffectHitEffect($cardID)
         AddDecisionQueue("MULTIZONEDESTROY", $mainPlayer, "-", 1);
       }
       break;
+    case "OUT112":
+      if (IsHeroAttackTarget()) {
+        PlayAura($CID_BloodRotPox, $defPlayer);
+      }
+      break;
     case "OUT114": case "OUT115": case "OUT116":
       if (IsHeroAttackTarget()) {
         PlayAura($CID_Inertia, $defPlayer);
