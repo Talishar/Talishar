@@ -2017,6 +2017,8 @@ case "6":
 switch($cardID[5]) {
 case "0":
 return "A";
+case "5":
+return "A";
 default: return "AA";
 }
 default: return "AA";
@@ -5861,6 +5863,8 @@ case "4":
 switch($cardID[5]) {
 case "2":
 return 2;
+case "5":
+return 4;
 case "8":
 return 3;
 default: return 0;
@@ -5881,6 +5885,8 @@ case "8":
 switch($cardID[5]) {
 case "3":
 return 6;
+case "6":
+return 7;
 default: return 0;
 }
 case "9":
@@ -7627,6 +7633,8 @@ case "4":
 switch($cardID[5]) {
 case "1":
 return 1;
+case "5":
+return 2;
 case "8":
 return 2;
 default: return 3;
@@ -7651,8 +7659,16 @@ case "3":
 return 2;
 case "4":
 return 2;
+case "5":
+return 2;
 case "8":
 return 2;
+default: return 3;
+}
+case "8":
+switch($cardID[5]) {
+case "6":
+return -1;
 default: return 3;
 }
 case "9":
@@ -11943,6 +11959,8 @@ case "1":
 return "Blade Cuff";
 case "2":
 return "Stab Wound";
+case "5":
+return "Bleed Out";
 case "8":
 return "Hurl";
 default: return "";
@@ -11967,6 +11985,8 @@ case "3":
 return "Death Touch";
 case "4":
 return "Death Touch";
+case "5":
+return "Toxicity";
 case "8":
 return "Virulent Touch";
 default: return "";
@@ -11975,6 +11995,8 @@ case "8":
 switch($cardID[5]) {
 case "3":
 return "Amnesia";
+case "6":
+return "Gore Belching";
 default: return "";
 }
 case "9":
@@ -20899,6 +20921,12 @@ case "4":
 return 1;
 default: return 0;
 }
+case "4":
+switch($cardID[5]) {
+case "5":
+return 2;
+default: return 0;
+}
 case "5":
 switch($cardID[5]) {
 case "4":
@@ -24270,6 +24298,8 @@ case "4":
 switch($cardID[5]) {
 case "2":
 return "M";
+case "5":
+return "R";
 case "8":
 return "R";
 default: return "C";
@@ -24290,11 +24320,15 @@ case "3":
 return "R";
 case "4":
 return "R";
+case "5":
+return "R";
 default: return "C";
 }
 case "8":
 switch($cardID[5]) {
 case "3":
+return "M";
+case "6":
 return "M";
 default: return "C";
 }
