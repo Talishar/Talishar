@@ -914,6 +914,9 @@ function EffectHitEffect($cardID)
         AddDecisionQueue("PUTPLAY", $defPlayer, "-", 1);
       }
       break;
+    case "OUT165": LoseHealth(5, $defPlayer); break;
+    case "OUT166": LoseHealth(4, $defPlayer); break;
+    case "OUT167": LoseHealth(3, $defPlayer); break;
     default:
       break;
   }

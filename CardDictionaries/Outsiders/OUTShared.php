@@ -79,6 +79,7 @@ function OUTAbilityCost($cardID)
       case "OUT124": case "OUT125": case "OUT126": return true;
       case "OUT141": return CardSubType($attackID) == "Dagger";
       case "OUT158": return CardType($attackID) == "AA";
+      case "OUT165": case "OUT166": case "OUT167": return ClassContains($attackID, "ASSASSIN", $mainPlayer) || ClassContains($attackID, "RANGER", $mainPlayer);
       case "OUT195": case "OUT196": case "OUT197": return true;
       default: return false;
     }
@@ -96,6 +97,7 @@ function OUTAbilityCost($cardID)
       case "OUT068": case "OUT069": case "OUT070": return true;
       case "OUT148": return true;
       case "OUT159": case "OUT160": return true;//Tomes
+      case "OUT165": case "OUT166": case "OUT167": return true;
       default: return false;
     }
   }
@@ -259,6 +261,9 @@ function OUTAbilityCost($cardID)
         PlayAura("DYN244", $currentPlayer);
         PlayAura($CID_Frailty, $otherPlayer);
         return "";
+      case "OUT165": case "OUT166": case "OUT167":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Your opponent loses life if your next assassin or ranger attack hits.";
       case "OUT195": case "OUT196": case "OUT197":
         if(DelimStringContains($additionalCosts, "BANISH1ATTACK"))
         {
