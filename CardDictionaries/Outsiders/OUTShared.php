@@ -58,6 +58,7 @@ function OUTAbilityCost($cardID)
       case "OUT124": case "OUT125": case "OUT126": return 1;
       case "OUT141": return 1;
       case "OUT186": return (-1 * $idArr[1]);
+      case "OUT188_2": return 3;
       case "OUT195": case "OUT196": case "OUT197": return 1;
       default: return 0;
     }
@@ -82,6 +83,8 @@ function OUTAbilityCost($cardID)
       case "OUT158": return CardType($attackID) == "AA";
       case "OUT165": case "OUT166": case "OUT167": return ClassContains($attackID, "ASSASSIN", $mainPlayer) || ClassContains($attackID, "RANGER", $mainPlayer);
       case "OUT186": return true;
+      case "OUT188_1": return CardType($attackID) == "AA";
+      case "OUT188_2": return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
       case "OUT195": case "OUT196": case "OUT197": return true;
       default: return false;
     }
@@ -101,6 +104,7 @@ function OUTAbilityCost($cardID)
       case "OUT148": return true;
       case "OUT159": case "OUT160": return true;//Tomes
       case "OUT165": case "OUT166": case "OUT167": return true;
+      case "OUT188": return true;
       default: return false;
     }
   }
@@ -307,6 +311,10 @@ function OUTAbilityCost($cardID)
         }
         RevealCards($cardsToReveal);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        return "";
+      case "OUT188":
+        AddCurrentTurnEffect($cardID . "_1", $currentPlayer);
+        AddCurrentTurnEffect($cardID . "_2", $currentPlayer);
         return "";
       case "OUT195": case "OUT196": case "OUT197":
         if(DelimStringContains($additionalCosts, "BANISH1ATTACK"))

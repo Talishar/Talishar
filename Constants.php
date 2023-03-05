@@ -537,3 +537,9 @@ function GetDamagePrevention($player)
   global $CS_DamagePrevention;
   return GetClassState($player, $CS_DamagePrevention);
 }
+
+function AttackPlayedFrom()
+{
+  global $CCS_AttackPlayedFrom, $combatChainState;
+  return $combatChainState[$CCS_AttackPlayedFrom];
+}
