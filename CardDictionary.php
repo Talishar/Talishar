@@ -1766,41 +1766,14 @@ function RepriseActive()
 function HasCombo($cardID)
 {
   switch ($cardID) {
-    case "WTR081":
-    case "WTR083":
-    case "WTR084":
-    case "WTR085":
-    case "WTR086":
-    case "WTR087":
-    case "WTR088":
-    case "WTR089":
-    case "WTR090":
-    case "WTR091":
-    case "WTR095":
-    case "WTR096":
-    case "WTR097":
-    case "WTR104":
-    case "WTR105":
-    case "WTR106":
-    case "WTR110":
-    case "WTR111":
-    case "WTR112":
+    case "WTR081": case "WTR083": case "WTR084": case "WTR085": case "WTR086": case "WTR087":
+    case "WTR088": case "WTR089": case "WTR090": case "WTR091": case "WTR095": case "WTR096":
+    case "WTR097": case "WTR104": case "WTR105": case "WTR106": case "WTR110": case "WTR111": case "WTR112":
       return true;
-    case "CRU054":
-    case "CRU055":
-    case "CRU056":
-    case "CRU057":
-    case "CRU058":
-    case "CRU059":
-    case "CRU060":
-    case "CRU061":
-    case "CRU062":
+    case "CRU054": case "CRU055": case "CRU056": case "CRU057": case "CRU058": case "CRU059":
+    case "CRU060": case "CRU061": case "CRU062":
       return true;
-    case "EVR038":
-    case "EVR040":
-    case "EVR041":
-    case "EVR042":
-    case "EVR043":
+    case "EVR038": case "EVR040": case "EVR041": case "EVR042": case "EVR043":
       return true;
     case "DYN047":
     case "DYN056": case "DYN057": case "DYN058":
@@ -1808,6 +1781,9 @@ function HasCombo($cardID)
       return true;
     case "OUT051":
     case "OUT056": case "OUT057": case "OUT058":
+    case "OUT059": case "OUT060": case "OUT061":
+    case "OUT074": case "OUT075": case "OUT076":
+    case "OUT080": case "OUT081": case "OUT082":
       return true;
   }
   return false;
@@ -1885,6 +1861,12 @@ function ComboActive($cardID = "")
         break;
       case "OUT056": case "OUT057": case "OUT058":
         return str_contains($lastAttackName, "Gustwave");
+      case "OUT059": case "OUT060": case "OUT061":
+        if($lastAttackName == "Head Jab") return true;
+      case "OUT074": case "OUT075": case "OUT076":
+        if($lastAttackName == "Surging Strike") return true;
+      case "OUT080": case "OUT081": case "OUT082":
+        if($lastAttackName == "Head Jab") return true;
     }
   }
   return false;

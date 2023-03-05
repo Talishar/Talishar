@@ -429,6 +429,13 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . "-");
         AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-");
         break;
+      case "OUT080": case "OUT081": case "OUT082":
+        if(ComboActive() && IsHeroAttackTarget())
+        {
+          WriteLog("Deals 2 damage");
+          AddDecisionQueue("DEALDAMAGE", $defPlayer, "2-" . $cardID . "-DAMAGE", 1);
+        }
+        break;
       case "OUT101":
         if(SearchCurrentTurnEffects("AIM", $mainPlayer)) {
           AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a pitch value", 1);
