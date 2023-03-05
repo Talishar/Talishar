@@ -267,6 +267,27 @@ function OUTAbilityCost($cardID)
       case "OUT165": case "OUT166": case "OUT167":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Your opponent loses life if your next assassin or ranger attack hits.";
+      case "OUT171":
+        if(NumAttackReactionsPlayed() > 0)
+        {
+          PlayAura($CID_BloodRotPox, $mainPlayer);
+          $rv = "Trap triggered and created a Bloodrot Pox.";
+        }
+        return $rv;
+      case "OUT172":
+        if(DoesAttackHaveGoAgain())
+        {
+          PlayAura($CID_Frailty, $mainPlayer);
+          $rv = "Trap triggered and created a Frailty.";
+        }
+        return $rv;
+      case "OUT173":
+        if(HasIncreasedAttack())
+        {
+          PlayAura($CID_Inertia, $mainPlayer);
+          $rv = "Trap triggered and created an Inertia.";
+        }
+        return $rv;
       case "OUT186":
         if(!CanRevealCards($currentPlayer)) { AddCurrentTurnEffect("OUT186-7", $currentPlayer); return "You cannot reveal cards so Gore Belching gets -7."; }
         $deck = &GetDeck($currentPlayer);
