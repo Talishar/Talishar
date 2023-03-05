@@ -2188,6 +2188,20 @@ function OnBlockResolveEffects()
         AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
       }
       break;
+    case "OUT185":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack());
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an action card to put on top of your deck");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+
+    /*
+          AddDecisionQueue("FINDINDICES", $mainPlayer, "GYNAA");
+          AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
+          AddDecisionQueue("REMOVEMYDISCARD", $mainPlayer, "-", 1);
+          AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
+          AddDecisionQueue("SHOWSELECTEDCARD", $mainPlayer, "-", 1);
+          */
+      break;
+    default: break;
   }
   $blockedFromHand = 0;
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
@@ -2317,20 +2331,6 @@ function OnBlockEffects($index, $from)
           WriteLog(CardLink($combatChain[0], $combatChain[0]) . " got +1 for the rest of the turn.");
         }
       }
-      break;
-    case "OUT185":
-
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack());
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an action card to put on top of your deck");
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-
-/*
-      AddDecisionQueue("FINDINDICES", $mainPlayer, "GYNAA");
-      AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
-      AddDecisionQueue("REMOVEMYDISCARD", $mainPlayer, "-", 1);
-      AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
-      AddDecisionQueue("SHOWSELECTEDCARD", $mainPlayer, "-", 1);
-      */
       break;
     default:
       break;
