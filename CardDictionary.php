@@ -1249,6 +1249,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "OUT021": case "OUT022": case "OUT023":
     case "OUT042": case "OUT043": case "OUT044":
       return count($combatChain) == 0 || !HasStealth($combatChain[0]);
+    case "OUT094":
+      return !ArsenalHasFaceDownCard($player);
     case "OUT154": case "OUT155": case "OUT156":
       if (count($combatChain) == 0) return true;
       $subtype = CardSubtype($combatChain[0]);
@@ -1322,7 +1324,7 @@ function HasBladeBreak($cardID)
     case "RVD003": return true;
     case "UPR136": case "UPR158": case "UPR182": return true;
     case "DYN045": case "DYN152": case "DYN171": return true;
-    case "OUT049": case "OUT139": case "OUT141": case "OUT158": return true;
+    case "OUT049": case "OUT094" case "OUT139": case "OUT141": case "OUT158": return true;
     default:
       return false;
   }

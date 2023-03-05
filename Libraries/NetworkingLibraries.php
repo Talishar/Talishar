@@ -1810,6 +1810,15 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MZBANISH", $currentPlayer, "HAND,UZURI," . $currentPlayer, 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       break;
+      case "OUT094":
+        if (ArsenalHasFaceDownCard($currentPlayer)) {
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALDOWN");
+          AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
+          AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
+          AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+          WriteLog(CardLink($cardID, $cardID) . " put your arsenal at the bottom of your deck");
+        }
+        break;
     case "OUT148":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how much to pay for " . CardLink($cardID, $cardID));
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0,1");

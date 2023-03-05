@@ -1034,6 +1034,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         DestroyAuraUniqueID($player, $uniqueID);
         WriteLog(CardLink($parameter, $parameter) . " draw a card and is destroyed.");
         break;
+   case "OUT094":
+      WriteLog("Gained a resource from " . CardLink($parameter, $parameter));
+      GainResources($player, 1);
+      break;
     case "OUT174":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
       AddDecisionQueue("BUTTONINPUT", $player, "0,1");
