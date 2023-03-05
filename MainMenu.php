@@ -165,9 +165,9 @@ if ($canSeeQueue) {
 
       <div style="vertical-align:middle; position: relative;">
         <h3>Outsiders</h3>
-        All spoiled cards as of Toxicity implemented except:<BR>
-          Amnesia, Bleed Out, Toxicity<BR>
-          Last updated: 5:34PM CST
+        All spoiled cards as of Sneak Attack implemented except:<BR>
+          Amnesia, Sneak Attack<BR>
+          Last updated: 7:38PM CST
         <br>
       </div>
       <BR>
