@@ -1076,34 +1076,17 @@ function SelfCostModifier($cardID)
   global $CS_NumCharged, $currentPlayer, $combatChain, $CS_LayerTarget;
   switch ($cardID) {
     case "ARC080":
-      return (-1 * NumRunechants($currentPlayer));
     case "ARC082":
-      return (-1 * NumRunechants($currentPlayer));
-    case "ARC088":
-    case "ARC089":
-    case "ARC090":
-      return (-1 * NumRunechants($currentPlayer));
-    case "ARC094":
-    case "ARC095":
-    case "ARC096":
-      return (-1 * NumRunechants($currentPlayer));
-    case "ARC097":
-    case "ARC098":
-    case "ARC099":
-      return (-1 * NumRunechants($currentPlayer));
-    case "ARC100":
-    case "ARC101":
-    case "ARC102":
+    case "ARC088": case "ARC089": case "ARC090":
+    case "ARC094": case "ARC095": case "ARC096":
+    case "ARC097": case "ARC098": case "ARC099":
+    case "ARC100": case "ARC101": case "ARC102":
       return (-1 * NumRunechants($currentPlayer));
     case "MON032":
       return (-1 * (2 * GetClassState($currentPlayer, $CS_NumCharged)));
-    case "MON084":
-    case "MON085":
-    case "MON086":
+    case "MON084": case "MON085": case "MON086":
       return TalentContains($combatChain[GetClassState($currentPlayer, $CS_LayerTarget)], "SHADOW") ? -1 : 0;
-    case "DYN104":
-    case "DYN105":
-    case "DYN106":
+    case "DYN104": case "DYN105": case "DYN106":
       $numHypers = 0;
       $numHypers += CountItem("ARC036", $currentPlayer);
       $numHypers += CountItem("DYN111", $currentPlayer);
@@ -1111,6 +1094,8 @@ function SelfCostModifier($cardID)
       return $numHypers > 0 ? -1 : 0;
     case "OUT056": case "OUT057": case "OUT058":
       return (ComboActive($cardID) ? -2 : 0);
+    case "OUT145": case "OUT146": case "OUT147":
+      return (-1 * DamageDealtBySubtype("Dagger"));
     default:
       return 0;
   }

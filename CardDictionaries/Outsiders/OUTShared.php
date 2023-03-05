@@ -95,6 +95,7 @@ function OUTAbilityCost($cardID)
       case "OUT052": return true;
       case "OUT056": case "OUT057": case "OUT058": return ComboActive($cardID);
       case "OUT068": case "OUT069": case "OUT070": return true;
+      case "OUT145": case "OUT146": case "OUT147": return true;
       case "OUT148": return true;
       case "OUT159": case "OUT160": return true;//Tomes
       case "OUT165": case "OUT166": case "OUT167": return true;
@@ -441,6 +442,17 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
     AddDecisionQueue("HITEFFECT", $otherPlayer, "<-", 1);
+  }
+
+  function DamageDealtBySubtype($subtype)
+  {
+    global $chainLinks, $chainLinkSummary;
+    $damage = 0;
+    for($i=0; $i<count($chainLinks); ++$i)
+    {
+      if(CardSubType($chainLinks[$i][0]) == $subtype) $damage += $chainLinkSummary[$i*ChainLinkSummaryPieces()];
+    }
+    return $damage;
   }
 
 ?>
