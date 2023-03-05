@@ -619,6 +619,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "OUT043": return 2;
     case "OUT044": return 1;
     case "OUT051": return (ComboActive() ? 2 : 0);
+    case "OUT074": case "OUT075": case "OUT076": return (ComboActive() ? 2 : 0);
     case "OUT133": case "OUT134": case "OUT135": return NumCardsDefended() < 2 ? 3 : 0;
     case "OUT154": return 3;
     case "OUT155": return 2;
@@ -1068,6 +1069,8 @@ function SelfCostModifier($cardID)
       return $numHypers > 0 ? -1 : 0;
     case "OUT056": case "OUT057": case "OUT058":
       return (ComboActive($cardID) ? -2 : 0);
+    case "OUT074": case "OUT075": case "OUT076":
+      return (ComboActive($cardID) ? -1 : 0);
     case "OUT145": case "OUT146": case "OUT147":
       return (-1 * DamageDealtBySubtype("Dagger"));
     default:
@@ -2320,6 +2323,20 @@ function OnBlockEffects($index, $from)
         }
       }
       break;
+    case "OUT185":
+
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack());
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an action card to put on top of your deck");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+
+/*
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "GYNAA");
+      AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
+      AddDecisionQueue("REMOVEMYDISCARD", $mainPlayer, "-", 1);
+      AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
+      AddDecisionQueue("SHOWSELECTEDCARD", $mainPlayer, "-", 1);
+      */
+      break;
     default:
       break;
   }
@@ -2614,22 +2631,16 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
         case "WTR122":
           $modifier += 1;
           break;
-        case "WTR135":
-        case "WTR136":
-        case "WTR137":
+        case "WTR135": case "WTR136": case "WTR137":
           $modifier += 1;
           break;
-        case "CRU079":
-        case "CRU080":
+        case "CRU079": case "CRU080":
           $modifier += 1;
           break;
-        case "MON105":
-        case "MON106":
+        case "MON105": case "MON106":
           $modifier += 1;
           break;
-        case "MON113":
-        case "MON114":
-        case "MON115":
+        case "MON113": case "MON114": case "MON115":
           $modifier += 1;
           break;
         case "EVR055-1":

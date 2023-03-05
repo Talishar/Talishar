@@ -59,7 +59,9 @@ function OUTAbilityCost($cardID)
       case "OUT114": return 3;
       case "OUT115": return 2;
       case "OUT116": return 1;
+      case "OUT121": case "OUT122": case "OUT123": return 1;
       case "OUT124": case "OUT125": case "OUT126": return 1;
+      case "OUT136": case "OUT137": case "OUT138": return 1;
       case "OUT141": return 1;
       case "OUT186": return (-1 * $idArr[1]);
       case "OUT188_2": return 3;
@@ -83,8 +85,10 @@ function OUTAbilityCost($cardID)
       case "OUT052": return count($idArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($idArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
       case "OUT105": return CardSubType($attackID) == "Arrow";
-      case "OUT114": return CardSubType($attackID) == "Arrow";
+      case "OUT114": case "OUT115": case "OUT116": return CardSubType($attackID) == "Arrow";
+      case "OUT121": case "OUT122": case "OUT123": return true;
       case "OUT124": case "OUT125": case "OUT126": return true;
+      case "OUT136": case "OUT137": case "OUT138": return true;
       case "OUT141": return CardSubType($attackID) == "Dagger";
       case "OUT158": return CardType($attackID) == "AA";
       case "OUT165": case "OUT166": case "OUT167": return ClassContains($attackID, "ASSASSIN", $mainPlayer) || ClassContains($attackID, "RANGER", $mainPlayer);
@@ -103,15 +107,17 @@ function OUTAbilityCost($cardID)
       case "OUT005": case "OUT006": return true;
       case "OUT007": case "OUT008": return true;
       case "OUT009": case "OUT010": return true;
-      case "OUT052": return true;
+      case "OUT052": case "OUT053": return true;
       case "OUT056": case "OUT057": case "OUT058": return ComboActive($cardID);
       case "OUT068": case "OUT069": case "OUT070": return true;
+      case "OUT074": case "OUT075": case "OUT076": return true;
       case "OUT105": return true;
       case "OUT114": return true;
       case "OUT145": case "OUT146": case "OUT147": return true;
       case "OUT148": return true;
       case "OUT159": case "OUT160": case "OUT161": return true;//Codices
       case "OUT165": case "OUT166": case "OUT167": return true;
+      case "OUT185": return true;
       case "OUT188": return true;
       default: return false;
     }
@@ -223,14 +229,39 @@ function OUTAbilityCost($cardID)
       case "OUT105":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "OUT114":
+      case "OUT106": case "OUT107": case "OUT108":
+        if(NumAttackReactionsPlayed() > 0)
+        {
+          $deck = new Deck($mainPlayer);
+          for($i=0; $i<2; ++$i)
+          {
+            $cardRemoved = $deck->Top(remove:true);
+            AddGraveyard($cardRemoved, $mainPlayer, "DECK");
+          }
+          $rv = "Milled two cards.";
+        }
+        return $rv;
+      case "OUT114": case "OUT115": case "OUT116":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "OUT121": case "OUT122": case "OUT123":
+        if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          $rv = "Gets +1.";
+        }
+        return $rv;
       case "OUT124": case "OUT125": case "OUT126":
         if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          return "has +1.";
+          $rv = "Gets +1.";
         }
+        return $rv;
+      case "OUT136": case "OUT137": case "OUT138":
+        if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          $rv = "Gets +1.";
+        }
+        return $rv;
       case "OUT139":
         ThrowWeapon("Dagger");
         return "";
@@ -251,7 +282,7 @@ function OUTAbilityCost($cardID)
         if(!ArsenalFull($currentPlayer))
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-          AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+          AddDecisionQueue("CHOOSEHAND", $currentPlayer, "2-", 1);
           AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
           AddDecisionQueue("ADDARSENALFACEDOWN", $currentPlayer, "GY", 1);
         }
@@ -432,6 +463,9 @@ function OUTAbilityCost($cardID)
           else $char[0] = "DUMMYDISHONORED";
         }
         break;
+      case "OUT053":
+        KatsuHit();
+        break;
       case "OUT059": case "OUT060": case "OUT061":
         if(ComboActive() && IsHeroAttackTarget())
         {
@@ -475,6 +509,9 @@ function OUTAbilityCost($cardID)
         if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
         break;
       case "OUT124": case "OUT125": case "OUT126":
+        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+        break;
+      case "OUT136": case "OUT137": case "OUT138":
         if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
         break;
       case "OUT142":

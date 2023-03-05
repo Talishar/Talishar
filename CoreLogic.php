@@ -521,7 +521,7 @@ function CanDamageBePrevented($player, $damage, $type, $source="-")
   $otherPlayer = $player == 1 ? 2 : 1;
   if($type == "ARCANE" && SearchCurrentTurnEffects("EVR105", $player)) return false;
   if(SearchCurrentTurnEffects("UPR158", $otherPlayer)) return false;
-  if($source == "DYN005" || $source == "OUT030" || $source == "OUT031" || $source == "OUT032") return false;
+  if($source == "DYN005" || $source == "OUT030" || $source == "OUT031" || $source == "OUT032"|| $source == "OUT121" || $source == "OUT122" || $source == "OUT123") return false;
   return true;
 }
 
@@ -1323,7 +1323,7 @@ function ClassOverride($cardID, $player="")
 
 function NameOverride($cardID, $player="")
 {
-  
+
 }
 
 function ClassContains($cardID, $class, $player="")
