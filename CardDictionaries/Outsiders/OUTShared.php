@@ -102,7 +102,7 @@ function OUTAbilityCost($cardID)
       case "OUT068": case "OUT069": case "OUT070": return true;
       case "OUT145": case "OUT146": case "OUT147": return true;
       case "OUT148": return true;
-      case "OUT159": case "OUT160": return true;//Tomes
+      case "OUT159": case "OUT160": case "OUT161": return true;//Codices
       case "OUT165": case "OUT166": case "OUT167": return true;
       case "OUT188": return true;
       default: return false;
@@ -267,6 +267,21 @@ function OUTAbilityCost($cardID)
         }
         PlayAura("DYN244", $currentPlayer);
         PlayAura($CID_Frailty, $otherPlayer);
+        return "";
+      case "OUT161":
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        if(!ArsenalFull($currentPlayer))
+        {
+          TopDeckToArsenal($currentPlayer);
+          PummelHit($currentPlayer);
+        }
+        if(!ArsenalFull($otherPlayer))
+        {
+          TopDeckToArsenal($otherPlayer);
+          PummelHit($otherPlayer);
+        }
+        PlayAura("DYN244", $currentPlayer);
+        PlayAura($CID_Inertia, $otherPlayer);
         return "";
       case "OUT165": case "OUT166": case "OUT167":
         AddCurrentTurnEffect($cardID, $currentPlayer);

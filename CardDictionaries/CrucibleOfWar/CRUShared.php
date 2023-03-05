@@ -612,8 +612,8 @@ function CRUHitEffect($cardID)
       AddDecisionQueue("COAXCOMMOTION", $mainPlayer, "-", 1);
       break;
     case "CRU183": case "CRU184": case "CRU185":
-      DefenderTopDeckToArsenal();
-      MainTopDeckToArsenal();
+      TopDeckToArsenal($defPlayer);
+      TopDeckToArsenal($mainPlayer);
       break;
     default:
       break;

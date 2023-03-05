@@ -1107,18 +1107,6 @@ function GiveAttackGoAgain()
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
 }
 
-function DefenderTopDeckToArsenal()
-{
-  global $defPlayer;
-  TopDeckToArsenal($defPlayer);
-}
-
-function MainTopDeckToArsenal()
-{
-  global $mainPlayer;
-  TopDeckToArsenal($mainPlayer);
-}
-
 function TopDeckToArsenal($player)
 {
   $deck = &GetDeck($player);
