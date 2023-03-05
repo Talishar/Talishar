@@ -5773,6 +5773,8 @@ case "6":
 return 2;
 case "7":
 return 1;
+case "8":
+return 3;
 default: return 0;
 }
 case "2":
@@ -5903,6 +5905,8 @@ case "2":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
+case "1":
+return 6;
 case "4":
 return 5;
 default: return 0;
@@ -7597,6 +7601,8 @@ case "0":
 return -1;
 case "1":
 return 1;
+case "8":
+return 2;
 default: return 3;
 }
 case "5":
@@ -7685,6 +7691,8 @@ case "2":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
+case "1":
+return 2;
 case "4":
 return 2;
 default: return 3;
@@ -11861,6 +11869,8 @@ case "6":
 return "Back Stab";
 case "7":
 return "Back Stab";
+case "8":
+return "Sneak Attack";
 default: return "";
 }
 case "2":
@@ -12013,6 +12023,8 @@ case "2":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
+case "1":
+return "Cut Down to Size";
 case "4":
 return "Destructive Deliberation";
 default: return "";
@@ -20881,6 +20893,8 @@ case "3":
 return 2;
 case "4":
 return 1;
+case "8":
+return 2;
 default: return 0;
 }
 case "2":
@@ -20963,6 +20977,8 @@ case "2":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
+case "1":
+return 2;
 case "4":
 return 2;
 default: return 0;
@@ -24249,6 +24265,8 @@ return "R";
 case "6":
 return "R";
 case "7":
+return "R";
+case "8":
 return "R";
 default: return "C";
 }
