@@ -219,6 +219,18 @@ function OUTAbilityCost($cardID)
       case "OUT105":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "OUT106": case "OUT107": case "OUT108":
+        if(NumAttackReactionsPlayed() > 0)
+        {
+          $deck = new Deck($mainPlayer);
+          for($i=0; $i<2; ++$i)
+          {
+            $cardRemoved = $deck->Top(remove:true);
+            AddGraveyard($cardRemoved, $mainPlayer, "DECK");
+          }
+          $rv = "Milled two cards.";
+        }
+        return $rv;
       case "OUT124": case "OUT125": case "OUT126":
         if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
