@@ -112,6 +112,7 @@ function OUTAbilityCost($cardID)
       case "OUT148": return true;
       case "OUT159": case "OUT160": case "OUT161": return true;//Codices
       case "OUT165": case "OUT166": case "OUT167": return true;
+      case "OUT185": return true;
       case "OUT188": return true;
       default: return false;
     }

@@ -2318,6 +2318,20 @@ function OnBlockEffects($index, $from)
         }
       }
       break;
+    case "OUT185":
+
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack());
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an action card to put on top of your deck");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+
+/*
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "GYNAA");
+      AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
+      AddDecisionQueue("REMOVEMYDISCARD", $mainPlayer, "-", 1);
+      AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
+      AddDecisionQueue("SHOWSELECTEDCARD", $mainPlayer, "-", 1);
+      */
+      break;
     default:
       break;
   }
@@ -2612,22 +2626,16 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
         case "WTR122":
           $modifier += 1;
           break;
-        case "WTR135":
-        case "WTR136":
-        case "WTR137":
+        case "WTR135": case "WTR136": case "WTR137":
           $modifier += 1;
           break;
-        case "CRU079":
-        case "CRU080":
+        case "CRU079": case "CRU080":
           $modifier += 1;
           break;
-        case "MON105":
-        case "MON106":
+        case "MON105": case "MON106":
           $modifier += 1;
           break;
-        case "MON113":
-        case "MON114":
-        case "MON115":
+        case "MON113": case "MON114": case "MON115":
           $modifier += 1;
           break;
         case "EVR055-1":
