@@ -59,6 +59,7 @@ function OUTAbilityCost($cardID)
       case "OUT114": return 3;
       case "OUT115": return 2;
       case "OUT116": return 1;
+      case "OUT118": case "OUT119": case "OUT120": return 1; 
       case "OUT121": case "OUT122": case "OUT123": return 1;
       case "OUT124": case "OUT125": case "OUT126": return 1;
       case "OUT136": case "OUT137": case "OUT138": return 1;
@@ -86,6 +87,7 @@ function OUTAbilityCost($cardID)
       case "OUT068": case "OUT069": case "OUT070": return true;
       case "OUT105": return CardSubType($attackID) == "Arrow";
       case "OUT114": case "OUT115": case "OUT116": return CardSubType($attackID) == "Arrow";
+      case "OUT118": case "OUT119": case "OUT120": return true;
       case "OUT121": case "OUT122": case "OUT123": return true;
       case "OUT124": case "OUT125": case "OUT126": return true;
       case "OUT136": case "OUT137": case "OUT138": return true;
@@ -243,6 +245,11 @@ function OUTAbilityCost($cardID)
         return $rv;
       case "OUT114": case "OUT115": case "OUT116":
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "OUT118": case "OUT119": case "OUT120":
+        if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
         return "";
       case "OUT121": case "OUT122": case "OUT123":
         if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
@@ -507,6 +514,12 @@ function OUTAbilityCost($cardID)
         break;
       case "OUT114":
         if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+        break;
+      case "OUT118": case "OUT119": case "OUT120":
+        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+        break;
+      case "OUT021":
+        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
         break;
       case "OUT124": case "OUT125": case "OUT126":
         if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
