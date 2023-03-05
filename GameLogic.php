@@ -2197,14 +2197,8 @@ function OnBlockResolveEffects()
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack());
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an action card to put on top of your deck");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-
-    /*
-          AddDecisionQueue("FINDINDICES", $mainPlayer, "GYNAA");
-          AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
-          AddDecisionQueue("REMOVEMYDISCARD", $mainPlayer, "-", 1);
-          AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
-          AddDecisionQueue("SHOWSELECTEDCARD", $mainPlayer, "-", 1);
-          */
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
       break;
     default: break;
   }
