@@ -383,6 +383,13 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("PUTPLAY", $defPlayer, "-", 1);
         }
         break;
+      case "OUT183":
+        if(IsHeroAttackTarget())
+        {
+          AddCurrentTurnEffect($cardID, $defPlayer);
+          AddNextTurnEffect($cardID, $defPlayer);
+        }
+        break;
       case "OUT198": case "OUT199": case "OUT200":
         SetArsenalFacing("UP", $defPlayer);
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS:type=DR");

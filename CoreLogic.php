@@ -1321,10 +1321,14 @@ function ClassOverride($cardID, $player="")
   return $cardClass;
 }
 
+function NameOverride($cardID, $player="")
+{
+  
+}
+
 function ClassContains($cardID, $class, $player="")
 {
   $cardClass = ClassOverride($cardID, $player);
-  //Loop over current turn effects to find modifiers
   return DelimStringContains($cardClass, $class);
 }
 
@@ -1334,6 +1338,11 @@ function SubtypeContains($cardID, $subtype, $player="")
   return DelimStringContains($cardSubtype, $subtype);
 }
 
+function CardNameContains($cardID, $name, $player="")
+{
+  $cardName = NameOverride($cardID, $player);
+  return DelimStringContains($cardName, $name);
+}
 
 function TalentOverride($cardID, $player="")
 {
