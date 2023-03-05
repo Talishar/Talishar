@@ -420,6 +420,16 @@ function OUTAbilityCost($cardID)
           else $char[0] = "DUMMYDISHONORED";
         }
         break;
+      case "OUT059": case "OUT060": case "OUT061":
+        if(ComboActive() && IsHeroAttackTarget())
+        {
+          AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+          AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
+          AddDecisionQueue("MULTIADDTOPDECK", $defPlayer, "-", 1);
+          WriteLog("The opponent must put a card from their hand on top of their deck.");
+        }
+        break;
       case "OUT068": case "OUT069": case "OUT070":
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give this a name", 0, 1);
         AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
