@@ -55,6 +55,7 @@ function OUTAbilityCost($cardID)
     {
       case "OUT033": case "OUT034": case "OUT035": return 1;
       case "OUT052": return 1;
+      case "OUT105": return 4;
       case "OUT124": case "OUT125": case "OUT126": return 1;
       case "OUT141": return 1;
       case "OUT186": return (-1 * $idArr[1]);
@@ -78,6 +79,7 @@ function OUTAbilityCost($cardID)
       case "OUT049": return CardType($attackID) == "AA";
       case "OUT052": return count($idArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($idArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
+      case "OUT105": return CardSubType($attackID) == "Arrow";
       case "OUT124": case "OUT125": case "OUT126": return true;
       case "OUT141": return CardSubType($attackID) == "Dagger";
       case "OUT158": return CardType($attackID) == "AA";
@@ -100,6 +102,7 @@ function OUTAbilityCost($cardID)
       case "OUT052": return true;
       case "OUT056": case "OUT057": case "OUT058": return ComboActive($cardID);
       case "OUT068": case "OUT069": case "OUT070": return true;
+      case "OUT105": return true;
       case "OUT145": case "OUT146": case "OUT147": return true;
       case "OUT148": return true;
       case "OUT159": case "OUT160": case "OUT161": return true;//Codices
@@ -207,6 +210,9 @@ function OUTAbilityCost($cardID)
           for($i=0; $i<$numDraw; ++$i) Draw($mainPlayer);
           WriteLog("Attacker discarded their hand and drew $numDraw cards.");
         }
+        return "";
+      case "OUT105":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "OUT124": case "OUT125": case "OUT126":
         if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {

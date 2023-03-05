@@ -866,6 +866,14 @@ function EffectHitEffect($cardID)
         PlayAura("ARC112", $mainPlayer, $amount, true);
       }
       break;
+    case "OUT105":
+      if (IsHeroAttackTarget() && SearchCurrentTurnEffects("AIM", $mainPlayer)) {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:minAttack=1;maxAttack=1;type=W");//TODO: Limit to 1H
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a weapon to destroy");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MULTIZONEDESTROY", $mainPlayer, "-", 1);
+      }
+      break;
     case "OUT158":
       if(IsHeroAttackTarget())
       {
@@ -4706,6 +4714,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "MYCHAR":
           return DestroyCharacter($player, $index);
+          break;
+        case "THEIRCHAR":
+          return DestroyCharacter($otherP, $index);
           break;
         default:
           break;
