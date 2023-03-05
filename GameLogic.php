@@ -881,7 +881,7 @@ function EffectHitEffect($cardID)
         PlayAura($CID_BloodRotPox, $defPlayer);
       }
       break;
-    case "OUT114": case "OUT115": case "OUT116":
+    case "OUT114":
       if (IsHeroAttackTarget()) {
         PlayAura($CID_Inertia, $defPlayer);
       }
