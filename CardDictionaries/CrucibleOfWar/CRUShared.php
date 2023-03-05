@@ -191,8 +191,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   $rv = "";
   switch ($cardID) {
       //CRU Brute
-    case "CRU004":
-    case "CRU005":
+    case "CRU004": case "CRU005":
       if (GetClassState($currentPlayer, $CS_Num6PowDisc) > 0) {
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         $rv = "Gains go again.";
@@ -218,9 +217,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("DESTROYITEM", $otherPlayer, "<-", 1);
       }
       return "Argh... Smash! rolled " . $roll . ".";
-    case "CRU013":
-    case "CRU014":
-    case "CRU015":
+    case "CRU013": case "CRU014": case "CRU015":
       if (GetClassState($currentPlayer, $CS_Num6PowDisc) > 0) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
         $rv = "Gains Dominate.";
@@ -236,9 +233,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $rv = "Stamp Authority gives you +1 intellect until end of turn.";
       }
       return $rv;
-    case "CRU041":
-    case "CRU042":
-    case "CRU043":
+    case "CRU041": case "CRU042": case "CRU043":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Prevents some of the next damage you take this turn.";
       //Ninja
@@ -264,9 +259,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_CardTypeDefenseRequirement, 1);
       }
       return $rv;
-    case "CRU057":
-    case "CRU058":
-    case "CRU059":
+    case "CRU057": case "CRU058": case "CRU059":
       if (ComboActive()) {
         $combatChainState[$CCS_BaseAttackDefenseMax] = $combatChainState[$CCS_NumChainLinks];
         $rv = "Cannot be defended by attacks with greater than " . $combatChainState[$CCS_NumChainLinks] . " base attack.";
@@ -301,28 +294,20 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddCurrentTurnEffect($cardID . "-2", $currentPlayer); //Hit effect
       return "Gives your next weapon attack +2 and go again.";
-    case "CRU085":
-    case "CRU086":
-    case "CRU087":
+    case "CRU085": case "CRU086": case "CRU087":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
       AddCurrentTurnEffect($cardID . "-2", ($mainPlayer == 1 ? 2 : 1));
       return "Gives your next weapon attack  +" . EffectAttackModifier($cardID . "-1") . " and makes the next Defense Reaction cost +1 to play.";
-    case "CRU088":
-    case "CRU089":
-    case "CRU090":
+    case "CRU088": case "CRU089": case "CRU090":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
       if (RepriseActive()) AddCurrentTurnEffectFromCombat($cardID . "-2", $mainPlayer);
       return "Gives your weapon attack +" . EffectAttackModifier($cardID . "-1") . RepriseActive() ? " and gives your next attack +1." : ".";
-    case "CRU091":
-    case "CRU092":
-    case "CRU093":
+    case "CRU091": case "CRU092": case "CRU093":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
       $atkWWpn = GetClassState($currentPlayer, $CS_AtksWWeapon) > 0;
       if ($atkWWpn) AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
       return "Gives your next weapon attack go again" . ($atkWWpn ? " and +" . EffectAttackModifier($cardID . "-2") : "") . ".";
-    case "CRU094":
-    case "CRU095":
-    case "CRU096":
+    case "CRU094": case "CRU095": case "CRU096":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
       $atkWWpn = GetClassState($currentPlayer, $CS_AtksWWeapon) > 0;
       if ($atkWWpn) AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
@@ -440,9 +425,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("ROCKSLIDETRAP", $otherPlayer, "-", 1);
       }
       return "";
-    case "CRU135":
-    case "CRU136":
-    case "CRU137":
+    case "CRU135": case "CRU136": case "CRU137":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddCurrentTurnEffect($cardID . "-1", ($currentPlayer == 1 ? 2 : 1));
       return "Gives the next arrow attack this turn +" . EffectAttackModifier($cardID) . " and prevents defense reactions on that chain link.";
@@ -465,14 +448,10 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "CRU144":
       PlayAura("ARC112", $currentPlayer, 4);
       return "Creates 4 Runechant.";
-    case "CRU145":
-    case "CRU146":
-    case "CRU147":
+    case "CRU145": case "CRU146": case "CRU147":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Gives your next Runeblade attack action go again and creates Runechants if it hits.";
-    case "CRU154":
-    case "CRU155":
-    case "CRU156":
+    case "CRU154": case "CRU155": case "CRU156":
       if (!CanRevealCards($currentPlayer)) return "Cannot reveal cards.";
       if ($cardID == "CRU154") $count = 3;
       else if ($cardID == "CRU155") $count = 2;
@@ -507,30 +486,22 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "CRU164":
       NegateLayer($target);
       return "Negates an instant.";
-    case "CRU165":
-    case "CRU166":
-    case "CRU167":
+    case "CRU165": case "CRU166": case "CRU167":
       if ($cardID == "CRU165") $optAmt = 3;
       else if ($cardID == "CRU166") $optAmt = 2;
       else $optAmt = 1;
       AddCurrentTurnEffect($cardID, $currentPlayer);
       Opt($cardID, $optAmt);
       return "";
-    case "CRU168":
-    case "CRU169":
-    case "CRU170":
+    case "CRU168": case "CRU169": case "CRU170":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       Opt($cardID, 1);
       return "";
-    case "CRU171":
-    case "CRU172":
-    case "CRU173":
+    case "CRU171": case "CRU172": case "CRU173":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "CRU174":
-    case "CRU175":
-    case "CRU176":
+    case "CRU174": case "CRU175": case "CRU176":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD",$cardID, resolvedTarget: $target);
       return "";
       //CRU Generics
@@ -544,9 +515,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "CRU182":
       AddCurrentTurnEffect("CRU182", ($currentPlayer == 1 ? 2 : 1));
       return "Makes attack actions unable to gain power.";
-    case "CRU183":
-    case "CRU184":
-    case "CRU185":
+    case "CRU183": case "CRU184": case "CRU185":
       if ($from == "ARS") {
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         $rv = "Gains go again.";
@@ -556,9 +525,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       MyDrawCard();
       MyDrawCard();
       return "Draws 2 cards.";
-    case "CRU189":
-    case "CRU190":
-    case "CRU191":
+    case "CRU189": case "CRU190": case "CRU191":
       $options = GetChainLinkCards($defPlayer, "AA");
       if ($options == "") return "No defending attack action cards.";
       AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, $options);
@@ -584,19 +551,13 @@ function CRUHitEffect($cardID)
         PlayAura("CRU075", $mainPlayer);
       }
       break;
-    case "CRU060":
-    case "CRU061":
-    case "CRU062":
+    case "CRU060": case "CRU061": case "CRU062":
       if (ComboActive()) RushingRiverHitEffect();
       break;
-    case "CRU066":
-    case "CRU067":
-    case "CRU068":
+    case "CRU066": case "CRU067": case "CRU068":
       GiveAttackGoAgain();
       break;
-    case "CRU069":
-    case "CRU070":
-    case "CRU071":
+    case "CRU069": case "CRU070": case "CRU071":
       GiveAttackGoAgain();
       break;
     case "CRU072":
@@ -608,14 +569,10 @@ function CRUHitEffect($cardID)
         MainDrawCard();
       }
       break;
-    case "CRU106":
-    case "CRU107":
-    case "CRU108":
+    case "CRU106": case "CRU107": case "CRU108":
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
       break;
-    case "CRU109":
-    case "CRU110":
-    case "CRU111":
+    case "CRU109": case "CRU110": case "CRU111":
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
       break;
     case "CRU123":
@@ -624,18 +581,14 @@ function CRUHitEffect($cardID)
         AddNextTurnEffect("CRU123-DMG", $defPlayer);
       }
       break;
-    case "CRU129":
-    case "CRU130":
-    case "CRU131":
+    case "CRU129": case "CRU130": case "CRU131":
       if (!ArsenalEmpty($mainPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
       AddDecisionQueue("FINDINDICES", $mainPlayer, "MAINHAND");
       AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
       AddDecisionQueue("REMOVEMYHAND", $mainPlayer, "-", 1);
       AddDecisionQueue("ADDARSENALFACEDOWN", $mainPlayer, "HAND", 1);
       break;
-    case "CRU132":
-    case "CRU133":
-    case "CRU134":
+    case "CRU132": case "CRU133": case "CRU134":
       if (IsHeroAttackTarget()) {
         AddCurrentTurnEffectFromCombat($cardID, $defPlayer);
         $char = &GetPlayerCharacter($defPlayer);
@@ -645,16 +598,12 @@ function CRUHitEffect($cardID)
     case "CRU142":
       PlayAura("ARC112", $mainPlayer);
       break;
-    case "CRU148":
-    case "CRU149":
-    case "CRU150":
+    case "CRU148": case "CRU149": case "CRU150":
       if (IsHeroAttackTarget() && GetClassState($defPlayer, $CS_ArcaneDamageTaken)) {
         PummelHit();
       }
       break;
-    case "CRU151":
-    case "CRU152":
-    case "CRU153":
+    case "CRU151": case "CRU152": case "CRU153":
       PlayAura("ARC112", $mainPlayer);
       break;
     case "CRU180":
@@ -662,9 +611,7 @@ function CRUHitEffect($cardID)
       AddDecisionQueue("MAYMULTICHOOSETEXT", $mainPlayer, "3-Quicken_token,Draw_card,Gain_life");
       AddDecisionQueue("COAXCOMMOTION", $mainPlayer, "-", 1);
       break;
-    case "CRU183":
-    case "CRU184":
-    case "CRU185":
+    case "CRU183": case "CRU184": case "CRU185":
       DefenderTopDeckToArsenal();
       MainTopDeckToArsenal();
       break;
