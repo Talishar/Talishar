@@ -42,6 +42,16 @@ class Deck {
     return ($remove ? array_shift($this->deck) : $this->deck[0]);
   }
 
+  function TopCards($cards) {
+    $topCards = [];
+    for ($i = 0; $i <= $cards; $i++) {
+      if (RemainingCards() > 0) {
+        array_push($topCards, array_shift($this->deck));
+      }
+    }
+    return $topCards;
+  }
+
   function Banish() {
     // Code to banish x number of cards from the top of the deck
   }

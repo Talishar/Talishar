@@ -31,12 +31,11 @@
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       case "ARC084":
-        $deck = &GetDeck($currentPlayer);
-        if(count($deck) < 2) return "Not enough cards in deck.";
-        if(!RevealCards($deck[0] . "," . $deck[1])) return "Cannot reveal cards.";
-        $d0Type = CardType($deck[0]);
-        $d1Type = CardType($deck[1]);
-        if(($d0Type == "AA" && $d1Type == "A") || ($d1Type == "AA" && $d0Type == "A"))
+        $deck = new Deck($currentPlayer);
+        if ($deck->Reveal(2)) {
+          $revealedCards = $deck->TopCards(2)
+        }
+        if(($revealedCards[0] == "AA" && $revealedCards[0] == "A") || ($revealedCards[0] == "AA" && $revealedCards[0] == "A"))
         {
           AddPlayerHand($deck[0], $currentPlayer, $deck);
           AddPlayerHand($deck[1], $currentPlayer, $deck);
