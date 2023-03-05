@@ -57,6 +57,7 @@ function OUTAbilityCost($cardID)
       case "OUT052": return 1;
       case "OUT105": return 4;
       case "OUT124": case "OUT125": case "OUT126": return 1;
+      case "OUT136": case "OUT137": case "OUT138": return 1;
       case "OUT141": return 1;
       case "OUT186": return (-1 * $idArr[1]);
       case "OUT188_2": return 3;
@@ -81,6 +82,7 @@ function OUTAbilityCost($cardID)
       case "OUT068": case "OUT069": case "OUT070": return true;
       case "OUT105": return CardSubType($attackID) == "Arrow";
       case "OUT124": case "OUT125": case "OUT126": return true;
+      case "OUT136": case "OUT137": case "OUT138": return true;
       case "OUT141": return CardSubType($attackID) == "Dagger";
       case "OUT158": return CardType($attackID) == "AA";
       case "OUT165": case "OUT166": case "OUT167": return ClassContains($attackID, "ASSASSIN", $mainPlayer) || ClassContains($attackID, "RANGER", $mainPlayer);
@@ -234,8 +236,15 @@ function OUTAbilityCost($cardID)
       case "OUT124": case "OUT125": case "OUT126":
         if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          return "has +1.";
+          $rv = "Gets +1.";
         }
+        return $rv;
+      case "OUT136": case "OUT137": case "OUT138":
+        if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          $rv = "Gets +1.";
+        }
+        return $rv;
       case "OUT139":
         ThrowWeapon("Dagger");
         return "";
@@ -477,6 +486,9 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT124": case "OUT125": case "OUT126":
+        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+        break;
+      case "OUT136": case "OUT137": case "OUT138":
         if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
         break;
       case "OUT142":
