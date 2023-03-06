@@ -1866,6 +1866,8 @@ function ComboActive($cardID = "")
         return str_contains($lastAttackName, "Gustwave");
       case "OUT059": case "OUT060": case "OUT061":
         if($lastAttackName == "Head Jab") return true;
+      case "OUT062": case "OUT063": case "OUT064":
+        if($lastAttackName == "Twin Twisters" || $lastAttackName == "Spinning Wheel Kick") return true;
       case "OUT074": case "OUT075": case "OUT076":
         if($lastAttackName == "Surging Strike") return true;
       case "OUT080": case "OUT081": case "OUT082":

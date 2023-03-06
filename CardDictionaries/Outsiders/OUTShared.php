@@ -119,6 +119,7 @@ function OUTAbilityCost($cardID)
       case "OUT009": case "OUT010": return true;
       case "OUT052": case "OUT053": return true;
       case "OUT056": case "OUT057": case "OUT058": return ComboActive($cardID);
+      case "OUT062": case "OUT063": case "OUT064": return true;
       case "OUT068": case "OUT069": case "OUT070": return true;
       case "OUT074": case "OUT075": case "OUT076": return true;
       case "OUT105": return true;
@@ -487,6 +488,7 @@ function OUTAbilityCost($cardID)
   {
     global $mainPlayer, $defPlayer, $combatChain, $chainLinks, $chainLinkSummary;
     global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
+    global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     $attackID = $combatChain[0];
     switch ($cardID)
     {
@@ -563,6 +565,9 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("MULTIADDTOPDECK", $defPlayer, "-", 1);
           WriteLog("The opponent must put a card from their hand on top of their deck.");
         }
+        break;
+      case "OUT062": case "OUT063": case "OUT064":
+        if(ComboActive()) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
       case "OUT068": case "OUT069": case "OUT070":
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give this a name", 0, 1);
