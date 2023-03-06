@@ -470,6 +470,11 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           $character[$i + 1] = 1;//Once per turn
         }
         break;
+      case "OUT091": case "OUT092": //Riptide
+        if ($from == "HAND") {
+          AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
+        }
+        break;
       default:
         break;
     }
