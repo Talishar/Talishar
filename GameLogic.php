@@ -964,6 +964,12 @@ function EffectBlockModifier($cardID, $index)
       $cardType = CardType($combatChain[$index]);
       $cardBlock = BlockValue($combatChain[$index]);
       return ($cardType == "E" ? -1 : 0);
+    case "OUT109":
+      return (PitchValue($combatChain[$index]) == 1 ? -1 : 0);
+    case "OUT110":
+      return (PitchValue($combatChain[$index]) == 2 ? -1 : 0);
+    case "OUT111":
+      return (PitchValue($combatChain[$index]) == 3 ? -1 : 0);
     default:
       return 0;
   }

@@ -62,6 +62,9 @@ function OUTAbilityCost($cardID)
       case "OUT033": case "OUT034": case "OUT035": return 1;
       case "OUT052": return 1;
       case "OUT105": return 4;
+      case "OUT109": return 4;
+      case "OUT110": return 3;
+      case "OUT111": return 2;
       case "OUT112": return 3;
       case "OUT113": return 3;
       case "OUT114": return 3;
@@ -91,6 +94,7 @@ function OUTAbilityCost($cardID)
       case "OUT049": return CardType($attackID) == "AA";
       case "OUT052": return count($idArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($idArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
+      case "OUT109": case "OUT110": case "OUT111": return CardSubType($attackID) == "Arrow";
       case "OUT105": return CardSubType($attackID) == "Arrow";
       case "OUT112": return CardSubType($attackID) == "Arrow";
       case "OUT113": return CardSubType($attackID) == "Arrow";
@@ -123,6 +127,7 @@ function OUTAbilityCost($cardID)
       case "OUT068": case "OUT069": case "OUT070": return true;
       case "OUT074": case "OUT075": case "OUT076": return true;
       case "OUT105": return true;
+      case "OUT109": case "OUT110": case "OUT111": return true;
       case "OUT112": return true;
       case "OUT113": return true;
       case "OUT114": return true;
@@ -315,6 +320,10 @@ function OUTAbilityCost($cardID)
           WriteLog("Trap triggers and hit effects do not fire.");
           TrapTriggered($cardID);
         }
+        return "";
+      case "OUT109": case "OUT110": case "OUT111":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffect($cardID, $defPlayer);
         return "";
       case "OUT112":
         AddCurrentTurnEffect($cardID, $currentPlayer);
