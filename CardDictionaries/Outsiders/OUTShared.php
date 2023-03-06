@@ -57,6 +57,7 @@ function OUTAbilityCost($cardID)
       case "OUT052": return 1;
       case "OUT105": return 4;
       case "OUT112": return 3;
+      case "OUT113": return 3;
       case "OUT114": return 3;
       case "OUT118": case "OUT119": case "OUT120": return 1;
       case "OUT121": case "OUT122": case "OUT123": return 1;
@@ -86,6 +87,7 @@ function OUTAbilityCost($cardID)
       case "OUT068": case "OUT069": case "OUT070": return true;
       case "OUT105": return CardSubType($attackID) == "Arrow";
       case "OUT112": return CardSubType($attackID) == "Arrow";
+      case "OUT113": return CardSubType($attackID) == "Arrow";
       case "OUT114": return CardSubType($attackID) == "Arrow";
       case "OUT118": case "OUT119": case "OUT120": return true;
       case "OUT121": case "OUT122": case "OUT123": return true;
@@ -115,6 +117,7 @@ function OUTAbilityCost($cardID)
       case "OUT074": case "OUT075": case "OUT076": return true;
       case "OUT105": return true;
       case "OUT112": return true;
+      case "OUT113": return true;
       case "OUT114": return true;
       case "OUT145": case "OUT146": case "OUT147": return true;
       case "OUT148": return true;
@@ -291,6 +294,9 @@ function OUTAbilityCost($cardID)
         }
         return "";
       case "OUT112":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "OUT113":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "OUT114":
@@ -564,12 +570,6 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "_resource_cards_this_turn_and_next", 1);
           AddDecisionQueue("WRITELOG", $mainPlayer, "<-", 1);
         }
-        break;
-      case "OUT112":
-        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
-        break;
-      case "OUT114":
-        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
         break;
       case "OUT118": case "OUT119": case "OUT120":
         if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);

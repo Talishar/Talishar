@@ -877,14 +877,13 @@ function EffectHitEffect($cardID)
       }
       break;
     case "OUT112":
-      if (IsHeroAttackTarget()) {
-        PlayAura($CID_BloodRotPox, $defPlayer);
-      }
+      if (IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+      break;
+    case "OUT113":
+      if (IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
       break;
     case "OUT114":
-      if (IsHeroAttackTarget()) {
-        PlayAura($CID_Inertia, $defPlayer);
-      }
+      if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
       break;
     case "OUT158":
       if(IsHeroAttackTarget())
