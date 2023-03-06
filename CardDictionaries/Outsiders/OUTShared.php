@@ -58,7 +58,7 @@ function OUTAbilityCost($cardID)
       case "OUT105": return 4;
       case "OUT112": return 3;
       case "OUT114": return 3;
-      case "OUT118": case "OUT119": case "OUT120": return 1; 
+      case "OUT118": case "OUT119": case "OUT120": return 1;
       case "OUT121": case "OUT122": case "OUT123": return 1;
       case "OUT124": case "OUT125": case "OUT126": return 1;
       case "OUT136": case "OUT137": case "OUT138": return 1;
@@ -219,6 +219,14 @@ function OUTAbilityCost($cardID)
           }
         }
         return $rv;
+      case "OUT102":
+        if(HasIncreasedAttack())
+        {
+          AddCurrentTurnEffect($cardID, $mainPlayer);
+          $rv = "Trap triggered and the attack cannot gain power.";
+          TrapTriggered($cardID);
+        }
+        return "";
       case "OUT103":
         if(DoesAttackHaveGoAgain())
         {
@@ -227,10 +235,39 @@ function OUTAbilityCost($cardID)
           DiscardHand($mainPlayer);
           for($i=0; $i<$numDraw; ++$i) Draw($mainPlayer);
           WriteLog("Attacker discarded their hand and drew $numDraw cards.");
+          TrapTriggered($cardID);
         }
         return "";
+      case "OUT104":
+        if(NumAttackReactionsPlayed() > 0)
+        {
+          $deck = new Deck($mainPlayer);
+          $topDeck = $deck->Top(remove:true);
+          $name = CardName($topDeck);
+          AddGraveyard($topDeck, $mainPlayer, "DECK");
+          $discard = &GetDiscard($mainPlayer);
+          $numName = 0;
+          for($i=0; $i<count($discard); $i+=DiscardPieces())
+          {
+            if(CardName($discard[$i]) == $name) ++$numName;
+          }
+          LoseHealth($numName, $mainPlayer);
+          $rv = Cardlink($topDeck, $topDeck) . " put into discard. Player $mainPlayer lost $numName health.";
+          TrapTriggered($cardID);
+        }
+        return $rv;
       case "OUT105":
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "OUT106":
+        if(HasIncreasedAttack())
+        {
+          AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIP");
+          AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
+          AddDecisionQueue("ADDNEGDEFCOUNTER", $mainPlayer, "-", 1);
+          $rv = "Trap triggered and puts a -1 counter on an equipment.";
+          TrapTriggered($cardID);
+        }
         return "";
       case "OUT107":
         if(NumAttackReactionsPlayed() > 0)
@@ -240,10 +277,19 @@ function OUTAbilityCost($cardID)
           {
             $cardRemoved = $deck->Top(remove:true);
             AddGraveyard($cardRemoved, $mainPlayer, "DECK");
+            TrapTriggered($cardID);
           }
           $rv = "Milled two cards.";
         }
         return $rv;
+      case "OUT108":
+        if(DoesAttackHaveGoAgain())
+        {
+          AddCurrentTurnEffect($cardID, $mainPlayer);
+          WriteLog("Trap triggers and hit effects do not fire.");
+          TrapTriggered($cardID);
+        }
+        return "";
       case "OUT112":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -351,6 +397,7 @@ function OUTAbilityCost($cardID)
         {
           PlayAura($CID_BloodRotPox, $mainPlayer);
           $rv = "Trap triggered and created a Bloodrot Pox.";
+          TrapTriggered($cardID);
         }
         return $rv;
       case "OUT172":
@@ -358,6 +405,7 @@ function OUTAbilityCost($cardID)
         {
           PlayAura($CID_Frailty, $mainPlayer);
           $rv = "Trap triggered and created a Frailty.";
+          TrapTriggered($cardID);
         }
         return $rv;
       case "OUT173":
@@ -365,6 +413,7 @@ function OUTAbilityCost($cardID)
         {
           PlayAura($CID_Inertia, $mainPlayer);
           $rv = "Trap triggered and created an Inertia.";
+          TrapTriggered($cardID);
         }
         return $rv;
       case "OUT186":
@@ -635,6 +684,17 @@ function OUTAbilityCost($cardID)
       if($combatChain[$i+1] == $mainPlayer && (CardType($combatChain[$i]) == "AR" || GetAbilityType($combatChain[$i]) == "AR")) ++$numReactions;
     }
     return $numReactions;
+  }
+
+  function TrapTriggered($cardID)
+  {
+    global $mainPlayer, $defPlayer;
+    $char = &GetPlayerCharacter($defPlayer);
+    if($char[0] == "OUT091" || $char[0] == "OUT092")
+    {
+      WriteLog("Riptide deals 1 damage from a trap.");
+      DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
+    }
   }
 
 ?>
