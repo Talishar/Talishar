@@ -166,8 +166,22 @@ if ($canSeeQueue) {
       <div style="vertical-align:middle; position: relative;">
         <h3>Outsiders</h3>
         All spoiled cards as of Sneak Attack implemented except:<BR>
-          Amnesia, Sneak Attack<BR>
-          Last updated: 7:38PM CST
+          AmnesiaBack<br>
+           Heel Kick<br>
+Silverwind Shuriken<br>
+Spire Sniping<br>
+Vambrace of Determination - Half Implemented<br>
+Mask of Shifting Perspectives<br>
+Burden of the Past<br>
+Concealed Blade<br>
+Mask of Malicious Manifestations<br>
+Tarpit Trap<br>
+Amplifying Arrow<br>
+Buzzsaw Trap<br>
+Visit the Floating Dojo<br>
+Falcon Wing<br>
+Scout the Periphery<BR>
+          Last updated: 9:55PM CST 3/5/23
         <br>
       </div>
       <BR>
