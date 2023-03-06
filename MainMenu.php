@@ -166,8 +166,8 @@ if ($canSeeQueue) {
       <div style="vertical-align:middle; position: relative;">
         <h3>Outsiders</h3>
         All spoiled cards as of Sneak Attack implemented except:<BR>
-          AmnesiaBack<br>
-           Heel Kick<br>
+          Amnesia<br>
+          Back Heel Kick<br>
 Silverwind Shuriken<br>
 Spire Sniping<br>
 Vambrace of Determination - Half Implemented<br>
