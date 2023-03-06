@@ -1782,9 +1782,13 @@ function HasCombo($cardID)
     case "DYN056": case "DYN057": case "DYN058":
     case "DYN059": case "DYN060": case "DYN061":
       return true;
+    case "OUT050": 
     case "OUT051":
+    case "OUT055":
     case "OUT056": case "OUT057": case "OUT058":
     case "OUT059": case "OUT060": case "OUT061":
+    case "OUT062": case "OUT063": case "OUT064":
+    case "OUT065":
     case "OUT074": case "OUT075": case "OUT076":
     case "OUT080": case "OUT081": case "OUT082":
       return true;
