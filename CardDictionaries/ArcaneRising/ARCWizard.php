@@ -453,6 +453,7 @@
         case "UPR159": ++$barrierArray[1]; $total += 1; break;
         case "UPR166": ++$barrierArray[1]; $total += 1; break;
         case "UPR167": ++$barrierArray[1]; $total += 1; break;
+        case "OUT094": ++$barrierArray[1]; $total += 1; break;
         default: break;
       }
     }
