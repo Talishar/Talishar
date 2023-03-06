@@ -2251,6 +2251,9 @@ function OnBlockResolveEffects()
       case "DYN152":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
         break;
+      case "OUT099":
+        AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
+        break;
       default:
         break;
     }
@@ -3903,19 +3906,22 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "GAINACTIONPOINTS":
       $actionPoints += $parameter;
       return $lastResult;
+    case "EQUALPASS":
+      if($lastResult == $parameter) return "PASS";
+      return 1;
     case "NOPASS":
       if ($lastResult == "NO") return "PASS";
       return 1;
     case "NOPASSLOG":
       if ($lastResult == "NO") {
-        writelog("Player " . $player . " looked at the top of the deck and left the card there.");
+        WriteLog("Player " . $player . " looked at the top of the deck and left the card there.");
         return "PASS";
       }
       writelog("Player " . $player . " put a card at the bottom of the deck.");
       return 1;
     case "NOPASSARAKNI":
       if ($lastResult == "NO") {
-        writelog(CardLink($parameter, $parameter) . " looked at the top of the deck and left the card there.", $player);
+        WriteLog(CardLink($parameter, $parameter) . " looked at the top of the deck and left the card there.", $player);
         return "PASS";
       }
       writelog(CardLink($parameter, $parameter) . " put a card at the bottom of the deck.", $player);
