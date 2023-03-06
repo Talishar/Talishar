@@ -140,26 +140,20 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "001-PickMode");
       break;
     case 005:
-      //if($encounter[3] == "Dorinthea") AddDecisionQueue("BUTTONINPUT", $player, "Cintari_Saber_Background,Dawnblade_Background");
-      //if($encounter[3] == "Bravo") AddDecisionQueue("BUTTONINPUT", $player, "Anothos_Background,Titans_Fist_Background");
       AddDecisionQueue("BUTTONINPUT", $player, GetBackgrounds($encounter[3]));
       AddDecisionQueue("BACKGROUND", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
-      //AddDecisionQueue("SETENCOUNTER", $player, "106-BeforeFight");
       break;
     case 006:
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
-      //AddDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
-      //AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
       AddDecisionQueue("BUTTONINPUT", $player, "Rest,Reflect");
       AddDecisionQueue("CAMPFIRE", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 8:
-      //AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
       AddDecisionQueue("SHOP", $player, GetShop());
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
