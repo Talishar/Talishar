@@ -148,10 +148,18 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
   array_push($arsenal, "0"); //Is Frozen (1 = Frozen)
   array_push($arsenal, GetUniqueId()); //Unique ID
   $otherPlayer = $player == 1 ? 2 : 1;
-  if ($facing == "UP") {
-    if ($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
+  if($facing == "UP") {
+    if($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
       WriteLog("Back Alley Breakline was put into your arsenal from your deck face up. Gained 1 action point.");
       if ($player == $mainPlayer) GainActionPoints(1);
+    }
+    if($from == "DECK" && CardSubType($cardID) == "Arrow" && SearchCharacterActive($player, "OUT097"))
+    {
+      AddDecisionQueue("YESNO", $player, "if you want to pay 1 to put an aim counter on the arrow");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, count($arsenal)-ArsenalPieces(), 1);
+      AddDecisionQueue("ADDAIMCOUNTER", $player, "-", 1);
     }
     switch ($cardID) {
       case "ARC057":
