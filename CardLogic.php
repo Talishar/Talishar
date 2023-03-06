@@ -1034,6 +1034,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " draws a card and is destroyed.");
       break;
+    case "OUT091": case "OUT092":
+      Reload();
+      break;
     case "OUT099":
       $otherPlayer = ($player == 1 ? 2 : 1);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose target hero");
