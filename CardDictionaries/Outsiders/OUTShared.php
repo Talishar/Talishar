@@ -10,6 +10,7 @@ function OUTAbilityCost($cardID)
     case "OUT011": return 0;
     case "OUT049": return 1;
     case "OUT093": return 1;
+    case "OUT094": return 0;
     case "OUT096": return 3;
     case "OUT098": return 0;
     case "OUT139": return 0;
@@ -30,6 +31,7 @@ function OUTAbilityCost($cardID)
       case "OUT011": return "AR";
       case "OUT049": return "I";
       case "OUT093": return "I";
+      case "OUT094": return "I";
       case "OUT096": return "I";
       case "OUT098": return "I";
       case "OUT139": return "AR";
@@ -206,6 +208,9 @@ function OUTAbilityCost($cardID)
             $arsenal[count($arsenal) - ArsenalPieces() + 3] += 1;
           }
         }
+        return "";
+      case "OUT094":
+        GainResources($currentPlayer, 1);
         return "";
       case "OUT096":
         $deck = new Deck($currentPlayer);
