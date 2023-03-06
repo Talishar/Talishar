@@ -11,6 +11,7 @@ function OUTAbilityCost($cardID)
     case "OUT049": return 1;
     case "OUT093": return 1;
     case "OUT096": return 3;
+    case "OUT098": return 0;
     case "OUT139": return 0;
     case "OUT141": return 2;
     case "OUT158": return 1;
@@ -30,6 +31,7 @@ function OUTAbilityCost($cardID)
       case "OUT049": return "I";
       case "OUT093": return "I";
       case "OUT096": return "I";
+      case "OUT098": return "I";
       case "OUT139": return "AR";
       case "OUT141": return "A";
       case "OUT158": return "A";
@@ -222,6 +224,12 @@ function OUTAbilityCost($cardID)
           }
         }
         return $rv;
+      case "OUT098":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
+        AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+        break;
       case "OUT102":
         if(HasIncreasedAttack())
         {

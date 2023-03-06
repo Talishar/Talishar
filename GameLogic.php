@@ -3043,7 +3043,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "OUT011":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "OUT049": case "OUT141": case "OUT158":
+    case "OUT049": case "OUT098": case "OUT141": case "OUT158":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     default:
