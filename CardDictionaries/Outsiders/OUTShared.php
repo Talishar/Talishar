@@ -11,6 +11,7 @@ function OUTAbilityCost($cardID)
     case "OUT049": return 1;
     case "OUT093": return 1;
     case "OUT094": return 0;
+    case "OUT095": return 3;
     case "OUT096": return 3;
     case "OUT098": return 0;
     case "OUT139": return 0;
@@ -32,6 +33,7 @@ function OUTAbilityCost($cardID)
       case "OUT049": return "I";
       case "OUT093": return "I";
       case "OUT094": return "I";
+      case "OUT095": return "I";
       case "OUT096": return "I";
       case "OUT098": return "I";
       case "OUT139": return "AR";
@@ -211,6 +213,13 @@ function OUTAbilityCost($cardID)
         return "";
       case "OUT094":
         GainResources($currentPlayer, 1);
+        return "";
+      case "OUT095":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYDISCARDARROW");
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "3-", 1);
+        AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMEMBRANCE", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         return "";
       case "OUT096":
         $deck = new Deck($currentPlayer);

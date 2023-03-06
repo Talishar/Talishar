@@ -3043,7 +3043,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "OUT011":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "OUT049": case "OUT098": case "OUT141": case "OUT158":
+    case "OUT049": case "OUT095": case "OUT098": case "OUT141": case "OUT158":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     default:
@@ -3258,6 +3258,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "MYDECKARROW":
           $rv = SearchDeck($player, "", "Arrow");
+          break;
+        case "MYDISCARDARROW":
+          $rv = SearchDiscard($player, "", "Arrow");
           break;
         case "MAINHAND":
           $rv = GetIndices(count(GetHand($mainPlayer)));
