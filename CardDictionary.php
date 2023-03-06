@@ -40,7 +40,7 @@ function CardType($cardID)
 {
   if(!$cardID) return "";
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM")
+  if($set != "ROG" && $set != "DUM" && $set != "LGS")
   {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardType($cardID);
