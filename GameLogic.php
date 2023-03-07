@@ -887,6 +887,10 @@ function EffectHitEffect($cardID)
     case "OUT114":
       if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
       break;
+    case "OUT140":
+      WriteLog("Mask of Shifting Perspectives lets you sink a card.");
+      MayBottomDeckDraw($mainPlayer);
+      break;
     case "OUT158":
       if(IsHeroAttackTarget())
       {
@@ -1864,7 +1868,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN154":
       return true;
-    case "OUT052": case "OUT141": return true;
+    case "OUT052": case "OUT140": case "OUT141": return true;
     default:
       return false;
   }
@@ -3054,7 +3058,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "OUT011":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "OUT049": case "OUT095": case "OUT098": case "OUT141": case "OUT158":
+    case "OUT049": case "OUT095": case "OUT098": case "OUT140": case "OUT141": case "OUT158":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     default:

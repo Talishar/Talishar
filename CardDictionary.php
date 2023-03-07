@@ -1325,7 +1325,7 @@ function HasBladeBreak($cardID)
     case "RVD003": return true;
     case "UPR136": case "UPR158": case "UPR182": return true;
     case "DYN045": case "DYN152": case "DYN171": return true;
-    case "OUT049": case "OUT094": case "OUT099": case "OUT139": case "OUT141": case "OUT158": return true;
+    case "OUT049": case "OUT094": case "OUT099": case "OUT139": case "OUT140": case "OUT141": case "OUT158": return true;
     default:
       return false;
   }

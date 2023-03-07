@@ -169,7 +169,6 @@ if ($canSeeQueue) {
           Amnesia<br>
           Back Heel Kick<br>
 Vambrace of Determination - Half Implemented<br>
-Mask of Shifting Perspectives<br>
 Burden of the Past<br>
 Concealed Blade<br>
 Mask of Malicious Manifestations<br>

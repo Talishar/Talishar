@@ -16,6 +16,7 @@ function OUTAbilityCost($cardID)
     case "OUT096": return 3;
     case "OUT098": return 0;
     case "OUT139": return 0;
+    case "OUT140": return 0;
     case "OUT141": return 2;
     case "OUT158": return 1;
     default: return 0;
@@ -39,6 +40,7 @@ function OUTAbilityCost($cardID)
       case "OUT096": return "I";
       case "OUT098": return "I";
       case "OUT139": return "AR";
+      case "OUT140": return "AR";
       case "OUT141": return "A";
       case "OUT158": return "A";
       default: return "";
@@ -111,6 +113,7 @@ function OUTAbilityCost($cardID)
       case "OUT121": case "OUT122": case "OUT123": return true;
       case "OUT124": case "OUT125": case "OUT126": return true;
       case "OUT136": case "OUT137": case "OUT138": return true;
+      case "OUT140": return CardSubType($attackID) == "Dagger";
       case "OUT141": return CardSubType($attackID) == "Dagger";
       case "OUT158": return CardType($attackID) == "AA";
       case "OUT165": case "OUT166": case "OUT167": return CardType($attackID) == "AA" && (ClassContains($attackID, "ASSASSIN", $mainPlayer) || ClassContains($attackID, "RANGER", $mainPlayer));
@@ -146,6 +149,7 @@ function OUTAbilityCost($cardID)
       case "OUT159": case "OUT160": case "OUT161": return true;//Codices
       case "OUT165": case "OUT166": case "OUT167": return true;
       case "OUT185": return true;
+      case "OUT187": return true;
       case "OUT188": return true;
       case "OUT225": case "OUT226": case "OUT227": return true;
       default: return false;
@@ -377,6 +381,9 @@ function OUTAbilityCost($cardID)
       case "OUT139":
         ThrowWeapon("Dagger");
         return "";
+      case "OUT140":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "OUT141":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -490,6 +497,9 @@ function OUTAbilityCost($cardID)
         }
         RevealCards($cardsToReveal);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        return "";
+      case "OUT187":
+        //TODO
         return "";
       case "OUT188":
         AddCurrentTurnEffect($cardID . "_1", $currentPlayer);
