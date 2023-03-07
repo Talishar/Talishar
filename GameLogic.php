@@ -5216,7 +5216,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             break;
         }
       }
-      WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
+      if(count($params) <= 3) WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
       return $lastResult;
     case "MZREMOVE":
       //TODO: Make each removal function return the card ID that was removed, so you know what it was
