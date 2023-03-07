@@ -2013,3 +2013,9 @@ function HasPlayedAttackReaction()
   }
   return false;
 }
+
+function HitEffectsPreventedThisLink()
+{
+  global $combatChainState, $CCS_ChainLinkHitEffectsPrevented;
+  $combatChainState[$CCS_ChainLinkHitEffectsPrevented] = 1;
+}

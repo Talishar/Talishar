@@ -173,7 +173,6 @@ Mask of Shifting Perspectives<br>
 Burden of the Past<br>
 Concealed Blade<br>
 Mask of Malicious Manifestations<br>
-Tarpit Trap<br>
 Amplifying Arrow<br>
 Visit the Floating Dojo<br>
 
