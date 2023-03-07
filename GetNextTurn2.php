@@ -333,6 +333,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
+    $cardID = explode("_", $cardID)[0];
     $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid blue;'>";
     $effect .= Card($cardID, "crops", 65, 0, 1);
     $effect .= "</div>";
