@@ -4172,7 +4172,7 @@ return 5;
 case "2":
 return 4;
 case "9":
-return 4;
+return 3;
 default: return 0;
 }
 case "0":
@@ -4202,9 +4202,9 @@ default: return 0;
 case "2":
 switch($cardID[5]) {
 case "0":
-return 3;
-case "1":
 return 2;
+case "1":
+return 1;
 default: return 0;
 }
 default: return 0;
