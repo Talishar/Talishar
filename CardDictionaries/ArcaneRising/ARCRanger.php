@@ -155,7 +155,7 @@
     if($player == 0) $player = $currentPlayer;
     if(ArsenalFull($player))
     {
-      WriteLog("Your arsenal is full, so you add a card.");
+      WriteLog("Your arsenal is full, so you do not arsenal a card.");
       return;
     }
     AddDecisionQueue("FINDINDICES", $player, "HAND");
