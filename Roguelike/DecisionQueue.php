@@ -174,6 +174,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         $deck = &GetZone($player, "Deck");
         $character = &GetZone($player, "Character");
         $encounter = &GetZone($player, "Encounter");
+        GiveUniversalEquipment();
         switch($lastResult)
         {
           case "The_Volcai_Sellsword":
@@ -390,9 +391,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
   $health = &GetZone($player, "Health");
   array_push($health, 20); //TODO: Base on hero health
   $character = &GetZone($player, "Character");
-  $character = explode(" ", $heroFileArray[0]); //TODO: Support multiple heroes
+  $character = explode(" ", $heroFileArray[0]);
   $deck = &GetZone($player, "Deck");
-  $deck = explode(" ", $heroFileArray[1]); //TODO: Support multiple heroes
+  $deck = explode(" ", $heroFileArray[1]);
   $encounter = &GetZone($player, "Encounter");
   $encounter[3] = $hero;
   }

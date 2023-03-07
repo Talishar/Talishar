@@ -20,6 +20,13 @@ function GetPool($type, $hero, $rarity, $background){
   else return ("WTR224"); //Cracked Bauble as a default, but we shouldn't see this
 }
 
+//Called at
+function GiveUniversalEquipment(){
+  $character = &GetZone(1, "Character");
+  array_push($character, "WTR156", "ARC155", "ARC156", "ARC157", "ARC158");
+
+}
+
 //Input a list of parameters
 function GetPool2($arrayParameters){
 
