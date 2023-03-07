@@ -100,8 +100,9 @@ function OUTAbilityCost($cardID)
       case "OUT049": return CardType($attackID) == "AA";
       case "OUT052": return count($idArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($idArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
-      case "OUT109": case "OUT110": case "OUT111": return CardSubType($attackID) == "Arrow";
+      case "OUT102": return true;
       case "OUT105": return CardSubType($attackID) == "Arrow";
+      case "OUT109": case "OUT110": case "OUT111": return CardSubType($attackID) == "Arrow";
       case "OUT112": return CardSubType($attackID) == "Arrow";
       case "OUT113": return CardSubType($attackID) == "Arrow";
       case "OUT114": return CardSubType($attackID) == "Arrow";

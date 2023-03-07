@@ -175,7 +175,6 @@ Concealed Blade<br>
 Mask of Malicious Manifestations<br>
 Tarpit Trap<br>
 Amplifying Arrow<br>
-Buzzsaw Trap<br>
 Visit the Floating Dojo<br>
 
 Fleet Foot Sandals<br>

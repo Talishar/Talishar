@@ -1312,6 +1312,7 @@ function DestroyFrozenArsenal($player)
 function CanGainAttack()
 {
   global $combatChain, $mainPlayer;
+  if(SearchCurrentTurnEffects("OUT102", $mainPlayer)) return false;
   return !SearchCurrentTurnEffects("CRU035", $mainPlayer) || CardType($combatChain[0]) != "AA";
 }
 
