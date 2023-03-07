@@ -362,9 +362,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Make_your_way_up_through_Metrix": //Combustible Courier
             PrependDecisionQueue("SETENCOUNTER", $player, "120-BeforeFight");
             break;
-          case "Catch_a_ferry_across_the_lake": //TESTING Rune Scholar
-            PrependDecisionQueue("SETENCOUNTER", $player, "107-BeforeFight");
-            break;
+            /* case "Catch_a_ferry_across_the_lake": 
+              PrependDecisionQueue("SETENCOUNTER", $player, "107-BeforeFight");
+              break; */
           case "Venture_into_the_forest_and_attempt_to_sneak_past": //Ravenous Rabble
             PrependDecisionQueue("SETENCOUNTER", $player, "102-BeforeFight");
             break;
@@ -377,6 +377,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Turn_back_and_take_the_long_way_around": //Quickshot Apprentice
             PrependDecisionQueue("SETENCOUNTER", $player, "106-BeforeFight");
             break; 
+          case "You_notice_a_mountain_pass_you_can_move_through": //Rune Scholar
+            PrependDecisionQueue("SETENCOUNTER", $player, "107-BeforeFight");
+            break;
           case "Leave_the_town_immediately":
             PrependDecisionQueue("SETENCOUNTER", $player, "118-BeforeFight");
             break;
