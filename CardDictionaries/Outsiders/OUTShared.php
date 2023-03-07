@@ -767,4 +767,18 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("OK", $otherPlayer, "-", 1);
   }
 
+  function SpireSnipingAbility($player)
+  {
+    $deck = &GetDeck($player);
+    $cards = "";
+    for ($i = 0; $i < 2; ++$i) {
+      if (count($deck) > 0) {
+        if ($cards != "") $cards .= ",";
+        $card = array_shift($deck);
+        $cards .= $card;
+      }
+    }
+    AddDecisionQueue("CHOOSETOP", $player, $cards);
+  }
+
 ?>

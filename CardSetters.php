@@ -162,18 +162,17 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
       AddDecisionQueue("ADDAIMCOUNTER", $player, "-", 1);
     }
     switch ($cardID) {
-      case "ARC057":
-      case "ARC058":
-      case "ARC059":
+      case "ARC057": case "ARC058": case "ARC059":
         AddCurrentTurnEffect($cardID, $player);
         break;
-      case "ARC063":
-      case "ARC064":
-      case "ARC065":
+      case "ARC063": case "ARC064": case "ARC065":
         Opt($cardID, 1);
         break;
       case "CRU123":
         AddCurrentTurnEffect($cardID, $otherPlayer);
+        break;
+      case "OUT130": case "OUT131": case "OUT132":
+        SpireSnipingAbility($player);
         break;
       default:
         break;
@@ -195,10 +194,22 @@ function SetArsenalFacing($facing, $player)
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
     if ($facing == "UP" && $arsenal[$i + 1] == "DOWN") {
       $arsenal[$i + 1] = "UP";
+      ArsenalTurnFaceUpAbility($arsenal[$i], $player);
       return $arsenal[$i];
     }
   }
   return "";
+}
+
+function ArsenalTurnFaceUpAbility($cardID, $player)
+{
+  switch($cardID)
+  {
+    case "OUT130": case "OUT131": case "OUT132":
+      SpireSnipingAbility($player);
+      break;
+    default: break;
+  }
 }
 
 function RemoveArsenal($player, $index)
