@@ -111,10 +111,10 @@ if(CardSet($p2Char[0]) == "ROG") {
     array_unshift($p2Hand, "ARC069");
   }
 
-  //Runeblade Scholar
-  if ($p2Char[0] == "ROGUE010") {
+  //Runeblade Scholar, effect disabled for now
+  /* if ($p2Char[0] == "ROGUE010") {
     PutItemIntoPlayForPlayer("ARC163", 1); //Rusted Relic for the main player, not the scholar
-  }
+  } */
 }
 
 AddDecisionQueue("SHUFFLEDECK", 1, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck

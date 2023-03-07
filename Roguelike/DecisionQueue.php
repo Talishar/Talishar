@@ -319,9 +319,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
       case "ROCKS":
         switch($lastResult)
         {
-          case "Trade_2_gold_pieces_for_the_stone":
+          case "Trade_1_gold_pieces_for_the_stone":
             $encounter = &GetZone($player, "Encounter");
-            $encounter[9] -= 2;
+            $encounter[9] -= 1;
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(1, "ResourceGems"));
             break;
           case "Decline_his_offer_and_move_on":
