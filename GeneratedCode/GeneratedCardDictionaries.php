@@ -2091,12 +2091,6 @@ case "3":
 return "A";
 case "4":
 return "A";
-case "5":
-return "A";
-case "6":
-return "A";
-case "7":
-return "A";
 default: return "AA";
 }
 case "3":
@@ -23607,6 +23601,12 @@ default: return "";
 }
 case "1":
 switch($cardID[5]) {
+case "5":
+return "Arrow";
+case "6":
+return "Arrow";
+case "7":
+return "Arrow";
 case "8":
 return "Arrow";
 case "9":
