@@ -251,7 +251,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
         break;
       case "OUT102":
-        if(HasIncreasedAttack())
+        if(!IsAllyAttacking() && HasIncreasedAttack())
         {
           AddCurrentTurnEffect($cardID, $mainPlayer);
           $rv = "Trap triggered and the attack cannot gain power.";
@@ -259,7 +259,7 @@ function OUTAbilityCost($cardID)
         }
         return "";
       case "OUT103":
-        if(DoesAttackHaveGoAgain())
+        if(!IsAllyAttacking() && DoesAttackHaveGoAgain())
         {
           $hand = &GetHand($mainPlayer);
           $numDraw = count($hand) - 1;
@@ -270,7 +270,7 @@ function OUTAbilityCost($cardID)
         }
         return "";
       case "OUT104":
-        if(NumAttackReactionsPlayed() > 0)
+        if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0)
         {
           $deck = new Deck($mainPlayer);
           $topDeck = $deck->Top(remove:true);
@@ -291,7 +291,7 @@ function OUTAbilityCost($cardID)
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "OUT106":
-        if(HasIncreasedAttack())
+        if(!IsAllyAttacking() && HasIncreasedAttack())
         {
           AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIP");
           AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
@@ -301,7 +301,7 @@ function OUTAbilityCost($cardID)
         }
         return "";
       case "OUT107":
-        if(NumAttackReactionsPlayed() > 0)
+        if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0)
         {
           $deck = new Deck($mainPlayer);
           for($i=0; $i<2; ++$i)
@@ -314,7 +314,7 @@ function OUTAbilityCost($cardID)
         }
         return $rv;
       case "OUT108":
-        if(DoesAttackHaveGoAgain())
+        if(!IsAllyAttacking() && DoesAttackHaveGoAgain())
         {
           AddCurrentTurnEffect($cardID, $mainPlayer);
           WriteLog("Trap triggers and hit effects do not fire.");
@@ -431,7 +431,7 @@ function OUTAbilityCost($cardID)
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Your opponent loses life if your next assassin or ranger attack hits.";
       case "OUT171":
-        if(NumAttackReactionsPlayed() > 0)
+        if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0)
         {
           PlayAura($CID_BloodRotPox, $mainPlayer);
           $rv = "Trap triggered and created a Bloodrot Pox.";
@@ -439,7 +439,7 @@ function OUTAbilityCost($cardID)
         }
         return $rv;
       case "OUT172":
-        if(DoesAttackHaveGoAgain())
+        if(!IsAllyAttacking() && DoesAttackHaveGoAgain())
         {
           PlayAura($CID_Frailty, $mainPlayer);
           $rv = "Trap triggered and created a Frailty.";
@@ -447,7 +447,7 @@ function OUTAbilityCost($cardID)
         }
         return $rv;
       case "OUT173":
-        if(HasIncreasedAttack())
+        if(!IsAllyAttacking() && HasIncreasedAttack())
         {
           PlayAura($CID_Inertia, $mainPlayer);
           $rv = "Trap triggered and created an Inertia.";
