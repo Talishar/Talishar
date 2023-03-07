@@ -177,7 +177,20 @@ Tarpit Trap<br>
 Amplifying Arrow<br>
 Buzzsaw Trap<br>
 Visit the Floating Dojo<br>
-          Last updated: 9:55PM CST 3/5/23
+
+Fleet Foot Sandals<br>
+Feisty Locals<br>
+Knives Out<br>
+Threadbare Tunic<br>
+Deadly Duo<br>
+Spring Loaded<br>
+Silken Gi<br>
+Freewheeling Renegades<br>
+Infectious Host<br>
+Skybound Shot<br>
+Fisticuffs<br>
+Brush Off<br>
+          Last updated: 7:52PM CST 3/6/23
         <br>
       </div>
       <BR>
