@@ -789,6 +789,7 @@ function OUTAbilityCost($cardID)
 
   function Belch()
   {
+    global $currentPlayer;
     if(!CanRevealCards($currentPlayer)) return "";
     $cardRemoved = "";
     $deck = &GetDeck($currentPlayer);
