@@ -178,8 +178,6 @@ Tarpit Trap<br>
 Amplifying Arrow<br>
 Buzzsaw Trap<br>
 Visit the Floating Dojo<br>
-Falcon Wing<br>
-Scout the Periphery<BR>
           Last updated: 9:55PM CST 3/5/23
         <br>
       </div>
