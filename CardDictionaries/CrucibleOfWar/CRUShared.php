@@ -400,6 +400,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "Prevents the next damage you would take.";
     case "CRU126":
       if (!IsAllyAttacking()) {
+        TrapTriggered($cardID);
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
         AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
@@ -409,6 +410,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "CRU127":
       if(!IsAllyAttacking()) {
+        TrapTriggered($cardID);
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 1, 1);
         AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
@@ -418,6 +420,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "CRU128":
       if (!IsAllyAttacking()) {
+        TrapTriggered($cardID);
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
         AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
