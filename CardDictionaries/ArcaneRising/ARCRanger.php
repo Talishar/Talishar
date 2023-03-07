@@ -149,6 +149,22 @@
     AddDecisionQueue("ADDARSENALFACEDOWN", $player, "HAND", 1);
   }
 
+  function SuperReload($player=0)
+  {
+    global $currentPlayer;
+    if($player == 0) $player = $currentPlayer;
+    if(ArsenalFull($player))
+    {
+      WriteLog("Your arsenal is full, so you add a card.");
+      return;
+    }
+    AddDecisionQueue("FINDINDICES", $player, "HAND");
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put in your arsenal");
+    AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+    AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+    AddDecisionQueue("ADDARSENALFACEDOWN", $player, "HAND", 1);
+  }
+
   function ReloadArrow($player = 0, $counters="0")
   {
     global $currentPlayer;
