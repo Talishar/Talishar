@@ -20,11 +20,10 @@ function GetPool($type, $hero, $rarity, $background){
   else return ("WTR224"); //Cracked Bauble as a default, but we shouldn't see this
 }
 
-//Called at
+//Called at DecisionQueue.php at Backgrounds event
 function GiveUniversalEquipment(){
   $character = &GetZone(1, "Character");
   array_push($character, "WTR156", "ARC155", "ARC156", "ARC157", "ARC158");
-
 }
 
 //Input a list of parameters

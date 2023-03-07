@@ -101,6 +101,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           default: break;
         }
+        return 1;
       case "BATTLEFIELD":
         switch($lastResult)
         {
@@ -114,6 +115,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           default: break;
         }
+        return 1;
       case "LIBRARY":
         switch($lastResult)
         {
@@ -125,6 +127,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Leave":
             break;
         }
+        return 1;
       case "BLACKSMITH":
         $encounter = &GetZone($player, "Encounter");
         switch($lastResult)
@@ -144,6 +147,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Leave":
             break;
         }
+        return 1;
       case "OLDHAG":
         switch($lastResult)
         {
@@ -170,10 +174,12 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Leave":
             break;
         }
+        return 1;
       case "BACKGROUND":
         $deck = &GetZone($player, "Deck");
         $character = &GetZone($player, "Character");
         $encounter = &GetZone($player, "Encounter");
+        WriteLog("Background Event");
         GiveUniversalEquipment();
         switch($lastResult)
         {
@@ -213,6 +219,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             array_push($deck, "ELE208", "EVR030", "WTR070", "CRU040", "WTR190", "ARC211");
             break;
         }
+        return 1;
       case "STARTADVENTURE":
         switch($lastResult)
         {
