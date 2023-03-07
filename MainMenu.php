@@ -168,7 +168,6 @@ if ($canSeeQueue) {
         All spoiled cards as of Sneak Attack implemented except:<BR>
           Amnesia<br>
           Back Heel Kick<br>
-Silverwind Shuriken<br>
 Spire Sniping<br>
 Vambrace of Determination - Half Implemented<br>
 Mask of Shifting Perspectives<br>
