@@ -1249,6 +1249,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "OUT021": case "OUT022": case "OUT023":
     case "OUT042": case "OUT043": case "OUT044":
       return count($combatChain) == 0 || !HasStealth($combatChain[0]);
+    case "OUT054": return ($from == "PLAY" ? count($combatChain) == 0 || !HasCombo($combatChain[0]) : false);
     case "OUT094":
       return !ArsenalHasFaceDownCard($player);
     case "OUT154": case "OUT155": case "OUT156":
@@ -1782,7 +1783,7 @@ function HasCombo($cardID)
     case "DYN056": case "DYN057": case "DYN058":
     case "DYN059": case "DYN060": case "DYN061":
       return true;
-    case "OUT050": 
+    case "OUT050":
     case "OUT051":
     case "OUT055":
     case "OUT056": case "OUT057": case "OUT058":

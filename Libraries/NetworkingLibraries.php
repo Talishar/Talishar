@@ -9,21 +9,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 0: break; //Deprecated
     case 1: break; //Deprecated
     case 2: //Play card from hand - DEPRECATED
-      WriteLog("This code has been deprecated and should never be called, please report bug.");
-      $found = HasCard($cardID);
-      if ($found >= 0 && IsPlayable($cardID, $turn[0], "HAND", $found)) {
-        //Player actually has the card, now do the effect
-        //First remove it from their hand
-        $hand = &GetHand($playerID);
-        unset($hand[$found]);
-        $hand = array_values($hand);
-        PlayCard($cardID, "HAND");
-      }
-      else
-      {
-        echo("Play from hand " . $turn[0] . " Invalid Input<BR>");
-        return false;
-      }
       break;
     case 3: //Play equipment ability
       $index = $cardID;
@@ -1505,7 +1490,7 @@ function PayAdditionalCosts($cardID, $from)
   global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex;
   $cardSubtype = CardSubType($cardID);
 
-  if ($from == "PLAY" && $cardSubtype == "Item") {
+  if ($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     $paidSteamCounter = PayItemAbilityAdditionalCosts($cardID, $from);
     SetClassState($currentPlayer, $CS_AdditionalCosts, $paidSteamCounter);
     return;
@@ -1856,7 +1841,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $chainClosed = false;
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
   if (GoesOnCombatChain($turn[0], $cardID, $from)) {
-    if($from == "PLAY" && $uniqueID != "-1" && $index == -1) { WriteLog(CardLink($cardID, $cardID) . " is no longer in play and so the effect does not resolve."); return; }
+    if($from == "PLAY" && $uniqueID != "-1" && $index == -1 && !DelimStringContains(CardSubType($cardID), "Item")) { WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play."); return; }
     $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
     if ($index == 0) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
@@ -1890,9 +1875,10 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
   } else if ($from != "PLAY") {
     $cardSubtype = CardSubType($cardID);
+    WriteLog($cardSubtype);
     if (DelimStringContains($cardSubtype, "Aura")) {
       PlayMyAura($cardID);
-    } else if ($cardSubtype == "Item") {
+    } else if (DelimStringContains($cardSubtype, "Item")) {
       PutItemIntoPlay($cardID);
     } else if ($cardSubtype == "Landmark") {
       PlayLandmark($cardID, $currentPlayer);

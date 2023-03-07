@@ -619,6 +619,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "OUT043": return 2;
     case "OUT044": return 1;
     case "OUT051": return (ComboActive() ? 2 : 0);
+    case "OUT054": return 1;
     case "OUT062": case "OUT063": case "OUT064": return (ComboActive() ? 1 : 0);
     case "OUT074": case "OUT075": case "OUT076": return (ComboActive() ? 2 : 0);
     case "OUT133": case "OUT134": case "OUT135": return NumCardsDefended() < 2 ? 3 : 0;
@@ -2778,7 +2779,7 @@ function PutItemIntoPlay($item, $steamCounterModifier = 0)
 function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1)
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
-  if (CardSubType($item) != "Item") return;
+  if (!DelimStringContains(CardSubType($item), "Item")) return;
   $items = &GetItems($player);
   $myHoldState = ItemDefaultHoldTriggerState($item);
   if ($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;

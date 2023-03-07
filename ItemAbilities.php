@@ -12,6 +12,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "EVR179": case "EVR180": case "EVR181":
     case "EVR182": case "EVR183": case "EVR184":
     case "EVR185": case "EVR186": case "EVR187":
+    case "OUT054":
       DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
       break;
     case "ARC035":

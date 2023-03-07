@@ -9,6 +9,7 @@ function OUTAbilityCost($cardID)
     case "OUT009": case "OUT010": return 2;
     case "OUT011": return 0;
     case "OUT049": return 1;
+    case "OUT054": return 0;
     case "OUT093": return 1;
     case "OUT094": return 0;
     case "OUT095": return 3;
@@ -31,6 +32,7 @@ function OUTAbilityCost($cardID)
       case "OUT009": case "OUT010": return "AA";
       case "OUT011": return "AR";
       case "OUT049": return "I";
+      case "OUT054": return "AR";
       case "OUT093": return "I";
       case "OUT094": return "I";
       case "OUT095": return "I";
@@ -609,9 +611,6 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT118": case "OUT119": case "OUT120":
-        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
-        break;
-      case "OUT021":
         if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
         break;
       case "OUT124": case "OUT125": case "OUT126":
