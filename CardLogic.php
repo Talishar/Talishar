@@ -1038,19 +1038,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       SuperReload();
       break;
     case "OUT099":
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose target hero");
-      AddDecisionQueue("BUTTONINPUT", $player, "Target_Opponent,Target_Yourself");
-      AddDecisionQueue("EQUALPASS", $player, "Target_Opponent");
-      AddDecisionQueue("DECKCARDS", $player, "0", 1);
-      AddDecisionQueue("SETDQVAR", $player, "1", 1);
-      AddDecisionQueue("SETDQCONTEXT", $player, "Wayfinder's Crest shows the top of your deck is <1>", 1);
-      AddDecisionQueue("OK", $player, "-", 1);
-      AddDecisionQueue("ELSE", $player, "-");
-      AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
-      AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
-      AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Wayfinder's Crest shows the top of your deck is <1>", 1);
-      AddDecisionQueue("OK", $otherPlayer, "-", 1);
+      LookAtTopCard($player, "OUT099");
       break;
     case "OUT174":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));

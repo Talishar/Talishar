@@ -70,6 +70,7 @@ function OUTAbilityCost($cardID)
       case "OUT112": return 3;
       case "OUT113": return 3;
       case "OUT114": return 3;
+      case "OUT115": case "OUT116": case "OUT117": return 1;
       case "OUT118": case "OUT119": case "OUT120": return 1;
       case "OUT121": case "OUT122": case "OUT123": return 1;
       case "OUT124": case "OUT125": case "OUT126": return 1;
@@ -78,6 +79,9 @@ function OUTAbilityCost($cardID)
       case "OUT186": return (-1 * $idArr[1]);
       case "OUT188_2": return 3;
       case "OUT195": case "OUT196": case "OUT197": return 1;
+      case "OUT225": return 3;
+      case "OUT226": return 2;
+      case "OUT227": return 1;
       default: return 0;
     }
   }
@@ -101,6 +105,7 @@ function OUTAbilityCost($cardID)
       case "OUT112": return CardSubType($attackID) == "Arrow";
       case "OUT113": return CardSubType($attackID) == "Arrow";
       case "OUT114": return CardSubType($attackID) == "Arrow";
+      case "OUT115": case "OUT116": case "OUT117": return true;
       case "OUT118": case "OUT119": case "OUT120": return true;
       case "OUT121": case "OUT122": case "OUT123": return true;
       case "OUT124": case "OUT125": case "OUT126": return true;
@@ -112,6 +117,7 @@ function OUTAbilityCost($cardID)
       case "OUT188_1": return CardType($attackID) == "AA";
       case "OUT188_2": return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
       case "OUT195": case "OUT196": case "OUT197": return true;
+      case "OUT225": case "OUT226": case "OUT227": return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
       default: return false;
     }
   }
@@ -133,12 +139,14 @@ function OUTAbilityCost($cardID)
       case "OUT112": return true;
       case "OUT113": return true;
       case "OUT114": return true;
+      case "OUT115": case "OUT116": case "OUT117": return true;
       case "OUT145": case "OUT146": case "OUT147": return true;
       case "OUT148": return true;
       case "OUT159": case "OUT160": case "OUT161": return true;//Codices
       case "OUT165": case "OUT166": case "OUT167": return true;
       case "OUT185": return true;
       case "OUT188": return true;
+      case "OUT225": case "OUT226": case "OUT227": return true;
       default: return false;
     }
   }
@@ -337,6 +345,11 @@ function OUTAbilityCost($cardID)
       case "OUT114":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "OUT115": case "OUT116": case "OUT117":
+        if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
+        return "";
       case "OUT118": case "OUT119": case "OUT120":
         if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -487,6 +500,10 @@ function OUTAbilityCost($cardID)
           AddCurrentTurnEffect($cardID, $currentPlayer);
           GiveAttackGoAgain();
         }
+        return "";
+      case "OUT225": case "OUT226": case "OUT227":
+        LookAtTopCard($currentPlayer, $cardID);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "OUT231": case "OUT232": case "OUT233":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -731,6 +748,23 @@ function OUTAbilityCost($cardID)
       WriteLog("Riptide deals 1 damage from a trap.");
       DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
     }
+  }
+
+  function LookAtTopCard($player, $source)
+  {
+    $otherPlayer = ($player == 1 ? 2 : 1);
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose target hero");
+    AddDecisionQueue("BUTTONINPUT", $player, "Target_Opponent,Target_Yourself");
+    AddDecisionQueue("EQUALPASS", $player, "Target_Opponent");
+    AddDecisionQueue("DECKCARDS", $player, "0", 1);
+    AddDecisionQueue("SETDQVAR", $player, "1", 1);
+    AddDecisionQueue("SETDQCONTEXT", $player, CardName($source) . " shows the top of your deck is <1>", 1);
+    AddDecisionQueue("OK", $player, "-", 1);
+    AddDecisionQueue("ELSE", $player, "-");
+    AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
+    AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
+    AddDecisionQueue("SETDQCONTEXT", $otherPlayer, CardName($source) . " shows the top of your deck is <1>", 1);
+    AddDecisionQueue("OK", $otherPlayer, "-", 1);
   }
 
 ?>
