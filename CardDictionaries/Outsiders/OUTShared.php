@@ -210,7 +210,8 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
         }
         else if($abilityName == "Aim") {
-          if (ArsenalHasFaceDownCard($currentPlayer)) {
+          $arsenalFaceDown = ArsenalFaceDownCard($currentPlayer);
+          if ($arsenalFaceDown != "" && CardSubType($arsenalFaceDown) == "Arrow") {
             SetArsenalFacing("UP", $currentPlayer);
             $arsenal = &GetArsenal($currentPlayer);
             $arsenal[count($arsenal) - ArsenalPieces() + 3] += 1;

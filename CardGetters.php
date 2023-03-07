@@ -307,6 +307,15 @@ function HasTakenDamage($player)
   return GetClassState($player, $CS_DamageTaken) > 0;
 }
 
+function ArsenalFaceDownCard($player)
+{
+  $arsenal = &GetArsenal($player);
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if ($arsenal[$i + 1] == "DOWN") return $arsenal[$i];
+  }
+  return "";
+}
+
 function ArsenalHasFaceDownCard($player)
 {
   $arsenal = &GetArsenal($player);
