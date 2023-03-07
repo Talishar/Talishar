@@ -18,6 +18,7 @@ function OUTAbilityCost($cardID)
     case "OUT139": return 0;
     case "OUT140": return 0;
     case "OUT141": return 2;
+    case "OUT157": return 1;
     case "OUT158": return 1;
     default: return 0;
   }
@@ -42,6 +43,7 @@ function OUTAbilityCost($cardID)
       case "OUT139": return "AR";
       case "OUT140": return "AR";
       case "OUT141": return "A";
+      case "OUT157": return "A";
       case "OUT158": return "A";
       default: return "";
     }
@@ -52,6 +54,7 @@ function OUTAbilityCost($cardID)
     switch ($cardID)
     {
       case "OUT141": return true;
+      case "OUT157": return true;
       case "OUT158": return true;
       default: return false;
     }
@@ -393,6 +396,10 @@ function OUTAbilityCost($cardID)
           ThrowWeapon("Dagger");
         }
         return "";
+      case "OUT157":
+        $cardRemoved = Belch();
+        AddPlayerHand($cardRemoved, $currentPlayer, "DECK");
+        return "";
       case "OUT158":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -479,24 +486,12 @@ function OUTAbilityCost($cardID)
         }
         return $rv;
       case "OUT186":
-        if(!CanRevealCards($currentPlayer)) { AddCurrentTurnEffect("OUT186-7", $currentPlayer); return "You cannot reveal cards so Gore Belching gets -7."; }
-        $deck = &GetDeck($currentPlayer);
-        $cardsToReveal = "";
-        for($i=0; $i<count($deck); ++$i)
-        {
-          if($cardsToReveal != "") $cardsToReveal .= ",";
-          $cardsToReveal .= $deck[$i];
-          if(CardType($deck[$i]) == "AA")
-          {
-            BanishCardForPlayer($deck[$i], $currentPlayer, "DECK", "-", "OUT186");
-            AddCurrentTurnEffect("OUT186-" . AttackValue($deck[$i]), $currentPlayer);
-            unset($deck[$i]);
-            $deck = array_values($deck);
-            break;
-          }
+        $cardRemoved = Belch();
+        if($cardRemoved == "") { AddCurrentTurnEffect("OUT186-7", $currentPlayer); return "You cannot reveal cards so Gore Belching gets -7."; }
+        else {
+          BanishCardForPlayer($cardRemoved, $currentPlayer, "DECK", "-", "OUT186");
+          AddCurrentTurnEffect("OUT186-" . AttackValue($cardRemoved), $currentPlayer);
         }
-        RevealCards($cardsToReveal);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       case "OUT187":
         //TODO
@@ -790,6 +785,29 @@ function OUTAbilityCost($cardID)
       }
     }
     AddDecisionQueue("CHOOSETOP", $player, $cards);
+  }
+
+  function Belch()
+  {
+    if(!CanRevealCards($currentPlayer)) return "";
+    $cardRemoved = "";
+    $deck = &GetDeck($currentPlayer);
+    $cardsToReveal = "";
+    for($i=0; $i<count($deck); ++$i)
+    {
+      if($cardsToReveal != "") $cardsToReveal .= ",";
+      $cardsToReveal .= $deck[$i];
+      if(CardType($deck[$i]) == "AA")
+      {
+        $cardRemoved = $deck[$i];
+        unset($deck[$i]);
+        $deck = array_values($deck);
+        break;
+      }
+    }
+    RevealCards($cardsToReveal);
+    AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+    return $cardRemoved;
   }
 
 ?>

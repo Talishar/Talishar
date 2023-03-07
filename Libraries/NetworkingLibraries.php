@@ -1795,21 +1795,24 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MZBANISH", $currentPlayer, "HAND,UZURI," . $currentPlayer, 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       break;
-      case "OUT094":
-        if (ArsenalHasFaceDownCard($currentPlayer)) {
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALDOWN");
-          AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
-          AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
-          AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
-          WriteLog(CardLink($cardID, $cardID) . " put your arsenal at the bottom of your deck");
-        }
-        break;
+    case "OUT094":
+      if (ArsenalHasFaceDownCard($currentPlayer)) {
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALDOWN");
+        AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+        WriteLog(CardLink($cardID, $cardID) . " put your arsenal at the bottom of your deck");
+      }
+      break;
     case "OUT148":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how much to pay for " . CardLink($cardID, $cardID));
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0,1");
       AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
       AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-PAY1", 1);
+      break;
+    case "OUT157":
+      BottomDeckMultizone($currentPlayer, "MYHAND", "MYARS");
       break;
     case "OUT195": case "OUT196": case "OUT197":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:maxAttack=1;minAttack=1");
@@ -1875,7 +1878,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
   } else if ($from != "PLAY") {
     $cardSubtype = CardSubType($cardID);
-    WriteLog($cardSubtype);
     if (DelimStringContains($cardSubtype, "Aura")) {
       PlayMyAura($cardID);
     } else if (DelimStringContains($cardSubtype, "Item")) {

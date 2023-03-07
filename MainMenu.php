@@ -171,7 +171,6 @@ if ($canSeeQueue) {
 Vambrace of Determination - Half Implemented<br>
 Burden of the Past<br>
 Concealed Blade<br>
-Mask of Malicious Manifestations<br>
 Amplifying Arrow<br>
 Visit the Floating Dojo<br>
 

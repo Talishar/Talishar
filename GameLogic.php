@@ -2981,14 +2981,6 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "CRU024":
       break; //No limits on use, so override default
     case "CRU101":
-      /*
-      if($character[$cardIndex+2] == 0) $character[$cardIndex+1] = 2;
-      else
-      {
-        --$character[$cardIndex+5];
-        if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;//By default, if it's used, set it to used
-      }
-      */
       break;
     case "CRU177":
       $character[$cardIndex + 1] = 1;
@@ -2997,8 +2989,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "MON061": case "MON090": case "MON108": case "MON188": case "MON230": case "MON238": case "MON239": case "MON240":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "MON029":
-    case "MON030":
+    case "MON029": case "MON030":
       $character[$cardIndex + 1] = 2; //It's not limited to once
       break;
     case "ELE116": case "ELE145": case "ELE214": case "ELE225": case "ELE233": case "ELE234": case "ELE235": case "ELE236":
@@ -3031,23 +3022,11 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "UPR166":
       $character[$cardIndex + 2] -= 2;
       break;
-    case "DYN046":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
     case "DYN088":
       $character[$cardIndex + 2] -= 2;
       $character[$cardIndex + 1] = 1;
       break;
-    case "DYN117":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
-    case "DYN118":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
-    case "DYN171":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
-    case "DYN235":
+    case "DYN046": case "DYN117": case "DYN118": case "DYN171": case "DYN235":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "DYN492a":
@@ -3058,7 +3037,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "OUT011":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "OUT049": case "OUT095": case "OUT098": case "OUT140": case "OUT141": case "OUT158":
+    case "OUT049": case "OUT095": case "OUT098": case "OUT140": case "OUT141": case "OUT157": case "OUT158":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     default:
