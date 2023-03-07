@@ -583,9 +583,9 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-        AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Head_Jab,Surging_Strike,Twin_Twisters");
-        AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . "-");
-        AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-");
+        AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Head_Jab,Surging_Strike,Twin_Twisters", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . "-", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-", 1);
         break;
       case "OUT080": case "OUT081": case "OUT082":
         if(ComboActive() && IsHeroAttackTarget())
