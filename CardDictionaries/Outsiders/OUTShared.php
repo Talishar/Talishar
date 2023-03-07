@@ -519,7 +519,7 @@ function OUTAbilityCost($cardID)
       case "OUT012":
         $deck = new Deck($defPlayer);
         $deckCard = $deck->Top(true);
-        BanishCardForPlayer($deckCard, $mainPlayer, "THEIRDECK", "NT", $cardID);
+        if($deckCard != "") BanishCardForPlayer($deckCard, $mainPlayer, "THEIRDECK", "NT", $cardID);
         break;
       case "OUT013":
         if(HasPlayedAttackReaction())
