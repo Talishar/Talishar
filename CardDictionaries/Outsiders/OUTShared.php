@@ -327,8 +327,8 @@ function OUTAbilityCost($cardID)
           {
             $cardRemoved = $deck->Top(remove:true);
             AddGraveyard($cardRemoved, $mainPlayer, "DECK");
-            TrapTriggered($cardID);
           }
+          TrapTriggered($cardID);
           $rv = "Milled two cards.";
         }
         return $rv;
