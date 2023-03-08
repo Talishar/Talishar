@@ -278,6 +278,15 @@ function SearchCharacterForCard($player, $cardID)
   return false;
 }
 
+function SearchCharacterAliveSubtype($player, $subtype)
+{
+  $character = &GetPlayerCharacter($player);
+  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if ($character[$i+1] != 0 && CardSubType($character[$i]) == $subtype) return true;
+  }
+  return false;
+}
+
 function FindCharacterIndex($player, $cardID)
 {
   $character = &GetPlayerCharacter($player);
