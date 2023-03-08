@@ -891,6 +891,14 @@ function EffectHitEffect($cardID)
       WriteLog("Mask of Shifting Perspectives lets you sink a card.");
       MayBottomDeckDraw($mainPlayer);
       break;
+    case "OUT143":
+      $char = &GetPlayerCharacter($mainPlayer);
+      $charClass = CardClass($char[0]);
+      $weapons = ($charClass == "NINJA" ? "WTR078,CRU051" : "DYN115,OUT005,OUT007,OUT009");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a weapon to equip (make sure you choose one in your inventory)");
+      AddDecisionQueue("CHOOSECARD", $mainPlayer, $weapons);
+      AddDecisionQueue("EQUIPCARD", $mainPlayer, "<-");
+      break;
     case "OUT158":
       if(IsHeroAttackTarget())
       {
@@ -5719,6 +5727,30 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
       }
       return "";
+    case "EQUIPCARD":
+      $char = &GetPlayerCharacter($player);
+      $lastWeapon = -1;
+      $replaced = 0;
+      //Replace the first destroyed weapon; if none just replace the last one
+      for($i=CharacterPieces(); $i<count($char) && !$replaced; $i+=CharacterPieces())
+      {
+        if(CardType($char[$i]) == "W")
+        {
+          $lastWeapon = $i;
+          if($char[$i+1] == 0)
+          {
+            $char[$i] = $parameter;
+            $char[$i+1] = 2;
+            $replaced = 1;
+          }
+        }
+      }
+      if(!$replaced)
+      {
+        $char[$lastWeapon] = $parameter;
+        $char[$lastWeapon+1] = 2;
+      }
+      break;
     default:
       return "NOTSTATIC";
   }

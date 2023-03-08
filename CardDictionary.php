@@ -1252,6 +1252,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "OUT054": return ($from == "PLAY" ? count($combatChain) == 0 || !HasCombo($combatChain[0]) : false);
     case "OUT094":
       return !ArsenalHasFaceDownCard($player);
+    case "OUT143":
+      return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || (!ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) && !ClassContains($combatChain[0], "NINJA", $mainPlayer));
     case "OUT154": case "OUT155": case "OUT156":
       if (count($combatChain) == 0) return true;
       $subtype = CardSubtype($combatChain[0]);

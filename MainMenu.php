@@ -170,7 +170,6 @@ if ($canSeeQueue) {
           Back Heel Kick<br>
 Vambrace of Determination - Half Implemented<br>
 Burden of the Past<br>
-Concealed Blade<br>
 Visit the Floating Dojo<br>
 
 Fleet Foot Sandals<br>
