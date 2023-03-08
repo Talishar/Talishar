@@ -489,7 +489,7 @@ function IsTeamSecondCycle($userID)
     case "The4thAWOL":
     case "Beserk":
     case "Dudebroski":
-    case "Deathstalker182":
+    case "deathstalker182":
     case "TryHardYeti":
     case "Fledermausmann":
     case "Kymo13":
