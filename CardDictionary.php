@@ -2113,54 +2113,16 @@ function SpellVoidAmount($cardID, $player)
 function IsSpecialization($cardID)
 {
   switch ($cardID) {
-    case "WTR006":
-    case "WTR009":
-    case "WTR043":
-    case "WTR047":
-    case "WTR081":
-    case "WTR083":
-    case "WTR119":
-    case "WTR121":
-      return true;
-    case "ARC007":
-    case "ARC009":
-    case "ARC043":
-    case "ARC046":
-    case "ARC080":
-    case "ARC083":
-    case "ARC118":
-    case "ARC121":
-      return true;
-    case "CRU000":
-    case "CRU074":
-      return true;
-    case "MON005":
-    case "MON007":
-    case "MON035":
-    case "MON189":
-    case "MON190":
-    case "MON198":
-    case "MON199":
-      return true;
-    case "ELE004":
-    case "ELE036":
-    case "ELE066":
-      return true;
-    case "EVR003":
-    case "EVR039":
-    case "EVR055":
-    case "EVR070":
-      return true;
-    case "DVR008":
-    case "RVD008":
-      return true;
-    case "UPR090":
-    case "UPR091":
-    case "UPR109":
-    case "UPR126":
-      return true;
+    case "WTR006": case "WTR009": case "WTR043": case "WTR047": case "WTR081": case "WTR083": case "WTR119": case "WTR121":
+    case "ARC007": case "ARC009": case "ARC043": case "ARC046": case "ARC080": case "ARC083": case "ARC118": case "ARC121":
+    case "CRU000": case "CRU074":
+    case "MON005": case "MON007": case "MON035": case "MON189": case "MON190": case "MON198": case "MON199":
+    case "ELE004": case "ELE036": case "ELE066":
+    case "EVR003": case "EVR039": case "EVR055": case "EVR070":
+    case "DVR008": case "RVD008": return true;
+    case "UPR090": case "UPR091": case "UPR109": case "UPR126":
     case "DYN121":
-      return true;
+    case "OUT013": case "OUT053": case "OUT055": case "OUT097": case "OUT098": case "OUT102": case "OUT103": case "OUT104": return true;
     default:
       return false;
   }
@@ -2169,31 +2131,17 @@ function IsSpecialization($cardID)
 function Is1H($cardID)
 {
   switch ($cardID) {
-    case "WTR078":
-    case "CRU049":
-      return true;
-    case "CRU004":
-    case "CRU005":
-      return true;
-    case "CRU051":
-    case "CRU052":
-      return true;
-    case "CRU079":
-    case "CRU080":
-      return true;
-    case "MON105":
-    case "MON106":
-      return true;
-    case "ELE003":
-    case "ELE202":
-      return true;
+    case "WTR078": case "CRU049":
+    case "CRU004": case "CRU005":
+    case "CRU051": case "CRU052":
+    case "CRU079": case "CRU080":
+    case "MON105": case "MON106":
+    case "ELE003": case "ELE202":
     case "DYN069": case "DYN070":
     case "DYN115": case "DYN116":
-      return true;
     case "OUT005": case "OUT006":
     case "OUT007": case "OUT008":
-    case "OUT009": case "OUT010":
-      return true;
+    case "OUT009": case "OUT010": return true;
     default:
       return false;
   }
@@ -2203,15 +2151,8 @@ function AbilityPlayableFromCombatChain($cardID)
 {
   switch ($cardID) {
     case "MON245":
-      return true;
-    case "MON281":
-    case "MON282":
-    case "MON283":
-      return true;
-    case "ELE195":
-    case "ELE196":
-    case "ELE197":
-      return true;
+    case "MON281": case "MON282": case "MON283":
+    case "ELE195": case "ELE196": case "ELE197":
     case "EVR157":
       return true;
     default:
@@ -2224,9 +2165,7 @@ function CardCaresAboutPitch($cardID)
   global $currentPlayer;
   if(SearchCurrentTurnEffects("ELE001-SHIYANA", $currentPlayer) || SearchCurrentTurnEffects("ELE002-SHIYANA", $currentPlayer)) return true;
   switch ($cardID) {
-    case "ELE001":
-    case "ELE002":
-    case "ELE003":
+    case "ELE001": case "ELE002": case "ELE003":
       return true;
     case "DYN172": case "DYN173": case "DYN174":
     case "DYN176": case "DYN177": case "DYN178":
@@ -2271,9 +2210,7 @@ function CardHasAltArt($cardID)
 function isIyslander($character)
 {
   switch ($character) {
-    case 'EVR120':
-    case 'UPR102':
-    case 'UPR103':
+    case 'EVR120': case 'UPR102': case 'UPR103':
       return true;
     default:
       return false;
