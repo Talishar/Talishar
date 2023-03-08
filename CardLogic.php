@@ -520,6 +520,7 @@ function ProcessLayer($player, $parameter)
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $CS_EffectContext;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty;
 
   $resources = &GetResources($player);
   $items = &GetItems($player);
@@ -1036,6 +1037,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " draws a card and is destroyed.");
       break;
+    case "DYN244":
+      MainDrawCard();
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
     case "OUT091": case "OUT092":
       SuperReload();
       break;
@@ -1056,6 +1061,34 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
       AddDecisionQueue("VAMBRACE", $player, $target, 1);
+      break;
+    case $CID_BloodRotPox:
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_3_to_avoid_taking_2_damage", 0, 1);
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("PASSTAKEDAMAGE", $player, 2);
+      AddDecisionQueue("PASSPARAMETER", $player, "3", 1);
+      AddDecisionQueue("PAYRESOURCES", $player, "3", 1);
+      AddDecisionQueue("PITFALLTRAP", $player, "-", 1);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case $CID_Inertia:
+      $deck = &GetDeck($player);
+      $arsenal = &GetArsenal($player);
+      while(count($arsenal) > 0)
+      {
+        array_push($deck, $arsenal[0]);
+        RemoveArsenal($player, 0);
+      }
+      $hand = &GetHand($player);
+      while(count($hand) > 0)
+      {
+        array_push($deck, $hand[0]);
+        RemoveHand($player, 0);
+      }
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case $CID_Frailty:
+      DestroyAuraUniqueID($player, $uniqueID);
       break;
     default:
       break;

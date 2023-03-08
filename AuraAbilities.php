@@ -469,9 +469,7 @@ function AuraBeginEndPhaseAbilities()
         ++$auras[$i + 2];
         ChannelTalent($i, "ICE");
         break;
-      case "UPR176":
-      case "UPR177":
-      case "UPR178":
+      case "UPR176": case "UPR177": case "UPR178":
         if ($auras[$i] == "UPR176") $numOpt = 3;
         else if ($auras[$i] == "UPR177") $numOpt = 2;
         else $numOpt = 1;
@@ -491,36 +489,16 @@ function AuraBeginEndPhaseAbilities()
         }
         break;
       case "DYN244":
-        MyDrawCard();
-        $remove = 1;
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case $CID_BloodRotPox:
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_3_to_avoid_taking_2_damage", 0, 1);
-        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSTAKEDAMAGE", $mainPlayer, 2);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "3", 1);
-        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "3", 1);
-        AddDecisionQueue("PITFALLTRAP", $mainPlayer, "-", 1);
-        $remove = 1;
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case $CID_Inertia:
-        $deck = &GetDeck($mainPlayer);
-        $arsenal = &GetArsenal($mainPlayer);
-        while(count($arsenal) > 0)
-        {
-          array_push($deck, $arsenal[0]);
-          RemoveArsenal($mainPlayer, 0);
-        }
-        $hand = &GetHand($mainPlayer);
-        while(count($hand) > 0)
-        {
-          array_push($deck, $hand[0]);
-          RemoveHand($mainPlayer, 0);
-        }
-        $remove = 1;
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case $CID_Frailty:
-        $remove = 1;
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       default:
         break;
