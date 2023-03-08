@@ -2019,6 +2019,8 @@ case "3":
 switch($cardID[5]) {
 case "8":
 return "R";
+case "7":
+return "T";
 case "0":
 return "I";
 case "1":
@@ -8067,6 +8069,8 @@ case "3":
 switch($cardID[5]) {
 case "8":
 return -1;
+case "7":
+return -1;
 case "0":
 return -1;
 case "1":
@@ -12635,6 +12639,8 @@ case "3":
 switch($cardID[5]) {
 case "8":
 return "Cracked Bauble";
+case "7":
+return "Ponder";
 case "0":
 return "Brush Off";
 case "1":
@@ -12924,7 +12930,7 @@ switch($cardID[5]) {
 case "0":
 return "Threadbare Tunic";
 case "1":
-return "Fistcuffs";
+return "Fisticuffs";
 case "2":
 return "Fleet Foot Sandles";
 case "3":
@@ -17325,6 +17331,8 @@ case "3":
 switch($cardID[5]) {
 case "8":
 return 2;
+case "7":
+return 0;
 case "0":
 return 3;
 case "2":
@@ -22391,6 +22399,24 @@ case "6":
 return "Head";
 default: return "";
 }
+case "4":
+switch($cardID[5]) {
+case "5":
+return "Item";
+case "0":
+return "Item";
+case "1":
+return "Item";
+case "2":
+return "Item";
+case "3":
+return "Item";
+case "4":
+return "Aura";
+case "6":
+return "Aura";
+default: return "";
+}
 case "0":
 switch($cardID[5]) {
 case "0":
@@ -22429,7 +22455,11 @@ case "3":
 return "Aura";
 default: return "";
 }
-case "4":
+default: return "";
+}
+case "1":
+switch($cardID[4]) {
+case "1":
 switch($cardID[5]) {
 case "0":
 return "Item";
@@ -22437,18 +22467,18 @@ case "1":
 return "Item";
 case "2":
 return "Item";
-case "3":
-return "Item";
 case "4":
-return "Aura";
+return "Young";
+case "5":
+return "Dagger";
 case "6":
-return "Aura";
+return "Dagger";
+case "7":
+return "Legs";
+case "8":
+return "Head";
 default: return "";
 }
-default: return "";
-}
-case "1":
-switch($cardID[4]) {
 case "9":
 switch($cardID[5]) {
 case "1":
@@ -22463,22 +22493,6 @@ case "0":
 switch($cardID[5]) {
 case "0":
 return "Aura";
-default: return "";
-}
-case "1":
-switch($cardID[5]) {
-case "1":
-return "Item";
-case "2":
-return "Item";
-case "4":
-return "Young";
-case "5":
-return "Dagger";
-case "7":
-return "Legs";
-case "8":
-return "Head";
 default: return "";
 }
 case "5":
@@ -22627,6 +22641,8 @@ default: return "";
 }
 case "7":
 switch($cardID[5]) {
+case "0":
+return "Dagger";
 case "2":
 return "Aura";
 case "3":
@@ -23413,6 +23429,8 @@ default: return "";
 }
 case "5":
 switch($cardID[5]) {
+case "4":
+return "Head";
 case "3":
 return "Aura";
 case "5":
@@ -23551,13 +23569,19 @@ default: return "";
 }
 case "0":
 switch($cardID[5]) {
+case "4":
+return "Dagger";
 case "2":
 return "Young";
 case "3":
 return "Young";
 case "5":
 return "Dagger";
+case "6":
+return "Dagger";
 case "7":
+return "Dagger";
+case "8":
 return "Dagger";
 case "9":
 return "Dagger";
@@ -23565,6 +23589,8 @@ default: return "";
 }
 case "1":
 switch($cardID[5]) {
+case "0":
+return "Dagger";
 case "1":
 return "Chest";
 default: return "";
@@ -23577,6 +23603,22 @@ default: return "";
 }
 default: return "";
 }
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "7":
+return "Aura";
+case "4":
+return "Aura";
+case "5":
+return "Aura";
+case "6":
+return "Aura";
+default: return "";
+}
+default: return "";
+}
 case "1":
 switch($cardID[4]) {
 case "0":
@@ -23707,20 +23749,6 @@ case "1":
 return "Arms";
 case "2":
 return "Legs";
-default: return "";
-}
-default: return "";
-}
-case "2":
-switch($cardID[4]) {
-case "3":
-switch($cardID[5]) {
-case "4":
-return "Aura";
-case "5":
-return "Aura";
-case "6":
-return "Aura";
 default: return "";
 }
 default: return "";
@@ -24115,6 +24143,12 @@ case "9":
 return "Legs";
 default: return "";
 }
+case "0":
+switch($cardID[5]) {
+case "3":
+return "Young";
+default: return "";
+}
 case "2":
 switch($cardID[5]) {
 case "5":
@@ -24287,6 +24321,8 @@ case "0":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
+case "4":
+return "Chest";
 case "2":
 return "Club";
 case "3":

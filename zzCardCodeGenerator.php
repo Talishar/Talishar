@@ -116,12 +116,13 @@
         else if($propertyName == "subtype")
         {
           $data = "";
-          for($j=0; $j<count($cardArray[$i]->types); ++$j)
+          for($k=0; $k<count($cardArray[$i]->types); ++$k)
           {
-            if(!IsCardType($cardArray[$i]->types[$j]) && !IsClass($cardArray[$i]->types[$j]) && !IsTalent($cardArray[$i]->types[$j]) && !IsHandedness($cardArray[$i]->types[$j]))
+            $type = $cardArray[$i]->types[$k];
+            if(!IsCardType($type) && !IsClass($type) && !IsTalent($type) && !IsHandedness($type))
             {
               if($data != "") $data .= ",";
-              $data .= $cardArray[$i]->types[$j];
+              $data .= $type;
             }
           }
         }
