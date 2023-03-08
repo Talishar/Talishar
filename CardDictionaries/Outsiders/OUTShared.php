@@ -433,7 +433,8 @@ function OUTAbilityCost($cardID)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "GYAA");
           AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
+          AddDecisionQueue("WRITELOG", $currentPlayer, "Card chosen:", 1);
+          AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "1", 1);
           AddDecisionQueue("ADDARSENALFACEDOWN", $currentPlayer, "GY", 1);
           PummelHit($currentPlayer, true);
         }
@@ -441,7 +442,8 @@ function OUTAbilityCost($cardID)
         {
           AddDecisionQueue("FINDINDICES", $otherPlayer, "GYAA");
           AddDecisionQueue("CHOOSEDISCARD", $otherPlayer, "<-", 1);
-          AddDecisionQueue("MULTIREMOVEDISCARD", $otherPlayer, "-", 1);
+          AddDecisionQueue("WRITELOG", $currentPlayer, "Card chosen:", 1);
+          AddDecisionQueue("MULTIREMOVEDISCARD", $otherPlayer, "1", 1);
           AddDecisionQueue("ADDARSENALFACEDOWN", $otherPlayer, "GY", 1);
           PummelHit($otherPlayer, true);
         }
