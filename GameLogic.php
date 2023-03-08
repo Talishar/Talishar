@@ -948,6 +948,26 @@ function EffectAttackModifier($cardID)
   }
 }
 
+function EffectHasBlockModifier($cardID)
+{
+  switch($cardID)
+  {
+    case "MON089":
+    case "ELE000-2":
+    case "ELE143":
+    case "DYN115": case "DYN116":
+    case "ELE203":
+    case "OUT005": case "OUT006":
+    case "OUT007": case "OUT008":
+    case "OUT009": case "OUT010":
+    case "OUT109":
+    case "OUT110":
+    case "OUT111":
+    return true;
+    default: return false;
+  }
+}
+
 function EffectBlockModifier($cardID, $index)
 {
   global $combatChain, $defPlayer, $mainPlayer;

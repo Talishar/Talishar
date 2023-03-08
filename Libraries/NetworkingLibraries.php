@@ -925,12 +925,13 @@ function FinalizeChainLink($chainClosed = false)
   }
 }
 
-function CleanUpCombatEffects()
+function CleanUpCombatEffects($weaponSwap=false)
 {
   global $currentTurnEffects;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     $effectArr = explode(",", $currentTurnEffects[$i]);
     if (IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0])) {
+      if($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
       --$currentTurnEffects[$i + 3];
       if ($currentTurnEffects[$i + 3] == 0) RemoveCurrentTurnEffect($i);
     }

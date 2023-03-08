@@ -384,7 +384,7 @@ function AttackReplaced()
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
   $combatChainState[$CCS_AttackPlayedFrom] = "BANISH";//Right now only Uzuri can do this
   $combatChainState[$CCS_LinkBaseAttack] = 0;
-  CleanUpCombatEffects();
+  CleanUpCombatEffects(true);
 }
 
 function ResetChainLinkState()
