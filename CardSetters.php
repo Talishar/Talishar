@@ -155,11 +155,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
     }
     if($from == "DECK" && CardSubType($cardID) == "Arrow" && SearchCharacterActive($player, "OUT097"))
     {
-      AddDecisionQueue("YESNO", $player, "if you want to pay 1 to put an aim counter on the arrow");
-      AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
-      AddDecisionQueue("PASSPARAMETER", $player, count($arsenal)-ArsenalPieces(), 1);
-      AddDecisionQueue("ADDAIMCOUNTER", $player, "-", 1);
+      AddLayer("TRIGGER", $player, "OUT097", "-", "-", -1);
     }
     switch ($cardID) {
       case "ARC057": case "ARC058": case "ARC059":

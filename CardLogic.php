@@ -1039,6 +1039,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "OUT091": case "OUT092":
       SuperReload();
       break;
+    case "OUT097":
+      $arsenal = &GetArsenal($player);
+      AddDecisionQueue("YESNO", $player, "if you want to pay 1 to put an aim counter on the arrow");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, count($arsenal)-ArsenalPieces(), 1);
+      AddDecisionQueue("ADDAIMCOUNTER", $player, "-", 1);
+      break;
     case "OUT099":
       LookAtTopCard($player, "OUT099");
       break;
