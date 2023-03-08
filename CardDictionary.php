@@ -1795,7 +1795,6 @@ function HasCombo($cardID)
       return true;
     case "OUT050":
     case "OUT051":
-    case "OUT055":
     case "OUT056": case "OUT057": case "OUT058":
     case "OUT059": case "OUT060": case "OUT061":
     case "OUT062": case "OUT063": case "OUT064":
