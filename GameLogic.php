@@ -3548,9 +3548,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $discard = &GetDiscard($player);
       $cards = "";
       if (!is_array($lastResult)) $lastResult = explode(",", $lastResult);
+      $cardsRemoved = "";
       for ($i = 0; $i < count($lastResult); ++$i) {
         if ($cards != "") $cards .= ",";
         $cards .= $discard[$lastResult[$i]];
+        if($parameter == "1") WriteLog(CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]));
         unset($discard[$lastResult[$i]]);
       }
       $discard = array_values($discard);
