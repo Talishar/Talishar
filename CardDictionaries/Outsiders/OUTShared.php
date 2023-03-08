@@ -564,7 +564,7 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "THEIRHAND:pitch=", 1);
           AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "<-", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MZBANISH", $mainPlayer, "HAND,-," . $defPlayer, 1);
+          AddDecisionQueue("MZBANISH", $mainPlayer, "HAND,-," . $mainPlayer, 1);
           AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
         }
         break;
