@@ -626,6 +626,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "OUT154": return 3;
     case "OUT155": return 2;
     case "OUT156": return 1;
+    case "OUT207": case "OUT208": case "OUT209": return (NumActionsBlocking() > 0 ? 2 : 0);
     default:
       return 0;
   }
@@ -1896,7 +1897,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN154":
       return true;
-    case "OUT052": case "OUT140": case "OUT141": return true;
+    case "OUT052": case "OUT140": case "OUT141": case "OUT144": return true;
     default:
       return false;
   }

@@ -174,8 +174,6 @@ Burden of the Past<br>
 Visit the Floating Dojo<br>
 
 Fleet Foot Sandals<br>
-Feisty Locals<br>
-Knives Out<br>
 Threadbare Tunic<br>
 Deadly Duo<br>
 Spring Loaded<br>

@@ -928,8 +928,10 @@ function FinalizeChainLink($chainClosed = false)
 function CleanUpCombatEffects($weaponSwap=false)
 {
   global $currentTurnEffects;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $effectArr = explode(",", $currentTurnEffects[$i]);
+    $effectArr = explode("_", $effectArr[0]);
+    $effectArr = explode("-", $effectArr[0]);
     if (IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0])) {
       if($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
       --$currentTurnEffects[$i + 3];
