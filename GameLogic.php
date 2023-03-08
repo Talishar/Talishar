@@ -950,7 +950,7 @@ function EffectAttackModifier($cardID)
 
 function EffectBlockModifier($cardID, $index)
 {
-  global $combatChain, $defPlayer;
+  global $combatChain, $defPlayer, $mainPlayer;
   switch ($cardID) {
     case "MON089":
       if($combatChain[$index] == $cardID) return 1;
@@ -978,11 +978,11 @@ function EffectBlockModifier($cardID, $index)
       $cardBlock = BlockValue($combatChain[$index]);
       return ($cardType == "E" ? -1 : 0);
     case "OUT109":
-      return (PitchValue($combatChain[$index]) == 1 ? -1 : 0);
+      return (PitchValue($combatChain[$index]) == 1 && SearchCurrentTurnEffects("AIM", $mainPlayer) ? -1 : 0);
     case "OUT110":
-      return (PitchValue($combatChain[$index]) == 2 ? -1 : 0);
+      return (PitchValue($combatChain[$index]) == 2 && SearchCurrentTurnEffects("AIM", $mainPlayer) ? -1 : 0);
     case "OUT111":
-      return (PitchValue($combatChain[$index]) == 3 ? -1 : 0);
+      return (PitchValue($combatChain[$index]) == 3 && SearchCurrentTurnEffects("AIM", $mainPlayer) ? -1 : 0);
     default:
       return 0;
   }
