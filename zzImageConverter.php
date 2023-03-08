@@ -5,7 +5,8 @@ function CheckImage($cardID)
   $filename = "./WebpImages/" . $cardID . ".webp";
   if(!file_exists($filename))
   {
-    $imageURL = "https://fabrary.net/images/cards/" . $cardID . ".webp";
+    //$imageURL = "https://fabrary.net/images/cards/" . $cardID . ".webp";
+    $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $cardID . ".webp";
     //$imageURL = "https://fabrary.net/images/cards/" . $cardID . ".width-450.webp";
     echo("Image for " . $cardID . " does not exist.<BR>");
     $handler = fopen($filename, "w");
