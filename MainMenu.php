@@ -166,7 +166,7 @@ if ($canSeeQueue) {
 
       <div style="vertical-align:middle; position: relative;">
         <h3>Outsiders</h3>
-        All spoiled cards as of Sneak Attack implemented except:<BR>
+        All spoiled cards implemented except:<BR>
           Amnesia<br>
           Back Heel Kick<br>
 Vambrace of Determination - Half Implemented<br>
@@ -185,7 +185,7 @@ Infectious Host<br>
 Skybound Shot<br>
 Fisticuffs<br>
 Brush Off<br>
-          Last updated: 8:51PM CST 3/6/23
+          Last updated: 10:13PM CST 3/7/23
         <br>
       </div>
       <BR>
