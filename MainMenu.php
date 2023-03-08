@@ -76,6 +76,7 @@ if (IsMobile()) echo ("<div class='ContentWindow' style='top:240px; left:32%; wi
 else echo ("<div class='ContentWindow' style='top:225px; left:35%; width:30%; bottom: 30px; overflow-y:auto'>");
 
 ?>
+<h4>Talishar is an open-source, fan-made platform not associated with LSS. There are bugs, so if you have any questions about game interactions or rulings, please <a style='text-decoration: underline;' target='_blank' href='https://discord.gg/VFhYB9T7s8'>contact the judges</a>.</h4>
 
 <h1><?php echo ($createNewGameText); ?></h1>
 
