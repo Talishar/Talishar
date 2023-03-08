@@ -414,6 +414,34 @@ function AuraStartTurnAbilities()
 }
 
 
+function AuraBeginEndPhaseTriggers()
+{
+  global $mainPlayer;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty;
+  $auras = &GetAuras($mainPlayer);
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    $remove = 0;
+    switch ($auras[$i]) {
+      case "DYN244":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case $CID_BloodRotPox:
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case $CID_Inertia:
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case $CID_Frailty:
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      default:
+        break;
+    }
+    if ($remove == 1) DestroyAura($mainPlayer, $i);
+  }
+  $auras = array_values($auras);
+}
+
 function AuraBeginEndPhaseAbilities()
 {
   global $mainPlayer;
@@ -421,7 +449,6 @@ function AuraBeginEndPhaseAbilities()
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
-    $test = 0;
     switch ($auras[$i]) {
       case "ELE117":
         ++$auras[$i + 2];
@@ -487,18 +514,6 @@ function AuraBeginEndPhaseAbilities()
           --$auras[$i + 2];
           DealArcane(2, 2, "PLAYCARD", "DYN175", false, $mainPlayer);
         }
-        break;
-      case "DYN244":
-        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
-        break;
-      case $CID_BloodRotPox:
-        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
-        break;
-      case $CID_Inertia:
-        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
-        break;
-      case $CID_Frailty:
-        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       default:
         break;
