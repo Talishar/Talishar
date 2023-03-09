@@ -420,7 +420,6 @@ function AuraBeginEndPhaseTriggers()
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    $remove = 0;
     switch ($auras[$i]) {
       case "DYN244":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
@@ -437,7 +436,6 @@ function AuraBeginEndPhaseTriggers()
       default:
         break;
     }
-    if ($remove == 1) DestroyAura($mainPlayer, $i);
   }
   $auras = array_values($auras);
 }
