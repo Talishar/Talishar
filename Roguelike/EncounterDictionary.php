@@ -88,6 +88,10 @@ function EncounterDescription()
     case 120:
       if($encounter[1] == "BeforeFight") return "You emerge in the noticeably cleaner streets of Metrix. Just as you're emerging, a mailman sees you and panics, attempting to attack you.";
       else if($encounter[1] == "AfterFight") return "You killed a poor mailman. You heartless monster! Oh well, no use dwelling on the past, now that you're out of the city it's time to move towards your objective.";
+    case 121:
+      if($encounter[1] == "BeforeFight") return "You hear a loud bellow from the other side of the fallen tree. The tree rises, revealing a brute picking it up. He seems incredibly angry at the block in the road.";
+      else if($encounter[1] == "AfterFight") return "After you delivered a humbling smackdown, the orc calms down and continues on his way. He gives no apology for his outburst before.";
+    case 999: return "This text means something is wrong!"; //Maybe $encounter[1] is set to something weird?
 
     case 201: return "You found a battlefield. Choose what you want to do.";
     case 202: return "You found a library. Choose what you want to do.";
@@ -199,7 +203,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 208:
-      if($encounter[9] >= 2) AddDecisionQueue("BUTTONINPUT", $player, "Trade_2_gold_pieces_for_the_stone,Decline_his_offer_and_move_on");
+      if($encounter[9] >= 2) AddDecisionQueue("BUTTONINPUT", $player, "Trade_1_gold_pieces_for_the_stone,Decline_his_offer_and_move_on");
       else AddDecisionQueue("BUTTONINPUT", $player, "Decline_his_offer_and_move_on");
       AddDecisionQueue("ROCKS", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
@@ -256,6 +260,8 @@ function EncounterImage()
       return "CRU055_cropped.png";
     case 120:
       return "CRU110_cropped.png";
+    case 121:
+      return "MON226_cropped.png";
 
     case 201:
       return "WTR194_cropped.png";
