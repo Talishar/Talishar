@@ -208,6 +208,19 @@ function SearchDeckByName($player, $name)
   return $cardList;
 }
 
+function SearchDiscardByName($player, $name)
+{
+  $discard = &GetDiscard($player);
+  $cardList = "";
+  for ($i = 0; $i < count($discard); $i += DeckPieces()) {
+    if (CardName($discard[$i]) == $name) {
+      if ($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
+    }
+  }
+  return $cardList;
+}
+
 function SearchDiscardForCard($player, $card1, $card2 = "", $card3 = "")
 {
   $discard = &GetDiscard($player);
@@ -963,6 +976,7 @@ function SearchMultizone($player, $searches)
             switch($zone)
             {
               case "MYDECK": $searchResult = SearchDeckByName($player, $name); break;
+              case "MYDISCARD": $searchResult = SearchDiscardByName($player, $name); break;
               default: break;
             }
             $rv = SearchMultiZoneFormat($searchResult, $zone);
