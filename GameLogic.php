@@ -609,9 +609,9 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "DYN150": return 1;
     case "OUT005": case "OUT006":
       return NumEquipBlock() > 0 ? 1 : 0;
-    case "OUT007": case "OUT007":
+    case "OUT007": case "OUT008":
       return NumEquipBlock() > 0 ? 1 : 0;
-    case "OUT009": case "OUT008":
+    case "OUT009": case "OUT010":
       return NumEquipBlock() > 0 ? 1 : 0;
     case "OUT018": case "OUT019": case "OUT020": return (NumAttackReactionsPlayed() > 0 ? 4 : 0);
     case "OUT021": case "OUT022": case "OUT023": return 3;
