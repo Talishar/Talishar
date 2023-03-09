@@ -379,7 +379,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 100: //Break Chain
-      if($currentPlayer == $mainPlayer) {
+      if($currentPlayer == $mainPlayer && count($combatChain) == 0) {
         ResetCombatChainState();
         ProcessDecisionQueue();
       }
