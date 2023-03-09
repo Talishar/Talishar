@@ -2141,27 +2141,19 @@ function RemoveEffectsOnChainClose()
     $remove = 0;
     $effectArr = explode("-", $currentTurnEffects[$i]);
     switch ($effectArr[0]) {
-      case "CRU106":
-      case "CRU107":
-      case "CRU108":
+      case "CRU106": case "CRU107": case "CRU108":
         $remove = 1;
         break;
-      case "CRU109":
-      case "CRU110":
-      case "CRU111":
+      case "CRU109": case "CRU110": case "CRU111":
         $remove = 1;
         break;
       case "MON245":
         $remove = 1;
         break;
-      case "ELE067":
-      case "ELE068":
-      case "ELE069":
+      case "ELE067": case "ELE068": case "ELE069":
         $remove = 1;
         break;
-      case "ELE186":
-      case "ELE187":
-      case "ELE188":
+      case "ELE186": case "ELE187": case "ELE188":
         $remove = 1;
         break;
       case "UPR049":
@@ -2176,6 +2168,12 @@ function RemoveEffectsOnChainClose()
       case "DYN139": case "DYN140": case "DYN141":
       case "DYN142": case "DYN143": case "DYN144":
       case "DYN145": case "DYN146": case "DYN147":
+        $remove = 1;
+        break;
+      case "OUT033": case "OUT034": case "OUT035":
+        $remove = 1;
+        break;
+      case "OUT071": case "OUT072": case "OUT073":
         $remove = 1;
         break;
       case "OUT052":

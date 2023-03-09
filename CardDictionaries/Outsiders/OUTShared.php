@@ -68,6 +68,7 @@ function OUTAbilityCost($cardID)
     {
       case "OUT033": case "OUT034": case "OUT035": return 1;
       case "OUT052": return 1;
+      case "OUT071": case "OUT072": case "OUT073": return 2;
       case "OUT105": return 4;
       case "OUT109": return 4;
       case "OUT110": return 3;
@@ -107,6 +108,7 @@ function OUTAbilityCost($cardID)
       case "OUT049": return CardType($attackID) == "AA";
       case "OUT052": return count($idArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($idArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
+      case "OUT071": case "OUT072": case "OUT073": return AttackValue($attackID) <= 2;
       case "OUT102": return true;
       case "OUT105": return CardSubType($attackID) == "Arrow";
       case "OUT109": case "OUT110": case "OUT111": return CardSubType($attackID) == "Arrow";
@@ -140,10 +142,12 @@ function OUTAbilityCost($cardID)
       case "OUT005": case "OUT006": return true;
       case "OUT007": case "OUT008": return true;
       case "OUT009": case "OUT010": return true;
+      case "OUT033": case "OUT034": case "OUT035": return true;
       case "OUT052": case "OUT053": return true;
       case "OUT056": case "OUT057": case "OUT058": return ComboActive($cardID);
       case "OUT062": case "OUT063": case "OUT064": return true;
       case "OUT068": case "OUT069": case "OUT070": return true;
+      case "OUT071": case "OUT072": case "OUT073": return true;
       case "OUT074": case "OUT075": case "OUT076": return true;
       case "OUT105": return true;
       case "OUT109": case "OUT110": case "OUT111": return true;
@@ -624,6 +628,9 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Head_Jab,Surging_Strike,Twin_Twisters", 1);
         AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . "-", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-", 1);
+        break;
+      case "OUT071": case "OUT072": case "OUT073":
+        AddCurrentTurnEffect($cardID, $mainPlayer);
         break;
       case "OUT080": case "OUT081": case "OUT082":
         if(ComboActive() && IsHeroAttackTarget())
