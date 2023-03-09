@@ -3929,6 +3929,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "EQUALPASS":
       if($lastResult == $parameter) return "PASS";
       return 1;
+    case "NOTEQUALPASS":
+      if($lastResult != $parameter) return "PASS";
+      return 1;
     case "NOPASS":
       if ($lastResult == "NO") return "PASS";
       return 1;
@@ -3969,7 +3972,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ELSE":
       if($lastResult == "PASS") return "0";
       else if ($lastResult == "NO") return "NO";
-      else return $lastResult;
+      else return "PASS";
     case "FINDCURRENTEFFECTPASS":
       if (SearchCurrentTurnEffects($parameter, $player)) return "PASS";
       return $lastResult;

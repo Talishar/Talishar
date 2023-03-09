@@ -84,6 +84,7 @@ function OUTAbilityCost($cardID)
       case "OUT141": return 1;
       case "OUT143": return 1;
       case "OUT144": return 1;
+      case "OUT151": case "OUT152": case "OUT153": return 1;
       case "OUT186": return (-1 * $idArr[1]);
       case "OUT188_2": return 3;
       case "OUT195": case "OUT196": case "OUT197": return 1;
@@ -127,6 +128,7 @@ function OUTAbilityCost($cardID)
       case "OUT141": return CardSubType($attackID) == "Dagger";
       case "OUT143": return true;
       case "OUT144": return CardSubType($attackID) == "Dagger";
+      case "OUT151": case "OUT152": case "OUT153": return CardSubType($attackID) == "Dagger";
       case "OUT158": return CardType($attackID) == "AA";
       case "OUT165": case "OUT166": case "OUT167": return CardType($attackID) == "AA" && (ClassContains($attackID, "ASSASSIN", $mainPlayer) || ClassContains($attackID, "RANGER", $mainPlayer));
       case "OUT186": return true;
@@ -161,6 +163,7 @@ function OUTAbilityCost($cardID)
       case "OUT115": case "OUT116": case "OUT117": return true;
       case "OUT145": case "OUT146": case "OUT147": return true;
       case "OUT148": return true;
+      case "OUT151": case "OUT152": case "OUT153": return true;
       case "OUT159": case "OUT160": case "OUT161": return true;//Codices
       case "OUT165": case "OUT166": case "OUT167": return true;
       case "OUT185": return true;
@@ -682,6 +685,9 @@ function OUTAbilityCost($cardID)
         if($numDaggerHits > 0) WriteLog("Player " . $defPlayer . " lost " . $numDaggerHits . " life from " . CardLink("OUT142", "OUT142"));
         LoseHealth($numDaggerHits, $defPlayer);
         break;
+      case "OUT151": case "OUT152": case "OUT153":
+        AddCurrentTurnEffect($cardID, $mainPlayer);
+        break;
       case "OUT162": case "OUT163": case "OUT164":
         if(IsHeroAttackTarget())
         {
@@ -790,6 +796,8 @@ function OUTAbilityCost($cardID)
   function LookAtTopCard($player, $source)
   {
     $otherPlayer = ($player == 1 ? 2 : 1);
+    AddDecisionQueue("PASSPARAMETER", $player, "ELSE");
+    AddDecisionQueue("SETDQVAR", $player, "1");
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose target hero");
     AddDecisionQueue("BUTTONINPUT", $player, "Target_Opponent,Target_Yourself");
     AddDecisionQueue("EQUALPASS", $player, "Target_Opponent");
@@ -797,7 +805,8 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("SETDQVAR", $player, "1", 1);
     AddDecisionQueue("SETDQCONTEXT", $player, CardName($source) . " shows the top of your deck is <1>", 1);
     AddDecisionQueue("OK", $player, "-", 1);
-    AddDecisionQueue("ELSE", $player, "-");
+    AddDecisionQueue("PASSPARAMETER", $player, "{1}");
+    AddDecisionQueue("NOTEQUALPASS", $player, "ELSE");
     AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
     AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
     AddDecisionQueue("SETDQCONTEXT", $otherPlayer, CardName($source) . " shows the top of your deck is <1>", 1);
