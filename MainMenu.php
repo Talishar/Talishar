@@ -175,7 +175,6 @@ Visit the Floating Dojo<br>
 
 Fleet Foot Sandals<br>
 Threadbare Tunic<br>
-Spring Loaded<br>
 Silken Gi<br>
 Freewheeling Renegades<br>
 Infectious Host<br>

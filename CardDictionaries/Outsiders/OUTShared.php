@@ -87,6 +87,9 @@ function OUTAbilityCost($cardID)
       case "OUT186": return (-1 * $idArr[1]);
       case "OUT188_2": return 3;
       case "OUT195": case "OUT196": case "OUT197": return 1;
+      case "OUT219": return 3;
+      case "OUT220": return 2;
+      case "OUT221": return 1;
       case "OUT225": return 3;
       case "OUT226": return 2;
       case "OUT227": return 1;
@@ -130,6 +133,7 @@ function OUTAbilityCost($cardID)
       case "OUT188_1": return CardType($attackID) == "AA";
       case "OUT188_2": return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
       case "OUT195": case "OUT196": case "OUT197": return true;
+      case "OUT219": case "OUT220": case "OUT221": return true;
       case "OUT225": case "OUT226": case "OUT227": return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
       default: return false;
     }
@@ -523,6 +527,14 @@ function OUTAbilityCost($cardID)
           GiveAttackGoAgain();
         }
         return "";
+      case "OUT219": case "OUT220": case "OUT221":
+        $hand = &GetHand($currentPlayer);
+        if(count($hand) == 0)
+        {
+          $rv = "Spring Load gains bonus power";
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
+        return $rv;
       case "OUT225": case "OUT226": case "OUT227":
         LookAtTopCard($currentPlayer, $cardID);
         AddCurrentTurnEffect($cardID, $currentPlayer);
