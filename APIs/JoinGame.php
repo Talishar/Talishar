@@ -723,18 +723,15 @@ function IsBanned($cardID, $format)
 function ReverseArt($cardID)
 {
   switch ($cardID) {
-    case "WTR078":
-      return "CRU049";
-    case "CRU004":
-      return "CRU005";
-    case "CRU051":
-      return "CRU052";
-    case "CRU079":
-      return "CRU080";
-    case "DYN069":
-      return "DYN070";
-    case "DYN115":
-      return "DYN116";
+    case "WTR078": return "CRU049";
+    case "CRU004": return "CRU005";
+    case "CRU051": return "CRU052";
+    case "CRU079": return "CRU080";
+    case "DYN069": return "DYN070";
+    case "DYN115": return "DYN116";
+    case "OUT005": return "OUT006";
+    case "OUT007": return "OUT008";
+    case "OUT009": return "OUT010";
     default:
       return $cardID;
   }
