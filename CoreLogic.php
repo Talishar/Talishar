@@ -1861,7 +1861,7 @@ function IsSpecificAuraAttacking($player, $index)
       if(!IsCombatEffectActive($currentTurnEffects[$i])) continue;
       switch($currentTurnEffects[$i])
       {
-        case "EVR094": case "EVR095": case "EVR096": $attackValue = floor($attackValue/2); break;
+        case "EVR094": case "EVR095": case "EVR096": $attackValue = ceil($attackValue/2); break;
         default: break;
       }
     }
