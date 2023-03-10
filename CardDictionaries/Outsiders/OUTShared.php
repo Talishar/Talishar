@@ -594,12 +594,13 @@ function OUTAbilityCost($cardID)
       case "OUT013":
         if(HasPlayedAttackReaction())
         {
-          AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
-          AddDecisionQueue("REVEALHANDCARDS", $defPlayer, "-", 1);
           AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a pitch value", 1);
           AddDecisionQueue("BUTTONINPUT", $mainPlayer, "1,2,3", 1);
-          AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "THEIRHAND:pitch=", 1);
-          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "<-", 1);
+          AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+          AddDecisionQueue("WRITELOG", $mainPlayer, "Main player chose: {0}", 1);
+          AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+          AddDecisionQueue("REVEALHANDCARDS", $defPlayer, "-", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND:pitch={0}", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
           AddDecisionQueue("MZBANISH", $mainPlayer, "HAND,-," . $mainPlayer, 1);
           AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
