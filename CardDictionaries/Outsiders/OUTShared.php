@@ -659,7 +659,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-", 1);
         break;
       case "OUT071": case "OUT072": case "OUT073":
-        AddCurrentTurnEffect($cardID, $mainPlayer);
+        AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
         break;
       case "OUT080": case "OUT081": case "OUT082":
         if(ComboActive() && IsHeroAttackTarget())
