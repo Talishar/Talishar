@@ -162,7 +162,7 @@ function OUTAbilityCost($cardID)
       case "OUT114": return true;
       case "OUT115": case "OUT116": case "OUT117": return true;
       case "OUT145": case "OUT146": case "OUT147": return true;
-      case "OUT148": return true;
+      case "OUT148": case "OUT149": case "OUT150": return true;
       case "OUT151": case "OUT152": case "OUT153": return true;
       case "OUT159": case "OUT160": case "OUT161": return true;//Codices
       case "OUT165": case "OUT166": case "OUT167": return true;
@@ -424,7 +424,7 @@ function OUTAbilityCost($cardID)
       case "OUT144":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "OUT148":
+      case "OUT148": case "OUT149": case "OUT150":
         if(DelimStringContains($additionalCosts, "PAY1"))
         {
           ThrowWeapon("Dagger");

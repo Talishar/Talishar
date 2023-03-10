@@ -171,8 +171,6 @@ if ($canSeeQueue) {
           Back Heel Kick<br>
 Vambrace of Determination - Half Implemented<br>
 Burden of the Past<br>
-Visit the Floating Dojo<br>
-
 Fleet Foot Sandals<br>
 Threadbare Tunic<br>
 Silken Gi<br>
