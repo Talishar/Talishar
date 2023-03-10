@@ -833,6 +833,7 @@ function DYNHitEffect($cardID)
         else {
           $cardToBanish = array_shift($deck);
           BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
+          WriteLog(CardLink($cardToBanish, $cardToBanish) . " was banished.");
         }
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to banish", 1);
