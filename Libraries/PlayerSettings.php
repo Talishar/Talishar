@@ -298,6 +298,7 @@ function IsStreamerMode($player)
 
 function ParseSettingsStringValueToIdInt(string $value)
 {
+  //TODO NOTE: use array_flip to turn it the other way around (int -> string);
   $settingsToId = array(
     "HoldPrioritySetting" => 0,
     "TryReactUI" => 1,
