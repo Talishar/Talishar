@@ -1877,15 +1877,21 @@ function ComboActive($cardID = "")
         if($lastAttackName == "Bonds of Ancestry") return true;
         break;
       case "OUT056": case "OUT057": case "OUT058":
-        return str_contains($lastAttackName, "Gustwave");
+        if(str_contains($lastAttackName, "Gustwave")) return true;
+        break;
       case "OUT059": case "OUT060": case "OUT061":
         if($lastAttackName == "Head Jab") return true;
+        break;
       case "OUT062": case "OUT063": case "OUT064":
         if($lastAttackName == "Twin Twisters" || $lastAttackName == "Spinning Wheel Kick") return true;
+        break;
       case "OUT074": case "OUT075": case "OUT076":
         if($lastAttackName == "Surging Strike") return true;
+        break;
       case "OUT080": case "OUT081": case "OUT082":
         if($lastAttackName == "Head Jab") return true;
+        break;
+      default: break;
     }
   }
   return false;
