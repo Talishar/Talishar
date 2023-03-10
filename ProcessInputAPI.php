@@ -36,7 +36,7 @@ $authKey = $_POST["authKey"];
 $mode = $_POST["mode"];
 $submission = $_POST["submission"];
 $submission = json_encode($submission);
-$submission = json_decode($submission);//I don't know why it's not correctly parsing as objects all the way down here
+$submission = json_decode($submission); //I don't know why it's not correctly parsing as objects all the way down here
 
 //First we need to parse the game state from the file
 include "ParseGamestate.php";
@@ -52,7 +52,7 @@ $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 $conceded = false;
 $randomSeeded = false;
 
-if(!IsReplay()) {
+if (!IsReplay()) {
   if (($playerID == 1 || $playerID == 2) && $authKey == "") {
     if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
   }
@@ -69,7 +69,7 @@ if(!IsReplay()) {
 $afterResolveEffects = [];
 
 $animations = [];
-$events = [];//Clear events each time so it's only updated ones that get sent
+$events = []; //Clear events each time so it's only updated ones that get sent
 
 if ((IsPatron(1) || IsPatron(2)) && !IsReplay()) {
   $commandFile = fopen("./Games/" . $gameName . "/commandfile.txt", "a");
@@ -84,52 +84,64 @@ $response = new stdClass();
 switch ($mode) {
   case 26: //Change setting
     $userID = "";
-    if(!$isSimulation)
-    {
+    if (!$isSimulation) {
       include "MenuFiles/ParseGamefile.php";
       include_once "./includes/dbh.inc.php";
       include_once "./includes/functions.inc.php";
-      if($playerID == 1) $userID = $p1id;
+      if ($playerID == 1) $userID = $p1id;
       else $userID = $p2id;
     }
-    for($i=0; $i<count($submission->settings); ++$i)
-    {
-      ChangeSetting($playerID, $submission->settings[$i]->id, $submission->settings[$i]->value, $userID);
+    for ($i = 0; $i < count($submission->settings); ++$i) {
+      $setting = $submission->settings[$i];
+      $setting->id = ParseSettingsStringValueToIdInt($setting->name) ?? $setting->id;
+      ChangeSetting($playerID, $setting->id, $setting->value, $userID);
     }
     $response->message = "Settings changed successfully.";
     break;
   case 33: //Fully re-order layers
     //First validate
     $isValid = true;
-    if(count($submission->layers) < $dqState[8]/LayerPieces()) { $response->error = "Not enough layers."; $isValid = false; break; }
-    for($i=0; $i<count($submission->layers); ++$i)
-    {
+    if (count($submission->layers) < $dqState[8] / LayerPieces()) {
+      $response->error = "Not enough layers.";
+      $isValid = false;
+      break;
+    }
+    for ($i = 0; $i < count($submission->layers); ++$i) {
       $layerID = $submission->layers[$i];
-      if($layerID % LayerPieces() != 0) { $response->error = "Not a layer ID."; $isValid = false; break; }
-      if($layerID < 0 || $layerID > $dqState[8]) { $response->error = "Layer ID out of range."; $isValid = false; break; }
-      for($j=$i+1; $j<count($submission->layers); ++$j)
-      {
-        if($layerID == $submission->layers[$j]) { $response->error = "Layer ID is duplicated."; $isValid = false; break; }
+      if ($layerID % LayerPieces() != 0) {
+        $response->error = "Not a layer ID.";
+        $isValid = false;
+        break;
+      }
+      if ($layerID < 0 || $layerID > $dqState[8]) {
+        $response->error = "Layer ID out of range.";
+        $isValid = false;
+        break;
+      }
+      for ($j = $i + 1; $j < count($submission->layers); ++$j) {
+        if ($layerID == $submission->layers[$j]) {
+          $response->error = "Layer ID is duplicated.";
+          $isValid = false;
+          break;
+        }
       }
     }
     //Now if it's valid, do the swap
     $newLayers = [];
-    for($i=0; $i<count($submission->layers); ++$i)
-    {
-      for($j=$submission->layers[$i]; $j<$submission->layers[$i]+LayerPieces(); ++$j)
-      {
+    for ($i = 0; $i < count($submission->layers); ++$i) {
+      for ($j = $submission->layers[$i]; $j < $submission->layers[$i] + LayerPieces(); ++$j) {
         array_push($newLayers, $layers[$j]);
       }
     }
-    for($i=$dqState[8]+LayerPieces(); $i<$dqState[8]+LayerPieces()*2; ++$i)
-    {
+    for ($i = $dqState[8] + LayerPieces(); $i < $dqState[8] + LayerPieces() * 2; ++$i) {
       array_push($newLayers, $layers[$i]);
     }
     $layers = $newLayers;
     break;
-  default: break;
+  default:
+    break;
 }
-echo(json_encode($response));
+echo (json_encode($response));
 
 ProcessMacros();
 if ($inGameStatus == $GameStatus_Rematch) {
@@ -171,9 +183,8 @@ if (!IsGameOver()) {
 
 //Now write out the game state
 if (!$skipWriteGamestate) {
-  if(!IsModeAsync($mode))
-  {
-    if(GetCachePiece($gameName, 12) == "1") WriteLog("Current player is active again.");
+  if (!IsModeAsync($mode)) {
+    if (GetCachePiece($gameName, 12) == "1") WriteLog("Current player is active again.");
     SetCachePiece($gameName, 12, "0");
     $currentPlayerActivity = 0;
   }
