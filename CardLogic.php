@@ -1166,7 +1166,7 @@ function GiveAttackGoAgain()
 function TopDeckToArsenal($player)
 {
   $deck = &GetDeck($player);
-  if (!ArsenalEmpty($player) || count($deck) == 0) return; //Already something there
+  if (ArsenalFull($player) || count($deck) == 0) return; //Already something there
   AddArsenal(array_shift($deck), $player, "DECK", "DOWN");
   WriteLog("The top card of player " . $player . "'s deck was put in their arsenal.");
 }
