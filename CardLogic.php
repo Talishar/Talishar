@@ -795,6 +795,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "ELE215":
+      WriteLog(CardLink("ELE215", "ELE215") . " discarded your hand and arsenal.");
+      DestroyArsenal($target);
+      DiscardHand($target);
+      break;
     case "EVR018":
         PlayAura("ELE111", $player);
       break;

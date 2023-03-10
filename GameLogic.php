@@ -1886,20 +1886,24 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN089-UNDER":
       return true;
-    case "DYN119": case "DYN120": case "DYN122":
-    case "DYN124": case "DYN125": case "DYN126":
-    case "DYN127": case "DYN128": case "DYN129":
-    case "DYN133": case "DYN134": case "DYN135":
-    case "DYN136": case "DYN137": case "DYN138":  //Contracts visualization
-    case "DYN139": case "DYN140": case "DYN141":
-    case "DYN142": case "DYN143": case "DYN144":
-    case "DYN145": case "DYN146": case "DYN147":
-      return true;
     case "DYN154":
       return true;
     case "OUT052": case "OUT140": case "OUT141": case "OUT144": return true;
     default:
       return false;
+  }
+}
+
+function BeginEndPhaseEffectTriggers()
+{
+  global $currentTurnEffects, $mainPlayer;
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+    switch ($currentTurnEffects[$i]) {
+      case "ELE215-1":
+        AddLayer("TRIGGER", $mainPlayer, "ELE215", $currentTurnEffects[$i+1], "-", "-");
+        break;
+      default: break;
+    }
   }
 }
 
@@ -1909,18 +1913,11 @@ function BeginEndPhaseEffects()
   EndTurnBloodDebt(); //This has to be before resetting character, because of sleep dart effects
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     switch ($currentTurnEffects[$i]) {
-      case "ELE215-1":
-        WriteLog(CardLink("ELE215", "ELE215") . " discarded your hand and arsenal.");
-        DestroyArsenal($currentTurnEffects[$i + 1]);
-        DiscardHand($currentTurnEffects[$i + 1]);
-        break;
       case "EVR106":
         WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " destroyed your Runechants.");
         DestroyAllThisAura($currentTurnEffects[$i + 1], "ARC112");
         break;
-      case "UPR200":
-      case "UPR201":
-      case "UPR202":
+      case "UPR200": case "UPR201": case "UPR202":
         SetClassState($currentTurnEffects[$i + 1], $CS_EffectContext, $currentTurnEffects[$i]);
         Draw($currentTurnEffects[$i + 1]);
         break;
@@ -2157,17 +2154,6 @@ function RemoveEffectsOnChainClose()
         $remove = 1;
         break;
       case "UPR049":
-        $remove = 1;
-        break;
-      case "DYN095": case "DYN096": case "DYN097":
-      case "DYN119": case "DYN120": case "DYN122":
-      case "DYN124": case "DYN125": case "DYN126":
-      case "DYN127": case "DYN128": case "DYN129":
-      case "DYN133": case "DYN134": case "DYN135":
-      case "DYN136": case "DYN137": case "DYN138":
-      case "DYN139": case "DYN140": case "DYN141":
-      case "DYN142": case "DYN143": case "DYN144":
-      case "DYN145": case "DYN146": case "DYN147":
         $remove = 1;
         break;
       case "OUT033": case "OUT034": case "OUT035":

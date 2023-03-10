@@ -250,7 +250,7 @@ function IsStreamerMode($player)
 
 function ChangeSetting($player, $setting, $value, $playerId="")
 {
-  global $SET_MuteChat;
+  global $SET_MuteChat, $SET_AlwaysHoldPriority, $layerPriority;
   /*
   global $SET_ManualMode;
 
@@ -278,6 +278,10 @@ function ChangeSetting($player, $setting, $value, $playerId="")
       else {
         WriteLog("Chat enabled by player " . $player);
       }
+    }
+    else if($setting == $SET_AlwaysHoldPriority)
+    {
+      $layerPriority[$player-1] = "1";
     }
   }
   if($playerId != "" && SaveSettingInDatabase($setting)) SaveSetting($playerId, $setting, $value);

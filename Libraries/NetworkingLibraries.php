@@ -945,6 +945,7 @@ function BeginTurnPass()
   ResetCombatChainState(); // The combat chain must be closed prior to the turn ending. The close step is outlined in 7.8 - specifically: CR 2.1 - 7.8.7. Fifth and finally, the Close Step ends, and the Action Phase continues. The Action Phase will always continue after the combat chain is closed - so there is another round of priority windows
   AddLayer("ENDTURN", $mainPlayer, "-");
   AuraBeginEndPhaseTriggers();
+  BeginEndPhaseEffectTriggers();
   ProcessDecisionQueue("");
 }
 
