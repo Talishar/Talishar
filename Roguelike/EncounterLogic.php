@@ -33,6 +33,8 @@ function GetBackgrounds($character)
   {
     case "Dorinthea": $backgroundChoices = array("The_Volcai_Sellsword", "The_Lowly_Solanian", "The_Fierce_Warrior", "Spiders_Deserter"); break;
     case "Bravo": $backgroundChoices = array("The_Everfest_Showman", "The_Reclusive_Blacksmith", "The_Slumbering_Giant"); break;
+    case "Lexi": $backgroundChoices = array("The_Ancient_Ollin", "The_Exuberant_Adventurer", "The_Hired_Crow", "The_Roadside_Bandit"); break;
+    case "Fai": $backgroundChoices = array("The_Rebel_Organizer", "The_Travelling_Duo", "The_Archaeologist"); break;
   }
   $options = getOptions(2, count($backgroundChoices)-1);
   return $backgroundChoices[$options[0]] . "," . $backgroundChoices[$options[1]];
@@ -158,7 +160,7 @@ function GeneratePool($selected, $type, $rarity = "-")
   }
   $pool = GetPool($type, $encounter[3], $rarity, $encounter[7]);
   $generatedPool = [];
-  
+
   /*$options = GetOptions($selected, count($pool));
   for($i = 0; $i < count($options); $i++){
     $generatedPool[$i] = $pool[$i];
@@ -174,7 +176,7 @@ function GeneratePool($selected, $type, $rarity = "-")
     }
     if(!$found) array_push($generatedPool, $pool[$i]);
   }
-  return $generatedPool; 
+  return $generatedPool;
 }
 
 function GetRandomArmor($type) //TODO combine this with GetRandomCards()

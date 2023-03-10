@@ -128,6 +128,24 @@ $cardIconTop = intval($cardSize / 4.2); //30
       $encounterContent .= "<BR>";
       break;
     }
+    /*case "CHOOSEHERO": //TODO: hero choices should have the hero card and not just the name
+    {
+      $options = explode(",", $myDQ[1]);
+      //$encounterContent .= "<div style='position:absolute; text-align:center; top:30%; left: 250%; width:" . count($options)*155 . "; background-color: rgba(255,255,255,0.8); border: 3px solid black; border-radius: 5px;'>";
+      $encounterContent .= "<h2>Choose a card</h2>";
+      $encounterContent .= "<div style='display:inline;'>";
+      for($i=0; $i<count($options); ++$i)
+      {
+        switch($options[$i])
+        {
+
+        }
+        $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
+      }
+      $encounterContent .= "</div>";
+      //$encounterContent .= "<div>";
+      break;
+    }*/
     case "REMOVEDECKCARD":{
       $options = explode(",", $myDQ[1]);
       $encounterContent .= "<h2>Remove a card from your deck</h2>";

@@ -17,6 +17,7 @@ function GetPool($type, $hero, $rarity, $background){
   if(($hero == "Bravo" || $hero == "Dorinthea") && $type == "Talent") $type = "Class";
   if($type == "Class") return GetPool2(array($type, $rarity, $background));
   else if($type == "Generic") return GetPool3(array($rarity));
+  else if($type == "Talent") return GetPool4(array($type, $rarity, $background));
   else return ("WTR224"); //Cracked Bauble as a default, but we shouldn't see this
 
   //Don't delete this stuff
@@ -374,7 +375,7 @@ function GetPool2($arrayParameters){
     array("CRU032", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Crush the Weak
     array("CRU033", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
     array("CRU034", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
-    array("CRU035", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Chokeslam    
+    array("CRU035", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Chokeslam
     array("CRU036", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
     array("CRU037", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
     array("CRU038", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Emerging Dominance
@@ -480,8 +481,165 @@ function GetPool2($arrayParameters){
     array("DYN084", "Class", "Common", "Hatchet", "Battleaxe"),
     //DYN085-087 Visit the Imperial Forge - I've decided to omit these, since armor isn't hugely relevant right now and I don't know how the AI can handle piercing. It feels like this card would only be good in an exploitative manner
 
+    array("ARC044", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Three of a Kind
+    array("ARC045", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Endless Arrow
+    array("ARC048", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Take Cover
+    array("ARC049", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC050", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC054", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Take Aim
+    array("ARC055", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC056", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC060", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Hamstring Shot
+    array("ARC061", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC062", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC069", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Searing Shot
+    array("ARC070", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC071", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+
+    array("CRU123", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Remorseless
+    array("CRU124", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Poison the Tips
+    array("CRU132", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Sleep Dart
+    array("CRU133", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("CRU134", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+
+    array("ELE035", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Frost Lock
+    array("ELE036", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Light it Up
+    array("ELE037", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Ice Storm
+    array("ELE038", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Cold Wave - Could be worth ommiting due to the AI never playing DRs, but it still gets the "If this is fused" and "if you've fused this turn" type of things. Also, the player doesn't know that
+    array("ELE039", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE040", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE041", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Snap Shot
+    array("ELE042", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE043", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE044", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Blizzard Bolt
+    array("ELE045", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE046", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE047", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Buzz Bolt
+    array("ELE048", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE049", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE050", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Chilling Icevein
+    array("ELE051", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE052", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE053", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Dazzling Crescendo
+    array("ELE054", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE055", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE056", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Flake Out
+    array("ELE057", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE058", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE059", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Frazzle
+    array("ELE060", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE061", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE215", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Seek and Destroy
+    array("ELE216", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Bolt'n' Shot
+    array("ELE217", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE218", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE219", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Over Flex
+    array("ELE220", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE221", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+
+    array("EVR090", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Rain Razors
+    array("EVR091", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Release the Tension - might be worth ommiting due to the AI not being able to play DRs, but it's still a buff, so it stays for now
+    array("EVR092", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("EVR093", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("EVR094", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Fatigue Shot
+    array("EVR095", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("EVR096", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("EVR100", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Read the Glide Path
+    array("EVR101", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("EVR102", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+
+    array("DYN153", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //only Heat Seeker. No way to gain aim counters yet. Might reevaluate if we make an aim centric power.
+
+    array("WTR082", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Ancestral Empowerment
+    array("WTR098", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Head Jab
+    array("WTR099", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("WTR100", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("WTR101", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Leg Tap
+    array("WTR102", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("WTR103", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("WTR107", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Surging Strike
+    array("WTR108", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("WTR109", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+
+    array("CRU063", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Flying Kick
+    array("CRU064", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("CRU065", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("CRU066", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Soulbead Strike
+    array("CRU067", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("CRU068", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("CRU069", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Torrent of Tempo
+    array("CRU070", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("CRU071", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("CRU072", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Bittering Thorns
+    array("CRU073", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Salt the Wound
+
+    array("EVR041", "Class", "Rare", "Emberblade", "Kodachi", "Edge"), //Hundred Winds
+    array("EVR042", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+    array("EVR043", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+    array("EVR044", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Ride the Tailwind
+    array("EVR045", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("EVR046", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("EVR047", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Twin Twisters
+    array("EVR048", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("EVR049", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+
+    array("UPR048", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Phoenix Form
+    array("UPR049", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Searing Emberblade
+    array("UPR050", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Combustion Point
+    array("UPR051", "Class", "Rare", "Emberblade", "Kodachi", "Edge"), //Engulfing Flamewave
+    array("UPR052", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+    array("UPR053", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+    array("UPR054", "Class", "Rare", "Emberblade", "Kodachi", "Edge"), //Mounting Anger
+    array("UPR055", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+    array("UPR056", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+    array("UPR057", "Class", "Rare", "Emberblade", "Kodachi", "Edge"), //Rise from the Ashes
+    array("UPR058", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+    array("UPR059", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+    array("UPR060", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Brand with Cinderclaw
+    array("UPR061", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR062", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR063", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Cinderskin Devotion
+    array("UPR064", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR065", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR066", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Dust Runner Outlaw
+    array("UPR067", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR068", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR069", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Lava Vein Loyalty
+    array("UPR070", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR071", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR072", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Rebelious Rush
+    array("UPR073", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR074", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR075", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Rising Resentment
+    array("UPR076", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR077", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR078", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Ronin Renegade
+    array("UPR079", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR080", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR081", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Soaring Strike
+    array("UPR082", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR083", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("UPR160", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Double Strike
+    array("UPR161", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Take the Tempo
+    array("UPR162", "Class", "Rare", "Emberblade", "Kodachi", "Edge"), //Rapid Reflex
+    array("UPR163", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+    array("UPR164", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+
+    array("DYN047", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Tiger Swipe
+    array("DYN048", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Mindstate of the Tiger
+    array("DYN049", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Roar of the Tiger
+    array("DYN050", "Class", "Rare", "Emberblade", "Kodachi", "Edge"), //Flex Claws - Decide whether or not this is included in the pool
+    array("DYN051", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+    array("DYN052", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+    array("DYN056", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Pouncing Qi - Decide whether or not this is included in the pool
+    array("DYN057", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("DYN058", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("DYN062", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Predatory Streak
+    array("DYN063", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("DYN064", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+
   );
-  
+
   $returnPool = array(); // Create an empty list of cards to be returned
   $sizeParameters = count($arrayParameters);
   $paramCheck = new SplFixedArray($sizeParameters); //Create a shadow of the parameters...
@@ -497,7 +655,7 @@ function GetPool2($arrayParameters){
     for($j = 0; $j < $sizeParameters; $j++){
       for($k = 1; $k < count($CardRewardPool[$i]); $k++){
         if($arrayParameters[$j] == $CardRewardPool[$i][$k]){
-          $paramCheck[$j] = true; 
+          $paramCheck[$j] = true;
         }
       }
       if($paramCheck[$j] == false){
@@ -506,14 +664,14 @@ function GetPool2($arrayParameters){
       }
     }
     if($eligible) {
-      array_push($returnPool, $CardRewardPool[$i][0]); 
+      array_push($returnPool, $CardRewardPool[$i][0]);
     }
   }
     return $returnPool;
 }
 function GetPool3($arrayParameters){
 
-  //Currently, Generics are available to all heroes equally. 
+  //Currently, Generics are available to all heroes equally.
   //In the future, if we want to have certain generics available to certain heroes, we can go back and tag most cards with "All", and specific ones with the name of that hero
   $CardRewardPool = array(
     array("WTR159", "Majestic"), //Enlightened Strike
@@ -530,7 +688,7 @@ function GetPool3($arrayParameters){
     array("WTR170", "Rare"), //Energy potion
     array("WTR171", "Rare"), //Potion of Strength
     array("WTR172", "Rare"), //Timesnap Potion
-    array("WTR173", "Rare"), //Sigil of Solace - Nate thinks that these shouldn't be in the pool because they're too strong. 
+    array("WTR173", "Rare"), //Sigil of Solace - Nate thinks that these shouldn't be in the pool because they're too strong.
     array("WTR174", "Rare"), // Nate, if you're reading this, feel free to remove these from the pool!
     array("WTR175", "Rare"), // Sigil of Solace (Blue)
     array("WTR176", "Common"), //Barraging Brawnhide
@@ -549,7 +707,7 @@ function GetPool3($arrayParameters){
     array("WTR189", "Common"),
     array("WTR190", "Common"),
     array("WTR191", "Common"), //Scar for a Scar - Notably reprinted in UPR, and omitted there
-    array("WTR192", "Common"), 
+    array("WTR192", "Common"),
     array("WTR193", "Common"),
     array("WTR194", "Common"), //Scour the Battlescape
     array("WTR195", "Common"),
@@ -609,7 +767,7 @@ function GetPool3($arrayParameters){
     array("ARC185", "Common"), //Moon Wish
     array("ARC186", "Common"),
     array("ARC187", "Common"),
-    array("ARC188", "Common"), //Push the Point 
+    array("ARC188", "Common"), //Push the Point
     array("ARC189", "Common"),
     array("ARC190", "Common"),
     array("ARC191", "Common"), //Ravenous Rabble
@@ -624,7 +782,7 @@ function GetPool3($arrayParameters){
     array("ARC200", "Common"), //Fate Foreseen
     array("ARC201", "Common"),
     array("ARC202", "Common"),
-    array("ARC203", "Common"), //Come to Fight 
+    array("ARC203", "Common"), //Come to Fight
     array("ARC204", "Common"),
     array("ARC205", "Common"),
     array("ARC206", "Common"), //Force Sight
@@ -660,8 +818,8 @@ function GetPool3($arrayParameters){
     array("MON246", "Majestic"), //Nourishing Emptiness
     array("MON247", "Majestic"), //Rouse the Ancients
     array("MON248", "Rare"), //Out Muscle
-    array("MON249", "Rare"), 
-    array("MON250", "Rare"), 
+    array("MON249", "Rare"),
+    array("MON250", "Rare"),
     array("MON251", "Rare"), //Seek Horizon
     array("MON252", "Rare"),
     array("MON253", "Rare"),
@@ -724,8 +882,8 @@ function GetPool3($arrayParameters){
     array("EVR159", "Majestic"), //Knick Knack Bric-a-brac
     array("EVR160", "Majestic"), //This Round's on Me
     array("EVR161", "Rare"), //Life of the Party
-    array("EVR162", "Rare"), 
-    array("EVR163", "Rare"), 
+    array("EVR162", "Rare"),
+    array("EVR163", "Rare"),
     //EVR164-166 - High Striker - I've decided to omit this one, but if someone wants to add it in feel free
     array("EVR167", "Rare"), //Pick a Card, Any Card
     array("EVR168", "Rare"),
@@ -736,7 +894,7 @@ function GetPool3($arrayParameters){
     array("EVR159", "Rare"), //Even Bigger Than That
     array("EVR160", "Rare"),
     array("EVR161", "Rare"),
-    //EVER176 through EVER193 are all potions. 
+    //EVER176 through EVER193 are all potions.
     //I decided to omit all the potions for now, but feel free to add some/all
 
     array("UPR187", "Majestic"), //Erase Face
@@ -779,7 +937,7 @@ function GetPool3($arrayParameters){
     array("DYN241", "Majestic"), //Imperial Ledger
     array("DYN242", "Majestic"), //Imperial Warhorn
   );
-  
+
   $returnPool = array(); // Create an empty list of cards to be returned
   $sizeParameters = count($arrayParameters);
   $paramCheck = new SplFixedArray($sizeParameters); //Create a shadow of the parameters...
@@ -795,7 +953,7 @@ function GetPool3($arrayParameters){
     for($j = 0; $j < $sizeParameters; $j++){
       for($k = 1; $k < count($CardRewardPool[$i]); $k++){
         if($arrayParameters[$j] == $CardRewardPool[$i][$k]){
-          $paramCheck[$j] = true; 
+          $paramCheck[$j] = true;
         }
       }
       if($paramCheck[$j] == false){
@@ -804,7 +962,141 @@ function GetPool3($arrayParameters){
       }
     }
     if($eligible) {
-      array_push($returnPool, $CardRewardPool[$i][0]); 
+      array_push($returnPool, $CardRewardPool[$i][0]);
+    }
+  }
+    return $returnPool;
+}
+function GetPool4($arrayParameters){
+
+  $CardRewardPool = array(
+    array("ELE092", "Talent", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Flashfreeze
+    array("ELE097", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Entwine Ice
+    array("ELE098", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE099", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE100", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Entwine Lightning
+    array("ELE101", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE102", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE103", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Invigorate
+    array("ELE104", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE105", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE106", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Rejuvenate
+    array("ELE107", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE108", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE112", "Talent", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Pulse of Volthaven
+    array("ELE146", "Talent", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Channel Lake Frigid
+    array("ELE147", "Talent", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Blizzard
+    array("ELE148", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Frost Fang
+    array("ELE149", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE150", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE151", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Ice Quake
+    array("ELE152", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE153", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE154", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Weave Ice
+    array("ELE155", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE156", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE157", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Icy Encounter
+    array("ELE158", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE159", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE160", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Winter's Grasp
+    array("ELE161", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE162", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE163", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Chill to the Bone
+    array("ELE164", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE165", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE166", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Polar Blast
+    array("ELE167", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE168", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE169", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Winter's Bite
+    array("ELE170", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE171", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE172", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Amulet of Ice
+    array("ELE175", "Talent", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Channel Thunder Steppe
+    array("ELE176", "Talent", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Blink
+    array("ELE177", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Flash
+    array("ELE178", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE179", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE180", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Weave Lightning
+    array("ELE181", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE182", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE183", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Lightning Press
+    array("ELE184", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE185", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE186", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Ball Lightning
+    array("ELE187", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE188", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE189", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Lightning Surge
+    array("ELE190", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE191", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE192", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Heaven's Claws
+    array("ELE193", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE194", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE195", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Shock Striker
+    array("ELE196", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE197", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE198", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Electrify
+    array("ELE199", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE200", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE201", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Amulet of Lightning
+
+    array("UPR138", "Talent", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Channel the Bleak Expanse
+    array("UPR139", "Talent", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Hypothermia
+    array("UPR140", "Talent", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Insidious Chill
+    array("UPR141", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Isenhowl Weathervane
+    array("UPR142", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("UPR143", "Talent", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("UPR144", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Arctic Incarceration
+    array("UPR145", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("UPR146", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("UPR147", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Cold Snap
+    array("UPR148", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("UPR149", "Talent", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+
+    array("UPR086", "Talent", "Majestic", "Emberblade", "Kodachi", "Edge"), //Thaw
+    array("UPR087", "Talent", "Majestic", "Emberblade", "Kodachi", "Edge"), //Liquify
+    array("UPR088", "Talent", "Majestic", "Emberblade", "Kodachi", "Edge"), //Uprising
+    array("UPR089", "Talent", "Majestic", "Emberblade", "Kodachi", "Edge"), //Tome of Firebrand
+    array("UPR090", "Talent", "Rare", "Emberblade", "Kodachi", "Edge"), //Red Hot
+    array("UPR091", "Talent", "Rare", "Emberblade", "Kodachi", "Edge"), //Rise Up
+    array("UPR092", "Talent", "Common", "Emberblade", "Kodachi", "Edge"), //Blaze Headlong
+    array("UPR093", "Talent", "Common", "Emberblade", "Kodachi", "Edge"), //Breaking Point
+    array("UPR094", "Talent", "Common", "Emberblade", "Kodachi", "Edge"), //Burn Away
+    array("UPR095", "Talent", "Common", "Emberblade", "Kodachi", "Edge"), //Flameborn Retribution
+    array("UPR096", "Talent", "Common", "Emberblade", "Kodachi", "Edge"), //Flamecall Awakening
+    array("UPR097", "Talent", "Common", "Emberblade", "Kodachi", "Edge"), //Inflame
+    array("UPR098", "Talent", "Common", "Emberblade", "Kodachi", "Edge"), //Lava Burst
+    array("UPR099", "Talent", "Common", "Emberblade", "Kodachi", "Edge"), //Searing Touch
+    array("UPR100", "Talent", "Common", "Emberblade", "Kodachi", "Edge"), //Stoke the Flames
+    array("UPR101", "Talent", "Common", "Emberblade", "Kodachi", "Edge"), //Phoenix Flame
+    array("UPR101", "Talent", "Common", "Emberblade", "Kodachi", "Edge"), //Phoenix Flame - Putting it in twice so it has a higher rate to be pulled in card rewards
+
+  );
+
+  $returnPool = array(); // Create an empty list of cards to be returned
+  $sizeParameters = count($arrayParameters);
+  $paramCheck = new SplFixedArray($sizeParameters); //Create a shadow of the parameters...
+  for ($i = 0; $i < $sizeParameters; $i++){ //... The same length as the list of parameters
+    $paramCheck[$i] = false;
+  }
+  $eligible = true;
+  for($i = 0; $i < count($CardRewardPool); $i++){
+    $eligible = true;
+    for($j = 0; $j < $sizeParameters; $j++){
+      $paramCheck[$j] = false;
+    }
+    for($j = 0; $j < $sizeParameters; $j++){
+      for($k = 1; $k < count($CardRewardPool[$i]); $k++){
+        if($arrayParameters[$j] == $CardRewardPool[$i][$k]){
+          $paramCheck[$j] = true;
+        }
+      }
+      if($paramCheck[$j] == false){
+        $eligible = false;
+        break;
+      }
+    }
+    if($eligible) {
+      array_push($returnPool, $CardRewardPool[$i][0]);
     }
   }
     return $returnPool;

@@ -211,6 +211,41 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             array_push($character, "CRU024");
             array_push($deck, "ELE208", "EVR030", "WTR070", "CRU040", "WTR190", "ARC211");
             break;
+          case "The_Ancient_Ollin":
+            $encounter[7] = "Shiver";
+            array_push($character, "ELE033");
+            array_push($deck, "ELE044", "ELE045", "ELE057", "ELE058", "ELE153", "ELE154", "ELE171", "ELE168");
+            break;
+          case "The_Exuberant_Adventurer":
+            $encounter[7] = "Voltaire";
+            array_push($character, "ELE134");
+            array_push($deck, "ELE048", "ELE059", "ELE054", "ELE055", "ELE180", "ELE185", "ELE199", "ELE186");
+            break;
+          case "The_Hired_Crow":
+            $encounter[7] = "DeathDealer";
+            array_push($character, "ARC040");
+            array_push($deck, "ELE044", "ELE051", "ELE060", "ELE047", "ELE200", "ELE183", "ELE168", "ELE152");
+            break;
+          case "The_Roadside_Bandit":
+            $encounter[7] = "RedLiner";
+            array_push($character, "CRU121");
+            array_push($deck, "ELE216", "ELE217", "ARC069", "ARC070", "ARC054", "ARC055", "EVR100", "EVR101");
+            break;
+          case "The_Rebel_Organizer":
+            $encounter[7] = "Emberblade";
+            array_push($character, "UPR046");
+            array_push($deck, "UPR101", "UPR101", "UPR057", "UPR096", "UPR097");
+            break;
+          case "The_Travelling_Duo":
+            $encounter[7] = "Kodachi";
+            array_push($character, "WTR078", "WTR078");
+            array_push($deck, "UPR098", "UPR099", "UPR093", "UPR062", "UPR071");
+            break;
+          case "The_Archaeologist":
+            $encounter[7] = "Edge";
+            array_push($character, "CRU050");
+            array_push($deck, "UPR051", "UPR052", "UPR072", "UPR074", "WTR208");
+            break;
         }
       case "STARTADVENTURE":
         switch($lastResult)
@@ -349,7 +384,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             PrependDecisionQueue("SETENCOUNTER", $player, "208-PickMode");
             break;
           case "Take_the_scenic_route_through_the_back_streets": //Stealthy Stabber
-            PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight"); 
+            PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight");
             break;
           case "Make_your_way_up_through_Metrix": //Combustible Courier
             PrependDecisionQueue("SETENCOUNTER", $player, "120-BeforeFight");
@@ -368,7 +403,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Turn_back_and_take_the_long_way_around": //Quickshot Apprentice
             PrependDecisionQueue("SETENCOUNTER", $player, "106-BeforeFight");
-            break; 
+            break;
           case "Leave_the_town_immediately":
             PrependDecisionQueue("SETENCOUNTER", $player, "118-BeforeFight");
             break;
@@ -384,7 +419,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         return "NOTSTATIC";
     }
   }
-  function ResetHero($player, $hero="Dorinthea")
+function ResetHero($player, $hero="Dorinthea")
   {
   $heroFileArray = file("Heroes/" . $hero . ".txt", FILE_IGNORE_NEW_LINES);
   $health = &GetZone($player, "Health");
