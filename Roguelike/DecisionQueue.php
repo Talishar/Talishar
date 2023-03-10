@@ -101,6 +101,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           default: break;
         }
+        return 1;
       case "BATTLEFIELD":
         switch($lastResult)
         {
@@ -114,6 +115,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           default: break;
         }
+        return 1;
       case "LIBRARY":
         switch($lastResult)
         {
@@ -125,6 +127,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Leave":
             break;
         }
+        return 1;
       case "BLACKSMITH":
         $encounter = &GetZone($player, "Encounter");
         switch($lastResult)
@@ -144,6 +147,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Leave":
             break;
         }
+        return 1;
       case "OLDHAG":
         switch($lastResult)
         {
@@ -170,10 +174,13 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Leave":
             break;
         }
+        return 1;
       case "BACKGROUND":
         $deck = &GetZone($player, "Deck");
         $character = &GetZone($player, "Character");
         $encounter = &GetZone($player, "Encounter");
+        WriteLog("Background Event");
+        GiveUniversalEquipment();
         switch($lastResult)
         {
           case "The_Volcai_Sellsword":
@@ -247,6 +254,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             array_push($deck, "UPR051", "UPR052", "UPR072", "UPR074", "WTR208");
             break;
         }
+        return 1;
       case "STARTADVENTURE":
         switch($lastResult)
         {
@@ -353,9 +361,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
       case "ROCKS":
         switch($lastResult)
         {
-          case "Trade_2_gold_pieces_for_the_stone":
+          case "Trade_1_gold_pieces_for_the_stone":
             $encounter = &GetZone($player, "Encounter");
-            $encounter[9] -= 2;
+            $encounter[9] -= 1;
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(1, "ResourceGems"));
             break;
           case "Decline_his_offer_and_move_on":
@@ -389,11 +397,14 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Make_your_way_up_through_Metrix": //Combustible Courier
             PrependDecisionQueue("SETENCOUNTER", $player, "120-BeforeFight");
             break;
-          case "Catch_a_ferry_across_the_lake": //TESTING Rune Scholar
-            PrependDecisionQueue("SETENCOUNTER", $player, "107-BeforeFight");
-            break;
+            /* case "Catch_a_ferry_across_the_lake":
+              PrependDecisionQueue("SETENCOUNTER", $player, "107-BeforeFight");
+              break; */
           case "Venture_into_the_forest_and_attempt_to_sneak_past": //Ravenous Rabble
             PrependDecisionQueue("SETENCOUNTER", $player, "102-BeforeFight");
+            break;
+          case "Approach_the_roadblock_head_on": //SwingWithBigTree
+            PrependDecisionQueue("SETENCOUNTER", $player, "121-BeforeFight");
             break;
           case "Take_precaution_and_find_a_different_way_across": //Crane Master
             PrependDecisionQueue("SETENCOUNTER", $player, "115-BeforeFight");
@@ -403,6 +414,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Turn_back_and_take_the_long_way_around": //Quickshot Apprentice
             PrependDecisionQueue("SETENCOUNTER", $player, "106-BeforeFight");
+            break;
+          case "You_notice_a_mountain_pass_you_can_move_through": //Rune Scholar
+            PrependDecisionQueue("SETENCOUNTER", $player, "107-BeforeFight");
             break;
           case "Leave_the_town_immediately":
             PrependDecisionQueue("SETENCOUNTER", $player, "118-BeforeFight");
@@ -425,9 +439,9 @@ function ResetHero($player, $hero="Dorinthea")
   $health = &GetZone($player, "Health");
   array_push($health, 20); //TODO: Base on hero health
   $character = &GetZone($player, "Character");
-  $character = explode(" ", $heroFileArray[0]); //TODO: Support multiple heroes
+  $character = explode(" ", $heroFileArray[0]);
   $deck = &GetZone($player, "Deck");
-  $deck = explode(" ", $heroFileArray[1]); //TODO: Support multiple heroes
+  $deck = explode(" ", $heroFileArray[1]);
   $encounter = &GetZone($player, "Encounter");
   $encounter[3] = $hero;
   }

@@ -2112,6 +2112,12 @@ function CharacterStartTurnAbility($index)
       PlayAura("ARC112", $mainPlayer);
       PlayAura("ARC112", $mainPlayer);
       break;
+    case "ROGUE021":
+      $hand = &GetHand($mainPlayer);
+      array_unshift($hand, "MON226");
+      $resources = &GetResources($mainPlayer);
+      $resources[0] += 2;
+      break;
     default:
       break;
   }
