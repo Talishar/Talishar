@@ -451,7 +451,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "WTR082": return 1;
     case "WTR083": return (ComboActive() ? 1 : 0);
     case "WTR084": return (ComboActive() ? 1 : 0);
-    case "WTR086": case "WTR087": case "WTR088": return (ComboActive() ? $combatChainState[$CCS_NumHits] : 0);
+    case "WTR086": case "WTR087": case "WTR088": return (ComboActive() ? NumAttacksHit() : 0);
     case "WTR089": case "WTR090": case "WTR091": return (ComboActive() ? 3 : 0);
     case "WTR095": case "WTR096": case "WTR097": return (ComboActive() ? 1 : 0);
     case "WTR104": case "WTR105": case "WTR106": return (ComboActive() ? 2 : 0);
