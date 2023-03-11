@@ -567,7 +567,7 @@ function CRUHitEffect($cardID)
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
       break;
     case "CRU074":
-      if ($combatChainState[$CCS_HitsInRow] >= 2) {
+      if (HitsInRow() > 0) {
         MainDrawCard();
         MainDrawCard();
       }
