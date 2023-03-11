@@ -168,7 +168,6 @@ if ($canSeeQueue) {
         <h3>Outsiders</h3>
         All spoiled cards implemented except:<BR>
           Amnesia<br>
-Vambrace of Determination - Half Implemented<br>
 Burden of the Past<br>
 Infectious Host<br>
           Last updated: 10:13PM CST 3/7/23

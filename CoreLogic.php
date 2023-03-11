@@ -586,6 +586,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   $damage = PermanentTakeDamageAbilities($player, $damage, $type);
   $damage = ItemTakeDamageAbilities($player, $damage, $type);
   if($damage == 1 && $preventable && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
+  $damage = CurrentEffectPreventDamagePrevention($player, $type, $damageThreatened, $damage, $source);
   $dqVars[0] = $damage;
   if($type == "COMBAT") $dqState[6] = $damage;
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);

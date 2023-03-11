@@ -1333,6 +1333,25 @@ function BanishCostModifier($from, $index)
   }
 }
 
+function CurrentEffectPreventDamagePrevention($player, $type, $damageThreatened, $damage, $source)
+{
+  global $currentTurnEffects;
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0 && $damage < $damageThreatened; $i -= CurrentTurnEffectPieces()) {
+    if ($currentTurnEffects[$i + 1] == $player) {
+      $remove = false;
+      switch ($currentTurnEffects[$i]) {
+        case "OUT174":
+          if($type != "COMBAT") break;
+          if($damage < $damageThreatened) $damage += 1;
+          $remove = true;
+        default: break;
+      }
+    }
+    if ($remove) RemoveCurrentTurnEffect($i);
+  }
+  return $damage;
+}
+
 function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable)
 {
   global $currentTurnEffects, $currentPlayer;
