@@ -578,6 +578,11 @@ function OUTAbilityCost($cardID)
         AddCurrentTurnEffect($cardID . "_1", $currentPlayer);
         AddCurrentTurnEffect($cardID . "_2", $currentPlayer);
         return "";
+      case "OUT192": case "OUT193": case "OUT194":
+        if(SearchAuras($CID_Frailty, $currentPlayer)) PlayAura($CID_Frailty, $defPlayer);
+        if(SearchAuras($CID_BloodRotPox, $currentPlayer)) PlayAura($CID_BloodRotPox, $defPlayer);
+        if(SearchAuras($CID_Inertia, $currentPlayer)) PlayAura($CID_Inertia, $defPlayer);
+        return "";
       case "OUT195": case "OUT196": case "OUT197":
         if(DelimStringContains($additionalCosts, "BANISH1ATTACK"))
         {

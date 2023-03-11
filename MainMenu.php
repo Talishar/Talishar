@@ -169,7 +169,6 @@ if ($canSeeQueue) {
         All spoiled cards implemented except:<BR>
           Amnesia<br>
 Burden of the Past<br>
-Infectious Host<br>
           Last updated: 10:13PM CST 3/7/23
         <br>
       </div>

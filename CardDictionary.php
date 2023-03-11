@@ -40,7 +40,7 @@ function CardType($cardID)
 {
   if(!$cardID) return "";
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM" && $set != "LGS")
+  if($set != "ROG" && $set != "DUM")
   {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardType($cardID);
@@ -73,7 +73,6 @@ function CardType($cardID)
     case "DYN492a": return "W";
     case "DYN492b": return "E";
     case "DYN612": return "-";
-    case "LGS125": case "LGS126": case "LGS127": return "T";
     case "DUMMY":
     case "DUMMYDISHONORED":
       return "C";
@@ -87,7 +86,7 @@ function CardSubType($cardID)
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
   if(!$cardID) return "";
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM" && $set != "LGS")
+  if($set != "ROG" && $set != "DUM")
   {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardSubtype($cardID);
@@ -115,8 +114,6 @@ function CardSubType($cardID)
       case "UPR439": case "UPR440": case "UPR441": return "Ash";
       case "UPR551": return "Ally";
       case "DYN612": return "Angel,Ally";
-      case "LGS125": case "LGS126": case "LGS127": return "Aura";
-      case $CID_BloodRotPox: case $CID_Frailty: case $CID_Inertia: return "Aura";
       return "";
   }
 }
