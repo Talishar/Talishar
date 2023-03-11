@@ -115,7 +115,7 @@ function OUTAbilityCost($cardID)
       case "OUT049": return CardType($attackID) == "AA";
       case "OUT052": return count($commaArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($commaArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
-      case "OUT071": case "OUT072": case "OUT073": return AttackValue($attackID) <= 2;
+      case "OUT071": case "OUT072": case "OUT073": return CardType($attackID) == "AA" && AttackValue($attackID) <= 2;
       case "OUT102": return true;
       case "OUT105": return CardSubType($attackID) == "Arrow";
       case "OUT109": case "OUT110": case "OUT111": return CardSubType($attackID) == "Arrow";
@@ -629,7 +629,7 @@ function OUTAbilityCost($cardID)
         break;
       case "OUT051":
         $char = &GetPlayerCharacter($defPlayer);
-        if(HasAttackName("Surging Strike") && HasAttackName("Descendent Gustwave") && HasAttackName("Bonds of Ancestry"))
+        if(IsHeroAttackTarget() && HasAttackName("Surging Strike") && HasAttackName("Descendent Gustwave") && HasAttackName("Bonds of Ancestry"))
         {
           if($char[0] == "DUMMY") WriteLog("Combat Dummies have no honor.");
           else if($char[0] == "DUMMYDISHONORED") WriteLog("Those who have been dishonored have nothing left to lose.");
