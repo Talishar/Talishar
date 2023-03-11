@@ -20,6 +20,7 @@ function OUTAbilityCost($cardID)
     case "OUT141": return 2;
     case "OUT157": return 1;
     case "OUT158": return 1;
+    case "OUT175": case "OUT176": case "OUT177": case "OUT178": return 1;//Seeker's Equips
     case "OUT179": return 0;
     case "OUT180": return 0;
     case "OUT181": return 2;
@@ -49,6 +50,7 @@ function OUTAbilityCost($cardID)
       case "OUT141": return "A";
       case "OUT157": return "A";
       case "OUT158": return "A";
+      case "OUT175": case "OUT176": case "OUT177": case "OUT178": return "I";//Seeker's Equips
       case "OUT179": return "I";
       case "OUT180": return "I";
       case "OUT181": return "AR";
@@ -534,6 +536,10 @@ function OUTAbilityCost($cardID)
           TrapTriggered($cardID);
         }
         return $rv;
+      case "OUT175": case "OUT176": case "OUT177": case "OUT178":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        PlayerOpt($currentPlayer, 1);
+        return "";
       case "OUT179":
         AddCurrentTurnEffect($cardID . "_1", $currentPlayer);
         AddCurrentTurnEffect($cardID . "_2", $currentPlayer);
