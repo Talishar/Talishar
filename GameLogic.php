@@ -910,7 +910,7 @@ function EffectHitEffect($cardID)
     case "OUT165": LoseHealth(5, $defPlayer); break;
     case "OUT166": LoseHealth(4, $defPlayer); break;
     case "OUT167": LoseHealth(3, $defPlayer); break;
-    case "OUT188_2": PlayAura("DYN244", $mainPlayer); break;
+    case "OUT188_1": PlayAura("DYN244", $mainPlayer); return 1;
     default:
       break;
   }
@@ -1890,7 +1890,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN154":
       return true;
-    case "OUT052": case "OUT140": case "OUT141": case "OUT144": return true;
+    case "OUT052": case "OUT140": case "OUT141": case "OUT144": case "OUT188_1": return true;
     default:
       return false;
   }
