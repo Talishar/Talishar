@@ -1271,6 +1271,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $from == "HAND";
     case "OUT168": case "OUT169": case "OUT170":
       return $from == "HAND";
+    case "OUT180":
+      $hand = &GetHand($player);
+      return count($hand) > 0;
     case "OUT182":
       return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || AttackValue($combatChain[0]) > 1;
     default:

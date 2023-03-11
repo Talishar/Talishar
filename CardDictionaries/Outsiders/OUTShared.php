@@ -20,6 +20,7 @@ function OUTAbilityCost($cardID)
     case "OUT141": return 2;
     case "OUT157": return 1;
     case "OUT158": return 1;
+    case "OUT180": return 0;
     case "OUT182": return 0;
     default: return 0;
   }
@@ -46,6 +47,7 @@ function OUTAbilityCost($cardID)
       case "OUT141": return "A";
       case "OUT157": return "A";
       case "OUT158": return "A";
+      case "OUT180": return "I";
       case "OUT182": return "AR";
       default: return "";
     }
@@ -526,6 +528,9 @@ function OUTAbilityCost($cardID)
           TrapTriggered($cardID);
         }
         return $rv;
+      case "OUT180":
+        GainResources($currentPlayer, 1);
+        break;
       case "OUT182":
         GiveAttackGoAgain();
         break;
