@@ -20,6 +20,7 @@ function OUTAbilityCost($cardID)
     case "OUT141": return 2;
     case "OUT157": return 1;
     case "OUT158": return 1;
+    case "OUT182": return 0;
     default: return 0;
   }
 }
@@ -45,6 +46,7 @@ function OUTAbilityCost($cardID)
       case "OUT141": return "A";
       case "OUT157": return "A";
       case "OUT158": return "A";
+      case "OUT182": return "AR";
       default: return "";
     }
   }
@@ -524,6 +526,9 @@ function OUTAbilityCost($cardID)
           TrapTriggered($cardID);
         }
         return $rv;
+      case "OUT182":
+        GiveAttackGoAgain();
+        break;
       case "OUT186":
         $cardRemoved = Belch();
         if($cardRemoved == "") { AddCurrentTurnEffect("OUT186-7", $currentPlayer); return "You cannot reveal cards so Gore Belching gets -7."; }
