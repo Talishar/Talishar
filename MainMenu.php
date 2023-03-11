@@ -168,7 +168,6 @@ if ($canSeeQueue) {
         <h3>Outsiders</h3>
         All spoiled cards implemented except:<BR>
           Amnesia<br>
-          Back Heel Kick<br>
 Vambrace of Determination - Half Implemented<br>
 Burden of the Past<br>
 Fleet Foot Sandals<br>
