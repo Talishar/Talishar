@@ -32,9 +32,9 @@ include "CardDictionaries/Roguelike/ROGUEShared.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
 
-$CID_BloodRotPox = "LGS125";
-$CID_Frailty = "LGS126";
-$CID_Inertia = "LGS127";
+$CID_BloodRotPox = "OUT234";
+$CID_Frailty = "OUT235";
+$CID_Inertia = "OUT236";
 
 function CardType($cardID)
 {
