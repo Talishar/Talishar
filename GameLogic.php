@@ -2558,8 +2558,7 @@ function MainCharacterHitAbilities()
       }
     }
     switch ($characterID) {
-      case "WTR076":
-      case "WTR077":
+      case "WTR076": case "WTR077":
         if (CardType($attackID) == "AA") {
           AddLayer("TRIGGER", $mainPlayer, $characterID);
           $mainCharacter[$i + 1] = 1;

@@ -166,6 +166,7 @@ function ChainLinksPieces()
 //2 - Talents
 //3 - Class
 //4 - List of names
+//5 - Hit on link
 function ChainLinkSummaryPieces()
 {
   return 5;
