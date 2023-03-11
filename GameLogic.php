@@ -437,7 +437,7 @@ function ProcessCrushEffect($cardID)
 //NOTE: This happens at combat resolution, so can't use the my/their directly
 function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)
 {
-  global $mainPlayer, $mainPitch, $CS_Num6PowDisc, $combatChain, $combatChainState, $mainAuras, $CCS_NumHits, $CS_CardsBanished, $CCS_HitsInRow;
+  global $mainPlayer, $mainPitch, $CS_Num6PowDisc, $combatChain, $combatChainState, $mainAuras, $CCS_NumHits, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken;
   global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CCS_NumChainLinks, $CS_NumAuras, $CS_AtksWWeapon;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
@@ -478,7 +478,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "WTR210": return 2;
     case "WTR211": return 1;
     case "ARC077": return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0 ? 3 : 0;
-    case "ARC188": case "ARC189": case "ARC190": return $combatChainState[$CCS_HitsInRow] > 0 ? 2 : 0;
+    case "ARC188": case "ARC189": case "ARC190": return HitsInRow() > 0 ? 2 : 0;
     case "CRU016": case "CRU017": case "CRU018": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0;
     case "CRU056": return ComboActive() ? 2 : 0;
     case "CRU057": case "CRU058": case "CRU059": return ComboActive() ? 1 : 0;
