@@ -1798,7 +1798,7 @@ function HasCombo($cardID)
     case "OUT056": case "OUT057": case "OUT058":
     case "OUT059": case "OUT060": case "OUT061":
     case "OUT062": case "OUT063": case "OUT064":
-    case "OUT065":
+    case "OUT065": case "OUT066": case "OUT067":
     case "OUT074": case "OUT075": case "OUT076":
     case "OUT080": case "OUT081": case "OUT082":
       return true;
@@ -1884,6 +1884,9 @@ function ComboActive($cardID = "")
         break;
       case "OUT062": case "OUT063": case "OUT064":
         if($lastAttackName == "Twin Twisters" || $lastAttackName == "Spinning Wheel Kick") return true;
+        break;
+      case "OUT065": case "OUT066": case "OUT067":
+        if($lastAttackName == "Twin Twisters") return true;
         break;
       case "OUT074": case "OUT075": case "OUT076":
         if($lastAttackName == "Surging Strike") return true;

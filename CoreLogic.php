@@ -106,6 +106,7 @@ function AddAttack(&$totalAttack, $amount)
 {
   global $combatChain;
   if($amount > 0 && $combatChain[0] == "OUT100") $amount += 1;
+  if($amount > 0 && ($combatChain[0] == "OUT065" || $combatChain[0] == "OUT066" || $combatChain[0] == "OUT067") && ComboActive()) $amount += 1;
   $totalAttack += $amount;
 }
 
