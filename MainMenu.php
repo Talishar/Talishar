@@ -171,7 +171,6 @@ if ($canSeeQueue) {
 Vambrace of Determination - Half Implemented<br>
 Burden of the Past<br>
 Infectious Host<br>
-Skybound Shot<br>
           Last updated: 10:13PM CST 3/7/23
         <br>
       </div>

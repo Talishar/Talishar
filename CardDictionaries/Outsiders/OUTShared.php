@@ -91,6 +91,7 @@ function OUTAbilityCost($cardID)
       case "OUT118": case "OUT119": case "OUT120": return 1;
       case "OUT121": case "OUT122": case "OUT123": return 1;
       case "OUT124": case "OUT125": case "OUT126": return 1;
+      case "OUT127": case "OUT128": case "OUT129": return 1;
       case "OUT136": case "OUT137": case "OUT138": return 1;
       case "OUT141": return 1;
       case "OUT143": return 1;
@@ -137,6 +138,7 @@ function OUTAbilityCost($cardID)
       case "OUT118": case "OUT119": case "OUT120": return true;
       case "OUT121": case "OUT122": case "OUT123": return true;
       case "OUT124": case "OUT125": case "OUT126": return true;
+      case "OUT127": case "OUT128": case "OUT129": return true;
       case "OUT136": case "OUT137": case "OUT138": return true;
       case "OUT140": return CardSubType($attackID) == "Dagger";
       case "OUT141": return CardSubType($attackID) == "Dagger";
@@ -413,6 +415,12 @@ function OUTAbilityCost($cardID)
         }
         return $rv;
       case "OUT124": case "OUT125": case "OUT126":
+        if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          $rv = "Gets +1.";
+        }
+        return $rv;
+      case "OUT127": case "OUT128": case "OUT129":
         if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Gets +1.";
