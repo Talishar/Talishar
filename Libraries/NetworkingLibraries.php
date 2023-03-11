@@ -747,7 +747,7 @@ function BeginChainLinkResolution()
 function ResolveChainLink()
 {
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
-  global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext;
+  global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsWithWeapon, $CS_EffectContext;
   UpdateGameState($currentPlayer);
   BuildMainPlayerGameState();
 
@@ -784,7 +784,7 @@ function ResolveChainLink()
 function ResolveCombatDamage($damageDone)
 {
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $currentTurnEffects;
-  global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CCS_ChainLinkHitEffectsPrevented;
+  global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsWithWeapon, $CS_EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_HitsWithSword;
   $wasHit = $damageDone > 0;
 
@@ -800,7 +800,6 @@ function ResolveCombatDamage($damageDone)
   {
     $combatChainState[$CCS_DamageDealt] = $damageDone;
     ++$combatChainState[$CCS_NumHits];
-    ++$combatChainState[$CCS_HitsInRow];
     if (CardType($combatChain[0]) == "W") {
       ++$combatChainState[$CCS_HitsWithWeapon];
       IncrementClassState($mainPlayer, $CS_HitsWithWeapon);
@@ -837,7 +836,6 @@ function ResolveCombatDamage($damageDone)
         AddDecisionQueue("CLEAREFFECTCONTEXT", $mainPlayer, "-");
       }
     }
-    $combatChainState[$CCS_HitsInRow] = 0;
   }
   $currentPlayer = $mainPlayer;
   ProcessDecisionQueue(); //Any combat related decision queue logic should be main player gamestate

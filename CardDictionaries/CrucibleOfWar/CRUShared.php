@@ -547,7 +547,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function CRUHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CS_ArcaneDamageTaken, $CCS_HitsInRow;
+  global $mainPlayer, $defPlayer, $combatChainState, $CS_ArcaneDamageTaken;
   switch ($cardID) {
     case "CRU054":
       if (ComboActive()) {
