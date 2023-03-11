@@ -170,7 +170,6 @@ if ($canSeeQueue) {
           Amnesia<br>
 Vambrace of Determination - Half Implemented<br>
 Burden of the Past<br>
-Silken Gi<br>
 Freewheeling Renegades<br>
 Infectious Host<br>
 Skybound Shot<br>

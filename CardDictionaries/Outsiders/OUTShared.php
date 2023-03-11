@@ -20,6 +20,7 @@ function OUTAbilityCost($cardID)
     case "OUT141": return 2;
     case "OUT157": return 1;
     case "OUT158": return 1;
+    case "OUT179": return 0;
     case "OUT180": return 0;
     case "OUT182": return 0;
     default: return 0;
@@ -47,6 +48,7 @@ function OUTAbilityCost($cardID)
       case "OUT141": return "A";
       case "OUT157": return "A";
       case "OUT158": return "A";
+      case "OUT179": return "I";
       case "OUT180": return "I";
       case "OUT182": return "AR";
       default: return "";
@@ -90,6 +92,7 @@ function OUTAbilityCost($cardID)
       case "OUT143": return 1;
       case "OUT144": return 1;
       case "OUT151": case "OUT152": case "OUT153": return 1;
+      case "OUT179_2": return -1;
       case "OUT186": return (-1 * $idArr[1]);
       case "OUT188_2": return 3;
       case "OUT195": case "OUT196": case "OUT197": return 1;
@@ -138,6 +141,7 @@ function OUTAbilityCost($cardID)
       case "OUT151": case "OUT152": case "OUT153": return CardSubType($attackID) == "Dagger";
       case "OUT158": return CardType($attackID) == "AA";
       case "OUT165": case "OUT166": case "OUT167": return CardType($attackID) == "AA" && (ClassContains($attackID, "ASSASSIN", $mainPlayer) || ClassContains($attackID, "RANGER", $mainPlayer));
+      case "OUT179_2": return CardType($attackID) == "AA";
       case "OUT186": return true;
       case "OUT188_1": return CardType($attackID) == "AA";
       case "OUT188_2": return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
@@ -528,6 +532,10 @@ function OUTAbilityCost($cardID)
           TrapTriggered($cardID);
         }
         return $rv;
+      case "OUT179":
+        AddCurrentTurnEffect($cardID . "_1", $currentPlayer);
+        AddCurrentTurnEffect($cardID . "_2", $currentPlayer);
+        return "";
       case "OUT180":
         GainResources($currentPlayer, 1);
         break;

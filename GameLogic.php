@@ -1302,6 +1302,12 @@ function CurrentEffectCostModifiers($cardID, $from)
             $remove = 1;
           }
           break;
+        case "OUT179_1":
+          if (CardType($cardID) == "AA") {
+            $costModifier -= 1;
+            $remove = 1;
+          }
+          break;
         default:
           break;
       }
@@ -3057,7 +3063,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "OUT049": case "OUT095": case "OUT098": case "OUT140": case "OUT141": case "OUT157": case "OUT158":
-    case "OUT180": case "OUT182":
+    case "OUT179": case "OUT180": case "OUT182":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     default:
