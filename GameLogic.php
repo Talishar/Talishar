@@ -3738,6 +3738,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = &GetDeck($player);
       $cards = explode(",", $lastResult);
       for ($i = 0; $i < count($cards); ++$i) {
+        if($parameter == "1") WriteLog(CardLink($cards[$i], $cards[$i]));
         array_unshift($deck, $cards[$i]);
       }
       return $lastResult;

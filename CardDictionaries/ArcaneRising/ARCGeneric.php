@@ -156,8 +156,9 @@ function ARCGenericHitEffect($cardID)
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:type=A");
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a non-attack action card to put on top of your deck");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("WRITELOG", $mainPlayer, "Put a card on top of your deck:", 1);
       AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-      AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
+      AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "1", 1);
       break;
     case "ARC182": case "ARC183":  case "ARC184":
       OptMain(2);
