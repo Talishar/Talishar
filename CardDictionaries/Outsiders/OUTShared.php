@@ -584,6 +584,9 @@ function OUTAbilityCost($cardID)
         LookAtTopCard($currentPlayer, $cardID);
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "OUT228": case "OUT229": case "OUT230":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "OUT231": case "OUT232": case "OUT233":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         PlayAura("DYN244", $currentPlayer);

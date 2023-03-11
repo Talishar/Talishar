@@ -1406,6 +1406,18 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if($preventable) $damage -= 1;
           $remove = 1;
           break;
+        case "OUT228":
+          if($preventable && $damage == 3) $damage = 0;
+          $remove = 1;
+          break;
+        case "OUT229":
+          if($preventable && $damage == 2) $damage = 0;
+          $remove = 1;
+          break;
+        case "OUT230":
+          if($preventable && $damage == 1) $damage = 0;
+          $remove = 1;
+          break;
         case "OUT231":
           if ($type == "COMBAT") {
             if($preventable) $damage -= 4;
