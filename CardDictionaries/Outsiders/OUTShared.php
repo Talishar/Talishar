@@ -22,6 +22,7 @@ function OUTAbilityCost($cardID)
     case "OUT158": return 1;
     case "OUT179": return 0;
     case "OUT180": return 0;
+    case "OUT181": return 2;
     case "OUT182": return 0;
     default: return 0;
   }
@@ -50,6 +51,7 @@ function OUTAbilityCost($cardID)
       case "OUT158": return "A";
       case "OUT179": return "I";
       case "OUT180": return "I";
+      case "OUT181": return "AR";
       case "OUT182": return "AR";
       default: return "";
     }

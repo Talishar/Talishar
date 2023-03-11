@@ -626,6 +626,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "OUT154": return 3;
     case "OUT155": return 2;
     case "OUT156": return 1;
+    case "OUT181": return 1;
     case "OUT207": case "OUT208": case "OUT209": return (NumActionsBlocking() > 0 ? 2 : 0);
     case "OUT210": case "OUT211": case "OUT212": return (NumActionsBlocking() > 0 ? -2 : 0);
     default:
@@ -3064,7 +3065,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "OUT049": case "OUT095": case "OUT098": case "OUT140": case "OUT141": case "OUT157": case "OUT158":
-    case "OUT179": case "OUT180": case "OUT182":
+    case "OUT179": case "OUT180": case "OUT181": case "OUT182":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     default:
