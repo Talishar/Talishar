@@ -705,6 +705,8 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
         AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Head_Jab,Surging_Strike,Twin_Twisters", 1);
+        AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "Attack renamed to {0}", 1);
         AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . "-", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-", 1);
         break;
