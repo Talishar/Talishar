@@ -39,7 +39,7 @@ function EncounterDescription()
     case 007:
       return "You found a campfire. Choose what you want to do.";
     case 8:
-      return "You come across a small village. A merchant waves you down.";
+      return "You come across a small village. You wander through the market, investigating the various wares. The village has many residents, and you note the location of a local healer, as well as an elderly urchin with outstretched palms.";
     case 9:
       return GetCrossroadsDescription();
 
@@ -81,7 +81,7 @@ function EncounterDescription()
       else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
     case 118:
       if($encounter[1] == "BeforeFight") return "As you travel, you encounter a boisterous traveler wearing leather armor with a green glimmer. \"Hail, bounty hunter. Would you like to spar?\"";
-      else if($encounter[1] == "AfterFight") return "\"Wow stranger, that was an impressive match. Thank you for the lessons learned!\"";
+      else if($encounter[1] == "AfterFight") return "\"Wow stranger, that was an exciting match. Thank you for the lessons learned!\"";
     case 119:
       if($encounter[1] == "BeforeFight") return "As you cross the bridge, thunder cracks. A storm begins, and the winds nearly knock you into the chasm below. A figure runs towards you, as though dancing on the rain itself.";
       else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
@@ -90,8 +90,8 @@ function EncounterDescription()
       else if($encounter[1] == "AfterFight") return "You killed a poor mailman. You heartless monster! Oh well, no use dwelling on the past, now that you're out of the city it's time to move towards your objective.";
     case 121:
       if($encounter[1] == "BeforeFight") return "You hear a loud bellow from the other side of the fallen tree. The tree rises, revealing a brute picking it up. He seems incredibly angry at the block in the road.";
-      else if($encounter[1] == "AfterFight") return "After you delivered a humbling smackdown, the orc calms down and continues on his way. He gives no apology for his outburst before.";
-    case 999: return "This text means something is wrong!"; //Maybe $encounter[1] is set to something weird?
+      else if($encounter[1] == "AfterFight") return "After you deliver a humbling smackdown, the orc calms down and continues on his way. He gives no apology for his outburst before.";
+    case 999: return "This text means something is wrong!"; //Maybe $encounter[1] is set to something weird? Maybe there's a typo?
 
     case 201: return "You found a battlefield. Choose what you want to do.";
     case 202: return "You found a library. Choose what you want to do.";
