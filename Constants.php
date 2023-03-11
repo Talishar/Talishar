@@ -169,7 +169,7 @@ function ChainLinksPieces()
 //5 - Hit on link
 function ChainLinkSummaryPieces()
 {
-  return 5;
+  return 6;
 }
 
 function DecisionQueuePieces()
