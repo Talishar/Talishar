@@ -2066,3 +2066,14 @@ function HitsInCombatChain()
   }
   return $numHits;
 }
+
+function NumAttacksHit()
+{
+    global $chainLinkSummary;
+    $numHits = 0;
+    for($i=count($chainLinkSummary)-ChainLinkSummaryPieces(); $i>=0; $i-=ChainLinkSummaryPieces())
+    {
+      if($chainLinkSummary[$i] > 0) ++$numHits;
+    }
+    return $numHits;
+}
