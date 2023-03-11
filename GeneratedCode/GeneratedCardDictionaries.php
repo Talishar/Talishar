@@ -4086,9 +4086,9 @@ switch($cardID[5]) {
 case "0":
 return 3;
 case "1":
-return 3;
-case "2":
 return 2;
+case "2":
+return 1;
 case "3":
 return 3;
 case "4":
@@ -4174,7 +4174,7 @@ return 5;
 case "2":
 return 4;
 case "9":
-return 3;
+return 2;
 default: return 0;
 }
 case "0":
@@ -4206,7 +4206,7 @@ switch($cardID[5]) {
 case "0":
 return 2;
 case "1":
-return 1;
+return 2;
 default: return 0;
 }
 default: return 0;
@@ -12722,11 +12722,11 @@ return "Destructive Deliberation";
 case "6":
 return "Destructive Deliberation";
 case "7":
-return "Fiesty Locals";
+return "Feisty Locals";
 case "8":
-return "Fiesty Locals";
+return "Feisty Locals";
 case "9":
-return "Fiesty Locals";
+return "Feisty Locals";
 default: return "";
 }
 default: return "";
@@ -12932,7 +12932,7 @@ return "Threadbare Tunic";
 case "1":
 return "Fisticuffs";
 case "2":
-return "Fleet Foot Sandles";
+return "Fleet Foot Sandals";
 case "3":
 return "Amnesia";
 case "4":
