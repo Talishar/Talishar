@@ -45,7 +45,7 @@
 
   function UPRNinjaHitEffect($cardID)
   {
-    global $mainPlayer, $combatChainState, $CCS_NumHits;
+    global $mainPlayer, $combatChainState;
     switch($cardID)
     {
       case "UPR048":
@@ -85,7 +85,7 @@
         break;
       case "UPR161":
         $rv = "";
-        if($combatChainState[$CCS_NumHits] >= 3)
+        if(HitsInCombatChain() >= 2)
         {
           $deck = &GetDeck($mainPlayer);
           $rv .= CardLink($deck[0], $deck[0]) . " was banished.";

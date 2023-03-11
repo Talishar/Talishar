@@ -2055,3 +2055,14 @@ function HitsInRow()
   }
   return $numHits;
 }
+
+function HitsInCombatChain()
+{
+  global $chainLinkSummary;
+  $numHits = 0;
+  for($i=count($chainLinkSummary)-ChainLinkSummaryPieces(); $i>=0; $i-=ChainLinkSummaryPieces())
+  {
+    if($chainLinkSummary[$i+5] == "1") ++$numHits;
+  }
+  return $numHits;
+}
