@@ -625,8 +625,8 @@ function CRUHitEffect($cardID)
 
 function RushingRiverHitEffect()
 {
-  global $combatChainState, $CCS_NumHits, $mainPlayer;
-  $num = $combatChainState[$CCS_NumHits];
+  global $combatChainState, $mainPlayer;
+  $num = NumAttacksHit()+1;
   for ($i = 0; $i < $num; ++$i) {
     Draw($mainPlayer);
     AddDecisionQueue("FINDINDICES", $mainPlayer, "HAND");
