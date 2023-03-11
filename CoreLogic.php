@@ -2044,3 +2044,14 @@ function HitEffectsPreventedThisLink()
   global $combatChainState, $CCS_ChainLinkHitEffectsPrevented;
   $combatChainState[$CCS_ChainLinkHitEffectsPrevented] = 1;
 }
+
+function HitsInRow()
+{
+  global $chainLinkSummary;
+  $numHits = 0;
+  for($i=count($chainLinkSummary)-ChainLinkSummaryPieces(); $i>=0 && $chainLinkSummary[$i+5] == "1"; $i-=ChainLinkSummaryPieces())
+  {
+    ++$numHits;
+  }
+  return $numHits;
+}

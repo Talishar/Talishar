@@ -847,7 +847,7 @@ function FinalizeChainLink($chainClosed = false)
 {
   global $turn, $actionPoints, $combatChain, $mainPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
-  global $CS_AnotherWeaponGainedGoAgain;
+  global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink;
   UpdateGameState($currentPlayer);
   BuildMainPlayerGameState();
 
@@ -903,7 +903,7 @@ function FinalizeChainLink($chainClosed = false)
   array_push($chainLinkSummary, TalentOverride($combatChain[0], $mainPlayer));
   array_push($chainLinkSummary, ClassOverride($combatChain[0], $mainPlayer));
   array_push($chainLinkSummary, SerializeCurrentAttackNames());
-  array_push($chainLinkSummary, ($combatChainState[$CCS_DamageDealt] > 0 ? "1" : "0"));//Hit on link
+  array_push($chainLinkSummary, ($combatChainState[$CCS_DamageDealt] > 0 || $combatChainState[$CCS_HitThisLink] == "1" ? "1" : "0"));//Hit on link
 
   //Clean up combat effects that were used and are one-time
   CleanUpCombatEffects();

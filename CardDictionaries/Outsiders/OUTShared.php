@@ -812,7 +812,7 @@ function OUTAbilityCost($cardID)
 
   function ThrowWeapon($subtype)
   {
-    global $currentPlayer;
+    global $currentPlayer, $CCS_HitThisLink;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype);
     AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -824,6 +824,8 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
     AddDecisionQueue("HITEFFECT", $otherPlayer, "<-", 1);
+    AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
+    AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_HitThisLink, 1);
   }
 
   function DamageDealtBySubtype($subtype)

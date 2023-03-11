@@ -2543,7 +2543,7 @@ function MainCharacterEndTurnAbilities()
 
 function MainCharacterHitAbilities()
 {
-  global $combatChain, $combatChainState, $CCS_WeaponIndex, $CCS_HitsInRow, $mainPlayer;
+  global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $attackID = $combatChain[0];
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
 
@@ -2565,13 +2565,12 @@ function MainCharacterHitAbilities()
         }
         break;
       case "WTR079":
-        if (CardType($attackID) == "AA" && $combatChainState[$CCS_HitsInRow] >= 3) {
+        if (CardType($attackID) == "AA" && HitsInRow() >= 2) {
           AddLayer("TRIGGER", $mainPlayer, $characterID);
           $mainCharacter[$i + 1] = 1;
         }
         break;
-      case "WTR113":
-      case "WTR114":
+      case "WTR113": case "WTR114":
         if ($mainCharacter[$i + 1] == 2 && CardType($attackID) == "W" && $mainCharacter[$combatChainState[$CCS_WeaponIndex] + 1] != 0) {
           $mainCharacter[$i + 1] = 1;
           $mainCharacter[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
