@@ -1821,6 +1821,8 @@ function IsCombatEffectActive($cardID)
 function IsCombatEffectPersistent($cardID)
 {
   global $currentPlayer;
+  $effectArr = explode(",", $cardID);
+  $cardID = $effectArr[0];
   if ($cardID == "CRU097") {
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
@@ -2137,7 +2139,8 @@ function RemoveEffectsOnChainClose()
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = 0;
     $effectArr = explode("-", $currentTurnEffects[$i]);
-    switch ($effectArr[0]) {
+    $effectArr2 = explode(",", $effectArr[0]);
+    switch ($effectArr2[0]) {
       case "CRU106": case "CRU107": case "CRU108":
         $remove = 1;
         break;
@@ -2223,11 +2226,14 @@ function OnBlockResolveEffects()
       }
       break;
     case "OUT185":
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack());
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an action card to put on top of your deck");
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-      AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
+      if(NumActionsBlocking() > 0)
+      {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack());
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an action card to put on top of your deck");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
+      }
       break;
     default: break;
   }

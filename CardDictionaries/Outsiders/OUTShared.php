@@ -63,7 +63,8 @@ function OUTAbilityCost($cardID)
   function OUTEffectAttackModifier($cardID)
   {
     $idArr = explode("-", $cardID);
-    $cardID = $idArr[0];
+    $idArr2 = explode(",", $idArr[0]);
+    $cardID = $idArr2[0];
     switch ($cardID)
     {
       case "OUT033": case "OUT034": case "OUT035": return 1;
@@ -101,8 +102,10 @@ function OUTAbilityCost($cardID)
   function OUTCombatEffectActive($cardID, $attackID)
   {
     global $mainPlayer;
-    $idArr = explode("-", $cardID);
-    $cardID = $idArr[0];
+    $dashArr = explode("-", $cardID);
+    $commaArr = explode(",", $cardID);
+    $cardID = $dashArr[0];
+    if(strlen($cardID) > 6) $cardID = $commaArr[0];
     switch ($cardID)
     {
       case "OUT005": case "OUT006": return NumReactionBlocking() > 0;
@@ -110,7 +113,7 @@ function OUTAbilityCost($cardID)
       case "OUT009": case "OUT010": return NumEquipBlock() > 0;
       case "OUT033": case "OUT034": case "OUT035": return HasStealth($attackID);
       case "OUT049": return CardType($attackID) == "AA";
-      case "OUT052": return count($idArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($idArr[1]));
+      case "OUT052": return count($commaArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($commaArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
       case "OUT071": case "OUT072": case "OUT073": return AttackValue($attackID) <= 2;
       case "OUT102": return true;
@@ -214,7 +217,7 @@ function OUTAbilityCost($cardID)
         return "";
       case "OUT052":
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
-        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT052-");
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT052,");
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
         return "";
       case "OUT055":

@@ -1982,20 +1982,20 @@ function GetCurrentAttackNames()
   array_push($names, CardName($combatChain[0]));
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
+    $name = "";
     $effectArr = explode("-", $currentTurnEffects[$i]);
-    if($currentTurnEffects[$i+1] != $mainPlayer || !IsCombatEffectActive($effectArr[0]) || IsCombatEffectLimited($i)) continue;
     switch($effectArr[0])
     {
       case "OUT049":
         $name = (count($effectArr) > 1 ? $effectArr[1] : "N/A");
-        array_push($names, $name);
         break;
       case "OUT068": case "OUT069": case "OUT070":
         $name = (count($effectArr) > 1 ? $effectArr[1] : "N/A");
-        array_push($names, $name);
         break;
       default: break;
     }
+    //You have to do this at the end, or you might have a recursive loop -- e.g. with OUT052
+    if($name != "" && $currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) array_push($names, $name);
   }
   return $names;
 }
