@@ -3037,7 +3037,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {
   global $redirectPath, $playerID, $gameName;
   global $currentPlayer, $combatChain, $defPlayer;
-  global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $CCS_ChainAttackBuff;
+  global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints;
   global $defCharacter, $CS_NumCharged, $otherPlayer;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
@@ -4216,7 +4216,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($parameter == "1" && TalentContains($lastResult, "LIGHT")) {
         WriteLog("V of the Vanguard gives all attacks on this combat chain +1.");
         AddCurrentTurnEffect("MON035", $player);
-        //++$combatChainState[$CCS_ChainAttackBuff];
       }
       $hand = &GetHand($player);
       if (count($hand) > 0) {

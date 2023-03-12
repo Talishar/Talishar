@@ -272,12 +272,12 @@ $CCS_HitsInRow = 5;//Deprecated -- use HitsInRow() instead
 $CCS_HitsWithWeapon = 6;
 $CCS_GoesWhereAfterLinkResolves = 7;
 $CCS_AttackPlayedFrom = 8;
-$CCS_ChainAttackBuff = 9;
+$CCS_ChainAttackBuff = 9;//Deprecated -- Use persistent combat effect with RemoveEffectsOnChainClose instead
 $CCS_ChainLinkHitEffectsPrevented = 10;
 $CCS_NumBoosted = 11;
-$CCS_NextBoostBuff = 12; //Deprecated -- use $CCS_IsBoosted now.
+$CCS_NextBoostBuff = 12;//Deprecated -- use $CCS_IsBoosted now.
 $CCS_AttackFused = 13;
-$CCS_AttackTotalDamage = 14; //Deprecated -- use chain link summary instead, it has all of them
+$CCS_AttackTotalDamage = 14;//Deprecated -- use chain link summary instead, it has all of them
 $CCS_NumChainLinks = 15;
 $CCS_AttackTarget = 16;
 $CCS_LinkTotalAttack = 17;
@@ -302,7 +302,7 @@ $CCS_HitThisLink = 34;
 function ResetCombatChainState()
 {
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt;
-  global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainAttackBuff, $CCS_ChainLinkHitEffectsPrevented;
+  global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented;
   global $CCS_NumBoosted, $CCS_NextBoostBuff, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_NumChainLinks, $CCS_AttackTarget;
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
@@ -315,7 +315,6 @@ function ResetCombatChainState()
   $combatChainState[$CCS_HitsWithWeapon] = 0;
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
   $combatChainState[$CCS_AttackPlayedFrom] = "NA";
-  $combatChainState[$CCS_ChainAttackBuff] = 0;
   $combatChainState[$CCS_ChainLinkHitEffectsPrevented] = 0;
   $combatChainState[$CCS_NumBoosted] = 0;
   $combatChainState[$CCS_NextBoostBuff] = 0;

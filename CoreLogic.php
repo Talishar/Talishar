@@ -5,7 +5,7 @@
 
 function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[])
 {
-  global $combatChain, $mainPlayer, $currentTurnEffects, $defCharacter, $playerID, $combatChainState, $CCS_ChainAttackBuff, $CCS_LinkBaseAttack;
+  global $combatChain, $mainPlayer, $currentTurnEffects, $defCharacter, $playerID, $combatChainState, $CCS_LinkBaseAttack;
   global $CCS_WeaponIndex, $mainCharacter, $mainAuras;
     UpdateGameState($playerID);
     BuildMainPlayerGameState();
@@ -90,13 +90,6 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
     if($canGainAttack || $attack < 0)
     {
       array_push($attackModifiers, "Arsenal Ability");
-      array_push($attackModifiers, $attack);
-      AddAttack($totalAttack, $attack);
-    }
-    $attack = $combatChainState[$CCS_ChainAttackBuff];
-    if($canGainAttack || $attack < 0)
-    {
-      array_push($attackModifiers, "Whole Combat Chain Buff");
       array_push($attackModifiers, $attack);
       AddAttack($totalAttack, $attack);
     }
