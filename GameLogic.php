@@ -264,10 +264,10 @@ function DoSurgeEffect($cardID, $player, $target)
       break;
     case "DYN206": case "DYN207": case "DYN208":
       AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=E;hasEnergyCounters=true");
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose which permanent remove an energy counter");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose card to remove an energy counter");
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZGETCARDINDEX", $player, "-", 1);
-      AddDecisionQueue("REMOVEENERGYCOUNTER", $targetPlayer, $cardID, 1);
+      AddDecisionQueue("REMOVECOUNTER", $targetPlayer, $cardID, 1);
       break;
     default: break;
   }
@@ -3842,10 +3842,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character[$lastResult + 4] += 1;
       WriteLog("A negative counter was removed from " . CardLink($character[$lastResult], $character[$lastResult]));
       return $lastResult;
-    case "REMOVEENERGYCOUNTER":
+    case "REMOVECOUNTER":
       $character = &GetPlayerCharacter($player);
       $character[$lastResult + 2] -= 1;
-      WriteLog(CardLink($parameter, $parameter) . " surge ability removed an energy counter from " . CardLink($character[$lastResult], $character[$lastResult]) . ".");
+      WriteLog(CardLink($parameter, $parameter) . " removed a counter from " . CardLink($character[$lastResult], $character[$lastResult]) . ".");
       return $lastResult;
     case "FLASHFREEZEDOMINATE":
       AddCurrentTurnEffect($parameter, $player, "PLAY");
