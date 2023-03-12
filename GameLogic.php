@@ -883,11 +883,7 @@ function EffectHasBlockModifier($cardID)
     case "MON089":
     case "ELE000-2":
     case "ELE143":
-    case "DYN115": case "DYN116":
     case "ELE203":
-    case "OUT005": case "OUT006":
-    case "OUT007": case "OUT008":
-    case "OUT009": case "OUT010":
     case "OUT109":
     case "OUT110":
     case "OUT111":
@@ -907,24 +903,8 @@ function EffectBlockModifier($cardID, $index)
       return 1;
     case "ELE143":
       return 1;
-    case "DYN115": case "DYN116":
-      $cardType = CardType($combatChain[$index]);
-      $cardBlock = BlockValue($combatChain[$index]);
-      return ($cardType == "AA" ? -1 : 0);
     case "ELE203":
       return ($combatChain[$index] == "ELE203" ? 1 : 0);
-    case "OUT005": case "OUT006":
-      $cardType = CardType($combatChain[$index]);
-      $cardBlock = BlockValue($combatChain[$index]);
-      return ($cardType == "AR" || $cardType == "DR" ? -1 : 0);
-    case "OUT007": case "OUT008":
-      $cardType = CardType($combatChain[$index]);
-      $cardBlock = BlockValue($combatChain[$index]);
-      return ($cardType == "A" ? -1 : 0);
-    case "OUT009": case "OUT010":
-      $cardType = CardType($combatChain[$index]);
-      $cardBlock = BlockValue($combatChain[$index]);
-      return ($cardType == "E" ? -1 : 0);
     case "OUT109":
       return (PitchValue($combatChain[$index]) == 1 && SearchCurrentTurnEffects("AIM", $mainPlayer) ? -1 : 0);
     case "OUT110":
@@ -2159,7 +2139,7 @@ function OnAttackEffects($attack)
 
 function OnBlockResolveEffects()
 {
-  global $combatChain, $CS_DamageTaken, $defPlayer, $mainPlayer;
+  global $combatChain, $CS_DamageTaken, $defPlayer, $mainPlayer, $currentTurnEffects;
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if (SearchCurrentTurnEffects("ARC160-1", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
@@ -2222,6 +2202,46 @@ function OnBlockResolveEffects()
   {
     AddLayer("TRIGGER", $mainPlayer, "ELE174");
   }
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $remove = false;
+    if ($currentTurnEffects[$i + 1] == $defPlayer) {
+      switch ($currentTurnEffects[$i]) {
+        case "DYN115": case "DYN116":
+          $count = ModifyBlockForType("AA", -1);
+          $remove = $count > 0;
+          break;
+        case "OUT005": case "OUT006":
+          $count = ModifyBlockForType("AR", -1);
+          $count += ModifyBlockForType("DR", -1);
+          $remove = $count > 0;
+          break;
+        case "OUT007": case "OUT008":
+          $count = ModifyBlockForType("A", -1);
+          $remove = $count > 0;
+          break;
+        case "OUT009": case "OUT010":
+          $count = ModifyBlockForType("E", -1);
+          $remove = $count > 0;
+          break;
+        default: break;
+      }
+    }
+    if ($remove) RemoveCurrentTurnEffect($i);
+  }
+}
+
+function ModifyBlockForType($type, $amount)
+{
+  global $combatChain, $defPlayer;
+  $count = 0;
+  for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
+  {
+    if($combatChain[$i+1] != $defPlayer) continue;
+    if(CardType($combatChain[$i]) != $type) continue;
+    ++$count;
+    $combatChain[$i+6] += $amount;
+  }
+  return $count;
 }
 
 function OnBlockEffects($index, $from)
