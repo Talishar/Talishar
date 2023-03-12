@@ -278,7 +278,7 @@ $CCS_NumBoosted = 11;
 $CCS_NextBoostBuff = 12;//Deprecated -- use $CCS_IsBoosted now.
 $CCS_AttackFused = 13;
 $CCS_AttackTotalDamage = 14;//Deprecated -- use chain link summary instead, it has all of them
-$CCS_NumChainLinks = 15;
+$CCS_NumChainLinks = 15;//Deprecated -- use NumChainLinks() instead
 $CCS_AttackTarget = 16;
 $CCS_LinkTotalAttack = 17;
 $CCS_LinkBaseAttack = 18;
@@ -303,7 +303,7 @@ function ResetCombatChainState()
 {
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt;
   global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented;
-  global $CCS_NumBoosted, $CCS_NextBoostBuff, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_NumChainLinks, $CCS_AttackTarget;
+  global $CCS_NumBoosted, $CCS_NextBoostBuff, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
   global $defPlayer, $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
@@ -320,7 +320,6 @@ function ResetCombatChainState()
   $combatChainState[$CCS_NextBoostBuff] = 0;
   $combatChainState[$CCS_AttackFused] = 0;
   $combatChainState[$CCS_AttackTotalDamage] = 0;
-  $combatChainState[$CCS_NumChainLinks] = 0;
   $combatChainState[$CCS_AttackTarget] = "NA";
   $combatChainState[$CCS_LinkTotalAttack] = 0;
   $combatChainState[$CCS_LinkBaseAttack] = 0;

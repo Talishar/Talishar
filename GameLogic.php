@@ -439,7 +439,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 {
   global $mainPlayer, $mainPitch, $CS_Num6PowDisc, $combatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken;
-  global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CCS_NumChainLinks, $CS_NumAuras, $CS_AtksWWeapon;
+  global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
   switch ($cardID) {
     case "WTR003": return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
@@ -483,7 +483,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "CRU056": return ComboActive() ? 2 : 0;
     case "CRU057": case "CRU058": case "CRU059": return ComboActive() ? 1 : 0;
     case "CRU060": case "CRU061": case "CRU062": return ComboActive() ? 1 : 0;
-    case "CRU063": case "CRU064": case "CRU065": return $combatChainState[$CCS_NumChainLinks] >= 3 ? 2 : 0;
+    case "CRU063": case "CRU064": case "CRU065": return NumChainLinks() >= 3 ? 2 : 0;
     case "CRU073": return NumAttacksHit();
     case "CRU083": return 3;
     case "CRU112": case "CRU113": case "CRU114": return $combatChainState[$CCS_NumBoosted];
