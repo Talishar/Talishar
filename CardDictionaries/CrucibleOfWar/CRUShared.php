@@ -242,8 +242,9 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "CRU054":
       if (ComboActive()) {
-        $combatChainState[$CCS_ResourceCostDefenseMin] = $combatChainState[$CCS_NumChainLinks];
-        $rv = "Cannot be defended by cards with cost less than " . $combatChainState[$CCS_NumChainLinks] . ".";
+        $numLinks = NumChainLinks();
+        $combatChainState[$CCS_ResourceCostDefenseMin] = $numLinks;
+        $rv = "Cannot be defended by cards with cost less than " . $numLinks . ".";
       }
       return $rv;
     case "CRU055":

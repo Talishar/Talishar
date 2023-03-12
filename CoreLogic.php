@@ -2070,3 +2070,11 @@ function NumAttacksHit()
     }
     return $numHits;
 }
+
+function NumChainLinks()
+{
+  global $chainLinkSummary, $combatChain;
+  $numLinks = count($chainLinkSummary)/ChainLinkSummaryPieces();
+  if(count($combatChain) > 0) ++$numLinks;
+  return $numLinks;
+}
