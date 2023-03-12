@@ -543,7 +543,7 @@ function ChannelTalent($index, $talent)
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYPITCH:talent=" . $talent . ";", 1);
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBottom . " more " . $plurial . " to put at the bottom for " . CardName($auras[$index]), 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZADDBOTDECK", $mainPlayer, "-", 1);
+      AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBOTDECK", 1);
       AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
       --$leftToBottom;

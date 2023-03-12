@@ -388,7 +388,7 @@ function ProcessCrushEffect($cardID)
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put at the bottom of the deck", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZADDBOTDECK", $mainPlayer, "-", 1);
+        AddDecisionQueue("MZADDZONE", $mainPlayer, "THEIRBOTDECK", 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
         break;
       case "WTR057": case "WTR058": case "WTR059":
@@ -647,7 +647,7 @@ function EffectHitEffect($cardID)
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put at the bottom of the deck", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZADDBOTDECK", $mainPlayer, "-", 1);
+        AddDecisionQueue("MZADDZONE", $mainPlayer, "THEIRBOTDECK", 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
       break;
@@ -5230,50 +5230,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
-    case "MZADDBOTDECK":
-      $lastResultArr = explode(",", $lastResult);
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      $params = explode(",", $parameter);
-      for ($i = 0; $i < count($lastResultArr); ++$i) {
-        $mzIndex = explode("-", $lastResultArr[$i]);
-        switch ($mzIndex[0]) {
-          case "MYDISCARD":
-            $discard = &GetDiscard($player);
-            AddBottomDeck($discard[$mzIndex[1]], $player, $params[0]);
-            break;
-          case "THEIRDISCARD":
-            $discard = &GetDiscard($otherPlayer);
-            AddBottomDeck($discard[$mzIndex[1]], $otherPlayer, $params[0]);
-            break;
-          case "MYARS":
-            $arsenal = &GetArsenal($player);
-            AddBottomDeck($arsenal[$mzIndex[1]], $player, $params[0]);
-            break;
-          case "THEIRARS":
-            $arsenal = &GetArsenal($otherPlayer);
-            AddBottomDeck($arsenal[$mzIndex[1]], $otherPlayer, $params[0]);
-            break;
-          case "MYPITCH":
-            $pitch = &GetPitch($player);
-            AddBottomDeck($pitch[$mzIndex[1]], $player, $params[0]);
-            break;
-          case "THEIRDISCARD":
-            $pitch = &GetPitch($otherPlayer);
-            AddBottomDeck($pitch[$mzIndex[1]], $otherPlayer, $params[0]);
-            break;
-          case "MYHAND":
-            $hand = &GetHand($player);
-            AddBottomDeck($hand[$mzIndex[1]], $player, $params[0]);
-            break;
-          case "THEIRHAND":
-            $hand = &GetHand($otherPlayer);
-            AddBottomDeck($hand[$mzIndex[1]], $otherPlayer, $params[0]);
-            break;
-          default:
-            break;
-        }
-      }
-      return $lastResult;
     case "MZDISCARD":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);
@@ -5309,6 +5265,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         {
           case "MYHAND": AddPlayerHand($cardIDs[$i], $player, "-"); break;
           case "MYTOPDECK": AddTopDeck($cardIDs[$i], $player, "-"); break;
+          case "MYBOTDECK": AddBottomDeck($cardIDs[$i], $player, "-"); break;
+          case "THEIRBOTDECK": AddBottomDeck($cardIDs[$i], $otherPlayer, "-"); break;
           default: break;
         }
       }

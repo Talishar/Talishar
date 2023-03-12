@@ -164,7 +164,7 @@
         AddDecisionQueue("MZGETCARDID", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
-        AddDecisionQueue("MZADDBOTDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("WRITELOG", $currentPlayer, "<1> recurred from Strategic Planning.", 1);
