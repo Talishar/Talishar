@@ -318,14 +318,14 @@ function ChainLinkBeginResolutionEffects()
 
 function CombatChainResolutionEffects()
 {
-  global $combatChain;
+  global $combatChain, $mainPlayer;
     switch($combatChain[0])
     {
       case "CRU051": case "CRU052":
         EvaluateCombatChain($totalAttack, $totalBlock);
         for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-          if ($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
-            DestroyCurrentWeapon();
+          if (!($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack)) {
+            UndestroyCurrentWeapon();
           }
         }
         break;

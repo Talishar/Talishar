@@ -909,6 +909,28 @@ function ChainLinkResolvedEffects()
   }
 }
 
+function CombatChainClosedMainCharacterEffects()
+{
+  global $chainLinks, $chainLinkSummary, $combatChain, $mainPlayer;
+  $character = &GetPlayerCharacter($mainPlayer);
+  for($i=0; $i<count($chainLinks); ++$i)
+  {
+    for($j=0; $j<count($chainLinks[$i]); $j += ChainLinksPieces())
+    {
+      if($chainLinks[$i][$j+1] != $mainPlayer) continue;
+      $charIndex = FindCharacterIndex($mainPlayer, $chainLinks[$i][$j]);
+      if($charIndex == -1) continue;
+      switch($chainLinks[$i][$j])
+      {
+        case "CRU051": case "CRU052":
+          if($character[$charIndex+7] == "1") DestroyCharacter($mainPlayer, $charIndex);
+          break;
+        default: break;
+      }
+    }
+  }
+}
+
 function CombatChainClosedCharacterEffects()
 {
   global $chainLinks, $defPlayer, $chainLinkSummary, $combatChain;
@@ -929,13 +951,6 @@ function CombatChainClosedCharacterEffects()
           if((BlockValue($character[$charIndex]) + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]) <= 0)
           {
             DestroyCharacter($defPlayer, $charIndex);
-            //Mechanoid Check
-            if ($character[$charIndex] == "DYN492b") {
-              $indexWeapon = FindCharacterIndex($defPlayer, "DYN492a"); // Weapon
-              DestroyCharacter($defPlayer, $indexWeapon);
-              $indexItem = GetItemIndex("DYN492c", $defPlayer);
-              DestroyItemForPlayer($defPlayer, $indexItem);
-            }
           }
         }
         if(HasBattleworn($chainLinks[$i][$j]))
@@ -1526,11 +1541,21 @@ function IsEquipUsable($player, $index)
   return $character[$index + 1] == 2;
 }
 
+
+function UndestroyCurrentWeapon()
+{
+  global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  $index = $combatChainState[$CCS_WeaponIndex];
+  $char = &GetPlayerCharacter($mainPlayer);
+  $char[$index+7] = "0";
+}
+
 function DestroyCurrentWeapon()
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $index = $combatChainState[$CCS_WeaponIndex];
-  DestroyCharacter($mainPlayer, $index);
+  $char = &GetPlayerCharacter($mainPlayer);
+  $char[$index+7] = "1";
 }
 
 function AttackDestroyed($attackID)

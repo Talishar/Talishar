@@ -3,8 +3,6 @@
 $GameStatus_Over = 2;
 $GameStatus_Rematch = 3;
 
-$characterPieces = 8;
-
 function DeckPieces()
 {
   return 1;
@@ -369,6 +367,7 @@ function ResetCombatChainState()
   }
   UnsetCombatChainBanish();
   CombatChainClosedCharacterEffects();
+  CombatChainClosedMainCharacterEffects();
   RemoveEffectsOnChainClose();
   $chainLinks = [];
   $chainLinkSummary = [];
