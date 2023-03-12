@@ -256,14 +256,14 @@
 
   function RuptureActive($beforePlay=false, $notAttack=false)
   {
-    global $combatChainState, $CCS_NumChainLinks;
+    global $combatChainState;
     if($notAttack)
     {
       $target = 4; //Doesn't show rupture border for Attack Reactions and future d.react or instants
     } else {
       $target = ($beforePlay ? 3 : 4);
     }
-    if($combatChainState[$CCS_NumChainLinks] >= $target) return true;
+    if(NumChainLinks() >= $target) return true;
     return false;
   }
 

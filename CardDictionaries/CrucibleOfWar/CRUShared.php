@@ -187,7 +187,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 {
   global $mainPlayer, $CS_NumBoosted, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer;
   global $CS_AtksWWeapon, $CS_Num6PowDisc, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_PlayIndex, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
-  global $CCS_BaseAttackDefenseMax, $CCS_NumChainLinks, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $CCS_RequiredEquipmentBlock, $CCS_NumBoosted;
+  global $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $CCS_RequiredEquipmentBlock, $CCS_NumBoosted;
   $rv = "";
   switch ($cardID) {
       //CRU Brute
@@ -262,8 +262,9 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return $rv;
     case "CRU057": case "CRU058": case "CRU059":
       if (ComboActive()) {
-        $combatChainState[$CCS_BaseAttackDefenseMax] = $combatChainState[$CCS_NumChainLinks];
-        $rv = "Cannot be defended by attacks with greater than " . $combatChainState[$CCS_NumChainLinks] . " base attack.";
+        $numLinks = NumChainLinks();
+        $combatChainState[$CCS_BaseAttackDefenseMax] = $numLinks;
+        $rv = "Cannot be defended by attacks with greater than " . $numLinks . " base attack.";
       }
       return $rv;
       //CRU Warrior
