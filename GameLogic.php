@@ -954,14 +954,10 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     if ($defAuras[$i] == "ELE109" && $cardType == "A") $blockModifier += 1;
   }
   switch ($cardID) {
-    case "WTR212":
-    case "WTR213":
-    case "WTR214":
+    case "WTR212": case "WTR213": case "WTR214":
       $blockModifier += $from == "ARS" ? 1 : 0;
       break;
-    case "WTR051":
-    case "WTR052":
-    case "WTR053":
+    case "WTR051": case "WTR052": case "WTR053":
       $blockModifier += ($resourcesPaid >= 6 ? 3 : 0);
       break;
     case "ARC150":
@@ -970,21 +966,13 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "CRU187":
       $blockModifier += ($from == "ARS" ? 2 : 0);
       break;
-    case "MON075":
-    case "MON076":
-    case "MON077":
+    case "MON075": case "MON076": case "MON077":
       return GetClassState($mainPlayer, $CS_CardsBanished) >= 3 ? 2 : 0;
-    case "MON290":
-    case "MON291":
-    case "MON292":
+    case "MON290": case "MON291": case "MON292":
       return count($defAuras) >= 1 ? 1 : 0;
-    case "ELE227":
-    case "ELE228":
-    case "ELE229":
+    case "ELE227": case "ELE228": case "ELE229":
       return GetClassState($mainPlayer, $CS_ArcaneDamageTaken) > 0 ? 1 : 0;
-    case "EVR050":
-    case "EVR051":
-    case "EVR052":
+    case "EVR050": case "EVR051": case "EVR052":
       return (CardCost($combatChain[0]) == 0 && CardType($combatChain[0]) == "AA" ? 2 : 0);
     case "DYN045":
       $blockModifier += (count($chainLinks) >= 3 ? 4 : 0);
@@ -1001,18 +989,12 @@ function BlockModifier($cardID, $from, $resourcesPaid)
 function PlayBlockModifier($cardID)
 {
   switch ($cardID) {
-    case "CRU189":
-      return 4;
-    case "CRU190":
-      return 3;
-    case "CRU191":
-      return 2;
-    case "ELE125":
-      return 4;
-    case "ELE126":
-      return 3;
-    case "ELE127":
-      return 2;
+    case "CRU189": return 4;
+    case "CRU190": return 3;
+    case "CRU191": return 2;
+    case "ELE125": return 4;
+    case "ELE126": return 3;
+    case "ELE127": return 2;
     default:
       return 0;
   }
