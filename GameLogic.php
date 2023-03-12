@@ -3099,16 +3099,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ARC121":
           $rv = SearchDeck($player, "", "", $lastResult, -1, "WIZARD");
           break;
-        case "ARC138":
-        case "ARC139":
-        case "ARC140":
-          $rv = SearchHand($player, "A", "", $lastResult, -1, "WIZARD");
-          break;
-        case "ARC185":
-        case "ARC186":
-        case "ARC187":
-          $rv = SearchDeckForCard($player, "ARC212", "ARC213", "ARC214");
-          break;
         case "CRU026":
           $rv = SearchEquipNegCounter($defCharacter);
           break;
@@ -5332,51 +5322,36 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);
       $params = explode(",", $parameter);
+      $cardIDs = [];
       for ($i = 0; $i < count($lastResultArr); ++$i) {
         $mzIndex = explode("-", $lastResultArr[$i]);
-        switch ($mzIndex[0]) {
-          case "MYDISCARD":
-            $deck = &GetDeck($player);
-            AddGraveyard($deck[$mzIndex[1]], $player, $params[0]);
-            WriteLog(CardLink($deck[$mzIndex[1]], $deck[$mzIndex[1]]) . " was discarded");
-            break;
-          case "THEIRDISCARD":
-            $deck = &GetDeck($otherPlayer);
-            AddGraveyard($deck[$mzIndex[1]], $otherPlayer, $params[0]);
-            WriteLog(CardLink($deck[$mzIndex[1]], $deck[$mzIndex[1]]) . " was discarded");
-            break;
-          case "MYARS":
-            $arsenal = &GetArsenal($player);
-            AddGraveyard($arsenal[$mzIndex[1]], $player, $params[0]);
-            WriteLog(CardLink($arsenal[$mzIndex[1]], $arsenal[$mzIndex[1]]) . " was discarded");
-            break;
-          case "THEIRARS":
-            $arsenal = &GetArsenal($otherPlayer);
-            AddGraveyard($arsenal[$mzIndex[1]], $otherPlayer, $params[0]);
-            WriteLog(CardLink($arsenal[$mzIndex[1]], $arsenal[$mzIndex[1]]) . " was discarded");
-            break;
-          case "MYPITCH":
-            $pitch = &GetPitch($player);
-            AddGraveyard($pitch[$mzIndex[1]], $player, $params[0]);
-            WriteLog(CardLink($pitch[$mzIndex[1]], $pitch[$mzIndex[1]]) . " was discarded");
-            break;
-          case "THEIRDISCARD":
-            $pitch = &GetPitch($otherPlayer);
-            AddGraveyard($pitch[$mzIndex[1]], $otherPlayer, $params[0]);
-            WriteLog(CardLink($pitch[$mzIndex[1]], $pitch[$mzIndex[1]]) . " was discarded");
-            break;
-          case "MYHAND":
-            $hand = &GetHand($player);
-            AddGraveyard($hand[$mzIndex[1]], $player, $params[0]);
-            WriteLog(CardLink($hand[$mzIndex[1]], $hand[$mzIndex[1]]) . " was discarded");
-            break;
-          case "THEIRHAND":
-            $hand = &GetHand($otherPlayer);
-            AddGraveyard($hand[$mzIndex[1]], $otherPlayer, $params[0]);
-            WriteLog(CardLink($hand[$mzIndex[1]], $hand[$mzIndex[1]]) . " was discarded");
-            break;
-          default:
-            break;
+        $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
+        $zone = &GetMZZone($cardOwner, $mzIndex[0]);
+        array_push($cardIDs, $zone[$mzIndex[1]]);
+      }
+      for($i=0; $i<count($cardIDs); ++$i)
+      {
+        AddGraveyard($cardIDs[$i], $player, $params[0]);
+        WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was discarded");
+      }
+      return $lastResult;
+    case "MZADDZONE":
+      //TODO: Add "from", add more zones
+      $lastResultArr = explode(",", $lastResult);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $params = explode(",", $parameter);
+      $cardIDs = [];
+      for ($i = 0; $i < count($lastResultArr); ++$i) {
+        $mzIndex = explode("-", $lastResultArr[$i]);
+        $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
+        $zone = &GetMZZone($cardOwner, $mzIndex[0]);
+        array_push($cardIDs, $zone[$mzIndex[1]]);
+      }
+      for($i=0; $i<count($cardIDs); ++$i)
+      {
+        switch($params[0])
+        {
+          case "MYHAND": AddPlayerHand($cardIDs[$i], $player, "-"); break;
         }
       }
       return $lastResult;

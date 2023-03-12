@@ -164,7 +164,10 @@ function ARCGenericHitEffect($cardID)
       OptMain(2);
       break;
     case "ARC185": case "ARC186": case "ARC187":
-      AddLayer("TRIGGER", $mainPlayer, $cardID);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK:cardID=ARC212,ARC213,ARC214");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $mainPlayer, "MYHAND", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       break;
     case "ARC194": case "ARC195": case "ARC196":
       SetClassState($mainPlayer, $CS_NextNAAInstant, 1);

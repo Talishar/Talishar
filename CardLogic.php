@@ -619,13 +619,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
-    case "ARC185": case "ARC186": case "ARC187":
-      AddDecisionQueue("FINDINDICES", $player, $parameter);
-      AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
-      AddDecisionQueue("ADDMYHAND", $player, "-", 1);
-      AddDecisionQueue("REVEALCARDS", $player, "-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $player, "-");
-      break;
     case "CRU000":
       PlayAura("ARC112", $player);
       break;
