@@ -4970,9 +4970,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           return 2;
       }
       return $lastResult;
-    case "AETHERWILDFIRE":
-      AddCurrentTurnEffect("EVR123," . $lastResult, $player);
-      return $lastResult;
     case "SURGENTAETHERTIDE":
       AddCurrentTurnEffect("DYN192," . $lastResult, $player);
       return $lastResult;
@@ -5057,7 +5054,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardID = $zone[$params[1]];
       MZStartTurnAbility($cardID, $lastResult);
       return "";
-
     case "MZDAMAGE":
       $lastResultArr = explode(",", $lastResult);
       $params = explode(",", $parameter);

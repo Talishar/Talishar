@@ -431,7 +431,8 @@
         DealArcane(4, 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         if($currentPlayer != $mainPlayer)
         {
-          AddDecisionQueue("AETHERWILDFIRE", $currentPlayer, "-");
+          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "EVR123,");
+          AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
         }
         return "";
       case "EVR124":
