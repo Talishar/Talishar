@@ -3895,20 +3895,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "NOPASS":
       if ($lastResult == "NO") return "PASS";
       return 1;
-    case "NOPASSLOG":
-      if ($lastResult == "NO") {
-        WriteLog("Player " . $player . " looked at the top of the deck and left the card there.");
-        return "PASS";
-      }
-      writelog("Player " . $player . " put a card at the bottom of the deck.");
-      return 1;
-    case "NOPASSARAKNI":
-      if ($lastResult == "NO") {
-        WriteLog(CardLink($parameter, $parameter) . " looked at the top of the deck and left the card there.", $player);
-        return "PASS";
-      }
-      writelog(CardLink($parameter, $parameter) . " put a card at the bottom of the deck.", $player);
-      return 1;
     case "SANDSCOURGREATBOW":
       if ($lastResult == "NO") {
         ReloadArrow($player); // From Hand
