@@ -306,22 +306,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($currentPlayer == $playerID) {
       if ($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo ("(" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "16px") . ")");
       if (CanPassPhase($turn[0])) {
-        //if ($turn[0] == "B") echo (CreateButton($playerID, "Undo Block", 10001, 0, "16px"));
         if ($turn[0] == "B") echo (CreateButton($playerID, "Undo Block", 10001, 0, "16px") . " " . CreateButton($playerID, "Pass", 99, 0, "16px") . " " . CreateButton($playerID, "Pass Block and Reactions", 101, 0, "16px", "", "Reactions will not be skipped if the opponent reacts"));
       }
     } else {
       if ($currentPlayerActivity == 2 && $playerID != 3) echo ("— Opponent is inactive " . CreateButton($playerID, "Claim Victory", 100007, 0, "16px"));
     }
     echo ("</b>");
-    /*
-    if($playerID != $currentPlayer && $playerID != $mainPlayer)
-    {
-      $currentValue = ShortcutAttackThreshold($playerID);
-      echo(CreateRadioButton($SET_ShortcutAttackThreshold . "-0", "Never Pass", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Never Pass"));
-      echo(CreateRadioButton($SET_ShortcutAttackThreshold . "-1", "1 Attack", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "1 Attack"));
-      echo(CreateRadioButton($SET_ShortcutAttackThreshold . "-99", "Always Pass", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Always Pass"));
-    }
-    */
     echo ("</span>");
   }
   if (IsManualMode($playerID)) echo ("&nbsp;" . CreateButton($playerID, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "18px", "", "", true));
@@ -334,10 +324,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
     $cardID = explode("_", $cardID)[0];
-    $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid blue;'>";
+    $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
+    $color = ($isFriendly ? "blue" : "red");
+    $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid " . $color . ";'>";
     $effect .= Card($cardID, "crops", 65, 0, 1);
     $effect .= "</div>";
-    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) $friendlyEffects .= $effect;
+    if ($isFriendly) $friendlyEffects .= $effect;
     else $opponentEffects .= $effect;
   }
 
