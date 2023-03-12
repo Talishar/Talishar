@@ -786,7 +786,7 @@ function EffectHitEffect($cardID)
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND,-," . $defPlayer, 1);
+        AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND,-," . $mainPlayer, 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
       break;
@@ -5235,12 +5235,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $mzIndex = explode("-", $lastResultArr[$i]);
         $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
         $zone = &GetMZZone($cardOwner, $mzIndex[0]);
-        array_push($cardIDs, $zone[$mzIndex[1]]);
-      }
-      for($i=0; $i<count($cardIDs); ++$i)
-      {
-        AddGraveyard($cardIDs[$i], $player, $params[0]);
-        WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was discarded");
+        $cardID = $zone[$mzIndex[1]];
+        AddGraveyard($cardID, $cardOwner, $params[0]);
+        WriteLog(CardLink($cardID, $cardID) . " was discarded");
       }
       return $lastResult;
     case "MZADDZONE":
