@@ -303,7 +303,7 @@ function ResetCombatChainState()
 {
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt;
   global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented;
-  global $CCS_NumBoosted, $CCS_NextBoostBuff, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
+  global $CCS_NumBoosted, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
   global $defPlayer, $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
@@ -317,7 +317,6 @@ function ResetCombatChainState()
   $combatChainState[$CCS_AttackPlayedFrom] = "NA";
   $combatChainState[$CCS_ChainLinkHitEffectsPrevented] = 0;
   $combatChainState[$CCS_NumBoosted] = 0;
-  $combatChainState[$CCS_NextBoostBuff] = 0;
   $combatChainState[$CCS_AttackFused] = 0;
   $combatChainState[$CCS_AttackTotalDamage] = 0;
   $combatChainState[$CCS_AttackTarget] = "NA";
