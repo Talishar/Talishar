@@ -1807,7 +1807,7 @@ function IsCombatEffectPersistent($cardID)
     case "ARC170-1": case "ARC171-1": case "ARC172-1":
       return true;
     case "CRU025": case "CRU053": case "CRU084-2": case "CRU105": case "CRU122": case "CRU124": case "CRU188": return true;
-    case "MON034": case "MON087": case "MON089": case "MON108": case "MON109": case "MON218": case "MON239": case "MON245": return true;
+    case "MON034": case "MON035": case "MON087": case "MON089": case "MON108": case "MON109": case "MON218": case "MON239": case "MON245": return true;
     case "ELE044": case "ELE045": case "ELE046": return true;
     case "ELE047": case "ELE048": case "ELE049": return true;
     case "ELE050": case "ELE051": case "ELE052": return true;
@@ -2115,7 +2115,7 @@ function RemoveEffectsOnChainClose()
       case "CRU109": case "CRU110": case "CRU111":
         $remove = 1;
         break;
-      case "MON245":
+      case "MON035": case "MON245":
         $remove = 1;
         break;
       case "ELE067": case "ELE068": case "ELE069":
@@ -4215,7 +4215,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "VOFTHEVANGUARD":
       if ($parameter == "1" && TalentContains($lastResult, "LIGHT")) {
         WriteLog("V of the Vanguard gives all attacks on this combat chain +1.");
-        ++$combatChainState[$CCS_ChainAttackBuff];
+        AddCurrentTurnEffect("MON035", $player);
+        //++$combatChainState[$CCS_ChainAttackBuff];
       }
       $hand = &GetHand($player);
       if (count($hand) > 0) {

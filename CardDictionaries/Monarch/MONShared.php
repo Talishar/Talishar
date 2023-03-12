@@ -115,6 +115,7 @@
     switch($cardID)
     {
       case "MON034": return 1;
+      case "MON035": return 1;
       case "MON081": return 3;
       case "MON082": return 2;
       case "MON083": return 1;
@@ -174,6 +175,7 @@
     switch($cardID)
     {
       case "MON034": return CardType($attackID) == "W";
+      case "MON035": return true;
       case "MON081": case "MON082": case "MON083": return CardType($attackID) == "AA";
       case "MON087": $theirChar = GetPlayerCharacter($defPlayer); return TalentContains($theirChar[0], "SHADOW");
       case "MON089": return true;
