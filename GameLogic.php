@@ -2137,6 +2137,24 @@ function OnAttackEffects($attack)
   }
 }
 
+function OnDefenseReactionResolveEffects()
+{
+  global $currentTurnEffects, $defPlayer;
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $remove = false;
+    if ($currentTurnEffects[$i + 1] == $defPlayer) {
+      switch ($currentTurnEffects[$i]) {
+        case "OUT005": case "OUT006":
+          $count = ModifyBlockForType("DR", -1); //AR is handled in OnBlockResolveEffects
+          $remove = $count > 0;
+          break;
+        default: break;
+      }
+    }
+    if ($remove) RemoveCurrentTurnEffect($i);
+  }
+}
+
 function OnBlockResolveEffects()
 {
   global $combatChain, $CS_DamageTaken, $defPlayer, $mainPlayer, $currentTurnEffects;
@@ -2211,8 +2229,7 @@ function OnBlockResolveEffects()
           $remove = $count > 0;
           break;
         case "OUT005": case "OUT006":
-          $count = ModifyBlockForType("AR", -1);
-          $count += ModifyBlockForType("DR", -1);
+          $count = ModifyBlockForType("AR", -1); //DR could not possibly be blocking at this time, see OnDefenseReactionResolveEffects
           $remove = $count > 0;
           break;
         case "OUT007": case "OUT008":
@@ -2294,7 +2311,7 @@ function OnBlockEffects($index, $from)
             if ($first) {
               for ($k = 0; $k < $numbPlow; $k++) {
                 AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $currentTurnEffects[$i]);
-                WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " gives you weapon +1 for the rest of the turn.");
+                WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " gives your weapon +1 for the rest of the turn.");
               }
             }
           }

@@ -1873,6 +1873,9 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) SpecificAllyAttackAbilities($cardID);
       }
     }
+    else { //On chain, but not index 0
+      if($definedCardType == "DR") OnDefenseReactionResolveEffects();
+    }
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
   } else if ($from != "PLAY") {
     $cardSubtype = CardSubType($cardID);
