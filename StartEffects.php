@@ -28,6 +28,27 @@ if ($p2Char[0] == "DUMMY") {
   SetCachePiece($gameName, 3, "99999999999999");
 }
 
+//roguelike gamemode powers
+if(CardSet($p2Char[0]) == "ROG") {
+  $deck = &GetDeck(1);
+  //array_unshift($deck, "ROGUE508");
+  $powers = SearchDeck(1, "", "Power");
+  //WriteLog(strlen($powers));
+  //WriteLog($powersArray[0]);
+  //WriteLog($powersArray[1]);
+  if(strlen($powers) != 0) {
+    $powersArray = explode(",", $powers);
+    //WriteLog(count($powersArray));
+    for($i = count($powersArray)-1; $i >= 0; --$i)
+    {
+      PutPermanentIntoPlay(1, $deck[$powersArray[$i]]);
+      //WriteLog($deck[$powersArray[$i]]);
+      array_splice($deck, $powersArray[$i], 1);
+      ROGUEPowerStart();
+    }
+  //WriteLog($deck[$powers[0]]);
+  }  
+
 //CR 2.0 4.1.5b Meta-static abilities affecting deck composition
 //Dash
 if ($p1Char[0] == "ARC001" || $p1Char[0] == "ARC002") {
@@ -83,27 +104,6 @@ if (SearchCharacterForCard(2, "DYN026")) {
   $p2Char[$index + 4] = -2;
   WriteLog("When you equip " . CardLink("DYN026", "DYN026") . " it gets two -1 counters.");
 }
-
-//roguelike gamemode powers
-if(CardSet($p2Char[0]) == "ROG") {
-  $deck = &GetDeck(1);
-  //array_unshift($deck, "ROGUE508");
-  $powers = SearchDeck(1, "", "Power");
-  //WriteLog(strlen($powers));
-  //WriteLog($powersArray[0]);
-  //WriteLog($powersArray[1]);
-  if(strlen($powers) != 0) {
-    $powersArray = explode(",", $powers);
-    //WriteLog(count($powersArray));
-    for($i = count($powersArray)-1; $i >= 0; --$i)
-    {
-      PutPermanentIntoPlay(1, $deck[$powersArray[$i]]);
-      //WriteLog($deck[$powersArray[$i]]);
-      array_splice($deck, $powersArray[$i], 1);
-      ROGUEPowerStart();
-    }
-  //WriteLog($deck[$powers[0]]);
-  }  
 
   //Quickshot Apprentice
   if ($p2Char[0] == "ROGUE016") {
