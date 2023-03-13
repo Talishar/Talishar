@@ -4968,9 +4968,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           return 2;
       }
       return $lastResult;
-    case "SURGENTAETHERTIDE":
-      AddCurrentTurnEffect("DYN192," . $lastResult, $player);
-      return $lastResult;
     case "CLEAREFFECTCONTEXT":
       SetClassState($currentPlayer, $CS_EffectContext, "-");
       return $lastResult;
