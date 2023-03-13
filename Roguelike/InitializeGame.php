@@ -24,26 +24,26 @@
   encounter["ShopRemoveCost"] = How much it costs to remove a card from the deck through the shop
   */
 
-  // for($i=1; $i<=$numPlayers; ++$i)
-  // { //this is what I am currently working in
-    $encounter = &GetZone(1, "Encounter");
-      $encounter["EncounterID"] = 001;
-      $encounter["Subphase"] = "PickMode"; 
-      $encounter["AdventurePosition"] = 0; 
-      $encounter["Hero"] = "Dorinthea";
-      $encounter["FinalBoss"] = "Ira"; 
-      $encounter["MajesticCardPercentage"] = 1; 
-      $encounter["Background"] = "none"; 
-      $encounter["Difficulty"] = "Normal"; 
-      $encounter["Gold"] = 0; 
-      $encounter["Rerolls"] = 0;
-      $encounter["ShopHealCost"] = 1;
-      $encounter["ShopRemoveCost"] = 1; 
-    InitializeEncounter(1);
+  for($i=1; $i<=$numPlayers; ++$i)
+  { //this is what I am currently working in
+    $encounter = &GetZone($i, "Encounter");
+    $encounter["EncounterID"] = 001;
+    $encounter["Subphase"] = "PickMode"; 
+    $encounter["AdventurePosition"] = 0; 
+    $encounter["Hero"] = "Dorinthea";
+    $encounter["FinalBoss"] = "Ira"; 
+    $encounter["MajesticCardPercentage"] = 1; 
+    $encounter["Background"] = "none"; 
+    $encounter["Difficulty"] = "Normal"; 
+    $encounter["Gold"] = 0; 
+    $encounter["Rerolls"] = 0;
+    $encounter["ShopHealCost"] = 1;
+    $encounter["ShopRemoveCost"] = 1; 
+    InitializeEncounter($i);
 
     ResetHero(1); //Defined in DecisionQueue.php
 
-  //}
+  }
 
   include 'WriteGamestate.php';
 
