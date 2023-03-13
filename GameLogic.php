@@ -5101,42 +5101,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $otherPlayer = ($player == 1 ? 2 : 1);
       for ($i = 0; $i < count($lastResultArr); ++$i) {
         $mzIndex = explode("-", $lastResultArr[$i]);
-        switch ($mzIndex[0]) {
-          case "MYDECK":
-            $zone = &GetMZZone($player, $mzIndex[0]);
-            BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
-            break;
-          case "MYDISCARD":
-            $zone = &GetMZZone($player, $mzIndex[0]);
-            BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
-            break;
-          case "THEIRDISCARD":
-            $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
-            BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
-            break;
-          case "MYHAND":
-            $zone = &GetMZZone($player, $mzIndex[0]);
-            BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
-            break;
-          case "THEIRHAND":
-            $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
-            BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
-            break;
-          case "MYARS":
-            $zone = &GetMZZone($player, $mzIndex[0]);
-            BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
-            break;
-          case "THEIRARS":
-            $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
-            BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
-            break;
-          case "THEIRAURAS":
-            $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
-            BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
-            break;
-          default:
-            break;
-        }
+        $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
+        $zone = &GetMZZone($cardOwner, $mzIndex[0]);
+        BanishCardForPlayer($zone[$mzIndex[1]], $cardOwner, $params[0], $params[1], $params[2]);
       }
       if(count($params) <= 3) WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
       return $lastResult;
