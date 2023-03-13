@@ -1,5 +1,18 @@
 <?php
 
+/*
+Encounter variable
+encounter[0] = Encounter ID (001-099 Special Encounters | 101-199 Combat Encounters | 201-299 Event Encounters)
+encounter[1] = Encounter Subphase
+encounter[2] = Position in adventure
+encounter[3] = Hero ID
+encounter[4] = Adventure ID
+encounter[5] = A string made up of encounters that have already been visited, looks like "ID-subphase,ID-subphase,ID-subphase,etc."
+encounter[6] = majesticCard% (1-100, the higher it is, the more likely a majestic card is chosen) (Whole code is based off of the Slay the Spire rare card chance)
+encounter[7] = background chosen
+*/
+
+
 function GetPool($type, $hero, $rarity, $background){
   if(($hero == "Bravo" || $hero == "Dorinthea") && $type == "Talent") $type = "Class";
   if($type == "Class") return GetPool2(array($type, $rarity, $background));
@@ -298,7 +311,7 @@ function GetPool2($arrayParameters){
     array("EVR049", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
 
     array("UPR048", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Phoenix Form
-    array("UPR049", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Spreading Flames
+    array("UPR049", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Searing Emberblade
     array("UPR050", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Combustion Point
     array("UPR051", "Class", "Rare", "Emberblade", "Kodachi", "Edge"), //Engulfing Flamewave
     array("UPR052", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
