@@ -1801,7 +1801,7 @@ function PayAdditionalCosts($cardID, $from)
         WriteLog(CardLink($cardID, $cardID) . " put your arsenal at the bottom of your deck");
       }
       break;
-    case "OUT148":
+    case "OUT148": case "OUT149": case "OUT150":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how much to pay for " . CardLink($cardID, $cardID));
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0,1");
       AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
