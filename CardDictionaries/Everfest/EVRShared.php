@@ -638,7 +638,14 @@
         return $rv;
       case "EVR187":
         if($from == "PLAY"){
-          AddDecisionQueue("POTIONOFLUCK", $currentPlayer, "-", 1);
+          $numToDraw = 0;
+          while($card = RemoveHand($currentPlayer, 0) != "") { AddBottomDeck($card, $currentPlayer, "HAND"); ++$numToDraw; }
+          while($card = RemoveArsenal($currentPlayer, 0) != "") { AddBottomDeck($card, $currentPlayer, "ARS"); ++$numToDraw; }
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+          for ($i = 0; $i < $numToDraw; $i++) {
+            AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+          }
+          WriteLog(CardLink("EVR187","EVR187") . " shuffled your hand and arsenal into your deck and drew " . $numToDraw . " cards.");
         }
         return "";
       case "EVR190":

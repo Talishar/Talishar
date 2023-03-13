@@ -3553,19 +3553,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $arsenal = array_values($arsenal);
       return $cards;
-    case "FULLARSENALTODECK":
-      $arsenal = &GetArsenal($player);
-      $deck = &GetDeck($player);
-      $i = 0;
-      while (count($arsenal) > 0) {
-        if ($i % ArsenalPieces() == 0) {
-          array_push($deck, $arsenal[$i]);
-          RemoveArsenalEffects($player, $arsenal[$i]);
-        }
-        unset($arsenal[$i]);
-        ++$i;
-      }
-      return $lastResult;
     case "MULTIADDHAND":
       $cards = explode(",", $lastResult);
       $hand = &GetHand($player);
@@ -4905,24 +4892,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       WriteLog("You must pay " . HeaveValue($lastResult) . " resources to heave this.");
       return HeaveValue($lastResult);
-    case "POTIONOFLUCK":
-      $arsenal = &GetArsenal($player);
-      $hand = &GetHand($player);
-      $deck = &GetDeck($player);
-      $sizeToDraw = count($hand) + count($arsenal) / ArsenalPieces();
-      $i = 0;
-      while (count($hand) > 0) {
-        array_push($deck, $hand[$i]);
-        unset($hand[$i]);
-        ++$i;
-      }
-      for ($i = 0; $i < $sizeToDraw; $i++) {
-        PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
-      }
-      PrependDecisionQueue("FULLARSENALTODECK", $currentPlayer, "-", 1);
-      PrependDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-      WriteLog(CardLink("EVR187","EVR187") . " shuffled your hand and arsenal into your deck and draw " . $sizeToDraw . " cards.");
-      return $lastResult;
     case "BRAVOSTARSHOW":
       $hand = &GetHand($player);
       $cards = "";

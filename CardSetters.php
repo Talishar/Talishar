@@ -116,10 +116,13 @@ function AddPlayerHand($cardID, $player, $from)
 function RemoveHand($player, $index)
 {
   $hand = &GetHand($player);
+  if(count($hand) == 0) return "";
+  $cardID = $hand[$index];
   for ($j = $index + HandPieces() - 1; $j >= $index; --$j) {
     unset($hand[$j]);
   }
   $hand = array_values($hand);
+  return $cardID;
 }
 
 function GainResources($player, $amount)
@@ -211,10 +214,13 @@ function ArsenalTurnFaceUpAbility($cardID, $player)
 function RemoveArsenal($player, $index)
 {
   $arsenal = &GetArsenal($player);
+  if(count($arsenal) == 0) return "";
+  $cardID = $arsenal[$index];
   for ($i = $index + ArsenalPieces() - 1; $i >= $index; --$i) {
     unset($arsenal[$i]);
   }
   $arsenal = array_values($arsenal);
+  return $index;
 }
 
 function SetCCAttackModifier($index, $amount)
