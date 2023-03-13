@@ -830,6 +830,10 @@ function EffectHasBlockModifier($cardID)
     case "ELE000-2":
     case "ELE143":
     case "ELE203":
+    case "DYN115": case "DYN116":
+    case "OUT005": case "OUT006":
+    case "OUT007": case "OUT008":
+    case "OUT009": case "OUT010":
     case "OUT109":
     case "OUT110":
     case "OUT111":
@@ -2171,19 +2175,19 @@ function OnBlockResolveEffects()
     if ($currentTurnEffects[$i + 1] == $defPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "DYN115": case "DYN116":
-          $count = ModifyBlockForType("AA", -1);
+          $count = ModifyBlockForType("AA", 0);
           $remove = $count > 0;
           break;
         case "OUT005": case "OUT006":
-          $count = ModifyBlockForType("AR", -1); //DR could not possibly be blocking at this time, see OnDefenseReactionResolveEffects
+          $count = ModifyBlockForType("AR", 0); //DR could not possibly be blocking at this time, see OnDefenseReactionResolveEffects
           $remove = $count > 0;
           break;
         case "OUT007": case "OUT008":
-          $count = ModifyBlockForType("A", -1);
+          $count = ModifyBlockForType("A", 0);
           $remove = $count > 0;
           break;
         case "OUT009": case "OUT010":
-          $count = ModifyBlockForType("E", -1);
+          $count = ModifyBlockForType("E", 0);
           $remove = $count > 0;
           break;
         default: break;
@@ -2236,6 +2240,18 @@ function OnBlockEffects($index, $from)
             $combatChain[$index + 6] += $amount;
             $remove = 1;
           }
+          break;
+        case "DYN115": case "DYN116":
+          if($cardType == "AA") $combatChain[$index + 6] -= 1;
+          break;
+        case "OUT005": case "OUT006":
+          if($cardType == "AR") $combatChain[$index + 6] -= 1;
+          break;
+        case "OUT007": case "OUT008":
+          if($cardType == "A") $combatChain[$index + 6] -= 1;
+          break;
+        case "OUT009": case "OUT010":
+          if($cardType == "E") $combatChain[$index + 6] -= 1;
           break;
         default:
           break;
