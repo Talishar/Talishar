@@ -641,22 +641,13 @@ function EffectHitEffect($cardID)
       }
       break;
     case "ELE163":
-      if (IsHeroAttackTarget()) {
-        PlayAura("ELE111", $defPlayer);
-        PlayAura("ELE111", $defPlayer);
-        PlayAura("ELE111", $defPlayer);
-      }
+      if (IsHeroAttackTarget()) PlayAura("ELE111", $defPlayer, 3);
       break;
     case "ELE164":
-      if (IsHeroAttackTarget()) {
-        PlayAura("ELE111", $defPlayer);
-        PlayAura("ELE111", $defPlayer);
-      }
+      if (IsHeroAttackTarget()) PlayAura("ELE111", $defPlayer, 2);
       break;
     case "ELE165":
-      if (IsHeroAttackTarget()) {
-        PlayAura("ELE111", $defPlayer);
-      }
+      if (IsHeroAttackTarget()) PlayAura("ELE111", $defPlayer);
       break;
     case "ELE173":
       if (IsHeroAttackTarget()) {
