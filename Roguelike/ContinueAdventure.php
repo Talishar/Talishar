@@ -17,11 +17,11 @@
   $health = &GetZone($playerID, "Health");
   $health[0] = $remainingHealth;
   $encounter = &GetZone($playerID, "Encounter");
-  $encounter[1] = "AfterFight";
-  if ($encounter[2] < 9){
-    $encounter[9] += 2;
+  $encounter["Subphase"] = "AfterFight";
+  if ($encounter["AdventurePosition"] < 9){
+    $encounter["Gold"] += 2;
   } else {
-    $encounter[9] += 3;
+    $encounter["Gold"] += 3;
   }
 
   AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards(4));

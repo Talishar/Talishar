@@ -1,20 +1,5 @@
 <?php
 
-/*
-Encounter variable
-encounter[0] = Encounter ID (001-099 Special Encounters | 101-199 Combat Encounters | 201-299 Event Encounters)
-encounter[1] = Encounter Subphase
-encounter[2] = Position in adventure
-encounter[3] = Hero ID
-encounter[4] = Adventure ID
-encounter[5] = A string made up of encounters that have already been visited, looks like "ID-subphase,ID-subphase,ID-subphase,etc."
-encounter[6] = majesticCard% (1-100, the higher it is, the more likely a majestic card is chosen) (Whole code is based off of the Slay the Spire rare card chance)
-encounter[7] = background chosen
-encounter[8] = adventure difficulty (to be used later)
-encounter[9] = current gold
-encounter[10] = rerolls remaining //TODO: Add in a reroll system
-*/
-
 function GetOptions($amount, $upperBound, $lowerBound = 0, $step = 1) //amount needs to be less than both upperbound and the amount of options in the pool being chosen from
 {
   $options = [];
@@ -142,23 +127,23 @@ function GeneratePool($selected, $type, $rarity = "-")
   if($rarity == "-")
   {
     $randRarity = rand(1,100);
-    if($randRarity <= $encounter[6])
+    if($randRarity <= $encounter["MajesticCardPercentage"])
     {
-      $encounter[6] = 1;
+      $encounter["MajesticCardPercentage"] = 1;
       $rarity = "Majestic";
     }
     else if($randRarity >= 75)
     {
-      $encounter[6] += 3;
+      $encounter["MajesticCardPercentage"] += 3;
       $rarity = "Rare";
     }
     else
     {
-      $encounter[6] +=1;
+      $encounter["MajesticCardPercentage"] +=1;
       $rarity = "Common";
     }
   }
-  $pool = GetPool($type, $encounter[3], $rarity, $encounter[7]);
+  $pool = GetPool($type, $encounter["Hero"], $rarity, $encounter["Background"]);
   $generatedPool = [];
 
   /*$options = GetOptions($selected, count($pool));
@@ -182,7 +167,7 @@ function GeneratePool($selected, $type, $rarity = "-")
 function GetRandomArmor($type) //TODO combine this with GetRandomCards()
 {
   $encounter = &GetZone(1, "Encounter");
-  switch($encounter[3])
+  switch($encounter["Hero"])
   {
     case "Dorinthea":
     {

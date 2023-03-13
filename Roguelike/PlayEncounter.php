@@ -130,7 +130,7 @@
     fwrite($deckFile, $sideboardCards);
     fclose($deckFile);
 
-  $encounterName = GetEncounterName($encounter[0]);
+  $encounterName = GetEncounterName($encounter["EncounterID"]);
 
   header("Location: " . $redirectPath . "/CreateGame.php?deckTestMode=" . $encounterName . "&roguelikeGameID=" . $gameName . "&deck=ROGUELIKE-" . $gameName. "&startingHealth=" . $health[0]);
 

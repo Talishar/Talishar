@@ -2,44 +2,42 @@
 
 /*
 Encounter variable
-encounter[0] = Encounter ID (001-099 Special Encounters | 101-199 Combat Encounters | 201-299 Event Encounters)
-encounter[1] = Encounter Subphase
-encounter[2] = Position in adventure
-encounter[3] = Hero ID
-encounter[4] = Adventure ID
-encounter[5] = A string made up of encounters that have already been visited, looks like "ID-subphase,ID-subphase,ID-subphase,etc."
-encounter[6] = majesticCard% (1-100, the higher it is, the more likely a majestic card is chosen) (Whole code is based off of the Slay the Spire rare card chance)
-encounter[7] = background chosen
-encounter[8] = adventure difficulty (to be used later)
-encounter[9] = current gold
-encounter[10] = rerolls remaining //TODO: Add in a reroll system
+encounter["EncounterID"] = Encounter ID (001-099 Special Encounters | 101-199 Combat Encounters | 201-299 Event Encounters)
+encounter["Subphase"] = Encounter Subphase
+encounter["AdventurePosition] = Position in adventure
+encounter["Hero"] = Hero ID
+encounter["FinalBoss"] = Adventure ID
+encounter["VisitedString"] = A string made up of encounters that have already been visited, looks like "ID-subphase,ID-subphase,ID-subphase,etc."
+encounter["MajesticCardPercentage"] = majesticCard% (1-100, the higher it is, the more likely a majestic card is chosen) (Whole code is based off of the Slay the Spire rare card chance)
+encounter["Background"] = background chosen
+encounter["Difficulty"] = adventure difficulty (to be used later)
+encounter["Gold"] = current gold
+encounter["Rerolls"] = rerolls remaining //TODO: Add in a reroll system
+encounter["ShopHealCost"] = How much it costs to heal at the shop
+encounter["ShopRemoveCost"] = How much it costs to remove a card from the deck through the shop
 */
 
 function GetNextEncounter() //TODO overhaul this whole function and children
 {
   $encounter = &GetZone(1, "Encounter");
-  // WriteLog("hijacked GetNextEncounter");
-  // WriteLog("Encounter[0]: " . $encounter[0]);
-  // WriteLog("Encounter[1]: " . $encounter[1]);
-  // WriteLog("Encounter[2]: " . $encounter[2]);
-  ++$encounter[2];
-  switch($encounter[4])
+  ++$encounter["AdventurePosition"];
+  switch($encounter["FinalBoss"])
   {
     case "Ira":
-      switch($encounter[8])
+      switch($encounter["Difficulty"])
       {
         case "Easy":
         case "Normal":
         case "Hard":
-          switch($encounter[2])
+          switch($encounter["AdventurePosition"])
           {
-            //case 1: return CrossroadsDoubleChoice("Make_your_way_up_through_Metrix,Take_the_scenic_route_through_the_back_streets,Catch_a_ferry_across_the_lake");//combat choice of X, Y, and Z
+            // case 1: return CrossroadsDoubleChoice("Make_your_way_up_through_Metrix,Take_the_scenic_route_through_the_back_streets,Catch_a_ferry_across_the_lake");//combat choice of X, Y, and Z
             case 2: return RandomEvent();
             case 3: return CrossroadsDoubleChoice("Turn_back_and_take_the_long_way_around,Approach_the_roadblock_head_on,Venture_into_the_forest_and_attempt_to_sneak_past");//combat choice of X, Y, and Z
             case 4: return RandomEvent();
             case 5: return CrossroadsDoubleChoice("Ignore_your_instincts_and_stop_for_the_night,Stay_very_briefly_to_stock_up,Leave_the_town_immediately");//combat choice of X, Y, and Z
             case 6: return RandomEvent();
-            case 7: case 1: return "Go_towards_the_smoke_rising_in_the_distance,Follow_the_sounds_of_laughter"; //Campfire or a shop
+            case 1: case 7: return "Go_towards_the_smoke_rising_in_the_distance,Follow_the_sounds_of_laughter"; //Campfire or a shop
             case 8: return "Explore_the_cave"; //Elite
             case 9: return "Search_through_the_treasures"; //Get a power
             case 10: return CrossroadsDoubleChoice("Attempt_to_cross_the_river_here,Travel_downstream_to_find_a_bridge,Travel_upstream_to_the_nearest_town");//combat choice of X, Y, and Z
@@ -88,15 +86,15 @@ function CrossroadsDoubleChoice($string)
 function GetCrossroadsDescription()
 {
   $encounter = &GetZone(1, "Encounter");
-  switch($encounter[4])
+  switch($encounter["FinalBoss"])
   {
     case "Ira":
-      switch($encounter[8])
+      switch($encounter["Difficulty"])
       {
         case "Easy":
         case "Normal":
         case "Hard":
-          switch($encounter[2])
+          switch($encounter["AdventurePosition"])
           {
             case 1: return "Your destination lies beyond the Pits. How would you like to leave?";
             case 3: return "Ahead of you lies a fallen tree. It likely did not fall naturally. What would you like to do?";
@@ -117,15 +115,15 @@ function GetCrossroadsImage()
 {
   {
     $encounter = &GetZone(1, "Encounter");
-    switch($encounter[4])
-    {
-      case "Ira":
-        switch($encounter[8])
-        {
-          case "Easy":
-          case "Normal":
-          case "Hard":
-            switch($encounter[2])
+    switch($encounter["FinalBoss"])
+  {
+    case "Ira":
+      switch($encounter["Difficulty"])
+      {
+        case "Easy":
+        case "Normal":
+        case "Hard":
+          switch($encounter["AdventurePosition"])
             {
               case 1: return "CRU122_cropped.png";
               case 3: return "CRU006_cropped.png";

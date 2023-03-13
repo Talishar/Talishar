@@ -78,7 +78,7 @@
             //WriteLog($cardID);
             $encounter = &GetZone($playerID, "Encounter");
             $cost = getShopCost($cardID);
-            //WriteLog("cost: " . $cost . ", total: " . $encounter[9]);
+            //WriteLog("cost: " . $cost . ", total: " . $encounter["Gold"]);
             if($cardID == "CardBack")
             {
               $newShop = $myDQ[1];
@@ -87,7 +87,7 @@
               PrependDecisionQueue("SHOP", $playerID, $newShop);
               break;
             }
-            else if($encounter[9] < $cost)
+            else if($encounter["Gold"] < $cost)
             {
               $newShop = $myDQ[1];
               WriteLog("You cannot afford to buy " . CardLink($cardID, $cardID) . ".");
@@ -108,7 +108,7 @@
                 array_push($deck, $cardID);
               }
               WriteLog("You spent " . $cost . " gold and added " . CardLink($cardID, $cardID) . " to your deck.");
-              $encounter[9] -= $cost;
+              $encounter["Gold"] -= $cost;
               $newShop = "";
               for($j=0;$j<count($options);++$j){
                 if($j != 0) $newShop.=",";
@@ -136,10 +136,36 @@
           }
         }
         if($myDQ[0] == "SHOP"){
-          //WriteLog($buttonInput);
+          $encounter = &GetZone($playerID, "Encounter");
+          $health = &GetZone($playerID, "Health");
+          WriteLog($buttonInput);
+          WriteLog($encounter["Gold"]);
+          WriteLog($encounter["shopHealCost"]);
+          if($buttonInput == "shop_heal"){
+            $health = &GetZone($playerID, "Health");
+            $gain = (20 - $health[0] > 10 ? 10 : 20 - $health[0]);
+            if($gain < 0) $gain = 0;
+            if($gain = 0){
+              WriteLog("You are already very health. You and the healer enjoy a polite conversation, but there's no need to hire them.");
+            }
+            else if($encounter["Gold"] <= $encounter["shopHealCost"]){
+              WriteLog("The local healer patches your wounds. You feel better prepared for your journey ahead! You heal $gain health.");
+              $health[0] += $gain;
+              $encounter["shopHealCost"] += 1;
+            }
+            else{
+              WriteLog("You can't afford the services of a healer. You will have to tend to your wounds another time.");
+              // "You don't have enough gold for that."
+            }
+          }
+          else if($buttonInput == "shop_remove"){
+
+          }
         }
-        ClearPhase($playerID);
-        ContinueDecisionQueue($playerID, $buttonInput);
+        else{
+          ClearPhase($playerID);
+          ContinueDecisionQueue($playerID, $buttonInput);
+        }
         break;
       case 99: //Pass
         PassInput();

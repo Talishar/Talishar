@@ -76,9 +76,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
       case "SETENCOUNTER":
         $params = explode("-", $parameter1);
         $encounter = &GetZone($player, "Encounter");
-        $encounter[0] = $params[0];
-        $encounter[1] = $params[1];
-        //WriteLog("Setting Encounter -> " . $encounter[0] . "-" . $encounter[1]);
+        $encounter["EncounterID"] = $params[0];
+        $encounter["Subphase"] = $params[1];
+        //WriteLog("Setting Encounter -> " . $encounter["EncounterID"] . "-" . $encounter["Subphase"]);
         InitializeEncounter($player);
         return 1;
       case "CAMPFIRE":
@@ -141,8 +141,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Ask_Legend":
             WriteLog("A giant gave you a legendary gift.");
-            if($encounter[3] == "Dorinthea") PrependDecisionQueue("CHOOSECARD", $player, "WTR116");
-            if($encounter[3] == "Bravo") PrependDecisionQueue("CHOOSECARD", $player, "WTR041");
+            if($encounter["Hero"] == "Dorinthea") PrependDecisionQueue("CHOOSECARD", $player, "WTR116");
+            if($encounter["Hero"] == "Bravo") PrependDecisionQueue("CHOOSECARD", $player, "WTR041");
             break;
           case "Leave":
             break;
@@ -179,77 +179,76 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         $deck = &GetZone($player, "Deck");
         $character = &GetZone($player, "Character");
         $encounter = &GetZone($player, "Encounter");
-        WriteLog("Background Event");
         GiveUniversalEquipment();
         switch($lastResult)
         {
           case "The_Volcai_Sellsword":
-            $encounter[7] = "Saber";
+            $encounter["Background"] = "Saber";
             array_push($character, "CRU079", "CRU080"); //Cintari Sabers, both
             array_push($deck, "EVR062", "EVR058", "EVR066"); //Blade Runner B, Slice and Dice Y, Outland Skirmish R
             break;
           case "The_Lowly_Solanian":
-            $encounter[7] = "Dawnblade";
+            $encounter["Background"] = "Dawnblade";
             array_push($character, "WTR115");
             array_push($deck, "WTR125", "WTR133", "MON113"); //Overpower B, Ironsong Response Y, Plow Through R
             break;
           case "The_Fierce_Warrior":
-            $encounter[7] = "Hatchet";
+            $encounter["Background"] = "Hatchet";
             array_push($character, "MON105", "MON106"); //Body and Mind
             array_push($deck, "EVR062", "DYN083", "EVR066"); //Blade Runner B, Felling Swing y, Outland Skirmish R
             break;
           case "Spiders_Deserter":
-            $encounter[7] = "Battleaxe";
+            $encounter["Background"] = "Battleaxe";
             array_push($character, "DYN068");
             array_push($deck, "WTR125", "WTR142", "DYN082"); //Overpower B, Sharpen Steel Y, Felling Swing R
             break;
           case "The_Everfest_Showman":
-            $encounter[7] = "Anothos";
+            $encounter["Background"] = "Anothos";
             array_push($character, "WTR040");
             array_push($deck, "EVR024", "WTR065", "WTR066", "CRU035", "WTR206", "MON293");
             break;
           case "The_Reclusive_Blacksmith":
-            $encounter[7] = "TitanFist";
+            $encounter["Background"] = "TitanFist";
             array_push($character, "ELE202", "DYN026"); //Titan's Fist and Seasoned Saviour
             array_push($deck, "DYN031", "DYN038", "WTR063", "WTR064", "ARC202", "WTR212");
             break;
           case "The_Slumbering_Giant":
-            $encounter[7] = "Sledge";
+            $encounter["Background"] = "Sledge";
             array_push($character, "CRU024");
             array_push($deck, "ELE208", "EVR030", "WTR070", "CRU040", "WTR190", "ARC211");
             break;
           case "The_Ancient_Ollin":
-            $encounter[7] = "Shiver";
+            $encounter["Background"] = "Shiver";
             array_push($character, "ELE033");
             array_push($deck, "ELE044", "ELE045", "ELE057", "ELE058", "ELE153", "ELE154", "ELE171", "ELE168");
             break;
           case "The_Exuberant_Adventurer":
-            $encounter[7] = "Voltaire";
+            $encounter["Background"] = "Voltaire";
             array_push($character, "ELE134");
             array_push($deck, "ELE048", "ELE059", "ELE054", "ELE055", "ELE180", "ELE185", "ELE199", "ELE186");
             break;
           case "The_Hired_Crow":
-            $encounter[7] = "DeathDealer";
+            $encounter["Background"] = "DeathDealer";
             array_push($character, "ARC040");
             array_push($deck, "ELE044", "ELE051", "ELE060", "ELE047", "ELE200", "ELE183", "ELE168", "ELE152");
             break;
           case "The_Roadside_Bandit":
-            $encounter[7] = "RedLiner";
+            $encounter["Background"] = "RedLiner";
             array_push($character, "CRU121");
             array_push($deck, "ELE216", "ELE217", "ARC069", "ARC070", "ARC054", "ARC055", "EVR100", "EVR101");
             break;
           case "The_Rebel_Organizer":
-            $encounter[7] = "Emberblade";
+            $encounter["Background"] = "Emberblade";
             array_push($character, "UPR046");
             array_push($deck, "UPR101", "UPR101", "UPR057", "UPR096", "UPR097");
             break;
           case "The_Travelling_Duo":
-            $encounter[7] = "Kodachi";
+            $encounter["Background"] = "Kodachi";
             array_push($character, "WTR078", "WTR078");
             array_push($deck, "UPR098", "UPR099", "UPR093", "UPR062", "UPR071");
             break;
           case "The_Archaeologist":
-            $encounter[7] = "Edge";
+            $encounter["Background"] = "Edge";
             array_push($character, "CRU050");
             array_push($deck, "UPR051", "UPR052", "UPR072", "UPR074", "WTR208");
             break;
@@ -287,14 +286,14 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         }
         return 1;
       case "CHOOSEHERO": //Logic for hero selection moved to ResetHero function
-          ResetHero($player, $lastResult);
+        ResetHero($player, $lastResult);
         return 1;
       case "CHOOSEADVENTURE":
         switch($lastResult)
         {
           case "Ira":
           $encounter = &GetZone($player, "Encounter");
-          $encounter[4] = "Ira";
+          $encounter["FinalBoss"] = "Ira";
           break;
         }
         return 1;
@@ -363,7 +362,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         {
           case "Trade_1_gold_pieces_for_the_stone":
             $encounter = &GetZone($player, "Encounter");
-            $encounter[9] -= 1;
+            $encounter["Gold"] -= 1;
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(1, "ResourceGems"));
             break;
           case "Decline_his_offer_and_move_on":
@@ -443,7 +442,7 @@ function ResetHero($player, $hero="Dorinthea")
   $deck = &GetZone($player, "Deck");
   $deck = explode(" ", $heroFileArray[1]);
   $encounter = &GetZone($player, "Encounter");
-  $encounter[3] = $hero;
+  $encounter["Hero"] = $hero;
   }
 
 ?>
