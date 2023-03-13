@@ -80,26 +80,14 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
       default:
         return ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
     }
-  } else if ($set == "EVR") {
-    return EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-  } else if ($set == "UPR") {
-    return UPRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-  } else if ($set == "DVR") {
-    return DVRPlayAbility($cardID, $from, $resourcesPaid);
-  } else if ($set == "RVD") {
-    return RVDPlayAbility($cardID, $from, $resourcesPaid);
-  } else if ($set == "DYN") {
-    return DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-  } else if ($set == "OUT") {
-    return OUTPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-  } else {
-    return ROGUEPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   }
-  $rv = "";
-  switch ($cardID) {
-    default:
-      break;
-  }
+  else if ($set == "EVR") return EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if ($set == "UPR") return UPRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if ($set == "DVR") return DVRPlayAbility($cardID, $from, $resourcesPaid);
+  else if ($set == "RVD") return RVDPlayAbility($cardID, $from, $resourcesPaid);
+  else if ($set == "DYN") return DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if ($set == "OUT") return OUTPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else return ROGUEPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
 }
 
 function ProcessHitEffect($cardID)
@@ -170,19 +158,11 @@ function ProcessHitEffect($cardID)
       default:
         return ELETalentHitEffect($cardID);
     }
-  } else if ($set == "EVR") {
-    return EVRHitEffect($cardID);
-  } else if ($set == "UPR") {
-    return UPRHitEffect($cardID);
-  } else if ($set == "DYN") {
-    return DYNHitEffect($cardID);
-  } else if ($set == "OUT") {
-    return OUTHitEffect($cardID);
   }
-  switch ($cardID) {
-    default:
-      break;
-  }
+  else if ($set == "EVR") return EVRHitEffect($cardID);
+  else if ($set == "UPR") return UPRHitEffect($cardID);
+  else if ($set == "DYN") return DYNHitEffect($cardID);
+  else if ($set == "OUT") return OUTHitEffect($cardID);
 }
 
 function ProcessDealDamageEffect($cardID)
