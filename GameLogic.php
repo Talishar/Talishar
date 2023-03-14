@@ -1924,6 +1924,9 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "ROGUE521": case "ROGUE522":
       return true;
+    case "ROGUE601": return true;
+    case "ROGUE603": return true;
+    case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
     default:
       return false;
   }
@@ -2507,6 +2510,10 @@ function Draw($player, $mainPhase = true)
       $character = &GetPlayerCharacter($player);
       for($i=0; $i<$numBrainstorm; ++$i) DealArcane(1, 2, "TRIGGER", $character[0]);
     }
+  }
+  if ($player == $mainPlayer && SearchPermanentsForCard($player, "ROGUE601"))
+  {
+    AddCurrentTurnEffect("ROGUE601", $player);
   }
   $hand = array_values($hand);
   return $hand[count($hand) - 1];
@@ -5841,6 +5848,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         for($deckCount = 0; $deckCount < count($deck); ++$deckCount) { $deck[$deckCount] = $hand[$lastResult]; }
       }
       //for($deckCount = 0; $deckCount < count($deck); ++$deckCount) { WriteLog("deck[$deckCount] = " . $deck[$deckCount]); }
+      return $lastResult;
+    case "ROGUEDECKCARDSTURNSTART":
+      $deck = &GetDeck($player);
+      $hand = &GetHand($player);
+      array_unshift($deck, $hand[$lastResult]);
       return $lastResult;
     default:
       return "NOTSTATIC";

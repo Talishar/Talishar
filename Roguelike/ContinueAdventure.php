@@ -20,6 +20,50 @@
   $encounter[1] = "AfterFight";
   $encounter[9] += 2;
 
+  $deck = &GetZone($playerID, "Deck");
+  for($i = 0; $i < count($deck); ++$i)
+  {
+    switch($deck[$i])
+    {
+      case "ROGUE611":
+        if($health[0] <= 5)
+        {
+          WriteLog("Your Bloodstone grows in strength.");
+          $deck[$i] = "ROGUE612";
+        }
+        break;
+      case "ROGUE612":
+        if($health[0] <= 5)
+        {
+          WriteLog("Your Bloodstone grows in strength.");
+          $deck[$i] = "ROGUE613";
+        }
+        break;
+      case "ROGUE613":
+        if($health[0] <= 5)
+        {
+          WriteLog("Your Bloodstone grows in strength.");
+          $deck[$i] = "ROGUE614";
+        }
+        break;
+      case "ROGUE614":
+        if($health[0] <= 5)
+        {
+          WriteLog("Your Bloodstone is perfect.");
+          $deck[$i] = "ROGUE615";
+        }
+        break;
+      case "ROGUE615":
+        if($health[0] <= 5)
+        {
+          WriteLog("Something Ancient awakens within your Bloodstone. Your name escapes you. Perhaps you shouldn't have disturbed it.");
+          $deck[$i] = "ROGUE616";
+        }
+        break;
+      default: break;
+    }
+  }
+
   AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards(4));
   AddDecisionQueue("SETENCOUNTER", $playerID, "009-PickMode");
 

@@ -232,6 +232,19 @@ function SearchAlliesActive($player, $card1, $card2 = "", $card3 = "")
   return $cardList != "";
 }
 
+function SearchPermanentsForCard($player, $card)
+{
+  $permanents = &GetPermanents($player);
+  $indices = "";
+  for ($i = 0; $i < count($permanents); $i += PermanentPieces()) {
+    if ($permanents[$i] == $card) {
+      if ($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
+}
+
 function SearchEquipNegCounter(&$character)
 {
   $equipList = "";

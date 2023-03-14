@@ -257,6 +257,42 @@ function PermanentStartTurnAbilities()
       case "ROGUE528":
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
+
+      case "ROGUE602":
+        $indexChoices = [];
+        for($j = count($character) - CharacterPieces(); $j >= 0; $j -= CharacterPieces())
+        {
+          WriteLog("Checking" . $character[$j] . "->" . $character[$j+1]);
+          if($character[$j+1] == 0) array_push($indexChoices, $j);
+        }
+        if(count($indexChoices) != 0) $character[$indexChoices[rand(0, count($indexChoices)-1)]+1] = 2;
+        break;
+      case "ROGUE603":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        array_unshift($hand, "DYN065");
+        break;
+      case "ROGUE605":
+        AddCurrentTurnEffect("ROGUE605-first", $mainPlayer);
+        AddCurrentTurnEffect("ROGUE605-second", $mainPlayer);
+        break;
+      case "ROGUE606":
+        MayBottomDeckDraw();
+        break;
+      case "ROGUE608":
+        $items = &GetItems($mainPlayer);
+        $found = false;
+        for($j = 0; $j < count($items)-1; ++$j) { if($items[$j] == "DYN243") $found = true; continue; }
+        if(!$found) AddDecisionQueue("STARTOFGAMEPUTPLAY", 1, "DYN243");
+        break;
+      case "ROGUE610":
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "HAND");
+        AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
+        AddDecisionQueue("ROGUEDECKCARDSTURNSTART", $mainPlayer, "0");
+        AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
+        break;
+      case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
       default:
         break;
     }
@@ -294,6 +330,10 @@ function PermanentPlayAbilities($attackID, $from="")
         break;
       case "ROGUE528":
         if($cardType == "A") ++$actionPoints;
+        break;
+
+      case "ROGUE607":
+        if($cardType != "A" && $cardType != "AA") AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
       default:
         break;
