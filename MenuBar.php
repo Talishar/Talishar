@@ -154,7 +154,7 @@ $isMobile = IsMobile();
         <?php if (!$isMobile) echo '<li><a href="https://github.com/Talishar/Talishar/labels/bug" target="_blank">Known Bugs</a></li>'; ?>
         <?php //if($isPatron) echo "<li><a href='Replays.php'>Replays[BETA]</a></li>";
         ?>
-        <li><a href="Draft.php">Limited</a></li>
+        <li><a href="https://www.draftfab.com/">DraftFaB</a></li>
         <?php if (!$isMobile) echo '<li><a href="' . $roguelikePath . '">Roguelike</a></li>'; ?>
         <?php
         if (isset($_SESSION["useruid"])) {

@@ -172,6 +172,10 @@ Burden of the Past<br>
         <br>
       </div>
       <BR>
+      Test Outsiders sealed and draft FREE through our partner site, <a href='https://www.draftfab.com' target='_blank'>DRAFTFAB</a>!
+      <BR>
+      <a href='https://www.draftfab.com' target='_blank'><img src='./Images/logos/draftfab.png'></img></a>
+      <br><BR>
       <div class='LanguageSelector'><?php echo ($languageText); ?>:
         <select id='languageSelect' onchange='changeLanguage()' name='decksToTry' id='decksToTry'>
           <option value='1' <?php if ($language == 1) echo (" selected"); ?>>English</option>
