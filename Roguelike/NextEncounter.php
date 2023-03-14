@@ -174,9 +174,16 @@ $cardIconTop = intval($cardSize / 4.2); //30
       }
       $encounterContent .= "</div><BR>";
       $encounterContent .= "<div display:inline;'>";
-      //if($encounter[10] > 0) $encounterContent .= CreateButton($playerID, str_replace("_", " ", "Reroll"), 2, strval("Reroll"), "24px");
+      $shopHealStringValue = "Pay_".$encounter[11]."g_to_hire_a_local_healer";
+      $encounterContent .= CreateButton($playerID, str_replace("_", " ", $shopHealStringValue), 2, strval("shop_heal"), "24px");
+      $shopRemoveStringValue = "Offer_".$encounter[12]."g_to_a_beggar";
+      $encounterContent .= CreateButton($playerID, str_replace("_", " ", $shopRemoveStringValue), 2, strval("shop_reflect"), "24px");
+      //$encounterContent .= "</div><BR>";
+      //$encounterContent .= "<div display:inline;'>";
+      $encounterContent .= "</div><BR>";
+      $encounterContent .= "<div display:inline;'>";
       $encounterContent .= CreateButton($playerID, str_replace("_", " ", "Leave"), 2, strval("Leave"), "24px");
-      $encounterContent .= "</div>";
+      $encounterContent .= "</div><BR>";
 
       break;
     }

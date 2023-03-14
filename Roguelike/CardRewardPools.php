@@ -10,14 +10,26 @@ encounter[4] = Adventure ID
 encounter[5] = A string made up of encounters that have already been visited, looks like "ID-subphase,ID-subphase,ID-subphase,etc."
 encounter[6] = majesticCard% (1-100, the higher it is, the more likely a majestic card is chosen) (Whole code is based off of the Slay the Spire rare card chance)
 encounter[7] = background chosen
+encounter[8] = adventure difficulty (to be used later)
+encounter[9] = current gold
+encounter[10] = rerolls remaining //TODO: Add in a reroll system
+encounter[11] = cost to heal at the shop
+encounter[12] = cost to remove card at the shop
 */
 
 
 function GetPool($type, $hero, $rarity, $background){
   if(($hero == "Bravo" || $hero == "Dorinthea") && $type == "Talent") $type = "Class";
-  if($type == "Class") return GetPool2(array($type, $rarity, $background));
-  else if($type == "Generic") return GetPool3(array($rarity));
-  else if($type == "Talent") return GetPool4(array($type, $rarity, $background));
+
+  if($type == "Class") return GetPoolClass(array($type, $rarity, $background));
+  else if($type == "Generic") return GetPoolGeneric(array($rarity));
+  else if($type == "Talent") return GetPoolTalent(array($type, $rarity, $background));
+  else if($type == "Equipment") {
+    switch($rarity){
+      case "Common": case "Legendary": return GetPoolEquipment(array($rarity));
+      case "-": default: return GetPoolEquipment(array());
+    }
+  }
   else return ("WTR224"); //Cracked Bauble as a default, but we shouldn't see this
 }
 
@@ -28,7 +40,7 @@ function GiveUniversalEquipment(){
 }
 
 //Input a list of parameters
-function GetPool2($arrayParameters){
+function GetPoolClass($arrayParameters){
 
   $CardRewardPool = array(
     array("WTR043", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"),
@@ -367,36 +379,9 @@ function GetPool2($arrayParameters){
 
   );
 
-  $returnPool = array(); // Create an empty list of cards to be returned
-  $sizeParameters = count($arrayParameters);
-  $paramCheck = new SplFixedArray($sizeParameters); //Create a shadow of the parameters...
-  for ($i = 0; $i < $sizeParameters; $i++){ //... The same length as the list of parameters
-    $paramCheck[$i] = false;
-  }
-  $eligible = true;
-  for($i = 0; $i < count($CardRewardPool); $i++){
-    $eligible = true;
-    for($j = 0; $j < $sizeParameters; $j++){
-      $paramCheck[$j] = false;
-    }
-    for($j = 0; $j < $sizeParameters; $j++){
-      for($k = 1; $k < count($CardRewardPool[$i]); $k++){
-        if($arrayParameters[$j] == $CardRewardPool[$i][$k]){
-          $paramCheck[$j] = true;
-        }
-      }
-      if($paramCheck[$j] == false){
-        $eligible = false;
-        break;
-      }
-    }
-    if($eligible) {
-      array_push($returnPool, $CardRewardPool[$i][0]);
-    }
-  }
-    return $returnPool;
+  return ProcessPool($CardRewardPool, $arrayParameters);
 }
-function GetPool3($arrayParameters){
+function GetPoolGeneric($arrayParameters){
 
   //Currently, Generics are available to all heroes equally.
   //In the future, if we want to have certain generics available to certain heroes, we can go back and tag most cards with "All", and specific ones with the name of that hero
@@ -665,36 +650,9 @@ function GetPool3($arrayParameters){
     array("DYN242", "Majestic"), //Imperial Warhorn
   );
 
-  $returnPool = array(); // Create an empty list of cards to be returned
-  $sizeParameters = count($arrayParameters);
-  $paramCheck = new SplFixedArray($sizeParameters); //Create a shadow of the parameters...
-  for ($i = 0; $i < $sizeParameters; $i++){ //... The same length as the list of parameters
-    $paramCheck[$i] = false;
-  }
-  $eligible = true;
-  for($i = 0; $i < count($CardRewardPool); $i++){
-    $eligible = true;
-    for($j = 0; $j < $sizeParameters; $j++){
-      $paramCheck[$j] = false;
-    }
-    for($j = 0; $j < $sizeParameters; $j++){
-      for($k = 1; $k < count($CardRewardPool[$i]); $k++){
-        if($arrayParameters[$j] == $CardRewardPool[$i][$k]){
-          $paramCheck[$j] = true;
-        }
-      }
-      if($paramCheck[$j] == false){
-        $eligible = false;
-        break;
-      }
-    }
-    if($eligible) {
-      array_push($returnPool, $CardRewardPool[$i][0]);
-    }
-  }
-    return $returnPool;
+  return ProcessPool($CardRewardPool, $arrayParameters);
 }
-function GetPool4($arrayParameters){
+function GetPoolTalent($arrayParameters){
 
   $CardRewardPool = array(
     array("ELE092", "Talent", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Flashfreeze
@@ -799,34 +757,89 @@ function GetPool4($arrayParameters){
 
   );
 
-  $returnPool = array(); // Create an empty list of cards to be returned
-  $sizeParameters = count($arrayParameters);
-  $paramCheck = new SplFixedArray($sizeParameters); //Create a shadow of the parameters...
-  for ($i = 0; $i < $sizeParameters; $i++){ //... The same length as the list of parameters
-    $paramCheck[$i] = false;
-  }
+  return ProcessPool($CardRewardPool, $arrayParameters);
+}
+
+function GetPoolEquipment($arrayParameters){
+  $CardRewardPool = array(
+  array("WTR150", "Generic", "Legendary"), //Fyendal's Spring Tunic
+  array("WTR151", "Generic", "Common"), //Hope Merchant's Hood
+  array("WTR152", "Generic", "Common"), //Heartened Cross Strap
+  array("WTR153", "Generic", "Common"), //Goliath Gauntlet
+  array("WTR154", "Generic", "Common"), //Snapdragon Scalers
+  array("WTR155", "Generic", "Common"), //Ironrot Helm
+  //array("WTR156", "Generic", "Common"), //Ironrot Chest - Omitted due to being included in universal equipment
+  array("WTR157", "Generic", "Common"), 
+  array("WTR158", "Generic", "Common"), 
+
+  array("ARC150", "Generic", "Legendary"), //Arcanite Skullcap
+  array("ARC151", "Generic", "Common"), //Talismanic Lens
+  array("ARC152", "Generic", "Common"), //Vest of the First Fist
+  array("ARC153", "Generic", "Common"), //Bracers of Belief
+  array("ARC154", "Generic", "Common"), //Mage Master Boots
+  //ARC155 - 158 Nullrune Boots omitted due to being included in universal equipment
+
+  //CRU179 - Omitted due to irrelevance... though there's definitely a world where this is relevant, though maybe not playable. 
+
+  array("MON238", "Generic", "Common"), //Blood Drop Brocade
+  array("MON239", "Generic", "Common"), //Stubby Hammerers
+  array("MON240", "Generic", "Common"), //Time Skippers
+  array("MON241", "Generic", "Common"), //Ironhide Helm
+  array("MON242", "Generic", "Common"), 
+  array("MON243", "Generic", "Common"), 
+  array("MON244", "Generic", "Common"), //Ironhide Boots
+
+  array("ELE233", "Generic", "Common"), //Ragamuffin's Hat
+  array("ELE234", "Generic", "Common"), //Deep Blue
+  array("ELE235", "Generic", "Common"), //Cracker Jax
+  array("ELE236", "Generic", "Common"), //Runaways
+
+  //EVR155 - Arcane Lantern (RARE) - omitted for now. I want to be able to tag the diff between Equips that interact with Arcane and those that don't before I implement the arcane ones.
+
+  array("UPR182", "Generic", "Legendary"), //Crown of Providence
+  array("UPR183", "Generic", "Common"), //Heliod's Mitre - Okay, not technically a common, but I'm okay with it going in the common pool if you are *wink*
+  array("UPR184", "Generic", "Common"), //Quelling Robe
+  array("UPR185", "Generic", "Common"), //Quelling Sleeves
+  array("UPR186", "Generic", "Common"), //Quelling Slippers
+
+  //DYN236 thru 29 - Spellfray equipment. I do want to put these in the pool, but I'd like to tag them as arcane first and put them in my 2nd draft
+  array("DYN234", "Generic", "Legendary"), //Crown of Dominion
+  array("DYN235", "Generic", "Rare") //Ornate Tessen
+  );
+
+  return ProcessPool($CardRewardPool, $arrayParameters);
+}
+
+function ProcessPool($CardRewardPool, $arrayOfParameters){
+
+$returnPool = array(); // Create an empty list of cards to be returned
+$sizeParameters = count($arrayOfParameters);
+$paramCheck = new SplFixedArray($sizeParameters); //Create a shadow of the parameters...
+for ($i = 0; $i < $sizeParameters; $i++){ //... The same length as the list of parameters
+  $paramCheck[$i] = false;
+}
+$eligible = true;
+for($i = 0; $i < count($CardRewardPool); $i++){
   $eligible = true;
-  for($i = 0; $i < count($CardRewardPool); $i++){
-    $eligible = true;
-    for($j = 0; $j < $sizeParameters; $j++){
-      $paramCheck[$j] = false;
-    }
-    for($j = 0; $j < $sizeParameters; $j++){
-      for($k = 1; $k < count($CardRewardPool[$i]); $k++){
-        if($arrayParameters[$j] == $CardRewardPool[$i][$k]){
-          $paramCheck[$j] = true;
-        }
-      }
-      if($paramCheck[$j] == false){
-        $eligible = false;
-        break;
+  for($j = 0; $j < $sizeParameters; $j++){
+    $paramCheck[$j] = false;
+  }
+  for($j = 0; $j < $sizeParameters; $j++){
+    for($k = 1; $k < count($CardRewardPool[$i]); $k++){
+      if($arrayOfParameters[$j] == $CardRewardPool[$i][$k]){
+        $paramCheck[$j] = true;
       }
     }
-    if($eligible) {
-      array_push($returnPool, $CardRewardPool[$i][0]);
+    if($paramCheck[$j] == false){
+      $eligible = false;
+      break;
     }
   }
-    return $returnPool;
+  if($eligible) {
+    array_push($returnPool, $CardRewardPool[$i][0]);
+  }
+}
+  return $returnPool;
 }
 
 function ArrayAsString($arrayToBeStringed){
@@ -837,5 +850,3 @@ function ArrayAsString($arrayToBeStringed){
   }
   return $outString;
 }
-
-?>

@@ -228,8 +228,8 @@ function GetPriority($cardID, $heroID, $type)
       case "ROGUE021":
         switch($cardID)
         {
-          case "WTR017": case "WTR018": case "WTR019": $priority = array(2.1, 0.5, 0.6); return $priority[$type];
-          case "MON226": $priority = array(0, 0.4); return $priority[$type];
+          case "WTR017": case "WTR018": case "WTR019": $priority = array(2.1, 0.5, 0.6, 0, 0, 1.1); return $priority[$type];
+          case "MON226": $priority = array(0, 0.4, 0.1, 0, 0, 0.1); return $priority[$type];
           default: return 0;
         }
       default: return 0;
