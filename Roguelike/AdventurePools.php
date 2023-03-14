@@ -35,13 +35,13 @@ function GetNextEncounter() //TODO overhaul this whole function and children
         case "Hard":
           switch($encounter[2])
           {
-            //case 1: return CrossroadsDoubleChoice("Make_your_way_up_through_Metrix,Take_the_scenic_route_through_the_back_streets,Catch_a_ferry_across_the_lake");//combat choice of X, Y, and Z
+            case 1: return CrossroadsDoubleChoice("Make_your_way_up_through_Metrix,Take_the_scenic_route_through_the_back_streets,Catch_a_ferry_across_the_lake");//combat choice of X, Y, and Z
             case 2: return RandomEvent();
             case 3: return CrossroadsDoubleChoice("Turn_back_and_take_the_long_way_around,Approach_the_roadblock_head_on,Venture_into_the_forest_and_attempt_to_sneak_past");//combat choice of X, Y, and Z
             case 4: return RandomEvent();
             case 5: return CrossroadsDoubleChoice("Ignore_your_instincts_and_stop_for_the_night,Stay_very_briefly_to_stock_up,Leave_the_town_immediately");//combat choice of X, Y, and Z
             case 6: return RandomEvent();
-            case 7: case 1: return "Go_towards_the_smoke_rising_in_the_distance,Follow_the_sounds_of_laughter"; //Campfire or a shop
+            case 7: return "Go_towards_the_smoke_rising_in_the_distance,Follow_the_sounds_of_laughter"; //Campfire or a shop
             case 8: return "Explore_the_cave"; //Elite
             case 9: return "Search_through_the_treasures"; //Get a power
             case 10: return CrossroadsDoubleChoice("Attempt_to_cross_the_river_here,Travel_downstream_to_find_a_bridge,Travel_upstream_to_the_nearest_town");//combat choice of X, Y, and Z

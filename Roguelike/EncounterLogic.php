@@ -141,7 +141,7 @@ function GetRandomCards($number = 4, $special = "-", $specialType = "-")
 function GeneratePool($selected, $type, $rarity = "-")
 {
   $encounter = &GetZone(1, "Encounter");
-  if($rarity == "-")
+  if($rarity == "-" && $type != "Equipment")
   {
     $randRarity = rand(1,100);
     if($randRarity <= $encounter[6])
@@ -255,6 +255,10 @@ function GetShop()
   array_push($result, $pool[rand(0, count($pool)-1)]);
   $pool = GeneratePool($result, "Talent");
   array_push($result, $pool[rand(0, count($pool)-1)]);
+  $pool = GeneratePool($result, "Equipment", "Common");
+  array_push($result, $pool[rand(0, count($pool)-1)]);
+  $pool = GeneratePool($result, "Equipment");
+  array_push($result, $pool[rand(0, count($pool)-1)]);
   $pool = GeneratePool($result, "Generic");
   array_push($result, $pool[rand(0, count($pool)-1)]);
   $pool = GeneratePool($result, "Generic"); //change to weapon once that is set up
@@ -278,9 +282,13 @@ function GetShopCost($cardID)
   {
     case "C": case "T": $cost = 2; break;
     case "R": $cost = 4; break;
-    case "S": case "M": $cost = 8; break;
+    case "S": case "M": $cost = 6; break;
   }
-  if(CardSubtype($cardID) == "Power") $cost = $cost * 2;
+  if(CardSubtype($cardID) == "Power") $cost += 2;
+  if(CardType($cardID) == "E"){
+    if(Rarity($cardID) == "L") $cost = 12;
+    else $cost = 4;
+  }
   return $cost;
 }
 ?>

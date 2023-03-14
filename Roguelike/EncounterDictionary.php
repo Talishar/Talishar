@@ -98,14 +98,14 @@ function EncounterDescription()
       else if($encounter[1] == "AfterFight") return "You killed a poor mailman. You heartless monster! Oh well, no use dwelling on the past, now that you're out of the city it's time to move towards your objective.";
     case 121:
       if($encounter[1] == "BeforeFight") return "You hear a loud bellow from the other side of the fallen tree. The tree rises, revealing a brute picking it up. He seems incredibly angry at the block in the road.";
-      else if($encounter[1] == "AfterFight") return "After you deliver a humbling smackdown, the orc calms down and continues on his way. He gives no apology for his outburst before.";
+      else if($encounter[1] == "AfterFight") return "After you deliver a humbling smackdown, the brute calms down and continues on his way. He gives no apology for his outburst before.";
     case 999: return "This text means something is wrong!"; //Maybe $encounter[1] is set to something weird? Maybe there's a typo?
 
     case 201: return "You found a battlefield. Choose what you want to do.";
     case 202: return "You found a library. Choose what you want to do.";
     case 203: return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
     case 204: return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor.";
-    case 205: return "You enter a temple. There is an altar that reads \"Offer of yourself and receive a bountiful blessing.\"";
+    case 205: return "You enter a temple. There is an altar that reads, \"Offer of yourself and receive a bountiful blessing.\"";
     case 206:
       $health = &GetZone(1, "Health");
       if($health[0] > 1) return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game.'";
@@ -152,6 +152,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "001-PickMode");
       break;
     case 005:
+      $encounter[9] += 3;
       AddDecisionQueue("BUTTONINPUT", $player, GetBackgrounds($encounter[3]));
       AddDecisionQueue("BACKGROUND", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
