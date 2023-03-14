@@ -13,6 +13,8 @@ encounter[7] = background chosen
 encounter[8] = adventure difficulty (to be used later)
 encounter[9] = current gold
 encounter[10] = rerolls remaining //TODO: Add in a reroll system
+encounter[11] = cost to heal at the shop
+encounter[12] = cost to remove card at the shop
 */
 
 function GetOptions($amount, $upperBound, $lowerBound = 0, $step = 1) //amount needs to be less than both upperbound and the amount of options in the pool being chosen from

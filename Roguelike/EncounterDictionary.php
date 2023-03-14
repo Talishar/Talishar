@@ -17,6 +17,8 @@ encounter[7] = background chosen
 encounter[8] = adventure difficulty (to be used later)
 encounter[9] = current gold
 encounter[10] = rerolls remaining //TODO: Add in a reroll system
+encounter[11] = cost to heal at the shop
+encounter[12] = cost to remove card at the shop
 */
 
 function EncounterDescription()
@@ -39,7 +41,13 @@ function EncounterDescription()
     case 007:
       return "You found a campfire. Choose what you want to do.";
     case 8:
-      return "You come across a small village. You wander through the market, investigating the various wares. The village has many residents, and you note the location of a local healer, as well as an elderly urchin with outstretched palms.";
+      $myDQ = &GetZone(1, "DecisionQueue");
+      if($myDQ[0] == "Shop"){
+        return "You come across a small village. You wander through the market, investigating the various wares. The village has many residents, and you note the location of a local healer, as well as an elderly urchin with outstretched palms.";
+      } 
+      else { //This should just be the beggar/removedeck 
+        return "Thank you, traveller. Please, honor me by sitting and enjoying the scenery with me. I find this spot to be perfect for attuning to oneself.";
+      }
     case 9:
       return GetCrossroadsDescription();
 
