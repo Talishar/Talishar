@@ -18,7 +18,11 @@
   $health[0] = $remainingHealth;
   $encounter = &GetZone($playerID, "Encounter");
   $encounter[1] = "AfterFight";
-  $encounter[9] += 2;
+  if ($encounter[2] < 9){
+    $encounter[9] += 2;
+  } else {
+    $encounter[9] += 3;
+  }
 
   $deck = &GetZone($playerID, "Deck");
   for($i = 0; $i < count($deck); ++$i)

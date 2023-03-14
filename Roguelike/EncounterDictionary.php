@@ -17,6 +17,8 @@ encounter[7] = background chosen
 encounter[8] = adventure difficulty (to be used later)
 encounter[9] = current gold
 encounter[10] = rerolls remaining //TODO: Add in a reroll system
+encounter[11] = cost to heal at the shop
+encounter[12] = cost to remove card at the shop
 */
 
 function EncounterDescription()
@@ -38,8 +40,14 @@ function EncounterDescription()
       return "The man smiles and hands you your reward. You take it before making your way back out in search of your next bounty.";
     case 007:
       return "You found a campfire. Choose what you want to do.";
-    case 8:
-      return "You come across a small village. A merchant waves you down.";
+    case 8: //Shop event
+      $myDQ = &GetZone(1, "DecisionQueue");
+      if($myDQ[0] == "SHOP"){
+        return "You come across a small village. You wander through the market, investigating the various wares. The village has many residents, and you note the location of a local healer, as well as an elderly urchin with outstretched palms.";
+      } 
+      else { //This should just be the beggar/removedeck 
+        return "Thank you, traveller. Please, honor me by sitting and enjoying the scenery with me. I find this spot to be perfect for attuning to oneself.";
+      }
     case 9:
       return GetCrossroadsDescription();
 
@@ -81,7 +89,7 @@ function EncounterDescription()
       else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
     case 118:
       if($encounter[1] == "BeforeFight") return "As you travel, you encounter a boisterous traveler wearing leather armor with a green glimmer. \"Hail, bounty hunter. Would you like to spar?\"";
-      else if($encounter[1] == "AfterFight") return "\"Wow stranger, that was an impressive match. Thank you for the lessons learned!\"";
+      else if($encounter[1] == "AfterFight") return "\"Wow stranger, that was an exciting match. Thank you for the lessons learned!\"";
     case 119:
       if($encounter[1] == "BeforeFight") return "As you cross the bridge, thunder cracks. A storm begins, and the winds nearly knock you into the chasm below. A figure runs towards you, as though dancing on the rain itself.";
       else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
@@ -90,14 +98,14 @@ function EncounterDescription()
       else if($encounter[1] == "AfterFight") return "You killed a poor mailman. You heartless monster! Oh well, no use dwelling on the past, now that you're out of the city it's time to move towards your objective.";
     case 121:
       if($encounter[1] == "BeforeFight") return "You hear a loud bellow from the other side of the fallen tree. The tree rises, revealing a brute picking it up. He seems incredibly angry at the block in the road.";
-      else if($encounter[1] == "AfterFight") return "After you delivered a humbling smackdown, the orc calms down and continues on his way. He gives no apology for his outburst before.";
-    case 999: return "This text means something is wrong!"; //Maybe $encounter[1] is set to something weird?
+      else if($encounter[1] == "AfterFight") return "After you deliver a humbling smackdown, the brute calms down and continues on his way. He gives no apology for his outburst before.";
+    case 999: return "This text means something is wrong!"; //Maybe $encounter[1] is set to something weird? Maybe there's a typo?
 
     case 201: return "You found a battlefield. Choose what you want to do.";
     case 202: return "You found a library. Choose what you want to do.";
     case 203: return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
     case 204: return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor.";
-    case 205: return "You enter a temple. There is an altar that reads \"Offer of yourself and receive a bountiful blessing.\"";
+    case 205: return "You enter a temple. There is an altar that reads, \"Offer of yourself and receive a bountiful blessing.\"";
     case 206:
       $health = &GetZone(1, "Health");
       if($health[0] > 1) return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game.'";
@@ -144,6 +152,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "001-PickMode");
       break;
     case 005:
+      $encounter[9] += 3;
       AddDecisionQueue("BUTTONINPUT", $player, GetBackgrounds($encounter[3]));
       AddDecisionQueue("BACKGROUND", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
@@ -226,7 +235,13 @@ function EncounterImage()
     case 007:
       return "UPR221_cropped.png";
     case 8:
-      return "WTR151_cropped.png";
+      $myDQ = &GetZone(1, "DecisionQueue");
+      if($myDQ[0] == "SHOP"){
+        return "WTR151_cropped.png";
+      }
+      else { //This should just be the beggar/remove section of the shop
+        return "CRU075_cropped.png";
+      }
     case 9:
       return GetCrossroadsImage();
 

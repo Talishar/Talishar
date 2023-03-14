@@ -274,7 +274,7 @@ function ROGUERarity($cardID)
     switch ($cardID) {
       case "ROGUE507": case "ROGUE508": case "ROGUE509": case "ROGUE510": case "ROGUE511": case "ROGUE512": case "ROGUE513": case "ROGUE516": case "ROGUE517": return "C";
       case "ROGUE501": case "ROGUE504": case "ROGUE518": case "ROGUE519": case "ROGUE521": case "ROGUE522": case "ROGUE523": case "ROGUE524": case "ROGUE525": return "R";
-      case "ROGUE502": case "ROGUE503": case "ROGUE505": case "ROGUE506": case "ROGUE516": case "ROGUE527": case "ROGUE528": return "M";
+      case "ROGUE502": case "ROGUE503": case "ROGUE505": case "ROGUE506": case "ROGUE516": case "ROGUE526": case "ROGUE527": case "ROGUE528": return "M";
       default: return "";
     }
 }
@@ -303,6 +303,34 @@ function ROGUEPitchValue($cardID)
       case "ROGUE013": return -1;
       case "ROGUE014": return -1;
       case "ROGUE501": return 3;
+      case "ROGUE501": return -1; //Broken Hourglass
+      case "ROGUE502": return -1; //Perfect Mirror
+      case "ROGUE503": return -1; //Scroll of Mastery
+      case "ROGUE504": return -1; //Blacksmith's Tongs
+      case "ROGUE505": return -1; //Teklo's Cranium
+      case "ROGUE506": return -1; //Teachings of War
+      case "ROGUE507": return -1; //Merchant's Handbag
+      case "ROGUE508": return -1; //Shattered Mirror
+      case "ROGUE509": return -1; //Qi Scroll
+      case "ROGUE510": return -1; //Survival Kit
+      case "ROGUE511": return -1; //Magnifying Glass
+      case "ROGUE512": return -1; //Dagger of the Meek
+      case "ROGUE513": return -1; //Hammer of the Mighty
+      case "ROGUE514": return -1; //Teklo Power Generator (not implemented)
+      case "ROGUE515": return -1; //Lucky Tooth (not implemented)
+      case "ROGUE516": return -1; //Mark of Undeath
+      case "ROGUE517": return -1; //Shamans Skullbone
+      case "ROGUE518": return -1; //Wild Mirror
+      case "ROGUE519": return -1; //Shard of the Mountain
+      case "ROGUE520": return -1; //Blacksmith's Hammer (not implemented) (Quesioning how possible this is to implement, gonna ignore for now)
+      case "ROGUE521": return -1; //Solanian Bell
+      case "ROGUE522": return -1; //Thieves Tools
+      case "ROGUE523": return -1; //Ward of Protection
+      case "ROGUE524": return -1; //Gorganian Cipher
+      case "ROGUE525": return -1; //Acorn of Korshem
+      case "ROGUE526": return -1; //Blacktek Timebomb
+      case "ROGUE527": return -1; //Merchant Supply Cart
+      case "ROGUE528": return -1; //Sutcliffe's Tome
       default: return 3;
     }
 }

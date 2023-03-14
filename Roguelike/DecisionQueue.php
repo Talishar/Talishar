@@ -179,7 +179,6 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         $deck = &GetZone($player, "Deck");
         $character = &GetZone($player, "Character");
         $encounter = &GetZone($player, "Encounter");
-        WriteLog("Background Event");
         GiveUniversalEquipment();
         switch($lastResult)
         {
@@ -377,6 +376,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             PrependDecisionQueue("SETENCOUNTER", $player, "007-PickMode");
             break;
           case "Follow_the_sounds_of_laughter": //shop
+            $encounter = &GetZone(1, "Encounter");
             PrependDecisionQueue("SETENCOUNTER", $player, "008-PickMode");
             break;
           case "Explore_some_nearby_ruins": //battlefield
