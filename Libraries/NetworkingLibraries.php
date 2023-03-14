@@ -796,7 +796,7 @@ function ResolveCombatDamage($damageDone)
     SetClassState($mainPlayer, $CS_DamageDealt, GetClassState($mainPlayer, $CS_DamageDealt) + $damageDone);
   }
 
-  if ($wasHit && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented])
+  if ($wasHit && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented] && !EffectPreventsHit())
   {
     $combatChainState[$CCS_DamageDealt] = $damageDone;
     if (CardType($combatChain[0]) == "W") {

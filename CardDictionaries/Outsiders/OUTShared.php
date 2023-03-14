@@ -382,7 +382,7 @@ function OUTAbilityCost($cardID)
       case "OUT108":
         if(!IsAllyAttacking() && DoesAttackHaveGoAgain())
         {
-          HitEffectsPreventedThisLink();
+          AddCurrentTurnEffect($cardID, $mainPlayer);
           WriteLog("Trap triggers and hit effects do not fire.");
           TrapTriggered($cardID);
         }

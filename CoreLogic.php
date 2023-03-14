@@ -2063,6 +2063,24 @@ function HitEffectsPreventedThisLink()
   $combatChainState[$CCS_ChainLinkHitEffectsPrevented] = 1;
 }
 
+function EffectPreventsHit()
+{
+  global $currentTurnEffects, $mainPlayer;
+  $preventsHit = false;
+  for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
+  {
+    if($currentTurnEffects[$i+1] != $mainPlayer) continue;
+    $remove = 0;
+    switch($currentTurnEffects[$i])
+    {
+      case "OUT108": $preventsHit = true; $remove = 1; break;
+      default: break;
+    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
+  }
+  return $preventsHit;
+}
+
 function HitsInRow()
 {
   global $chainLinkSummary;
