@@ -147,6 +147,7 @@ if ($decklink != "") {
   $armsSideboard = "";
   $legsSideboard = "";
   $offhandSideboard = "";
+  $quiverSideboard = "";
   $unsupportedCards = "";
   $character = "";
   $head = "";
@@ -154,6 +155,7 @@ if ($decklink != "") {
   $arms = "";
   $legs = "";
   $offhand = "";
+  $quiver = "";
   $weapon1 = "";
   $weapon2 = "";
   $weaponSideboard = "";
@@ -232,6 +234,13 @@ if ($decklink != "") {
                 $offhandSideboard .= $id;
               }
               break;
+            case "Quiver":
+              if ($quiver == "") $quiver = $id;
+              else {
+                if ($quiverSideboard != "") $quiverSideboard .= " ";
+                $quiverSideboard .= $id;
+              }
+              break;
             default:
               break;
           }
@@ -244,7 +253,6 @@ if ($decklink != "") {
             case "Chest":
               if ($chestSideboard != "") $chestSideboard .= " ";
               $chestSideboard .= $id;
-
               break;
             case "Arms":
               if ($armsSideboard != "") $armsSideboard .= " ";
@@ -257,6 +265,10 @@ if ($decklink != "") {
             case "Off-Hand":
               if ($offhandSideboard != "") $offhandSideboard .= " ";
               $offhandSideboard .= $id;
+              break;
+            case "Quiver":
+              if ($quiverSideboard != "") $quiverSideboard .= " ";
+              $quiverSideboard .= $id;
               break;
             default:
               break;
@@ -292,6 +304,7 @@ if ($decklink != "") {
   if ($weapon1 != "") $charString .= " " . $weapon1;
   if ($weapon2 != "") $charString .= " " . $weapon2;
   if ($offhand != "") $charString .= " " . $offhand;
+  if ($quiver != "") $charString .= " " . $quiver;
   if ($head != "") $charString .= " " . $head;
   if ($chest != "") $charString .= " " . $chest;
   if ($arms != "") $charString .= " " . $arms;
@@ -305,6 +318,7 @@ if ($decklink != "") {
   fwrite($deckFile, $offhandSideboard . "\r\n");
   fwrite($deckFile, $weaponSideboard . "\r\n");
   fwrite($deckFile, $sideboardCards);
+  fwrite($deckFile, $quiverSideboard);
   fclose($deckFile);
   copy($filename, "./Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
 
@@ -438,9 +452,9 @@ function GetAltCardID($cardID)
       return "WTR192";
     case "UPR211":
       return "WTR193";
-    case "HER075": 
+    case "HER075":
       return "DYN025";
-    case "LGS112": 
+    case "LGS112":
       return "DYN070";
     case "LGS116":
       return "DYN200";
@@ -453,6 +467,24 @@ function GetAltCardID($cardID)
     case "MON306":
     case "ELE237": //Cracked Baubles
       return "WTR224";
+    case "OUT077": return "WTR098";
+    case "OUT078": return "WTR099";
+    case "OUT079": return "WTR100";
+    case "OUT083": return "WTR107";
+    case "OUT084": return "WTR108";
+    case "OUT085": return "WTR109";
+    case "OUT086": return "EVR047";
+    case "OUT087": return "EVR048";
+    case "OUT088": return "EVR049";
+    case "OUT213": return "ARC191";
+    case "OUT214": return "ARC192";
+    case "OUT215": return "ARC193";
+    case "OUT216": return "MON251";
+    case "OUT217": return "MON252";
+    case "OUT218": return "MON253";
+    case "OUT222": return "ARC203";
+    case "OUT223": return "ARC204";
+    case "OUT224": return "ARC205";
   }
   return $cardID;
 }
