@@ -474,13 +474,14 @@ function ParseDraftFab($deck, $filename)
   $armsSideboard = "";
   $legsSideboard = "";
   $offhandSideboard = "";
+  $quiverSideboard = "";
   $weaponSideboard = "";
   $sideboardCards = "";
 
   $cards = explode(",", $deck);
   for ($i = 0; $i < count($cards); ++$i) {
     $card = explode(":", $cards[$i]);
-    $cardID = $card[0];
+    $cardID = GetAltCardID($card[0]);
     $quantity = $card[2];
     $type = CardType($cardID);
     switch ($type) {
@@ -516,6 +517,10 @@ function ParseDraftFab($deck, $filename)
             if ($offhandSideboard != "") $offhandSideboard .= " ";
             $offhandSideboard .= $cardID;
             break;
+          case "Quiver":
+            if ($quiverSideboard != "") $quiverSideboard .= " ";
+            $quiverSideboard .= $cardID;
+            break;
           default:
             break;
         }
@@ -537,15 +542,7 @@ function ParseDraftFab($deck, $filename)
 
   $deckFile = fopen($filename, "w");
   $charString = $character;
-  /*
-  if ($weapon1 != "") $charString .= " " . $weapon1;
-  if ($weapon2 != "") $charString .= " " . $weapon2;
-  if ($offhand != "") $charString .= " " . $offhand;
-  if ($head != "") $charString .= " " . $head;
-  if ($chest != "") $charString .= " " . $chest;
-  if ($arms != "") $charString .= " " . $arms;
-  if ($legs != "") $charString .= " " . $legs;
-  */
+
   fwrite($deckFile, $charString . "\r\n");
   fwrite($deckFile, $deckCards . "\r\n");
   fwrite($deckFile, $headSideboard . "\r\n");
@@ -554,79 +551,67 @@ function ParseDraftFab($deck, $filename)
   fwrite($deckFile, $legsSideboard . "\r\n");
   fwrite($deckFile, $offhandSideboard . "\r\n");
   fwrite($deckFile, $weaponSideboard . "\r\n");
-  fwrite($deckFile, $sideboardCards);
+  fwrite($deckFile, $sideboardCards . "\r\n");
+  fwrite($deckFile, $quiverSideboard);
   fclose($deckFile);
 }
 
 function GetAltCardID($cardID)
 {
   switch ($cardID) {
-    case "OXO001":
-      return "WTR155";
-    case "OXO002":
-      return "WTR156";
-    case "OXO003":
-      return "WTR157";
-    case "OXO004":
-      return "WTR158";
-    case "BOL002":
-      return "MON405";
-    case "BOL006":
-      return "MON400";
-    case "CHN002":
-      return "MON407";
-    case "CHN006":
-      return "MON401";
-    case "LEV002":
-      return "MON406";
-    case "LEV005":
-      return "MON400";
-    case "PSM002":
-      return "MON404";
-    case "PSM007":
-      return "MON402";
-    case "FAB015":
-      return "WTR191";
-    case "FAB016":
-      return "WTR162";
-    case "FAB023":
-      return "MON135";
-    case "FAB024":
-      return "ARC200";
-    case "FAB030":
-      return "DYN030";
-    case "FAB057":
-      return "EVR063";
-    case "DVR026":
-      return "WTR182";
-    case "RVD008":
-      return "WTR006";
-    case "UPR209":
-      return "WTR191";
-    case "UPR210":
-      return "WTR192";
-    case "UPR211":
-      return "WTR193";
-    case "HER075":
-      return "DYN025";
-    case "LGS112":
-      return "DYN070";
-    case "LGS116":
-      return "DYN200";
-    case "LGS117":
-      return "DYN201";
-    case "LGS118":
-      return "DYN202";
+    case "OXO001": return "WTR155";
+    case "OXO002": return "WTR156";
+    case "OXO003": return "WTR157";
+    case "OXO004": return "WTR158";
+    case "BOL002": return "MON405";
+    case "BOL006": return "MON400";
+    case "CHN002": return "MON407";
+    case "CHN006": return "MON401";
+    case "LEV002": return "MON406";
+    case "LEV005": return "MON400";
+    case "PSM002": return "MON404";
+    case "PSM007": return "MON402";
+    case "FAB015": return "WTR191";
+    case "FAB016": return "WTR162";
+    case "FAB023": return "MON135";
+    case "FAB024": return "ARC200";
+    case "FAB030": return "DYN030";
+    case "FAB057": return "EVR063";
+    case "DVR026": return "WTR182";
+    case "RVD008": return "WTR006";
+    case "UPR209": return "WTR191";
+    case "UPR210": return "WTR192";
+    case "UPR211": return "WTR193";
+    case "HER075": return "DYN025";
+    case "LGS112": return "DYN070";
+    case "LGS116": return "DYN200";
+    case "LGS117": return "DYN201";
+    case "LGS118": return "DYN202";
     case "ARC218":
     case "UPR224":
     case "MON306":
     case "ELE237": //Cracked Baubles
       return "WTR224";
-    case "DYN238":
-      return "MON401";
+    case "DYN238": return "MON401";
     case "RVD004": return "DVR004";
-      // case "DYN000":
-      //   return "ARC159";
+    case "OUT077": return "WTR098";
+    case "OUT078": return "WTR099";
+    case "OUT079": return "WTR100";
+    case "OUT083": return "WTR107";
+    case "OUT084": return "WTR108";
+    case "OUT085": return "WTR109";
+    case "OUT086": return "EVR047";
+    case "OUT087": return "EVR048";
+    case "OUT088": return "EVR049";
+    case "OUT213": return "ARC191";
+    case "OUT214": return "ARC192";
+    case "OUT215": return "ARC193";
+    case "OUT216": return "MON251";
+    case "OUT217": return "MON252";
+    case "OUT218": return "MON253";
+    case "OUT222": return "ARC203";
+    case "OUT223": return "ARC204";
+    case "OUT224": return "ARC205";
   }
   return $cardID;
 }
@@ -638,48 +623,21 @@ function IsBanned($cardID, $format)
     if(substr($cardID, 0, 3) == "OUT") return true;
   }
   switch ($format) {
-
-      //  The following cards are banned in Blitz:
-      //  ARC076: Viserai
-      //  ARC077: Nebula Blade
-      //  ELE186: ELE187: ELE188: Awakening
-      //  ELE186: ELE187: ELE188: Ball Lightning
-      //  WTR164: WTR165: WTR166: Drone of Brutality
-      //  ELE223: Duskblade
-      //  WTR152: Heartened Cross Strap
-      //  CRU174: CRU175: CRU176: Snapback
-      //  ARC129: ARC130: ARC131: Stir the Aetherwind
-      //  MON239: Stubby Hammerers
-      //  ELE115: Crown of Seeds (Until Oldhim becomes Living Legend)
-      //  MON183: MON184: MON185: Seeds of Agony (Until Chane becomes Living Legend)
-      //  CRU141: Bloodsheath Skeleta
-      //  EVR037: Mask of the Pouncing Lynx
     case "blitz":
     case "compblitz":
       switch ($cardID) {
-        case "ARC076":
-        case "ARC077":
-        case "ELE006":
-        case "ELE186":
-        case "ELE187":
-        case "ELE188":
-        case "WTR164":
-        case "WTR165":
-        case "WTR166":
-        case "ELE223":
         case "WTR152":
-        case "CRU174":
-        case "CRU175":
-        case "CRU176":
-        case "ARC129":
-        case "ARC130":
-        case "ARC131":
+        case "WTR164": case "WTR165": case "WTR166":
+        case "ARC076": case "ARC077": //Viserai
+        case "ARC129": case "ARC130": case "ARC131":
+        case "ELE006":
+        case "ELE186": case "ELE187": case "ELE188":
+        case "ELE223":
+        case "CRU141":
+        case "CRU174": case "CRU175": case "CRU176":
         case "MON239":
         case "ELE115":
-        case "MON183":
-        case "MON184":
-        case "MON185":
-        case "CRU141":
+        case "MON183": case "MON184": case "MON185":
         case "EVR037":
         case "EVR123": // Aether Wildfire
         case "UPR113": case "UPR114": case "UPR115": // Aether Icevein
@@ -689,54 +647,31 @@ function IsBanned($cardID, $format)
           return false;
       }
       break;
-
-      //    MON001: Prism, Sculptor of Arc Light (as of August 30, 2022)
-      //    MON003: Luminaris (as of August 30, 2022)
-      //    EVR017: Bravo, Star of the Show
-      //    MON153: Chane, Bound by Shadow
-      //    MON155: Galaxxi Black
-
-      //    The following cards are banned in Classic Constructed:
-      //    ELE006: Awakening
-      //    ELE186: ELE187: ELE188: Ball Lightning
-      //    WTR164: WTR165: WTR166: Drone of Brutality
-      //    ELE223: Duskblade
-      //    ARC170: ARC171: ARC172: Plunder Run
-      //    MON239: Stubby Hammerers
-      //    CRU141: Bloodsheath Skeleta
-      //    ELE114: Pulse of Isenloft
     case "cc":
     case "compcc":
       switch ($cardID) {
-        case "MON001":
-        case "MON003":
-        case "EVR017":
+        case "WTR164": case "WTR165": case "WTR166": //Drone of Brutality
+        case "ARC170": case "ARC171": case "ARC172": //Plunder Run
+        case "CRU141":
+        case "MON001": //Prism
+        case "MON003": //Luminaris
         case "MON153":
         case "MON155":
-        case "ELE006":
-        case "ELE186":
-        case "ELE187":
-        case "ELE188":
-        case "WTR164":
-        case "WTR165":
-        case "WTR166":
-        case "ELE223":
-        case "ARC170":
-        case "ARC171":
-        case "ARC172":
         case "MON239":
-        case "CRU141":
-        case "ELE114":
-        case "MON266": case "MON267": case "MON268":
+        case "MON266": case "MON267": case "MON268": //Belittle
         case "ELE003":
+        case "ELE006":
+        case "ELE114":
         case "ELE172":
+        case "ELE186": case "ELE187": case "ELE188":
+        case "ELE223":
+        case "EVR017":
         case "UPR139":
           return true;
         default:
           return false;
       }
       break;
-
     case "commoner":
       switch ($cardID) {
         case "ELE186": //Ball Lightning
