@@ -78,7 +78,7 @@
             //WriteLog($cardID);
             $encounter = &GetZone($playerID, "Encounter");
             $cost = getShopCost($cardID);
-            //WriteLog("cost: " . $cost . ", total: " . $encounter["Gold"]);
+            //WriteLog("cost: " . $cost . ", total: " . $encounter[9]);
             if($cardID == "CardBack")
             {
               $newShop = $myDQ[1];
@@ -117,8 +117,8 @@
               $newShop.=",CardBack";
               //WriteLog($newShop);
               ClearPhase($playerID); //Clear the screen and keep going
-              ContinueDecisionQueue($playerID, "");
               PrependDecisionQueue("SHOP", $playerID, $newShop);
+              ContinueDecisionQueue($playerID, "");
               break;
             }
           }
@@ -170,6 +170,7 @@
           }
           else if($buttonInput == "Leave"){
             WriteLog("You decide to leave the village and carry on with your adventure.");
+            WriteLog("DQ: ".$myDQ[0].$myDQ[1].$myDQ[2].$myDQ[3]);
             ClearPhase(1);
             ContinueDecisionQueue(1, $buttonInput);
           }

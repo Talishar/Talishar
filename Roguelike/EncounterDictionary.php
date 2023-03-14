@@ -40,9 +40,9 @@ function EncounterDescription()
       return "The man smiles and hands you your reward. You take it before making your way back out in search of your next bounty.";
     case 007:
       return "You found a campfire. Choose what you want to do.";
-    case 8:
+    case 8: //Shop event
       $myDQ = &GetZone(1, "DecisionQueue");
-      if($myDQ[0] == "Shop"){
+      if($myDQ[0] == "SHOP"){
         return "You come across a small village. You wander through the market, investigating the various wares. The village has many residents, and you note the location of a local healer, as well as an elderly urchin with outstretched palms.";
       } 
       else { //This should just be the beggar/removedeck 
@@ -234,7 +234,13 @@ function EncounterImage()
     case 007:
       return "UPR221_cropped.png";
     case 8:
-      return "WTR151_cropped.png";
+      $myDQ = &GetZone(1, "DecisionQueue");
+      if($myDQ[0] == "SHOP"){
+        return "WTR151_cropped.png";
+      }
+      else { //This should just be the beggar/remove section of the shop
+        return "CRU075_cropped.png";
+      }
     case 9:
       return GetCrossroadsImage();
 
