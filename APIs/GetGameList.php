@@ -82,9 +82,8 @@ if ($handle = opendir($path)) {
         array_push($response->openGames, $openGame);
       }
     }
-
-
   }
+  $response->gameInProgressCount = $gameInProgressCount;
   closedir($handle);
   echo json_encode($response);
 }
