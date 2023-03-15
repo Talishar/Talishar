@@ -391,6 +391,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Talk_to_a_wandering_trader": //Rocks
             PrependDecisionQueue("SETENCOUNTER", $player, "208-PickMode");
             break;
+          case "Follow_the_sound_of_metallic_ringing": //Giant Forge
+            PrependDecisionQueue("SETENCOUNTER", $player, "204-PickMode");
+            break;
           case "Take_the_scenic_route_through_the_back_streets": //Stealthy Stabber
             PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight");
             break;

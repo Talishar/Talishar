@@ -760,50 +760,63 @@ function GetPoolTalent($arrayParameters){
   return ProcessPool($CardRewardPool, $arrayParameters);
 }
 
+//TODO: Add slot (head, chest etc)
 function GetPoolEquipment($arrayParameters){
   $CardRewardPool = array(
-  array("WTR150", "Generic", "Legendary"), //Fyendal's Spring Tunic
-  array("WTR151", "Generic", "Common"), //Hope Merchant's Hood
-  array("WTR152", "Generic", "Common"), //Heartened Cross Strap
+  array("WTR041", "Bravo", "Legendary", "Chest"), //Tectonic Plating
+  array("WTR042", "Bravo", "Legendary", "Head"), //Helm of Isen's Peak
+  array("WTR079", "Fai", "Legendary", "Head"), //Mask of Momentum
+  array("WTR080", "Fai", "Common", "Legs"), //Breaking Scales
+  array("WTR116", "Dorinthea", "Legendary", "Arms"), //Braveforge Bracers
+  array("WTR117", "Dorinthea", "Common", "Legs"), //Refraction Bolters
+  array("WTR150", "Generic", "Legendary", "Chest"), //Fyendal's Spring Tunic
+  array("WTR151", "Generic", "Common", "Head"), //Hope Merchant's Hood
+  array("WTR152", "Generic", "Common", "Chest"), //Heartened Cross Strap
   array("WTR153", "Generic", "Common"), //Goliath Gauntlet
-  array("WTR154", "Generic", "Common"), //Snapdragon Scalers
-  array("WTR155", "Generic", "Common"), //Ironrot Helm
-  //array("WTR156", "Generic", "Common"), //Ironrot Chest - Omitted due to being included in universal equipment
-  array("WTR157", "Generic", "Common"), 
-  array("WTR158", "Generic", "Common"), 
+  array("WTR154", "Generic", "Common", "Legs"), //Snapdragon Scalers
+  array("WTR155", "Generic", "Common", "Head"), //Ironrot Helm
+  //array("WTR156", "Generic", "Common", "Chest"), //Ironrot Chest - Omitted due to being included in universal equipment
+  array("WTR157", "Generic", "Common", "Arms"), //Ironrot Gauntlets
+  array("WTR158", "Generic", "Common", "Legs"), //Ironrot Boots
 
-  array("ARC150", "Generic", "Legendary"), //Arcanite Skullcap
-  array("ARC151", "Generic", "Common"), //Talismanic Lens
-  array("ARC152", "Generic", "Common"), //Vest of the First Fist
-  array("ARC153", "Generic", "Common"), //Bracers of Belief
-  array("ARC154", "Generic", "Common"), //Mage Master Boots
+  array("ARC041", "Lexi", "Legendary", "Head"), //Skullbone Crosswrap
+  array("ARC042", "Lexi", "Common"), //Bull's Eye Bracers
+  array("ARC150", "Generic", "Legendary", "Head"), //Arcanite Skullcap
+  array("ARC151", "Generic", "Common", "Head"), //Talismanic Lens
+  array("ARC152", "Generic", "Common", "Chest"), //Vest of the First Fist
+  array("ARC153", "Generic", "Common", "Arms"), //Bracers of Belief
+  array("ARC154", "Generic", "Common", "Legs"), //Mage Master Boots
   //ARC155 - 158 Nullrune Boots omitted due to being included in universal equipment
 
+  array("CRU025", "Bravo", "Majestic", "Arms"), //Crater Fist
+  array("CRU053", "Fai", "Majestic", "Legs"), //Breeze Rider Boots
+  array("CRU081", "Dorinthea", "Majestic", "Chest"), //Courage of Bladehold
+  array("CRU122", "Lexi", "Majestic", "Legs"), //Perch Grapplers
   //CRU179 - Omitted due to irrelevance... though there's definitely a world where this is relevant, though maybe not playable. 
 
-  array("MON238", "Generic", "Common"), //Blood Drop Brocade
-  array("MON239", "Generic", "Common"), //Stubby Hammerers
-  array("MON240", "Generic", "Common"), //Time Skippers
-  array("MON241", "Generic", "Common"), //Ironhide Helm
-  array("MON242", "Generic", "Common"), 
-  array("MON243", "Generic", "Common"), 
-  array("MON244", "Generic", "Common"), //Ironhide Boots
+  array("MON238", "Generic", "Common", "Chest"), //Blood Drop Brocade
+  array("MON239", "Generic", "Common", "Arms"), //Stubby Hammerers
+  array("MON240", "Generic", "Common", "Legs"), //Time Skippers
+  array("MON241", "Generic", "Common", "Head"), //Ironhide Helm
+  array("MON242", "Generic", "Common", "Chest"), 
+  array("MON243", "Generic", "Common", "Arms"), 
+  array("MON244", "Generic", "Common", "Legs"), //Ironhide Boots
 
-  array("ELE233", "Generic", "Common"), //Ragamuffin's Hat
-  array("ELE234", "Generic", "Common"), //Deep Blue
+  array("ELE233", "Generic", "Common", "Head"), //Ragamuffin's Hat
+  array("ELE234", "Generic", "Common", "Chest"), //Deep Blue
   array("ELE235", "Generic", "Common"), //Cracker Jax
-  array("ELE236", "Generic", "Common"), //Runaways
+  array("ELE236", "Generic", "Common", "Legs"), //Runaways
 
   //EVR155 - Arcane Lantern (RARE) - omitted for now. I want to be able to tag the diff between Equips that interact with Arcane and those that don't before I implement the arcane ones.
 
-  array("UPR182", "Generic", "Legendary"), //Crown of Providence
-  array("UPR183", "Generic", "Common"), //Heliod's Mitre - Okay, not technically a common, but I'm okay with it going in the common pool if you are *wink*
-  array("UPR184", "Generic", "Common"), //Quelling Robe
+  array("UPR182", "Generic", "Legendary", "Head"), //Crown of Providence
+  array("UPR183", "Generic", "Common", "Head"), //Heliod's Mitre - Okay, not technically a common, but I'm okay with it going in the common pool if you are *wink*
+  array("UPR184", "Generic", "Common", "Chest"), //Quelling Robe
   array("UPR185", "Generic", "Common"), //Quelling Sleeves
   array("UPR186", "Generic", "Common"), //Quelling Slippers
 
   //DYN236 thru 29 - Spellfray equipment. I do want to put these in the pool, but I'd like to tag them as arcane first and put them in my 2nd draft
-  array("DYN234", "Generic", "Legendary"), //Crown of Dominion
+  array("DYN234", "Generic", "Legendary", "Head"), //Crown of Dominion
   array("DYN235", "Generic", "Rare") //Ornate Tessen
   );
 

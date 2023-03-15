@@ -62,7 +62,12 @@ function RandomEvent()
   $commonEvents = array("Explore_some_nearby_ruins", "Visit_a_local_library");
   $rareEvents = array("Enter_a_nearby_temple", "Talk_to_a_wandering_trader");
   $majesticEvents = array("Explore_some_nearby_ruins", "Visit_a_local_library", "Enter_a_nearby_temple");
+  $devTestEvents = array("Visit_a_local_library", "Follow_the_sound_of_metallic_ringing"); //Put events in here to test them. They will be the only ones to show up. Make sure you put at least 2 options
   $randEvent = rand(1,100);
+  if(count($devTestEvents) >= 2 ){
+    $options = GetOptions(2, count($devTestEvents)-1);
+    return $devTestEvents[$options[0]].",".$devTestEvents[$options[1]];
+  }
   if($randEvent > 90)
   {
     $options = GetOptions(2, count($majesticEvents)-1);

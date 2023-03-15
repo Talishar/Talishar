@@ -190,7 +190,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("VOLTHAVEN", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
-    case 204: //obsolete, doesn't currently work
+    case 204: //TODO: Integrate with CardRewardPools.php
       AddDecisionQueue("BUTTONINPUT", $player, "Use_Forge,Ask_Legend,Leave");
       AddDecisionQueue("BLACKSMITH", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
