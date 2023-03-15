@@ -769,10 +769,13 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT189": case "OUT190": case "OUT191":
-        AddCurrentTurnEffect($cardID, $defPlayer);
-        AddNextTurnEffect($cardID, $defPlayer);
-        $char = &GetPlayerCharacter($defPlayer);
-        $char[1] = 3;
+        if(IsHeroAttackTarget())
+        {
+          AddCurrentTurnEffect($cardID, $defPlayer);
+          AddNextTurnEffect($cardID, $defPlayer);
+          $char = &GetPlayerCharacter($defPlayer);
+          $char[1] = 3;
+        }
         break;
       case "OUT198": case "OUT199": case "OUT200":
         SetArsenalFacing("UP", $defPlayer);
