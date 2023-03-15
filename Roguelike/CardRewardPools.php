@@ -17,36 +17,38 @@ encounter[11] = cost to heal at the shop
 encounter[12] = cost to remove card at the shop
 */
 
-
-function GetPool2($type, $tags){
-
-  if($type == "Class") return GetPoolClass(array($type, $rarity, $background));
-  else if($type == "Generic") return GetPoolGeneric(array($rarity));
-  else if($type == "Talent") return GetPoolTalent(array($type, $rarity, $background));
-  else if($type == "Equipment") {
-    switch($rarity){
-      //Be careful when asking for equipment of a specific rarity... There aren't a whole lot of options!
-      case "Common": case "Rare": case "Majestic": case "Legendary": return GetPoolEquipment(array($rarity));
-      case "-": default: return GetPoolEquipment(array());
-    }
-  }
-  else return ("WTR224"); //Cracked Bauble as a default, but we shouldn't see this
-}
-function GetPool($type, $hero, $rarity, $background){
+//For Maindeck cards, $tag1 and $tag2 can be any tag that you want to use to filter results. For equipment, set $tag1 according to note below
+function GetPool($type, $hero, $rarity, $background, $tag1="", $tag2 = "",){
   if(($hero == "Bravo" || $hero == "Dorinthea") && $type == "Talent") $type = "Class";
-
-  return GetPool2($type, array($hero, $rarity, $background));
 
   if($type == "Class") return GetPoolClass(array($rarity, $background));
   else if($type == "Generic") return GetPoolGeneric(array($rarity));
   else if($type == "Talent") return GetPoolTalent(array($type, $rarity, $background));
   else if($type == "Equipment") {
-    switch($rarity){
-      //Be careful when asking for equipment of a specific rarity... There aren't a whole lot of options!
-      case "Common": case "Rare": case "Majestic": case "Legendary": return GetPoolEquipment(array($rarity));
-      case "-": default: return GetPoolEquipment(array());
+    //Okay, this is a little weird, but to call for equipment, set $type to be "Equipment", and $tag1 to be either "Generic", "All", or "Hero". Default is "All". 
+    if($rarity = "-"){
+      return GetPoolLogicEquipment($tag1, $hero, array($tag2));
+    }
+    else {
+      return GetPoolLogicEquipment($tag1, $hero, array($rarity, $tag2));
     }
   }
+}
+
+//See GetPool() for logic. $type would be 
+function GetPoolLogicEquipment($tag1, $hero, $tags){
+  if($tag1 == "Hero"){
+    array_push($tags, $hero);
+    return GetPoolEquipment($tags);
+  }
+  else if($tag1 == "Generic"){
+    array_push($tags, "Generic");
+    return GetPoolEquipment($tags);
+  }
+  else { // "All" mode as default. Can return generic and class cards with the given tags. 
+    return array_merge(GetPoolLogicEquipment("Hero", $hero, $tags), GetPoolLogicEquipment("Generic", $hero, $tags));
+  }
+
 }
 
 //Called at DecisionQueue.php at Backgrounds event
@@ -866,6 +868,8 @@ function GetPoolEquipment($arrayParameters){
 
 function ProcessPool($CardRewardPool, $arrayOfParameters){
 
+$arrayOfParameters = array_filter($arrayOfParameters);
+$arrayOfParameters = array_values($arrayOfParameters);
 $returnPool = array(); // Create an empty list of cards to be returned
 $sizeParameters = count($arrayOfParameters);
 $paramCheck = new SplFixedArray($sizeParameters); //Create a shadow of the parameters...
