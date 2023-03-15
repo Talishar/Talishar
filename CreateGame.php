@@ -138,5 +138,6 @@ $handler = fopen($filename, "w");
 fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
-WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!0!0!0!0"); //Initialize SHMOP cache for this game
+$cacheVisibility = ($visibility == "public" ? "1" : "0");
+WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!" . $cacheVisibility . "!0!0!0"); //Initialize SHMOP cache for this game
 header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink&format=$format&set=$set&decksToTry=$decksToTry&favoriteDeck=$favoriteDeck&favoriteDecks=$favoriteDeckLink");

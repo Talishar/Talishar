@@ -26,6 +26,11 @@ if (!is_numeric($playerID)) {
   exit;
 }
 
+if($playerID == 3 && GetCachePiece($gameName, 9) != "1") {
+  header('HTTP/1.0 403 Forbidden');
+  exit;
+}
+
 $authKey = TryGet("authKey", "");
 $lastUpdate = intval(TryGet("lastUpdate", 0));
 $windowWidth = intval(TryGet("windowWidth", 0));

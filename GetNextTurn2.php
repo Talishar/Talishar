@@ -19,6 +19,11 @@ if (!file_exists("./Games/" . $gameName . "/")) {
   exit;
 }
 
+if($playerID == 3 && GetCachePiece($gameName, 9) != "1") {
+  header('HTTP/1.0 403 Forbidden');
+  exit;
+}
+
 $authKey = TryGet("authKey", 3);
 $lastUpdate = intval(TryGet("lastUpdate", 0));
 $windowWidth = intval(TryGet("windowWidth", 0));

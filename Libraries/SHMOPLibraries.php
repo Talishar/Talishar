@@ -9,7 +9,7 @@
 6 - Last gamestate update (time)
 7 - P1 Hero
 8 - P2 Hero
-9 - Last current cache piece (possibly defunct?)
+9 - Game visibility (1 = public, 0 = private)
 10 - Is Replay
 11 - Number P2 disconnects
 12 - Current player status (0 = active, 1 = inactive)
