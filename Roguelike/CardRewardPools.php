@@ -18,19 +18,35 @@ encounter[12] = cost to remove card at the shop
 */
 
 
-function GetPool($type, $hero, $rarity, $background){
-  if(($hero == "Bravo" || $hero == "Dorinthea") && $type == "Talent") $type = "Class";
+function GetPool2($type, $tags){
 
   if($type == "Class") return GetPoolClass(array($type, $rarity, $background));
   else if($type == "Generic") return GetPoolGeneric(array($rarity));
   else if($type == "Talent") return GetPoolTalent(array($type, $rarity, $background));
   else if($type == "Equipment") {
     switch($rarity){
-      case "Common": case "Legendary": return GetPoolEquipment(array($rarity));
+      //Be careful when asking for equipment of a specific rarity... There aren't a whole lot of options!
+      case "Common": case "Rare": case "Majestic": case "Legendary": return GetPoolEquipment(array($rarity));
       case "-": default: return GetPoolEquipment(array());
     }
   }
   else return ("WTR224"); //Cracked Bauble as a default, but we shouldn't see this
+}
+function GetPool($type, $hero, $rarity, $background){
+  if(($hero == "Bravo" || $hero == "Dorinthea") && $type == "Talent") $type = "Class";
+
+  return GetPool2($type, array($hero, $rarity, $background));
+
+  if($type == "Class") return GetPoolClass(array($rarity, $background));
+  else if($type == "Generic") return GetPoolGeneric(array($rarity));
+  else if($type == "Talent") return GetPoolTalent(array($type, $rarity, $background));
+  else if($type == "Equipment") {
+    switch($rarity){
+      //Be careful when asking for equipment of a specific rarity... There aren't a whole lot of options!
+      case "Common": case "Rare": case "Majestic": case "Legendary": return GetPoolEquipment(array($rarity));
+      case "-": default: return GetPoolEquipment(array());
+    }
+  }
 }
 
 //Called at DecisionQueue.php at Backgrounds event
@@ -794,30 +810,55 @@ function GetPoolEquipment($arrayParameters){
   array("CRU122", "Lexi", "Majestic", "Legs"), //Perch Grapplers
   //CRU179 - Omitted due to irrelevance... though there's definitely a world where this is relevant, though maybe not playable. 
 
+  array("MON107", "Dorinthea", "Legendary", "Legs"), //Valiant Dynamo
+  array("MON108", "Dorinthea", "Common", "Arms"), //Gallantry Gold
   array("MON238", "Generic", "Common", "Chest"), //Blood Drop Brocade
   array("MON239", "Generic", "Common", "Arms"), //Stubby Hammerers
   array("MON240", "Generic", "Common", "Legs"), //Time Skippers
   array("MON241", "Generic", "Common", "Head"), //Ironhide Helm
-  array("MON242", "Generic", "Common", "Chest"), 
+  array("MON242", "Generic", "Common", "Chest"),
   array("MON243", "Generic", "Common", "Arms"), 
   array("MON244", "Generic", "Common", "Legs"), //Ironhide Boots
 
+  array("ELE144", "Lexi", "Legendary", "Chest"), //Heart of Ice
+  array("ELE145", "Lexi", "Common", "Chest"), //Coat of Frost
+  array("ELE173", "Lexi", "Legendary", "Arms"), //Shock Charmers
+  array("ELE174", "Lexi", "Common", "Arms"), //Mark of Lightning
+  array("ELE203", "Bravo", "Legendary", "Offhand"), //Rampart of the Ram's Head
+  array("ELE204", "Bravo", "Common", "Offhand"), //Rotten Old Buckler
+  array("ELE213", "Lexi", "Legendary", "Head"), //New Horizon
+  array("ELE214", "Lexi", "Common", "Head"), //Honing Hood
   array("ELE233", "Generic", "Common", "Head"), //Ragamuffin's Hat
   array("ELE234", "Generic", "Common", "Chest"), //Deep Blue
   array("ELE235", "Generic", "Common"), //Cracker Jax
   array("ELE236", "Generic", "Common", "Legs"), //Runaways
 
+  array("EVR020", "Bravo", "Majestic", "Chest"), //Earthlore Bounty
+  array("EVR037", "Fai", "Majestic", "Head"), //Mask of the Pouncing Lynx
+  array("EVR053", "Dorinthea", "Majestic", "Head"), //Helm of Sharp Eye
   //EVR155 - Arcane Lantern (RARE) - omitted for now. I want to be able to tag the diff between Equips that interact with Arcane and those that don't before I implement the arcane ones.
 
+  array("UPR047", "Fai", "Common", "Arms"), //Heat Wave
+  array("UPR084", "Fai", "Legendary", "Chest"), //Flamescale Furnace
+  array("UPR085", "Fai", "Common", "Chest"), //Sash of Sandikai
+  array("UPR136", "Lexi", "Legendary", "Head"), //Coronet Peak
+  array("UPR137", "Lexi", "Common", "Head"), //Glacial Horns
+  array("UPR158", "Fai", "Legendary", "Arms"), //Tiger Stripe Shuko
+  array("UPR159", "Fai", "Common", "Legs"), //Tide Flippers
   array("UPR182", "Generic", "Legendary", "Head"), //Crown of Providence
   array("UPR183", "Generic", "Common", "Head"), //Heliod's Mitre - Okay, not technically a common, but I'm okay with it going in the common pool if you are *wink*
   array("UPR184", "Generic", "Common", "Chest"), //Quelling Robe
-  array("UPR185", "Generic", "Common"), //Quelling Sleeves
-  array("UPR186", "Generic", "Common"), //Quelling Slippers
+  array("UPR185", "Generic", "Common", "Arms"), //Quelling Sleeves
+  array("UPR186", "Generic", "Common", "Legs"), //Quelling Slippers
 
+  array("DYN026", "Bravo", "Majestic", "Offhand"), //Seasoned Saviour
+  array("DYN027", "Bravo", "Rare", "Offhand"), //Steelbraid Buckler
+  array("DYN045", "Fai", "Majestic", "Chest"), //Blazing Yoroi
+  array("DYN046", "Fai", "Rare", "Arms"), //Tearing Shuko
+  array("DYN152", "Lexi", "Rare", "Arms"), //Hornet's Sting
   //DYN236 thru 29 - Spellfray equipment. I do want to put these in the pool, but I'd like to tag them as arcane first and put them in my 2nd draft
   array("DYN234", "Generic", "Legendary", "Head"), //Crown of Dominion
-  array("DYN235", "Generic", "Rare") //Ornate Tessen
+  array("DYN235", "Generic", "Rare", "Offhand") //Ornate Tessen
   );
 
   return ProcessPool($CardRewardPool, $arrayParameters);
