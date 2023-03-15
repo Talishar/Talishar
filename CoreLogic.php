@@ -2065,7 +2065,7 @@ function HitEffectsPreventedThisLink()
 
 function EffectPreventsHit()
 {
-  global $currentTurnEffects, $mainPlayer;
+  global $currentTurnEffects, $mainPlayer, $combatChain;
   $preventsHit = false;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
@@ -2073,7 +2073,7 @@ function EffectPreventsHit()
     $remove = 0;
     switch($currentTurnEffects[$i])
     {
-      case "OUT108": $preventsHit = true; $remove = 1; break;
+      case "OUT108": if(CardType($combatChain[0]) == "AA") { $preventsHit = true; $remove = 1; } break;
       default: break;
     }
     if($remove == 1) RemoveCurrentTurnEffect($i);
