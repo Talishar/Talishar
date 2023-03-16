@@ -1263,11 +1263,11 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           $remove = 1;
           break;
         case "OUT228":
-          if($preventable && $damage == 3) $damage = 0;
+          if($preventable && $damage <= 3) $damage = 0;
           $remove = 1;
           break;
         case "OUT229":
-          if($preventable && $damage == 2) $damage = 0;
+          if($preventable && $damage <= 2) $damage = 0;
           $remove = 1;
           break;
         case "OUT230":
