@@ -117,6 +117,14 @@ function GetRandomCards($number = 4, $special = "-", $specialType = "-")
     $poolResources = array("WTR000", "ARC000", "EVR000", "CRU000", "UPR000", "DVR027", "WTR224", "ARC218", "MON306", "ELE237", "UPR224"); //5 cracked baubles to weight them as more likely to occur. 11 options equally likely
     return $poolResources[rand(0, count($poolResources) - 1)];
   }
+  else if($special == "Equipment"){ //$specialType should be "Arms", "Chest" etc. This can only be one at a time so far
+    //WriteLog($number);
+    $encounter = &GetZone(1, "Encounter");
+    $result = [];                               //Rarity                          //When I say $number, I mean slot
+    $pool = GetPool("Equipment", $encounter[3], $specialType, $encounter[7], "All", $number);
+    array_push($result, $pool[rand(0, count($pool) - 1)]);
+    return $result[0];
+  }
   else //default. This is used in the combat encounter rewards. Literally everything passed into the function is ignored.
   {
     $result = [];

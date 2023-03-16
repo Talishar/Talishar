@@ -134,10 +134,10 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         {
           case "Use_Forge":
             WriteLog("You used your might to craft some armor.");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomArmor("Head"));
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomArmor("Chest"));
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomArmor("Arms"));
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomArmor("Legs"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Head", "Equipment", "Common"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Chest", "Equipment", "Common"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Arms", "Equipment", "Common"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Legs", "Equipment", "Common"));
             break;
           case "Ask_Legend":
             WriteLog("A giant gave you a legendary gift.");

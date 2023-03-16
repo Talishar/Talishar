@@ -26,7 +26,7 @@ function GetPool($type, $hero, $rarity, $background, $tag1="", $tag2 = "",){
   else if($type == "Talent") return GetPoolTalent(array($type, $rarity, $background));
   else if($type == "Equipment") {
     //Okay, this is a little weird, but to call for equipment, set $type to be "Equipment", and $tag1 to be either "Generic", "All", or "Hero". Default is "All". 
-    if($rarity = "-"){
+    if($rarity == "-"){
       return GetPoolLogicEquipment($tag1, $hero, array($tag2));
     }
     else {
