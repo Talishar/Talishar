@@ -19,11 +19,6 @@ if (!file_exists("./Games/" . $gameName . "/")) {
   exit;
 }
 
-if($playerID == 3 && GetCachePiece($gameName, 9) != "1") {
-  header('HTTP/1.0 403 Forbidden');
-  exit;
-}
-
 $authKey = TryGet("authKey", 3);
 $lastUpdate = intval(TryGet("lastUpdate", 0));
 $windowWidth = intval(TryGet("windowWidth", 0));
@@ -39,6 +34,12 @@ include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
 
 SetHeaders();
+
+if($playerID == 3 && GetCachePiece($gameName, 9) != "1") {
+  echo($playerID . " " . $gameName . " " . GetCachePiece($gameName, 9));
+  header('HTTP/1.0 403 Forbidden');
+  exit;
+}
 
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $opponentDisconnected = false;

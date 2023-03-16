@@ -156,7 +156,6 @@ function GamestateUpdated($gameName)
   $cacheArr[0]++;
   $currentTime = round(microtime(true) * 1000);
   $cacheArr[5] = $currentTime;
-  $cacheArr[8] = $currentPlayer;
   WriteCache($gameName, implode(SHMOPDelimiter(), $cacheArr));
 }
 
