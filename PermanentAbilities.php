@@ -390,6 +390,23 @@ function PermanentPlayAbilities($attackID, $from="")
     }
   }
 }
+
+function PermanentAddAttackAbilities()
+{
+  global $mainPlayer;
+  $amount = 0;
+  $permanents = &GetPermanents($mainPlayer);
+  for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
+    switch($permanents[$i]) {
+      case "ROGUE705":
+        $amount += 1;
+        break;
+      default:
+        break;
+    }
+  }
+  return $amount;
+}
 /*
 function DestroyAlly($player, $index)
 {

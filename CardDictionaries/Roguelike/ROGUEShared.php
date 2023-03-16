@@ -72,7 +72,7 @@ function ROGUEEffectAttackModifier($cardID)
       case "ROGUE704":
         global $currentPlayer;
         $banish = &GetBanish($currentPlayer);
-        $rv = 0;
+        $rv = -1;
         WriteLog("Attack->".$combatChain[0]);
         for($i = 0; $i < count($banish); $i += BanishPieces())
         {
