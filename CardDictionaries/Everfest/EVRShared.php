@@ -640,7 +640,7 @@
         if($from == "PLAY"){
           $numToDraw = 0;
           $card = "";
-          while(($card = RemoveHand($currentPlayer, 0)) != "") { WriteLog($card); AddBottomDeck($card, $currentPlayer, "HAND"); ++$numToDraw; }
+          while(($card = RemoveHand($currentPlayer, 0)) != "") { AddBottomDeck($card, $currentPlayer, "HAND"); ++$numToDraw; }
           while(($card = RemoveArsenal($currentPlayer, 0)) != "") { AddBottomDeck($card, $currentPlayer, "ARS"); ++$numToDraw; }
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
           for ($i = 0; $i < $numToDraw; $i++) {

@@ -220,7 +220,7 @@ function RemoveArsenal($player, $index)
     unset($arsenal[$i]);
   }
   $arsenal = array_values($arsenal);
-  return $index;
+  return $cardID;
 }
 
 function SetCCAttackModifier($index, $amount)
