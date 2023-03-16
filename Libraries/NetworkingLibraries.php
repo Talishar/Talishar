@@ -601,6 +601,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       fwrite($counterFile, $counter+1);
       fclose($counterFile);
       break;
+    case 100013: //Enable Spectate
+      SetCachePiece($gameName, 9, "1");
+      break;
     default:
       break;
   }
