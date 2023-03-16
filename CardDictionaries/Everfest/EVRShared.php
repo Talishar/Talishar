@@ -639,8 +639,9 @@
       case "EVR187":
         if($from == "PLAY"){
           $numToDraw = 0;
-          while($card = RemoveHand($currentPlayer, 0) != "") { AddBottomDeck($card, $currentPlayer, "HAND"); ++$numToDraw; }
-          while($card = RemoveArsenal($currentPlayer, 0) != "") { AddBottomDeck($card, $currentPlayer, "ARS"); ++$numToDraw; }
+          $card = "";
+          while(($card = RemoveHand($currentPlayer, 0)) != "") { WriteLog($card); AddBottomDeck($card, $currentPlayer, "HAND"); ++$numToDraw; }
+          while(($card = RemoveArsenal($currentPlayer, 0)) != "") { AddBottomDeck($card, $currentPlayer, "ARS"); ++$numToDraw; }
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
           for ($i = 0; $i < $numToDraw; $i++) {
             AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
