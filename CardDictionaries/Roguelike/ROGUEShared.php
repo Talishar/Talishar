@@ -40,7 +40,7 @@ function ROGUEAbilityHasGoAgain($cardID)
 
 function ROGUEEffectAttackModifier($cardID)
 {
-    global $combatChainState, $CCS_LinkBaseAttack;
+    global $combatChain, $combatChainState, $CCS_LinkBaseAttack;
     $params = explode(",", $cardID);
     $cardID = $params[0];
     if (count($params) > 1) $parameter = $params[1];
@@ -68,6 +68,18 @@ function ROGUEEffectAttackModifier($cardID)
       case "ROGUE614": return 3;
       case "ROGUE615": return 4;
       case "ROGUE616": return 5;
+      case "ROGUE702": case "ROGUE702-NA": return 2;
+      case "ROGUE704":
+        global $currentPlayer;
+        $banish = &GetBanish($currentPlayer);
+        $rv = 0;
+        WriteLog("Attack->".$combatChain[0]);
+        for($i = 0; $i < count($banish); $i += BanishPieces())
+        {
+          if($banish[$i] == $combatChain[0]) ++$rv;
+          WriteLog("Banish[i]->".$banish[$i]);
+        }
+        return $rv;
       default: return 0;
     }
 }
@@ -95,6 +107,9 @@ function ROGUECombatEffectActive($cardID, $attackID)
         case "ROGUE605-second": return GetClassState($currentPlayer, $CS_NumAttacks) == 2;
         case "ROGUE607": return true;
         case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
+        case "ROGUE702": return PitchValue($attackID) == 2;
+        case "ROGUE702-NA": return true;
+        case "ROGUE704": return true;
         default:
             return false;
     }
@@ -143,7 +158,11 @@ function ROGUECardType($cardID)
       case "ROGUE606": case "ROGUE607": case "ROGUE608": case "ROGUE609": case "ROGUE610":
       case "ROGUE611": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615":
       case "ROGUE616":
-      return "A";
+        return "A";
+      case "ROGUE701": case "ROGUE702": case "ROGUE703": case "ROGUE704": case "ROGUE705":
+      case "ROGUE706": case "ROGUE707": case "ROGUE708": case "ROGUE709": case "ROGUE710":
+      case "ROGUE711":
+        return "A";
       default:
         return "";
     }
@@ -213,6 +232,18 @@ function ROGUECardSubtype($cardID)
       case "ROGUE610":
       case "ROGUE611": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616":
         return "Power";
+      case "ROGUE701":
+      case "ROGUE702":
+      case "ROGUE703":
+      case "ROGUE704":
+      case "ROGUE705":
+      case "ROGUE706":
+      case "ROGUE707":
+      case "ROGUE708":
+      case "ROGUE709":
+      case "ROGUE710":
+      case "ROGUE711":
+        return "Power";
       default: return "";
     }
 }
@@ -265,6 +296,18 @@ function ROGUEName($cardID)
       case "ROGUE614": return "Lustrous Bloodstone";
       case "ROGUE615": return "Perfect Bloodstone";
       case "ROGUE616": return "Legendary Bloodstone";
+
+      case "ROGUE701": return "Acorn of Korshem";
+      case "ROGUE702": return "Solanian Bell";
+      case "ROGUE703": return "Broken Hourglass";
+      case "ROGUE704": return "Mark of Mastery";
+      case "ROGUE705": return "Magnifying Glass";
+      case "ROGUE706": return "Sown Seed";
+      case "ROGUE707": return "Blacktek Amplifier";
+      case "ROGUE708": return "Unstable Core";
+      case "ROGUE709": return "Ward of Protection";
+      case "ROGUE710": return "Sword of the Brave and Timid";
+      case "ROGUE711": return "Raven's Heart";
       default: return "";
     }
 }

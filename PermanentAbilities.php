@@ -103,6 +103,30 @@ function PermanentBeginEndPhaseEffects()
         }
         $deck = $destArr;
         break;
+      case "ROGUE703":
+        $deck = &GetDeck($mainPlayer);
+        $discard = &GetDiscard($mainPlayer);
+        $banish = &GetBanish($mainPlayer);
+        for($i = count($discard)-1; $i >= 0; --$i)
+        {
+          if(rand(0, 1) == 0) array_push($deck, $discard[$i]);
+          else
+          {
+            array_push($banish, $discard[$i]);
+            array_push($banish, "");
+            array_push($banish, GetUniqueId());
+          }
+          unset($discard[$i]);
+        }
+        $destArr = [];
+        while (count($deck) > 0) {
+          $index = GetRandom(0, count($deck) - 1);
+          array_push($destArr, $deck[$index]);
+          unset($deck[$index]);
+          $deck = array_values($deck);
+        }
+        $deck = $destArr;
+        break;
       default:
         break;
     }
@@ -293,6 +317,18 @@ function PermanentStartTurnAbilities()
       case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616":
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
+      case "ROGUE701":
+        $resources = &GetResources($mainPlayer);
+        $deck = &GetDeck($mainPlayer);
+        $discard = &GetDiscard($mainPlayer);
+        $resources[0] += ((count($deck) + count($discard) + count($hand)) - (count($deck) + count($discard) + count($hand))%10)/10;
+        break;
+      case "ROGUE702":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
+      case "ROGUE704":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
       default:
         break;
     }
@@ -335,6 +371,20 @@ function PermanentPlayAbilities($attackID, $from="")
       case "ROGUE607":
         if($cardType != "A" && $cardType != "AA") AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
+      case "ROGUE702":
+        if($cardPitch == 2 && $cardType != "AA")
+        {
+          AddCurrentTurnEffect($permanents[$i] . "-NA", $mainPlayer);
+        }
+        break;
+      case "ROGUE704":
+        if($cardType == "AA")
+        {
+          $banish = &GetBanish($mainPlayer);
+          array_push($banish, $attackID);
+          array_push($banish, "");
+          array_push($banish, GetUniqueId());
+        }
       default:
         break;
     }
