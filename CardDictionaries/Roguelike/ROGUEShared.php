@@ -73,13 +73,45 @@ function ROGUEEffectAttackModifier($cardID)
         global $currentPlayer;
         $banish = &GetBanish($currentPlayer);
         $rv = -1;
-        WriteLog("Attack->".$combatChain[0]);
         for($i = 0; $i < count($banish); $i += BanishPieces())
         {
           if($banish[$i] == $combatChain[0]) ++$rv;
-          WriteLog("Banish[i]->".$banish[$i]);
         }
         return $rv;
+      case "ROGUE707":
+        $rv = 0;
+        if(HasEphemeral($combatChain[0])) ++$rv;
+        if(DoesAttackHaveGoAgain()) ++$rv;
+        if(IsDominateActive()) ++$rv;
+        if(isOverpowerActive()) ++$rv;
+        if(HasRupture($combatChain[0])) ++$rv;
+        if(HasCombo($combatChain[0])) ++$rv;
+        if(HasFusion($combatChain[0]) != "") ++$rv;
+        if(HasCrush($combatChain[0])) ++$rv;
+        if(IsPhantasmActive()) ++$rv;
+        return $rv;
+      case "ROGUE709": return -2;
+      case "ROGUE711":
+        global $currentPlayer;
+        $pitch = &GetPitch($currentPlayer);
+        $rv = 0;
+        for($i = 0; $i < count($pitch); $i += PitchPieces())
+        {
+          ++$rv;
+        }
+        $rv = (int) ($rv / 2);
+        return $rv * 2;
+      case "ROGUE802": return 1;
+      case "ROGUE805":
+        global $currentPlayer;
+        $grave = &GetDiscard($currentPlayer);
+        $rv = 0;
+        for($i = 0; $i < count($grave); $i += DiscardPieces())
+        {
+          if(CardType($grave[$i]) == "E") ++$rv;
+        }
+        return $rv;
+      case "ROGUE806": return 5;
       default: return 0;
     }
 }
@@ -110,6 +142,16 @@ function ROGUECombatEffectActive($cardID, $attackID)
         case "ROGUE702": return PitchValue($attackID) == 2;
         case "ROGUE702-NA": return true;
         case "ROGUE704": return true;
+        case "ROGUE707": return true;
+        case "ROGUE709": return true;
+        case "ROGUE710-GA": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
+        case "ROGUE710-DO": return CardType($attackID) == "AA" && CardCost($attackID) >= 2;
+        case "ROGUE711": return true;
+        case "ROGUE802": return CardType($attackID) == "AA";
+        case "ROGUE805": return true;
+        case "ROGUE806":
+          $deck = &GetDeck($currentPlayer);
+          return count($deck) < 1;
         default:
             return false;
     }
@@ -162,6 +204,9 @@ function ROGUECardType($cardID)
       case "ROGUE701": case "ROGUE702": case "ROGUE703": case "ROGUE704": case "ROGUE705":
       case "ROGUE706": case "ROGUE707": case "ROGUE708": case "ROGUE709": case "ROGUE710":
       case "ROGUE711":
+        return "A";
+      case "ROGUE801": case "ROGUE802": case "ROGUE803": case "ROGUE804": case "ROGUE805":
+      case "ROGUE806":
         return "A";
       default:
         return "";
@@ -244,6 +289,14 @@ function ROGUECardSubtype($cardID)
       case "ROGUE710":
       case "ROGUE711":
         return "Power";
+      case "ROGUE801":
+      case "ROGUE802":
+      case "ROGUE803":
+      case "ROGUE804":
+      case "ROGUE805":
+      case "ROGUE806":
+      case "ROGUE807":
+        return "Power";
       default: return "";
     }
 }
@@ -308,6 +361,14 @@ function ROGUEName($cardID)
       case "ROGUE709": return "Ward of Protection";
       case "ROGUE710": return "Sword of the Brave and Timid";
       case "ROGUE711": return "Raven's Heart";
+
+      case "ROGUE801": return "Perfect Mirror";
+      case "ROGUE802": return "Teachings of War";
+      case "ROGUE803": return "Mountain Shard";
+      case "ROGUE804": return "Unstable Engine";
+      case "ROGUE805": return "Ethereal Armor";
+      case "ROGUE806": return "Soul of Blasmophet";
+      case "ROGUE807": return "Teklo's Cranium";
       default: return "";
     }
 }
@@ -480,6 +541,14 @@ function ROGUEPowerStart()
       case "ROGUE609":
         $health = &GetHealth($mainPlayer);
         if($health <= 10) $health += 5;
+        break;
+      case "ROGUE708":
+        $options = [];
+        for ($j = count($permanents) - PermanentPieces(); $j >= 0; $j -= PermanentPieces())
+        {
+          if($permanents[$j] != "ROGUE708" && $permanents[$j] != "ROGUE609" && $permanents[$j] != "ROGUE604" && CardSubType($permanents[$j]) == "Power") array_push($options, $permanents[$j]);
+        }
+        if(count($options) > 0) $permanents[$i] = $options[rand(0, (count($options)-1))];
         break;
       default:
         break;

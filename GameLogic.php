@@ -988,6 +988,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   $cardType = CardType($cardID);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ROGUE506", $defPlayer);
+  if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ROGUE802", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("EVR186", $defPlayer);
   if ($cardType == "E" && (SearchCurrentTurnEffects("DYN095", $mainPlayer) || SearchCurrentTurnEffects("DYN096", $mainPlayer) || SearchCurrentTurnEffects("DYN097", $mainPlayer))) $blockModifier -= 1;
   if (SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
@@ -1291,6 +1292,11 @@ function CurrentEffectCostModifiers($cardID, $from)
           }
           break;
         case "ROGUE519":
+          if (IsStaticType(CardType($cardID), $from, $cardID)) {
+            $costModifier -= 1;
+          }
+          break;
+        case "ROGUE803":
           if (IsStaticType(CardType($cardID), $from, $cardID)) {
             $costModifier -= 1;
           }
@@ -1611,6 +1617,7 @@ function CurrentEffectGrantsGoAgain()
         case "UPR094":
           return true;
         case "DYN076": case "DYN077": case "DYN078": return true;
+        case "ROGUE710-GA": return true;
         default:
           break;
       }
@@ -1928,6 +1935,13 @@ function IsCombatEffectPersistent($cardID)
     case "ROGUE603": return true;
     case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
     case "ROGUE704": return true;
+    case "ROGUE707": return true;
+    case "ROGUE710-GA": return true;
+    case "ROGUE710-DO": return true;
+    case "ROGUE711": return true;
+    case "ROGUE802": return true;
+    case "ROGUE805": return true;
+    case "ROGUE806": return true;
     default:
       return false;
   }
@@ -2285,6 +2299,7 @@ function OnBlockResolveEffects()
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if (SearchCurrentTurnEffects("ARC160-1", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
     if (SearchCurrentTurnEffects("ROGUE506", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
+    if (SearchCurrentTurnEffects("ROGUE802", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
     if (SearchAurasForCard("ELE117", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 3);
     ProcessPhantasmOnBlock($i); // Phantasm should trigger first until we can re-order triggers
   }

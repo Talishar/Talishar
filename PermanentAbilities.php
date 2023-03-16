@@ -109,7 +109,7 @@ function PermanentBeginEndPhaseEffects()
         $banish = &GetBanish($mainPlayer);
         for($i = count($discard)-1; $i >= 0; --$i)
         {
-          if(rand(0, 1) == 0) array_push($deck, $discard[$i]);
+          if(rand(0, 1) == 0 && CardType($discard[$i]) != "W" && CardType($discard[$i]) != "E") array_push($deck, $discard[$i]);
           else
           {
             array_push($banish, $discard[$i]);
@@ -240,6 +240,7 @@ function PermanentStartTurnAbilities()
         break;
       case "ROGUE512": case "ROGUE513":
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
       case "ROGUE517":
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
@@ -329,6 +330,42 @@ function PermanentStartTurnAbilities()
       case "ROGUE704":
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
+      case "ROGUE707":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
+      case "ROGUE710":
+        AddCurrentTurnEffect($permanents[$i]."-GA", $mainPlayer);
+        AddCurrentTurnEffect($permanents[$i]."-DO", $mainPlayer);
+        break;
+      case "ROGUE711":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
+      case "ROGUE801":
+        array_push($hand, $hand[rand(0, count($hand)-1)]);
+        break;
+      case "ROGUE802":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
+      case "ROGUE803":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
+      case "ROGUE804":
+        $options = array("ROGUE601", "ROGUE602", "ROGUE603", "ROGUE605", "ROGUE606", "ROGUE607", "ROGUE608", "ROGUE610");
+        PutPermanentIntoPlay(1, $options[rand(0, count($options)-1)]);
+        break;
+      case "ROGUE805":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
+      case "ROGUE806":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        SoulShackleStartTurn($mainPlayer);
+        SoulShackleStartTurn($mainPlayer);
+        SoulShackleStartTurn($mainPlayer);
+        SoulShackleStartTurn($mainPlayer);
+        break;
+      case "ROGUE807":
+        MyDrawCard();
+        break;
       default:
         break;
     }
@@ -341,6 +378,13 @@ function PermanentStartTurnAbilities()
         break;
       case "ROGUE523":
         AddCurrentTurnEffect($defPermanents[$i], $mainPlayer);
+        break;
+
+      case "ROGUE709":
+        AddCurrentTurnEffect($defPermanents[$i], $mainPlayer);
+        break;
+      case "ROGUE802":
+        AddCurrentTurnEffect($defPermanents[$i], $defPlayer);
         break;
       default:
         break;
@@ -385,6 +429,10 @@ function PermanentPlayAbilities($attackID, $from="")
           array_push($banish, "");
           array_push($banish, GetUniqueId());
         }
+        break;
+      case "ROGUE706":
+        if($from == "ARS") MyDrawCard();
+        break;
       default:
         break;
     }
