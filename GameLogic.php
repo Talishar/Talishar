@@ -2124,7 +2124,7 @@ function OnBlockResolveEffects()
       }
       break;
     case "OUT185":
-      if(NumActionsBlocking() > 0)
+      for($i=0; $i<NumActionsBlocking(); ++$i)
       {
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack());
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an action card to put on top of your deck");
