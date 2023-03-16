@@ -1060,6 +1060,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $iconLeft = $cardWidth / 2 - intval($iconHeight * .71 / 2) + 5;
         if ($myArsenal[$i + 1] == "UP") echo ("<img style='position:absolute; z-index: 5; left:" . $iconLeft . "px; bottom:3px; height:" . $iconHeight . "px; ' src='./Images/faceUp.png' title='This arsenal card is face up.'></img>");
         else echo ("<img style='position:absolute; left:" . $iconLeft . "px; bottom:3px; z-index: 5; height:" . $iconHeight . "px; ' src='./Images/faceDown.png' title='This arsenal card is face down.'></img>");
+        if($restriction != "") echo ("<img style='position:absolute; left:26px; top:26px; z-index: 5;' src='./Images/restricted.png' title='$restriction'></img>");
         echo ("</div>");
       }
       if ($myArsenal[$i + 4] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:7px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
