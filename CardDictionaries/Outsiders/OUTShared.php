@@ -122,9 +122,6 @@ function OUTAbilityCost($cardID)
     if(strlen($cardID) > 6) $cardID = $commaArr[0];
     switch ($cardID)
     {
-      case "OUT005": case "OUT006": return NumReactionBlocking() > 0;
-      case "OUT007": case "OUT008": return NumNonAttackActionBlocking() > 0;
-      case "OUT009": case "OUT010": return NumEquipBlock() > 0;
       case "OUT033": case "OUT034": case "OUT035": return HasStealth($attackID);
       case "OUT049": return CardType($attackID) == "AA";
       case "OUT052": return count($commaArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($commaArr[1]));

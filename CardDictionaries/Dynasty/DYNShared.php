@@ -180,7 +180,6 @@ function DYNCombatEffectActive($cardID, $attackID)
       $index = FindCharacterIndex($mainPlayer, "DYN492a");
       return $attackID == "DYN492a" && $character[$index + 2] >= 1;
     case "DYN091-1": return $combatChainState[$CCS_IsBoosted];
-    case "DYN115": case "DYN116": return NumAttacksBlocking() > 0;
     case "DYN154": return true;
     case "DYN155": return CardSubType($attackID) == "Arrow";
     case "DYN156": case "DYN157": case "DYN158": return true;
