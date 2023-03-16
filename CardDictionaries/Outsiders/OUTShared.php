@@ -684,7 +684,7 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT053":
-        KatsuHit();
+        KatsuHit("to_discard_and_search_for_a_combo_card");
         break;
       case "OUT059": case "OUT060": case "OUT061":
         if(ComboActive() && IsHeroAttackTarget())

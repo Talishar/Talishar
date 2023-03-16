@@ -555,14 +555,15 @@ function WTRAbilityCost($cardID)
     return "";
   }
 
-  function KatsuHit()
+  function KatsuHit($context="")
   {
     global $mainPlayer;
     $hand = &GetHand($mainPlayer);
+    if($context == "") $context = "to_use_Katsu's_ability";
     //If hand is empty skip the popup
     if(count($hand) > 0)
     {
-      AddDecisionQueue("YESNO", $mainPlayer, "to_use_Katsu's_ability");
+      AddDecisionQueue("YESNO", $mainPlayer, $context);
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-1", 1);
       AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
