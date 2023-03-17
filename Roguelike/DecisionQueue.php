@@ -424,6 +424,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Brave_the_bridge":
             PrependDecisionQueue("SETENCOUNTER", $player, "119-BeforeFight");
             break;
+          case "Ignore_your_instincts_and_stop_for_the_night": //Tortured Soul
+            PrependDecisionQueue("SETENCOUNTER", $player, "122-BeforeFight");
+            break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
             break;

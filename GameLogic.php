@@ -2057,6 +2057,7 @@ function ItemDamageTakenAbilities($player, $damage)
 function CharacterStartTurnAbility($index)
 {
   global $mainPlayer;
+  $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
 
   if ($mainCharacter[$index + 1] == 0 && !CharacterTriggerInGraveyard($mainCharacter[$index])) return; //Do not process ability if it is destroyed
@@ -2135,6 +2136,19 @@ function CharacterStartTurnAbility($index)
       array_unshift($hand, "MON226");
       $resources = &GetResources($mainPlayer);
       $resources[0] += 2;
+      break;
+    case "ROGUE022":
+      $defBanish = &GetBanish($otherPlayer);
+      $health = &GetHealth($mainPlayer);
+      $totalBD = 0;
+      for($i = 0; $i < count($defBanish); $i += BanishPieces())
+      {
+        if(HasBloodDebt($defBanish[$i])) ++$totalBD;
+      }
+      $health += $totalBD;
+      array_push($defBanish, "MON203");
+      array_push($defBanish, "");
+      array_push($defBanish, GetUniqueId());
       break;
     default:
       break;
