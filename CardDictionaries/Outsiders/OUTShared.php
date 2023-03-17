@@ -217,7 +217,7 @@ function OUTAbilityCost($cardID)
       case "OUT014":
         for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
         {
-          if($combatChain[$i+1] == $defPlayer) PlayAura($CID_BloodRotPox, $defPlayer);
+          if($combatChain[$i+1] == $defPlayer && $combatChain[$i+2] != "EQUIP" && $combatChain[$i+2] != "PLAY") PlayAura($CID_BloodRotPox, $defPlayer);
         }
         return "";
       case "OUT033": case "OUT034": case "OUT035":
