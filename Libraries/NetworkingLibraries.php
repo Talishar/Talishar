@@ -1237,7 +1237,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if ($cardType == "A" && !$canPlayAsInstant) {
         ResetCombatChainState();
       }
-      if (SearchCurrentTurnEffects("CRU123-DMG", $playerID) && ($cardType == "A" || $cardType == "AA")) LoseHealth(1, $playerID);
+      if ($cardType == "A" || $cardType == "AA") LoseHealth(CountCurrentTurnEffects("CRU123-DMG", $playerID), $playerID);
       CombatChainPlayAbility($cardID);
       ItemPlayAbilities($cardID, $from);
       ResetCardPlayed($cardID);
