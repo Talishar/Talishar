@@ -1170,16 +1170,16 @@ function BanishCostModifier($from, $index)
   }
 }
 
-function CurrentEffectPreventDamagePrevention($player, $type, $damageThreatened, $damage, $source)
+function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
 {
   global $currentTurnEffects;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0 && $damage < $damageThreatened; $i -= CurrentTurnEffectPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $player) {
       $remove = false;
       switch ($currentTurnEffects[$i]) {
         case "OUT174":
           if($type != "COMBAT") break;
-          if($damage < $damageThreatened) $damage += 1;
+          $damage += 1;
           $remove = true;
         default: break;
       }
@@ -4772,7 +4772,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "FINALIZEDAMAGE":
       $params = explode(",", $parameter);
-      return FinalizeDamage($player, $dqVars[0], $params[0], $params[1], $params[2]);
+      $damage = $dqVars[0];
+      $damageThreatened = $params[0];
+      if($damage > $damageThreatened) $damage = $damageThreatened;//Means there was excess damage prevention prevention
+      return FinalizeDamage($player, $damage, $damageThreatened, $params[1], $params[2]);
     case "KORSHEM":
       switch ($lastResult) {
         case "Gain_a_resource":
