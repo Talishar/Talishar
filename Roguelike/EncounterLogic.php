@@ -44,18 +44,21 @@ function GetBackgrounds($character)
 
 function GetPowers($amount = 3, $special = "-")
 {
-  $common = array("ROGUE507", "ROGUE508", "ROGUE509", "ROGUE510", "ROGUE511", "ROGUE512", "ROGUE513", "ROGUE516", "ROGUE517");
-  $rare = array("ROGUE501", "ROGUE504", "ROGUE518", "ROGUE519", "ROGUE521", "ROGUE522", "ROGUE523", "ROGUE524", "ROGUE525");
-  $majestic = array("ROGUE502", "ROGUE503", "ROGUE505", "ROGUE506", "ROGUE526", "ROGUE527", "ROGUE528");
+  //$common = array("ROGUE507", "ROGUE508", "ROGUE509", "ROGUE510", "ROGUE511", "ROGUE512", "ROGUE513", "ROGUE516", "ROGUE517");
+  //$rare = array("ROGUE501", "ROGUE504", "ROGUE518", "ROGUE519", "ROGUE521", "ROGUE522", "ROGUE523", "ROGUE524", "ROGUE525");
+  //$majestic = array("ROGUE502", "ROGUE503", "ROGUE505", "ROGUE506", "ROGUE526", "ROGUE527", "ROGUE528");
+  $common = array("ROGUE601", "ROGUE602", "ROGUE603", "ROGUE604", "ROGUE605", "ROGUE606", "ROGUE607", "ROGUE608", "ROGUE609", "ROGUE610", "ROGUE611");
+  $rare = array("ROGUE701", "ROGUE702", "ROGUE703", "ROGUE704", "ROGUE705", "ROGUE706", "ROGUE707", "ROGUE708", "ROGUE709", "ROGUE710", "ROGUE711");
+  $majestic = array("ROGUE801", "ROGUE802", "ROGUE803", "ROGUE804", "ROGUE805", "ROGUE806", "ROGUE807");
   if($special = "-")
   {
     $options = [];
     $rarityCount = array(0, 0, 0);
     for($i = 0; $i < $amount; ++$i)
     {
-      $random = rand(1,100);
-      if($random >= 90) ++$rarityCount[2];
-      else if($random >= 60) ++$rarityCount[1];
+      $random = rand(1,100); //current rarity numbers make rares appear about 1 in every 3 rewards and majestics appear about 1 in every 10 rewards. Feel free to change in testing.
+      if($random >= 97) ++$rarityCount[2]; //MAKE SURE THIS IS 97 WHEN PUSHED
+      else if($random >= 86) ++$rarityCount[1]; //MAKE SURE THIS IS 86 WHEN PUSHED
       else ++$rarityCount[0];
     }
     if($rarityCount[0] > 0)

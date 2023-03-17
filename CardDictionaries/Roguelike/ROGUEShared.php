@@ -435,6 +435,19 @@ function ROGUEPitchValue($cardID)
       case "ROGUE526": return -1; //Blacktek Timebomb
       case "ROGUE527": return -1; //Merchant Supply Cart
       case "ROGUE528": return -1; //Sutcliffe's Tome
+
+      case "ROGUE601": case "ROGUE602": case "ROGUE603": case "ROGUE604": case "ROGUE605":
+      case "ROGUE606": case "ROGUE607": case "ROGUE608": case "ROGUE609": case "ROGUE610":
+      case "ROGUE611": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615":
+      case "ROGUE616":
+        return -1;
+      case "ROGUE701": case "ROGUE702": case "ROGUE703": case "ROGUE704": case "ROGUE705":
+      case "ROGUE706": case "ROGUE707": case "ROGUE708": case "ROGUE709": case "ROGUE710":
+      case "ROGUE711":
+        return -1;
+      case "ROGUE801": case "ROGUE802": case "ROGUE803": case "ROGUE804": case "ROGUE805":
+      case "ROGUE806":
+        return -1;
       default: return 3;
     }
 }
