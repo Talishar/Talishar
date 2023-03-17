@@ -1,5 +1,7 @@
 <?php
 
+
+//ROGUE5XX values are depreciated. Do not use them. They may not work properly.
 function ROGUEAbilityCost($cardID)
 {
     switch ($cardID) {
@@ -38,7 +40,7 @@ function ROGUEAbilityHasGoAgain($cardID)
 
 function ROGUEEffectAttackModifier($cardID)
 {
-    global $combatChainState, $CCS_LinkBaseAttack;
+    global $combatChain, $combatChainState, $CCS_LinkBaseAttack;
     $params = explode(",", $cardID);
     $cardID = $params[0];
     if (count($params) > 1) $parameter = $params[1];
@@ -55,12 +57,68 @@ function ROGUEEffectAttackModifier($cardID)
       case "ROGUE521":
       case "ROGUE521-NA": return 1;
       case "ROGUE523": return -2;
+
+      case "ROGUE601": return 1;
+      case "ROGUE603": return 1;
+      case "ROGUE605-first": return 2;
+      case "ROGUE605-second": return -2;
+      case "ROGUE607": return 1;
+      case "ROGUE612": return 1;
+      case "ROGUE613": return 2;
+      case "ROGUE614": return 3;
+      case "ROGUE615": return 4;
+      case "ROGUE616": return 5;
+      case "ROGUE702": case "ROGUE702-NA": return 2;
+      case "ROGUE704":
+        global $currentPlayer;
+        $banish = &GetBanish($currentPlayer);
+        $rv = -1;
+        for($i = 0; $i < count($banish); $i += BanishPieces())
+        {
+          if($banish[$i] == $combatChain[0]) ++$rv;
+        }
+        return $rv;
+      case "ROGUE707":
+        $rv = 0;
+        if(HasEphemeral($combatChain[0])) ++$rv;
+        if(DoesAttackHaveGoAgain()) ++$rv;
+        if(IsDominateActive()) ++$rv;
+        if(isOverpowerActive()) ++$rv;
+        if(HasRupture($combatChain[0])) ++$rv;
+        if(HasCombo($combatChain[0])) ++$rv;
+        if(HasFusion($combatChain[0]) != "") ++$rv;
+        if(HasCrush($combatChain[0])) ++$rv;
+        if(IsPhantasmActive()) ++$rv;
+        return $rv;
+      case "ROGUE709": return -2;
+      case "ROGUE711":
+        global $currentPlayer;
+        $pitch = &GetPitch($currentPlayer);
+        $rv = 0;
+        for($i = 0; $i < count($pitch); $i += PitchPieces())
+        {
+          ++$rv;
+        }
+        $rv = (int) ($rv / 2);
+        return $rv * 2;
+      case "ROGUE802": return 1;
+      case "ROGUE805":
+        global $currentPlayer;
+        $grave = &GetDiscard($currentPlayer);
+        $rv = 0;
+        for($i = 0; $i < count($grave); $i += DiscardPieces())
+        {
+          if(CardType($grave[$i]) == "E") ++$rv;
+        }
+        return $rv;
+      case "ROGUE806": return 5;
       default: return 0;
     }
 }
 
 function ROGUECombatEffectActive($cardID, $attackID)
 {
+    global $currentPlayer, $CS_NumAttacks;
     $params = explode(",", $cardID);
     $cardID = $params[0];
     switch ($cardID) {
@@ -74,6 +132,26 @@ function ROGUECombatEffectActive($cardID, $attackID)
         case "ROGUE521-NA": return true;
         case "ROGUE522": return true;
         case "ROGUE523": return true;
+
+        case "ROGUE601": return true;
+        case "ROGUE603": return $attackID == "DYN065";
+        case "ROGUE605-first": return true;
+        case "ROGUE605-second": return GetClassState($currentPlayer, $CS_NumAttacks) == 2;
+        case "ROGUE607": return true;
+        case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
+        case "ROGUE702": return PitchValue($attackID) == 2;
+        case "ROGUE702-NA": return true;
+        case "ROGUE704": return true;
+        case "ROGUE707": return true;
+        case "ROGUE709": return true;
+        case "ROGUE710-GA": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
+        case "ROGUE710-DO": return CardType($attackID) == "AA" && CardCost($attackID) >= 2;
+        case "ROGUE711": return true;
+        case "ROGUE802": return CardType($attackID) == "AA";
+        case "ROGUE805": return true;
+        case "ROGUE806":
+          $deck = &GetDeck($currentPlayer);
+          return count($deck) < 1;
         default:
             return false;
     }
@@ -117,6 +195,19 @@ function ROGUECardType($cardID)
       case "ROGUE501": case "ROGUE502": case "ROGUE503": case "ROGUE504": case "ROGUE505": case "ROGUE506": case "ROGUE507": case "ROGUE508": case "ROGUE509": case "ROGUE510": case "ROGUE511": case "ROGUE512": case "ROGUE513": case "ROGUE514":
       case "ROGUE515": case "ROGUE516": case "ROGUE517": case "ROGUE518": case "ROGUE519": case "ROGUE520": case "ROGUE521": case "ROGUE522": case "ROGUE523": case "ROGUE524": case "ROGUE525": case "ROGUE526": case "ROGUE527": case "ROGUE528":
       return "A";
+
+      case "ROGUE601": case "ROGUE602": case "ROGUE603": case "ROGUE604": case "ROGUE605":
+      case "ROGUE606": case "ROGUE607": case "ROGUE608": case "ROGUE609": case "ROGUE610":
+      case "ROGUE611": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615":
+      case "ROGUE616":
+        return "A";
+      case "ROGUE701": case "ROGUE702": case "ROGUE703": case "ROGUE704": case "ROGUE705":
+      case "ROGUE706": case "ROGUE707": case "ROGUE708": case "ROGUE709": case "ROGUE710":
+      case "ROGUE711":
+        return "A";
+      case "ROGUE801": case "ROGUE802": case "ROGUE803": case "ROGUE804": case "ROGUE805":
+      case "ROGUE806":
+        return "A";
       default:
         return "";
     }
@@ -173,7 +264,39 @@ function ROGUECardSubtype($cardID)
       case "ROGUE526": //Blacktek Timebomb
       case "ROGUE527": //Merchant Supply Cart
       case "ROGUE528": //Sutcliffe's Tome
-      return "Power";
+        return "Power";
+      case "ROGUE601":
+      case "ROGUE602":
+      case "ROGUE603":
+      case "ROGUE604":
+      case "ROGUE605":
+      case "ROGUE606":
+      case "ROGUE607":
+      case "ROGUE608":
+      case "ROGUE609":
+      case "ROGUE610":
+      case "ROGUE611": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616":
+        return "Power";
+      case "ROGUE701":
+      case "ROGUE702":
+      case "ROGUE703":
+      case "ROGUE704":
+      case "ROGUE705":
+      case "ROGUE706":
+      case "ROGUE707":
+      case "ROGUE708":
+      case "ROGUE709":
+      case "ROGUE710":
+      case "ROGUE711":
+        return "Power";
+      case "ROGUE801":
+      case "ROGUE802":
+      case "ROGUE803":
+      case "ROGUE804":
+      case "ROGUE805":
+      case "ROGUE806":
+      case "ROGUE807":
+        return "Power";
       default: return "";
     }
 }
@@ -209,6 +332,43 @@ function ROGUEName($cardID)
       case "ROGUE526": return "Blacktek Timebomb";
       case "ROGUE527": return "Merchant Supply Cart";
       case "ROGUE528": return "Sutcliffe's Tome";
+
+      case "ROGUE601": return "Earthlore Whetstone";
+      case "ROGUE602": return "Ollin Anvil";
+      case "ROGUE603": return "Qi Scroll";
+      case "ROGUE604": return "Gorganian Cypher";
+      case "ROGUE605": return "Frail Rose";
+      case "ROGUE606": return "Seekers Knapsack";
+      case "ROGUE607": return "Tome of Sutcliffe";
+      case "ROGUE608": return "Paper Crown";
+      case "ROGUE609": return "Staff of Sol";
+      case "ROGUE610": return "Deck of Cards";
+      case "ROGUE611": return "Cracked Bloodstone";
+      case "ROGUE612": return "Plain Bloodstone";
+      case "ROGUE613": return "Polished Bloodstone";
+      case "ROGUE614": return "Lustrous Bloodstone";
+      case "ROGUE615": return "Perfect Bloodstone";
+      case "ROGUE616": return "Legendary Bloodstone";
+
+      case "ROGUE701": return "Acorn of Korshem";
+      case "ROGUE702": return "Solanian Bell";
+      case "ROGUE703": return "Broken Hourglass";
+      case "ROGUE704": return "Mark of Mastery";
+      case "ROGUE705": return "Magnifying Glass";
+      case "ROGUE706": return "Sown Seed";
+      case "ROGUE707": return "Blacktek Amplifier";
+      case "ROGUE708": return "Unstable Core";
+      case "ROGUE709": return "Ward of Protection";
+      case "ROGUE710": return "Sword of the Brave and Timid";
+      case "ROGUE711": return "Raven's Heart";
+
+      case "ROGUE801": return "Perfect Mirror";
+      case "ROGUE802": return "Teachings of War";
+      case "ROGUE803": return "Mountain Shard";
+      case "ROGUE804": return "Unstable Engine";
+      case "ROGUE805": return "Ethereal Armor";
+      case "ROGUE806": return "Soul of Blasmophet";
+      case "ROGUE807": return "Teklo's Cranium";
       default: return "";
     }
 }
@@ -275,6 +435,19 @@ function ROGUEPitchValue($cardID)
       case "ROGUE526": return -1; //Blacktek Timebomb
       case "ROGUE527": return -1; //Merchant Supply Cart
       case "ROGUE528": return -1; //Sutcliffe's Tome
+
+      case "ROGUE601": case "ROGUE602": case "ROGUE603": case "ROGUE604": case "ROGUE605":
+      case "ROGUE606": case "ROGUE607": case "ROGUE608": case "ROGUE609": case "ROGUE610":
+      case "ROGUE611": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615":
+      case "ROGUE616":
+        return -1;
+      case "ROGUE701": case "ROGUE702": case "ROGUE703": case "ROGUE704": case "ROGUE705":
+      case "ROGUE706": case "ROGUE707": case "ROGUE708": case "ROGUE709": case "ROGUE710":
+      case "ROGUE711":
+        return -1;
+      case "ROGUE801": case "ROGUE802": case "ROGUE803": case "ROGUE804": case "ROGUE805":
+      case "ROGUE806":
+        return -1;
       default: return 3;
     }
 }
@@ -372,6 +545,23 @@ function ROGUEPowerStart()
       case "ROGUE524":
         $deck = &GetDeck($mainPlayer);
         array_unshift($deck, "CRU181", "CRU181", "CRU181");
+        break;
+
+      case "ROGUE604":
+        $deck = &GetDeck($mainPlayer);
+        array_unshift($deck, "CRU181", "CRU181", "CRU181");
+        break;
+      case "ROGUE609":
+        $health = &GetHealth($mainPlayer);
+        if($health <= 10) $health += 5;
+        break;
+      case "ROGUE708":
+        $options = [];
+        for ($j = count($permanents) - PermanentPieces(); $j >= 0; $j -= PermanentPieces())
+        {
+          if($permanents[$j] != "ROGUE708" && $permanents[$j] != "ROGUE609" && $permanents[$j] != "ROGUE604" && CardSubType($permanents[$j]) == "Power") array_push($options, $permanents[$j]);
+        }
+        if(count($options) > 0) $permanents[$i] = $options[rand(0, (count($options)-1))];
         break;
       default:
         break;

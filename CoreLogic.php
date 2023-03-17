@@ -25,14 +25,15 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
         {
           array_push($attackModifiers, $combatChain[$i-1]);
           array_push($attackModifiers, $attack);
-          $totalAttack += $attack;
+          if($i == 1) $totalAttack += $attack;
+          else AddAttack($totalAttack, $attack);
         }
         $attack = AttackModifier($combatChain[$i-1], $combatChain[$i+1], $combatChain[$i+2], $combatChain[$i+3]) + $combatChain[$i + 4];
         if(($canGainAttack && !$snagActive) || $attack < 0)
         {
           array_push($attackModifiers, $combatChain[$i-1]);
           array_push($attackModifiers, $attack);
-          $totalAttack += $attack;
+          AddAttack($totalAttack, $attack);
         }
       }
       else
@@ -53,7 +54,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
           {
             array_push($attackModifiers, $currentTurnEffects[$i]);
             array_push($attackModifiers, $attack);
-            $totalAttack += $attack;
+            AddAttack($totalAttack, $attack);
           }
         }
       }
@@ -68,7 +69,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       {
         array_push($attackModifiers, "+1 Attack Counters");
         array_push($attackModifiers, $attack);
-        $totalAttack += $attack;
+        AddAttack($totalAttack, $attack);
       }
     }
     $attack = MainCharacterAttackModifiers();
@@ -76,29 +77,37 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
     {
       array_push($attackModifiers, "Character/Equipment");
       array_push($attackModifiers, $attack);
-      $totalAttack += $attack;
+      AddAttack($totalAttack, $attack);
     }
     $attack = AuraAttackModifiers(0);
     if($canGainAttack || $attack < 0)
     {
       array_push($attackModifiers, "Aura Ability");
       array_push($attackModifiers, $attack);
-      $totalAttack += $attack;
+      AddAttack($totalAttack, $attack);
     }
     $attack = ArsenalAttackModifier();
     if($canGainAttack || $attack < 0)
     {
       array_push($attackModifiers, "Arsenal Ability");
       array_push($attackModifiers, $attack);
-      $totalAttack += $attack;
+      AddAttack($totalAttack, $attack);
     }
     $attack = $combatChainState[$CCS_ChainAttackBuff];
     if($canGainAttack || $attack < 0)
     {
       array_push($attackModifiers, "Whole Combat Chain Buff");
       array_push($attackModifiers, $attack);
-      $totalAttack += $attack;
+      AddAttack($totalAttack, $attack);
     }
+}
+
+function AddAttack(&$totalAttack, $amount)
+{
+  global $combatChain;
+  if($amount > 0 && $combatChain[0] == "OUT100") $amount += 1;
+  if($amount > 0) $amount += PermanentAddAttackAbilities();
+  $totalAttack += $amount;
 }
 
 function BlockingCardDefense($index, $from="", $resourcesPaid=-1)

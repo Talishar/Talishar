@@ -31,7 +31,7 @@ if ($p2Char[0] == "DUMMY") {
 //roguelike gamemode powers
 if(CardSet($p2Char[0]) == "ROG") {
   $deck = &GetDeck(1);
-  //array_unshift($deck, "ROGUE508");
+  //array_unshift($deck, "ROGUE807");
   $powers = SearchDeck(1, "", "Power");
   //WriteLog(strlen($powers));
   //WriteLog($powersArray[0]);
@@ -44,10 +44,11 @@ if(CardSet($p2Char[0]) == "ROG") {
       PutPermanentIntoPlay(1, $deck[$powersArray[$i]]);
       //WriteLog($deck[$powersArray[$i]]);
       array_splice($deck, $powersArray[$i], 1);
-      ROGUEPowerStart();
     }
   //WriteLog($deck[$powers[0]]);
-  }  
+  }
+  ROGUEPowerStart();
+}
 
 //CR 2.0 4.1.5b Meta-static abilities affecting deck composition
 //Dash
@@ -115,7 +116,6 @@ if (SearchCharacterForCard(2, "DYN026")) {
   /* if ($p2Char[0] == "ROGUE010") {
     PutItemIntoPlayForPlayer("ARC163", 1); //Rusted Relic for the main player, not the scholar
   } */
-}
 
 AddDecisionQueue("SHUFFLEDECK", 1, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck
 AddDecisionQueue("SHUFFLEDECK", 2, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck
