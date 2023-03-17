@@ -2039,6 +2039,9 @@ function RemoveEffectsOnChainClose()
       case "UPR049":
         $remove = 1;
         break;
+      case "DYN095": case "DYN096": case "DYN097":
+        $remove = 1;
+        break;
       case "OUT033": case "OUT034": case "OUT035":
         $remove = 1;
         break;
