@@ -68,36 +68,21 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false)
 function AllyHealth($cardID)
 {
   switch ($cardID) {
-    case "MON219":
-      return 6;
-    case "MON220":
-      return 6;
-    case "UPR406":
-      return 6;
-    case "UPR407":
-      return 5;
-    case "UPR408":
-      return 4;
-    case "UPR409":
-      return 3;
-    case "UPR410":
-      return 2;
-    case "UPR411":
-      return 2;
-    case "UPR412":
-      return 4;
-    case "UPR413":
-      return 7;
-    case "UPR414":
-      return 6;
-    case "UPR415":
-      return 4;
-    case "UPR416":
-      return 1;
-    case "UPR417":
-      return 3;
-    case "DYN612":
-      return 4;
+    case "MON219": return 6;
+    case "MON220": return 6;
+    case "UPR406": return 6;
+    case "UPR407": return 5;
+    case "UPR408": return 4;
+    case "UPR409": return 3;
+    case "UPR410": return 2;
+    case "UPR411": return 2;
+    case "UPR412": return 4;
+    case "UPR413": return 7;
+    case "UPR414": return 6;
+    case "UPR415": return 4;
+    case "UPR416": return 1;
+    case "UPR417": return 3;
+    case "DYN612": return 4;
     default:
       return 1;
   }
