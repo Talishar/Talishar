@@ -14,6 +14,7 @@ function &GetMZZone($player, $zone)
   else if ($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = &GetDiscard($player);
   else if ($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = &GetPermanents($player);
   else if ($zone == "BANISH" || $zone == "MYBANISH" || $zone == "THEIRBANISH") $rv = &GetBanish($player);
+  else if ($zone == "DECK" || $zone == "MYDECK" || $zone == "THEIRDECK") $rv = &GetDeck($player);
   else if ($zone == "LAYER") return $layers;
   else if ($zone == "CC") return $combatChain;
   return $rv;
@@ -304,6 +305,15 @@ function HasTakenDamage($player)
 {
   global $CS_DamageTaken;
   return GetClassState($player, $CS_DamageTaken) > 0;
+}
+
+function ArsenalFaceDownCard($player)
+{
+  $arsenal = &GetArsenal($player);
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if ($arsenal[$i + 1] == "DOWN") return $arsenal[$i];
+  }
+  return "";
 }
 
 function ArsenalHasFaceDownCard($player)

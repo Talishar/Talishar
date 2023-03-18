@@ -1,35 +1,5 @@
 <?php
 
-  function UPRIllusionistCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR006": case "UPR007": case "UPR008": case "UPR009": case "UPR010": case "UPR011": case "UPR012": case "UPR013": case "UPR014": case "UPR015": case "UPR016": case "UPR017": return "Invocation";
-      case "UPR003": return "Scepter";
-      case "UPR004": return "Arms";
-      case "UPR005": return "Aura";
-      case "UPR042": return "Dragon,Ally";
-      case "UPR043": return "Ash";
-      case "UPR151": return "Arms";
-      case "UPR152": return "Legs";
-      case "UPR406": return "Dragon,Ally";
-      case "UPR407": return "Dragon,Ally";
-      case "UPR408": return "Dragon,Ally";
-      case "UPR409": return "Dragon,Ally";
-      case "UPR410": return "Dragon,Ally";
-      case "UPR411": return "Dragon,Ally";
-      case "UPR412": return "Dragon,Ally";
-      case "UPR413": return "Dragon,Ally";
-      case "UPR414": return "Dragon,Ally";
-      case "UPR415": return "Dragon,Ally";
-      case "UPR416": return "Dragon,Ally";
-      case "UPR417": return "Dragon,Ally";
-      case "UPR439": case "UPR440": case "UPR441": return "Ash";
-      case "UPR551": return "Ally";
-      default: return "";
-    }
-  }
-
   function UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer;

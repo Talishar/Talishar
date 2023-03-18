@@ -15,6 +15,7 @@ $chainLinkIndex = TryGet("index", "");
 ob_start();
 include "./ParseGamestate.php";
 include "./GameLogic.php";
+include "./Libraries/SHMOPLibraries.php";
 include "./Libraries/UILibraries2.php";
 include "./Libraries/StatFunctions.php";
 include "./Libraries/PlayerSettings.php";
@@ -144,6 +145,7 @@ switch ($popupType) {
     AddSetting($response->Settings, "DisableStats", $SET_DisableStats);
     AddSetting($response->Settings, "IsCasterMode", $SET_CasterMode);
     AddSetting($response->Settings, "IsStreamerMode", $SET_StreamerMode);
+    $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     break;
   default:
     break;

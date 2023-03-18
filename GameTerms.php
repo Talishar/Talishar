@@ -43,7 +43,7 @@ function TypeToPlay($phase)
     case "CHOOSEDECK":
       return "a card from deck";
     case "MAYCHOOSEDECK":
-      return "a card from deck";  
+      return "a card from deck";
     case "HANDTOPBOTTOM":
       return "a card from hand";
     case "CHOOSEBOTTOM":
@@ -114,6 +114,8 @@ function TypeToPlay($phase)
       return "how much you want to pay";
     case "CHOOSEMYSOUL": case "MAYCHOOSEMYSOUL":
       return "a card from soul";
+    case "INPUTCARDNAME":
+      return "a card name";
   }
 }
 

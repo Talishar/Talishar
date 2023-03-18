@@ -1,17 +1,5 @@
 <?php
 
-
-  function ARCWizardCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC115": return "Staff";
-      case "ARC116": return "Legs";
-      case "ARC117": return "Chest";
-      default: return "";
-    }
-  }
-
   function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer, $CS_NextWizardNAAInstant, $CS_ArcaneDamageTaken;
@@ -129,10 +117,11 @@
       case "ARC138": case "ARC139": case "ARC140":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
-        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID, 1);
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,INST", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:type=A;class=WIZARD;maxCost={1}", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZBANISH", $currentPlayer, "HAND,INST," . $currentPlayer, 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         return "";
       case "ARC141": case "ARC142": case "ARC143":
       case "ARC144": case "ARC145": case "ARC146":
@@ -465,6 +454,7 @@
         case "UPR159": ++$barrierArray[1]; $total += 1; break;
         case "UPR166": ++$barrierArray[1]; $total += 1; break;
         case "UPR167": ++$barrierArray[1]; $total += 1; break;
+        case "OUT094": ++$barrierArray[1]; $total += 1; break;
         default: break;
       }
     }

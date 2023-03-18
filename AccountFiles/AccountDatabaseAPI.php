@@ -17,6 +17,45 @@ function LoadUserData($username) {
   return $row;
 }
 
+
+function PasswordLogin($username, $password, $rememberMe) {
+	$conn = GetLocalMySQLConnection();
+	$userData = LoadUserData($username);
+
+  if($userData == NULL) return false;
+
+  try {
+  	$passwordValid = password_verify($password, $userData["usersPwd"]);
+  }
+  catch (\Exception $e) { }
+
+  if($passwordValid)
+  {
+    session_start();
+		$_SESSION["userid"] = $userData["usersId"];
+		$_SESSION["useruid"] = $userData["usersUid"];
+		$_SESSION["useremail"] = $userData["usersEmail"];
+		$_SESSION["userspwd"] = $userData["usersPwd"];
+		$patreonAccessToken = $userData["patreonAccessToken"];
+		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
+
+		try {
+			PatreonLogin($patreonAccessToken);
+		} catch (\Exception $e) { }
+
+		if($rememberMe)
+		{
+			$cookie = hash("sha256", rand() . $_SESSION["userspwd"] . rand());
+			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/");
+			storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
+		}
+		session_write_close();
+
+		return true;
+  }
+  return false;
+}
+
 function AttemptPasswordLogin($username, $password, $rememberMe) {
 	$conn = GetLocalMySQLConnection();
 	$userData = LoadUserData($username);

@@ -7,9 +7,24 @@ function GetStringArray($line)
   return explode(" ", $line);
 }
 
-
+if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
+if(!isset($filepath)) $filepath = "./Games/" . $gameName . "/";
 
 ParseGamestate();
+
+function GamestateSanitize($input)
+{
+  $output = str_replace(",", "<44>", $input);
+  $output = str_replace(" ", "_", $output);
+  return $output;
+}
+
+function GamestateUnsanitize($input)
+{
+  $output = str_replace("<44>", ",", $input);
+  $output = str_replace("_", " ", $output);
+  return $output;
+}
 
 function ParseGamestate($useRedis = false)
 {
@@ -23,42 +38,23 @@ function ParseGamestate($useRedis = false)
   global $layers, $layerPriority, $mainPlayer, $defPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
   global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity, $p1PlayerRating, $p2PlayerRating;
   global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $roguelikeGameID, $events, $lastUpdate;
-  global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID;
+  global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID, $filename;
 
   $mainPlayerGamestateStillBuilt = 0;
   $mpgBuiltFor = -1;
   $myStateBuiltFor = -1;
 
-  $filename = "./Games/" . $gameName . "/gamestate.txt";
-
   $fileTries = 0;
-  $targetTries = ($playerID == 1 ? 5 : 100);
-  $waitTime = ($playerID == 1 ? 100000 : 1000000);
+  $targetTries = ($playerID == 1 ? 10 : 100);
+  $waitTime = 1000000;
   while (!file_exists($filename) && $fileTries < $targetTries) {
-    usleep($waitTime); //100ms
+    usleep($waitTime); //1 second
     ++$fileTries;
   }
   if ($fileTries == $targetTries) {
-    if ($playerID == 1) {
-      $errorFileName = "./BugReports/CreateGameFailsafe.txt";
-      $errorHandler = fopen($errorFileName, "a");
-      date_default_timezone_set('America/Chicago');
-      $errorDate = date('m/d/Y h:i:s a');
-      $errorOutput = "Create game failsafe hit for game $gameName at $errorDate";
-      fwrite($errorHandler, $errorOutput . "\r\n");
-      fclose($errorHandler);
-      include "HostFiles/Redirector.php";
-      header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=1");
-    } else {
-      echo ("This game no longer exists on the server. Please go to the main menu and create a new game.");
-      $errorFileName = "./BugReports/CreateGameFailsafe.txt";
-      $errorHandler = fopen($errorFileName, "a");
-      date_default_timezone_set('America/Chicago');
-      $errorDate = date('m/d/Y h:i:s a');
-      $errorOutput = "Final create game error for game $gameName at $errorDate (total failure)";
-      fwrite($errorHandler, $errorOutput . "\r\n");
-      fclose($errorHandler);
-    }
+    $response = new stdClass();
+    $response->error = "Unable to create the game after 10 seconds. Please try again.";
+    echo(json_encode($response));
     exit;
   }
 
@@ -418,8 +414,7 @@ function UpdateMainPlayerGameStateInner()
 
 function MakeGamestateBackup($filename = "gamestateBackup.txt")
 {
-  global $gameName;
-  $filepath = "./Games/" . $gameName . "/";
+  global $filepath;
   if(!file_exists($filepath . "gamestate.txt")) WriteLog("Cannot copy gamestate file; it does not exist.");
   $result = copy($filepath . "gamestate.txt", $filepath . $filename);
   if(!$result) WriteLog("Copy of gamestate into " . $filename . " failed.");
@@ -427,8 +422,7 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
 
 function RevertGamestate($filename = "gamestateBackup.txt")
 {
-  global $gameName, $skipWriteGamestate, $useRedis;
-  $filepath = "./Games/" . $gameName . "/";
+  global $gameName, $skipWriteGamestate, $useRedis, $filepath;
   if($useRedis)
   {
     $gamestate = file_get_contents($filepath . $filename);
@@ -440,8 +434,7 @@ function RevertGamestate($filename = "gamestateBackup.txt")
 
 function MakeStartTurnBackup()
 {
-  global $mainPlayer, $currentTurn, $gameName;
-  $filepath = "./Games/" . $gameName . "/";
+  global $mainPlayer, $currentTurn, $filepath;
   $lastTurnFN = $filepath . "lastTurnGamestate.txt";
   $thisTurnFN = $filepath . "beginTurnGamestate.txt";
   if (file_exists($thisTurnFN)) copy($thisTurnFN, $lastTurnFN);

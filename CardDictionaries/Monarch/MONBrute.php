@@ -1,16 +1,5 @@
 <?php
 
-  function MONBruteCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON121": return "Flail";
-      case "MON122": return "Legs";
-      case "MON221": return "Axe";
-      default: return "";
-    }
-  }
-
   function MONBrutePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;

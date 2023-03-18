@@ -67,7 +67,9 @@ function JSONRenderedCard(
   $isFrozen = NULL,
   $gem = NULL,
   $countersMap = new stdClass(), // new object for counters
-  $label = NULL
+  $label = NULL,
+  $facing = NULL,
+  $numUses = NULL
 ) {
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -123,6 +125,8 @@ function JSONRenderedCard(
     'isFrozen' => $isFrozen,
     'countersMap' => $countersMap,
     'label' => $label,
+    'facing' => $facing,
+    'numUses' => $numUses,
   ];
 
   if ($gem != NULL) {
@@ -330,7 +334,7 @@ function BorderColorMap($code)
   }
 }
 
-function CreateButton($playerID, $caption, $mode, $input, $size = "", $image = "", $tooltip = "", $fullRefresh = false, $fullReload = false, $prompt = "")
+function CreateButton($playerID, $caption, $mode, $input, $size = "", $image = "", $tooltip = "", $fullRefresh = false, $fullReload = false, $prompt = "", $useInput=false)
 {
   global $gameName, $authKey;
 
@@ -346,8 +350,10 @@ function CreateButton($playerID, $caption, $mode, $input, $size = "", $image = "
 
   if ($image != "")
     $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick='" . $onClick . "'>";
+  else if($useInput)
+    $rv = "<input type='button' value='$caption' title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick='" . $onClick . "'></input>";
   else
-    $rv = "<button class='button' title='$tooltip' " . ($size != "" ? "style='font-size:$size; width:' " : "") . " onclick='" . $onClick . "'>" . $caption . "</button>";
+    $rv = "<button class='button' title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick='" . $onClick . "'>" . $caption . "</button>";
 
   return $rv;
 }
@@ -389,6 +395,18 @@ function CreateForm($playerID, $caption, $mode, $count)
   $rv .= "<input type='hidden' id='playerID' name='playerID' value='" . $playerID . "'>";
   $rv .= "<input type='hidden' id='mode' name='mode' value='" . $mode . "'>";
   $rv .= "<input type='hidden' id='chkCount' name='chkCount' value='" . $count . "'>";
+  return $rv;
+}
+
+function CreateTextForm($playerID, $caption, $mode)
+{
+  global $gameName;
+  $rv = "<form>";
+  $rv .= "<input type='button' onclick='textSubmit(" . $mode . ")' value='" . $caption . "'>";
+  $rv .= "<input type='hidden' id='gameName' name='gameName' value='" . $gameName . "'>";
+  $rv .= "<input type='hidden' id='playerID' name='playerID' value='" . $playerID . "'>";
+  $rv .= "<input type='hidden' id='mode' name='mode' value='" . $mode . "'>";
+  $rv .= "<input type='text' id='inputText' name='inputText' onkeypress='suppressEventPropagation(event)'>";
   return $rv;
 }
 
@@ -672,7 +690,7 @@ function BanishUI($from = "")
       $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i)); //Display banished cards that are playable
     else // if($from != "HAND")
     {
-      if (PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i]))
+      if (PlayableFromBanish($banish[$i], $banish[$i+1]) || AbilityPlayableFromBanish($banish[$i]))
         $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));
       else if ($from != "HAND")
         $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
@@ -695,15 +713,16 @@ function BanishUIMinimal($from = "")
       if ($rv != "") $rv .= "|";
       if ($playerID == 3) ClientRenderedCard(cardNumber: $MyCardBack, overlay: 1, controller: $playerID);
       else $rv .= ClientRenderedCard(cardNumber: $banish[$i], overlay: 1, controller: $playerID);
-    } else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") {
-      if ($rv != "") $rv .= "|";
-      $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
-    } else {
-      if (PlayableFromBanish($banish[$i]) || (AbilityPlayableFromBanish($banish[$i]) && IsPlayable($banish[$i], $turn[0], "BANISH", $i) && $playerID == $mainPlayer)) {
+    }
+    else {
+      if ($action > 0) {
         if ($rv != "") $rv .= "|";
         $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
-      } else if ($from != "HAND")
+      }
+      else if ($from != "HAND")
+      {
         $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
+      }
     }
   }
   return $rv;
@@ -721,13 +740,10 @@ function TheirBanishUIMinimal($from = "")
     if ($mod == "INT") {
       if ($rv != "") $rv .= "|";
       $rv .= ClientRenderedCard(cardNumber: $TheirCardBack, overlay: 1, controller: $playerID);
-    } else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") {
-      if ($rv != "") $rv .= "|";
-      $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
     } else {
-      if (PlayableFromBanish($banish[$i]) || (AbilityPlayableFromBanish($banish[$i]) && IsPlayable($banish[$i], $turn[0], "BANISH", $i) && $otherPlayer == $mainPlayer)) {
+      if ($otherPlayer == $mainPlayer && IsPlayable($banish[$i], $turn[0], "BANISH", $i, $restriction, $otherPlayer)) {
         if ($rv != "") $rv .= "|";
-        $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
+        $rv .= ClientRenderedCard(cardNumber: $banish[$i], controller: $otherPlayer);
       } else if ($from != "HAND")
         $rv .= Card($banish[$i], "concat", $size, 0, 1, 0);
     }
@@ -741,7 +757,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $mod = "-")
   if ($playerID != $currentPlayer) return 0;
   if ($turn[0] == "B") return ($isPlayable ? 6 : 0);
   if ($from == "BANISH") {
-    if (($isPlayable || PlayableFromBanish($cardID)) && (($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119"))) return 7;
+    if ($isPlayable || PlayableFromBanish($cardID, $mod)) return 7;
     if (HasBloodDebt($cardID)) return 2;
     if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
     if ($isPlayable && ComboActive($cardID)) return 5;
@@ -814,7 +830,9 @@ function MainMenuUI()
 
   $rv .= PreviousTurnSelectionUI() . "<BR>";
   $rv .= "<img style='width: 66vh; height: 33vh;' src='./Images/ShortcutMenu.png'>";
-  $rv .= "<div><input class='GameLobby_Input' onclick='copyText()' style='width:40%;' type='text' id='gameLink' value='" . $reactFE . "?gameName=$gameName&playerID=3'>&nbsp;<button class='GameLobby_Button' style='margin-left:3px;' onclick='copyText()'>Copy Spectate Link</button></div><br>";
+  $isSpectateEnabled = GetCachePiece($gameName, 9) == "1";
+  if($isSpectateEnabled) $rv .= "<div><input class='GameLobby_Input' onclick='copyText()' style='width:40%;' type='text' id='gameLink' value='" . $reactFE . "?gameName=$gameName&playerID=3'>&nbsp;<button class='GameLobby_Button' style='margin-left:3px;' onclick='copyText()'>Copy Spectate Link</button></div><br>";
+  else $rv .= CreateButton($playerID, "Enable Spectating", 100013, 0, "24px", "", "Enable Spectating", 1) . "<BR>";
   if (isset($_SESSION["userid"])) {
     $userID = $_SESSION["userid"];
     $badges = GetMyAwardableBadges($userID);
@@ -842,7 +860,7 @@ function GetTheirBanishForDisplay($playerID)
   $TheirCardBack = GetCardBack($playerID == 1 ? 2 : 1);
   $banish = array();
   for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
-    if ($theirBanish[$i + 1] == "INT") array_push($banish, $TheirCardBack);
+    if ($theirBanish[$i + 1] == "INT" || $theirBanish[$i + 1] == "UZURI") array_push($banish, $TheirCardBack);
     else array_push($banish, $theirBanish[$i]);
   }
   return $banish;
@@ -854,7 +872,7 @@ function GetMyBanishForDisplay($playerID)
   $myCardBack = GetCardBack($playerID == 1 ? 1 : 2);
   $banish = array();
   for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
-    if ($myBanish[$i + 1] == "INT") array_push($banish, $myCardBack);
+    if ($myBanish[$i + 1] == "INT" || $myBanish[$i + 1] == "UZURI") array_push($banish, $myCardBack);
     else array_push($banish, $myBanish[$i]);
   }
   return $banish;

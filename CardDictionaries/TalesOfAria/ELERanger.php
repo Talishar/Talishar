@@ -1,26 +1,5 @@
 <?php
 
-  function ELERangerCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE033": case "ELE034": return "Bow";
-      case "ELE035": case "ELE036": return "Arrow";
-      case "ELE038": case "ELE039": case "ELE040":
-      case "ELE041": case "ELE042": case "ELE043":
-      case "ELE044": case "ELE045": case "ELE046":
-      case "ELE047": case "ELE048": case "ELE049":
-      case "ELE050": case "ELE051": case "ELE052":
-      case "ELE053": case "ELE054": case "ELE055":
-      case "ELE056": case "ELE057": case "ELE058":
-      case "ELE059": case "ELE060": case "ELE061": return "Arrow";
-      case "ELE213": return "Head";
-      case "ELE214": return "Head";
-      case "ELE216": case "ELE217": case "ELE218": return "Arrow";
-      default: return "";
-    }
-  }
-
   function ELERangerPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
@@ -127,7 +106,7 @@
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to fuse", 1);
       AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("NOFUSE", $player, $cardID); //
-      AddDecisionQueue("REVEALHANDCARDS", $player, "<-", 1);
+      AddDecisionQueue("REVEALHANDCARDS", $player, "-", 1);
       if ($isAndOrFuse)
       {
         AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);

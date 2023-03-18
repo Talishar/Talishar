@@ -244,15 +244,15 @@ function SpecificAllyAttackAbilities($attackID)
       return "";
     case "UPR408":
       if (IsHeroAttackTarget()) {
-        $deck = &GetDeck($mainPlayer);
-        if (count($deck) == 0) return "You have no cards in your deck.";
-        $wasRevealed = RevealCards($deck[0]);
-        if ($wasRevealed && PitchValue($deck[0]) == 1) {
-          $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-          AddDecisionQueue("CHOOSETHEIRHAND", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-          AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,NA", 1);
+        $deck = new Deck($mainPlayer);
+        if ($deck->Reveal(1)) {
+          if (PitchValue($deck->Top()) == 1) {
+            $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+            AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+            AddDecisionQueue("CHOOSETHEIRHAND", $mainPlayer, "<-", 1);
+            AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+            AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,NA", 1);
+          }
         }
       }
       return "";

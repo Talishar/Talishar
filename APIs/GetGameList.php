@@ -30,13 +30,17 @@ if ($handle = opendir($path)) {
     if (file_exists($gs)) {
       $lastGamestateUpdate = intval(GetCachePiece($gameToken, 6));
       if ($currentTime - $lastGamestateUpdate < 30000) {
-        $gameInProgress = new stdClass();
-        $gameInProgress->p1Hero = GetCachePiece($gameToken, 7);
-        $gameInProgress->p2Hero = GetCachePiece($gameToken, 8);
-        $gameInProgress->secondsSinceLastUpdate = intval(($currentTime - $lastGamestateUpdate) / 1000);
-        $gameInProgress->gameName = $gameToken;
+        $visibility = GetCachePiece($gameToken, 9);
         $gameInProgressCount += 1;
-        array_push($response->gamesInProgress, $gameInProgress);
+        if($visibility == "1")
+        {
+          $gameInProgress = new stdClass();
+          $gameInProgress->p1Hero = GetCachePiece($gameToken, 7);
+          $gameInProgress->p2Hero = GetCachePiece($gameToken, 8);
+          $gameInProgress->secondsSinceLastUpdate = intval(($currentTime - $lastGamestateUpdate) / 1000);
+          $gameInProgress->gameName = $gameToken;
+          array_push($response->gamesInProgress, $gameInProgress);
+        }
       }
       else if ($currentTime - $lastGamestateUpdate > 900000) //~1 hour
       {
@@ -63,7 +67,7 @@ if ($handle = opendir($path)) {
         deleteDirectory($folder);
         DeleteCache($gameToken);
       }
-      if ($status == 0 && $visibility == "public") {
+      if ($status == 0 && $visibility == "public" && intval(GetCachePiece($gameName, 11)) < 3) {
         $openGame = new stdClass();
         $openGame->p1Hero = GetCachePiece($gameName, 7);
         $formatName = "";
@@ -78,9 +82,8 @@ if ($handle = opendir($path)) {
         array_push($response->openGames, $openGame);
       }
     }
-
-
   }
+  $response->gameInProgressCount = $gameInProgressCount;
   closedir($handle);
   echo json_encode($response);
 }

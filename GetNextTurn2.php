@@ -1,7 +1,6 @@
 <?php
 
 include 'Libraries/HTTPLibraries.php';
-include 'Classes/Deck.php';
 
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
@@ -26,14 +25,25 @@ $windowWidth = intval(TryGet("windowWidth", 0));
 $windowHeight = intval(TryGet("windowHeight", 0));
 $lastCurrentPlayer = intval(TryGet("lastCurrentPlayer", 0));
 
+if (($playerID == 1 || $playerID == 2) && $authKey == "") {
+  if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+}
+
 include "HostFiles/Redirector.php";
 include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
 
 SetHeaders();
 
+if($playerID == 3 && GetCachePiece($gameName, 9) != "1") {
+  echo($playerID . " " . $gameName . " " . GetCachePiece($gameName, 9));
+  header('HTTP/1.0 403 Forbidden');
+  exit;
+}
+
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $opponentDisconnected = false;
+$opponentInactive = false;
 
 $currentTime = round(microtime(true) * 1000);
 if ($isGamePlayer) {
@@ -48,15 +58,13 @@ if ($isGamePlayer) {
 }
 $count = 0;
 $cacheVal = intval(GetCachePiece($gameName, 1));
-$lastCurrentCachePiece = intval(GetCachePiece($gameName, 9));
-while ($lastUpdate != 0 && ($lastCurrentPlayer == 0 || $lastCurrentCachePiece == 0 || $lastCurrentPlayer == $lastCurrentCachePiece) && $cacheVal <= $lastUpdate) {
+while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   usleep(100000); //100 milliseconds
   $currentTime = round(microtime(true) * 1000);
   $readCache = ReadCache($gameName);
   if($readCache == "") break;
   $cacheArr = explode(SHMOPDelimiter(), $readCache);
   $cacheVal = intval($cacheArr[0]);
-  $lastCurrentCachePiece = intval($cacheArr[8]);
   if ($isGamePlayer) {
     SetCachePiece($gameName, $playerID + 1, $currentTime);
     $otherP = ($playerID == 1 ? 2 : 1);
@@ -72,6 +80,14 @@ while ($lastUpdate != 0 && ($lastCurrentPlayer == 0 || $lastCurrentCachePiece ==
       SetCachePiece($gameName, $otherP + 3, "2");
       $lastUpdate = 0;
       $opponentDisconnected = true;
+    }
+    //Handle server timeout
+    $lastUpdateTime = $cacheArr[5];
+    if ($currentTime - $lastUpdateTime > 90000 && $cacheArr[11] != "1")//90 seconds
+    {
+      SetCachePiece($gameName, 12, "1");
+      $opponentInactive = true;
+      $lastUpdate = 0;
     }
   }
   ++$count;
@@ -95,6 +111,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     include_once "./APIKeys/APIKeys.php";
     PlayerLoseHealth($otherP, GetHealth($otherP));
     include "WriteGamestate.php";
+  }
+  else if($opponentInactive && !IsGameOver()) {
+    $currentPlayerActivity = 2;
+    WriteLog("The current player is inactive.");
+    include "WriteGamestate.php";
+    GamestateUpdated($gameName);
   }
 
   if ($turn[0] == "REMATCH" && intval($playerID) != 3) {
@@ -288,83 +310,31 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($currentPlayer == $playerID) {
       if ($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo ("(" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "16px") . ")");
       if (CanPassPhase($turn[0])) {
-        //if ($turn[0] == "B") echo (CreateButton($playerID, "Undo Block", 10001, 0, "16px"));
         if ($turn[0] == "B") echo (CreateButton($playerID, "Undo Block", 10001, 0, "16px") . " " . CreateButton($playerID, "Pass", 99, 0, "16px") . " " . CreateButton($playerID, "Pass Block and Reactions", 101, 0, "16px", "", "Reactions will not be skipped if the opponent reacts"));
       }
     } else {
       if ($currentPlayerActivity == 2 && $playerID != 3) echo ("— Opponent is inactive " . CreateButton($playerID, "Claim Victory", 100007, 0, "16px"));
     }
     echo ("</b>");
-    /*
-    if($playerID != $currentPlayer && $playerID != $mainPlayer)
-    {
-      $currentValue = ShortcutAttackThreshold($playerID);
-      echo(CreateRadioButton($SET_ShortcutAttackThreshold . "-0", "Never Pass", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Never Pass"));
-      echo(CreateRadioButton($SET_ShortcutAttackThreshold . "-1", "1 Attack", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "1 Attack"));
-      echo(CreateRadioButton($SET_ShortcutAttackThreshold . "-99", "Always Pass", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Always Pass"));
-    }
-    */
     echo ("</span>");
   }
   if (IsManualMode($playerID)) echo ("&nbsp;" . CreateButton($playerID, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "18px", "", "", true));
   echo ("</span>");
 
   //Deduplicate current turn effects
-  $friendlyEffectsArr = [];
-  $opponentEffectsArr = [];
+  $friendlyEffects = "";
+  $opponentEffects = "";
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
-    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) $arr = &$friendlyEffectsArr;
-    else $arr = &$opponentEffectsArr;
-    if (!array_key_exists($cardID, $arr)) {
-      $arr[$cardID] = [];
-    }
-    if (!array_key_exists($currentTurnEffects[$i], $arr[$cardID])) $arr[$cardID][$currentTurnEffects[$i]] = 1;
-    else ++$arr[$cardID][$currentTurnEffects[$i]];
-  }
-
-  //Display Current Turn Effects
-  $friendlyEffects = "";
-  $opponentEffects = "";
-  foreach ($friendlyEffectsArr as $key => $effectArr) {
-    $max = 0;
-    foreach ($effectArr as $effectCount) {
-      if ($effectCount > $max) $max = $effectCount;
-    }
-    if (IsEffectTileable($key)) {
-      $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid blue;'>";
-      $effect .= Card($key, "crops", 65, 0, 1, counters: $max);
-      $effect .= "</div>";
-      $friendlyEffects .= $effect;
-    } else {
-      for ($i = 0; $i < $max; ++$i) {
-        $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid blue;'>";
-        $effect .= Card($key, "crops", 65, 0, 1);
-        $effect .= "</div>";
-        $friendlyEffects .= $effect;
-      }
-    }
-  }
-
-  foreach ($opponentEffectsArr as $key => $effectArr) {
-    $max = 0;
-    foreach ($effectArr as $effectCount) {
-      if ($effectCount > $max) $max = $effectCount;
-    }
-    if (IsEffectTileable($key)) {
-      $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid red;'>";
-      $effect .= Card($key, "crops", 65, 0, 1, counters: $max);
-      $effect .= "</div>";
-      $opponentEffects .= $effect;
-    } else {
-      for ($i = 0; $i < $max; ++$i) {
-        $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid red;'>";
-        $effect .= Card($key, "crops", 65, 0, 1);
-        $effect .= "</div>";
-        $opponentEffects .= $effect;
-      }
-    }
+    $cardID = explode("_", $cardID)[0];
+    $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
+    $color = ($isFriendly ? "blue" : "red");
+    $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid " . $color . ";'>";
+    $effect .= Card($cardID, "crops", 65, 0, 1);
+    $effect .= "</div>";
+    if ($isFriendly) $friendlyEffects .= $effect;
+    else $opponentEffects .= $effect;
   }
 
   echo ("<div style='position:fixed; height:100%; width:100px; left:0px; top:0px;'>");
@@ -445,8 +415,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   echo ("</div>"); //Combat chain div
 
-
-  //if($turn[0] == "INSTANT" && ($playerID == $turn[1] || count($layers) > 0))
   if (count($layers) > 0) {
     $content = "";
     $content .= "<div style='font-size:24px; margin-left:5px; margin-bottom:5px; margin-top:5px;'><b>Layers</b>&nbsp;<i style='font-size:16px; margin-right: 5px;'>(Priority settings can be adjusted in the menu)</i></div>";
@@ -456,9 +424,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $content .= "&nbsp;Attack Target: " . GetMZCardLink($defPlayer, $attackTarget);
       }
     }
+    if($dqState[8] != -1) $content .= "<div style='margin-left:5px;'><i style='font-size:16px;'>For more info about trigger ordering, see rule 1.10.2c of the <a href='http://fabjud.ge/cr' target='_blank'>comprehensive rulebook</a>.</i></div>";
     $content .= "<div style='margin-left:1px; margin-top:3px; margin-bottom:5px' display:inline;'>";
     $nbTiles = 0;
     for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
+      $content .= "<div style='display:inline; max-width:" . $cardSize . "px;'>";
       $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" ? $layers[$i + 2] : $layers[$i]);
       $layersColor = $layers[$i + 1] == $playerID ? 1 : 2;
       if ($playerID == 3) $layersColor = $layers[$i + 1] == $otherPlayer ? 2 : 1;
@@ -472,6 +442,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $nbTiles = 0;
         $content .= Card($layerName, "concat", $cardSize, 0, 1, 0, $layersColor, controller: $layers[$i + 1]);
       }
+      if($layers[$i] == "TRIGGER" && $dqState[8] >= $i && $playerID == $mainPlayer)
+      {
+        if($i < $dqState[8]) $content .= "<span style='position:relative; left:-110px; top:-20px; z-index:10000;'>" . CreateButton($playerID, "<", 31, $i, "18px", useInput:true) . "</span>";
+        if($i > 0) $content .= "<span style='position:relative; left:-65px; top:-20px; z-index:10000;'>" . CreateButton($playerID, ">", 32, $i, "18px", useInput:true) . "</span>";
+      }
+      $content .= "</div>";
     }
     $content .= "</div>";
     echo CreatePopup("INSTANT", [], 0, 1, "", 1, $content, "./", false, true);
@@ -634,6 +610,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "THEIRPERM") $source = $theirPermanents;
       else if ($option[0] == "MYPITCH") $source = $myPitch;
       else if ($option[0] == "THEIRPITCH") $source = $theirPitch;
+      else if ($option[0] == "MYDECK") $source = $myDeck;
+      else if ($option[0] == "THEIRDECK") $source = $theirDeck;
       else if ($option[0] == "LANDMARK") $source = $landmarks;
       else if ($option[0] == "CC") $source = $combatChain;
       else if ($option[0] == "COMBATCHAINLINK") $source = $combatChain;
@@ -781,41 +759,34 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $caption = "<div>Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".") . "</div>";
     if (GetDQHelpText() != "-") $caption = "<div>" . implode(" ", explode("_", GetDQHelpText())) . "</div>";
     $content .= CreateForm($playerID, "Submit", 19, count($options));
-
-    if ($turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MAYMULTICHOOSETEXT") {
-      $content .= "<table style='border-spacing:0; border-collapse: collapse;'>";
-      for ($i = 0; $i < count($options); ++$i) {
-        $content .= "<tr><th style='text-align: left;'>";
-        $content .= CreateCheckbox($i, strval($options[$i]), -1, false, implode(" ", explode("_", strval($options[$i]))));
-        $content .= "</th>";
-        $content .= "</tr>";
-      }
-      $content .= "</table>";
-      $content .= "</form>";
-      $content .= "</div>";
-      echo CreatePopup("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
-    } else {
-      $content .= "<table style='border-spacing:0; border-collapse: collapse;'><tr>";
-      for ($i = 0; $i < count($options); ++$i) {
-        $content .= "<td>";
-        $content .= CreateCheckbox($i, strval($options[$i]));
-        $content .= "</td>";
-      }
-      $content .= "</tr><tr>";
-      for ($i = 0; $i < count($options); ++$i) {
-        $content .= "<td>";
-        $content .= "<div class='container'>";
-        if ($turn[0] == "MULTICHOOSEDISCARD") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($myDiscard[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
-        else if ($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($theirDiscard[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
-        else if ($turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MAYMULTICHOOSEHAND") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($myHand[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
-        else if ($turn[0] == "MULTICHOOSEDECK") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($myDeck[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
-        else if ($turn[0] == "MULTICHOOSETHEIRDECK") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($theirDeck[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
-        $content .= "<div class='overlay'><div class='text'>Select</div></div></div>";
-        $content .= "</td>";
-      }
-      $content .= "</tr></table></form></div>";
-      echo CreatePopup("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
+    $content .= "<table style='border-spacing:0; border-collapse: collapse;'><tr>";
+    for ($i = 0; $i < count($options); ++$i) {
+      $content .= "<td>";
+      $content .= CreateCheckbox($i, strval($i));
+      $content .= "</td>";
     }
+    $content .= "</tr><tr>";
+    for ($i = 0; $i < count($options); ++$i) {
+      $content .= "<td>";
+      $content .= "<div class='container'>";
+      if ($turn[0] == "MULTICHOOSEDISCARD") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($myDiscard[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
+      else if ($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($theirDiscard[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
+      else if ($turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MAYMULTICHOOSEHAND") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($myHand[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
+      else if ($turn[0] == "MULTICHOOSEDECK") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($myDeck[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
+      else if ($turn[0] == "MULTICHOOSETHEIRDECK") $content .= "<label class='multichoose' for=chk" . $i . ">" . Card($theirDeck[$options[$i]], "concat", $cardSize, 0, 1) . "</label>";
+      else if ($turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MAYMULTICHOOSETEXT") $content .= implode(" ", explode("_", strval($options[$i])));
+      $content .= "<div class='overlay'><div class='text'>Select</div></div></div>";
+      $content .= "</td>";
+    }
+    $content .= "</tr></table></form></div>";
+    echo CreatePopup("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
+  }
+
+  if($turn[0] == "INPUTCARDNAME" && $turn[1] == $playerID)
+  {
+    $caption = "<div>Enter a card name or ID</div>";
+    $content = CreateTextForm($playerID, "Submit", 30);
+    echo CreatePopup("INPUTCARDNAME", [], 0, 1, $caption, 1, $content);
   }
 
   //Opponent hand
@@ -864,7 +835,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Display Their Banish
   if (count($theirBanish) > 0) {
     echo ("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; top:" . GetZoneTop("THEIRBANISH") . ";'>");
-    $card = $theirBanish[count($theirBanish) - BanishPieces() + 1] == "INT" ? $TheirCardBack : $theirBanish[count($theirBanish) - BanishPieces()];
+    $mod = $theirBanish[count($theirBanish) - BanishPieces() + 1];
+    $card = $mod == "INT" || $mod == "UZURI" ? $TheirCardBack : $theirBanish[count($theirBanish) - BanishPieces()];
     echo (Card($card, "concat", $cardSizeAura, 0, 0, 0, 0, controller: $otherPlayer));
 
     $theirBloodDeptCount = 0;
@@ -1052,8 +1024,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if (IsCasterMode()) $handContents .= ClientRenderedCard(cardNumber: $myHand[$i], controller: 2);
       else $handContents .= ClientRenderedCard(cardNumber: $MyCardBack, controller: 2);
     } else {
-      if ($playerID == $currentPlayer && $turn[0] == "CHOOSEHANDCANCEL") $playable = !IsPitchRestricted($myHand[$i], $restriction, "HAND", -1);
-      elseif ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+      if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
       else $playable = false;
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
       $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
@@ -1087,6 +1058,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $iconLeft = $cardWidth / 2 - intval($iconHeight * .71 / 2) + 5;
         if ($myArsenal[$i + 1] == "UP") echo ("<img style='position:absolute; z-index: 5; left:" . $iconLeft . "px; bottom:3px; height:" . $iconHeight . "px; ' src='./Images/faceUp.png' title='This arsenal card is face up.'></img>");
         else echo ("<img style='position:absolute; left:" . $iconLeft . "px; bottom:3px; z-index: 5; height:" . $iconHeight . "px; ' src='./Images/faceDown.png' title='This arsenal card is face down.'></img>");
+        if($restriction != "") echo ("<img style='position:absolute; left:26px; top:26px; z-index: 5;' src='./Images/restricted.png' title='$restriction'></img>");
         echo ("</div>");
       }
       if ($myArsenal[$i + 4] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:7px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
@@ -1125,11 +1097,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $playable = ($currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false);
       $border = CardBorderColor($myItems[$i], "PLAY", $playable);
       echo ("<div style='position:relative; display: inline-block;'>");
-      echo (Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i + 2] != 2 ? 1 : 0, $border, $myItems[$i + 1], strval($i), "", false, 0, 0, 0, "ITEMS", controller: $playerID) . "&nbsp");
+      echo (Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, ItemOverlay($myItems[$i], $myItems[$i + 2], $myItems[$i + 3]), $border, $myItems[$i + 1], strval($i), "", false, 0, 0, 0, "ITEMS", controller: $playerID) . "&nbsp");
       DisplayPriorityGem($myItems[$i + 5], "ITEMS-" . $i);
       echo ("</div>");
     }
   }
+
   $myAllies = GetAllies($playerID);
   if (count($myAllies) > 0) {
     for ($i = 0; $i < count($myAllies); $i += AllyPieces()) {
@@ -1226,7 +1199,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Display My Banish
   if (count($myBanish) > 0) {
     echo ("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; bottom:" . GetZoneBottom("MYBANISH") . ";'>");
-    if ($playerID == 3) $card = ($myBanish[count($myBanish) - BanishPieces() + 1] == "INT" ? $MyCardBack : $myBanish[count($myBanish) - BanishPieces()]);
+    $mod = $myBanish[count($myBanish) - BanishPieces() + 1];
+    if ($playerID == 3) $card = ($mod == "INT" || $mod == "UZURI" ? $MyCardBack : $myBanish[count($myBanish) - BanishPieces()]);
     else $card = $myBanish[count($myBanish) - BanishPieces()];
     echo (Card($card, "concat", $cardSizeAura, 0, 0, 0, 0, controller: $playerID));
     echo ("<span title='Click to see your Banish Zone.' onclick='ShowPopup(\"myBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer;
@@ -1333,6 +1307,12 @@ function PlayableCardBorderColor($cardID)
 {
   if (HasReprise($cardID) && RepriseActive()) return 3;
   return 0;
+}
+
+function ItemOverlay($item, $isReady, $numUses)
+{
+  if($item == "EVR070" && $numUses < 3) return 1;
+  return ($isReady != 2 ? 1 : 0);
 }
 
 function ChoosePopup($zone, $options, $mode, $caption = "", $zoneSize = 1)
@@ -1483,18 +1463,6 @@ function IsTileable($cardID)
     case "EVR195":
     case "UPR043":
     case "DYN243":
-      return true;
-    default:
-      return false;
-  }
-}
-
-function IsEffectTileable($cardID)
-{
-  switch ($cardID) {
-    case "WTR075":
-      return true;
-    case "ELE173":
       return true;
     default:
       return false;

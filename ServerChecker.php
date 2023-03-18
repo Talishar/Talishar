@@ -51,8 +51,9 @@ if ($handle = opendir($path)) {
       if ($currentTime - $lastGamestateUpdate < 30000) {
         $p1Hero = GetCachePiece($gameToken, 7);
         $p2Hero = GetCachePiece($gameToken, 8);
-        if ($p2Hero != "") {
-          $gameInProgressCount += 1;
+        if($p2Hero != "") $gameInProgressCount += 1;
+        $visibility = GetCachePiece($gameToken, 9);
+        if ($p2Hero != "" && $visibility == "1") {
           $spectateLinks .= "<form style='text-align:center;' action='" . $reactFE . "'>";
           $spectateLinks .= "<center><table><tr><td style='vertical-align:middle; padding-left:8px; width:50px; height: 40px;'>";
           if ($p1Hero == "") {
@@ -98,7 +99,7 @@ if ($handle = opendir($path)) {
       }
     }
 
-    if ($status == 0 && $visibility == "public") {
+    if ($status == 0 && $visibility == "public" && intval(GetCachePiece($gameName, 11)) < 3) {
       $p1Hero = GetCachePiece($gameName, 7);
       $formatName = "";
       if ($format == "commoner") $formatName = "Commoner ";

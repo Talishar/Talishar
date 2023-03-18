@@ -1,17 +1,5 @@
 <?php
 
-  function MONRunebladeCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON155": return "Sword";
-      case "MON157": return "Aura";
-      case "MON229": return "Scythe";
-      case "MON230": return "Chest";
-      default: return "";
-    }
-  }
-
   function MONRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;

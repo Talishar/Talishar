@@ -5,6 +5,14 @@ function IsWeapon($cardID)
   return CardType($cardID) == "W";
 }
 
+function IsWeaponAttack()
+{
+  global $combatChain;
+  if(count($combatChain) == 0) return false;
+  if(CardType($combatChain[0]) == "W" || CardSubType($combatChain[0]) == "Aura") return true;
+  return false;
+}
+
 function WeaponIndices($chooser, $player, $subtype = "")
 {
   global $mainPlayer;

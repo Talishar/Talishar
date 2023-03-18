@@ -47,6 +47,12 @@ if (!isset($_SESSION["userid"])) {
   }
 }
 
+if($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
+  //Must be logged in to use matchmaking
+  header("Location: MainMenu.php");
+  exit;
+}
+
 if(isset($_SESSION["userid"]))
 {
   //Save game creation settings
@@ -93,8 +99,11 @@ if ( (!file_exists("Games/$gameName")) && (mkdir("Games/$gameName", 0700, true))
 
 $p1Data = [1];
 $p2Data = [2];
+$p1SideboardSubmitted = "0";
+$p2SideboardSubmitted = "0";
 if ($deckTestMode != "") {
   $gameStatus = 4; //ReadyToStart
+  $p2SideboardSubmitted = "1";
   $opponentDeck = "./Assets/Dummy.txt";
   $fileName = "./Roguelike/Encounters/".$deckTestMode.".txt";
   if(file_exists($fileName)) $opponentDeck = $fileName;
@@ -135,5 +144,6 @@ $handler = fopen($filename, "w");
 fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
-WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!0!0!"); //Initialize SHMOP cache for this game
+$cacheVisibility = ($visibility == "public" ? "1" : "0");
+WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!" . $cacheVisibility . "!0!0!0"); //Initialize SHMOP cache for this game
 header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink&format=$format&set=$set&decksToTry=$decksToTry&favoriteDeck=$favoriteDeck&favoriteDecks=$favoriteDeckLink");

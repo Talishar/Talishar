@@ -1,12 +1,16 @@
 <?php
 
 
+include "../CardDictionary.php";
 include '../Libraries/HTTPLibraries.php';
 include_once "../Libraries/PlayerSettings.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 
+SetHeaders();
+
 session_start();
 
+$_POST = json_decode(file_get_contents('php://input'), true);
 $gameName = $_POST["gameName"];
 $playerID = $_POST["playerID"];
 $lastUpdate = $_POST["lastUpdate"];
@@ -17,18 +21,20 @@ else if (isset($_POST["authKey"])) $authKey = $_POST["authKey"];
 session_write_close();
 
 if (!IsGameNameValid($gameName)) {
-  echo(json_encode(new stdClass()));
+  echo (json_encode(new stdClass()));
   exit;
 }
 
-if(!file_exists("../Games/" . $gameName . "/")) { echo(json_encode(new stdClass())); exit; }
+if (!file_exists("../Games/" . $gameName . "/")) {
+  echo (json_encode(new stdClass()));
+  exit;
+}
 
-if($lastUpdate == "NaN") $lastUpdate = 0;
+if ($lastUpdate == "NaN") $lastUpdate = 0;
 if ($lastUpdate > 10000000) $lastUpdate = 0;
 
 
 include "../WriteLog.php";
-include "../CardDictionary.php";
 include "../HostFiles/Redirector.php";
 include "../Libraries/UILibraries2.php";
 include "../Libraries/SHMOPLibraries.php";
@@ -56,7 +62,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   if ($oppStatus != "-1" && $oppLastTime != "") {
     if (($currentTime - $oppLastTime) > 8000 && $oppStatus == "0") {
-      WriteLog("Player $otherP has disconnected.", path:"../");
+      WriteLog("Player $otherP has disconnected.", path: "../");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "-1");
       SetCachePiece($gameName, $otherP + 6, "");
@@ -70,19 +76,21 @@ include "../MenuFiles/WriteGamefile.php";
 
 $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 if ($authKey != $targetAuth) {
-  echo(json_encode(new stdClass()));
+  echo (json_encode(new stdClass()));
   exit;
 }
 
 if ($kickPlayerTwo) {
-  if($oppStatus != "-1" && ($format == "compcc" || $format == "compblitz"))
-  {
-      //This happens when player 2 "dodges" -- add logging?
+  $numP2Disconnects = IncrementCachePiece($gameName, 11);
+  if ($numP2Disconnects >= 3) {
+    WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.");
   }
-  if (file_exists("../Games/" . $gameName . "/p2Deck.txt")) unlink("./Games/" . $gameName . "/p2Deck.txt");
-  if (file_exists("../Games/" . $gameName . "/p2DeckOrig.txt")) unlink("./Games/" . $gameName . "/p2DeckOrig.txt");
+  if (file_exists("../Games/" . $gameName . "/p2Deck.txt")) unlink("../Games/" . $gameName . "/p2Deck.txt");
+  if (file_exists("../Games/" . $gameName . "/p2DeckOrig.txt")) unlink("../Games/" . $gameName . "/p2DeckOrig.txt");
   $gameStatus = $MGS_Initial;
   $p2Data = [];
+  $p2uid = "";
+  $p2id = "";
   WriteGameFile();
 }
 
@@ -94,6 +102,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   exit;
 } else if ($gameStatus == $MGS_GameStarted) {
   $response->lastUpdate = "1";
+  $response->isMainGameReady = true;
   echo json_encode($response);
   exit;
 } else {
@@ -106,7 +115,6 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   if ($playerID == 1 && $gameStatus < $MGS_Player2Joined) {
     $response->isPrivateLobby = ($visibility == "private");
   }
-
 
   $response->gameLog = JSONLog($gameName, $playerID, "../");
 
@@ -122,10 +130,10 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
     fclose($handler);
   }
   $response->theirHero = $otherHero;
-  $response->theirName = CardName($otherHero);
+  $response->theirHeroName = CardName($otherHero);
 
   $theirName = ($playerID == 1 ? $p2uid : $p1uid);
-  if($theirName == '-') $theirName = "Player " . ($playerID == 1 ? 2 : 1);
+  if ($theirName == '-') $theirName = "Player " . ($playerID == 1 ? 2 : 1);
   $contentCreator = ContentCreators::tryFrom(($playerID == 1 ? $p2ContentCreatorID : $p1ContentCreatorID));
   $nameColor = ($contentCreator != null ? $contentCreator->NameColor() : "");
   $overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($otherHero) : "");
@@ -142,6 +150,14 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   if ($gameStatus == $MGS_ChooseFirstPlayer) $response->myPriority = ($playerID == $firstPlayerChooser ? true : false);
   else if ($playerID == 1 && $gameStatus < $MGS_ReadyToStart) $response->myPriority = false;
   else if ($playerID == 2 && $gameStatus >= $MGS_ReadyToStart) $response->myPriority = false;
+
+  $response->isMainGameReady = ($gameStatus == $MGS_ReadyToStart && $p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1");
+  $response->canSubmitSideboard = ($gameStatus > $MGS_ChooseFirstPlayer && ($playerID == 1 ? $p1SideboardSubmitted == "0" : $p2SideboardSubmitted == "0"));
+
+  $decklink = ($playerID == 1 ? $p1DeckLink : $p2DeckLink);
+  $matchups = ($playerID == 1 ? $p1Matchups : $p2Matchups);
+  $response->myDeckLink = $decklink;
+  $response->matchups = $matchups;
 
   echo json_encode($response);
   exit;

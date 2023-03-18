@@ -1,23 +1,8 @@
 <?php
 
-  function MONTalentCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON000": return "Landmark";
-      case "MON060": return "Chest";
-      case "MON061": return "Head";
-      case "MON187": return "Chest";
-      case "MON188": return "Head";
-      case "MON219": return "Ally";
-      case "MON220": return "Ally";
-      default: return "";
-    }
-  }
-
   function MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts = "")
   {
-    global $currentPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAddedToSoul, $combatChain, $CS_PlayIndex;
+    global $currentPlayer, $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAddedToSoul, $combatChain, $CS_PlayIndex;
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     switch($cardID)
     {
@@ -67,7 +52,8 @@
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDATTACKCOUNTERS", $currentPlayer, "1", 1);
         }
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        if($currentPlayer == $mainPlayer) AddCurrentTurnEffect($cardID, $currentPlayer);
+        else AddNextTurnEffect($cardID, $currentPlayer);
         return "";
       case "MON081": case "MON082": case "MON083":
         AddCurrentTurnEffect($cardID, $currentPlayer);
