@@ -260,11 +260,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $index = SearchCombatChainLink($currentPlayer, subtype:"Off-Hand", class:"GUARDIAN");
         if ($index != ""){
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-          AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Discard a card or PASS and take 1 damage");
+          AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Discard a card or take 1 damage");
           AddDecisionQueue("MAYCHOOSEHAND", $otherPlayer, "<-", 1);
           AddDecisionQueue("REMOVEMYHAND", $otherPlayer, "-", 1);
           AddDecisionQueue("DISCARDCARD", $otherPlayer, "HAND", 1);
-          AddDecisionQueue("PASSTAKEDAMAGE", $otherPlayer, 1);
+          AddDecisionQueue("ELSE", $otherPlayer, "-");
+          AddDecisionQueue("TAKEDAMAGE", $otherPlayer, 1, 1);
         }
       }
       return "";

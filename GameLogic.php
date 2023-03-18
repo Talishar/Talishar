@@ -5315,9 +5315,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
-    case "PASSTAKEDAMAGE":
-      if($lastResult == "PASS") DamageTrigger($player, $parameter, "DAMAGE");
-      return $lastResult;
     case "HITEFFECT":
       ProcessHitEffect($parameter);
       return $parameter;
