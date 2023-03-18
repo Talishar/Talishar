@@ -1174,8 +1174,8 @@ function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
 {
   global $currentTurnEffects;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+    $remove = false;
     if ($currentTurnEffects[$i + 1] == $player) {
-      $remove = false;
       switch ($currentTurnEffects[$i]) {
         case "OUT174":
           if($type != "COMBAT") break;
@@ -1463,76 +1463,32 @@ function CurrentEffectGrantsGoAgain()
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       switch ($currentTurnEffects[$i]) {
-        case "WTR144":
-        case "WTR145":
-        case "WTR146":
-          return true;
-        case "ARC047":
-          return true;
-        case "ARC160-3":
-          return true;
-        case "CRU053":
-          return true;
-        case "CRU055":
-          return true;
-        case "CRU084":
-          return true;
-        case "CRU091-1":
-        case "CRU092-1":
-        case "CRU093-1":
-          return true;
-        case "CRU122":
-          return true;
-        case "CRU145":
-        case "CRU146":
-        case "CRU147":
-          return true;
-        case "MON165":
-        case "MON166":
-        case "MON167":
-          return true;
-        case "MON193":
-          return true;
-        case "MON247":
-          return true;
-        case "MON260-2":
-        case "MON261-2":
-        case "MON262-2":
-          return true;
-        case "ELE031-1":
-          return true;
-        case "ELE034-2":
-          return true;
-        case "ELE091-GA":
-          return true;
-        case "ELE177":
-        case "ELE178":
-        case "ELE179":
-          return true;
-        case "ELE180":
-        case "ELE181":
-        case "ELE182":
-          return $combatChainState[$CCS_AttackFused] == 1;
-        case "ELE201":
-          return true;
-        case "EVR017":
-          return true;
-        case "EVR161-3":
-          return true;
-        case "EVR044":
-        case "EVR045":
-        case "EVR046":
-          return true;
-        case "DVR008":
-          return true;
-        case "DVR019":
-          return true;
-        case "UPR081":
-        case "UPR082":
-        case "UPR083":
-          return true;
-        case "UPR094":
-          return true;
+        case "WTR144": case "WTR145": case "WTR146": return true;
+        case "ARC047": return true;
+        case "ARC160-3": return true;
+        case "CRU053": return true;
+        case "CRU055": return true;
+        case "CRU084": return true;
+        case "CRU091-1": case "CRU092-1": case "CRU093-1": return true;
+        case "CRU122": return true;
+        case "CRU145": case "CRU146": case "CRU147": return true;
+        case "MON165": case "MON166": case "MON167": return true;
+        case "MON193": return true;
+        case "MON247": return true;
+        case "MON260-2": case "MON261-2": case "MON262-2": return true;
+        case "ELE031-1": return true;
+        case "ELE034-2": return true;
+        case "ELE091-GA": return true;
+        case "ELE177": case "ELE178": case "ELE179": return true;
+        case "ELE180": case "ELE181": case "ELE182": return $combatChainState[$CCS_AttackFused] == 1;
+        case "ELE201": return true;
+        case "EVR017": return true;
+        case "EVR044": case "EVR045": case "EVR046": return true;
+        case "EVR161-3": return true;
+        case "DVR008": return true;
+        case "DVR019": return true;
+        case "UPR081": case "UPR082": case "UPR083": return true;
+        case "UPR094": return true;
         case "DYN076": case "DYN077": case "DYN078": return true;
         default:
           break;
@@ -1726,50 +1682,30 @@ function IsCombatEffectPersistent($cardID)
     case "ELE059": case "ELE060": case "ELE061": return true;
     case "ELE066-HIT": return true;
     case "ELE067": case "ELE068": case "ELE069": return true;
-    case "ELE091-BUFF":
-    case "ELE091-GA":
-      return true;
-    case "ELE092-DOM":
-    case "ELE092-BUFF":
-      return true;
-    case "ELE143":
-      return true;
+    case "ELE091-BUFF": case "ELE091-GA": return true;
+    case "ELE092-DOM": case "ELE092-BUFF": return true;
+    case "ELE143": return true;
     case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": return true;
-    case "ELE173":
-      return true;
+    case "ELE173": return true;
     case "ELE198": case "ELE199": case "ELE200": return true;
-    case "ELE203":
-      return true;
-    case "EVR001":
-      return true;
-    case "EVR019":
-      return true;
+    case "ELE203": return true;
+    case "EVR001": return true;
+    case "EVR019": return true;
     case "EVR066-1": case "EVR067-1": case "EVR068-1": return true;
-    case "EVR090":
-      return true;
-    case "EVR160":
-      return true;
+    case "EVR090": return true;
+    case "EVR160": return true;
     case "EVR164": case "EVR165": case "EVR166": return true;
     case "EVR170-1": case "EVR171-1": case "EVR172-1": return true;
-    case "EVR186":
-      return true;
-    case "DVR008-1":
-      return true;
+    case "EVR186": return true;
+    case "DVR008-1": return true;
     case "UPR036": case "UPR037": case "UPR038": return true;
-    case "UPR047":
-      return true;
-    case "UPR049":
-      return true;
-    case "DYN009":
-      return true;
-    case "DYN049":
-      return true;
-    case "DYN085": case "DYN086": case "DYN087":
-      return true;
-    case "DYN089-UNDER":
-      return true;
-    case "DYN154":
-      return true;
+    case "UPR047": return true;
+    case "UPR049": return true;
+    case "DYN009": return true;
+    case "DYN049": return true;
+    case "DYN085": case "DYN086": case "DYN087": return true;
+    case "DYN089-UNDER": return true;
+    case "DYN154": return true;
     case "OUT052": case "OUT140": case "OUT141": case "OUT144": case "OUT188_1": return true;
     default:
       return false;
