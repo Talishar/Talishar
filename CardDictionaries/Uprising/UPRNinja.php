@@ -1,17 +1,5 @@
 <?php
 
-  function UPRNinjaCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR046": return "Sword";
-      case "UPR047": return "Arms";
-      case "UPR158": return "Arms";
-      case "UPR159": return "Legs";
-      default: return "";
-    }
-  }
-
   function UPRNinjaPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
@@ -57,7 +45,7 @@
 
   function UPRNinjaHitEffect($cardID)
   {
-    global $mainPlayer, $combatChainState, $CCS_NumHits;
+    global $mainPlayer, $combatChainState;
     switch($cardID)
     {
       case "UPR048":
@@ -97,7 +85,7 @@
         break;
       case "UPR161":
         $rv = "";
-        if($combatChainState[$CCS_NumHits] >= 3)
+        if(HitsInCombatChain() >= 2)
         {
           $deck = &GetDeck($mainPlayer);
           $rv .= CardLink($deck[0], $deck[0]) . " was banished.";

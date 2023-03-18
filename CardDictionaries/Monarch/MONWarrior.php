@@ -1,18 +1,5 @@
 <?php
 
-  function MONWarriorCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON031": return "Sword";
-      case "MON105": return "Axe";
-      case "MON106": return "Axe";
-      case "MON107": return "Legs";
-      case "MON108": return "Arms";
-      default: return "";
-    }
-  }
-
   function MONWarriorPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $CS_NumCharged, $currentPlayer, $CS_AtksWWeapon, $CS_LastAttack;
@@ -59,27 +46,27 @@
       case "MON105":
         if(GetClassState($currentPlayer, $CS_LastAttack) != "MON106") return "";
         AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
-        return "Gains +1 power until end of turn.";
+        return "";
       case "MON106":
         if(GetClassState($currentPlayer, $CS_LastAttack) != "MON105") return "";
         AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
-        return "Gains +1 power until end of turn.";
+        return "";
       case "MON108":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your weapon attacks this turn +1.";
+        return "";
       case "MON109":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your axe attacks this turn +2 and Dominate.";
+        return "";
       case "MON110": case "MON111": case "MON112":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . " and lets you attack an additional time if it hits.";
+        return "";
       case "MON113": case "MON114": case "MON115":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . " and gives it +1 when defended by an attack action card.";
+        return "";
       case "MON116": case "MON117": case "MON118":
         if(GetClassState($currentPlayer, $CS_AtksWWeapon) == 0) return "Does nothing because there were no weapon attacks this turn.";
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your next attack +" . EffectAttackModifier($cardID) . ".";
+        return "";
       default: return "";
     }
   }
@@ -111,7 +98,7 @@
     {
       AddSoul($cardID, $mainPlayer, "DECK");
       GainHealth(1, $mainPlayer);
-      WriteLog("It's a Light card, so it goes in the soul and gain 1 health.");
+      WriteLog("Lumina Ascension put a Light card in Soul.");
     }
     else
     {

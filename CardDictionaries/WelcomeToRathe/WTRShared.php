@@ -146,42 +146,6 @@ function WTRAbilityCost($cardID)
     }
   }
 
-  function WTRCardSubtype($cardID)
-  {
-    switch ($cardID)
-    {
-      case "WTR003": return "Club";
-      case "WTR004": return "Legs";
-      case "WTR005": return "Chest";
-      case "WTR040": return "Hammer";
-      case "WTR041": return "Chest";
-      case "WTR042": return "Head";
-      case "WTR046": case "WTR047":
-      case "WTR054": case "WTR055": case "WTR056":
-      case "WTR069": case "WTR070": case "WTR071":
-      case "WTR072": case "WTR073": case "WTR074": case "WTR075": return "Aura";
-      case "WTR078": return "Dagger";
-      case "WTR079": return "Head";
-      case "WTR080": return "Arms";
-      case "WTR115": return "Sword";
-      case "WTR116": return "Arms";
-      case "WTR117": return "Legs";
-      case "WTR150": return "Chest";
-      case "WTR151": return "Head";
-      case "WTR152": return "Chest";
-      case "WTR153": return "Arms";
-      case "WTR154": return "Legs";
-      case "WTR155": return "Head";
-      case "WTR156": return "Chest";
-      case "WTR157": return "Arms";
-      case "WTR158": return "Legs";
-      case "WTR162": return "Item";
-      case "WTR170": case "WTR171": case "WTR172": return "Item";
-      case "WTR225": return "Aura";
-      default: return "";
-    }
-  }
-
   function WTRHasGoAgain($cardID)
   {
     switch ($cardID)
@@ -316,8 +280,9 @@ function WTRAbilityCost($cardID)
         if(CountPitch(GetPitch($currentPlayer), 0, 0)) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         return "";
       case "WTR082":
+        if(CardName($combatChain[0]) == "Bonds of Ancestry") WriteLog("Your ancestors reward you for your loyalty.");
         MyDrawCard();
-        return "Draws a card.";
+        return "";
       case "WTR092": case "WTR093": case "WTR094":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives the next blocking Combo card +2 this turn.";
@@ -431,7 +396,7 @@ function WTRAbilityCost($cardID)
         MyDrawCard();
         $hand = GetHand($currentPlayer); //Get hand size after draw for correct health gain
         if($from == "ARS") GainHealth(count($hand), $currentPlayer);
-        return "Draws 2 cards" . ($from == "ARS" ? " and gained " . count($hand) . " health" : "") . ".";
+        return "";
       case "WTR161":
         if(count(GetDeck($currentPlayer)) == 0) {
           $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
@@ -454,7 +419,6 @@ function WTRAbilityCost($cardID)
           {
             GainHealth(2, $currentPlayer);
             $actionPoints += 1;
-            $rv .= " and gained you 2 health.";
           }
           else if($roll <= 6)
           {
@@ -495,9 +459,9 @@ function WTRAbilityCost($cardID)
           $actionPoints += 2;
         }
         return "";
-      case "WTR173": GainHealth(3, $currentPlayer); return "Sigil of Solace gained 3 health.";
-      case "WTR174": GainHealth(2, $currentPlayer); return "Sigil of Solace gained 2 health.";
-      case "WTR175": GainHealth(1, $currentPlayer); return "Sigil of Solace gained 1 health.";
+      case "WTR173": GainHealth(3, $currentPlayer); return "";
+      case "WTR174": GainHealth(2, $currentPlayer); return "";
+      case "WTR175": GainHealth(1, $currentPlayer); return "";
       case "WTR182": case "WTR183": case "WTR184":
         PlayMyAura("WTR225");
         return "Creates a Quicken token.";
@@ -588,17 +552,18 @@ function WTRAbilityCost($cardID)
     }
     RevealCards($cards, $mainPlayer);//CanReveal called
     GainHealth($lifegain, $mainPlayer);
-    return "Blessing of Deliverance gained " . $lifegain . " life.";
+    return "";
   }
 
-  function KatsuHit()
+  function KatsuHit($context="")
   {
     global $mainPlayer;
     $hand = &GetHand($mainPlayer);
+    if($context == "") $context = "to_use_Katsu's_ability";
     //If hand is empty skip the popup
     if(count($hand) > 0)
     {
-      AddDecisionQueue("YESNO", $mainPlayer, "to_use_Katsu's_ability");
+      AddDecisionQueue("YESNO", $mainPlayer, $context);
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-1", 1);
       AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);

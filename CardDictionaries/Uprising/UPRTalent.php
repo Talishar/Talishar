@@ -1,28 +1,5 @@
 <?php
 
-  function UPRTalentCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR000": return "Gem";
-      case "UPR084": return "Chest";
-      case "UPR085": return "Chest";
-      case "UPR136": return "Head";
-      case "UPR137": return "Head";
-      case "UPR138": return "Aura";
-      case "UPR139": return "Affliction,Aura";
-      case "UPR140": return "Aura";
-      case "UPR182": return "Head";
-      case "UPR183": return "Head";
-      case "UPR184": return "Chest";
-      case "UPR185": return "Arms";
-      case "UPR186": return "Legs";
-      case "UPR190": return "Aura";
-      case "UPR218": case "UPR219": case "UPR220": return "Aura";
-      default: return "";
-    }
-  }
-
   function UPRTalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $CS_PlayIndex, $CS_NumRedPlayed;
@@ -163,9 +140,8 @@
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
         return "Lets you pay 2 to give it +2 power.";
       case "UPR194": case "UPR195": case "UPR196":
-        $rv = "";
-        if(PlayerHasLessHealth($currentPlayer)) { GainHealth(1, $currentPlayer); $rv = "Gained 1 health."; }
-        return $rv;
+        if(PlayerHasLessHealth($currentPlayer)) { GainHealth(1, $currentPlayer); }
+        return "";
       case "UPR197": case "UPR198": case "UPR199":
         if($cardID == "UPR197") $numCards = 4;
         else if($cardID == "UPR198") $numCards = 3;
@@ -188,7 +164,7 @@
         AddDecisionQueue("MZGETCARDID", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
-        AddDecisionQueue("MZADDBOTDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("WRITELOG", $currentPlayer, "<1> recurred from Strategic Planning.", 1);
@@ -207,13 +183,12 @@
         else if($cardID == "UPR216") $amount = 2;
         else $amount = 1;
         GainHealth($amount, $currentPlayer);
-        return "Gain $amount health.";
+        return "";
       case "UPR221": case "UPR222": case "UPR223":
         if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard(($currentPlayer == 1 ? 2 : 1), $target));
         if(PlayerHasLessHealth($currentPlayer))
         {
           GainHealth(1, $currentPlayer);
-          WriteLog("Gain 1 health from " . CardLink($cardID, $cardID) . ".");
         }
         return "Prevents damage this turn.";
       default: return "";
@@ -281,14 +256,14 @@
 
   function RuptureActive($beforePlay=false, $notAttack=false)
   {
-    global $combatChainState, $CCS_NumChainLinks;
+    global $combatChainState;
     if($notAttack)
     {
       $target = 4; //Doesn't show rupture border for Attack Reactions and future d.react or instants
     } else {
       $target = ($beforePlay ? 3 : 4);
     }
-    if($combatChainState[$CCS_NumChainLinks] >= $target) return true;
+    if(NumChainLinks() >= $target) return true;
     return false;
   }
 

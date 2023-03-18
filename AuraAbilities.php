@@ -314,7 +314,6 @@ function AuraStartTurnAbilities()
         if(PlayerHasLessHealth($mainPlayer))
         {
           GainHealth(2, $mainPlayer);
-          WriteLog("Gained 2 health from Never Yield.");
         }
         if(PlayerHasFewerEquipment($mainPlayer))
         {
@@ -330,7 +329,6 @@ function AuraStartTurnAbilities()
         if ($auras[$i] == "DYN033") $amount = 3;
         else if ($auras[$i] == "DYN034") $amount = 2;
         else $amount = 1;
-        WriteLog(CardLink($auras[$i], $auras[$i]) . " give " . $amount . " health to target hero.");
         GainHealth($amount, $mainPlayer);
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
@@ -417,13 +415,39 @@ function AuraStartTurnAbilities()
 }
 
 
+function AuraBeginEndPhaseTriggers()
+{
+  global $mainPlayer;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty;
+  $auras = &GetAuras($mainPlayer);
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    switch ($auras[$i]) {
+      case "DYN244":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case $CID_BloodRotPox:
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case $CID_Inertia:
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case $CID_Frailty:
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      default:
+        break;
+    }
+  }
+  $auras = array_values($auras);
+}
+
 function AuraBeginEndPhaseAbilities()
 {
   global $mainPlayer;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
-    $test = 0;
     switch ($auras[$i]) {
       case "ELE117":
         ++$auras[$i + 2];
@@ -471,9 +495,7 @@ function AuraBeginEndPhaseAbilities()
         ++$auras[$i + 2];
         ChannelTalent($i, "ICE");
         break;
-      case "UPR176":
-      case "UPR177":
-      case "UPR178":
+      case "UPR176": case "UPR177": case "UPR178":
         if ($auras[$i] == "UPR176") $numOpt = 3;
         else if ($auras[$i] == "UPR177") $numOpt = 2;
         else $numOpt = 1;
@@ -491,10 +513,6 @@ function AuraBeginEndPhaseAbilities()
           --$auras[$i + 2];
           DealArcane(2, 2, "PLAYCARD", "DYN175", false, $mainPlayer);
         }
-        break;
-      case "DYN244":
-        MyDrawCard();
-        $remove = 1;
         break;
       default:
         break;
@@ -526,7 +544,7 @@ function ChannelTalent($index, $talent)
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYPITCH:talent=" . $talent . ";", 1);
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBottom . " more " . $plurial . " to put at the bottom for " . CardName($auras[$index]), 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZADDBOTDECK", $mainPlayer, "-", 1);
+      AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBOTDECK", 1);
       AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
       --$leftToBottom;
@@ -823,7 +841,8 @@ function AuraHitEffects($attackID)
 
 function AuraAttackModifiers($index)
 {
-  global $combatChain;
+  global $combatChain, $combatChainState, $CCS_AttackPlayedFrom;
+  global $CID_Frailty;
   $modifier = 0;
   $player = $combatChain[$index + 1];
   $otherPlayer = ($player == 1 ? 2 : 1);
@@ -833,6 +852,11 @@ function AuraAttackModifiers($index)
       case "ELE117":
         if (CardType($combatChain[$index]) == "AA") {
           $modifier += 3;
+        }
+        break;
+      case $CID_Frailty:
+        if (IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS") {
+          $modifier -= 1;
         }
         break;
       default:

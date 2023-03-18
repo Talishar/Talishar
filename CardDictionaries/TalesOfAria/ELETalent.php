@@ -1,33 +1,5 @@
 <?php
 
-  function ELETalentCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE000": return "Landmark";
-      case "ELE109": return "Aura";
-      case "ELE110": return "Aura";
-      case "ELE111": return "Aura";
-      case "ELE115": return "Head";
-      case "ELE116": return "Head";
-      case "ELE117": return "Aura";
-      case "ELE143": return "Item";
-      case "ELE144": return "Chest";
-      case "ELE145": return "Chest";
-      case "ELE146": return "Aura";
-      case "ELE172": return "Item";
-      case "ELE173": return "Arms";
-      case "ELE174": return "Arms";
-      case "ELE175": return "Aura";
-      case "ELE201": return "Item";
-      case "ELE233": return "Head";
-      case "ELE234": return "Chest";
-      case "ELE235": return "Arms";
-      case "ELE236": return "Legs";
-      default: return "";
-    }
-  }
-
   function ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
   {
     global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_DamagePrevention, $combatChain, $layers;
@@ -46,9 +18,9 @@
       case "ELE103": case "ELE104": case "ELE105":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives the next attack you Fuse this turn +" . EffectAttackModifier($cardID) . ".";
-      case "ELE106": GainHealth(3, $currentPlayer); return "Rejuvenate gains 3 health.";
-      case "ELE107": GainHealth(2, $currentPlayer); return "Rejuvenate gains 2 health.";
-      case "ELE108": GainHealth(1, $currentPlayer); return "Rejuvenate gains 1 health.";
+      case "ELE106": GainHealth(3, $currentPlayer); return "";
+      case "ELE107": GainHealth(2, $currentPlayer); return "";
+      case "ELE108": GainHealth(1, $currentPlayer); return "";
       case "ELE112":
         if (count($combatChain) > 0 || CardType($layers[0]) == "AA" || GetAbilityType($layers[0]) == "AA") {
           AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
@@ -58,15 +30,11 @@
         return "Gives your next Lightning, Ice, or Elemental attack this turn +4.";
       case "ELE113":
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-        AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "2-", 1);
+        AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "Cards returned:", 1);
+        AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "1", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
-        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-        AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
         return "";
       case "ELE114":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -188,8 +156,9 @@
         $amount = 3;
         if($cardID == "ELE184") $amount = 2;
         else if($cardID == "ELE185") $amount = 1;
-        if (count($combatChain) != 0) {
-          CombatChainPowerModifier(intval(explode("-", $target)[1]), $amount);
+        $targetIndex = intval(explode("-", $target)[1]);
+        if ($targetIndex != 0) {
+          CombatChainPowerModifier($targetIndex, $amount);
         }
         else {
           AddCurrentTurnEffect($cardID, $currentPlayer);

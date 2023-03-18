@@ -73,9 +73,10 @@ $canSeeQueue = isset($_SESSION["useruid"]);
 <?php
 
 if (IsMobile()) echo ("<div class='ContentWindow' style='top:240px; left:32%; width:60%; bottom: 0px; overflow-y:visible'>");
-else echo ("<div class='ContentWindow' style='top:225px; left:35%; width:30%; bottom: 30px; overflow-y:auto'>");
+else echo ("<div class='ContentWindow' style='top:225px; left:32%; width:36%; bottom: 30px; overflow-y:auto'>");
 
 ?>
+<h5>Talishar is an open-source, fan-made platform not associated with LSS. It may not be a completely accurate representation of the Rules as Written. If you have questions about interactions or rulings, please <a style='text-decoration: underline;' target='_blank' href='https://discord.gg/VFhYB9T7s8'>contact the judge community</a> for clarification.</h5>
 
 <h1><?php echo ($createNewGameText); ?></h1>
 
@@ -90,7 +91,7 @@ if (isset($_SESSION["userid"])) {
     if (isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
     echo ("<div class='SelectDeckInput'>Favorite Decks: ");
     echo ("<select style='height:34px; width:60%;' name='favoriteDecks' id='favoriteDecks'>");
-    for ($i = 0; $i < count($favoriteDecks); $i += 3) {
+    for ($i = 0; $i < count($favoriteDecks); $i += 4) {
       echo ("<option value='" . $i . "<fav>" . $favoriteDecks[$i] . "'" . ($i == $selIndex ? " selected " : "") . ">" . $favoriteDecks[$i + 1] . "</option>");
     }
     echo ("</select></div>");
@@ -164,13 +165,17 @@ if ($canSeeQueue) {
     <div style='vertical-align:middle; text-align:center;'>
 
       <div style="vertical-align:middle; position: relative;">
-        <h3>Big changes to matchmaking!</h3>
-        <h4 style="margin-left:5%; margin-right:5%;">Login is now required for matchmaking</h4>
-        <BR>
-        If logged out, you can still make private games to play with friends, against yourself in multiple tabs, or against the bot! We've also added Clash as a supported format.
+        <h3>Outsiders</h3>
+        All spoiled cards implemented except:<BR>
+          Amnesia<br>
+Burden of the Past<br>
         <br>
       </div>
       <BR>
+      Test Outsiders sealed and draft FREE through our partner site, <a href='https://www.draftfab.com' target='_blank'>DRAFTFAB</a>!
+      <BR>
+      <a href='https://www.draftfab.com' target='_blank'><img src='./Images/logos/draftfab.png'></img></a>
+      <br><BR>
       <div class='LanguageSelector'><?php echo ($languageText); ?>:
         <select id='languageSelect' onchange='changeLanguage()' name='decksToTry' id='decksToTry'>
           <option value='1' <?php if ($language == 1) echo (" selected"); ?>>English</option>

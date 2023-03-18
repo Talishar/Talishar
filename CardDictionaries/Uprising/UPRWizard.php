@@ -1,19 +1,5 @@
 <?php
 
-  function UPRWizardCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR125": return "Arms";
-      case "UPR126": return "Affliction,Aura";
-      case "UPR165": return "Staff";
-      case "UPR166": return "Chest";
-      case "UPR167": return "Chest";
-      case "UPR176": case "UPR177": case "UPR178": return "Aura";
-      default: return "";
-    }
-  }
-
   function UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention, $CS_LastDynCost;
@@ -144,7 +130,7 @@
         return "Lets you look at the top 2 cards of your deck.";
       case "UPR169":
         NegateLayer($target, "HAND");
-        if($currentPlayer != $mainPlayer) GainActionPoints($mainPlayer, 1);
+        if($currentPlayer != $mainPlayer) GainActionPoints(1, $mainPlayer);
         return "Negates a non-attack action and returned it to it's owners hand";
       case "UPR170": case "UPR171": case "UPR172":
         if($cardID == "UPR170") $damage = 4;

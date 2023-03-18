@@ -109,7 +109,6 @@
 
   function EVREffectAttackModifier($cardID)
   {
-    global $combatChainState, $CCS_LinkBaseAttack;
     $params = explode(",", $cardID);
     $cardID = $params[0];
     if(count($params) > 1) $parameter = $params[1];
@@ -141,7 +140,6 @@
       case "EVR091": return 3;
       case "EVR092": return 2;
       case "EVR093": return 1;
-      case "EVR094": case "EVR095": case "EVR096": return floor($combatChainState[$CCS_LinkBaseAttack]/2) * -1;
       case "EVR100": return 3;
       case "EVR101": return 2;
       case "EVR102": return 1;
@@ -204,38 +202,6 @@
       case "EVR170-2": case "EVR171-2": case "EVR172-2": return CardType($attackID) == "AA";
       case "EVR186": return true;
       default: return false;
-    }
-  }
-
-  function EVRCardSubtype($cardID)
-  {
-    switch($cardID)
-    {
-      case "EVR000": return "Gem";
-      case "EVR001": return "Arms";
-      case "EVR018": return "Off-Hand";
-      case "EVR020": return "Chest";
-      case "EVR023": return "Aura";
-      case "EVR037": return "Head";
-      case "EVR053": return "Head";
-      case "EVR069": case "EVR070": case "EVR071": case "EVR072": return "Item";
-      case "EVR086": return "Arms";
-      case "EVR087": return "Bow";
-      case "EVR088": return "Arrow";
-      case "EVR094": case "EVR095": case "EVR096": return "Arrow";
-      case "EVR097": case "EVR098": case "EVR099": return "Arrow";
-      case "EVR103": return "Arms";
-      case "EVR107": case "EVR108": case "EVR109": return "Aura";
-      case "EVR121": return "Staff";
-      case "EVR131": case "EVR132": case "EVR133": return "Aura";
-      case "EVR137": return "Head";
-      case "EVR140": return "Aura";
-      case "EVR141": case "EVR142": case "EVR143": return "Aura";
-      case "EVR155": return "Off-Hand";
-      case "EVR176": case "EVR177": case "EVR178": case "EVR179": case "EVR180": case "EVR181": case "EVR182": case "EVR183":
-      case "EVR184": case "EVR185": case "EVR186": case "EVR187": case "EVR188": case "EVR189": case "EVR190": case "EVR191":
-      case "EVR192": case "EVR193": case "EVR195": return "Item";
-      default: return "";
     }
   }
 
@@ -465,7 +431,8 @@
         DealArcane(4, 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         if($currentPlayer != $mainPlayer)
         {
-          AddDecisionQueue("AETHERWILDFIRE", $currentPlayer, "-");
+          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "EVR123,");
+          AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
         }
         return "";
       case "EVR124":
@@ -504,7 +471,7 @@
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CROWNOFREFLECTION", 1);
-        AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
         return "Lets you destroy an aura and play a new one.";
@@ -589,9 +556,17 @@
       case "EVR177":
         if($from == "PLAY")
         {
-          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-          PummelHit($otherPlayer);
-          PummelHit($otherPlayer);
+          if (ShouldAutotargetOpponent($currentPlayer)) {
+            $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+            PummelHit($otherPlayer);
+            PummelHit($otherPlayer);
+          }
+          else
+          {
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
+            AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
+            AddDecisionQueue("AMULETOFECHOES", $currentPlayer, "<-", 1);
+          }
         }
         return "";
       case "EVR178":
@@ -633,7 +608,7 @@
         if($from == "PLAY"){
           GainHealth(2, $currentPlayer);
         }
-        return "Gain 2 health.";
+        return "";
       case "EVR184":
         if($from == "PLAY"){
           LookAtHand($otherPlayer);
@@ -663,7 +638,15 @@
         return $rv;
       case "EVR187":
         if($from == "PLAY"){
-          AddDecisionQueue("POTIONOFLUCK", $currentPlayer, "-", 1);
+          $numToDraw = 0;
+          $card = "";
+          while(($card = RemoveHand($currentPlayer, 0)) != "") { AddBottomDeck($card, $currentPlayer, "HAND"); ++$numToDraw; }
+          while(($card = RemoveArsenal($currentPlayer, 0)) != "") { AddBottomDeck($card, $currentPlayer, "ARS"); ++$numToDraw; }
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+          for ($i = 0; $i < $numToDraw; $i++) {
+            AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+          }
+          WriteLog(CardLink("EVR187","EVR187") . " shuffled your hand and arsenal into your deck and drew " . $numToDraw . " cards.");
         }
         return "";
       case "EVR190":

@@ -95,6 +95,23 @@ function createUser($conn, $username, $email, $pwd, $reportingServer=false) {
 	exit();
 }
 
+function CreateUserAPI($conn, $username, $email, $pwd) {
+	$conn = GetDBConnection();
+  $sql = "INSERT INTO users (usersUid, usersEmail, usersPwd) VALUES (?, ?, ?);";
+
+	$stmt = mysqli_stmt_init($conn);
+	if (!mysqli_stmt_prepare($stmt, $sql)) {
+	 	return false;
+	}
+
+	$hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
+
+	mysqli_stmt_bind_param($stmt, "sss", $username, $email, $hashedPwd);
+	mysqli_stmt_execute($stmt);
+	mysqli_stmt_close($stmt);
+	mysqli_close($conn);
+}
+
 function loginFromCookie()
 {
 	$token = $_COOKIE["rememberMeToken"];
@@ -177,16 +194,16 @@ function GetDeckBuilderId($uid, $decklink)
 	return $dbId;
 }
 
-function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
+function addFavoriteDeck($userID, $decklink, $deckName, $heroID, $format="")
 {
 	$conn = GetDBConnection();
 	$deckName = implode("", explode("\"", $deckName));
 	$deckName = implode("", explode("'", $deckName));
-	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "'";
-	$sql = "INSERT IGNORE INTO favoritedeck (decklink, usersId, name, hero) VALUES (?, ?, ?, ?);";
+	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "','" . $format . "'";
+	$sql = "INSERT IGNORE INTO favoritedeck (decklink, usersId, name, hero, format) VALUES (?, ?, ?, ?, ?);";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "ssss", $decklink, $userID, $deckName, $heroID);
+		mysqli_stmt_bind_param($stmt, "sssss", $decklink, $userID, $deckName, $heroID, $format);
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
 	}
@@ -195,9 +212,9 @@ function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
 
 function LoadFavoriteDecks($userID)
 {
-	if($userID == "") return "";
+	if($userID == "") return [];
 	$conn = GetDBConnection();
-	$sql = "SELECT decklink, name, hero from favoritedeck where usersId=?";
+	$sql = "SELECT decklink, name, hero, format from favoritedeck where usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	$output = [];
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -205,7 +222,7 @@ function LoadFavoriteDecks($userID)
 		mysqli_stmt_execute($stmt);
 		$data = mysqli_stmt_get_result($stmt);
 	  while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
-			for($i=0;$i<3;++$i) array_push($output, $row[$i]);
+			for($i=0;$i<4;++$i) array_push($output, $row[$i]);
 		}
 		mysqli_stmt_close($stmt);
 	}
@@ -555,6 +572,35 @@ function SendEmail($userEmail, $url) {
       print $response->statusCode() . "\n";
       print_r($response->headers());
       print $response->body() . "\n";
+  } catch (Exception $e) {
+      echo 'Caught exception: '. $e->getMessage() ."\n";
+  }
+}
+
+function SendEmailAPI($userEmail, $url) {
+  include "../APIKeys/APIKeys.php";
+  require '../vendor/autoload.php';
+
+  $email = new Mail();
+  $email->setFrom("no-reply@talishar.net", "No-Reply");
+  $email->setSubject("Talishar Password Reset Link");
+  $email->addTo($userEmail);
+  $email->addContent(
+      "text/html",
+      "
+        <p>
+          We recieved a password reset request. The link to reset your password is below.
+          If you did not make this request, you can ignore this email
+        </p>
+        <p>
+          Here is your password reset link: </br>
+          <a href=$url>Password Reset</a>
+        </p>
+      "
+  );
+  $sendgrid = new \SendGrid($sendgridKey);
+  try {
+      $response = $sendgrid->send($email);
   } catch (Exception $e) {
       echo 'Caught exception: '. $e->getMessage() ."\n";
   }

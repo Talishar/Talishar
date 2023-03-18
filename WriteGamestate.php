@@ -2,7 +2,7 @@
 
 UpdateGameState($playerID);
 
-$filename = "./Games/" . $gameName . "/gamestate.txt";
+if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
 $handler = fopen($filename, "w");
 
 $lockTries = 0;

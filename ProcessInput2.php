@@ -39,6 +39,7 @@ for ($i = 0; $i < $chkCount; ++$i) {
   $chk = isset($_GET[("chk" . $i)]) ? $_GET[("chk" . $i)] : "";
   if ($chk != "") array_push($chkInput, $chk);
 }
+$inputText = isset($_GET["inputText"]) ? $_GET["inputText"] : "";
 
 SetHeaders();
 
@@ -90,7 +91,7 @@ if(!IsReplay()) {
   if (($playerID == 1 || $playerID == 2) && $authKey == "") {
     if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
   }
-  if ($playerID != 3 && $authKey != $targetAuth) exit;
+  if ($playerID != 3 && $authKey != $targetAuth) { echo("Invalid auth key"); exit; }
   if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
   if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
     $currentTime = round(microtime(true) * 1000);
@@ -112,7 +113,7 @@ if ((IsPatron(1) || IsPatron(2)) && !IsReplay()) {
 }
 
 //Now we can process the command
-ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput);
+ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput, false, $inputText);
 
 ProcessMacros();
 if ($inGameStatus == $GameStatus_Rematch) {
@@ -125,6 +126,8 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
   $firstPlayer = 1;
   $firstPlayerChooser = ($winner == 1 ? 2 : 1);
+  $p1SideboardSubmitted = "0";
+  $p2SideboardSubmitted = (IsPlayerAI(2) ? "1" : "0");
   WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
   WriteGameFile();
   $turn[0] = "REMATCH";
@@ -154,6 +157,12 @@ if (!IsGameOver()) {
 if (!$skipWriteGamestate) {
   //if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGamestate();
   //else UpdateGameState(1);
+  if(!IsModeAsync($mode))
+  {
+    if(GetCachePiece($gameName, 12) == "1") WriteLog("Current player is active again.");
+    SetCachePiece($gameName, 12, "0");
+    $currentPlayerActivity = 0;
+  }
   DoGamestateUpdate();
   include "WriteGamestate.php";
 }

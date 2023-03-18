@@ -1,27 +1,6 @@
 <?php
 
 
-  function ARCGenericCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC000": return "Gem";
-      case "ARC150": return "Head";
-      case "ARC151": return "Head";
-      case "ARC152": return "Chest";
-      case "ARC153": return "Arms";
-      case "ARC154": return "Legs";
-      case "ARC155": return "Head";
-      case "ARC156": return "Chest";
-      case "ARC157": return "Arms";
-      case "ARC158": return "Legs";
-      case "ARC162": return "Aura";
-      case "ARC163": return "Item";
-      case "ARC167": case "ARC168": case "ARC169": return "Aura";
-      default: return "";
-    }
-  }
-
 function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CS_NumMoonWishPlayed;
@@ -141,12 +120,10 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       else if ($cardID == "ARC213") $health = 2;
       else $health = 1;
       GainHealth($health, $currentPlayer);
-      $rv = "Gain $health health";
       if (GetClassState($currentPlayer, $CS_NumMoonWishPlayed) > 0) {
         MyDrawCard();
-        $rv .= " and draw a card.";
-      } else $rv .= ".";
-      return $rv;
+      }
+      return "";
     case "ARC215":
     case "ARC216":
     case "ARC217":
@@ -176,17 +153,21 @@ function ARCGenericHitEffect($cardID)
       AddCurrentTurnEffect($cardID, $mainPlayer);
       break;
     case "ARC179": case "ARC180": case "ARC181":
-      AddDecisionQueue("FINDINDICES", $mainPlayer, "GYNAA");
-      AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
-      AddDecisionQueue("REMOVEMYDISCARD", $mainPlayer, "-", 1);
-      AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
-      AddDecisionQueue("SHOWSELECTEDCARD", $mainPlayer, "-", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:type=A");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a non-attack action card to put on top of your deck");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("WRITELOG", $mainPlayer, "Put a card on top of your deck:", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "1", 1);
       break;
     case "ARC182": case "ARC183":  case "ARC184":
       OptMain(2);
       break;
     case "ARC185": case "ARC186": case "ARC187":
-      AddLayer("TRIGGER", $mainPlayer, $cardID);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK:cardID=ARC212,ARC213,ARC214");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $mainPlayer, "MYHAND", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       break;
     case "ARC194": case "ARC195": case "ARC196":
       SetClassState($mainPlayer, $CS_NextNAAInstant, 1);

@@ -1,18 +1,5 @@
 <?php
 
-  function RVDCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "RVD002": return "Club";
-      case "RVD003": return "Head";
-      case "RVD004": return "Chest";
-      case "RVD005": return "Arms";
-      case "RVD006": return "Legs";
-      default: return "";
-    }
-  }
-
   function RVDEffectAttackModifier($cardID)
   {
     switch($cardID)

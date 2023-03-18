@@ -1,6 +1,7 @@
 <?php
 
 
+include "CardDictionary.php";
 include 'Libraries/HTTPLibraries.php';
 include_once "Libraries/PlayerSettings.php";
 include_once "Assets/patreon-php-master/src/PatreonDictionary.php";
@@ -22,7 +23,6 @@ if ($lastUpdate > 10000000) $lastUpdate = 0;
 
 
 include "WriteLog.php";
-include "CardDictionary.php";
 include "HostFiles/Redirector.php";
 include "Libraries/UILibraries2.php";
 include "Libraries/SHMOPLibraries.php";
@@ -69,9 +69,11 @@ if ($authKey != $targetAuth) {
 }
 
 if ($kickPlayerTwo) {
-  if($oppStatus != "-1" && ($format == "compcc" || $format == "compblitz"))
+
+  $numP2Disconnects = IncrementCachePiece($gameName, 11);
+  if($numP2Disconnects >= 3)
   {
-      //This happens when player 2 "dodges" -- add logging?
+    WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.");
   }
   if (file_exists("./Games/" . $gameName . "/p2Deck.txt")) unlink("./Games/" . $gameName . "/p2Deck.txt");
   if (file_exists("./Games/" . $gameName . "/p2DeckOrig.txt")) unlink("./Games/" . $gameName . "/p2DeckOrig.txt");
@@ -149,7 +151,8 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   if($channelLink != "") echo("</a>");
   echo ("</div>");
 
-  echo ("<div id='submitDisplay' style='display:none;'>" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none")) . "</div>");
+  $needToSideboard = $gameStatus >= $MGS_P2Sideboard && ($playerID == 1 ? $p1SideboardSubmitted != "1" : $p2SideboardSubmitted != "1");
+  echo ("<div id='submitDisplay' style='display:none;'>" . ($needToSideboard ? "block" : "none") . "</div>");
 
   $icon = "ready.png";
   if ($gameStatus == $MGS_ChooseFirstPlayer) $icon = $playerID == $firstPlayerChooser ? "ready.png" : "notReady.png";
