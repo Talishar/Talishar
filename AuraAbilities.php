@@ -221,10 +221,10 @@ function AuraCostModifier()
 // Start of Action Phase give players priority // CR 2.1 - 4.3.1. The “beginning of the action phase” event occurs and abilities that trigger at the beginning of the action phase are triggered.
 function AuraStartTurnAbilities()
 {
-  global $mainPlayer, $CS_EffectContext;
+  global $mainPlayer, $EffectContext;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    SetClassState($mainPlayer, $CS_EffectContext, $auras[$i]);
+    $EffectContext = $auras[$i];
     switch ($auras[$i]) {
       case "WTR046":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
@@ -409,7 +409,6 @@ function AuraStartTurnAbilities()
       default:
         break;
     }
-    SetClassState($mainPlayer, $CS_EffectContext, "-");
   }
 }
 

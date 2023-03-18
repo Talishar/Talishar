@@ -787,7 +787,7 @@ function ResolveChainLink()
 function ResolveCombatDamage($damageDone)
 {
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $currentTurnEffects;
-  global $CCS_DamageDealt, $CCS_HitsWithWeapon, $CS_EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CCS_ChainLinkHitEffectsPrevented;
+  global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_HitsWithSword;
   $wasHit = $damageDone > 0;
 
@@ -809,10 +809,9 @@ function ResolveCombatDamage($damageDone)
     }
     for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
       if ($combatChain[$i] == $mainPlayer) {
-        SetClassState($mainPlayer, $CS_EffectContext, $combatChain[$i - 1]);
+        $EffectContext = $combatChain[$i - 1];
         ProcessHitEffect($combatChain[$i - 1]);
         if ($damageDone >= 4) ProcessCrushEffect($combatChain[$i - 1]);
-        AddDecisionQueue("CLEAREFFECTCONTEXT", $mainPlayer, "-");
       }
     }
     for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
@@ -834,8 +833,7 @@ function ResolveCombatDamage($damageDone)
   } else {
     for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
       if ($combatChain[$i] == $mainPlayer) {
-        SetClassState($mainPlayer, $CS_EffectContext, $combatChain[$i - 1]);
-        AddDecisionQueue("CLEAREFFECTCONTEXT", $mainPlayer, "-");
+        $EffectContext = $combatChain[$i - 1];
       }
     }
   }
@@ -997,8 +995,10 @@ function FinalizeTurn()
   //4.4.1. Players do not get priority during the End Phase.
   global $currentPlayer, $currentTurn, $playerID, $turn, $combatChain, $actionPoints, $mainPlayer, $defPlayer, $currentTurnEffects, $nextTurnEffects;
   global $mainHand, $defHand, $mainDeck, $mainItems, $defItems, $defDeck, $mainCharacter, $defCharacter, $mainResources, $defResources;
-  global $mainAuras, $firstPlayer, $lastPlayed, $layerPriority;
+  global $mainAuras, $firstPlayer, $lastPlayed, $layerPriority, $EffectContext;
   global $MakeStartTurnBackup;
+
+  $EffectContext = "-";
 
   //4.4.2. First, the “beginning of the end phase” event occurs and abilities that trigger at the beginning of the end phase are triggered.
   //Undo Intimidate
@@ -1831,7 +1831,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $turn, $combatChain, $currentPlayer, $defPlayer, $combatChainState, $CCS_AttackPlayedFrom, $CS_PlayIndex;
   global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex, $CS_NumAttacks, $CCS_LinkBaseAttack;
-  global $CCS_WeaponIndex, $CS_EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
+  global $CCS_WeaponIndex, $EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
   global $CS_NumDragonAttacks, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks, $CCS_IsBoosted;
   global $SET_PassDRStep;
 
@@ -1919,10 +1919,9 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       ArsenalPlayCardAbilities($cardID);
       CharacterPlayCardAbilities($cardID, $from);
     }
-    SetClassState($currentPlayer, $CS_EffectContext, $cardID);
+    $EffectContext = $cardID;
     $playText = "";
     if (!$chainClosed) $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-    AddDecisionQueue("CLEAREFFECTCONTEXT", $currentPlayer, "-");
     if ($playText != "" && $from != "EQUIP" && $from != "PLAY") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ": " . $playText);
     else if($playText != "" && ($from == "EQUIP" || $from == "PLAY")) WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ": " . $playText);
     if (!$openedChain) ResolveGoAgain($cardID, $currentPlayer, $from);

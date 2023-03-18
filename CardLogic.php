@@ -519,7 +519,7 @@ function ProcessLayer($player, $parameter)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $CS_EffectContext;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty;
 
   $resources = &GetResources($player);
@@ -536,6 +536,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     }
   }
 
+  $EffectContext = $parameter;
+
   switch ($parameter) {
     case "WTR000":
       if(IHaveLessHealth()) GainHealth(1, $player);
@@ -549,7 +551,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
     case "WTR047":
-      SetClassState($player, $CS_EffectContext, $parameter);
       Draw($player);
       WriteLog(CardLink($parameter, $parameter) . " draw a card.");
       DestroyAuraUniqueID($player, $uniqueID);
