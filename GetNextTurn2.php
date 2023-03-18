@@ -58,15 +58,13 @@ if ($isGamePlayer) {
 }
 $count = 0;
 $cacheVal = intval(GetCachePiece($gameName, 1));
-$lastCurrentCachePiece = intval(GetCachePiece($gameName, 9));
-while ($lastUpdate != 0 && ($lastCurrentPlayer == 0 || $lastCurrentCachePiece == 0 || $lastCurrentPlayer == $lastCurrentCachePiece) && $cacheVal <= $lastUpdate) {
+while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   usleep(100000); //100 milliseconds
   $currentTime = round(microtime(true) * 1000);
   $readCache = ReadCache($gameName);
   if($readCache == "") break;
   $cacheArr = explode(SHMOPDelimiter(), $readCache);
   $cacheVal = intval($cacheArr[0]);
-  $lastCurrentCachePiece = intval($cacheArr[8]);
   if ($isGamePlayer) {
     SetCachePiece($gameName, $playerID + 1, $currentTime);
     $otherP = ($playerID == 1 ? 2 : 1);
