@@ -1047,28 +1047,28 @@ function CurrentEffectCostModifiers($cardID, $from)
   global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID;
   $costModifier = 0;
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-      $remove = 0;
       switch ($currentTurnEffects[$i]) {
         case "WTR060": case "WTR061": case "WTR062":
           if (IsAction($cardID)) {
             $costModifier += 1;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "WTR075":
           if (ClassContains($cardID, "GUARDIAN", $currentPlayer) && CardType($cardID) == "AA") {
             $costModifier -= 1;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "WTR152":
           if (CardType($cardID) == "AA") {
             $costModifier -= 2;
-            $remove = 1;
+            $remove = true;
           }
           break;
-        case "CRU081":
+        case "CRU081": //Courage of Bladehold
           if (CardType($cardID) == "W" && CardSubType($cardID) == "Sword") {
             $costModifier -= 1;
           }
@@ -1076,25 +1076,25 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "CRU085-2": case "CRU086-2": case "CRU087-2":
           if (CardType($cardID) == "DR") {
             $costModifier += 1;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "CRU141-AA":
           if (CardType($cardID) == "AA") {
             $costModifier -= CountAura("ARC112", $currentPlayer);
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "CRU141-NAA":
           if (CardType($cardID) == "A") {
             $costModifier -= CountAura("ARC112", $currentPlayer);
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "ARC060": case "ARC061": case "ARC062":
           if (CardType($cardID) == "AA" || GetAbilityType($cardID, -1, $from) == "AA") {
             $costModifier += 1;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "ELE035-1":
@@ -1109,44 +1109,44 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "EVR179":
           if (IsStaticType(CardType($cardID), $from, $cardID)) {
             $costModifier -= 1;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "UPR000":
           if (TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "PLAY" && $from != "EQUIP") {
             $costModifier -= 1;
             --$currentTurnEffects[$i + 3];
-            if ($currentTurnEffects[$i + 3] <= 0) $remove = 1;
+            if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
           }
           break;
         case "UPR075": case "UPR076": case "UPR077":
           if (GetClassState($currentPlayer, $CS_PlayUniqueID) == $currentTurnEffects[$i + 2]) {
             --$costModifier;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "UPR166":
           if (IsStaticType(CardType($cardID), $from, $cardID) && DelimStringContains(CardSubType($cardID), "Staff")) {
             $costModifier -= 3;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "OUT011":
           if (CardType($cardID) == "AR") {
             $costModifier -= 1;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "OUT179_1":
           if (CardType($cardID) == "AA") {
             $costModifier -= 1;
-            $remove = 1;
+            $remove = true;
           }
           break;
         default:
           break;
       }
-      if ($remove == 1) RemoveCurrentTurnEffect($i);
+      if ($remove) RemoveCurrentTurnEffect($i);
     }
   }
   return $costModifier;
