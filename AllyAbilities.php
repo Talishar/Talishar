@@ -93,6 +93,12 @@ function AllyDestroyedAbility($player, $index)
   global $mainPlayer;
   $allies = &GetAllies($player);
   $cardID = $allies[$index];
+  if (HasWard($cardID) && CardType($cardID) != "T" && SearchCharacterActive($player, "DYN213")) {
+    $index = FindCharacterIndex($player, "DYN213");
+    $char = &GetPlayerCharacter($player);
+    $char[$index + 1] = 1;
+    GainResources($player, 1);
+  }
   switch ($cardID) {
     case "UPR410":
       if ($player == $mainPlayer && $allies[$index + 8] > 0) {
@@ -240,8 +246,8 @@ function SpecificAllyAttackAbilities($attackID)
     case "UPR410":
       if ($attackID == $allies[$i] && $allies[$i + 8] > 0) {
         GainActionPoints(1);
-        WriteLog(CardLink($allies[$i], $allies[$i]) . " Attacks: Gain 1 action point.");
         --$allies[$i + 8];
+        WriteLog("Gained 1 action point from " . CardLink($allies[$i], $allies[$i]));
       }
       break;
     default:
@@ -272,25 +278,18 @@ function AllyTakeDamageAbilities($player, $index, $damage, $preventable)
   $type = "-";//Add this if it ever matters
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
   for ($i = count($allies) - AllyPieces(); $i >= 0; $i -= AllyPieces()) {
-    $remove = 0;
+    $remove = false;
     switch ($allies[$i]) {
       case "DYN612":
         if ($damage > 0) {
           if ($preventable) $damage -= 4;
-          $remove = 1;
+          $remove = true;
         }
         break;
       default:
         break;
     }
-    if ($remove == 1) {
-      DestroyAlly($player, $i);
-      if (HasWard($allies[$i]) && SearchCharacterActive($player, "DYN213") && CardType($allies[$i]) != "T") {
-        $index = FindCharacterIndex($player, "DYN213");
-        $char[$index + 1] = 1;
-        GainResources($player, 1);
-      }
-    }
+    if ($remove) DestroyAlly($player, $i);
   }
   if ($damage <= 0) $damage = 0;
   return $damage;
