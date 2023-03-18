@@ -2199,15 +2199,9 @@ function OnBlockEffects($index, $from)
   $currentTurnEffects = array_values($currentTurnEffects);
   switch ($combatChain[0]) {
     case "CRU079": case "CRU080":
-      if ($cardType == "AA") {
-        $first = true;
-        for ($i = 0; $i < $index; $i += CombatChainPieces()) {
-          if ($combatChain[$i + 1] == $currentPlayer && CardType($combatChain[$i]) == "AA") $first = false;
-        }
-        if ($first) {
-          AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $combatChain[0]);
-          WriteLog(CardLink($combatChain[0], $combatChain[0]) . " got +1 for the rest of the turn.");
-        }
+      if ($cardType == "AA" && NumAttacksBlocking() == 1) {
+        AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $combatChain[0]);
+        WriteLog(CardLink($combatChain[0], $combatChain[0]) . " got +1 for the rest of the turn.");
       }
       break;
     default:
