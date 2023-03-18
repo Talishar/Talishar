@@ -258,6 +258,25 @@ function GetPriority($cardID, $heroID, $type)
           case "DYN027": $priority = array(2.6, 0, 0, 0, 0, 0, 0, 0); return $priority[$type];
           default: return 0;
         }
+      case "ROGUE024":
+        switch($cardID)
+        {
+          case "ELE044": $priority = array(0.1, 0, 0.6, 0, 0, 0.5, 0.8, 0); return $priority[$type];
+          case "ELE045": $priority = array(0.1, 0, 0.6, 0, 0, 1.5, 0.7, 0); return $priority[$type];
+          case "ELE046": $priority = array(0.1, 0, 0.6, 0, 0, 2.5, 0.6, 0); return $priority[$type];
+          case "ELE050": $priority = array(0.1, 0, 0.6, 0, 0, 0.5, 0.8, 0); return $priority[$type];
+          case "ELE051": $priority = array(0.1, 0, 0.6, 0, 0, 1.5, 0.7, 0); return $priority[$type];
+          case "ELE052": $priority = array(0.1, 0, 0.6, 0, 0, 2.5, 0.6, 0); return $priority[$type];
+          case "ELE035": $priority = array(0.1, 0, 0.6, 0, 0, 2.5, 0.6, 0); return $priority[$type];
+          case "ELE168": $priority = array(0.2, 10.7, 0.9, 0, 0, 2.6, 0.9, 0); return $priority[$type];
+          case "UPR149": $priority = array(0.2, 10.7, 0.9, 0, 0, 2.6, 0.9, 0); return $priority[$type];
+          case "UPR143": $priority = array(0.2, 10.7, 0.9, 0, 0, 2.6, 0.9, 0); return $priority[$type];
+          case "ELE171": $priority = array(0.2, 10.7, 0.9, 0, 0, 2.6, 0.9, 0); return $priority[$type];
+          case "ELE165": $priority = array(0.2, 10.7, 0.9, 0, 0, 2.6, 0.9, 0); return $priority[$type];
+          case "ELE033": $priority = array(0, ROGUE024BowPrio(), 0, 0, 0, 0, 0, 0); return $priority[$type];
+          case "UPR136": $priority = array(0.1, ROGUE024PeakPrio(), 0, 0, 0, 0, 0, 0); return $priority[$type];
+          default: return 0;
+        }
       default: return 0;
   }
 }
@@ -307,4 +326,31 @@ function ROGUE023GauntletPrio()
   }
   return 0;
 }
+
+function ROGUE024BowPrio()
+{
+  global $currentPlayer;
+  $hand = &GetHand($currentPlayer);
+  $found = false;
+  for ($i = 0; $i < count($hand); ++$i)
+  {
+    if(CardSubType($hand[$i]) == "Arrow") $found = true;
+  }
+  return $found ? 0.8 : 0;
+}
+
+function ROGUE024PeakPrio()
+{
+  global $currentPlayer;
+  $hand = &GetHand($currentPlayer);
+  $found = false;
+  for ($i = 0; $i < count($hand); ++$i)
+  {
+    if(CardSubType($hand[$i]) == "Arrow") $found = true;
+  }
+  $arsenal = &GetArsenal($currentPlayer);
+  if(CardSubType($arsenal[0]) == "Arrow") $found = true;
+  return $found ? 0 : 0.8;
+}
+
 ?>

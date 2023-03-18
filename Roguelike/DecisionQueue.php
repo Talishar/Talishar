@@ -430,6 +430,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "You_notice_a_mountain_pass_you_can_move_through": //Pass Guardian
             PrependDecisionQueue("SETENCOUNTER", $player, "123-BeforeFight");
             break;
+          case "Attempt_to_cross_the_river_here": //Bow Fisherman
+            PrependDecisionQueue("SETENCOUNTER", $player, "124-BeforeFight");
+            break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
             break;

@@ -155,6 +155,7 @@
       case 121: return "SwingWithBigTree";
       case 122: return "LostSoul";
       case 123: return "PassGuardian";
+      case 124: return "BowFisher";
       default: return "Woottonhog";
     }
   }

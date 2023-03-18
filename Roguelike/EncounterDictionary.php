@@ -105,6 +105,9 @@ function EncounterDescription()
     case 123:
       if($encounter[1] == "BeforeFight") return "As you come upon the mountain pass, a great voice booms, \"Stop, stranger! You are not welcome here!\"";
       else if($encounter[1] == "AfterFight") return "You bested the great Guardian.";
+    case 124:
+      if($encounter[1] == "BeforeFight") return "An arrow hits that water near you. As you look up, you see what looks to be an Arian Fisherman.";
+      else if($encounter[1] == "AfterFight") return "\"Whoah there friend! You should watch where you wade! I almost hit you there!\"";
     case 999: return "This text means something is wrong!"; //Maybe $encounter[1] is set to something weird? Maybe there's a typo?
 
     case 201: return "You found a battlefield. Choose what you want to do.";
@@ -165,8 +168,8 @@ function InitializeEncounter($player)
       break;
     case 006:
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
-      AddDecisionQueue("SETENCOUNTER", $player, "123-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
-      //AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      //AddDecisionQueue("SETENCOUNTER", $player, "124-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
       AddDecisionQueue("BUTTONINPUT", $player, "Rest,Reflect");
@@ -288,6 +291,8 @@ function EncounterImage()
       return "MON203_cropped.png";
     case 123:
       return "ELE028_cropped.png";
+    case 124:
+      return "ELE219_cropped.png";
 
     case 201:
       return "WTR194_cropped.png";
