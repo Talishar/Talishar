@@ -23,6 +23,11 @@ function EncounterAI()
       //LogHandArray($hand);
       if(count($decisionQueue) > 0)
       {
+        global $EffectContext;
+        if($EffectContext == "OUT234")
+        {
+          ContinueDecisionQueue("NO");
+        }
         if($decisionQueue[0] == "SHIVER")
         {
           $options = explode(",", $turn[2]);
