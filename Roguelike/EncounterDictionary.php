@@ -44,8 +44,8 @@ function EncounterDescription()
       $myDQ = &GetZone(1, "DecisionQueue");
       if($myDQ[0] == "SHOP"){
         return "You come across a small village. You wander through the market, investigating the various wares. The village has many residents, and you note the location of a local healer, as well as an elderly urchin with outstretched palms.";
-      } 
-      else { //This should just be the beggar/removedeck 
+      }
+      else { //This should just be the beggar/removedeck
         return "Thank you, traveller. Please, honor me by sitting and enjoying the scenery with me. I find this spot to be perfect for attuning to oneself.";
       }
     case 9:
@@ -99,6 +99,15 @@ function EncounterDescription()
     case 121:
       if($encounter[1] == "BeforeFight") return "You hear a loud bellow from the other side of the fallen tree. The tree rises, revealing a brute picking it up. He seems incredibly angry at the block in the road.";
       else if($encounter[1] == "AfterFight") return "After you deliver a humbling smackdown, the brute calms down and continues on his way. He gives no apology for his outburst before.";
+    case 122:
+      if($encounter[1] == "BeforeFight") return "As you drift off to sleep, a scream pierces through your skull. You have a visitor.";
+      else if($encounter[1] == "AfterFight") return "You banished the spirit.";
+    case 123:
+      if($encounter[1] == "BeforeFight") return "As you come upon the mountain pass, a great voice booms, \"Stop, stranger! You are not welcome here!\"";
+      else if($encounter[1] == "AfterFight") return "You bested the great Guardian.";
+    case 124:
+      if($encounter[1] == "BeforeFight") return "An arrow hits that water near you. As you look up, you see what looks to be an Arian Fisherman.";
+      else if($encounter[1] == "AfterFight") return "\"Whoah there friend! You should watch where you wade! I almost hit you there!\"";
     case 999: return "This text means something is wrong!"; //Maybe $encounter[1] is set to something weird? Maybe there's a typo?
 
     case 201: return "You found a battlefield. Choose what you want to do.";
@@ -159,6 +168,7 @@ function InitializeEncounter($player)
       break;
     case 006:
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
+      //AddDecisionQueue("SETENCOUNTER", $player, "124-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
@@ -277,6 +287,12 @@ function EncounterImage()
       return "CRU110_cropped.png";
     case 121:
       return "MON226_cropped.png";
+    case 122:
+      return "MON203_cropped.png";
+    case 123:
+      return "ELE028_cropped.png";
+    case 124:
+      return "ELE219_cropped.png";
 
     case 201:
       return "WTR194_cropped.png";

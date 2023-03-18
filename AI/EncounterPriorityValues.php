@@ -228,8 +228,53 @@ function GetPriority($cardID, $heroID, $type)
       case "ROGUE021":
         switch($cardID)
         {
-          case "WTR017": case "WTR018": case "WTR019": $priority = array(2.1, 0.5, 0.6, 0, 0, 1.1); return $priority[$type];
-          case "MON226": $priority = array(0, 0.4, 0.1, 0, 0, 0.1); return $priority[$type];
+          case "WTR017": case "WTR018": case "WTR019": $priority = array(2.1, 0.5, 0.6, 0, 0, 1.1, 0); return $priority[$type];
+          case "MON226": $priority = array(0, 0.4, 0.1, 0, 0, 0.1, 0); return $priority[$type];
+          default: return 0;
+        }
+      case "ROGUE022":
+        switch($cardID)
+        {
+          case "MON203": $priority = array(10.3, 0.7, 0.7, 0, 0, 0.5, 0.7, 0); return $priority[$type];
+          case "MON204": $priority = array(11.1, 0.5, 0.5, 0, 0, 1.5, 0.5, 0); return $priority[$type];
+          case "MON205": $priority = array(11.4, 0.3, 0.3, 0, 0, 2.5, 0.3, 0); return $priority[$type];
+          case "MON206": $priority = array(10.7, 0.9, 0.9, 0, 0, 0.5, 0.9, 0); return $priority[$type];
+          case "MON208": $priority = array(11.6, 0.4, 0.4, 0, 0, 2.5, 0.4, 0); return $priority[$type];
+          case "MON209": $priority = array(10.5, 0.8, 0.8, 0, 0, 0.5, 0.8, 0); return $priority[$type];
+          case "MON211": $priority = array(11.2, 0.6, 0.6, 0, 0, 2.5, 0.6, 0); return $priority[$type];
+          default: return 0;
+        }
+      case "ROGUE023":
+        switch($cardID)
+        {
+          case "WTR044": $priority = array(0.2, 0.8, 0.8, 0, 0, 0.5, 0.8, 0); return $priority[$type];
+          case "WTR048": $priority = array(0.2, 0.8, 0.8, 0, 0, 0.5, 0.8, 0); return $priority[$type];
+          case "ELE209": $priority = array(0.2, 0.8, 0.8, 0, 0, 0.5, 0.8, 0); return $priority[$type];
+          case "WTR050": $priority = array(0.1, 0.5, 0.5, 0, 0, 2.5, 0.5, 0); return $priority[$type];
+          case "WTR068": $priority = array(0.1, 0.5, 0.5, 0, 0, 2.5, 0.5, 0); return $priority[$type];
+          case "CRU037": $priority = array(0.1, 0.5, 0.5, 0, 0, 2.5, 0.5, 0); return $priority[$type];
+          case "ELE211": $priority = array(0.1, 0.5, 0.5, 0, 0, 2.5, 0,5, 0); return $priority[$type];
+          case "WTR153": $priority = array(0.1, ROGUE023GauntletPrio(), 0, 0, 0, 0, 0, 0); return $priority[$type];
+          case "DYN027": $priority = array(2.6, 0, 0, 0, 0, 0, 0, 0); return $priority[$type];
+          default: return 0;
+        }
+      case "ROGUE024":
+        switch($cardID)
+        {
+          case "ELE044": $priority = array(0.1, 0, 0.6, 0, 0, 0.5, 0.8, 0); return $priority[$type];
+          case "ELE045": $priority = array(0.1, 0, 0.6, 0, 0, 1.5, 0.7, 0); return $priority[$type];
+          case "ELE046": $priority = array(0.1, 0, 0.6, 0, 0, 2.5, 0.6, 0); return $priority[$type];
+          case "ELE050": $priority = array(0.1, 0, 0.6, 0, 0, 0.5, 0.8, 0); return $priority[$type];
+          case "ELE051": $priority = array(0.1, 0, 0.6, 0, 0, 1.5, 0.7, 0); return $priority[$type];
+          case "ELE052": $priority = array(0.1, 0, 0.6, 0, 0, 2.5, 0.6, 0); return $priority[$type];
+          case "ELE035": $priority = array(0.1, 0, 0.6, 0, 0, 2.5, 0.6, 0); return $priority[$type];
+          case "ELE168": $priority = array(0.2, 10.7, 0.9, 0, 0, 2.6, 0.9, 0); return $priority[$type];
+          case "UPR149": $priority = array(0.2, 10.7, 0.9, 0, 0, 2.6, 0.9, 0); return $priority[$type];
+          case "UPR143": $priority = array(0.2, 10.7, 0.9, 0, 0, 2.6, 0.9, 0); return $priority[$type];
+          case "ELE171": $priority = array(0.2, 10.7, 0.9, 0, 0, 2.6, 0.9, 0); return $priority[$type];
+          case "ELE165": $priority = array(0.2, 10.7, 0.9, 0, 0, 2.6, 0.9, 0); return $priority[$type];
+          case "ELE033": $priority = array(0, ROGUE024BowPrio(), 0, 0, 0, 0, 0, 0); return $priority[$type];
+          case "UPR136": $priority = array(0.1, ROGUE024PeakPrio(), 0, 0, 0, 0, 0, 0); return $priority[$type];
           default: return 0;
         }
       default: return 0;
@@ -266,4 +311,46 @@ function ROGUE017GorgPrio()
   if($totalTomes >= 3) return 1.9;
   else return 0;
 }
+
+function ROGUE023GauntletPrio()
+{
+  global $currentTurnEffects, $currentPlayer;
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    if ($currentTurnEffects[$i + 1] == $currentPlayer) {
+      switch ($currentTurnEffects[$i]) {
+        case "CRU029": case "CRU030": case "CRU031": return 0.9;
+        default:
+          break;
+      }
+    }
+  }
+  return 0;
+}
+
+function ROGUE024BowPrio()
+{
+  global $currentPlayer;
+  $hand = &GetHand($currentPlayer);
+  $found = false;
+  for ($i = 0; $i < count($hand); ++$i)
+  {
+    if(CardSubType($hand[$i]) == "Arrow") $found = true;
+  }
+  return $found ? 0.8 : 0;
+}
+
+function ROGUE024PeakPrio()
+{
+  global $currentPlayer;
+  $hand = &GetHand($currentPlayer);
+  $found = false;
+  for ($i = 0; $i < count($hand); ++$i)
+  {
+    if(CardSubType($hand[$i]) == "Arrow") $found = true;
+  }
+  $arsenal = &GetArsenal($currentPlayer);
+  if(CardSubType($arsenal[0]) == "Arrow") $found = true;
+  return $found ? 0 : 0.8;
+}
+
 ?>

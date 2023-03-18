@@ -1301,6 +1301,9 @@ function CurrentEffectCostModifiers($cardID, $from)
             $costModifier -= 1;
           }
           break;
+        case "ROGUE024":
+          $costModifier += 1;
+          break;
         default:
           break;
       }
@@ -2057,6 +2060,7 @@ function ItemDamageTakenAbilities($player, $damage)
 function CharacterStartTurnAbility($index)
 {
   global $mainPlayer;
+  $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
 
   if ($mainCharacter[$index + 1] == 0 && !CharacterTriggerInGraveyard($mainCharacter[$index])) return; //Do not process ability if it is destroyed
@@ -2136,6 +2140,21 @@ function CharacterStartTurnAbility($index)
       $resources = &GetResources($mainPlayer);
       $resources[0] += 2;
       break;
+    case "ROGUE022":
+      $defBanish = &GetBanish($otherPlayer);
+      $health = &GetHealth($mainPlayer);
+      $totalBD = 0;
+      for($i = 0; $i < count($defBanish); $i += BanishPieces())
+      {
+        if(HasBloodDebt($defBanish[$i])) ++$totalBD;
+      }
+      $health += $totalBD;
+      array_push($defBanish, "MON203");
+      array_push($defBanish, "");
+      array_push($defBanish, GetUniqueId());
+      break;
+    case "ROGUE024":
+      AddCurrentTurnEffect("ROGUE024", $otherPlayer);
     default:
       break;
   }
@@ -2724,6 +2743,12 @@ function MainCharacterHitAbilities()
         {
           $deck = &GetDeck($mainPlayer);
           array_unshift($deck, "ARC069");
+        }
+        break;
+      case "ROGUE024":
+        if (IsHeroAttackTarget()) {
+          $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+          DamageTrigger($otherPlayer, 1, "ATTACKHIT");
         }
         break;
       default:

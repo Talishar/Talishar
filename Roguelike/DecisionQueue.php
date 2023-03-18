@@ -424,6 +424,15 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Brave_the_bridge":
             PrependDecisionQueue("SETENCOUNTER", $player, "119-BeforeFight");
             break;
+          case "Ignore_your_instincts_and_stop_for_the_night": //Tortured Soul
+            PrependDecisionQueue("SETENCOUNTER", $player, "122-BeforeFight");
+            break;
+          case "You_notice_a_mountain_pass_you_can_move_through": //Pass Guardian
+            PrependDecisionQueue("SETENCOUNTER", $player, "123-BeforeFight");
+            break;
+          case "Attempt_to_cross_the_river_here": //Bow Fisherman
+            PrependDecisionQueue("SETENCOUNTER", $player, "124-BeforeFight");
+            break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
             break;

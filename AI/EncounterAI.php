@@ -23,6 +23,11 @@ function EncounterAI()
       //LogHandArray($hand);
       if(count($decisionQueue) > 0)
       {
+        if($decisionQueue[0] == "SHIVER")
+        {
+          $options = explode(",", $turn[2]);
+          ContinueDecisionQueue($options[1]);
+        }
         if($isBowActive)//was the last action a bow action?
         {
           $optionIndex = 0;
