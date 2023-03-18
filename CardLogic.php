@@ -1039,7 +1039,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       WriteLog(CardLink($parameter, $parameter) . " draws a card and is destroyed.");
       break;
     case "DYN244":
-      MainDrawCard();
+      Draw($player, false);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "OUT091": case "OUT092":

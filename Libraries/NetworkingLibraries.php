@@ -461,11 +461,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10009:
       WriteLog("Player " . $playerID ." manually draw a card for themselves.", highlight: true);
-      Draw($playerID);
+      Draw($playerID, false);
       break;
     case 10010:
       WriteLog("Player " . $playerID ." manually draw a card for their opponent.", highlight: true);
-      Draw(($playerID == 1 ? 2 : 1));
+      Draw(($playerID == 1 ? 2 : 1), false);
       break;
     case 10011:
       WriteLog("Player " . $playerID ." manually add a card to their hand.", highlight: true);
