@@ -1026,21 +1026,17 @@ function IsAlternativeCostPaid($cardID, $from)
   global $currentTurnEffects, $currentPlayer;
   $isAlternativeCostPaid = false;
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-      $remove = 0;
       switch ($currentTurnEffects[$i]) {
-        case "ARC185":
-        case "CRU188":
-        case "MON199":
-        case "MON257":
-        case "EVR161":
+        case "ARC185": case "CRU188": case "MON199": case "MON257": case "EVR161":
           $isAlternativeCostPaid = true;
-          $remove = 1;
+          $remove = true;
           break;
         default:
           break;
       }
-      if ($remove == 1) RemoveCurrentTurnEffect($i);
+      if ($remove) RemoveCurrentTurnEffect($i);
     }
   }
   return $isAlternativeCostPaid;
