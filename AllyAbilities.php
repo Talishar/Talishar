@@ -201,22 +201,20 @@ function SpecificAllyAttackAbilities($attackID)
     case "UPR407":
       if (IsHeroAttackTarget() && CanRevealCards($mainPlayer)) {
         $deck = &GetDeck($mainPlayer);
-        $numRed = 0;
-        $cardsReveal = "";
+        $redCount = 0;
+        $cards = "";
         for ($j = 0; $j < 2 && $j < count($deck); ++$j) {
-          if (PitchValue($deck[$j]) == 1) {
-            ++$numRed;
-          }
-          if ($cardsReveal != "") $cardsReveal .= ",";
-          $cardsReveal .= $deck[$j];
+          if (PitchValue($deck[$j]) == 1) ++$redCount;
+          if ($cards != "") $cards .= ",";
+          $cards .= $deck[$j];
         }
-        RevealCards($cardsReveal); //CanReveal checked
-        if ($numRed > 0) {
+        RevealCards($cards);
+        if ($redCount > 0) {
           $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
           AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
           AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
-          if ($numRed == 2) AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
+          if ($redCount == 2) AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
           AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
         }
       }
