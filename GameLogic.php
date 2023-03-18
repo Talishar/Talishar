@@ -1579,28 +1579,26 @@ function CurrentEffectEndTurnAbilities()
 {
   global $currentTurnEffects, $mainPlayer;
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    $remove = 0;
+    $remove = false;
     $cardID = substr($currentTurnEffects[$i], 0, 6);
     if (SearchCurrentTurnEffects($cardID . "-UNDER", $currentTurnEffects[$i + 1])) {
       AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i + 1]); // Todo: Need to check in the future if it's still under
     }
     switch ($currentTurnEffects[$i]) {
-      case "MON069":
-      case "MON070":
-      case "MON071":
-      case "EVR056": //Oath of Steel does the same thing
-        if ($mainPlayer == $currentTurnEffects[$i + 1]) { //Only at the end of YOUR end phase
+      case "MON069": case "MON070": case "MON071":
+      case "EVR056":
+        if ($mainPlayer == $currentTurnEffects[$i + 1]) {
           $char = &GetPlayerCharacter($currentTurnEffects[$i + 1]);
           for ($j = 0; $j < count($char); $j += CharacterPieces()) {
             if (CardType($char[$j]) == "W") $char[$j + 3] = 0; //Glisten clears out all +1 power counters
           }
-          $remove = 1;
+          $remove = true;
         }
         break;
       default:
         break;
     }
-    if ($remove == 1) RemoveCurrentTurnEffect($i);
+    if ($remove) RemoveCurrentTurnEffect($i);
   }
 }
 
@@ -1944,44 +1942,27 @@ function RemoveEffectsOnChainClose()
 {
   global $currentTurnEffects;
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    $remove = 0;
+    $remove = false;
     $effectArr = explode("-", $currentTurnEffects[$i]);
     $effectArr2 = explode(",", $effectArr[0]);
     switch ($effectArr2[0]) {
-      case "CRU106": case "CRU107": case "CRU108":
-        $remove = 1;
-        break;
-      case "CRU109": case "CRU110": case "CRU111":
-        $remove = 1;
-        break;
-      case "MON035": case "MON245":
-        $remove = 1;
-        break;
-      case "ELE067": case "ELE068": case "ELE069":
-        $remove = 1;
-        break;
-      case "ELE186": case "ELE187": case "ELE188":
-        $remove = 1;
-        break;
-      case "UPR049":
-        $remove = 1;
-        break;
-      case "DYN095": case "DYN096": case "DYN097":
-        $remove = 1;
-        break;
-      case "OUT033": case "OUT034": case "OUT035":
-        $remove = 1;
-        break;
-      case "OUT071": case "OUT072": case "OUT073":
-        $remove = 1;
-        break;
-      case "OUT052":
+      case "CRU106": case "CRU107": case "CRU108": //High Speed Impact
+      case "CRU109": case "CRU110": case "CRU111": // Combustible Courier
+      case "MON035": //V of the Vanguard
+      case "MON245": //Exude Confidence
+      case "ELE067": case "ELE068": case "ELE069": //Explosive Growth
+      case "ELE186": case "ELE187": case "ELE188": //Ball Lightning
+      case "UPR049": //Spreading Flames
+      case "DYN095": case "DYN096": case "DYN097": //Scramble Pulse
+      case "OUT033": case "OUT034": case "OUT035": //Prowl
+      case "OUT052": //Head Leads the Tail
+      case "OUT071": case "OUT072": case "OUT073": //Deadly Duo
         $remove = 1;
         break;
       default:
         break;
     }
-    if ($remove == 1) RemoveCurrentTurnEffect($i);
+    if ($remove) RemoveCurrentTurnEffect($i);
   }
 }
 
