@@ -87,8 +87,8 @@ $gamestateContent .= $permanentUniqueIDCounter . "\r\n";
 $gamestateContent .= $inGameStatus . "\r\n"; //Game status -- 0 = START, 1 = PLAY, 2 = OVER
 $gamestateContent .= "\r\n"; //Animations - Deprecated
 $gamestateContent .= $currentPlayerActivity . "\r\n"; //Current Player activity status -- 0 = active, 2 = inactive
-$gamestateContent .= $p1PlayerRating . "\r\n"; //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
-$gamestateContent .= $p2PlayerRating . "\r\n"; //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+$gamestateContent .= "\r\n"; //Unused
+$gamestateContent .= "\r\n"; //Unused
 $gamestateContent .= $p1TotalTime . "\r\n"; //Player 1 total time
 $gamestateContent .= $p2TotalTime . "\r\n"; //Player 2 total time
 $gamestateContent .= $lastUpdateTime . "\r\n"; //Last update time

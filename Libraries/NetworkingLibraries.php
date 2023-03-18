@@ -2,7 +2,7 @@
 function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput, $isSimulation=false, $inputText="")
 {
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
-  global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $p1PlayerRating, $p2PlayerRating, $redirectPath, $CS_PlayedAsInstant;
+  global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $redirectPath, $CS_PlayedAsInstant;
   global $dqState, $layers;
   global $roguelikeGameID;
   switch ($mode) {
@@ -750,7 +750,7 @@ function BeginChainLinkResolution()
 function ResolveChainLink()
 {
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
-  global $CCS_DamageDealt, $CCS_HitsWithWeapon, $CS_EffectContext;
+  global $CCS_DamageDealt, $CCS_HitsWithWeapon;
   UpdateGameState($currentPlayer);
   BuildMainPlayerGameState();
 
@@ -1964,7 +1964,7 @@ function WriteGamestate()
   global $landmarks, $winner, $firstPlayer, $currentPlayer, $currentTurn, $turn, $actionPoints, $combatChain, $combatChainState;
   global $currentTurnEffects, $currentTurnEffectsFromCombat, $nextTurnEffects, $decisionQueue, $dqVars, $dqState;
   global $layers, $layerPriority, $mainPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
-  global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity, $p1PlayerRating, $p2PlayerRating;
+  global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity;
   global $p1TotalTime, $p2TotalTime, $lastUpdateTime;
   $filename = "./Games/" . $gameName . "/gamestate.txt";
   $handler = fopen($filename, "w");
@@ -2049,8 +2049,8 @@ function WriteGamestate()
   fwrite($handler, $inGameStatus . "\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
   fwrite($handler, implode(" ", $animations) . "\r\n"); //Animations
   fwrite($handler, $currentPlayerActivity . "\r\n"); //Current Player activity status -- 0 = active, 2 = inactive
-  fwrite($handler, $p1PlayerRating . "\r\n"); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
-  fwrite($handler, $p2PlayerRating . "\r\n"); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+  fwrite($handler, "\r\n"); //Unused
+  fwrite($handler, "\r\n"); //Unused
   fwrite($handler, $p1TotalTime . "\r\n"); //Player 1 total time
   fwrite($handler, $p2TotalTime . "\r\n"); //Player 2 total time
   fwrite($handler, $lastUpdateTime . "\r\n"); //Last update time
