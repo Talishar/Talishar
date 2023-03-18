@@ -1971,15 +1971,13 @@ function OnAttackEffects($attack)
   global $currentTurnEffects, $mainPlayer, $defPlayer;
   $attackType = CardType($attack);
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    $remove = 0;
+    $remove = false;
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
-        case "ELE085":
-        case "ELE086":
-        case "ELE087":
+        case "ELE085": case "ELE086": case "ELE087":
           if ($attackType == "AA") {
             DealArcane(1, 0, "PLAYCARD", $attack, true);
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "ELE092-DOM":
@@ -1994,7 +1992,7 @@ function OnAttackEffects($attack)
           break;
       }
     }
-    if ($remove == 1) RemoveCurrentTurnEffect($i);
+    if ($remove) RemoveCurrentTurnEffect($i);
   }
 }
 
@@ -2145,14 +2143,14 @@ function OnBlockEffects($index, $from)
   $cardType = CardType($combatChain[$index]);
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    $remove = 0;
+    $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "WTR092": case "WTR093": case "WTR094":
           if (HasCombo($combatChain[$index])) {
             $combatChain[$index + 6] += 2;
           }
-          $remove = 1;
+          $remove = true;
           break;
         case "ELE004":
           if ($cardType == "DR") {
@@ -2166,7 +2164,7 @@ function OnBlockEffects($index, $from)
             else if($currentTurnEffects[$i] == "DYN043") $amount = 5;
             else $amount = 4;
             $combatChain[$index + 6] += $amount;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "DYN115": case "DYN116":
@@ -2210,7 +2208,7 @@ function OnBlockEffects($index, $from)
           break;
       }
     }
-    if ($remove == 1) RemoveCurrentTurnEffect($i);
+    if ($remove) RemoveCurrentTurnEffect($i);
   }
   $currentTurnEffects = array_values($currentTurnEffects);
   switch ($combatChain[0]) {
@@ -2235,7 +2233,7 @@ function ActivateAbilityEffects()
 {
   global $currentPlayer, $currentTurnEffects;
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    $remove = 0;
+    $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "ELE004-HIT":
@@ -2246,7 +2244,7 @@ function ActivateAbilityEffects()
           break;
       }
     }
-    if ($remove == 1) RemoveCurrentTurnEffect($i);
+    if ($remove) RemoveCurrentTurnEffect($i);
   }
   $currentTurnEffects = array_values($currentTurnEffects);
 }
