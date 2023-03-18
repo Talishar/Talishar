@@ -94,7 +94,7 @@ $gamestateContent .= $p2TotalTime . "\r\n"; //Player 2 total time
 $gamestateContent .= $lastUpdateTime . "\r\n"; //Last update time
 $gamestateContent .= $roguelikeGameID . "\r\n"; //Last update time
 $gamestateContent .= implode(" ", $events) . "\r\n";//Events
-//$gamestateContent .= (intval(GetCachePiece($gameName, 0))+1) . "\r\n";//Update number the gamestate is for
+$gamestateContent .= $EffectContext . "\r\n";//Update number the gamestate is for
 
 fwrite($handler, $gamestateContent);
 
