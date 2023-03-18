@@ -1067,10 +1067,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case $CID_BloodRotPox:
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_3_to_avoid_taking_2_damage", 0, 1);
       AddDecisionQueue("NOPASS", $player, "-", 1);
-      AddDecisionQueue("PASSTAKEDAMAGE", $player, 2);
       AddDecisionQueue("PASSPARAMETER", $player, "3", 1);
       AddDecisionQueue("PAYRESOURCES", $player, "3", 1);
-      AddDecisionQueue("PITFALLTRAP", $player, "-", 1);
+      AddDecisionQueue("ELSE", $player, "-");
+      AddDecisionQueue("WRITELOG", $player, "Took 2 damage from Bloodrot Pox.", 1);
+      AddDecisionQueue("TAKEDAMAGE", $player, 2, 1);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case $CID_Inertia:
