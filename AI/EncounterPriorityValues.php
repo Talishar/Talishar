@@ -244,6 +244,20 @@ function GetPriority($cardID, $heroID, $type)
           case "MON211": $priority = array(11.2, 0.6, 0.6, 0, 0, 2.5, 0.6, 0); return $priority[$type];
           default: return 0;
         }
+      case "ROGUE023":
+        switch($cardID)
+        {
+          case "WTR044": $priority = array(0.2, 0.8, 0.8, 0, 0, 0.5, 0.8, 0); return $priority[$type];
+          case "WTR048": $priority = array(0.2, 0.8, 0.8, 0, 0, 0.5, 0.8, 0); return $priority[$type];
+          case "ELE209": $priority = array(0.2, 0.8, 0.8, 0, 0, 0.5, 0.8, 0); return $priority[$type];
+          case "WTR050": $priority = array(0.1, 0.5, 0.5, 0, 0, 2.5, 0.5, 0); return $priority[$type];
+          case "WTR068": $priority = array(0.1, 0.5, 0.5, 0, 0, 2.5, 0.5, 0); return $priority[$type];
+          case "CRU037": $priority = array(0.1, 0.5, 0.5, 0, 0, 2.5, 0.5, 0); return $priority[$type];
+          case "ELE211": $priority = array(0.1, 0.5, 0.5, 0, 0, 2.5, 0,5, 0); return $priority[$type];
+          case "WTR153": $priority = array(0.1, ROGUE023GauntletPrio(), 0, 0, 0, 0, 0, 0); return $priority[$type];
+          case "DYN027": $priority = array(2.6, 0, 0, 0, 0, 0, 0, 0); return $priority[$type];
+          default: return 0;
+        }
       default: return 0;
   }
 }
@@ -277,5 +291,20 @@ function ROGUE017GorgPrio()
   }
   if($totalTomes >= 3) return 1.9;
   else return 0;
+}
+
+function ROGUE023GauntletPrio()
+{
+  global $currentTurnEffects, $currentPlayer;
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    if ($currentTurnEffects[$i + 1] == $currentPlayer) {
+      switch ($currentTurnEffects[$i]) {
+        case "CRU029": case "CRU030": case "CRU031": return 0.9;
+        default:
+          break;
+      }
+    }
+  }
+  return 0;
 }
 ?>
