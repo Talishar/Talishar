@@ -70,8 +70,8 @@ function ROGUEEffectAttackModifier($cardID)
       case "ROGUE616": return 5;
       case "ROGUE702": case "ROGUE702-NA": return 2;
       case "ROGUE704":
-        global $currentPlayer;
-        $banish = &GetBanish($currentPlayer);
+        global $mainPlayer;
+        $banish = &GetBanish($mainPlayer);
         $rv = -1;
         for($i = 0; $i < count($banish); $i += BanishPieces())
         {
@@ -92,8 +92,8 @@ function ROGUEEffectAttackModifier($cardID)
         return $rv;
       case "ROGUE709": return -2;
       case "ROGUE711":
-        global $currentPlayer;
-        $pitch = &GetPitch($currentPlayer);
+        global $mainPlayer;
+        $pitch = &GetPitch($mainPlayer);
         $rv = 0;
         for($i = 0; $i < count($pitch); $i += PitchPieces())
         {
@@ -103,8 +103,8 @@ function ROGUEEffectAttackModifier($cardID)
         return $rv * 2;
       case "ROGUE802": return 1;
       case "ROGUE805":
-        global $currentPlayer;
-        $grave = &GetDiscard($currentPlayer);
+        global $mainPlayer;
+        $grave = &GetDiscard($mainPlayer);
         $rv = 0;
         for($i = 0; $i < count($grave); $i += DiscardPieces())
         {
@@ -194,6 +194,7 @@ function ROGUECardType($cardID)
       case "ROGUE022": return "C";
       case "ROGUE023": return "C";
       case "ROGUE024": return "C";
+      case "ROGUE025": return "C";
 
       case "ROGUE501": case "ROGUE502": case "ROGUE503": case "ROGUE504": case "ROGUE505": case "ROGUE506": case "ROGUE507": case "ROGUE508": case "ROGUE509": case "ROGUE510": case "ROGUE511": case "ROGUE512": case "ROGUE513": case "ROGUE514":
       case "ROGUE515": case "ROGUE516": case "ROGUE517": case "ROGUE518": case "ROGUE519": case "ROGUE520": case "ROGUE521": case "ROGUE522": case "ROGUE523": case "ROGUE524": case "ROGUE525": case "ROGUE526": case "ROGUE527": case "ROGUE528":
@@ -241,6 +242,7 @@ function ROGUECardSubtype($cardID)
       case "ROGUE022": return "Runeblade";
       case "ROGUE023": return "Guardian";
       case "ROGUE024": return "Ranger";
+      case "ROGUE025": return "Brute";
 
       case "ROGUE501": //Broken Hourglass
       case "ROGUE502": //Perfect Mirror

@@ -6,7 +6,13 @@
 
 function CardIsBlockable($storedPriorityNode)
 {
-  global $combatChain, $combatChainState, $CCS_NumChainLinks;
+  global $combatChain, $combatChainState, $CCS_NumChainLinks, $currentPlayer;
+  if($storedPriorityNode[1] == "Character")
+  {
+    $character = &GetPlayerCharacter($currentPlayer);
+    if($character[$storedPriorityNode[2]+6] == 1) return false;
+    //WriteLog("character[i+6]->".$character[$storedPriorityNode[2]+6]);
+  }
   switch($combatChain[0])
   {
     case "CRU054": return !(ComboActive() && CardCost($storedPriorityNode[0]) < $combatChainState[$CCS_NumChainLinks]);

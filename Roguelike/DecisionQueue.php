@@ -433,6 +433,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Attempt_to_cross_the_river_here": //Bow Fisherman
             PrependDecisionQueue("SETENCOUNTER", $player, "124-BeforeFight");
             break;
+          case "Explore_the_cave": //mini-boss
+            PrependDecisionQueue("SETENCOUNTER", $player, "125-BeforeFight");
+            break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
             break;
