@@ -37,7 +37,7 @@ function ParseGamestate($useRedis = false)
   global $currentTurnEffects, $currentTurnEffectsFromCombat, $nextTurnEffects, $decisionQueue, $dqVars, $dqState;
   global $layers, $layerPriority, $mainPlayer, $defPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
   global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity;
-  global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $roguelikeGameID, $events, $lastUpdate;
+  global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $roguelikeGameID, $events, $lastUpdate, $EffectContext;
   global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID, $filename;
 
   $mainPlayerGamestateStillBuilt = 0;
@@ -161,7 +161,7 @@ function ParseGamestate($useRedis = false)
   $lastUpdateTime = trim($gamestateContent[68+$numChainLinks]); //Last update time
   $roguelikeGameID = trim($gamestateContent[69+$numChainLinks]); //Roguelike game id
   $events = GetStringArray($gamestateContent[70+$numChainLinks]); //Events
-  //$updateNumber = trim($gamestateContent[71+$numChainLinks]); //What update number the gamestate is for
+  $EffectContext = trim($gamestateContent[71+$numChainLinks]); //What update number the gamestate is for
 
   fclose($handler);
   BuildMyGamestate($playerID);
