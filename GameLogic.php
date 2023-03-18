@@ -1304,7 +1304,7 @@ function CurrentEffectAttackAbility()
   $attackID = $combatChain[0];
   $attackType = CardType($attackID);
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    $remove = 0;
+    $remove = false;
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "EVR056":
@@ -1313,23 +1313,21 @@ function CurrentEffectAttackAbility()
             ++$character[GetClassState($mainPlayer, $CS_PlayIndex) + 3];
           }
           break;
-        case "MON183":
-        case "MON184":
-        case "MON185":
+        case "MON183": case "MON184": case "MON185":
           if ($currentTurnEffects[$i] == "MON183") $maxCost = 2;
           else if ($currentTurnEffects[$i] == "MON184") $maxCost = 1;
           else $maxCost = 0;
           if ($attackType == "AA" && CardCost($attackID) <= $maxCost) {
             WriteLog("Seeds of Agony dealt 1 damage.");
             DealArcane(1, 0, "PLAYCARD", $currentTurnEffects[$i], true);
-            $remove = 1;
+            $remove = true;
           }
           break;
         default:
           break;
       }
     }
-    if ($remove == 1) RemoveCurrentTurnEffect($i);
+    if ($remove) RemoveCurrentTurnEffect($i);
   }
   $currentTurnEffects = array_values($currentTurnEffects); //In case any were removed
 }
@@ -1346,34 +1344,34 @@ function CurrentEffectPlayAbility($cardID, $from)
   }
 
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    $remove = 0;
+    $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "ARC209":
           $cardType = CardType($cardID);
           if (($cardType == "A" || $cardType == "AA") && $cost >= 0) {
             ++$actionPoints;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "ARC210":
           $cardType = CardType($cardID);
           if (($cardType == "A" || $cardType == "AA") && $cost >= 1) {
             ++$actionPoints;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "ARC211":
           $cardType = CardType($cardID);
           if (($cardType == "A" || $cardType == "AA") && $cost >= 2) {
             ++$actionPoints;
-            $remove = 1;
+            $remove = true;
           }
           break;
         default:
           break;
       }
-      if ($remove == 1) RemoveCurrentTurnEffect($i);
+      if ($remove) RemoveCurrentTurnEffect($i);
     }
   }
   $currentTurnEffects = array_values($currentTurnEffects); //In case any were removed
@@ -1385,21 +1383,20 @@ function CurrentEffectPlayOrActivateAbility($cardID, $from)
   global $currentTurnEffects, $currentPlayer;
 
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    $remove = 0;
+    $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
-        case "MON153":
-        case "MON154":
+        case "MON153": case "MON154":
           $cardType = CardType($cardID);
           if (($cardType == "AA" || $cardType == "W" || $cardType == "T") && (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer))) {
             GiveAttackGoAgain();
-            $remove = 1;
+            $remove = true;
           }
           break;
         default:
           break;
       }
-      if ($remove == 1) RemoveCurrentTurnEffect($i);
+      if ($remove) RemoveCurrentTurnEffect($i);
     }
   }
   $currentTurnEffects = array_values($currentTurnEffects); //In case any were removed
@@ -1411,43 +1408,42 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID)
   global $currentTurnEffects, $currentPlayer;
   $hasGoAgain = false;
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    $remove = 0;
+    $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
-        case "MON153":
-        case "MON154":
+        case "MON153": case "MON154":
           if (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer)) {
             $hasGoAgain = true;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "ELE177":
           if (CardCost($cardID) >= 0) {
             $hasGoAgain = true;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "ELE178":
           if (CardCost($cardID) >= 1) {
             $hasGoAgain = true;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "ELE179":
           if (CardCost($cardID) >= 2) {
             $hasGoAgain = true;
-            $remove = 1;
+            $remove = true;
           }
           break;
         case "ELE201":
           $hasGoAgain = true;
-          $remove = 1;
+          $remove = true;
           break;
         default:
           break;
       }
     }
-    if ($remove == 1) RemoveCurrentTurnEffect($i);
+    if ($remove) RemoveCurrentTurnEffect($i);
   }
   return $hasGoAgain;
 }
