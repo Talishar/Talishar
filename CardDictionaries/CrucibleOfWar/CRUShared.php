@@ -405,8 +405,9 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         TrapTriggered($cardID);
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
-        AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
-        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
+        AddDecisionQueue("NOPASS", $otherPlayer, $cardID, 1);
+        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "1", 1);
+        AddDecisionQueue("ELSE", $otherPlayer, "-");
         AddDecisionQueue("TRIPWIRETRAP", $otherPlayer, "-", 1);
       }
       return "";
@@ -415,9 +416,10 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         TrapTriggered($cardID);
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 1, 1);
-        AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
-        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
-        AddDecisionQueue("PITFALLTRAP", $otherPlayer, "-", 1);
+        AddDecisionQueue("NOPASS", $otherPlayer, $cardID, 1);
+        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "1", 1);
+        AddDecisionQueue("ELSE", $otherPlayer, "-");
+        AddDecisionQueue("TAKEDAMAGE", $otherPlayer, 2, 1);
       }
       return "";
     case "CRU128":
@@ -425,9 +427,10 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         TrapTriggered($cardID);
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
-        AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
-        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
-        AddDecisionQueue("ROCKSLIDETRAP", $otherPlayer, "-", 1);
+        AddDecisionQueue("NOPASS", $otherPlayer, $cardID, 1);
+        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "1", 1);
+        AddDecisionQueue("ELSE", $otherPlayer, "-");
+        AddDecisionQueue("ATTACKMODIFIER", $otherPlayer, "-2", 1);
       }
       return "";
     case "CRU135": case "CRU136": case "CRU137":

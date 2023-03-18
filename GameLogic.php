@@ -4056,17 +4056,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         HitEffectsPreventedThisLink();
       }
       return 1;
-    case "PITFALLTRAP":
-      if ($lastResult == 0) {
-        WriteLog(CardLink("CRU127", "CRU127") . " deals 2 damage to the attacking hero.");
-        DamageTrigger($player, 2, "DAMAGE");
-      }
-      return 1;
-    case "ROCKSLIDETRAP":
-      if ($lastResult == 0) {
-        WriteLog(CardLink("CRU128", "CRU128") . " give the target attack -2.");
-        $combatChain[5] -= 2;
-      }
+    case "ATTACKMODIFIER":
+      $amount = intval($parameter);
+      $combatChain[5] += $amount;
       return 1;
     case "SONATAARCANIX":
       $cards = explode(",", $lastResult);
