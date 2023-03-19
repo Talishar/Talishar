@@ -157,6 +157,7 @@
       case 123: return "PassGuardian";
       case 124: return "BowFisher";
       case 125: return "GreedyHermit";
+      case 126: return "ShadyMerchant";
       default: return "Woottonhog";
     }
   }

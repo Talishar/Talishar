@@ -111,6 +111,9 @@ function EncounterDescription()
     case 125:
       if($encounter[1] == "BeforeFight") return "As you enter the cave, you find a great beast standing in front of a pile of treasures. You are not welcome here.";
       else if($encounter[1] == "AfterFight") return "The beast lets out one last roar before toppling over. You've vanquished the greedy monster.";
+    case 126:
+      if($encounter[1] == "BeforeFight") return "As you walk into a nearby shop, the door closes behind you. The shopkeeper flashes you a crooked grin";
+      else if($encounter[1] == "AfterFight") return "The shopkeeper turns into a pile of ash on the floor. You blink, and you find yourself standing in the burnt out husk of what was once a shop.";
     case 999: return "This text means something is wrong!"; //Maybe $encounter[1] is set to something weird? Maybe there's a typo?
 
     case 201: return "You found a battlefield. Choose what you want to do.";
@@ -170,9 +173,9 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
       break;
     case 006:
-      //$encounter[2] = 16;
+      //$encounter[2] = 7; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
-      //AddDecisionQueue("SETENCOUNTER", $player, "125-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
+      //AddDecisionQueue("SETENCOUNTER", $player, "126-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
@@ -307,6 +310,8 @@ function EncounterImage()
       return "ELE219_cropped.png";
     case 125:
       return "RVD025_cropped.png";
+    case 126:
+      return "CRU188_cropped.png";
 
     case 201:
       return "WTR194_cropped.png";

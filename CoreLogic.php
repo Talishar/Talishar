@@ -414,6 +414,32 @@ function CharacterPlayCardAbilities($cardID, $from)
         break;
     }
   }
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherCharacter = &GetPlayerCharacter($otherPlayer);
+  for($i=0; $i<count($otherCharacter); $i+=CharacterPieces())
+  {
+    //WriteLog("OtherPlayer->".$otherCharacter[0]);
+    $characterID = $otherCharacter[$i];
+    switch($characterID)
+    {
+      case "ROGUE026":
+        //WriteLog("cardID->".$cardID.",CardType->".CardType($cardID));
+        if(CardType($cardID) != "W" && CardType($cardID) != "E")
+        {
+          $generatedAmount = CardCost($cardID);
+          if($generatedAmount < 1) $generatedAmount = 1;
+          //WriteLog("GeneratedAmount->".$generatedAmount);
+          for($j = 0; $j < $generatedAmount; ++$j)
+          {
+            PutItemIntoPlayForPlayer("DYN243", $currentPlayer);
+            //PutItemIntoPlay(1, "DYN243");
+          }
+        }
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 function MainCharacterPlayCardAbilities($cardID, $from)

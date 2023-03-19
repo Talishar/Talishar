@@ -442,6 +442,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Explore_the_cave": //mini-boss
             PrependDecisionQueue("SETENCOUNTER", $player, "125-BeforeFight");
             break;
+          case "Stay_very_briefly_to_stock_up": //Shady Merchant
+            PrependDecisionQueue("SETENCOUNTER", $player, "126-BeforeFight");
+            break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
             break;

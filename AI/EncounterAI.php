@@ -11,7 +11,7 @@ function EncounterAI()
   if(!IsGameOver() && $currentPlayerIsAI)
   {
     $isBowActive = false;
-    for($logicCount=0; $logicCount<=10 && $currentPlayerIsAI; ++$logicCount)
+    for($logicCount=0; $logicCount<=20 && $currentPlayerIsAI; ++$logicCount)
     {
       global $turn;
       $hand = &GetHand($currentPlayer);
@@ -21,6 +21,7 @@ function EncounterAI()
       $items = &GetItems($currentPlayer);
       $allies = &GetAllies($currentPlayer);
       //LogHandArray($hand);
+      //WriteLog("Turn[0]->".$turn[0]);
       if(count($decisionQueue) > 0)
       {
         global $EffectContext;
@@ -53,6 +54,10 @@ function EncounterAI()
           }
           $options = explode(",", $turn[2]);
           ContinueDecisionQueue($options[$optionIndex]);
+        }
+        else if($turn[0] == "INPUTCARDNAME")
+        {
+          ProcessInput($currentPlayer, 30, "-", 0, 0, "-", false, "Crouching Tiger");
         }
         else
         {
@@ -182,9 +187,9 @@ function EncounterAI()
       }
       ProcessMacros();
       $currentPlayerIsAI = ($currentPlayer == 2 ? true : false);
-      if($logicCount == 10 && $currentPlayerIsAI)
+      if($logicCount == 20 && $currentPlayerIsAI)
       {
-        for($i=0; $i<=10 && $currentPlayerIsAI; ++$i)
+        for($i=0; $i<=20 && $currentPlayerIsAI; ++$i)
         {
           PassInput();
           $currentPlayerIsAI = ($currentPlayer == 2 ? true : false);
