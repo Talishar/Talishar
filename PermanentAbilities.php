@@ -288,7 +288,7 @@ function PermanentStartTurnAbilities()
         $indexChoices = [];
         for($j = count($character) - CharacterPieces(); $j >= 0; $j -= CharacterPieces())
         {
-          WriteLog("Checking" . $character[$j] . "->" . $character[$j+1]);
+          //WriteLog("Checking" . $character[$j] . "->" . $character[$j+1]);
           if($character[$j+1] == 0) array_push($indexChoices, $j);
         }
         if(count($indexChoices) != 0) $character[$indexChoices[rand(0, count($indexChoices)-1)]+1] = 2;
