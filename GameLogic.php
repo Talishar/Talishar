@@ -1950,6 +1950,10 @@ function CharacterStartTurnAbility($index)
       break;
     case "ROGUE024":
       AddCurrentTurnEffect("ROGUE024", $otherPlayer);
+      break;
+    case "ROGUE028":
+      PlayAura("MON104", $mainPlayer);
+      break;
     default:
       break;
   }
@@ -2584,6 +2588,12 @@ function MainCharacterHitAbilities()
         if (IsHeroAttackTarget()) {
           $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
           DamageTrigger($otherPlayer, 1, "ATTACKHIT");
+        }
+        break;
+      case "ROGUE028":
+        if (IsHeroAttackTarget()) {
+          PlayAura("MON104", $mainPlayer);
+          PlayAura("MON104", $mainPlayer);
         }
         break;
       default:

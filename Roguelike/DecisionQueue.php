@@ -448,6 +448,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Catch_a_ferry_across_the_lake": //Swashbuckler
             PrependDecisionQueue("SETENCOUNTER", $player, "127-BeforeFight");
             break;
+          case "Travel_upstream_to_the_nearest_town": //Spectral Image
+            PrependDecisionQueue("SETENCOUNTER", $player, "128-BeforeFight");
+            break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
             break;

@@ -159,6 +159,7 @@
       case 125: return "GreedyHermit";
       case 126: return "ShadyMerchant";
       case 127: return "Swashbuckler";
+      case 128: return "SpectralImage";
       default: return "Woottonhog";
     }
   }
