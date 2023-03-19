@@ -131,7 +131,7 @@ function EncounterDescription()
 
 function InitializeEncounter($player)
 {
-  $encounter = &GetZone($player, "Encounter");
+  /*$encounter = &GetZone($player, "Encounter");
   WriteLog("===============================");
   WriteLog("Encounter[0] = " . $encounter[0]);
   WriteLog("Encounter[1] = " . $encounter[1]);
@@ -141,7 +141,7 @@ function InitializeEncounter($player)
   WriteLog("Encounter[5] = " . $encounter[5]);
   WriteLog("Encounter[6] = " . $encounter[6]);
   WriteLog("Encounter[7] = " . $encounter[7]);
-  WriteLog("===============================");
+  WriteLog("===============================");*/
   switch($encounter[0])
   {
     case 001:
@@ -170,7 +170,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
       break;
     case 006:
-      $encounter[2] = 16;
+      //$encounter[2] = 16;
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
       //AddDecisionQueue("SETENCOUNTER", $player, "125-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
