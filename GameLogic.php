@@ -374,7 +374,6 @@ function ProcessCrushEffect($cardID)
         AddDecisionQueue("VALIDATEALLSAMENAME", $defPlayer, "DECK", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $defPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $defPlayer, "DECK,-", 1);
-        AddDecisionQueue("SHOWBANISHEDCARD", $defPlayer, "-", 1);
         AddDecisionQueue("RIGHTEOUSCLEANSING", $mainPlayer, "<-", 1);
         break;
       case "CRU032": case "CRU033": case "CRU034":
@@ -3605,9 +3604,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       WriteLog(CardLink($parameter, $parameter) . " modes are: " . $rv);
       return $lastResult;
-    case "SHOWBANISHEDCARD":
-      WriteLog(CardLink($lastResult, $lastResult) . " was banished.");
-      return $lastResult;
     case "SHOWDISCARDEDCARD":
       WriteLog(CardLink($lastResult, $lastResult) . " was discarded.");
       return $lastResult;
@@ -3969,7 +3965,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             WriteLog(CardLink("ARC160", "ARC160") . " allows you to banish a card and draw 2.");
             PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
             PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
-            PrependDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
             PrependDecisionQueue("BANISH", $currentPlayer, "-", 1);
             PrependDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
             PrependDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
@@ -4349,7 +4344,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DIMENXXIONALGATEWAY":
       if (ClassContains($lastResult, "RUNEBLADE", $player)) DealArcane(1, 0, "PLAYCARD", "MON161", true);
       if (TalentContains($lastResult, "SHADOW", $player)) {
-        PrependDecisionQueue("SHOWBANISHEDCARD", $player, "-", 1);
         PrependDecisionQueue("MULTIBANISH", $player, "DECK,-", 1);
         PrependDecisionQueue("MULTIREMOVEDECK", $player, "<-", 1);
         PrependDecisionQueue("FINDINDICES", $player, "TOPDECK", 1);

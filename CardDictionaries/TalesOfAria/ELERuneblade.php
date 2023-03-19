@@ -87,7 +87,8 @@
     AddDecisionQueue("MAYCHOOSEDISCARD", $otherPlayer, "<-", 1);
     AddDecisionQueue("REMOVEDISCARD", $otherPlayer, "-", 1);
     AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK,INST", 1);
-    AddDecisionQueue("SHOWBANISHEDCARD", $otherPlayer, "-", 1);
+    AddDecisionQueue("SETDQVAR", $otherPlayer, "0", 1);
+    AddDecisionQueue("WRITELOG", $otherPlayer, "<0> was banished.", 1);
   }
 
 ?>

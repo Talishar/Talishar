@@ -109,15 +109,16 @@
         AddDecisionQueue("BANISHADDMODIFIER", $currentPlayer, "MON212", 1);
         return "Lets you play an attack action from your banish zone.";
       case "MON215": case "MON216": case "MON217":
-        if($cardID == "MON215") $optAmt = 3;
-        else if($cardID == "MON216") $optAmt = 2;
-        else $optAmt = 1;
-        Opt($cardID, $optAmt);
+        if($cardID == "MON215") $amount = 3;
+        else if($cardID == "MON216") $amount = 2;
+        else $amount = 1;
+        Opt($cardID, $amount);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "TOPDECK", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,NA", 1);
-        AddDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
-        return "Lets you opt $optAmt and banish the top card of your deck.";
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
+        return "";
       case "MON218":
         $theirCharacter = GetPlayerCharacter($otherPlayer);
         if(TalentContains($theirCharacter[0], "LIGHT", $otherPlayer))
@@ -185,7 +186,8 @@
     AddDecisionQueue("PARAMDELIMTOARRAY", $mainPlayer, "0", 1);
     AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "0", 1);
     AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,-", 1);
-    AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
+    AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+    AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was banished.", 1);
   }
 
   function EndTurnBloodDebt()

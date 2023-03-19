@@ -118,7 +118,7 @@
         return "";
       case "UPR166":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Discounts your next staff ability by 3.";
+        return "";
       case "UPR167":
         GainResources($currentPlayer, 1);
         return "Gain 1 resource.";
@@ -126,8 +126,9 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPX,2");
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("DUPLICITYBANISH", $currentPlayer, "DECK,INST", 1);
-        AddDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
-        return "Lets you look at the top 2 cards of your deck.";
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
+        return "";
       case "UPR169":
         NegateLayer($target, "HAND");
         if($currentPlayer != $mainPlayer) GainActionPoints(1, $mainPlayer);

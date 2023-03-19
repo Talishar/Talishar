@@ -78,7 +78,8 @@
         AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $mainPlayer, "HAND,TT", 1);
-        AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was banished.", 1);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{I}", 1);
         AddDecisionQueue("MZGETUNIQUEID", $mainPlayer, "-", 1);
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $cardID . ",HIT", 1);

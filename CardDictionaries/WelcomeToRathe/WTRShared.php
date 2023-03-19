@@ -326,7 +326,8 @@ function WTRAbilityCost($cardID)
           $ARs = SearchDeck($currentPlayer, "AR");
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, $ARs);
           AddDecisionQueue("BANISH", $currentPlayer, "TCL", 1);
-          AddDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
+          AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+          AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         }
         return "";
@@ -571,7 +572,8 @@ function WTRAbilityCost($cardID)
       AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-2", 1);
       AddDecisionQueue("MAYCHOOSEDECK", $mainPlayer, "<-", 1);
       AddDecisionQueue("BANISH", $mainPlayer, "TT", 1);
-      AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
+      AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+      AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was banished.", 1);
       AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
     }
   }

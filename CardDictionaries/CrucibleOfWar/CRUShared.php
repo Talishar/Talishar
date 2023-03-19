@@ -289,7 +289,8 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,TCC", 1);
-        AddDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
       }
       return "Gives your weapon attack +" . AttackModifier($cardID) . " and looks for an attack reaction.";
     case "CRU084":
