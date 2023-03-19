@@ -178,7 +178,8 @@
       case "ELE073": case "ELE074": case "ELE075": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
       case "ELE076": case "ELE077": case "ELE078": SetClassState($player, $CS_NextNAAInstant, 1); break;
       case "ELE079": case "ELE080": case "ELE081":
-        PrependDecisionQueue("SHOWSELECTEDCARD", $player, "-", 1);
+        PrependDecisionQueue("WRITELOG", $player, "<0> was selected.", 1);
+        PrependDecisionQueue("SETDQVAR", $player, "0", 1);
         PrependDecisionQueue("ADDBOTDECK", $player, "-", 1);
         PrependDecisionQueue("REMOVEDISCARD", $player, "-", 1);
         PrependDecisionQueue("MAYCHOOSEDISCARD", $player, "<-", 1);

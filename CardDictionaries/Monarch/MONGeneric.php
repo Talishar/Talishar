@@ -68,7 +68,8 @@
       AddDecisionQueue("CHOOSEDISCARDCANCEL", $currentPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
-      AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+      AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was selected.", 1);
       return "";
       default: return "";
     }

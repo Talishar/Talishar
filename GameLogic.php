@@ -3593,9 +3593,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $rv .= $deck[$i];
       }
       return ($rv == "" ? "PASS" : $rv);
-    case "SHOWSELECTEDCARD":
-      WriteLog(CardLink($lastResult, $lastResult) . " was selected.");
-      return $lastResult;
     case "SHOWSELECTEDMODE":
       $rv = implode(" ", explode("_", $lastResult));
       WriteLog(CardLink($parameter, $parameter) . " mode is: " . $rv);

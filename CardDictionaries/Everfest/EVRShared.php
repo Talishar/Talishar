@@ -766,7 +766,8 @@
         AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
         AddDecisionQueue("REMOVEDISCARD", $mainPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $mainPlayer, "-", 1);
-        AddDecisionQueue("SHOWSELECTEDCARD", $mainPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was selected.", 1);
         break;
       case "EVR113": case "EVR114": case "EVR115":
         if(IsHeroAttackTarget() && GetClassState($mainPlayer, $CS_NumAuras) > 0) PummelHit();
