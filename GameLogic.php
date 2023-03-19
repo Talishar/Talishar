@@ -2354,6 +2354,16 @@ function Draw($player, $mainPhase = true)
       if ($cardType == "A" || $cardType == "AA") PlayAura("WTR075", $player);
     }
   }
+  if (SearchCharacterActive($otherPlayer, "ROGUE026") && $mainPhase) {
+    //WriteLog("drawn card");
+    $health = &GetHealth($otherPlayer);
+    $health += -10;
+    if($health < 1)
+    {
+      $health = 1;
+      WriteLog("NO! You will not banish me! I refuse!");
+    }
+  }
   if ($mainPhase)
   {
     $numBrainstorm = CountCurrentTurnEffects("DYN196", $player);
