@@ -167,6 +167,7 @@ if ($canSeeQueue) {
       <div style="vertical-align:middle; position: relative;">
         <h3>Outsiders</h3>
         All spoiled cards implemented except:<BR>
+Fable<br>
           Amnesia<br>
 Burden of the Past<br>
         <br>
