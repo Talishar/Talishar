@@ -4044,9 +4044,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PrependDecisionQueue("CHARGE", $player, "-", 1);
       }
       return "1";
-    case "BEACONOFVICTORY-1":
-      WriteLog(CardLink("MON033", "MON033") . " was played with X = " . $lastResult . ".");
-      return $lastResult . ",BEACONOFVICTORY";
     case "TRIPWIRETRAP":
       if ($lastResult == 0) {
         WriteLog("Hit effects are prevented by " . CardLink("CRU126", "CRU126") . " this chain link.");

@@ -1605,7 +1605,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEMYSOUL", $currentPlayer, "-", 1);
-      AddDecisionQueue("BEACONOFVICTORY-1", $currentPlayer, "-", 1);
+      AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, ",BEACONOFVICTORY", 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
     case "MON035":
