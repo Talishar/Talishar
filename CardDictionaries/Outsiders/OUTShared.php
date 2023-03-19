@@ -237,14 +237,13 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:sameName=WTR107");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Surging Strike from your graveyard");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("OPT", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:comboOnly=true");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Combo card from your graveyard");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "{0},{1}");
+        AddDecisionQueue("OPT", $currentPlayer, "<-", 1);
         return "";
       case "OUT056": case "OUT057": case "OUT058":
         if(ComboActive())
