@@ -379,6 +379,12 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             $encounter = &GetZone(1, "Encounter");
             PrependDecisionQueue("SETENCOUNTER", $player, "008-PickMode");
             break;
+          case "Search_through_the_treasures":
+            PrependDecisionQueue("SETENCOUNTER", $player, "010-PickMode");
+            break;
+          case "Approach_your_destination":
+            PrependDecisionQueue("SETENCOUNTER", $player, "108-BeforeFight");
+            break;
           case "Explore_some_nearby_ruins": //battlefield
             PrependDecisionQueue("SETENCOUNTER", $player, "201-PickMode");
             break;
@@ -415,9 +421,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Turn_back_and_take_the_long_way_around": //Quickshot Apprentice
             PrependDecisionQueue("SETENCOUNTER", $player, "106-BeforeFight");
             break;
-          case "You_notice_a_mountain_pass_you_can_move_through": //Rune Scholar
+          /*case "You_notice_a_mountain_pass_you_can_move_through": //Rune Scholar
             PrependDecisionQueue("SETENCOUNTER", $player, "107-BeforeFight");
-            break;
+            break;*/
           case "Leave_the_town_immediately":
             PrependDecisionQueue("SETENCOUNTER", $player, "118-BeforeFight");
             break;
@@ -432,6 +438,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Attempt_to_cross_the_river_here": //Bow Fisherman
             PrependDecisionQueue("SETENCOUNTER", $player, "124-BeforeFight");
+            break;
+          case "Explore_the_cave": //mini-boss
+            PrependDecisionQueue("SETENCOUNTER", $player, "125-BeforeFight");
             break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");

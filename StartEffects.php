@@ -113,6 +113,10 @@ if (SearchCharacterForCard(2, "DYN026")) {
     $p2Hand = &GetHand(2);
     array_unshift($p2Hand, "ARC069");
   }
+if ($p2Char[0] == "ROGUE025") {
+  $options = array("ROGUE801", "ROGUE803", "ROGUE805");
+  PutPermanentIntoPlay(0, $options[rand(0, count($options)-1)]);
+}
 
   //Runeblade Scholar, effect disabled for now
   /* if ($p2Char[0] == "ROGUE010") {

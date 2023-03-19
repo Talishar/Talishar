@@ -406,6 +406,10 @@ function CharacterPlayCardAbilities($cardID, $from)
           $character[$i + 1] = 1;
         }
         break;
+      case "ROGUE025":
+        $resources = &GetResources($currentPlayer);
+        ++$resources[0];
+        break;
       default:
         break;
     }

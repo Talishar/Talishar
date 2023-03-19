@@ -1754,16 +1754,16 @@ function BeginEndPhaseEffectTriggers()
 
 function BeginEndPhaseEffects()
 {
-  global $currentTurnEffects, $mainPlayer, $CS_EffectContext;
+  global $currentTurnEffects, $mainPlayer, $EffectContext;
   EndTurnBloodDebt(); //This has to be before resetting character, because of sleep dart effects
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+    $EffectContext = $currentTurnEffects[$i];
     switch ($currentTurnEffects[$i]) {
       case "EVR106":
         WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " destroyed your Runechants.");
         DestroyAllThisAura($currentTurnEffects[$i + 1], "ARC112");
         break;
       case "UPR200": case "UPR201": case "UPR202":
-        SetClassState($currentTurnEffects[$i + 1], $CS_EffectContext, $currentTurnEffects[$i]);
         Draw($currentTurnEffects[$i + 1]);
         break;
       case "DYN153":
@@ -2327,7 +2327,7 @@ function CountPitch(&$pitch, $min = 0, $max = 9999)
 
 function Draw($player, $mainPhase = true)
 {
-  global $CS_EffectContext, $mainPlayer;
+  global $EffectContext, $mainPlayer;
   $otherPlayer = ($player == 1 ? 2 : 1);
   if ($mainPhase && $player != $mainPlayer) {
     $talismanOfTithes = SearchItemsForCard("EVR192", $otherPlayer);
@@ -2349,12 +2349,8 @@ function Draw($player, $mainPhase = true)
   array_push($hand, array_shift($deck));
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "EVR019") || (SearchCurrentTurnEffects("EVR019-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "CRU097")))) PlayAura("WTR075", $otherPlayer);
   if (SearchCharacterActive($player, "EVR020")) {
-    //Check if it was played by the player with Eartlore Bounty
-    $context = GetClassState($player, $CS_EffectContext);
-    //Otherwise it gets the cardID (context) from the other player.
-    if ($context == "-") $context = GetClassState($otherPlayer, $CS_EffectContext);
-    if ($context != "-") {
-      $cardType = CardType($context);
+    if ($EffectContext != "-") {
+      $cardType = CardType($EffectContext);
       if ($cardType == "A" || $cardType == "AA") PlayAura("WTR075", $player);
     }
   }
@@ -3029,7 +3025,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints;
   global $defCharacter, $CS_NumCharged, $otherPlayer;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
-  global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
+  global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
   global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $inGameStatus;
   global $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $chainLinkSummary, $chainLinks, $MakeStartGameBackup;
   $rv = "";
@@ -4930,9 +4926,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AddCurrentTurnEffect($parameter . "-2", $player);
           return 2;
       }
-      return $lastResult;
-    case "CLEAREFFECTCONTEXT":
-      SetClassState($currentPlayer, $CS_EffectContext, "-");
       return $lastResult;
     case "MICROPROCESSOR":
       $deck = &GetDeck($player); // TODO: Once per turn restriction

@@ -36,8 +36,8 @@ function ParseGamestate($useRedis = false)
   global $landmarks, $winner, $firstPlayer, $currentPlayer, $currentTurn, $turn, $actionPoints, $combatChain, $combatChainState;
   global $currentTurnEffects, $currentTurnEffectsFromCombat, $nextTurnEffects, $decisionQueue, $dqVars, $dqState;
   global $layers, $layerPriority, $mainPlayer, $defPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
-  global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity, $p1PlayerRating, $p2PlayerRating;
-  global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $roguelikeGameID, $events, $lastUpdate;
+  global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity;
+  global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $roguelikeGameID, $events, $lastUpdate, $EffectContext;
   global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID, $filename;
 
   $mainPlayerGamestateStillBuilt = 0;
@@ -154,14 +154,14 @@ function ParseGamestate($useRedis = false)
   $inGameStatus = trim($gamestateContent[61+$numChainLinks]); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
   $animations = GetStringArray($gamestateContent[62+$numChainLinks]); //Animations
   $currentPlayerActivity = trim($gamestateContent[63+$numChainLinks]); //Current Player activity status -- 0 = active, 2 = inactive
-  $p1PlayerRating = trim($gamestateContent[64+$numChainLinks]); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
-  $p2PlayerRating = trim($gamestateContent[65+$numChainLinks]); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+  //64 + numChainLinks unused
+  //65 + numChainLinks unused
   $p1TotalTime = trim($gamestateContent[66+$numChainLinks]); //Player 1 total time
   $p2TotalTime = trim($gamestateContent[67+$numChainLinks]); //Player 2 total time
   $lastUpdateTime = trim($gamestateContent[68+$numChainLinks]); //Last update time
   $roguelikeGameID = trim($gamestateContent[69+$numChainLinks]); //Roguelike game id
   $events = GetStringArray($gamestateContent[70+$numChainLinks]); //Events
-  //$updateNumber = trim($gamestateContent[71+$numChainLinks]); //What update number the gamestate is for
+  $EffectContext = trim($gamestateContent[71+$numChainLinks]); //What update number the gamestate is for
 
   fclose($handler);
   BuildMyGamestate($playerID);
