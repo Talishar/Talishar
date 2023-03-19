@@ -301,6 +301,15 @@ function GetPriority($cardID, $heroID, $type)
           case "WTR166": case "OUT203": case "ARC161": case "OUT191": case "MON286": case "MON289": $priority = array(11.5, 0.6, 0.6, 0, 0, 2.5, 0.6, 0); return $priority[$type];
           default: return 0;
         }
+      case "ROGUE027":
+        switch($cardID)
+        {
+          case "MON113": case "CRU085": case "CRU094": $priority = array(2.7, 0.9, 0.9, 0, 0, 0.5, 0.9, 0); return $priority[$type];
+          case "MON114": case "CRU086": case "CRU095": $priority = array(2.8, 0.5, 0.9, 0, 0, 1,5, 0.9, 0); return $priority[$type];
+          case "WTR122": $priority = array(2.6, ROGUE027IronsongPrio(), ROGUE027IronsongPrio(), 0, 0, 1.4, 0.8, 0); return $priority[$type];
+          case "DYN067": $priority = array(0, 0.7, 0, 0, 0, 0, 0, 0); return $priority[$type];
+          default: return 0;
+        }
       default: return 0;
   }
 }
@@ -412,6 +421,14 @@ function ROGUE025HorizonsPrio()
   $arsenal = &GetArsenal($currentPlayer);
   if(count($arsenal) > 0) return 2.9;
   else return 0.9;
+}
+
+function ROGUE027IronsongPrio()
+{
+  global $currentPlayer;
+  $resources = &GetResources($currentPlayer);
+  if($resources[0] != 0) return 0.8;
+  else return 0;
 }
 
 ?>

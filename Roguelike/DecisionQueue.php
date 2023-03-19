@@ -445,6 +445,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Stay_very_briefly_to_stock_up": //Shady Merchant
             PrependDecisionQueue("SETENCOUNTER", $player, "126-BeforeFight");
             break;
+          case "Catch_a_ferry_across_the_lake": //Swashbuckler
+            PrependDecisionQueue("SETENCOUNTER", $player, "127-BeforeFight");
+            break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
             break;
