@@ -141,7 +141,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Ask_Legend":
             WriteLog("A giant gave you a legendary gift.");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards)
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards);
             if($encounter[3] == "Dorinthea") PrependDecisionQueue("CHOOSECARD", $player, "WTR116");
             if($encounter[3] == "Bravo") PrependDecisionQueue("CHOOSECARD", $player, "WTR041");
             break;

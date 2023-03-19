@@ -300,7 +300,7 @@ function GetShopCost($cardID)
     case "R": $cost = 4; break;
     case "S": case "M": $cost = 6; break;
   }
-  if(CardSubtype($cardID) == "Power") $cost += 2;
+  if(CardSubtype($cardID) == "Power") $cost += 4;
   if(CardType($cardID) == "E"){
     if(Rarity($cardID) == "L") $cost = 12;
     else $cost = 4;
