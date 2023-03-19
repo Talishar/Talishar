@@ -483,7 +483,7 @@ function AuraBeginEndPhaseAbilities()
             AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
             --$leftToBanish;
           }
-          AddDecisionQueue("DESTROYCHANNEL", $mainPlayer, $i);
+          AddDecisionQueue("MZDESTROY", $mainPlayer, "MYAURAS-" . $i);
         } else {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " was destroyed.");
           DestroyAura($mainPlayer, $i);
@@ -547,7 +547,7 @@ function ChannelTalent($index, $talent)
       AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
       --$leftToBottom;
     }
-    AddDecisionQueue("DESTROYCHANNEL", $mainPlayer, $index);
+    AddDecisionQueue("MZDESTROY", $mainPlayer, "MYAURAS-" . $index);
   } else {
     WriteLog(CardLink($auras[$index], $auras[$index]) . " was destroyed.");
     DestroyAura($mainPlayer, $index);

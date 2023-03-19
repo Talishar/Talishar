@@ -3492,13 +3492,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "MZOP":
-      switch ($parameter) //Mode
+      switch ($parameter)
       {
-        case "FREEZE":
-          MZFreeze($lastResult);
-          break;
-        default:
-          break;
+        case "FREEZE": MZFreeze($lastResult); break;
+        default: break;
       }
       return $lastResult;
     case "PASSPARAMETER":
@@ -3518,12 +3515,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDDISCARD":
       AddGraveyard($lastResult, $player, $parameter);
-      WriteLog(CardLink($lastResult, $lastResult) . " was discarded.");
       return $lastResult;
     case "ADDBOTTOMMYDECK":
       $deck = &GetDeck($player);
       array_push($deck, $lastResult);
-      WriteLog("A card was put at the bottom of the deck.");
       return $lastResult;
     case "ADDBOTDECK":
       $deck = &GetDeck($player);
@@ -3563,13 +3558,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       break;
     case "DESTROYALLY":
       DestroyAlly($player, $lastResult);
-      break;
-    case "DESTROYCHANNEL":
-      $auras = &GetAuras($mainPlayer);
-      if ($dqVars[0] > 0) {
-        WriteLog(CardLink($auras[$parameter], $auras[$parameter]) . " was destroyed.");
-        DestroyAura($player, $parameter);
-      }
       break;
     case "PARAMDELIMTOARRAY":
       return explode(",", $parameter);
