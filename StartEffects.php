@@ -118,6 +118,12 @@ if ($p2Char[0] == "ROGUE025") {
   PutPermanentIntoPlay(0, $options[rand(0, count($options)-1)]);
 }
 
+if ($p2Char[0] == "ROGUE008") {
+  PutPermanentIntoPlay(0, "ROGUE601");
+  PutPermanentIntoPlay(0, "ROGUE603");
+  PutPermanentIntoPlay(0, "ROGUE803");
+}
+
   //Runeblade Scholar, effect disabled for now
   /* if ($p2Char[0] == "ROGUE010") {
     PutItemIntoPlayForPlayer("ARC163", 1); //Rusted Relic for the main player, not the scholar

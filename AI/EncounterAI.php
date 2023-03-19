@@ -21,6 +21,7 @@ function EncounterAI()
       $items = &GetItems($currentPlayer);
       $allies = &GetAllies($currentPlayer);
       //LogHandArray($hand);
+      //WriteLog("Turn[0]->".$turn[0]);
       if(count($decisionQueue) > 0)
       {
         global $EffectContext;
@@ -53,6 +54,10 @@ function EncounterAI()
           }
           $options = explode(",", $turn[2]);
           ContinueDecisionQueue($options[$optionIndex]);
+        }
+        else if($turn[0] == "INPUTCARDNAME")
+        {
+          ProcessInput($currentPlayer, 30, "-", 0, 0, "-", false, "Crouching Tiger");
         }
         else
         {
