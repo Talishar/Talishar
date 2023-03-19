@@ -678,8 +678,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "DYN235":
-      BottomDeckDraw();
-      return CardLink($cardID, $cardID) . " let you sink a card.";
+      BottomDeck($currentPlayer, false, shouldDraw:true);
+      return "";
     case "DYN240":
       $rv = "";
       if ($from == "PLAY") {

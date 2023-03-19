@@ -763,7 +763,7 @@ function EffectHitEffect($cardID)
       break;
     case "OUT140":
       WriteLog("Mask of Shifting Perspectives lets you sink a card.");
-      MayBottomDeckDraw($mainPlayer);
+      BottomDeck($mainPlayer, true, shouldDraw:true);
       break;
     case "OUT143":
       $char = &GetPlayerCharacter($mainPlayer);
@@ -3592,7 +3592,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($rv != "") $rv .= ",";
         $rv .= $deck[$i];
       }
-      return $rv == "" ? "PASS" : $rv;
+      return ($rv == "" ? "PASS" : $rv);
     case "SHOWSELECTEDCARD":
       WriteLog(CardLink($lastResult, $lastResult) . " was selected.");
       return $lastResult;

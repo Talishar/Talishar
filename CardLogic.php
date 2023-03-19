@@ -22,52 +22,18 @@ function HandToTopDeck($player)
   AddDecisionQueue("MULTIADDTOPDECK", $player, "-", 1);
 }
 
-function BottomDeck()
-{
-  global $currentPlayer;
-  $hand = GetHand($currentPlayer);
-  if (count($hand) > 0) {
-    AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Put_a_card_from_your_hand_on_the_bottom_of_your_deck.");
-    AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
-    AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-    AddDecisionQueue("ADDBOTTOMMYDECK", $currentPlayer, "-", 1);
-  }
-}
-
-function MayBottomDeck($player="")
+function BottomDeck($player="", $mayAbility=false, $shouldDraw=false)
 {
   global $currentPlayer;
   if($player == "") $player = $currentPlayer;
-  $hand = GetHand($player);
-  if (count($hand) > 0) {
-    AddDecisionQueue("FINDINDICES", $player, "HAND");
-    AddDecisionQueue("SETDQCONTEXT", $player, "You_may_put_a_card_from_your_hand_on_the_bottom_of_your_deck.");
-    AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
-    AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
-    AddDecisionQueue("ADDBOTTOMMYDECK", $player, "-", 1);
-  }
-}
-
-function MayBottomDeckDraw($player="")
-{
-  global $currentPlayer;
-  if($player == "") $player = $currentPlayer;
-  $hand = GetHand($player);
-  if (count($hand) > 0) {
-    MayBottomDeck($player);
-    AddDecisionQueue("DRAW", $player, "-", 1);
-  }
-}
-
-function BottomDeckDraw()
-{
-  global $currentPlayer;
-  $hand = GetHand($currentPlayer);
-  if (count($hand) > 0) {
-    BottomDeck();
-    AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-  }
+  AddDecisionQueue("FINDINDICES", $player, "HAND");
+  AddDecisionQueue("SETDQCONTEXT", $player, "Put_a_card_from_your_hand_on_the_bottom_of_your_deck.");
+  if($mayAbility) AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+  else AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+  AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
+  AddDecisionQueue("ADDBOTTOMMYDECK", $player, "-", 1);
+  AddDecisionQueue("WRITELOG", $player, "A card was put on the bottom of the deck", 1);
+  if($shouldDraw) AddDecisionQueue("DRAW", $player, "-", 1);
 }
 
 function BottomDeckMultizone($player, $zone1, $zone2)
