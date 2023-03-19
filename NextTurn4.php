@@ -423,7 +423,7 @@
             return (cardSize + 105) + "px";
           case "Legs":
             return "95px";
-          case "Off-Hand":
+          case "Off-Hand": case "Quiver":
             return "calc(50% + " + (cardSize / 2 + 10) + "px)";
         }
       }
@@ -446,7 +446,7 @@
             return (cardSize + 15) + "px";
           case "Legs":
             return "5px";
-          case "Off-Hand":
+          case "Off-Hand": case "Quiver":
             return (cardSize * 2 + 25) + "px";
         }
       }
@@ -469,7 +469,7 @@
             return (cardSize + 15) + "px";
           case "Legs":
             return (cardSize * 2 + 25) + "px";
-          case "Off-Hand":
+          case "Off-Hand": case "Quiver":
             return (cardSize * 2 + 25) + "px";
         }
       }
@@ -679,7 +679,7 @@
                 var chatbox = document.getElementById("chatbox");
                 if(chatbox) chatbox.style.width = (parseInt(sidebarWrapperWidth)-10) + "px";
                 var chatText = document.getElementById("chatText");
-                if(chatText) chatText.style.width = (parseInt(sidebarWrapperWidth)-70) + "px";
+                if(chatText) chatText.style.width = (parseInt(sidebarWrapperWidth)-100) + "px";
               }
             } else {
               CheckReloadNeeded(lastUpdate);
@@ -705,6 +705,19 @@
         }
         SubmitInput(mode, input);
       }
+
+      function textSubmit(mode) {
+        var input = "";
+        input += "&gameName=" + document.getElementById("gameName").value;
+        input += "&playerID=" + document.getElementById("playerID").value;
+        input += "&inputText=" + document.getElementById("inputText").value;
+        SubmitInput(mode, input);
+      }
+
+      function suppressEventPropagation(e)
+      {
+        e.stopPropagation();
+      }
     </script>
 
     <?php
@@ -712,12 +725,16 @@
     echo ("<div id='popupContainer'></div>");
     echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
     echo ("<div id='mainDiv' style='position:fixed; z-index:20; left:0px; top:0px; width:100%;height:100%;'></div>");
+    echo ("<div id='chatbox' style='z-index:40; position:fixed; bottom:0px; right:18px; width:200px; height: 32px;'>");
     if ($playerID != 3 && !IsChatMuted()) {
-      echo ("<div id='chatbox' style='z-index:40; position:fixed; bottom:0px; right:18px; width:200px; height: 32px;'>");
-      echo ("<input id='chatText' style='margin-left: 4px; margin-right: 1px; width:140px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+      echo ("<input id='chatText' style='margin-left: 4px; margin-right: 1px; width:110px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
       echo ("<button style='display:inline; border: 2px solid " . $borderColor . "; width:45px; color: #1a1a1a; border:" . $backgroundColor . "; padding: 0; font: inherit; cursor: pointer; outline: inherit; box-shadow: none;' onclick='SubmitChat()'>Chat</button>");
-      echo ("</div>");
+      echo ("<button title='Disable Chat' " . ProcessInputLink($playerID, 26, $SET_MuteChat . "-1", fullRefresh:true) . "style='display:inline; border: 2px solid " . $borderColor . "; width:20px; color: #1a1a1a; border:" . $backgroundColor . "; padding: 0; font: inherit; cursor: pointer; outline: inherit; box-shadow: none;'>&#128681;</button>");
     }
+    else {
+      echo ("<button title='Re-enable Chat' " . ProcessInputLink($playerID, 26, $SET_MuteChat . "-0", fullRefresh:true) . "style='display:inline; border: 2px solid " . $borderColor . "; width:210px; color: #1a1a1a; border:" . $backgroundColor . "; padding: 0; font: inherit; cursor: pointer; outline: inherit; box-shadow: none;'>⌨️ Re-enable Chat</button>");
+    }
+    echo ("</div>");
     echo ("<input type='hidden' id='gameName' value='" . $gameName . "'>");
     echo ("<input type='hidden' id='playerID' value='" . $playerID . "'>");
     echo ("<input type='hidden' id='authKey' value='" . $authKey . "'>");

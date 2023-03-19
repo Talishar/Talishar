@@ -52,6 +52,7 @@ function GetNextEncounter() //TODO overhaul this whole function and children
             case 15: return RandomEvent();
             case 16: return "Go_towards_the_smoke_rising_in_the_distance,Follow_the_sounds_of_laughter"; //Campfire or a shop
             case 17: return "Approach_your_destination"; //Boss
+            case 18: return "Return_to_menu";
           }
       }
   }
@@ -110,10 +111,11 @@ function GetCrossroadsDescription()
             case 5: return "You find yourself in a small town. Something about this town feels unnatural. It unsettles you. What would you like to do?";
             case 7: case 16: return "You come to a crossroads. In one direction, you see smoke rising in the distance. In the other, you hear the distant sounds of laughter. Which way would you like to go?";
             case 8: return "Off to the side of the road is a small cave. You hear a roar echo from inside. Perhaps there's some gold inside, it's certainly worth checking out.";
-            case 9: return "With the great beast felled, you see a pile of treasures within the cave.";
+            case 9: return "With the great beast felled, you turn to the pile of treasures within the cave.";
             case 10: return "You come upon a great river. It's too wide to cross on your own. What would you like to do?";
             case 12: return "Before you lies the mountains of Misteria, and within them your goal. Where would you like to go?";
             case 14: return "As you travel through the mountains, you come upon a rope bridge connecting the mountains. You can sense the end of your journey is approaching. A hooded figure stands on the bridge, waiting.";
+            case 17: return "It seems your journey has come to an end.";
             default: return "You come to a crossroads. Which way would you like to go?";
           }
       }
@@ -142,6 +144,7 @@ function GetCrossroadsImage()
               case 10: return "MON240_cropped.png";
               case 12: return "CRU075_cropped.png";
               case 14: return "WTR092_cropped.png";
+              case 17: return "CRU046_cropped.png";
               default: return "EVR100_cropped.png";
 
             }

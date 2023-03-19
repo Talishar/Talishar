@@ -20,6 +20,10 @@ else if (isset($_GET["authKey"])) $authKey = $_GET["authKey"];
 
 session_write_close();
 
+if (($playerID == 1 || $playerID == 2) && $authKey == "") {
+  if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+}
+
 if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
   header("Location: " . $redirectPath . "/MainMenu.php"); //If the game file happened to get deleted from inactivity, redirect back to the main menu instead of erroring out
   exit;
@@ -61,7 +65,7 @@ $isMobile = IsMobile();
 <head>
   <meta charset="utf-8">
   <title>Talishar</title>
-  <link rel="stylesheet" href="https://unpkg.com/bamboo.css/dist/dark.min.css">
+  <link rel="stylesheet" href="./css/menuStyles2.css">
 </head>
 
 <script>
@@ -161,6 +165,7 @@ $isMobile = IsMobile();
     $arms = "";
     $legs = "";
     $offhand = "";
+    $quiver = "";
     for ($i = 1; $i < count($character); ++$i) {
       switch (CardSubtype($character[$i])) {
         case "Head":
@@ -178,6 +183,9 @@ $isMobile = IsMobile();
         case "Off-Hand":
           $offhand = $character[$i];
           break;
+        case "Quiver":
+          $quiver = $character[$i];
+          break;
         default:
           if ($weapons != "") $weapons .= ",";
           $weapons .= $character[$i];
@@ -193,6 +201,7 @@ $isMobile = IsMobile();
     $offhandSB = GetArray($handler);
     $weaponSB = GetArray($handler);
     $deckSB = GetArray($handler);
+    $quiverSB = GetArray($handler);
 
     fclose($handler);
   }
@@ -271,6 +280,7 @@ $isMobile = IsMobile();
             if (isset($weapon1) && isset($weapon2) && isset($weaponSB)) DisplayWeaponRow($weapon1, $weapon2, $weaponSB, "WEAPONS");
           }
           if (isset($offhand) && isset($offhandSB)) DisplayEquipRow($offhand, $offhandSB, "OFFHAND");
+          if (isset($quiver) && isset($quiverSB)) DisplayEquipRow($quiver, $quiverSB, "QUIVER");
 
           ?>
         </table>
@@ -419,13 +429,15 @@ $isMobile = IsMobile();
             return true;
           case "OFFHAND":
             return true;
+          case "QUIVER":
+            return true;
           default:
             return false;
         }
       }
 
       function GetCharacterCards() {
-        var types = ["WEAPONS", "OFFHAND", "HEAD", "CHEST", "ARMS", "LEGS"];
+        var types = ["WEAPONS", "OFFHAND", "QUIVER", "HEAD", "CHEST", "ARMS", "LEGS"];
         var returnValue = "<?php echo(isset($character) ? $character[0] : ""); ?>";
         for (var i = 0; i < types.length; ++i) {
           var selected = GetSelectedEquipType(types[i]);
@@ -581,18 +593,10 @@ $isMobile = IsMobile();
   function HasReverseArt($cardID)
   {
     switch ($cardID) {
-      case "WTR078":
-        return true;
-      case "CRU004":
-        return true;
-      case "CRU051":
-        return true;
-      case "CRU079":
-        return true;
-      case "DYN069":
-        return true;
-      case "DYN115":
-        return true;
+      case "WTR078": return true;
+      case "CRU004": case "CRU051": case "CRU079": return true;
+      case "DYN069": case "DYN115": return true;
+      case "OUT005": case "OUT007": case "OUT009": return true;
       default:
         return false;
         break;
@@ -602,18 +606,15 @@ $isMobile = IsMobile();
   function ReverseArt($cardID)
   {
     switch ($cardID) {
-      case "WTR078":
-        return "CRU049";
-      case "CRU004":
-        return "CRU005";
-      case "CRU051":
-        return "CRU052";
-      case "CRU079":
-        return "CRU080";
-      case "DYN069":
-        return "DYN070";
-      case "DYN115":
-        return "DYN116";
+      case "WTR078": return "CRU049";
+      case "CRU004": return "CRU005";
+      case "CRU051": return "CRU052";
+      case "CRU079": return "CRU080";
+      case "DYN069": return "DYN070";
+      case "DYN115": return "DYN116";
+      case "OUT005": return "OUT006";
+      case "OUT007": return "OUT008";
+      case "OUT009": return "OUT010";
       default:
         break;
     }

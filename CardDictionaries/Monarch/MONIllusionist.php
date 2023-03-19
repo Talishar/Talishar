@@ -1,20 +1,5 @@
 <?php
 
-  function MONIllusionistCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON003": return "Scepter";
-      case "MON005": case "MON006": return "Aura";
-      case "MON011": case "MON012": case "MON013": return "Aura";
-      case "MON088": return "Orb";
-      case "MON089": return "Legs";
-      case "MON090": return "Arms";
-      case "MON104": return "Aura";
-      default: return "";
-    }
-  }
-
   function MONIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
@@ -208,9 +193,16 @@
       ProcessDecisionQueue();
     }
     else {
-      $turn[0] = "A";
+      $turn[0] = "D";
       $currentPlayer = $mainPlayer;
-      for($i=0; $i<LayerPieces(); ++$i) array_shift($layers);//Get rid of defense step layer
+      for($i=count($layers)-LayerPieces(); $i >= 0; $i-=LayerPieces())
+      {
+        if($layers[$i] == "DEFENDSTEP" || ($layers[$i] == "LAYER" && $layers[$i+2] == "PHANTASM"))
+        {
+          for($j=$i; $j<($i+LayerPieces()); ++$j) unset($layers[$j]);
+        }
+      }
+      $layers = array_values($layers);
     }
   }
 

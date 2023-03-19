@@ -20,7 +20,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer;
   $rv = -1;
   if ($player == "") $player = $currentPlayer;
-  AddEvent("BANISH", $cardID);
+  AddEvent("BANISH", ($modifier == "INT" || $modifier == "UZURI" ? "CardBack" : $cardID));
   if (($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
     WriteLog(CardLink($cardID, $cardID) . " was banished from your deck face up by an action card. Gained 1 action point.");
     ++$actionPoints;
@@ -113,18 +113,16 @@ function AddPlayerHand($cardID, $player, $from)
   array_push($hand, $cardID);
 }
 
-function RemoveHand($cardID, $player)
+function RemoveHand($player, $index)
 {
   $hand = &GetHand($player);
-  for ($i = count($hand) - HandPieces(); $i >= 0; $i -= HandPieces()) {
-    if ($hand[$i] == $cardID) {
-      for ($j = $i + HandPieces() - 1; $j >= $i; --$j) {
-        unset($hand[$j]);
-      }
-      $hand = array_values($hand);
-      break;
-    }
+  if(count($hand) == 0) return "";
+  $cardID = $hand[$index];
+  for ($j = $index + HandPieces() - 1; $j >= $index; --$j) {
+    unset($hand[$j]);
   }
+  $hand = array_values($hand);
+  return $cardID;
 }
 
 function GainResources($player, $amount)
@@ -153,24 +151,27 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
   array_push($arsenal, "0"); //Is Frozen (1 = Frozen)
   array_push($arsenal, GetUniqueId()); //Unique ID
   $otherPlayer = $player == 1 ? 2 : 1;
-  if ($facing == "UP") {
-    if ($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
+  if($facing == "UP") {
+    if($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
       WriteLog("Back Alley Breakline was put into your arsenal from your deck face up. Gained 1 action point.");
       if ($player == $mainPlayer) GainActionPoints(1);
     }
+    if($from == "DECK" && CardSubType($cardID) == "Arrow" && SearchCharacterActive($player, "OUT097"))
+    {
+      AddLayer("TRIGGER", $player, "OUT097", "-", "-", -1);
+    }
     switch ($cardID) {
-      case "ARC057":
-      case "ARC058":
-      case "ARC059":
+      case "ARC057": case "ARC058": case "ARC059":
         AddCurrentTurnEffect($cardID, $player);
         break;
-      case "ARC063":
-      case "ARC064":
-      case "ARC065":
+      case "ARC063": case "ARC064": case "ARC065":
         Opt($cardID, 1);
         break;
       case "CRU123":
         AddCurrentTurnEffect($cardID, $otherPlayer);
+        break;
+      case "OUT130": case "OUT131": case "OUT132":
+        SpireSnipingAbility($player);
         break;
       default:
         break;
@@ -192,18 +193,34 @@ function SetArsenalFacing($facing, $player)
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
     if ($facing == "UP" && $arsenal[$i + 1] == "DOWN") {
       $arsenal[$i + 1] = "UP";
+      ArsenalTurnFaceUpAbility($arsenal[$i], $player);
       return $arsenal[$i];
     }
+  }
+  return "";
+}
+
+function ArsenalTurnFaceUpAbility($cardID, $player)
+{
+  switch($cardID)
+  {
+    case "OUT130": case "OUT131": case "OUT132":
+      SpireSnipingAbility($player);
+      break;
+    default: break;
   }
 }
 
 function RemoveArsenal($player, $index)
 {
   $arsenal = &GetArsenal($player);
+  if(count($arsenal) == 0) return "";
+  $cardID = $arsenal[$index];
   for ($i = $index + ArsenalPieces() - 1; $i >= $index; --$i) {
     unset($arsenal[$i]);
   }
   $arsenal = array_values($arsenal);
+  return $cardID;
 }
 
 function SetCCAttackModifier($index, $amount)
@@ -260,7 +277,6 @@ function BanishFromSpecificSoul(&$soul, $player)
 {
   if (count($soul) == 0) return;
   $cardID = array_shift($soul);
-  AddEvent("BANISH", $cardID);
   BanishCardForPlayer($cardID, $player, "SOUL", "SOUL");
 }
 
@@ -447,8 +463,10 @@ function AddGraveyard($cardID, $player, $from)
 function RemoveGraveyard($player, $index)
 {
   $discard = &GetDiscard($player);
+  $cardID = $discard[$index];
   unset($discard[$index]);
   $discard = array_values($discard);
+  return $cardID;
 }
 
 function SearchCharacterAddUses($player, $uses, $type = "", $subtype = "")

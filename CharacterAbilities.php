@@ -123,4 +123,24 @@ function CharacterDamageTakenAbilities($player, $damage)
   }
 }
 
+function CharacterDealDamageAbilities($player, $damage)
+{
+  $char = &GetPlayerCharacter($player);
+  $otherPlayer = $player == 1 ? 1 : 2;
+  for ($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces())
+  {
+    switch ($char[$i]) {
+      case "ROGUE023":
+        if($damage >= 4)
+        {
+          PlayAura("CRU031", $player, 1, false, true);
+          break;
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
+
 ?>

@@ -1,6 +1,9 @@
 <?php
 
-  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/json/json/english/card.json";
+  include './zzImageConverter.php';
+
+  //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/v5.0.0/json/english/card.json";
+  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/outsiders/json/english/card.json";
   $curl = curl_init();
   $headers = array(
     "Content-Type: application/json",
@@ -36,7 +39,7 @@
 
   fclose($handler);
 
-  function GenerateFunction(&$cardArray, $handler, $functionName, $propertyName, $defaultValue="")
+  function GenerateFunction(&$cardArray, $handler, $functionName, $propertyName, $defaultValue="", $sparse=false)
   {
     echo("<BR>" . $functionName . "<BR>");
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
@@ -45,6 +48,7 @@
     if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health") $isString = false;
     fwrite($handler, "if(strlen(\$cardID) < 6) return " . ($isString ? "\"\"" : "0") . ";\r\n");
     fwrite($handler, "if(is_int(\$cardID)) return " . ($isString ? "\"\"" : "0") . ";\r\n");
+    if($sparse) fwrite($handler, "switch(\$cardID) {\r\n");
     $trie = [];
     $cardsSeen = [];
     for($i=0; $i<count($cardArray); ++$i)
@@ -58,6 +62,18 @@
         $cardID = $cardArray[$i]->printings[$j]->id;
         $set = substr($cardID, 0, 3);
         if(!in_array($set, $originalSets)) continue;
+        if(($set == "DVR" || $set == "RVD"))
+        {
+          $found = false;
+          for($k=$j+1; $k<count($cardArray[$i]->printings); ++$k)
+          {
+            $cardID2 = $cardArray[$i]->printings[$k]->id;
+            $set2 = substr($cardID2, 0, 3);
+            if($set2 == "RVD" || $set2 == "DVR") continue;
+            if(in_array($set, $originalSets)) { $found = true; break; }
+          }
+          if($found) continue;
+        }
         $duplicate = false;
         for($k=0; $k<count($cardPrintings); ++$k)
         {
@@ -91,6 +107,11 @@
         else if($propertyName == "health")
         {
           $data = $cardArray[$i]->health;
+          CheckImage($cardID);
+        }
+        else if($propertyName == "rarity")
+        {
+          $data = $cardRarity;
         }
         else if($propertyName == "rarity")
         {
@@ -99,22 +120,26 @@
         else if($propertyName == "subtype")
         {
           $data = "";
-          for($j=0; $j<count($cardArray[$j]->types); ++$j)
+          for($k=0; $k<count($cardArray[$i]->types); ++$k)
           {
-            if(IsSubtype($cardArray[$i]->types[$j]) && !IsClass($cardArray[$i]->types[$j]) && !IsTalent($cardArray[$i]->types[$j]))
+            $type = $cardArray[$i]->types[$k];
+            if(!IsCardType($type) && !IsClass($type) && !IsTalent($type) && !IsHandedness($type))
             {
               if($data != "") $data .= ",";
-              $data .= $cardArray[$i]->types[$j];
+              $data .= $type;
             }
           }
-          if($data != "") echo($data . "<BR>");
         }
         if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
-        if($data != "-" && $data != "" && $data != "*" && $data != $defaultValue) AddToTrie($trie, $cardID, 0, $data);
+        if($data != "-" && $data != "" && $data != "*" && $data != $defaultValue)
+        {
+          if($sparse) fwrite($handler, "case \"" . $cardID . "\": return " . ($isString ? "\"$data\"" : $data) . ";\r\n");
+          else AddToTrie($trie, $cardID, 0, $data);
+        }
       }
     }
-
-    TraverseTrie($trie, "", $handler, $isString, $defaultValue);
+    if($sparse) fwrite($handler, "default: return " . ($isString ? "\"$defaultValue\"" : $defaultValue) . ";}\r\n");
+    else TraverseTrie($trie, "", $handler, $isString, $defaultValue);
 
     fwrite($handler, "}\r\n\r\n");
   }
@@ -181,14 +206,14 @@
     return "-";
   }
 
-  function IsSubtype($term)
+  function IsCardType($term)
   {
     switch($term)
     {
       case "Action": case "Attack": case "Defense Reaction": case "Attack Reaction":
       case "Instant": case "Weapon": case "Hero": case "Equipment": case "Token":
-      case "Resource": case "Mentor": case "(1H)": case "(2H)": return false;
-      default: return true;
+      case "Resource": case "Mentor": return true;
+      default: return false;
     }
   }
 
@@ -209,8 +234,19 @@
     switch($term)
     {
       case "Elemental": case "Light": case "Shadow": case "Draconic": return true;
+      case "Ice": case "Lightning": case "Earth": return true;
       default: return false;
     }
   }
+
+  function IsHandedness($term)
+  {
+    switch($term)
+    {
+      case "1H": case "2H": return true;
+      default: return false;
+    }
+  }
+
 
 ?>

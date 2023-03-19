@@ -1,19 +1,5 @@
 <?php
 
-  function ELEGuardianCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE003": return "Hammer";
-      case "ELE025": case "ELE026": case "ELE027":
-      case "ELE028": case "ELE029": case "ELE030": return "Aura";
-      case "ELE202": return "Hammer";
-      case "ELE203": case "ELE204": return "Off-Hand";
-      case "ELE206": case "ELE207": case "ELE208": return "Aura";
-      default: return "";
-    }
-  }
-
   function ELEGuardianPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $CS_DamagePrevention;

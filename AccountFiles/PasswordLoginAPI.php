@@ -9,34 +9,30 @@ include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
 include_once '../Database/ConnectionManager.php';
 include_once './AccountDatabaseAPI.php';
+include_once '../Libraries/HTTPLibraries.php';
+
+SetHeaders();
 
 
-if (isset($_POST["submit"])) {
+$_POST = json_decode(file_get_contents('php://input'), true);
 
-  $username = $_POST["userID"];
-  $password = $_POST["password"];
-  $rememberMe = isset($_POST["rememberMe"]);
+$username = $_POST["userID"];
+$password = $_POST["password"];
+$rememberMe = isset($_POST["rememberMe"]);
 
-  try {
-    AttemptPasswordLogin($username, $password, $rememberMe);
-  } catch (\Exception $e) { }
-
-} else {
-	header("location: ../Login.php");
-  exit();
+try {
+  PasswordLogin($username, $password, $rememberMe, true);
+} catch (\Exception $e) {
 }
 
 
 $response = new stdClass();
 $response->isUserLoggedIn = IsUserLoggedIn();
-if($response->isUserLoggedIn)
-{
+if ($response->isUserLoggedIn) {
   $response->loggedInUserID = LoggedInUser();
   $response->loggedInUserName = LoggedInUserName();
 }
 
-echo(json_encode($response));
+echo (json_encode($response));
 
 exit;
-
-?>

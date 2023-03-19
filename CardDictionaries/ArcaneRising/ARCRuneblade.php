@@ -1,19 +1,6 @@
 <?php
 
 
-  function ARCRunebladeCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC077": return "Sword";
-      case "ARC078": return "Arms";
-      case "ARC079": return "Head";
-      case "ARC106": case "ARC107": case "ARC108": return "Aura";
-      case "ARC112": return "Aura";
-      default: return "";
-    }
-  }
-
   function ARCRunebladePlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer;

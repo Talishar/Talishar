@@ -25,10 +25,10 @@ $isMobile = IsMobile();
 <head>
   <title>Talishar</title>
   <link rel="shortcut icon" type="image/png" href="Images/TeenyCoin.png" />
-  <link rel="stylesheet" href="https://unpkg.com/bamboo.css/dist/dark.min.css">
+  <link rel="stylesheet" href="./css/menuStyles2.css">
   <style>
     body {
-      background-image: url('Images/background_DYN.jpg');
+      background-image: url('Images/outsiders-background.jpg');
       background-position: top center;
       background-repeat: no-repeat;
       background-size: cover;
@@ -134,7 +134,7 @@ $isMobile = IsMobile();
   </style>
 </head>
 
-<body style="background-image: url('./Images/background.jpg');">
+<body style="background-image: url('./Images/outsiders-background.jpg');">
 
   <div style='width: 100%'>
     <nav class='NavBarDiv'>
@@ -154,7 +154,7 @@ $isMobile = IsMobile();
         <?php if (!$isMobile) echo '<li><a href="https://github.com/Talishar/Talishar/labels/bug" target="_blank">Known Bugs</a></li>'; ?>
         <?php //if($isPatron) echo "<li><a href='Replays.php'>Replays[BETA]</a></li>";
         ?>
-        <li><a href="Draft.php">Limited</a></li>
+        <li><a href="https://www.draftfab.com/">DraftFaB</a></li>
         <?php if (!$isMobile) echo '<li><a href="' . $roguelikePath . '">Roguelike</a></li>'; ?>
         <?php
         if (isset($_SESSION["useruid"])) {

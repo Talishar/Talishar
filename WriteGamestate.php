@@ -2,7 +2,7 @@
 
 UpdateGameState($playerID);
 
-$filename = "./Games/" . $gameName . "/gamestate.txt";
+if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
 $handler = fopen($filename, "w");
 
 $lockTries = 0;
@@ -87,14 +87,14 @@ $gamestateContent .= $permanentUniqueIDCounter . "\r\n";
 $gamestateContent .= $inGameStatus . "\r\n"; //Game status -- 0 = START, 1 = PLAY, 2 = OVER
 $gamestateContent .= "\r\n"; //Animations - Deprecated
 $gamestateContent .= $currentPlayerActivity . "\r\n"; //Current Player activity status -- 0 = active, 2 = inactive
-$gamestateContent .= $p1PlayerRating . "\r\n"; //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
-$gamestateContent .= $p2PlayerRating . "\r\n"; //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+$gamestateContent .= "\r\n"; //Unused
+$gamestateContent .= "\r\n"; //Unused
 $gamestateContent .= $p1TotalTime . "\r\n"; //Player 1 total time
 $gamestateContent .= $p2TotalTime . "\r\n"; //Player 2 total time
 $gamestateContent .= $lastUpdateTime . "\r\n"; //Last update time
 $gamestateContent .= $roguelikeGameID . "\r\n"; //Last update time
 $gamestateContent .= implode(" ", $events) . "\r\n";//Events
-//$gamestateContent .= (intval(GetCachePiece($gameName, 0))+1) . "\r\n";//Update number the gamestate is for
+$gamestateContent .= $EffectContext . "\r\n";//Update number the gamestate is for
 
 fwrite($handler, $gamestateContent);
 
