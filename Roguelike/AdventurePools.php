@@ -52,6 +52,7 @@ function GetNextEncounter() //TODO overhaul this whole function and children
             case 15: return RandomEvent();
             case 16: return "Go_towards_the_smoke_rising_in_the_distance,Follow_the_sounds_of_laughter"; //Campfire or a shop
             case 17: return "Approach_your_destination"; //Boss
+            case 18: return "Return_to_menu";
           }
       }
   }
@@ -109,6 +110,7 @@ function GetCrossroadsDescription()
             case 10: return "You come upon a great river. It's too wide to cross on your own. What would you like to do?";
             case 12: return "Before you lies the mountains of Misteria, and within them your goal. Where would you like to go?";
             case 14: return "As you travel through the mountains, you come upon a rope bridge connecting the mountains. You can sense the end of your journey is approaching. A hooded figure stands on the bridge, waiting.";
+            case 17: return "It seems your journey has come to an end.";
             default: return "You come to a crossroads. Which way would you like to go?";
           }
       }
@@ -137,6 +139,7 @@ function GetCrossroadsImage()
               case 10: return "MON240_cropped.png";
               case 12: return "CRU075_cropped.png";
               case 14: return "WTR092_cropped.png";
+              case 17: return "CRU046_cropped.png";
               default: return "EVR100_cropped.png";
 
             }
