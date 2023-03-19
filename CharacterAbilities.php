@@ -134,9 +134,18 @@ function CharacterDealDamageAbilities($player, $damage)
         if($damage >= 4)
         {
           PlayAura("CRU031", $player, 1, false, true);
-          break;
         }
         break;
+      case "ROGUE029":
+        for($j = count($char) - CharacterPieces(); $j >= 0; $j -= CharacterPieces())
+        {
+          if($char[$j] == "DYN068") $indexCounter = $j+3;
+        }
+        $char[$indexCounter] += 1;
+        if($damage >= 4)
+        {
+          $char[$indexCounter] = $char[$indexCounter] * 2;
+        }
       default:
         break;
     }
