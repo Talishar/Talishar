@@ -121,7 +121,12 @@ function GetRandomCards($number = 4, $special = "-", $specialType = "-")
     //WriteLog($number);
     $encounter = &GetZone(1, "Encounter");
     $result = [];                               //Rarity                          //When I say $number, I mean slot
-    $pool = GetPool("Equipment", $encounter[3], $specialType, $encounter[7], "All", $number);
+    if($number == "-"){
+      $pool = GetPool("Equipment", $encounter[3], $specialType, $encounter[7], "All");
+    }
+    else {
+      $pool = GetPool("Equipment", $encounter[3], $specialType, $encounter[7], "All", $number);
+    }
     array_push($result, $pool[rand(0, count($pool) - 1)]);
     return $result[0];
   }
