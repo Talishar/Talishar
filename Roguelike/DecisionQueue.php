@@ -451,6 +451,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Travel_upstream_to_the_nearest_town": //Spectral Image
             PrependDecisionQueue("SETENCOUNTER", $player, "128-BeforeFight");
             break;
+          case "Travel_downstream_to_find_a_bridge": //Mindscarred Man
+            PrependDecisionQueue("SETENCOUNTER", $player, "129-BeforeFight");
+            break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
             break;
