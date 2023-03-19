@@ -131,8 +131,8 @@ function EncounterDescription()
 
 function InitializeEncounter($player)
 {
-  /*$encounter = &GetZone($player, "Encounter");
-  WriteLog("===============================");
+  $encounter = &GetZone($player, "Encounter");
+  /*WriteLog("===============================");
   WriteLog("Encounter[0] = " . $encounter[0]);
   WriteLog("Encounter[1] = " . $encounter[1]);
   WriteLog("Encounter[2] = " . $encounter[2]);
