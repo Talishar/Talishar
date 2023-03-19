@@ -379,6 +379,12 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             $encounter = &GetZone(1, "Encounter");
             PrependDecisionQueue("SETENCOUNTER", $player, "008-PickMode");
             break;
+          case "Search_through_the_treasures":
+            PrependDecisionQueue("SETENCOUNTER", $player, "010-PickMode");
+            break;
+          case "Approach_your_destination":
+            PrependDecisionQueue("SETENCOUNTER", $player, "108-PickMode");
+            break;
           case "Explore_some_nearby_ruins": //battlefield
             PrependDecisionQueue("SETENCOUNTER", $player, "201-PickMode");
             break;

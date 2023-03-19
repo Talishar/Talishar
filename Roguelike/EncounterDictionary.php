@@ -171,8 +171,8 @@ function InitializeEncounter($player)
       break;
     case 006:
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
-      AddDecisionQueue("SETENCOUNTER", $player, "125-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
-      //AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      //AddDecisionQueue("SETENCOUNTER", $player, "125-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
       AddDecisionQueue("BUTTONINPUT", $player, "Rest,Reflect");
@@ -186,6 +186,10 @@ function InitializeEncounter($player)
     case 9:
       AddDecisionQueue("BUTTONINPUT", $player, GetNextEncounter());
       AddDecisionQueue("CROSSROADS", $player, "-");
+      break;
+    case 10:
+      AddDecisionQueue("CHOOSECARD", $player, GetPowers());
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
 
     case 201:
@@ -257,6 +261,8 @@ function EncounterImage()
       }
     case 9:
       return GetCrossroadsImage();
+    case 10:
+      return "EVR191_cropped.png";
 
     case 101:
       return "MON286_cropped.png";

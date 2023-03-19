@@ -170,6 +170,12 @@ function EncounterAI()
           PassInput();
         }
       }
+      else if($turn[0] == "OPT" && $mainPlayer = $currentPlayer)
+      {
+        $options = explode(",", $turn[2]);
+        ProcessInput($currentPlayer, 9, $options[0], 0, 0, "");
+        CacheCombatResult();
+      }
       else
       {
         PassInput();
