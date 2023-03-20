@@ -2279,14 +2279,3 @@ function HasDominate($cardID)
   }
   return false;
 }
-
-function HasOverpower ($cardID)
-{
-  switch ($cardID) {
-    case "DYN068": return true;
-    case "DYN088": return true;
-    case "DYN492a": return true;
-    default: break;
-  }
-  return false;
-}
