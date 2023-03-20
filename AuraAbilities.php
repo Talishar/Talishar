@@ -448,32 +448,24 @@ function AuraBeginEndPhaseAbilities()
     $remove = 0;
     switch ($auras[$i]) {
       case "ELE117":
-        ++$auras[$i + 2];
         ChannelTalent($i, "EARTH");
         break;
       case "ELE146":
-        ++$auras[$i + 2];
         ChannelTalent($i, "ICE");
         break;
       case "ELE175":
-        ++$auras[$i + 2];
         ChannelTalent($i, "LIGHTNING");
         break;
       case "UPR005":
-        ++$auras[$i + 2];
-        $discard = &GetDiscard($mainPlayer);
-        $toBanish = $auras[$i + 2];
+        $toBanish = ++$auras[$i + 2];
         $discardReds = SearchCount(SearchDiscard($player, pitch:1));
         if ($toBanish <= $discardReds) {
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, $toBanish);
-          AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
           for ($j = $toBanish; $j > 0; --$j) {
-            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:pitch=1", 1);
+            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:pitch=1", ($j == $toBanish ? 0 : 1));
             AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose $j card(s) to banish for Burn Them All", 1);
             AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
             AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-," . $mainPlayer, 1);
             AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-            AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
           }
           AddDecisionQueue("ELSE", $mainPlayer, "-");
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $i, 1);
@@ -484,7 +476,6 @@ function AuraBeginEndPhaseAbilities()
         }
         break;
       case "UPR138":
-        ++$auras[$i + 2];
         ChannelTalent($i, "ICE");
         break;
       case "UPR176": case "UPR177": case "UPR178":
@@ -518,30 +509,20 @@ function ChannelTalent($index, $talent)
 {
   global $mainPlayer;
   $auras = &GetAuras($mainPlayer);
-  $pitch = &GetPitch($mainPlayer);
-  $leftToBottom = $auras[$index + 2];
-  $numTalentInPitch = 0;
-
-  for ($j = 0; $j < count($pitch); $j++) {
-    if (TalentContains($pitch[$j], $talent, $mainPlayer) == 1) {
-      ++$numTalentInPitch;
-    }
-  }
-  if ($leftToBottom <= $numTalentInPitch) {
-    AddDecisionQueue("PASSPARAMETER", $mainPlayer, $auras[$index + 2]);
-    AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
-    for ($k = 0; $k < $auras[$index + 2]; $k++) {
-      if ($leftToBottom > 1) $plurial = "cards";
-      else $plurial = "card";
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYPITCH:talent=" . $talent . ";", 1);
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBottom . " more " . $plurial . " to put at the bottom for " . CardName($auras[$index]), 1);
+  $toBottom = ++$auras[$index + 2];
+  $numTalent = SearchCount(SearchPitch($mainPlayer, talent:$talent));
+  if ($toBottom <= $numTalent) {
+    $cardName = CardName($auras[$index]);
+    for ($j = $toBottom; $j > 0; --$j) {
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYPITCH:talent=" . $talent, ($j == $toBottom ? 0 : 1));
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose $j card(s) to put on the bottom for " . $cardName, 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBOTDECK", 1);
       AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-      AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
-      --$leftToBottom;
     }
-    AddDecisionQueue("MZDESTROY", $mainPlayer, "MYAURAS-" . $index);
+    AddDecisionQueue("ELSE", $mainPlayer, "-");
+    AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $index, 1);
+    AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
   } else {
     WriteLog(CardLink($auras[$index], $auras[$index]) . " was destroyed.");
     DestroyAura($mainPlayer, $index);
