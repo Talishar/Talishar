@@ -60,9 +60,9 @@ function GetNextEncounter() //TODO overhaul this whole function and children
 
 function RandomEvent()
 {
-  $commonEvents = array("Explore_some_nearby_ruins", "Visit_a_local_library");
-  $rareEvents = array("Enter_a_nearby_temple", "Talk_to_a_wandering_trader");
-  $majesticEvents = array("Explore_some_nearby_ruins", "Visit_a_local_library", "Enter_a_nearby_temple");
+  $commonEvents = array("You_come_across_some_interesting_ruins", "You_find_a_great_library");
+  $rareEvents = array("You_see_a_small_temple_a_ways_from_the_path", "A_wandering_trader_approaches_you");
+  $majesticEvents = array("You_come_across_some_interesting_ruins", "You_find_a_great_library", "You_see_a_small_temple_a_ways_from_the_path");
   $randEvent = rand(1,100);
   if($randEvent > 90)
   {
@@ -111,7 +111,7 @@ function GetCrossroadsDescription()
             case 12: return "Before you lies the mountains of Misteria, and within them your goal. Where would you like to go?";
             case 14: return "As you travel through the mountains, you come upon a rope bridge connecting the mountains. You can sense the end of your journey is approaching. A hooded figure stands on the bridge, waiting.";
             case 17: return "It seems your journey has come to an end.";
-            default: return "You come to a crossroads. Which way would you like to go?";
+            default: return "During your journey, something quite interesting happens. What happens?";
           }
       }
   }
