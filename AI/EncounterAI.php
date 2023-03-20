@@ -22,6 +22,7 @@ function EncounterAI()
       $allies = &GetAllies($currentPlayer);
       //LogHandArray($hand);
       //WriteLog("Turn[0]->".$turn[0]);
+      //LogHandArray($decisionQueue);
       if(count($decisionQueue) > 0)
       {
         global $EffectContext;
@@ -179,6 +180,12 @@ function EncounterAI()
       {
         $options = explode(",", $turn[2]);
         ProcessInput($currentPlayer, 9, $options[0], 0, 0, "");
+        CacheCombatResult();
+      }
+      else if($turn[0] == "HANDTOPBOTTOM"  && $mainPlayer = $currentPlayer)
+      {
+        $options = explode(",", $turn[2]);
+        ProcessInput($currentPlayer, 12, $options[0], 0, 0, "");
         CacheCombatResult();
       }
       else
