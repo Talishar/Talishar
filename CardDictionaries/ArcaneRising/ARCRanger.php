@@ -131,6 +131,7 @@
         break;
       default: break;
     }
+    return "";
   }
 
   function Reload($player=0)

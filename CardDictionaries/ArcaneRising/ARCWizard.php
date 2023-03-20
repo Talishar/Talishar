@@ -135,7 +135,7 @@
 
   function ARCWizardHitEffect($cardID)
   {
-
+    return "";
   }
 
   //Parameters:

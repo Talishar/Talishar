@@ -156,6 +156,7 @@ function ARCMechanologistHitEffect($cardID)
     default:
       break;
   }
+  return "";
 }
 
 function HasBoost($cardID)

@@ -81,6 +81,7 @@
         break;
       default: break;
     }
+    return "";
   }
 
   function NumRunechants($player)

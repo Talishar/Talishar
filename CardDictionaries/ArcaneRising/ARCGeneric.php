@@ -175,4 +175,5 @@ function ARCGenericHitEffect($cardID)
     default:
       break;
   }
+  return "";
 }
