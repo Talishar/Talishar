@@ -1915,21 +1915,13 @@ function PitchAbility($cardID)
     }
   }
   switch ($cardID) {
-    case "WTR000":
-      AddLayer("TRIGGER", $currentPlayer, $cardID);
-      break;
-    case "ARC000":
-      AddLayer("TRIGGER", $currentPlayer, $cardID);
-      break;
-    case "CRU000":
+    case "WTR000": case "ARC000": case "CRU000": case "OUT000":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "EVR000":
-      WriteLog(CardLink($cardID, $cardID). " created a Seismic Surge.");
       PlayAura("WTR075", $currentPlayer);
       break;
     case "UPR000":
-      WriteLog(CardLink($cardID, $cardID) . " makes the next 3 draconic cards you play cost 1 less this turn.");
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     default:

@@ -1965,6 +1965,8 @@ case "0":
 switch($cardID[5]) {
 case "4":
 return "W";
+case "0":
+return "R";
 case "1":
 return "C";
 case "2":
@@ -8001,6 +8003,8 @@ case "0":
 switch($cardID[5]) {
 case "4":
 return -1;
+case "0":
+return -1;
 case "1":
 return -1;
 case "2":
@@ -12493,6 +12497,8 @@ case "0":
 switch($cardID[5]) {
 case "4":
 return "Spider's Bite";
+case "0":
+return "Plague Hive";
 case "1":
 return "Uzuri, Switchblade";
 case "2":
@@ -17223,6 +17229,8 @@ case "0":
 switch($cardID[5]) {
 case "4":
 return 0;
+case "0":
+return 2;
 case "1":
 return 0;
 case "2":
@@ -23571,6 +23579,8 @@ case "0":
 switch($cardID[5]) {
 case "4":
 return "Dagger";
+case "0":
+return "Gem";
 case "2":
 return "Young";
 case "3":
@@ -25758,6 +25768,8 @@ case "0":
 switch($cardID[5]) {
 case "4":
 return "T";
+case "0":
+return "F";
 case "1":
 return "T";
 case "2":

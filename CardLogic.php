@@ -1010,6 +1010,19 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       Draw($player, false);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "OUT000":
+      $rand = GetRandom(1, 3);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      switch($rand)
+      {
+        case 1: $auraCreated = "OUT236"; break;
+        case 2: $auraCreated = "OUT235"; break;
+        case 3: $auraCreated = "OUT234"; break;
+        default: break;
+      }
+      WriteLog("Plague Hive created a " . CardLink($auraCreated, $auraCreated));
+      PlayAura($auraCreated, $otherPlayer);
+      break;
     case "OUT091": case "OUT092":
       SuperReload();
       break;
