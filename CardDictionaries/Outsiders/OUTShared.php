@@ -229,8 +229,10 @@ function OUTAbilityCost($cardID)
         return "";
       case "OUT052":
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT052,");
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
+        AddDecisionQueue("WRITELOG", $currentPlayer, "{0} was chosen");
         return "";
       case "OUT055":
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:sameName=WTR107");
