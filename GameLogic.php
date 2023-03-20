@@ -2477,27 +2477,13 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
   for ($i = 0; $i < count($mainCharacterEffects); $i += CharacterEffectPieces()) {
     if ($mainCharacterEffects[$i] == $index) {
       switch ($mainCharacterEffects[$i + 1]) {
-        case "WTR119":
-          $modifier += 2;
-          break;
-        case "WTR122":
-          $modifier += 1;
-          break;
-        case "WTR135": case "WTR136": case "WTR137":
-          $modifier += 1;
-          break;
-        case "CRU079": case "CRU080":
-          $modifier += 1;
-          break;
-        case "MON105": case "MON106":
-          $modifier += 1;
-          break;
-        case "MON113": case "MON114": case "MON115":
-          $modifier += 1;
-          break;
-        case "EVR055-1":
-          $modifier += 1;
-          break;
+        case "WTR119": $modifier += 2; break;
+        case "WTR122": $modifier += 1; break;
+        case "WTR135": case "WTR136": case "WTR137": $modifier += 1; break;
+        case "CRU079": case "CRU080": $modifier += 1; break;
+        case "MON105": case "MON106": $modifier += 1; break;
+        case "MON113": case "MON114": case "MON115": $modifier += 1; break;
+        case "EVR055-1": $modifier += 1; break;
         default:
           break;
       }
@@ -2518,11 +2504,8 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
       }
     }
     switch ($characterID) {
-      case "MON029":
-      case "MON030":
-        if (HaveCharged($mainPlayer) && NumAttacksBlocking() > 0) {
-          $modifier += 1;
-        }
+      case "MON029": case "MON030":
+        if (HaveCharged($mainPlayer) && NumAttacksBlocking() > 0) $modifier += 1;
         break;
       default:
         break;
@@ -2558,10 +2541,8 @@ function MainCharacterGrantsGoAgain()
   for ($i = 0; $i < count($mainCharacterEffects); $i += 2) {
     if ($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
       switch ($mainCharacterEffects[$i + 1]) {
-        case "EVR055-2":
-          return true;
-        default:
-          break;
+        case "EVR055-2": return true;
+        default: break;
       }
     }
   }
@@ -2589,26 +2570,24 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
 {
   $char = &GetPlayerCharacter($player);
   $index = count($char);
-  array_push($char, $cardID); //0 - Card ID
-  array_push($char, 2); //1 - Status (2=ready, 1=unavailable, 0=destroyed)
-  array_push($char, CharacterCounters($cardID)); //2 - Num counters
-  array_push($char, 0); //3 - Num attack counters
-  array_push($char, 0); //4 - Num defense counters
-  array_push($char, 1); //5 - Num uses
-  array_push($char, 0); //6 - On chain (1 = yes, 0 = no)
-  array_push($char, 0); //7 - Flagged for destruction (1 = yes, 0 = no)
-  array_push($char, 0); //8 - Frozen (1 = yes, 0 = no)
-  array_push($char, 2); //9 - Is Active (2 = always active, 1 = yes, 0 = no)
+  array_push($char, $cardID);
+  array_push($char, 2);
+  array_push($char, CharacterCounters($cardID));
+  array_push($char, 0);
+  array_push($char, 0);
+  array_push($char, 1);
+  array_push($char, 0);
+  array_push($char, 0);
+  array_push($char, 0);
+  array_push($char, 2);
   return $index;
 }
 
 function CharacterCounters ($cardID)
 {
   switch ($cardID) {
-    case "DYN492a":
-      return 8;
-    default:
-      return 0;
+    case "DYN492a": return 8;
+    default: return 0;
   }
 }
 
@@ -2630,23 +2609,21 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
   for ($i = 0; $i < $number; ++$i) {
     $uniqueID = GetUniqueId();
     $steamCounters = SteamCounterLogic($item, $player, $uniqueID) + $steamCounterModifier;
-    array_push($items, $item); //Card ID
-    array_push($items, $steamCounters); //Counters
-    array_push($items, 2); //Status
-    array_push($items, ItemUses($item)); //Num Uses
-    array_push($items, $uniqueID); //Unique ID
-    array_push($items, $myHoldState); //My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
-    array_push($items, $theirHoldState); //Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
+    array_push($items, $item);
+    array_push($items, $steamCounters);
+    array_push($items, 2);
+    array_push($items, ItemUses($item));
+    array_push($items, $uniqueID);
+    array_push($items, $myHoldState);
+    array_push($items, $theirHoldState);
   }
 }
 
 function ItemUses($cardID)
 {
   switch ($cardID) {
-    case "EVR070":
-      return 3;
-    default:
-      return 1;
+    case "EVR070": return 3;
+    default: return 1;
   }
 }
 
@@ -2688,10 +2665,8 @@ function IsDominateActive()
   for ($i = 0; $i < count($characterEffects); $i += CharacterEffectPieces()) {
     if ($characterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
       switch ($characterEffects[$i + 1]) {
-        case "WTR122":
-          return true;
-        default:
-          break;
+        case "WTR122": return true;
+        default: break;
       }
     }
   }
@@ -2729,30 +2704,6 @@ function IsDominateActive()
   return false;
 }
 
-function HasDominate ($cardID)
-{
-  global $mainPlayer, $combatChainState;
-  global $CS_NumAuras, $CCS_NumBoosted;
-  switch ($cardID)
-  {
-    case "WTR095": case "WTR096": case "WTR097": return (ComboActive() ? true : false);
-    case "WTR179": case "WTR180": case "WTR181": return true;
-    case "ARC080": return true;
-    case "MON004": return true;
-    case "MON023": case "MON024": case "MON025": return true;
-    case "MON246": return SearchDiscard($mainPlayer, "AA") == "";
-    case "MON275": case "MON276": case "MON277": return true;
-    case "ELE209": case "ELE210": case "ELE211": return HasIncreasedAttack();
-    case "EVR027": case "EVR028": case "EVR029": return true;
-    case "EVR038": return (ComboActive() ? true : false);
-    case "EVR076": case "EVR077": case "EVR078": return $combatChainState[$CCS_NumBoosted] > 0;
-    case "EVR110": case "EVR111": case "EVR112": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
-    case "OUT027": case "OUT028": case "OUT029": return true;
-    default: break;
-  }
-  return false;
-}
-
 function isOverpowerActive()
 {
   global $combatChain, $mainPlayer;
@@ -2764,17 +2715,6 @@ function isOverpowerActive()
     case "DYN492a": return true;
     default:
       break;
-  }
-  return false;
-}
-
-function HasOverpower ($cardID)
-{
-  switch ($cardID) {
-    case "DYN068": return true;
-    case "DYN088": return true;
-    case "DYN492a": return true;
-    default: break;
   }
   return false;
 }
@@ -2796,8 +2736,8 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "WTR037": case "WTR038":
-        $character[$cardIndex + 1] = 2;
-        break;
+      $character[$cardIndex + 1] = 2;
+      break;
     case "WTR150":
       $character[$cardIndex + 2] -= 3;
       break;
