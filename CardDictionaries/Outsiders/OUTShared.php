@@ -780,8 +780,11 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
         break;
       case "OUT201": case "OUT202": case "OUT203":
-        $hand = &GetHand($defPlayer);
-        if(count($hand) >= 4) PummelHit($defPlayer);
+        if(IsHeroAttackTarget())
+        {
+          $hand = &GetHand($defPlayer);
+          if(count($hand) >= 4) PummelHit($defPlayer);
+        }
         break;
       case "OUT204": case "OUT205": case "OUT206":
         PlayAura("DYN244", $mainPlayer);//Ponder
