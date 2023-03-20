@@ -2704,7 +2704,7 @@ function IsDominateActive()
   return false;
 }
 
-function isOverpowerActive()
+function IsOverpowerActive()
 {
   global $combatChain, $mainPlayer;
   if (count($combatChain) == 0) return false;
