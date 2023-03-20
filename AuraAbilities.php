@@ -534,28 +534,20 @@ function AuraEndTurnAbilities()
   global $CS_NumNonAttackCards, $mainPlayer, $CS_HitsWithSword;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    $remove = 0;
+    $remove = false;
     switch ($auras[$i]) {
       case "ARC167": case "ARC168": case "ARC169":
-        if (GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0) {
-          $remove = 1;
-        }
+        if (GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0) $remove = true;
         break;
-      case "ELE226":
-        $remove = 1;
-        break;
-      case "UPR139":
-        $remove = 1;
-        break;
+      case "ELE226": $remove = true; break;
+      case "UPR139": $remove = true; break;
       case "DYN072":
-        if (GetClassState($mainPlayer, $CS_HitsWithSword) <= 0) {
-          $remove = 1;
-        }
+        if (GetClassState($mainPlayer, $CS_HitsWithSword) <= 0) $remove = true;
         break;
       default:
         break;
     }
-    if ($remove == 1) DestroyAura($mainPlayer, $i);
+    if ($remove) DestroyAura($mainPlayer, $i);
   }
 }
 
