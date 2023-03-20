@@ -462,28 +462,22 @@ function AuraBeginEndPhaseAbilities()
       case "UPR005":
         ++$auras[$i + 2];
         $discard = &GetDiscard($mainPlayer);
-        $leftToBanish = $auras[$i + 2];
-        $numReds = 0;
-        for ($j = 0; $j < count($discard); $j++) {
-          if (PitchValue($discard[$j]) == 1) {
-            ++$numReds;
-          }
-        }
-        if ($leftToBanish <= $numReds) {
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, $auras[$i + 2]);
+        $toBanish = $auras[$i + 2];
+        $discardReds = SearchCount(SearchDiscard($player, pitch:1));
+        if ($toBanish <= $discardReds) {
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, $toBanish);
           AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
-          for ($k = 0; $k < $auras[$i + 2]; $k++) {
-            if ($leftToBanish > 1) $plurial = "cards";
-            else $plurial = "card";
-            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:pitch=1;", 1);
-            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBanish . " more " . $plurial . " to banish for Burn Them All", 1);
+          for ($j = $toBanish; $j > 0; --$j) {
+            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:pitch=1", 1);
+            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose $j card(s) to banish for Burn Them All", 1);
             AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
             AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-," . $mainPlayer, 1);
             AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
             AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
-            --$leftToBanish;
           }
-          AddDecisionQueue("MZDESTROY", $mainPlayer, "MYAURAS-" . $i);
+          AddDecisionQueue("ELSE", $mainPlayer, "-");
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $i, 1);
+          AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
         } else {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " was destroyed.");
           DestroyAura($mainPlayer, $i);

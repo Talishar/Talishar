@@ -4875,7 +4875,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MZDESTROY":
       $lastResultArr = explode(",", $lastResult);
-      $params = explode(",", $parameter);
       $otherPlayer = ($player == 1 ? 2 : 1);
       for ($i = 0; $i < count($lastResultArr); ++$i) {
         $mzIndex = explode("-", $lastResultArr[$i]);
