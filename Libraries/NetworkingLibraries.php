@@ -697,7 +697,7 @@ function Passed(&$turn, $playerID)
 function PassInput($autopass = true)
 {
   global $turn, $currentPlayer;
-  if ($turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MAYCHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSEMULTIZONE" ||$turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "INSTANT" || $turn[0] == "OK") {
+  if ($turn[0] == "END" || $turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MAYCHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSEMULTIZONE" ||$turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "INSTANT" || $turn[0] == "OK") {
     ContinueDecisionQueue("PASS");
   } else {
     if ($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed.");
@@ -940,12 +940,20 @@ function CleanUpCombatEffects($weaponSwap=false)
 function BeginTurnPass()
 {
   global $mainPlayer, $defPlayer, $decisionQueue;
-  WriteLog("Main player pass priority. Beginning of end phase.");
+  WriteLog("Main player passed priority; attempting to end turn.");
   ResetCombatChainState(); // The combat chain must be closed prior to the turn ending. The close step is outlined in 7.8 - specifically: CR 2.1 - 7.8.7. Fifth and finally, the Close Step ends, and the Action Phase continues. The Action Phase will always continue after the combat chain is closed - so there is another round of priority windows
   AddLayer("ENDTURN", $mainPlayer, "-");
-  AuraBeginEndPhaseTriggers();
+  //AuraBeginEndPhaseTriggers();
   BeginEndPhaseEffectTriggers();
   ProcessDecisionQueue("");
+}
+
+function EndStep()
+{
+  global $mainPlayer, $turn;
+  $turn[0] = "END";
+  AddLayer("ENDSTEP", $mainPlayer, "-");
+  AuraBeginEndPhaseTriggers();
 }
 
 //CR 2.0 4.4.2. - Beginning of the end phase

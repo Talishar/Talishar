@@ -379,7 +379,8 @@ function ContinueDecisionQueue($lastResult = "")
         }
         $layerPriority[0] = ShouldHoldPriority(1);
         $layerPriority[1] = ShouldHoldPriority(2);
-        if ($cardID == "ENDTURN") FinishTurnPass();
+        if ($cardID == "ENDTURN") EndStep();
+        else if ($cardID == "ENDSTEP") FinishTurnPass();
         else if ($cardID == "RESUMETURN") $turn[0] = "M";
         else if ($cardID == "LAYER") ProcessLayer($player, $parameter);
         else if ($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);

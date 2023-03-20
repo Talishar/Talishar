@@ -102,9 +102,7 @@
         var LanguageJP = <?php echo ((IsLanguageJP($playerID) ? "true" : "false")); ?>;
         LanguageJP = LanguageJP && TranslationExist('JP', cardNumber);
 
-        if (cardNumber == "ENDTURN" || cardNumber == "RESUMETURN" || cardNumber == "PHANTASM" || cardNumber == "FINALIZECHAINLINK" || cardNumber == "DEFENDSTEP") {
-          //folderPath = str_replace("CardImages", "Images", folderPath);
-          //folderPath = str_replace("concat", "Images", folderPath);
+        if (cardNumber == "ENDSTEP" || cardNumber == "ENDTURN" || cardNumber == "RESUMETURN" || cardNumber == "PHANTASM" || cardNumber == "FINALIZECHAINLINK" || cardNumber == "DEFENDSTEP") {
           showHover = 0;
           borderColor = 0;
         } else if (folder == "concat" && LanguageJP) { // Japanese

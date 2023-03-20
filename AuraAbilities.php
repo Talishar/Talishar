@@ -416,20 +416,11 @@ function AuraStartTurnAbilities()
 function AuraBeginEndPhaseTriggers()
 {
   global $mainPlayer;
-  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     switch ($auras[$i]) {
       case "DYN244":
-        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
-        break;
-      case $CID_BloodRotPox:
-        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
-        break;
-      case $CID_Inertia:
-        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
-        break;
-      case $CID_Frailty:
+      case "OUT234": case "OUT235": case "OUT236":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       default:
