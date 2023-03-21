@@ -336,18 +336,22 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN090":
       if(IsHeroAttackTarget() && $combatChainState[$CCS_NumBoosted] > 0)
       {
+        $numBoosted = $combatChainState[$CCS_NumBoosted];
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $combatChainState[$CCS_NumBoosted]);
+
+        AddDecisionQueue("PASSPARAMETER", $otherPlayer, $numBoosted, 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-        AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "{0}-", 1);
-        AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-{0}", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose {0} card(s)", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-{0}");
+        AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "{0}-");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose $numBoosted card(s)", 1);
         AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
         AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
-        AddDecisionQueue("REVEALHANDCARDSRETURNLASTRESULT", $otherPlayer, "<-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "1");
+        AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "<-", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card", 1);
-        AddDecisionQueue("PULSECHECKVALIDCARDS", $otherPlayer, $combatChainState[$CCS_NumBoosted], 1);
+        AddDecisionQueue("SPECIFICCARD", $otherPlayer, "PULSEWAVEHARPOONFILTER", 1);
         AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("HANDCARD", $otherPlayer, "-", 1);

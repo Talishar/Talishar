@@ -3363,16 +3363,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $revealed = RevealCards($cards, $player);
       return ($revealed ? $cards : "PASS");
-    case "REVEALHANDCARDSRETURNLASTRESULT":
-      $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
-      $hand = &GetHand($player);
-      $cards = "";
-      for ($i = 0; $i < count($indices); ++$i) {
-        if ($cards != "") $cards .= ",";
-        $cards .= $hand[$indices[$i]];
-      }
-      $revealed = RevealCards($cards, $player);
-      return ($revealed ? $lastResult : "PASS");
     case "WRITELOG":
       WriteLog(implode(" ", explode("_", $parameter)));
       return $lastResult;
@@ -4971,18 +4961,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return CountItem("EVR195", $player);
       case "BLOCKVALUE":
         return BlockValue($lastResult);
-      case "PULSECHECKVALIDCARDS":
-      $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
-      $hand = &GetHand($player);
-      $newIndices = "";
-      for ($i = 0; $i < count($indices); ++$i) {
-        if (BlockValue($hand[$indices[$i]]) > -1 && BlockValue($hand[$indices[$i]]) <= $parameter && (CardType($hand[$indices[$i]]) == "A" || CardType($hand[$indices[$i]]) == "AA"))
-        {
-          if ($newIndices != "") $newIndices .= ",";
-          $newIndices .= $indices[$i];
-        }
-      }
-      return ($newIndices != "" ? $newIndices : "PASS");
     case "MZADDSTEAMCOUNTER":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);
