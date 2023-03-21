@@ -4782,12 +4782,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = $params[1];
       }
       return $rv;
-    case "SIFT":
-      $numCards = SearchCount($lastResult);
-      for ($i = 0; $i < $numCards; ++$i) {
-        Draw($player);
-      }
-      return "1";
     case "CCFILTERTYPE":
       if ($lastResult == "" || $lastResult == "PASS") return "PASS";
       $arr = explode(",", $lastResult);

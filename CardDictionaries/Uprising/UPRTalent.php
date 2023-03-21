@@ -151,7 +151,7 @@
         AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("SIFT", $currentPlayer, "-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SIFT", 1);
         return "Lets you cycle $numCards cards.";
       case "UPR200": case "UPR201": case "UPR202":
         if($cardID == "UPR200") $maxCost = 2;

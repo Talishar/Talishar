@@ -39,6 +39,12 @@ function SpecificCardLogic($player, $card, $lastResult)
         }
       }
       return ($filteredIndices != "" ? $filteredIndices : "PASS");
+    case "SIFT":
+      $numCards = SearchCount($lastResult);
+      for ($i = 0; $i < $numCards; ++$i) {
+        Draw($player);
+      }
+      return "1";
     default: return "";
   }
 }
