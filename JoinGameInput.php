@@ -612,6 +612,7 @@ function GetAltCardID($cardID)
     case "OUT222": return "ARC203";
     case "OUT223": return "ARC204";
     case "OUT224": return "ARC205";
+    case "WIN022": return "OUT091";
   }
   return $cardID;
 }
