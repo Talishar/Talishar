@@ -184,8 +184,8 @@ function InitializeEncounter($player)
     case 006:
       //$encounter[2] = 7; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
-      AddDecisionQueue("SETENCOUNTER", $player, "127-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
-      //AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      //AddDecisionQueue("SETENCOUNTER", $player, "127-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
       AddDecisionQueue("BUTTONINPUT", $player, "Rest,Reflect");

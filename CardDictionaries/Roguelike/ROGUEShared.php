@@ -141,7 +141,7 @@ function ROGUECombatEffectActive($cardID, $attackID)
         case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
         case "ROGUE702": return PitchValue($attackID) == 2;
         case "ROGUE702-NA": return true;
-        case "ROGUE704": return true;
+        case "ROGUE704": return CardType($attackID) == "AA";
         case "ROGUE707": return true;
         case "ROGUE709": return true;
         case "ROGUE710-GA": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
