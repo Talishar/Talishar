@@ -3669,7 +3669,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for ($i = 0; $i < count($params); ++$i) {
         switch ($params[$i]) {
           case "Buff_your_attack_action_cards_this_turn":
-            WriteLog(CardLink("ARC160", "ARC160") . " gives attack action cards +1 power and defense this turn.");
             AddCurrentTurnEffect("ARC160-1", $currentPlayer);
             if ($currentPlayer == $defPlayer) {
               for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
@@ -3678,7 +3677,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             }
             break;
           case "Your_next_attack_action_card_gains_go_again":
-            WriteLog(CardLink("ARC160", "ARC160") . " gives the next attack action card this turn go again.");
             if (count($combatChain) > 0) {
               AddCurrentTurnEffectFromCombat("ARC160-3", $currentPlayer);
             } else {
@@ -3686,11 +3684,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             }
             break;
           case "Defend_with_attack_action_cards_from_arsenal":
-            WriteLog(CardLink("ARC160", "ARC160") . " makes it possible to block with attack actions from arsenal.");
             AddCurrentTurnEffect("ARC160-2", $currentPlayer);
             break;
           case "Banish_an_attack_action_card_to_draw_2_cards":
-            WriteLog(CardLink("ARC160", "ARC160") . " allows you to banish a card and draw 2.");
             PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
             PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
             PrependDecisionQueue("BANISH", $currentPlayer, "-", 1);
