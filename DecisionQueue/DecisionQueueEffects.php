@@ -5,6 +5,9 @@ function SpecificCardLogic($player, $card, $lastResult)
   global $dqVars;
   switch($card)
   {
+    case "BLOODONHERHANDS":
+      BloodOnHerHandsResolvePlay($lastResult);
+      return $lastResult;
     case "RIGHTEOUSCLEANSING":
       $numBanished = SearchCount(",", $lastResult);//Parameter is the banished cards
       $numLeft = 5 - $numBanished;

@@ -3700,9 +3700,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
-    case "BLOODONHERHANDS":
-      BloodOnHerHandsResolvePlay($lastResult);
-      return $lastResult;
     case "VESTOFTHEFIRSTFIST":
       if ($lastResult == "YES") {
         $character = &GetPlayerCharacter($player);
