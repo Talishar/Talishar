@@ -385,16 +385,16 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Approach_your_destination":
             PrependDecisionQueue("SETENCOUNTER", $player, "108-BeforeFight");
             break;
-          case "Explore_some_nearby_ruins": //battlefield
+          case "You_come_across_some_interesting_ruins": //battlefield
             PrependDecisionQueue("SETENCOUNTER", $player, "201-PickMode");
             break;
-          case "Visit_a_local_library": //library
+          case "You_find_a_great_library": //library
             PrependDecisionQueue("SETENCOUNTER", $player, "202-PickMode");
             break;
-          case "Enter_a_nearby_temple": //Enlightenment
+          case "You_see_a_small_temple_a_ways_from_the_path": //Enlightenment
             PrependDecisionQueue("SETENCOUNTER", $player, "205-PickMode");
             break;
-          case "Talk_to_a_wandering_trader": //Rocks
+          case "A_wandering_trader_approaches_you": //Rocks
             PrependDecisionQueue("SETENCOUNTER", $player, "208-PickMode");
             break;
           case "Take_the_scenic_route_through_the_back_streets": //Stealthy Stabber
