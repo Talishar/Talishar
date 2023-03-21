@@ -223,7 +223,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 204: //TODO: Integrate with CardRewardPools.php
-      AddDecisionQueue("BUTTONINPUT", $player, "Use_Forge,Ask_Legend,Leave");
+      AddDecisionQueue("BUTTONINPUT", $player, "Spend_some_time_forging_equipment_for_yourself,Ask_the_blacksmith_to_make_you_a_piece_of_equipment,Leave");
       AddDecisionQueue("BLACKSMITH", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;

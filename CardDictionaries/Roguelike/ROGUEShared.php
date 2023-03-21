@@ -282,20 +282,20 @@ function ROGUECardSubtype($cardID)
       case "ROGUE528": //Sutcliffe's Tome
         return "Power";
       case "ROGUE601":
-      case "ROGUE602":
+      case "ROGUE602": //Ollin's Hammer
       case "ROGUE603":
       case "ROGUE604":
       case "ROGUE605":
       case "ROGUE606":
       case "ROGUE607":
-      case "ROGUE608":
+      case "ROGUE608": //Crown of Blessings
       case "ROGUE609":
       case "ROGUE610":
       case "ROGUE611": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616":
         return "Power";
       case "ROGUE701":
       case "ROGUE702":
-      case "ROGUE703":
+      case "ROGUE703": //Broken Hourglass
       case "ROGUE704":
       case "ROGUE705":
       case "ROGUE706":

@@ -132,18 +132,16 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         $encounter = &GetZone($player, "Encounter");
         switch($lastResult)
         {
-          case "Use_Forge":
+          case "Spend_some_time_forging_equipment_for_yourself":
             WriteLog("You used your might to craft some armor.");
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Head", "Equipment", "Common"));
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Chest", "Equipment", "Common"));
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Arms", "Equipment", "Common"));
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Legs", "Equipment", "Common"));
             break;
-          case "Ask_Legend":
+          case "Ask_the_blacksmith_to_make_you_a_piece_of_equipment":
             WriteLog("A giant gave you a legendary gift.");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards);
-            if($encounter[3] == "Dorinthea") PrependDecisionQueue("CHOOSECARD", $player, "WTR116");
-            if($encounter[3] == "Bravo") PrependDecisionQueue("CHOOSECARD", $player, "WTR041");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("-", "Equipment", "Legendary"));
             break;
           case "Leave":
             break;
