@@ -581,7 +581,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "ARC152":
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Vest_of_the_First_Fist_to_gain_2_resources");
-      AddDecisionQueue("VESTOFTHEFIRSTFIST", $player, $index, 1);
+      AddDecisionQueue("NOPASS", $player, "");
+      AddDecisionQueue("PASSPARAMETER", $player, "MYCHAR-" . $index, 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+      AddDecisionQueue("GAINRESOURCES", $player, 2, 1);
       break;
     case "ARC162":
       DestroyAuraUniqueID($player, $uniqueID);

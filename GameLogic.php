@@ -3700,14 +3700,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
-    case "VESTOFTHEFIRSTFIST":
-      if ($lastResult == "YES") {
-        $character = &GetPlayerCharacter($player);
-        $character[$parameter + 1] = 0;
-        GainResources($player, 2);
-        WriteLog("Vest of the First Fist was destroyed and gave 2 resources.");
-      }
-      return $lastResult;
     case "BOOST":
       global $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
       $deck = &GetDeck($currentPlayer);
@@ -4600,6 +4592,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for ($i = 0; $i < count($lastResultArr); ++$i) {
         $mzIndex = explode("-", $lastResultArr[$i]);
         switch ($mzIndex[0]) {
+          case "MYCHAR":
+            DestroyCharacter($player, $mzIndex[1]);
           case "MYALLY":
             DestroyAlly($player, $mzIndex[1]);
             break;
@@ -4745,6 +4739,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           default: break;
         }
       }
+      return $lastResult;
+    case "GAINRESOURCES":
+      GainResources($player, $parameter);
       return $lastResult;
     case "TRANSFORM":
       return "ALLY-" . ResolveTransform($player, $lastResult, $parameter);
