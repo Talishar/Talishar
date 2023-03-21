@@ -353,10 +353,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card", 1);
         AddDecisionQueue("SPECIFICCARD", $otherPlayer, "PULSEWAVEHARPOONFILTER", 1);
         AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("HANDCARD", $otherPlayer, "-", 1);
-        AddDecisionQueue("BLOCKVALUE", $currentPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
         AddDecisionQueue("ADDCARDTOCHAIN", $otherPlayer, "HAND", 1);
       }

@@ -4959,8 +4959,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return SpecificCardLogic($player, $parameter, $lastResult);
       case "COUNTSILVERS":
         return CountItem("EVR195", $player);
-      case "BLOCKVALUE":
-        return BlockValue($lastResult);
     case "MZADDSTEAMCOUNTER":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);
