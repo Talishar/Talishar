@@ -11,6 +11,7 @@ include "CharacterAbilities.php";
 include "WeaponLogic.php";
 include "MZLogic.php";
 include "Classes/Deck.php";
+include "DecisionQueue/DecisionQueueEffects.php";
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
 {
@@ -267,85 +268,6 @@ function CombatChainResolutionEffects()
         break;
         default: break;
     }
-}
-
-function HasCrush($cardID)
-{
-  switch($cardID) {
-    case "WTR043": case "WTR044": case "WTR045": case "WTR057": case "WTR058": case "WTR059":
-    case "WTR060": case "WTR061": case "WTR062": case "WTR063": case "WTR064": case "WTR065":
-    case "WTR066": case "WTR067": case "WTR068": case "WTR050": case "WTR049": case "WTR048":
-    case "CRU026": case "CRU027": case "CRU032": case "CRU033": case "CRU034": case "CRU035":
-    case "CRU036": case "CRU037":
-      return true;
-    default:
-      return false;
-  }
-}
-
-function ProcessCrushEffect($cardID)
-{
-  global $mainPlayer, $defPlayer, $defCharacter, $combatChain;
-  if(CardType($combatChain[0]) && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
-  if(IsHeroAttackTarget()) {
-    switch($cardID) {
-      case "WTR043":
-        DiscardRandom($defPlayer);
-        DiscardRandom($defPlayer);
-        break;
-      case "WTR044":
-        AddNextTurnEffect($cardID, $defPlayer);
-        break;
-      case "WTR045":
-        AddNextTurnEffect($cardID, $defPlayer);
-        break;
-      case "WTR048": case "WTR049": case "WTR050":
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put at the bottom of the deck", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZADDZONE", $mainPlayer, "THEIRBOTDECK", 1);
-        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-        break;
-      case "WTR057": case "WTR058": case "WTR059":
-        AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
-        AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-        AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
-        break;
-      case "WTR060": case "WTR061": case "WTR062":
-        AddNextTurnEffect($cardID, $defPlayer);
-        break;
-      case "WTR063": case "WTR064": case "WTR065":
-        $defCharacter[1] = 3;
-        break;
-      case "WTR066": case "WTR067": case "WTR068":
-        AddNextTurnEffect($cardID, $defPlayer);
-        break;
-      case "CRU026":
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "CRU026");
-        AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-        AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
-        break;
-      case "CRU027":
-        AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPX,5");
-        AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
-        AddDecisionQueue("COUNTPARAM", $defPlayer, "<-", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card(s) to banish", 1);
-        AddDecisionQueue("MULTICHOOSETHEIRDECK", $mainPlayer, "<-", 1, 1);
-        AddDecisionQueue("VALIDATEALLSAMENAME", $defPlayer, "DECK", 1);
-        AddDecisionQueue("MULTIREMOVEDECK", $defPlayer, "-", 1);
-        AddDecisionQueue("MULTIBANISH", $defPlayer, "DECK,-", 1);
-        AddDecisionQueue("RIGHTEOUSCLEANSING", $mainPlayer, "<-", 1);
-        break;
-      case "CRU032": case "CRU033": case "CRU034":
-        AddNextTurnEffect("CRU032", $defPlayer);
-        break;
-      case "CRU035": case "CRU036": case "CRU037":
-        AddNextTurnEffect("CRU035", $defPlayer);
-        break;
-      default:
-        return;
-    }
-  }
 }
 
 //NOTE: This happens at combat resolution, so can't use the my/their directly
@@ -5043,25 +4965,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       case "DESTROYFROZENARSENAL":
         DestroyFrozenArsenal($player);
         return "";
-      case "RIGHTEOUSCLEANSING":
-        $numBanished = explode(",", $parameter); //Banished card
-        $numToReorder = 5 - count($numBanished);
-        $otherPlayer = ($player == 1 ? 2 : 1);
-        $deck = &GetDeck($otherPlayer);
-        $cards = "";
-        for ($i = 0; $i < $numToReorder; ++$i) {
-          if (count($deck) > 0) {
-            if ($cards != "") $cards .= ",";
-            $card = array_shift($deck);
-            $cards .= $card;
-          }
-        }
-        if($cards != "")
-        {
-          PrependDecisionQueue("CHOOSETOPOPPONENT", $player, $cards);
-          PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put on top of your opponent deck");
-        }
-        return "";
+      case "SPECIFICCARD":
+        return SpecificCardLogic($player, $parameter, $lastResult);
       case "COUNTSILVERS":
         return CountItem("EVR195", $player);
       case "BLOCKVALUE":
