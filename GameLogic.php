@@ -1665,7 +1665,7 @@ function CharacterStartTurnAbility($index)
     case "DYN117": case "DYN118": case "OUT011":
       $discardIndex = SearchDiscardForCard($mainPlayer, $mainCharacter[$index]);
       if($mainCharacter[$index+1] == 0 && CountItem("EVR195", $mainPlayer) >= 2 && $discardIndex != "") {
-        AddDecisionQueue("COUNTSILVERS", $mainPlayer, "");
+        AddDecisionQueue("COUNTITEM", $mainPlayer, "EVR195");
         AddDecisionQueue("LESSTHANPASS", $mainPlayer, "2");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to pay 2 silvers to equip " . CardLink($mainCharacter[$index], $mainCharacter[$index]) . "?", 1);
         AddDecisionQueue("YESNO", $mainPlayer, "if_they_want_to_pay_and_equip_" . CardLink($mainCharacter[$index], $mainCharacter[$index]), 1);
@@ -4957,8 +4957,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return "";
       case "SPECIFICCARD":
         return SpecificCardLogic($player, $parameter, $lastResult);
-      case "COUNTSILVERS":
-        return CountItem("EVR195", $player);
     case "MZADDSTEAMCOUNTER":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);
