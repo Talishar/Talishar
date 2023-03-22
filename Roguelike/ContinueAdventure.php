@@ -23,6 +23,10 @@
   } else {
     $encounter[9] += 3;
   }
+  WriteLog($encounter[2]);
+  if($encounter[2] == 8 && $health[0] <= 20){
+    $health[0] = 20;
+  }
 
   $deck = &GetZone($playerID, "Deck");
   for($i = 0; $i < count($deck); ++$i)
@@ -67,9 +71,15 @@
       default: break;
     }
   }
-
-  AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards(4));
-  AddDecisionQueue("SETENCOUNTER", $playerID, "009-PickMode");
+  if($encounter[2] != 17) {
+    AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards(4));
+    AddDecisionQueue("SETENCOUNTER", $playerID, "009-PickMode");
+  }
+  else {
+    $encounter[0] = "011";
+    $encounter[1] = "";
+    InitializeEncounter($playerID);
+  }
 
   include "WriteGamestate.php";
 

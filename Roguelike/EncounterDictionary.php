@@ -50,6 +50,8 @@ function EncounterDescription()
       }
     case 9:
       return GetCrossroadsDescription();
+    case 11:
+      return "Thank you for playing Blackjack's Tavern! We have a lot more in the works that we can't wait to show off. If you're interested in helping with future updates, join the Talishar discord!";
 
     case 101:
       if($encounter[1] == "BeforeFight") return "You're attacked by a Woottonhog.";
@@ -182,9 +184,9 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
       break;
     case 006:
-      //$encounter[2] = 7; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
+      //$encounter[2] = 14; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
-      //AddDecisionQueue("SETENCOUNTER", $player, "127-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
+      //AddDecisionQueue("SETENCOUNTER", $player, "125-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
@@ -201,8 +203,6 @@ function InitializeEncounter($player)
       AddDecisionQueue("CROSSROADS", $player, "-");
       break;
     case 10:
-      $health = &GetZone($player, "HEALTH");
-      if($health < 20) $health = 20;
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
@@ -278,6 +278,8 @@ function EncounterImage()
       return GetCrossroadsImage();
     case 10:
       return "EVR191_cropped.png";
+    case 11:
+      return "DYN002_cropped.png";
 
     case 101:
       return "MON286_cropped.png";

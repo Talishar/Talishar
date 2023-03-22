@@ -10,7 +10,7 @@ function CardIsBlockable($storedPriorityNode)
   if($storedPriorityNode[1] == "Character")
   {
     $character = &GetPlayerCharacter($currentPlayer);
-    if($character[$storedPriorityNode[2]+6] == 1) return false;
+    if($character[$storedPriorityNode[2]+6] == 1 || $character[$storedPriorityNode[2]+1] != 2) return false;
     //WriteLog("character[i+6]->".$character[$storedPriorityNode[2]+6]);
   }
   switch($combatChain[0])
