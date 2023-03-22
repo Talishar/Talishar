@@ -321,4 +321,62 @@ function EffectBlockModifier($cardID, $index)
   }
 }
 
+function RemoveEffectsOnChainClose()
+{
+  global $currentTurnEffects;
+  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $remove = false;
+    $effectArr = explode("-", $currentTurnEffects[$i]);
+    $effectArr2 = explode(",", $effectArr[0]);
+    switch($effectArr2[0]) {
+      case "CRU106": case "CRU107": case "CRU108": //High Speed Impact
+      case "CRU109": case "CRU110": case "CRU111": // Combustible Courier
+      case "MON035": //V of the Vanguard
+      case "MON245": //Exude Confidence
+      case "ELE067": case "ELE068": case "ELE069": //Explosive Growth
+      case "ELE186": case "ELE187": case "ELE188": //Ball Lightning
+      case "UPR049": //Spreading Flames
+      case "DYN095": case "DYN096": case "DYN097": //Scramble Pulse
+      case "OUT033": case "OUT034": case "OUT035": //Prowl
+      case "OUT052": //Head Leads the Tail
+      case "OUT071": case "OUT072": case "OUT073": //Deadly Duo
+        $remove = 1;
+        break;
+      default:
+        break;
+    }
+    if($remove) RemoveCurrentTurnEffect($i);
+  }
+}
+
+function OnAttackEffects($attack)
+{
+  global $currentTurnEffects, $mainPlayer, $defPlayer;
+  $attackType = CardType($attack);
+  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $remove = false;
+    if($currentTurnEffects[$i + 1] == $mainPlayer) {
+      switch($currentTurnEffects[$i]) {
+        case "ELE085": case "ELE086": case "ELE087":
+          if($attackType == "AA") {
+            DealArcane(1, 0, "PLAYCARD", $attack, true);
+            $remove = true;
+          }
+          break;
+        case "ELE092-DOM":
+          AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Do you want to pay 2 to prevent this attack from getting dominate?", 1);
+          AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,2", 0, 1);
+          AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
+          AddDecisionQueue("GREATERTHANPASS", $defPlayer, "0", 1);
+          AddDecisionQueue("ADDIMMEDIATECURRENTEFFECT", $mainPlayer, $currentTurnEffects[$i] . "ATK", 1);
+          break;
+        default:
+          break;
+      }
+    }
+    if($remove) RemoveCurrentTurnEffect($i);
+  }
+}
+
+
 ?>
