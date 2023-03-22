@@ -50,7 +50,7 @@ function GetNextEncounter() //TODO overhaul this whole function and children
             case 13: return RandomEvent();
             case 14: return CrossroadsDoubleChoice("Use_the_cover_of_darkness_to_cross,Take_precaution_and_find_a_different_way_across,Brave_the_bridge");//combat choice of X, Y, and Z
             case 15: return RandomEvent();
-            case 16: return "Go_towards_the_smoke_rising_in_the_distance,Follow_the_sounds_of_laughter"; //Campfire or a shop
+            case 16: return "Follow_the_sounds_of_laughter"; //Campfire or a shop
             case 17: return "Approach_your_destination"; //Boss
             case 18: return "Return_to_menu";
           }
