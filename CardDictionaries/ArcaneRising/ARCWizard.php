@@ -506,4 +506,78 @@
     }
   }
 
+
+  function ArcaneHitEffect($player, $source, $target, $damage)
+  {
+    switch($source) {
+      case "UPR104":
+        if(MZIsPlayer($target) && $damage > 0) {
+          AddDecisionQueue("ENCASEDAMAGE", MZPlayerID($player, $target), "-", 1);
+        }
+        break;
+      case "UPR113": case "UPR114": case "UPR115":
+        if(MZIsPlayer($target)) PayOrDiscard(MZPlayerID($player, $target), 2, true);
+        break;
+      case "UPR119": case "UPR120": case "UPR121":
+        if(MZIsPlayer($target) && $damage > 0) {
+          AddDecisionQueue("FINDINDICES", $player, "SEARCHMZ,THEIRARS", 1);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to freeze", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+          AddDecisionQueue("MZOP", $player, "FREEZE", 1);
+        }
+        break;
+      case "UPR122": case "UPR123": case "UPR124":
+        if(MZIsPlayer($target) && $damage > 0) {
+          AddDecisionQueue("PLAYAURA", MZPlayerID($player, $target), "ELE111", 1);
+        }
+        break;
+      default:
+        break;
+    }
+
+    if($damage > 0 && CardType($source) != "W" && SearchCurrentTurnEffects("UPR125", $player, true)) AddDecisionQueue("OP", MZPlayerID($player, $target), "DESTROYFROZENARSENAL");
+
+    if(HasSurge($source) && $damage > ArcaneDamage($source)) {
+      ProcessSurge($source, $player, $target);
+    }
+  }
+
+  function ProcessSurge($cardID, $player, $target)
+  {
+    global $mainPlayer;
+    $targetPlayer = MZPlayerID($player, $target);
+    switch($cardID) {
+      case "DYN194":
+        $hand = &GetHand($targetPlayer);
+        $numToDraw = count($hand) - 1;
+        if($numToDraw < 0) $numToDraw = 0;
+        $deck = &GetDeck($targetPlayer);
+        while(count($hand) > 0) array_push($deck, array_shift($hand));
+        for($i=0; $i<$numToDraw; ++$i) array_push($hand, array_shift($deck));
+        WriteLog("Mind Warp warps the target's mind.");
+        AddDecisionQueue("SHUFFLEDECK", $targetPlayer, "-");
+        break;
+      case "DYN195":
+        PlayAura("DYN244", $player);
+        WriteLog(CardLink($cardID, $cardID) . " created a " . CardLink("DYN244", "DYN244") . " token");
+        break;
+      case "DYN197": case "DYN198": case "DYN199":
+        if(CurrentEffectPreventsGoAgain() || $player != $mainPlayer) break;
+        GainActionPoints();
+        WriteLog(CardLink($cardID, $cardID) . " gained go again");
+        break;
+      case "DYN203": case "DYN204": case "DYN205":
+        PlayerOpt($player, 1);
+        break;
+      case "DYN206": case "DYN207": case "DYN208":
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=E;hasEnergyCounters=true");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Remove an energy counter from a card");
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZGETCARDINDEX", $player, "-", 1);
+        AddDecisionQueue("REMOVECOUNTER", $targetPlayer, $cardID, 1);
+        break;
+      default: break;
+    }
+  }
+
 ?>
