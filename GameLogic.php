@@ -360,17 +360,6 @@ function CharacterCostModifier($cardID, $from)
   return $modifier;
 }
 
-function RemoveCurrentEffects($player, $effectID) //Remove all instance on 1 effect. Example case multiple BIOS Update
-{
-  global $currentTurnEffects;
-  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    if($currentTurnEffects[$i + 1] == $player && $currentTurnEffects[$i] == $effectID) {
-      RemoveCurrentTurnEffect($i);
-    }
-  }
-  $currentTurnEffects = array_values($currentTurnEffects);
-}
-
 function CurrentEffectBaseAttackSet($cardID)
 {
   global $currentPlayer, $currentTurnEffects;
@@ -3167,8 +3156,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       ItemBoostEffects();
       $actionPoints += CountCurrentTurnEffects("ARC006", $currentPlayer);
       $cardID = $deck[0];
-      if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player)) {
-        RemoveCurrentEffects($player, "DYN091-2");
+      if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) {
         PutItemIntoPlay($cardID);
       }
       else BanishCardForPlayer($cardID, $currentPlayer, "DECK", "BOOST");
