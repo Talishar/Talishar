@@ -449,7 +449,7 @@ function AuraBeginEndPhaseAbilities()
         break;
       case "UPR005":
         $toBanish = ++$auras[$i + 2];
-        $discardReds = SearchCount(SearchDiscard($player, pitch:1));
+        $discardReds = SearchCount(SearchDiscard($mainPlayer, pitch:1));
         if ($toBanish <= $discardReds) {
           for ($j = $toBanish; $j > 0; --$j) {
             AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:pitch=1", ($j == $toBanish ? 0 : 1));
