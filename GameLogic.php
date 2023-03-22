@@ -135,8 +135,8 @@ function ChainLinkBeginResolutionEffects()
     for($i = 0; $i < count($mainCharacterEffects); $i += CharacterEffectPieces()) {
       if($mainCharacterEffects[$i] == $index) {
         switch($mainCharacterEffects[$i + 1]) {
-            //CR 2.1 - 6.5.4. Standard-replacement: Third, each player applies any active standard-replacement effects they control.
-            //CR 2.1 - 6.5.5. Prevention: Fourth, each player applies any active prevention effects they control.
+          //CR 2.1 - 6.5.4. Standard-replacement: Third, each player applies any active standard-replacement effects they control.
+          //CR 2.1 - 6.5.5. Prevention: Fourth, each player applies any active prevention effects they control.
           case "EVR054":
             $pendingDamage = CachedTotalAttack() - CachedTotalBlock();
             AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Currently $pendingDamage damage would be dealt. Do you want to destroy a defending equipment instead?");
@@ -148,8 +148,7 @@ function ChainLinkBeginResolutionEffects()
             AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
             AddDecisionQueue("DESTROYCHARACTER", $defPlayer, "-", 1);
             break;
-          default:
-            break;
+          default: break;
         }
       }
     }
@@ -167,23 +166,6 @@ function ChainLinkBeginResolutionEffects()
       break;
     default: break;
   }
-}
-
-function CombatChainResolutionEffects()
-{
-  global $combatChain, $mainPlayer;
-    switch($combatChain[0])
-    {
-      case "CRU051": case "CRU052":
-        EvaluateCombatChain($totalAttack, $totalBlock);
-        for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-          if (!($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack)) {
-            UndestroyCurrentWeapon();
-          }
-        }
-        break;
-        default: break;
-    }
 }
 
 //NOTE: This happens at combat resolution, so can't use the my/their directly

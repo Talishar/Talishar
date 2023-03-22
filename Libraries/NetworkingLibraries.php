@@ -758,7 +758,6 @@ function ResolveChainLink()
   $totalAttack = 0;
   $totalDefense = 0;
   EvaluateCombatChain($totalAttack, $totalDefense);
-  CombatChainResolutionEffects();
 
   $combatChainState[$CCS_LinkTotalAttack] = $totalAttack;
 
