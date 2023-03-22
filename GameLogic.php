@@ -126,48 +126,6 @@ function ProcessHitEffect($cardID)
   else if ($set == "OUT") return OUTHitEffect($cardID);
 }
 
-function ChainLinkBeginResolutionEffects()
-{
-  global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex, $CID_BloodRotPox;
-  if(CardType($combatChain[0]) == "W") {
-    $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
-    $index = $combatChainState[$CCS_WeaponIndex];
-    for($i = 0; $i < count($mainCharacterEffects); $i += CharacterEffectPieces()) {
-      if($mainCharacterEffects[$i] == $index) {
-        switch($mainCharacterEffects[$i + 1]) {
-          //CR 2.1 - 6.5.4. Standard-replacement: Third, each player applies any active standard-replacement effects they control.
-          //CR 2.1 - 6.5.5. Prevention: Fourth, each player applies any active prevention effects they control.
-          case "EVR054":
-            $pendingDamage = CachedTotalAttack() - CachedTotalBlock();
-            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Currently $pendingDamage damage would be dealt. Do you want to destroy a defending equipment instead?");
-            AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_a_blocking_equipment_instead_of_dealing_damage");
-            AddDecisionQueue("NOPASS", $mainPlayer, "-");
-            AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
-            AddDecisionQueue("SETCOMBATCHAINSTATE", $mainPlayer, $CCS_CombatDamageReplaced, 1);
-            AddDecisionQueue("FINDINDICES", $defPlayer, "SHATTER,$pendingDamage", 1);
-            AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-            AddDecisionQueue("DESTROYCHARACTER", $defPlayer, "-", 1);
-            break;
-          default: break;
-        }
-      }
-    }
-  }
-  switch($combatChain[0])
-  {
-    case "OUT168": case "OUT169": case "OUT170":
-      for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
-      {
-        if($combatChain[$i+1] != $defPlayer || $combatChain[$i+2] != "HAND") continue;
-        WriteLog("Virulent Touch creates a Bloodrot Pox from being blocked from hand.");
-        PlayAura($CID_BloodRotPox, $defPlayer);
-        break;
-      }
-      break;
-    default: break;
-  }
-}
-
 //NOTE: This happens at combat resolution, so can't use the my/their directly
 function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)
 {
