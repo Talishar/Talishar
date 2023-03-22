@@ -223,7 +223,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "The_Exuberant_Adventurer":
             $encounter[7] = "Voltaire";
-            array_push($character, "ELE134");
+            array_push($character, "ELE034");
             array_push($deck, "ELE048", "ELE059", "ELE054", "ELE055", "ELE180", "ELE185", "ELE199", "ELE186");
             break;
           case "The_Hired_Crow":
