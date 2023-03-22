@@ -290,6 +290,26 @@ function GetShop()
   return $resultStr;
 }
 
+function GetArmorShop()
+{
+  $result = [];
+  $pool = GeneratePool($result, "Equipment");
+  array_push($result, $pool[rand(0, count($pool)-1)]);
+  $pool = GeneratePool($result, "Equipment");
+  array_push($result, $pool[rand(0, count($pool)-1)]);
+  $pool = GeneratePool($result, "Equipment");
+  array_push($result, $pool[rand(0, count($pool)-1)]);
+  $pool = GeneratePool($result, "Equipment");
+  array_push($result, $pool[rand(0, count($pool)-1)]);
+  $resultStr = "";
+  for($i = 0; $i < count($result); ++$i)
+  {
+    if($i != 0) $resultStr.=",";
+    $resultStr.=$result[$i];
+  }
+  return $resultStr;
+}
+
 function GetShopCost($cardID)
 {
   if($cardID == "CardBack") return 0;
@@ -305,6 +325,8 @@ function GetShopCost($cardID)
     if(Rarity($cardID) == "L") $cost = 12;
     else $cost = 4;
   }
+  $encounter = &GetZone(1, "Encounter");
+  if($encounter[0] == 211) $cost = $cost / 2;
   return $cost;
 }
 ?>

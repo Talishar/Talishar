@@ -372,6 +372,23 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
         }
         return 1;
+      case "CLIFF":
+        switch($lastResult)
+        {
+          case "Its_best_to_leave_the_gold_behind":
+            $encounter = &GetZone($player, "Encounter");
+            $encounter[9] = 0;
+            WriteLog("You lost all your gold over the edge of a cliff.");
+            break;
+          case "Attempt_to_retrieve_your_coins":
+            $encounter = &GetZone($player, "Encounter");
+            $encounter[9] += 4;
+            $health = &GetZone($player, "Health");
+            $health[0] -= 4;
+            WriteLog("You stumble down a cliff, losing some life but retrieving some gold. You even found some cold someone else had lost.");
+            break;
+        }
+        return 1;
       case "CROSSROADS":
         switch($lastResult)
         {
@@ -402,6 +419,12 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Follow_the_sound_of_metallic_ringing": //Giant Forge
             PrependDecisionQueue("SETENCOUNTER", $player, "204-PickMode");
+            break;
+          case "You_see_one_of_the_most_beautiful_views_in_all_of_rathe": //Cliffside
+            PrependDecisionQueue("SETENCOUNTER", $player, "210-PickMode");
+            break;
+          case "You_find_a_small_smithing_hut": //Cliffside
+            PrependDecisionQueue("SETENCOUNTER", $player, "211-PickMode");
             break;
           case "Take_the_scenic_route_through_the_back_streets": //Stealthy Stabber
             PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight");

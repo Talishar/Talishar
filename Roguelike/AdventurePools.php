@@ -60,8 +60,8 @@ function GetNextEncounter() //TODO overhaul this whole function and children
 
 function RandomEvent()
 {
-  $devTestEvents = array(); //Put events in here to test them. They will be the only ones to show up. Make sure you put at least 2 options
-  $commonEvents = array("You_wander_through_a_fresh_battlefield", "You_find_a_great_library");
+  $devTestEvents = array("You_find_a_small_smithing_hut", "You_see_one_of_the_most_beautiful_views_in_all_of_rathe"); //Put events in here to test them. They will be the only ones to show up. Make sure you put at least 2 options
+  $commonEvents = array("You_wander_through_a_fresh_battlefield", "You_find_a_great_library", "You_see_one_of_the_most_beautiful_views_in_all_of_rathe", "You_find_a_small_smithing_hut");
   $rareEvents = array("You_see_a_small_temple_a_ways_from_the_path", "A_wandering_trader_approaches_you");
   $majesticEvents = array("You_wander_through_a_fresh_battlefield", "You_find_a_great_library", "You_see_a_small_temple_a_ways_from_the_path");
   $randEvent = rand(1,100);

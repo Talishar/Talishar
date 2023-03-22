@@ -137,7 +137,8 @@ function EncounterDescription()
       if($health[0] > 1) return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game.'";
       else return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game. But it seems you have nothing to offer me, so I must take my leave.'";
     case 208: return "You meet a migrating trader, who holds up a small stone, but doesn't let you get a close look at it. \"Greetings Bounty Hunter, I have an amazing deal for you. Two gold pieces and this powerful stone can be yours.\"";
-
+    case 210: return "The view is breathtaking, but the journey is precarious. You lose your footing and stumble, dropping your bag of coins over the edge.";
+    case 211: return "The shop smells of smoke and flame. A short man gets on a box to look at you from beyond the counter.";
     default: return "No encounter text.";
   }
 }
@@ -184,7 +185,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
       break;
     case 006:
-      //$encounter[2] = 7; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
+      $encounter[2] = 1; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
       //AddDecisionQueue("SETENCOUNTER", $player, "127-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
@@ -203,8 +204,6 @@ function InitializeEncounter($player)
       AddDecisionQueue("CROSSROADS", $player, "-");
       break;
     case 10:
-      $health = &GetZone($player, "HEALTH");
-      if($health < 20) $health = 20;
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
@@ -253,6 +252,17 @@ function InitializeEncounter($player)
       break;
     case 209:
       AddDecisionQueue("SHOP", $player, GetShop());
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 210:
+      $health = &GetZone($player, "Health");
+      if($health[0] >= 5) AddDecisionQueue("BUTTONINPUT", $player, "Its_best_to_leave_the_gold_behind,Attempt_to_retrieve_your_coins");
+      else  AddDecisionQueue("BUTTONINPUT", $player, "Its_best_to_leave_the_gold_behind");
+      AddDecisionQueue("CLIFF", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 211:
+      AddDecisionQueue("SHOP", $player, GetArmorShop(), "special");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     default: /*WriteLog("We Shouldn't Be Here");*/ break;
@@ -344,6 +354,10 @@ function EncounterImage()
       return "CRU188_cropped.png";
     case 208:
       return "UPR212_cropped.png";
+    case 210:
+      return "DYN165_cropped.png";
+    case 211:
+      return "DYN085_cropped.png";
 
     default: return "CRU054_cropped.png";
   }
@@ -385,6 +399,10 @@ function EncounterChoiceHeader(){
       return "What will you do?";
     case 208:
       return "Take the exchange?";
+    case 210:
+      return "What will you do?";
+    case 211:
+      return "What purchases will you make?";
     default: return "";
   }
 }

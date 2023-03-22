@@ -174,12 +174,14 @@ $cardIconTop = intval($cardSize / 4.2); //30
       {
         $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, GetShopCost($options[$i]), strval($options[$i]));
       }
-      $encounterContent .= "</div><BR>";
-      $encounterContent .= "<div display:inline;'>";
-      $shopHealStringValue = "Pay_".$encounter[11]."g_to_hire_a_local_healer";
-      $encounterContent .= CreateButton($playerID, str_replace("_", " ", $shopHealStringValue), 2, strval("shop_heal"), "24px");
-      $shopRemoveStringValue = "Offer_".$encounter[12]."g_to_a_beggar";
-      $encounterContent .= CreateButton($playerID, str_replace("_", " ", $shopRemoveStringValue), 2, strval("shop_reflect"), "24px");
+      if($myDQ[2] == "-") {
+        $encounterContent .= "</div><BR>";
+        $encounterContent .= "<div display:inline;'>";
+        $shopHealStringValue = "Pay_".$encounter[11]."g_to_hire_a_local_healer";
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $shopHealStringValue), 2, strval("shop_heal"), "24px");
+        $shopRemoveStringValue = "Offer_".$encounter[12]."g_to_a_beggar";
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $shopRemoveStringValue), 2, strval("shop_reflect"), "24px");
+      }
       //$encounterContent .= "</div><BR>";
       //$encounterContent .= "<div display:inline;'>";
       $encounterContent .= "</div><BR>";
