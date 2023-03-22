@@ -416,18 +416,12 @@ function EffectHitEffect($cardID)
     case "EVR161-1":
       GainHealth(2, $mainPlayer);
       break;
-    case "EVR164":
-      PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 6);
-      RemoveCurrentEffect($mainPlayer, $cardID);
-      break;
-    case "EVR165":
-      PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 4);
-      RemoveCurrentEffect($mainPlayer, $cardID);
-      break;
-    case "EVR166":
-      PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2);
-      RemoveCurrentEffect($mainPlayer, $cardID);
-      break;
+    case "EVR164": case "EVR165": case "EVR166":
+      if($cardID == "EVR164") $amount = 6;
+      else if($cardID == "EVR165") $amount = 4;
+      else $amount = 2;
+      PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, $amount);
+      return 1;
     case "EVR170-1": case "EVR171-1": case "EVR172-1":
       if (IsHeroAttackTarget()) {
         AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMSMAX,2");
