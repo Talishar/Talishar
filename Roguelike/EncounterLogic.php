@@ -154,6 +154,40 @@ function GetRandomCards($number = 4, $special = "-", $specialType = "-")
   }
 }
 
+function GetRandomDeckCard($player, $special = "") //TODO add in a seperate special call to remove random cards instead of any card and a special call to remove powers.
+{
+
+  $deck = &GetZone($player, "Deck");
+  $fullList = "";
+  for($i = 0; $i < count($deck); ++$i)
+  {
+    if(CardSubtype($deck[$i]) != "Power")
+    {
+      //WriteLog(CardSubtype($deck[$i]));
+      if($i != 0) $fullList .= ",";
+      $fullList .= $deck[$i];
+    }
+  }
+
+  if ($special == "") {
+    $special = "ALL"; //This is the default mode
+  }
+  if ($special == "ALL") return $fullList; // By default, this is all we need
+  elseif($special == 4) {
+    //WriteLog($fullList);
+    $deckNoPowers = explode(",", $fullList);
+    $options = GetOptions(4, 0, count($deckNoPowers) - 1, 1); //If empty cards keep showing up, maybe get rid of the '- 1' in front of count(#deckNoPowers)
+    $return = "";
+    for($i = 0; $i < count($options); $i++){
+      if($i != 0) $return .= ",";
+      $return .= $deckNoPowers[$options[$i]];
+    }
+    return $return;
+  }
+  WriteLog("Function GetRandomDeckCard failed to find a case");
+  return "This should never happen";
+}
+
 function GeneratePool($selected, $type, $rarity = "-")
 {
   $encounter = &GetZone(1, "Encounter");
@@ -195,40 +229,6 @@ function GeneratePool($selected, $type, $rarity = "-")
     if(!$found) array_push($generatedPool, $pool[$i]);
   }
   return $generatedPool;
-}
-
-function GetRandomDeckCard($player, $special = "") //TODO add in a seperate special call to remove random cards instead of any card and a special call to remove powers.
-{
-
-  $deck = &GetZone($player, "Deck");
-  $fullList = "";
-  for($i = 0; $i < count($deck); ++$i)
-  {
-    if(CardSubtype($deck[$i]) != "Power")
-    {
-      //WriteLog(CardSubtype($deck[$i]));
-      if($i != 0) $fullList .= ",";
-      $fullList .= $deck[$i];
-    }
-  }
-
-  if ($special == "") {
-    $special = "ALL"; //This is the default mode
-  }
-  if ($special == "ALL") return $fullList; // By default, this is all we need
-  elseif($special == 4) {
-    //WriteLog($fullList);
-    $deckNoPowers = explode(",", $fullList);
-    $options = GetOptions(4, 0, count($deckNoPowers) - 1, 1); //If empty cards keep showing up, maybe get rid of the '- 1' in front of count(#deckNoPowers)
-    $return = "";
-    for($i = 0; $i < count($options); $i++){
-      if($i != 0) $return .= ",";
-      $return .= $deckNoPowers[$options[$i]];
-    }
-    return $return;
-  }
-  WriteLog("Function GetRandomDeckCard failed to find a case");
-  return "This should never happen";
 }
 
 function GetShop()
