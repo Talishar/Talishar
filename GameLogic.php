@@ -140,7 +140,7 @@ function ArcaneHitEffect($player, $source, $target, $damage)
     case "UPR119": case "UPR120": case "UPR121":
       if(MZIsPlayer($target) && $damage > 0) {
         AddDecisionQueue("FINDINDICES", $player, "SEARCHMZ,THEIRARS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose which card you want to freeze", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to freeze", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZOP", $player, "FREEZE", 1);
       }
