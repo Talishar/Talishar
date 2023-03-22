@@ -312,8 +312,8 @@
   {
     global $currentTurnEffects;
     $modifier = 0;
-    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
-    {
+    for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+      $remove = false;
       $effectArr = explode(",", $currentTurnEffects[$i]);
       switch($effectArr[0])
       {
@@ -324,11 +324,12 @@
         case "DYN192":
           if (ActionsThatDoArcaneDamage($source)) {
             $modifier += $effectArr[1];
-            RemoveCurrentEffect($player, $currentTurnEffects[$i]);
+            $remove = true;
           }
           break;
         default: break;
       }
+      if($remove) RemoveCurrentTurnEffect($i);
     }
     return $modifier;
   }

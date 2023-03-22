@@ -252,66 +252,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
   }
 }
 
-function EffectAttackModifier($cardID)
-{
-  $set = CardSet($cardID);
-  if ($set == "WTR") return WTREffectAttackModifier($cardID);
-  else if ($set == "ARC") return ARCEffectAttackModifier($cardID);
-  else if ($set == "CRU") return CRUEffectAttackModifier($cardID);
-  else if ($set == "MON") return MONEffectAttackModifier($cardID);
-  else if ($set == "ELE") return ELEEffectAttackModifier($cardID);
-  else if ($set == "EVR") return EVREffectAttackModifier($cardID);
-  else if ($set == "DVR") return DVREffectAttackModifier($cardID);
-  else if ($set == "RVD") return RVDEffectAttackModifier($cardID);
-  else if ($set == "UPR") return UPREffectAttackModifier($cardID);
-  else if ($set == "DYN") return DYNEffectAttackModifier($cardID);
-  else if ($set == "OUT") return OUTEffectAttackModifier($cardID);
-  return 0;
-}
 
-function EffectHasBlockModifier($cardID)
-{
-  switch($cardID)
-  {
-    case "MON089":
-    case "ELE000-2":
-    case "ELE143":
-    case "ELE203":
-    case "DYN115": case "DYN116":
-    case "OUT005": case "OUT006":
-    case "OUT007": case "OUT008":
-    case "OUT009": case "OUT010":
-    case "OUT109":
-    case "OUT110":
-    case "OUT111":
-    return true;
-    default: return false;
-  }
-}
-
-function EffectBlockModifier($cardID, $index)
-{
-  global $combatChain, $defPlayer, $mainPlayer;
-  switch($cardID) {
-    case "MON089":
-      if($combatChain[$index] == $cardID) return 1;
-      return 0;
-    case "ELE000-2":
-      return 1;
-    case "ELE143":
-      return 1;
-    case "ELE203":
-      return ($combatChain[$index] == "ELE203" ? 1 : 0);
-    case "OUT109":
-      return (PitchValue($combatChain[$index]) == 1 && SearchCurrentTurnEffects("AIM", $mainPlayer) ? -1 : 0);
-    case "OUT110":
-      return (PitchValue($combatChain[$index]) == 2 && SearchCurrentTurnEffects("AIM", $mainPlayer) ? -1 : 0);
-    case "OUT111":
-      return (PitchValue($combatChain[$index]) == 3 && SearchCurrentTurnEffects("AIM", $mainPlayer) ? -1 : 0);
-    default:
-      return 0;
-  }
-}
 
 function BlockModifier($cardID, $from, $resourcesPaid)
 {
@@ -417,18 +358,6 @@ function CharacterCostModifier($cardID, $from)
     --$modifier;
   }
   return $modifier;
-}
-
-function RemoveCurrentEffect($player, $effectID)
-{
-  global $currentTurnEffects;
-  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    if($currentTurnEffects[$i + 1] == $player && $currentTurnEffects[$i] == $effectID) {
-      RemoveCurrentTurnEffect($i);
-      break;
-    }
-  }
-  $currentTurnEffects = array_values($currentTurnEffects);
 }
 
 function RemoveCurrentEffects($player, $effectID) //Remove all instance on 1 effect. Example case multiple BIOS Update
@@ -1366,12 +1295,11 @@ function OnAttackEffects($attack)
           }
           break;
         case "ELE092-DOM":
-          AddDecisionQueue("FLASHFREEZEDOMINATE", $mainPlayer, $currentTurnEffects[$i] . "ATK", 1);
-          AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose to pay 2 to remove dominate from this attack", 1);
+          AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Do you want to pay 2 to prevent this attack from getting dominate?", 1);
           AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,2", 0, 1);
           AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
-          AddDecisionQueue("LESSTHANPASS", $defPlayer, "2", 1);
-          AddDecisionQueue("REMOVECURRENTEFFECT", $mainPlayer, $currentTurnEffects[$i] . "ATK", 1);
+          AddDecisionQueue("GREATERTHANPASS", $defPlayer, "0", 1);
+          AddDecisionQueue("ADDIMMEDIATECURRENTEFFECT", $mainPlayer, $currentTurnEffects[$i] . "ATK", 1);
           break;
         default:
           break;
@@ -2980,14 +2908,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character[$lastResult + 2] -= 1;
       WriteLog(CardLink($parameter, $parameter) . " removed a counter from " . CardLink($character[$lastResult], $character[$lastResult]) . ".");
       return $lastResult;
-    case "FLASHFREEZEDOMINATE":
+    case "ADDIMMEDIATECURRENTEFFECT":
       AddCurrentTurnEffect($parameter, $player, "PLAY");
       return "1";
     case "ADDCURRENTEFFECT":
       AddCurrentTurnEffect($parameter, $player);
-      return "1";
-    case "REMOVECURRENTEFFECT":
-      RemoveCurrentEffect($player, $parameter);
       return "1";
     case "ADDCURRENTANDNEXTTURNEFFECT":
       AddCurrentTurnEffect($parameter, $player);

@@ -260,4 +260,65 @@ function EffectHitEffect($cardID)
   return 0;
 }
 
+function EffectAttackModifier($cardID)
+{
+  $set = CardSet($cardID);
+  if ($set == "WTR") return WTREffectAttackModifier($cardID);
+  else if ($set == "ARC") return ARCEffectAttackModifier($cardID);
+  else if ($set == "CRU") return CRUEffectAttackModifier($cardID);
+  else if ($set == "MON") return MONEffectAttackModifier($cardID);
+  else if ($set == "ELE") return ELEEffectAttackModifier($cardID);
+  else if ($set == "EVR") return EVREffectAttackModifier($cardID);
+  else if ($set == "DVR") return DVREffectAttackModifier($cardID);
+  else if ($set == "RVD") return RVDEffectAttackModifier($cardID);
+  else if ($set == "UPR") return UPREffectAttackModifier($cardID);
+  else if ($set == "DYN") return DYNEffectAttackModifier($cardID);
+  else if ($set == "OUT") return OUTEffectAttackModifier($cardID);
+  return 0;
+}
+
+function EffectHasBlockModifier($cardID)
+{
+  switch($cardID)
+  {
+    case "MON089":
+    case "ELE000-2":
+    case "ELE143":
+    case "ELE203":
+    case "DYN115": case "DYN116":
+    case "OUT005": case "OUT006":
+    case "OUT007": case "OUT008":
+    case "OUT009": case "OUT010":
+    case "OUT109":
+    case "OUT110":
+    case "OUT111":
+    return true;
+    default: return false;
+  }
+}
+
+function EffectBlockModifier($cardID, $index)
+{
+  global $combatChain, $defPlayer, $mainPlayer;
+  switch($cardID) {
+    case "MON089":
+      if($combatChain[$index] == $cardID) return 1;
+      return 0;
+    case "ELE000-2":
+      return 1;
+    case "ELE143":
+      return 1;
+    case "ELE203":
+      return ($combatChain[$index] == "ELE203" ? 1 : 0);
+    case "OUT109":
+      return (PitchValue($combatChain[$index]) == 1 && SearchCurrentTurnEffects("AIM", $mainPlayer) ? -1 : 0);
+    case "OUT110":
+      return (PitchValue($combatChain[$index]) == 2 && SearchCurrentTurnEffects("AIM", $mainPlayer) ? -1 : 0);
+    case "OUT111":
+      return (PitchValue($combatChain[$index]) == 3 && SearchCurrentTurnEffects("AIM", $mainPlayer) ? -1 : 0);
+    default:
+      return 0;
+  }
+}
+
 ?>
