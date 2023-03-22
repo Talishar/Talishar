@@ -128,7 +128,7 @@ function EncounterDescription()
     case 201: return "You found a battlefield. Choose what you want to do.";
     case 202: return "You found a library. Choose what you want to do.";
     case 203: return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
-    case 204: return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor.";
+    case 204: return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor. You can use this as an opportunity to practice some of the limited blacksmithing skills you have, or you can commission a piece from the Giant.";
     case 205: return "You enter a temple. There is an altar that reads, \"Offer of yourself and receive a bountiful blessing.\"";
     case 206:
       $health = &GetZone(1, "Health");
@@ -222,7 +222,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("VOLTHAVEN", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
-    case 204: //TODO: Integrate with CardRewardPools.php
+    case 204:
       AddDecisionQueue("BUTTONINPUT", $player, "Spend_some_time_forging_equipment_for_yourself,Ask_the_blacksmith_to_make_you_a_piece_of_equipment,Leave");
       AddDecisionQueue("BLACKSMITH", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
