@@ -154,10 +154,7 @@ function ArcaneHitEffect($player, $source, $target, $damage)
       break;
   }
 
-  if($damage > 0 && SearchCurrentTurnEffects("UPR125", $player) && CardType($source) != "W") {
-    AddDecisionQueue("DESTROYFROZENARSENAL", MZPlayerID($player, $target), "-");
-    SearchCurrentTurnEffects("UPR125", $player, true);
-  }
+  if($damage > 0 && CardType($source) != "W" && SearchCurrentTurnEffects("UPR125", $player, true)) AddDecisionQueue("OP", MZPlayerID($player, $target), "DESTROYFROZENARSENAL");
 
   if(HasSurge($source) && $damage > ArcaneDamage($source)) {
     ProcessSurge($source, $player, $target);
@@ -3227,6 +3224,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default: break;
       }
       return $lastResult;
+    case "OP":
+      switch($parameter)
+      {
+        case "DESTROYFROZENARSENAL":
+          DestroyFrozenArsenal($player);
+          return "";
+        default: return $lastResult;
+      }
     case "PASSPARAMETER":
       return $parameter;
     case "DISCARDMYHAND":
@@ -4928,9 +4933,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
       }
       return "";
-      case "DESTROYFROZENARSENAL":
-        DestroyFrozenArsenal($player);
-        return "";
       case "SPECIFICCARD":
         return SpecificCardLogic($player, $parameter, $lastResult);
     case "MZADDSTEAMCOUNTER":
