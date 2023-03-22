@@ -313,25 +313,15 @@ function EffectHitEffect($cardID)
       if (IsHeroAttackTarget()) {
         $hand = &GetHand($defPlayer);
         $cards = "";
-        if (!empty($hand)) // Discard 1st card at random
+        for($i=0; $i<2 && count($hand) > 0; ++$i)
         {
-          $ind = GetRandom() % count($hand);
-          $card1 = $hand[$ind];
-          unset($hand[$ind]);
+          $index = GetRandom() % count($hand);
+          if($cards != "") $cards .= ",";
+          $cards .= $hand[$index];
+          unset($hand[$index]);
           $hand = array_values($hand);
         }
-        if (!empty($hand)) // Discard 2nd card at random
-        {
-          $ind = GetRandom() % count($hand);
-          $card2 = $hand[$ind];
-          unset($hand[$ind]);
-          $hand = array_values($hand);
-        }
-        if ($card1 != "") $cards .= $card1;
-        if ($card2 != "") $cards .= "," . $card2;
-        if ($cards != "") {
-          AddDecisionQueue("CHOOSEBOTTOM", $defPlayer, $cards);
-        }
+        if($cards != "") AddDecisionQueue("CHOOSEBOTTOM", $defPlayer, $cards);
       }
       break;
     case "ELE019": case "ELE020": case "ELE021":
@@ -414,7 +404,6 @@ function EffectHitEffect($cardID)
     case "ELE215":
       if (IsHeroAttackTarget()) {
         AddNextTurnEffect($cardID . "-1", $defPlayer);
-        AddCurrentTurnEffectFromCombat("ELE215", $defPlayer); //Doesn't do anything just show it in the effects
       }
       break;
     case "EVR047-1": case "EVR048-1": case "EVR049-1":

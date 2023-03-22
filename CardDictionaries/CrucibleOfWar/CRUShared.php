@@ -599,7 +599,6 @@ function CRUHitEffect($cardID)
       break;
     case "CRU132": case "CRU133": case "CRU134":
       if (IsHeroAttackTarget()) {
-        AddCurrentTurnEffectFromCombat($cardID, $defPlayer);
         $char = &GetPlayerCharacter($defPlayer);
         $char[1] = 3;
       }

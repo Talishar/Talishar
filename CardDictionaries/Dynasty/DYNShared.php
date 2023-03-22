@@ -866,7 +866,6 @@ function DYNHitEffect($cardID)
     case "DYN154":
       if (SearchCurrentTurnEffects("AIM", $mainPlayer) && IsHeroAttackTarget()) {
         AddNextTurnEffect($cardID, $defPlayer);
-        AddCurrentTurnEffectFromCombat($cardID . "-1", $defPlayer); //Doesn't do anything just show it in the effects
       }
       break;
     case "DYN156": case "DYN157": case "DYN158":
