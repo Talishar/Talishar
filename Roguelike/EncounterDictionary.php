@@ -346,4 +346,11 @@ function EncounterImage()
     default: return "CRU054_cropped.png";
   }
 }
+
+function EncounterChoiceHeader(){
+  $encounter = &GetZone(1, "Encounter");
+  switch($encounter[0]){
+    default: return "";
+  }
+}
 ?>

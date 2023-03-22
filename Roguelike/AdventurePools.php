@@ -110,7 +110,7 @@ function GetCrossroadsDescription()
             case 3: return "Ahead of you lies a fallen tree. It likely did not fall naturally. What would you like to do?";
             case 5: return "You find yourself in a small town. Something about this town feels unnatural. It unsettles you. What would you like to do?";
             case 7: case 16: return "Your route takes you to a trade settlement. There are merchants here that have taken residence while they can turn a profit, and other residents passing through.";
-            case 8: return "Off to the side of the road is a small cave. You hear a roar echo from inside. Perhaps there's some gold inside, it's certainly worth checking out.";
+            case 8: return "Off to the side of the road is a small cave. You hear a roar echo from inside. In your experience, caves like this typically hold hidden treasures, so it's certainly worth checking out.";
             case 9: return "With the great beast felled, you turn to the pile of treasures within the cave.";
             case 10: return "You come upon a great river. It's too wide to cross on your own. What would you like to do?";
             case 12: return "Before you lies the mountains of Misteria, and within them your goal. Where would you like to go?";

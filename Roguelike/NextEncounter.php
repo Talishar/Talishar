@@ -119,7 +119,10 @@ $cardIconTop = intval($cardSize / 4.2); //30
     }
     case "BUTTONINPUT":
     {
-      $encounterContent = "<div display:inline;'>";
+      $headerContent = EncounterChoiceHeader();
+      WriteLog("BUTTONINPUT seen");
+      $encounterContent .= "<h2>$headerContent</h2>";
+      $encounterContent .= "<div style='display:inline;'>";
       $options = explode(",", $myDQ[1]);
       for ($i = 0; $i < count($options); ++$i) {
         $encounterContent .= CreateButton($playerID, str_replace("_", " ", $options[$i]), 2, strval($options[$i]), "24px");
