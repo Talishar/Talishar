@@ -41,7 +41,7 @@ function GetNextEncounter() //TODO overhaul this whole function and children
             case 4: return RandomEvent();
             case 5: return CrossroadsDoubleChoice("Ignore_your_instincts_and_stop_for_the_night,Stay_very_briefly_to_stock_up,Leave_the_town_immediately");//combat choice of X, Y, and Z
             case 6: return RandomEvent();
-            case 7: return "Go_towards_the_smoke_rising_in_the_distance,Follow_the_sounds_of_laughter"; //Campfire or a shop
+            case 7: return "Follow_the_sounds_of_laughter"; //Campfire or a shop
             case 8: return "Explore_the_cave"; //Elite
             case 9: return "Search_through_the_treasures"; //Get a power
             case 10: return CrossroadsDoubleChoice("Attempt_to_cross_the_river_here,Travel_downstream_to_find_a_bridge,Travel_upstream_to_the_nearest_town");//combat choice of X, Y, and Z
@@ -50,7 +50,7 @@ function GetNextEncounter() //TODO overhaul this whole function and children
             case 13: return RandomEvent();
             case 14: return CrossroadsDoubleChoice("Use_the_cover_of_darkness_to_cross,Take_precaution_and_find_a_different_way_across,Brave_the_bridge");//combat choice of X, Y, and Z
             case 15: return RandomEvent();
-            case 16: return "Go_towards_the_smoke_rising_in_the_distance,Follow_the_sounds_of_laughter"; //Campfire or a shop
+            case 16: return "Follow_the_sounds_of_laughter"; //Campfire or a shop
             case 17: return "Approach_your_destination"; //Boss
             case 18: return "Return_to_menu";
           }
@@ -60,10 +60,15 @@ function GetNextEncounter() //TODO overhaul this whole function and children
 
 function RandomEvent()
 {
+  $devTestEvents = array(); //Put events in here to test them. They will be the only ones to show up. Make sure you put at least 2 options
   $commonEvents = array("You_come_across_some_interesting_ruins", "You_find_a_great_library");
   $rareEvents = array("You_see_a_small_temple_a_ways_from_the_path", "A_wandering_trader_approaches_you");
   $majesticEvents = array("You_come_across_some_interesting_ruins", "You_find_a_great_library", "You_see_a_small_temple_a_ways_from_the_path");
   $randEvent = rand(1,100);
+  if(count($devTestEvents) >= 2 ){
+    $options = GetOptions(2, count($devTestEvents)-1);
+    return $devTestEvents[$options[0]].",".$devTestEvents[$options[1]];
+  }
   if($randEvent > 90)
   {
     $options = GetOptions(2, count($majesticEvents)-1);
@@ -104,7 +109,7 @@ function GetCrossroadsDescription()
             case 1: return "Your destination lies beyond the Pits. How would you like to leave?";
             case 3: return "Ahead of you lies a fallen tree. It likely did not fall naturally. What would you like to do?";
             case 5: return "You find yourself in a small town. Something about this town feels unnatural. It unsettles you. What would you like to do?";
-            case 7: case 16: return "You come to a crossroads. In one direction, you see smoke rising in the distance. In the other, you hear the distant sounds of laughter. Which way would you like to go?";
+            case 7: case 16: return "Your route takes you to a trade settlement. There are merchants here that have taken residence while they can turn a profit, and other residents passing through.";
             case 8: return "Off to the side of the road is a small cave. You hear a roar echo from inside. Perhaps there's some gold inside, it's certainly worth checking out.";
             case 9: return "With the great beast felled, you turn to the pile of treasures within the cave.";
             case 10: return "You come upon a great river. It's too wide to cross on your own. What would you like to do?";

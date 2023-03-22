@@ -17,20 +17,38 @@ encounter[11] = cost to heal at the shop
 encounter[12] = cost to remove card at the shop
 */
 
-
-function GetPool($type, $hero, $rarity, $background){
+//For Maindeck cards, $tag1 and $tag2 can be any tag that you want to use to filter results. For equipment, set $tag1 according to note below
+function GetPool($type, $hero, $rarity, $background, $tag1="", $tag2 = "",){
   if(($hero == "Bravo" || $hero == "Dorinthea") && $type == "Talent") $type = "Class";
 
-  if($type == "Class") return GetPoolClass(array($type, $rarity, $background));
+  if($type == "Class") return GetPoolClass(array($rarity, $background));
   else if($type == "Generic") return GetPoolGeneric(array($rarity));
   else if($type == "Talent") return GetPoolTalent(array($type, $rarity, $background));
   else if($type == "Equipment") {
-    switch($rarity){
-      case "Common": case "Legendary": return GetPoolEquipment(array($rarity));
-      case "-": default: return GetPoolEquipment(array());
+    //Okay, this is a little weird, but to call for equipment, set $type to be "Equipment", and $tag1 to be either "Generic", "All", or "Hero". Default is "All". 
+    if($rarity == "-"){
+      return GetPoolLogicEquipment($tag1, $hero, array($tag2));
+    }
+    else {
+      return GetPoolLogicEquipment($tag1, $hero, array($rarity, $tag2));
     }
   }
-  else return ("WTR224"); //Cracked Bauble as a default, but we shouldn't see this
+}
+
+//See GetPool() for logic. $type would be 
+function GetPoolLogicEquipment($tag1, $hero, $tags){
+  if($tag1 == "Hero"){
+    array_push($tags, $hero);
+    return GetPoolEquipment($tags);
+  }
+  else if($tag1 == "Generic"){
+    array_push($tags, "Generic");
+    return GetPoolEquipment($tags);
+  }
+  else { // "All" mode as default. Can return generic and class cards with the given tags. 
+    return array_merge(GetPoolLogicEquipment("Hero", $hero, $tags), GetPoolLogicEquipment("Generic", $hero, $tags));
+  }
+
 }
 
 //Called at DecisionQueue.php at Backgrounds event
@@ -72,6 +90,17 @@ function GetPoolClass($arrayParameters){
     array("WTR073", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
     array("WTR074", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
 
+    array("WTR082", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Ancestral Empowerment
+    array("WTR098", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Head Jab
+    array("WTR099", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("WTR100", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("WTR101", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Leg Tap
+    array("WTR102", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("WTR103", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("WTR107", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Surging Strike
+    array("WTR108", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("WTR109", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+
     array("WTR118", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
     array("WTR119", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
     array("WTR120", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //120-122 are Supers. I'm putting them in the majestic queue
@@ -105,6 +134,21 @@ function GetPoolClass($arrayParameters){
     array("WTR148", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
     array("WTR149", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
 
+    array("ARC044", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Three of a Kind
+    array("ARC045", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Endless Arrow
+    array("ARC048", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Take Cover
+    array("ARC049", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC050", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC054", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Take Aim
+    array("ARC055", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC056", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC060", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Hamstring Shot
+    array("ARC061", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC062", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC069", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Searing Shot
+    array("ARC070", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC071", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+
     array("CRU026", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Mangle
     array("CRU027", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Righteous Cleansing
     array("CRU028", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Stamp Authority
@@ -124,6 +168,18 @@ function GetPoolClass($arrayParameters){
     array("CRU042", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
     array("CRU043", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
 
+    array("CRU063", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Flying Kick
+    array("CRU064", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("CRU065", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("CRU066", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Soulbead Strike
+    array("CRU067", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("CRU068", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("CRU069", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Torrent of Tempo
+    array("CRU070", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("CRU071", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("CRU072", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Bittering Thorns
+    array("CRU073", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Salt the Wound
+
     array("CRU082", "Class", "Majestic", "Saber", "Dawnblade"), //Twinning Blade - Only Swords
     array("CRU083", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Unified Decree
     array("CRU084", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Spoils of War
@@ -138,6 +194,12 @@ function GetPoolClass($arrayParameters){
     array("CRU095", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
     array("CRU096", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
 
+    array("CRU123", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Remorseless
+    array("CRU124", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Poison the Tips
+    array("CRU132", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Sleep Dart
+    array("CRU133", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("CRU134", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+
     array("MON109", "Class", "Majestic", "Hatchet", "Battleaxe"), //Spill Blood - Only Axes
     array("MON110", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Dusk Path Pilgrimage
     array("MON111", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
@@ -148,98 +210,6 @@ function GetPoolClass($arrayParameters){
     array("MON116", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Second Swing
     array("MON117", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
     array("MON118", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-
-    array("ELE205", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Tear Asunder
-    array("ELE206", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Embolden
-    array("ELE207", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
-    array("ELE208", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
-    //ELE209 - Thump - Can the AI handle this? I haven't tested it yet. TODO Test it
-
-    array("EVR021", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"),
-    array("EVR022", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"),
-    //EVR023 Nerves of Steel - I think this one is situational enough that we can omit it for now
-    array("EVR024", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Thunder Quake
-    array("EVR025", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
-    array("EVR026", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
-    array("EVR027", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Macho Grande
-    array("EVR028", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
-    array("EVR029", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
-    array("EVR030", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Seismic Stir
-    array("EVR031", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
-    array("EVR032", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
-    array("EVR033", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Steadfast
-    array("EVR034", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
-    array("EVR035", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
-    array("EVR054", "Class", "Majestic", "Dawnblade", "Battleaxe"), //Shatter
-    //EVR055 Blood on Her Hands - Not playable in any of our heroes
-    array("EVR056", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Oath of Steel
-    array("EVR057", "Class", "Rare", "Saber", "Dawnblade"), //Slice and Dice - Sword / Dagger only
-    array("EVR058", "Class", "Rare", "Saber", "Dawnblade"),
-    array("EVR059", "Class", "Rare", "Saber", "Dawnblade"),
-    array("EVR060", "Class", "Common", "Saber", "Hatchet"), //Blade Runner - 1H weapon
-    array("EVR061", "Class", "Common", "Saber", "Hatchet"),
-    array("EVR062", "Class", "Common", "Saber", "Hatchet"),
-    array("EVR063", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //In the Swing
-    array("EVR064", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("EVR065", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("EVR066", "Class", "Common", "Saber", "Hatchet"), //Outland Skirmish - 1H weapon
-    array("EVR067", "Class", "Common", "Saber", "Hatchet"),
-    array("EVR068", "Class", "Common", "Saber", "Hatchet"),
-
-    array("DYN028", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Buckle
-    array("DYN029", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Never Yield
-    array("DYN030", "Class", "Rare", "TitanFist"), //Shield Bash - Limited to Titanfist for off-hand synergy
-    array("DYN031", "Class", "Rare", "TitanFist"),
-    array("DYN032", "Class", "Rare", "TitanFist"),
-    array("DYN033", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Blessing of Patience
-    array("DYN034", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
-    array("DYN035", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
-    array("DYN036", "Class", "Rare", "TitanFist"), //Shield Wall - Limited to Titanfist for off-hand synergy, this one honestly could be in all pools but I chose to limit for now
-    array("DYN037", "Class", "Rare", "TitanFist"),
-    array("DYN038", "Class", "Rare", "TitanFist"),
-    array("DYN039", "Class", "Rare", "TitanFist"), //Reinforce Steel - Limited to Titanfist for off-hand synergy
-    array("DYN040", "Class", "Rare", "TitanFist"),
-    array("DYN041", "Class", "Rare", "TitanFist"),
-    array("DYN042", "Class", "Rare", "TitanFist"), //Withstand - Limited to Titanfist for off-hand synergy
-    array("DYN043", "Class", "Rare", "TitanFist"),
-    array("DYN044", "Class", "Rare", "TitanFist"),
-
-    array("DYN071", "Class", "Majestic", "Hatchet", "Battleaxe"), //Cleave - Since there aren't any Ally cards yet, I could see omitting this, but the buff is still playable so I'm keeping it
-    array("DYN072", "Class", "Majestic", "Hatchet", "Battleaxe"),
-    array("DYN073", "Class", "Rare", "Hatchet", "Battleaxe"), //Blessing of Steel
-    array("DYN074", "Class", "Rare", "Hatchet", "Battleaxe"),
-    array("DYN075", "Class", "Rare", "Hatchet", "Battleaxe"),
-    array("DYN076", "Class", "Rare", "Hatchet", "Battleaxe"), //Precision Press
-    array("DYN077", "Class", "Rare", "Hatchet", "Battleaxe"),
-    array("DYN078", "Class", "Rare", "Hatchet", "Battleaxe"),
-    array("DYN079", "Class", "Common", "Saber", "Dawnblade"), //Puncture - Swords/Dagger only
-    array("DYN080", "Class", "Common", "Saber", "Dawnblade"),
-    array("DYN081", "Class", "Common", "Saber", "Dawnblade"),
-    array("DYN082", "Class", "Common", "Hatchet", "Battleaxe"), //Felling Swing
-    array("DYN083", "Class", "Common", "Hatchet", "Battleaxe"),
-    array("DYN084", "Class", "Common", "Hatchet", "Battleaxe"),
-    //DYN085-087 Visit the Imperial Forge - I've decided to omit these, since armor isn't hugely relevant right now and I don't know how the AI can handle piercing. It feels like this card would only be good in an exploitative manner
-
-    array("ARC044", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Three of a Kind
-    array("ARC045", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Endless Arrow
-    array("ARC048", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Take Cover
-    array("ARC049", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ARC050", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ARC054", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Take Aim
-    array("ARC055", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ARC056", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ARC060", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Hamstring Shot
-    array("ARC061", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ARC062", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ARC069", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Searing Shot
-    array("ARC070", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ARC071", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-
-    array("CRU123", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Remorseless
-    array("CRU124", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Poison the Tips
-    array("CRU132", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Sleep Dart
-    array("CRU133", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("CRU134", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
 
     array("ELE035", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Frost Lock
     array("ELE036", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Light it Up
@@ -268,6 +238,13 @@ function GetPoolClass($arrayParameters){
     array("ELE059", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Frazzle
     array("ELE060", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
     array("ELE061", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+
+    array("ELE205", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Tear Asunder
+    array("ELE206", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Embolden
+    array("ELE207", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("ELE208", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    //ELE209 - Thump - Can the AI handle this? I haven't tested it yet. TODO Test it
+
     array("ELE215", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Seek and Destroy
     array("ELE216", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Bolt'n' Shot
     array("ELE217", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
@@ -275,6 +252,49 @@ function GetPoolClass($arrayParameters){
     array("ELE219", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Over Flex
     array("ELE220", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
     array("ELE221", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+
+
+    array("EVR021", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"),
+    array("EVR022", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"),
+    //EVR023 Nerves of Steel - I think this one is situational enough that we can omit it for now
+    array("EVR024", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Thunder Quake
+    array("EVR025", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("EVR026", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("EVR027", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Macho Grande
+    array("EVR028", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("EVR029", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("EVR030", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Seismic Stir
+    array("EVR031", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("EVR032", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("EVR033", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Steadfast
+    array("EVR034", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("EVR035", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+
+    array("EVR041", "Class", "Rare", "Emberblade", "Kodachi", "Edge"), //Hundred Winds
+    array("EVR042", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+    array("EVR043", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+    array("EVR044", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Ride the Tailwind
+    array("EVR045", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("EVR046", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("EVR047", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Twin Twisters
+    array("EVR048", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+    array("EVR049", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+
+    array("EVR054", "Class", "Majestic", "Dawnblade", "Battleaxe"), //Shatter
+    //EVR055 Blood on Her Hands - Not playable in any of our heroes
+    array("EVR056", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Oath of Steel
+    array("EVR057", "Class", "Rare", "Saber", "Dawnblade"), //Slice and Dice - Sword / Dagger only
+    array("EVR058", "Class", "Rare", "Saber", "Dawnblade"),
+    array("EVR059", "Class", "Rare", "Saber", "Dawnblade"),
+    array("EVR060", "Class", "Common", "Saber", "Hatchet"), //Blade Runner - 1H weapon
+    array("EVR061", "Class", "Common", "Saber", "Hatchet"),
+    array("EVR062", "Class", "Common", "Saber", "Hatchet"),
+    array("EVR063", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //In the Swing
+    array("EVR064", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("EVR065", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("EVR066", "Class", "Common", "Saber", "Hatchet"), //Outland Skirmish - 1H weapon
+    array("EVR067", "Class", "Common", "Saber", "Hatchet"),
+    array("EVR068", "Class", "Common", "Saber", "Hatchet"),
 
     array("EVR090", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Rain Razors
     array("EVR091", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Release the Tension - might be worth ommiting due to the AI not being able to play DRs, but it's still a buff, so it stays for now
@@ -286,41 +306,6 @@ function GetPoolClass($arrayParameters){
     array("EVR100", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Read the Glide Path
     array("EVR101", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
     array("EVR102", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-
-    array("DYN153", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //only Heat Seeker. No way to gain aim counters yet. Might reevaluate if we make an aim centric power.
-
-    array("WTR082", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Ancestral Empowerment
-    array("WTR098", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Head Jab
-    array("WTR099", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("WTR100", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("WTR101", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Leg Tap
-    array("WTR102", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("WTR103", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("WTR107", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Surging Strike
-    array("WTR108", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("WTR109", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-
-    array("CRU063", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Flying Kick
-    array("CRU064", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("CRU065", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("CRU066", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Soulbead Strike
-    array("CRU067", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("CRU068", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("CRU069", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Torrent of Tempo
-    array("CRU070", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("CRU071", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("CRU072", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Bittering Thorns
-    array("CRU073", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Salt the Wound
-
-    array("EVR041", "Class", "Rare", "Emberblade", "Kodachi", "Edge"), //Hundred Winds
-    array("EVR042", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
-    array("EVR043", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
-    array("EVR044", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Ride the Tailwind
-    array("EVR045", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("EVR046", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("EVR047", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Twin Twisters
-    array("EVR048", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("EVR049", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
 
     array("UPR048", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Phoenix Form
     array("UPR049", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Searing Emberblade
@@ -346,7 +331,7 @@ function GetPoolClass($arrayParameters){
     array("UPR069", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Lava Vein Loyalty
     array("UPR070", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
     array("UPR071", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
-    array("UPR072", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Rebelious Rush
+    array("UPR072", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Rebellious Rush
     array("UPR073", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
     array("UPR074", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
     array("UPR075", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Rising Resentment
@@ -358,11 +343,30 @@ function GetPoolClass($arrayParameters){
     array("UPR081", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Soaring Strike
     array("UPR082", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
     array("UPR083", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
+
     array("UPR160", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Double Strike
     array("UPR161", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Take the Tempo
     array("UPR162", "Class", "Rare", "Emberblade", "Kodachi", "Edge"), //Rapid Reflex
     array("UPR163", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
     array("UPR164", "Class", "Rare", "Emberblade", "Kodachi", "Edge"),
+
+    array("DYN028", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Buckle
+    array("DYN029", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Never Yield
+    array("DYN030", "Class", "Rare", "TitanFist"), //Shield Bash - Limited to Titanfist for off-hand synergy
+    array("DYN031", "Class", "Rare", "TitanFist"),
+    array("DYN032", "Class", "Rare", "TitanFist"),
+    array("DYN033", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Blessing of Patience
+    array("DYN034", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("DYN035", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
+    array("DYN036", "Class", "Rare", "TitanFist"), //Shield Wall - Limited to Titanfist for off-hand synergy, this one honestly could be in all pools but I chose to limit for now
+    array("DYN037", "Class", "Rare", "TitanFist"),
+    array("DYN038", "Class", "Rare", "TitanFist"),
+    array("DYN039", "Class", "Rare", "TitanFist"), //Reinforce Steel - Limited to Titanfist for off-hand synergy
+    array("DYN040", "Class", "Rare", "TitanFist"),
+    array("DYN041", "Class", "Rare", "TitanFist"),
+    array("DYN042", "Class", "Rare", "TitanFist"), //Withstand - Limited to Titanfist for off-hand synergy
+    array("DYN043", "Class", "Rare", "TitanFist"),
+    array("DYN044", "Class", "Rare", "TitanFist"),
 
     array("DYN047", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Tiger Swipe
     array("DYN048", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Mindstate of the Tiger
@@ -377,6 +381,23 @@ function GetPoolClass($arrayParameters){
     array("DYN063", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
     array("DYN064", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
 
+    array("DYN071", "Class", "Majestic", "Hatchet", "Battleaxe"), //Cleave - Since there aren't any Ally cards yet, I could see omitting this, but the buff is still playable so I'm keeping it
+    array("DYN072", "Class", "Majestic"), //Ironsong Ride - Limited to sword backgrounds
+    array("DYN073", "Class", "Rare", "Hatchet", "Battleaxe"), //Blessing of Steel
+    array("DYN074", "Class", "Rare", "Hatchet", "Battleaxe"),
+    array("DYN075", "Class", "Rare", "Hatchet", "Battleaxe"),
+    array("DYN076", "Class", "Rare", "Hatchet", "Battleaxe"), //Precision Press
+    array("DYN077", "Class", "Rare", "Hatchet", "Battleaxe"),
+    array("DYN078", "Class", "Rare", "Hatchet", "Battleaxe"),
+    array("DYN079", "Class", "Common", "Saber", "Dawnblade"), //Puncture - Swords/Dagger only
+    array("DYN080", "Class", "Common", "Saber", "Dawnblade"),
+    array("DYN081", "Class", "Common", "Saber", "Dawnblade"),
+    array("DYN082", "Class", "Common", "Hatchet", "Battleaxe"), //Felling Swing
+    array("DYN083", "Class", "Common", "Hatchet", "Battleaxe"),
+    array("DYN084", "Class", "Common", "Hatchet", "Battleaxe"),
+    //DYN085-087 Visit the Imperial Forge - I've decided to omit these, since armor isn't hugely relevant right now and I don't know how the AI can handle piercing. It feels like this card would only be good in an exploitative manner
+
+    array("DYN153", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //only Heat Seeker. No way to gain aim counters yet. Might reevaluate if we make an aim centric power.
   );
 
   return ProcessPool($CardRewardPool, $arrayParameters);
@@ -760,51 +781,89 @@ function GetPoolTalent($arrayParameters){
   return ProcessPool($CardRewardPool, $arrayParameters);
 }
 
+//TODO: Add slot (head, chest etc)
 function GetPoolEquipment($arrayParameters){
   $CardRewardPool = array(
-  array("WTR150", "Generic", "Legendary"), //Fyendal's Spring Tunic
-  array("WTR151", "Generic", "Common"), //Hope Merchant's Hood
-  array("WTR152", "Generic", "Common"), //Heartened Cross Strap
+  array("WTR041", "Bravo", "Legendary", "Chest"), //Tectonic Plating
+  array("WTR042", "Bravo", "Legendary", "Head"), //Helm of Isen's Peak
+  array("WTR079", "Fai", "Legendary", "Head"), //Mask of Momentum
+  array("WTR080", "Fai", "Common", "Legs"), //Breaking Scales
+  array("WTR116", "Dorinthea", "Legendary", "Arms"), //Braveforge Bracers
+  array("WTR117", "Dorinthea", "Common", "Legs"), //Refraction Bolters
+  array("WTR150", "Generic", "Legendary", "Chest"), //Fyendal's Spring Tunic
+  array("WTR151", "Generic", "Common", "Head"), //Hope Merchant's Hood
+  array("WTR152", "Generic", "Common", "Chest"), //Heartened Cross Strap
   array("WTR153", "Generic", "Common"), //Goliath Gauntlet
-  array("WTR154", "Generic", "Common"), //Snapdragon Scalers
-  array("WTR155", "Generic", "Common"), //Ironrot Helm
-  //array("WTR156", "Generic", "Common"), //Ironrot Chest - Omitted due to being included in universal equipment
-  array("WTR157", "Generic", "Common"), 
-  array("WTR158", "Generic", "Common"), 
+  array("WTR154", "Generic", "Common", "Legs"), //Snapdragon Scalers
+  array("WTR155", "Generic", "Common", "Head"), //Ironrot Helm
+  //array("WTR156", "Generic", "Common", "Chest"), //Ironrot Chest - Omitted due to being included in universal equipment
+  array("WTR157", "Generic", "Common", "Arms"), //Ironrot Gauntlets
+  array("WTR158", "Generic", "Common", "Legs"), //Ironrot Boots
 
-  array("ARC150", "Generic", "Legendary"), //Arcanite Skullcap
-  array("ARC151", "Generic", "Common"), //Talismanic Lens
-  array("ARC152", "Generic", "Common"), //Vest of the First Fist
-  array("ARC153", "Generic", "Common"), //Bracers of Belief
-  array("ARC154", "Generic", "Common"), //Mage Master Boots
+  array("ARC041", "Lexi", "Legendary", "Head"), //Skullbone Crosswrap
+  array("ARC042", "Lexi", "Common"), //Bull's Eye Bracers
+  array("ARC150", "Generic", "Legendary", "Head"), //Arcanite Skullcap
+  array("ARC151", "Generic", "Common", "Head"), //Talismanic Lens
+  array("ARC152", "Generic", "Common", "Chest"), //Vest of the First Fist
+  array("ARC153", "Generic", "Common", "Arms"), //Bracers of Belief
+  array("ARC154", "Generic", "Common", "Legs"), //Mage Master Boots
   //ARC155 - 158 Nullrune Boots omitted due to being included in universal equipment
 
+  array("CRU025", "Bravo", "Majestic", "Arms"), //Crater Fist
+  array("CRU053", "Fai", "Majestic", "Legs"), //Breeze Rider Boots
+  array("CRU081", "Dorinthea", "Majestic", "Chest"), //Courage of Bladehold
+  array("CRU122", "Lexi", "Majestic", "Legs"), //Perch Grapplers
   //CRU179 - Omitted due to irrelevance... though there's definitely a world where this is relevant, though maybe not playable. 
 
-  array("MON238", "Generic", "Common"), //Blood Drop Brocade
-  array("MON239", "Generic", "Common"), //Stubby Hammerers
-  array("MON240", "Generic", "Common"), //Time Skippers
-  array("MON241", "Generic", "Common"), //Ironhide Helm
-  array("MON242", "Generic", "Common"), 
-  array("MON243", "Generic", "Common"), 
-  array("MON244", "Generic", "Common"), //Ironhide Boots
+  array("MON107", "Dorinthea", "Legendary", "Legs"), //Valiant Dynamo
+  array("MON108", "Dorinthea", "Common", "Arms"), //Gallantry Gold
+  array("MON238", "Generic", "Common", "Chest"), //Blood Drop Brocade
+  array("MON239", "Generic", "Common", "Arms"), //Stubby Hammerers
+  array("MON240", "Generic", "Common", "Legs"), //Time Skippers
+  array("MON241", "Generic", "Common", "Head"), //Ironhide Helm
+  array("MON242", "Generic", "Common", "Chest"),
+  array("MON243", "Generic", "Common", "Arms"), 
+  array("MON244", "Generic", "Common", "Legs"), //Ironhide Boots
 
-  array("ELE233", "Generic", "Common"), //Ragamuffin's Hat
-  array("ELE234", "Generic", "Common"), //Deep Blue
+  array("ELE144", "Lexi", "Legendary", "Chest"), //Heart of Ice
+  array("ELE145", "Lexi", "Common", "Chest"), //Coat of Frost
+  array("ELE173", "Lexi", "Legendary", "Arms"), //Shock Charmers
+  array("ELE174", "Lexi", "Common", "Arms"), //Mark of Lightning
+  array("ELE203", "Bravo", "Legendary", "Offhand"), //Rampart of the Ram's Head
+  array("ELE204", "Bravo", "Common", "Offhand"), //Rotten Old Buckler
+  array("ELE213", "Lexi", "Legendary", "Head"), //New Horizon
+  array("ELE214", "Lexi", "Common", "Head"), //Honing Hood
+  array("ELE233", "Generic", "Common", "Head"), //Ragamuffin's Hat
+  array("ELE234", "Generic", "Common", "Chest"), //Deep Blue
   array("ELE235", "Generic", "Common"), //Cracker Jax
-  array("ELE236", "Generic", "Common"), //Runaways
+  array("ELE236", "Generic", "Common", "Legs"), //Runaways
 
+  array("EVR020", "Bravo", "Majestic", "Chest"), //Earthlore Bounty
+  array("EVR037", "Fai", "Majestic", "Head"), //Mask of the Pouncing Lynx
+  array("EVR053", "Dorinthea", "Majestic", "Head"), //Helm of Sharp Eye
   //EVR155 - Arcane Lantern (RARE) - omitted for now. I want to be able to tag the diff between Equips that interact with Arcane and those that don't before I implement the arcane ones.
 
-  array("UPR182", "Generic", "Legendary"), //Crown of Providence
-  array("UPR183", "Generic", "Common"), //Heliod's Mitre - Okay, not technically a common, but I'm okay with it going in the common pool if you are *wink*
-  array("UPR184", "Generic", "Common"), //Quelling Robe
-  array("UPR185", "Generic", "Common"), //Quelling Sleeves
-  array("UPR186", "Generic", "Common"), //Quelling Slippers
+  array("UPR047", "Fai", "Common", "Arms"), //Heat Wave
+  array("UPR084", "Fai", "Legendary", "Chest"), //Flamescale Furnace
+  array("UPR085", "Fai", "Common", "Chest"), //Sash of Sandikai
+  array("UPR136", "Lexi", "Legendary", "Head"), //Coronet Peak
+  array("UPR137", "Lexi", "Common", "Head"), //Glacial Horns
+  array("UPR158", "Fai", "Legendary", "Arms"), //Tiger Stripe Shuko
+  array("UPR159", "Fai", "Common", "Legs"), //Tide Flippers
+  array("UPR182", "Generic", "Legendary", "Head"), //Crown of Providence
+  array("UPR183", "Generic", "Common", "Head"), //Heliod's Mitre - Okay, not technically a common, but I'm okay with it going in the common pool if you are *wink*
+  array("UPR184", "Generic", "Common", "Chest"), //Quelling Robe
+  array("UPR185", "Generic", "Common", "Arms"), //Quelling Sleeves
+  array("UPR186", "Generic", "Common", "Legs"), //Quelling Slippers
 
+  array("DYN026", "Bravo", "Majestic", "Offhand"), //Seasoned Saviour
+  array("DYN027", "Bravo", "Rare", "Offhand"), //Steelbraid Buckler
+  array("DYN045", "Fai", "Majestic", "Chest"), //Blazing Yoroi
+  array("DYN046", "Fai", "Rare", "Arms"), //Tearing Shuko
+  array("DYN152", "Lexi", "Rare", "Arms"), //Hornet's Sting
   //DYN236 thru 29 - Spellfray equipment. I do want to put these in the pool, but I'd like to tag them as arcane first and put them in my 2nd draft
-  array("DYN234", "Generic", "Legendary"), //Crown of Dominion
-  array("DYN235", "Generic", "Rare") //Ornate Tessen
+  array("DYN234", "Generic", "Legendary", "Head"), //Crown of Dominion
+  array("DYN235", "Generic", "Rare", "Offhand") //Ornate Tessen
   );
 
   return ProcessPool($CardRewardPool, $arrayParameters);
@@ -812,6 +871,8 @@ function GetPoolEquipment($arrayParameters){
 
 function ProcessPool($CardRewardPool, $arrayOfParameters){
 
+$arrayOfParameters = array_filter($arrayOfParameters);
+$arrayOfParameters = array_values($arrayOfParameters);
 $returnPool = array(); // Create an empty list of cards to be returned
 $sizeParameters = count($arrayOfParameters);
 $paramCheck = new SplFixedArray($sizeParameters); //Create a shadow of the parameters...

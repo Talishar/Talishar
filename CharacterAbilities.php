@@ -146,6 +146,7 @@ function CharacterDealDamageAbilities($player, $damage)
         {
           $char[$indexCounter] = $char[$indexCounter] * 2;
         }
+        break;
       default:
         break;
     }

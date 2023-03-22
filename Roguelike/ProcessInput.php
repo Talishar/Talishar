@@ -170,7 +170,6 @@
           }
           else if($buttonInput == "Leave"){
             WriteLog("You decide to leave the village and carry on with your adventure.");
-            WriteLog("DQ: ".$myDQ[0].$myDQ[1].$myDQ[2].$myDQ[3]);
             ClearPhase(1);
             ContinueDecisionQueue(1, $buttonInput);
           }
