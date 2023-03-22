@@ -106,12 +106,16 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         switch($lastResult)
         {
           case "Loot":
-            WriteLog("You've found some equipment to salvage.");
+            WriteLog("You've found some equipment to salvage, and a gold piece in the pocket of one of the fallen.");
             PrependDecisionQueue("CHOOSECARD", $player, "WTR155");
+            $encounter = &GetZone(1, "Encounter");
+            $encounter[9] += 1;
             break;
           case "Pay_Respects":
-            WriteLog("You've found a new sense of peace and reflection.");
+            WriteLog("You've found a new sense of peace and reflection. You walk away more confident than before. You gain 2 health.");
             PrependDecisionQueue("CHOOSECARD", $player, "WTR163");
+            $health = &GetZone(1, "Health");
+            $health[0] += 2;
             break;
           default: break;
         }
