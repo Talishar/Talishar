@@ -307,7 +307,7 @@ function GetPriority($cardID, $heroID, $type)
           case "MON113": case "CRU085": case "CRU094": $priority = array(2.7, 0.9, 0.9, 0, 0, 0.5, 0.9, 0); return $priority[$type];
           case "MON114": case "CRU086": case "CRU095": $priority = array(2.8, 0.5, 0.9, 0, 0, 1.5, 0.9, 0); return $priority[$type];
           case "WTR122": $priority = array(2.6, ROGUE027IronsongPrio(), ROGUE027IronsongPrio(), 0, 0, 1.4, 0.8, 0); return $priority[$type];
-          case "DYN067": $priority = array(0, 0.7, 0, 0, 0, 0, 0, 0); return $priority[$type];
+          case "DYN070": $priority = array(0, 0.7, 0, 0, 0, 0, 0, 0); return $priority[$type];
           default: return 0;
         }
       case "ROGUE028":
