@@ -61,9 +61,9 @@ function GetNextEncounter() //TODO overhaul this whole function and children
 function RandomEvent()
 {
   $devTestEvents = array(); //Put events in here to test them. They will be the only ones to show up. Make sure you put at least 2 options
-  $commonEvents = array("You_come_across_some_interesting_ruins", "You_find_a_great_library");
+  $commonEvents = array("You_wander_through_a_fresh_battlefield", "You_find_a_great_library");
   $rareEvents = array("You_see_a_small_temple_a_ways_from_the_path", "A_wandering_trader_approaches_you");
-  $majesticEvents = array("You_come_across_some_interesting_ruins", "You_find_a_great_library", "You_see_a_small_temple_a_ways_from_the_path");
+  $majesticEvents = array("You_wander_through_a_fresh_battlefield", "You_find_a_great_library", "You_see_a_small_temple_a_ways_from_the_path");
   $randEvent = rand(1,100);
   if(count($devTestEvents) >= 2 ){
     $options = GetOptions(2, count($devTestEvents)-1);
@@ -106,17 +106,45 @@ function GetCrossroadsDescription()
         case "Hard":
           switch($encounter[2])
           {
-            case 1: return "Your destination lies beyond the Pits. How would you like to leave?";
-            case 3: return "Ahead of you lies a fallen tree. It likely did not fall naturally. What would you like to do?";
-            case 5: return "You find yourself in a small town. Something about this town feels unnatural. It unsettles you. What would you like to do?";
+            case 1: return "Your destination lies beyond the Pits.";
+            case 3: return "Ahead of you lies a fallen tree. It likely did not fall naturally.";
+            case 5: return "You find yourself in a small town. Something about this town feels unnatural. It unsettles you.";
             case 7: case 16: return "Your route takes you to a trade settlement. There are merchants here that have taken residence while they can turn a profit, and other residents passing through.";
-            case 8: return "Off to the side of the road is a small cave. You hear a roar echo from inside. Perhaps there's some gold inside, it's certainly worth checking out.";
+            case 8: return "Off to the side of the road is a small cave. You hear a roar echo from inside. In your experience, caves like this typically hold hidden treasures, so it's certainly worth checking out.";
             case 9: return "With the great beast felled, you turn to the pile of treasures within the cave.";
-            case 10: return "You come upon a great river. It's too wide to cross on your own. What would you like to do?";
-            case 12: return "Before you lies the mountains of Misteria, and within them your goal. Where would you like to go?";
+            case 10: return "You come upon a great river. It's too wide to cross on your own.";
+            case 12: return "Before you lies the mountains of Misteria, and within them your goal.";
             case 14: return "As you travel through the mountains, you come upon a rope bridge connecting the mountains. You can sense the end of your journey is approaching. A hooded figure stands on the bridge, waiting.";
             case 17: return "It seems your journey has come to an end.";
-            default: return "During your journey, something quite interesting happens. What happens?";
+            default: return "During your journey, something quite interesting happens.";
+          }
+      }
+  }
+}
+
+function GetCrossroadsChoiceHeader() {
+  $encounter = &GetZone(1, "Encounter");
+  switch($encounter[4])
+  {
+    case "Ira":
+      switch($encounter[8])
+      {
+        case "Easy":
+        case "Normal":
+        case "Hard":
+          switch($encounter[2])
+          {
+            case 1: return "How would you like to leave?";
+            case 3: return "What would you like to do?";
+            case 5: return "What would you like to do?";
+            case 7: case 16: return "";
+            case 8: return "";
+            case 9: return "";
+            case 10: return "What would you like to do?";
+            case 12: return "Where would you like to go?";
+            case 14: return "What would you like to do?";
+            case 17: return "";
+            default: return "What happens?";
           }
       }
   }

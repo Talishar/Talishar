@@ -106,12 +106,16 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         switch($lastResult)
         {
           case "Loot":
-            WriteLog("You've found some equipment to salvage.");
+            WriteLog("You've found some equipment to salvage, and a gold piece in the pocket of one of the fallen.");
             PrependDecisionQueue("CHOOSECARD", $player, "WTR155");
+            $encounter = &GetZone(1, "Encounter");
+            $encounter[9] += 1;
             break;
           case "Pay_Respects":
-            WriteLog("You've found a new sense of peace and reflection.");
+            WriteLog("You honor the fallen. While their mortal form is gone, their stories live on. You carry their spirit with you. You gain 2 health.");
             PrependDecisionQueue("CHOOSECARD", $player, "WTR163");
+            $health = &GetZone(1, "Health");
+            $health[0] += 2;
             break;
           default: break;
         }
@@ -384,7 +388,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Approach_your_destination":
             PrependDecisionQueue("SETENCOUNTER", $player, "108-BeforeFight");
             break;
-          case "You_come_across_some_interesting_ruins": //battlefield
+          case "You_wander_through_a_fresh_battlefield": //battlefield
             PrependDecisionQueue("SETENCOUNTER", $player, "201-PickMode");
             break;
           case "You_find_a_great_library": //library
@@ -423,9 +427,6 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Turn_back_and_take_the_long_way_around": //Quickshot Apprentice
             PrependDecisionQueue("SETENCOUNTER", $player, "106-BeforeFight");
             break;
-          /*case "You_notice_a_mountain_pass_you_can_move_through": //Rune Scholar
-            PrependDecisionQueue("SETENCOUNTER", $player, "107-BeforeFight");
-            break;*/
           case "Leave_the_town_immediately":
             PrependDecisionQueue("SETENCOUNTER", $player, "118-BeforeFight");
             break;
