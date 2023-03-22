@@ -126,14 +126,6 @@ function ProcessHitEffect($cardID)
   else if ($set == "OUT") return OUTHitEffect($cardID);
 }
 
-function ProcessDealDamageEffect($cardID)
-{
-  $set = CardSet($cardID);
-  if($set == "UPR") {
-    return UPRDealDamageEffect($cardID);
-  }
-}
-
 function ArcaneHitEffect($player, $source, $target, $damage)
 {
   switch($source) {
@@ -164,15 +156,15 @@ function ArcaneHitEffect($player, $source, $target, $damage)
 
   if($damage > 0 && SearchCurrentTurnEffects("UPR125", $player) && CardType($source) != "W") {
     AddDecisionQueue("DESTROYFROZENARSENAL", MZPlayerID($player, $target), "-");
-    SearchCurrentTurnEffects("UPR125", $player, true); // Remove the effect
+    SearchCurrentTurnEffects("UPR125", $player, true);
   }
 
   if(HasSurge($source) && $damage > ArcaneDamage($source)) {
-    DoSurgeEffect($source, $player, $target);
+    ProcessSurge($source, $player, $target);
   }
 }
 
-function DoSurgeEffect($cardID, $player, $target)
+function ProcessSurge($cardID, $player, $target)
 {
   global $mainPlayer;
   $targetPlayer = MZPlayerID($player, $target);
@@ -189,19 +181,19 @@ function DoSurgeEffect($cardID, $player, $target)
       break;
     case "DYN195":
       PlayAura("DYN244", $player);
-      WriteLog(CardLink($cardID, $cardID) . " surge's ability create a " . CardLink("DYN244", "DYN244") . " token.");
+      WriteLog(CardLink($cardID, $cardID) . " created a " . CardLink("DYN244", "DYN244") . " token");
       break;
     case "DYN197": case "DYN198": case "DYN199":
-      if (CurrentEffectPreventsGoAgain() || $player != $mainPlayer) break;
-      WriteLog(CardLink($cardID, $cardID) . " gained go again due to its surge's ability");
+      if(CurrentEffectPreventsGoAgain() || $player != $mainPlayer) break;
       GainActionPoints();
+      WriteLog(CardLink($cardID, $cardID) . " gained go again");
       break;
     case "DYN203": case "DYN204": case "DYN205":
       PlayerOpt($player, 1);
       break;
     case "DYN206": case "DYN207": case "DYN208":
       AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=E;hasEnergyCounters=true");
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose card to remove an energy counter");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Remove an energy counter from a card");
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZGETCARDINDEX", $player, "-", 1);
       AddDecisionQueue("REMOVECOUNTER", $targetPlayer, $cardID, 1);
