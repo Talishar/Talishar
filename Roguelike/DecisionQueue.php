@@ -384,7 +384,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Approach_your_destination":
             PrependDecisionQueue("SETENCOUNTER", $player, "108-BeforeFight");
             break;
-          case "You_come_across_some_interesting_ruins": //battlefield
+          case "You_wander_through_a_fresh_battlefield": //battlefield
             PrependDecisionQueue("SETENCOUNTER", $player, "201-PickMode");
             break;
           case "You_find_a_great_library": //library

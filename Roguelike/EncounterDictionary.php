@@ -127,8 +127,8 @@ function EncounterDescription()
       else if($encounter[1] == "AfterFight") return "The defeated man falls. His eyes do not change, for nothing was ever behind his eyes.";
     case 999: return "This text means something is wrong!"; //Maybe $encounter[1] is set to something weird? Maybe there's a typo?
 
-    case 201: return "You found a battlefield. Choose what you want to do.";
-    case 202: return "You found a library. Choose what you want to do.";
+    case 201: return "There was a battle here recently. There aren't any combatants, but there are bodies littering the ground, still dripping with blood.";
+    case 202: return "You found a library.";
     case 203: return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
     case 204: return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor. You can use this as an opportunity to practice some of the limited blacksmithing skills you have, or you can commission a piece from the Giant.";
     case 205: return "You enter a temple. There is an altar that reads, \"Offer of yourself and receive a bountiful blessing.\"";
@@ -184,9 +184,9 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
       break;
     case 006:
-      //$encounter[2] = 14; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
+      //$encounter[2] = 7; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
-      //AddDecisionQueue("SETENCOUNTER", $player, "125-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
+      //AddDecisionQueue("SETENCOUNTER", $player, "127-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
@@ -203,6 +203,8 @@ function InitializeEncounter($player)
       AddDecisionQueue("CROSSROADS", $player, "-");
       break;
     case 10:
+      $health = &GetZone($player, "HEALTH");
+      if($health < 20) $health = 20;
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
@@ -278,8 +280,6 @@ function EncounterImage()
       return GetCrossroadsImage();
     case 10:
       return "EVR191_cropped.png";
-    case 11:
-      return "DYN002_cropped.png";
 
     case 101:
       return "MON286_cropped.png";
@@ -352,6 +352,39 @@ function EncounterImage()
 function EncounterChoiceHeader(){
   $encounter = &GetZone(1, "Encounter");
   switch($encounter[0]){
+    case 001:
+      return "What will you do?";
+    case 002:
+      return "Choose a hero";
+    case 003:
+      return "Choose a finale";
+    case 004:
+      return "Choose a difficulty";
+    case 005:
+      return "Choose a Background";
+    case 006:
+      return "The man smiles and hands you your reward. You take it before making your way back out in search of your next bounty.";
+    case 007:
+      return "What will you do?";
+    case 8:
+      return "What purchases will you make?";
+    case 9:
+      return GetCrossroadsChoiceHeader();
+
+    case 201:
+      return "What will you do?";
+    case 202:
+      return "What will you do?";
+    case 203:
+      return "";
+    case 204:
+      return "What will you do?";
+    case 205:
+      return "What will you do?";
+    case 206:
+      return "What will you do?";
+    case 208:
+      return "Take the exchange?";
     default: return "";
   }
 }

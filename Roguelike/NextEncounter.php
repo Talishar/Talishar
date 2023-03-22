@@ -120,7 +120,6 @@ $cardIconTop = intval($cardSize / 4.2); //30
     case "BUTTONINPUT":
     {
       $headerContent = EncounterChoiceHeader();
-      WriteLog("BUTTONINPUT seen");
       $encounterContent .= "<h2>$headerContent</h2>";
       $encounterContent .= "<div style='display:inline;'>";
       $options = explode(",", $myDQ[1]);
