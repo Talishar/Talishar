@@ -112,7 +112,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             $encounter[9] += 1;
             break;
           case "Pay_Respects":
-            WriteLog("You've found a new sense of peace and reflection. You walk away more confident than before. You gain 2 health.");
+            WriteLog("You honor the fallen. While their mortal form is gone, their stories live on. You carry their spirit with you. You gain 2 health.");
             PrependDecisionQueue("CHOOSECARD", $player, "WTR163");
             $health = &GetZone(1, "Health");
             $health[0] += 2;
@@ -427,9 +427,6 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Turn_back_and_take_the_long_way_around": //Quickshot Apprentice
             PrependDecisionQueue("SETENCOUNTER", $player, "106-BeforeFight");
             break;
-          /*case "You_notice_a_mountain_pass_you_can_move_through": //Rune Scholar
-            PrependDecisionQueue("SETENCOUNTER", $player, "107-BeforeFight");
-            break;*/
           case "Leave_the_town_immediately":
             PrependDecisionQueue("SETENCOUNTER", $player, "118-BeforeFight");
             break;
