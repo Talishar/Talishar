@@ -198,7 +198,7 @@ function EffectHitEffect($cardID)
       AddDecisionQueue("MZDAMAGE", $mainPlayer, $combatChainState[$CCS_DamageDealt] . ",DAMAGE," . $cardID, 1);
       break;
     case "DYN155":
-      if (IsHeroAttackTarget() && SearchCurrentTurnEffects("AIM", $mainPlayer)) {
+      if (IsHeroAttackTarget() && HasAimCounter()) {
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
@@ -215,7 +215,7 @@ function EffectHitEffect($cardID)
       }
       break;
     case "OUT105":
-      if (IsHeroAttackTarget() && SearchCurrentTurnEffects("AIM", $mainPlayer)) {
+      if (IsHeroAttackTarget() && HasAimCounter()) {
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:minAttack=1;maxAttack=1;type=W");//TODO: Limit to 1H
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a weapon to destroy");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
@@ -311,11 +311,11 @@ function EffectBlockModifier($cardID, $index)
     case "ELE203":
       return ($combatChain[$index] == "ELE203" ? 1 : 0);
     case "OUT109":
-      return (PitchValue($combatChain[$index]) == 1 && SearchCurrentTurnEffects("AIM", $mainPlayer) ? -1 : 0);
+      return (PitchValue($combatChain[$index]) == 1 && HasAimCounter() ? -1 : 0);
     case "OUT110":
-      return (PitchValue($combatChain[$index]) == 2 && SearchCurrentTurnEffects("AIM", $mainPlayer) ? -1 : 0);
+      return (PitchValue($combatChain[$index]) == 2 && HasAimCounter() ? -1 : 0);
     case "OUT111":
-      return (PitchValue($combatChain[$index]) == 3 && SearchCurrentTurnEffects("AIM", $mainPlayer) ? -1 : 0);
+      return (PitchValue($combatChain[$index]) == 3 && HasAimCounter() ? -1 : 0);
     default:
       return 0;
   }

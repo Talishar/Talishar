@@ -398,35 +398,35 @@ function OUTAbilityCost($cardID)
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "OUT115": case "OUT116": case "OUT117":
-        if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+        if(HasAimCounter()) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
         }
         return "";
       case "OUT118": case "OUT119": case "OUT120":
-        if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+        if(HasAimCounter()) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
         }
         return "";
       case "OUT121": case "OUT122": case "OUT123":
-        if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+        if(HasAimCounter()) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Gets +1.";
         }
         return $rv;
       case "OUT124": case "OUT125": case "OUT126":
-        if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+        if(HasAimCounter()) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Gets +1.";
         }
         return $rv;
       case "OUT127": case "OUT128": case "OUT129":
-        if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+        if(HasAimCounter()) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Gets +1.";
         }
         return $rv;
       case "OUT136": case "OUT137": case "OUT138":
-        if(SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+        if(HasAimCounter()) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Gets +1.";
         }
@@ -718,7 +718,7 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT101":
-        if(SearchCurrentTurnEffects("AIM", $mainPlayer)) {
+        if(HasAimCounter()) {
           AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a pitch value", 1);
           AddDecisionQueue("BUTTONINPUT", $mainPlayer, "1,2,3", 1);
           AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);

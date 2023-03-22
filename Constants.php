@@ -542,3 +542,9 @@ function AttackPlayedFrom()
   global $CCS_AttackPlayedFrom, $combatChainState;
   return $combatChainState[$CCS_AttackPlayedFrom];
 }
+
+function HasAimCounter()
+{
+  global $combatChainState, $CCS_HasAimCounter;
+  return $combatChainState[$CCS_HasAimCounter];
+}

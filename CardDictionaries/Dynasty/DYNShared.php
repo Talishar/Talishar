@@ -464,15 +464,13 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Gives your next Arrow attack action card +" . EffectAttackModifier($cardID);
     case "DYN156": case "DYN157": case "DYN158":
-      if (SearchCurrentTurnEffects("AIM", $currentPlayer)){
+      if (HasAimCounter()){
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "has piercing 1.";
       }
       return "";
     case "DYN165": case "DYN166": case "DYN167":
-      if (SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+      if(HasAimCounter()) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "has +2.";
       }
       return "";
     case "DYN168": case "DYN169": case "DYN170":
@@ -864,7 +862,7 @@ function DYNHitEffect($cardID)
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
       break;
     case "DYN154":
-      if (SearchCurrentTurnEffects("AIM", $mainPlayer) && IsHeroAttackTarget()) {
+      if (HasAimCounter() && IsHeroAttackTarget()) {
         AddNextTurnEffect($cardID, $defPlayer);
       }
       break;
@@ -876,7 +874,7 @@ function DYNHitEffect($cardID)
       }
       break;
     case "DYN162": case "DYN163": case "DYN164":
-      if (SearchCurrentTurnEffects("AIM", $mainPlayer) && IsHeroAttackTarget()) {
+      if (HasAimCounter() && IsHeroAttackTarget()) {
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to Destroy", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);

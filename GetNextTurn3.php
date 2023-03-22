@@ -190,8 +190,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Display active chain link
   $activeChainLink = new stdClass();
   $combatChainReactions = array();
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    if ($i == 0) {
+  for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if($i == 0) {
 
       // vars for active chain link: Is there an action?
       $action = $currentPlayer == $playerID &&
@@ -204,7 +204,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $borderColor = $action == 21 ? 1 : null;
 
       $countersMap = new stdClass();
-      if (SearchCurrentTurnEffects("AIM", $mainPlayer) && CardSubType($combatChain[$i]) == "Arrow") $countersMap->aim = 1;
+      if(HasAimCounter()) $countersMap->aim = 1;
 
       $activeChainLink->attackingCard = JSONRenderedCard(
         cardNumber: $combatChain[$i],
