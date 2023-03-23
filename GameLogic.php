@@ -744,16 +744,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIREMOVEMYSOUL":
       for ($i = 0; $i < $lastResult; ++$i) BanishFromSoul($player);
       return $lastResult;
-    case "ADDTHEIRHAND":
-      $oPlayer = ($player == 1 ? 2 : 1);
-      AddPlayerHand($lastResult, $oPlayer, "-");
-      return $lastResult;
-    case "ADDMAINHAND":
-      AddPlayerHand($lastResult, $mainPlayer, "-");
-      return $lastResult;
-    case "ADDMYHAND":
-      AddPlayerHand($lastResult, $currentPlayer, "-");
-      return $lastResult;
     case "ADDHAND":
       AddPlayerHand($lastResult, $player, "-");
       return $lastResult;

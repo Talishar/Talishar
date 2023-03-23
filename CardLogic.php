@@ -844,7 +844,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         {
           AddDecisionQueue("FINDINDICES", $player, "DECKCARD,UPR101");
           AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
-          AddDecisionQueue("ADDMYHAND", $player, "-", 1);
+          AddDecisionQueue("ADDHAND", $player, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
         }
         return "";

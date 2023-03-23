@@ -220,7 +220,7 @@ function WTRAbilityCost($cardID)
       case "WTR009":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("SANDSKETCH", $currentPlayer, "-");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
@@ -272,7 +272,7 @@ function WTRAbilityCost($cardID)
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCLASSAA,GUARDIAN");
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "Lets you to search for a Guardian attack card.";
       //Ninja
@@ -512,7 +512,7 @@ function WTRAbilityCost($cardID)
       case "WTR084":
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $cardID);
         if(ComboActive()){
-          AddDecisionQueue("ADDMAINHAND", $mainPlayer, "-"); //Only back to hand if combo is active
+          AddDecisionQueue("ADDHAND", $mainPlayer, "-"); //Only back to hand if combo is active
         }
         break;
       case "WTR085":
