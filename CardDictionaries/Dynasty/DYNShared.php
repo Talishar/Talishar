@@ -417,15 +417,15 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "DYN130": case "DYN131": case "DYN132":
-      if ($cardID == "DYN130") $amount = 4;
-      else if ($cardID == "DYN131") $amount = 3;
-      else $amount = 2;
+      if($cardID == "DYN130") $amount = -4;
+      else if($cardID == "DYN131") $amount = -3;
+      else $amount = -2;
       $options = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C");
-      if (!empty($options)) {
+      if($options != "") {
         AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, $options);
-        AddDecisionQueue("COMBATCHAINDEBUFFDEFENSE", $currentPlayer, $amount, 1);
+        AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $currentPlayer, $amount, 1);
       }
-      return "Reduce the defense of target defending card by " . $amount . ".";
+      return "";
     case "DYN148": case "DYN149": case "DYN150":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);

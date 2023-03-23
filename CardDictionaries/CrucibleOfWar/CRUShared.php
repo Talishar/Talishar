@@ -538,7 +538,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $options = GetChainLinkCards($defPlayer, "AA");
       if ($options == "") return "No defending attack action cards.";
       AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, $options);
-      AddDecisionQueue("COMBATCHAINBUFFDEFENSE", $currentPlayer, PlayBlockModifier($cardID), 1);
+      AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $currentPlayer, PlayBlockModifier($cardID), 1);
       return "";
     case "CRU197":
       if ($from == "PLAY") {

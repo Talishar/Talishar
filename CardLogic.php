@@ -878,7 +878,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $player, "2", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
-      AddDecisionQueue("COMBATCHAINBUFFPOWER", $player, "2", 1);
+      AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $player, "2", 1);
       break;
     case "UPR194": case "UPR195": case "UPR196":
       if (PlayerHasLessHealth($player)) GainHealth(1, $player);
@@ -889,7 +889,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
-      AddDecisionQueue("COMBATCHAINBUFFDEFENSE", $player, "2", 1);
+      AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
       break;
     case "UPR218": case "UPR219": case "UPR220":
       DestroyAuraUniqueID($player, $uniqueID);

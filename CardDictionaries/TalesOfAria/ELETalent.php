@@ -68,8 +68,8 @@
       case "ELE125": case "ELE126": case "ELE127":
        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
        AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
-       AddDecisionQueue("COMBATCHAINBUFFDEFENSE", $currentPlayer, PlayBlockModifier($cardID), 1);
-       return "Gives target defending card " . PlayBlockModifier($cardID) . ".";
+       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $currentPlayer, PlayBlockModifier($cardID), 1);
+       return "";
       case "ELE131": case "ELE132": case "ELE133":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
         AddDecisionQueue("MAYCHOOSEARSENAL", $currentPlayer, "<-", 1);

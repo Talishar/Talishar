@@ -693,18 +693,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       unset($soul[$lastResult]);
       $soul = array_values($soul);
       return $cardID;
-    case "COMBATCHAINBUFFPOWER":
+    case "COMBATCHAINPOWERMODIFIER":
       CombatChainPowerModifier($lastResult, $parameter);
       return $lastResult;
-    case "COMBATCHAINBUFFDEFENSE":
-      WriteLog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " had it's defense buffed by " . $parameter . ".");
+    case "COMBATCHAINDEFENSEMODIFIER":
+      if($parameter < 0) {
+        $defense = BlockingCardDefense($lastResult);
+        if($parameter < $defense * -1) $parameter = $defense * -1;
+      }
       $combatChain[$lastResult + 6] += $parameter;
-      return $lastResult;
-    case "COMBATCHAINDEBUFFDEFENSE":
-      global $currentTurnEffects, $mainPlayer;
-      $defense = BlockingCardDefense($lastResult);
-      if ($parameter > $defense) $parameter = $defense;
-      $combatChain[$lastResult + 6] -= $parameter;
       return $lastResult;
     case "REMOVEDISCARD":
       $discard = &GetDiscard($player);
