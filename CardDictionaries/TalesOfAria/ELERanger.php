@@ -222,7 +222,8 @@
         PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
         PrependDecisionQueue("FINDINDICES", $player, "HAND", 1);
         PrependDecisionQueue("ELSE", $player, "-");
-        PrependDecisionQueue("PAYRESOURCES", $player, $amount, 1);
+        PrependDecisionQueue("PAYRESOURCES", $player, "-", 1);
+        PrependDecisionQueue("PASSPARAMETER", $player, $amount, 1);
         PrependDecisionQueue("NOPASS", $player, "-", ($passable ? 1 : 0), 1);
         PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding", ($passable ? 1 : 0), 1);
         PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " to avoid discarding");
@@ -230,7 +231,8 @@
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " to avoid discarding");
         AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding", ($passable ? 1 : 0), 1);
         AddDecisionQueue("NOPASS", $player, "-", ($passable ? 1 : 0), 1);
-        AddDecisionQueue("PAYRESOURCES", $player, $amount, 1);
+        AddDecisionQueue("PASSPARAMETER", $player, $amount, 1);
+        AddDecisionQueue("PAYRESOURCES", $player, "-", 1);
         AddDecisionQueue("ELSE", $player, "-");
         AddDecisionQueue("FINDINDICES", $player, "HAND", 1);
         AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
@@ -334,9 +336,6 @@
         case "UPR140":
           if($element == "ICE")
           {
-            // PayOrDiscard(($player == 1 ? 2 : 1), 2, true);
-            // --$auras[$i+2];
-            // if($auras[$i+2] == 0) { WriteLog(CardLink($auras[$i], $auras[$i])." was destroyed."); DestroyAura($player, $i); }
             AddLayer("TRIGGER", $player, $auras[$i], $otherPlayer, uniqueID:$auras[$i+6]);
           }
           break;
