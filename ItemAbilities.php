@@ -1,5 +1,41 @@
 <?php
 
+function PutItemIntoPlay($item, $steamCounterModifier = 0)
+{
+  global $currentPlayer;
+  PutItemIntoPlayForPlayer($item, $currentPlayer, $steamCounterModifier);
+}
+
+function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1)
+{
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  if(!DelimStringContains(CardSubType($item), "Item")) return;
+  $items = &GetItems($player);
+  $myHoldState = ItemDefaultHoldTriggerState($item);
+  if($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
+  $theirHoldState = ItemDefaultHoldTriggerState($item);
+  if($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
+  for($i = 0; $i < $number; ++$i) {
+    $uniqueID = GetUniqueId();
+    $steamCounters = SteamCounterLogic($item, $player, $uniqueID) + $steamCounterModifier;
+    array_push($items, $item);
+    array_push($items, $steamCounters);
+    array_push($items, 2);
+    array_push($items, ItemUses($item));
+    array_push($items, $uniqueID);
+    array_push($items, $myHoldState);
+    array_push($items, $theirHoldState);
+  }
+}
+
+function ItemUses($cardID)
+{
+  switch($cardID) {
+    case "EVR070": return 3;
+    default: return 1;
+  }
+}
+
 function PayItemAbilityAdditionalCosts($cardID, $from)
 {
   global $currentPlayer, $CS_PlayIndex, $combatChain;
@@ -207,5 +243,30 @@ function ItemDamageTakenAbilities($player, $damage)
     }
   }
 }
+
+function SteamCounterLogic($item, $playerID, $uniqueID)
+{
+  global $CS_NumBoosted;
+  $counters = ETASteamCounters($item);
+  switch($item) {
+    case "CRU104":
+      $counters += GetClassState($playerID, $CS_NumBoosted);
+      break;
+    default: break;
+  }
+  if(ClassContains($item, "MECHANOLOGIST", $playerID))
+  {
+    $items = &GetItems($playerID);
+    for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces())
+    {
+      if($items[$i] == "DYN093")
+      {
+        AddLayer("TRIGGER", $playerID, $items[$i], $uniqueID, "-", $items[$i + 4]);
+      }
+    }
+  }
+  return $counters;
+}
+
 
 ?>

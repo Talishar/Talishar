@@ -62,6 +62,31 @@ class Character
 
 }
 
+function PutCharacterIntoPlayForPlayer($cardID, $player)
+{
+  $char = &GetPlayerCharacter($player);
+  $index = count($char);
+  array_push($char, $cardID);
+  array_push($char, 2);
+  array_push($char, CharacterCounters($cardID));
+  array_push($char, 0);
+  array_push($char, 0);
+  array_push($char, 1);
+  array_push($char, 0);
+  array_push($char, 0);
+  array_push($char, 0);
+  array_push($char, 2);
+  return $index;
+}
+
+function CharacterCounters ($cardID)
+{
+  switch($cardID) {
+    case "DYN492a": return 8;
+    default: return 0;
+  }
+}
+
 function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 {
   $char = &GetPlayerCharacter($player);
@@ -151,5 +176,237 @@ function CharacterStartTurnAbility($index)
   }
 }
 
+function DefCharacterStartTurnAbilities()
+{
+  global $defPlayer, $mainPlayer;
+  $character = &GetPlayerCharacter($defPlayer);
+  for($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if($character[$i + 1] == 0) continue; //Do not process ability if it is destroyed
+    switch($character[$i]) {
+      case "EVR086":
+        if (PlayerHasLessHealth($mainPlayer)) {
+          AddDecisionQueue("CHARREADYORPASS", $defPlayer, $i);
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_draw_a_card_and_give_your_opponent_a_silver.", 1);
+          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+          AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $defPlayer, "EVR195", 1);
+          AddDecisionQueue("PUTPLAY", $defPlayer, "0", 1);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+function CharacterDestroyEffect($cardID, $player)
+{
+  switch($cardID) {
+    case "ELE213":
+      DestroyArsenal($player);
+      break;
+    case "DYN214":
+      AddLayer("TRIGGER", $player, "DYN214", "-", "-");
+      break;
+    case "DYN492b":
+      $weaponIndex = FindCharacterIndex($player, "DYN492a");
+      if(intval($weaponIndex) != -1) DestroyCharacter($player, $weaponIndex);
+      break;
+    default:
+      break;
+  }
+}
+
+function MainCharacterEndTurnAbilities()
+{
+  global $mainClassState, $CS_HitsWDawnblade, $CS_AtksWWeapon, $mainPlayer, $defPlayer, $CS_NumNonAttackCards;
+  global $CS_NumAttackCards, $defCharacter, $CS_ArcaneDamageDealt;
+
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
+    $characterID = $mainCharacter[$i];
+    if($i == 0 && $mainCharacter[$i] == "CRU097")
+    {
+      $otherCharacter = &GetPlayerCharacter($defPlayer);
+      if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $mainPlayer)) {
+        $characterID = $otherCharacter[0];
+      }
+    }
+    switch($characterID) {
+      case "WTR115":
+        if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 0) $mainCharacter[$i + 3] = 0;
+        break;
+      case "CRU077":
+        KassaiEndTurnAbility();
+        break;
+      case "MON107":
+        if($mainClassState[$CS_AtksWWeapon] >= 2 && $mainCharacter[$i + 4] < 0) ++$mainCharacter[$i + 4];
+        break;
+      case "ELE223":
+        if(GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0 || GetClassState($mainPlayer, $CS_NumAttackCards) == 0) $mainCharacter[$i + 3] = 0;
+        break;
+      case "ELE224":
+        if(GetClassState($mainPlayer, $CS_ArcaneDamageDealt) < $mainCharacter[$i + 2]) {
+          DestroyCharacter($mainPlayer, $i);
+          $mainCharacter[$i + 2] = 0;
+        }
+        break;
+      default: break;
+    }
+  }
+}
+
+function MainCharacterHitAbilities()
+{
+  global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  $attackID = $combatChain[0];
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
+
+  for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
+    if(CardType($mainCharacter[$i]) == "W" || $mainCharacter[$i + 1] != "2") continue;
+    $characterID = $mainCharacter[$i];
+    if($i == 0 && $mainCharacter[0] == "CRU097") {
+      $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+      $otherCharacter = &GetPlayerCharacter($otherPlayer);
+      if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $mainPlayer)) {
+        $characterID = $otherCharacter[0];
+      }
+    }
+    switch($characterID) {
+      case "WTR076": case "WTR077":
+        if(CardType($attackID) == "AA") {
+          AddLayer("TRIGGER", $mainPlayer, $characterID);
+          $mainCharacter[$i + 1] = 1;
+        }
+        break;
+      case "WTR079":
+        if(CardType($attackID) == "AA" && HitsInRow() >= 2) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID);
+          $mainCharacter[$i + 1] = 1;
+        }
+        break;
+      case "WTR113": case "WTR114":
+        if($mainCharacter[$i + 1] == 2 && CardType($attackID) == "W" && $mainCharacter[$combatChainState[$CCS_WeaponIndex] + 1] != 0) {
+          $mainCharacter[$i + 1] = 1;
+          $mainCharacter[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+          ++$mainCharacter[$combatChainState[$CCS_WeaponIndex] + 5];
+        }
+        break;
+      case "WTR117":
+        if(CardType($attackID) == "W" && IsCharacterActive($mainPlayer, $i)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID);
+        }
+        break;
+      case "ARC152":
+        if(CardType($attackID) == "AA" && IsCharacterActive($mainPlayer, $i)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID);
+        }
+        break;
+      case "CRU047":
+        if(CardType($attackID) == "AA" && $mainCharacter[$i+5] == 1) {
+          AddCurrentTurnEffectFromCombat("CRU047", $mainPlayer);
+          $mainCharacter[$i+5] = 0;
+        }
+        break;
+      case "CRU053":
+        if(CardType($attackID) == "AA" && ClassContains($attackID, "NINJA", $mainPlayer) && IsCharacterActive($mainPlayer, $i)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID);
+        }
+        break;
+      case "ELE062": case "ELE063":
+        if(IsHeroAttackTarget() && CardType($attackID) == "AA" && !SearchAuras("ELE109", $mainPlayer)) {
+          PlayAura("ELE109", $mainPlayer);
+        }
+        break;
+      case "EVR037":
+        if(CardType($attackID) == "AA" && IsCharacterActive($mainPlayer, $i)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
+{
+  global $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CS_NumAttacks;
+  $modifier = 0;
+  $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  if($index == -1) $index = $combatChainState[$CCS_WeaponIndex];
+  for($i = 0; $i < count($mainCharacterEffects); $i += CharacterEffectPieces()) {
+    if($mainCharacterEffects[$i] == $index) {
+      switch($mainCharacterEffects[$i + 1]) {
+        case "WTR119": $modifier += 2; break;
+        case "WTR122": $modifier += 1; break;
+        case "WTR135": case "WTR136": case "WTR137": $modifier += 1; break;
+        case "CRU079": case "CRU080": $modifier += 1; break;
+        case "MON105": case "MON106": $modifier += 1; break;
+        case "MON113": case "MON114": case "MON115": $modifier += 1; break;
+        case "EVR055-1": $modifier += 1; break;
+        default:
+          break;
+      }
+    }
+  }
+  if($onlyBuffs) return $modifier;
+
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
+    if(!IsEquipUsable($mainPlayer, $i)) continue;
+    $characterID = $mainCharacter[$i];
+    if($i == 0 && $mainCharacter[0] == "CRU097")
+    {
+      $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+      $otherCharacter = &GetPlayerCharacter($otherPlayer);
+      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $mainPlayer)) {
+        $characterID = $otherCharacter[0];
+      }
+    }
+    switch($characterID) {
+      case "MON029": case "MON030":
+        if (HaveCharged($mainPlayer) && NumAttacksBlocking() > 0) $modifier += 1;
+        break;
+      default: break;
+    }
+  }
+  return $modifier;
+}
+
+function MainCharacterHitEffects()
+{
+  global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  $modifier = 0;
+  $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
+  for($i = 0; $i < count($mainCharacterEffects); $i += 2) {
+    if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
+      switch($mainCharacterEffects[$i + 1]) {
+        case "WTR119":
+          MainDrawCard();
+          break;
+        default: break;
+      }
+    }
+  }
+  return $modifier;
+}
+
+function MainCharacterGrantsGoAgain()
+{
+  global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  if($combatChainState[$CCS_WeaponIndex] == -1) return false;
+  $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
+  for($i = 0; $i < count($mainCharacterEffects); $i += 2) {
+    if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
+      switch($mainCharacterEffects[$i + 1]) {
+        case "EVR055-2": return true;
+        default: break;
+      }
+    }
+  }
+  return false;
+}
 
 ?>
