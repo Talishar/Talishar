@@ -409,4 +409,14 @@ function MainCharacterGrantsGoAgain()
   return false;
 }
 
+function CharacterCostModifier($cardID, $from)
+{
+  global $currentPlayer, $CS_NumSwordAttacks;
+  $modifier = 0;
+  if(CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumSwordAttacks) == 1 && (SearchCharacterActive($currentPlayer, "CRU077") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects("CRU077-SHIYANA", $currentPlayer)))) {
+    --$modifier;
+  }
+  return $modifier;
+}
+
 ?>

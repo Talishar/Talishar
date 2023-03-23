@@ -1996,6 +1996,66 @@ function SameWeaponEquippedTwice()
   return false;
 }
 
+function SelfCostModifier($cardID)
+{
+  global $CS_NumCharged, $currentPlayer, $combatChain, $CS_LayerTarget;
+  switch($cardID) {
+    case "ARC080":
+    case "ARC082":
+    case "ARC088": case "ARC089": case "ARC090":
+    case "ARC094": case "ARC095": case "ARC096":
+    case "ARC097": case "ARC098": case "ARC099":
+    case "ARC100": case "ARC101": case "ARC102":
+      return (-1 * NumRunechants($currentPlayer));
+    case "MON032":
+      return (-1 * (2 * GetClassState($currentPlayer, $CS_NumCharged)));
+    case "MON084": case "MON085": case "MON086":
+      return TalentContains($combatChain[GetClassState($currentPlayer, $CS_LayerTarget)], "SHADOW") ? -1 : 0;
+    case "DYN104": case "DYN105": case "DYN106":
+      return CountItem("ARC036", $currentPlayer) > 0 || CountItem("DYN111", $currentPlayer) > 0 || CountItem("DYN112", $currentPlayer) > 0 ? -1 : 0;
+    case "OUT056": case "OUT057": case "OUT058":
+      return (ComboActive($cardID) ? -2 : 0);
+    case "OUT074": case "OUT075": case "OUT076":
+      return (ComboActive($cardID) ? -1 : 0);
+    case "OUT145": case "OUT146": case "OUT147":
+      return (-1 * DamageDealtBySubtype("Dagger"));
+    default: return 0;
+  }
+}
+
+function IsAlternativeCostPaid($cardID, $from)
+{
+  global $currentTurnEffects, $currentPlayer;
+  $isAlternativeCostPaid = false;
+  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $remove = false;
+    if($currentTurnEffects[$i + 1] == $currentPlayer) {
+      switch($currentTurnEffects[$i]) {
+        case "ARC185": case "CRU188": case "MON199": case "MON257": case "EVR161":
+          $isAlternativeCostPaid = true;
+          $remove = true;
+          break;
+        default:
+          break;
+      }
+      if($remove) RemoveCurrentTurnEffect($i);
+    }
+  }
+  return $isAlternativeCostPaid;
+}
+
+function BanishCostModifier($from, $index)
+{
+  global $currentPlayer;
+  if($from != "BANISH") return 0;
+  $banish = GetBanish($currentPlayer);
+  $mod = explode("-", $banish[$index + 1]);
+  switch($mod[0]) {
+    case "ARC119": return -1 * intval($mod[1]);
+    default: return 0;
+  }
+}
+
 function IsCurrentAttackName($name)
 {
   $names = GetCurrentAttackNames();
