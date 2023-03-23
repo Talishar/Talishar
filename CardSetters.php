@@ -70,18 +70,6 @@ function RemoveBanish($player, $index)
   $banish = array_values($banish);
 }
 
-function AddBottomMainDeck($cardID, $from)
-{
-  global $mainPlayer;
-  AddBottomDeck($cardID, $mainPlayer, $from);
-}
-
-function AddBottomMyDeck($cardID, $from)
-{
-  global $currentPlayer;
-  AddBottomDeck($cardID, $currentPlayer, $from);
-}
-
 function AddBottomDeck($cardID, $player, $from)
 {
   $deck = &GetDeck($player);
@@ -92,19 +80,6 @@ function AddTopDeck($cardID, $player, $from)
 {
   $deck = &GetDeck($player);
   array_unshift($deck, $cardID);
-}
-
-function RemoveTopMyDeck()
-{
-  global $myDeck;
-  if (count($myDeck) == 0) return "";
-  return array_shift($myDeck);
-}
-
-function AddMainHand($cardID, $from)
-{
-  global $mainPlayer;
-  AddPlayerHand($cardID, $mainPlayer, $from);
 }
 
 function AddPlayerHand($cardID, $player, $from)

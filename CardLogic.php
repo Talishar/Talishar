@@ -31,7 +31,7 @@ function BottomDeck($player="", $mayAbility=false, $shouldDraw=false)
   if($mayAbility) AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
   AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
-  AddDecisionQueue("ADDBOTTOMMYDECK", $player, "-", 1);
+  AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
   AddDecisionQueue("WRITELOG", $player, "A card was put on the bottom of the deck", 1);
   if($shouldDraw) AddDecisionQueue("DRAW", $player, "-", 1);
 }
@@ -42,7 +42,7 @@ function BottomDeckMultizone($player, $zone1, $zone2)
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to sink (or Pass)", 1);
   AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MULTIZONEREMOVE", $player, "-", 1);
-  AddDecisionQueue("ADDBOTTOMMYDECK", $player, "-", 1);
+  AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
 }
 
 function BottomDeckMultizoneDraw($player, $zone1, $zone2)

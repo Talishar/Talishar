@@ -911,10 +911,10 @@ function FinalizeChainLink($chainClosed = false)
       }
       switch ($goesWhere) {
         case "BOTDECK":
-          AddBottomMainDeck($combatChain[$i - 1], "CC");
+          AddBottomDeck($combatChain[$i - 1], $mainPlayer, "CC");
           break;
         case "HAND":
-          AddMainHand($combatChain[$i - 1], "CC");
+          AddPlayerHand($combatChain[$i - 1], $mainPlayer, "CC");
           break;
         case "SOUL":
           AddSoul($combatChain[$i - 1], $combatChain[$i], "CC");

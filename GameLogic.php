@@ -883,10 +883,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDDISCARD":
       AddGraveyard($lastResult, $player, $parameter);
       return $lastResult;
-    case "ADDBOTTOMMYDECK":
-      $deck = &GetDeck($player);
-      array_push($deck, $lastResult);
-      return $lastResult;
     case "ADDBOTDECK":
       $deck = &GetDeck($player);
       array_push($deck, $lastResult);
@@ -1767,9 +1763,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($parameter == "A") SetClassState($player, $CS_NextNAACardGoAgain, 1);
       else if ($parameter == "AA") GiveAttackGoAgain();
       return 1;
-    case "ADDMYRESOURCES":
-      AddResourceCost($player, $parameter);
-      return $parameter;
     case "PROCESSATTACKTARGET":
       $combatChainState[$CCS_AttackTarget] = $lastResult;
       $mzArr = explode("-", $lastResult);
