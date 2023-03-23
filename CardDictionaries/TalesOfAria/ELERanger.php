@@ -222,7 +222,7 @@
         PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
         PrependDecisionQueue("FINDINDICES", $player, "HAND", 1);
         PrependDecisionQueue("ELSE", $player, "-");
-        PrependDecisionQueue("PAYRESOURCES", $player, "1", 1);
+        PrependDecisionQueue("PAYRESOURCES", $player, $amount, 1);
         PrependDecisionQueue("NOPASS", $player, "-", ($passable ? 1 : 0), 1);
         PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding", ($passable ? 1 : 0), 1);
         PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " to avoid discarding");
