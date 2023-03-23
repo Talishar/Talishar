@@ -220,17 +220,13 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "DYN079": return 3 + (NumEquipBlock() > 0 ? 1 : 0);
     case "DYN080": return 2 + (NumEquipBlock() > 0 ? 1 : 0);
     case "DYN081": return 1 + (NumEquipBlock() > 0 ? 1 : 0);
-    case "DYN115": case "DYN116":
-      return NumEquipBlock() > 0 ? 1 : 0;
+    case "DYN115": case "DYN116": return NumEquipBlock() > 0 ? 1 : 0;
     case "DYN148": return 3;
     case "DYN149": return 2;
     case "DYN150": return 1;
-    case "OUT005": case "OUT006":
-      return NumEquipBlock() > 0 ? 1 : 0;
-    case "OUT007": case "OUT008":
-      return NumEquipBlock() > 0 ? 1 : 0;
-    case "OUT009": case "OUT010":
-      return NumEquipBlock() > 0 ? 1 : 0;
+    case "OUT005": case "OUT006": return NumEquipBlock() > 0 ? 1 : 0;
+    case "OUT007": case "OUT008": return NumEquipBlock() > 0 ? 1 : 0;
+    case "OUT009": case "OUT010": return NumEquipBlock() > 0 ? 1 : 0;
     case "OUT018": case "OUT019": case "OUT020": return (NumAttackReactionsPlayed() > 0 ? 4 : 0);
     case "OUT021": case "OUT022": case "OUT023": return 3;
     case "OUT042": return 3;
@@ -247,12 +243,9 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "OUT181": return 1;
     case "OUT207": case "OUT208": case "OUT209": return (NumActionsBlocking() > 0 ? 2 : 0);
     case "OUT210": case "OUT211": case "OUT212": return (NumActionsBlocking() > 0 ? -2 : 0);
-    default:
-      return 0;
+    default: return 0;
   }
 }
-
-
 
 function BlockModifier($cardID, $from, $resourcesPaid)
 {
@@ -313,8 +306,7 @@ function PlayBlockModifier($cardID)
     case "ELE125": return 4;
     case "ELE126": return 3;
     case "ELE127": return 2;
-    default:
-      return 0;
+    default: return 0;
   }
 }
 
@@ -334,11 +326,7 @@ function SelfCostModifier($cardID)
     case "MON084": case "MON085": case "MON086":
       return TalentContains($combatChain[GetClassState($currentPlayer, $CS_LayerTarget)], "SHADOW") ? -1 : 0;
     case "DYN104": case "DYN105": case "DYN106":
-      $numHypers = 0;
-      $numHypers += CountItem("ARC036", $currentPlayer);
-      $numHypers += CountItem("DYN111", $currentPlayer);
-      $numHypers += CountItem("DYN112", $currentPlayer);
-      return $numHypers > 0 ? -1 : 0;
+      return CountItem("ARC036", $currentPlayer) > 0 || CountItem("DYN111", $currentPlayer) > 0 || CountItem("DYN112", $currentPlayer) > 0 ? -1 : 0;
     case "OUT056": case "OUT057": case "OUT058":
       return (ComboActive($cardID) ? -2 : 0);
     case "OUT074": case "OUT075": case "OUT076":
