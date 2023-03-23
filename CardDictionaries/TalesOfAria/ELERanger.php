@@ -218,7 +218,6 @@
     $otherPlayer = ($player == 1 ? 2 : 1);
     if (count($targetHand) > 0) {
       if ($fromDQ) {
-        PrependDecisionQueue("SHOWDISCARDEDCARD", $player, "-", 1);
         PrependDecisionQueue("DISCARDMYHAND", $player, "-", 1);
         PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
         PrependDecisionQueue("FINDINDICES", $player, "HAND", 1);
@@ -236,7 +235,6 @@
         AddDecisionQueue("FINDINDICES", $player, "HAND", 1);
         AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
         AddDecisionQueue("DISCARDMYHAND", $player, "-", 1);
-        AddDecisionQueue("SHOWDISCARDEDCARD", $player, "-", 1);
       }
     }
   }

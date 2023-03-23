@@ -991,9 +991,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       WriteLog(CardLink($parameter, $parameter) . " modes are: " . $rv);
       return $lastResult;
-    case "SHOWDISCARDEDCARD":
-      WriteLog(CardLink($lastResult, $lastResult) . " was discarded.");
-      return $lastResult;
     case "SHOWSELECTEDHANDCARD":
       $hand = &GetHand($player);
       WriteLog(CardLink($hand[$lastResult], $hand[$lastResult]) . " was selected.");
