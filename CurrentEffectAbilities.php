@@ -996,4 +996,37 @@ function BeginEndPhaseEffects()
   }
 }
 
+function BeginEndPhaseEffectTriggers()
+{
+  global $currentTurnEffects, $mainPlayer;
+  for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+    switch($currentTurnEffects[$i]) {
+      case "ELE215-1":
+        AddLayer("TRIGGER", $mainPlayer, "ELE215", $currentTurnEffects[$i+1], "-", "-");
+        break;
+      default: break;
+    }
+  }
+}
+
+function ActivateAbilityEffects()
+{
+  global $currentPlayer, $currentTurnEffects;
+  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $remove = false;
+    if($currentTurnEffects[$i + 1] == $currentPlayer) {
+      switch($currentTurnEffects[$i]) {
+        case "ELE004-HIT":
+          WriteLog(CardLink("ELE004", "ELE004") . " created a frostbite");
+          PlayAura("ELE111", $currentPlayer);
+          break;
+        default:
+          break;
+      }
+    }
+    if($remove) RemoveCurrentTurnEffect($i);
+  }
+  $currentTurnEffects = array_values($currentTurnEffects);
+}
+
 ?>
