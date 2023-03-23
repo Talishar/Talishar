@@ -102,6 +102,7 @@ $cardIconTop = intval($cardSize / 4.2); //30
   // WriteLog("myDQ: " . $myDQ[0] . ", " . $myDQ[1]);
   if(count($myDQ) > 0)
   {
+    //WriteLog("myDQ[0]->".$myDQ[0]."myDQ[1]->".$myDQ[1]."myDQ[2]->".$myDQ[2]."myDQ[3]->".$myDQ[3]);
     switch($myDQ[0]){
     case "CHOOSECARD":
     {
@@ -113,7 +114,13 @@ $cardIconTop = intval($cardSize / 4.2); //30
       {
         $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
       }
-      $encounterContent .= "</div>";
+      $encounterContent .= "</div><BR>";
+      $encounterContent .= "<div display:inline;'>";
+      if($encounter[10] > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
+        $rerollStringValue = "Reroll:_".$encounter[10];
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $rerollStringValue), 2, strval("Reroll"), "24px");
+      }
+      $encounterContent .= "</div><BR>";
       //$encounterContent .= "<div>";
       break;
     }
@@ -156,7 +163,13 @@ $cardIconTop = intval($cardSize / 4.2); //30
       {
         $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
       }
-      $encounterContent .= "</div>";
+      $encounterContent .= "</div><BR>";
+      $encounterContent .= "<div display:inline;'>";
+      if($encounter[10] > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
+        $rerollStringValue = "Reroll:_".$encounter[10];
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $rerollStringValue), 2, strval("Reroll"), "24px");
+      }
+      $encounterContent .= "</div><BR>";
       break;
     }
     case "DUPLICATECARD":{
@@ -167,7 +180,13 @@ $cardIconTop = intval($cardSize / 4.2); //30
       {
         $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
       }
-      $encounterContent .= "</div>";
+      $encounterContent .= "</div><BR>";
+      $encounterContent .= "<div display:inline;'>";
+      if($encounter[10] > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
+        $rerollStringValue = "Reroll:_".$encounter[10];
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $rerollStringValue), 2, strval("Reroll"), "24px");
+      }
+      $encounterContent .= "</div><BR>";
       break;
     }
     case "SHOP":
@@ -185,7 +204,7 @@ $cardIconTop = intval($cardSize / 4.2); //30
       {
         $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, GetShopCost($options[$i]), strval($options[$i]));
       }
-      if($myDQ[2] == "-") {
+      if($myDQ[3] != "NoSubchoice" && $myDQ[3] != "NoRS") {
         $encounterContent .= "</div><BR>";
         $encounterContent .= "<div display:inline;'>";
         $shopHealStringValue = "Pay_".$encounter[11]."g_to_hire_a_local_healer";
@@ -197,6 +216,10 @@ $cardIconTop = intval($cardSize / 4.2); //30
       //$encounterContent .= "<div display:inline;'>";
       $encounterContent .= "</div><BR>";
       $encounterContent .= "<div display:inline;'>";
+      if($encounter[10] > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
+        $rerollStringValue = "Reroll:_".$encounter[10];
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $rerollStringValue), 2, strval("Reroll"), "24px");
+      }
       $encounterContent .= CreateButton($playerID, str_replace("_", " ", "Leave"), 2, strval("Leave"), "24px");
       $encounterContent .= "</div><BR>";
 

@@ -97,7 +97,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Reflect":
             WriteLog("You reflected on the trials of the day, and may remove a card.");
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomCards("Deck,All"), "-", "NoReroll");
             break;
           default: break;
         }
@@ -107,13 +107,13 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         {
           case "Loot":
             WriteLog("You've found some equipment to salvage, and a gold piece in the pocket of one of the fallen.");
-            PrependDecisionQueue("CHOOSECARD", $player, "WTR155");
+            PrependDecisionQueue("CHOOSECARD", $player, "WTR155", "-", "NoReroll");
             $encounter = &GetZone(1, "Encounter");
             $encounter[9] += 1;
             break;
           case "Pay_Respects":
             WriteLog("You honor the fallen. While their mortal form is gone, their stories live on. You carry their spirit with you. You gain 2 health.");
-            PrependDecisionQueue("CHOOSECARD", $player, "WTR163");
+            PrependDecisionQueue("CHOOSECARD", $player, "WTR163", "-", "NoReroll");
             $health = &GetZone(1, "Health");
             $health[0] += 2;
             break;
@@ -125,8 +125,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         {
           case "Search":
             WriteLog("You searched the library and found an interesting book about fighting techniques.");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4));
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic"), "Reward,Class-Class-Talent-Generic");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic"), "Reward,Class-Class-Talent-Generic");
             break;
           case "Leave":
             break;
@@ -138,14 +138,14 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         {
           case "Spend_some_time_forging_equipment_for_yourself":
             WriteLog("You used your might to craft some armor.");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Head", "Equipment", "Common"));
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Chest", "Equipment", "Common"));
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Arms", "Equipment", "Common"));
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Legs", "Equipment", "Common"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Equipment,Common,Head"), "-", "NoReroll");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Equipment,Common,Chest"), "-", "NoReroll");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Equipment,Common,Arms"), "-", "NoReroll");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Equipment,Common,Legs"), "-", "NoReroll");
             break;
           case "Ask_the_blacksmith_to_make_you_a_piece_of_equipment":
             WriteLog("A giant gave you a legendary gift.");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("-", "Equipment", "Legendary"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Equipment,Legendary"), "-", "NoReroll");
             break;
           case "Leave":
             break;
@@ -334,29 +334,29 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Make_an_offering":
             PrependDecisionQueue("ENLIGHTENMENT", $player, "-");
             PrependDecisionQueue("BUTTONINPUT", $player, "Make_another_offering,Receive_a_small_blessing");
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomCards("Deck,4"), "Deck,4");
             break;
           case "Make_another_offering":
             PrependDecisionQueue("ENLIGHTENMENT", $player, "-");
             PrependDecisionQueue("BUTTONINPUT", $player, "Make_a_final_offering,Receive_a_sizable_blessing");
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomCards("Deck,4"), "Deck,4");
             break;
           case "Make_a_final_offering":
             PrependDecisionQueue("ENLIGHTENMENT", $player, "-");
             PrependDecisionQueue("BUTTONINPUT", $player, "Receive_an_incredible_blessing");
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomCards("Deck,4"), "Deck,4");
             break;
           case "Receive_a_small_blessing":
             WriteLog("Your charity is recognized. May Sol shine upon you.");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Common"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic,ForcedRarity-Common"), "Reward,Class-Class-Talent-Generic,ForcedRarity-Common");
             break;
           case "Receive_a_sizable_blessing":
             WriteLog("Your act of selflessness is recognized and celebrated. Contemplate this treasure in your travels.");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Rare"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic,ForcedRarity-Rare"), "Reward,Class-Class-Talent-Generic,ForcedRarity-Rare");
             break;
           case "Receive_an_incredible_blessing":
             WriteLog("Your depth of character and virtue is boundless. Please honor the church by carrying it's teaching throughout Rathe.");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Majestic"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic"), "Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic");
             break;
           }
           return 1;
@@ -366,7 +366,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Trade_1_gold_pieces_for_the_stone":
             $encounter = &GetZone($player, "Encounter");
             $encounter[9] -= 1;
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(1, "ResourceGems"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("ResourceGems"), "-", "NoReroll");
             break;
           case "Decline_his_offer_and_move_on":
             break;
@@ -393,14 +393,14 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         switch($lastResult)
         {
           case "Tell_him_your_story":
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomCards("Deck,4"), "Deck,4");
             break;
           case "Listen_to_his_story":
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic"), "Reward,Class-Class-Talent-Generic");
             break;
           case "Sit_peacefully":
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4));
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic"), "Reward,Class-Class-Talent-Generic");
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomCards("Deck,4"), "Deck,4");
             break;
           case "Leave":
             break;
@@ -410,7 +410,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         switch($lastResult)
         {
           case "Spar_for_a_short_while":
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomDeckCard($player, 4));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Deck,4"), "Deck,4");
             break;
           case "Spar_until_nightfall":
             $health = &GetZone($player, "Health");

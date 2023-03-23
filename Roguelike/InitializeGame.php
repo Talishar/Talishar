@@ -12,7 +12,7 @@
   for($i=1; $i<=$numPlayers; ++$i)
   { //this is what I am currently working in
     $encounter = &GetZone($i, "Encounter");
-    $encounter  = array(001, "PickMode", 0, "Dorinthea", "Ira", "none", 1, "none", "Normal", 0, 0, 1, 1);
+    $encounter  = array(001, "PickMode", 0, "Dorinthea", "Ira", "none", 1, "none", "Normal", 0, 2, 1, 1);
     //See EncounterDictionary for explanations for encounter variable
     InitializeEncounter($i);
 

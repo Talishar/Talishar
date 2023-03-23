@@ -95,62 +95,52 @@ function GetPowers($amount = 3, $special = "-")
   }
 }
 
-function GetRandomCards($number = 4, $special = "-", $specialType = "-")
+//function GetRandomCards($number = 4, $special = "-", $specialType = "-")
+function GetRandomCards($inputString)
 {
-  if($special == "ForcedRarity")
+  $parameters = explode(",", $inputString);
+  switch($parameters[0])
   {
-    $result = [];
-    $pool = GeneratePool($result, "Class", $specialType);
-    array_push($result, $pool[rand(0, count($pool)-1)]);
-    $pool = GeneratePool($result, "Class", $specialType);
-    array_push($result, $pool[rand(0, count($pool)-1)]);
-    $pool = GeneratePool($result, "Talent", $specialType);
-    array_push($result, $pool[rand(0, count($pool)-1)]);
-    $pool = GeneratePool($result, "Generic", $specialType);
-    array_push($result, $pool[rand(0, count($pool)-1)]);
-    $resultStr = "";
-    for($i = 0; $i < count($result); ++$i)
-    {
-      if($i != 0) $resultStr.=",";
-      $resultStr.=$result[$i];
-    }
-    return $resultStr;
-  }
-  else if($special == "ResourceGems"){ //Used by ROCKS event, only returns one
-    $poolResources = array("WTR000", "ARC000", "EVR000", "CRU000", "UPR000", "DVR027", "WTR224", "ARC218", "MON306", "ELE237", "UPR224"); //5 cracked baubles to weight them as more likely to occur. 11 options equally likely
-    return $poolResources[rand(0, count($poolResources) - 1)];
-  }
-  else if($special == "Equipment"){ //$specialType should be "Arms", "Chest" etc. This can only be one at a time so far
-    //WriteLog($number);
-    $encounter = &GetZone(1, "Encounter");
-    $result = [];                               //Rarity                          //When I say $number, I mean slot
-    if($number == "-"){
-      $pool = GetPool("Equipment", $encounter[3], $specialType, $encounter[7], "All");
-    }
-    else {
-      $pool = GetPool("Equipment", $encounter[3], $specialType, $encounter[7], "All", $number);
-    }
-    array_push($result, $pool[rand(0, count($pool) - 1)]);
-    return $result[0];
-  }
-  else //default. This is used in the combat encounter rewards. Literally everything passed into the function is ignored.
-  {
-    $result = [];
-    $pool = GeneratePool($result, "Class");
-    array_push($result, $pool[rand(0, count($pool)-1)]);
-    $pool = GeneratePool($result, "Class");
-    array_push($result, $pool[rand(0, count($pool)-1)]);
-    $pool = GeneratePool($result, "Talent");
-    array_push($result, $pool[rand(0, count($pool)-1)]);
-    $pool = GeneratePool($result, "Generic");
-    array_push($result, $pool[rand(0, count($pool)-1)]);
-    $resultStr = "";
-    for($i = 0; $i < count($result); ++$i)
-    {
-      if($i != 0) $resultStr.=",";
-      $resultStr.=$result[$i];
-    }
-    return $resultStr;
+    case "Reward":
+      $rarity = "-";
+      for($i = 2; $i < count($parameters); ++$i)
+      {
+        $tags = explode("-", $parameters[$i]);
+        switch($tags[0])
+        {
+          case "ForcedRarity":
+            $rarity = $tags[1];
+        }
+      }
+      $tags = explode("-", $parameters[1]);
+      $result = [];
+      for($i = 0; $i < count($tags); ++$i)
+      {
+        $pool = GeneratePool($result, $tags[$i], $rarity);
+        array_push($result, $pool[rand(0, count($pool)-1)]);
+      }
+      $resultStr = "";
+      for($i = 0; $i < count($result); ++$i)
+      {
+        if($i != 0) $resultStr.=",";
+        $resultStr.=$result[$i];
+      }
+      return $resultStr;
+    case "Deck":
+      return GetRandomDeckCard(1, $parameters[1]);
+    case "Power":
+      return GetPowers($parameters[1]);
+    case "Equipment":
+      array_push($parameters, "");
+      array_push($parameters, "");
+      $encounter = &GetZone(1, "Encounter");
+      $result = [];
+      $pool = GetPool("Equipment", $encounter[3], $parameters[1], $encounter[7], "All", $parameters[2]);
+      array_push($result, $pool[rand(0, count($pool) - 1)]);
+      return $result[0];
+    case "ResourceGems":
+      $poolResources = array("WTR000", "ARC000", "EVR000", "CRU000", "UPR000", "DVR027", "WTR224", "ARC218", "MON306", "ELE237", "UPR224"); //5 cracked baubles to weight them as more likely to occur. 11 options equally likely
+      return $poolResources[rand(0, count($poolResources) - 1)];
   }
 }
 
@@ -233,6 +223,10 @@ function GeneratePool($selected, $type, $rarity = "-")
 
 function GetShop($inputString = "Class,Class,Talent,Equipment-Common,Equipment,Generic,Generic,Power-1")
 {
+  if($inputString == "-")
+  {
+    $inputString = "Class,Class,Talent,Equipment-Common,Equipment,Generic,Generic,Power-1";
+  }
   $result = [];
 
   $input = explode(",", $inputString);
