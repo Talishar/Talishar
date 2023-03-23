@@ -773,15 +773,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->popup = CreatePopupAPI("DYNPITCH", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "");
   }
 
-  if ($turn[0] == "PAYORDISCARD" && $turn[1] == $playerID) {
-    $playerInputPopup->active = true;
-    array_push($playerInputButtons, CreateButtonAPI($playerID, "Pay", 28, "PAY", "20px"));
-    array_push($playerInputButtons, CreateButtonAPI($playerID, "Discard", 28, "DISCARD", "20px"));
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose " . TypeToPlay($turn[0]);
-    $playerInputPopup->popup = CreatePopupAPI("PAYORDISCARD", [], 0, 1, $caption, 1, "");
-  }
-
   if ($turn[0] == "OK" && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     array_push($playerInputButtons, CreateButtonAPI($playerID, "Ok", 99, "OK", "20px"));

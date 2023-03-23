@@ -315,9 +315,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         PlayCard($cardID, "HAND");
       }
       break;
-    case 28: //PAY OR DISCARD
-      if ($turn[0] == "PAYORDISCARD" && ($buttonInput == "PAY" || $buttonInput == "DISCARD")) ContinueDecisionQueue($buttonInput);
-      break;
+    case 28: break; //Deprecated
     case 29: //CHOOSETOPOPPONENT
       if($turn[0] == "CHOOSETOPOPPONENT") {
         $otherPlayer = ($playerID == 1 ? 2 : 1);

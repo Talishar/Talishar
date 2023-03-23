@@ -303,16 +303,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $chainLinkSummary, $chainLinks, $MakeStartGameBackup;
   $rv = "";
   switch ($phase) {
-    case "FINDRESOURCECOST":
-      switch ($parameter) {
-        case "CRU126": case "CRU127": case "CRU128":
-          return (($lastResult == "YES" || $lastResult == "PAY") ? 1 : 0);
-        case "ELE148": case "ELE149": case "ELE150":
-          return (($lastResult == "YES" || $lastResult == "PAY") ? 2 : 0);
-        default:
-          return (($lastResult == "YES" || $lastResult == "PAY") ? $parameter : 0);
-      }
-      return 0;
     case "FINDINDICES":
       UpdateGameState($currentPlayer);
       BuildMainPlayerGamestate();
@@ -568,12 +558,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "MON305":
           $rv = SearchDiscard($player, "AA", "", 0);
-          break;
-        case "HANDIFZERO":
-          if ($lastResult == 0) {
-            $hand = &GetHand($player);
-            $rv = GetIndices(count($hand));
-          }
           break;
         case "ELE006":
           $count = CountAura("WTR075", $player);

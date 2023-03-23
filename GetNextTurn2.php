@@ -508,14 +508,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo CreatePopup("YESNO", [], 0, 1, $caption, 1, $content);
   }
 
-  if ($turn[0] == "PAYORDISCARD" && $turn[1] == $playerID) {
-    $content = CreateButton($playerID, "Pay", 28, "PAY", "20px");
-    $content .= CreateButton($playerID, "Discard", 28, "DISCARD", "20px");
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose " . TypeToPlay($turn[0]);
-    echo CreatePopup("PAYORDISCARD", [], 0, 1, $caption, 1, $content);
-  }
-
   if ($turn[0] == "OK" && $turn[1] == $playerID) {
     $content = CreateButton($playerID, "Ok", 99, "OK", "20px");
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
