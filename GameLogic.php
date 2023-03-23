@@ -333,8 +333,7 @@ function SelfCostModifier($cardID)
       return (ComboActive($cardID) ? -1 : 0);
     case "OUT145": case "OUT146": case "OUT147":
       return (-1 * DamageDealtBySubtype("Dagger"));
-    default:
-      return 0;
+    default: return 0;
   }
 }
 
@@ -346,25 +345,6 @@ function CharacterCostModifier($cardID, $from)
     --$modifier;
   }
   return $modifier;
-}
-
-function CurrentEffectBaseAttackSet($cardID)
-{
-  global $currentPlayer, $currentTurnEffects;
-  $currentModifier = -1;
-  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    $mod = -1;
-    if($currentTurnEffects[$i + 1] == $currentPlayer && IsCombatEffectActive($currentTurnEffects[$i])) {
-      switch($currentTurnEffects[$i]) {
-        case "UPR155": $mod = 8; break;
-        case "UPR156": $mod = 7; break;
-        case "UPR157": $mod = 6; break;
-        default: break;
-      }
-      if($mod > $currentModifier) $currentModifier = $mod;
-    }
-  }
-  return $currentModifier;
 }
 
 function IsAlternativeCostPaid($cardID, $from)

@@ -378,5 +378,21 @@ function OnAttackEffects($attack)
   }
 }
 
+function CurrentEffectBaseAttackSet($cardID)
+{
+  global $currentPlayer, $currentTurnEffects;
+  $mod = -1;
+  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    if($currentTurnEffects[$i + 1] == $currentPlayer && IsCombatEffectActive($currentTurnEffects[$i])) {
+      switch($currentTurnEffects[$i]) {
+        case "UPR155": if($mod < 8) $mod = 8; break;
+        case "UPR156": if($mod < 7) $mod = 7; break;
+        case "UPR157": if($mod < 6) $mod = 6; break;
+        default: break;
+      }
+    }
+  }
+  return $mod;
+}
 
 ?>
