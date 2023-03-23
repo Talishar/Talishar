@@ -84,7 +84,7 @@
               $newShop = $myDQ[1];
               ClearPhase($playerID); //Clear the screen and keep going
               ContinueDecisionQueue($playerID, "");
-              PrependDecisionQueue("SHOP", $playerID, $newShop);
+              PrependDecisionQueue("SHOP", $playerID, $newShop, $myDQ[2], $myDQ[3]);
               break;
             }
             else if($encounter[9] < $cost)
@@ -93,7 +93,7 @@
               WriteLog("You cannot afford to buy " . CardLink($cardID, $cardID) . ".");
               ClearPhase($playerID); //Clear the screen and keep going
               ContinueDecisionQueue($playerID, "");
-              PrependDecisionQueue("SHOP", $playerID, $newShop);
+              PrependDecisionQueue("SHOP", $playerID, $newShop, $myDQ[2], $myDQ[3]);
               break;
             }
             else
@@ -117,7 +117,7 @@
               $newShop.=",CardBack";
               //WriteLog($newShop);
               ClearPhase($playerID); //Clear the screen and keep going
-              PrependDecisionQueue("SHOP", $playerID, $newShop);
+              PrependDecisionQueue("SHOP", $playerID, $newShop, $myDQ[2], $myDQ[3]);
               ContinueDecisionQueue($playerID, "");
               break;
             }
@@ -140,7 +140,55 @@
         if($myDQ[0] == "CHOOSECARD"){
           if($buttonInput == "Reroll")
           {
-
+            $encounter = &GetZone($playerID, "Encounter");
+            if($encounter[10] >= 1) {
+              WriteLog("You used a reroll to alter the reward");
+              $encounter[10] -= 1;
+              $parameterOne = $myDQ[2];
+              $parameterTwo = $myDQ[3];
+              ClearPhase($playerID); //Clear the screen and keep going
+              PrependDecisionQueue("CHOOSECARD", $playerID, GetRandomCards($parameterOne), $parameterOne, $parameterTwo);
+              ContinueDecisionQueue($playerID, "");
+            }
+            else {
+              WriteLog("You attempted to reroll, but fate is not so kind.");
+            }
+          }
+        }
+        else if($myDQ[0] == "REMOVEDECKCARD"){
+          if($buttonInput == "Reroll")
+          {
+            $encounter = &GetZone($playerID, "Encounter");
+            if($encounter[10] >= 1) {
+              WriteLog("You used a reroll to alter the reward");
+              $encounter[10] -= 1;
+              $parameterOne = $myDQ[2];
+              $parameterTwo = $myDQ[3];
+              ClearPhase($playerID); //Clear the screen and keep going
+              PrependDecisionQueue("REMOVEDECKCARD", $playerID, GetRandomCards($parameterOne), $parameterOne, $parameterTwo);
+              ContinueDecisionQueue($playerID, "");
+            }
+            else {
+              WriteLog("You attempted to reroll, but fate is not so kind.");
+            }
+          }
+        }
+        else if($myDQ[0] == "DUPLICATECARD"){
+          if($buttonInput == "Reroll")
+          {
+            $encounter = &GetZone($playerID, "Encounter");
+            if($encounter[10] >= 1) {
+              WriteLog("You used a reroll to alter the reward");
+              $encounter[10] -= 1;
+              $parameterOne = $myDQ[2];
+              $parameterTwo = $myDQ[3];
+              ClearPhase($playerID); //Clear the screen and keep going
+              PrependDecisionQueue("REMOVEDECKCARD", $playerID, GetRandomCards($parameterOne), $parameterOne, $parameterTwo);
+              ContinueDecisionQueue($playerID, "");
+            }
+            else {
+              WriteLog("You attempted to reroll, but fate is not so kind.");
+            }
           }
         }
         else if($myDQ[0] == "SHOP"){
@@ -174,6 +222,21 @@
             }
             else {
               WriteLog("Unfortunately, you don't have much to spare. Perhaps you'll be able to share good fortune another day.");
+            }
+          }
+          else if($buttonInput == "Reroll")
+          {
+            if($encounter[10] >= 1) {
+              WriteLog("You used a reroll to alter the shop");
+              $encounter[10] -= 1;
+              $parameterOne = $myDQ[2];
+              $parameterTwo = $myDQ[3];
+              ClearPhase($playerID); //Clear the screen and keep going
+              PrependDecisionQueue("SHOP", $playerID, GetShop($parameterOne), $parameterOne, $parameterTwo);
+              ContinueDecisionQueue($playerID, "");
+            }
+            else {
+              WriteLog("You attempted to reroll, but fate is not so kind.");
             }
           }
           else if($buttonInput == "Leave"){

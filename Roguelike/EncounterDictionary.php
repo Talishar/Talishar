@@ -190,8 +190,8 @@ function InitializeEncounter($player)
       break;
     case 006:
       //$encounter[2] = 1; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
-      AddDecisionQueue("CHOOSECARD", $player, GetPowers());
-      //AddDecisionQueue("SETENCOUNTER", $player, "127-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
+      AddDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,3"), "Power,3");
+      //AddDecisionQueue("SETENCOUNTER", $player, "212-PickMode"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
@@ -208,7 +208,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("CROSSROADS", $player, "-");
       break;
     case 10:
-      AddDecisionQueue("CHOOSECARD", $player, GetPowers());
+      AddDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,3"), "Power,3");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
 
@@ -266,15 +266,15 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 211:
-      AddDecisionQueue("SHOP", $player, GetShop("Equipment,Equipment,Equipment,Equipment,Equipment,Equipment"), "special");
+      AddDecisionQueue("SHOP", $player, GetShop("Equipment,Equipment,Equipment,Equipment,Equipment,Equipment"), "Equipment,Equipment,Equipment,Equipment,Equipment,Equipment", "NoSubchoice");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 212:
-      AddDecisionQueue("DUPLICATECARD", $player, GetRandomDeckCard($player, 4));
+      AddDecisionQueue("DUPLICATECARD", $player, GetRandomCards("Deck,4"), "Deck,4");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 213:
-      AddDecisionQueue("SHOP", $player, GetShop("Power-4"), "special");
+      AddDecisionQueue("SHOP", $player, GetShop("Power-4"), "Power-4", "NoSubchoice");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 214:
