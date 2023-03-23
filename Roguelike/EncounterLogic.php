@@ -231,45 +231,26 @@ function GeneratePool($selected, $type, $rarity = "-")
   return $generatedPool;
 }
 
-function GetShop()
+function GetShop($inputString = "Class,Class,Talent,Equipment-Common,Equipment,Generic,Generic,Power-1")
 {
   $result = [];
-  $pool = GeneratePool($result, "Class");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Class");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Talent");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Equipment", "Common");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Equipment");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Generic");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Generic"); //change to weapon once that is set up
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  //$pool = GeneratePool($result, "Power");
-  array_push($result, GetPowers(1));
-  $resultStr = "";
-  for($i = 0; $i < count($result); ++$i)
-  {
-    if($i != 0) $resultStr.=",";
-    $resultStr.=$result[$i];
-  }
-  return $resultStr;
-}
 
-function GetArmorShop()
-{
-  $result = [];
-  $pool = GeneratePool($result, "Equipment");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Equipment");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Equipment");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Equipment");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
+  $input = explode(",", $inputString);
+  for($i = 0; $i < count($input); ++$i)
+  {
+    $params = explode("-", $input[$i]);
+    array_push($params, "");
+    array_push($params, "");
+    if($params[0] == "Power")
+    {
+      array_push($result, GetPowers($params[1]));
+    }
+    else
+    {
+      $pool = GeneratePool($result, $params[0], $params[1], $params[2]);
+      array_push($result, $pool[rand(0, count($pool)-1)]);
+    }
+  }
   $resultStr = "";
   for($i = 0; $i < count($result); ++$i)
   {
@@ -296,6 +277,7 @@ function GetShopCost($cardID)
   }
   $encounter = &GetZone(1, "Encounter");
   if($encounter[0] == 211) $cost = $cost / 2;
+  if($encounter[0] == 213) $cost -= 2;
   return $cost;
 }
 ?>

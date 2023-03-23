@@ -389,6 +389,39 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
         }
         return 1;
+      case "PEACEFULMONK":
+        switch($lastResult)
+        {
+          case "Tell_him_your_story":
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
+            break;
+          case "Listen_to_his_story":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4));
+            break;
+          case "Sit_peacefully":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4));
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
+            break;
+          case "Leave":
+            break;
+        }
+        return 1;
+      case "SPARRINGKNIGHT":
+        switch($lastResult)
+        {
+          case "Spar_for_a_short_while":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomDeckCard($player, 4));
+            break;
+          case "Spar_until_nightfall":
+            $health = &GetZone($player, "Health");
+            $health[0] -= 4;
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomDeckCard($player, 4));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomDeckCard($player, 4));
+            break;
+          case "Politely_decline":
+            break;
+        }
+        return 1;
       case "CROSSROADS":
         switch($lastResult)
         {
@@ -423,8 +456,20 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "You_see_one_of_the_most_beautiful_views_in_all_of_rathe": //Cliffside
             PrependDecisionQueue("SETENCOUNTER", $player, "210-PickMode");
             break;
-          case "You_find_a_small_smithing_hut": //Cliffside
+          case "You_find_a_small_smithing_hut": //Armorer
             PrependDecisionQueue("SETENCOUNTER", $player, "211-PickMode");
+            break;
+          case "You_come_across_a_small_dojo": //DuplicateCard
+            PrependDecisionQueue("SETENCOUNTER", $player, "212-PickMode");
+            break;
+          case "A_lavish_noble_passes_you_by": //Noble shop
+            PrependDecisionQueue("SETENCOUNTER", $player, "213-PickMode");
+            break;
+          case "You_pass_a_strange_man_in_robes": //Monk
+            PrependDecisionQueue("SETENCOUNTER", $player, "214-PickMode");
+            break;
+          case "A_knight_approaches_you_asking_to_spar": //Sparring Knight
+            PrependDecisionQueue("SETENCOUNTER", $player, "215-PickMode");
             break;
           case "Take_the_scenic_route_through_the_back_streets": //Stealthy Stabber
             PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight");

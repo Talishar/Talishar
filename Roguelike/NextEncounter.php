@@ -159,6 +159,17 @@ $cardIconTop = intval($cardSize / 4.2); //30
       $encounterContent .= "</div>";
       break;
     }
+    case "DUPLICATECARD":{
+      $options = explode(",", $myDQ[1]);
+      $encounterContent .= "<h2>Offer a card in your deck</h2>";
+      $encounterContent .= "<div style='display:inline;'>";
+      for($i=0; $i<count($options); ++$i)
+      {
+        $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
+      }
+      $encounterContent .= "</div>";
+      break;
+    }
     case "SHOP":
     {
       $options = explode(",", $myDQ[1]);
