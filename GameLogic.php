@@ -706,12 +706,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($parameter > $defense) $parameter = $defense;
       $combatChain[$lastResult + 6] -= $parameter;
       return $lastResult;
-    case "REMOVEMYDISCARD":
-      $discard = &GetDiscard($player);
-      $cardID = $discard[$lastResult];
-      unset($discard[$lastResult]);
-      $discard = array_values($discard);
-      return $cardID;
     case "REMOVEDISCARD":
       $discard = &GetDiscard($player);
       $cardID = $discard[$lastResult];

@@ -1586,7 +1586,7 @@ function PayAdditionalCosts($cardID, $from)
         return "No Nimblism to banish.";
       }
       AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, $indices);
-      AddDecisionQueue("REMOVEMYDISCARD", $currentPlayer, "-", 1);
+      AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
       AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
       AddDecisionQueue("NIMBLESTRIKE", $currentPlayer, "-", 1);
       break;
@@ -1596,7 +1596,7 @@ function PayAdditionalCosts($cardID, $from)
         return "No Sloggism to banish.";
       }
       AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, $indices);
-      AddDecisionQueue("REMOVEMYDISCARD", $currentPlayer, "-", 1);
+      AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
       AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
       AddDecisionQueue("SLOGGISM", $currentPlayer, "-", 1);
       break;
