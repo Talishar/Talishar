@@ -963,7 +963,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $zone = $destArr;
       return $lastResult;
     case "GIVEATTACKGOAGAIN":
-      $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
+      GiveAttackGoAgain();
       return $lastResult;
     case "EXHAUSTCHARACTER":
       $character = &GetPlayerCharacter($player);
