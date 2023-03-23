@@ -97,5 +97,59 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
   return $damage;
 }
 
+function CharacterStartTurnAbility($index)
+{
+  global $mainPlayer;
+  $char = new Character($mainPlayer, $index);
+  if($char->status == 0 && !CharacterTriggerInGraveyard($char->cardID)) return;
+  if($char->status == 1) return;
+  switch($char->cardID) {
+    case "WTR150":
+      if($char->numCounters < 3) ++$char->numCounters;
+      $char->Finished();
+      break;
+    case "CRU097":
+      AddLayer("TRIGGER", $mainPlayer, $char->cardID);
+      break;
+    case "MON187":
+      if(GetHealth($mainPlayer) <= 13) {
+        $char->status = 0;
+        BanishCardForPlayer($char->cardID, $mainPlayer, "EQUIP", "NA");
+        WriteLog(CardLink($char->cardID, $char->cardID) . " got banished for having 13 or less health");
+        $char->Finished();
+      }
+      break;
+    case "EVR017":
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may reveal an Earth, Ice, and Lightning card for Bravo, Star of the Show.");
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "BRAVOSTARSHOW");
+      AddDecisionQueue("MULTICHOOSEHAND", $mainPlayer, "<-", 1);
+      AddDecisionQueue("BRAVOSTARSHOW", $mainPlayer, "-", 1);
+      break;
+    case "EVR019":
+      if(CountAura("WTR075", $mainPlayer) >= 3) {
+        WriteLog(CardLink($char->cardID, $char->cardID) . " gives Crush attacks Dominate this turn");
+        AddCurrentTurnEffect("EVR019", $mainPlayer);
+      }
+      break;
+    case "DYN117": case "DYN118": case "OUT011":
+      $discardIndex = SearchDiscardForCard($mainPlayer, $char->cardID);
+      if(CountItem("EVR195", $mainPlayer) >= 2 && $discardIndex != "") {
+        AddDecisionQueue("COUNTITEM", $mainPlayer, "EVR195");
+        AddDecisionQueue("LESSTHANPASS", $mainPlayer, "2");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to pay 2 silver to equip " . CardLink($char->cardID, $char->cardID) . "?", 1);
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_and_equip_" . CardLink($char->cardID, $char->cardID), 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "EVR195-2", 1);
+        AddDecisionQueue("FINDANDDESTROYITEM", $mainPlayer, "<-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYCHAR-" . $index, 1);
+        AddDecisionQueue("MZUNDESTROY", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYDISCARD-" . $discardIndex, 1);
+        AddDecisionQueue("MULTIZONEREMOVE", $mainPlayer, "-", 1);
+      }
+      break;
+    default: break;
+  }
+}
+
 
 ?>

@@ -968,4 +968,32 @@ function IsCombatEffectPersistent($cardID)
   }
 }
 
+function BeginEndPhaseEffects()
+{
+  global $currentTurnEffects, $mainPlayer, $EffectContext;
+  EndTurnBloodDebt(); //Must be done before resetting character (e.g. sleep dart)
+  for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+    $EffectContext = $currentTurnEffects[$i];
+    switch($currentTurnEffects[$i]) {
+      case "EVR106":
+        if(CountAura("ARC112", $mainPlayer) > 0) WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " destroyed your Runechant tokens");
+        DestroyAllThisAura($currentTurnEffects[$i + 1], "ARC112");
+        break;
+      case "UPR200": case "UPR201": case "UPR202":
+        Draw($currentTurnEffects[$i + 1]);
+        break;
+      case "DYN153":
+        $deck = &GetDeck($mainPlayer);
+        if(count($deck) == 0) break;
+        if(!ArsenalFull($mainPlayer)) {
+          $card = array_shift($deck);
+          AddArsenal($card, $mainPlayer, "DECK", "UP");
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
+
 ?>
