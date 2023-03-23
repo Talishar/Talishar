@@ -154,6 +154,40 @@ function GetRandomCards($number = 4, $special = "-", $specialType = "-")
   }
 }
 
+function GetRandomDeckCard($player, $special = "") //TODO add in a seperate special call to remove random cards instead of any card and a special call to remove powers.
+{
+
+  $deck = &GetZone($player, "Deck");
+  $fullList = "";
+  for($i = 0; $i < count($deck); ++$i)
+  {
+    if(CardSubtype($deck[$i]) != "Power")
+    {
+      //WriteLog(CardSubtype($deck[$i]));
+      if($i != 0) $fullList .= ",";
+      $fullList .= $deck[$i];
+    }
+  }
+
+  if ($special == "") {
+    $special = "ALL"; //This is the default mode
+  }
+  if ($special == "ALL") return $fullList; // By default, this is all we need
+  elseif($special == 4) {
+    //WriteLog($fullList);
+    $deckNoPowers = explode(",", $fullList);
+    $options = GetOptions(4, 0, count($deckNoPowers) - 1, 1); //If empty cards keep showing up, maybe get rid of the '- 1' in front of count(#deckNoPowers)
+    $return = "";
+    for($i = 0; $i < count($options); $i++){
+      if($i != 0) $return .= ",";
+      $return .= $deckNoPowers[$options[$i]];
+    }
+    return $return;
+  }
+  WriteLog("Function GetRandomDeckCard failed to find a case");
+  return "This should never happen";
+}
+
 function GeneratePool($selected, $type, $rarity = "-")
 {
   $encounter = &GetZone(1, "Encounter");
@@ -197,90 +231,26 @@ function GeneratePool($selected, $type, $rarity = "-")
   return $generatedPool;
 }
 
-function GetRandomArmor($type) //TODO combine this with GetRandomCards()
-{
-  $encounter = &GetZone(1, "Encounter");
-  switch($encounter[3])
-  {
-    case "Dorinthea":
-    {
-      switch($type)
-      {
-        case "Head": $pool = array("UPR183", "WTR151", "MON241", "WTR155", "ARC155", "ELE233", "DYN236", "ARC151", "EVR053"); break;
-        case "Chest": $pool = array("MON238", "DVR004", "ELE234", "WTR152", "MON242", "WTR156", "ARC156", "UPR184", "DYN237", "ARC152", "CRU081"); break;
-        case "Arms": $pool = array("ARC153", "ELE235", "CRU179", "WTR153", "MON243", "WTR157", "ARC157", "UPR185", "DYN238", "MON239", "MON108"); break;
-        case "Legs": $pool = array("MON244", "WTR158", "ARC154", "ARC158", "UPR186", "ELE236", "WTR154", "DYN239", "MON240", "WTR117"); break;
-      }
-      break;
-    }
-    case "Bravo":
-    {
-      switch($type)
-      {
-        case "Head": $pool = array("UPR183", "WTR151", "MON241", "WTR155", "ARC155", "ELE233", "DYN236", "ARC151", "WTR042"); break;
-        case "Chest": $pool = array("MON238", "DVR004", "ELE234", "WTR152", "MON242", "WTR156", "ARC156", "UPR184", "DYN237", "ARC152", "EVR020"); break;
-        case "Arms": $pool = array("ARC153", "ELE235", "CRU179", "WTR153", "MON243", "WTR157", "ARC157", "UPR185", "DYN238", "MON239", "CRU025"); break;
-        case "Legs": $pool = array("MON244", "WTR158", "ARC154", "ARC158", "UPR186", "ELE236", "WTR154", "DYN239", "MON240"); break;
-      }
-      break;
-    }
-  }
-  return $pool[rand(0, count($pool)-1)];
-}
-
-function GetRandomDeckCard($player, $special = "") //TODO add in a seperate special call to remove random cards instead of any card and a special call to remove powers.
-{
-
-  $deck = &GetZone($player, "Deck");
-  $fullList = "";
-  for($i = 0; $i < count($deck); ++$i)
-  {
-    if(CardSubtype($deck[$i]) != "Power")
-    {
-      //WriteLog(CardSubtype($deck[$i]));
-      if($i != 0) $fullList .= ",";
-      $fullList .= $deck[$i];
-    }
-  }
-
-  if ($special == "") {
-    $special = "ALL"; //This is the default mode
-  }
-  if ($special == "ALL") return $fullList; // By default, this is all we need
-  elseif($special == 4) {
-    //WriteLog($fullList);
-    $deckNoPowers = explode(",", $fullList);
-    $options = GetOptions(4, 0, count($deckNoPowers) - 1, 1); //If empty cards keep showing up, maybe get rid of the '- 1' in front of count(#deckNoPowers)
-    $return = "";
-    for($i = 0; $i < count($options); $i++){
-      if($i != 0) $return .= ",";
-      $return .= $deckNoPowers[$options[$i]];
-    }
-    return $return;
-  }
-  WriteLog("Function GetRandomDeckCard failed to find a case");
-  return "This should never happen";
-}
-
-function GetShop()
+function GetShop($inputString = "Class,Class,Talent,Equipment-Common,Equipment,Generic,Generic,Power-1")
 {
   $result = [];
-  $pool = GeneratePool($result, "Class");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Class");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Talent");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Equipment", "Common");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Equipment");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Generic");
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  $pool = GeneratePool($result, "Generic"); //change to weapon once that is set up
-  array_push($result, $pool[rand(0, count($pool)-1)]);
-  //$pool = GeneratePool($result, "Power");
-  array_push($result, GetPowers(1));
+
+  $input = explode(",", $inputString);
+  for($i = 0; $i < count($input); ++$i)
+  {
+    $params = explode("-", $input[$i]);
+    array_push($params, "");
+    array_push($params, "");
+    if($params[0] == "Power")
+    {
+      array_push($result, GetPowers($params[1]));
+    }
+    else
+    {
+      $pool = GeneratePool($result, $params[0], $params[1], $params[2]);
+      array_push($result, $pool[rand(0, count($pool)-1)]);
+    }
+  }
   $resultStr = "";
   for($i = 0; $i < count($result); ++$i)
   {
@@ -305,6 +275,9 @@ function GetShopCost($cardID)
     if(Rarity($cardID) == "L") $cost = 12;
     else $cost = 4;
   }
+  $encounter = &GetZone(1, "Encounter");
+  if($encounter[0] == 211) $cost = $cost / 2;
+  if($encounter[0] == 213) $cost -= 2;
   return $cost;
 }
 ?>

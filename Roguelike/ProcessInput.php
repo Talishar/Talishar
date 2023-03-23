@@ -122,6 +122,14 @@
               break;
             }
           }
+          if($myDQ[0] == "DUPLICATECARD")
+          {
+            $deck = &GetZone($playerID, "Deck");
+            array_push($deck, $cardID);
+            array_push($deck, $cardID);
+            WriteLog("You added " . CardLink($cardID, $cardID) . " to your deck.");
+            WriteLog("You added " . CardLink($cardID, $cardID) . " to your deck.");
+          }
           ClearPhase($playerID); //Clear the screen and keep going
           ContinueDecisionQueue($playerID, "");
           break;
@@ -141,7 +149,7 @@
           if($buttonInput == "shop_heal"){
             $health = &GetZone($playerID, "Health");
             WriteLog("\$encounter[11]: ".$encounter[11]);
-            
+
             $gain = (20 - $health[0] > 5 ? 5 : 20 - $health[0]);
             if($gain < 0) $gain = 0;
             if($gain == 0){
