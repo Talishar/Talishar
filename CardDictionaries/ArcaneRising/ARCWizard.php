@@ -23,13 +23,13 @@
         return "";
       case "ARC115":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives the next card that deals arcane damage +1.";
+        return "";
       case "ARC116":
         SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
-        return "You can play your next Wizard non-attack action as though it were an instant.";
+        return "";
       case "ARC117":
         GainResources($currentPlayer, 3);
-        return "Gain 3 resources.";
+        return "";
       case "ARC118":
         $damage = GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
         DealArcane($damage, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
@@ -77,7 +77,7 @@
         return "";
       case "ARC123": case "ARC124": case "ARC125":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives the next card that deals arcane damage +2.";
+        return "";
       case "ARC126": case "ARC127": case "ARC128":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("OPTX", $currentPlayer, "<-", 1);
@@ -85,7 +85,7 @@
       case "ARC129": case "ARC130": case "ARC131":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
-        return "Buffs your next arcane and lets you play your next Wizard non-attack action as though it were an instant.";
+        return "";
       case "ARC132": case "ARC133": case "ARC134":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD",$cardID, resolvedTarget: $target);
         AddDecisionQueue("BUFFARCANE", $currentPlayer, $cardID, 1);
@@ -94,26 +94,13 @@
         if($cardID == "ARC135") $count = 5;
         else if($cardID == "ARC136") $count = 4;
         else $count = 3;
-        $deck = &GetDeck($currentPlayer);
-        $cards = "";
-        for($i=0; $i<$count; ++$i)
-        {
-          if(count($deck) > 0)
-          {
-            if($cards != "") $cards .= ",";
-            $card = array_shift($deck);
-            $cards .= $card;
-          }
-        }
-        if($cards != "")
-        {
-          WriteLog("Choose a card to go on the top of your deck.");
-          AddDecisionQueue("CHOOSECARD", $currentPlayer, $cards, 1);
-          AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "DECK");
-          AddDecisionQueue("REMOVELAST", $currentPlayer, $cards, 1);
-          AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-", 1);
-        }
-        return "Lets you rearrange the cards of your deck.";
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXREMOVE," . $count);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("CHOOSECARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "DECK");
+        AddDecisionQueue("OP", $currentPlayer, "REMOVECARD", 1);
+        AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-", 1);
+        return "";
       case "ARC138": case "ARC139": case "ARC140":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);

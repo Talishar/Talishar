@@ -39,11 +39,11 @@
         AddDecisionQueue("BULLEYESBRACERS", $currentPlayer, $cardID, 1);
         return "";
       case "ARC044":
-        MyDrawCard();
-        MyDrawCard();
-        MyDrawCard();
+        Draw($currentPlayer);
+        Draw($currentPlayer);
+        Draw($currentPlayer);
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Draws 3 cards and restrict you to playing cards from arsenal this turn.";
+        return "";
       case "ARC046":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYDECKARROW");
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
@@ -55,47 +55,27 @@
       case "ARC047":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Reload();
-        return "Gives arrows you control go again this turn and allows you to reload.";
+        return "";
       case "ARC048": case "ARC049": case "ARC050":
         Reload();
-        return "Take cover allows you to reload.";
+        return "";
       case "ARC051": case "ARC052": case "ARC053":
         if(!ArsenalEmpty($currentPlayer)) return "Did nothing because your arsenal is not empty.";
         if($cardID == "ARC051") $count = 4;
         else if($cardID == "ARC052") $count = 3;
         else $count = 2;
-        $deck = &GetDeck($currentPlayer);
-        $cards = "";
-        $arrows = "";
-        for($i=0; $i<$count; ++$i)
-        {
-          if(count($deck) > 0)
-          {
-            if($cards != "") $cards .= ",";
-            $card = array_shift($deck);
-            $cards .= $card;
-            if(CardSubtype($card) == "Arrow")
-            {
-              if($arrows != "") $arrows .= ",";
-              $arrows .= $card;
-            }
-          }
-        }
-        if($arrows != "")
-        {
-          AddDecisionQueue("CHOOSECARD", $currentPlayer, $arrows, 1);
-          AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "DECK");
-        }
-        if($cards != "")
-        {
-          AddDecisionQueue("REMOVELAST", $currentPlayer, $cards, 1);
-          AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-", 1);
-        }
-        return "Lets you load an arrow and rearrange the rest of the cards on the bottom of your deck.";
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXREMOVE," . $count);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("FILTER", $currentPlayer, "LastResult-include-subtype-Arrow", 1);
+        AddDecisionQueue("CHOOSECARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "DECK", 1);
+        AddDecisionQueue("OP", $currentPlayer, "REMOVECARD");
+        AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-");
+        return "";
       case "ARC054": case "ARC055": case "ARC056":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Reload();
-        return "Gives your next Ranger attack action card +" . EffectAttackModifier($cardID) . " and allows you to reload.";
+        return "";
       default: return "";
     }
   }

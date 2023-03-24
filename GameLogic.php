@@ -366,13 +366,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $deck = &GetDeck($player);
           if (count($deck) > 0) $rv = "0";
           break;
-        case "DECKTOPX":
-          $rv = "";
-          $deck = &GetDeck($player);
-          for ($i = 0; $i < $subparam; ++$i) if ($i < count($deck)) {
-            if ($rv != "") $rv .= ",";
-            $rv .= $i;
-          }
+        case "DECKTOPXREMOVE":
+          $deck = new Deck($player);
+          $rv = $deck->Top(true, $subparam);
           break;
         case "DECKCLASSAA":
           $rv = SearchDeck($player, "AA", "", -1, -1, $subparam);
@@ -863,8 +859,45 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DESTROYFROZENARSENAL":
           DestroyFrozenArsenal($player);
           return "";
+        case "REMOVECARD":
+          if($lastResult == "") return $dqVars[0];
+          $cards = explode(",", $dqVars[0]);
+          for($i = 0; $i < count($cards); ++$i) {
+            if($cards[$i] == $lastResult) {
+              unset($cards[$i]);
+              $cards = array_values($cards);
+              break;
+            }
+          }
+          return implode(",", $cards);
         default: return $lastResult;
       }
+    case "FILTER":
+      $params = explode("-", $parameter);
+      $from = $params[0];
+      $relationship = $params[1];//exclude other or include
+      $type = $params[2];
+      $compare = $params[3];
+      $input = "";
+      switch($from)
+      {
+        case "LastResult": $input = $lastResult; break;
+        default: break;
+      }
+      $input = explode(",", $input);
+      $output = [];
+      for($i=0; $i<count($input); ++$i)
+      {
+        $passFilter = ($relationship == "include" ? false : true);
+        switch($type)
+        {
+          case "subtype": if(SubtypeContains($input[$i], $compare, $player)) $passFilter = !$passFilter; break;
+          default: break;
+        }
+        if($passFilter) array_push($output, $input[$i]);
+      }
+      WriteLog(count($output));
+      return (count($output) > 0 ? implode(",", $output) : "PASS");
     case "PASSPARAMETER":
       return $parameter;
     case "DISCARDMYHAND":
@@ -1788,17 +1821,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         array_push($hand, array_shift($deck));
       }
       return 1;
-    case "REMOVELAST":
-      if ($lastResult == "") return $parameter;
-      $cards = explode(",", $parameter);
-      for ($i = 0; $i < count($cards); ++$i) {
-        if ($cards[$i] == $lastResult) {
-          unset($cards[$i]);
-          $cards = array_values($cards);
-          break;
-        }
-      }
-      return implode(",", $cards);
     case "ROLLDIE":
       $roll = RollDie($player, true, $parameter == "1");
       return $roll;

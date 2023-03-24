@@ -41,10 +41,15 @@ class Deck {
     }
   }
 
-  function Top($remove = false)
+  function Top($remove = false, $amount = 1)
   {
-    if(count($this->deck) == 0) return "";
-    return ($remove ? array_shift($this->deck) : $this->deck[0]);
+    $rv = "";
+    for($i=0; $i<$amount; ++$i)
+    {
+      if($rv != "") $rv .= ",";
+      $rv .= ($remove ? array_shift($this->deck) : $this->deck[$i]);
+    }
+    return $rv;
   }
 
   function Banish() {

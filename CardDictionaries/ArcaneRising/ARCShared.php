@@ -98,7 +98,6 @@
       case "ARC209": case "ARC210": case "ARC211": return true;
       case "ARC212": case "ARC213": case "ARC214": return GetClassState($currentPlayer, $CS_NumMoonWishPlayed) > 0;
       case "ARC215": case "ARC216": case "ARC217": return true;
-
       default: return false;
     }
   }
@@ -133,28 +132,28 @@
   {
     switch($cardID)
     {
-    case "ARC032": return 3;
-    case "ARC033": return 2;
-    case "ARC034": return 1;
-    case "ARC042": return 1;
-    case "ARC054": return 3;
-    case "ARC055": return 2;
-    case "ARC056": return 1;
-    case "ARC057": case "ARC058": case "ARC059": return 2;
-    case "ARC091": return 3;
-    case "ARC092": return 2;
-    case "ARC093": return 1;
-    case "ARC153-1": return 1; case "ARC153-2": return 2; case "ARC153-3": return 3;
-    case "ARC160-1": return 1;
-    case "ARC170-2": return 3;
-    case "ARC171-2": return 2;
-    case "ARC172-2": return 1;
-    case "ARC203": return 3;
-    case "ARC204": return 2;
-    case "ARC205": return 1;
-    case "ARC206": return 3;
-    case "ARC207": return 2;
-    case "ARC208": return 1;
+      case "ARC032": return 3;
+      case "ARC033": return 2;
+      case "ARC034": return 1;
+      case "ARC042": return 1;
+      case "ARC054": return 3;
+      case "ARC055": return 2;
+      case "ARC056": return 1;
+      case "ARC057": case "ARC058": case "ARC059": return 2;
+      case "ARC091": return 3;
+      case "ARC092": return 2;
+      case "ARC093": return 1;
+      case "ARC153-1": return 1; case "ARC153-2": return 2; case "ARC153-3": return 3;
+      case "ARC160-1": return 1;
+      case "ARC170-2": return 3;
+      case "ARC171-2": return 2;
+      case "ARC172-2": return 1;
+      case "ARC203": return 3;
+      case "ARC204": return 2;
+      case "ARC205": return 1;
+      case "ARC206": return 3;
+      case "ARC207": return 2;
+      case "ARC208": return 1;
       default: return 0;
     }
   }
@@ -188,8 +187,7 @@ function ARCCombatEffectActive($cardID, $attackID)
     case "ARC203": case "ARC204": case "ARC205":
     case "ARC206": case "ARC207": case "ARC208":
       return CardType($attackID) == "AA";
-    default:
-      return false;
+    default: return false;
   }
 }
 
