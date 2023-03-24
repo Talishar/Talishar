@@ -519,7 +519,7 @@ function WTRAbilityCost($cardID)
         if(CardCost($deck[$i]) >= 3) ++$lifegain;
       }
     }
-    RevealCards($cards, $mainPlayer);//CanReveal called
+    RevealCards($cards, $mainPlayer);
     GainHealth($lifegain, $mainPlayer);
     return "";
   }
@@ -529,7 +529,6 @@ function WTRAbilityCost($cardID)
     global $mainPlayer;
     $hand = &GetHand($mainPlayer);
     if($context == "") $context = "to_use_Katsu's_ability";
-    //If hand is empty skip the popup
     if(count($hand) > 0)
     {
       AddDecisionQueue("YESNO", $mainPlayer, $context);
@@ -592,64 +591,62 @@ function WTRAbilityCost($cardID)
   {
     global $mainPlayer, $defPlayer, $defCharacter, $combatChain;
     if(CardType($combatChain[0]) && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
-    if(IsHeroAttackTarget()) {
-      switch($cardID) {
-        case "WTR043":
-          DiscardRandom($defPlayer);
-          DiscardRandom($defPlayer);
-          break;
-        case "WTR044":
-          AddNextTurnEffect($cardID, $defPlayer);
-          break;
-        case "WTR045":
-          AddNextTurnEffect($cardID, $defPlayer);
-          break;
-        case "WTR048": case "WTR049": case "WTR050":
-          AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
-          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put at the bottom of the deck", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MZADDZONE", $mainPlayer, "THEIRBOTDECK", 1);
-          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-          break;
-        case "WTR057": case "WTR058": case "WTR059":
-          AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
-          AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-          AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
-          break;
-        case "WTR060": case "WTR061": case "WTR062":
-          AddNextTurnEffect($cardID, $defPlayer);
-          break;
-        case "WTR063": case "WTR064": case "WTR065":
-          $defCharacter[1] = 3;
-          break;
-        case "WTR066": case "WTR067": case "WTR068":
-          AddNextTurnEffect($cardID, $defPlayer);
-          break;
-        case "CRU026":
-          AddDecisionQueue("FINDINDICES", $mainPlayer, "CRU026");
-          AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-          AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
-          break;
-        case "CRU027":
-          AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES,5");
-          AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
-          AddDecisionQueue("COUNTPARAM", $defPlayer, "<-", 1);
-          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card(s) to banish", 1);
-          AddDecisionQueue("MULTICHOOSETHEIRDECK", $mainPlayer, "<-", 1, 1);
-          AddDecisionQueue("VALIDATEALLSAMENAME", $defPlayer, "DECK", 1);
-          AddDecisionQueue("MULTIREMOVEDECK", $defPlayer, "-", 1);
-          AddDecisionQueue("MULTIBANISH", $defPlayer, "DECK,-", 1);
-          AddDecisionQueue("SPECIFICCARD", $mainPlayer, "RIGHTEOUSCLEANSING", 1);
-          break;
-        case "CRU032": case "CRU033": case "CRU034":
-          AddNextTurnEffect("CRU032", $defPlayer);
-          break;
-        case "CRU035": case "CRU036": case "CRU037":
-          AddNextTurnEffect("CRU035", $defPlayer);
-          break;
-        default:
-          return;
-      }
+    if(!IsHeroAttackTarget()) return;
+    switch($cardID) {
+      case "WTR043":
+        DiscardRandom($defPlayer);
+        DiscardRandom($defPlayer);
+        break;
+      case "WTR044":
+        AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "WTR045":
+        AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "WTR048": case "WTR049": case "WTR050":
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put at the bottom of the deck", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZADDZONE", $mainPlayer, "THEIRBOTDECK", 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        break;
+      case "WTR057": case "WTR058": case "WTR059":
+        AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
+        AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+        AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
+        break;
+      case "WTR060": case "WTR061": case "WTR062":
+        AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "WTR063": case "WTR064": case "WTR065":
+        $defCharacter[1] = 3;
+        break;
+      case "WTR066": case "WTR067": case "WTR068":
+        AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "CRU026":
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "CRU026");
+        AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+        AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
+        break;
+      case "CRU027":
+        AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES,5");
+        AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
+        AddDecisionQueue("COUNTPARAM", $defPlayer, "<-", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card(s) to banish", 1);
+        AddDecisionQueue("MULTICHOOSETHEIRDECK", $mainPlayer, "<-", 1, 1);
+        AddDecisionQueue("VALIDATEALLSAMENAME", $defPlayer, "DECK", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $defPlayer, "-", 1);
+        AddDecisionQueue("MULTIBANISH", $defPlayer, "DECK,-", 1);
+        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "RIGHTEOUSCLEANSING", 1);
+        break;
+      case "CRU032": case "CRU033": case "CRU034":
+        AddNextTurnEffect("CRU032", $defPlayer);
+        break;
+      case "CRU035": case "CRU036": case "CRU037":
+        AddNextTurnEffect("CRU035", $defPlayer);
+        break;
+      default: return;
     }
   }
 
