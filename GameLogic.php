@@ -366,6 +366,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $deck = &GetDeck($player);
           if (count($deck) > 0) $rv = "0";
           break;
+        case "DECKTOPXINDICES":
+          $deck = &GetDeck($player);
+          for($i=0; $i<$subparam && $i<count($deck); ++$i)
+          {
+            if($rv != "") $rv .= ",";
+            $rv .= $i;
+          }
+          break;
         case "DECKTOPXREMOVE":
           $deck = new Deck($player);
           $rv = $deck->Top(true, $subparam);

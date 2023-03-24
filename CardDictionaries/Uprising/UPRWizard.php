@@ -123,7 +123,7 @@
         GainResources($currentPlayer, 1);
         return "Gain 1 resource.";
       case "UPR168":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPX,2");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES,2");
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("DUPLICITYBANISH", $currentPlayer, "DECK,INST", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);

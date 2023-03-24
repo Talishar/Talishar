@@ -663,7 +663,7 @@ function WTRAbilityCost($cardID)
           AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
           break;
         case "CRU027":
-          AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPX,5");
+          AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES,5");
           AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
           AddDecisionQueue("COUNTPARAM", $defPlayer, "<-", 1);
           AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card(s) to banish", 1);
