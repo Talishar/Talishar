@@ -1580,24 +1580,19 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-");
       break;
     case "WTR185": case "WTR186": case "WTR187":
-      $indices = SearchDiscardForCard($currentPlayer, "WTR218", "WTR219", "WTR220");
-      if ($indices == "") {
-        return "No Nimblism to banish.";
-      }
-      AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, $indices);
-      AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
-      AddDecisionQueue("NIMBLESTRIKE", $currentPlayer, "-", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:cardID=WTR218;cardID=WTR219;cardID=WTR220");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,GY,-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, $cardID, 1);
       break;
     case "WTR197": case "WTR198": case "WTR199":
-      $indices = SearchDiscardForCard($currentPlayer, "WTR221", "WTR222", "WTR223");
-      if ($indices == "") {
-        return "No Sloggism to banish.";
-      }
-      AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, $indices);
-      AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
-      AddDecisionQueue("SLOGGISM", $currentPlayer, "-", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:cardID=WTR221;cardID=WTR222;cardID=WTR223");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,GY,-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "ARC003":
       $abilityType = GetResolvedAbilityType($cardID);

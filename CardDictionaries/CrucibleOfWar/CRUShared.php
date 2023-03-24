@@ -452,7 +452,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
       AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
       AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("BANISH", $currentPlayer, "TT", 1);
+      AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,TT", 1);
       return "Banishes a Runeblade attack action card, which can be played this turn.";
     case "CRU144":
       PlayAura("ARC112", $currentPlayer, 4);

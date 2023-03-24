@@ -314,7 +314,7 @@ function WTRAbilityCost($cardID)
         {
           $ARs = SearchDeck($currentPlayer, "AR");
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, $ARs);
-          AddDecisionQueue("BANISH", $currentPlayer, "TCL", 1);
+          AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,TCL", 1);
           AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
           AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
@@ -450,7 +450,7 @@ function WTRAbilityCost($cardID)
       case "WTR218": case "WTR219": case "WTR220":
         AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
-      case "WTR221": case "WTR222": case "WTR223"://Sloggism
+      case "WTR221": case "WTR222": case "WTR223":
         AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
       case "WTR153":
@@ -538,7 +538,7 @@ function WTRAbilityCost($cardID)
       AddDecisionQueue("DISCARDMYHAND", $mainPlayer, "-", 1);
       AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-2", 1);
       AddDecisionQueue("MAYCHOOSEDECK", $mainPlayer, "<-", 1);
-      AddDecisionQueue("BANISH", $mainPlayer, "TT", 1);
+      AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,TT", 1);
       AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
       AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was banished.", 1);
       AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);

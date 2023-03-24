@@ -650,9 +650,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "DRAW":
       return Draw($player);
-    case "BANISH":
-      BanishCardForPlayer($lastResult, $player, "-", $parameter);
-      return $lastResult;
     case "MULTIBANISH":
       if($lastResult == "") return $lastResult;
       $cards = explode(",", $lastResult);
@@ -1205,13 +1202,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           return 2;
       }
       return $lastResult;
-    case "NIMBLESTRIKE":
-      AddCurrentTurnEffect("WTR185", $player);
-      $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-      return "1";
-    case "SLOGGISM":
-      AddCurrentTurnEffect("WTR197", $player);
-      return "1";
     case "SANDSKETCH":
       if (count(GetHand($player)) == 0) {
         WriteLog("No card for Sand Sketched Plan to discard.");
@@ -1350,7 +1340,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "Banish_an_attack_action_card_to_draw_2_cards":
             PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
             PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
-            PrependDecisionQueue("BANISH", $currentPlayer, "-", 1);
+            PrependDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,-", 1);
             PrependDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
             PrependDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
             PrependDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
@@ -2378,6 +2368,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         switch($params[0])
         {
+          case "MYBANISH": BanishCardForPlayer($cardIDs[$i], $player, $params[1], $params[2]); break;
           case "MYHAND": AddPlayerHand($cardIDs[$i], $player, "-"); break;
           case "MYTOPDECK": AddTopDeck($cardIDs[$i], $player, "-"); break;
           case "MYBOTDECK": AddBottomDeck($cardIDs[$i], $player, "-"); break;
