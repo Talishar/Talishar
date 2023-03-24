@@ -128,7 +128,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
   $otherPlayer = $player == 1 ? 2 : 1;
   if($facing == "UP") {
     if($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
-      WriteLog("Back Alley Breakline was put into your arsenal from your deck face up. Gained 1 action point.");
+      WriteLog("Gained 1 action point from Back Alley Breakline");
       if ($player == $mainPlayer) GainActionPoints(1);
     }
     if($from == "DECK" && CardSubType($cardID) == "Arrow" && SearchCharacterActive($player, "OUT097"))

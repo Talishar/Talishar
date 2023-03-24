@@ -380,7 +380,7 @@ function AuraStartTurnAbilities()
         else $amount = 1;
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         Opt($auras[$i], $amount);
-        AddDecisionQueue("BLESSINGOFFOCUS", $mainPlayer, "-", 1);
+        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "BLESSINGOFFOCUS", 1);
         break;
 		  case "DYN179": case "DYN180": case "DYN181":
         if ($auras[$i] == "DYN179") $amount = 3;

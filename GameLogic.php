@@ -2054,13 +2054,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PlayAura("WTR225", $player);
       }
       return $lastResult;
-    case "BLESSINGOFFOCUS":
-      $deck = &GetDeck($mainPlayer);
-      if (RevealCards($deck[0], $mainPlayer) && CardSubType($deck[0]) == "Arrow") {
-        if (!ArsenalFull($mainPlayer)) AddArsenal($deck[0], $mainPlayer, "DECK", "UP", 1);
-        else WriteLog("Your arsenal is full, so you cannot put an arrow in your arsenal.");
-      }
-      return $lastResult;
     case "KRAKENAETHERVEIN":
       if ($lastResult > 0) {
         for ($i = 0; $i < $lastResult; ++$i) Draw($player);
@@ -2184,13 +2177,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       SetClassState($player, $CS_AbilityIndex, $index);
       $names = explode(",", GetAbilityNames($parameter, GetClassState($player, $CS_CharacterIndex)));
       WriteLog(implode(" ", explode("_", $names[$index])) . " ability was chosen.");
-      return $lastResult;
-    case "ENCASEDAMAGE":
-      $character = &GetPlayerCharacter($player);
-      $character[8] = 1;
-      for ($i = CharacterPieces(); $i < count($character); $i += CharacterPieces()) {
-        if (CardType($character[$i]) == "E" && $character[$i + 1] != 0) $character[$i + 8] = 1;
-      }
       return $lastResult;
     case "MZSTARTTURNABILITY":
       $params = explode("-", $lastResult);

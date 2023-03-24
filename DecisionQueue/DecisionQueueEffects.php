@@ -45,6 +45,20 @@ function SpecificCardLogic($player, $card, $lastResult)
         Draw($player);
       }
       return "1";
+    case "ENCASEDAMAGE":
+      $character = &GetPlayerCharacter($player);
+      $character[8] = 1;//Freeze their character
+      for ($i = CharacterPieces(); $i < count($character); $i += CharacterPieces()) {
+        if (CardType($character[$i]) == "E" && $character[$i + 1] != 0) $character[$i + 8] = 1;//Freeze their equipment
+      }
+      return $lastResult;
+    case "BLESSINGOFFOCUS":
+      $deck = new Deck($player);
+      if ($deck->Reveal() && CardSubType($deck->Top()) == "Arrow") {
+        if (!ArsenalFull($player)) { AddArsenal($deck->Top(true), $player, "DECK", "UP", 1); }
+        else WriteLog("Your arsenal is full");
+      }
+      return $lastResult;
     default: return "";
   }
 }

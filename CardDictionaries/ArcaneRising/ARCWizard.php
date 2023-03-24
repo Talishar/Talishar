@@ -500,7 +500,7 @@
     switch($source) {
       case "UPR104":
         if(MZIsPlayer($target) && $damage > 0) {
-          AddDecisionQueue("ENCASEDAMAGE", MZPlayerID($player, $target), "-", 1);
+          AddDecisionQueue("SPECIFICCARD", MZPlayerID($player, $target), "ENCASEDAMAGE", 1);
         }
         break;
       case "UPR113": case "UPR114": case "UPR115":
