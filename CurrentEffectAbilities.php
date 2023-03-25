@@ -187,9 +187,7 @@ function EffectHitEffect($cardID)
       }
       break;
     case "DYN028":
-      AddDecisionQueue("FINDINDICES", $mainPlayer, "CRU026");
-      AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-      AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
+      Mangle();
       break;
     case "DYN071":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRALLY", 1);

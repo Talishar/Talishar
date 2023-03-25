@@ -861,27 +861,6 @@ function GetChainLinkCards($playerID="", $cardType="", $exclCardTypes="")
   return $pieces;
 }
 
-function GetMainPlayerComboCards()
-{
-  return GetComboCards();
-}
-
-function GetComboCards()
-{
-  global $mainPlayer;
-  $deck = &GetDeck($mainPlayer);
-  $combo = "";
-  for($i=0; $i<count($deck); ++$i)
-  {
-    if(HasCombo($deck[$i]))
-    {
-      if($combo != "") $combo .= ",";
-      $combo .= $i;
-    }
-  }
-  return $combo;
-}
-
 function GetTheirEquipmentChoices()
 {
   global $currentPlayer;

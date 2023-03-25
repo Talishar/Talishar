@@ -67,9 +67,12 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       }
       return $rv;
     case "ARC014": case "ARC015": case "ARC016":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-      AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-      AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+      if($cardID == "ARC014") $maxCost = 2;
+      else if($cardID == "ARC015") $maxCost = 1;
+      if($cardID == "ARC016") $maxCost = 0;
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:subtype=Item;maxCost=$maxCost;class=MECHANOLOGIST");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? 1 : 0), 1);
       return "";
     case "ARC017":

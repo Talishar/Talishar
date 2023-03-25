@@ -335,19 +335,16 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return $rv;
     case "CRU105":
-      if ($from == "PLAY") {
+      if($from == "PLAY") {
         $items = &GetItems($currentPlayer);
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        if (ClassContains($items[$index], "MECHANOLOGIST", $currentPlayer) && $items[$index + 2] == 2 && $additionalCosts == "PAID") {
+        if(ClassContains($items[$index], "MECHANOLOGIST", $currentPlayer) && $items[$index + 2] == 2 && $additionalCosts == "PAID") {
           $items[$index + 2] = 1;
           AddCurrentTurnEffect($cardID, $currentPlayer); //Show an effect for better visualization.
-          // AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-          // AddDecisionQueue("CHOOSECHARACTER", $currentPlayer, "<-", 1);      // TODO: Uncomment if they release 1H pistol
-          // AddDecisionQueue("ADDCHARACTEREFFECT", $currentPlayer, $cardID, 1);
-          $rv = "Gives target pistol +1.";
+          $rv = "Gives pistol +1";
         } else {
           $items[$index + 1] = 1;
-          $rv = "Gains a steam counter.";
+          $rv = "Gains a steam counter";
         }
       }
       return $rv;

@@ -38,20 +38,6 @@ function WeaponIndices($chooser, $player, $subtype = "")
   return $weapons;
 }
 
-
-function GetWeaponChoices($subtype = "")
-{
-  global $myCharacter;
-  $weapons = "";
-  for ($i = 0; $i < count($myCharacter); $i += CharacterPieces()) {
-    if (CardType($myCharacter[$i]) == "W" && ($subtype == "" || $subtype == CardSubtype($myCharacter[$i]))) {
-      if ($weapons != "") $weapons .= ",";
-      $weapons .= $i;
-    }
-  }
-  return $weapons;
-}
-
 function ApplyEffectToEachWeapon($effectID)
 {
   global $myCharacter, $currentPlayer;

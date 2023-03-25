@@ -533,14 +533,14 @@ function WTRAbilityCost($cardID)
     {
       AddDecisionQueue("YESNO", $mainPlayer, $context);
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-      AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-1", 1);
-      AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
-      AddDecisionQueue("DISCARDMYHAND", $mainPlayer, "-", 1);
-      AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-2", 1);
-      AddDecisionQueue("MAYCHOOSEDECK", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,TT", 1);
-      AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
-      AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was banished.", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND:maxCost=0", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZDISCARD", $mainPlayer, "-", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK:comboOnly=true", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBANISH,DECK,TT", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
     }
   }
@@ -587,6 +587,14 @@ function WTRAbilityCost($cardID)
     }
   }
 
+  function Mangle()
+  {
+    global $mainPlayer;
+    AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;hasNegCounters=true");
+    AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
+  }
+
   function ProcessCrushEffect($cardID)
   {
     global $mainPlayer, $defPlayer, $defCharacter, $combatChain;
@@ -625,9 +633,7 @@ function WTRAbilityCost($cardID)
         AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "CRU026":
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "CRU026");
-        AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-        AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
+        Mangle();
         break;
       case "CRU027":
         AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES,5");

@@ -322,36 +322,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = SearchDeckForCard($player, "WTR081");
           if ($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv;
           break;
-        case "WTR076-1":
-          $rv = SearchHand($player, "", "", 0);
-          break;
-        case "WTR076-2":
-          $rv = GetComboCards();
-          break;
         case "WTR081":
           $rv = LordOfWindIndices($player);
           if ($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv;
-          break;
-        case "ARC014":
-          $rv = SearchHand($player, "", "Item", 2, -1, "MECHANOLOGIST");
-          break;
-        case "ARC015":
-          $rv = SearchHand($player, "", "Item", 1, -1, "MECHANOLOGIST");
-          break;
-        case "ARC016":
-          $rv = SearchHand($player, "", "Item", 0, -1, "MECHANOLOGIST");
           break;
         case "ARC079":
           $rv = CombineSearches(SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE"), SearchDiscard($player, "A", "", -1, -1, "RUNEBLADE"));
           break;
         case "ARC121":
           $rv = SearchDeck($player, "", "", $lastResult, -1, "WIZARD");
-          break;
-        case "CRU026":
-          $rv = SearchEquipNegCounter($defCharacter);
-          break;
-        case "CRU105":
-          $rv = GetWeaponChoices("Pistol");
           break;
         case "CRU143":
           $rv = SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE");
@@ -2195,6 +2174,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         switch ($mzIndex[0]) {
           case "MYCHAR":
             DestroyCharacter($player, $mzIndex[1]);
+          case "THEIRCHAR":
+            DestroyCharacter($otherPlayer, $mzIndex[1]);
           case "MYALLY":
             DestroyAlly($player, $mzIndex[1]);
             break;
@@ -2286,10 +2267,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             RemovefromPitch($otherPlayer, $mzIndex[1]);
             break;
           case "MYHAND":
-            RemoveCard($player, $mzIndex[1]);
+            $lastResult = RemoveCard($player, $mzIndex[1]);
             break;
           case "THEIRHAND":
-            RemoveCard($otherPlayer, $mzIndex[1]);
+            $lastResult = RemoveCard($otherPlayer, $mzIndex[1]);
             break;
           case "THEIRAURAS":
             RemoveAura($otherPlayer, $mzIndex[1]);
