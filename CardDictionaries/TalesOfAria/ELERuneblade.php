@@ -25,7 +25,7 @@
         return "";
       case "ELE070": case "ELE071": case "ELE072":
         AddDecisionQueue("CLASSSTATEGREATERORPASS", $currentPlayer, $CS_ArcaneDamageDealt . "-1", 1);
-        AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
+        AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
         return "";
       case "ELE079": case "ELE080": case "ELE081":
         if(GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0)

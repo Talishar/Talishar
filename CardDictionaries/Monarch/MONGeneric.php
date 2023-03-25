@@ -17,7 +17,7 @@
       }
       return " restrict play of instants and defense reactions";
     case "MON251": case "MON252": case "MON253":
-      if ($additionalCosts != "-") AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
+      if ($additionalCosts != "-") AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       return "";
     case "MON260": case "MON261": case "MON262":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);

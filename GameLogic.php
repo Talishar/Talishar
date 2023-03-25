@@ -195,94 +195,50 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     }
   }
   switch($cardID) {
-    case "WTR005": case "WTR042": case "WTR080":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
-    case "WTR037": case "WTR038":
-      $character[$cardIndex + 1] = 2;
-      break;
-    case "WTR150":
+    case "WTR150": //Tunic energy counters
       $character[$cardIndex + 2] -= 3;
       break;
-    case "WTR151": case "WTR152": case "WTR153": case "WTR154":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
-    case "ARC003":
-      $character[$cardIndex + 1] = 2;
-      break;
-    case "ARC005": case "ARC042": case "ARC079": case "ARC116": case "ARC117": case "ARC151": case "ARC153": case "ARC154":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
-    case "ARC113": case "ARC114":
-      $character[$cardIndex + 1] = 2;
-      break;
-    case "CRU006": case "CRU025": case "CRU081": case "CRU102": case "CRU122": case "CRU141":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
-    case "CRU024":
-      break; //No limits on use, so override default
-    case "CRU101":
-      break;
-    case "CRU177":
+    case "CRU177": //Talishar rust counters
       $character[$cardIndex + 1] = 1;
       ++$character[$cardIndex + 2];
       break;
-    case "MON061": case "MON090": case "MON108": case "MON188": case "MON230": case "MON238": case "MON239": case "MON240":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
+    case "WTR037": case "WTR038":
+    case "ARC003": case "ARC113": case "ARC114":
+    case "CRU024": case "CRU101":
     case "MON029": case "MON030":
-      $character[$cardIndex + 1] = 2; //It's not limited to once
-      break;
-    case "ELE116": case "ELE145": case "ELE214": case "ELE225": case "ELE233": case "ELE234": case "ELE235": case "ELE236":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
     case "ELE173":
-      break; //Unlimited uses, explicitly don't use default
-    case "ELE224":
-      ++$character[$cardIndex + 2];
+    case "OUT096":
+      break; //Unlimited uses
+    case "ELE224": //Spellbound Creepers - Bind counters
+    case "UPR151": //Ghostly Touch - Haunt counters
+      $character[$cardIndex + 2] -= 1;//Remove a counter
       --$character[$cardIndex + 5];
-      if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1;
+      if($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1;
       break;
-    case "EVR053": case "EVR103": case "EVR137":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
-    case "DVR004": case "DVR005":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
-    case "RVD004":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
-    case "UPR004": case "UPR047": case "UPR085": case "UPR125": case "UPR137": case "UPR159": case "UPR167":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
-    case "UPR151":
-      $character[$cardIndex + 2] -= 1;
-      --$character[$cardIndex + 5];
-      if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1;
-      break;
-    case "UPR166":
+    case "UPR166": //Alluvion Constellas - Energy counters
       $character[$cardIndex + 2] -= 2;
       break;
-    case "DYN088":
+    case "DYN088": //Hanabi Blaster - Steam counters, once per turn
       $character[$cardIndex + 2] -= 2;
       $character[$cardIndex + 1] = 1;
-      break;
-    case "DYN046": case "DYN117": case "DYN118": case "DYN171": case "DYN235":
-      DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "DYN492a":
       --$character[$cardIndex + 2];
-      WriteLog(CardLink($cardID, $cardID) . " banished a card from under itself.");
-      BanishCardForPlayer("DYN492a", $currentPlayer, "-"); // TODO: Temporary until we can actually banish the cards that were put under
+      BanishCardForPlayer("DYN492a", $currentPlayer, "-");
       break;
-    case "OUT011":
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
-    case "OUT049": case "OUT095": case "OUT098": case "OUT140": case "OUT141": case "OUT157": case "OUT158":
+    case "WTR005": case "WTR042": case "WTR080": case "WTR151": case "WTR152": case "WTR153": case "WTR154":
+    case "ARC005": case "ARC042": case "ARC079": case "ARC116": case "ARC117": case "ARC151": case "ARC153": case "ARC154":
+    case "CRU006": case "CRU025": case "CRU081": case "CRU102": case "CRU122": case "CRU141":
+    case "MON061": case "MON090": case "MON108": case "MON188": case "MON230": case "MON238": case "MON239": case "MON240":
+    case "ELE116": case "ELE145": case "ELE214": case "ELE225": case "ELE233": case "ELE234": case "ELE235": case "ELE236":
+    case "EVR053": case "EVR103": case "EVR137":
+    case "DVR004": case "DVR005":
+    case "RVD004":
+    case "UPR004": case "UPR047": case "UPR085": case "UPR125": case "UPR137": case "UPR159": case "UPR167":
+    case "DYN046": case "DYN117": case "DYN118": case "DYN171": case "DYN235":
+    case "OUT011": case "OUT049": case "OUT095": case "OUT098": case "OUT140": case "OUT141": case "OUT157": case "OUT158":
     case "OUT175": case "OUT176": case "OUT177": case "OUT178": case "OUT179": case "OUT180": case "OUT181": case "OUT182":
       DestroyCharacter($currentPlayer, $cardIndex);
-      break;
-    case "OUT096":
       break;
     default:
       --$character[$cardIndex + 5];
@@ -821,6 +777,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DESTROYFROZENARSENAL":
           DestroyFrozenArsenal($player);
           return "";
+        case "GIVEATTACKGOAGAIN":
+          GiveAttackGoAgain();
+          return $lastResult;
         case "REMOVECARD":
           if($lastResult == "") return $dqVars[0];
           $cards = explode(",", $dqVars[0]);
@@ -925,9 +884,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $zone = array_values($zone);
       }
       $zone = $destArr;
-      return $lastResult;
-    case "GIVEATTACKGOAGAIN":
-      GiveAttackGoAgain();
       return $lastResult;
     case "EXHAUSTCHARACTER":
       $character = &GetPlayerCharacter($player);

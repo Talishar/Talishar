@@ -1581,7 +1581,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,GY,-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
-      AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
     case "WTR197": case "WTR198": case "WTR199":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:cardID=WTR221;cardID=WTR222;cardID=WTR223");
@@ -1672,7 +1672,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
-      AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
+      AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
     case "MON195":
     case "MON196":

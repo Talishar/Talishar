@@ -223,7 +223,7 @@
         AddDecisionQueue("CHOOSEDISCARD", $mainPlayer, "<-", 1);
         AddDecisionQueue("REMOVEDISCARD", $mainPlayer, "-", 1);
         AddDecisionQueue("ADDHAND", $mainPlayer, "-", 1);
-        AddDecisionQueue("GIVEATTACKGOAGAIN", $mainPlayer, "-", 1);
+        AddDecisionQueue("OP", $mainPlayer, "GIVEATTACKGOAGAIN", 1);
         break;
       case "UPR187":
         if(IsHeroAttackTarget())
