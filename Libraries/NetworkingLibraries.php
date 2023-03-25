@@ -1348,8 +1348,7 @@ function GetLayerTarget($cardID)
   global $currentPlayer;
   switch ($cardID) {
     case "CRU164":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "LAYER,TYPE-I-MAXCOST-1");
-      AddDecisionQueue("MULTIZONEFORMAT", $currentPlayer, "LAYER", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "LAYER:type=I;maxCost=1");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
@@ -1375,8 +1374,7 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
     case "UPR169":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "LAYER,TYPE-A");
-      AddDecisionQueue("MULTIZONEFORMAT", $currentPlayer, "LAYER", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "LAYER:type:A");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;

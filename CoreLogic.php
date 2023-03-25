@@ -1943,8 +1943,7 @@ function GetDamagePreventionTargetIndices()
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $rv = "";
 
-  $rv = SearchLayerDQ($otherPlayer, "");
-  $rv = SearchMultiZoneFormat($rv, "LAYER");
+  $rv = SearchMultizone($otherPlayer, "LAYER");
   if (count($combatChain) > 0) {
     if ($rv != "") $rv .= ",";
     $rv .= "CC-0";

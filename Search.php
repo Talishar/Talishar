@@ -139,35 +139,6 @@ function isPriorityStep($cardID)
   }
 }
 
-//Parses DQ subparams into search format
-function SearchLayerDQ($player, $param)
-{
-  global $layers;
-  $type = "";
-  $subtype = "";
-  $maxCost = -1;
-  $minCost = -1;
-  $class = "";
-  $talent = "";
-  $bloodDebtOnly = false;
-  $phantasmOnly = false;
-  $pitch = -1;
-  $specOnly = false;
-  $maxAttack = -1;
-  $minAttack = -1;
-  $maxDef = -1;
-  $frozenOnly = false;
-  $hasNegCounters = false;
-  $hasEnergyCounters = false;
-  $paramArray = explode("-", $param);
-  $comboOnly = false;
-  for ($i = 0; $i < count($paramArray); $i += 2) {
-    if ($paramArray[$i] == "TYPE") $type = $paramArray[$i + 1];
-    else if ($paramArray[$i] == "MAXCOST") $maxCost = $paramArray[$i + 1];
-  }
-  return SearchInner($layers, $player, "LAYER", LayerPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack);
-}
-
 function SearchHandForCard($player, $card)
 {
   $hand = &GetHand($player);

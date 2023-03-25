@@ -335,9 +335,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "CRU143":
           $rv = SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE");
           break;
-        case "LAYER":
-          $rv = SearchLayerDQ($player, $subparam);
-          break;
         case "DECK":
           $rv = SearchDeck($player);
           break;
