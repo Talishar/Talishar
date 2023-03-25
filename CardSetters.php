@@ -191,7 +191,7 @@ function RemoveArsenal($player, $index)
   $arsenal = &GetArsenal($player);
   if(count($arsenal) == 0) return "";
   $cardID = $arsenal[$index];
-  for ($i = $index + ArsenalPieces() - 1; $i >= $index; --$i) {
+  for($i = $index + ArsenalPieces() - 1; $i >= $index; --$i) {
     unset($arsenal[$i]);
   }
   $arsenal = array_values($arsenal);

@@ -159,13 +159,8 @@
       $arsenal[$index+3] += 1;
       if($arsenal[$index+3] >= 3)
       {
-        WriteLog(CardLink("MON407", "MON407") . " searched for a specialization card.");
-        RemoveArsenal($player, $index);
-        BanishCardForPlayer("MON407", $player, "ARS", "-");
-        AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
-        AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
-        AddDecisionQueue("SHUFFLEDECK", $player, "-");
+        WriteLog(CardLink("MON407", "MON407") . " searched for a specialization card");
+        MentorTrigger($player, $index);
       }
     }
   }

@@ -70,18 +70,13 @@ function RVDPlayAbility($cardID)
 
 function ChiefRukutanAbility($player, $index)
 {
-  $log = CardLink("RVD007", "RVD007") . " Intimidates";
+  $rv = CardLink("RVD007", "RVD007") . " Intimidates";
   Intimidate();
   $arsenal = &GetArsenal($player);
   ++$arsenal[$index + 3];
   if ($arsenal[$index + 3] == 2) {
-    $log .= " and searches for an Alpha Rampage card";
-    RemoveArsenal($player, $index);
-    BanishCardForPlayer("RVD007", $player, "ARS", "-");
-    AddDecisionQueue("FINDINDICES", $player, "DECKCARD,WTR006");
-    AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
-    AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
-    AddDecisionQueue("SHUFFLEDECK", $player, "-");
+    $rv .= " and searches for an Alpha Rampage";
+    MentorTrigger($player, $index, specificCard:"WTR006");
   }
-  WriteLog($log . ".");
+  WriteLog($rv);
 }

@@ -55,14 +55,14 @@
         AddDecisionQueue("OK", $currentPlayer, "-", 1);
         return "";
       case "ARC120":
-        $damage = ArcaneDamage($cardID) + ConsumeArcaneBonus($currentPlayer) * 2; // TODO: Not exactly right. Should be able to target 2 differents heroes.
-        DealArcane($damage, 1, "PLAYCARD", $cardID, resolvedTarget: $target, nbArcaneInstance: 2); //Basically this just applies the bonus twice
+        $damage = ArcaneDamage($cardID) + ConsumeArcaneBonus($currentPlayer) * 2;
+        DealArcane($damage, 1, "PLAYCARD", $cardID, resolvedTarget: $target, nbArcaneInstance: 2);
         return "";
       case "ARC121":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
-        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_tutor_a_card?", 1);
+        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_tutor_a_card", 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID, 1);

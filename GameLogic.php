@@ -252,9 +252,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       BuildMainPlayerGamestate();
       $parameters = explode(",", $parameter);
       $parameter = $parameters[0];
-      if (count($parameters) > 1) $subparam = $parameters[1];
+      if(count($parameters) > 1) $subparam = $parameters[1];
       else $subparam = "";
-      switch ($parameter) {
+      switch($parameter) {
         case "ARCANETARGET":
           $rv = GetArcaneTargetIndices($player, $subparam);
           break;
@@ -297,9 +297,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DECKTOPXREMOVE":
           $deck = new Deck($player);
           $rv = $deck->Top(true, $subparam);
-          break;
-        case "DECKSPEC":
-          $rv = SearchDeck($player, "", "", -1, -1, "", "", false, false, -1, true);
           break;
         case "DECKCARD":
           $rv = SearchDeckForCard($player, $subparam);
