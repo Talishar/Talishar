@@ -1472,7 +1472,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "EVR161": case "EVR162": case "EVR163":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "LIFEOFPARTY");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "EVR161", 1);
       break;
     default:
@@ -1772,7 +1772,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("FINDINDICES", $currentPlayer, "CASHOUT");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
       AddDecisionQueue("CASHOUTCONTINUE", $currentPlayer, "-", 1);

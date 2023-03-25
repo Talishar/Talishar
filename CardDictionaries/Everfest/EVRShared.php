@@ -468,7 +468,7 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "AURACLASS,ILLUSIONIST");
         AddDecisionQueue("MULTIZONEFORMAT", $currentPlayer, "MYAURAS", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
+        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CROWNOFREFLECTION", 1);
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
@@ -745,7 +745,7 @@
           AddDecisionQueue("FINDINDICES", $defPlayer, "AURACLASS,");
           AddDecisionQueue("MULTIZONEFORMAT", $defPlayer, "THEIRAURAS", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MULTIZONEDESTROY", $mainPlayer, "-", 1);
+          AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "ARC112", 1);
           AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
         }

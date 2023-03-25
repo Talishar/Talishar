@@ -311,7 +311,7 @@ function UPRDealDamageEffect($cardID)
       AddDecisionQueue("FINDINDICES", $player, "QUELL");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($maxUsed - $i) . " quell cards to destroy");
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MULTIZONEDESTROY", $player, "-", 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
     }
   }
 

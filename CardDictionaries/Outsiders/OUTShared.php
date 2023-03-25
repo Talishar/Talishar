@@ -819,7 +819,7 @@ function OUTAbilityCost($cardID)
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype);
     AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-    AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
+    AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
     AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
     AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "1-", 1);
     AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-DAMAGE", 1);

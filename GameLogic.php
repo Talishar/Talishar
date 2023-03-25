@@ -273,18 +273,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ARC079":
           $rv = CombineSearches(SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE"), SearchDiscard($player, "A", "", -1, -1, "RUNEBLADE"));
           break;
-        case "ARC121":
-          $rv = SearchDeck($player, "", "", $lastResult, -1, "WIZARD");
-          break;
-        case "CRU143":
-          $rv = SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE");
-          break;
-        case "DECK":
-          $rv = SearchDeck($player);
-          break;
+        case "ARC121": $rv = SearchDeck($player, "", "", $lastResult, -1, "WIZARD"); break;
+        case "CRU143": $rv = SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE"); break;
+        case "DECK": $rv = SearchDeck($player); break;
         case "TOPDECK":
           $deck = &GetDeck($player);
-          if (count($deck) > 0) $rv = "0";
+          if(count($deck) > 0) $rv = "0";
           break;
         case "DECKTOPXINDICES":
           $deck = &GetDeck($player);
@@ -778,14 +772,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         if($passFilter) array_push($output, $input[$i]);
       }
-      WriteLog(count($output));
       return (count($output) > 0 ? implode(",", $output) : "PASS");
     case "PASSPARAMETER":
       return $parameter;
     case "DISCARDCARD":
       AddGraveyard($lastResult, $player, $parameter);
       CardDiscarded($player, $lastResult);
-      WriteLog(CardLink($lastResult, $lastResult) . " was discarded.");
+      WriteLog(CardLink($lastResult, $lastResult) . " was discarded");
       return $lastResult;
     case "ADDDISCARD":
       AddGraveyard($lastResult, $player, $parameter);
@@ -1497,17 +1490,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for ($i = 0; $i < count($elementArray); ++$i) {
         $element = $elementArray[$i];
         switch ($element) {
-          case "EARTH":
-            IncrementClassState($player, $CS_NumFusedEarth);
-            break;
-          case "ICE":
-            IncrementClassState($player, $CS_NumFusedIce);
-            break;
-          case "LIGHTNING":
-            IncrementClassState($player, $CS_NumFusedLightning);
-            break;
-          default:
-            break;
+          case "EARTH": IncrementClassState($player, $CS_NumFusedEarth); break;
+          case "ICE": IncrementClassState($player, $CS_NumFusedIce); break;
+          case "LIGHTNING": IncrementClassState($player, $CS_NumFusedLightning); break;
+          default: break;
         }
         AppendClassState($player, $CS_AdditionalCosts, $elements);
         CurrentTurnFuseEffects($player, $element);
@@ -1682,34 +1668,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MULTIZONEFORMAT":
       return SearchMultizoneFormat($lastResult, $parameter);
-    case "MULTIZONEDESTROY":
-      $params = explode("-", $lastResult);
-      $source = $params[0];
-      $index = $params[1];
-      $otherP = ($player == 1 ? 2 : 1);
-      switch ($source) {
-        case "MYAURAS":
-          DestroyAura($player, $index);
-          break;
-        case "THEIRAURAS":
-          DestroyAura($otherP, $index);
-          break;
-        case "MYHAND":
-          DiscardIndex($player, $index);
-          break;
-        case "MYITEMS":
-          DestroyItemForPlayer($player, $index);
-          break;
-        case "MYCHAR":
-          return DestroyCharacter($player, $index);
-          break;
-        case "THEIRCHAR":
-          return DestroyCharacter($otherP, $index);
-          break;
-        default:
-          break;
-      }
-      return $lastResult;
     case "MULTIZONEREMOVE":
       $params = explode("-", $lastResult);
       $source = $params[0];
@@ -1906,7 +1864,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("CASHOUTCONTINUE", $currentPlayer, "-", 1);
       PrependDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
       PrependDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195", 1);
-      PrependDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
+      PrependDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       PrependDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       PrependDecisionQueue("FINDINDICES", $currentPlayer, "CASHOUT");
       return "";

@@ -201,7 +201,7 @@ function EffectHitEffect($cardID)
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:minAttack=1;maxAttack=1;type=W");//TODO: Limit to 1H
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a weapon to destroy");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MULTIZONEDESTROY", $mainPlayer, "-", 1);
+        AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
       }
       break;
     case "OUT112":
