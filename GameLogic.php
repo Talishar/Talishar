@@ -520,9 +520,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "WEAPON":
           $rv = WeaponIndices($player, $player, $subparam);
           break;
-        case "MON020":
-        case "MON021":
-        case "MON022":
+        case "MON020": case "MON021": case "MON022":
           $rv = SearchDiscard($player, "", "", -1, -1, "", "", false, true);
           break;
         case "MON033-1":
@@ -540,9 +538,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MON158":
           $rv = InvertExistenceIndices($player);
           break;
-        case "MON159":
-        case "MON160":
-        case "MON161":
+        case "MON159": case "MON160": case "MON161":
           $rv = SearchDiscard($player, "A", "", -1, -1, "", "", true);
           break;
         case "MON212":
@@ -573,14 +569,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ELE116":
           $rv = PlumeOfEvergrowthIndices($player);
           break;
-        case "ELE125":
-        case "ELE126":
-        case "ELE127":
+        case "ELE125": case "ELE126": case "ELE127":
           $rv = SummerwoodShelterIndices($player);
           break;
-        case "ELE140":
-        case "ELE141":
-        case "ELE142":
+        case "ELE140": case "ELE141": case "ELE142":
           $rv = SowTomorrowIndices($player, $parameter);
           break;
         case "EVR178":
