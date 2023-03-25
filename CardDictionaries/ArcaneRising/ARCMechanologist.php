@@ -44,12 +44,12 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ARC009":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKMECHITEMCOST," . (GetClassState($currentPlayer, $CS_LastDynCost) / 2));
-      AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
-      AddDecisionQueue("PUTPLAY", $currentPlayer, "-");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:subtype=Item;class=MECHANOLOGIST;maxCost=" . (GetClassState($currentPlayer, $CS_LastDynCost) / 2));
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("PUTPLAY", $currentPlayer, 0, 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
-      $boosted = GetClassState($currentPlayer, $CS_NumBoosted) > 0;
-      if($boosted) AddDecisionQueue("DRAW", $currentPlayer, "-");
+      if(GetClassState($currentPlayer, $CS_NumBoosted) > 0) AddDecisionQueue("DRAW", $currentPlayer, "-");
       return "";
     case "ARC010":
       if($from == "PLAY") {

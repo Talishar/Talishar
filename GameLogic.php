@@ -415,9 +415,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ITEMSMAX":
           $rv = SearchItems($player, "", "", $subparam);
           break;
-        case "DECKMECHITEMCOST":
-          $rv = SearchDeck($player, "", "Item", $subparam, $subparam, "MECHANOLOGIST");
-          break;
         case "EQUIP":
           $rv = GetEquipmentIndices($player);
           break;
@@ -436,15 +433,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "CCDEFLESSX":
           $rv = SearchCombatChainLink($player, "", "", -1, -1, "", "", false, false, -1, false, -1, $subparam);
           break;
-        case "HANDEARTH":
-          $rv = SearchHand($player, "", "", -1, -1, "", "EARTH");
-          break;
-        case "HANDICE":
-          $rv = SearchHand($player, "", "", -1, -1, "", "ICE");
-          break;
-        case "HANDLIGHTNING":
-          $rv = SearchHand($player, "", "", -1, -1, "", "LIGHTNING");
-          break;
         case "HANDAAMAXCOST":
           $rv = SearchHand($player, "AA", "", $subparam);
           break;
@@ -454,19 +442,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MYHANDARROW":
           $rv = SearchHand($player, "", "Arrow");
           break;
-        case "MYDECKARROW":
-          $rv = SearchDeck($player, "", "Arrow");
-          break;
         case "MYDISCARDARROW":
           $rv = SearchDiscard($player, "", "Arrow");
           break;
         case "MAINHAND":
           $rv = GetIndices(count(GetHand($mainPlayer)));
-          break;
-        case "FIRSTXDECK":
-          $deck = &GetDeck($player);
-          if ($subparam > count($deck)) $subparam = count($deck);
-          $rv = GetIndices($subparam);
           break;
         case "BANISHTYPE":
           $rv = SearchBanish($player, $subparam);
@@ -2274,7 +2254,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             break;
           case "MYDECK":
             $deck = new Deck($player);
-            $deck->Remove($mzIndex[1]);
+            return $deck->Remove($mzIndex[1]);
             break;
           default:
             break;

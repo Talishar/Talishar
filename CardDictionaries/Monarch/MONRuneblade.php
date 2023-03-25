@@ -74,7 +74,7 @@
         $xVal = $resourcesPaid/2;
         $numRevealed = 3 + $xVal;
         WriteLog(CardLink($cardID, $cardID) . " reveals " . $numRevealed . " cards.");
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "FIRSTXDECK," . $numRevealed);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $numRevealed);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SONATAARCANIX", $currentPlayer, "-", 1);

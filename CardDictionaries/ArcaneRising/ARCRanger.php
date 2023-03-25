@@ -45,11 +45,12 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "ARC046":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYDECKARROW");
-        AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:subtype=Arrow");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         Reload();
         return "";
       case "ARC047":

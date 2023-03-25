@@ -20,8 +20,10 @@ class Deck {
   }
 
   function Remove($index) {
+    $cardID = $this->deck[$index];
     unset($this->deck[$index]);
     $this->deck = array_values($this->deck);
+    return $cardID;
   }
 
   function Reveal($revealCount=1) {
