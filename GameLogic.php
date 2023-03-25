@@ -862,14 +862,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return (count($output) > 0 ? implode(",", $output) : "PASS");
     case "PASSPARAMETER":
       return $parameter;
-    case "DISCARDMYHAND":
-      $hand = &GetHand($player);
-      $cardID = $hand[$lastResult];
-      unset($hand[$lastResult]);
-      $hand = array_values($hand);
-      AddGraveyard($cardID, $player, "HAND");
-      CardDiscarded($player, $cardID);
-      return $cardID;
     case "DISCARDCARD":
       AddGraveyard($lastResult, $player, $parameter);
       CardDiscarded($player, $lastResult);
@@ -1712,15 +1704,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $card = array_shift($deck);
       LoseHealth(1, $player);
-      WriteLog("Player " . $player . " lost 1 health.");
+      WriteLog(CardLink("CRU007", "CRU007") . " banished " . CardLink($card, $card) . " and lost 1 health");
       if (AttackValue($card) >= 6) {
-        WriteLog(CardLink("CRU007", "CRU007") . " banished " . CardLink($card, $card) . " and was added to hand.");
         BanishCardForPlayer($card, $player, "DECK", "-");
         $banish = &GetBanish($player);
         RemoveBanish($player, count($banish) - BanishPieces());
         AddPlayerHand($card, $player, "BANISH");
       } else {
-        WriteLog(CardLink("CRU007", "CRU007") . " banished " . CardLink($card, $card) . ".");
         BanishCardForPlayer($card, $player, "DECK", "-");
         PrependDecisionQueue("BEASTWITHIN", $player, "-");
       }
@@ -2050,13 +2040,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SCOUR":
       WriteLog("Scour deals " . $parameter . " arcane damage.");
       DealArcane($parameter, 0, "PLAYCARD", "EVR124", true, $player, resolvedTarget: ($player == 1 ? 2 : 1));
-      return "";
-    case "KNICKKNACK":
-      for ($i = 0; $i < ($dqVars[0] + 1); ++$i) {
-        PrependDecisionQueue("PUTPLAY", $player, "-", 1);
-        PrependDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
-        PrependDecisionQueue("FINDINDICES", $player, "KNICKKNACK");
-      }
       return "";
     case "CASHOUTCONTINUE":
       PrependDecisionQueue("CASHOUTCONTINUE", $currentPlayer, "-", 1);

@@ -1816,7 +1816,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("DIVIDE", $currentPlayer, "1"); //Useless line?
         AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
       }
-      AddDecisionQueue("KNICKKNACK", $currentPlayer, "-");
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "KNICKKNACK");
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       break;
     case "UPR094":

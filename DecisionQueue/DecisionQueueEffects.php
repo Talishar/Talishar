@@ -166,6 +166,13 @@ function SpecificCardLogic($player, $card, $lastResult)
       }
       WriteLog("Talisman of Cremation banished " . $count . " cards named " . $cardName);
       return "";
+    case "KNICKKNACK":
+      for($i = 0; $i < ($dqVars[0] + 1); ++$i) {
+        PrependDecisionQueue("PUTPLAY", $player, "-", 1);
+        PrependDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "KNICKKNACK");
+      }
+      return "";
     default: return "";
   }
 }
