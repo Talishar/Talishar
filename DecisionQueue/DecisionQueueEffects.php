@@ -1,5 +1,44 @@
 <?php
 
+function PlayerTargetedAbility($player, $card, $lastResult)
+{
+  global $dqVars;
+  $target = ($lastResult == "Target_Opponent" ? ($player == 1 ? 2 : 1) : $player);
+  switch($card)
+  {
+    case "CORONETPEAK":
+      AddDecisionQueue("DQPAYORDISCARD", $target, "1");
+      return "";
+    case "IMPERIALWARHORN":
+      if($lastResult == "Target_Opponent" || $lastResult == "Target_Both_Heroes")
+      {
+        if(IsRoyal($player)) ImperialWarHorn($player, "THEIR");
+        else ImperialWarHorn(($player == 1 ? 2 : 1), "MY");
+      }
+      if($lastResult == "Target_Yourself" || $lastResult == "Target_Both_Heroes") ImperialWarHorn($player, "MY");
+      return "";
+    case "PRY":
+      $zone = $target == $player ? "HAND" : "THEIRHAND";
+      AddDecisionQueue("FINDINDICES", $target, "HAND");
+      AddDecisionQueue("PREPENDLASTRESULT", $target, $dqVars[0] . "-", 1);
+      AddDecisionQueue("APPENDLASTRESULT", $target, "-" . $dqVars[0], 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $dqVars[0] . " card" . ($dqVars[0] > 1 ? "s" : ""), 1);
+      AddDecisionQueue("MULTICHOOSEHAND", $target, "<-", 1);
+      AddDecisionQueue("IMPLODELASTRESULT", $target, ",", 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card", 1);
+      AddDecisionQueue("CHOOSE" . $zone, $player, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $target, "-", 1);
+      AddDecisionQueue("ADDBOTDECK", $target, "-", 1);
+      AddDecisionQueue("DRAW", $target, "-", 1);
+      return "";
+    case "AMULETOFECHOES":
+      PummelHit($target);
+      PummelHit($target);
+      return "";
+    default: return $lastResult;
+  }
+}
+
 function SpecificCardLogic($player, $card, $lastResult)
 {
   global $dqVars, $CS_DamageDealt;

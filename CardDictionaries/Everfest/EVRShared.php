@@ -458,7 +458,7 @@
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
-        AddDecisionQueue("PRY", $currentPlayer, "<-", 1);
+        AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "PRY", 1);
         return "";
       case "EVR134": case "EVR135": case "EVR136":
         DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);

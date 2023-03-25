@@ -2420,93 +2420,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
       }
       return 0;
-    case "IMPERIALWARHORN":
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      switch ($lastResult) {
-        case "Target_Opponent":
-          if (IsRoyal($player)) {
-            ImperialWarHorn($player, "THEIR");
-          } else {
-            ImperialWarHorn($otherPlayer, "MY");
-          }
-          break;
-        case "Target_Both_Heroes":
-          if (IsRoyal($player)) {
-            ImperialWarHorn($player, "MY");
-            ImperialWarHorn($player, "THEIR");
-          } else {
-            ImperialWarHorn($player, "MY");
-            ImperialWarHorn($otherPlayer, "MY");
-          }
-          break;
-        case "Target_Yourself":
-          ImperialWarHorn($player, "MY");
-          break;
-        case "Target_No_Heroes":
-          return "";
-        default:
-          break;
-      }
-      return "";
-    case "CORONETPEAK":
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      if ($lastResult == "") $lastResult = $parameter;
-      switch ($lastResult) {
-        case "Target_Opponent":
-          AddDecisionQueue("DQPAYORDISCARD", $otherPlayer, "1");
-          break;
-        case "Target_Yourself":
-          AddDecisionQueue("DQPAYORDISCARD", $player, "1");
-          break;
-        default:
-          break;
-      }
+    case "PLAYERTARGETEDABILITY":
+      PlayerTargetedAbility($player, $parameter, $lastResult);
       return "";
     case "DQPAYORDISCARD":
       PayOrDiscard($player, $parameter);
       return "";
-    case "PRY":
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      $plurial = "";
-      switch ($lastResult) {
-        case "Target_Opponent":
-          $theirHand = &GetHand($otherPlayer);
-          if ($player != $mainPlayer) $dqVars[0] = count($theirHand);
-          if ($dqVars[0] > 1) $plurial = "s";
-          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-          AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, $dqVars[0] . "-", 1);
-          AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-" . $dqVars[0], 1);
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $dqVars[0] . " card" . $plurial, 1);
-          AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
-          AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card", 1);
-          AddDecisionQueue("CHOOSETHEIRHAND", $player, "<-", 1);
-          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-          AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
-          AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
-          break;
-        case "Target_Yourself":
-          $myHand = &GetHand($player);
-          if ($player != $mainPlayer) $dqVars[0] = count($myHand);
-          if ($dqVars[0] > 1) $plurial = "s";
-          AddDecisionQueue("FINDINDICES", $player, "HAND");
-          AddDecisionQueue("PREPENDLASTRESULT", $player, $dqVars[0] . "-", 1);
-          AddDecisionQueue("APPENDLASTRESULT", $player, "-" . $dqVars[0], 1);
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $dqVars[0] . " card" . $plurial, 1);
-          AddDecisionQueue("MULTICHOOSEHAND", $player, "<-", 1);
-          AddDecisionQueue("IMPLODELASTRESULT", $player, ",", 1);
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card", 1);
-          AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
-          AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
-          AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
-          AddDecisionQueue("DRAW", $player, "-", 1);
-          break;
-        default:
-          break;
-      }
-      return "";
-      case "SPECIFICCARD":
-        return SpecificCardLogic($player, $parameter, $lastResult);
+    case "SPECIFICCARD":
+      return SpecificCardLogic($player, $parameter, $lastResult);
     case "MZADDSTEAMCOUNTER":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);
@@ -2564,19 +2485,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       CardDiscarded($player, $lastResult, $parameter);
       return $lastResult;
     case "AMULETOFECHOES":
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      switch ($lastResult) {
-        case "Target_Opponent":
-          PummelHit($otherPlayer);
-          PummelHit($otherPlayer);
-          break;
-        case "Target_Yourself":
-          PummelHit($player);
-          PummelHit($player);
-          break;
-        default:
-          break;
-      }
+      PlayerTargetedAbility($player, "AMULETOFECHOES", $lastResult);
       return "";
     case "EQUIPCARD":
       $char = &GetPlayerCharacter($player);

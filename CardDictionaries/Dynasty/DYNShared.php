@@ -710,7 +710,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose any number of heroes");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Both_Heroes,Target_Yourself,Target_No_Heroes");
-        AddDecisionQueue("IMPERIALWARHORN", $currentPlayer, "<-", 1);
+        AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "IMPERIALWARHORN", 1);
       }
       return $rv;
     case "DYN243":
