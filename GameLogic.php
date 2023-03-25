@@ -308,15 +308,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HAND":
           $rv = GetIndices(count(GetHand($player)));
           break;
-        case "HANDTALENT":
-          $rv = SearchHand($player, "", "", -1, -1, "", $subparam);
-          break;
-        case "HANDPITCH":
-          $rv = SearchHand($player, "", "", -1, -1, "", "", false, false, $subparam);
-          break;
-        case "HANDACTION":
-          $rv = CombineSearches(SearchHand($player, "A"), SearchHand($player, "AA"));
-          break;
+        //This one requires CHOOSEMULTIZONECANCEL
+        case "HANDPITCH": $rv = SearchHand($player, "", "", -1, -1, "", "", false, false, $subparam); break;
         case "HANDACTIONMAXCOST":
           $rv = CombineSearches(SearchHand($player, "A", "", $subparam), SearchHand($player, "AA", "", $subparam));
           break;
@@ -332,12 +325,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $arsenal = &GetArsenal($player);
           $rv = GetIndices(count($arsenal), 0, ArsenalPieces());
           break;
-        case "ARSENALDOWN":
-          $rv = GetArsenalFaceDownIndices($player);
-          break;
-        case "ARSENALUP":
-          $rv = GetArsenalFaceUpIndices($player);
-          break;
+        //These are needed because MZ search doesn't have facedown parameter
+        case "ARSENALDOWN": $rv = GetArsenalFaceDownIndices($player); break;
+        case "ARSENALUP": $rv = GetArsenalFaceUpIndices($player); break;
         case "ITEMS":
           $rv = GetIndices(count(GetItems($player)), 0, ItemPieces());
           break;

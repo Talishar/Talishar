@@ -517,3 +517,13 @@ function ClearAdditionalCosts($player)
   global $CS_AdditionalCosts;
   SetClassState($player, $CS_AdditionalCosts, "-");
 }
+
+function FaceDownArsenalBotDeck($player)
+{
+  if(ArsenalHasFaceDownCard($player)) {
+    AddDecisionQueue("FINDINDICES", $player, "ARSENALDOWN");
+    AddDecisionQueue("CHOOSEARSENAL", $player, "<-", 1);
+    AddDecisionQueue("REMOVEARSENAL", $player, "-", 1);
+    AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
+  }
+}

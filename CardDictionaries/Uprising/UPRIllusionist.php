@@ -105,13 +105,10 @@
         if(IsHeroAttackTarget())
         {
           $items = &GetItems($defPlayer);
-          if(count($items) == 0)
-          {
+          if(count($items) == 0) {
             Draw($mainPlayer);
-            WriteLog(CardLink($cardID,$cardID) . " draw a card.");
-          }
-          else
-          {
+            WriteLog(CardLink($cardID,$cardID) . " drew a card");
+          } else {
             AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMS");
             AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take control of");
             AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);

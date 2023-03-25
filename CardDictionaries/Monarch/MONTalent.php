@@ -135,9 +135,9 @@
         return "";
       case "MON219":
         $otherPlayer = $currentPlayer == 2 ? 1 : 2;
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDTALENT,SHADOW");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:talent=SHADOW");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
         if (!IsAllyAttackTarget()) {
           AddDecisionQueue("PASSPARAMETER", $otherPlayer, "1", 1);

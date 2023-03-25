@@ -1747,13 +1747,7 @@ function PayAdditionalCosts($cardID, $from)
       }
       break;
     case "ELE115":
-      if (ArsenalHasFaceDownCard($currentPlayer)) {
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALDOWN");
-        AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
-        WriteLog(CardLink($cardID, $cardID) . " put your arsenal at the bottom of your deck");
-      }
+      FaceDownArsenalBotDeck($currentPlayer);
       break;
     case "ELE118":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
@@ -1834,13 +1828,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       break;
     case "OUT094":
-      if (ArsenalHasFaceDownCard($currentPlayer)) {
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALDOWN");
-        AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
-        WriteLog(CardLink($cardID, $cardID) . " put your arsenal at the bottom of your deck");
-      }
+      FaceDownArsenalBotDeck($currentPlayer);
       break;
     case "OUT148": case "OUT149": case "OUT150":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how much to pay for " . CardLink($cardID, $cardID));
