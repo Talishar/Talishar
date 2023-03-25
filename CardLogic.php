@@ -55,12 +55,6 @@ function BottomDeckMultizone($player, $zone1, $zone2)
   AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
 }
 
-function BottomDeckMultizoneDraw($player, $zone1, $zone2)
-{
-  BottomDeckMultizone($player, $zone1, $zone2);
-  AddDecisionQueue("DRAW", $player, "-", 1);
-}
-
 function AddCurrentTurnEffectNextAttack($cardID, $player, $from = "", $uniqueID = -1)
 {
   global $combatChain;
@@ -880,7 +874,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       PlayAura("ELE111", $target, $numFrost);
       break;
     case "UPR182":
-      BottomDeckMultizoneDraw($player, "MYHAND", "MYARS");
+      BottomDeckMultizone($player, "MYHAND", "MYARS");
+      AddDecisionQueue("DRAW", $player, "-", 1);//Draw if they didn't pass
       break;
     case "UPR190":
       DestroyAuraUniqueID($player, $uniqueID);
