@@ -212,9 +212,9 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       for ($i = 1; $i < $roll; $i += 2) //half rounded down
       {
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "ITEMS", 1);
-        AddDecisionQueue("CHOOSETHEIRITEM", $currentPlayer, "<-", 1);
-        AddDecisionQueue("DESTROYITEM", $otherPlayer, "<-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       }
       return "Argh... Smash! rolled " . $roll . ".";
     case "CRU013": case "CRU014": case "CRU015":

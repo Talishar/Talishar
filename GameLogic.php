@@ -328,9 +328,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         //These are needed because MZ search doesn't have facedown parameter
         case "ARSENALDOWN": $rv = GetArsenalFaceDownIndices($player); break;
         case "ARSENALUP": $rv = GetArsenalFaceUpIndices($player); break;
-        case "ITEMS":
-          $rv = GetIndices(count(GetItems($player)), 0, ItemPieces());
-          break;
         case "ITEMSMAX":
           $rv = SearchItems($player, "", "", $subparam);
           break;
@@ -731,6 +728,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       switch ($parameter)
       {
         case "FREEZE": MZFreeze($lastResult); break;
+        case "GAINCONTROL": MZGainControl($player, $lastResult); break;
         default: break;
       }
       return $lastResult;
@@ -1791,9 +1789,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($index != -1) DestroyItemForPlayer($player, $index);
       }
       return $lastResult;
-    case "DESTROYITEM":
-      DestroyItemForPlayer($player, $parameter);
-      return $lastResult;
     case "COUNTPARAM":
       $array = explode(",", $parameter);
       return count($array) . "-" . $parameter;
@@ -2216,10 +2211,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $rv = implode(",", $rv);
       return ($rv == "" ? "PASS" : $rv);
-    case "ITEMGAINCONTROL":
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      StealItem($otherPlayer, $lastResult, $player);
-      return $lastResult;
     case "AFTERTHAW":
       $otherPlayer = ($player == 1 ? 2 : 1);
       $params = explode("-", $lastResult);

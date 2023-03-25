@@ -109,10 +109,10 @@
             Draw($mainPlayer);
             WriteLog(CardLink($cardID,$cardID) . " drew a card");
           } else {
-            AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMS");
-            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take control of");
-            AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);
-            AddDecisionQueue("ITEMGAINCONTROL", $mainPlayer, "-", 1);
+            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
+            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take");
+            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+            AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
           }
         }
         break;

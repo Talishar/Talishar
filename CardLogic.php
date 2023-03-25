@@ -951,7 +951,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       $index = GetItemIndex($parameter, $player);
       AddDecisionQueue("YESNO", $player, "Do_you_want_to_destroy_" . CardLink($parameter, $parameter) . "_and_a_defending_equipment?");
       AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("DESTROYITEM", $player, $index, 1);
+      AddDecisionQueue("PASSPARAMETER", $player, "MYITEMS-$index", 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
       AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIPONCC", 1);
       AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       AddDecisionQueue("DESTROYTHEIRCHARACTER", $player, "-", 1);

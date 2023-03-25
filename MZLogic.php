@@ -1,5 +1,15 @@
 <?php
 
+function MZGainControl($player, $target)
+{
+  $targetArr = explode("-", $target);
+  switch($targetArr[0])
+  {
+    case "MYITEMS": case "THEIRITEMS": StealItem(($player == 1 ? 2 : 1), $targetArr[1], $player); break;
+    default: break;
+  }
+}
+
 function MZFreeze($target)
 {
   global $currentPlayer;

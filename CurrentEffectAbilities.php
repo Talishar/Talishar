@@ -158,9 +158,9 @@ function EffectHitEffect($cardID)
       return 1;
     case "EVR170-1": case "EVR171-1": case "EVR172-1":
       if(IsHeroAttackTarget()) {
-        AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMSMAX,2");
-        AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);
-        AddDecisionQueue("DESTROYITEM", $defPlayer, "<-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:maxCost=2");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
         return 1;
       }
       break;

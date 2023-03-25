@@ -727,10 +727,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     ChoosePopup($theirCharacter, $turn[2], 16, "Choose a card from your opponent character/equipment", CharacterPieces());
   }
 
-  if ($turn[0] == "CHOOSETHEIRITEM" && $turn[1] == $playerID) {
-    ChoosePopup($theirItems, $turn[2], 16, "Choose one of your opponent items", ItemPieces());
-  }
-
   if (($turn[0] == "CHOOSEMYSOUL" || $turn[0] == "MAYCHOOSEMYSOUL") && $turn[1] == $playerID) {
     ChoosePopup($mySoul, $turn[2], 16, "Choose a card from your soul", SoulPieces());
   }
