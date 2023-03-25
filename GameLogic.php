@@ -298,15 +298,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $deck = new Deck($player);
           $rv = $deck->Top(true, $subparam);
           break;
-        case "DECKCARD":
-          $rv = SearchDeckForCard($player, $subparam);
-          break;
         case "PERMSUBTYPE":
           if ($subparam == "Aura") $rv = SearchAura($player, "", $subparam);
           else $rv = SearchPermanents($player, "", $subparam);
-          break;
-        case "SEARCHMZ":
-          $rv = SearchMZ($player, $subparam);
           break;
         case "MZSTARTTURN":
           $rv = MZStartTurnIndices();

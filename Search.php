@@ -758,74 +758,6 @@ function GetMZCardLink($player, $MZ)
   return CardLink($zoneDS[$index], $zoneDS[$index]);
 }
 
-function SearchMZ($player, $subparam)
-{
-  $rv = "";
-  $otherPlayer = ($player == 1 ? 2 : 1);
-  $zones = explode("|", $subparam);
-  for ($i = 0; $i < count($zones); ++$i) {
-    switch ($zones[$i]) {
-      case "MYARS":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($player), $zones[$i]));
-        break;
-      case "THEIRARS":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($otherPlayer), $zones[$i]));
-        break;
-      case "MYALLY":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAllies($player), $zones[$i]));
-        break;
-      case "THEIRALLY":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAllies($otherPlayer), $zones[$i]));
-        break;
-      case "MYHAND":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchHand($player), $zones[$i]));
-        break;
-      case "THEIRHAND":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchHand($otherPlayer), $zones[$i]));
-        break;
-      case "MYDISCARD":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchDiscard($player), $zones[$i]));
-        break;
-      case "THEIRDISCARD":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchDiscard($otherPlayer), $zones[$i]));
-        break;
-      case "MYCHAR":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($player), $zones[$i]));
-        break;
-      case "THEIRCHAR":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($otherPlayer), $zones[$i]));
-        break;
-      case "MYITEMS":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchItems($player), $zones[$i]));
-        break;
-      case "THEIRITEMS":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchItems($otherPlayer), $zones[$i]));
-        break;
-      case "MYPERM":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchPermanents($player), $zones[$i]));
-        break;
-      case "THEIRPERM":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchPermanents($otherPlayer), $zones[$i]));
-        break;
-      case "MYAURAS":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAura($player), $zones[$i]));
-        break;
-      case "THEIRAURAS":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAura($otherPlayer), $zones[$i]));
-        break;
-      case "MYPITCH":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchPitch($player), $zones[$i]));
-        break;
-      case "THEIRPITCH":
-        $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchPitch($otherPlayer), $zones[$i]));
-        break;
-      default:
-        break;
-    }
-  }
-  return $rv;
-}
-
 //$searches is the following format:
 //Each search is delimited by &, which means a set UNION
 //Each search is the format <zone>:<condition 1>;<condition 2>,...
@@ -835,7 +767,7 @@ function SearchMultizone($player, $searches)
 {
   $unionSearches = explode("&", $searches);
   $rv = "";
-  for ($i = 0; $i < count($unionSearches); ++$i) {
+  for($i = 0; $i < count($unionSearches); ++$i) {
     $type = "";
     $subtype = "";
     $maxCost = -1;
@@ -857,7 +789,7 @@ function SearchMultizone($player, $searches)
     $zone = $searchArr[0];
     $isCardID = false;
     $isSameName = false;
-    if (count($searchArr) > 1) //Means there are conditions
+    if(count($searchArr) > 1) //Means there are conditions
     {
       $conditions = explode(";", $searchArr[1]);
       for ($j = 0; $j < count($conditions); ++$j) {

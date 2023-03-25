@@ -74,7 +74,7 @@ function EffectHitEffect($cardID)
       break;
     case "ELE019": case "ELE020": case "ELE021":
       if(IsHeroAttackTarget()) {
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put at the bottom of the deck", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZADDZONE", $mainPlayer, "THEIRBOTDECK", 1);
@@ -181,7 +181,7 @@ function EffectHitEffect($cardID)
       break;
     case "DYN155":
       if(IsHeroAttackTarget() && HasAimCounter()) {
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND");
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND,-," . $mainPlayer, 1);

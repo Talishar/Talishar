@@ -210,8 +210,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   $rv = "";
   switch ($cardID) {
     case "DYN001":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCARD,ARC159");
-      AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:cardID=ARC159");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("ATTACKWITHIT", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       return "";
@@ -512,35 +513,31 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN174":
       $pitchArr = explode(",", $additionalCosts);
-      $attackActionPitched = 0;
-      $naaPitched = 0;
-      for ($i = 0; $i < count($pitchArr); ++$i) {
-        if (CardType($pitchArr[$i]) == "A") $naaPitched = 1;
-        if (CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
+      $attackPitched = false;
+      $nonAttackPitched = false;
+      for($i = 0; $i < count($pitchArr); ++$i) {
+        if(CardType($pitchArr[$i]) == "A") $nonAttackPitched = true;
+        if(CardType($pitchArr[$i]) == "AA") $attackPitched = true;
       }
       $rv = "";
-      if ($attackActionPitched) {
-        // Opponent
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "SEARCHMZ,MYALLY");
+      if($attackPitched) {
+        AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYALLY");
         AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-");
         AddDecisionQueue("MZDESTROY", $otherPlayer, "-", 1);
-        // Player
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,MYALLY");
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYALLY");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-");
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-        $rv .= "Each hero chose and destroyed an ally they control.";
+        $rv .= "Each hero chooses and destroys an ally they control";
       }
-      if ($naaPitched) {
-        // Opponent
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "SEARCHMZ,MYAURAS");
+      if($nonAttackPitched) {
+        AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYAURAS");
         AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-");
         AddDecisionQueue("MZDESTROY", $otherPlayer, "-", 1);
-        // Player
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,MYAURAS");
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-");
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-        if ($rv != "") $rv .= " ";
-        $rv .= "Each hero chose and destroyed an aura they control.";
+        if ($rv != "") $rv .= " and an aura they control";
+        else $rv = "Each hero chooses and destroys an aura they control";
       }
       return $rv;
     case "DYN175":
@@ -741,16 +738,16 @@ function DYNHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_DamageDealt, $CCS_NumBoosted;
   global $chainLinks, $combatChain;
-  switch ($cardID) {
+  switch($cardID) {
     case "DYN047":
-      if (ComboActive())
+      if(ComboActive())
       {
         $numLinks = 0;
-        for ($i = 0; $i < count($chainLinks); ++$i) {
-          if ($chainLinks[$i][0] == "DYN065") ++$numLinks;
+        for($i = 0; $i < count($chainLinks); ++$i) {
+          if($chainLinks[$i][0] == "DYN065") ++$numLinks;
         }
-        if (count($combatChain) > 0 && $combatChain[0] == "DYN065") ++$numLinks;
-        for ($i=0; $i < $numLinks; $i++) {
+        if(count($combatChain) > 0 && $combatChain[0] == "DYN065") ++$numLinks;
+        for($i=0; $i < $numLinks; $i++) {
           BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
         }
       }
@@ -759,7 +756,7 @@ function DYNHitEffect($cardID)
       BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
       break;
     case "DYN067":
-      if (IsHeroAttackTarget() && !SearchAuras("DYN246", $mainPlayer)) {
+      if(IsHeroAttackTarget() && !SearchAuras("DYN246", $mainPlayer)) {
         PlayAura("DYN246", $mainPlayer);
       }
       break;
@@ -774,18 +771,18 @@ function DYNHitEffect($cardID)
       AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       break;
     case "DYN115": case "DYN116":
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         AddCurrentTurnEffect($cardID, $defPlayer);
       }
       break;
     case "DYN117":
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         WriteLog(CardLink($cardID, $cardID) . " gives the current Assassin attack go again.");
       }
       break;
     case "DYN118":
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
         if (count($deck) == 0) WriteLog("The opponent deck is already... depleted.");
         $cardToBanish = array_shift($deck);
@@ -794,28 +791,28 @@ function DYNHitEffect($cardID)
       }
       break;
     case "DYN119":
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
-        if (count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
+        if(count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
         $cardsName = "";
-        for ($i = 0; $i < $combatChainState[$CCS_DamageDealt]; ++$i) {
+        for($i = 0; $i < $combatChainState[$CCS_DamageDealt]; ++$i) {
           if (count($deck) == 0) break;
           $cardToBanish = array_shift($deck);
           BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
           if ($cardsName != "") $cardsName .= ", ";
           $cardsName .= CardLink($cardToBanish, $cardToBanish);
         }
-        if ($cardsName != "") WriteLog(CardLink($cardID, $cardID) . " Banished the following cards: " . $cardsName);
+        if($cardsName != "") WriteLog(CardLink($cardID, $cardID) . " Banished the following cards: " . $cardsName);
       }
       break;
     case "DYN121":
-      if (IsHeroAttackTarget() && IsRoyal($defPlayer)) {
+      if(IsHeroAttackTarget() && IsRoyal($defPlayer)) {
         PlayerLoseHealth($defPlayer, GetHealth($defPlayer));
       }
       break;
     case "DYN120":
-      if (IsHeroAttackTarget()) {
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
+      if(IsHeroAttackTarget()) {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZBANISH", $mainPlayer, "ARS,-," . $mainPlayer, 1);
@@ -828,15 +825,15 @@ function DYNHitEffect($cardID)
       }
       break;
     case "DYN122":
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
-        if (count($deck) == 0) WriteLog("The opponent deck is already... depleted.");
+        if(count($deck) == 0) WriteLog("The opponent deck is already... depleted.");
         else {
           $cardToBanish = array_shift($deck);
           BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
           WriteLog(CardLink($cardToBanish, $cardToBanish) . " was banished.");
         }
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZBANISH", $mainPlayer, "HAND,-," . $mainPlayer, 1);
@@ -850,7 +847,7 @@ function DYNHitEffect($cardID)
     case "DYN139": case "DYN140": case "DYN141":
     case "DYN142": case "DYN143": case "DYN144":
     case "DYN145": case "DYN146": case "DYN147":
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
         if (count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
         $cardToBanish = array_shift($deck);
@@ -862,21 +859,21 @@ function DYNHitEffect($cardID)
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
       break;
     case "DYN154":
-      if (HasAimCounter() && IsHeroAttackTarget()) {
+      if(HasAimCounter() && IsHeroAttackTarget()) {
         AddNextTurnEffect($cardID, $defPlayer);
       }
       break;
     case "DYN156": case "DYN157": case "DYN158":
-      if (IsHeroAttackTarget()){
+      if(IsHeroAttackTarget()){
         AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
         AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
         AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
       }
       break;
     case "DYN162": case "DYN163": case "DYN164":
-      if (HasAimCounter() && IsHeroAttackTarget()) {
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to Destroy", 1);
+      if(HasAimCounter() && IsHeroAttackTarget()) {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to destroy", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZDISCARD", $mainPlayer, "ARS,-," . $mainPlayer, 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);

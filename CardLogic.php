@@ -48,7 +48,7 @@ function BottomDeck($player="", $mayAbility=false, $shouldDraw=false)
 
 function BottomDeckMultizone($player, $zone1, $zone2)
 {
-  AddDecisionQueue("FINDINDICES", $player, "SEARCHMZ," . $zone1 . "|" . $zone2, 1);
+  AddDecisionQueue("MULTIZONEINDICES", $player, $zone1 . "&" . $zone2, 1);
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to sink (or Pass)", 1);
   AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MULTIZONEREMOVE", $player, "-", 1);
@@ -855,8 +855,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "UPR096":
         if(GetClassState($player, $CS_NumRedPlayed) > 1 && CanRevealCards($player))
         {
-          AddDecisionQueue("FINDINDICES", $player, "DECKCARD,UPR101");
-          AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:cardID=UPR101");
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
           AddDecisionQueue("ADDHAND", $player, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
         }
