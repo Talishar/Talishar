@@ -27,7 +27,7 @@
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND", 1);
-        AddDecisionQueue("BECOMETHEARKNIGHT", $currentPlayer, "-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "BECOMETHEARKNIGHT", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       case "ARC084":

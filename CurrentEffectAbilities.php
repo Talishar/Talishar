@@ -6,8 +6,8 @@ function EffectHitEffect($cardID)
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $combatChain, $CCS_DamageDealt;
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
-  if (CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
-  switch ($cardID) {
+  if(CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
+  switch($cardID) {
     case "WTR129": case "WTR130": case "WTR131":
       GiveAttackGoAgain();
       break;
@@ -15,17 +15,15 @@ function EffectHitEffect($cardID)
       NaturesPathPilgrimageHit();
       break;
     case "ARC170-1": case "ARC171-1": case "ARC172-1":
-      MainDrawCard();
+      Draw($mainPlayer);
       return 1;
     case "CRU124":
-      if (IsHeroAttackTarget()) {
-        PummelHit();
-      }
+      if(IsHeroAttackTarget()) PummelHit();
       break;
     case "CRU145": case "CRU146": case "CRU147":
-      if (ClassContains($combatChain[0], "RUNEBLADE", $mainPlayer)){
+      if(ClassContains($combatChain[0], "RUNEBLADE", $mainPlayer)){
         if ($cardID == "CRU145") $amount = 3;
-        else if ($cardID == "CRU146") $amount = 2;
+        else if($cardID == "CRU146") $amount = 2;
         else $amount = 1;
         PlayAura("ARC112", $mainPlayer, $amount);
       }
@@ -46,7 +44,7 @@ function EffectHitEffect($cardID)
       ShadowPuppetryHitEffect();
       break;
     case "MON218":
-      if (count(GetSoul($defPlayer)) > 0) {
+      if(count(GetSoul($defPlayer)) > 0) {
         BanishFromSoul($defPlayer);
         LoseHealth(1, $defPlayer);
       }
@@ -55,12 +53,12 @@ function EffectHitEffect($cardID)
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
       break;
     case "ELE003":
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         PlayAura("ELE111", $defPlayer);
       }
       break;
     case "ELE005":
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         $hand = &GetHand($defPlayer);
         $cards = "";
         for($i=0; $i<2 && count($hand) > 0; ++$i)
@@ -75,7 +73,7 @@ function EffectHitEffect($cardID)
       }
       break;
     case "ELE019": case "ELE020": case "ELE021":
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put at the bottom of the deck", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
@@ -84,38 +82,28 @@ function EffectHitEffect($cardID)
       }
       break;
     case "ELE022": case "ELE023": case "ELE024":
-      if (IsHeroAttackTarget()) {
-        PlayAura("ELE111", $defPlayer);
-      }
+      if(IsHeroAttackTarget()) PlayAura("ELE111", $defPlayer);
       break;
     case "ELE035-2":
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         AddCurrentTurnEffect("ELE035-3", $defPlayer);
         AddNextTurnEffect("ELE035-3", $defPlayer);
       }
       break;
     case "ELE037-2":
-      if (IsHeroAttackTarget()) {
-        DamageTrigger($defPlayer, 1, "ATTACKHIT");
-      }
+      if(IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT");
       break;
     case "ELE047": case "ELE048": case "ELE049":
-      if (IsHeroAttackTarget()) {
-        DamageTrigger($defPlayer, 1, "ATTACKHIT");
-      }
+      if(IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT");
       break;
     case "ELE066-HIT":
       AddLayer("TRIGGER", $mainPlayer, "ELE066");
       break;
     case "ELE092-BUFF":
-      if (IsHeroAttackTarget()) {
-        DamageTrigger($defPlayer, 3, "ATTACKHIT");
-      }
+      if(IsHeroAttackTarget()) DamageTrigger($defPlayer, 3, "ATTACKHIT");
       break;
     case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT":
-      if (IsHeroAttackTarget()) {
-        PlayAura("ELE111", $defPlayer);
-      }
+      if(IsHeroAttackTarget()) PlayAura("ELE111", $defPlayer);
       break;
     case "ELE163":
       if (IsHeroAttackTarget()) PlayAura("ELE111", $defPlayer, 3);
@@ -127,32 +115,28 @@ function EffectHitEffect($cardID)
       if (IsHeroAttackTarget()) PlayAura("ELE111", $defPlayer);
       break;
     case "ELE173":
-      if (IsHeroAttackTarget()) {
-        DamageTrigger($defPlayer, 1, "ATTACKHIT");
-      }
+      if(IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT");
       return 1;
     case "ELE195": case "ELE196": case "ELE197":
-      if (IsHeroAttackTarget()) {
-        DamageTrigger($defPlayer, 1, "ATTACKHIT");
-      }
+      if(IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT");
       break;
     case "ELE198": case "ELE199": case "ELE200":
-      if (IsHeroAttackTarget()) {
-        if ($cardID == "ELE198") $damage = 3;
-        else if ($cardID == "ELE199") $damage = 2;
+      if(IsHeroAttackTarget()) {
+        if($cardID == "ELE198") $damage = 3;
+        else if($cardID == "ELE199") $damage = 2;
         else $damage = 1;
         DamageTrigger($defPlayer, $damage, "ATTACKHIT");
         return 1;
       }
       break;
     case "ELE205":
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         PummelHit();
         PummelHit();
       }
       break;
     case "ELE215":
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         AddNextTurnEffect($cardID . "-1", $defPlayer);
       }
       break;
@@ -173,7 +157,7 @@ function EffectHitEffect($cardID)
       PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, $amount);
       return 1;
     case "EVR170-1": case "EVR171-1": case "EVR172-1":
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMSMAX,2");
         AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);
         AddDecisionQueue("DESTROYITEM", $defPlayer, "<-", 1);
@@ -182,7 +166,7 @@ function EffectHitEffect($cardID)
       break;
     case "DVR008-1":
       $char = &GetPlayerCharacter($mainPlayer);
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         ++$char[$combatChainState[$CCS_WeaponIndex] + 3];
       }
       break;
@@ -196,7 +180,7 @@ function EffectHitEffect($cardID)
       AddDecisionQueue("MZDAMAGE", $mainPlayer, $combatChainState[$CCS_DamageDealt] . ",DAMAGE," . $cardID, 1);
       break;
     case "DYN155":
-      if (IsHeroAttackTarget() && HasAimCounter()) {
+      if(IsHeroAttackTarget() && HasAimCounter()) {
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
@@ -205,15 +189,15 @@ function EffectHitEffect($cardID)
       }
       break;
     case "DYN185-HIT": case "DYN186-HIT": case "DYN187-HIT":
-      if (ClassContains($combatChain[0], "RUNEBLADE", $mainPlayer)) {
-        if ($cardID == "DYN185-HIT") $amount = 3;
-        else if ($cardID == "DYN186-HIT") $amount = 2;
+      if(ClassContains($combatChain[0], "RUNEBLADE", $mainPlayer)) {
+        if($cardID == "DYN185-HIT") $amount = 3;
+        else if($cardID == "DYN186-HIT") $amount = 2;
         else $amount = 1;
         PlayAura("ARC112", $mainPlayer, $amount, true);
       }
       break;
     case "OUT105":
-      if (IsHeroAttackTarget() && HasAimCounter()) {
+      if(IsHeroAttackTarget() && HasAimCounter()) {
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:minAttack=1;maxAttack=1;type=W");//TODO: Limit to 1H
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a weapon to destroy");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
@@ -221,16 +205,16 @@ function EffectHitEffect($cardID)
       }
       break;
     case "OUT112":
-      if (IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+      if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
       break;
     case "OUT113":
-      if (IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+      if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
       break;
     case "OUT114":
-      if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+      if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
       break;
     case "OUT140":
-      WriteLog("Mask of Shifting Perspectives lets you sink a card.");
+      WriteLog("Mask of Shifting Perspectives lets you sink a card");
       BottomDeck($mainPlayer, true, shouldDraw:true);
       break;
     case "OUT143":
@@ -261,17 +245,17 @@ function EffectHitEffect($cardID)
 function EffectAttackModifier($cardID)
 {
   $set = CardSet($cardID);
-  if ($set == "WTR") return WTREffectAttackModifier($cardID);
-  else if ($set == "ARC") return ARCEffectAttackModifier($cardID);
-  else if ($set == "CRU") return CRUEffectAttackModifier($cardID);
-  else if ($set == "MON") return MONEffectAttackModifier($cardID);
-  else if ($set == "ELE") return ELEEffectAttackModifier($cardID);
-  else if ($set == "EVR") return EVREffectAttackModifier($cardID);
-  else if ($set == "DVR") return DVREffectAttackModifier($cardID);
-  else if ($set == "RVD") return RVDEffectAttackModifier($cardID);
-  else if ($set == "UPR") return UPREffectAttackModifier($cardID);
-  else if ($set == "DYN") return DYNEffectAttackModifier($cardID);
-  else if ($set == "OUT") return OUTEffectAttackModifier($cardID);
+  if($set == "WTR") return WTREffectAttackModifier($cardID);
+  else if($set == "ARC") return ARCEffectAttackModifier($cardID);
+  else if($set == "CRU") return CRUEffectAttackModifier($cardID);
+  else if($set == "MON") return MONEffectAttackModifier($cardID);
+  else if($set == "ELE") return ELEEffectAttackModifier($cardID);
+  else if($set == "EVR") return EVREffectAttackModifier($cardID);
+  else if($set == "DVR") return DVREffectAttackModifier($cardID);
+  else if($set == "RVD") return RVDEffectAttackModifier($cardID);
+  else if($set == "UPR") return UPREffectAttackModifier($cardID);
+  else if($set == "DYN") return DYNEffectAttackModifier($cardID);
+  else if($set == "OUT") return OUTEffectAttackModifier($cardID);
   return 0;
 }
 

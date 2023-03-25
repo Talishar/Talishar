@@ -559,8 +559,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         KatsuHit();
       break;
     case "WTR079":
-        WriteLog(CardLink($parameter, $parameter) . " drew a card.");
-        MainDrawCard();
+        WriteLog(CardLink($parameter, $parameter) . " drew a card");
+        Draw($player);
       break;
     case "WTR117":
       $index = FindCharacterIndex($player, $parameter);
@@ -727,7 +727,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       WriteLog(CardLink($parameter, $parameter) . " created an Embodiment of Lightning aura.");
       break;
     case "ELE066":
-      if (HasIncreasedAttack()) MainDrawCard();
+      if (HasIncreasedAttack()) Draw($player);
       break;
     case "ELE004":
       for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {

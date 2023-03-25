@@ -218,7 +218,7 @@
     $otherPlayer = ($player == 1 ? 2 : 1);
     if (count($targetHand) > 0) {
       if ($fromDQ) {
-        PummelHit($player, passable:false, fromDQ:true);
+        PummelHit($player, passable:true, fromDQ:true);
         PrependDecisionQueue("ELSE", $player, "-");
         PrependDecisionQueue("PAYRESOURCES", $player, "-", 1);
         PrependDecisionQueue("PASSPARAMETER", $player, $amount, 1);
@@ -232,7 +232,7 @@
         AddDecisionQueue("PASSPARAMETER", $player, $amount, 1);
         AddDecisionQueue("PAYRESOURCES", $player, "-", 1);
         AddDecisionQueue("ELSE", $player, "-");
-        PummelHit($player, passable:false, fromDQ:false);
+        PummelHit($player, passable:true, fromDQ:false);
       }
     }
   }

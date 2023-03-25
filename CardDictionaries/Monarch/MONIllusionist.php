@@ -41,11 +41,11 @@
     {
       case "MON004":
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
-        MainDrawCard();
-        MainDrawCard();
+        Draw($mainPlayer);
+        Draw($mainPlayer);
         break;
       case "MON007":
-        if (!IsAllyAttackTarget()) {
+        if(!IsAllyAttackTarget()) {
           AddCurrentTurnEffect($cardID, $defPlayer);
           AddNextTurnEffect($cardID, $defPlayer);
         }

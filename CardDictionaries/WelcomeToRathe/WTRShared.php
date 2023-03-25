@@ -265,10 +265,11 @@ function WTRAbilityCost($cardID)
         AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
       case "WTR047":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCLASSAA,GUARDIAN");
-        AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=AA;class=GUARDIAN");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       //Ninja
@@ -488,7 +489,7 @@ function WTRAbilityCost($cardID)
           LoseHealth($combatChainState[$CCS_DamageDealt], $defPlayer);
         }
         break;
-      case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) { WriteLog(CardLink($cardID,$cardID) . " draw a card."); MainDrawCard(); } break;
+      case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) { Draw($mainPlayer); } break;
       case "WTR115":
         if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 1) {
           $mainCharacter = &GetPlayerCharacter($mainPlayer);

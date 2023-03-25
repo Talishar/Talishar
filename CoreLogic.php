@@ -617,8 +617,8 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
       }
       if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused]) AddCurrentTurnEffect($source, $mainPlayer);
       if($source == "DYN173" && SearchCurrentTurnEffects("DYN173", $mainPlayer, true)) {
-        WriteLog("Player " . $mainPlayer . " draw a card and Player " . $otherPlayer . " must discard a card.");
-        MainDrawCard();
+        WriteLog("Player " . $mainPlayer . " drew a card and Player " . $otherPlayer . " must discard a card");
+        Draw($mainPlayer);
         PummelHit();
       }
       if ($source == "DYN612") GainHealth($damage, $mainPlayer);

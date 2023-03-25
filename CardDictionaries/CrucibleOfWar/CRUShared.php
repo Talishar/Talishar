@@ -551,14 +551,14 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 function CRUHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer, $combatChainState, $CS_ArcaneDamageTaken;
-  switch ($cardID) {
+  switch($cardID) {
     case "CRU054":
-      if (ComboActive()) {
+      if(ComboActive()) {
         PlayAura("CRU075", $mainPlayer);
       }
       break;
     case "CRU060": case "CRU061": case "CRU062":
-      if (ComboActive()) RushingRiverHitEffect();
+      if(ComboActive()) RushingRiverHitEffect();
       break;
     case "CRU066": case "CRU067": case "CRU068":
       GiveAttackGoAgain();
@@ -571,8 +571,8 @@ function CRUHitEffect($cardID)
       break;
     case "CRU074":
       if (HitsInRow() > 0) {
-        MainDrawCard();
-        MainDrawCard();
+        Draw($mainPlayer);
+        Draw($mainPlayer);
       }
       break;
     case "CRU106": case "CRU107": case "CRU108":
@@ -588,14 +588,14 @@ function CRUHitEffect($cardID)
       }
       break;
     case "CRU129": case "CRU130": case "CRU131":
-      if (!ArsenalEmpty($mainPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
+      if(!ArsenalEmpty($mainPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
       AddDecisionQueue("FINDINDICES", $mainPlayer, "MAINHAND");
       AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
       AddDecisionQueue("REMOVEMYHAND", $mainPlayer, "-", 1);
       AddDecisionQueue("ADDARSENALFACEDOWN", $mainPlayer, "HAND", 1);
       break;
     case "CRU132": case "CRU133": case "CRU134":
-      if (IsHeroAttackTarget()) {
+      if(IsHeroAttackTarget()) {
         $char = &GetPlayerCharacter($defPlayer);
         $char[1] = 3;
       }
@@ -604,7 +604,7 @@ function CRUHitEffect($cardID)
       PlayAura("ARC112", $mainPlayer);
       break;
     case "CRU148": case "CRU149": case "CRU150":
-      if (IsHeroAttackTarget() && GetClassState($defPlayer, $CS_ArcaneDamageTaken)) {
+      if(IsHeroAttackTarget() && GetClassState($defPlayer, $CS_ArcaneDamageTaken)) {
         PummelHit();
       }
       break;
@@ -629,7 +629,7 @@ function RushingRiverHitEffect()
 {
   global $combatChainState, $mainPlayer;
   $num = NumAttacksHit()+1;
-  for ($i = 0; $i < $num; ++$i) {
+  for($i = 0; $i < $num; ++$i) {
     Draw($mainPlayer);
     AddDecisionQueue("FINDINDICES", $mainPlayer, "HAND");
     AddDecisionQueue("CHOOSEHAND", $mainPlayer, "<-", 1);
@@ -654,7 +654,7 @@ function KayoStaticAbility()
 {
   global $combatChainState, $CCS_LinkBaseAttack, $mainPlayer;
   $roll = GetDieRoll($mainPlayer);
-  if ($roll >= 5)
+  if($roll >= 5)
   {
     if(CanGainAttack()) $combatChainState[$CCS_LinkBaseAttack] *= 2;
   }
@@ -664,8 +664,8 @@ function KayoStaticAbility()
 function KassaiEndTurnAbility()
 {
   global $mainPlayer, $CS_AtksWWeapon, $CS_HitsWithWeapon;
-  if (GetClassState($mainPlayer, $CS_AtksWWeapon) >= 2) {
-    for ($i = 0; $i < GetClassState($mainPlayer, $CS_HitsWithWeapon); ++$i) {
+  if(GetClassState($mainPlayer, $CS_AtksWWeapon) >= 2) {
+    for($i = 0; $i < GetClassState($mainPlayer, $CS_HitsWithWeapon); ++$i) {
       PutItemIntoPlayForPlayer("CRU197", $mainPlayer);
     }
   }

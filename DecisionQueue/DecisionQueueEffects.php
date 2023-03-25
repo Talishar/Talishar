@@ -173,6 +173,14 @@ function SpecificCardLogic($player, $card, $lastResult)
         PrependDecisionQueue("FINDINDICES", $player, "KNICKKNACK");
       }
       return "";
+    case "BECOMETHEARKNIGHT":
+      $type = (CardType($lastResult) == "A" ? "AA" : "A");
+      PrependDecisionQueue("MULTIADDHAND", $player, "-", 1);
+      PrependDecisionQueue("REVEALCARDS", $player, "-", 1);
+      PrependDecisionQueue("MZREMOVE", $player, "-", 1);
+      PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      PrependDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:type=$type;class=RUNEBLADE");
+      return 1;
     default: return "";
   }
 }

@@ -384,7 +384,7 @@ function MainCharacterHitEffects()
     if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
       switch($mainCharacterEffects[$i + 1]) {
         case "WTR119":
-          MainDrawCard();
+          Draw($mainPlayer);
           break;
         default: break;
       }

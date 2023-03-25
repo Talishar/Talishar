@@ -170,18 +170,6 @@ function MyDrawCard()
   Draw($currentPlayer);
 }
 
-function TheirDrawCard()
-{
-  global $currentPlayer;
-  Draw(($currentPlayer == 1 ? 2 : 1));
-}
-
-function MainDrawCard()
-{
-  global $mainPlayer;
-  Draw($mainPlayer);
-}
-
 function EquipPayAdditionalCosts($cardIndex, $from)
 {
   global $currentPlayer;
@@ -309,12 +297,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DECKTOPXREMOVE":
           $deck = new Deck($player);
           $rv = $deck->Top(true, $subparam);
-          break;
-        case "DECKCLASSAA":
-          $rv = SearchDeck($player, "AA", "", -1, -1, $subparam);
-          break;
-        case "DECKCLASSNAA":
-          $rv = SearchDeck($player, "A", "", -1, -1, $subparam);
           break;
         case "DECKSPEC":
           $rv = SearchDeck($player, "", "", -1, -1, "", "", false, false, -1, true);
@@ -1185,8 +1167,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             PlayAura("WTR225", 2);
             break;
           case "Draw_card":
-            MyDrawCard();
-            TheirDrawCard();
+            Draw($player);
+            Draw($player == 1 ? 2 : 1);
             break;
           case "Gain_life":
             GainHealth(1, $player);
@@ -1679,14 +1661,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("MULTIADDTOPDECK", $player, "-", 1);
       PrependDecisionQueue("MULTIREMOVEDISCARD", $player, "-", 1);
       PrependDecisionQueue("CHOOSEDISCARD", $player, "<-", 1);
-      PrependDecisionQueue("FINDINDICES", $player, $indicesParam);
-      return 1;
-    case "BECOMETHEARKNIGHT":
-      $lastType = CardType($lastResult);
-      $indicesParam = ($lastType == "A" ? "DECKCLASSAA,RUNEBLADE" : "DECKCLASSNAA,RUNEBLADE");
-      PrependDecisionQueue("MULTIADDHAND", $player, "-", 1);
-      PrependDecisionQueue("REVEALCARDS", $player, "-", 1);
-      PrependDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
       PrependDecisionQueue("FINDINDICES", $player, $indicesParam);
       return 1;
     case "GENESIS":

@@ -77,7 +77,7 @@
     switch($cardID)
     {
       case "MON042": case "MON043": case "MON044":
-        if(GetClassState($mainPlayer, $CS_NumCharged) > 0) MainDrawCard();
+        if(GetClassState($mainPlayer, $CS_NumCharged) > 0) Draw($mainPlayer);
         break;
       case "MON048": case "MON049": case "MON050":
         if(GetClassState($mainPlayer, $CS_NumCharged) > 0) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
