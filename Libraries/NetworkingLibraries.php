@@ -1427,9 +1427,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       }
       break;
-    case "ARC185":
-    case "ARC186":
-    case "ARC187":
+    case "ARC185": case "ARC186": case "ARC187":
       HandToTopDeck($currentPlayer);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "ARC185", 1);
       break;

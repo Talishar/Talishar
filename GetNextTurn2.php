@@ -694,7 +694,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   if (($turn[0] == "CHOOSETHEIRHAND") && $turn[1] == $playerID) {
-    ChoosePopup($theirHand, $turn[2], 16, "Choose a card from your opponent hand");
+    ChoosePopup($theirHand, $turn[2], 16, "Choose a card from your opponent's hand");
   }
 
   if (($turn[0] == "CHOOSEMYAURA") && $turn[1] == $playerID) {
@@ -702,7 +702,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   if (($turn[0] == "CHOOSETHEIRAURA") && $turn[1] == $playerID) {
-    ChoosePopup($theirAuras, $turn[2], 16, "Choose one of your opponent auras");
+    ChoosePopup($theirAuras, $turn[2], 16, "Choose one of your opponent's auras");
   }
 
   if (($turn[0] == "CHOOSEDISCARD" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID) {
@@ -712,7 +712,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   if (($turn[0] == "MAYCHOOSETHEIRDISCARD") && $turn[1] == $playerID) {
-    ChoosePopup($theirDiscard, $turn[2], 16, "Choose a card from your opponent discard");
+    ChoosePopup($theirDiscard, $turn[2], 16, "Choose a card from your opponent's graveyard");
   }
 
   if (($turn[0] == "CHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSECOMBATCHAIN") && $turn[1] == $playerID) {

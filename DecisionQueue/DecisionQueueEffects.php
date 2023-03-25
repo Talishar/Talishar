@@ -1,5 +1,47 @@
 <?php
 
+function ModalAbilities($player, $card, $lastResult)
+{
+  switch($card)
+  {
+    case "MICROPROCESSOR":
+      $deck = new Deck($player);
+      switch($lastResult) {
+        case "Opt":
+          WriteLog(Cardlink("EVR070","EVR070") . " let you Opt 1");
+          Opt("EVR070", 1);
+          break;
+        case "Draw_then_top_deck":
+          if(!$deck->Empty()) {
+            WriteLog(Cardlink("EVR070","EVR070") . " let you draw a card then put one on top");
+            Draw($player);
+            HandToTopDeck($player);
+          }
+          break;
+        case "Banish_top_deck":
+          if(!$deck->Empty()) {
+            $card = $deck->Top(remove:true);
+            BanishCardForPlayer($card, $player, "DECK", "-");
+            WriteLog(Cardlink("EVR070","EVR070") . " banished " . CardLink($card, $card));
+          }
+          break;
+        default: break;
+      }
+      return "";
+    case "TWINTWISTERS":
+      switch($lastResult) {
+        case "Hit_Effect":
+          AddCurrentTurnEffect("EVR047-1", $player);
+          return 1;
+        case "1_Attack":
+          AddCurrentTurnEffect("EVR047-2", $player);
+          return 2;
+      }
+      return $lastResult;
+    default: return "";
+  }
+}
+
 function PlayerTargetedAbility($player, $card, $lastResult)
 {
   global $dqVars;
@@ -111,6 +153,19 @@ function SpecificCardLogic($player, $card, $lastResult)
         for ($i = 0; $i < $lastResult; ++$i) Draw($player);
       }
       return $lastResult;
+    case "TALISMANOFCREMATION":
+      $discard = &GetDiscard($player);
+      $cardName = CardName($discard[$lastResult]);
+      $count = 0;
+      for($i = count($discard) - DiscardPieces(); $i >= 0; $i -= DiscardPieces()) {
+        if(CardName($discard[$i]) == $cardName) {
+          BanishCardForPlayer($discard[$i], $player, "GY");
+          RemoveGraveyard($player, $i);
+          ++$count;
+        }
+      }
+      WriteLog("Talisman of Cremation banished " . $count . " cards named " . $cardName);
+      return "";
     default: return "";
   }
 }

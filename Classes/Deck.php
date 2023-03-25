@@ -14,6 +14,10 @@ class Deck {
   }
 
   // Methods
+  function Empty() {
+    return count($this->deck) == 0;
+  }
+
   function RemainingCards() {
     // Code to return the number of remaining cards in the deck
     return count($this->deck);

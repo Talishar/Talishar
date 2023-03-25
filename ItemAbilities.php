@@ -89,7 +89,11 @@ function ItemPlayAbilities($cardID, $from)
     switch ($items[$i]) {
       case "EVR189":
         if ($from == "BANISH") {
-          TalismanOfCremationBanishPlay();
+          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Talisman of Cremation");
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "GY");
+          AddDecisionQueue("MAYCHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
+          AddDecisionQueue("SPECIFICCARD", $otherPlayer, "TALISMANOFCREMATION", 1);
           $remove = true;
         }
         break;

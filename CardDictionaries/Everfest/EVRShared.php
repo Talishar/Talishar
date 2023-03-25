@@ -291,8 +291,8 @@
         if ($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard(($currentPlayer == 1 ? 2 : 1), $target));
         return "";
       case "EVR047": case "EVR048": case "EVR049":
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-        AddDecisionQueue("TWINTWISTERS", $currentPlayer, $cardID);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts);
+        AddDecisionQueue("MODAL", $currentPlayer, "TWINTWISTERS");
         return "";
       case "EVR053":
         $rv = "You have no cards in your deck.";
@@ -356,7 +356,7 @@
           if($items[GetClassState($currentPlayer, $CS_PlayIndex)+3] == 2) { $rv = "Gained an action point from Micro-Processor."; GainActionPoints(1); }
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
           AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Opt,Draw_then_top_deck,Banish_top_deck");
-          AddDecisionQueue("MICROPROCESSOR", $currentPlayer, "-", 1);
+          AddDecisionQueue("MODAL", $currentPlayer, "MICROPROCESSOR", 1);
         }
         return $rv;
       case "EVR073": case "EVR074": case "EVR075":
@@ -978,16 +978,6 @@
       case "GoAgain": return $hasGoAgain;
       default: return 0;
     }
-  }
-
-  function TalismanOfCremationBanishPlay()
-  {
-    global $currentPlayer;
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may choose a card to banish with Talisman of Cremation.");
-    AddDecisionQueue("FINDINDICES", $otherPlayer, "GY");
-    AddDecisionQueue("MAYCHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
-    AddDecisionQueue("TALISMANOFCREMATION", $otherPlayer, "-", 1);
   }
 
   function ShatterIndices($player, $pendingDamage)

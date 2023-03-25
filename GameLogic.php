@@ -2045,57 +2045,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PutItemIntoPlayForPlayer("EVR195", $player);
       }
       return $lastResult;
-    case "TWINTWISTERS":
-      switch ($lastResult) {
-        case "Hit_Effect":
-          WriteLog("If Twin Twisters hits, the next attack gets +1 power.");
-          AddCurrentTurnEffect($parameter . "-1", $player);
-          return 1;
-        case "1_Attack":
-          WriteLog("Twin Twisters gets +1 power.");
-          AddCurrentTurnEffect($parameter . "-2", $player);
-          return 2;
-      }
-      return $lastResult;
-    case "MICROPROCESSOR":
-      $deck = &GetDeck($player); // TODO: Once per turn restriction
-      switch ($lastResult) {
-        case "Opt":
-          WriteLog("Player " . $player . " Opt 1 with " . Cardlink("EVR070","EVR070") . ".");
-          Opt("EVR070", 1);
-          break;
-        case "Draw_then_top_deck":
-          if (count($deck) > 0) {
-            WriteLog("Player " . $player . " draw a card then put a card on top of their deck with " . Cardlink("EVR070", "EVR070") . ".");
-            Draw($player);
-            HandToTopDeck($player);
-          }
-          break;
-        case "Banish_top_deck":
-          if (count($deck) > 0) {
-            $card = array_shift($deck);
-            BanishCardForPlayer($card, $player, "DECK", "-");
-            WriteLog("Player " . $player . " banish the top card of their deck with " . Cardlink("EVR070", "EVR070") . ".");
-            WriteLog(CardLink($card, $card) . " was banished.");
-          }
-          break;
-        default:
-          break;
-      }
-      return "";
-    case "TALISMANOFCREMATION":
-      $discard = &GetDiscard($player);
-      $cardName = CardName($discard[$lastResult]);
-      $count = 0;
-      for ($i = count($discard) - DiscardPieces(); $i >= 0; $i -= DiscardPieces()) {
-        if (CardName($discard[$i]) == $cardName) {
-          BanishCardForPlayer($discard[$i], $player, "GY");
-          RemoveGraveyard($player, $i);
-          ++$count;
-        }
-      }
-      WriteLog("Talisman of Cremation banished " . $count . " cards named " . $cardName . ".");
-      return "";
+    case "MODAL":
+      return ModalAbilities($player, $parameter, $lastResult);
     case "SCOUR":
       WriteLog("Scour deals " . $parameter . " arcane damage.");
       DealArcane($parameter, 0, "PLAYCARD", "EVR124", true, $player, resolvedTarget: ($player == 1 ? 2 : 1));
