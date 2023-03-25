@@ -2046,19 +2046,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ATTACKWITHIT":
       PlayCardSkipCosts($lastResult, "DECK");
       return $lastResult;
-    case "EVENBIGGERTHANTHAT":
-      $deck = &GetDeck($player);
-      if (RevealCards($deck[0], $player) && AttackValue($deck[0]) > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt)) {
-        WriteLog("Even Bigger Than That! draw a card and create a Quicken token.");
-        Draw($player);
-        PlayAura("WTR225", $player);
-      }
-      return $lastResult;
-    case "KRAKENAETHERVEIN":
-      if ($lastResult > 0) {
-        for ($i = 0; $i < $lastResult; ++$i) Draw($player);
-      }
-      return $lastResult;
     case "HEAVE":
       PrependDecisionQueue("PAYRESOURCES", $player, "<-");
       AddArsenal($lastResult, $player, "HAND", "UP");

@@ -993,6 +993,7 @@ function EndStep()
   AddLayer("ENDSTEP", $mainPlayer, "-");
   AuraBeginEndPhaseTriggers();
   BeginEndPhaseEffectTriggers();
+  if(HeaveIndices() != "") AddLayer("TRIGGER", $mainPlayer, "HEAVE");
 }
 
 //CR 2.0 4.4.2. - Beginning of the end phase
@@ -1001,7 +1002,6 @@ function FinishTurnPass()
   global $mainPlayer;
   ClearLog();
   ResetCombatChainState();
-  Heave();
   QuellEndPhase(1);
   QuellEndPhase(2);
   ItemEndTurnAbilities();

@@ -506,6 +506,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
   $EffectContext = $parameter;
 
   switch ($parameter) {
+    case "HEAVE":
+      Heave();
+      break;
     case "WTR000":
       if(IHaveLessHealth()) GainHealth(1, $player);
       break;

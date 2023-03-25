@@ -2,7 +2,7 @@
 
 function SpecificCardLogic($player, $card, $lastResult)
 {
-  global $dqVars;
+  global $dqVars, $CS_DamageDealt;
   switch($card)
   {
     case "BLOODONHERHANDS":
@@ -54,9 +54,22 @@ function SpecificCardLogic($player, $card, $lastResult)
       return $lastResult;
     case "BLESSINGOFFOCUS":
       $deck = new Deck($player);
-      if ($deck->Reveal() && CardSubType($deck->Top()) == "Arrow") {
-        if (!ArsenalFull($player)) { AddArsenal($deck->Top(true), $player, "DECK", "UP", 1); }
+      if($deck->Reveal() && CardSubType($deck->Top()) == "Arrow") {
+        if(!ArsenalFull($player)) { AddArsenal($deck->Top(true), $player, "DECK", "UP", 1); }
         else WriteLog("Your arsenal is full");
+      }
+      return $lastResult;
+    case "EVENBIGGERTHANTHAT":
+      $deck = new Deck($player);
+      if($deck->Reveal() && AttackValue($deck->Top()) > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt)) {
+        WriteLog("Even Bigger Than That! drew a card and created a Quicken token");
+        Draw($player);
+        PlayAura("WTR225", $player);
+      }
+      return $lastResult;
+    case "KRAKENAETHERVEIN":
+      if($lastResult > 0) {
+        for ($i = 0; $i < $lastResult; ++$i) Draw($player);
       }
       return $lastResult;
     default: return "";

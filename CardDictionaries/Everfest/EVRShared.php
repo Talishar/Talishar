@@ -424,7 +424,7 @@
         return $rv;
       case "EVR121":
         DealArcane(1, 1, "ABILITY", $cardID);
-        AddDecisionQueue("KRAKENAETHERVEIN", $currentPlayer, "-");
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "KRAKENAETHERVEIN");
         return "";
       case "EVR123":
         DealArcane(4, 1, "PLAYCARD", $cardID, resolvedTarget: $target);
@@ -531,7 +531,7 @@
         else if($cardID == "EVR174") $opt = 2;
         else if($cardID == "EVR175") $opt = 1;
         Opt($cardID, $opt);
-        AddDecisionQueue("EVENBIGGERTHANTHAT", $currentPlayer, "-");
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVENBIGGERTHANTHAT");
         return "";
       case "EVR176":
         if($from == "PLAY")
