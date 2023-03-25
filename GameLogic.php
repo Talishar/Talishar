@@ -264,11 +264,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DAMAGEPREVENTIONTARGET": $rv = GetDamagePreventionTargetIndices(); break;
         case "WTR083":
           $rv = SearchDeckForCard($player, "WTR081");
-          if ($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv;
+          if($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv;
           break;
         case "WTR081":
           $rv = LordOfWindIndices($player);
-          if ($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv;
+          if($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv;
           break;
         case "ARC079":
           $rv = CombineSearches(SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE"), SearchDiscard($player, "A", "", -1, -1, "RUNEBLADE"));
@@ -1526,32 +1526,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for($index=0; $index<count($layers) && $layers[$index] == "TRIGGER"; $index+=LayerPieces());
       AddCurrentTurnEffect("CRU161", $player, "PLAY", $layers[$index+6]);
       return $lastResult;
-    case "SHIVER":
-      $arsenal = &GetArsenal($player);
-      switch ($lastResult) {
-        case "1_Attack":
-          WriteLog("Shiver gives the arrow +1.");
-          AddCurrentTurnEffect("ELE033-1", $player, "HAND", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
-          return 1;
-        case "Dominate":
-          WriteLog("Shiver gives the arrow Dominate.");
-          AddCurrentTurnEffect("ELE033-2", $player, "HAND", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
-          return 1;
-      }
-      return $lastResult;
-    case "VOLTAIRE":
-      $arsenal = &GetArsenal($player);
-      switch ($lastResult) {
-        case "1_Attack":
-          WriteLog("Voltaire gives the arrow +1.");
-          AddCurrentTurnEffect("ELE034-1", $player, "HAND", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
-          return 1;
-        case "Go_again":
-          WriteLog("Voltaire gives the arrow go again.");
-          AddCurrentTurnEffect("ELE034-2", $player, "HAND", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
-          return 1;
-      }
-      return $lastResult;
     case "DREADBORE":
       $arsenal = &GetArsenal($player);
       AddCurrentTurnEffect($parameter, $player, "HAND", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
@@ -1609,7 +1583,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if ($totalAV >= 13) {
         AddCurrentTurnEffect("MON247", $player);
-        WriteLog(CardLink("MON247", "MON247") . " got +7 and go again.");
+        WriteLog(CardLink("MON247", "MON247") . " got +7 and go again");
       }
       return $lastResult;
     case "BEASTWITHIN":
@@ -1845,22 +1819,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damageThreatened = $params[0];
       if($damage > $damageThreatened) $damage = $damageThreatened;//Means there was excess damage prevention prevention
       return FinalizeDamage($player, $damage, $damageThreatened, $params[1], $params[2]);
-    case "KORSHEM":
-      switch ($lastResult) {
-        case "Gain_a_resource":
-          GainResources($player, 1);
-          return 1;
-        case "Gain_a_life":
-          GainHealth(1, $player);
-          return 2;
-        case "1_Attack":
-          AddCurrentTurnEffect("ELE000-1", $player);
-          return 3;
-        case "1_Defense":
-          AddCurrentTurnEffect("ELE000-2", $player);
-          return 4;
-      }
-      return $lastResult;
     case "SETDQVAR":
       $dqVars[$parameter] = $lastResult;
       return $lastResult;
@@ -1879,9 +1837,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($lastResult == "PASS") return $lastResult;
       LordSutcliffeAfterDQ($player, $parameter);
       return $lastResult;
-    // case "APPROVEMANUALMODE":
-    //   ApproveManualMode($player);
-    //   return $lastResult;
     case "BINGO":
       if ($lastResult == "") WriteLog("No card was revealed for " . CardLink("EVR156","EVR156") . ".");
       $cardType = CardType($lastResult);
@@ -1906,7 +1861,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for ($i = 0; $i < $heaveValue; ++$i) {
         PlayAura("WTR075", $player);
       }
-      WriteLog("You must pay " . HeaveValue($lastResult) . " resources to heave this.");
+      WriteLog("You must pay " . HeaveValue($lastResult) . " resources to heave this");
       return HeaveValue($lastResult);
     case "BRAVOSTARSHOW":
       $hand = &GetHand($player);
@@ -1923,7 +1878,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $cards .= $card;
       }
       if (RevealCards($cards, $player) && $hasLightning && $hasIce && $hasEarth) {
-        WriteLog("Bravo, Star of the Show gives the next attack with cost 3 or more +2, Dominate, and go again.");
+        WriteLog("Bravo, Star of the Show gives the next attack with cost 3 or more +2, Dominate, and go again");
         AddCurrentTurnEffect("EVR017", $player);
       }
       return $lastResult;

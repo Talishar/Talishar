@@ -38,6 +38,37 @@ function ModalAbilities($player, $card, $lastResult)
           return 2;
       }
       return $lastResult;
+    case "SHIVER":
+      $arsenal = &GetArsenal($player);
+      switch($lastResult) {
+        case "1_Attack":
+          AddCurrentTurnEffect("ELE033-1", $player, "HAND", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+          return 1;
+        case "Dominate":
+          AddCurrentTurnEffect("ELE033-2", $player, "HAND", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+          return 1;
+      }
+      return $lastResult;
+    case "VOLTAIRE":
+      $arsenal = &GetArsenal($player);
+      switch ($lastResult) {
+        case "1_Attack":
+          AddCurrentTurnEffect("ELE034-1", $player, "HAND", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+          return 1;
+        case "Go_again":
+          AddCurrentTurnEffect("ELE034-2", $player, "HAND", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+          return 1;
+      }
+      return $lastResult;
+    case "KORSHEM":
+      switch($lastResult) {
+          case "Gain_a_resource": GainResources($player, 1); return 1;
+          case "Gain_a_life": GainHealth(1, $player); return 2;
+          case "1_Attack": AddCurrentTurnEffect("ELE000-1", $player); return 3;
+          case "1_Defense": AddCurrentTurnEffect("ELE000-2", $player); return 4;
+          default: break;
+        }
+      return $lastResult;
     default: return "";
   }
 }

@@ -19,7 +19,7 @@
         AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode", 1);
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Dominate", 1);
-        AddDecisionQueue("SHIVER", $currentPlayer, "-", 1);
+        AddDecisionQueue("MODAL", $currentPlayer, "SHIVER", 1);
         return "";
       case "ELE034":
         if(ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
@@ -29,7 +29,7 @@
         AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode", 1);
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Go_again", 1);
-        AddDecisionQueue("VOLTAIRE", $currentPlayer, "-", 1);
+        AddDecisionQueue("MODAL", $currentPlayer, "VOLTAIRE", 1);
         return "";
       case "ELE035":
         AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
