@@ -448,6 +448,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MAINHAND":
           $rv = GetIndices(count(GetHand($mainPlayer)));
           break;
+        case "HANDEARTH":
+          $rv = SearchHand($player, "", "", -1, -1, "", "EARTH");
+          break;
+        case "HANDICE":
+          $rv = SearchHand($player, "", "", -1, -1, "", "ICE");
+          break;
+        case "HANDLIGHTNING":
+          $rv = SearchHand($player, "", "", -1, -1, "", "LIGHTNING");
+          break;
         case "BANISHTYPE":
           $rv = SearchBanish($player, $subparam);
           break;
