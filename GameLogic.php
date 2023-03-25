@@ -2160,8 +2160,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         switch ($mzIndex[0]) {
           case "MYCHAR":
             DestroyCharacter($player, $mzIndex[1]);
+            break;
           case "THEIRCHAR":
             DestroyCharacter($otherPlayer, $mzIndex[1]);
+            break;
           case "MYALLY":
             DestroyAlly($player, $mzIndex[1]);
             break;
