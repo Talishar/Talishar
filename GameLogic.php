@@ -198,6 +198,10 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "OUT096":
       break; //Unlimited uses
     case "ELE224": //Spellbound Creepers - Bind counters
+      ++$character[$cardIndex + 2];//Add a counter
+      --$character[$cardIndex + 5];
+      if($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1;
+      break;
     case "UPR151": //Ghostly Touch - Haunt counters
       $character[$cardIndex+2] -= 1;//Remove a counter
       --$character[$cardIndex+5];
