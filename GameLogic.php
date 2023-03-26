@@ -1173,43 +1173,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $index = FindCharacterIndex($player, $combatChain[$parameter]);
       $character[$index + 4] += 1;
       return $lastResult;
-    case "ARTOFWAR":
-      global $currentPlayer, $combatChain, $defPlayer;
-      $params = explode(",", $lastResult);
-      for ($i = 0; $i < count($params); ++$i) {
-        switch ($params[$i]) {
-          case "Buff_your_attack_action_cards_this_turn":
-            AddCurrentTurnEffect("ARC160-1", $currentPlayer);
-            if ($currentPlayer == $defPlayer) {
-              for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
-                if (CardType($combatChain[$j]) == "AA") CombatChainPowerModifier($j, 1);
-              }
-            }
-            break;
-          case "Your_next_attack_action_card_gains_go_again":
-            if (count($combatChain) > 0) {
-              AddCurrentTurnEffectFromCombat("ARC160-3", $currentPlayer);
-            } else {
-              AddCurrentTurnEffect("ARC160-3", $currentPlayer);
-            }
-            break;
-          case "Defend_with_attack_action_cards_from_arsenal":
-            AddCurrentTurnEffect("ARC160-2", $currentPlayer);
-            break;
-          case "Banish_an_attack_action_card_to_draw_2_cards":
-            PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
-            PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
-            PrependDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,-", 1);
-            PrependDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-            PrependDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-            PrependDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
-            PrependDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDAA");
-            break;
-          default:
-            break;
-        }
-      }
-      return $lastResult;
     case "BOOST":
       global $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
       $deck = &GetDeck($currentPlayer);
@@ -1327,8 +1290,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $damage;
     case "AFTERQUELL":
       $maxQuell = GetClassState($player, $CS_MaxQuellUsed);
-      if($lastResult > 0) WriteLog("Player $player prevented $lastResult damage with Quell.", $player);
-      if ($lastResult > $maxQuell) SetClassState($player, $CS_MaxQuellUsed, $lastResult);
+      if($lastResult > 0) WriteLog("Player $player prevented $lastResult damage with Quell", $player);
+      if($lastResult > $maxQuell) SetClassState($player, $CS_MaxQuellUsed, $lastResult);
       return $lastResult;
     case "SPELLVOIDCHOICES":
       $damage = $parameter;

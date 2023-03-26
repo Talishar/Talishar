@@ -27,7 +27,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       return "";
     case "ARC160":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-      AddDecisionQueue("ARTOFWAR", $currentPlayer, "-", 1);
+      AddDecisionQueue("MODAL", $currentPlayer, "ARTOFWAR", 1);
       return "";
     case "ARC162":
       return "Is currently a manual resolve card. Name the card in chat, and enforce not playing it manually.";

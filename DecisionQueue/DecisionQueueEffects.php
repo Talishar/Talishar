@@ -2,6 +2,7 @@
 
 function ModalAbilities($player, $card, $lastResult)
 {
+  global $combatChain, $defPlayer;
   switch($card)
   {
     case "MICROPROCESSOR":
@@ -68,6 +69,38 @@ function ModalAbilities($player, $card, $lastResult)
           case "1_Defense": AddCurrentTurnEffect("ELE000-2", $player); return 4;
           default: break;
         }
+      return $lastResult;
+    case "ARTOFWAR":
+      $params = explode(",", $lastResult);
+      for($i = 0; $i < count($params); ++$i) {
+        switch($params[$i]) {
+          case "Buff_your_attack_action_cards_this_turn":
+            AddCurrentTurnEffect("ARC160-1", $player);
+            if($player == $defPlayer) {
+              for($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
+                if(CardType($combatChain[$j]) == "AA") CombatChainPowerModifier($j, 1);
+              }
+            }
+            break;
+          case "Your_next_attack_action_card_gains_go_again":
+            if(count($combatChain) > 0) AddCurrentTurnEffectFromCombat("ARC160-3", $player);
+            else AddCurrentTurnEffect("ARC160-3", $player);
+            break;
+          case "Defend_with_attack_action_cards_from_arsenal":
+            AddCurrentTurnEffect("ARC160-2", $player);
+            break;
+          case "Banish_an_attack_action_card_to_draw_2_cards":
+            PrependDecisionQueue("DRAW", $player, "-", 1);
+            PrependDecisionQueue("DRAW", $player, "-", 1);
+            PrependDecisionQueue("MULTIBANISH", $player, "HAND,-", 1);
+            PrependDecisionQueue("REMOVEMYHAND", $player, "-", 1);
+            PrependDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+            PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to banish", 1);
+            PrependDecisionQueue("FINDINDICES", $player, "MYHANDAA");
+            break;
+          default: break;
+        }
+      }
       return $lastResult;
     default: return "";
   }
