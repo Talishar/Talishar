@@ -184,11 +184,11 @@ function EquipPayAdditionalCosts($cardIndex, $from)
   }
   switch($cardID) {
     case "WTR150": //Tunic energy counters
-      $character[$cardIndex + 2] -= 3;
+      $character[$cardIndex+2] -= 3;
       break;
     case "CRU177": //Talishar rust counters
-      $character[$cardIndex + 1] = 1;
-      ++$character[$cardIndex + 2];
+      $character[$cardIndex+1] = 1;
+      ++$character[$cardIndex+2];
       break;
     case "WTR037": case "WTR038":
     case "ARC003": case "ARC113": case "ARC114":
@@ -199,19 +199,19 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       break; //Unlimited uses
     case "ELE224": //Spellbound Creepers - Bind counters
     case "UPR151": //Ghostly Touch - Haunt counters
-      $character[$cardIndex + 2] -= 1;//Remove a counter
-      --$character[$cardIndex + 5];
-      if($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1;
+      $character[$cardIndex+2] -= 1;//Remove a counter
+      --$character[$cardIndex+5];
+      if($character[$cardIndex+5] == 0) $character[$cardIndex + 1] = 1;
       break;
     case "UPR166": //Alluvion Constellas - Energy counters
-      $character[$cardIndex + 2] -= 2;
+      $character[$cardIndex+2] -= 2;
       break;
     case "DYN088": //Hanabi Blaster - Steam counters, once per turn
-      $character[$cardIndex + 2] -= 2;
-      $character[$cardIndex + 1] = 1;
+      $character[$cardIndex+2] -= 2;
+      $character[$cardIndex+1] = 1;
       break;
     case "DYN492a":
-      --$character[$cardIndex + 2];
+      --$character[$cardIndex+ 2];
       BanishCardForPlayer("DYN492a", $currentPlayer, "-");
       break;
     case "WTR005": case "WTR042": case "WTR080": case "WTR151": case "WTR152": case "WTR153": case "WTR154":
@@ -229,8 +229,8 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     default:
-      --$character[$cardIndex + 5];
-      if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used
+      --$character[$cardIndex+5];
+      if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1; //By default, if it's used, set it to used
       break;
   }
 }
@@ -255,9 +255,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if(count($parameters) > 1) $subparam = $parameters[1];
       else $subparam = "";
       switch($parameter) {
-        case "ARCANETARGET":
-          $rv = GetArcaneTargetIndices($player, $subparam);
-          break;
+        case "ARCANETARGET": $rv = GetArcaneTargetIndices($player, $subparam); break;
         case "DAMAGEPREVENTION":
           $rv = GetDamagePreventionIndices($player);
           break;
@@ -293,214 +291,82 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = $deck->Top(true, $subparam);
           break;
         case "PERMSUBTYPE":
-          if ($subparam == "Aura") $rv = SearchAura($player, "", $subparam);
+          if($subparam == "Aura") $rv = SearchAura($player, "", $subparam);
           else $rv = SearchPermanents($player, "", $subparam);
           break;
-        case "MZSTARTTURN":
-          $rv = MZStartTurnIndices();
-          break;
-        case "HAND":
-          $rv = GetIndices(count(GetHand($player)));
-          break;
+        case "MZSTARTTURN": $rv = MZStartTurnIndices(); break;
+        case "HAND": $rv = GetIndices(count(GetHand($player))); break;
         //This one requires CHOOSEMULTIZONECANCEL
         case "HANDPITCH": $rv = SearchHand($player, "", "", -1, -1, "", "", false, false, $subparam); break;
-        case "HANDACTIONMAXCOST":
-          $rv = CombineSearches(SearchHand($player, "A", "", $subparam), SearchHand($player, "AA", "", $subparam));
-          break;
-        case "MULTIHAND":
-          $hand = &GetHand($player);
-          $rv = count($hand) . "-" . GetIndices(count($hand));
-          break;
+        case "HANDACTIONMAXCOST": $rv = CombineSearches(SearchHand($player, "A", "", $subparam), SearchHand($player, "AA", "", $subparam)); break;
+        case "MULTIHAND": $rv = count(GetHand($player)) . "-" . GetIndices(count($hand)); break;
         case "MULTIHANDAA":
           $search = SearchHand($player, "AA");
           $rv = SearchCount($search) . "-" . $search;
           break;
-        case "ARSENAL":
-          $arsenal = &GetArsenal($player);
-          $rv = GetIndices(count($arsenal), 0, ArsenalPieces());
-          break;
+        case "ARSENAL": $rv = GetIndices(GetArsenal($player), 0, ArsenalPieces()); break;
         //These are needed because MZ search doesn't have facedown parameter
         case "ARSENALDOWN": $rv = GetArsenalFaceDownIndices($player); break;
         case "ARSENALUP": $rv = GetArsenalFaceUpIndices($player); break;
-        case "ITEMSMAX":
-          $rv = SearchItems($player, "", "", $subparam);
-          break;
-        case "EQUIP":
-          $rv = GetEquipmentIndices($player);
-          break;
-        case "EQUIP0":
-          $rv = GetEquipmentIndices($player, 0);
-          break;
-        case "EQUIPCARD":
-          $rv = FindCharacterIndex($player, $subparam);
-          break;
-        case "EQUIPONCC":
-          $rv = GetEquipmentIndices($player, onCombatChain:true);
-          break;
-        case "CCAA":
-          $rv = SearchCombatChainLink($player, "AA");
-          break;
-        case "CCDEFLESSX":
-          $rv = SearchCombatChainLink($player, "", "", -1, -1, "", "", false, false, -1, false, -1, $subparam);
-          break;
-        case "HANDAAMAXCOST":
-          $rv = SearchHand($player, "AA", "", $subparam);
-          break;
-        case "MYHANDAA":
-          $rv = SearchHand($player, "AA");
-          break;
-        case "MYHANDARROW":
-          $rv = SearchHand($player, "", "Arrow");
-          break;
-        case "MYDISCARDARROW":
-          $rv = SearchDiscard($player, "", "Arrow");
-          break;
-        case "MAINHAND":
-          $rv = GetIndices(count(GetHand($mainPlayer)));
-          break;
-        case "HANDEARTH":
-          $rv = SearchHand($player, "", "", -1, -1, "", "EARTH");
-          break;
-        case "HANDICE":
-          $rv = SearchHand($player, "", "", -1, -1, "", "ICE");
-          break;
-        case "HANDLIGHTNING":
-          $rv = SearchHand($player, "", "", -1, -1, "", "LIGHTNING");
-          break;
-        case "BANISHTYPE":
-          $rv = SearchBanish($player, $subparam);
-          break;
-        case "GY":
-          $discard = &GetDiscard($player);
-          $rv = GetIndices(count($discard));
-          break;
-        case "GYTYPE":
-          $rv = SearchDiscard($player, $subparam);
-          break;
-        case "GYAA":
-          $rv = SearchDiscard($player, "AA");
-          break;
-        case "GYNAA":
-          $rv = SearchDiscard($player, "A");
-          break;
-        case "GYCLASSAA":
-          $rv = SearchDiscard($player, "AA", "", -1, -1, $subparam);
-          break;
-        case "GYCLASSNAA":
-          $rv = SearchDiscard($player, "A", "", -1, -1, $subparam);
-          break;
-        case "GYCARD":
-          $rv = SearchDiscardForCard($player, $subparam);
-          break;
-        case "WEAPON":
-          $rv = WeaponIndices($player, $player, $subparam);
-          break;
-        case "MON020": case "MON021": case "MON022":
-          $rv = SearchDiscard($player, "", "", -1, -1, "", "", false, true);
-          break;
-        case "MON033-1":
-          $rv = GetIndices(count(GetSoul($player)), 1);
-          break;
-        case "MON033-2":
-          $rv = CombineSearches(SearchDeck($player, "A", "", $lastResult), SearchDeck($player, "AA", "", $lastResult));
-          break;
-        case "MON125":
-          $rv = SearchDeck($player, "", "", -1, -1, "", "", true);
-          break;
-        case "MON156":
-          $rv = SearchHand($player, "", "", -1, -1, "", "", true);
-          break;
-        case "MON158":
-          $rv = InvertExistenceIndices($player);
-          break;
-        case "MON159": case "MON160": case "MON161":
-          $rv = SearchDiscard($player, "A", "", -1, -1, "", "", true);
-          break;
-        case "MON212":
-          $rv = SearchBanish($player, "AA", "", $subparam);
-          break;
-        case "MON266-1":
-          $rv = SearchHand($player, "AA", "", -1, -1, "", "", false, false, -1, false, 3);
-          break;
-        case "MON266-2":
-          $rv = SearchDeckForCard($player, "MON296", "MON297", "MON298");
-          break;
-        case "MON303":
-          $rv =  SearchDiscard($player, "AA", "", 2);
-          break;
-        case "MON304":
-          $rv = SearchDiscard($player, "AA", "", 1);
-          break;
-        case "MON305":
-          $rv = SearchDiscard($player, "AA", "", 0);
-          break;
-        case "ELE006":
-          $count = CountAura("WTR075", $player);
-          $rv = SearchDeck($player, "AA", "", $count, -1, "GUARDIAN");
-          break;
-        case "ELE113":
-          $rv = PulseOfCandleholdIndices($player);
-          break;
-        case "ELE116":
-          $rv = PlumeOfEvergrowthIndices($player);
-          break;
-        case "ELE125": case "ELE126": case "ELE127":
-          $rv = SummerwoodShelterIndices($player);
-          break;
-        case "ELE140": case "ELE141": case "ELE142":
-          $rv = SowTomorrowIndices($player, $parameter);
-          break;
-        case "EVR178":
-          $rv = SearchDeckForCard($player, "MON281", "MON282", "MON283");
-          break;
-        case "HEAVE":
-          $rv = HeaveIndices();
-          break;
-        case "BRAVOSTARSHOW":
-          $rv = BravoStarOfTheShowIndices();
-          break;
-        case "AURACLASS":
-          $rv = SearchAura($player, "", "", -1, -1, $subparam);
-          break;
-        case "AURAMAXCOST":
-          $rv = SearchAura($player, "", "", $subparam);
-          break;
-        case "DECKAURAMAXCOST":
-          $rv = SearchDeck($player, "", "Aura", $subparam);
-          break;
-        case "CROWNOFREFLECTION":
-          $rv = SearchHand($player, "", "Aura", -1, -1, "ILLUSIONIST");
-          break;
-        case "LIFEOFPARTY":
-          $rv = LifeOfThePartyIndices();
-          break;
-        case "COALESCENTMIRAGE":
-          $rv = SearchHand($player, "", "Aura", -1, 0, "ILLUSIONIST");
-          break;
-        case "MASKPOUNCINGLYNX":
-          $rv = SearchDeck($player, "AA", "", -1, -1, "", "", false, false, -1, false, 2);
-          break;
-        case "SHATTER":
-          $rv = ShatterIndices($player, $subparam);
-          break;
-        case "KNICKKNACK":
-          $rv = KnickKnackIndices($player);
-          break;
-        case "CASHOUT":
-          $rv = CashOutIndices($player);
-          break;
-        case "UPR086":
-          $rv = ThawIndices($player);
-          break;
-        case "QUELL":
-          $rv = QuellIndices($player);
-          break;
-        case "SOUL":
-          $rv = SearchSoul($player, talent:"LIGHT");
-          break;
-        default:
-          $rv = "";
-          break;
+        case "ITEMSMAX": $rv = SearchItems($player, "", "", $subparam); break;
+        case "EQUIP": $rv = GetEquipmentIndices($player); break;
+        case "EQUIP0": $rv = GetEquipmentIndices($player, 0); break;
+        case "EQUIPCARD": $rv = FindCharacterIndex($player, $subparam); break;
+        case "EQUIPONCC": $rv = GetEquipmentIndices($player, onCombatChain:true); break;
+        case "CCAA": $rv = SearchCombatChainLink($player, "AA"); break;
+        case "CCDEFLESSX": $rv = SearchCombatChainLink($player, "", "", -1, -1, "", "", false, false, -1, false, -1, $subparam); break;
+        case "HANDAAMAXCOST": $rv = SearchHand($player, "AA", "", $subparam); break;
+        case "MYHANDAA": $rv = SearchHand($player, "AA"); break;
+        case "MYHANDARROW": $rv = SearchHand($player, "", "Arrow"); break;
+        case "MYDISCARDARROW": $rv = SearchDiscard($player, "", "Arrow"); break;
+        case "MAINHAND": $rv = GetIndices(count(GetHand($mainPlayer))); break;
+        case "HANDEARTH": $rv = SearchHand($player, "", "", -1, -1, "", "EARTH"); break;
+        case "HANDICE": $rv = SearchHand($player, "", "", -1, -1, "", "ICE"); break;
+        case "HANDLIGHTNING": $rv = SearchHand($player, "", "", -1, -1, "", "LIGHTNING"); break;
+        case "BANISHTYPE": $rv = SearchBanish($player, $subparam); break;
+        case "GY": $rv = GetIndices(count(GetDiscard($player))); break;
+        case "GYTYPE": $rv = SearchDiscard($player, $subparam); break;
+        case "GYAA": $rv = SearchDiscard($player, "AA"); break;
+        case "GYNAA": $rv = SearchDiscard($player, "A"); break;
+        case "GYCLASSAA": $rv = SearchDiscard($player, "AA", "", -1, -1, $subparam); break;
+        case "GYCLASSNAA": $rv = SearchDiscard($player, "A", "", -1, -1, $subparam); break;
+        case "GYCARD": $rv = SearchDiscardForCard($player, $subparam); break;
+        case "WEAPON": $rv = WeaponIndices($player, $player, $subparam); break;
+        case "MON020": case "MON021": case "MON022": $rv = SearchDiscard($player, "", "", -1, -1, "", "", false, true); break;
+        case "MON033-1": $rv = GetIndices(count(GetSoul($player)), 1); break;
+        case "MON033-2": $rv = CombineSearches(SearchDeck($player, "A", "", $lastResult), SearchDeck($player, "AA", "", $lastResult)); break;
+        case "MON125": $rv = SearchDeck($player, "", "", -1, -1, "", "", true); break;
+        case "MON156": $rv = SearchHand($player, "", "", -1, -1, "", "", true); break;
+        case "MON158": $rv = InvertExistenceIndices($player); break;
+        case "MON159": case "MON160": case "MON161": $rv = SearchDiscard($player, "A", "", -1, -1, "", "", true); break;
+        case "MON212": $rv = SearchBanish($player, "AA", "", $subparam); break;
+        case "MON266-1": $rv = SearchHand($player, "AA", "", -1, -1, "", "", false, false, -1, false, 3); break;
+        case "MON266-2": $rv = SearchDeckForCard($player, "MON296", "MON297", "MON298"); break;
+        case "MON303": $rv =  SearchDiscard($player, "AA", "", 2); break;
+        case "MON304": $rv = SearchDiscard($player, "AA", "", 1); break;
+        case "MON305": $rv = SearchDiscard($player, "AA", "", 0); break;
+        case "ELE006": $rv = SearchDeck($player, "AA", "", CountAura("WTR075", $player), -1, "GUARDIAN"); break;
+        case "ELE113": $rv = PulseOfCandleholdIndices($player); break;
+        case "ELE116": $rv = PlumeOfEvergrowthIndices($player); break;
+        case "ELE125": case "ELE126": case "ELE127": $rv = SummerwoodShelterIndices($player); break;
+        case "ELE140": case "ELE141": case "ELE142": $rv = SowTomorrowIndices($player, $parameter); break;
+        case "EVR178": $rv = SearchDeckForCard($player, "MON281", "MON282", "MON283"); break;
+        case "HEAVE": $rv = HeaveIndices(); break;
+        case "BRAVOSTARSHOW": $rv = BravoStarOfTheShowIndices(); break;
+        case "AURACLASS": $rv = SearchAura($player, "", "", -1, -1, $subparam); break;
+        case "AURAMAXCOST": $rv = SearchAura($player, "", "", $subparam); break;
+        case "DECKAURAMAXCOST": $rv = SearchDeck($player, "", "Aura", $subparam); break;
+        case "CROWNOFREFLECTION": $rv = SearchHand($player, "", "Aura", -1, -1, "ILLUSIONIST"); break;
+        case "LIFEOFPARTY": $rv = LifeOfThePartyIndices(); break;
+        case "COALESCENTMIRAGE": $rv = SearchHand($player, "", "Aura", -1, 0, "ILLUSIONIST"); break;
+        case "MASKPOUNCINGLYNX": $rv = SearchDeck($player, "AA", "", -1, -1, "", "", false, false, -1, false, 2); break;
+        case "SHATTER": $rv = ShatterIndices($player, $subparam); break;
+        case "KNICKKNACK": $rv = KnickKnackIndices($player); break;
+        case "CASHOUT": $rv = CashOutIndices($player); break;
+        case "UPR086": $rv = ThawIndices($player); break;
+        case "QUELL": $rv = QuellIndices($player); break;
+        case "SOUL": $rv = SearchSoul($player, talent:"LIGHT"); break;
+        default: $rv = ""; break;
       }
       return ($rv == "" ? "PASS" : $rv);
     case "MULTIZONEINDICES":
