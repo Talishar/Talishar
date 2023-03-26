@@ -16,12 +16,13 @@ function DestroyLandmark($index)
 {
   global $landmarks;
   $cardID = $landmarks[$index];
-  $player = $landmarks[$index + 1];
-  for ($j = $index + LandmarkPieces() - 1; $j >= $index; --$j) {
+  $ownerID = $landmarks[$index + 1];
+  for($j = $index + LandmarkPieces() - 1; $j >= $index; --$j) {
     unset($landmarks[$j]);
   }
   $landmarks = array_values($landmarks);
-  AddGraveyard($cardID, $player, "PLAY");
+  AddGraveyard($cardID, $ownerID, "PLAY");
+  return $cardID;
 }
 
 function LandmarkBeginEndPhaseAbilities()

@@ -134,15 +134,3 @@ function PermanentTakeDamageAbilities($player, $damage, $type)
   if ($damage <= 0) $damage = 0;
   return $damage;
 }
-
-/*
-function DestroyAlly($player, $index)
-{
-  $allies = &GetAllies($player);
-  for($j = $index+AllyPieces()-1; $j >= $index; --$j)
-  {
-    unset($allies[$j]);
-  }
-  $allies = array_values($allies);
-}
-*/

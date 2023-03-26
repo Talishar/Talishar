@@ -119,22 +119,21 @@ function DestroyMyItem($index)
 function DestroyItemForPlayer($player, $index)
 {
   $items = &GetItems($player);
-  if (CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY") {
+  if(CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY") {
     AddGraveyard($items[$index], $player, "PLAY");
   }
-  for ($i = $index + ItemPieces() - 1; $i >= $index; --$i) {
-
-    //Mechanoid Check
-    if ($items[$i] == "DYN492c") {
+  $cardID = $items[$index];
+  for($i = $index + ItemPieces() - 1; $i >= $index; --$i) {
+    if($items[$i] == "DYN492c") {
       $indexWeapon = FindCharacterIndex($player, "DYN492a"); // Weapon
       DestroyCharacter($player, $indexWeapon);
       $indexEquipment = FindCharacterIndex($player, "DYN492b"); // Equipment
       DestroyCharacter($player, $indexEquipment);
     }
-
     unset($items[$i]);
   }
   $items = array_values($items);
+  return $cardID;
 }
 
 function StealItem($srcPlayer, $index, $destPlayer)

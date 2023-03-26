@@ -23,9 +23,9 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false)
 {
   global $combatChain, $mainPlayer;
   $allies = &GetAllies($player);
-  if (!$skipDestroy) {
+  if(!$skipDestroy) {
     AllyDestroyedAbility($player, $index);
-    if (ClassContains($allies[$index], "ILLUSIONIST", $player) && SearchCharacterActive($player, "UPR152") && count($combatChain) > 0 && $player == $mainPlayer) {
+    if(ClassContains($allies[$index], "ILLUSIONIST", $player) && SearchCharacterActive($player, "UPR152") && count($combatChain) > 0 && $player == $mainPlayer) {
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_3_to_gain_an_action_point", 0, 1);
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, 3, 1);
@@ -35,34 +35,31 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false)
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
     }
   }
-  if (IsSpecificAllyAttacking($player, $index) || (IsSpecificAllyAttackTarget($player, $index) && !$fromCombat)) {
+  if(IsSpecificAllyAttacking($player, $index) || (IsSpecificAllyAttackTarget($player, $index) && !$fromCombat)) {
     CloseCombatChain();
   }
-  //Dragon Allies
-  if (CardType($allies[$index]) != "T" && DelimStringContains(CardSubType($allies[$index]), "Dragon")) {
-    $set = substr($allies[$index], 0, 3);
-    $number = intval(substr($allies[$index], -3));
-    $number -= 400;
-    $id = $number;
-    if ($number < 100) $id = "0" . $id;
-    if ($number < 10) $id = "0" . $id;
-    $id = $set . $id;
-    AddGraveyard($id, $player, "PLAY");
-  }
-  //Non-token ashes
-  if (CardType($allies[$index + 4]) != "T" && DelimStringContains(CardSubType($allies[$index + 4]), "Ash")) {
-    $set = substr($allies[$index + 4], 0, 3);
-    $number = intval(substr($allies[$index + 4], -3));
-    $id = $number;
-    if ($number < 100) $id = "0" . $id;
-    if ($number < 10) $id = "0" . $id;
-    $id = $set . $id;
-    AddGraveyard($id, $player, "PLAY");
-  }
-  for ($j = $index + AllyPieces() - 1; $j >= $index; --$j) {
-    unset($allies[$j]);
-  }
+  $cardID = $allies[$index];
+  AllyAddGraveyard($player, $cardID, "Invocation");
+  AllyAddGraveyard($player, $allies[$index+4], "Ash");
+  for($j = $index + AllyPieces() - 1; $j >= $index; --$j) unset($allies[$j]);
   $allies = array_values($allies);
+  return $cardID;
+}
+
+function AllyAddGraveyard($player, $cardID, $subtype)
+{
+  if(CardType($cardID) != "T") {
+    $set = substr($cardID, 0, 3);
+    $number = intval(substr($cardID, 3, 3));
+    $number -= 400;
+    if($number < 0) return;
+    $id = $number;
+    if($number < 100) $id = "0" . $id;
+    if($number < 10) $id = "0" . $id;
+    $id = $set . $id;
+    if(!SubtypeContains($cardID, $subtype, $player)) return;
+    AddGraveyard($id, $player, "PLAY");
+  }
 }
 
 function AllyHealth($cardID)

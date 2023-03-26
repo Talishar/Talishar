@@ -1634,49 +1634,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "MZDESTROY":
-      $lastResultArr = explode(",", $lastResult);
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      for ($i = 0; $i < count($lastResultArr); ++$i) {
-        $mzIndex = explode("-", $lastResultArr[$i]);
-        switch ($mzIndex[0]) {
-          case "MYCHAR":
-            DestroyCharacter($player, $mzIndex[1]);
-            break;
-          case "THEIRCHAR":
-            DestroyCharacter($otherPlayer, $mzIndex[1]);
-            break;
-          case "MYALLY":
-            DestroyAlly($player, $mzIndex[1]);
-            break;
-          case "THEIRALLY":
-            DestroyAlly($otherPlayer, $mzIndex[1]);
-            break;
-          case "MYAURAS":
-            DestroyAura($player, $mzIndex[1]);
-            break;
-          case "THEIRAURAS":
-            DestroyAura($otherPlayer, $mzIndex[1]);
-            break;
-          case "MYITEMS":
-            DestroyItemForPlayer($player, $mzIndex[1]);
-            break;
-          case "THEIRITEMS":
-            DestroyItemForPlayer($otherPlayer, $mzIndex[1]);
-            break;
-          case "MYARS":
-            DestroyArsenal($player, $mzIndex[1]);
-            break;
-          case "THEIRARS":
-            DestroyArsenal($otherPlayer, $mzIndex[1]);
-            break;
-          case "LANDMARK":
-            DestroyLandmark($mzIndex[1]);
-            break;
-          default:
-            break;
-        }
-      }
-      return $lastResult;
+      return MZDestroy($player, $lastResult);
     case "MZUNDESTROY":
       return MZUndestroy($player, $parameter, $lastResult);
     case "MZBANISH":

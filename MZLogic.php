@@ -1,5 +1,29 @@
 <?php
 
+function MZDestroy($player, $lastResult)
+{
+  $lastResultArr = explode(",", $lastResult);
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  for ($i = 0; $i < count($lastResultArr); ++$i) {
+    $mzIndex = explode("-", $lastResultArr[$i]);
+    switch ($mzIndex[0]) {
+      case "MYCHAR": $lastResult = DestroyCharacter($player, $mzIndex[1]); break;
+      case "THEIRCHAR": $lastResult = DestroyCharacter($otherPlayer, $mzIndex[1]); break;
+      case "MYALLY": $lastResult = DestroyAlly($player, $mzIndex[1]); break;
+      case "THEIRALLY": $lastResult = DestroyAlly($otherPlayer, $mzIndex[1]); break;
+      case "MYAURAS": $lastResult = DestroyAura($player, $mzIndex[1]); break;
+      case "THEIRAURAS": $lastResult = DestroyAura($otherPlayer, $mzIndex[1]); break;
+      case "MYITEMS": $lastResult = DestroyItemForPlayer($player, $mzIndex[1]); break;
+      case "THEIRITEMS": $lastResult = DestroyItemForPlayer($otherPlayer, $mzIndex[1]); break;
+      case "MYARS": $lastResult = DestroyArsenal($player, $mzIndex[1]); break;
+      case "THEIRARS": $lastResult = DestroyArsenal($otherPlayer, $mzIndex[1]); break;
+      case "LANDMARK": $lastResult = DestroyLandmark($mzIndex[1]); break;
+      default: break;
+    }
+  }
+  return $lastResult;
+}
+
 function MZRemove($player, $lastResult)
 {
   //TODO: Make each removal function return the card ID that was removed, so you know what it was
@@ -158,20 +182,10 @@ function UnfreezeMZ($player, $zone, $index)
 function FrozenOffsetMZ($zone)
 {
   switch ($zone) {
-    case "ARS":
-    case "MYARS":
-    case "THEIRARS":
-      return 4;
-    case "ALLY":
-    case "MYALLY":
-    case "THEIRALLY":
-      return 3;
-    case "CHAR":
-    case "MYCHAR":
-    case "THEIRCHAR":
-      return 8;
-    default:
-      return -1;
+    case "ARS": case "MYARS": case "THEIRARS": return 4;
+    case "ALLY": case "MYALLY": case "THEIRALLY": return 3;
+    case "CHAR": case "MYCHAR": case "THEIRCHAR": return 8;
+    default: return -1;
   }
 }
 

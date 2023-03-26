@@ -1175,12 +1175,16 @@ function TopDeckToArsenal($player)
 function DestroyArsenal($player, $index=-1)
 {
   $arsenal = &GetArsenal($player);
+  $cardIDs = "";
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
     if($index > -1 && $index != $i) continue;
-    WriteLog(CardLink($arsenal[$i], $arsenal[$i]) . " was destroyed from the arsenal.");
+    if($cardIDs != "") $cardIDs .= ",";
+    $cardIDs .= $arsenal[$i];
+    WriteLog(CardLink($arsenal[$i], $arsenal[$i]) . " was destroyed from the arsenal");
     AddGraveyard($arsenal[$i], $player, "ARS");
   }
   $arsenal = [];
+  return $cardIDs;
 }
 
 function DiscardHand($player)
