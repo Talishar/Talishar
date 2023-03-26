@@ -614,7 +614,7 @@ function CRUHitEffect($cardID)
     case "CRU180":
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose any number of options");
       AddDecisionQueue("MAYMULTICHOOSETEXT", $mainPlayer, "3-Quicken_token,Draw_card,Gain_life");
-      AddDecisionQueue("COAXCOMMOTION", $mainPlayer, "-", 1);
+      AddDecisionQueue("MODAL", $mainPlayer, "COAXCOMMOTION", 1);
       break;
     case "CRU183": case "CRU184": case "CRU185":
       TopDeckToArsenal($defPlayer);

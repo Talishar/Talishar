@@ -21,7 +21,7 @@
       return "";
     case "MON260": case "MON261": case "MON262":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-      AddDecisionQueue("CAPTAINSCALL", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("MODAL", $currentPlayer, $cardID, 1);
       return "";
     case "MON263": case "MON264": case "MON265":
       if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gets +3 power."; }

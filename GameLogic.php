@@ -1115,54 +1115,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog(CardLink("WTR117", "WTR117") . " was destroyed and gave the current attack go again.");
       }
       return $lastResult;
-    case "TOMEOFAETHERWIND":
-      $params = explode(",", $lastResult);
-      for ($i = 0; $i < count($params); ++$i) {
-        switch ($params[$i]) {
-          case "Buff_Arcane":
-            AddCurrentTurnEffect("ARC122", $player);
-            break;
-          case "Draw_card":
-            MyDrawCard();
-            break;
-          default:
-            break;
-        }
-      }
-      return $lastResult;
-    case "COAXCOMMOTION":
-      if(!is_array($lastResult)) return $lastResult;
-      for ($i = 0; $i < count($lastResult); ++$i) {
-        switch ($lastResult[$i]) {
-          case "Quicken_token":
-            PlayAura("WTR225", 1);
-            PlayAura("WTR225", 2);
-            break;
-          case "Draw_card":
-            Draw($player);
-            Draw($player == 1 ? 2 : 1);
-            break;
-          case "Gain_life":
-            GainHealth(1, $player);
-            GainHealth(1, ($player == 1 ? 2 : 1));
-            break;
-          default:
-            break;
-        }
-      }
-      return $lastResult;
-    case "CAPTAINSCALL":
-      switch ($lastResult) {
-        case "Buff_Power":
-          WriteLog(CardLink($parameter, $parameter) . " gives +2 power.");
-          AddCurrentTurnEffect($parameter . "-1", $player);
-          return 1;
-        case "Go_Again":
-          WriteLog(CardLink($parameter, $parameter) . " gives go again.");
-          AddCurrentTurnEffect($parameter . "-2", $player);
-          return 2;
-      }
-      return $lastResult;
     case "IRONHIDE":
       $character = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $combatChain[$parameter]);

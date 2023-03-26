@@ -73,7 +73,7 @@
         return "";
       case "ARC122":
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-        AddDecisionQueue("TOMEOFAETHERWIND", $currentPlayer, "-", 1);
+        AddDecisionQueue("MODAL", $currentPlayer, "TOMEOFAETHERWIND", 1);
         return "";
       case "ARC123": case "ARC124": case "ARC125":
         AddCurrentTurnEffect($cardID, $currentPlayer);

@@ -30,18 +30,15 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       AddDecisionQueue("MODAL", $currentPlayer, "ARTOFWAR", 1);
       return "";
     case "ARC162":
-      return "Is currently a manual resolve card. Name the card in chat, and enforce not playing it manually.";
+      return "Chains of Eminence is currently a partially manual card. Name the card in chat, and enforce not playing it manually.";
     case "ARC164": case "ARC165": case "ARC166":
-      if(IHaveLessHealth()) {
-        GiveAttackGoAgain();
-        $rv = "Gained go again.";
-      }
-      return $rv;
+      if(IHaveLessHealth()) GiveAttackGoAgain();
+      return "";
     case "ARC170": case "ARC171": case "ARC172":
       AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
       if($from == "ARS") {
         AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
-        $rv = "Played from arsenal and gives your next attack action card +" . EffectAttackModifier($cardID . "-2") . ".";
+        $rv = "Played from arsenal: Gives your next attack action card +" . EffectAttackModifier($cardID . "-2");
       }
       return $rv;
     case "ARC173": case "ARC174": case "ARC175":
@@ -56,11 +53,8 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
       return "";
     case "ARC182": case "ARC183": case "ARC184":
-      if ($from == "ARS") {
-        GiveAttackGoAgain();
-        $rv = "Gained go again";
-      }
-      return $rv;
+      if($from == "ARS") GiveAttackGoAgain();
+      return "";
     case "ARC191": case "ARC192": case "ARC193":
       if(CanRevealCards($currentPlayer)) {
         $deck = GetDeck($currentPlayer);

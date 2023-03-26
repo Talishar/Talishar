@@ -102,6 +102,42 @@ function ModalAbilities($player, $card, $lastResult)
         }
       }
       return $lastResult;
+    case "COAXCOMMOTION":
+      if(!is_array($lastResult)) return $lastResult;
+      for($i = 0; $i < count($lastResult); ++$i) {
+        switch($lastResult[$i]) {
+          case "Quicken_token":
+            PlayAura("WTR225", 1);
+            PlayAura("WTR225", 2);
+            break;
+          case "Draw_card":
+            Draw($player);
+            Draw($player == 1 ? 2 : 1);
+            break;
+          case "Gain_life":
+            GainHealth(1, $player);
+            GainHealth(1, ($player == 1 ? 2 : 1));
+            break;
+          default: break;
+        }
+      }
+      return $lastResult;
+    case "MON260": case "MON261": case "MON262":
+      switch($lastResult) {
+        case "Buff_Power": AddCurrentTurnEffect("$card-1", $player); return 1;
+        case "Go_Again": AddCurrentTurnEffect("$card-2", $player); return 2;
+      }
+      return $lastResult;
+    case "TOMEOFAETHERWIND":
+      $params = explode(",", $lastResult);
+      for($i = 0; $i < count($params); ++$i) {
+        switch($params[$i]) {
+          case "Buff_Arcane": AddCurrentTurnEffect("ARC122", $player); break;
+          case "Draw_card": Draw($player); break;
+          default: break;
+        }
+      }
+      return $lastResult;
     default: return "";
   }
 }
