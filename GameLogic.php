@@ -295,11 +295,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           else $rv = SearchPermanents($player, "", $subparam);
           break;
         case "MZSTARTTURN": $rv = MZStartTurnIndices(); break;
-        case "HAND": $rv = GetIndices(count(GetHand($player))); break;
+        case "HAND":
+          $count = &GetHand($player);
+          $rv = GetIndices(count($count));
+          break;
         //This one requires CHOOSEMULTIZONECANCEL
         case "HANDPITCH": $rv = SearchHand($player, "", "", -1, -1, "", "", false, false, $subparam); break;
         case "HANDACTIONMAXCOST": $rv = CombineSearches(SearchHand($player, "A", "", $subparam), SearchHand($player, "AA", "", $subparam)); break;
-        case "MULTIHAND": $rv = count(GetHand($player)) . "-" . GetIndices(count($hand)); break;
+        case "MULTIHAND":
+          $hand = &GetHand($player);
+          $rv = count($hand) . "-" . GetIndices(count($hand));
+          break;
         case "MULTIHANDAA":
           $search = SearchHand($player, "AA");
           $rv = SearchCount($search) . "-" . $search;
