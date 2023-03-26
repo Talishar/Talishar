@@ -285,7 +285,7 @@ function MZStartTurnAbility($cardID, $MZIndex)
   {
     case "UPR086":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $MZIndex);
-      AddDecisionQueue("MULTIZONEREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,-", 1);
       AddDecisionQueue("FINDINDICES", $currentPlayer, "UPR086");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);

@@ -51,7 +51,7 @@ function BottomDeckMultizone($player, $zone1, $zone2)
   AddDecisionQueue("MULTIZONEINDICES", $player, $zone1 . "&" . $zone2, 1);
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to sink (or Pass)", 1);
   AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-  AddDecisionQueue("MULTIZONEREMOVE", $player, "-", 1);
+  AddDecisionQueue("MZREMOVE", $player, "-", 1);
   AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
 }
 

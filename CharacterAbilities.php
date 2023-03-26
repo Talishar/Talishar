@@ -169,7 +169,7 @@ function CharacterStartTurnAbility($index)
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYCHAR-" . $index, 1);
         AddDecisionQueue("MZUNDESTROY", $mainPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYDISCARD-" . $discardIndex, 1);
-        AddDecisionQueue("MULTIZONEREMOVE", $mainPlayer, "-", 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
       break;
     default: break;
