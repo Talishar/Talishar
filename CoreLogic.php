@@ -635,6 +635,19 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
   return $damage;
 }
 
+function DoQuell($targetPlayer, $damage)
+{
+  $quellChoices = QuellChoices($targetPlayer, $damage);
+  if ($quellChoices != "0") {
+    PrependDecisionQueue("PAYRESOURCES", $targetPlayer, "<-", 1);
+    PrependDecisionQueue("AFTERQUELL", $targetPlayer, "-", 1);
+    PrependDecisionQueue("BUTTONINPUT", $targetPlayer, $quellChoices);
+    PrependDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose an amount to pay for Quell");
+  } else {
+    PrependDecisionQueue("PASSPARAMETER", $targetPlayer, "0"); //If no quell, we need to discard the previous last result
+  }
+}
+
 function ProcessDealDamageEffect($cardID)
 {
   $set = CardSet($cardID);

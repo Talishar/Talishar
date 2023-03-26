@@ -1311,16 +1311,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($allies[$target[1] + 2] <= 0) DestroyAlly($targetPlayer, $target[1]);
         return $damage;
       } else {
-        $quellChoices = QuellChoices($targetPlayer, $damage);
         PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, $parameter);
-        if ($quellChoices != "0") {
-          PrependDecisionQueue("PAYRESOURCES", $targetPlayer, "<-", 1);
-          PrependDecisionQueue("AFTERQUELL", $targetPlayer, "-", 1);
-          PrependDecisionQueue("BUTTONINPUT", $targetPlayer, $quellChoices);
-          PrependDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose an amount to pay for Quell");
-        } else {
-          PrependDecisionQueue("PASSPARAMETER", $targetPlayer, "0"); //If no quell, we need to discard the previous last result
-        }
+        DoQuell($targetPlayer, $damage);
       }
       return $damage;
     case "TAKEDAMAGE":
@@ -1388,14 +1380,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
 
       CheckSpellvoid($target, $damage);
-      $quellChoices = QuellChoices($target, $damage);
-      if ($quellChoices != "0") {
-        PrependDecisionQueue("INCDQVAR", $target, "1", 1);
-        PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
-        PrependDecisionQueue("AFTERQUELL", $target, "-", 1);
-        PrependDecisionQueue("BUTTONINPUT", $target, $quellChoices);
-        PrependDecisionQueue("SETDQCONTEXT", $target, "Choose an amount to pay for Quell");
-      }
+      PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+      DoQuell($target, $damage);
       PrependDecisionQueue("INCDQVAR", $target, "1", 1);
       PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
       PrependDecisionQueue("ARCANECHOSEN", $target, "-", 1, 1);
