@@ -356,11 +356,12 @@ function WTRAbilityCost($cardID)
       case "WTR151":
         $indices = GetMyHandIndices();
         if($indices == "") return "";
-        AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, count(GetHand($currentPlayer)) . "-" . $indices);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIHAND");
+        AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("HOPEMERCHANTHOOD", $currentPlayer, "-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "HOPEMERCHANTHOOD", 1);
         return "";
       case "WTR152":
         AddCurrentTurnEffect($cardID, $mainPlayer);

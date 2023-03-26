@@ -558,8 +558,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "WTR117":
       $index = FindCharacterIndex($player, $parameter);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Refraction_Bolters_to_give_your_attack_Go_Again");
-      AddDecisionQueue("REFRACTIONBOLTERS", $player, $index, 1);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Refraction_Bolters_to_get_Go_Again");
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, "MYCHAR-$index", 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+      AddDecisionQueue("OP", $player, "GIVEATTACKGOAGAIN", 1);
+      AddDecisionQueue("WRITELOG", $player, "Refraction Bolters was destroyed", 1);
       break;
     case "ARC000":
       Opt($parameter, 2);

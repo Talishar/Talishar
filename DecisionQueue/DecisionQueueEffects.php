@@ -281,6 +281,12 @@ function SpecificCardLogic($player, $card, $lastResult)
       PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       PrependDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:type=$type;class=RUNEBLADE");
       return 1;
+    case "HOPEMERCHANTHOOD":
+    WriteLog($lastResult);
+      $count = SearchCount($lastResult);
+      for($i = 0; $i < $count; ++$i) Draw($player);
+      WriteLog(CardLink("WTR151", "WTR151") . " shuffled and drew " . $count . " cards");
+      return "1";
     default: return "";
   }
 }

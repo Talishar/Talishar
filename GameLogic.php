@@ -1088,17 +1088,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("Remembrance shuffled back " . $cards . ".");
       $discard = array_values($discard);
       return "1";
-    case "HOPEMERCHANTHOOD":
-      $cards = explode(",", $lastResult);
-      if ($cards[0] != "") {
-        for ($i = 0; $i < count($cards); ++$i) {
-          MyDrawCard();
-        }
-        WriteLog(CardLink("WTR151", "WTR151") . " shuffle and draw " . count($cards) . " cards.");
-      } else {
-        WriteLog(CardLink("WTR151", "WTR151") . " shuffle and draw 0 card.");
-      }
-      return "1";
     case "LORDOFWIND":
       $number = 0;
        if ($lastResult != "") {
@@ -1107,14 +1096,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddResourceCost($player, $number);
       AddCurrentTurnEffect("WTR081-" . $number, $player);
       return $number;
-    case "REFRACTIONBOLTERS":
-      if ($lastResult == "YES") {
-        $character = &GetPlayerCharacter($player);
-        DestroyCharacter($player, $parameter);
-        $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-        WriteLog(CardLink("WTR117", "WTR117") . " was destroyed and gave the current attack go again.");
-      }
-      return $lastResult;
     case "IRONHIDE":
       $character = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $combatChain[$parameter]);
@@ -1810,120 +1791,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "MZUNDESTROY":
-      $lastResultArr = explode(",", $lastResult);
-      $params = explode(",", $parameter);
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      for ($i = 0; $i < count($lastResultArr); ++$i) {
-        $mzIndex = explode("-", $lastResultArr[$i]);
-        switch ($mzIndex[0]) {
-          case "MYCHAR":
-            UndestroyCharacter($player, $mzIndex[1]);
-            break;
-          default: break;
-        }
-      }
-      break;
+      return MZUndestroy($player, $parameter, $lastResult);
     case "MZBANISH":
-      $lastResultArr = explode(",", $lastResult);
-      $params = explode(",", $parameter);
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      for ($i = 0; $i < count($lastResultArr); ++$i) {
-        $mzIndex = explode("-", $lastResultArr[$i]);
-        $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
-        $zone = &GetMZZone($cardOwner, $mzIndex[0]);
-        BanishCardForPlayer($zone[$mzIndex[1]], $cardOwner, $params[0], $params[1], $params[2]);
-      }
-      if(count($params) <= 3) WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
-      return $lastResult;
+      return MZBanish($player, $parameter, $lastResult);
     case "MZREMOVE":
-      //TODO: Make each removal function return the card ID that was removed, so you know what it was
-      //Previously this was returning the MZ index, which is useless once you're removed the card -- it's something else now
-      $lastResultArr = explode(",", $lastResult);
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      for ($i = 0; $i < count($lastResultArr); ++$i) {
-        $mzIndex = explode("-", $lastResultArr[$i]);
-        switch ($mzIndex[0]) {
-          case "MYDISCARD":
-            $lastResult = RemoveGraveyard($player, $mzIndex[1]);
-            break;
-          case "THEIRDISCARD":
-            $lastResult = RemoveGraveyard($otherPlayer, $mzIndex[1]);
-            break;
-          case "MYBANISH":
-            RemoveBanish($player, $mzIndex[1]);
-            break;
-          case "THEIRBANISH":
-            RemoveBanish($otherPlayer, $mzIndex[1]);
-            break;
-          case "MYARS":
-            $lastResult = RemoveFromArsenal($player, $mzIndex[1]);
-            break;
-          case "THEIRARS":
-            $lastResult = RemoveFromArsenal($otherPlayer, $mzIndex[1]);
-            break;
-          case "MYPITCH":
-            RemovefromPitch($player, $mzIndex[1]);
-            break;
-          case "THEIRPITCH":
-            RemovefromPitch($otherPlayer, $mzIndex[1]);
-            break;
-          case "MYHAND":
-            $lastResult = RemoveCard($player, $mzIndex[1]);
-            break;
-          case "THEIRHAND":
-            $lastResult = RemoveCard($otherPlayer, $mzIndex[1]);
-            break;
-          case "THEIRAURAS":
-            RemoveAura($otherPlayer, $mzIndex[1]);
-            break;
-          case "MYDECK":
-            $deck = new Deck($player);
-            return $deck->Remove($mzIndex[1]);
-            break;
-          default:
-            break;
-        }
-      }
-      return $lastResult;
+       return MZRemove($player, $lastResult);
     case "MZDISCARD":
-      $lastResultArr = explode(",", $lastResult);
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      $params = explode(",", $parameter);
-      $cardIDs = [];
-      for ($i = 0; $i < count($lastResultArr); ++$i) {
-        $mzIndex = explode("-", $lastResultArr[$i]);
-        $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
-        $zone = &GetMZZone($cardOwner, $mzIndex[0]);
-        $cardID = $zone[$mzIndex[1]];
-        AddGraveyard($cardID, $cardOwner, $params[0]);
-        WriteLog(CardLink($cardID, $cardID) . " was discarded");
-      }
-      return $lastResult;
+      return MZDiscard($player, $parameter, $lastResult);
     case "MZADDZONE":
-      //TODO: Add "from", add more zones
-      $lastResultArr = explode(",", $lastResult);
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      $params = explode(",", $parameter);
-      $cardIDs = [];
-      for ($i = 0; $i < count($lastResultArr); ++$i) {
-        $mzIndex = explode("-", $lastResultArr[$i]);
-        $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
-        $zone = &GetMZZone($cardOwner, $mzIndex[0]);
-        array_push($cardIDs, $zone[$mzIndex[1]]);
-      }
-      for($i=0; $i<count($cardIDs); ++$i)
-      {
-        switch($params[0])
-        {
-          case "MYBANISH": BanishCardForPlayer($cardIDs[$i], $player, $params[1], $params[2]); break;
-          case "MYHAND": AddPlayerHand($cardIDs[$i], $player, "-"); break;
-          case "MYTOPDECK": AddTopDeck($cardIDs[$i], $player, "-"); break;
-          case "MYBOTDECK": AddBottomDeck($cardIDs[$i], $player, "-"); break;
-          case "THEIRBOTDECK": AddBottomDeck($cardIDs[$i], $otherPlayer, "-"); break;
-          default: break;
-        }
-      }
-      return $lastResult;
+      return MZAddZone($player, $parameter, $lastResult);
     case "GAINRESOURCES":
       GainResources($player, $parameter);
       return $lastResult;
