@@ -296,8 +296,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "MZSTARTTURN": $rv = MZStartTurnIndices(); break;
         case "HAND":
-          $count = &GetHand($player);
-          $rv = GetIndices(count($count));
+          $hand = &GetHand($player);
+          $rv = GetIndices(count($hand));
           break;
         //This one requires CHOOSEMULTIZONECANCEL
         case "HANDPITCH": $rv = SearchHand($player, "", "", -1, -1, "", "", false, false, $subparam); break;
@@ -310,7 +310,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $search = SearchHand($player, "AA");
           $rv = SearchCount($search) . "-" . $search;
           break;
-        case "ARSENAL": $rv = GetIndices(GetArsenal($player), 0, ArsenalPieces()); break;
+        case "ARSENAL":
+          $arsenal = &GetArsenal($player);
+          $rv = GetIndices(count($arsenal), 0, ArsenalPieces());
+          break;
         //These are needed because MZ search doesn't have facedown parameter
         case "ARSENALDOWN": $rv = GetArsenalFaceDownIndices($player); break;
         case "ARSENALUP": $rv = GetArsenalFaceUpIndices($player); break;
@@ -325,12 +328,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MYHANDAA": $rv = SearchHand($player, "AA"); break;
         case "MYHANDARROW": $rv = SearchHand($player, "", "Arrow"); break;
         case "MYDISCARDARROW": $rv = SearchDiscard($player, "", "Arrow"); break;
-        case "MAINHAND": $rv = GetIndices(count(GetHand($mainPlayer))); break;
+        case "MAINHAND":
+          $hand = &GetHand($mainPlayer);
+          $rv = GetIndices(count($hand)); break;
         case "HANDEARTH": $rv = SearchHand($player, "", "", -1, -1, "", "EARTH"); break;
         case "HANDICE": $rv = SearchHand($player, "", "", -1, -1, "", "ICE"); break;
         case "HANDLIGHTNING": $rv = SearchHand($player, "", "", -1, -1, "", "LIGHTNING"); break;
         case "BANISHTYPE": $rv = SearchBanish($player, $subparam); break;
-        case "GY": $rv = GetIndices(count(GetDiscard($player))); break;
+        case "GY":
+          $discard = &GetDiscard($player);
+          $rv = GetIndices(count($discard));
+          break;
         case "GYTYPE": $rv = SearchDiscard($player, $subparam); break;
         case "GYAA": $rv = SearchDiscard($player, "AA"); break;
         case "GYNAA": $rv = SearchDiscard($player, "A"); break;
@@ -339,7 +347,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "GYCARD": $rv = SearchDiscardForCard($player, $subparam); break;
         case "WEAPON": $rv = WeaponIndices($player, $player, $subparam); break;
         case "MON020": case "MON021": case "MON022": $rv = SearchDiscard($player, "", "", -1, -1, "", "", false, true); break;
-        case "MON033-1": $rv = GetIndices(count(GetSoul($player)), 1); break;
+        case "MON033-1":
+          $soul = &GetSoul($player);
+          $rv = GetIndices(count($soul), 1);
+          break;
         case "MON033-2": $rv = CombineSearches(SearchDeck($player, "A", "", $lastResult), SearchDeck($player, "AA", "", $lastResult)); break;
         case "MON125": $rv = SearchDeck($player, "", "", -1, -1, "", "", true); break;
         case "MON156": $rv = SearchHand($player, "", "", -1, -1, "", "", true); break;
