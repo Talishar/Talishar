@@ -1358,20 +1358,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $parameters[0];
       $source = $parameters[1];
       $type = $parameters[2];
-      if ($type == "PLAYCARD") {
+      if($type == "PLAYCARD") {
         $damage += ConsumeArcaneBonus($player);
-        WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage.");
+        WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage");
       }
-      if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
+      if($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
         $allies = &GetAllies($targetPlayer);
-        if ($allies[$target[1] + 6] > 0) {
+        if($allies[$target[1] + 6] > 0) {
           $damage -= 3;
           if ($damage < 0) $damage = 0;
           --$allies[$target[1] + 6];
         }
         $allies[$target[1] + 2] -= $damage;
-        if ($damage > 0) AllyDamageTakenAbilities($targetPlayer, $target[1]);
-        if ($allies[$target[1] + 2] <= 0) {
+        if($damage > 0) AllyDamageTakenAbilities($targetPlayer, $target[1]);
+        if($allies[$target[1] + 2] <= 0) {
           DestroyAlly($targetPlayer, $target[1]);
         } else {
           AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
@@ -1379,22 +1379,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return "";
       }
 
-      if (SearchCurrentTurnEffects("DYN025", $otherPlayer) && $targetPlayer != $otherPlayer) {
-        SearchCurrentTurnEffects("DYN025", $otherPlayer, true);
-        AddCurrentTurnEffect("DYN025-1", $otherPlayer);
-        $targetPlayer = $otherPlayer;
-      } elseif (SearchCurrentTurnEffects("DYN025", $player) && $targetPlayer != $player) {
-        SearchCurrentTurnEffects("DYN025", $player, true);
-        AddCurrentTurnEffect("DYN025-1", $player);
-        $targetPlayer = $player;
-      }
-
       AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
       $target = $targetPlayer;
       $sourceType = CardType($source);
       if($sourceType == "A" || $sourceType == "AA") $damage += CountCurrentTurnEffects("ELE065", $player);
       $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
-      //Create cancel point
       PrependDecisionQueue("TAKEARCANE", $target, $damage . "-" . $source . "-" . $player);
       PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
 

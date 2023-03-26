@@ -523,12 +523,6 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
             if($currentTurnEffects[$i+3] <= 0) $remove = true;
           }
           break;
-        case "DYN025":
-          if($currentTurnEffects[$i] == "DYN025-1") {
-            if($preventable) $damage -= 1;
-            $remove = true;
-          }
-          break;
         case "OUT175": case "OUT176": case "OUT177": case "OUT178":
           if($preventable) $damage -= 1;
           $remove = true;

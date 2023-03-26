@@ -250,9 +250,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $rv .= "Your next Brute attack this turn gains +" . EffectAttackModifier($cardID);
       return $rv;
-    case "DYN025":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
     case "DYN028":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";

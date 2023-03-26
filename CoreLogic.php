@@ -513,12 +513,6 @@ function HasIncreasedAttack()
 
 function DamageTrigger($player, $damage, $type, $source="NA")
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
-  if (SearchCurrentTurnEffects("DYN025", $otherPlayer) && $player != $otherPlayer) {
-    SearchCurrentTurnEffects("DYN025", $otherPlayer, true);
-    AddCurrentTurnEffect("DYN025-1", $otherPlayer);
-    $player = $otherPlayer;
-  }
   AddDecisionQueue("DEALDAMAGE", $player, $damage . "-" . $source . "-" . $type);
   return $damage;
 }
