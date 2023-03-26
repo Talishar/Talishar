@@ -849,9 +849,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "UPR096":
         if(GetClassState($player, $CS_NumRedPlayed) > 1 && CanRevealCards($player))
         {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:cardID=UPR101");
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:cardID=UPR101");
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+          AddDecisionQueue("MZREMOVE", $player, "-", 1);
           AddDecisionQueue("ADDHAND", $player, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
         }
