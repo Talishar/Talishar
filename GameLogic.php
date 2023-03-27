@@ -524,26 +524,23 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIADDHAND":
       $cards = explode(",", $lastResult);
       $hand = &GetHand($player);
-      $displayText = "";
-      for ($i = 0; $i < count($cards); ++$i) {
-        if ($parameter == "1") {
-          if ($displayText != "") $displayText .= ", ";
-          if ($i != 0 && $i == count($cards) - 1) $displayText .= "and ";
-          $displayText .= CardLink($cards[$i], $cards[$i]);
+      $log = "";
+      for($i = 0; $i < count($cards); ++$i) {
+        if($parameter == "1") {
+          if($log != "") $log .= ", ";
+          if($i != 0 && $i == count($cards) - 1) $log .= "and ";
+          $log .= CardLink($cards[$i], $cards[$i]);
         }
         array_push($hand, $cards[$i]);
       }
-      if ($displayText != "") {
-        $word = (count($cards) == 1 ? "was" : "were");
-        WriteLog($displayText . " $word added to your hand.");
-      }
+      if($log != "") WriteLog($log . " added to hand");
       return $lastResult;
     case "MULTIREMOVEHAND":
       $cards = "";
       $hand = &GetHand($player);
-      if (!is_array($lastResult)) $lastResult = explode(",", $lastResult);
-      for ($i = 0; $i < count($lastResult); ++$i) {
-        if ($cards != "") $cards .= ",";
+      if(!is_array($lastResult)) $lastResult = explode(",", $lastResult);
+      for($i = 0; $i < count($lastResult); ++$i) {
+        if($cards != "") $cards .= ",";
         $cards .= $hand[$lastResult[$i]];
         unset($hand[$lastResult[$i]]);
       }
@@ -584,13 +581,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDMZUSES":
       $lrArr = explode("-", $lastResult);
-      switch ($lrArr[0]) {
-        case "MYCHAR":
-        case "THEIRCHAR":
-          AddCharacterUses($player, $lrArr[1], $parameter);
-          break;
-        default:
-          break;
+      switch($lrArr[0]) {
+        case "MYCHAR": case "THEIRCHAR": AddCharacterUses($player, $lrArr[1], $parameter); break;
+        default: break;
       }
       return $lastResult;
     case "MZOP":
@@ -613,12 +606,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "OP":
       switch($parameter)
       {
-        case "DESTROYFROZENARSENAL":
-          DestroyFrozenArsenal($player);
-          return "";
-        case "GIVEATTACKGOAGAIN":
-          GiveAttackGoAgain();
-          return $lastResult;
+        case "DESTROYFROZENARSENAL": DestroyFrozenArsenal($player); return "";
+        case "GIVEATTACKGOAGAIN": GiveAttackGoAgain(); return $lastResult;
         case "REMOVECARD":
           if($lastResult == "") return $dqVars[0];
           $cards = explode(",", $dqVars[0]);
@@ -674,9 +663,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIADDDECK":
       $deck = &GetDeck($player);
       $cards = explode(",", $lastResult);
-      for($i = 0; $i < count($cards); ++$i) {
-        array_push($deck, $cards[$i]);
-      }
+      for($i = 0; $i < count($cards); ++$i) array_push($deck, $cards[$i]);
       return $lastResult;
     case "MULTIADDTOPDECK":
       $deck = &GetDeck($player);
@@ -838,20 +825,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($lastResult == "NO") return "PASS";
       return 1;
     case "SANDSCOURGREATBOW":
-      if($lastResult == "NO") {
-        ReloadArrow($player); // From Hand
-      } else {                // From Top Deck
+      if($lastResult == "NO") ReloadArrow($player);
+      else {
         AddDecisionQueue("PARAMDELIMTOARRAY", $player, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $player, "-", 1);
         AddDecisionQueue("NULLPASS", $player, "-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK-1", 1);
         AddDecisionQueue("ALLCARDSUBTYPEORPASS", $player, "Arrow", 1);
-      }
-      return $lastResult;
-    case "NOFUSE":
-      if($lastResult == "PASS") {
-        WriteLog("Nothing is revealed for " . CardLink($parameter, $parameter) . " fusion.");
-        return "PASS";
       }
       return $lastResult;
     case "NULLPASS":
@@ -928,7 +908,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($char[$parameter + 1] != 2) return "PASS";
       return 1;
     case "ESTRIKE":
-      switch ($lastResult) {
+      switch($lastResult) {
         case "Draw_a_Card":
           WriteLog(CardLink("WTR159", "WTR159") . " draw a card.");
           return MyDrawCard();
@@ -943,12 +923,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "SANDSKETCH":
-      if (count(GetHand($player)) == 0) {
+      if(count(GetHand($player)) == 0) {
         WriteLog("No card for Sand Sketched Plan to discard.");
         return "1";
       }
       $discarded = DiscardRandom($player, "WTR009");
-      if (AttackValue($discarded) >= 6) {
+      if(AttackValue($discarded) >= 6) {
         if($currentPlayer == $mainPlayer) {
           $actionPoints += 2;
           WriteLog(CardLink("WTR009","WTR009") . " gained 2 action points.");
@@ -966,7 +946,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $cards .= CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]);
         unset($discard[$lastResult[$i]]);
       }
-      WriteLog("Remembrance shuffled back " . $cards . ".");
+      WriteLog("Remembrance shuffled " . $cards);
       $discard = array_values($discard);
       return "1";
     case "LORDOFWIND":
@@ -990,7 +970,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "BOOST":
       global $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
       $deck = &GetDeck($currentPlayer);
-      if (count($deck) == 0) {
+      if(count($deck) == 0) {
         WriteLog("Could not boost. No cards left in deck.");
         return;
       }
@@ -1004,17 +984,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       unset($deck[0]);
       $deck = array_values($deck);
       $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $currentPlayer);
-      WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again.");
+      WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again");
       IncrementClassState($currentPlayer, $CS_NumBoosted);
       ++$combatChainState[$CCS_NumBoosted];
       $combatChainState[$CCS_IsBoosted] = 1;
-      if($grantsGA) {
-        GiveAttackGoAgain();
-      }
+      if($grantsGA) GiveAttackGoAgain();
       return $grantsGA;
     case "VOFTHEVANGUARD":
       if($parameter == "1" && TalentContains($lastResult, "LIGHT")) {
-        WriteLog("V of the Vanguard gives all attacks on this combat chain +1.");
+        WriteLog("V of the Vanguard gives all attacks on this combat chain +1");
         AddCurrentTurnEffect("MON035", $player);
       }
       $hand = &GetHand($player);
@@ -1025,7 +1003,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "1";
     case "TRIPWIRETRAP":
       if($lastResult == 0) {
-        WriteLog("Hit effects are prevented by " . CardLink("CRU126", "CRU126") . " this chain link.");
+        WriteLog("Hit effects are prevented by " . CardLink("CRU126", "CRU126") . " this chain link");
         HitEffectsPreventedThisLink();
       }
       return 1;
@@ -1295,7 +1273,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "INVERTEXISTENCE":
       if($lastResult == "")
       {
-        WriteLog("No cards were selected, so Invert Existence did not banish any cards.");
+        WriteLog("No cards were selected, so Invert Existence did not banish any cards");
         return $lastResult;
       }
       $cards = explode(",", $lastResult);
@@ -1328,7 +1306,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = &GetDeck($player);
       if(count($deck) == 0) {
         LoseHealth(9999, $player);
-        WriteLog("Your deck has no cards, so " . CardLink("CRU007", "CRU007") . " continues damaging you until you die.");
+        WriteLog("Your deck has no cards, so " . CardLink("CRU007", "CRU007") . " continues damaging you until you die");
         return 1;
       }
       $card = array_shift($deck);
@@ -1374,7 +1352,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default: break;
       }
       $combatChainState[$CCS_AttackTargetUID] = $uid;
-      WriteLog(GetMZCardLink($defPlayer, $lastResult) . " was chosen as the attack target.");
+      WriteLog(GetMZCardLink($defPlayer, $lastResult) . " was chosen as the attack target");
       return 1;
     case "STARTTURNABILITIES":
       StartTurnAbilities();
@@ -1421,26 +1399,23 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIZONEFORMAT":
       return SearchMultizoneFormat($lastResult, $parameter);
     case "MULTIZONETOKENCOPY":
-      $params = explode("-", $lastResult);
-      $source = $params[0];
-      $index = $params[1];
+      $mzArr = explode("-", $lastResult);
+      $source = $mzArr[0];
+      $index = $mzArr[1];
       switch($source) {
-        case "MYAURAS":
-          TokenCopyAura($player, $index);
-          break;
-        default:
-          break;
+        case "MYAURAS": TokenCopyAura($player, $index); break;
+        default: break;
       }
       return $lastResult;
     case "COUNTITEM":
       return CountItem($parameter, $player);
     case "FINDANDDESTROYITEM":
-      $params = explode("-", $parameter);
-      $cardID = $params[0];
-      $number = $params[1];
-      for ($i = 0; $i < $number; ++$i) {
+      $mzArr = explode("-", $parameter);
+      $cardID = $mzArr[0];
+      $number = $mzArr[1];
+      for($i = 0; $i < $number; ++$i) {
         $index = GetItemIndex($cardID, $player);
-        if ($index != -1) DestroyItemForPlayer($player, $index);
+        if($index != -1) DestroyItemForPlayer($player, $index);
       }
       return $lastResult;
     case "COUNTPARAM":
@@ -1552,12 +1527,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for($i = 0; $i < count($lastResult); ++$i) {
         if($cards != "") $cards .= ",";
         $card = $hand[$lastResult[$i]];
-        if (TalentContains($card, "LIGHTNING")) $hasLightning = true;
-        if (TalentContains($card, "ICE")) $hasIce = true;
-        if (TalentContains($card, "EARTH")) $hasEarth = true;
+        if(TalentContains($card, "LIGHTNING")) $hasLightning = true;
+        if(TalentContains($card, "ICE")) $hasIce = true;
+        if(TalentContains($card, "EARTH")) $hasEarth = true;
         $cards .= $card;
       }
-      if (RevealCards($cards, $player) && $hasLightning && $hasIce && $hasEarth) {
+      if(RevealCards($cards, $player) && $hasLightning && $hasIce && $hasEarth) {
         WriteLog("Bravo, Star of the Show gives the next attack with cost 3 or more +2, Dominate, and go again");
         AddCurrentTurnEffect("EVR017", $player);
       }
@@ -1736,7 +1711,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "MYITEMS":
             $items = &GetItems($player);
             $items[$mzIndex[1] + 1 ] += 1;
-            WriteLog(CardLink($items[$mzIndex[1]], $items[$mzIndex[1]]) . " gained a steam counter.");
+            WriteLog(CardLink($items[$mzIndex[1]], $items[$mzIndex[1]]) . " gained a steam counter");
             break;
           default:
             break;
