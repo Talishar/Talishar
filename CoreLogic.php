@@ -278,23 +278,6 @@ function MZStartTurnIndices()
   return $cards;
 }
 
-function MZStartTurnAbility($cardID, $MZIndex)
-{
-  global $currentPlayer, $otherPlayer;
-  switch($cardID)
-  {
-    case "UPR086":
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $MZIndex);
-      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,-", 1);
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "UPR086");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("AFTERTHAW", $currentPlayer, "<-", 1);
-      break;
-    default: break;
-  }
-}
-
 function ArsenalStartTurnAbilities()
 {
   global $mainPlayer;

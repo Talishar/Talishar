@@ -1554,16 +1554,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MODAL":
       return ModalAbilities($player, $parameter, $lastResult);
     case "SCOUR":
-      WriteLog("Scour deals " . $parameter . " arcane damage.");
+      WriteLog("Scour deals " . $parameter . " arcane damage");
       DealArcane($parameter, 0, "PLAYCARD", "EVR124", true, $player, resolvedTarget: ($player == 1 ? 2 : 1));
-      return "";
-    case "CASHOUTCONTINUE":
-      PrependDecisionQueue("CASHOUTCONTINUE", $currentPlayer, "-", 1);
-      PrependDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
-      PrependDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195", 1);
-      PrependDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      PrependDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      PrependDecisionQueue("FINDINDICES", $currentPlayer, "CASHOUT");
       return "";
     case "SETABILITYTYPE":
       $lastPlayed[2] = $lastResult;
@@ -1573,33 +1565,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog(implode(" ", explode("_", $names[$index])) . " ability was chosen.");
       return $lastResult;
     case "MZSTARTTURNABILITY":
-      $params = explode("-", $lastResult);
-      $zone = &GetMZZone($player, $params[0]);
-      $cardID = $zone[$params[1]];
-      MZStartTurnAbility($cardID, $lastResult);
+      MZStartTurnAbility($player, $lastResult);
       return "";
     case "MZDAMAGE":
       $lastResultArr = explode(",", $lastResult);
       $params = explode(",", $parameter);
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      for ($i = 0; $i < count($lastResultArr); ++$i) {
+      for($i = 0; $i < count($lastResultArr); ++$i) {
         $mzIndex = explode("-", $lastResultArr[$i]);
-        switch ($mzIndex[0]) {
-          case "MYCHAR":
-            DamageTrigger($player, $params[0], $params[1]);
-            break;
-          case "THEIRCHAR":
-            DamageTrigger($otherPlayer, $params[0], $params[1]);
-            break;
-          case "MYALLY":
-            DamageTrigger($player, $params[0], $params[1]);
-            break;
-          case "THEIRALLY":
-            DamageTrigger($otherPlayer, $params[0], $params[1]);
-            break;
-          default:
-            break;
-        }
+        $target = (substr($mzIndex[0], 0, 2) == "MY") ? $player : ($player == 1 ? 2 : 1);
+        DamageTrigger($target, $params[0], $params[1], GetMZCard($target, $lastResultArr[$i]));
       }
       return $lastResult;
     case "MZDESTROY":

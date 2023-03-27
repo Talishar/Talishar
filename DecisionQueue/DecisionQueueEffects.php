@@ -282,11 +282,18 @@ function SpecificCardLogic($player, $card, $lastResult)
       PrependDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:type=$type;class=RUNEBLADE");
       return 1;
     case "HOPEMERCHANTHOOD":
-    WriteLog($lastResult);
       $count = SearchCount($lastResult);
       for($i = 0; $i < $count; ++$i) Draw($player);
       WriteLog(CardLink("WTR151", "WTR151") . " shuffled and drew " . $count . " cards");
       return "1";
+    case "CASHOUTCONTINUE":
+      PrependDecisionQueue("CASHOUTCONTINUE", $currentPlayer, "-", 1);
+      PrependDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
+      PrependDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195", 1);
+      PrependDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      PrependDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      PrependDecisionQueue("FINDINDICES", $currentPlayer, "CASHOUT");
+      return "";
     default: return "";
   }
 }

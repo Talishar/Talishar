@@ -1775,7 +1775,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
-      AddDecisionQueue("CASHOUTCONTINUE", $currentPlayer, "-", 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CASHOUTCONTINUE", 1);
       break;
     case "EVR159":
       $numCopper = CountItem("CRU197", $currentPlayer);

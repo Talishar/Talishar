@@ -211,3 +211,20 @@ function GetMZCard($player, $MZIndex)
   $index = $params[1];
   return $zoneDS[$index];
 }
+
+function MZStartTurnAbility($player, $MZIndex)
+{
+  $cardID = GetMZCard($player, $MZIndex);
+  switch($cardID)
+  {
+    case "UPR086":
+      AddDecisionQueue("PASSPARAMETER", $player, $MZIndex);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      AddDecisionQueue("MULTIBANISH", $player, "GY,-", 1);
+      AddDecisionQueue("FINDINDICES", $player, "UPR086");
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("AFTERTHAW", $player, "<-", 1);
+      break;
+    default: break;
+  }
+}
