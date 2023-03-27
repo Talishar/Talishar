@@ -833,7 +833,7 @@ function ResolveCombatDamage($damageDone)
 
   PrependLayer("FINALIZECHAINLINK", $mainPlayer, "0");
 
-  WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
+  WriteLog("Combat resolved with " . ($wasHit ? "a hit for $damageDone damage" : "no hit"));
 
   if (!DelimStringContains(CardSubtype($combatChain[0]), "Ally")) {
     SetClassState($mainPlayer, $CS_DamageDealt, GetClassState($mainPlayer, $CS_DamageDealt) + $damageDone);

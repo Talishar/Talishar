@@ -1467,7 +1467,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode(",", $parameter);
       $damage = $dqVars[0];
       $damageThreatened = $params[0];
-      if($damage > $damageThreatened) $damage = $damageThreatened;//Means there was excess damage prevention prevention
+      if($damage > $damageThreatened)//Means there was excess damage prevention prevention
+      {
+        $damage = $damageThreatened;
+        $dqVars[0] = $damage;
+        $dqState[6] = $damage;
+      }
       return FinalizeDamage($player, $damage, $damageThreatened, $params[1], $params[2]);
     case "SETDQVAR":
       $dqVars[$parameter] = $lastResult;
