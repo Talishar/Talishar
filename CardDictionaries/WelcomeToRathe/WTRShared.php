@@ -600,7 +600,7 @@ function WTRAbilityCost($cardID)
   function ProcessCrushEffect($cardID)
   {
     global $mainPlayer, $defPlayer, $defCharacter, $combatChain;
-    if(CardType($combatChain[0]) && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
+    if(CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
     if(!IsHeroAttackTarget()) return;
     switch($cardID) {
       case "WTR043":
