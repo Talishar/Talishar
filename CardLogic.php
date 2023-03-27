@@ -959,7 +959,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("MZDESTROY", $player, "-", 1);
       AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIPONCC", 1);
       AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      AddDecisionQueue("DESTROYTHEIRCHARACTER", $player, "-", 1);
+      AddDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
       break;
 		case "DYN101": case "DYN102": case "DYN103":
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:cardID=ARC036;cardID=DYN111;cardID=DYN112");

@@ -286,7 +286,7 @@
   function ExposedToTheElementsIce($player)
   {
       $otherPlayer = $player == 1 ? 2 : 1;
-      PrependDecisionQueue("DESTROYTHEIRCHARACTER", $player, "-", 1);
+      PrependDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP0", 1);
       PrependDecisionQueue("WRITELOG", $player, "Declined_to_pay_for_Exposed_to_the_Elements.", 1);
