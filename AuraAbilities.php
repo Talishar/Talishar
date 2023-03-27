@@ -317,11 +317,11 @@ function AuraStartTurnAbilities()
         if(PlayerHasFewerEquipment($mainPlayer))
         {
           AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=E;hasNegCounters=true");
-          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which equipment to remove a -1 defense counter", 1);
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment to remove a -1 defense counter", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
           AddDecisionQueue("MZGETCARDINDEX", $mainPlayer, "-", 1);
           AddDecisionQueue("REMOVENEGDEFCOUNTER", $mainPlayer, "-", 1);
-          WriteLog("Removed a -1 counter from Never Yield.");
+          WriteLog("Never Yield Removed a -1 counter");
         }
         break;
       case "DYN033": case "DYN034": case "DYN035":

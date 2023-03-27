@@ -1665,16 +1665,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return "-1";
     case "MZGETCARDID":
-      global $mainPlayer, $defPlayer;
-      $rv = "-1";
-      $params = explode("-", $lastResult);
-      if(substr($params[0], 0, 5) == "THEIR"){
-        $zone = &GetMZZone($defPlayer, $params[0]);
-      } else $zone = &GetMZZone($mainPlayer, $params[0]);
-      $rv = $zone[$params[1]];
-      return $rv;
+      $lastResultArr = explode("-", $lastResult);
+      if(substr($lastResultArr[0], 0, 5) == "THEIR") $zone = &GetMZZone($defPlayer, $params[0]);
+      else $zone = &GetMZZone($mainPlayer, $lastResultArr[0]);
+      return $zone[$lastResultArr[1]];
     case "MZGETCARDINDEX":
-      global $mainPlayer, $defPlayer;
       $rv = "-1";
       $params = explode("-", $lastResult);
       if (substr($params[0], 0, 5) == "THEIR") {

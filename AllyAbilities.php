@@ -57,7 +57,7 @@ function AllyAddGraveyard($player, $cardID, $subtype)
     if($number < 100) $id = "0" . $id;
     if($number < 10) $id = "0" . $id;
     $id = $set . $id;
-    if(!SubtypeContains($cardID, $subtype, $player)) return;
+    if(!SubtypeContains($id, $subtype, $player)) return;
     AddGraveyard($id, $player, "PLAY");
   }
 }
