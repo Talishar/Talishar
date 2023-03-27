@@ -375,7 +375,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HEAVE": $rv = HeaveIndices(); break;
         case "BRAVOSTARSHOW": $rv = BravoStarOfTheShowIndices(); break;
         case "AURACLASS": $rv = SearchAura($player, "", "", -1, -1, $subparam); break;
-        case "AURAMAXCOST": $rv = SearchAura($player, "", "", $subparam); break;
         case "DECKAURAMAXCOST": $rv = SearchDeck($player, "", "Aura", $subparam); break;
         case "CROWNOFREFLECTION": $rv = SearchHand($player, "", "Aura", -1, -1, "ILLUSIONIST"); break;
         case "LIFEOFPARTY": $rv = LifeOfThePartyIndices(); break;
@@ -711,9 +710,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $cards;
     case "PLAYAURA":
       PlayAura($parameter, $player);
-      break;
-    case "DESTROYAURA":
-      DestroyAura($player, $lastResult);
       break;
     case "DESTROYALLY":
       DestroyAlly($player, $lastResult);

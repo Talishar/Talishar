@@ -437,9 +437,9 @@
       case "EVR124":
         for($i=0; $i<$resourcesPaid; ++$i)
         {
-          AddDecisionQueue("FINDINDICES", $otherPlayer, "AURAMAXCOST,0");
-          AddDecisionQueue("CHOOSETHEIRAURA", $currentPlayer, "<-", 1);
-          AddDecisionQueue("DESTROYAURA", $otherPlayer, "-", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:maxCost=0");
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         }
         AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid);
         return "";

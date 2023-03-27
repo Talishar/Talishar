@@ -963,11 +963,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->popup = ChoosePopup($myAuras, $turn[2], 16, "Choose one of your auras");
   }
 
-  if (($turn[0] == "CHOOSETHEIRAURA") && $turn[1] == $playerID) {
-    $playerInputPopup->active = true;
-    $playerInputPopup->popup = ChoosePopup($theirAuras, $turn[2], 16, "Choose one of your opponent's auras");
-  }
-
   if (($turn[0] == "CHOOSEDISCARD" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID) {
     $caption = "Choose a card from your discard";
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
