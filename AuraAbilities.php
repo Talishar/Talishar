@@ -305,23 +305,19 @@ function AuraStartTurnAbilities()
       case "DYN029":
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         $hand = &GetHand($mainPlayer);
-        if(count($hand) == 0)
-        {
+        if(count($hand) == 0) {
           Draw($mainPlayer, false);
-          WriteLog("Drew a card from Never Yield.");
+          WriteLog("Drew a card from Never Yield");
         }
-        if(PlayerHasLessHealth($mainPlayer))
-        {
+        if(PlayerHasLessHealth($mainPlayer)) {
           GainHealth(2, $mainPlayer);
         }
-        if(PlayerHasFewerEquipment($mainPlayer))
-        {
+        if(PlayerHasFewerEquipment($mainPlayer)) {
           AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=E;hasNegCounters=true");
           AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment to remove a -1 defense counter", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MZGETCARDINDEX", $mainPlayer, "-", 1);
+          AddDecisionQueue("MZOP", $mainPlayer, "GETCARDINDEX", 1);
           AddDecisionQueue("REMOVENEGDEFCOUNTER", $mainPlayer, "-", 1);
-          WriteLog("Never Yield Removed a -1 counter");
         }
         break;
       case "DYN033": case "DYN034": case "DYN035":

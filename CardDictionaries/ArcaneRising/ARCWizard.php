@@ -561,7 +561,7 @@
         AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=E;hasEnergyCounters=true");
         AddDecisionQueue("SETDQCONTEXT", $player, "Remove an energy counter from a card");
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZGETCARDINDEX", $player, "-", 1);
+        AddDecisionQueue("MZOP", $player, "GETCARDINDEX", 1);
         AddDecisionQueue("REMOVECOUNTER", $targetPlayer, $cardID, 1);
         break;
       default: break;

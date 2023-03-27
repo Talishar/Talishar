@@ -71,7 +71,7 @@
         return "";
       case "UPR036": case "UPR037": case "UPR038":
         Transform($currentPlayer, "Ash", "UPR042");
-        AddDecisionQueue("MZGETUNIQUEID", $currentPlayer, "-");
+        AddDecisionQueue("MZOP", $currentPlayer, "GETUNIQUEID");
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $currentPlayer, $cardID . "," . "HAND");
         return "";
       case "UPR151":

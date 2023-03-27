@@ -278,7 +278,7 @@
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Chest;hasNegCounters=true");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which chest pieces to remove a -1 defense counter");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "GETCARDINDEX", 1);
         AddDecisionQueue("REMOVENEGDEFCOUNTER", $currentPlayer, "-", 1);
         return "";
       case "EVR030": case "EVR031": case "EVR032":

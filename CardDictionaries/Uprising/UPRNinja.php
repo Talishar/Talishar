@@ -81,7 +81,7 @@
         AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
         AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was banished.", 1);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{I}", 1);
-        AddDecisionQueue("MZGETUNIQUEID", $mainPlayer, "-", 1);
+        AddDecisionQueue("MZOP", $mainPlayer, "GETUNIQUEID", 1);
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $cardID . ",HIT", 1);
         break;
       case "UPR161":

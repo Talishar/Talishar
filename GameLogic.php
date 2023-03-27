@@ -610,6 +610,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         case "FREEZE": MZFreeze($lastResult); break;
         case "GAINCONTROL": MZGainControl($player, $lastResult); break;
+        case "GETCARDINDEX": $mzArr = explode("-", $lastResult); return $mzArr[1];
+        case "GETUNIQUEID":
+          $mzArr = explode("-", $lastResult);
+          $zone = &GetMZZone($player, $mzArr[0]);
+          switch($mzArr[0]) {
+            case "ALLY": case "MYALLY": case "THEIRALLY": return $zone[$mzArr[1] + 5];
+            case "BANISH": case "MYBANISH": case "THEIRBANISH": return $zone[$mzArr[1] + 2];
+            default: return "-1";
+          }
         default: break;
       }
       return $lastResult;
@@ -1654,34 +1663,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "PERMANENT-" . ResolveTransformPermanent($player, $lastResult, $parameter);
     case "TRANSFORMAURA":
       return "AURA-" . ResolveTransformAura($player, $lastResult, $parameter);
-    case "MZGETUNIQUEID":
-      $params = explode("-", $lastResult);
-      $zone = &GetMZZone($player, $params[0]);
-      switch ($params[0]) {
-        case "ALLY":
-          return $zone[$params[1] + 5];
-        case "BANISH":
-          return $zone[$params[1] + 2];
-      }
-      return "-1";
     case "MZGETCARDID":
       $lastResultArr = explode("-", $lastResult);
       if(substr($lastResultArr[0], 0, 5) == "THEIR") $zone = &GetMZZone($defPlayer, $params[0]);
       else $zone = &GetMZZone($mainPlayer, $lastResultArr[0]);
       return $zone[$lastResultArr[1]];
-    case "MZGETCARDINDEX":
-      $rv = "-1";
-      $params = explode("-", $lastResult);
-      if (substr($params[0], 0, 5) == "THEIR") {
-        $zone = &GetMZZone($defPlayer, $params[0]);
-      } else $zone = &GetMZZone($mainPlayer, $params[0]);
-      switch ($params[0]) {
-        case "MYCHAR":
-          $rv = $params[1];
-        case "THEIRCHAR":
-          $rv = $params[1];
-      }
-      return $rv;
     case "CCFILTERTYPE":
       if ($lastResult == "" || $lastResult == "PASS") return "PASS";
       $arr = explode(",", $lastResult);

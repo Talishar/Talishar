@@ -274,36 +274,35 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       else if ($cardID == "DYN040") $maxDef = 2;
       else $maxDef = 1;
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Off-Hand;hasNegCounters=true;maxDef=" . $maxDef . ";class=GUARDIAN");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which Guardian Off-Hand to remove a -1 defense counter");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
+      AddDecisionQueue("MZOP", $currentPlayer, "GETCARDINDEX", 1);
       AddDecisionQueue("REMOVENEGDEFCOUNTER", $currentPlayer, "-", 1);
-      return "Remove a -1 counter from a Guardian Off-Hand with " . $maxDef . " or less base defense.";
+      return "";
     case "DYN042": case "DYN043": case "DYN044":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Off-Hand;class=GUARDIAN");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which Guardian Off-Hand to buff", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
-      return "The next time you block with target guardian off-hand, it blocks for extra.";
+      return "";
     case "DYN046":
       AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       return "Tearing Shuko gives your next Crouching Tiger +2.";
     case "DYN049":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddPlayerHand("DYN065", $currentPlayer, "-");
-      return "Create a " . CardLink("DYN065","DYN065") . " in your hand and give them +1 this turn.";
+      return "";
     case "DYN062": case "DYN063": case "DYN064":
-      if ($cardID == "DYN062") $amount = 3;
-      else if ($cardID == "DYN063") $amount = 2;
+      if($cardID == "DYN062") $amount = 3;
+      else if($cardID == "DYN063") $amount = 2;
       else $amount = 1;
-      for ($i=0; $i < $amount; $i++) {
+      for($i=0; $i < $amount; $i++) {
         BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
       }
-      return "Create " . $amount . " Crouching Tigers.";
+      return "";
     case "DYN068":
-      if (isAttackGreaterThanTwiceBasePower()) {
+      if(isAttackGreaterThanTwiceBasePower()) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return " Attack is more than twice it's base power and gains overpower.";
+        return CardLink($cardID, $cardID) . " gains overpower";
       }
       return "";
     case "DYN071":
@@ -311,32 +310,31 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN072":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=W;subtype=Sword");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which Sword gain a +1 counter");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Sword to gain a +1 counter");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
+      AddDecisionQueue("MZOP", $currentPlayer, "GETCARDINDEX", 1);
       AddDecisionQueue("ADDEQUIPCOUNTER", $currentPlayer, "-", 1);
-      return "Add a +1 counter from a sword you control.";
+      return "";
     case "DYN076": case "DYN077": case "DYN078":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "Your next sword or dagger attack gains go again and piercing.";
+      return "";
 		case "DYN082": case "DYN083": case "DYN084":
       if ($cardID == "DYN082") $amount = 3;
       else if ($cardID == "DYN083") $amount = 2;
       else $amount = 1;
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "Your next axe attack this turn gains +" . $amount;
+      return "";
 		case "DYN085": case "DYN086": case "DYN087":
-      if ($cardID == "DYN085") $amount = 3;
-      else if ($cardID == "DYN086") $amount = 2;
+      if($cardID == "DYN085") $amount = 3;
+      else if($cardID == "DYN086") $amount = 2;
       else $amount = 1;
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "Your sword and dagger attacks have piercing " . $amount . " this turn.";
+      return "";
     case "DYN090":
-      if(IsHeroAttackTarget() && $combatChainState[$CCS_NumBoosted] > 0)
+      $numBoosted = $combatChainState[$CCS_NumBoosted];
+      if(IsHeroAttackTarget() && $numBoosted > 0)
       {
-        $numBoosted = $combatChainState[$CCS_NumBoosted];
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-
         AddDecisionQueue("PASSPARAMETER", $otherPlayer, $numBoosted, 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
@@ -358,13 +356,13 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN091":
       AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
       AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
-      return "The next card you boost gets +3 attack and if you banish an item you play it.";
+      return "";
     case "DYN092":
       $hasHead = false; $hasChest = false; $hasArms = false; $hasLegs = false; $hasWeapon = false; $numHypers = 0;
       $char = &GetPlayerCharacter($currentPlayer);
       for($i=0; $i<count($char); $i+=CharacterPieces())
       {
-        if($char[$i+1] == 0) continue;//If it's destroyed
+        if($char[$i+1] == 0) continue;
         if(!ClassContains($char[$i], "MECHANOLOGIST", $currentPlayer)) continue;
         if(CardType($char[$i]) == "W") $hasWeapon = true;
         else {
@@ -428,7 +426,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want sink <0> with Cut to the Chase", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want sink <0>", 1);
       AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_sink_the_opponent's_card", 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("WRITELOG", $currentPlayer, "Sunk the top card", 1);
@@ -436,7 +434,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
       AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
       AddDecisionQueue("ELSE", $currentPlayer, "-");
-      AddDecisionQueue("WRITELOG", $currentPlayer, "Left the top card there", 1);
+      AddDecisionQueue("WRITELOG", $currentPlayer, "Left the top card", 1);
       return "";
     case "DYN151":
       $deck = &GetDeck($currentPlayer);
@@ -448,7 +446,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "NO");
         return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
       }
-      if (CardSubType($deck[0]) != "Arrow") {
+      if(CardSubType($deck[0]) != "Arrow") {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sandscour Greatbow shows you the top of your deck: <0>");
         AddDecisionQueue("OK", $currentPlayer, "whether to put an arrow in arsenal", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "NO");
@@ -460,16 +458,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN155":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "Gives your next Arrow attack action card +" . EffectAttackModifier($cardID);
+      return "";
     case "DYN156": case "DYN157": case "DYN158":
-      if (HasAimCounter()){
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-      }
+      if(HasAimCounter()) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN165": case "DYN166": case "DYN167":
-      if(HasAimCounter()) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-      }
+      if(HasAimCounter()) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN168": case "DYN169": case "DYN170":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALUP");
@@ -479,7 +473,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN171":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return CardLink("ARC112", "ARC112") . "s you control have spellvoid 1 this turn.";
+      return "";
     case "DYN172":
       $pitchArr = explode(",", $additionalCosts);
       $attackActionPitched = 0;
@@ -494,7 +488,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         PlayAura("ARC112", $currentPlayer);
         $rv .= " and creates a Runechant token";
       }
-      return $rv . ".";
+      return $rv;
     case "DYN173":
       $pitchArr = explode(",", $additionalCosts);
       $attackActionPitched = 0;
@@ -503,9 +497,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         if (CardType($pitchArr[$i]) == "A") $naaPitched = 1;
         if (CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
       }
-      if ($naaPitched && $attackActionPitched && IsHeroAttackTarget()) {
+      if($naaPitched && $attackActionPitched && IsHeroAttackTarget()) {
         AddCurrentTurnEffect($cardID, $currentPlayer, $from);
-        return "On-damage the defending hero discard a card and you draw a card";
+        return "The next time " . CardLink($cardID, $cardID) . "deals damage they discard a card and you draw a card";
       }
       return "";
     case "DYN174":
@@ -540,7 +534,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN175":
       $numRunechants = DestroyAllThisAura($currentPlayer, "ARC112");
       $auras = &GetAuras($currentPlayer);
-      $index = count($auras) - AuraPieces();//Get index of last played aura i.e. this
+      $index = count($auras) - AuraPieces();
       $auras[$index+2] = $numRunechants;
       return "";
     case "DYN176": case "DYN177": case "DYN178":
@@ -573,27 +567,25 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
 		case "DYN185": case "DYN186": case "DYN187":
-      if ($cardID == "DYN185") $amount = 3;
-      else if ($cardID == "DYN186") $amount = 2;
+      if($cardID == "DYN185") $amount = 3;
+      else if($cardID == "DYN186") $amount = 2;
       else $amount = 1;
       $pitchArr = explode(",", $additionalCosts);
       $attackActionPitched = 0;
-      $rv = "The next Runeblade attack action card you play creates " . $amount . " Runechant on-hit";
-      for ($i = 0; $i < count($pitchArr); ++$i) {
-        if (CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
+      $rv = "The next Runeblade attack action card you play creates Runechants on-hit";
+      for($i = 0; $i < count($pitchArr); ++$i) {
+        if(CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
       }
       AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
-      if ($attackActionPitched) {
+      if($attackActionPitched) {
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
-        $rv .= " and gain +1 power";
+        $rv .= " and gains +1 power";
       }
-      return $rv . ".";
-
+      return $rv;
     case "DYN188": case "DYN189": case "DYN190":
       $deck = new Deck($currentPlayer);
-
-      if ($deck->Reveal(1)) {
-        if (PitchValue($deck->Top()) == PitchValue($cardID)) {
+      if($deck->Reveal(1)) {
+        if(PitchValue($deck->Top()) == PitchValue($cardID)) {
           PlayAura("ARC112", $currentPlayer, 1, true);
         }
       }
@@ -606,7 +598,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN193":
       PlayerOpt($currentPlayer, 1, false);
       PlayAura("DYN244", $currentPlayer);
-      return CardLink($cardID, $cardID) . " let you Opt 1 and create a Ponder token.";
+      return "";
   	case "DYN194":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
@@ -633,7 +625,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN215":
       // TODO: Make named attack Illusionist
-      return CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction.";
+      return CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction";
     case "DYN221": case "DYN222": case "DYN223":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       $auras = &GetAuras($currentPlayer);
@@ -641,40 +633,27 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if($cardID == "DYN221") $maxCost = 3;
       else if($cardID == "DYN222") $maxCost = 2;
       else $maxCost = 1;
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:maxCost=" . $maxCost); // &LAYER:maxCost=1;type=AA
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:maxCost=" . $maxCost);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZBANISH", $currentPlayer, "AURAS,DYN221-" . $uniqueID . "," . $currentPlayer, 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       return "";
     case "DYN224": case "DYN225": case "DYN226":
-      if(SearchAuras("MON104", $currentPlayer))
-      {
-        GiveAttackGoAgain();
-        return CardLink($cardID, $cardID) . " gains go again.";
-      }
+      if(SearchAuras("MON104", $currentPlayer)) GiveAttackGoAgain();
       return "";
     case "DYN227": case "DYN228": case "DYN229":
-      if(SearchAuras("MON104", $currentPlayer))
-      {
-        AddCurrentTurnEffect("DYN227", $currentPlayer);
-        return CardLink($cardID, $cardID) . " gains Overpower.";
-      }
+      if(SearchAuras("MON104", $currentPlayer)) AddCurrentTurnEffect("DYN227", $currentPlayer);
       return "";
     case "DYN230": case "DYN231": case "DYN232":
       $deck = new Deck($currentPlayer);
-
-      if ($deck->Reveal(1)) {
-        if (PitchValue($deck->Top()) == PitchValue($cardID)) {
-          PlayAura("MON104", $currentPlayer, 1, true);
-        }
-      }
+      if($deck->Reveal(1) && PitchValue($deck->Top()) == PitchValue($cardID)) PlayAura("MON104", $currentPlayer, 1, true);
       return "";
     case "DYN235":
       BottomDeck($currentPlayer, false, shouldDraw:true);
       return "";
     case "DYN240":
       $rv = "";
-      if ($from == "PLAY") {
+      if($from == "PLAY") {
         DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
         $rv = CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction.";
         if(IsRoyal($currentPlayer))
@@ -688,7 +667,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return $rv;
     case "DYN241":
       $rv = "";
-      if ($from == "PLAY") {
+      if($from == "PLAY") {
         DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
         $item = (IsRoyal($currentPlayer) ? "DYN243": "CRU197");
         PutItemIntoPlayForPlayer($item, $currentPlayer);
@@ -700,7 +679,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return $rv;
     case "DYN242":
       $rv = "";
-      if ($from == "PLAY") {
+      if($from == "PLAY") {
         DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose any number of heroes");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Both_Heroes,Target_Yourself,Target_No_Heroes");
