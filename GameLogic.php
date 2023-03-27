@@ -516,22 +516,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $arsenal = &GetArsenal($player);
       $cardToReturn = $arsenal[$index];
       RemoveArsenalEffects($player, $cardToReturn);
-      for ($i = $index + ArsenalPieces() - 1; $i >= $index; --$i) {
+      for($i = $index + ArsenalPieces() - 1; $i >= $index; --$i) {
         unset($arsenal[$i]);
       }
       $arsenal = array_values($arsenal);
       return $cardToReturn;
-    case "MULTIREMOVEARSENAL":
-      $cards = "";
-      $arsenal = &GetArsenal($player);
-      if (!is_array($lastResult)) $lastResult = explode(",", $lastResult);
-      for ($i = 0; $i < count($lastResult); ++$i) {
-        if ($cards != "") $cards .= ",";
-        $cards .= $arsenal[$lastResult[$i]];
-        unset($arsenal[$lastResult[$i]]);
-      }
-      $arsenal = array_values($arsenal);
-      return $cards;
     case "MULTIADDHAND":
       $cards = explode(",", $lastResult);
       $hand = &GetHand($player);
