@@ -1774,6 +1774,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           {
             $char[$i] = $parameter;
             $char[$i+1] = 2;
+            $char[$i+2] = 0;
+            $char[$i+3] = 0;
+            $char[$i+4] = 0;
+            $char[$i+5] = 1;
+            $char[$i+6] = 0;
+            $char[$i+7] = 0;
+            $char[$i+8] = 0;
+            $char[$i+9] = 2;
             $replaced = 1;
           }
         }
