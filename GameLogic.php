@@ -586,6 +586,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         case "FREEZE": MZFreeze($lastResult); break;
         case "GAINCONTROL": MZGainControl($player, $lastResult); break;
+        case "GETCARDID": return GetMZCard($player, $lastResult);
         case "GETCARDINDEX": $mzArr = explode("-", $lastResult); return $mzArr[1];
         case "GETUNIQUEID":
           $mzArr = explode("-", $lastResult);
@@ -1597,11 +1598,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "PERMANENT-" . ResolveTransformPermanent($player, $lastResult, $parameter);
     case "TRANSFORMAURA":
       return "AURA-" . ResolveTransformAura($player, $lastResult, $parameter);
-    case "MZGETCARDID":
-      $lastResultArr = explode("-", $lastResult);
-      if(substr($lastResultArr[0], 0, 5) == "THEIR") $zone = &GetMZZone($defPlayer, $params[0]);
-      else $zone = &GetMZZone($mainPlayer, $lastResultArr[0]);
-      return $zone[$lastResultArr[1]];
     case "CCFILTERTYPE":
       if ($lastResult == "" || $lastResult == "PASS") return "PASS";
       $arr = explode(",", $lastResult);

@@ -741,7 +741,7 @@ function DYNHitEffect($cardID)
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to put into play");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
-      AddDecisionQueue("MZGETCARDID", $mainPlayer, "-", 1);
+      AddDecisionQueue("MZOP", $mainPlayer, "GETCARDID", 1);
       AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{0}", 1);
       AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);

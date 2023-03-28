@@ -656,7 +656,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=C&THEIRCHAR:type=C");
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose which hero to copy");
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZGETCARDID", $player, "-", 1);
+        AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
         AddDecisionQueue("APPENDLASTRESULT", $player, "-SHIYANA", 1);
         AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $player, "<-", 1);
       }
