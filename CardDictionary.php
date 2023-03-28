@@ -357,42 +357,17 @@ function AbilityCost($cardID)
   return CardCost($cardID);
 }
 
-function ResourcesPaidBlockModifier($cardID, $amountPaid)
-{
-  switch ($cardID) {
-    default:
-      return 0;
-  }
-}
-
-function ResourcesPaidAttackModifier($cardID, $amountPaid)
-{
-  switch ($cardID) {
-    default:
-      return 0;
-  }
-}
-
 function DynamicCost($cardID)
 {
   global $currentPlayer;
-  switch ($cardID) {
-    case "WTR051":
-    case "WTR052":
-    case "WTR053":
-      return "2,6";
-    case "ARC009":
-      return "0,2,4,6,8,10,12";
-    case "MON231":
-      return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40";
-    case "EVR022":
-      return "3,4,5,6,7,8,9,10,11,12";
-    case "EVR124":
-      return GetIndices(SearchCount(SearchAura(($currentPlayer == 1 ? 2 : 1), "", "", 0)) + 1);
-    case "UPR109":
-      return "0,2,4,6,8,10,12,14,16,18,20";
-    default:
-      return "";
+  switch($cardID) {
+    case "WTR051": case "WTR052": case "WTR053": return "2,6";
+    case "ARC009": return "0,2,4,6,8,10,12";
+    case "MON231": return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40";
+    case "EVR022": return "3,4,5,6,7,8,9,10,11,12";
+    case "EVR124": return GetIndices(SearchCount(SearchAura(($currentPlayer == 1 ? 2 : 1), "", "", 0)) + 1);
+    case "UPR109": return "0,2,4,6,8,10,12,14,16,18,20";
+    default: return "";
   }
 }
 
@@ -405,14 +380,7 @@ function PitchValue($cardID)
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedPitchValue($cardID);
   }
-  $class = CardClass($cardID);
-  if ($set == "ROG") {
-    return ROGUEPitchValue($cardID);
-  }
-  switch ($cardID) {
-    default:
-      return 0;
-  }
+  if($set == "ROG") return ROGUEPitchValue($cardID);
 }
 
 function BlockValue($cardID)
@@ -428,16 +396,13 @@ function BlockValue($cardID)
     if($number < 400) return GeneratedBlockValue($cardID);
   }
   $class = CardClass($cardID);
-  if ($set == "ROG") {
-    return ROGUEBlockValue($cardID);
-  }
-  switch ($cardID) {
+  if($set == "ROG") return ROGUEBlockValue($cardID);
+  switch($cardID) {
     case "MON400": case "MON401": case "MON402": return 0;
     case "DYN492a": return -1;
     case "DYN492b": return 5;
     case "DUMMYDISHONORED": return -1;
-    default:
-      return 3;
+    default: return 3;
   }
 }
 
@@ -448,9 +413,9 @@ function AttackValue($cardID)
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
-  if ($class == "ILLUSIONIST" && $subtype == "Aura") {
-    if (SearchCharacterForCard($mainPlayer, "MON003")) return 1;
-    if (SearchCharacterForCard($mainPlayer, "MON088")) return 4;
+  if($class == "ILLUSIONIST" && $subtype == "Aura") {
+    if(SearchCharacterForCard($mainPlayer, "MON003")) return 1;
+    if(SearchCharacterForCard($mainPlayer, "MON088")) return 4;
   }
   if($cardID == "CRU101") return 1 + $combatChainState[$CCS_NumBoosted];
   else if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
@@ -461,9 +426,7 @@ function AttackValue($cardID)
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedAttackValue($cardID);
   }
-  if ($set == "ROG") {
-    return ROGUEAttackValue($cardID);
-  }
+  if($set == "ROG") return ROGUEAttackValue($cardID);
   switch ($cardID) {
     case "UPR406": return 6;
     case "UPR407": return 5;
@@ -479,8 +442,7 @@ function AttackValue($cardID)
     case "UPR417": return 3;
     case "DYN492a": return 5;
     case "DYN612": return 4;
-    default:
-      return 0;
+    default: return 0;
   }
 }
 
@@ -488,36 +450,18 @@ function AttackValue($cardID)
 function HasGoAgain($cardID)
 {
   $set = CardSet($cardID);
-  if ($set == "WTR") {
-    return WTRHasGoAgain($cardID);
-  } else if ($set == "ARC") {
-    return ARCHasGoAgain($cardID);
-  } else if ($set == "CRU") {
-    return CRUHasGoAgain($cardID);
-  } else if ($set == "MON") {
-    return MONHasGoAgain($cardID);
-  } else if ($set == "ELE") {
-    return ELEHasGoAgain($cardID);
-  } else if ($set == "EVR") {
-    return EVRHasGoAgain($cardID);
-  } else if ($set == "UPR") {
-    return UPRHasGoAgain($cardID);
-  } else if ($set == "DVR") {
-    return DVRHasGoAgain($cardID);
-  } else if ($set == "RVD") {
-    return RVDHasGoAgain($cardID);
-  } else if ($set == "DYN") {
-    return DYNHasGoAgain($cardID);
-  } else if ($set == "OUT") {
-    return OUTHasGoAgain($cardID);
-  } else if ($set == "ROG") {
-    return ROGUEHasGoAgain($cardID);
-  }
-  switch ($cardID) {
-
-    default:
-      return false;
-  }
+  if($set == "WTR") return WTRHasGoAgain($cardID);
+  else if($set == "ARC") return ARCHasGoAgain($cardID);
+  else if($set == "CRU") return CRUHasGoAgain($cardID);
+  else if($set == "MON") return MONHasGoAgain($cardID);
+  else if($set == "ELE") return ELEHasGoAgain($cardID);
+  else if($set == "EVR") return EVRHasGoAgain($cardID);
+  else if($set == "UPR") return UPRHasGoAgain($cardID);
+  else if($set == "DVR") return DVRHasGoAgain($cardID);
+  else if($set == "RVD") return RVDHasGoAgain($cardID);
+  else if($set == "DYN") return DYNHasGoAgain($cardID);
+  else if($set == "OUT") return OUTHasGoAgain($cardID);
+  else if($set == "ROG") return ROGUEHasGoAgain($cardID);
 }
 
 function GetAbilityType($cardID, $index = -1, $from="-")
@@ -546,13 +490,10 @@ function GetAbilityType($cardID, $index = -1, $from="-")
 
 function GetAbilityTypes($cardID)
 {
-  switch ($cardID) {
-    case "ARC003": case "CRU101":
-      return "A,AA";
-    case "OUT093":
-      return "I,I";
-    default:
-      return "";
+  switch($cardID) {
+    case "ARC003": case "CRU101": return "A,AA";
+    case "OUT093": return "I,I";
+    default: return "";
   }
 }
 
@@ -566,18 +507,16 @@ function GetAbilityNames($cardID, $index = -1)
       $rv = "Add_a_steam_counter";
       if ($character[$index + 2] > 0) $rv .= ",Attack";
       return $rv;
-    case "OUT093":
-      return "Load,Aim";
-    default:
-      return "";
+    case "OUT093": return "Load,Aim";
+    default: return "";
   }
 }
 
 function GetAbilityIndex($cardID, $index, $abilityName)
 {
   $names = explode(",", GetAbilityNames($cardID, $index));
-  for ($i = 0; $i < count($names); ++$i) {
-    if ($abilityName == $names[$i]) return $i;
+  for($i = 0; $i < count($names); ++$i) {
+    if($abilityName == $names[$i]) return $i;
   }
   return 0;
 }
@@ -587,11 +526,9 @@ function GetResolvedAbilityType($cardID, $from="-")
   global $currentPlayer, $CS_AbilityIndex;
   $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
   $abilityTypes = GetAbilityTypes($cardID);
-  if ($abilityTypes == "" || $abilityIndex == "-") return GetAbilityType($cardID, -1, $from);
-  else {
-    $abilityTypes = explode(",", $abilityTypes);
-    return $abilityTypes[$abilityIndex];
-  }
+  if($abilityTypes == "" || $abilityIndex == "-") return GetAbilityType($cardID, -1, $from);
+  $abilityTypes = explode(",", $abilityTypes);
+  return $abilityTypes[$abilityIndex];
 }
 
 function GetResolvedAbilityName($cardID, $from="-")
@@ -599,11 +536,9 @@ function GetResolvedAbilityName($cardID, $from="-")
   global $currentPlayer, $CS_AbilityIndex;
   $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
   $abilityNames = GetAbilityNames($cardID);
-  if ($abilityNames == "" || $abilityIndex == "-") return "";
-  else {
-    $abilityNames = explode(",", $abilityNames);
-    return $abilityNames[$abilityIndex];
-  }
+  if($abilityNames == "" || $abilityIndex == "-") return "";
+  $abilityNames = explode(",", $abilityNames);
+  return $abilityNames[$abilityIndex];
 }
 
 function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "")
@@ -611,7 +546,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
   global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer;
   global $combatChain;
-  if ($player == "") $player = $currentPlayer;
+  if($player == "") $player = $currentPlayer;
   $myArsenal = &GetArsenal($player);
   $myAllies = &GetAllies($player);
   $myCharacter = &GetPlayerCharacter($player);
@@ -621,20 +556,20 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
   $abilityType = GetAbilityType($cardID, $index, $from);
-  if ($phase == "P" && $from != "HAND") return false;
-  if ($phase == "B" && $from == "BANISH") return false;
-  if ($from == "BANISH" && !(PlayableFromBanish($banish[$index], $banish[$index+1]) || AbilityPlayableFromBanish($banish[$index]))) return false;
-  if ($phase == "B" && $cardType == "E" && $myCharacter[$index + 6] == 1) {
+  if($phase == "P" && $from != "HAND") return false;
+  if($phase == "B" && $from == "BANISH") return false;
+  if($from == "BANISH" && !(PlayableFromBanish($banish[$index], $banish[$index+1]) || AbilityPlayableFromBanish($banish[$index]))) return false;
+  if($phase == "B" && $cardType == "E" && $myCharacter[$index + 6] == 1) {
     $restriction = "On combat chain";
     return false;
   }
   if($from == "CHAR" && $myCharacter[$index+1] != "2") return false;
-  if ($from == "CHAR" && $phase != "B" && $myCharacter[$index + 8] == "1") {
+  if($from == "CHAR" && $phase != "B" && $myCharacter[$index + 8] == "1") {
     $restriction = "Frozen";
     return false;
   }
-  if (isset($myAllies[$index + 3])) {
-    if ($from == "PLAY" && $subtype == "Ally" && $phase != "B" && $myAllies[$index + 3] == "1") {
+  if(isset($myAllies[$index + 3])) {
+    if($from == "PLAY" && $subtype == "Ally" && $phase != "B" && $myAllies[$index + 3] == "1") {
       $restriction = "Frozen";
       return false;
     }
