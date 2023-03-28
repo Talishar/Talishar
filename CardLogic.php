@@ -1215,6 +1215,17 @@ function DiscardedAtRandomEffects($player, $discarded, $source) {
   }
 }
 
+function DiscardCard($player, $index)
+{
+  $hand = &GetHand($player);
+  $discarded = $hand[$index];
+  unset($hand[$index]);
+  $hand = array_values($hand);
+  AddGraveyard($discarded, $player, "HAND");
+  CardDiscarded($player, $discarded, $source);
+  return $discarded;
+}
+
 function CardDiscarded($player, $discarded, $source = "")
 {
   global $CS_Num6PowDisc, $mainPlayer;
