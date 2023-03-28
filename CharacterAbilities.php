@@ -219,19 +219,12 @@ function CharacterDestroyEffect($cardID, $player)
 
 function MainCharacterEndTurnAbilities()
 {
-  global $mainClassState, $CS_HitsWDawnblade, $CS_AtksWWeapon, $mainPlayer, $defPlayer, $CS_NumNonAttackCards;
+  global $mainClassState, $CS_HitsWDawnblade, $CS_AtksWWeapon, $mainPlayer, $CS_NumNonAttackCards;
   global $CS_NumAttackCards, $defCharacter, $CS_ArcaneDamageDealt;
 
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
-    $characterID = $mainCharacter[$i];
-    if($i == 0 && $mainCharacter[$i] == "CRU097")
-    {
-      $otherCharacter = &GetPlayerCharacter($defPlayer);
-      if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $mainPlayer)) {
-        $characterID = $otherCharacter[0];
-      }
-    }
+    $characterID = ShiyanaCharacter($mainCharacter[$i]);
     switch($characterID) {
       case "WTR115":
         if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 0) $mainCharacter[$i + 3] = 0;
@@ -264,14 +257,7 @@ function MainCharacterHitAbilities()
 
   for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     if(CardType($mainCharacter[$i]) == "W" || $mainCharacter[$i + 1] != "2") continue;
-    $characterID = $mainCharacter[$i];
-    if($i == 0 && $mainCharacter[0] == "CRU097") {
-      $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-      $otherCharacter = &GetPlayerCharacter($otherPlayer);
-      if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $mainPlayer)) {
-        $characterID = $otherCharacter[0];
-      }
-    }
+    $characterID = ShiyanaCharacter($mainCharacter[$i]);
     switch($characterID) {
       case "WTR076": case "WTR077":
         if(CardType($attackID) == "AA") {
@@ -356,15 +342,7 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     if(!IsEquipUsable($mainPlayer, $i)) continue;
-    $characterID = $mainCharacter[$i];
-    if($i == 0 && $mainCharacter[0] == "CRU097")
-    {
-      $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-      $otherCharacter = &GetPlayerCharacter($otherPlayer);
-      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $mainPlayer)) {
-        $characterID = $otherCharacter[0];
-      }
-    }
+    $characterID = ShiyanaCharacter($mainCharacter[$i]);
     switch($characterID) {
       case "MON029": case "MON030":
         if (HaveCharged($mainPlayer) && NumAttacksBlocking() > 0) $modifier += 1;
@@ -413,7 +391,7 @@ function CharacterCostModifier($cardID, $from)
 {
   global $currentPlayer, $CS_NumSwordAttacks;
   $modifier = 0;
-  if(CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumSwordAttacks) == 1 && (SearchCharacterActive($currentPlayer, "CRU077") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects("CRU077-SHIYANA", $currentPlayer)))) {
+  if(CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumSwordAttacks) == 1 && SearchCharacterActive($currentPlayer, "CRU077")) {
     --$modifier;
   }
   return $modifier;
@@ -446,6 +424,16 @@ function EquipCard($player, $card)
       }
     }
   }
+}
+
+function ShiyanaCharacter($cardID)
+{
+  global $currentPlayer;
+  if($cardID == "CRU097") {
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) $cardID = $otherCharacter[0];
+  }
+  return $cardID;
 }
 
 ?>

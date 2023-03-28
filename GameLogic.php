@@ -29,13 +29,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   if(($set == "ELE" || $set == "UPR") && $additionalCosts != "-" && HasFusion($cardID)) {
     FuseAbility($cardID, $currentPlayer, $additionalCosts);
   }
-  if($cardID == "CRU097") {
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-      return PlayAbility($otherCharacter[0], $from, $resourcesPaid, $target, $additionalCosts);
-    }
-  }
+  $cardID = ShiyanaCharacter($cardID);
   if($set == "WTR") return WTRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "ARC") {
     switch($class) {
@@ -88,12 +82,12 @@ function PitchAbility($cardID)
   if($pitchValue == 1) {
     $talismanOfRecompenseIndex = GetItemIndex("EVR191", $currentPlayer);
     if($talismanOfRecompenseIndex > -1) {
-      WriteLog("Talisman of Recompense gained 3 instead of 1 and destroyed itself.");
+      WriteLog("Talisman of Recompense gained 3 instead of 1 and destroyed itself");
       DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
       GainResources($currentPlayer, 2);
     }
     if(SearchCharacterActive($currentPlayer, "UPR001") || SearchCharacterActive($currentPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $currentPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $currentPlayer)) {
-      WriteLog("Dromai creates an Ash.");
+      WriteLog("Dromai creates an Ash");
       PutPermanentIntoPlay($currentPlayer, "UPR043");
     }
   }
@@ -175,13 +169,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
   global $currentPlayer;
   $character = &GetPlayerCharacter($currentPlayer);
   $cardID = $character[$cardIndex];
-  if($cardID == "CRU097") {
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-      $cardID = $otherCharacter[$cardIndex];
-    }
-  }
+  $cardID = ShiyanaCharacter($cardID);
   switch($cardID) {
     case "WTR150": //Tunic energy counters
       $character[$cardIndex+2] -= 3;

@@ -498,15 +498,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
   $character = &GetPlayerCharacter($player);
   $auras = &GetAuras($player);
 
-  if(CardType($parameter) == "C")
-  {
-    $otherPlayer = ($player == 1 ? 2 : 1);
-    $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) {
-      $parameter = $otherCharacter[0];
-    }
-  }
-
+  $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
 
   switch ($parameter) {
@@ -1257,20 +1249,21 @@ function CardDiscarded($player, $discarded, $source = "")
 {
   global $CS_Num6PowDisc, $mainPlayer;
   AddEvent("DISCARD", $discarded);
-  if (AttackValue($discarded) >= 6) {
+  if(AttackValue($discarded) >= 6) {
     $character = &GetPlayerCharacter($player);
-    if (($character[0] == "WTR001" || $character[0] == "WTR002" || $character[0] == "RVD001" || SearchCurrentTurnEffects("WTR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("WTR002-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("RVD001-SHIYANA", $mainPlayer)) && $character[1] == 2 && $player == $mainPlayer) { //Rhinar
+    $characterID = ShiyanaCharacter($character[0]);
+    if(($characterID == "WTR001" || $characterID == "WTR002" || $characterID == "RVD001") && $character[1] == 2 && $player == $mainPlayer) { //Rhinar
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
     }
     $index = FindCharacterIndex($player, "DYN006");
-    if ($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index) && $player == $mainPlayer) {
+    if($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index) && $player == $mainPlayer) {
       AddLayer("TRIGGER", $player, $character[$index]);
     }
-    if (SearchCurrentTurnEffects("DYN009", $player)) {
+    if(SearchCurrentTurnEffects("DYN009", $player)) {
       $discard = &GetDiscard($player);
       $found = -1;
-      for ($i = 0; $i < count($discard) && $found == -1; $i += DiscardPieces()) {
-        if ($discard[$i] == $discarded) $found = $i;
+      for($i = 0; $i < count($discard) && $found == -1; $i += DiscardPieces()) {
+        if($discard[$i] == $discarded) $found = $i;
       }
       RemoveGraveyard($player, $found);
       BanishCardForPlayer($discarded, $player, "GY", "-", $player);
@@ -1278,7 +1271,7 @@ function CardDiscarded($player, $discarded, $source = "")
     }
     IncrementClassState($player, $CS_Num6PowDisc);
   }
-  if ($discarded == "CRU008" && $source != "" && ClassContains($source, "BRUTE", $mainPlayer) && CardType($source) == "AA") {
+  if($discarded == "CRU008" && $source != "" && ClassContains($source, "BRUTE", $mainPlayer) && CardType($source) == "AA") {
     WriteLog(CardLink("CRU008", "CRU008") . " intimidated because it was discarded by a Brute attack action card.");
     AddLayer("TRIGGER", $mainPlayer, $discarded);
   }

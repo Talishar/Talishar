@@ -6,16 +6,9 @@ function ProcessHitEffect($cardID)
   global $combatChainState, $CCS_ChainLinkHitEffectsPrevented, $currentPlayer, $combatChain;
   if(CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   if($combatChainState[$CCS_ChainLinkHitEffectsPrevented]) return;
+  $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
-
-  if($cardID == "CRU097") {
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-      return ProcessHitEffect($otherCharacter[0]);
-    }
-  }
   if($set == "WTR") return WTRHitEffect($cardID);
   else if($set == "ARC") {
     switch ($class) {

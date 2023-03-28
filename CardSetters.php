@@ -21,7 +21,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   $rv = -1;
   if ($player == "") $player = $currentPlayer;
   AddEvent("BANISH", ($modifier == "INT" || $modifier == "UZURI" ? "CardBack" : $cardID));
-  if (($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
+  if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
     WriteLog(CardLink($cardID, $cardID) . " was banished from your deck face up by an action card. Gained 1 action point.");
     ++$actionPoints;
   }
@@ -30,11 +30,11 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     AddLayer("TRIGGER", $player, $cardID);
   }
   //Do effects that change where it goes, or banish it if not
-  if ($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
+  if($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
     $character = &GetPlayerCharacter($player);
     AddLayer("TRIGGER", $player, $character[0], $cardID);
   } else {
-    if (CardType($cardID) != "T") { //If you banish a token, the token ceases to exist.
+    if(CardType($cardID) != "T") { //If you banish a token, the token ceases to exist.
       $rv = count($banish);
       array_push($banish, $cardID);
       array_push($banish, $modifier);
@@ -42,22 +42,21 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     }
   }
   ++$classState[$CS_CardsBanished];
-  if (AttackValue($cardID) >= 6) {
+  if(AttackValue($cardID) >= 6) {
     $character = &GetPlayerCharacter($player);
-    if ($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer) {
-      if (($character[0] == "MON119" || $character[0] == "MON120" || SearchCurrentTurnEffects("MON119-SHIYANA", $player) || SearchCurrentTurnEffects("MON120-SHIYANA", $player)) && $character[1] == 2) { // Levia
-        WriteLog(CardLink($character[0], $character[0]) . " Banished a card with 6+ power, and won't lose health from Blood Debt this turn.");
+    if($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer) {
+      $characterID = ShiyanaCharacter($character[0]);
+      if(($characterID == "MON119" || $characterID == "MON120") && $character[1] == 2) { // Levia
+        WriteLog(CardLink($characterID, $characterID) . " banished a card with 6+ power, and won't lose health from Blood Debt this turn");
       }
     }
     ++$classState[$CS_Num6PowBan];
     $index = FindCharacterIndex($player, "MON122");
-    if ($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index) && $player == $mainPlayer) {
+    if($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index) && $player == $mainPlayer) {
       AddLayer("TRIGGER", $player, $character[$index]);
     }
   }
-
   if($banishedBy != "") CheckContracts($banishedBy, $cardID);
-
   return $rv;
 }
 

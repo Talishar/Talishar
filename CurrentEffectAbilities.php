@@ -853,54 +853,26 @@ function IsCombatEffectActive($cardID)
   global $combatChain, $currentPlayer;
   if(count($combatChain) == 0) return;
   if($cardID == "AIM") return true;
+  $cardID = ShiyanaCharacter($cardID);
   $attackID = $combatChain[0];
-  if ($cardID == "CRU097") {
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-      return IsCombatEffectActive($otherCharacter[0]);
-    }
-  }
   $set = CardSet($cardID);
-  if($set == "WTR") {
-    return WTRCombatEffectActive($cardID, $attackID);
-  } else if($set == "ARC") {
-    return ARCCombatEffectActive($cardID, $attackID);
-  } else if($set == "CRU") {
-    return CRUCombatEffectActive($cardID, $attackID);
-  } else if($set == "MON") {
-    return MONCombatEffectActive($cardID, $attackID);
-  } else if($set == "ELE") {
-    return ELECombatEffectActive($cardID, $attackID);
-  } else if($set == "EVR") {
-    return EVRCombatEffectActive($cardID, $attackID);
-  } else if($set == "DVR") {
-    return DVRCombatEffectActive($cardID, $attackID);
-  } else if($set == "UPR") {
-    return UPRCombatEffectActive($cardID, $attackID);
-  } else if($set == "DYN") {
-    return DYNCombatEffectActive($cardID, $attackID);
-  } else if($set == "OUT") {
-    return OUTCombatEffectActive($cardID, $attackID);
-  }
-  switch ($cardID) {
-    default:
-      return 0;
-  }
+  if($set == "WTR") return WTRCombatEffectActive($cardID, $attackID);
+  else if($set == "ARC") return ARCCombatEffectActive($cardID, $attackID);
+  else if($set == "CRU") return CRUCombatEffectActive($cardID, $attackID);
+  else if($set == "MON") return MONCombatEffectActive($cardID, $attackID);
+  else if($set == "ELE") return ELECombatEffectActive($cardID, $attackID);
+  else if($set == "EVR") return EVRCombatEffectActive($cardID, $attackID);
+  else if($set == "DVR") return DVRCombatEffectActive($cardID, $attackID);
+  else if($set == "UPR") return UPRCombatEffectActive($cardID, $attackID);
+  else if($set == "DYN") return DYNCombatEffectActive($cardID, $attackID);
+  else if($set == "OUT") return OUTCombatEffectActive($cardID, $attackID);
 }
 
 function IsCombatEffectPersistent($cardID)
 {
   global $currentPlayer;
   $effectArr = explode(",", $cardID);
-  $cardID = $effectArr[0];
-  if($cardID == "CRU097") {
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-      return IsCombatEffectPersistent($otherCharacter[0]);
-    }
-  }
+  $cardID = ShiyanaCharacter($effectArr[0]);
   switch($cardID) {
     case "WTR007": case "WTR038": case "WTR039": return true;
     case "ARC047": return true;

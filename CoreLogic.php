@@ -363,21 +363,14 @@ function CharacterPlayCardAbilities($cardID, $from)
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
     if($character[$i+1] != 2) continue;
-    $characterID = $character[$i];
-    if ($i == 0 && $character[0] == "CRU097") {
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      $otherCharacter = &GetPlayerCharacter($otherPlayer);
-      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-        $characterID = $otherCharacter[0];
-      }
-    }
+    $characterID = ShiyanaCharacter($character[$i]);
     switch($characterID)
     {
       case "UPR158":
         if(GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && AttackValue($cardID) <= 2)
         {
           AddCurrentTurnEffect($characterID, $currentPlayer);
-          WriteLog(CardLink($characterID, $characterID) . " gives the attack +1 and makes the damage unable to be prevented.");
+          WriteLog(CardLink($characterID, $characterID) . " gives the attack +1 and makes the damage unable to be prevented");
           $character[$i+1] = 1;
         }
         break;
@@ -397,45 +390,38 @@ function MainCharacterPlayCardAbilities($cardID, $from)
 {
   global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumBoostPlayed;
   $character = &GetPlayerCharacter($currentPlayer);
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i + 1] != 2) continue;
-    $characterID = $character[$i];
-    if ($i == 0 && $character[0] == "CRU097") {
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      $otherCharacter = &GetPlayerCharacter($otherPlayer);
-      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-        $characterID = $otherCharacter[0];
-      }
-    }
-    switch ($characterID) {
+  for($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if($character[$i + 1] != 2) continue;
+    $characterID = ShiyanaCharacter($character[$i]);
+    switch($characterID) {
       case "ARC075": case "ARC076": //Viserai
-        if (!IsStaticType(CardType($cardID), $from, $cardID) && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) {
+        if(!IsStaticType(CardType($cardID), $from, $cardID) && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
       case "CRU161":
-        if (ActionsThatDoArcaneDamage($cardID) && SearchCharacterActive($currentPlayer, "CRU161") && IsCharacterActive($currentPlayer, FindCharacterIndex($currentPlayer, "CRU161"))) {
+        if(ActionsThatDoArcaneDamage($cardID) && SearchCharacterActive($currentPlayer, "CRU161") && IsCharacterActive($currentPlayer, FindCharacterIndex($currentPlayer, "CRU161"))) {
           AddLayer("TRIGGER", $currentPlayer, "CRU161");
         }
         break;
       case "ELE062": case "ELE063":
-        if (CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2 && $from != "PLAY") {
+        if(CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2 && $from != "PLAY") {
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
       case "EVR120": case "UPR102": case "UPR103": //Iyslander
-        if ($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID)) {
+        if($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
       case "DYN088":
         $numBoostPlayed = 0;
-        if (HasBoost($cardID))
+        if(HasBoost($cardID))
         {
           $numBoostPlayed = GetClassState($currentPlayer, $CS_NumBoostPlayed) + 1;
           SetClassState($currentPlayer, $CS_NumBoostPlayed, $numBoostPlayed);
         }
-        if ($numBoostPlayed == 3)
+        if($numBoostPlayed == 3)
         {
           $index = FindCharacterIndex($currentPlayer, "DYN088");
           ++$character[$index + 2];
@@ -456,7 +442,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         }
         break;
       case "OUT091": case "OUT092": //Riptide
-        if ($from == "HAND") {
+        if($from == "HAND") {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
@@ -588,8 +574,8 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     {
       $damage += CurrentEffectDamageModifiers($player, $source, $type);
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
-      if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063" || SearchCurrentTurnEffects("ELE062-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("ELE063-SHIYANA", $mainPlayer))
-      && $type == "ARCANE" && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) {
+      $characterID = ShiyanaCharacter($otherCharacter[0]);
+      if(($characterID == "ELE062" || $characterID == "ELE063") && $type == "ARCANE" && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) {
         PlayAura("ELE109", $otherPlayer);
       }
       if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused]) AddCurrentTurnEffect($source, $mainPlayer);
@@ -598,7 +584,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
         Draw($mainPlayer);
         PummelHit();
       }
-      if ($source == "DYN612") GainHealth($damage, $mainPlayer);
+      if($source == "DYN612") GainHealth($damage, $mainPlayer);
     }
 
     AuraDamageTakenAbilities($Auras, $damage);
@@ -1315,7 +1301,7 @@ function ClassOverride($cardID, $player="")
 
   if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";//Erase Face
   if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) {
-    if ($cardClass != "") $cardClass .= ",";
+    if($cardClass != "") $cardClass .= ",";
     $cardClass .= CardClass($otherCharacter[0]) . ",SHAPESHIFTER";
   }
 

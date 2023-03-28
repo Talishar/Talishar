@@ -209,12 +209,10 @@
   function IsImmuneToBloodDebt($player)
   {
     global $CS_Num6PowBan;
-      $character = &GetPlayerCharacter($player);
-      if($character[1] == 2 && ($character[0] == "MON119" || $character[0] == "MON120" || SearchCurrentTurnEffects("MON119-SHIYANA", $player) || SearchCurrentTurnEffects("MON120-SHIYANA", $player)) && GetClassState($player, $CS_Num6PowBan) > 0)
-      {
-        return true;
-      }
-      return false;
+    $character = &GetPlayerCharacter($player);
+    $characterID = ShiyanaCharacter($character[0]);
+    if($character[1] == 2 && ($characterID == "MON119" || $characterID == "MON120") && GetClassState($player, $CS_Num6PowBan) > 0) return true;
+    return false;
   }
 
 ?>

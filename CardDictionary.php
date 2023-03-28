@@ -140,14 +140,7 @@ function CharacterHealth($cardID)
 
 function CharacterIntellect($cardID)
 {
-  global $currentPlayer;
-  if ($cardID == "CRU097") {
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-      return CharacterIntellect($otherCharacter[0]);
-    }
-  }
+  $cardID = ShiyanaCharacter($cardID);
   switch ($cardID) {
     case "CRU099":
       return 3;
@@ -309,16 +302,9 @@ function CardTalent($cardID)
 //Minimum cost of the card
 function CardCost($cardID)
 {
-  global $currentPlayer;
+  $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
-  if ($cardID == "CRU097") {
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-      return CardCost($otherCharacter[0]);
-    }
-  }
   switch($cardID)
   {
     case "ARC009": return 0;
@@ -347,50 +333,27 @@ function CardCost($cardID)
 function AbilityCost($cardID)
 {
   global $currentPlayer;
+  $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
-  if ($cardID == "CRU097") {
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-      return AbilityCost($otherCharacter[0]);
-    }
+  if($class == "ILLUSIONIST" && $subtype == "Aura") {
+    if(SearchCharacterForCard($currentPlayer, "MON003")) return 0;
+    if(SearchCharacterForCard($currentPlayer, "MON088")) return 3;
   }
-  if ($class == "ILLUSIONIST" && $subtype == "Aura") {
-    if (SearchCharacterForCard($currentPlayer, "MON003")) return 0;
-    if (SearchCharacterForCard($currentPlayer, "MON088")) return 3;
-  }
-  if (DelimStringContains($subtype, "Dragon")) {
-    if (SearchCharacterActive($currentPlayer, "UPR003")) return 0;
-  }
-  if($set == "WTR")
-  {
-    return WTRAbilityCost($cardID);
-  }
-  else if ($set == "ARC") {
-    return ARCAbilityCost($cardID);
-  } else if ($set == "CRU") {
-    return CRUAbilityCost($cardID);
-  } else if ($set == "MON") {
-    return MONAbilityCost($cardID);
-  } else if ($set == "ELE") {
-    return ELEAbilityCost($cardID);
-  } else if ($set == "EVR") {
-    return EVRAbilityCost($cardID);
-  } else if ($set == "UPR") {
-    return UPRAbilityCost($cardID);
-  } else if ($set == "DVR") {
-    return DVRAbilityCost($cardID);
-  } else if ($set == "RVD") {
-    return RVDAbilityCost($cardID);
-  } else if ($set == "DYN") {
-    return DYNAbilityCost($cardID);
-  } else if ($set == "OUT") {
-    return OUTAbilityCost($cardID);
-  }  else if ($set == "ROG") {
-    return ROGUEAbilityCost($cardID);
-  }
+  if(DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "UPR003")) return 0;
+  if($set == "WTR") return WTRAbilityCost($cardID);
+  else if ($set == "ARC") return ARCAbilityCost($cardID);
+  else if ($set == "CRU") return CRUAbilityCost($cardID);
+  else if ($set == "MON") return MONAbilityCost($cardID);
+  else if ($set == "ELE") return ELEAbilityCost($cardID);
+  else if ($set == "EVR") return EVRAbilityCost($cardID);
+  else if ($set == "UPR") return UPRAbilityCost($cardID);
+  else if ($set == "DVR") return DVRAbilityCost($cardID);
+  else if ($set == "RVD") return RVDAbilityCost($cardID);
+  else if ($set == "DYN") return DYNAbilityCost($cardID);
+  else if ($set == "OUT") return OUTAbilityCost($cardID);
+  else if ($set == "ROG") return ROGUEAbilityCost($cardID);
   return CardCost($cardID);
 }
 
@@ -560,51 +523,25 @@ function HasGoAgain($cardID)
 function GetAbilityType($cardID, $index = -1, $from="-")
 {
   global $currentPlayer;
+  $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $subtype = CardSubtype($cardID);
-  if ($cardID == "CRU097") {
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-      return GetAbilityType($otherCharacter[0], $index, $from);
-    }
+  if($from == "PLAY" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $subtype == "Aura") {
+    if(SearchCharacterForCard($currentPlayer, "MON003") || SearchCharacterForCard($currentPlayer, "MON088")) return "AA";
   }
-  if ($from == "PLAY" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $subtype == "Aura") {
-    if (SearchCharacterForCard($currentPlayer, "MON003")) return "AA";
-    if (SearchCharacterForCard($currentPlayer, "MON088")) return "AA";
-  }
-  if (DelimStringContains($subtype, "Dragon")) {
-    if (SearchCharacterActive($currentPlayer, "UPR003")) return "AA";
-  }
-  if ($set == "WTR") {
-    return WTRAbilityType($cardID, $index);
-  } else if ($set == "ARC") {
-    return ARCAbilityType($cardID, $index);
-  } else if ($set == "CRU") {
-    return CRUAbilityType($cardID, $index);
-  } else if ($set == "MON") {
-    return MONAbilityType($cardID, $index);
-  } else if ($set == "ELE") {
-    return ELEAbilityType($cardID, $index);
-  } else if ($set == "EVR") {
-    return EVRAbilityType($cardID, $index);
-  } else if ($set == "UPR") {
-    return UPRAbilityType($cardID, $index);
-  } else if ($set == "DVR") {
-    return DVRAbilityType($cardID, $index);
-  } else if ($set == "RVD") {
-    return RVDAbilityType($cardID, $index);
-  } else if ($set == "DYN") {
-    return DYNAbilityType($cardID, $index);
-  } else if ($set == "OUT") {
-    return OUTAbilityType($cardID, $index);
-  }  else if ($set == "ROG") {
-    return ROGUEAbilityType($cardID, $index);
-  }
-  switch ($cardID) {
-    default:
-      return "";
-  }
+  if(DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "UPR003")) return "AA";
+  if($set == "WTR") return WTRAbilityType($cardID, $index);
+  else if ($set == "ARC") return ARCAbilityType($cardID, $index);
+  else if ($set == "CRU") return CRUAbilityType($cardID, $index);
+  else if ($set == "MON") return MONAbilityType($cardID, $index);
+  else if ($set == "ELE") return ELEAbilityType($cardID, $index);
+  else if ($set == "EVR") return EVRAbilityType($cardID, $index);
+  else if ($set == "UPR") return UPRAbilityType($cardID, $index);
+  else if ($set == "DVR") return DVRAbilityType($cardID, $index);
+  else if ($set == "RVD") return RVDAbilityType($cardID, $index);
+  else if ($set == "DYN") return DYNAbilityType($cardID, $index);
+  else if ($set == "OUT") return OUTAbilityType($cardID, $index);
+  else if ($set == "ROG") return ROGUEAbilityType($cardID, $index);
 }
 
 function GetAbilityTypes($cardID)
@@ -966,11 +903,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $type = CardType($combatChain[0]);
       return $type != "W";
     case "CRU097":
-      $otherCharacter = &GetPlayerCharacter($otherPlayer);
-      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-        return IsPlayRestricted($otherCharacter[0], $restriction, $from, $index, $player);
-      }
-      return false;
+      return IsPlayRestricted(ShiyanaCharacter("CRU097"), $restriction, $from, $index, $player);
     case "CRU125":
       return !HasTakenDamage($player);
     case "CRU126": case "CRU127": case "CRU128":
@@ -1466,40 +1399,21 @@ function ETASteamCounters($cardID)
 function AbilityHasGoAgain($cardID)
 {
   global $currentPlayer;
+  $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
-  if ($cardID == "CRU097") {
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-      return AbilityHasGoAgain($otherCharacter[0]);
-    }
-  }
-  if ($class == "ILLUSIONIST" && $subtype == "Aura") {
-    if (SearchCharacterForCard($currentPlayer, "MON088")) return true;
-  }
-  if ($set == "WTR") {
-    return WTRAbilityHasGoAgain($cardID);
-  } else if ($set == "ARC") {
-    return ARCAbilityHasGoAgain($cardID);
-  } else if ($set == "CRU") {
-    return CRUAbilityHasGoAgain($cardID);
-  } else if ($set == "MON") {
-    return MONAbilityHasGoAgain($cardID);
-  } else if ($set == "ELE") {
-    return ELEAbilityHasGoAgain($cardID);
-  } else if ($set == "EVR") {
-    return EVRAbilityHasGoAgain($cardID);
-  } else if ($set == "UPR") {
-    return UPRAbilityHasGoAgain($cardID);
-  } else if ($set == "DYN") {
-    return DYNAbilityHasGoAgain($cardID);
-  } else if($set == "OUT") {
-    return OUTAbilityHasGoAgain($cardID);
-  } else if ($set == "ROG") {
-    return ROGUEAbilityHasGoAgain($cardID);
-  }
+  if($class == "ILLUSIONIST" && $subtype == "Aura" && SearchCharacterForCard($currentPlayer, "MON088")) return true;
+  if($set == "WTR") return WTRAbilityHasGoAgain($cardID);
+  else if($set == "ARC") return ARCAbilityHasGoAgain($cardID);
+  else if($set == "CRU") return CRUAbilityHasGoAgain($cardID);
+  else if($set == "MON") return MONAbilityHasGoAgain($cardID);
+  else if($set == "ELE") return ELEAbilityHasGoAgain($cardID);
+  else if($set == "EVR") return EVRAbilityHasGoAgain($cardID);
+  else if($set == "UPR") return UPRAbilityHasGoAgain($cardID);
+  else if($set == "DYN") return DYNAbilityHasGoAgain($cardID);
+  else if($set == "OUT") return OUTAbilityHasGoAgain($cardID);
+  else if($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "RVD004":
       return true;
@@ -1512,105 +1426,24 @@ function AbilityHasGoAgain($cardID)
 
 function DoesEffectGrantDominate($cardID)
 {
-  global $combatChainState, $CCS_AttackFused, $currentPlayer;
-  if ($cardID == "CRU097") {
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-      return DoesEffectGrantDominate($otherCharacter[0]);
-    }
-  }
+  global $combatChainState, $CCS_AttackFused;
+  $cardID = ShiyanaCharacter($cardID);
   switch ($cardID) {
-    case "WTR038":
-    case "WTR039":
-      return true;
-    case "WTR197":
-      return true;
-    case "ARC011":
-    case "ARC012":
-    case "ARC013":
-      return true;
-    case "ARC019":
-      return true;
-    case "ARC038":
-    case "ARC039":
-      return true;
-    case "CRU013":
-    case "CRU014":
-    case "CRU015":
-      return true;
-    case "CRU038":
-    case "CRU039":
-    case "CRU040":
-      return true;
-    case "CRU094-2":
-    case "CRU095-2":
-    case "CRU096-2":
-      return true;
-    case "CRU106":
-    case "CRU107":
-    case "CRU108":
-      return true;
-    case "MON109":
-      return true;
-    case "MON129":
-    case "MON130":
-    case "MON131":
-      return true;
-    case "MON132":
-    case "MON133":
-    case "MON134":
-      return true;
-    case "MON195":
-    case "MON196":
-    case "MON197":
-      return true;
-    case "MON223":
-    case "MON224":
-    case "MON225":
-      return true;
-    case "MON278":
-    case "MON279":
-    case "MON280":
-      return true;
-    case "MON406":
-      return true;
-    case "ELE005":
-      return true;
-    case "ELE016":
-    case "ELE017":
-    case "ELE018":
-      return true;
-    case "ELE033-2":
-      return true;
-    case "ELE056":
-    case "ELE057":
-    case "ELE058":
-      return true;
-    case "ELE092-DOMATK":
-      return true;
-    case "ELE097":
-    case "ELE098":
-    case "ELE099":
-      return true;
-    case "ELE154":
-    case "ELE155":
-    case "ELE156":
-      return $combatChainState[$CCS_AttackFused] == 1;
-    case "ELE166":
-    case "ELE167":
-    case "ELE168":
-      return true;
-    case "ELE205":
-      return true;
-    case "EVR017":
-      return true;
-    case "EVR019":
-      return true;
-    case "UPR091":
-      return true;
+    case "WTR038": case "WTR039": case "WTR197":
+    case "ARC011": case "ARC012": case "ARC013": case "ARC019": case "ARC038": case "ARC039":
+    case "CRU013": case "CRU014": case "CRU015":
+    case "CRU038": case "CRU039": case "CRU040": case "CRU094-2": case "CRU095-2": case "CRU096-2":
+    case "CRU106": case "CRU107": case "CRU108":
+    case "MON109": case "MON129": case "MON130": case "MON131": case "MON132": case "MON133": case "MON134":
+    case "MON195": case "MON196": case "MON197": case "MON223": case "MON224": case "MON225":
+    case "MON278": case "MON279": case "MON280": case "MON406":
+    case "ELE005": case "ELE016": case "ELE017": case "ELE018": case "ELE033-2": case "ELE056": case "ELE057": case "ELE058":
+    case "ELE092-DOMATK": case "ELE097": case "ELE098": case "ELE099": case "ELE166": case "ELE167": case "ELE168": case "ELE205":
+    case "EVR017": case "EVR019": case "UPR091":
     case "DYN028":
       return true;
+    case "ELE154": case "ELE155": case "ELE156":
+      return $combatChainState[$CCS_AttackFused] == 1;
     default:
       return false;
   }
@@ -2174,18 +2007,15 @@ function AbilityPlayableFromCombatChain($cardID)
 
 function CardCaresAboutPitch($cardID)
 {
-  global $currentPlayer;
-  if(SearchCurrentTurnEffects("ELE001-SHIYANA", $currentPlayer) || SearchCurrentTurnEffects("ELE002-SHIYANA", $currentPlayer)) return true;
-  switch ($cardID) {
+  $cardID = ShiyanaCharacter($cardID);
+  switch($cardID) {
     case "ELE001": case "ELE002": case "ELE003":
-      return true;
     case "DYN172": case "DYN173": case "DYN174":
     case "DYN176": case "DYN177": case "DYN178":
 		case "DYN182": case "DYN183": case "DYN184":
 		case "DYN185": case "DYN186": case "DYN187":
       return true;
-    default:
-      return false;
+    default: return false;
   }
 }
 
