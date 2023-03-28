@@ -92,9 +92,7 @@ function RemoveHand($player, $index)
   $hand = &GetHand($player);
   if(count($hand) == 0) return "";
   $cardID = $hand[$index];
-  for ($j = $index + HandPieces() - 1; $j >= $index; --$j) {
-    unset($hand[$j]);
-  }
+  for($j = $index + HandPieces() - 1; $j >= $index; --$j) unset($hand[$j]);
   $hand = array_values($hand);
   return $cardID;
 }
