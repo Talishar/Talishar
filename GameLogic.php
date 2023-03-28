@@ -1059,7 +1059,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $dqState[7] = $lastResult;
       $target = explode("-", $lastResult);
       $targetPlayer = ($target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1));
-      $otherPlayer = $player == 1 ? 2 : 1;
       $parameters = explode("-", $parameter);
       $damage = $parameters[0];
       $source = $parameters[1];
@@ -1084,7 +1083,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         return "";
       }
-
       AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
       $target = $targetPlayer;
       $sourceType = CardType($source);
@@ -1092,7 +1090,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
       PrependDecisionQueue("TAKEARCANE", $target, $damage . "-" . $source . "-" . $player);
       PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
-
       CheckSpellvoid($target, $damage);
       PrependDecisionQueue("INCDQVAR", $target, "1", 1);
       DoQuell($target, $damage);
@@ -1709,11 +1706,8 @@ function ImperialWarHorn($player, $term)
 function CharacterTriggerInGraveyard($cardID)
 {
   switch ($cardID) {
-    case "DYN117": case "DYN118":
-      return true;
-    case "OUT011":
-      return true;
-    default:
-      return false;
+    case "DYN117": case "DYN118": return true;
+    case "OUT011": return true;
+    default: return false;
   }
 }
