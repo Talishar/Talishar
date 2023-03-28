@@ -18,6 +18,7 @@ include "CombatChain.php";
 function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
 {
   global $currentPlayer, $layers;
+  $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   if($target != "-")
@@ -29,7 +30,6 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   if(($set == "ELE" || $set == "UPR") && $additionalCosts != "-" && HasFusion($cardID)) {
     FuseAbility($cardID, $currentPlayer, $additionalCosts);
   }
-  $cardID = ShiyanaCharacter($cardID);
   if($set == "WTR") return WTRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "ARC") {
     switch($class) {

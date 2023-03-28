@@ -431,6 +431,7 @@ function ShiyanaCharacter($cardID)
   global $currentPlayer;
   if($cardID == "CRU097") {
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) $cardID = $otherCharacter[0];
   }
   return $cardID;

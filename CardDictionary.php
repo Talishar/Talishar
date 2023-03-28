@@ -1015,7 +1015,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       }
       return true;
     case "EVR053":
-      return !isAttackGreaterThanTwiceBasePower();
+      return !IsWeaponGreaterThanTwiceBasePower();
     case "EVR181":
       return $from == "PLAY" && (GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0 || count($combatChain) == 0 || CardType($combatChain[0]) != "AA");
     case "DVR013":

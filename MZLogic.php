@@ -207,6 +207,7 @@ function MZPlayerID($me, $MZIndex)
 function GetMZCard($player, $MZIndex)
 {
   $params = explode("-", $MZIndex);
+  if(substr($params[0], 0, 5) == "THEIR") $player = ($player == 1 ? 2 : 1);
   $zoneDS = &GetMZZone($player, $params[0]);
   $index = $params[1];
   return $zoneDS[$index];

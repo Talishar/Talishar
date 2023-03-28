@@ -300,7 +300,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "DYN068":
-      if(isAttackGreaterThanTwiceBasePower()) {
+      if(IsWeaponGreaterThanTwiceBasePower()) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return CardLink($cardID, $cardID) . " gains overpower";
       }
