@@ -82,18 +82,22 @@
             if($cardID == "CardBack")
             {
               $newShop = $myDQ[1];
+              $parameterOne = $myDQ[2];
+              $parameterTwo = $myDQ[3];
               ClearPhase($playerID); //Clear the screen and keep going
               ContinueDecisionQueue($playerID, "");
-              PrependDecisionQueue("SHOP", $playerID, $newShop, $myDQ[2], $myDQ[3]);
+              PrependDecisionQueue("SHOP", $playerID, $newShop, $parameterOne, $parameterTwo);
               break;
             }
             else if($encounter[9] < $cost)
             {
               $newShop = $myDQ[1];
               WriteLog("You cannot afford to buy " . CardLink($cardID, $cardID) . ".");
+              $parameterOne = $myDQ[2];
+              $parameterTwo = $myDQ[3];
               ClearPhase($playerID); //Clear the screen and keep going
               ContinueDecisionQueue($playerID, "");
-              PrependDecisionQueue("SHOP", $playerID, $newShop, $myDQ[2], $myDQ[3]);
+              PrependDecisionQueue("SHOP", $playerID, $newShop, $parameterOne, $parameterTwo);
               break;
             }
             else
@@ -115,9 +119,11 @@
                 $newShop.=$options[$j];
               }
               $newShop.=",CardBack";
+              $parameterOne = $myDQ[2];
+              $parameterTwo = $myDQ[3];
               //WriteLog($newShop);
               ClearPhase($playerID); //Clear the screen and keep going
-              PrependDecisionQueue("SHOP", $playerID, $newShop, $myDQ[2], $myDQ[3]);
+              PrependDecisionQueue("SHOP", $playerID, $newShop, $parameterOne, $parameterTwo);
               ContinueDecisionQueue($playerID, "");
               break;
             }
