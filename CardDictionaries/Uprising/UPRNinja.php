@@ -19,8 +19,8 @@
         return "Buffs your draconic attacks this combat chain.";
       case "UPR050":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CCDEFLESSX," . NumDraconicChainLinks()-1);
-        AddDecisionQueue("CCFILTERTYPE", $currentPlayer, "E");
-        AddDecisionQueue("CCFILTERPLAYER", $currentPlayer, $currentPlayer);
+        AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-exclude-type-E", 1);
+        AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-include-player-" . ($player == 1 ? 2 : 1), 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
         AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVECOMBATCHAIN", $currentPlayer, "-", 1);

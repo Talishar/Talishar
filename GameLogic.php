@@ -623,23 +623,28 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $relationship = $params[1];//exclude other or include
       $type = $params[2];
       $compare = $params[3];
-      $input = "";
+      $input = [];
       switch($from)
       {
-        case "LastResult": $input = $lastResult; break;
+        case "LastResult": $input = explode(",", $lastResult); for($i=0; $i<count($input); ++$i) $input[$i] = $input[$i] . "-" . $input[$i]; break;
+        case "CombatChain":
+          $lastResultArr = explode(",", $lastResult);
+          for($i=0; $i<count($lastResultArr); ++$i) array_push($input, $combatChain[$lastResultArr[$i]+CCOffset($type)] . "-" . $lastResultArr[$i]);
         default: break;
       }
-      $input = explode(",", $input);
       $output = [];
       for($i=0; $i<count($input); ++$i)
       {
+        $inputArr = explode("-", $input[$i]);
         $passFilter = ($relationship == "include" ? false : true);
         switch($type)
         {
-          case "subtype": if(SubtypeContains($input[$i], $compare, $player)) $passFilter = !$passFilter; break;
+          case "type": if(CardType($inputArr[0]) == $compare) $passFilter = !$passFilter; break;
+          case "subtype": if(SubtypeContains($inputArr[0], $compare, $player)) $passFilter = !$passFilter; break;
+          case "player": if($inputArr[0] == $compare) $passFilter = !$passFilter; break;
           default: break;
         }
-        if($passFilter) array_push($output, $input[$i]);
+        if($passFilter) array_push($output, $inputArr[1]);
       }
       return (count($output) > 0 ? implode(",", $output) : "PASS");
     case "PASSPARAMETER":
@@ -1598,32 +1603,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "PERMANENT-" . ResolveTransformPermanent($player, $lastResult, $parameter);
     case "TRANSFORMAURA":
       return "AURA-" . ResolveTransformAura($player, $lastResult, $parameter);
-    case "CCFILTERTYPE":
-      if ($lastResult == "" || $lastResult == "PASS") return "PASS";
-      $arr = explode(",", $lastResult);
-      $rv = [];
-      for ($i = 0; $i < count($arr); ++$i) {
-        if (CardType($combatChain[$arr[$i]]) != $parameter) array_push($rv, $arr[$i]);
-      }
-      $rv = implode(",", $rv);
-      return ($rv == "" ? "PASS" : $rv);
-    case "CCFILTERPLAYER":
-      if ($lastResult == "" || $lastResult == "PASS") return "PASS";
-      $arr = explode(",", $lastResult);
-      $rv = [];
-      for ($i = 0; $i < count($arr); ++$i) {
-        if ($combatChain[$arr[$i] + 1] != $parameter) array_push($rv, $arr[$i]);
-      }
-      $rv = implode(",", $rv);
-      return ($rv == "" ? "PASS" : $rv);
     case "AFTERTHAW":
       $otherPlayer = ($player == 1 ? 2 : 1);
       $params = explode("-", $lastResult);
-      if ($params[0] == "MYAURAS") {
-        DestroyAura($player, $params[1]);
-      } else {
-        UnfreezeMZ($player, $params[0], $params[1]);
-      }
+      if($params[0] == "MYAURAS") DestroyAura($player, $params[1]);
+      else UnfreezeMZ($player, $params[0], $params[1]);
       return "";
     case "SUCCUMBTOWINTER":
       $params = explode("-", $lastResult);

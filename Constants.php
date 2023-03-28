@@ -548,3 +548,12 @@ function HasAimCounter()
   global $combatChainState, $CCS_HasAimCounter;
   return $combatChainState[$CCS_HasAimCounter];
 }
+
+function CCOffset($piece)
+{
+  switch($piece)
+  {
+    case "player": return 1;
+    default: return 0;
+  }
+}
