@@ -419,4 +419,33 @@ function CharacterCostModifier($cardID, $from)
   return $modifier;
 }
 
+function EquipCard($player, $card)
+{
+  $char = &GetPlayerCharacter($player);
+  $lastWeapon = -1;
+  $replaced = 0;
+  //Replace the first destroyed weapon; if none you can't re-equip
+  for($i=CharacterPieces(); $i<count($char) && !$replaced; $i+=CharacterPieces())
+  {
+    if(CardType($char[$i]) == "W")
+    {
+      $lastWeapon = $i;
+      if($char[$i+1] == 0)
+      {
+        $char[$i] = $card;
+        $char[$i+1] = 2;
+        $char[$i+2] = 0;
+        $char[$i+3] = 0;
+        $char[$i+4] = 0;
+        $char[$i+5] = 1;
+        $char[$i+6] = 0;
+        $char[$i+7] = 0;
+        $char[$i+8] = 0;
+        $char[$i+9] = 2;
+        $replaced = 1;
+      }
+    }
+  }
+}
+
 ?>

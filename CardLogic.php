@@ -948,7 +948,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       $targetIndex = SearchItemsForUniqueID($target, $player);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_move_a_steam_counter_to_" . CardLink($items[$targetIndex], $items[$targetIndex]));
       AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("PLASMAMAINLINE", $player, $uniqueID . "," . $target, 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $uniqueID . "," . $target, 1);
+      AddDecisionQueue("SPECIFICCARD", $player, "PLASMAMAINLINE", 1);
       break;
     case "DYN094":
       $otherPlayer = ($player == 1 ? 2 : 1);

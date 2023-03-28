@@ -318,6 +318,14 @@ function SpecificCardLogic($player, $card, $lastResult)
       WriteLog("Remembrance shuffled " . $cards);
       $discard = array_values($discard);
       return "1";
+    case "PLASMAMAINLINE":
+      $items = &GetItems($player);
+      $lastResultArr = explode(",", $lastResult);
+      $PMIndex = SearchItemsForUniqueID($lastResultArr[0], $player);
+      $targetIndex = SearchItemsForUniqueID($lastResultArr[1], $player);
+      ++$items[$targetIndex + 1];
+      if(--$items[$PMIndex + 1] == 0) DestroyItemForPlayer($player, $PMIndex);
+      return $lastResult;
     default: return "";
   }
 }

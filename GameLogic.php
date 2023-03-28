@@ -1625,15 +1625,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "HITEFFECT":
       ProcessHitEffect($parameter);
       return $parameter;
-    case "PLASMAMAINLINE":
-      $items = &GetItems($player);
-      $params = explode(",", $parameter);
-      $plasmaIndex = SearchItemsForUniqueID($params[0], $player);
-      $targetIndex = SearchItemsForUniqueID($params[1], $player);
-      ++$items[$targetIndex + 1];
-      --$items[$plasmaIndex + 1];
-      if ($items[$plasmaIndex + 1] == 0) DestroyItemForPlayer($player, $plasmaIndex);
-      return $lastResult;
     case "SURAYA":
       DealArcane(1, 2, "ABILITY", $parameter, true);
       return $lastResult;
@@ -1659,37 +1650,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PlayerTargetedAbility($player, "AMULETOFECHOES", $lastResult);
       return "";
     case "EQUIPCARD":
-      $char = &GetPlayerCharacter($player);
-      $lastWeapon = -1;
-      $replaced = 0;
-      //Replace the first destroyed weapon; if none just replace the last one
-      for($i=CharacterPieces(); $i<count($char) && !$replaced; $i+=CharacterPieces())
-      {
-        if(CardType($char[$i]) == "W")
-        {
-          $lastWeapon = $i;
-          if($char[$i+1] == 0)
-          {
-            $char[$i] = $parameter;
-            $char[$i+1] = 2;
-            $char[$i+2] = 0;
-            $char[$i+3] = 0;
-            $char[$i+4] = 0;
-            $char[$i+5] = 1;
-            $char[$i+6] = 0;
-            $char[$i+7] = 0;
-            $char[$i+8] = 0;
-            $char[$i+9] = 2;
-            $replaced = 1;
-          }
-        }
-      }
-      if(!$replaced)
-      {
-        $char[$lastWeapon] = $parameter;
-        $char[$lastWeapon+1] = 2;
-      }
-      break;
+      EquipCard($player, $parameter);
+      return "";
     default:
       return "NOTSTATIC";
   }
