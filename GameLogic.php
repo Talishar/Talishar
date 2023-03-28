@@ -908,48 +908,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $char = &GetPlayerCharacter($player);
       if($char[$parameter + 1] != 2) return "PASS";
       return 1;
-    case "ESTRIKE":
-      switch($lastResult) {
-        case "Draw_a_Card":
-          WriteLog(CardLink("WTR159", "WTR159") . " draw a card.");
-          return MyDrawCard();
-        case "Buff_Power":
-          WriteLog(CardLink("WTR159", "WTR159") . " gained +2 power.");
-          AddCurrentTurnEffect("WTR159", $player);
-          return 1;
-        case "Go_Again":
-          WriteLog(CardLink("WTR159", "WTR159") . " gained go again.");
-          $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-          return 2;
-      }
-      return $lastResult;
-    case "SANDSKETCH":
-      if(count(GetHand($player)) == 0) {
-        WriteLog("No card for Sand Sketched Plan to discard.");
-        return "1";
-      }
-      $discarded = DiscardRandom($player, "WTR009");
-      if(AttackValue($discarded) >= 6) {
-        if($currentPlayer == $mainPlayer) {
-          $actionPoints += 2;
-          WriteLog(CardLink("WTR009","WTR009") . " gained 2 action points.");
-        }
-      }
-      return "1";
-    case "REMEMBRANCE":
-      $cards = "";
-      $deck = &GetDeck($player);
-      $discard = &GetDiscard($player);
-      for($i = 0; $i < count($lastResult); ++$i) {
-        array_push($deck, $discard[$lastResult[$i]]);
-        if($cards != "") $cards .= ", ";
-        if($i == count($lastResult) - 1) $cards .= "and ";
-        $cards .= CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]);
-        unset($discard[$lastResult[$i]]);
-      }
-      WriteLog("Remembrance shuffled " . $cards);
-      $discard = array_values($discard);
-      return "1";
     case "LORDOFWIND":
       $number = 0;
        if($lastResult != "") {
@@ -1631,9 +1589,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $currentTime = round(microtime(true) * 1000);
       SetCachePiece($gameName, 2, $currentTime);
       SetCachePiece($gameName, 3, $currentTime);
-      unlink("./Games/" . $gameName . "/gamestateBackup.txt");
-      unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
-      unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
+      ClearGameFiles($gameName);
       include "MenuFiles/ParseGamefile.php";
       header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID");
       exit;
@@ -1642,9 +1598,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($lastResult == "YES")
       {
         $inGameStatus = $GameStatus_Rematch;
-        unlink("./Games/" . $gameName . "/gamestateBackup.txt");
-        unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
-        unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
+        ClearGameFiles($gameName);
       }
       return 0;
     case "PLAYERTARGETEDABILITY":
@@ -1667,8 +1621,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $items[$mzIndex[1] + 1 ] += 1;
             WriteLog(CardLink($items[$mzIndex[1]], $items[$mzIndex[1]]) . " gained a steam counter");
             break;
-          default:
-            break;
+          default: break;
         }
       }
       return $lastResult;
@@ -1692,15 +1645,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params =  explode("-", $parameter);
       switch($mzIndex[0])
       {
-        case "MYAURAS":
-          $damage = AuraTakeDamageAbility($player, intval($mzIndex[1]), $params[0], $params[1]);
-          break;
-        case "MYCHAR":
-          $damage = CharacterTakeDamageAbility($player, intval($mzIndex[1]), $params[0], $params[1]);
-          break;
-        case "MYALLY":
-          $damage = AllyTakeDamageAbilities($player, intval($mzIndex[1]), $params[0], $params[1]);
-          break;
+        case "MYAURAS": $damage = AuraTakeDamageAbility($player, intval($mzIndex[1]), $params[0], $params[1]); break;
+        case "MYCHAR": $damage = CharacterTakeDamageAbility($player, intval($mzIndex[1]), $params[0], $params[1]); break;
+        case "MYALLY": $damage = AllyTakeDamageAbilities($player, intval($mzIndex[1]), $params[0], $params[1]); break;
         default: break;
       }
       if($damage < 0) $damage = 0;

@@ -219,7 +219,7 @@ function WTRAbilityCost($cardID)
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("SANDSKETCH", $currentPlayer, "-");
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SANDSKETCH");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       case "WTR010":
@@ -370,7 +370,7 @@ function WTRAbilityCost($cardID)
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         return "";
       case "WTR159":
-        PrependDecisionQueue("ESTRIKE", $currentPlayer, "-", 1);
+        PrependDecisionQueue("MODAL", $currentPlayer, "ESTRIKE", 1);
         PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
         return "";
       case "WTR160":
@@ -418,7 +418,7 @@ function WTRAbilityCost($cardID)
         else if($attackActions != "") $actions = $actions . "," . $attackActions;
         if($actions == "") return "";
         AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "3-" . $actions);
-        AddDecisionQueue("REMEMBRANCE", $currentPlayer, "-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "REMEMBRANCE", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         return "";
       case "WTR170":

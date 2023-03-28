@@ -5,6 +5,13 @@ function ModalAbilities($player, $card, $lastResult)
   global $combatChain, $defPlayer;
   switch($card)
   {
+    case "ESTRIKE":
+      switch($lastResult) {
+        case "Draw_a_Card": return Draw($player);
+        case "Buff_Power": AddCurrentTurnEffect("WTR159", $player); return 1;
+        case "Go_Again": GiveAttackGoAgain(); return 2;
+      }
+      return $lastResult;
     case "MICROPROCESSOR":
       $deck = new Deck($player);
       switch($lastResult) {
@@ -294,6 +301,23 @@ function SpecificCardLogic($player, $card, $lastResult)
       PrependDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       PrependDecisionQueue("FINDINDICES", $currentPlayer, "CASHOUT");
       return "";
+    case "SANDSKETCH":
+      if(AttackValue(DiscardRandom($player, "WTR009")) >= 6) GainActionPoints(2, $player);
+      return "1";
+    case "REMEMBRANCE":
+      $cards = "";
+      $deck = &GetDeck($player);
+      $discard = &GetDiscard($player);
+      for($i = 0; $i < count($lastResult); ++$i) {
+        array_push($deck, $discard[$lastResult[$i]]);
+        if($cards != "") $cards .= ", ";
+        if($i == count($lastResult) - 1) $cards .= "and ";
+        $cards .= CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]);
+        unset($discard[$lastResult[$i]]);
+      }
+      WriteLog("Remembrance shuffled " . $cards);
+      $discard = array_values($discard);
+      return "1";
     default: return "";
   }
 }

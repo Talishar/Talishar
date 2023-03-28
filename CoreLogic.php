@@ -2161,3 +2161,10 @@ function NumChainLinks()
   if(count($combatChain) > 0) ++$numLinks;
   return $numLinks;
 }
+
+function ClearGameFiles($gameName)
+{
+  unlink("./Games/" . $gameName . "/gamestateBackup.txt");
+  unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
+  unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
+}
