@@ -904,7 +904,7 @@ function CombatChainClosedCharacterEffects()
   $character = &GetPlayerCharacter($defPlayer);
   for($i=0; $i<count($chainLinks); ++$i)
   {
-    $nervesOfSteelActive = $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] <= 2 && SearchAuras("EVR023", $defPlayer);
+    $nervesOfSteelActive = $chainLinkSummary[$i*ChainLinkSummaryPieces()+1] <= 2 && SearchAuras("EVR023", $defPlayer);
     for($j=0; $j<count($chainLinks[$i]); $j += ChainLinksPieces())
     {
       if($chainLinks[$i][$j+1] != $defPlayer) continue;
@@ -935,7 +935,7 @@ function CombatChainClosedCharacterEffects()
       switch($chainLinks[$i][$j])
       {
         case "MON089":
-          if(!DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST") && $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] >= 6)
+          if(!DelimStringContains($chainLinkSummary[$i*ChainLinkSummaryPieces()+3], "ILLUSIONIST") && $chainLinkSummary[$i*ChainLinkSummaryPieces()+1] >= 6)
           {
             $character[FindCharacterIndex($defPlayer, "MON089")+1] = 0;
           }
@@ -2111,7 +2111,7 @@ function HitsInRow()
 {
   global $chainLinkSummary;
   $numHits = 0;
-  for($i=count($chainLinkSummary)-ChainLinkSummaryPieces(); $i>=0 && $chainLinkSummary[$i+5] == "1"; $i-=ChainLinkSummaryPieces())
+  for($i=count($chainLinkSummary)-ChainLinkSummaryPieces(); $i>=0 && intval($chainLinkSummary[$i+5]) > 0; $i-=ChainLinkSummaryPieces())
   {
     ++$numHits;
   }
@@ -2120,11 +2120,11 @@ function HitsInRow()
 
 function HitsInCombatChain()
 {
-  global $chainLinkSummary;
-  $numHits = 0;
+  global $chainLinkSummary, $combatChainState, $CCS_HitThisLink;
+  $numHits = intval($combatChainState[$CCS_HitThisLink]);
   for($i=count($chainLinkSummary)-ChainLinkSummaryPieces(); $i>=0; $i-=ChainLinkSummaryPieces())
   {
-    if($chainLinkSummary[$i+5] == "1") ++$numHits;
+    $numHits += intval($chainLinkSummary[$i+5]);
   }
   return $numHits;
 }

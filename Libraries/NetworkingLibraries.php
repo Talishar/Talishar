@@ -941,7 +941,9 @@ function FinalizeChainLink($chainClosed = false)
   array_push($chainLinkSummary, TalentOverride($combatChain[0], $mainPlayer));
   array_push($chainLinkSummary, ClassOverride($combatChain[0], $mainPlayer));
   array_push($chainLinkSummary, SerializeCurrentAttackNames());
-  array_push($chainLinkSummary, ($combatChainState[$CCS_DamageDealt] > 0 || $combatChainState[$CCS_HitThisLink] == "1" ? "1" : "0"));//Hit on link
+  $numHitsOnLink = ($combatChainState[$CCS_DamageDealt] > 0 ? 1 : 0);
+  $numHitsOnLink += intval($combatChainState[$CCS_HitThisLink]);
+  array_push($chainLinkSummary, $numHitsOnLink);//Num hits on link
 
   //Clean up combat effects that were used and are one-time
   CleanUpCombatEffects();

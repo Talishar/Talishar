@@ -444,12 +444,12 @@ function CombatChainCloseAbilities($player, $cardID, $chainLink)
   global $chainLinkSummary, $mainPlayer, $defPlayer, $chainLinks;
   switch($cardID) {
     case "EVR002":
-      if($chainLinkSummary[$chainLink * ChainLinkSummaryPieces()] == 0 && $chainLinks[$chainLink][0] == $cardID) {
+      if($chainLinkSummary[$chainLink*ChainLinkSummaryPieces()] == 0 && $chainLinks[$chainLink][0] == $cardID) {
         PlayAura("WTR225", $defPlayer);
       }
       break;
     case "UPR189":
-      if($chainLinkSummary[$chainLink * ChainLinkSummaryPieces() + 1] <= 2) {
+      if($chainLinkSummary[$chainLink*ChainLinkSummaryPieces()+1] <= 2) {
         Draw($player);
         WriteLog(CardLink($cardID, $cardID) . " drew a card");
       }
@@ -536,8 +536,8 @@ function IsDominateActive()
       {
         for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces())
         {
-          $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $mainPlayer) || ($j == 0 && DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST"));
-          if($chainLinks[$i][$j + 2] == "1" && $chainLinks[$i][$j] != "EVR138" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA")
+          $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $mainPlayer) || ($j == 0 && DelimStringContains($chainLinkSummary[$i*ChainLinkSummaryPieces()+3], "ILLUSIONIST"));
+          if($chainLinks[$i][$j+2] == "1" && $chainLinks[$i][$j] != "EVR138" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA")
           {
               if(!$hasDominate) $hasDominate = HasDominate($chainLinks[$i][$j]);
           }
