@@ -350,9 +350,9 @@ function EncounterImage()
     case 122:
       return "MON203_cropped.png";
     case 123:
-      return "ELE028_cropped.png";
+      return "CRU029_cropped.png";
     case 124:
-      return "ELE219_cropped.png";
+      return "DYN159_cropped.png";
     case 125:
       return "RVD025_cropped.png";
     case 126:
