@@ -516,27 +516,24 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode(",", $parameter);
       AddCurrentTurnEffect($params[0], $player, $params[1], $lastResult);
       return $lastResult;
-    case "ADDARSENALUNIQUEIDCURRENTEFFECT":
-      $arsenal = &GetArsenal($player);
-      $params = explode(",", $parameter);
-      AddCurrentTurnEffect($params[0], $player, $params[1], $arsenal[$lastResult + 5]);
-      return $lastResult;
     case "ADDAIMCOUNTER":
       $arsenal = &GetArsenal($player);
-      $arsenal[$lastResult + 3] += 1;
+      $arsenal[$lastResult+3] += 1;
+      return $lastResult;
+    case "ADDARSENALCURRENTEFFECT":
+      $arsenal = &GetArsenal($player);
+      $params = explode(",", $parameter);
+      AddCurrentTurnEffect($params[0], $player, $params[1], $arsenal[$lastResult+5]);
       return $lastResult;
     case "OPTX":
       Opt("NA", $parameter);
       return $lastResult;
     case "SETCLASSSTATE":
-      SetClassState($player, $parameter, $lastResult);
-      return $lastResult;
-    case "SETCLASSSTATEMULTICHOOSETEXT":
-      $value = $lastResult[0] . "," . $lastResult[1];
-      SetClassState($player, $parameter, $value);
+      $data = is_array($lastResult) ? implode(",", $lastResult) : $lastResult;
+      SetClassState($player, $parameter, $data);
       return $lastResult;
     case "GAINACTIONPOINTS":
-      $actionPoints += $parameter;
+      GainActionPoints($parameter, $player);
       return $lastResult;
     case "EQUALPASS":
       if($lastResult == $parameter) return "PASS";

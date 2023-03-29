@@ -1604,13 +1604,13 @@ function PayAdditionalCosts($cardID, $from)
     case "ARC122":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes");
       AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_Arcane,Buff_Arcane,Draw_card,Draw_card");
-      AddDecisionQueue("SETCLASSSTATEMULTICHOOSETEXT", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "ARC160":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes");
       AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_your_attack_action_cards_this_turn,Your_next_attack_action_card_gains_go_again,Defend_with_attack_action_cards_from_arsenal,Banish_an_attack_action_card_to_draw_2_cards-2");
-      AddDecisionQueue("SETCLASSSTATEMULTICHOOSETEXT", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "CRU097":

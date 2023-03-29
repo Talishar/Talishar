@@ -455,7 +455,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALUP");
       AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
       AddDecisionQueue("ADDAIMCOUNTER", $currentPlayer, "-", 1);
-      AddDecisionQueue("ADDARSENALUNIQUEIDCURRENTEFFECT", $currentPlayer, $cardID . "," . "HAND", 1);
+      AddDecisionQueue("ADDARSENALCURRENTEFFECT", $currentPlayer, $cardID . "," . "HAND", 1);
       return "";
     case "DYN171":
       AddCurrentTurnEffect($cardID, $currentPlayer);
