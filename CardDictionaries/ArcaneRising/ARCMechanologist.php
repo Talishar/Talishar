@@ -190,7 +190,7 @@ function Boost()
 
 function DoBoost($player)
 {
-  global $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
+  global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
   $deck = &GetDeck($player);
   if(count($deck) == 0) {
     WriteLog("Could not boost. No cards left in deck.");
