@@ -35,6 +35,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if(count($parameters) > 1) $subparam = $parameters[1];
       else $subparam = "";
       switch($parameter) {
+        case "GETINDICES": $rv = GetIndices($subparam); break;
         case "ARCANETARGET": $rv = GetArcaneTargetIndices($player, $subparam); break;
         case "DAMAGEPREVENTION":
           $rv = GetDamagePreventionIndices($player);
@@ -714,6 +715,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return 1;
     case "ATTACKMODIFIER":
       $amount = intval($parameter);
+      WriteLog($amount);
       $combatChain[5] += $amount;
       return 1;
     case "SONATAARCANIX":

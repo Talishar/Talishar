@@ -11,9 +11,8 @@
         GiveAttackGoAgain();
         return "Gives the current attack go again.";
       case "MON033":
-        $addCostValue = (int) $additionalCosts;
-        AddDecisionQueue("ATTACKMODIFIER", $currentPlayer, $addCostValue, 1);
-        if(GetClassState($currentPlayer, $CS_NumCharged) > 0 && DelimStringContains($additionalCosts, "BEACONOFVICTORY"))
+        AddDecisionQueue("ATTACKMODIFIER", $currentPlayer, intval($additionalCosts), 1);
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
