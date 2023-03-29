@@ -19,6 +19,7 @@
         AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID, 1);
         return "";
       case "ARC040":
+        if(!ArsenalEmpty($currentPlayer)) return "Your arsenal is not empty so you cannot load an arrow.";
         LoadArrow($currentPlayer);
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
@@ -26,6 +27,7 @@
         Opt($cardID, 1);
         return "";
       case "ARC042":
+        if(!ArsenalEmpty($currentPlayer)) return "Your arsenal is not empty so you cannot load an arrow.";
         LoadArrow($currentPlayer);
         AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",HAND", 1);
         return "";
@@ -108,7 +110,7 @@
 
   function LoadArrow($player, $facing = "UP")
   {
-    if(!ArsenalEmpty($player)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal";
+    if(ArsenalFull($player)) return "Your arsenal is full, so you cannot put an arrow in your arsenal";
     AddDecisionQueue("FINDINDICES", $player, "MYHANDARROW");
     AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
     AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);

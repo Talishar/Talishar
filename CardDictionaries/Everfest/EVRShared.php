@@ -381,7 +381,6 @@
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
       case "EVR087":
-        if(ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
         LoadArrow($currentPlayer);
         AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",HAND", 1);
         return "";
