@@ -294,12 +294,12 @@ function SpecificCardLogic($player, $card, $lastResult)
       WriteLog(CardLink("WTR151", "WTR151") . " shuffled and drew " . $count . " cards");
       return "1";
     case "CASHOUTCONTINUE":
-      PrependDecisionQueue("CASHOUTCONTINUE", $currentPlayer, "-", 1);
-      PrependDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
-      PrependDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195", 1);
-      PrependDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      PrependDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      PrependDecisionQueue("FINDINDICES", $currentPlayer, "CASHOUT");
+      PrependDecisionQueue("SPECIFICCARD", $player, "CASHOUTCONTINUE", 1);
+      PrependDecisionQueue("PUTPLAY", $player, "-", 1);
+      PrependDecisionQueue("PASSPARAMETER", $player, "EVR195", 1);
+      PrependDecisionQueue("MZDESTROY", $player, "-", 1);
+      PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      PrependDecisionQueue("FINDINDICES", $player, "CASHOUT");
       return "";
     case "SANDSKETCH":
       if(AttackValue(DiscardRandom($player, "WTR009")) >= 6) GainActionPoints(2, $player);
