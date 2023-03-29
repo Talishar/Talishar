@@ -491,7 +491,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $text = "";
       for($i = 0; $i < count($modes); ++$i) {
         if($text != "") $text .= ", ";
-        if($i == count($modes)-1) $text .= " and ";
+        if($i > 0 && $i == count($modes)-1) $text .= " and ";
         $text .= implode(" ", explode("_", $modes[$i]));
       }
       WriteLog("Selected mode" . (count($modes) > 1 ? "s" : "") . " for " . CardLink($parameter, $parameter) . (count($modes) > 1 ? " are" : " is") . ": " . $text);
