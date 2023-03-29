@@ -933,89 +933,42 @@ function ContractCompleted($player, $cardID)
 function CheckContracts($banishedBy, $cardBanished)
 {
   global $combatChain, $chainLinks;
-  //Current Chainlink
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    if ($combatChain[$i + 1] != $banishedBy) continue;
+  for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if($combatChain[$i + 1] != $banishedBy) continue;
     $contractType = ContractType($combatChain[$i]);
-    $contractCompleted = false;
-    switch ($contractType) {
-      case "REDPITCH":
-        if (PitchValue($cardBanished) == 1) $contractCompleted = true;
-        break;
-      case "YELLOWPITCH":
-        if (PitchValue($cardBanished) == 2) $contractCompleted = true;
-        break;
-      case "BLUEPITCH":
-        if (PitchValue($cardBanished) == 3) $contractCompleted = true;
-        break;
-      case "COST1ORLESS":
-        if (CardCost($cardBanished) <= 1) $contractCompleted = true;
-        break;
-      case "COST2ORMORE":
-        if (CardCost($cardBanished) >= 2) $contractCompleted = true;
-        break;
-      case "AA":
-        if (CardType($cardBanished) == "AA") $contractCompleted = true;
-        break;
-      case "GOAGAIN":
-        if (HasGoAgain($cardBanished)) $contractCompleted = true;
-        break;
-      case "NAA":
-        if (CardType($cardBanished) == "A") $contractCompleted = true;
-        break;
-      case "BLOCK2ORLESS":
-        if (BlockValue($cardBanished) <= 2 && BlockValue($cardBanished) >= 0) $contractCompleted = true;
-        break;
-      case "REACTIONS":
-        if (CardType($cardBanished) == "AR" || CardType($cardBanished) == "DR") $contractCompleted = true;
-        break;
-      default:
-        break;
-    }
-    if ($contractCompleted) ContractCompleted($banishedBy, $combatChain[$i]);
+    if(CheckContract($contractType, $cardBanished)) ContractCompleted($banishedBy, $combatChain[$i]);
   }
-  //Chain Links
-  for ($i = 0; $i < count($chainLinks); ++$i) {
-    for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
-      if ($chainLinks[$i][$j + 1] != $banishedBy) continue;
-      if ($chainLinks[$i][$j + 2] == 0) continue; //Skip if the card isn't on the chain anymore
+  for($i = 0; $i < count($chainLinks); ++$i) {
+    for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+      if($chainLinks[$i][$j + 1] != $banishedBy) continue;
+      if($chainLinks[$i][$j + 2] == 0) continue;
       $contractType = ContractType($chainLinks[$i][$j]);
-      $contractCompleted = false;
-      switch ($contractType) {
-        case "REDPITCH":
-          if (PitchValue($cardBanished) == 1) $contractCompleted = true;
-          break;
-        case "YELLOWPITCH":
-          if (PitchValue($cardBanished) == 2) $contractCompleted = true;
-          break;
-        case "BLUEPITCH":
-          if (PitchValue($cardBanished) == 3) $contractCompleted = true;
-          break;
-        case "COST1ORLESS":
-          if (CardCost($cardBanished) <= 1) $contractCompleted = true;
-          break;
-        case "COST2ORMORE":
-          if (CardCost($cardBanished) >= 2) $contractCompleted = true;
-          break;
-        case "AA":
-          if (CardType($cardBanished) == "AA") $contractCompleted = true;
-          break;
-        case "GOAGAIN":
-          if (HasGoAgain($cardBanished)) $contractCompleted = true;
-          break;
-        case "NAA":
-          if (CardType($cardBanished) == "A") $contractCompleted = true;
-          break;
-        case "BLOCK2ORLESS":
-          if (BlockValue($cardBanished) <= 2 && BlockValue($cardBanished) >= 0) $contractCompleted = true;
-          break;
-        case "REACTIONS":
-          if (CardType($cardBanished) == "AR" || CardType($cardBanished) == "DR") $contractCompleted = true;
-          break;
-        default:
-          break;
-        }
-      if ($contractCompleted) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
-      }
+      if(CheckContract($contractType, $cardBanished)) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
+    }
+  }
+}
+
+function ImperialWarHorn($player, $term)
+{
+  AddDecisionQueue("MULTIZONEINDICES", $player, $term . "ALLY&" . $term . "AURAS&"  . $term . "ITEMS&LANDMARK");
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to destroy", 1);
+  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  AddDecisionQueue("MZDESTROY", $player, "-", 1);
+}
+
+function CheckContract($contractType, $cardBanished)
+{
+  switch($contractType) {
+    case "REDPITCH": if(PitchValue($cardBanished) == 1) return true;
+    case "YELLOWPITCH": if(PitchValue($cardBanished) == 2) return true;
+    case "BLUEPITCH": if(PitchValue($cardBanished) == 3) return true;
+    case "COST1ORLESS": if(CardCost($cardBanished) <= 1) return true;
+    case "COST2ORMORE": if(CardCost($cardBanished) >= 2) return true;
+    case "AA": if(CardType($cardBanished) == "AA") return true;
+    case "GOAGAIN": if(HasGoAgain($cardBanished)) return true;
+    case "NAA": if(CardType($cardBanished) == "A") return true;
+    case "BLOCK2ORLESS": if(BlockValue($cardBanished) <= 2 && BlockValue($cardBanished) >= 0) return true;
+    case "REACTIONS": if(CardType($cardBanished) == "AR" || CardType($cardBanished) == "DR") return true;
+    default: return false;
     }
 }

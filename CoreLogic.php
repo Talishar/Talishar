@@ -2154,3 +2154,146 @@ function ClearGameFiles($gameName)
   unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
   unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
 }
+
+function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
+{
+  global $currentPlayer, $layers;
+  $cardID = ShiyanaCharacter($cardID);
+  $set = CardSet($cardID);
+  $class = CardClass($cardID);
+  if($target != "-")
+  {
+    $targetArr = explode("-", $target);
+    if($targetArr[0] == "LAYERUID") { $targetArr[0] = "LAYER"; $targetArr[1] = SearchLayersForUniqueID($targetArr[1]); }
+    $target = $targetArr[0] . "-" . $targetArr[1];
+  }
+  if(($set == "ELE" || $set == "UPR") && $additionalCosts != "-" && HasFusion($cardID)) {
+    FuseAbility($cardID, $currentPlayer, $additionalCosts);
+  }
+  if($set == "WTR") return WTRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if($set == "ARC") {
+    switch($class) {
+      case "MECHANOLOGIST": return ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "RANGER": return ARCRangerPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "RUNEBLADE": return ARCRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "WIZARD": return ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "GENERIC": return ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      default: return "";
+    }
+  }
+  else if($set == "CRU") return CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if($set == "MON") {
+    switch ($class) {
+      case "BRUTE": return MONBrutePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "ILLUSIONIST": return MONIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "RUNEBLADE": return MONRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "WARRIOR": return MONWarriorPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "GENERIC": return MONGenericPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "NONE": return MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      default: return "";
+    }
+  }
+  else if($set == "ELE") {
+    switch ($class) {
+      case "GUARDIAN": return ELEGuardianPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "RANGER": return ELERangerPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "RUNEBLADE": return ELERunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      default: return ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+    }
+  }
+  else if($set == "EVR") return EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if($set == "UPR") return UPRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if($set == "DVR") return DVRPlayAbility($cardID, $from, $resourcesPaid);
+  else if($set == "RVD") return RVDPlayAbility($cardID, $from, $resourcesPaid);
+  else if($set == "DYN") return DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if($set == "OUT") return OUTPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else return ROGUEPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+}
+
+function PitchAbility($cardID)
+{
+  global $currentPlayer, $CS_NumAddedToSoul;
+
+  $pitchValue = PitchValue($cardID);
+  if(GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($currentPlayer, "MON060") && TalentContains($cardID, "LIGHT", $currentPlayer)) {
+    $resources = &GetResources($currentPlayer);
+    $resources[0] += 1;
+  }
+  if($pitchValue == 1) {
+    $talismanOfRecompenseIndex = GetItemIndex("EVR191", $currentPlayer);
+    if($talismanOfRecompenseIndex > -1) {
+      WriteLog("Talisman of Recompense gained 3 instead of 1 and destroyed itself");
+      DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
+      GainResources($currentPlayer, 2);
+    }
+    if(SearchCharacterActive($currentPlayer, "UPR001") || SearchCharacterActive($currentPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $currentPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $currentPlayer)) {
+      WriteLog("Dromai creates an Ash");
+      PutPermanentIntoPlay($currentPlayer, "UPR043");
+    }
+  }
+  switch($cardID) {
+    case "WTR000": case "ARC000": case "CRU000": case "OUT000":
+      AddLayer("TRIGGER", $currentPlayer, $cardID);
+      break;
+    case "EVR000":
+      PlayAura("WTR075", $currentPlayer);
+      break;
+    case "UPR000":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    default:
+      break;
+  }
+}
+
+function CountPitch(&$pitch, $min = 0, $max = 9999)
+{
+  $pitchCount = 0;
+  for($i = 0; $i < count($pitch); ++$i) {
+    $cost = CardCost($pitch[$i]);
+    if($cost >= $min && $cost <= $max) ++$pitchCount;
+  }
+  return $pitchCount;
+}
+
+function Draw($player, $mainPhase = true)
+{
+  global $EffectContext, $mainPlayer;
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  if($mainPhase && $player != $mainPlayer) {
+    $talismanOfTithes = SearchItemsForCard("EVR192", $otherPlayer);
+    if($talismanOfTithes != "") {
+      $indices = explode(",", $talismanOfTithes);
+      DestroyItemForPlayer($otherPlayer, $indices[0]);
+      WriteLog(CardLink("EVR192", "EVR192") . " prevented a draw and was destroyed");
+      return "";
+    }
+  }
+  if($mainPhase && (SearchAurasForCard("UPR138", $otherPlayer) != "" || SearchAurasForCard("UPR138", $player) != "")) {
+    WriteLog("Draw prevented by " . CardLink("UPR138", "UPR138"));
+    return "";
+  }
+  $deck = &GetDeck($player);
+  $hand = &GetHand($player);
+  if(count($deck) == 0) return -1;
+  if(CurrentEffectPreventsDraw($player, $mainPhase)) return -1;
+  array_push($hand, array_shift($deck));
+  if($mainPhase && (SearchCharacterActive($otherPlayer, "EVR019") || (SearchCurrentTurnEffects("EVR019-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "CRU097")))) PlayAura("WTR075", $otherPlayer);
+  if(SearchCharacterActive($player, "EVR020")) {
+    if($EffectContext != "-") {
+      $cardType = CardType($EffectContext);
+      if($cardType == "A" || $cardType == "AA") PlayAura("WTR075", $player);
+    }
+  }
+  if($mainPhase)
+  {
+    $numBrainstorm = CountCurrentTurnEffects("DYN196", $player);
+    if($numBrainstorm > 0)
+    {
+      $character = &GetPlayerCharacter($player);
+      for($i=0; $i<$numBrainstorm; ++$i) DealArcane(1, 2, "TRIGGER", $character[0]);
+    }
+  }
+  $hand = array_values($hand);
+  return $hand[count($hand) - 1];
+}
