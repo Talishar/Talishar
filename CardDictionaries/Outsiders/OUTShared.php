@@ -77,9 +77,13 @@ function OUTAbilityCost($cardID)
     $idArr = explode("-", $cardID);
     $idArr2 = explode(",", $idArr[0]);
     $cardID = $idArr2[0];
-    switch ($cardID)
+    switch($cardID)
     {
+      case "OUT021": case "OUT022": case "OUT023": return 3;
       case "OUT033": case "OUT034": case "OUT035": return 1;
+      case "OUT042": return 3;
+      case "OUT043": return 2;
+      case "OUT044": return 1;
       case "OUT052": return 1;
       case "OUT071": case "OUT072": case "OUT073": return 2;
       case "OUT105": return 4;
@@ -99,6 +103,9 @@ function OUTAbilityCost($cardID)
       case "OUT143": return 1;
       case "OUT144": return 1;
       case "OUT151": case "OUT152": case "OUT153": return 1;
+      case "OUT154": return 3;
+      case "OUT155": return 2;
+      case "OUT156": return 1;
       case "OUT179_2": return -1;
       case "OUT186": return (-1 * $idArr[1]);
       case "OUT188_2": return 3;
@@ -122,7 +129,9 @@ function OUTAbilityCost($cardID)
     if(strlen($cardID) > 6) $cardID = $commaArr[0];
     switch ($cardID)
     {
+      case "OUT021": case "OUT022": case "OUT023": return true;
       case "OUT033": case "OUT034": case "OUT035": return HasStealth($attackID);
+      case "OUT042": case "OUT043": case "OUT044": return true;
       case "OUT049": return CardType($attackID) == "AA";
       case "OUT052": return count($commaArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($commaArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
@@ -144,6 +153,7 @@ function OUTAbilityCost($cardID)
       case "OUT143": return true;
       case "OUT144": return CardSubType($attackID) == "Dagger";
       case "OUT151": case "OUT152": case "OUT153": return CardSubType($attackID) == "Dagger";
+      case "OUT154": case "OUT155": case "OUT156": return true;
       case "OUT158": return CardType($attackID) == "AA";
       case "OUT165": case "OUT166": case "OUT167": return CardType($attackID) == "AA" && (ClassContains($attackID, "ASSASSIN", $mainPlayer) || ClassContains($attackID, "RANGER", $mainPlayer));
       case "OUT179_2": return CardType($attackID) == "AA";
@@ -219,8 +229,14 @@ function OUTAbilityCost($cardID)
           if($combatChain[$i+1] == $defPlayer && $combatChain[$i+2] != "PLAY" && CardType($combatChain[$i]) != "C") PlayAura($CID_BloodRotPox, $defPlayer);
         }
         return "";
+      case "OUT021": case "OUT022": case "OUT023":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "OUT033": case "OUT034": case "OUT035":
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        return "";
+      case "OUT042": case "OUT043": case "OUT044":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "OUT049":
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
@@ -445,6 +461,9 @@ function OUTAbilityCost($cardID)
           ThrowWeapon("Dagger");
         }
         return "";
+      case "OUT154": case "OUT155": case "OUT156":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "OUT157":
         $cardRemoved = Belch();
         AddPlayerHand($cardRemoved, $currentPlayer, "DECK");
@@ -645,15 +664,6 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("MZBANISH", $mainPlayer, "HAND,-," . $mainPlayer, 1);
           AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
         }
-        break;
-      case "OUT021":
-        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
-        break;
-      case "OUT022":
-        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
-        break;
-      case "OUT023":
-        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
         break;
       case "OUT024": case "OUT025": case "OUT026":
         if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);

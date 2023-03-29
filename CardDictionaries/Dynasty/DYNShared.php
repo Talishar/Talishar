@@ -129,6 +129,9 @@ function DYNEffectAttackModifier($cardID)
     case "DYN087": return NumEquipBlock() > 0 ? 1 : 0;
     case "DYN089-UNDER": return 1;
     case "DYN091-1": return 3;
+    case "DYN148": return 3;
+    case "DYN149": return 2;
+    case "DYN150": return 1;
     case "DYN155": return 3;
     case "DYN156": case "DYN157": case "DYN158": return NumEquipBlock() > 0 ? 1 : 0;
     case "DYN165": case "DYN166": case "DYN167": return 2;
@@ -169,6 +172,7 @@ function DYNCombatEffectActive($cardID, $attackID)
       $index = FindCharacterIndex($mainPlayer, "DYN492a");
       return $attackID == "DYN492a" && $character[$index + 2] >= 1;
     case "DYN091-1": return $combatChainState[$CCS_IsBoosted];
+    case "DYN148": case "DYN149": case "DYN150": return true;
     case "DYN154": return true;
     case "DYN155": return CardSubType($attackID) == "Arrow";
     case "DYN156": case "DYN157": case "DYN158": return true;
@@ -421,6 +425,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
       AddDecisionQueue("ELSE", $currentPlayer, "-");
       AddDecisionQueue("WRITELOG", $currentPlayer, "Left the top card", 1);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN151":
       $deck = &GetDeck($currentPlayer);

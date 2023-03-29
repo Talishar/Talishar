@@ -7,6 +7,7 @@ function EffectHitEffect($cardID)
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $combatChain, $CCS_DamageDealt;
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
   if(CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
+  $attackID = $combatChain[0];
   switch($cardID) {
     case "WTR129": case "WTR130": case "WTR131":
       GiveAttackGoAgain();
@@ -14,6 +15,8 @@ function EffectHitEffect($cardID)
     case "WTR147": case "WTR148": case "WTR149":
       NaturesPathPilgrimageHit();
       break;
+    case "WTR206": case "WTR207": case "WTR208": if(IsHeroAttackTarget() && CardType($attackID) == "AA") PummelHit(); break;
+    case "WTR209": case "WTR210": case "WTR211": if(CardType($attackID) == "AA") GiveAttackGoAgain(); break;
     case "ARC170-1": case "ARC171-1": case "ARC172-1":
       Draw($mainPlayer);
       return 1;
@@ -195,6 +198,15 @@ function EffectHitEffect($cardID)
         else $amount = 1;
         PlayAura("ARC112", $mainPlayer, $amount, true);
       }
+      break;
+    case "OUT021":
+      if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+      break;
+    case "OUT022":
+      if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+      break;
+    case "OUT023":
+      if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
       break;
     case "OUT105":
       if(IsHeroAttackTarget() && HasAimCounter()) {
@@ -719,6 +731,7 @@ function CurrentEffectGrantsGoAgain()
     if($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       switch ($currentTurnEffects[$i]) {
         case "WTR144": case "WTR145": case "WTR146": return true;
+        case "WTR154": return true;
         case "ARC047": return true;
         case "ARC160-3": return true;
         case "CRU053": return true;

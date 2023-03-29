@@ -1438,60 +1438,35 @@ function DoesAttackHaveGoAgain()
     if($attackType == "AA" && SearchAuras("MON013", $mainPlayer)) return true;
   }
   if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $mainPlayer))) return true;
-
-  // Unnatural Go Again - Important for Hypotermia
   $mainPitch = &GetPitch($mainPlayer);
-  switch ($combatChain[0])
+  switch($combatChain[0])
   {
-    case "WTR083": case "WTR084":
-      return ComboActive($combatChain[0]);
-    case "WTR095": case "WTR096": case "WTR097":
-      return ComboActive($combatChain[0]);
-    case "WTR104": case "WTR105": case "WTR106":
-      return ComboActive($combatChain[0]);
-    case "WTR110": case "WTR111": case "WTR112":
-      return ComboActive($combatChain[0]);
-    case "WTR161":
-      return count($myDeck) == 0;
-    case "ARC197": case "ARC198": case "ARC199":
-      return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0;
-    case "CRU010": case "CRU011": case "CRU012":
-      if(NumCardsNonEquipBlocking() < 2) return true;
+    case "WTR083": case "WTR084": return ComboActive($combatChain[0]);
+    case "WTR095": case "WTR096": case "WTR097": return ComboActive($combatChain[0]);
+    case "WTR104": case "WTR105": case "WTR106": return ComboActive($combatChain[0]);
+    case "WTR110": case "WTR111": case "WTR112": return ComboActive($combatChain[0]);
+    case "WTR161": return count($myDeck) == 0;
+    case "ARC197": case "ARC198": case "ARC199": return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0;
+    case "CRU010": case "CRU011": case "CRU012": if(NumCardsNonEquipBlocking() < 2) return true;
     case "CRU057": case "CRU058": case "CRU059":
-    case "CRU060": case "CRU061": case "CRU062":
-      return ComboActive($combatChain[0]);
-    case "CRU151": case "CRU152": case "CRU153":
-      return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
-    case "MON180": case "MON181": case "MON182":
-      return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
-    case "MON199": case "MON220":
-      return (count(GetSoul($defPlayer)) > 0 && !IsAllyAttackTarget());
-    case "MON223": case "MON224": case "MON225":
-      return NumCardsNonEquipBlocking() < 2;
-    case "MON248": case "MON249": case "MON250":
-      return SearchHighestAttackDefended() < CachedTotalAttack();
-    case "MON293": case "MON294": case "MON295":
-      return SearchPitchHighestAttack($mainPitch) > AttackValue($combatChain[0]);
-    case "ELE216": case "ELE217": case "ELE218":
-      return CachedTotalAttack() > AttackValue($combatChain[0]);
-    case "ELE216": case "ELE217": case "ELE218":
-      return HasIncreasedAttack();
-    case "EVR105":
-      return GetClassState($mainPlayer, $CS_NumAuras) > 0;
-    case "EVR138":
-      return FractalReplicationStats("GoAgain");
+    case "CRU060": case "CRU061": case "CRU062": return ComboActive($combatChain[0]);
+    case "CRU151": case "CRU152": case "CRU153": return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
+    case "MON180": case "MON181": case "MON182": return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
+    case "MON199": case "MON220": return (count(GetSoul($defPlayer)) > 0 && !IsAllyAttackTarget());
+    case "MON223": case "MON224": case "MON225": return NumCardsNonEquipBlocking() < 2;
+    case "MON248": case "MON249": case "MON250": return SearchHighestAttackDefended() < CachedTotalAttack();
+    case "MON293": case "MON294": case "MON295": return SearchPitchHighestAttack($mainPitch) > AttackValue($combatChain[0]);
+    case "ELE216": case "ELE217": case "ELE218": return CachedTotalAttack() > AttackValue($combatChain[0]);
+    case "ELE216": case "ELE217": case "ELE218": return HasIncreasedAttack();
+    case "EVR105": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
+    case "EVR138": return FractalReplicationStats("GoAgain");
     case "UPR046":
     case "UPR063": case "UPR064": case "UPR065":
-    case "UPR069": case "UPR070": case "UPR071":
-      return NumDraconicChainLinks() >= 2;
-    case "UPR048":
-      return NumPhoenixFlameChainLinks() >= 1;
-    case "UPR092":
-      return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
-    case "DYN047":
-      return (ComboActive($combatChain[0]));
-    case "DYN056": case "DYN057": case "DYN058":
-      return (ComboActive($combatChain[0]));
+    case "UPR069": case "UPR070": case "UPR071": return NumDraconicChainLinks() >= 2;
+    case "UPR048": return NumPhoenixFlameChainLinks() >= 1;
+    case "UPR092": return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
+    case "DYN047": return (ComboActive($combatChain[0]));
+    case "DYN056": case "DYN057": case "DYN058": return (ComboActive($combatChain[0]));
     case "DYN069": case "DYN070":
       $anotherWeaponGainedGoAgain = GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain);
       if (SameWeaponEquippedTwice()) return $anotherWeaponGainedGoAgain != "-";

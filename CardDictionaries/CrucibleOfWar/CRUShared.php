@@ -105,6 +105,7 @@
       case "CRU135": return 3;
       case "CRU136": return 2;
       case "CRU137": return 1;
+      case "CRU186": return 1;
       default: return 0;
     }
   }
@@ -114,20 +115,16 @@
     global $combatChain, $combatChainState, $mainPlayer, $CCS_IsBoosted, $CS_ArsenalFacing;
     switch($cardID)
     {
-      //Brute
       case "CRU008": return true;
       case "CRU013": case "CRU014": case "CRU015": return true;
-      //Guardian
       case "CRU025": return HasCrush($attackID);
       case "CRU029": case "CRU030": case "CRU031": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $mainPlayer);
       case "CRU038": case "CRU039": case "CRU040": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $mainPlayer);
-      //Ninja
       case "CRU046": return true;
       case "CRU047": return true;
       case "CRU053": return HasCombo($combatChain[0]);
       case "CRU055": return true;
       case "CRU072": return true;
-      //Warrior
       case "CRU084": return CardType($attackID) == "W";
       case "CRU084-2": return CardType($attackID) == "W";
       case "CRU085-1": case "CRU086-1": case "CRU087-1": return CardType($attackID) == "W";
@@ -137,19 +134,17 @@
       case "CRU091-2": case "CRU092-2": case "CRU093-2": return true;
       case "CRU094-1": case "CRU095-1": case "CRU096-1": return CardType($attackID) == "W";
       case "CRU094-2": case "CRU095-2": case "CRU096-2": return true;
-      //Mechnologist
       case "CRU105": return CardType($attackID) == "W" && CardSubtype($attackID) == "Pistol" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
       case "CRU106": case "CRU107": case "CRU108": return $combatChainState[$CCS_IsBoosted] == "1";
       case "CRU109": case "CRU110": case "CRU111": return $combatChainState[$CCS_IsBoosted] == "1";
-      //Ranger
       case "CRU122": return $combatChain[2] == "ARS" && GetClassState($mainPlayer, $CS_ArsenalFacing) == "UP" && CardSubtype($attackID) == "Arrow"; //The card being played from ARS and being an Arrow implies that the card is UP.
       case "CRU123": return $attackID == "CRU123";
       case "CRU124": return CardSubtype($combatChain[0]) == "Arrow";
       case "CRU125": return true;
       case "CRU135": case "CRU136": case "CRU137": return CardSubtype($attackID) == "Arrow";
       case "CRU135-1": case "CRU136-1": case "CRU137-1": return CardSubtype($attackID) == "Arrow";
-      //Runeblade
       case "CRU145": case "CRU146": case "CRU147": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
+      case "CRU186": return true;
       default: return false;
     }
   }
@@ -516,6 +511,9 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $rv = "Gains go again";
       }
       return $rv;
+    case "CRU186":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "CRU188":
       Draw($currentPlayer);
       Draw($currentPlayer);

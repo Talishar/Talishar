@@ -97,6 +97,12 @@ function WTRAbilityCost($cardID)
       case "WTR171": return 2;
       case "WTR185": return 1;
       case "WTR200": case "WTR201": case "WTR202": return 1;
+      case "WTR206": return 4;
+      case "WTR207": return 3;
+      case "WTR208": return 2;
+      case "WTR209": return 3;
+      case "WTR210": return 2;
+      case "WTR211": return 1;
       case "WTR218": return 3;
       case "WTR219": return 2;
       case "WTR220": return 1;
@@ -114,25 +120,21 @@ function WTRAbilityCost($cardID)
     $cardID = $idArr[0];
     switch ($cardID)
     {
-      //Brute
       case "WTR007": return ClassContains($attackID, "BRUTE", $mainPlayer);
       case "WTR017": case "WTR018": case "WTR019": return ClassContains($attackID, "BRUTE", $mainPlayer);
       case "WTR032": case "WTR033": case "WTR034": return CardType($attackID) == "AA" && ClassContains($attackID, "BRUTE", $mainPlayer);
       case "WTR035": case "WTR036": case "WTR037": return ClassContains($attackID, "BRUTE", $mainPlayer);
-      //Guardian
       case "WTR038": case "WTR039": return CardType($attackID) == "AA" && CardCost($attackID) >= 3;
       case "WTR066": case "WTR067": case "WTR068": return true;
       case "WTR069": case "WTR070": case "WTR071": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $mainPlayer);
-      //Ninja
       case "WTR081": return true;
-      //Warrior
       case "WTR116": return CardType($attackID) == "W";
       case "WTR129": case "WTR130": case "WTR131": return CardType($attackID) == "W";
       case "WTR141": case "WTR142": case "WTR143": return CardType($attackID) == "W";
       case "WTR144": case "WTR145": case "WTR146": return CardType($attackID) == "W";
       case "WTR147": case "WTR148": case "WTR149": return CardType($attackID) == "W";
-      //Generics
       case "WTR153": return CardType($attackID) == "AA" && CardCost($attackID) >= 2;
+      case "WTR154": return true;
       case "WTR159": return true;
       case "WTR161": return true;
       case "WTR162": return true;
@@ -140,6 +142,8 @@ function WTRAbilityCost($cardID)
       case "WTR185": return true;
       case "WTR197": return true;
       case "WTR200": case "WTR201": case "WTR202": return true;
+      case "WTR206": case "WTR207": case "WTR208": return true;
+      case "WTR209": case "WTR210": case "WTR211": return true;
       case "WTR218": case "WTR219": case "WTR220": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
       case "WTR221": case "WTR222": case "WTR223": return CardType($attackID) == "AA" && CardCost($attackID) >= 2;
       default: return false;
@@ -366,8 +370,11 @@ function WTRAbilityCost($cardID)
       case "WTR152":
         AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
+      case "WTR153":
+        AddCurrentTurnEffect($cardID, $mainPlayer);
+        return "";
       case "WTR154":
-        $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
+        AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
       case "WTR159":
         PrependDecisionQueue("MODAL", $currentPlayer, "ESTRIKE", 1);
@@ -446,6 +453,12 @@ function WTRAbilityCost($cardID)
       case "WTR200": case "WTR201": case "WTR202":
         if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $mainPlayer); $rv = "Gains +1 attack"; }
         return $rv;
+      case "WTR206": case "WTR207": case "WTR208":
+        AddCurrentTurnEffect($cardID, $mainPlayer);
+        return "";
+      case "WTR209": case "WTR210": case "WTR211":
+        AddCurrentTurnEffect($cardID, $mainPlayer);
+        return "";
       case "WTR215": case "WTR216": case "WTR217":
         BottomDeck($currentPlayer, true, shouldDraw:true);
         return "";
@@ -453,9 +466,6 @@ function WTRAbilityCost($cardID)
         AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
       case "WTR221": case "WTR222": case "WTR223":
-        AddCurrentTurnEffect($cardID, $mainPlayer);
-        return "";
-      case "WTR153":
         AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
       default: return "";
@@ -500,8 +510,6 @@ function WTRAbilityCost($cardID)
         IncrementClassState($mainPlayer, $CS_HitsWDawnblade, 1);
       break;
       case "WTR167": case "WTR168": case "WTR169": Draw($mainPlayer); break;
-      case "WTR206": case "WTR207": case "WTR208": if(IsHeroAttackTarget() && CardType($attackID) == "AA") PummelHit(); break;
-      case "WTR209": case "WTR210": case "WTR211": if(CardType($attackID) == "AA") GiveAttackGoAgain(); break;
       default: break;
     }
   }

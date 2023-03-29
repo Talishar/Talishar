@@ -775,33 +775,16 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     return true;
   }
   switch($cardID) {
-    case "WTR080":
-      if(count($combatChain) == 0) return true;
-      return !HasCombo($combatChain[0]);
-    case "WTR082":
-      return count($combatChain) == 0 || !ClassContains($combatChain[0], "NINJA", $player) || CardType($combatChain[0]) != "AA";
-    case "WTR116":
-      return GetClassState($player, $CS_HitsWithWeapon) == 0;
-    case "WTR118":
-      if (count($combatChain) == 0) return true;
-      return CardType($combatChain[0]) != "W";
-    case "WTR120": case "WTR121": case "WTR123":
-    case "WTR124": case "WTR125":
-    case "WTR135": case "WTR136": case "WTR137":
-      if (count($combatChain) == 0) return true;
-      $type = CardType($combatChain[0]);
-      return $type != "W";
-    case "WTR138": case "WTR139": case "WTR140":
-      if(count($combatChain) == 0) return true;
-      $type = CardType($combatChain[0]);
-      return $type != "W";
+    case "WTR080": return count($combatChain) == 0 || !HasCombo($combatChain[0]);
+    case "WTR082": return count($combatChain) == 0 || !ClassContains($combatChain[0], "NINJA", $player) || CardType($combatChain[0]) != "AA";
+    case "WTR116": return GetClassState($player, $CS_HitsWithWeapon) == 0;
+    case "WTR120": case "WTR121": case "WTR123": case "WTR124": case "WTR125": case "WTR118":
+    case "WTR135": case "WTR136": case "WTR137": case "WTR138": case "WTR139": case "WTR140": return count($combatChain) == 0 || CardType($combatChain[0]) != "W";
     case "WTR132": case "WTR133": case "WTR134":
       if(count($combatChain) == 0) return true;
       if(!RepriseActive()) return false;
-      $type = CardType($combatChain[0]);
-      return $type != "W";
-    case "WTR150":
-      return $character[$index + 2] < 3;
+      return CardType($combatChain[0]) != "W";
+    case "WTR150": return $character[$index + 2] < 3;
     case "WTR154":
       if(count($combatChain) == 0) return true;
       if(CardType($combatChain[0]) != "AA") return true;
@@ -817,40 +800,20 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $subtype = CardSubtype($combatChain[0]);
       if($subtype == "Sword" || $subtype == "Dagger" || (CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) <= 1)) return false;
       return true;
-    case "ARC004":
-      return GetClassState($player, $CS_NumBoosted) < 1;
-    case "ARC005":
-      return GetClassState($player, $CS_NumBoosted) < 1;
-    case "ARC008":
-      return GetClassState($player, $CS_NumBoosted) < 3;
-    case "ARC010":
-      return (count($combatChain) > 0 && $from == "PLAY" && $myItems[$index + 1] > 0 && (CardSubtype($combatChain[0]) != "Pistol" || $myItems[$index + 2] != 2));
-    case "ARC018":
-      return (count($combatChain) > 0 && $from == "PLAY" && $myItems[$index + 1] > 0 && (CardType($combatChain[0]) != "AA" || $myItems[$index + 2] != 2));
-    case "ARC041":
-      return !ArsenalHasFaceDownCard($player); //Restricted if you don't have a face down card
-    case "CRU082": case "CRU083":
-      if(count($combatChain) == 0) return true;
-      $type = CardType($combatChain[0]);
-      return $type != "W";
-    case "CRU088": case "CRU089": case "CRU090":
-      if(count($combatChain) == 0) return true;
-      $type = CardType($combatChain[0]);
-      return $type != "W";
-    case "CRU097":
-      return IsPlayRestricted(ShiyanaCharacter("CRU097"), $restriction, $from, $index, $player);
-    case "CRU125":
-      return !HasTakenDamage($player);
-    case "CRU126": case "CRU127": case "CRU128":
-      return $from != "ARS";
-    case "CRU143":
-      return SearchCount(SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE")) == 0;
-    case "CRU164":
-      return count($layers) == 0 || SearchLayer($player, "I", "", 1) == "";
-    case "CRU186":
-      if(count($combatChain) == 0) return true;
-      $type = CardType($combatChain[0]);
-      return $type != "AA";
+    case "ARC004": return GetClassState($player, $CS_NumBoosted) < 1;
+    case "ARC005": return GetClassState($player, $CS_NumBoosted) < 1;
+    case "ARC008": return GetClassState($player, $CS_NumBoosted) < 3;
+    case "ARC010": return (count($combatChain) > 0 && $from == "PLAY" && $myItems[$index + 1] > 0 && (CardSubtype($combatChain[0]) != "Pistol" || $myItems[$index + 2] != 2));
+    case "ARC018": return (count($combatChain) > 0 && $from == "PLAY" && $myItems[$index + 1] > 0 && (CardType($combatChain[0]) != "AA" || $myItems[$index + 2] != 2));
+    case "ARC041": return !ArsenalHasFaceDownCard($player);
+    case "CRU082": case "CRU083": return count($combatChain) == 0 || CardType($combatChain[0]) != "W";
+    case "CRU088": case "CRU089": case "CRU090": return count($combatChain) == 0 || CardType($combatChain[0]) != "W";
+    case "CRU097": return IsPlayRestricted(ShiyanaCharacter("CRU097"), $restriction, $from, $index, $player);
+    case "CRU125": return !HasTakenDamage($player);
+    case "CRU126": case "CRU127": case "CRU128": return $from != "ARS";
+    case "CRU143": return SearchCount(SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE")) == 0;
+    case "CRU164": return count($layers) == 0 || SearchLayer($player, "I", "", 1) == "";
+    case "CRU186": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA";
     case "CRU189": case "CRU190": case "CRU191":
       if(count($combatChain) <= 2) return true;
       $found = SearchCombatChainLink($player, "AA");
@@ -1072,13 +1035,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
         }
       }
       return $ash < 1;
-      //Once per turn instants restriction
-    case "MON281":
-    case "MON282":
-    case "MON283":
-    case "ELE195":
-    case "ELE196":
-    case "ELE197":
+    case "MON281": case "MON282": case "MON283": case "ELE195": case "ELE196": case "ELE197":
       return SearchCurrentTurnEffects($cardID, $player);
     case "DYN005": return count(GetHand($player)) != 0;
     case "DYN007":
@@ -1126,9 +1083,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "OUT143":
       return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || (!ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) && !ClassContains($combatChain[0], "NINJA", $mainPlayer));
     case "OUT154": case "OUT155": case "OUT156":
-      if (count($combatChain) == 0) return true;
+      if(count($combatChain) == 0) return true;
       $subtype = CardSubtype($combatChain[0]);
-      if ($subtype == "Dagger" || (CardType($combatChain[0]) == "AA" && AttackValue($combatChain[0]) <= 2)) return false;
+      if($subtype == "Dagger" || (CardType($combatChain[0]) == "AA" && AttackValue($combatChain[0]) <= 2)) return false;
       return true;
     case "OUT162": case "OUT163": case "OUT164":
       return $from == "HAND";
