@@ -210,6 +210,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $combatChain[$lastResult+6] += $parameter;
       return $lastResult;
+    case "COMBATCHAINCHARACTERDEFENSEMODIFIER":
+      $character = &GetPlayerCharacter($player);
+      $index = FindCharacterIndex($player, $combatChain[$parameter]);
+      $character[$index + 4] += 2;
+      return $lastResult;
     case "REMOVEDISCARD":
       $discard = &GetDiscard($player);
       $cardID = $discard[$lastResult];
