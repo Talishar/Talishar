@@ -14,29 +14,20 @@
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "DECK", 1);
         AddDecisionQueue("ALLCARDSUBTYPEORPASS", $currentPlayer, "Arrow", 1);
-        AddDecisionQueue("AZALEA", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID, 1);
         return "";
       case "ARC040":
-        if(!ArsenalEmpty($currentPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
+        LoadArrow($currentPlayer);
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
       case "ARC041":
-          Opt($cardID, 1);
+        Opt($cardID, 1);
         return "";
       case "ARC042":
-        if(!ArsenalEmpty($currentPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
-        AddDecisionQueue("BULLEYESBRACERS", $currentPlayer, $cardID, 1);
+        LoadArrow($currentPlayer);
+        AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",HAND", 1);
         return "";
       case "ARC044":
         Draw($currentPlayer);
@@ -61,7 +52,7 @@
         Reload();
         return "";
       case "ARC051": case "ARC052": case "ARC053":
-        if(!ArsenalEmpty($currentPlayer)) return "Did nothing because your arsenal is not empty.";
+        if(!ArsenalEmpty($currentPlayer)) return "Did nothing because your arsenal is not empty";
         if($cardID == "ARC051") $count = 4;
         else if($cardID == "ARC052") $count = 3;
         else $count = 2;
@@ -69,7 +60,7 @@
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("FILTER", $currentPlayer, "LastResult-include-subtype-Arrow", 1);
         AddDecisionQueue("CHOOSECARD", $currentPlayer, "<-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "DECK", 1);
+        AddDecisionQueue("ADDARSENAL", $currentPlayer, "DECK-UP", 1);
         AddDecisionQueue("OP", $currentPlayer, "REMOVECARD");
         AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-");
         return "";
@@ -115,6 +106,15 @@
     return "";
   }
 
+  function LoadArrow($player, $facing = "UP")
+  {
+    if(!ArsenalEmpty($player)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal";
+    AddDecisionQueue("FINDINDICES", $player, "MYHANDARROW");
+    AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+    AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
+    AddDecisionQueue("ADDARSENAL", $player, "HAND-" . $facing, 1);
+  }
+
   function Reload($player=0)
   {
     global $currentPlayer;
@@ -145,19 +145,5 @@
     AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
     AddDecisionQueue("ADDARSENALFACEDOWN", $player, "HAND", 1);
-  }
-
-  function ReloadArrow($player = 0, $counters="0")
-  {
-    global $currentPlayer;
-    if ($player == 0) $player = $currentPlayer;
-    if (ArsenalFull($player)) {
-      WriteLog("Your arsenal is full, so you cannot put an arrow in your arsenal.");
-      return;
-    }
-    AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
-    AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-    AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-    AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND-" . $counters, 1);
   }
 ?>

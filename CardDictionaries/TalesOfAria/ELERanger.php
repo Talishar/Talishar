@@ -13,39 +13,30 @@
         return $rv;
       case "ELE033":
         if(ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
+        LoadArrow($currentPlayer);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode", 1);
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Dominate", 1);
         AddDecisionQueue("MODAL", $currentPlayer, "SHIVER", 1);
         return "";
       case "ELE034":
         if(ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
+        LoadArrow($currentPlayer);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode", 1);
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Go_again", 1);
         AddDecisionQueue("MODAL", $currentPlayer, "VOLTAIRE", 1);
         return "";
       case "ELE035":
         AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
-        return "Makes cards and activating abilities by the opponent cost 1 more this turn.";
+        return "";
       case "ELE037":
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
-        if(DelimStringContains($additionalCosts, "ICE") && DelimStringContains($additionalCosts, "LIGHTNING"))
-        {
+        if(DelimStringContains($additionalCosts, "ICE") && DelimStringContains($additionalCosts, "LIGHTNING")) {
           AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
-          WriteLog(CardLink($cardID, $cardID)." gets fuse bonuses.");
         }
         return "";
       case "ELE214":
         $arsenal = &GetArsenal($currentPlayer);
-        for($i=0; $i < count($arsenal); $i+=ArsenalPieces())
-        {
+        for($i=0; $i < count($arsenal); $i+=ArsenalPieces()) {
           AddPlayerHand($arsenal[$i], $currentPlayer, "ARS");
         }
         $arsenal = [];
@@ -56,11 +47,11 @@
         return "";
       case "ELE215":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your next arrow attack +3 and if it hits destroys your opponent's hand an arsenal next turn.";
+        return "";
       case "ELE219": case "ELE220": case "ELE221":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Reload();
-        return "Gives your next arrow attack this turn +" . EffectAttackModifier($cardID) . " and lets you reload.";
+        return "";
       default: return "";
     }
   }
@@ -74,9 +65,8 @@
         if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) DamageTrigger($defPlayer, NumEquipment($defPlayer), "ATTACKHIT");
         break;
       case "ELE216": case "ELE217": case "ELE218":
-        if(HasIncreasedAttack())
-        {
-          WriteLog(CardLink($cardID, $cardID). " allows you to Reload.");
+        if(HasIncreasedAttack()) {
+          WriteLog(CardLink($cardID, $cardID). " allows you to Reload");
           Reload($mainPlayer);
         }
         break;
@@ -86,46 +76,33 @@
 
   function Fuse($cardID, $player, $elements)
   {
-    if(!CanRevealCards($player))
-    {
-      WriteLog("Cannot fuse because you cannot reveal cards.");
+    if(!CanRevealCards($player)) {
+      WriteLog("Cannot fuse because you cannot reveal cards");
       return;
     }
     $elementArray = explode(",", $elements);
     $elementText = "";
     $isAndOrFuse = IsAndOrFuse($cardID);
-
-    // First fuse ask to fuse all elements
     for($i=0; $i<count($elementArray); ++$i)
     {
       $element = $elementArray[$i];
-      // If there's multiple elements and it's an AND fusion, subsequent elements
-      // depends on the previous ones being fulfilled.
       $subsequent = ($i > 0 && !$isAndOrFuse) ? 1 : 0;
       AddDecisionQueue("FINDINDICES", $player, "HAND" . $element, $subsequent);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to fuse", 1);
       AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("REVEALHANDCARDS", $player, "-", 1);
-      if ($isAndOrFuse)
-      {
+      if($isAndOrFuse) {
         AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
         if($i > 0) $elementText .= " and/or ";
       }
-      else
-      {
-        if($i > 0) $elementText .= " and ";
-      }
+      else if($i > 0) $elementText .= " and ";
       $elementText .= $element;
     }
-
-    // Then if all elements have been fused allow the fusion
-    if (!$isAndOrFuse)
-    {
+    if(!$isAndOrFuse) {
       $elements = implode(",", $elementArray);
       AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $elements, 1);
     }
-
-    WriteLog("You may fuse " . $elementText . " for " . CardLink($cardID, $cardID) . ".");
+    WriteLog("You may fuse " . $elementText . " for " . CardLink($cardID, $cardID));
   }
 
   function IsAndOrFuse($cardID)
@@ -240,7 +217,6 @@
   {
     switch($cardID)
     {
-      //Guardian
       case "ELE004": return "ICE";
       case "ELE005": return "EARTH,ICE";
       case "ELE006": return "EARTH";

@@ -8,8 +8,7 @@
     {
       case "MON000":
         $rv = "";
-        if($from == "PLAY")
-        {
+        if($from == "PLAY") {
           DestroyLandmark(GetClassState($currentPlayer, $CS_PlayIndex));
           $rv = "The Great Library of Solana was destroyed";
         }
@@ -24,8 +23,7 @@
         return "";
       case "MON064":
         $hand = &GetHand($currentPlayer);
-        for($i = 0; $i < count($hand); ++$i)
-        {
+        for($i = 0; $i < count($hand); ++$i) {
           AddSoul($hand[$i], $currentPlayer, "HAND");
         }
         $hand = [];
@@ -146,16 +144,14 @@
       case "MON072": case "MON073": case "MON074": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
       case "MON078": case "MON079": case "MON080": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
       case "MON198":
-        if(IsHeroAttackTarget())
-        {
+        if(IsHeroAttackTarget()) {
           $numSoul = count(GetSoul($defPlayer));
           for($i=0; $i<$numSoul; ++$i) BanishFromSoul($defPlayer);
           LoseHealth($numSoul, $defPlayer);
         }
         break;
       case "MON206": case "MON207": case "MON208":
-        if(IsHeroAttackTarget())
-        {
+        if(IsHeroAttackTarget()) {
           BanishFromSoul($defPlayer);
           $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BANISH";
         }
@@ -167,10 +163,9 @@
   function ShadowPuppetryHitEffect()
   {
     global $mainPlayer;
-    AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
     AddDecisionQueue("DECKCARDS", $mainPlayer, "0", 1);
-    AddDecisionQueue("SETDQVAR", $mainPlayer, "1", 1);
-    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose if you want to banish <1> with Shadow Puppetry", 1);
+    AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose if you want to banish <0> with Shadow Puppetry", 1);
     AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_the_card", 1);
     AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
     AddDecisionQueue("PARAMDELIMTOARRAY", $mainPlayer, "0", 1);
@@ -183,16 +178,14 @@
   function EndTurnBloodDebt()
   {
     global $mainPlayer;
-    if(IsImmuneToBloodDebt($mainPlayer))
-    {
-      WriteLog("No blood debt damage was taken because you are immune.");
+    if(IsImmuneToBloodDebt($mainPlayer)) {
+      WriteLog("No blood debt damage was taken because you are immune");
       return;
     }
-    $numBD = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
-    if($numBD > 0)
-    {
-      LoseHealth($numBD, $mainPlayer);
-      WriteLog("Player $mainPlayer lost $numBD health from Blood Debt at end of turn.", $mainPlayer);
+    $numBloodDebt = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
+    if($numBloodDebt > 0) {
+      LoseHealth($numBloodDebt, $mainPlayer);
+      WriteLog("Player $mainPlayer lost $numBloodDebt health from Blood Debt at end of turn", $mainPlayer);
     }
   }
 

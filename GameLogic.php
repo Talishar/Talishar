@@ -26,7 +26,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $inGameStatus;
   global $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $chainLinkSummary, $chainLinks, $MakeStartGameBackup;
   $rv = "";
-  switch ($phase) {
+  switch($phase) {
     case "FINDINDICES":
       UpdateGameState($currentPlayer);
       BuildMainPlayerGamestate();
@@ -252,6 +252,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "PITCHABILITY":
       PitchAbility($lastResult);
+      return $lastResult;
+    case "ADDARSENAL":
+      $params = explode("-", $parameter);
+      $from = (count($params) > 0 ? $params[0] : "-");
+      $facing = (count($params) > 1 ? $params[1] : "DOWN");
+      AddArsenal($lastResult, $player, $from, $facing);
       return $lastResult;
     case "ADDARSENALFACEUP":
       $params = explode("-", $parameter);
@@ -573,13 +579,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($lastResult == "NO") return "PASS";
       return 1;
     case "SANDSCOURGREATBOW":
-      if($lastResult == "NO") ReloadArrow($player);
+      if($lastResult == "NO") LoadArrow($player);
       else {
-        AddDecisionQueue("PARAMDELIMTOARRAY", $player, "0", 1);
-        AddDecisionQueue("MULTIREMOVEDECK", $player, "-", 1);
-        AddDecisionQueue("NULLPASS", $player, "-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK-1", 1);
-        AddDecisionQueue("ALLCARDSUBTYPEORPASS", $player, "Arrow", 1);
+        $deck = &GetDeck($player);
+        $cardID = array_shift($deck);
+        AddArsenal($cardID, $player, "DECK", "UP");
       }
       return $lastResult;
     case "NULLPASS":
@@ -949,18 +953,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for($index=0; $index<count($layers) && $layers[$index] == "TRIGGER"; $index+=LayerPieces());
       AddCurrentTurnEffect("CRU161", $player, "PLAY", $layers[$index+6]);
       return $lastResult;
-    case "DREADBORE":
+    case "LASTARSENALADDEFFECT":
+      $params = explode(",", $parameter);
       $arsenal = &GetArsenal($player);
-      AddCurrentTurnEffect($parameter, $player, "HAND", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
-      return 1;
-    case "AZALEA":
-      $arsenal = &GetArsenal($player);
-      AddCurrentTurnEffect($parameter, $player, "DECK", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
-      return 1;
-    case "BULLEYESBRACERS":
-      $arsenal = &GetArsenal($player);
-      AddCurrentTurnEffect($parameter, $player, "HAND", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
-      return 1;
+      AddCurrentTurnEffect($params[0], $player, $params[1], $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+      return $lastResult;
     case "AWAKENINGTOKENS":
       $num = GetHealth($player == 1 ? 2 : 1) - GetHealth($player);
       for ($i = 0; $i < $num; ++$i) {
@@ -978,8 +975,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "INVERTEXISTENCE":
-      if($lastResult == "")
-      {
+      if($lastResult == "") {
         WriteLog("No cards were selected, so Invert Existence did not banish any cards");
         return $lastResult;
       }

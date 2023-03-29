@@ -380,11 +380,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "CRU121":
-      if(ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal";
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
-      AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-      AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-      AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
+      LoadArrow($currentPlayer);
       return "";
     case "CRU122":
       AddCurrentTurnEffect($cardID, $currentPlayer);

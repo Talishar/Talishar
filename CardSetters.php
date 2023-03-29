@@ -115,7 +115,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
   $arsenal = &GetArsenal($player);
   $character = &GetPlayerCharacter($player);
   $cardSubType = CardSubType($cardID);
-  if ($facing == "UP" && $from == "DECK" && $cardSubType == "Arrow" && $character[CharacterPieces()] == "DYN151") $counters=1;
+  if($facing == "UP" && $from == "DECK" && $cardSubType == "Arrow" && $character[CharacterPieces()] == "DYN151") $counters=1;
   array_push($arsenal, $cardID);
   array_push($arsenal, $facing);
   array_push($arsenal, ArsenalNumUsesPerTurn($cardID)); //Num uses

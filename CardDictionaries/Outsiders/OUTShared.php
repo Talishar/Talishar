@@ -263,20 +263,13 @@ function OUTAbilityCost($cardID)
         return "";
       case "OUT093":
         $abilityName = GetResolvedAbilityName($cardID);
-        if($abilityName == "Load")
-        {
-          if(ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
-          AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-          AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-          AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
-        }
+        if($abilityName == "Load") LoadArrow($currentPlayer);
         else if($abilityName == "Aim") {
           $arsenalFaceDown = ArsenalFaceDownCard($currentPlayer);
-          if ($arsenalFaceDown != "" && CardSubType($arsenalFaceDown) == "Arrow") {
+          if($arsenalFaceDown != "" && CardSubType($arsenalFaceDown) == "Arrow") {
             SetArsenalFacing("UP", $currentPlayer);
             $arsenal = &GetArsenal($currentPlayer);
-            $arsenal[count($arsenal) - ArsenalPieces() + 3] += 1;
+            $arsenal[count($arsenal)-ArsenalPieces()+3] += 1;
           }
         }
         return "";
