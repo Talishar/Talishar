@@ -106,9 +106,11 @@
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_to_pay_2_or_you_lose_and_can't_gain_go_again.");
         AddDecisionQueue("BUTTONINPUT", $mainPlayer, "0,2", 0, 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-        AddDecisionQueue("BLIZZARDLOG", $mainPlayer, "-", 1);
         AddDecisionQueue("GREATERTHANPASS", $mainPlayer, "0", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $cardID, 1);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "Lost Go Again", 1);
+        AddDecisionQueue("ELSE", $mainPlayer, $cardID);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "Resources were paid", 1);
         return "";
       case "ELE151": case "ELE152": case "ELE153":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -270,7 +272,7 @@
   function ExposedToTheElementsEarth($player)
   {
       $otherPlayer = $player == 1 ? 2 : 1;
-      PrependDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
+      PrependDecisionQueue("MODDEFCOUNTER", $otherPlayer, "-1", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
   }

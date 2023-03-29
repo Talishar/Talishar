@@ -263,7 +263,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Off-Hand;hasNegCounters=true;maxDef=" . $maxDef . ";class=GUARDIAN");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "GETCARDINDEX", 1);
-      AddDecisionQueue("REMOVENEGDEFCOUNTER", $currentPlayer, "-", 1);
+      AddDecisionQueue("MODDEFCOUNTER", $currentPlayer, "1", 1);
       return "";
     case "DYN042": case "DYN043": case "DYN044":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Off-Hand;class=GUARDIAN");
@@ -825,7 +825,7 @@ function DYNHitEffect($cardID)
       if(IsHeroAttackTarget()){
         AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
         AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-        AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
+        AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
       }
       break;
     case "DYN162": case "DYN163": case "DYN164":

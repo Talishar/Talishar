@@ -43,7 +43,7 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
         AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDARSENALFACEDOWN", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("ADDARSENAL", $currentPlayer, "HAND-DOWN", 1);
         return "";
       case "ELE215":
         AddCurrentTurnEffect($cardID, $currentPlayer);

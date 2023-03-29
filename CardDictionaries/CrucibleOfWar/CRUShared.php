@@ -587,7 +587,7 @@ function CRUHitEffect($cardID)
       AddDecisionQueue("FINDINDICES", $mainPlayer, "MAINHAND");
       AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
       AddDecisionQueue("REMOVEMYHAND", $mainPlayer, "-", 1);
-      AddDecisionQueue("ADDARSENALFACEDOWN", $mainPlayer, "HAND", 1);
+      AddDecisionQueue("ADDARSENAL", $mainPlayer, "HAND-DOWN", 1);
       break;
     case "CRU132": case "CRU133": case "CRU134":
       if(IsHeroAttackTarget()) {

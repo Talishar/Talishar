@@ -207,7 +207,7 @@
           $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
           AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-          AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
+          AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
           AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
         }
         break;

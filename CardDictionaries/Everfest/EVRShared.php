@@ -273,7 +273,7 @@
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which chest pieces to remove a -1 defense counter");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "GETCARDINDEX", 1);
-        AddDecisionQueue("REMOVENEGDEFCOUNTER", $currentPlayer, "-", 1);
+        AddDecisionQueue("MODDEFCOUNTER", $currentPlayer, "1", 1);
         return "";
       case "EVR030": case "EVR031": case "EVR032":
         if($cardID == "EVR030") $amount = 3;

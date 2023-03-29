@@ -206,8 +206,7 @@ function SpecificAllyAttackAbilities($attackID)
           $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
           AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-          AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
-          if($redCount == 2) AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
+          AddDecisionQueue("MODDEFCOUNTER", $otherPlayer, (-1 * $redCount), 1);
           AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
         }
       }

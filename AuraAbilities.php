@@ -317,7 +317,7 @@ function AuraStartTurnAbilities()
           AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment to remove a -1 defense counter", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
           AddDecisionQueue("MZOP", $mainPlayer, "GETCARDINDEX", 1);
-          AddDecisionQueue("REMOVENEGDEFCOUNTER", $mainPlayer, "-", 1);
+          AddDecisionQueue("MODDEFCOUNTER", $mainPlayer, "1", 1);
         }
         break;
       case "DYN033": case "DYN034": case "DYN035":

@@ -154,7 +154,7 @@
     else AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:specOnly=true");
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
     AddDecisionQueue("MZREMOVE", $player, "-", 1);
-    AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
+    AddDecisionQueue("ADDARSENAL", $player, "DECK-DOWN", 1);
     AddDecisionQueue("SHUFFLEDECK", $player, "-");
   }
 

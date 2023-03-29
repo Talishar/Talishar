@@ -351,8 +351,8 @@ function OUTAbilityCost($cardID)
         {
           AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIP");
           AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
-          AddDecisionQueue("ADDNEGDEFCOUNTER", $mainPlayer, "-", 1);
-          $rv = "Trap triggered and puts a -1 counter on an equipment.";
+          AddDecisionQueue("MODDEFCOUNTER", $mainPlayer, "-1", 1);
+          $rv = "Trap triggered and puts a -1 counter on an equipment";
           TrapTriggered($cardID);
         }
         return "";
@@ -459,14 +459,14 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
           AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-          AddDecisionQueue("ADDARSENALFACEDOWN", $currentPlayer, "GY", 1);
+          AddDecisionQueue("ADDARSENAL", $currentPlayer, "GY-DOWN", 1);
         }
         if(!ArsenalFull($otherPlayer))
         {
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-          AddDecisionQueue("ADDARSENALFACEDOWN", $otherPlayer, "GY", 1);
+          AddDecisionQueue("ADDARSENAL", $otherPlayer, "GY-DOWN", 1);
         }
         PlayAura("DYN244", $currentPlayer);//Ponder
         PlayAura($CID_BloodRotPox, $otherPlayer);
@@ -479,7 +479,7 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
           AddDecisionQueue("WRITELOG", $currentPlayer, "Card chosen:", 1);
           AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "1", 1);
-          AddDecisionQueue("ADDARSENALFACEDOWN", $currentPlayer, "GY", 1);
+          AddDecisionQueue("ADDARSENAL", $currentPlayer, "GY-DOWN", 1);
           PummelHit($currentPlayer, true);
         }
         if(!ArsenalFull($otherPlayer))
@@ -488,7 +488,7 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("CHOOSEDISCARD", $otherPlayer, "<-", 1);
           AddDecisionQueue("WRITELOG", $currentPlayer, "Card chosen:", 1);
           AddDecisionQueue("MULTIREMOVEDISCARD", $otherPlayer, "1", 1);
-          AddDecisionQueue("ADDARSENALFACEDOWN", $otherPlayer, "GY", 1);
+          AddDecisionQueue("ADDARSENAL", $otherPlayer, "GY-DOWN", 1);
           PummelHit($otherPlayer, true);
         }
         PlayAura("DYN244", $currentPlayer);

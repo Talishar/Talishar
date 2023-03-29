@@ -623,7 +623,7 @@ function WTRAbilityCost($cardID)
       case "WTR057": case "WTR058": case "WTR059":
         AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
         AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-        AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
+        AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
         break;
       case "WTR060": case "WTR061": case "WTR062":
         AddNextTurnEffect($cardID, $defPlayer);

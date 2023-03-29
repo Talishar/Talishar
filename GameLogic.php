@@ -259,14 +259,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $facing = (count($params) > 1 ? $params[1] : "DOWN");
       AddArsenal($lastResult, $player, $from, $facing);
       return $lastResult;
-    case "ADDARSENALFACEUP":
-      $params = explode("-", $parameter);
-      if(count($params) > 1) AddArsenal($lastResult, $player, $params[0], "UP", $params[1]);
-      else AddArsenal($lastResult, $player, $params[0], "UP");
-      return $lastResult;
-    case "ADDARSENALFACEDOWN":
-      AddArsenal($lastResult, $player, $parameter, "DOWN");
-      return $lastResult;
     case "TURNARSENALFACEUP":
       $arsenal = &GetArsenal($player);
       $arsenal[$lastResult + 1] = "UP";
@@ -306,9 +298,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $hand = array_values($hand);
       return $cards;
-    case "ADDLAYER":
-      AddLayer("TRIGGER", $player, $parameter);
-      return $lastResult;
     case "DESTROYCHARACTER":
       DestroyCharacter($player, $lastResult);
       return $lastResult;
@@ -512,26 +501,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return ($revealed ? $cards : "PASS");
     case "WRITELOG":
       WriteLog(implode(" ", explode("_", $parameter)));
-      return $lastResult;
-    case "WRITECARDLOG":
-      $message = implode(" ", explode("_", $parameter)) . CardLink($lastResult, $lastResult);
-      WriteLog($message);
-      return $lastResult;
-    case "ADDNEGDEFCOUNTER":
-      if($lastResult == "") return $lastResult;
-      $character = &GetPlayerCharacter($player);
-      $character[$lastResult+4] = intval($character[$lastResult+4]) - 1;
-      WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " gained a negative defense counter");
-      return $lastResult;
-    case "REMOVENEGDEFCOUNTER":
-      $character = &GetPlayerCharacter($player);
-      $character[$lastResult + 4] += 1;
-      WriteLog("A negative counter was removed from " . CardLink($character[$lastResult], $character[$lastResult]));
-      return $lastResult;
-    case "REMOVECOUNTER":
-      $character = &GetPlayerCharacter($player);
-      $character[$lastResult+2] -= 1;
-      WriteLog(CardLink($parameter, $parameter) . " removed a counter from " . CardLink($character[$lastResult], $character[$lastResult]));
       return $lastResult;
     case "ADDIMMEDIATECURRENTEFFECT":
       AddCurrentTurnEffect($parameter, $player, "PLAY");
@@ -756,6 +725,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DQCharge();
       return "1";
     case "FINISHCHARGE":
+      WriteLog("This card was charged: " . CardLink($lastResult, $lastResult));
       IncrementClassState($player, $CS_NumCharged);
       return $lastResult;
     case "DEALDAMAGE":
@@ -911,10 +881,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PrependDecisionQueue("FINDINDICES", $player, "HAND", 1);
       }
       return $parameter;
-    case "BLIZZARDLOG":
-      if($lastResult > 0) WriteLog($lastResult . " was paid for " . CardLink("ELE147", "ELE147"));
-      else WriteLog("Target attack lost and can't gain go again due to " . CardLink("ELE147", "ELE147"));
-      return $lastResult;
     case "ADDCLASSSTATE":
       $parameters = explode("-", $parameter);
       IncrementClassState($player, $parameters[0], $parameters[1]);
@@ -1170,6 +1136,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $index = $lastResultArr[1];
       if($zone == "MYCHAR" || $zone == "THEIRCHAR") $zoneDS[$index+3] += $parameter;
       else if($zone == "MYAURAS" || $zone == "THEIRAURAS") $zoneDS[$index+3] += $parameter;
+      return $lastResult;
+    case "MODDEFCOUNTER":
+      if($lastResult == "") return $lastResult;
+      $character = &GetPlayerCharacter($player);
+      $character[$lastResult+4] = intval($character[$lastResult+4]) + $parameter;
+      if($parameter < 0) WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " got a negative defense counter");
+      return $lastResult;
+    case "REMOVECOUNTER":
+      $character = &GetPlayerCharacter($player);
+      $character[$lastResult+2] -= 1;
+      WriteLog(CardLink($parameter, $parameter) . " removed a counter from " . CardLink($character[$lastResult], $character[$lastResult]));
       return $lastResult;
     case "FINALIZEDAMAGE":
       $params = explode(",", $parameter);

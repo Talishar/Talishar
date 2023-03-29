@@ -14,7 +14,7 @@
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "DECK", 1);
+        AddDecisionQueue("ADDARSENAL", $currentPlayer, "DECK-UP", 1);
         AddDecisionQueue("ALLCARDSUBTYPEORPASS", $currentPlayer, "Arrow", 1);
         AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID, 1);
         return "";
@@ -121,16 +121,15 @@
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
-    if(!ArsenalEmpty($player))
-    {
-      WriteLog("Your arsenal is not empty, so you cannot Reload.");
+    if(!ArsenalEmpty($player)) {
+      WriteLog("Your arsenal is not empty, so you cannot Reload");
       return;
     }
     AddDecisionQueue("FINDINDICES", $player, "HAND");
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to Reload");
     AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
-    AddDecisionQueue("ADDARSENALFACEDOWN", $player, "HAND", 1);
+    AddDecisionQueue("ADDARSENAL", $player, "HAND-DOWN", 1);
   }
 
   function SuperReload($player=0)
@@ -146,6 +145,6 @@
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put in your arsenal");
     AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
-    AddDecisionQueue("ADDARSENALFACEDOWN", $player, "HAND", 1);
+    AddDecisionQueue("ADDARSENAL", $player, "HAND-DOWN", 1);
   }
 ?>
