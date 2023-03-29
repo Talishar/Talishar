@@ -1432,12 +1432,3 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "NOTSTATIC";
   }
 }
-
-function CharacterTriggerInGraveyard($cardID)
-{
-  switch ($cardID) {
-    case "DYN117": case "DYN118": return true;
-    case "OUT011": return true;
-    default: return false;
-  }
-}

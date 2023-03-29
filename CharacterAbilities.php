@@ -500,4 +500,13 @@ function EquipPayAdditionalCosts($cardIndex, $from)
   }
 }
 
+function CharacterTriggerInGraveyard($cardID)
+{
+  switch($cardID) {
+    case "DYN117": case "DYN118": return true;
+    case "OUT011": return true;
+    default: return false;
+  }
+}
+
 ?>
