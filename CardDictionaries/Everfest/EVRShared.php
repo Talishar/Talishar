@@ -503,8 +503,11 @@
         else if($cardID == "EVR169") $times = 2;
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-        AddDecisionQueue("SHOWSELECTEDHANDCARD", $otherPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MYHAND-", 1);
+        AddDecisionQueue("MZOP", $otherPlayer, "GETCARDID", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<1> was chosen", 1);
         for($i=0; $i<$times; ++$i)
         {
           AddDecisionQueue("PICKACARD", $currentPlayer, "-", 1);

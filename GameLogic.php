@@ -489,10 +489,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       WriteLog("Selected mode" . (count($modes) > 1 ? "s" : "") . " for " . CardLink($parameter, $parameter) . (count($modes) > 1 ? " are" : " is") . ": " . $text);
       return $lastResult;
-    case "SHOWSELECTEDHANDCARD":
-      $hand = &GetHand($player);
-      WriteLog(CardLink($hand[$lastResult], $hand[$lastResult]) . " was selected.");
-      return $lastResult;
     case "REVEALCARDS":
       $cards = (is_array($lastResult) ? implode(",", $lastResult) : $lastResult);
       $revealed = RevealCards($cards, $player);
