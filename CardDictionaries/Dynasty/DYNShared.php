@@ -919,14 +919,14 @@ function CheckContracts($banishedBy, $cardBanished)
   for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     if($combatChain[$i + 1] != $banishedBy) continue;
     $contractType = ContractType($combatChain[$i]);
-    if(CheckContract($contractType, $cardBanished)) ContractCompleted($banishedBy, $combatChain[$i]);
+    if($contractType != "" && CheckContract($contractType, $cardBanished)) ContractCompleted($banishedBy, $combatChain[$i]);
   }
   for($i = 0; $i < count($chainLinks); ++$i) {
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j + 1] != $banishedBy) continue;
       if($chainLinks[$i][$j + 2] == 0) continue;
       $contractType = ContractType($chainLinks[$i][$j]);
-      if(CheckContract($contractType, $cardBanished)) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
+      if($contractType != "" && CheckContract($contractType, $cardBanished)) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
     }
   }
 }
@@ -942,16 +942,16 @@ function ImperialWarHorn($player, $term)
 function CheckContract($contractType, $cardBanished)
 {
   switch($contractType) {
-    case "REDPITCH": if(PitchValue($cardBanished) == 1) return true;
-    case "YELLOWPITCH": if(PitchValue($cardBanished) == 2) return true;
-    case "BLUEPITCH": if(PitchValue($cardBanished) == 3) return true;
-    case "COST1ORLESS": if(CardCost($cardBanished) <= 1) return true;
-    case "COST2ORMORE": if(CardCost($cardBanished) >= 2) return true;
-    case "AA": if(CardType($cardBanished) == "AA") return true;
-    case "GOAGAIN": if(HasGoAgain($cardBanished)) return true;
-    case "NAA": if(CardType($cardBanished) == "A") return true;
-    case "BLOCK2ORLESS": if(BlockValue($cardBanished) <= 2 && BlockValue($cardBanished) >= 0) return true;
-    case "REACTIONS": if(CardType($cardBanished) == "AR" || CardType($cardBanished) == "DR") return true;
+    case "REDPITCH": return PitchValue($cardBanished) == 1;
+    case "YELLOWPITCH": return PitchValue($cardBanished) == 2;
+    case "BLUEPITCH": return PitchValue($cardBanished);
+    case "COST1ORLESS": return CardCost($cardBanished) <= 1;
+    case "COST2ORMORE": return CardCost($cardBanished) >= 2;
+    case "AA": return CardType($cardBanished) == "AA";
+    case "GOAGAIN": return HasGoAgain($cardBanished);
+    case "NAA": return CardType($cardBanished) == "A";
+    case "BLOCK2ORLESS": return BlockValue($cardBanished) <= 2 && BlockValue($cardBanished) >= 0;
+    case "REACTIONS": return CardType($cardBanished) == "AR" || CardType($cardBanished) == "DR";
     default: return false;
     }
 }
