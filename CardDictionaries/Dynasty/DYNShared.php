@@ -299,8 +299,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=W;subtype=Sword");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Sword to gain a +1 counter");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZOP", $currentPlayer, "GETCARDINDEX", 1);
-      AddDecisionQueue("ADDEQUIPCOUNTER", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDATTACKCOUNTERS", $currentPlayer, "1", 1);
       return "";
     case "DYN076": case "DYN077": case "DYN078":
       AddCurrentTurnEffect($cardID, $currentPlayer);

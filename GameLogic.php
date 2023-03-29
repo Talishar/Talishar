@@ -513,13 +513,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDNEGDEFCOUNTER":
       if($lastResult == "") return $lastResult;
       $character = &GetPlayerCharacter($player);
-      $character[$lastResult + 4] = intval($character[$lastResult + 4]) - 1;
-      WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " gained a negative counter.");
-      return $lastResult;
-    case "ADDEQUIPCOUNTER":
-      $character = &GetPlayerCharacter($player);
-      $character[$lastResult + 3] += 1;
-      WriteLog("A counter was added to " . CardLink($character[$lastResult], $character[$lastResult]));
+      $character[$lastResult+4] = intval($character[$lastResult+4]) - 1;
+      WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " gained a negative defense counter");
       return $lastResult;
     case "REMOVENEGDEFCOUNTER":
       $character = &GetPlayerCharacter($player);
@@ -1171,12 +1166,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($numBD > 0) AddCurrentTurnEffect("MON198," . $numBD, $player);
       return $lastResult;
     case "ADDATTACKCOUNTERS":
-      $lastResults = explode("-", $lastResult);
-      $zone = $lastResults[0];
+      $lastResultArr = explode("-", $lastResult);
+      $zone = $lastResultArr[0];
       $zoneDS = &GetMZZone($player, $zone);
-      $index = $lastResults[1];
-      if($zone == "MYCHAR" || $zone == "THEIRCHAR") $zoneDS[$index + 3] += $parameter;
-      else if($zone == "MYAURAS" || $zone == "THEIRAURAS") $zoneDS[$index + 3] += $parameter;
+      $index = $lastResultArr[1];
+      if($zone == "MYCHAR" || $zone == "THEIRCHAR") $zoneDS[$index+3] += $parameter;
+      else if($zone == "MYAURAS" || $zone == "THEIRAURAS") $zoneDS[$index+3] += $parameter;
       return $lastResult;
     case "FINALIZEDAMAGE":
       $params = explode(",", $parameter);
