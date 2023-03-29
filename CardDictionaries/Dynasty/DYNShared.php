@@ -686,7 +686,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("MAYCHOOSEMYSOUL", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVESOUL", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "SOUL,-", 1);
-        AddDecisionQueue("SURAYA", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("THREATENARCANE", $currentPlayer, $cardID, 1);
       }
       return "";
     default:

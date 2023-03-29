@@ -192,24 +192,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $dqState[5] = $mzIndices;
       return $lastResult;
-    case "DUPLICITYBANISH":
-      $cards = explode(",", $lastResult);
-      $params = explode(",", $parameter);
-      $mzIndices = "";
-
-      if (cardType($cards[0]) == "A") {
-        $isPlayable = $params[1];
-      } else {
-        $isPlayable = "-";
-      }
-
-      for ($i = 0; $i < count($cards); ++$i) {
-        $index = BanishCardForPlayer($cards[$i], $player, $params[0], $isPlayable);
-        if ($mzIndices != "") $mzIndices .= ",";
-        $mzIndices .= "BANISH-" . $index;
-      }
-      $dqState[5] = $mzIndices;
-      return $lastResult;
     case "REMOVECOMBATCHAIN":
       $cardID = $combatChain[$lastResult];
       for ($i = CombatChainPieces() - 1; $i >= 0; --$i) {
@@ -831,6 +813,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       PrependDecisionQueue("INCDQVAR", $player, "1", 1);
       return $prevented;
+    case "THREATENARCANE":
+      DealArcane(1, 2, "ABILITY", $parameter, true);
+      return $lastResult;
     case "DEALARCANE":
       $dqState[7] = $lastResult;
       $target = explode("-", $lastResult);
@@ -1401,9 +1386,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "HITEFFECT":
       ProcessHitEffect($parameter);
       return $parameter;
-    case "SURAYA":
-      DealArcane(1, 2, "ABILITY", $parameter, true);
-      return $lastResult;
     case "PROCESSDAMAGEPREVENTION":
       $mzIndex = explode("-", $lastResult);
       $params =  explode("-", $parameter);
@@ -1419,12 +1401,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $dqState[6] = $damage;
       if($damage > 0) AddDamagePreventionSelection($player, $damage, $params[1]);
       return $damage;
-    case "CARDDISCARDED":
-      CardDiscarded($player, $lastResult, $parameter);
-      return $lastResult;
-    case "AMULETOFECHOES":
-      PlayerTargetedAbility($player, "AMULETOFECHOES", $lastResult);
-      return "";
     case "EQUIPCARD":
       EquipCard($player, $parameter);
       return "";

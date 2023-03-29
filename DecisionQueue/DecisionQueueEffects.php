@@ -326,6 +326,18 @@ function SpecificCardLogic($player, $card, $lastResult)
       ++$items[$targetIndex + 1];
       if(--$items[$PMIndex + 1] == 0) DestroyItemForPlayer($player, $PMIndex);
       return $lastResult;
+    case "TOMEOFDUPLICITY":
+      $cards = explode(",", $lastResult);
+      $mzIndices = "";
+      $mod = (CardType($cards[0]) == "A" ? "INST" : "-");
+      for($i = 0; $i < count($cards); ++$i) {
+        $index = BanishCardForPlayer($cards[$i], $player, "DECK", $mod);
+        WriteLog(CardLink($cards[$i], $cards[$i]) . " was banished");
+        if($mzIndices != "") $mzIndices .= ",";
+        $mzIndices .= "BANISH-" . $index;
+      }
+      $dqState[5] = $mzIndices;
+      return $lastResult;
     default: return "";
   }
 }

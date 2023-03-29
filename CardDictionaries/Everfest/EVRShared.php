@@ -551,7 +551,7 @@
           {
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
             AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
-            AddDecisionQueue("AMULETOFECHOES", $currentPlayer, "<-", 1);
+            AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "AMULETOFECHOES", 1);
           }
         }
         return "";

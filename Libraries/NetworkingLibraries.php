@@ -1513,12 +1513,11 @@ function PayAbilityAdditionalCosts($cardID)
   global $currentPlayer;
   switch ($cardID) {
     case "MON000":
-      for ($i = 0; $i < 2; ++$i) {
+      for($i = 0; $i < 2; ++$i) {
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDPITCH,2");
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDDISCARD", $currentPlayer, "HAND", 1);
-        AddDecisionQueue("CARDDISCARDED", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND", 1);
       }
       break;
     default:

@@ -125,9 +125,7 @@
       case "UPR168":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES,2");
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("DUPLICITYBANISH", $currentPlayer, "DECK,INST", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "TOMEOFDUPLICITY", 1);
         return "";
       case "UPR169":
         NegateLayer($target, "HAND");
