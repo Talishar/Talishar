@@ -343,6 +343,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
         if(ClassContains($items[$index], "MECHANOLOGIST", $currentPlayer) && $items[$index + 2] == 2 && $additionalCosts == "PAID") {
           $items[$index + 2] = 1;
+          AddCurrentTurnEffect($cardID, $currentPlayer);
         } else {
           $items[$index + 1] = 1;
         }
