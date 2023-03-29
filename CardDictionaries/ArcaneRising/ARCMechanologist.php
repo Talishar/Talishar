@@ -178,7 +178,7 @@ function Boost()
   global $currentPlayer;
   AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_boost");
   AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-  AddDecisionQueue("BOOST", $currentPlayer, "-", 1);
+  AddDecisionQueue("OP", $currentPlayer, "BOOST", 1);
   if (SearchCurrentTurnEffects("CRU102", $currentPlayer)) {
     AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
     AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
@@ -186,6 +186,32 @@ function Boost()
     AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
     AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
   }
+}
+
+function DoBoost($player)
+{
+  global $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
+  $deck = &GetDeck($player);
+  if(count($deck) == 0) {
+    WriteLog("Could not boost. No cards left in deck.");
+    return;
+  }
+  ItemBoostEffects();
+  GainActionPoints(CountCurrentTurnEffects("ARC006", $player), $player);
+  $cardID = $deck[0];
+  if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) {
+    PutItemIntoPlay($cardID);
+  }
+  else BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
+  unset($deck[0]);
+  $deck = array_values($deck);
+  $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $player);
+  WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again");
+  IncrementClassState($player, $CS_NumBoosted);
+  ++$combatChainState[$CCS_NumBoosted];
+  $combatChainState[$CCS_IsBoosted] = 1;
+  if($grantsGA) GiveAttackGoAgain();
+  return $grantsGA;
 }
 
 function ItemBoostEffects()

@@ -353,6 +353,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         case "DESTROYFROZENARSENAL": DestroyFrozenArsenal($player); return "";
         case "GIVEATTACKGOAGAIN": GiveAttackGoAgain(); return $lastResult;
+        case "BOOST": return DoBoost($player);
         case "REMOVECARD":
           if($lastResult == "") return $dqVars[0];
           $cards = explode(",", $dqVars[0]);
@@ -625,29 +626,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddResourceCost($player, $number);
       AddCurrentTurnEffect("WTR081-" . $number, $player);
       return $number;
-    case "BOOST":
-      global $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
-      $deck = &GetDeck($currentPlayer);
-      if(count($deck) == 0) {
-        WriteLog("Could not boost. No cards left in deck.");
-        return;
-      }
-      ItemBoostEffects();
-      $actionPoints += CountCurrentTurnEffects("ARC006", $currentPlayer);
-      $cardID = $deck[0];
-      if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) {
-        PutItemIntoPlay($cardID);
-      }
-      else BanishCardForPlayer($cardID, $currentPlayer, "DECK", "BOOST");
-      unset($deck[0]);
-      $deck = array_values($deck);
-      $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $currentPlayer);
-      WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again");
-      IncrementClassState($currentPlayer, $CS_NumBoosted);
-      ++$combatChainState[$CCS_NumBoosted];
-      $combatChainState[$CCS_IsBoosted] = 1;
-      if($grantsGA) GiveAttackGoAgain();
-      return $grantsGA;
     case "VOFTHEVANGUARD":
       if($parameter == "1" && TalentContains($lastResult, "LIGHT")) {
         WriteLog("V of the Vanguard gives all attacks on this combat chain +1");
