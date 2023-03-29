@@ -254,7 +254,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDARSENALFACEUP":
       $params = explode("-", $parameter);
-      if (count($params) > 1) AddArsenal($lastResult, $player, $params[0], "UP", $params[1]);
+      if(count($params) > 1) AddArsenal($lastResult, $player, $params[0], "UP", $params[1]);
       else AddArsenal($lastResult, $player, $params[0], "UP");
       return $lastResult;
     case "ADDARSENALFACEDOWN":
@@ -307,14 +307,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "DESTROYEQUIPDEF0":
       $character = &GetPlayerCharacter($defPlayer);
-      if (BlockValue($character[$lastResult]) + $character[$lastResult + 4] <= 0) {
-        WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " was destroyed.");
+      if(BlockValue($character[$lastResult]) + $character[$lastResult+4] <= 0) {
+        WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " was destroyed");
         DestroyCharacter($defPlayer, $lastResult);
       }
       return "";
     case "CHARFLAGDESTROY":
       $character = &GetPlayerCharacter($player);
-      $character[$parameter + 7] = 1;
+      $character[$parameter+7] = 1;
       return $lastResult;
     case "ADDCHARACTEREFFECT":
       $characterEffects = &GetCharacterEffects($player);
@@ -463,7 +463,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "EXHAUSTCHARACTER":
       $character = &GetPlayerCharacter($player);
-      $character[$parameter + 1] = 1;
+      $character[$parameter+1] = 1;
       return $parameter;
     case "DECKCARDS":
       $indices = explode(",", $parameter);
@@ -475,17 +475,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $rv .= $deck[$i];
       }
       return ($rv == "" ? "PASS" : $rv);
-    case "SHOWSELECTEDMODE":
-      $rv = implode(" ", explode("_", $lastResult));
-      WriteLog(CardLink($parameter, $parameter) . " mode is: " . $rv);
-      return $lastResult;
-    case "SHOWSELECTEDMODES":
-      $rv = "";
-      for($i = 0; $i < count($lastResult); ++$i) {
-        if($rv != "") $rv .= " and ";
-        $rv .= implode(" ", explode("_", $lastResult[$i]));
+    case "SHOWMODES":
+      if(is_array($lastResult)) $modes = $lastResult;
+      else {
+        $modes = [];
+        array_push($modes, $lastResult);
       }
-      WriteLog(CardLink($parameter, $parameter) . " modes are: " . $rv);
+      $text = "";
+      for($i = 0; $i < count($modes); ++$i) {
+        if($text != "") $text .= ", ";
+        if($i == count($modes)-1) $text .= " and ";
+        $text .= implode(" ", explode("_", $modes[$i]));
+      }
+      WriteLog("Selected mode" . (count($modes) > 1 ? "s" : "") . " for " . CardLink($parameter, $parameter) . (count($modes) > 1 ? " are" : " is") . ": " . $text);
       return $lastResult;
     case "SHOWSELECTEDHANDCARD":
       $hand = &GetHand($player);
