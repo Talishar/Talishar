@@ -88,9 +88,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       else if($cardID == "ARC213") $health = 2;
       else $health = 1;
       GainHealth($health, $currentPlayer);
-      if (GetClassState($currentPlayer, $CS_NumMoonWishPlayed) > 0) {
-        MyDrawCard();
-      }
+      if(GetClassState($currentPlayer, $CS_NumMoonWishPlayed) > 0) Draw($currentPlayer);
       return "";
     case "ARC215": case "ARC216": case "ARC217":
       if ($cardID == "ARC215") $opt = 4;

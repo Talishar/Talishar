@@ -158,12 +158,6 @@ function Draw($player, $mainPhase = true)
   return $hand[count($hand) - 1];
 }
 
-function MyDrawCard()
-{
-  global $currentPlayer;
-  Draw($currentPlayer);
-}
-
 function EquipPayAdditionalCosts($cardIndex, $from)
 {
   global $currentPlayer;

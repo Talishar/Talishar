@@ -18,7 +18,7 @@
         if($earthPitched)
         {
           IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
-          $rv .= "Prevent the next 2 damage that would be dealt to Oldhim this turn. ";
+          $rv .= "Prevent the next 2 damage that would be dealt to Oldhim this turn";
         }
         if($icePitched)
         {
@@ -40,21 +40,18 @@
       case "ELE003":
         $pitchArr = explode(",", $additionalCosts);
         $icePitched = 0;
-        for($i=0; $i<count($pitchArr); ++$i)
-        {
+        for($i=0; $i<count($pitchArr); ++$i) {
           if(TalentContains($pitchArr[$i], "ICE", $currentPlayer)) $icePitched = 1;
         }
-        if($icePitched)
-        {
+        if($icePitched) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv .= "If this hits, your opponent gains a Frostbite.";
+          $rv .= "Your opponent gains a frostbite if this hits";
         }
         return $rv;
       case "ELE005":
-        if(DelimStringContains($additionalCosts, "ICE") && DelimStringContains($additionalCosts, "EARTH"))
-        {
+        if(DelimStringContains($additionalCosts, "ICE") && DelimStringContains($additionalCosts, "EARTH")) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          WriteLog(CardLink($cardID, $cardID) . " gets +2, Dominate, and discards cards on hit.");
+          WriteLog(CardLink($cardID, $cardID) . " gets +2, Dominate, and discards cards on hit");
         }
         return "";
       case "ELE006":
@@ -68,9 +65,9 @@
         return "";
       case "ELE205":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your next Guardian attack +1, Dominate, and discards 2 on hit.";
+        return "";
       case "ELE206": case "ELE207": case "ELE208":
-        if(NumNonTokenAura($currentPlayer) > 1) { $rv = "Draws a card."; MyDrawCard(); }
+        if(NumNonTokenAura($currentPlayer) > 1) { $rv = "Drew a card"; Draw($currentPlayer); }
         return $rv;
       default: return "";
     }

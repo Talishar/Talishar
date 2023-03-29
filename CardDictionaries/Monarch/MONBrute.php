@@ -12,12 +12,10 @@
         DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID);
         return "Does $damage damage to yourself.";
       case "MON125":
-        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        MyDrawCard();
+        Draw($currentPlayer);
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
-        if(AttackValue($card) >= 6)
-        {
+        if(AttackValue($card) >= 6) {
           AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
@@ -45,12 +43,11 @@
         }
         return $rv;
       case "MON138": case "MON139": case "MON140":
-        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        MyDrawCard();
+        Draw($currentPlayer);
         $card = DiscardRandom();
         if(AttackValue($card) >= 6)
         {
-          $rv = "Lets you banish a card from a graveyard.";
+          $rv = "Lets you banish a card from a graveyard";
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD&THEIRDISCARD");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Deadwood Rumbler");
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -69,8 +66,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives your next Brute or Shadow attack action card +" . EffectAttackModifier($cardID) . ".";
       case "MON221":
-        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        MyDrawCard();
+        Draw($currentPlayer);
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
@@ -78,11 +74,9 @@
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv .= " and got +2 from discarding a card with 6 or more power";
         }
-        $rv .= ".";
         return $rv;
       case "MON222":
-        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        MyDrawCard();
+        Draw($currentPlayer);
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
@@ -90,18 +84,14 @@
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv .= " and doubled the base attack of your next Brute attack action card";
         }
-        $rv .= ".";
         return $rv;
       case "MON223": case "MON224": case "MON225":
-        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        MyDrawCard();
+        Draw($currentPlayer);
         $card = DiscardRandom();
         if(AttackValue($card) >= 6)
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Gains Dominate from discarding " . CardLink($card, $card) . " with 6 or more power.";
-        } else {
-          $rv = "Did not gain dominate from discarding " . CardLink($card, $card);
+          $rv = "Gains Dominate from discarding " . CardLink($card, $card) . " with 6 or more power";
         }
         return $rv;
       default: return "";

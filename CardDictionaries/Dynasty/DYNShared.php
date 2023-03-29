@@ -478,15 +478,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $pitchArr = explode(",", $additionalCosts);
       $attackActionPitched = 0;
       $naaPitched = 0;
-      for ($i = 0; $i < count($pitchArr); ++$i) {
-        if (CardType($pitchArr[$i]) == "A") $naaPitched = 1;
-        if (CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
+      for($i = 0; $i < count($pitchArr); ++$i) {
+        if(CardType($pitchArr[$i]) == "A") $naaPitched = 1;
+        if(CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
       }
-      $rv = "Draw a card";
-      MyDrawCard();
-      if ($naaPitched && $attackActionPitched) {
+      Draw($currentPlayer);
+      if($naaPitched && $attackActionPitched) {
         PlayAura("ARC112", $currentPlayer);
-        $rv .= " and creates a Runechant token";
+        $rv .= "Created a Runechant token";
       }
       return $rv;
     case "DYN173":

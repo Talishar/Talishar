@@ -233,8 +233,7 @@
         }
         return $rv . ".";
       case "EVR008": case "EVR009": case "EVR010":
-        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        MyDrawCard();
+        Draw($currentPlayer);
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
@@ -242,11 +241,9 @@
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv .= " and got +2 from discarding a card with 6 or more power";
         }
-        $rv .= ".";
         return $rv;
       case "EVR011": case "EVR012": case "EVR013":
-        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        MyDrawCard();
+        Draw($currentPlayer);
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
@@ -254,16 +251,13 @@
           GiveAttackGoAgain();
           $rv .= " and got go again from discarding a card with 6 or more power";
         }
-        $rv .= ".";
         return $rv;
       case "EVR014": case "EVR015": case "EVR016":
-        $rv = "Did nothing";
         if($cardID == "EVR014") $target = 4;
         else if($cardID == "EVR015") $target = 5;
         else $target = 6;
         $roll = GetDieRoll($currentPlayer);
-        if($roll >= $target)
-        {
+        if($roll >= $target) {
           $rv = "Gives the next Brute attack action card +5";
           AddCurrentTurnEffect($cardID, $currentPlayer);
         }

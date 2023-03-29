@@ -44,27 +44,22 @@ function RVDPlayAbility($cardID)
 {
   global $currentPlayer;
   $rv = "";
-  switch ($cardID) {
+  switch($cardID) {
     case "RVD004":
-      $resources = &GetResources($currentPlayer);
-      $resources[0] += 1;
-      return "Gain 1 resource.";
-
+      GainResources($currentPlayer, 1);
+      return "";
     case "RVD013":
-      WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-      MyDrawCard();
+      Draw($currentPlayer);
       $card = DiscardRandom();
       $rv = "Discarded " . CardLink($card, $card);
-      if (AttackValue($card) >= 6) {
+      if(AttackValue($card) >= 6) {
         Intimidate();
-        $rv .= " and intimidate from discarding a card with 6 or more power";
+        $rv .= " and intimidated from discarding a card with 6 or more power";
       }
-      $rv .= ".";
       return $rv;
     case "RVD025":
-      $rv = "Intimidates";
       Intimidate();
-      return $rv;
+      return "";
   }
 }
 
