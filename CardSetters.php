@@ -235,11 +235,11 @@ function BanishFromSoul($player, $index=0)
   global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   global $myStateBuiltFor;
-  if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) BanishFromSpecificSoul($mainSoul, $player, $index);
+  if($mainPlayerGamestateStillBuilt) {
+    if($player == $mainPlayer) BanishFromSpecificSoul($mainSoul, $player, $index);
     else BanishFromSpecificSoul($defSoul, $player, $index);
   } else {
-    if ($player == $myStateBuiltFor) BanishFromSpecificSoul($mySoul, $player, $index);
+    if($player == $myStateBuiltFor) BanishFromSpecificSoul($mySoul, $player, $index);
     else BanishFromSpecificSoul($theirSoul, $player, $index);
   }
 }
@@ -248,7 +248,6 @@ function BanishFromSpecificSoul(&$soul, $player, $index=0)
 {
   if(count($soul) == 0) return;
   $cardID = $soul[$index];
-  WriteLog($cardID);
   unset($soul[$index]);
   $soul = array_values($soul);
   BanishCardForPlayer($cardID, $player, "SOUL", "SOUL");

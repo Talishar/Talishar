@@ -684,7 +684,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("FINDINDICES", $currentPlayer, "SOUL");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish");
         AddDecisionQueue("MAYCHOOSEMYSOUL", $currentPlayer, "<-", 1);
-        AddDecisionQueue("BANISHFROMSOUL", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIBANISHSOUL", $currentPlayer, "-", 1);
         AddDecisionQueue("THREATENARCANE", $currentPlayer, $cardID, 1);
       }
       return "";

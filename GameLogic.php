@@ -199,8 +199,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $combatChain = array_values($combatChain);
       return $cardID;
-    case "BANISHFROMSOUL":
-      return BanishFromSoul($player, $lastResult);
     case "COMBATCHAINPOWERMODIFIER":
       CombatChainPowerModifier($lastResult, $parameter);
       return $lastResult;
@@ -209,7 +207,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $defense = BlockingCardDefense($lastResult);
         if($parameter < $defense * -1) $parameter = $defense * -1;
       }
-      $combatChain[$lastResult + 6] += $parameter;
+      $combatChain[$lastResult+6] += $parameter;
       return $lastResult;
     case "REMOVEDISCARD":
       $discard = &GetDiscard($player);
@@ -230,18 +228,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIREMOVEDISCARD":
       $discard = &GetDiscard($player);
       $cards = "";
-      if (!is_array($lastResult)) $lastResult = explode(",", $lastResult);
+      if(!is_array($lastResult)) $lastResult = explode(",", $lastResult);
       $cardsRemoved = "";
-      for ($i = 0; $i < count($lastResult); ++$i) {
-        if ($cards != "") $cards .= ",";
+      for($i = 0; $i < count($lastResult); ++$i) {
+        if($cards != "") $cards .= ",";
         $cards .= $discard[$lastResult[$i]];
         if($parameter == "1") WriteLog(CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]));
         unset($discard[$lastResult[$i]]);
       }
       $discard = array_values($discard);
       return $cards;
-    case "MULTIREMOVEMYSOUL":
-      for ($i = 0; $i < $lastResult; ++$i) BanishFromSoul($player);
+    case "MULTIBANISHSOUL":
+      if(!is_array($lastResult)) $lastResult = explode(",", $lastResult);
+      for($i = 0; $i < count($lastResult); ++$i) BanishFromSoul($player, $lastResult[$i]);
       return $lastResult;
     case "ADDHAND":
       AddPlayerHand($lastResult, $player, "-");

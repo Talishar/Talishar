@@ -129,9 +129,9 @@
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
-        if (!IsAllyAttackTarget()) {
-          AddDecisionQueue("PASSPARAMETER", $otherPlayer, "1", 1);
-          AddDecisionQueue("MULTIREMOVEMYSOUL", $otherPlayer, "-", 1);
+        if(!IsAllyAttackTarget()) {
+          AddDecisionQueue("PASSPARAMETER", $otherPlayer, "0", 1);
+          AddDecisionQueue("MULTIBANISHSOUL", $otherPlayer, "-", 1);
         }
         return "";
       default: return "";
