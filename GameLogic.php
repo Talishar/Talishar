@@ -669,15 +669,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $numArcane = count(explode(",", $lastResult));
       DealArcane($numArcane, 0, "PLAYCARD", "MON231", true);
       return 1;
-    case "SOULREAPING":
-      $cards = explode(",", $lastResult);
-      if(count($cards) > 0) AddCurrentTurnEffect("MON199", $player);
-      $numBD = 0;
-      for($i = 0; $i < count($cards); ++$i) if (HasBloodDebt($cards[$i])) {
-        ++$numBD;
-      }
-      GainResources($player, $numBD);
-      return 1;
     case "CHARGE":
       DQCharge();
       return "1";
@@ -694,14 +685,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $type = $parameters[2];
       if($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
         $allies = &GetAllies($targetPlayer);
-        if($allies[$target[1] + 6] > 0) {
+        if($allies[$target[1]+6] > 0) {
           $damage -= 3;
           if($damage < 0) $damage = 0;
-          --$allies[$target[1] + 6];
+          --$allies[$target[1]+6];
         }
-        $allies[$target[1] + 2] -= $damage;
+        $allies[$target[1]+2] -= $damage;
         if($damage > 0) AllyDamageTakenAbilities($targetPlayer, $target[1]);
-        if($allies[$target[1] + 2] <= 0) DestroyAlly($targetPlayer, $target[1]);
+        if($allies[$target[1]+2] <= 0) DestroyAlly($targetPlayer, $target[1]);
         return $damage;
       } else {
         PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, $parameter);
@@ -751,14 +742,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
         $allies = &GetAllies($targetPlayer);
-        if($allies[$target[1] + 6] > 0) {
+        if($allies[$target[1]+6] > 0) {
           $damage -= 3;
-          if ($damage < 0) $damage = 0;
-          --$allies[$target[1] + 6];
+          if($damage < 0) $damage = 0;
+          --$allies[$target[1]+6];
         }
-        $allies[$target[1] + 2] -= $damage;
+        $allies[$target[1]+2] -= $damage;
         if($damage > 0) AllyDamageTakenAbilities($targetPlayer, $target[1]);
-        if($allies[$target[1] + 2] <= 0) {
+        if($allies[$target[1]+2] <= 0) {
           DestroyAlly($targetPlayer, $target[1]);
         } else {
           AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
@@ -792,8 +783,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if(SearchCharacterActive($player, "UPR166")) {
           $char = &GetPlayerCharacter($player);
           $index = FindCharacterIndex($player, "UPR166");
-          if($char[$index + 2] < 4 && GetClassState($player, $CS_AlluvionUsed) == 0) {
-            ++$char[$index + 2];
+          if($char[$index+2] < 4 && GetClassState($player, $CS_AlluvionUsed) == 0) {
+            ++$char[$index+2];
             SetClassState($player, $CS_AlluvionUsed, 1);
           }
         }
@@ -834,7 +825,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PrependDecisionQueue("ADDMYPITCH", $player, "-", 1);
         PrependDecisionQueue("REMOVEMYHAND", $player, "-", 1);
         PrependDecisionQueue("CHOOSEHANDCANCEL", $player, "<-", 1);
-        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to pitch", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a pitch card", 1);
         PrependDecisionQueue("FINDINDICES", $player, "HAND", 1);
       }
       return $parameter;
@@ -883,20 +874,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "AWAKENINGTOKENS":
       $num = GetHealth($player == 1 ? 2 : 1) - GetHealth($player);
-      for ($i = 0; $i < $num; ++$i) {
-        PlayAura("WTR075", $player);
-      }
+      for($i = 0; $i < $num; ++$i) PlayAura("WTR075", $player);
       return 1;
-    case "DIMENXXIONALGATEWAY":
-      if(ClassContains($lastResult, "RUNEBLADE", $player)) DealArcane(1, 0, "PLAYCARD", "MON161", true);
-      if(TalentContains($lastResult, "SHADOW", $player)) {
-        PrependDecisionQueue("MULTIBANISH", $player, "DECK,-", 1);
-        PrependDecisionQueue("MULTIREMOVEDECK", $player, "<-", 1);
-        PrependDecisionQueue("FINDINDICES", $player, "TOPDECK", 1);
-        PrependDecisionQueue("NOPASS", $player, "-", 1);
-        PrependDecisionQueue("YESNO", $player, "if_you_want_to_banish_the_card", 1);
-      }
-      return $lastResult;
     case "INVERTEXISTENCE":
       if($lastResult == "") {
         WriteLog("No cards were selected, so Invert Existence did not banish any cards");
@@ -914,8 +893,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if($i != 0 && $i == count($cards) - 1) $message .= "and ";
         $message .= CardLink($cards[$i], $cards[$i]);
       }
-      WriteLog($message . ".");
-      if ($numAA == 1 && $numNAA == 1) DealArcane(2, 0, "PLAYCARD", "MON158", true, $player);
+      WriteLog($message);
+      if($numAA == 1 && $numNAA == 1) DealArcane(2, 0, "PLAYCARD", "MON158", true, $player);
       return $lastResult;
     case "ROUSETHEANCIENTS":
       $cards = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
@@ -928,26 +907,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog(CardLink("MON247", "MON247") . " got +7 and go again");
       }
       return $lastResult;
-    case "BEASTWITHIN":
-      $deck = &GetDeck($player);
-      if(count($deck) == 0) {
-        LoseHealth(9999, $player);
-        WriteLog("Your deck has no cards, so " . CardLink("CRU007", "CRU007") . " continues damaging you until you die");
-        return 1;
-      }
-      $card = array_shift($deck);
-      LoseHealth(1, $player);
-      WriteLog(CardLink("CRU007", "CRU007") . " banished " . CardLink($card, $card) . " and lost 1 health");
-      if(AttackValue($card) >= 6) {
-        BanishCardForPlayer($card, $player, "DECK", "-");
-        $banish = &GetBanish($player);
-        RemoveBanish($player, count($banish) - BanishPieces());
-        AddPlayerHand($card, $player, "BANISH");
-      } else {
-        BanishCardForPlayer($card, $player, "DECK", "-");
-        PrependDecisionQueue("BEASTWITHIN", $player, "-");
-      }
-      return 1;
     case "CROWNOFDICHOTOMY":
       $lastType = CardType($lastResult);
       $indicesParam = ($lastType == "A" ? "GYCLASSAA,RUNEBLADE" : "GYCLASSNAA,RUNEBLADE");

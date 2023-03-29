@@ -1461,7 +1461,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
-      AddDecisionQueue("SOULREAPING", $currentPlayer, "-", 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SOULREAPING", 1);
       break;
     case "MON257": case "MON258": case "MON259":
       HandToTopDeck($currentPlayer);

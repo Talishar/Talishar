@@ -34,7 +34,7 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "TOPDECK");
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
-        AddDecisionQueue("DIMENXXIONALGATEWAY", $currentPlayer, "-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "DIMENXXIONALGATEWAY", 1);
         return "Lets you Opt.";
       case "MON165": case "MON166": case "MON167":
         AddCurrentTurnEffect($cardID, $currentPlayer);

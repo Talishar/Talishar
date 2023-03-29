@@ -597,7 +597,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       PlayAura("ARC112", $player);
       break;
     case "CRU007":
-      AddDecisionQueue("BEASTWITHIN", $player, "-");
+      AddDecisionQueue("SPECIFICCARD", $player, "BEASTWITHIN");
       break;
     case "CRU008":
       Intimidate();

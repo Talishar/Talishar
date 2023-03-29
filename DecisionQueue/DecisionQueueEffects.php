@@ -346,6 +346,45 @@ function SpecificCardLogic($player, $card, $lastResult)
         AddArsenal($cardID, $player, "DECK", "UP");
       }
       return $lastResult;
+    case "SOULREAPING":
+      $cards = explode(",", $lastResult);
+      if(count($cards) > 0) AddCurrentTurnEffect("MON199", $player);
+      $numBD = 0;
+      for($i = 0; $i < count($cards); ++$i) if (HasBloodDebt($cards[$i])) {
+        ++$numBD;
+      }
+      GainResources($player, $numBD);
+      return 1;
+    case "DIMENXXIONALGATEWAY":
+      if(ClassContains($lastResult, "RUNEBLADE", $player)) DealArcane(1, 0, "PLAYCARD", "MON161", true);
+      if(TalentContains($lastResult, "SHADOW", $player)) {
+        PrependDecisionQueue("MULTIBANISH", $player, "DECK,-", 1);
+        PrependDecisionQueue("MULTIREMOVEDECK", $player, "<-", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "TOPDECK", 1);
+        PrependDecisionQueue("NOPASS", $player, "-", 1);
+        PrependDecisionQueue("YESNO", $player, "if_you_want_to_banish_the_card", 1);
+      }
+      return $lastResult;
+    case "BEASTWITHIN":
+      $deck = &GetDeck($player);
+      if(count($deck) == 0) {
+        LoseHealth(9999, $player);
+        WriteLog("Your deck has no cards, so " . CardLink("CRU007", "CRU007") . " continues damaging you until you die");
+        return 1;
+      }
+      $card = array_shift($deck);
+      LoseHealth(1, $player);
+      WriteLog(CardLink("CRU007", "CRU007") . " banished " . CardLink($card, $card) . " and lost 1 health");
+      if(AttackValue($card) >= 6) {
+        BanishCardForPlayer($card, $player, "DECK", "-");
+        $banish = &GetBanish($player);
+        RemoveBanish($player, count($banish) - BanishPieces());
+        AddPlayerHand($card, $player, "BANISH");
+      } else {
+        BanishCardForPlayer($card, $player, "DECK", "-");
+        PrependDecisionQueue("SPECIFICCARD", $player, "BEASTWITHIN");
+      }
+      return 1;
     default: return "";
   }
 }
