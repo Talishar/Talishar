@@ -523,8 +523,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "REMOVECOUNTER":
       $character = &GetPlayerCharacter($player);
-      $character[$lastResult + 2] -= 1;
-      WriteLog(CardLink($parameter, $parameter) . " removed a counter from " . CardLink($character[$lastResult], $character[$lastResult]) . ".");
+      $character[$lastResult+2] -= 1;
+      WriteLog(CardLink($parameter, $parameter) . " removed a counter from " . CardLink($character[$lastResult], $character[$lastResult]));
       return $lastResult;
     case "ADDIMMEDIATECURRENTEFFECT":
       AddCurrentTurnEffect($parameter, $player, "PLAY");
@@ -922,9 +922,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $card = $params[0];
       $elements = $params[1];
       $elementArray = explode(",", $elements);
-      for ($i = 0; $i < count($elementArray); ++$i) {
+      for($i = 0; $i < count($elementArray); ++$i) {
         $element = $elementArray[$i];
-        switch ($element) {
+        switch($element) {
           case "EARTH": IncrementClassState($player, $CS_NumFusedEarth); break;
           case "ICE": IncrementClassState($player, $CS_NumFusedIce); break;
           case "LIGHTNING": IncrementClassState($player, $CS_NumFusedLightning); break;
@@ -966,8 +966,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return 1;
     case "DIMENXXIONALGATEWAY":
-      if (ClassContains($lastResult, "RUNEBLADE", $player)) DealArcane(1, 0, "PLAYCARD", "MON161", true);
-      if (TalentContains($lastResult, "SHADOW", $player)) {
+      if(ClassContains($lastResult, "RUNEBLADE", $player)) DealArcane(1, 0, "PLAYCARD", "MON161", true);
+      if(TalentContains($lastResult, "SHADOW", $player)) {
         PrependDecisionQueue("MULTIBANISH", $player, "DECK,-", 1);
         PrependDecisionQueue("MULTIREMOVEDECK", $player, "<-", 1);
         PrependDecisionQueue("FINDINDICES", $player, "TOPDECK", 1);
@@ -985,10 +985,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $numAA = 0;
       $numNAA = 0;
       $message = "Invert existence banished ";
-      for ($i = 0; $i < count($cards); ++$i) {
+      for($i = 0; $i < count($cards); ++$i) {
         $type = CardType($cards[$i]);
-        if ($type == "AA") ++$numAA;
-        else if ($type == "A") ++$numNAA;
+        if($type == "AA") ++$numAA;
+        else if($type == "A") ++$numNAA;
         if($i >= 1) $message .= ", ";
         if($i != 0 && $i == count($cards) - 1) $message .= "and ";
         $message .= CardLink($cards[$i], $cards[$i]);
@@ -1066,7 +1066,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = &GetDeck($player);
       $hand = &GetHand($player);
       $char = &GetPlayerCharacter($player);
-      for ($i = 0; $i < CharacterIntellect($char[0]); ++$i) {
+      for($i = 0; $i < CharacterIntellect($char[0]); ++$i) {
         array_push($hand, array_shift($deck));
       }
       return 1;
