@@ -652,7 +652,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $amount = intval($parameter);
       WriteLog($amount);
       $combatChain[5] += $amount;
-      return 1;
+      return $parameter;
     case "SONATAARCANIX":
       $cards = explode(",", $lastResult);
       $numAA = 0;
