@@ -19,18 +19,18 @@ function WeaponIndices($chooser, $player, $subtype = "")
   $whoPrefix = ($player == $chooser ? "MY" : "THEIR");
   $character = GetPlayerCharacter($player);
   $weapons = "";
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i + 1] != 0 && CardType($character[$i]) == "W" && ($subtype == "" || CardSubType($character[$i]) == $subtype)) {
-      if ($weapons != "") $weapons .= ",";
+  for($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if($character[$i + 1] != 0 && CardType($character[$i]) == "W" && ($subtype == "" || CardSubType($character[$i]) == $subtype)) {
+      if($weapons != "") $weapons .= ",";
       $weapons .= $whoPrefix . "CHAR-" . $i;
     }
   }
   $auraWeapons = (SearchCharacterForCard($player, "MON003") || SearchCharacterForCard($player, "MON088")) && ($player == $mainPlayer);
-  if ($auraWeapons) {
+  if($auraWeapons) {
     $auras = GetAuras($player);
-    for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-      if (ClassContains($auras[$i], "ILLUSIONIST", $player)) {
-        if ($weapons != "") $weapons .= ",";
+    for($i = 0; $i < count($auras); $i += AuraPieces()) {
+      if(ClassContains($auras[$i], "ILLUSIONIST", $player)) {
+        if($weapons != "") $weapons .= ",";
         $weapons .= $whoPrefix . "AURAS-" . $i;
       }
     }
@@ -40,16 +40,14 @@ function WeaponIndices($chooser, $player, $subtype = "")
 
 function ApplyEffectToEachWeapon($effectID)
 {
-  global $myCharacter, $currentPlayer;
-  for ($i = 0; $i < count($myCharacter); $i += CharacterPieces()) {
-    if (CardType($myCharacter[$i]) == "W") {
-      AddCharacterEffect($currentPlayer, $i, $effectID);
-    }
+  global $currentPlayer;
+  for($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if(CardType($character[$i]) == "W") AddCharacterEffect($currentPlayer, $i, $effectID);
   }
 }
 
-function isAuraWeapon($cardID, $player, $from)
+function IsAuraWeapon($cardID, $player, $from)
 {
-  if ((SearchCharacterForCard($player, "MON003") || SearchCharacterForCard($player, "MON088")) && DelimStringContains(CardSubType($cardID), "Aura") && $from == "PLAY") return true;
+  if((SearchCharacterForCard($player, "MON003") || SearchCharacterForCard($player, "MON088")) && DelimStringContains(CardSubType($cardID), "Aura") && $from == "PLAY") return true;
   else return false;
 }

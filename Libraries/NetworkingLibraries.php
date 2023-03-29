@@ -171,23 +171,21 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 14: //Banish
       $index = $cardID;
       $banish = &GetBanish($playerID);
-      $theirCharacter = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
+      $theirChar = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
       if($index < 0 || $index >= count($banish))
       {
         echo("Banish Index " . $index . " Invalid Input<BR>");
         return false;
       }
       $cardID = $banish[$index];
-      if ($banish[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
-      if ($banish[$index + 1] == "MON212" && TalentContains($theirCharacter[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("MON212", $currentPlayer);
+      if($banish[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
+      if($banish[$index + 1] == "MON212" && TalentContains($theirChar[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("MON212", $currentPlayer);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if(CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2]);
       break;
-    case 15:
-    case 16:
-    case 18: //CHOOSE (15 and 18 deprecated)
-      if (count($decisionQueue) > 0)
+    case 15: case 16: case 18: //Decision Queue (15 and 18 deprecated)
+      if(count($decisionQueue) > 0)
       {
         $index = $cardID;
         ContinueDecisionQueue($index);
@@ -670,19 +668,17 @@ function PitchHasCard($cardID)
 
 function HasCard($cardID)
 {
-  global $myHand, $myCharacter;
+  global $currentPlayer;
   $cardType = CardType($cardID);
-  if ($cardType == "C" || $cardType == "E" || $cardType == "W") {
-    for ($i = 0; $i < count($myCharacter); $i += CharacterPieces()) {
-      if ($myCharacter[$i] == $cardID) {
-        return $i;
-      }
+  if($cardType == "C" || $cardType == "E" || $cardType == "W") {
+    $character = &GetPlayerCharacter($currentPlayer);
+    for($i = 0; $i < count($character); $i += CharacterPieces()) {
+      if($character[$i] == $cardID) return $i;
     }
   } else {
-    for ($i = 0; $i < count($myHand); ++$i) {
-      if ($myHand[$i] == $cardID) {
-        return $i;
-      }
+    $hand = &GetHand($currentPlayer);
+    for($i = 0; $i < count($hand); ++$i) {
+      if($hand[$i] == $cardID) return $i;
     }
   }
   return -1;

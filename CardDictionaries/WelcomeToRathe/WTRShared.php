@@ -322,7 +322,7 @@ function WTRAbilityCost($cardID)
         }
         return "";
       case "WTR126": case "WTR127": case "WTR128":
-        if(CardType($combatChain[0]) == "W" || isAuraWeapon($combatChain[0], $mainPlayer, $combatChain[2])) {
+        if(CardType($combatChain[0]) == "W" || IsAuraWeapon($combatChain[0], $mainPlayer, $combatChain[2])) {
           DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
           $rv = "Did 1 damage to the attacking hero";
         }

@@ -26,7 +26,6 @@
 
   function CRUAbilityType($cardID, $index=-1)
   {
-    global $myCharacter, $myClassState, $CS_PlayIndex;
     switch($cardID)
     {
       case "CRU004": case "CRU005": return "AA";
@@ -54,7 +53,6 @@
 
   function CRUAbilityHasGoAgain($cardID)
   {
-    global $myCharacter, $myClassState, $CS_PlayIndex;
     switch($cardID)
     {
       case "CRU006": return true;
