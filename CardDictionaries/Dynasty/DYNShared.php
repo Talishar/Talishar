@@ -2,12 +2,11 @@
 
 function DYNAbilityCost($cardID)
 {
-  switch ($cardID) {
+  switch($cardID) {
     case "DYN001": return 3;
     case "DYN005": return 3;
     case "DYN025": return 3;
     case "DYN046": return 0;
-    //Warrior
     case "DYN067": return 1;
     case "DYN068": return 3;
     case "DYN069": case "DYN070": return 1;
@@ -31,11 +30,10 @@ function DYNAbilityCost($cardID)
 
 function DYNAbilityType($cardID, $index = -1)
 {
-  switch ($cardID) {
+  switch($cardID) {
     case "DYN001": return "A";
     case "DYN005": return "AA";
     case "DYN046": return "I";
-    //Warrior
     case "DYN067": return "AA";
     case "DYN068": return "AA";
     case "DYN069": case "DYN070": return "AA";
@@ -58,38 +56,29 @@ function DYNAbilityType($cardID, $index = -1)
     default: return "";
   }
 }
-// Natural go again or ability go again. Attacks that gain go again should be in CoreLogic (due to hypothermia)
+
 function DYNHasGoAgain($cardID)
 {
-  switch ($cardID) {
-    //Brute
+  switch($cardID) {
     case "DYN009":
     case "DYN022": case "DYN023": case "DYN024":
-    //Guardian
     case "DYN028":
-    //Ninja
     case "DYN049":
     case "DYN050": case "DYN051": case "DYN052":
     case "DYN062": case "DYN063": case "DYN064":
     case "DYN065":
-    //Warrior
     case "DYN071":
     case "DYN076": case "DYN077": case "DYN078":
 		case "DYN082": case "DYN083": case "DYN084":
 		case "DYN085": case "DYN086": case "DYN087":
-    //Mechanologist
     case "DYN091":
     case "DYN092":
-    //Assassin
     case "DYN115": case "DYN116":
-    //Ranger
     case "DYN155":
 		case "DYN168": case "DYN169": case "DYN170":
-    //Runeblade
 		case "DYN185": case "DYN186": case "DYN187":
     case "DYN188": case "DYN189": case "DYN190":
     case "DYN209": case "DYN210": case "DYN211":
-    //Illusionist
     case "DYN212":
     case "DYN230": case "DYN231": case "DYN232": return true;
     default: return false;
@@ -98,7 +87,7 @@ function DYNHasGoAgain($cardID)
 
 function DYNAbilityHasGoAgain($cardID)
 {
-  switch ($cardID) {
+  switch($cardID) {
     case "DYN151": case "DYN192": case "DYN240": case "DYN243": return true;
     default: return false;
   }
@@ -109,8 +98,8 @@ function DYNEffectAttackModifier($cardID)
   global $mainPlayer;
   $params = explode(",", $cardID);
   $cardID = $params[0];
-  if (count($params) > 1) $parameter = $params[1];
-  switch ($cardID) {
+  if(count($params) > 1) $parameter = $params[1];
+  switch($cardID) {
     case "DYN007": return 6;
     case "DYN013": return 3;
     case "DYN014": return 2;
@@ -158,7 +147,7 @@ function DYNCombatEffectActive($cardID, $attackID)
   global $combatChainState, $CCS_IsBoosted, $mainPlayer;
   $params = explode(",", $cardID);
   $cardID = $params[0];
-  switch ($cardID) {
+  switch($cardID) {
     case "DYN007": return true;
     case "DYN013": case "DYN014": case "DYN015": return AttackValue($attackID) >= 6;
     case "DYN019": case "DYN020": case "DYN021": return true;
@@ -196,10 +185,10 @@ function DYNCombatEffectActive($cardID, $attackID)
 function DYNCardTalent($cardID)
 {
   $number = intval(substr($cardID, 3));
-  if ($number <= 0) return "";
-  else if ($number >= 1 && $number <= 2) return "ROYAL,DRACONIC";
-  else if ($number >= 3 && $number <= 4) return "DRACONIC";
-  else if ($number == 66 || $number == 212 || $number == 612) return "LIGHT";
+  if($number <= 0) return "";
+  else if($number >= 1 && $number <= 2) return "ROYAL,DRACONIC";
+  else if($number >= 3 && $number <= 4) return "DRACONIC";
+  else if($number == 66 || $number == 212 || $number == 612) return "LIGHT";
   else return "NONE";
 }
 
@@ -208,7 +197,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $CCS_CurrentAttackGainedGoAgain, $combatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
-  switch ($cardID) {
+  switch($cardID) {
     case "DYN001":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:cardID=ARC159");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -241,7 +230,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return $rv;
     case "DYN019": case "DYN020": case "DYN021":
-      if (AttackValue($additionalCosts) >= 6) {
+      if(AttackValue($additionalCosts) >= 6) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
         $rv .= "Discarded a 6 power card and gains +" . EffectAttackModifier($cardID);
       }
@@ -267,11 +256,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         }
       }
       return "";
-    case "DYN039":
-    case "DYN040":
-    case "DYN041":
-      if ($cardID == "DYN039") $maxDef = 3;
-      else if ($cardID == "DYN040") $maxDef = 2;
+    case "DYN039": case "DYN040": case "DYN041":
+      if($cardID == "DYN039") $maxDef = 3;
+      else if($cardID == "DYN040") $maxDef = 2;
       else $maxDef = 1;
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Off-Hand;hasNegCounters=true;maxDef=" . $maxDef . ";class=GUARDIAN");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -286,7 +273,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN046":
       AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
-      return "Tearing Shuko gives your next Crouching Tiger +2.";
+      return "";
     case "DYN049":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddPlayerHand("DYN065", $currentPlayer, "-");
@@ -623,7 +610,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       Transform($currentPlayer, "MON104", "DYN612");
       return "";
     case "DYN215":
-      // TODO: Make named attack Illusionist
       return CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction";
     case "DYN221": case "DYN222": case "DYN223":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -677,19 +663,18 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return $rv;
     case "DYN242":
-      $rv = "";
       if($from == "PLAY") {
         DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose any number of heroes");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Both_Heroes,Target_Yourself,Target_No_Heroes");
         AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "IMPERIALWARHORN", 1);
       }
-      return $rv;
+      return "";
     case "DYN243":
       $rv = "";
       if ($from == "PLAY") {
         DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
-        $rv = "Draws a card.";
+        $rv = "Draws a card";
         Draw($currentPlayer);
       }
       return $rv;
@@ -862,7 +847,7 @@ function IsRoyal($player)
 {
   $mainCharacter = &GetPlayerCharacter($player);
 
-  if (SearchCharacterForCard($player, "DYN234")) return true;
+  if(SearchCharacterForCard($player, "DYN234")) return true;
 
   switch ($mainCharacter[0]) {
     case "DYN001": return true;
@@ -873,7 +858,7 @@ function IsRoyal($player)
 
 function HasSurge($cardID)
 {
-  switch ($cardID) {
+  switch($cardID) {
 		case "DYN194": return true;
 		case "DYN195": return true;
     case "DYN197": case "DYN198": case "DYN199": return true;
@@ -885,7 +870,7 @@ function HasSurge($cardID)
 
 function HasEphemeral($cardID)
 {
-  switch ($cardID) {
+  switch($cardID) {
     case "DYN065": return true;
     default: return false;
   }
