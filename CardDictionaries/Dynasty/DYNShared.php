@@ -440,7 +440,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to put <0> in your arsenal", 1);
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_put_the_card_in_arsenal", 1);
       }
-      AddDecisionQueue("SANDSCOURGREATBOW", $currentPlayer, "-");
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SANDSCOURGREATBOW");
       return "";
     case "DYN155":
       AddCurrentTurnEffect($cardID, $currentPlayer);

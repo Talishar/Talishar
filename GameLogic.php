@@ -542,22 +542,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($lastResult != $parameter) return "PASS";
       return 1;
     case "NOPASS":
-      if ($lastResult == "NO") return "PASS";
+      if($lastResult == "NO") return "PASS";
       return 1;
-    case "SANDSCOURGREATBOW":
-      if($lastResult == "NO") LoadArrow($player);
-      else {
-        $deck = &GetDeck($player);
-        $cardID = array_shift($deck);
-        AddArsenal($cardID, $player, "DECK", "UP");
-      }
-      return $lastResult;
     case "NULLPASS":
       if($lastResult == "") return "PASS";
       return $lastResult;
     case "ELSE":
       if($lastResult == "PASS") return "0";
-      else if ($lastResult == "NO") return "NO";
+      else if($lastResult == "NO") return "NO";
       else return "PASS";
     case "FINDCURRENTEFFECTPASS":
       if(SearchCurrentTurnEffects($parameter, $player)) return "PASS";
@@ -633,16 +625,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddResourceCost($player, $number);
       AddCurrentTurnEffect("WTR081-" . $number, $player);
       return $number;
-    case "IRONHIDE":
-      $character = &GetPlayerCharacter($player);
-      $index = FindCharacterIndex($player, $combatChain[$parameter]);
-      $character[$index + 4] += 2;
-      return $lastResult;
-    case "VAMBRACE":
-      $character = &GetPlayerCharacter($player);
-      $index = FindCharacterIndex($player, $combatChain[$parameter]);
-      $character[$index + 4] += 1;
-      return $lastResult;
     case "BOOST":
       global $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
       $deck = &GetDeck($currentPlayer);

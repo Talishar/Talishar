@@ -338,6 +338,14 @@ function SpecificCardLogic($player, $card, $lastResult)
       }
       $dqState[5] = $mzIndices;
       return $lastResult;
+    case "SANDSCOURGREATBOW":
+      if($lastResult == "NO") LoadArrow($player);
+      else {
+        $deck = &GetDeck($player);
+        $cardID = array_shift($deck);
+        AddArsenal($cardID, $player, "DECK", "UP");
+      }
+      return $lastResult;
     default: return "";
   }
 }
