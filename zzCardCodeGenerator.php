@@ -102,7 +102,7 @@
         else if($propertyName == "cost")
         {
           $data = $cardArray[$i]->cost;
-          if($data == "") $data = 0;
+          if($data == "") $data = -1;
         }
         else if($propertyName == "health")
         {
