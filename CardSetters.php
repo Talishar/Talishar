@@ -118,7 +118,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
   if($facing == "UP" && $from == "DECK" && $cardSubType == "Arrow" && $character[CharacterPieces()] == "DYN151") $counters=1;
   array_push($arsenal, $cardID);
   array_push($arsenal, $facing);
-  array_push($arsenal, ArsenalNumUsesPerTurn($cardID)); //Num uses
+  array_push($arsenal, 1); //Num uses - currently always 1
   array_push($arsenal, $counters); //Counters
   array_push($arsenal, "0"); //Is Frozen (1 = Frozen)
   array_push($arsenal, GetUniqueId()); //Unique ID
@@ -154,8 +154,8 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
 function ArsenalEndTurn($player)
 {
   $arsenal = &GetArsenal($player);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    $arsenal[$i + 2] = ArsenalNumUsesPerTurn($arsenal[$i]);
+  for($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    $arsenal[$i + 2] = 1;//Num uses - currently always 1
   }
 }
 

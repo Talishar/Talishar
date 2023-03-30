@@ -1173,7 +1173,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $layerPriority[0] = ShouldHoldPriority(1);
   $layerPriority[1] = ShouldHoldPriority(2);
   $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
-  if ($dynCostResolved == -1) {
+  if($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
     if($playingCard)
     {
@@ -1184,11 +1184,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
     }
     //CR 5.1.2 Announce (CR 2.0)
-    if ($from == "ARS") WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);
+    if($from == "ARS") WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);
     else WriteLog("Player " . $playerID . " " . PlayTerm($turn[0], $from, $cardID) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
 
     LogPlayCardStats($currentPlayer, $cardID, $from);
-    if ($playingCard) {
+    if($playingCard) {
       ClearAdditionalCosts($currentPlayer);
       MakeGamestateBackup();
       $lastPlayed = [];
@@ -1198,13 +1198,13 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $lastPlayed[3] = "-";
       SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
     }
-    if (count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDTURN") $layers[count($layers)-LayerPieces()] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
+    if(count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDTURN") $layers[count($layers)-LayerPieces()] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
   }
-  if ($turn[0] != "P") {
-    if ($dynCostResolved >= 0) {
+  if($turn[0] != "P") {
+    if($dynCostResolved >= 0) {
       SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
       $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID)));
-      if (!$playingCard) $resources[1] += $dynCostResolved;
+      if(!$playingCard) $resources[1] += $dynCostResolved;
       else {
         $frostbitesPaid = AuraCostModifier();
         $isAlternativeCostPaid = IsAlternativeCostPaid($cardID, $from);
@@ -1216,17 +1216,17 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + $frostbitesPaid + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
         if($isAlternativeCostPaid && $resources[1] > 0) WriteLog("<span style='color:red;'>Alternative costs do not offset additional costs.</span>");
       }
-      if ($resources[1] < 0) $resources[1] = 0;
+      if($resources[1] < 0) $resources[1] = 0;
       LogResourcesUsedStats($currentPlayer, $resources[1]);
     } else {
       $dqCopy = $decisionQueue;
       $decisionQueue = [];
       //CR 5.1.3 Declare Costs Begin (CR 2.0)
       $resources[1] = 0;
-      if ($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
+      if($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
       else $dynCost = "";
-      if ($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
-      if ($dynCost != "") {
+      if($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
+      if($dynCost != "") {
         AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
       }
@@ -1238,15 +1238,15 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       //MISSING CR 5.1.3e Decide order of costs to be paid
       return;
     }
-  } else if ($turn[0] == "P") {
+  } else if($turn[0] == "P") {
     $pitchValue = PitchValue($cardID);
     $resources[0] += $pitchValue;
     array_push($pitch, $cardID);
-    if (CardCaresAboutPitch($turn[3])) AddAdditionalCost($currentPlayer, $cardID);
+    if(CardCaresAboutPitch($turn[3])) AddAdditionalCost($currentPlayer, $cardID);
     PitchAbility($cardID);
   }
-  if ($resources[0] < $resources[1]) {
-    if ($turn[0] != "P") {
+  if($resources[0] < $resources[1]) {
+    if($turn[0] != "P") {
       $turn[2] = $turn[0];
       $turn[3] = $cardID;
       $turn[4] = $from;
@@ -1257,37 +1257,35 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $resources[0] -= $resources[1];
   $resourcesPaid = GetClassState($currentPlayer, $CS_DynCostResolved);
   $resources[1] = 0;
-  if ($turn[0] == "P") {
+  if($turn[0] == "P") {
     $turn[0] = $turn[2];
     $cardID = $turn[3];
     $from = $turn[4];
     $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
   }
-  if (GetClassState($currentPlayer, $CS_LastDynCost) != 0 && DynamicCost($cardID) != "") WriteLog(CardLink($cardID, $cardID) . " was played with a cost of " . GetClassState($currentPlayer, $CS_LastDynCost));
+  if(GetClassState($currentPlayer, $CS_LastDynCost) != 0 && DynamicCost($cardID) != "") WriteLog(CardLink($cardID, $cardID) . " was played with a cost of " . GetClassState($currentPlayer, $CS_LastDynCost));
   $cardType = CardType($cardID);
   $abilityType = "";
   $playType = $cardType;
   PlayerMacrosCardPlayed();
   //We've paid resources, now pay action points if applicable
-  if ($playingCard) {
+  if($playingCard) {
     $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
-    if (IsStaticType($cardType, $from, $cardID)) {
+    if(IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
-      if ($abilityType == "A" && !$canPlayAsInstant) {
-        ResetCombatChainState();
-      }
+      if($abilityType == "A" && !$canPlayAsInstant) ResetCombatChainState();
       PayAbilityAdditionalCosts($cardID);
       ActivateAbilityEffects();
     } else {
-      if (GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
+      if(GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
       else SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) . "," . $cardID);
-      if ($cardType == "A" && !$canPlayAsInstant) {
+      if($cardType == "A" && !$canPlayAsInstant) {
         ResetCombatChainState();
       }
-      if ($cardType == "A" || $cardType == "AA") LoseHealth(CountCurrentTurnEffects("CRU123-DMG", $playerID), $playerID);
+      if($cardType == "A" || $cardType == "AA") LoseHealth(CountCurrentTurnEffects("CRU123-DMG", $playerID), $playerID);
       CombatChainPlayAbility($cardID);
       ItemPlayAbilities($cardID, $from);
       ResetCardPlayed($cardID);
@@ -1302,26 +1300,26 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
       IncrementClassState($currentPlayer, $CS_NumActionsPlayed);
     }
-    if ($from == "BANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
-    if (HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
-    if (PitchValue($cardID) == 1) IncrementClassState($currentPlayer, $CS_NumRedPlayed);
+    if($from == "BANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
+    if(HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
+    if(PitchValue($cardID) == 1) IncrementClassState($currentPlayer, $CS_NumRedPlayed);
     PayAdditionalCosts($cardID, $from);
   }
-  if ($cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
-  if ($cardID == "ARC185" || $cardID == "ARC186" || $cardID == "ARC187") IncrementClassState($currentPlayer, $CS_NumMoonWishPlayed);
-  if ($from == "BANISH") {
+  if($cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
+  if($cardID == "ARC185" || $cardID == "ARC186" || $cardID == "ARC187") IncrementClassState($currentPlayer, $CS_NumMoonWishPlayed);
+  if($from == "BANISH") {
     $index = GetClassState($currentPlayer, $CS_PlayIndex);
     $banish = &GetBanish($currentPlayer);
-    for ($i = $index + BanishPieces() - 1; $i >= $index; --$i) {
+    for($i = $index + BanishPieces() - 1; $i >= $index; --$i) {
       unset($banish[$i]);
     }
     $banish = array_values($banish);
   }
 
   //CR 5.1.4b Declare target of attack
-  if ($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
-  if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
-    if (HasBoost($cardID)) Boost();
+  if($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
+  if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
+    if(HasBoost($cardID)) Boost();
     GetLayerTarget($cardID); //Layer target
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
