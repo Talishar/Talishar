@@ -603,119 +603,34 @@ function GetAltCardID($cardID)
 
 function IsBanned($cardID, $format)
 {
-  switch ($format) {
-
-      //  The following cards are banned in Blitz:
-      //  ARC076: Viserai
-      //  ARC077: Nebula Blade
-      //  ELE186: ELE187: ELE188: Awakening
-      //  ELE186: ELE187: ELE188: Ball Lightning
-      //  WTR164: WTR165: WTR166: Drone of Brutality
-      //  ELE223: Duskblade
-      //  WTR152: Heartened Cross Strap
-      //  CRU174: CRU175: CRU176: Snapback
-      //  ARC129: ARC130: ARC131: Stir the Aetherwind
-      //  MON239: Stubby Hammerers
-      //  ELE115: Crown of Seeds (Until Oldhim becomes Living Legend)
-      //  MON183: MON184: MON185: Seeds of Agony (Until Chane becomes Living Legend)
-      //  CRU141: Bloodsheath Skeleta
-      //  EVR037: Mask of the Pouncing Lynx
-    case "blitz":
-    case "compblitz":
-      switch ($cardID) {
-        case "ARC076":
-        case "ARC077":
-        case "ELE006":
-        case "ELE186":
-        case "ELE187":
-        case "ELE188":
-        case "WTR164":
-        case "WTR165":
-        case "WTR166":
-        case "ELE223":
-        case "WTR152":
-        case "CRU174":
-        case "CRU175":
-        case "CRU176":
-        case "ARC129":
-        case "ARC130":
-        case "ARC131":
-        case "MON239":
-        case "ELE115":
-        case "MON183":
-        case "MON184":
-        case "MON185":
-        case "CRU141":
-        case "EVR037":
-        case "EVR123": // Aether Wildfire
-        case "UPR113":
-        case "UPR114":
-        case "UPR115": // Aether Icevein
-        case "UPR139": // Hypothermia
+  switch($format) {
+    case "blitz": case "compblitz":
+      switch($cardID) {
+        case "ARC076": case "ARC077": case "ELE006": case "ELE186": case "ELE187": case "ELE188": case "WTR164":
+        case "WTR165": case "WTR166": case "ELE223": case "WTR152": case "CRU174": case "CRU175": case "CRU176":
+        case "ARC129": case "ARC130": case "ARC131": case "MON239": case "ELE115": case "MON183": case "MON184":
+        case "MON185": case "CRU141": case "EVR037": case "EVR123": case "UPR113": case "UPR114": case "UPR115": case "UPR139":
           return true;
-        default:
-          return false;
+        default: return false;
       }
       break;
-
-      //    MON001: Prism, Sculptor of Arc Light (as of August 30, 2022)
-      //    MON003: Luminaris (as of August 30, 2022)
-      //    EVR017: Bravo, Star of the Show
-      //    MON153: Chane, Bound by Shadow
-      //    MON155: Galaxxi Black
-
-      //    The following cards are banned in Classic Constructed:
-      //    ELE006: Awakening
-      //    ELE186: ELE187: ELE188: Ball Lightning
-      //    WTR164: WTR165: WTR166: Drone of Brutality
-      //    ELE223: Duskblade
-      //    ARC170: ARC171: ARC172: Plunder Run
-      //    MON239: Stubby Hammerers
-      //    CRU141: Bloodsheath Skeleta
-      //    ELE114: Pulse of Isenloft
-    case "cc":
-    case "compcc":
-      switch ($cardID) {
-        case "MON001":
-        case "MON003":
-        case "EVR017":
-        case "MON153":
-        case "MON155":
-        case "ELE006":
-        case "ELE186":
-        case "ELE187":
-        case "ELE188":
-        case "WTR164":
-        case "WTR165":
-        case "WTR166":
-        case "ELE223":
-        case "ARC170":
-        case "ARC171":
-        case "ARC172":
-        case "MON239":
-        case "CRU141":
-        case "ELE114":
+    case "cc": case "compcc":
+      switch($cardID) {
+        case "MON001": case "MON003": case "EVR017": case "MON153": case "MON155": case "ELE006": case "ELE186":
+        case "ELE187": case "ELE188": case "WTR164": case "WTR165": case "WTR166": case "ELE223": case "ARC170":
+        case "ARC171": case "ARC172": case "MON239": case "CRU141": case "ELE114":
           return true;
-        default:
-          return false;
+        default: return false;
       }
       break;
-
     case "commoner":
-      switch ($cardID) {
-        case "ELE186": //Ball Lightning
-        case "ELE187":
-        case "ELE188":
-        case "MON266": //Belittle
-        case "MON267":
-        case "MON268":
+      switch($cardID) {
+        case "ELE186": case "ELE187": case "ELE188": case "MON266": case "MON267": case "MON268":
           return true;
-        default:
-          return false;
+        default: return false;
       }
       break;
-    default:
-      return false;
+    default: return false;
   }
 }
 
