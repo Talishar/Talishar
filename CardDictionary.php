@@ -385,10 +385,10 @@ function PitchValue($cardID)
 
 function BlockValue($cardID)
 {
-  global $mainPlayer;
+  global $defPlayer;
   if(!$cardID) return "";
   $set = CardSet($cardID);
-  if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
+  if($cardID == "MON191") return SearchPitchForNumCosts($defPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Block");
   if($set != "ROG" && $set != "DUM")
   {
