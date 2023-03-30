@@ -40,14 +40,11 @@ function CardType($cardID)
 {
   if(!$cardID) return "";
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM")
-  {
+  if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardType($cardID);
   }
-  if ($set == "ROG") {
-    return ROGUECardType($cardID);
-  }
+  if($set == "ROG") return ROGUECardType($cardID);
   switch ($cardID) {
     case "MON406": return "M";
     case "MON400": case "MON401": case "MON402": return "E";
@@ -76,8 +73,7 @@ function CardType($cardID)
     case "DUMMY":
     case "DUMMYDISHONORED":
       return "C";
-    default:
-      return "";
+    default: return "";
   }
 }
 
@@ -86,15 +82,12 @@ function CardSubType($cardID)
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
   if(!$cardID) return "";
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM")
-  {
+  if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardSubtype($cardID);
   }
-  if ($set == "ROG") {
-    return ROGUECardSubtype($cardID);
-  }
-  switch ($cardID) {
+  if($set == "ROG") return ROGUECardSubtype($cardID);
+  switch($cardID) {
     default:
       case "MON400": return "Chest";
       case "MON401": return "Arms";
@@ -121,36 +114,32 @@ function CardSubType($cardID)
 function CharacterHealth($cardID)
 {
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM")
-  {
+  if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCharacterHealth($cardID);
   }
-  switch ($cardID) {
+  switch($cardID) {
     case "DUMMY": return 1000;
     case "ROGUE001": return 6;
     case "ROGUE003": return 10;
     case "ROGUE004": return 10;
     case "ROGUE008": return 20;
     case "ROGUE006": return 14;
-    default:
-      return 20;
+    default: return 20;
   }
 }
 
 function CharacterIntellect($cardID)
 {
   $cardID = ShiyanaCharacter($cardID);
-  switch ($cardID) {
-    case "CRU099":
-      return 3;
+  switch($cardID) {
+    case "CRU099": return 3;
     case "ROGUE001": return 3;
     case "ROGUE003": return 3;
     case "ROGUE004": return 3;
     case "ROGUE008": return 4;
     case "ROGUE006": return 3;
-    default:
-      return 4;
+    default: return 4;
   }
 }
 
@@ -165,137 +154,136 @@ function CardClass($cardID)
   if(!$cardID) return "";
   $set = substr($cardID, 0, 3);
   $number = intval(substr($cardID, 3));
-  switch ($set) {
+  switch($set) {
     case "WTR":
-      if ($number >= 1 && $number <= 37) return "BRUTE";
-      else if ($number >= 38 && $number <= 75) return "GUARDIAN";
-      else if ($number >= 76 && $number <= 112) return "NINJA";
-      else if ($number >= 113 && $number <= 149) return "WARRIOR";
+      if($number >= 1 && $number <= 37) return "BRUTE";
+      else if($number >= 38 && $number <= 75) return "GUARDIAN";
+      else if($number >= 76 && $number <= 112) return "NINJA";
+      else if($number >= 113 && $number <= 149) return "WARRIOR";
       else return "GENERIC";
     case "ARC":
-      if ($number == 0) return "GENERIC";
-      else if ($number >= 1 && $number <= 37) return "MECHANOLOGIST";
-      else if ($number >= 38 && $number <= 74) return "RANGER";
-      else if ($number >= 75 && $number <= 112) return "RUNEBLADE";
-      else if ($number >= 113 && $number <= 149) return "WIZARD";
+      if($number == 0) return "GENERIC";
+      else if($number >= 1 && $number <= 37) return "MECHANOLOGIST";
+      else if($number >= 38 && $number <= 74) return "RANGER";
+      else if($number >= 75 && $number <= 112) return "RUNEBLADE";
+      else if($number >= 113 && $number <= 149) return "WIZARD";
       else return "GENERIC";
     case "CRU":
-      if ($number == 0) return "GENERIC";
-      else if ($number >= 1 && $number <= 21) return "BRUTE";
-      else if ($number >= 22 && $number <= 44) return "GUARDIAN";
-      else if ($number >= 45 && $number <= 75) return "NINJA";
-      else if ($number >= 76 && $number <= 96) return "WARRIOR";
-      else if ($number == 97) return "SHAPESHIFTER";
-      else if ($number >= 98 && $number <= 117) return "MECHANOLOGIST";
-      else if ($number == 118) return "MERCHANT";
-      else if ($number >= 119 && $number <= 137) return "RANGER";
-      else if ($number >= 138 && $number <= 157) return "RUNEBLADE";
-      else if ($number >= 158 && $number <= 176) return "WIZARD";
+      if($number == 0) return "GENERIC";
+      else if($number >= 1 && $number <= 21) return "BRUTE";
+      else if($number >= 22 && $number <= 44) return "GUARDIAN";
+      else if($number >= 45 && $number <= 75) return "NINJA";
+      else if($number >= 76 && $number <= 96) return "WARRIOR";
+      else if($number == 97) return "SHAPESHIFTER";
+      else if($number >= 98 && $number <= 117) return "MECHANOLOGIST";
+      else if($number == 118) return "MERCHANT";
+      else if($number >= 119 && $number <= 137) return "RANGER";
+      else if($number >= 138 && $number <= 157) return "RUNEBLADE";
+      else if($number >= 158 && $number <= 176) return "WIZARD";
       else return "GENERIC";
     case "MON":
-      if ($number == 0) return "NONE";
-      else if ($number >= 1 && $number <= 28) return "ILLUSIONIST"; //Light
-      else if ($number >= 29 && $number <= 59) return "WARRIOR"; //Light
-      else if ($number >= 60 && $number <= 87) return "NONE"; //Light
-      else if ($number >= 88 && $number <= 104) return "ILLUSIONIST";
-      else if ($number >= 105 && $number <= 118) return "WARRIOR";
-      else if ($number >= 119 && $number <= 152) return "BRUTE"; //Shadow
-      else if ($number >= 153 && $number <= 186) return "RUNEBLADE"; //Shadow
-      else if ($number >= 187 && $number <= 220) return "NONE"; //Shadow
-      else if ($number >= 221 && $number <= 228) return "BRUTE";
-      else if ($number >= 229 && $number <= 237) return "RUNEBLADE";
-      else if ($number == 404) return "ILLUSIONIST";
-      else if ($number == 405) return "WARRIOR";
-      else if ($number == 406) return "BRUTE";
-      else if ($number == 407) return "RUNEBLADE";
+      if($number == 0) return "NONE";
+      else if($number >= 1 && $number <= 28) return "ILLUSIONIST"; //Light
+      else if($number >= 29 && $number <= 59) return "WARRIOR"; //Light
+      else if($number >= 60 && $number <= 87) return "NONE"; //Light
+      else if($number >= 88 && $number <= 104) return "ILLUSIONIST";
+      else if($number >= 105 && $number <= 118) return "WARRIOR";
+      else if($number >= 119 && $number <= 152) return "BRUTE"; //Shadow
+      else if($number >= 153 && $number <= 186) return "RUNEBLADE"; //Shadow
+      else if($number >= 187 && $number <= 220) return "NONE"; //Shadow
+      else if($number >= 221 && $number <= 228) return "BRUTE";
+      else if($number >= 229 && $number <= 237) return "RUNEBLADE";
+      else if($number == 404) return "ILLUSIONIST";
+      else if($number == 405) return "WARRIOR";
+      else if($number == 406) return "BRUTE";
+      else if($number == 407) return "RUNEBLADE";
       else return "GENERIC";
     case "ELE":
-      if ($number == 0) return "NONE";
-      else if ($number >= 1 && $number <= 30) return "GUARDIAN";
-      else if ($number >= 31 && $number <= 61) return "RANGER";
-      else if ($number >= 31 && $number <= 90) return "RUNEBLADE";
-      else if ($number >= 202 && $number <= 212) return "GUARDIAN";
-      else if ($number >= 213 && $number <= 221) return "RANGER";
-      else if ($number >= 222 && $number <= 232) return "RUNEBLADE";
-      else if ($number >= 233) return "GENERIC";
+      if($number == 0) return "NONE";
+      else if($number >= 1 && $number <= 30) return "GUARDIAN";
+      else if($number >= 31 && $number <= 61) return "RANGER";
+      else if($number >= 31 && $number <= 90) return "RUNEBLADE";
+      else if($number >= 202 && $number <= 212) return "GUARDIAN";
+      else if($number >= 213 && $number <= 221) return "RANGER";
+      else if($number >= 222 && $number <= 232) return "RUNEBLADE";
+      else if($number >= 233) return "GENERIC";
       else return "NONE";
     case "EVR":
-      if ($number == 0) return "GUARDIAN";
-      else if ($number >= 1 && $number <= 16) return "BRUTE";
-      else if ($number >= 17 && $number <= 36) return "GUARDIAN";
-      else if ($number >= 37 && $number <= 52) return "NINJA";
-      else if ($number >= 53 && $number <= 68) return "WARRIOR";
-      else if ($number >= 69 && $number <= 84) return "MECHANOLOGIST";
-      else if ($number >= 85 && $number <= 86) return "MERCHANT";
-      else if ($number >= 87 && $number <= 102) return "RANGER";
-      else if ($number >= 103 && $number <= 119) return "RUNEBLADE";
-      else if ($number >= 120 && $number <= 136) return "WIZARD";
-      else if ($number >= 137 && $number <= 153) return "ILLUSIONIST";
+      if($number == 0) return "GUARDIAN";
+      else if($number >= 1 && $number <= 16) return "BRUTE";
+      else if($number >= 17 && $number <= 36) return "GUARDIAN";
+      else if($number >= 37 && $number <= 52) return "NINJA";
+      else if($number >= 53 && $number <= 68) return "WARRIOR";
+      else if($number >= 69 && $number <= 84) return "MECHANOLOGIST";
+      else if($number >= 85 && $number <= 86) return "MERCHANT";
+      else if($number >= 87 && $number <= 102) return "RANGER";
+      else if($number >= 103 && $number <= 119) return "RUNEBLADE";
+      else if($number >= 120 && $number <= 136) return "WIZARD";
+      else if($number >= 137 && $number <= 153) return "ILLUSIONIST";
       else return "GENERIC";
     case "UPR":
-      if ($number == 0) return "NONE";
-      else if ($number >= 1 && $number <= 43) return "ILLUSIONIST";
-      else if ($number >= 44 && $number <= 83) return "NINJA";
-      else if ($number >= 84 && $number <= 101) return "NONE";
-      else if ($number >= 102 && $number <= 135) return "WIZARD";
-      else if ($number >= 136 && $number <= 150) return "NONE";
-      else if ($number >= 151 && $number <= 157) return "ILLUSIONIST";
-      else if ($number >= 158 && $number <= 164) return "NINJA";
-      else if ($number >= 165 && $number <= 181) return "WIZARD";
-      else if ($number >= 182 && $number <= 223) return "GENERIC";
-      else if ($number >= 406 && $number <= 417) return "ILLUSIONIST";
-      else if ($number >= 439 && $number <= 441) return "ILLUSIONIST";
-      else if ($number == 551) return "ILLUSIONIST";
+      if($number == 0) return "NONE";
+      else if($number >= 1 && $number <= 43) return "ILLUSIONIST";
+      else if($number >= 44 && $number <= 83) return "NINJA";
+      else if($number >= 84 && $number <= 101) return "NONE";
+      else if($number >= 102 && $number <= 135) return "WIZARD";
+      else if($number >= 136 && $number <= 150) return "NONE";
+      else if($number >= 151 && $number <= 157) return "ILLUSIONIST";
+      else if($number >= 158 && $number <= 164) return "NINJA";
+      else if($number >= 165 && $number <= 181) return "WIZARD";
+      else if($number >= 182 && $number <= 223) return "GENERIC";
+      else if($number >= 406 && $number <= 417) return "ILLUSIONIST";
+      else if($number >= 439 && $number <= 441) return "ILLUSIONIST";
+      else if($number == 551) return "ILLUSIONIST";
       else return "NONE";
     case "DVR":
-      if ($number >= 2) return "WARRIOR";
-      else if ($number == 5) return "WARRIOR";
-      else if ($number >= 7 && $number <= 12) return "WARRIOR";
-      else if ($number >= 15 && $number <= 18) return "WARRIOR";
-      else if ($number >= 20 && $number <= 21) return "WARRIOR";
+      if($number >= 2) return "WARRIOR";
+      else if($number == 5) return "WARRIOR";
+      else if($number >= 7 && $number <= 12) return "WARRIOR";
+      else if($number >= 15 && $number <= 18) return "WARRIOR";
+      else if($number >= 20 && $number <= 21) return "WARRIOR";
       else return "GENERIC";
     case "RVD":
-      if ($number <= 3) return "BRUTE";
-      else if ($number >= 7 && $number <= 17) return "BRUTE";
-      else if ($number == 21) return "BRUTE";
-      else if ($number == 23) return "BRUTE";
-      else if ($number == 25) return "BRUTE";
+      if($number <= 3) return "BRUTE";
+      else if($number >= 7 && $number <= 17) return "BRUTE";
+      else if($number == 21) return "BRUTE";
+      else if($number == 23) return "BRUTE";
+      else if($number == 25) return "BRUTE";
       else return "GENERIC";
     case "DYN":
-      if ($number == 1) return "WARRIOR,WIZARD";
-      if ($number >= 2 && $number <= 4) return "ILLUSIONIST";
-      if ($number >= 5 && $number <= 24) return "BRUTE";
-      if ($number >= 25 && $number <= 44) return "GUARDIAN";
-      if ($number >= 45 && $number <= 65) return "NINJA";
-      if ($number >= 66 && $number <= 87) return "WARRIOR";
-      if ($number >= 88 && $number <= 112) return "MECHANOLOGIST";
-      if ($number >= 113 && $number <= 150) return "ASSASSIN";
-      if ($number >= 151 && $number <= 170) return "RANGER";
-      if ($number >= 171 && $number <= 191) return "RUNEBLADE";
-      if ($number >= 192 && $number <= 211) return "WIZARD";
-      if ($number >= 212 && $number <= 233) return "ILLUSIONIST";
-      else if ($number == 612) return "ILLUSIONIST";
+      if($number == 1) return "WARRIOR,WIZARD";
+      if($number >= 2 && $number <= 4) return "ILLUSIONIST";
+      if($number >= 5 && $number <= 24) return "BRUTE";
+      if($number >= 25 && $number <= 44) return "GUARDIAN";
+      if($number >= 45 && $number <= 65) return "NINJA";
+      if($number >= 66 && $number <= 87) return "WARRIOR";
+      if($number >= 88 && $number <= 112) return "MECHANOLOGIST";
+      if($number >= 113 && $number <= 150) return "ASSASSIN";
+      if($number >= 151 && $number <= 170) return "RANGER";
+      if($number >= 171 && $number <= 191) return "RUNEBLADE";
+      if($number >= 192 && $number <= 211) return "WIZARD";
+      if($number >= 212 && $number <= 233) return "ILLUSIONIST";
+      else if($number == 612) return "ILLUSIONIST";
       else return "GENERIC";
     case "OUT":
-      if ($number >= 1 && $number <= 44) return "ASSASSIN";
-      else if ($number >= 45 && $number <= 88) return "NINJA";
-      else if ($number >= 89 && $number <= 138) return "RANGER";
-      else if ($number >= 139 && $number <= 156) return "ASSASSIN,NINJA";
-      else if ($number >= 157 && $number <= 170) return "ASSASSIN,RANGER";
+      if($number >= 1 && $number <= 44) return "ASSASSIN";
+      else if($number >= 45 && $number <= 88) return "NINJA";
+      else if($number >= 89 && $number <= 138) return "RANGER";
+      else if($number >= 139 && $number <= 156) return "ASSASSIN,NINJA";
+      else if($number >= 157 && $number <= 170) return "ASSASSIN,RANGER";
       else return "GENERIC";
-    default:
-      return 0;
+    default: return 0;
   }
 }
 
 function CardTalent($cardID)
 {
   $set = substr($cardID, 0, 3);
-  if ($set == "MON") return MONCardTalent($cardID);
-  else if ($set == "ELE") return ELECardTalent($cardID);
-  else if ($set == "UPR") return UPRCardTalent($cardID);
-  else if ($set == "DYN") return DYNCardTalent($cardID);
-  else if ($set == "ROG") return ROGUECardTalent($cardID);
+  if($set == "MON") return MONCardTalent($cardID);
+  else if($set == "ELE") return ELECardTalent($cardID);
+  else if($set == "UPR") return UPRCardTalent($cardID);
+  else if($set == "DYN") return DYNCardTalent($cardID);
+  else if($set == "ROG") return ROGUECardTalent($cardID);
   return "NONE";
 }
 
@@ -314,20 +302,11 @@ function CardCost($cardID)
     case "UPR109": return 0;
     default: break;
   }
-
-  if($set != "ROG" && $set != "DUM")
-  {
+  if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardCost($cardID);
   }
-
-  if ($set == "ROG") {
-    return ROGUECardCost($cardID);
-  }
-  switch ($cardID) {
-    default:
-      return 0;
-  }
+  if($set == "ROG") return ROGUECardCost($cardID);
 }
 
 function AbilityCost($cardID)
@@ -343,17 +322,17 @@ function AbilityCost($cardID)
   }
   if(DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "UPR003")) return 0;
   if($set == "WTR") return WTRAbilityCost($cardID);
-  else if ($set == "ARC") return ARCAbilityCost($cardID);
-  else if ($set == "CRU") return CRUAbilityCost($cardID);
-  else if ($set == "MON") return MONAbilityCost($cardID);
-  else if ($set == "ELE") return ELEAbilityCost($cardID);
-  else if ($set == "EVR") return EVRAbilityCost($cardID);
-  else if ($set == "UPR") return UPRAbilityCost($cardID);
-  else if ($set == "DVR") return DVRAbilityCost($cardID);
-  else if ($set == "RVD") return RVDAbilityCost($cardID);
-  else if ($set == "DYN") return DYNAbilityCost($cardID);
-  else if ($set == "OUT") return OUTAbilityCost($cardID);
-  else if ($set == "ROG") return ROGUEAbilityCost($cardID);
+  else if($set == "ARC") return ARCAbilityCost($cardID);
+  else if($set == "CRU") return CRUAbilityCost($cardID);
+  else if($set == "MON") return MONAbilityCost($cardID);
+  else if($set == "ELE") return ELEAbilityCost($cardID);
+  else if($set == "EVR") return EVRAbilityCost($cardID);
+  else if($set == "UPR") return UPRAbilityCost($cardID);
+  else if($set == "DVR") return DVRAbilityCost($cardID);
+  else if($set == "RVD") return RVDAbilityCost($cardID);
+  else if($set == "DYN") return DYNAbilityCost($cardID);
+  else if($set == "OUT") return OUTAbilityCost($cardID);
+  else if($set == "ROG") return ROGUEAbilityCost($cardID);
   return CardCost($cardID);
 }
 
@@ -375,8 +354,7 @@ function PitchValue($cardID)
 {
   if(!$cardID) return "";
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM")
-  {
+  if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedPitchValue($cardID);
   }
@@ -390,8 +368,7 @@ function BlockValue($cardID)
   $set = CardSet($cardID);
   if($cardID == "MON191") return SearchPitchForNumCosts($defPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Block");
-  if($set != "ROG" && $set != "DUM")
-  {
+  if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedBlockValue($cardID);
   }
@@ -421,8 +398,7 @@ function AttackValue($cardID)
   else if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Attack");
   else if($cardID == "DYN216") return CountAura("MON104", $currentPlayer);
-  if($set != "ROG" && $set != "DUM")
-  {
+  if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedAttackValue($cardID);
   }
@@ -446,7 +422,6 @@ function AttackValue($cardID)
   }
 }
 
-// Natural go again or ability go again. Attacks that gain go again should be in CoreLogic (due to hypothermia)
 function HasGoAgain($cardID)
 {
   $set = CardSet($cardID);
@@ -475,17 +450,17 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   }
   if(DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "UPR003")) return "AA";
   if($set == "WTR") return WTRAbilityType($cardID, $index);
-  else if ($set == "ARC") return ARCAbilityType($cardID, $index);
-  else if ($set == "CRU") return CRUAbilityType($cardID, $index);
-  else if ($set == "MON") return MONAbilityType($cardID, $index);
-  else if ($set == "ELE") return ELEAbilityType($cardID, $index);
-  else if ($set == "EVR") return EVRAbilityType($cardID, $index);
-  else if ($set == "UPR") return UPRAbilityType($cardID, $index);
-  else if ($set == "DVR") return DVRAbilityType($cardID, $index);
-  else if ($set == "RVD") return RVDAbilityType($cardID, $index);
-  else if ($set == "DYN") return DYNAbilityType($cardID, $index);
-  else if ($set == "OUT") return OUTAbilityType($cardID, $index);
-  else if ($set == "ROG") return ROGUEAbilityType($cardID, $index);
+  else if($set == "ARC") return ARCAbilityType($cardID, $index);
+  else if($set == "CRU") return CRUAbilityType($cardID, $index);
+  else if($set == "MON") return MONAbilityType($cardID, $index);
+  else if($set == "ELE") return ELEAbilityType($cardID, $index);
+  else if($set == "EVR") return EVRAbilityType($cardID, $index);
+  else if($set == "UPR") return UPRAbilityType($cardID, $index);
+  else if($set == "DVR") return DVRAbilityType($cardID, $index);
+  else if($set == "RVD") return RVDAbilityType($cardID, $index);
+  else if($set == "DYN") return DYNAbilityType($cardID, $index);
+  else if($set == "OUT") return OUTAbilityType($cardID, $index);
+  else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
 }
 
 function GetAbilityTypes($cardID)
@@ -503,9 +478,9 @@ function GetAbilityNames($cardID, $index = -1)
   switch ($cardID) {
     case "ARC003": case "CRU101":
       $character = &GetPlayerCharacter($currentPlayer);
-      if ($index == -1) return "";
+      if($index == -1) return "";
       $rv = "Add_a_steam_counter";
-      if ($character[$index + 2] > 0) $rv .= ",Attack";
+      if($character[$index + 2] > 0) $rv .= ",Attack";
       return $rv;
     case "OUT093": return "Load,Aim";
     default: return "";
@@ -559,142 +534,95 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($phase == "P" && $from != "HAND") return false;
   if($phase == "B" && $from == "BANISH") return false;
   if($from == "BANISH" && !(PlayableFromBanish($banish[$index], $banish[$index+1]) || AbilityPlayableFromBanish($banish[$index]))) return false;
-  if($phase == "B" && $cardType == "E" && $character[$index + 6] == 1) {
-    $restriction = "On combat chain";
-    return false;
-  }
+  if($phase == "B" && $cardType == "E" && $character[$index + 6] == 1) { $restriction = "On combat chain"; return false; }
   if($from == "CHAR" && $character[$index+1] != "2") return false;
-  if($from == "CHAR" && $phase != "B" && $character[$index + 8] == "1") {
-    $restriction = "Frozen";
-    return false;
+  if($from == "CHAR" && $phase != "B" && $character[$index + 8] == "1") { $restriction = "Frozen"; return false; }
+  if($from == "PLAY" && $subtype == "Ally" && $phase != "B" && isset($myAllies[$index + 3]) && $myAllies[$index + 3] == "1") { $restriction = "Frozen"; return false; }
+  if($from == "ARS" && $phase != "B" && $myArsenal[$index + 4] == "1") { $restriction = "Frozen"; return false; }
+  if($phase != "P" && $cardType == "DR" && IsAllyAttackTarget() && $currentPlayer != $mainPlayer) return false;
+  if($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
+  if(count($combatChain) > 0 && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR")) && $from == "HAND") {
+    if(CachedDominateActive() && CachedNumBlockedFromHand() >= 1) return false;
+    if(CachedOverpowerActive() && CachedNumActionBlocked() >= 1 && ($cardType == "A" || $cardType == "AA")) return false;
+    if(CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "CRU047") || SearchCurrentTurnEffects("CRU047-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "CRU047") || SearchCharacterActive($mainPlayer, "CRU097")) && CardType($combatChain[0]) == "AA") return false;
   }
-  if(isset($myAllies[$index + 3])) {
-    if($from == "PLAY" && $subtype == "Ally" && $phase != "B" && $myAllies[$index + 3] == "1") {
-      $restriction = "Frozen";
-      return false;
-    }
-  }
-  if ($from == "ARS" && $phase != "B" && $myArsenal[$index + 4] == "1") {
-    $restriction = "Frozen";
-    return false;
-  }
-  if ($phase != "P" && $cardType == "DR" && IsAllyAttackTarget() && $currentPlayer != $mainPlayer) return false;
-  if ($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
-  if (count($combatChain) > 0 && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR")) && $from == "HAND") {
-    if (CachedDominateActive() && CachedNumBlockedFromHand() >= 1) return false;
-    if (CachedOverpowerActive() && CachedNumActionBlocked() >= 1 && ($cardType == "A" || $cardType == "AA")) return false;
-    if (CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "CRU047") || SearchCurrentTurnEffects("CRU047-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "CRU047") || SearchCharacterActive($mainPlayer, "CRU097")) && CardType($combatChain[0]) == "AA") return false;
-  }
-  if ($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player)) || $cardID == "OUT184")) return false;
-  if ($phase == "B" || $phase == "D") {
-    if ($cardType == "AA") {
+  if($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player)) || $cardID == "OUT184")) return false;
+  if($phase == "B" || $phase == "D") {
+    if($cardType == "AA") {
       $baseAttackMax = $combatChainState[$CCS_BaseAttackDefenseMax];
-      if ($baseAttackMax > -1 && AttackValue($cardID) > $baseAttackMax) return false;
+      if($baseAttackMax > -1 && AttackValue($cardID) > $baseAttackMax) return false;
     }
-    if ($combatChain[0] == "DYN121" && $phase == "B") return SearchBanishForCard($player, $cardID) == -1;
+    if($combatChain[0] == "DYN121" && $phase == "B") return SearchBanishForCard($player, $cardID) == -1;
     $resourceMin = $combatChainState[$CCS_ResourceCostDefenseMin];
-    if ($resourceMin > -1 && CardCost($cardID) < $resourceMin && $cardType != "E") return false;
-    if ($combatChainState[$CCS_CardTypeDefenseRequirement] == "Attack_Action" && $cardType != "AA") return false;
-    if ($combatChainState[$CCS_CardTypeDefenseRequirement] == "Non-attack_Action" && $cardType != "A") return false;
-    if ($combatChain[0] == "DYN121" && $cardType == "DR") return SearchBanishForCard($player, $cardID) == -1;
+    if($resourceMin > -1 && CardCost($cardID) < $resourceMin && $cardType != "E") return false;
+    if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Attack_Action" && $cardType != "AA") return false;
+    if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Non-attack_Action" && $cardType != "A") return false;
+    if($combatChain[0] == "DYN121" && $cardType == "DR") return SearchBanishForCard($player, $cardID) == -1;
   }
-  if ($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
-  if (($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index)) return false;
-  if ($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
+  if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
+  if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index)) return false;
+  if($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
   $isStaticType = IsStaticType($cardType, $from, $cardID);
-  if ($isStaticType) {
-    $cardType = GetAbilityType($cardID, $index, $from);
+  if($isStaticType) $cardType = GetAbilityType($cardID, $index, $from);
+  if($cardType == "") return false;
+  if(RequiresDiscard($cardID) || $cardID == "WTR159") {
+    if($from == "HAND" && count($myHand) < 2) return false;
+    else if(count($myHand) < 1) return false;
   }
-  if ($cardType == "") return false;
-  if (RequiresDiscard($cardID) || $cardID == "WTR159") {
-    if ($from == "HAND" && count($myHand) < 2) return false;
-    else if (count($myHand) < 1) return false;
-  }
-  if ($phase != "B" && $phase != "P" && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
-  if ($phase == "M" && $subtype == "Arrow" && $from != "ARS") return false;
-  if (SearchCurrentTurnEffects("ARC044", $player) && !$isStaticType && $from != "ARS") return false;
-  if (SearchCurrentTurnEffects("ARC043", $player) && ($cardType == "A" || $cardType == "AA") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
-  if (SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "A" && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
-  if (SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
-  if (count($combatChain) > 0) if ($combatChain[0] == "MON245" && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
-  if (SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
-  if (($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
-  if ($from == "CC" && AbilityPlayableFromCombatChain($cardID)) return true;
-  if (($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
-  switch ($cardType) {
-    case "A":
-      return $phase == "M";
-    case "AA":
-      return $phase == "M";
-    case "AR":
-      return $phase == "A";
+  if($phase != "B" && $phase != "P" && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
+  if($phase == "M" && $subtype == "Arrow" && $from != "ARS") return false;
+  if(SearchCurrentTurnEffects("ARC044", $player) && !$isStaticType && $from != "ARS") return false;
+  if(SearchCurrentTurnEffects("ARC043", $player) && ($cardType == "A" || $cardType == "AA") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
+  if(SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "A" && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
+  if(SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
+  if(count($combatChain) > 0) if ($combatChain[0] == "MON245" && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
+  if(SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
+  if(($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
+  if($from == "CC" && AbilityPlayableFromCombatChain($cardID)) return true;
+  if(($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
+  switch($cardType) {
+    case "A": return $phase == "M";
+    case "AA": return $phase == "M";
+    case "AR": return $phase == "A";
     case "DR":
       if($phase != "D") return false;
       if(!IsDefenseReactionPlayable($cardID, $from)) { $restriction = "Defense reaction not playable."; return false; }
       return true;
-    default:
-      return false;
+    default: return false;
   }
 }
 
-function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playerFrom="")
+function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom="")
 {
   global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer;
-  if ($player == "") $player = $currentPlayer;
+  if($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
-  if (($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
+  if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
   $subtype = CardSubType($cardID);
-  if (DelimStringContains($subtype, "Invocation") || DelimStringContains($subtype, "Ash") || $cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441") return "-";
-  switch ($cardID) {
-    case "WTR163":
-      return "BANISH";
-    case "CRU163":
-      return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
-    case "MON063":
-      if ($from == "CHAINCLOSING") return "SOUL";
-      return "GY";
-    case "MON064":
-      return "SOUL";
-    case "MON231":
-      return "BANISH";
-    case "ELE113":
-      return "BANISH";
-    case "ELE119": case "ELE120": case "ELE121":
-      if ($playerFrom == "ARS" && $from == "CHAINCLOSING") return "BOTDECK";
-      return "GY";
-    case "ELE140":
-    case "ELE141":
-    case "ELE142":
-      return "BANISH";
-    case "MON066": case "MON067": case "MON068":
-      if (SearchCurrentTurnEffects($cardID, $mainPlayer) && $from == "CHAINCLOSING") return "SOUL";
-      return "GY";
+  if(DelimStringContains($subtype, "Invocation") || DelimStringContains($subtype, "Ash") || $cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441") return "-";
+  switch($cardID) {
+    case "WTR163": return "BANISH";
+    case "CRU163": return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
+    case "MON063": return ($from == "CHAINCLOSING" ? "SOUL" : "GY");
+    case "MON064": return "SOUL";
+    case "MON231": return "BANISH";
+    case "ELE113": return "BANISH";
+    case "ELE119": case "ELE120": case "ELE121": return ($playedFrom == "ARS" && $from == "CHAINCLOSING" ? "BOTDECK" : "GY");
+    case "ELE140": case "ELE141": case "ELE142": return "BANISH";
+    case "MON066": case "MON067": case "MON068": return ($from == "CHAINCLOSING" && SearchCurrentTurnEffects($cardID, $mainPlayer) ? "SOUL" : "GY");
     case "MON087":
-      $theirChar = GetPlayerCharacter($otherPlayer);
-      if (TalentContains($theirChar[0], "SHADOW") && PlayerHasLessHealth($player)) return "SOUL";
-      else return "GY";
-    case "MON192":
-      if ($from == "BANISH") return "HAND";
-    case "EVR082":
-    case "EVR083":
-    case "EVR084":
-      return (GetClassState($player, $CS_NumBoosted) > 0 ? "BOTDECK" : "GY");
-    case "EVR134":
-    case "EVR135":
-    case "EVR136":
-      return ($player != $mainPlayer ? "BOTDECK" : "GY");
+      $theirChar = &GetPlayerCharacter($otherPlayer);
+      return (PlayerHasLessHealth($player) && TalentContains($theirChar[0], "SHADOW") ? "SOUL" : "GY");
+    case "MON192": return ($from == "BANISH" ? "HAND" : "GY");
+    case "EVR082": case "EVR083": case "EVR084": return (GetClassState($player, $CS_NumBoosted) > 0 ? "BOTDECK" : "GY");
+    case "EVR134": case "EVR135": case "EVR136": return ($player != $mainPlayer ? "BOTDECK" : "GY");
     case "UPR160":
-      if ($from == "COMBATCHAIN" && !SearchCurrentTurnEffects($cardID, $player)) {
+      if($from == "COMBATCHAIN" && !SearchCurrentTurnEffects($cardID, $player)) {
         AddCurrentTurnEffect($cardID, $player);
         return "BANISH,TCC";
-      } else {
-        SearchCurrentTurnEffects($cardID, $player, 1);
-        return "GY";
-      }
-    case "DYN241":
-      if ($from == "PLAY") return "-";
-    default:
+      } else SearchCurrentTurnEffects($cardID, $player, 1);
       return "GY";
+    default: return "GY";
   }
 }
 

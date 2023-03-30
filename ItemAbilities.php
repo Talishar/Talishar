@@ -116,10 +116,10 @@ function DestroyMyItem($index)
   DestroyItemForPlayer($currentPlayer, $index);
 }
 
-function DestroyItemForPlayer($player, $index)
+function DestroyItemForPlayer($player, $index, $skipDestroy=false)
 {
   $items = &GetItems($player);
-  if(CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY") {
+  if(!$skipDestroy && CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY") {
     AddGraveyard($items[$index], $player, "PLAY");
   }
   $cardID = $items[$index];

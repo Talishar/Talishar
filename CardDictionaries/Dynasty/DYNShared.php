@@ -655,17 +655,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return $rv;
     case "DYN241":
-      $rv = "";
       if($from == "PLAY") {
-        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
-        $item = (IsRoyal($currentPlayer) ? "DYN243": "CRU197");
-        PutItemIntoPlayForPlayer($item, $currentPlayer);
-        $rv = CardLink($cardID, $cardID) . " shuffled itself and created a " . CardLink($item, $item) . ".";
+        DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex), true);
+        PutItemIntoPlayForPlayer((IsRoyal($currentPlayer) ? "DYN243": "CRU197"), $currentPlayer);
         $deck = &GetDeck($currentPlayer);
         array_push($deck, "DYN241");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       }
-      return $rv;
+      return "";
     case "DYN242":
       if($from == "PLAY") {
         DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
