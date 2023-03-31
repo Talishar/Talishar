@@ -336,6 +336,27 @@ function OnBlockResolveEffects()
   }
 }
 
+function BeginningReactionStepEffects()
+{
+  global $combatChain, $mainPlayer, $defPlayer;
+  switch($combatChain[0])
+  {
+    case "OUT050":
+      if(ComboActive())
+      {
+        $blockingCards = GetChainLinkCards($defPlayer);
+        if($blockingCards != "")
+        {
+          $blockArr = explode(",", $blockingCards);
+          $index = $blockArr[GetRandom(0, count($blockArr) - 1)];
+          AddDecisionQueue("PASSPARAMETER", $defPlayer, $index, 1);
+          AddDecisionQueue("REMOVECOMBATCHAIN", $defPlayer, "-", 1);
+          AddDecisionQueue("MULTIBANISH", $defPlayer, "CC,-", 1);
+        }
+      }
+  }
+}
+
 function ModifyBlockForType($type, $amount)
 {
   global $combatChain, $defPlayer;

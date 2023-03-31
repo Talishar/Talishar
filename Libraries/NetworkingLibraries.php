@@ -712,22 +712,23 @@ function PassInput($autopass = true)
 function Pass(&$turn, $playerID, &$currentPlayer)
 {
   global $mainPlayer, $defPlayer;
-  if ($turn[0] == "M" || $turn[0] == "ARS") {
+  if($turn[0] == "M" || $turn[0] == "ARS") {
     return 1;
-  } else if ($turn[0] == "B") {
+  } else if($turn[0] == "B") {
     AddLayer("DEFENDSTEP", $mainPlayer, "-");
     OnBlockResolveEffects();
+    BeginningReactionStepEffects();
     ProcessDecisionQueue();
-  } else if ($turn[0] == "A") {
-    if (count($turn) >= 3 && $turn[2] == "D") {
+  } else if($turn[0] == "A") {
+    if(count($turn) >= 3 && $turn[2] == "D") {
       return BeginChainLinkResolution();
     } else {
       $currentPlayer = $currentPlayer == 1 ? 2 : 1;
       $turn[0] = "D";
       $turn[2] = "A";
     }
-  } else if ($turn[0] == "D") {
-    if (count($turn) >= 3 && $turn[2] == "A") {
+  } else if($turn[0] == "D") {
+    if(count($turn) >= 3 && $turn[2] == "A") {
       return BeginChainLinkResolution();
     } else {
       $currentPlayer = $currentPlayer == 1 ? 2 : 1;

@@ -1211,6 +1211,9 @@ function ComboActive($cardID = "")
       case "DYN059": case "DYN060": case "DYN061":
         if($lastAttackName == "Crouching Tiger") return true;
         break;
+      case "OUT050":
+        if($lastAttackName == "Spinning Wheel Kick") return true;
+        break;
       case "OUT051":
         if($lastAttackName == "Bonds of Ancestry") return true;
         break;
