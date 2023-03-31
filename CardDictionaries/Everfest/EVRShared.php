@@ -541,17 +541,14 @@
       case "EVR177":
         if($from == "PLAY")
         {
-          if (ShouldAutotargetOpponent($currentPlayer)) {
-            $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-            PummelHit($otherPlayer);
-            PummelHit($otherPlayer);
+          if(ShouldAutotargetOpponent($currentPlayer)) {
+            AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
           }
-          else
-          {
+          else {
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
             AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
-            AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "AMULETOFECHOES", 1);
           }
+          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "AMULETOFECHOES", 1);
         }
         return "";
       case "EVR178":
@@ -1014,5 +1011,21 @@
     $itemIndices = SearchMultizoneFormat(SearchItems($player, "A"), "MYITEMS");
     $rv = CombineSearches($equipIndices, $weaponIndices);
     return CombineSearches($rv, $itemIndices);
+  }
+
+  function IsAmuletOfEchoesRestricted()
+  {
+    global $CS_NamesOfCardsPlayed;
+    if($from == "PLAY") {
+      $names = explode(",", GetClassState(1, $CS_NamesOfCardsPlayed));
+      foreach(array_count_values($names) as $name => $count) {
+        if($count > 1) return false;
+      }
+      $names = explode(",", GetClassState(2, $CS_NamesOfCardsPlayed));
+      foreach(array_count_values($names) as $name => $count) {
+        if($count > 1) return false;
+      }
+    }
+    return true;
   }
 ?>

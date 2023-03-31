@@ -743,35 +743,15 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE140": case "ELE141": case "ELE142": return SowTomorrowIndices($player, $cardID) == "";
     case "ELE143": return $from == "PLAY" && GetClassState($player, $CS_NumFusedEarth) == 0;
     case "ELE147":
-      $weapons = "";
-      $auraWeapons = (SearchCharacterForCard($mainPlayer, "MON003") || SearchCharacterForCard($mainPlayer, "MON088"));
-      if ($auraWeapons) {
-        $auras = GetAuras($mainPlayer);
-        for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-          if (ClassContains($auras[$i], "ILLUSIONIST", $mainPlayer)) {
-            $weapons .= "AURAS";
-            break;
-          }
-        }
-      }
-      if (count($layers) != 0 && count($combatChain) == 0) {
-        $layerIndex = count($layers) - LayerPieces();
-        if($layers[$layerIndex] == "ENDTURN" || $layers[$layerIndex] == "TRIGGER") return true;
-        $abilityType = GetResolvedAbilityType($layers[$layerIndex]);
-        $layerSubtype = CardSubType($layers[$layerIndex]);
-        return !($weapons == "AURAS"
-          || $layerSubtype == "Dagger"
-          || $layerSubtype == "Hammer"
-          || $layerSubtype == "Sword"
-          || $layerSubtype == "Club"
-          || $layerSubtype == "Scythe"
-          || $layerSubtype == "Axe"
-          || $layerSubtype == "Flail"
-          || ($layerSubtype == "Pistol" && $abilityType == "AA")
-          || CardType($layers[$layerIndex]) == "AA"
-          || DelimStringContains($layerSubtype, "Ally"));
-      }
-      return count($combatChain) == 0;
+      if(count($combatChain) > 0) return false;//If there's an attack, there's a valid target
+      if(count($layers) == 0) return true;//If there's no attack, and no layers, nothing to do
+      $layerIndex = count($layers) - LayerPieces();//Only the earliest layer can be an attack
+      $layerID = $layers[$layerIndex];
+      if(strlen($layerID) != 6) return true;//Game phase, not a card - sorta hacky
+      if(CardType($layerID) == "AA") return false;
+      if($layerType == "AA" || $layerType == "W") return false;//It's an attack
+      if(GetResolvedAbilityType($layers[$layerIndex]) == "AA") return false;
+      return true;
     case "ELE172": return $from == "PLAY" && GetClassState($player, $CS_NumFusedIce) == 0;
     case "ELE183": case "ELE184": case "ELE185":
       if(count($layers) == 0 && count($combatChain) == 0) return true;
@@ -795,37 +775,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVR137": return $player != $mainPlayer;
     case "EVR173": case "EVR174": case "EVR175": return GetClassState($player, $CS_DamageDealt) == 0;
     case "EVR176": return $from == "PLAY" && count($myHand) < 4;
-    case "EVR177":
-      $restricted = false;
-      if($from == "PLAY") {
-        $hasDuplicate = false;
-        $cardNames = explode(",", GetClassState($otherPlayer, $CS_NamesOfCardsPlayed));
-        foreach(array_count_values($cardNames) as $name => $count) {
-          if($count > 1) $hasDuplicate = true;
-        }
-        $cardNames = explode(",", GetClassState($player, $CS_NamesOfCardsPlayed));
-        foreach(array_count_values($cardNames) as $name => $count) {
-          if($count > 1) $hasDuplicate = true;
-        }
-        if(!$hasDuplicate) $restricted = true;
-      }
-      return $restricted;
+    case "EVR177": return IsAmuletOfEchoesRestricted();
     case "EVR178": return ($from == "PLAY" && count($myHand) > 0);
     case "EVR179": return ($from == "PLAY" && GetClassState($player, $CS_NumCardsPlayed) >= 1);
-    case "EVR180":
-      if($from != "PLAY") return false;
-      if(count($layers) > 0){
-        for($i = 0; $i < count($layers); $i++) {
-          if(ArcaneDamage($layers[$i]) >= GetHealth($player) && $layers[$i+3] == "THEIRCHAR-0") return false;
-        }
-      }
-      if(count($combatChain) > 0) {
-        $attack = 0;
-        $defense = 0;
-        EvaluateCombatChain($attack, $defense);
-        if($attack >= GetHealth($player)) return false;
-      }
-      return true;
     case "EVR053": return !IsWeaponGreaterThanTwiceBasePower();
     case "EVR181": return $from == "PLAY" && (GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0 || count($combatChain) == 0 || CardType($combatChain[0]) != "AA");
     case "DVR013": return (count($combatChain) == 0 || CardType($combatChain[0]) != "W" || CardSubType($combatChain[0]) != "Sword");
