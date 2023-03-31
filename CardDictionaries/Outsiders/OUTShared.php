@@ -581,8 +581,12 @@ function OUTAbilityCost($cardID)
         }
         return "";
       case "OUT187":
-        //TODO
-        return "";
+        if(SearchCount(SearchDiscard(($currentPlayer == 1 ? 2 : 1), "DR")) >= 10)
+        {
+          Draw($currentPlayer);
+          WriteLog("Drew a card");
+        }
+        return "This is a partially manual card. Enforce defense reaction play restriction manually.";
       case "OUT188":
         AddCurrentTurnEffect($cardID . "_1", $currentPlayer);
         AddCurrentTurnEffect($cardID . "_2", $currentPlayer);

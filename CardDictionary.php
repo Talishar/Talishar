@@ -1146,7 +1146,8 @@ function HasCombo($cardID)
 
 function ComboActive($cardID = "")
 {
-  global $combatChainState, $combatChain, $chainLinkSummary;
+  global $combatChainState, $combatChain, $chainLinkSummary, $mainPlayer;
+  if(SearchCurrentTurnEffects("OUT183", $mainPlayer)) return false;
   if ($cardID == "" && count($combatChain) > 0) $cardID = $combatChain[0];
   if ($cardID == "") return false;
   if(count($chainLinkSummary) == 0) return false;//No combat active if no previous chain links

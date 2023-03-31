@@ -1328,7 +1328,9 @@ function ClassOverride($cardID, $player="")
 
 function NameOverride($cardID, $player="")
 {
-
+  $name = CardName($cardID);
+  if(SearchCurrentTurnEffects("OUT183", $player)) $name = "";
+  return $name;
 }
 
 function ClassContains($cardID, $class, $player="")
@@ -1353,10 +1355,8 @@ function TalentOverride($cardID, $player="")
 {
   global $currentTurnEffects;
   $cardTalent = CardTalent($cardID);
-
-  // CR 2.2.1 - 6.3.6. Continuous effects that remove a property, or part of a property, from an object do not remove properties, or parts of properties, that were added by another effect.
+  //CR 2.2.1 - 6.3.6. Continuous effects that remove a property, or part of a property, from an object do not remove properties, or parts of properties, that were added by another effect.
   if(SearchCurrentTurnEffects("UPR187", $player)) $cardTalent = "NONE";
-
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     $toAdd = "";
