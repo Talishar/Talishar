@@ -400,8 +400,9 @@ function CharacterCostModifier($cardID, $from)
 function EquipCard($player, $card)
 {
   $char = &GetPlayerCharacter($player);
-  $lastWeapon = -1;
+  $lastWeapon = 0;
   $replaced = 0;
+  $numHands = 0;
   //Replace the first destroyed weapon; if none you can't re-equip
   for($i=CharacterPieces(); $i<count($char) && !$replaced; $i+=CharacterPieces())
   {
@@ -422,7 +423,23 @@ function EquipCard($player, $card)
         $char[$i+9] = 2;
         $replaced = 1;
       }
+      else if(Is1H($char[$i])) ++$numHands;
+      else $numHands += 2;
     }
+  }
+  if($numHands < 2)
+  {
+    $insertIndex = $lastWeapon + CharacterPieces();
+    array_splice($char, $insertIndex, 0, $card);
+    array_splice($char, $insertIndex+1, 0, 2);
+    array_splice($char, $insertIndex+2, 0, 0);
+    array_splice($char, $insertIndex+3, 0, 0);
+    array_splice($char, $insertIndex+4, 0, 0);
+    array_splice($char, $insertIndex+5, 0, 1);
+    array_splice($char, $insertIndex+6, 0, 0);
+    array_splice($char, $insertIndex+7, 0, 0);
+    array_splice($char, $insertIndex+8, 0, 0);
+    array_splice($char, $insertIndex+9, 0, 2);
   }
 }
 
