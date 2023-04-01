@@ -4,23 +4,6 @@ include "EncounterLogic.php";
 include "CardRewardPools.php";
 include "AdventurePools.php";
 
-/*
-Encounter variable
-encounter[0] = Encounter ID (001-099 Special Encounters | 101-199 Combat Encounters | 201-299 Event Encounters)
-encounter[1] = Encounter Subphase
-encounter[2] = Position in adventure
-encounter[3] = Hero ID
-encounter[4] = Adventure ID
-encounter[5] = A string made up of encounters that have already been visited, looks like "ID-subphase,ID-subphase,ID-subphase,etc."
-encounter[6] = majesticCard% (1-100, the higher it is, the more likely a majestic card is chosen) (Whole code is based off of the Slay the Spire rare card chance)
-encounter[7] = background chosen
-encounter[8] = adventure difficulty (to be used later)
-encounter[9] = current gold
-encounter[10] = rerolls remaining //TODO: Add in a reroll system
-encounter[11] = cost to heal at the shop
-encounter[12] = cost to remove card at the shop
-*/
-
 function EncounterDescription()
 {
   $encounter = &GetZone(1, "Encounter");
@@ -152,7 +135,7 @@ function EncounterDescription()
 function InitializeEncounter($player)
 {
   $encounter = &GetZone($player, "Encounter");
-  WriteFullEncounter();
+  //WriteFullEncounter();
   switch($encounter->encounterID)
   {
     case 001:
@@ -183,8 +166,8 @@ function InitializeEncounter($player)
     case 006:
       //$encounter->position = 1; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
       AddDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,3"), "Power,3");
-      //AddDecisionQueue("SETENCOUNTER", $player, "212-PickMode"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
-      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      AddDecisionQueue("SETENCOUNTER", $player, "216-PickMode"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
+      //AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
       AddDecisionQueue("BUTTONINPUT", $player, "Rest,Reflect");

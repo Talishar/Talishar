@@ -1,22 +1,5 @@
 <?php
 
-/*
-Encounter variable
-encounter[0] = Encounter ID (001-099 Special Encounters | 101-199 Combat Encounters | 201-299 Event Encounters)
-encounter[1] = Encounter Subphase
-encounter[2] = Position in adventure
-encounter[3] = Hero ID
-encounter[4] = Adventure ID
-encounter[5] = A string made up of encounters that have already been visited, looks like "ID-subphase,ID-subphase,ID-subphase,etc."
-encounter[6] = majesticCard% (1-100, the higher it is, the more likely a majestic card is chosen) (Whole code is based off of the Slay the Spire rare card chance)
-encounter[7] = background chosen
-encounter[8] = adventure difficulty (to be used later)
-encounter[9] = current gold
-encounter[10] = rerolls remaining //TODO: Add in a reroll system
-encounter[11] = cost to heal at the shop
-encounter[12] = cost to remove card at the shop
-*/
-
 function GetNextEncounter() //TODO overhaul this whole function and children
 {
   $encounter = &GetZone(1, "Encounter");

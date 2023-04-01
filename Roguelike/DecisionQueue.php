@@ -430,24 +430,25 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             switch($encounter->hero)
             {
               case "Dorinthea":
-                PrependDecisionQueue("CHOOSECARD", $player, "WTR119");
-                PrependDecisionQueue("CHOOSECARD", $player, "WTR119");
+                PrependDecisionQueue("CHOOSECARD", $player, "WTR119", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "WTR119,WTR119", "-", "NoReroll");
                 break;
               case "Bravo":
-                PrependDecisionQueue("CHOOSECARD", $player, "WTR043");
-                PrependDecisionQueue("CHOOSECARD", $player, "WTR043");
+                PrependDecisionQueue("CHOOSECARD", $player, "WTR043", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "WTR043,WTR043", "-", "NoReroll");
                 break;
               case "Fai":
-                PrependDecisionQueue("CHOOSECARD", $player, "UPR091");
-                PrependDecisionQueue("CHOOSECARD", $player, "UPR091");
+                PrependDecisionQueue("CHOOSECARD", $player, "UPR091", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "UPR091,UPR091", "-", "NoReroll");
                 break;
               case "Lexi":
-                PrependDecisionQueue("CHOOSECARD", $player, "ELE036");
-                PrependDecisionQueue("CHOOSECARD", $player, "ELE036");
+                PrependDecisionQueue("CHOOSECARD", $player, "ELE036", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "ELE036,ELE036", "-", "NoReroll");
                 break;
             }
             break;
           case "The_face_of_another":
+            $encounter = &GetZone($player, "Encounter");
             switch($encounter->hero)
             {
               case "Dorinthea": $cardChoices = array("EVR070", "ARC007", "EVR055"); break;
@@ -456,8 +457,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
               case "Lexi": $cardChoices = array("ARC043", "UPR126", "ELE004"); break;
             }
             $randNum = rand(0, 2);
-            PrependDecisionQueue("CHOOSECARD", $player, $cardChoices[$randNum]);
-            PrependDecisionQueue("CHOOSECARD", $player, $cardChoices[$randNum]);
+            PrependDecisionQueue("CHOOSECARD", $player, $cardChoices[$randNum], "-", "NoReroll");
+            PrependDecisionQueue("CHOOSECARD", $player, $cardChoices[$randNum].",".$cardChoices[$randNum], "-", "NoReroll");
             break;
         }
         return 1;
