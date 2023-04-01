@@ -68,6 +68,7 @@ function SetHeaders()
   // array holding allowed Origin domains
   $allowedOrigins = array(
     "[0-9a-z]*\.talishar\.net",
+    "https\:\/\/talishar\.net",
     "[0-9a-z]*\.talishar-fe\.pages\.dev"
   );
 
