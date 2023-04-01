@@ -12,7 +12,7 @@ SetHeaders();
 $response = new stdClass();
 
 
-if(($format == "sealed" || $format == "draft") && substr($deck, 0, 9) != "DRAFTFAB-")
+if(($format == "sealed" || $format == "draft") && substr($decklink, 0, 9) != "DRAFTFAB-")
 {
   //Currently must use draft fab for sealed/draft
   $response->error = "You must use a DraftFaB for " . $format . ".";
