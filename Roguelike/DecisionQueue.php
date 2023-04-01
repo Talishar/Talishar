@@ -422,6 +422,45 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
         }
         return 1;
+      case "SHIYANASPEC":
+        switch($lastResult)
+        {
+          case "Your_face":
+            $encounter = &GetZone($player, "Encounter");
+            switch($encounter[3])
+            {
+              case "Dorinthea":
+                PrependDecisionQueue("CHOOSECARD", $player, "WTR119");
+                PrependDecisionQueue("CHOOSECARD", $player, "WTR119");
+                break;
+              case "Bravo":
+                PrependDecisionQueue("CHOOSECARD", $player, "WTR043");
+                PrependDecisionQueue("CHOOSECARD", $player, "WTR043");
+                break;
+              case "Fai":
+                PrependDecisionQueue("CHOOSECARD", $player, "UPR091");
+                PrependDecisionQueue("CHOOSECARD", $player, "UPR091");
+                break;
+              case "Lexi":
+                PrependDecisionQueue("CHOOSECARD", $player, "ELE036");
+                PrependDecisionQueue("CHOOSECARD", $player, "ELE036");
+                break;
+            }
+            break;
+          case "The_face_of_another":
+            switch($encounter[3])
+            {
+              case "Dorinthea": $cardChoices = array("EVR070", "ARC007", "EVR055"); break;
+              case "Bravo": $cardChoices = array("WTR006", "ARC080", "OUT013"); break;
+              case "Fai": $cardChoices = array("ELE066", "CRU074", "EVR039"); break;
+              case "Lexi": $cardChoices = array("ARC043", "UPR126", "ELE004"); break;
+            }
+            $randNum = rand(0, 2);
+            PrependDecisionQueue("CHOOSECARD", $player, $cardChoices[$randNum]);
+            PrependDecisionQueue("CHOOSECARD", $player, $cardChoices[$randNum]);
+            break;
+        }
+        return 1;
       case "CROSSROADS":
         switch($lastResult)
         {

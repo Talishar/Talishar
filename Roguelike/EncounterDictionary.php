@@ -143,6 +143,7 @@ function EncounterDescription()
     case 213: return "\"Hail, traveler. You look like you could use something powerful, and my pockets are awefully light at the moment. Care to trade?\"";
     case 214: return "\"Hello, traveler. I can see you have grown weary. Come, sit. You must have a great story to tell. Or perhaps you would like to hear one of mine? Maybe you just need some company.\"";
     case 215: return "The knight looks at you, smiles, and lowers his visor. \"Well friend, lets spar. Until you are tired, let us begin!\"";
+    case 216: return "The lady with the crown approaches you. She puts on a mask and suddenly she is you. Then, she puts on another mask and shifts into someone else entirely. \"Now, Which one do you prefer?\"";
     default: return "No encounter text.";
   }
 }
@@ -289,6 +290,11 @@ function InitializeEncounter($player)
       AddDecisionQueue("SPARRINGKNIGHT", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
+    case 216:
+      AddDecisionQueue("BUTTONINPUT", $player, "Your_face,The_face_of_another");
+      AddDecisionQueue("SHIYANASPEC", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
     default: /*WriteLog("We Shouldn't Be Here");*/ break;
   }
 }
@@ -390,6 +396,8 @@ function EncounterImage()
       return "EVR050_cropped.png";
     case 215:
       return "DVR009_cropped.png";
+    case 216:
+      return "CRU097_cropped.png";
 
     default: return "CRU054_cropped.png";
   }

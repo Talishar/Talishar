@@ -25,7 +25,7 @@ function GetPool($type, $hero, $rarity, $background, $tag1="", $tag2 = "",){
   else if($type == "Generic") return GetPoolGeneric(array($rarity));
   else if($type == "Talent") return GetPoolTalent(array($type, $rarity, $background));
   else if($type == "Equipment") {
-    //Okay, this is a little weird, but to call for equipment, set $type to be "Equipment", and $tag1 to be either "Generic", "All", or "Hero". Default is "All". 
+    //Okay, this is a little weird, but to call for equipment, set $type to be "Equipment", and $tag1 to be either "Generic", "All", or "Hero". Default is "All".
     if($rarity == "-"){
       return GetPoolLogicEquipment($tag1, $hero, array($tag2));
     }
@@ -35,7 +35,7 @@ function GetPool($type, $hero, $rarity, $background, $tag1="", $tag2 = "",){
   }
 }
 
-//See GetPool() for logic. $type would be 
+//See GetPool() for logic. $type would be
 function GetPoolLogicEquipment($tag1, $hero, $tags){
   if($tag1 == "Hero"){
     array_push($tags, $hero);
@@ -45,7 +45,7 @@ function GetPoolLogicEquipment($tag1, $hero, $tags){
     array_push($tags, "Generic");
     return GetPoolEquipment($tags);
   }
-  else { // "All" mode as default. Can return generic and class cards with the given tags. 
+  else { // "All" mode as default. Can return generic and class cards with the given tags.
     return array_merge(GetPoolLogicEquipment("Hero", $hero, $tags), GetPoolLogicEquipment("Generic", $hero, $tags));
   }
 
@@ -78,8 +78,12 @@ function GetPoolClass($arrayParameters){
     array("WTR057", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Buckling Blow
     array("WTR058", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
     array("WTR059", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
-    //TODO WTR060-WTR062 Cartilage Crush - Add when the AI can have taxes
-    //TODO WTR063-WTR065 Crush Confidence - Add when the AI can handle losing hero card effects and activated abilities
+    array("WTR060", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Cartilage Crush
+    array("WTR061", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("WTR062", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("WTR063", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Crush Confidence
+    array("WTR062", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
+    array("WTR065", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
     array("WTR066", "Class", "Common", "Anothos", "TitanFist", "Sledge"), //Debilitate
     array("WTR067", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
     array("WTR068", "Class", "Common", "Anothos", "TitanFist", "Sledge"),
@@ -142,12 +146,12 @@ function GetPoolClass($arrayParameters){
     array("ARC054", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Take Aim
     array("ARC055", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
     array("ARC056", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ARC060", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Hamstring Shot
-    array("ARC061", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ARC062", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ARC069", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Searing Shot
-    array("ARC070", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ARC071", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ARC060", "Class", "Common", "Shiver", "Voltaire", "RedLiner"), //Hamstring Shot
+    array("ARC061", "Class", "Common", "Shiver", "Voltaire", "RedLiner"),
+    array("ARC062", "Class", "Common", "Shiver", "Voltaire", "RedLiner"),
+    array("ARC069", "Class", "Common", "Shiver", "Voltaire", "RedLiner"), //Searing Shot
+    array("ARC070", "Class", "Common", "Shiver", "Voltaire", "RedLiner"),
+    array("ARC071", "Class", "Common", "Shiver", "Voltaire", "RedLiner"),
 
     array("CRU026", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Mangle
     array("CRU027", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Righteous Cleansing
@@ -196,9 +200,9 @@ function GetPoolClass($arrayParameters){
 
     array("CRU123", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Remorseless
     array("CRU124", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Poison the Tips
-    array("CRU132", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Sleep Dart
-    array("CRU133", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("CRU134", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("CRU132", "Class", "Common", "Shiver", "Voltaire", "RedLiner"), //Sleep Dart
+    array("CRU133", "Class", "Common", "Shiver", "Voltaire", "RedLiner"),
+    array("CRU134", "Class", "Common", "Shiver", "Voltaire", "RedLiner"),
 
     array("MON109", "Class", "Majestic", "Hatchet", "Battleaxe"), //Spill Blood - Only Axes
     array("MON110", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Dusk Path Pilgrimage
@@ -214,30 +218,30 @@ function GetPoolClass($arrayParameters){
     array("ELE035", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Frost Lock
     array("ELE036", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Light it Up
     array("ELE037", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Ice Storm
-    array("ELE038", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Cold Wave - Could be worth ommiting due to the AI never playing DRs, but it still gets the "If this is fused" and "if you've fused this turn" type of things. Also, the player doesn't know that
-    array("ELE039", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE040", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE041", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Snap Shot
-    array("ELE042", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE043", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE044", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Blizzard Bolt
-    array("ELE045", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE046", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE047", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Buzz Bolt
-    array("ELE048", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE049", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE050", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Chilling Icevein
-    array("ELE051", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE052", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE053", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Dazzling Crescendo
-    array("ELE054", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE055", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE056", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Flake Out
-    array("ELE057", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE058", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE059", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Frazzle
-    array("ELE060", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE061", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE038", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer"), //Cold Wave - Could be worth ommiting due to the AI never playing DRs, but it still gets the "If this is fused" and "if you've fused this turn" type of things. Also, the player doesn't know that
+    array("ELE039", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer"),
+    array("ELE040", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer"),
+    array("ELE041", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer"), //Snap Shot
+    array("ELE042", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer"),
+    array("ELE043", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer"),
+    array("ELE044", "Class", "Common", "Shiver", "Voltaire", "DeathDealer"), //Blizzard Bolt
+    array("ELE045", "Class", "Common", "Shiver", "Voltaire", "DeathDealer"),
+    array("ELE046", "Class", "Common", "Shiver", "Voltaire", "DeathDealer"),
+    array("ELE047", "Class", "Common", "Shiver", "Voltaire", "DeathDealer"), //Buzz Bolt
+    array("ELE048", "Class", "Common", "Shiver", "Voltaire", "DeathDealer"),
+    array("ELE049", "Class", "Common", "Shiver", "Voltaire", "DeathDealer"),
+    array("ELE050", "Class", "Common", "Shiver", "Voltaire", "DeathDealer"), //Chilling Icevein
+    array("ELE051", "Class", "Common", "Shiver", "Voltaire", "DeathDealer"),
+    array("ELE052", "Class", "Common", "Shiver", "Voltaire", "DeathDealer"),
+    array("ELE053", "Class", "Common", "Voltaire", "DeathDealer"), //Dazzling Crescendo
+    array("ELE054", "Class", "Common", "Voltaire", "DeathDealer"),
+    array("ELE055", "Class", "Common", "Voltaire", "DeathDealer"),
+    array("ELE056", "Class", "Common", "Shiver", "DeathDealer"), //Flake Out
+    array("ELE057", "Class", "Common", "Shiver", "DeathDealer"),
+    array("ELE058", "Class", "Common", "Shiver", "DeathDealer"),
+    array("ELE059", "Class", "Common", "Shiver", "Voltaire", "DeathDealer"), //Frazzle
+    array("ELE060", "Class", "Common", "Shiver", "Voltaire", "DeathDealer"),
+    array("ELE061", "Class", "Common", "Shiver", "Voltaire", "DeathDealer"),
 
     array("ELE205", "Class", "Majestic", "Anothos", "TitanFist", "Sledge"), //Tear Asunder
     array("ELE206", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Embolden
@@ -246,9 +250,9 @@ function GetPoolClass($arrayParameters){
     //ELE209 - Thump - Can the AI handle this? I haven't tested it yet. TODO Test it
 
     array("ELE215", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Seek and Destroy
-    array("ELE216", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Bolt'n' Shot
-    array("ELE217", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("ELE218", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("ELE216", "Class", "Common", "Shiver", "Voltaire", "RedLiner"), //Bolt'n' Shot
+    array("ELE217", "Class", "Common", "Shiver", "Voltaire", "RedLiner"),
+    array("ELE218", "Class", "Common", "Shiver", "Voltaire", "RedLiner"),
     array("ELE219", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Over Flex
     array("ELE220", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
     array("ELE221", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
@@ -300,9 +304,9 @@ function GetPoolClass($arrayParameters){
     array("EVR091", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Release the Tension - might be worth ommiting due to the AI not being able to play DRs, but it's still a buff, so it stays for now
     array("EVR092", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
     array("EVR093", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("EVR094", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Fatigue Shot
-    array("EVR095", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("EVR096", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("EVR094", "Class", "Common", "Shiver", "Voltaire", "RedLiner"), //Fatigue Shot
+    array("EVR095", "Class", "Common", "Shiver", "Voltaire", "RedLiner"),
+    array("EVR096", "Class", "Common", "Shiver", "Voltaire", "RedLiner"),
     array("EVR100", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Read the Glide Path
     array("EVR101", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
     array("EVR102", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
@@ -398,6 +402,29 @@ function GetPoolClass($arrayParameters){
     //DYN085-087 Visit the Imperial Forge - I've decided to omit these, since armor isn't hugely relevant right now and I don't know how the AI can handle piercing. It feels like this card would only be good in an exploitative manner
 
     array("DYN153", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //only Heat Seeker. No way to gain aim counters yet. Might reevaluate if we make an aim centric power.
+
+    array("OUT100", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Amplifying Arrow
+    array("OUT105", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Melting Point
+    array("OUT109", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Fletch a [color] tail
+    array("OUT110", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("OUT111", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("OUT112", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Lace with [infection]
+    array("OUT113", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("OUT114", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("OUT118", "Class", "Rare", "Shiver", "Voltaire", "RedLiner"), //Infecting Shot
+    array("OUT119", "Class", "Rare", "Shiver", "Voltaire", "RedLiner"),
+    array("OUT120", "Class", "Rare", "Shiver", "Voltaire", "RedLiner"),
+    array("OUT124", "Class", "Rare", "Shiver", "Voltaire", "RedLiner"), //Sedation Shot
+    array("OUT125", "Class", "Rare", "Shiver", "Voltaire", "RedLiner"),
+    array("OUT126", "Class", "Rare", "Shiver", "Voltaire", "RedLiner"),
+    array("OUT136", "Class", "Rare", "Shiver", "Voltaire", "RedLiner"), //Withering Shot
+    array("OUT136", "Class", "Rare", "Shiver", "Voltaire", "RedLiner"),
+    array("OUT136", "Class", "Rare", "Shiver", "Voltaire", "RedLiner"),
+    array("OUT159", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Codexes
+    array("OUT160", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+    array("OUT161", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
+
+    array("OUT052", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Head Leads the Tail
   );
 
   return ProcessPool($CardRewardPool, $arrayParameters);
@@ -813,7 +840,7 @@ function GetPoolEquipment($arrayParameters){
   array("CRU053", "Fai", "Majestic", "Legs"), //Breeze Rider Boots
   array("CRU081", "Dorinthea", "Majestic", "Chest"), //Courage of Bladehold
   array("CRU122", "Lexi", "Majestic", "Legs"), //Perch Grapplers
-  //CRU179 - Omitted due to irrelevance... though there's definitely a world where this is relevant, though maybe not playable. 
+  //CRU179 - Omitted due to irrelevance... though there's definitely a world where this is relevant, though maybe not playable.
 
   array("MON107", "Dorinthea", "Legendary", "Legs"), //Valiant Dynamo
   array("MON108", "Dorinthea", "Common", "Arms"), //Gallantry Gold
@@ -822,7 +849,7 @@ function GetPoolEquipment($arrayParameters){
   array("MON240", "Generic", "Common", "Legs"), //Time Skippers
   array("MON241", "Generic", "Common", "Head"), //Ironhide Helm
   array("MON242", "Generic", "Common", "Chest"),
-  array("MON243", "Generic", "Common", "Arms"), 
+  array("MON243", "Generic", "Common", "Arms"),
   array("MON244", "Generic", "Common", "Legs"), //Ironhide Boots
 
   array("ELE144", "Lexi", "Legendary", "Chest"), //Heart of Ice

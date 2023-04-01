@@ -55,6 +55,10 @@
                 $char = &GetZone($playerID, "Character");
                 array_push($char, $cardID);
               }
+              else if(CardSubtype($cardID) == "Power") {
+                $deck = &GetZone($playerID, "Deck");
+                array_push($deck, $cardID);
+              }
               else {
                 $deck = &GetZone($playerID, "Deck");
                 array_push($deck, $cardID);
