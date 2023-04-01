@@ -21,19 +21,19 @@ function GetNextEncounter() //TODO overhaul this whole function and children
 {
   $encounter = &GetZone(1, "Encounter");
   // WriteLog("hijacked GetNextEncounter");
-  // WriteLog("Encounter[0]: " . $encounter[0]);
-  // WriteLog("Encounter[1]: " . $encounter[1]);
-  // WriteLog("Encounter[2]: " . $encounter[2]);
-  ++$encounter[2];
-  switch($encounter[4])
+  // WriteLog("Encounter[0]: " . $encounter->encounterID);
+  // WriteLog("Encounter[1]: " . $encounter->subphase);
+  // WriteLog("Encounter[2]: " . $encounter->position);
+  ++$encounter->position;
+  switch($encounter->adventure)
   {
     case "Ira":
-      switch($encounter[8])
+      switch($encounter->difficulty)
       {
         case "Easy":
         case "Normal":
         case "Hard":
-          switch($encounter[2])
+          switch($encounter->position)
           {
             case 1: return CrossroadsDoubleChoice("Make_your_way_up_through_Metrix,Take_the_scenic_route_through_the_back_streets,Catch_a_ferry_across_the_lake");//combat choice of X, Y, and Z
             case 2: return RandomEvent();
@@ -96,15 +96,15 @@ function CrossroadsDoubleChoice($string)
 function GetCrossroadsDescription()
 {
   $encounter = &GetZone(1, "Encounter");
-  switch($encounter[4])
+  switch($encounter->adventure)
   {
     case "Ira":
-      switch($encounter[8])
+      switch($encounter->difficulty)
       {
         case "Easy":
         case "Normal":
         case "Hard":
-          switch($encounter[2])
+          switch($encounter->position)
           {
             case 1: return "Your destination lies beyond the Pits.";
             case 3: return "Ahead of you lies a fallen tree. It likely did not fall naturally.";
@@ -124,15 +124,15 @@ function GetCrossroadsDescription()
 
 function GetCrossroadsChoiceHeader() {
   $encounter = &GetZone(1, "Encounter");
-  switch($encounter[4])
+  switch($encounter->adventure)
   {
     case "Ira":
-      switch($encounter[8])
+      switch($encounter->difficulty)
       {
         case "Easy":
         case "Normal":
         case "Hard":
-          switch($encounter[2])
+          switch($encounter->position)
           {
             case 1: return "How would you like to leave?";
             case 3: return "What would you like to do?";
@@ -154,15 +154,15 @@ function GetCrossroadsImage()
 {
   {
     $encounter = &GetZone(1, "Encounter");
-    switch($encounter[4])
+    switch($encounter->adventure)
     {
       case "Ira":
-        switch($encounter[8])
+        switch($encounter->difficulty)
         {
           case "Easy":
           case "Normal":
           case "Hard":
-            switch($encounter[2])
+            switch($encounter->position)
             {
               case 1: return "CRU122_cropped.png";
               case 3: return "CRU006_cropped.png";

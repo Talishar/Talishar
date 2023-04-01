@@ -69,8 +69,7 @@ $cardIconTop = intval($cardSize / 4.2); //30
 
   //Display left sidebar
   echo("<div style='position:absolute; text-align: center; z-index:100; border: 3px solid black; border-radius:5px; left:10px; top:17px; height:calc(95% - 26px); width:14%; background-color:rgba(235, 213, 179, .85);'>");
-  echo("<h2 style='width:100%;'>Encounter #" . $encounter[0] . "</h2>");
-
+  echo("<h2 style='width:100%;'>Encounter #" . $encounter->encounterID . "</h2>");
 
   echo ("<div style='height:6vh; width:100%; z-index:-200;'><span title='Your remaining life' style='top: 10%; left: 50%; text-align: center; transform: translate(-50%, -50%); position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize/1.5 . "; width:" . $cardIconSize/1.5 . ";' src='../Images/Life.png'>
       <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 32px; height: 32px; padding: 1px;
@@ -79,11 +78,11 @@ $cardIconTop = intval($cardSize / 4.2); //30
   echo ("<div style='height:6vh; width:100%; z-index:-200;'><span title='Your remaining life' style='top: 10%; left: 50%; text-align: center; transform: translate(-50%, 70%); position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize/1.5 . "; width:" . $cardIconSize/1.5 . ";' src='../Images/Arsenal.png'>
       <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 32px; height: 32px; padding: 1px;
       text-align: center; transform: translate(-50%, -50%); line-height: 1.2;
-      position:absolute; font-size:32px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $encounter[9] . "</div></img></span></div>");
+      position:absolute; font-size:32px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $encounter->gold . "</div></img></span></div>");
   /*echo ("<div style='height:6vh; width:100%; z-index:-200;'><span title='Your remaining life' style='top: 10%; left: 50%; text-align: center; transform: translate(-50%, 190%); position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize/1.5 . "; width:" . $cardIconSize/1.5 . ";' src='../Images/Intellect.png'>
       <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 32px; height: 32px; padding: 1px;
       text-align: center; transform: translate(-50%, -50%); line-height: 1.2;
-      position:absolute; font-size:32px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $encounter[10] . "</div></img></span></div>");*/
+      position:absolute; font-size:32px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $encounter->rerolls . "</div></img></span></div>");*/
 
   echo("<center>" . Card($character[0], "../concat", $cardSize, 0, 1) . "</center>");
   echo("<BR>");
@@ -95,10 +94,10 @@ $cardIconTop = intval($cardSize / 4.2); //30
 
   $encounterContent = "";
   // WriteLog("playerID: " . $playerID);
-  // WriteLog("encounter[0]: " . $encounter[0]);
-  // WriteLog("encounter[1]: " . $encounter[1]);
-  // WriteLog($encounter[2]);
-  // WriteLog("Next encounter[0]: " . GetNextEncounter($encounter[0]));
+  // WriteLog("encounter[0]: " . $encounter->encounterID);
+  // WriteLog("encounter[1]: " . $encounter->subphase);
+  // WriteLog($encounter->position);
+  // WriteLog("Next encounter[0]: " . GetNextEncounter($encounter->encounterID));
   // WriteLog("myDQ: " . $myDQ[0] . ", " . $myDQ[1]);
   if(count($myDQ) > 0)
   {
@@ -116,8 +115,8 @@ $cardIconTop = intval($cardSize / 4.2); //30
       }
       $encounterContent .= "</div><BR>";
       $encounterContent .= "<div display:inline;'>";
-      if($encounter[10] > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
-        $rerollStringValue = "Reroll:_".$encounter[10];
+      if($encounter->rerolls > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
+        $rerollStringValue = "Reroll:_".$encounter->rerolls;
         $encounterContent .= CreateButton($playerID, str_replace("_", " ", $rerollStringValue), 2, strval("Reroll"), "24px");
       }
       $encounterContent .= "</div><BR>";
@@ -165,8 +164,8 @@ $cardIconTop = intval($cardSize / 4.2); //30
       }
       $encounterContent .= "</div><BR>";
       $encounterContent .= "<div display:inline;'>";
-      if($encounter[10] > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
-        $rerollStringValue = "Reroll:_".$encounter[10];
+      if($encounter->rerolls > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
+        $rerollStringValue = "Reroll:_".$encounter->rerolls;
         $encounterContent .= CreateButton($playerID, str_replace("_", " ", $rerollStringValue), 2, strval("Reroll"), "24px");
       }
       $encounterContent .= "</div><BR>";
@@ -182,8 +181,8 @@ $cardIconTop = intval($cardSize / 4.2); //30
       }
       $encounterContent .= "</div><BR>";
       $encounterContent .= "<div display:inline;'>";
-      if($encounter[10] > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
-        $rerollStringValue = "Reroll:_".$encounter[10];
+      if($encounter->rerolls > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
+        $rerollStringValue = "Reroll:_".$encounter->rerolls;
         $encounterContent .= CreateButton($playerID, str_replace("_", " ", $rerollStringValue), 2, strval("Reroll"), "24px");
       }
       $encounterContent .= "</div><BR>";
@@ -207,17 +206,17 @@ $cardIconTop = intval($cardSize / 4.2); //30
       if($myDQ[3] != "NoSubchoice" && $myDQ[3] != "NoRS") {
         $encounterContent .= "</div><BR>";
         $encounterContent .= "<div display:inline;'>";
-        $shopHealStringValue = "Pay_".$encounter[11]."g_to_hire_a_local_healer";
+        $shopHealStringValue = "Pay_".$encounter->costToHeal."g_to_hire_a_local_healer";
         $encounterContent .= CreateButton($playerID, str_replace("_", " ", $shopHealStringValue), 2, strval("shop_heal"), "24px");
-        $shopRemoveStringValue = "Offer_".$encounter[12]."g_to_a_beggar";
+        $shopRemoveStringValue = "Offer_".$encounter->costToRemove."g_to_a_beggar";
         $encounterContent .= CreateButton($playerID, str_replace("_", " ", $shopRemoveStringValue), 2, strval("shop_reflect"), "24px");
       }
       //$encounterContent .= "</div><BR>";
       //$encounterContent .= "<div display:inline;'>";
       $encounterContent .= "</div><BR>";
       $encounterContent .= "<div display:inline;'>";
-      if($encounter[10] > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
-        $rerollStringValue = "Reroll:_".$encounter[10];
+      if($encounter->rerolls > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
+        $rerollStringValue = "Reroll:_".$encounter->rerolls;
         $encounterContent .= CreateButton($playerID, str_replace("_", " ", $rerollStringValue), 2, strval("Reroll"), "24px");
       }
       $encounterContent .= CreateButton($playerID, str_replace("_", " ", "Leave"), 2, strval("Leave"), "24px");
@@ -231,7 +230,7 @@ $cardIconTop = intval($cardSize / 4.2); //30
     }
   }
   }
-  else if($encounter[1] != ""){
+  else if($encounter->subphase != ""){
     $encounterContent .= "<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/Roguelike/PlayEncounter.php'>";
     $encounterContent .= "<input type='hidden' id='gameName' name='gameName' value='$gameName' />";
     $encounterContent .= "<input type='hidden' id='playerID' name='playerID' value='$playerID' />";
@@ -249,7 +248,7 @@ $cardIconTop = intval($cardSize / 4.2); //30
   $content .= "</div>";
   $content .= "<center>" . $encounterContent . "</center>";
   echo CreatePopup("BUTTONINPUT", [], 0, 1, EncounterDescription(), 1, $content, size:2);
-  //EncounterImage($encounter[0], $encounter[1]);
+  //EncounterImage($encounter->encounterID, $encounter->subphase);
 
 
   echo("</div>");//End background

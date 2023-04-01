@@ -135,7 +135,7 @@ function GetRandomCards($inputString)
       array_push($parameters, "");
       $encounter = &GetZone(1, "Encounter");
       $result = [];
-      $pool = GetPool("Equipment", $encounter[3], $parameters[1], $encounter[7], "All", $parameters[2]);
+      $pool = GetPool("Equipment", $encounter->heroID, $parameters[1], $encounter->background, "All", $parameters[2]);
       array_push($result, $pool[rand(0, count($pool) - 1)]);
       return $result[0];
     case "ResourceGems":
@@ -184,23 +184,23 @@ function GeneratePool($selected, $type, $rarity = "-")
   if($rarity == "-" && $type != "Equipment")
   {
     $randRarity = rand(1,100);
-    if($randRarity <= $encounter[6])
+    if($randRarity <= $encounter->majesticCard)
     {
-      $encounter[6] = 1;
+      $encounter->majesticCard = 1;
       $rarity = "Majestic";
     }
     else if($randRarity >= 75)
     {
-      $encounter[6] += 3;
+      $encounter->majesticCard += 3;
       $rarity = "Rare";
     }
     else
     {
-      $encounter[6] +=1;
+      $encounter->majesticCard +=1;
       $rarity = "Common";
     }
   }
-  $pool = GetPool($type, $encounter[3], $rarity, $encounter[7]);
+  $pool = GetPool($type, $encounter->heroID, $rarity, $encounter->background);
   $generatedPool = [];
 
   /*$options = GetOptions($selected, count($pool));
@@ -270,8 +270,8 @@ function GetShopCost($cardID)
     else $cost = 4;
   }
   $encounter = &GetZone(1, "Encounter");
-  if($encounter[0] == 211) $cost = $cost / 2;
-  if($encounter[0] == 213) $cost -= 2;
+  if($encounter->encounterID == 211) $cost = $cost / 2;
+  if($encounter->encounterID == 213) $cost -= 2;
   return $cost;
 }
 ?>

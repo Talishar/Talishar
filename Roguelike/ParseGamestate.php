@@ -29,8 +29,15 @@
     {
       for($j=1; $j<=$numPlayers; ++$j)
       {
-        $varName = "p" . $j . $zones[$i][1];
-        $$varName = GetArray($gameFile);
+        if($zones[$i][1] == "Encounter") {
+          $varName = "p" . $j . $zones[$i][1];
+          //$$varName = new Encounter(GetArray($gameFile));
+          $$varName = json_decode(trim(fgets($gameFile)));
+        }
+        else {
+          $varName = "p" . $j . $zones[$i][1];
+          $$varName = GetArray($gameFile);
+        }
       }
     }
   }

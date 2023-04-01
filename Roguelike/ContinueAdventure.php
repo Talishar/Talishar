@@ -17,14 +17,14 @@
   $health = &GetZone($playerID, "Health");
   $health[0] = $remainingHealth;
   $encounter = &GetZone($playerID, "Encounter");
-  $encounter[1] = "AfterFight";
-  if ($encounter[2] < 9){
-    $encounter[9] += 2;
+  $encounter->subphase = "AfterFight";
+  if ($encounter->position < 9){
+    $encounter->gold += 2;
   } else {
-    $encounter[9] += 3;
+    $encounter->gold += 3;
   }
-  WriteLog($encounter[2]);
-  if($encounter[2] == 8 && $health[0] <= 20){
+  //WriteLog($encounter->position);
+  if($encounter->position == 8 && $health[0] <= 20){
     $health[0] = 20;
   }
 
@@ -71,14 +71,14 @@
       default: break;
     }
   }
-  if($encounter[2] != 17) {
+  if($encounter->position != 17) {
     AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards("Reward,Class-Class-Talent-Generic"), "Reward,Class-Class-Talent-Generic");
     AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards("Reward,Class-Class-Talent-Generic"), "Reward,Class-Class-Talent-Generic");
     AddDecisionQueue("SETENCOUNTER", $playerID, "009-PickMode");
   }
   else {
-    $encounter[0] = "011";
-    $encounter[1] = "";
+    $encounter->encounterID = "011";
+    $encounter->subphase = "";
     InitializeEncounter($playerID);
   }
 
