@@ -75,7 +75,7 @@ $deckLoaded = false;
 if(substr($decklink, 0, 9) == "DRAFTFAB-")
 {
   $isDraftFaB = true;
-  $deckFile = "./Games/" . $gameName . "/p" . $playerID . "deck.txt";
+  $deckFile = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
   ParseDraftFab($decklink, $deckFile);
   $decklink = "";//Already loaded deck, so don't try to load again
   $deckLoaded = true;
@@ -466,7 +466,7 @@ session_write_close();
 
 function ParseDraftFab($deck, $filename)
 {
-  echo($filename);
+  global $character;
   $character = "DYN001";
   $deckCards = "";
   $headSideboard = "";
