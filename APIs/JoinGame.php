@@ -11,15 +11,6 @@ SetHeaders();
 
 $response = new stdClass();
 
-
-if(($format == "sealed" || $format == "draft") && substr($decklink, 0, 9) != "DRAFTFAB-")
-{
-  //Currently must use draft fab for sealed/draft
-  $response->error = "You must use a DraftFaB for " . $format . ".";
-  echo json_encode($response);
-  exit;
-}
-
 session_start();
 if (!isset($gameName)) {
   $_POST = json_decode(file_get_contents('php://input'), true);
@@ -78,6 +69,16 @@ if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
   WriteGameFile();
   echo (json_encode($response));
   exit;
+}
+
+$deckLoaded = false;
+if(substr($decklink, 0, 9) == "DRAFTFAB-")
+{
+  $isDraftFaB = true;
+  $deckFile = "./Games/" . $gameName . "/p" . $playerID . "deck.txt";
+  ParseDraftFab($decklink, $deckFile);
+  $decklink = "";//Already loaded deck, so don't try to load again
+  $deckLoaded = true;
 }
 
 if ($decklink != "") {
@@ -310,16 +311,26 @@ if ($decklink != "") {
         $totalCards += $numMainBoard + $numSideboard;
       }
     }
-  } else {
+    $deckLoaded = true;
+  }
+  if(!$deckLoaded) {
     $response->error = "Decklist link invalid.";
-    echo (json_encode($response));
+    echo(json_encode($response));
     LogDeckLoadFailure("Decklist link invalid.");
     exit;
   }
 
-  if ($unsupportedCards != "") {
+  if($unsupportedCards != "") {
     $response->error = "The following cards are not yet supported: " . $unsupportedCards;
     echo (json_encode($response));
+    exit;
+  }
+
+  if(($format == "sealed" || $format == "draft") && substr($decklink, 0, 9) != "DRAFTFAB-")
+  {
+    //Currently must use draft fab for sealed/draft
+    $response->error = "You must use a DraftFaB deck for " . $format . ".";
+    echo json_encode($response);
     exit;
   }
 
@@ -455,6 +466,7 @@ session_write_close();
 
 function ParseDraftFab($deck, $filename)
 {
+  echo($filename);
   $character = "DYN001";
   $deckCards = "";
   $headSideboard = "";
@@ -541,71 +553,36 @@ function ParseDraftFab($deck, $filename)
 function GetAltCardID($cardID)
 {
   switch ($cardID) {
-    case "OXO001":
-      return "WTR155";
-    case "OXO002":
-      return "WTR156";
-    case "OXO003":
-      return "WTR157";
-    case "OXO004":
-      return "WTR158";
-    case "BOL002":
-      return "MON405";
-    case "BOL006":
-      return "MON400";
-    case "CHN002":
-      return "MON407";
-    case "CHN006":
-      return "MON401";
-    case "LEV002":
-      return "MON406";
-    case "LEV005":
-      return "MON400";
-    case "PSM002":
-      return "MON404";
-    case "PSM007":
-      return "MON402";
-    case "FAB015":
-      return "WTR191";
-    case "FAB016":
-      return "WTR162";
-    case "FAB023":
-      return "MON135";
-    case "FAB024":
-      return "ARC200";
-    case "FAB030":
-      return "DYN030";
-    case "FAB057":
-      return "EVR063";
-    case "DVR026":
-      return "WTR182";
-    case "RVD008":
-      return "WTR006";
-    case "UPR209":
-      return "WTR191";
-    case "UPR210":
-      return "WTR192";
-    case "UPR211":
-      return "WTR193";
-    case "HER075":
-      return "DYN025";
-    case "LGS112":
-      return "DYN070";
-    case "LGS116":
-      return "DYN200";
-    case "LGS117":
-      return "DYN201";
-    case "LGS118":
-      return "DYN202";
-    case "ARC218":
-    case "UPR224":
-    case "MON306":
-    case "ELE237": //Cracked Baubles
-      return "WTR224";
-    case "DYN238":
-      return "MON401";
-      // case "DYN000":
-      //   return "ARC159";
+    case "OXO001": return "WTR155";
+    case "OXO002": return "WTR156";
+    case "OXO003": return "WTR157";
+    case "OXO004": return "WTR158";
+    case "BOL002": return "MON405";
+    case "BOL006": return "MON400";
+    case "CHN002": return "MON407";
+    case "CHN006": return "MON401";
+    case "LEV002": return "MON406";
+    case "LEV005": return "MON400";
+    case "PSM002": return "MON404";
+    case "PSM007": return "MON402";
+    case "FAB015": return "WTR191";
+    case "FAB016": return "WTR162";
+    case "FAB023": return "MON135";
+    case "FAB024": return "ARC200";
+    case "FAB030": return "DYN030";
+    case "FAB057": return "EVR063";
+    case "DVR026": return "WTR182";
+    case "RVD008": return "WTR006";
+    case "UPR209": return "WTR191";
+    case "UPR210": return "WTR192";
+    case "UPR211": return "WTR193";
+    case "HER075": return "DYN025";
+    case "LGS112": return "DYN070";
+    case "LGS116": return "DYN200";
+    case "LGS117": return "DYN201";
+    case "LGS118": return "DYN202";
+    case "ARC218": case "UPR224": case "MON306": case "ELE237": return "WTR224";
+    case "DYN238": return "MON401";
   }
   return $cardID;
 }
