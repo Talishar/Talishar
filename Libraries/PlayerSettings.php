@@ -516,21 +516,16 @@ function TranslationExist($Language, $cardID)
 
 function FormatCode($format)
 {
-  switch ($format) {
-    case "cc":
-      return 0;
-    case "compcc":
-      return 1;
-    case "blitz":
-      return 2;
-    case "compblitz":
-      return 3;
-    case "livinglegendscc":
-      return 4;
-    case "commoner":
-      return 5;
-    default:
-      return -1;
+  switch($format) {
+    case "cc": return 0;
+    case "compcc": return 1;
+    case "blitz": return 2;
+    case "compblitz": return 3;
+    case "livinglegendscc": return 4;
+    case "commoner": return 5;
+    case "sealed": return 6;
+    case "draft": return 7;
+    default: return -1;
   }
 }
 

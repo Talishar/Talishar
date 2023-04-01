@@ -11,6 +11,15 @@ SetHeaders();
 
 $response = new stdClass();
 
+
+if(($format == "sealed" || $format == "draft") && substr($deck, 0, 9) != "DRAFTFAB-")
+{
+  //Currently must use draft fab for sealed/draft
+  $response->error = "You must use a DraftFaB for " . $format . ".";
+  echo json_encode($response);
+  exit;
+}
+
 session_start();
 if (!isset($gameName)) {
   $_POST = json_decode(file_get_contents('php://input'), true);
