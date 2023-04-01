@@ -274,4 +274,23 @@ function GetShopCost($cardID)
   if($encounter->encounterID == 213) $cost -= 2;
   return $cost;
 }
+
+function WriteFullEncounter() {
+  $encounter = &GetZone(1, "Encounter");
+  WriteLog("===============================");
+  WriteLog("encounterID->" . $encounter->encounterID);
+  WriteLog("subphase->" . $encounter->subphase);
+  WriteLog("position->" . $encounter->position);
+  WriteLog("hero->" . $encounter->hero);
+  WriteLog("adventure->" . $encounter->adventure);
+  WriteLog("visited->[" . implode(", ", $encounter->visited) . "]");
+  WriteLog("majesticCard->" . $encounter->majesticCard);
+  WriteLog("background->" . $encounter->background);
+  WriteLog("difficulty->" . $encounter->difficulty);
+  WriteLog("gold->" . $encounter->gold);
+  WriteLog("rerolls->" . $encounter->rerolls);
+  WriteLog("costToHeal->" . $encounter->costToHeal);
+  WriteLog("costToRemove->" . $encounter->costToRemove);
+  WriteLog("===============================");
+}
 ?>

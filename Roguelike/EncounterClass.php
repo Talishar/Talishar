@@ -1,20 +1,21 @@
 <?php
 
-class Encounter {
+class Encounter { //There are a few things in this file that I will be using to add a tag system later down the line. Ignore them for now, it'll happen eventually
 
-  public $encounterID;
-  public $subphase;
-  public $position;
-  public $hero;
-  public $adventure;
-  public $visited;
-  public $majesticCard;
-  public $background;
-  public $difficulty;
-  public $gold;
-  public $rerolls;
-  public $costToHeal;
-  public $costToRemove;
+  public $encounterID; //current encounter ID (ex. 001, 211, 114)
+  public $subphase; //current encounter subphase (ex. BeforeFight, PickMode)
+  public $position; //Position in the encounter that increments every time you go to a new encounter
+  public $hero; //Current hero (ex. Dorinthea, Bravo)
+  public $adventure; //current adventure (ex. Ira)
+  public $visited; //an array of visited encounters (this is only used for encounters that can only be visited once)
+  public $majesticCard; //the majestic card chance. This means that majestic cards will show up *eventually*
+  public $background; //current background selected. This will likely eventually be unneeded when dynamic card rewards are implemented
+  public $difficulty; //current difficulty
+  public $gold; //current gold total
+  public $rerolls; //current amount of rerolls
+  public $costToHeal; //current cost to heal
+  public $costToRemove; //current cost to remove
+  public $tags; //a list of tags that is currently unused but will be critical to dynamic card rewards
 
   function __construct() {
     $this->encounterID = 1;
@@ -30,41 +31,63 @@ class Encounter {
     $this->rerolls = 2;
     $this->costToHeal = 1;
     $this->costToRemove = 1;
+    $this->tags = array();
   }
 
-  public function WriteFullEncounter() {
-    WriteLog("===============================");
-    WriteLog("encounterID->" . $this->encounterID);
-    WriteLog("subphase->" . $this->subphase);
-    WriteLog("position->" . $this->position);
-    WriteLog("hero->" . $this->hero);
-    WriteLog("adventure->" . $this->adventure);
-    WriteLog("visited->[" . implode(", ", $this->visited) . "]");
-    WriteLog("majesticCard->" . $this->majesticCard);
-    WriteLog("background->" . $this->background);
-    WriteLog("difficulty->" . $this->difficulty);
-    WriteLog("gold->" . $this->gold);
-    WriteLog("rerolls->" . $this->rerolls);
-    WriteLog("costToHeal->" . $this->costToHeal);
-    WriteLog("costToRemove->" . $this->costToRemove);
-    WriteLog("===============================");
+  /*public function AddCardTags($cardID) {
+    $cardTags = GetTags($cardID);
+    for($i = 0; $i < count($cardTags); ++$i)
+    {
+      $contains = $this->ContainsTag($cardTags[$i]->tag);
+      if($contains = "-" && $cardTags[$i]->create == true) $this->AddTag($cardTags[$i]);
+      else if($contains != "-") $this->IncrementTag($cardTags[$i]->weight, $i);
+    }
   }
 
-  /*function WriteArray() {
-    $returnArray = [];
-    array_push($returnArray, "encounterID->".$this->encounterID);
-    array_push($returnArray, "subphase->".$this->subphase);
-    array_push($returnArray, "position->".$this->position);
-    array_push($returnArray, "hero->".$this->hero);
-    array_push($returnArray, "visited->".implode(",", $this->visited));
-    array_push($returnArray, "majesticCard->".$this->majesticCard);
-    array_push($returnArray, "background->".$this->background);
-    array_push($returnArray, "difficulty->".$this->difficulty);
-    array_push($returnArray, "gold->".$this->gold);
-    array_push($returnArray, "rerolls->".$this->rerolls);
-    array_push($returnArray, "costToHeal->".$this->costToHeal);
-    array_push($returnArray, "costToRemove->".$this->costToRemove);
+  public function ContainsTag($tagCheck) {
+    for($i = 0; $i < count($this->tags); ++$i)
+    {
+      if($this->tags[$i] == $tagCheck) return $i;
+    }
+    return "-";
+  }
+
+  public function AddTag($addedTag) {
+    $index = count($this->tags);
+    array_push($this->tags, $addedTag);
+    $deck = &GetZone($player, "Deck");
+    for($i = 0; $i < count($deck); ++$i)
+    {
+      $specificWeight = GetTagWeight($deck[$i], $addedTag->tag);
+      if($specificWeight != "-") $this->IncrementTag($specificWeight, $index);
+    }
+  }
+
+  public function IncrementTag($weight, $index) {
+    $tags[$index]->weight += $weight;
+  }
+
+  public function GetCardPool($type) {
+      switch($type)
+      {
+        case "HighSynergy":
+        case "MidSynergy":
+        case "LowSynergy":
+        case "NoSynergy":
+      }
   }*/
+
 }
+
+/*class Tag {
+  public $tag;
+  public $weight;
+  public $create;
+
+  function __construct($tag = "NULL", $weight = 0) {
+    $this->tag = $tag;
+    $this->weight = $weight;
+  }
+}*/
 
  ?>

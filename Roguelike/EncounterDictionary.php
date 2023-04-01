@@ -152,16 +152,7 @@ function EncounterDescription()
 function InitializeEncounter($player)
 {
   $encounter = &GetZone($player, "Encounter");
-  /*WriteLog("===============================");
-  WriteLog("Encounter[0] = " . $encounter->encounterID);
-  WriteLog("Encounter[1] = " . $encounter->subphase);
-  WriteLog("Encounter[2] = " . $encounter->position);
-  WriteLog("Encounter[3] = " . $encounter->hero);
-  WriteLog("Encounter[4] = " . $encounter->adventure);
-  WriteLog("Encounter[5] = " . $encounter->visited[0]);
-  WriteLog("Encounter[6] = " . $encounter->majesticCard);
-  WriteLog("Encounter[7] = " . $encounter->background);
-  WriteLog("===============================");*/
+  WriteFullEncounter();
   switch($encounter->encounterID)
   {
     case 001:
