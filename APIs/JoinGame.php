@@ -76,7 +76,7 @@ if(substr($decklink, 0, 9) == "DRAFTFAB-")
 {
   $isDraftFaB = true;
   $deckFile = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
-  ParseDraftFab($decklink, $deckFile);
+  ParseDraftFab(substr($decklink, 9), $deckFile);
   $decklink = "";//Already loaded deck, so don't try to load again
   $deckLoaded = true;
 }
