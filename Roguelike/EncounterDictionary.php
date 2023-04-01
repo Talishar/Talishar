@@ -156,7 +156,7 @@ function InitializeEncounter($player)
   WriteLog("Encounter[0] = " . $encounter->encounterID);
   WriteLog("Encounter[1] = " . $encounter->subphase);
   WriteLog("Encounter[2] = " . $encounter->position);
-  WriteLog("Encounter[3] = " . $encounter->heroID);
+  WriteLog("Encounter[3] = " . $encounter->hero);
   WriteLog("Encounter[4] = " . $encounter->adventure);
   WriteLog("Encounter[5] = " . $encounter->visited[0]);
   WriteLog("Encounter[6] = " . $encounter->majesticCard);
@@ -185,7 +185,7 @@ function InitializeEncounter($player)
       break;
     case 005:
       $encounter->gold += 3;
-      AddDecisionQueue("BUTTONINPUT", $player, GetBackgrounds($encounter->heroID));
+      AddDecisionQueue("BUTTONINPUT", $player, GetBackgrounds($encounter->hero));
       AddDecisionQueue("BACKGROUND", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
       break;

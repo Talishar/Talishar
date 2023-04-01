@@ -32,11 +32,22 @@ class Encounter {
     $this->costToRemove = 1;
   }
 
-  public function set_encounterID($value) {
-    $this->encounterID = $value;
-  }
-  public function get_encounterID() {
-    return $this->encounterID;
+  public function WriteFullEncounter() {
+    WriteLog("===============================");
+    WriteLog("encounterID->" . $this->encounterID);
+    WriteLog("subphase->" . $this->subphase);
+    WriteLog("position->" . $this->position);
+    WriteLog("hero->" . $this->hero);
+    WriteLog("adventure->" . $this->adventure);
+    WriteLog("visited->[" . implode(", ", $this->visited) . "]");
+    WriteLog("majesticCard->" . $this->majesticCard);
+    WriteLog("background->" . $this->background);
+    WriteLog("difficulty->" . $this->difficulty);
+    WriteLog("gold->" . $this->gold);
+    WriteLog("rerolls->" . $this->rerolls);
+    WriteLog("costToHeal->" . $this->costToHeal);
+    WriteLog("costToRemove->" . $this->costToRemove);
+    WriteLog("===============================");
   }
 
   /*function WriteArray() {

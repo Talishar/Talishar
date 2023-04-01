@@ -427,7 +427,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         {
           case "Your_face":
             $encounter = &GetZone($player, "Encounter");
-            switch($encounter->heroID)
+            switch($encounter->hero)
             {
               case "Dorinthea":
                 PrependDecisionQueue("CHOOSECARD", $player, "WTR119");
@@ -448,7 +448,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             }
             break;
           case "The_face_of_another":
-            switch($encounter->heroID)
+            switch($encounter->hero)
             {
               case "Dorinthea": $cardChoices = array("EVR070", "ARC007", "EVR055"); break;
               case "Bravo": $cardChoices = array("WTR006", "ARC080", "OUT013"); break;
@@ -583,7 +583,7 @@ function ResetHero($player, $hero="Dorinthea")
   $deck = &GetZone($player, "Deck");
   $deck = explode(" ", $heroFileArray[1]);
   $encounter = &GetZone($player, "Encounter");
-  $encounter->heroID = $hero;
+  $encounter->hero = $hero;
   }
 
 ?>

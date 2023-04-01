@@ -135,7 +135,7 @@ function GetRandomCards($inputString)
       array_push($parameters, "");
       $encounter = &GetZone(1, "Encounter");
       $result = [];
-      $pool = GetPool("Equipment", $encounter->heroID, $parameters[1], $encounter->background, "All", $parameters[2]);
+      $pool = GetPool("Equipment", $encounter->hero, $parameters[1], $encounter->background, "All", $parameters[2]);
       array_push($result, $pool[rand(0, count($pool) - 1)]);
       return $result[0];
     case "ResourceGems":
@@ -200,7 +200,7 @@ function GeneratePool($selected, $type, $rarity = "-")
       $rarity = "Common";
     }
   }
-  $pool = GetPool($type, $encounter->heroID, $rarity, $encounter->background);
+  $pool = GetPool($type, $encounter->hero, $rarity, $encounter->background);
   $generatedPool = [];
 
   /*$options = GetOptions($selected, count($pool));
