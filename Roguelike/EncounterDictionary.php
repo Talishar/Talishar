@@ -129,6 +129,10 @@ function EncounterDescription()
     case 216: return "The lady with a radiant aura approaches you. She puts on a mask and suddenly she is you. Then, she puts on another mask and shifts into someone else entirely. \"Now, Which one do you prefer?\"";
     case 217: case 218: case 219: case 220: case 221: case 222: return "The chest is simple, but it should be easy enough to open.";
     case 223: case 224: case 225: case 226: case 227: case 228: return "The chest is ornate, elegant in design. It may be difficult, but it should be able to be opened.";
+    case 229: return "Inside the tavern, there is a man in the corner rolling dice. \"Come on over here! I haven't lost yet!\"";
+    case 230: return "You come across a small village. You wander through the market, investigating the various wares.";
+    case 231: return "You are pulled closer to the shrine. The shrine speaks to you in a cool, twisted voice: \"Make an offering, or your soul is forfeit.\"";
+    case 232: return "The mirror serves no purpose to be here. It's unsettling.";
     default: return "No encounter text.";
   }
 }
@@ -301,6 +305,54 @@ function InitializeEncounter($player)
       AddDecisionQueue("CHEST", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
+    case 223:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_ornate_brown_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 224:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_ornate_white_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 225:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_ornate_blue_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 226:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_ornate_red_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 227:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_ornate_green_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 228:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_ornate_purple_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 229:
+      AddDecisionQueue("BUTTONINPUT", $player, "Partake_in_some_entertainment,Leave");
+      AddDecisionQueue("GAMBLER", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 230:
+      AddDecisionQueue("SHOP", $player, GetShop("Class,Class,Talent,Equipment-Common,Equipment,Generic,Generic,Power-1"), "Class,Class,Talent,Equipment-Common,Equipment,Generic,Generic,Power-1", "NoSubchoice");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 231:
+      AddDecisionQueue("REMOVEALLDECKCARD", $player, GetRandomCards("Deck,4"), "Deck,4");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 232:
+      AddDecisionQueue("BUTTONINPUT", $player, "Stare_into_the_mirror,Shatter_the_mirror,Leave");
+      AddDecisionQueue("MIRROR", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
     default: /*WriteLog("We Shouldn't Be Here");*/ break;
   }
 }
@@ -406,6 +458,16 @@ function EncounterImage()
       return "CRU097_cropped.png";
     case 217: case 218: case 219: case 220: case 221: case 222:
       return "DYN094_cropped.png";
+    case 223: case 224: case 225: case 226: case 227: case 228:
+      return "DYN242_cropped.png";
+    case 229:
+      return "CRU179_cropped.png";
+    case 230:
+      return "WTR151_cropped.png";
+    case 231:
+      return "ELE227_cropped.png";
+    case 232:
+      return "UPR187_cropped.png";
 
     default: return "CRU054_cropped.png";
   }
@@ -463,6 +525,16 @@ function EncounterChoiceHeader(){
       return "Which do you prefer?";
     case 217: case 218: case 219: case 220: case 221: case 222:
       return "Will you open the chest?";
+    case 223: case 224: case 225: case 226: case 227: case 228:
+      return "Will you open the chest?";
+    case 229:
+      return "What will you do?";
+    case 230:
+      return "What purchases will you make?";
+    case 231:
+      return "What will you offer?";
+    case 232:
+      return "What will you do?";
     default: return "";
   }
 }

@@ -268,6 +268,7 @@ function GetShopCost($cardID)
   $encounter = &GetZone(1, "Encounter");
   if($encounter->encounterID == 211) $cost = $cost / 2;
   if($encounter->encounterID == 213) $cost -= 2;
+  if($encounter->encounterID == 230) $cost -= 1;
   return $cost;
 }
 

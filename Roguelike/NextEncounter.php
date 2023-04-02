@@ -171,6 +171,23 @@ $cardIconTop = intval($cardSize / 4.2); //30
       $encounterContent .= "</div><BR>";
       break;
     }
+    case "REMOVEALLDECKCARD":{
+      $options = explode(",", $myDQ[1]);
+      $encounterContent .= "<h2>Choose a card to offer</h2>";
+      $encounterContent .= "<div style='display:inline;'>";
+      for($i=0; $i<count($options); ++$i)
+      {
+        $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
+      }
+      $encounterContent .= "</div><BR>";
+      $encounterContent .= "<div display:inline;'>";
+      if($encounter->rerolls > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
+        $rerollStringValue = "Reroll:_".$encounter->rerolls;
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $rerollStringValue), 2, strval("Reroll"), "24px");
+      }
+      $encounterContent .= "</div><BR>";
+      break;
+    }
     case "DUPLICATECARD":{
       $options = explode(",", $myDQ[1]);
       $encounterContent .= "<h2>Offer a card in your deck</h2>";

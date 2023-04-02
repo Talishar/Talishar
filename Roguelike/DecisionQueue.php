@@ -487,6 +487,99 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Open_the_purple_chest":
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,3,Common"), "Power,3,Common");
             break;
+          case "Open_the_ornate_brown_chest":
+            $encounter = &GetZone($player, "Encounter");
+            $foundGold = rand(14, 20);
+            $encounter->gold += $foundGold;
+            WriteLog("You dug through the chest and found " . $foundGold . " Gold.");
+            break;
+          case "Open_the_ornate_white_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Equipment,Legendary"), "Equipment,Legendary");
+            break;
+          case "Open_the_ornate_blue_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Class,ForcedRarity-Majestic"), "Reward,Class-Class-Class,ForcedRarity-Majestic");
+            break;
+          case "Open_the_ornate_red_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Talent-Talent-Talent,ForcedRarity-Majestic"), "Reward,Talent-Talent-Talent,ForcedRarity-Majestic");
+            break;
+          case "Open_the_ornate_green_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Generic-Generic-Generic,ForcedRarity-Majestic"), "Reward,Generic-Generic-Generic,ForcedRarity-Majestic");
+            break;
+          case "Open_the_ornate_purple_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,2,Majestic"), "Power,2,Majestic");
+            break;
+          case "Leave":
+            break;
+        }
+        return 1;
+      case "GAMBLER":
+        switch($lastResult)
+        {
+          case "Partake_in_some_entertainment":
+            $entertainment = rand(1, 4);
+            $encounter = &GetZone($player, "Encounter");
+            $encounter->gold += rand(-4, -8);
+            if($encounter->gold < 0) $encounter->gold = 0;
+            switch($entertainment)
+            {
+              case 1:
+                WriteLog("You gambled and managed to win nearly every game! You should leave before they get angry.");
+                $encounter->rerolls += 3;
+                break;
+              case 2:
+                WriteLog("You gambled and did about as well as you expected.");
+                $encounter->rerolls += 2;
+                break;
+              case 3:
+                WriteLog("You gambled and barely scraped by with a win.");
+                $encounter->rerolls += 1;
+                break;
+              case 4:
+                WriteLog("You gambled and did horribly, losing every game. You should leave before you lose all your belongings");
+                break;
+            }
+          case "Leave":
+            break;
+        }
+        return 1;
+      case "MIRROR":
+        switch($lastResult)
+        {
+          case "Stare_into_the_mirror":
+            $deck = &GetZone($player, "Deck");
+            $newDeck = [];
+            for($i = 0; $i < count($deck); ++$i)
+            {
+              if(CardSubtype($deck[$i]) == "Power")
+              {
+                array_push($newDeck, $deck[$i]);
+              }
+              else
+              {
+                array_push($newDeck, $deck[$i]);
+                array_push($newDeck, $deck[$i]);
+              }
+            }
+            $deck = $newDeck;
+            WriteLog("You stare into the mirror. You feel your mind become cluttered with thoughts of thoughts.");
+            break;
+          case "Shatter_the_mirror":
+            $deck = &GetZone($player, "Deck");
+            $newDeck = [];
+            for($i = 0; $i < count($deck); ++$i)
+            {
+              if(CardSubtype($deck[$i]) == "Power")
+              {
+                array_push($newDeck, $deck[$i]);
+              }
+            }
+            $deck = $newDeck;
+            WriteLog("You shatter the mirror. Your mind becomes empty, and you forget your journey. A short while later, it comes to you.");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic"), "Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic"), "Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic"), "Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic"), "Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic");
+            break;
           case "Leave":
             break;
         }
@@ -561,8 +654,38 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "You_find_a_small_purple_chest": //Power Chest
             PrependDecisionQueue("SETENCOUNTER", $player, "222-PickMode");
             break;
+          case "You_find_an_ornate_brown_chest": //Gold Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "223-PickMode");
+            break;
+          case "You_find_an_ornate_white_chest": //Equipment Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "224-PickMode");
+            break;
+          case "You_find_an_ornate_blue_chest": //Class Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "225-PickMode");
+            break;
+          case "You_find_an_ornate_red_chest": //Talent Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "226-PickMode");
+            break;
+          case "You_find_an_ornate_green_chest": //Generic Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "227-PickMode");
+            break;
+          case "You_find_an_ornate_purple_chest": //Power Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "228-PickMode");
+            break;
+          case "You_stumble_into_a_lively_tavern": //Gambler
+            PrependDecisionQueue("SETENCOUNTER", $player, "229-PickMode");
+            break;
+          case "You_see_smoke_rising_in_the_distance": //shop, but it is funky
+            PrependDecisionQueue("SETENCOUNTER", $player, "230-PickMode");
+            break;
+          case "You_find_a_large_shrine": //shrine
+            PrependDecisionQueue("SETENCOUNTER", $player, "231-PickMode");
+            break;
           case "Take_the_scenic_route_through_the_back_streets": //Stealthy Stabber
             PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight");
+            break;
+          case "You_find_a_large_mirror": //mirror
+            PrependDecisionQueue("SETENCOUNTER", $player, "232-PickMode");
             break;
           case "Make_your_way_up_through_Metrix": //Combustible Courier
             PrependDecisionQueue("SETENCOUNTER", $player, "120-BeforeFight");
