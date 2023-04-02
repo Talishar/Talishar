@@ -98,6 +98,7 @@ function GetRandomCards($inputString)
   {
     case "Reward":
       $rarity = "-";
+      $specialTags = "-";
       for($i = 2; $i < count($parameters); ++$i)
       {
         $tags = explode("-", $parameters[$i]);
@@ -105,13 +106,17 @@ function GetRandomCards($inputString)
         {
           case "ForcedRarity":
             $rarity = $tags[1];
+            break;
+          case "SpecialTag":
+            $specialTags = $tags[1];
+            break;
         }
       }
       $tags = explode("-", $parameters[1]);
       $result = [];
       for($i = 0; $i < count($tags); ++$i)
       {
-        $pool = GeneratePool($result, $tags[$i], $rarity);
+        $pool = GeneratePool($result, $tags[$i], $rarity, $specialTags);
         array_push($result, $pool[rand(0, count($pool)-1)]);
       }
       $resultStr = "";
@@ -174,7 +179,7 @@ function GetRandomDeckCard($player, $special = "") //TODO add in a seperate spec
   return "This should never happen";
 }
 
-function GeneratePool($selected, $type, $rarity = "-")
+function GeneratePool($selected, $type, $rarity = "-", $specialTags = "-")
 {
   $encounter = &GetZone(1, "Encounter");
   if($rarity == "-" && $type != "Equipment")
@@ -196,7 +201,8 @@ function GeneratePool($selected, $type, $rarity = "-")
       $rarity = "Common";
     }
   }
-  $pool = GetPool($type, $encounter->hero, $rarity, $encounter->background);
+  if($specialTags == "-") $pool = GetPool($type, $encounter->hero, $rarity, $encounter->background);
+  else if($specialTags == "AnyPool") $pool = GetPool($type, "ALL", $rarity, $encounter->background);
   $generatedPool = [];
 
   /*$options = GetOptions($selected, count($pool));
