@@ -40,8 +40,8 @@ function GetPowers($amount = 3, $special = "-")
     for($i = 0; $i < $amount; ++$i)
     {
       $random = rand(1,100); //current rarity numbers make rares appear about 1 in every 3 rewards and majestics appear about 1 in every 10 rewards. Feel free to change in testing.
-      if($random >= 95) ++$rarityCount[2]; //MAKE SURE THIS IS 97 WHEN PUSHED
-      else if($random >= 75) ++$rarityCount[1]; //MAKE SURE THIS IS 86 WHEN PUSHED
+      if($random >= 95) ++$rarityCount[2]; //MAKE SURE THIS IS 95 WHEN PUSHED
+      else if($random >= 75) ++$rarityCount[1]; //MAKE SURE THIS IS 75 WHEN PUSHED
       else ++$rarityCount[0];
     }
     if($rarityCount[0] > 0)

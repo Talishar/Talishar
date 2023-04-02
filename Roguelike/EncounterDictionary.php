@@ -126,7 +126,8 @@ function EncounterDescription()
     case 213: return "\"Hail, traveler. You look like you could use something powerful, and my pockets are awefully light at the moment. Care to trade?\"";
     case 214: return "\"Hello, traveler. I can see you have grown weary. Come, sit. You must have a great story to tell. Or perhaps you would like to hear one of mine? Maybe you just need some company.\"";
     case 215: return "The knight looks at you, smiles, and lowers his visor. \"Well friend, lets spar. Until you are tired, let us begin!\"";
-    case 216: return "The lady with the crown approaches you. She puts on a mask and suddenly she is you. Then, she puts on another mask and shifts into someone else entirely. \"Now, Which one do you prefer?\"";
+    case 216: return "The lady with a radiant aura approaches you. She puts on a mask and suddenly she is you. Then, she puts on another mask and shifts into someone else entirely. \"Now, Which one do you prefer?\"";
+    case 217: case 218: case 219: case 220: case 221: return "The chest is simple, but it should be easy enough to open.";
     default: return "No encounter text.";
   }
 }
@@ -164,10 +165,10 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
       break;
     case 006:
-      //$encounter->position = 1; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
+      $encounter->position = 1; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
       AddDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,3"), "Power,3");
-      AddDecisionQueue("SETENCOUNTER", $player, "216-PickMode"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
-      //AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      //AddDecisionQueue("SETENCOUNTER", $player, "216-PickMode"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
       AddDecisionQueue("BUTTONINPUT", $player, "Rest,Reflect");
@@ -267,6 +268,31 @@ function InitializeEncounter($player)
     case 216:
       AddDecisionQueue("BUTTONINPUT", $player, "Your_face,The_face_of_another");
       AddDecisionQueue("SHIYANASPEC", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 217:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_brown_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 218:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_white_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 219:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_blue_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 220:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_red_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 221:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_green_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     default: /*WriteLog("We Shouldn't Be Here");*/ break;
@@ -372,6 +398,8 @@ function EncounterImage()
       return "DVR009_cropped.png";
     case 216:
       return "CRU097_cropped.png";
+    case 217: case 218: case 219: case 220: case 221:
+      return "DYN094_cropped.png";
 
     default: return "CRU054_cropped.png";
   }
@@ -425,6 +453,10 @@ function EncounterChoiceHeader(){
       return "What will you do?";
     case 215:
       return "What will you do?";
+    case 216:
+      return "Which do you prefer?";
+    case 217: case 218: case 219: case 220: case 221:
+      return "Will you open the chest?";
     default: return "";
   }
 }

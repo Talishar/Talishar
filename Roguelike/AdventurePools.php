@@ -44,9 +44,9 @@ function GetNextEncounter() //TODO overhaul this whole function and children
 function RandomEvent()
 {
   $devTestEvents = array(); //Put events in here to test them. They will be the only ones to show up. Make sure you put at least 2 options
-  $commonEvents = array("You_wander_through_a_fresh_battlefield", "You_find_a_great_library", "You_see_one_of_the_most_beautiful_views_in_all_of_rathe", "You_find_a_small_smithing_hut", "You_come_across_a_small_dojo", "A_lavish_noble_passes_you_by", "You_pass_a_strange_man_in_robes", "A_knight_approaches_you_asking_to_spar");
-  $rareEvents = array("You_see_a_small_temple_a_ways_from_the_path", "A_wandering_trader_approaches_you");
-  $majesticEvents = array("You_wander_through_a_fresh_battlefield", "You_find_a_great_library", "You_see_a_small_temple_a_ways_from_the_path");
+  $commonEvents = array("You_wander_through_a_fresh_battlefield", "You_find_a_great_library", "You_see_one_of_the_most_beautiful_views_in_all_of_rathe", "You_find_a_small_smithing_hut", "You_come_across_a_small_dojo", "A_lavish_noble_passes_you_by", "You_pass_a_strange_man_in_robes", "A_knight_approaches_you_asking_to_spar", "You_find_a_small_brown_chest", "You_find_a_small_white_chest", "You_find_a_small_green_chest", "You_find_a_small_blue_chest", "You_find_a_small_red_chest");
+  $rareEvents = array("You_see_a_small_temple_a_ways_from_the_path", "A_radiant_woman_comes_across_your_path");
+  $majesticEvents = array("", "", "");
   $randEvent = rand(1,100);
   if(count($devTestEvents) >= 2 ){
     $options = GetOptions(2, count($devTestEvents)-1);

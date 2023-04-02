@@ -462,6 +462,32 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
         }
         return 1;
+      case "CHEST":
+        switch($lastResult)
+        {
+          case "Open_the_brown_chest":
+            $encounter = &GetZone($player, "Encounter");
+            $foundGold = rand(4, 10);
+            $encounter->gold += $foundGold;
+            WriteLog("You dug through the chest and found " . $foundGold . " Gold.");
+            break;
+          case "Open_the_white_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Equipment"), "Equipment");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Equipment"), "Equipment");
+            break;
+          case "Open_the_blue_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Class-Class"), "Reward,Class-Class-Class-Class");
+            break;
+          case "Open_the_red_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Talent-Talent-Talent-Talent"), "Reward,Talent-Talent-Talent-Talent");
+            break;
+          case "Open_the_green_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Generic-Generic-Generic-Generic"), "Reward,Generic-Generic-Generic-Generic");
+            break;
+          case "Leave":
+            break;
+        }
+        return 1;
       case "CROSSROADS":
         switch($lastResult)
         {
@@ -510,6 +536,24 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "A_knight_approaches_you_asking_to_spar": //Sparring Knight
             PrependDecisionQueue("SETENCOUNTER", $player, "215-PickMode");
+            break;
+          case "A_radiant_woman_comes_across_your_path": //Shiyana Spec
+            PrependDecisionQueue("SETENCOUNTER", $player, "216-PickMode");
+            break;
+          case "You_find_a_small_brown_chest": //Gold Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "217-PickMode");
+            break;
+          case "You_find_a_small_white_chest": //Equipment Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "218-PickMode");
+            break;
+          case "You_find_a_small_blue_chest": //Class Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "219-PickMode");
+            break;
+          case "You_find_a_small_red_chest": //Talent Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "220-PickMode");
+            break;
+          case "You_find_a_small_green_chest": //Generic Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "221-PickMode");
             break;
           case "Take_the_scenic_route_through_the_back_streets": //Stealthy Stabber
             PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight");
