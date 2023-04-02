@@ -7,13 +7,15 @@
   include 'DecisionQueue.php';
   include "ZoneGetters.php";
   include "../WriteLog.php";
+  include "EncounterClass.php";
   //include "EncounterDictionary.php";
 
   for($i=1; $i<=$numPlayers; ++$i)
   { //this is what I am currently working in
     $encounter = &GetZone($i, "Encounter");
-    $encounter  = array(001, "PickMode", 0, "Dorinthea", "Ira", "none", 1, "none", "Normal", 0, 2, 1, 1);
-    //See EncounterDictionary for explanations for encounter variable
+    $encounter = new Encounter();
+
+    //See EncounterClass for the pieces of the encounter object
     InitializeEncounter($i);
 
     ResetHero(1); //Defined in DecisionQueue.php

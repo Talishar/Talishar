@@ -55,6 +55,10 @@
                 $char = &GetZone($playerID, "Character");
                 array_push($char, $cardID);
               }
+              else if(CardSubtype($cardID) == "Power") {
+                $deck = &GetZone($playerID, "Deck");
+                array_push($deck, $cardID);
+              }
               else {
                 $deck = &GetZone($playerID, "Deck");
                 array_push($deck, $cardID);
@@ -78,7 +82,7 @@
             //WriteLog($cardID);
             $encounter = &GetZone($playerID, "Encounter");
             $cost = getShopCost($cardID);
-            //WriteLog("cost: " . $cost . ", total: " . $encounter[9]);
+            //WriteLog("cost: " . $cost . ", total: " . $encounter->gold);
             if($cardID == "CardBack")
             {
               $newShop = $myDQ[1];
@@ -89,7 +93,7 @@
               PrependDecisionQueue("SHOP", $playerID, $newShop, $parameterOne, $parameterTwo);
               break;
             }
-            else if($encounter[9] < $cost)
+            else if($encounter->gold < $cost)
             {
               $newShop = $myDQ[1];
               WriteLog("You cannot afford to buy " . CardLink($cardID, $cardID) . ".");
@@ -112,7 +116,7 @@
                 array_push($deck, $cardID);
               }
               WriteLog("You spent " . $cost . " gold and added " . CardLink($cardID, $cardID) . " to your deck.");
-              $encounter[9] -= $cost;
+              $encounter->gold -= $cost;
               $newShop = "";
               for($j=0;$j<count($options);++$j){
                 if($j != 0) $newShop.=",";
@@ -147,9 +151,9 @@
           if($buttonInput == "Reroll")
           {
             $encounter = &GetZone($playerID, "Encounter");
-            if($encounter[10] >= 1) {
+            if($encounter->rerolls >= 1) {
               WriteLog("You used a reroll to alter the reward");
-              $encounter[10] -= 1;
+              $encounter->rerolls -= 1;
               $parameterOne = $myDQ[2];
               $parameterTwo = $myDQ[3];
               ClearPhase($playerID); //Clear the screen and keep going
@@ -165,9 +169,9 @@
           if($buttonInput == "Reroll")
           {
             $encounter = &GetZone($playerID, "Encounter");
-            if($encounter[10] >= 1) {
+            if($encounter->rerolls >= 1) {
               WriteLog("You used a reroll to alter the reward");
-              $encounter[10] -= 1;
+              $encounter->rerolls -= 1;
               $parameterOne = $myDQ[2];
               $parameterTwo = $myDQ[3];
               ClearPhase($playerID); //Clear the screen and keep going
@@ -183,9 +187,9 @@
           if($buttonInput == "Reroll")
           {
             $encounter = &GetZone($playerID, "Encounter");
-            if($encounter[10] >= 1) {
+            if($encounter->rerolls >= 1) {
               WriteLog("You used a reroll to alter the reward");
-              $encounter[10] -= 1;
+              $encounter->rerolls -= 1;
               $parameterOne = $myDQ[2];
               $parameterTwo = $myDQ[3];
               ClearPhase($playerID); //Clear the screen and keep going
@@ -202,29 +206,29 @@
           $health = &GetZone($playerID, "Health");
           if($buttonInput == "shop_heal"){
             $health = &GetZone($playerID, "Health");
-            WriteLog("\$encounter[11]: ".$encounter[11]);
+            WriteLog("\$encounter->costToHeal: ".$encounter->costToHeal);
 
             $gain = (20 - $health[0] > 5 ? 5 : 20 - $health[0]);
             if($gain < 0) $gain = 0;
             if($gain == 0){
               WriteLog("You are already very healthy. You and the healer enjoy a polite conversation, but there's no need to hire them.");
             }
-            else if($encounter[9] >= $encounter[11]){ //If the player's gold is less than or equal to the cost to heal
+            else if($encounter->gold >= $encounter->costToHeal){ //If the player's gold is less than or equal to the cost to heal
               WriteLog("The local healer patches your wounds. You feel better prepared for your journey ahead! You heal $gain health.");
               $health[0] += $gain;
-              $encounter[9] -= $encounter[11];
-              $encounter[11] += 1;
+              $encounter->gold -= $encounter->costToHeal;
+              $encounter->costToHeal += 1;
             }
             else{
               WriteLog("You can't afford the services of a healer. You will have to tend to your wounds another time.");
             }
           }
           else if($buttonInput == "shop_reflect"){
-            if($encounter[9] >= $encounter[12]){
+            if($encounter->gold >= $encounter->costToRemove){
               WriteLog("The beggar invites you to sit beside him and join in meditation.");
               PrependDecisionQueue("REMOVEDECKCARD", 1, GetRandomDeckCard(1));
-              $encounter[9] -= $encounter[12];
-              $encounter[12] += 1;
+              $encounter->gold -= $encounter->costToRemove;
+              $encounter->costToRemove += 1;
             }
             else {
               WriteLog("Unfortunately, you don't have much to spare. Perhaps you'll be able to share good fortune another day.");
@@ -232,9 +236,9 @@
           }
           else if($buttonInput == "Reroll")
           {
-            if($encounter[10] >= 1) {
+            if($encounter->rerolls >= 1) {
               WriteLog("You used a reroll to alter the shop");
-              $encounter[10] -= 1;
+              $encounter->rerolls -= 1;
               $parameterOne = $myDQ[2];
               $parameterTwo = $myDQ[3];
               ClearPhase($playerID); //Clear the screen and keep going

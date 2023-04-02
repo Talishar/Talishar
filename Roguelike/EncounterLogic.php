@@ -1,22 +1,5 @@
 <?php
 
-/*
-Encounter variable
-encounter[0] = Encounter ID (001-099 Special Encounters | 101-199 Combat Encounters | 201-299 Event Encounters)
-encounter[1] = Encounter Subphase
-encounter[2] = Position in adventure
-encounter[3] = Hero ID
-encounter[4] = Adventure ID
-encounter[5] = A string made up of encounters that have already been visited, looks like "ID-subphase,ID-subphase,ID-subphase,etc."
-encounter[6] = majesticCard% (1-100, the higher it is, the more likely a majestic card is chosen) (Whole code is based off of the Slay the Spire rare card chance)
-encounter[7] = background chosen
-encounter[8] = adventure difficulty (to be used later)
-encounter[9] = current gold
-encounter[10] = rerolls remaining //TODO: Add in a reroll system
-encounter[11] = cost to heal at the shop
-encounter[12] = cost to remove card at the shop
-*/
-
 function GetOptions($amount, $upperBound, $lowerBound = 0, $step = 1) //amount needs to be less than both upperbound and the amount of options in the pool being chosen from
 {
   $options = [];
@@ -57,8 +40,8 @@ function GetPowers($amount = 3, $special = "-")
     for($i = 0; $i < $amount; ++$i)
     {
       $random = rand(1,100); //current rarity numbers make rares appear about 1 in every 3 rewards and majestics appear about 1 in every 10 rewards. Feel free to change in testing.
-      if($random >= 95) ++$rarityCount[2]; //MAKE SURE THIS IS 97 WHEN PUSHED
-      else if($random >= 75) ++$rarityCount[1]; //MAKE SURE THIS IS 86 WHEN PUSHED
+      if($random >= 95) ++$rarityCount[2]; //MAKE SURE THIS IS 95 WHEN PUSHED
+      else if($random >= 75) ++$rarityCount[1]; //MAKE SURE THIS IS 75 WHEN PUSHED
       else ++$rarityCount[0];
     }
     if($rarityCount[0] > 0)
@@ -135,7 +118,7 @@ function GetRandomCards($inputString)
       array_push($parameters, "");
       $encounter = &GetZone(1, "Encounter");
       $result = [];
-      $pool = GetPool("Equipment", $encounter[3], $parameters[1], $encounter[7], "All", $parameters[2]);
+      $pool = GetPool("Equipment", $encounter->hero, $parameters[1], $encounter->background, "All", $parameters[2]);
       array_push($result, $pool[rand(0, count($pool) - 1)]);
       return $result[0];
     case "ResourceGems":
@@ -184,23 +167,23 @@ function GeneratePool($selected, $type, $rarity = "-")
   if($rarity == "-" && $type != "Equipment")
   {
     $randRarity = rand(1,100);
-    if($randRarity <= $encounter[6])
+    if($randRarity <= $encounter->majesticCard)
     {
-      $encounter[6] = 1;
+      $encounter->majesticCard = 1;
       $rarity = "Majestic";
     }
     else if($randRarity >= 75)
     {
-      $encounter[6] += 3;
+      $encounter->majesticCard += 3;
       $rarity = "Rare";
     }
     else
     {
-      $encounter[6] +=1;
+      $encounter->majesticCard +=1;
       $rarity = "Common";
     }
   }
-  $pool = GetPool($type, $encounter[3], $rarity, $encounter[7]);
+  $pool = GetPool($type, $encounter->hero, $rarity, $encounter->background);
   $generatedPool = [];
 
   /*$options = GetOptions($selected, count($pool));
@@ -270,8 +253,27 @@ function GetShopCost($cardID)
     else $cost = 4;
   }
   $encounter = &GetZone(1, "Encounter");
-  if($encounter[0] == 211) $cost = $cost / 2;
-  if($encounter[0] == 213) $cost -= 2;
+  if($encounter->encounterID == 211) $cost = $cost / 2;
+  if($encounter->encounterID == 213) $cost -= 2;
   return $cost;
+}
+
+function WriteFullEncounter() {
+  $encounter = &GetZone(1, "Encounter");
+  WriteLog("===============================");
+  WriteLog("encounterID->" . $encounter->encounterID);
+  WriteLog("subphase->" . $encounter->subphase);
+  WriteLog("position->" . $encounter->position);
+  WriteLog("hero->" . $encounter->hero);
+  WriteLog("adventure->" . $encounter->adventure);
+  WriteLog("visited->[" . implode(", ", $encounter->visited) . "]");
+  WriteLog("majesticCard->" . $encounter->majesticCard);
+  WriteLog("background->" . $encounter->background);
+  WriteLog("difficulty->" . $encounter->difficulty);
+  WriteLog("gold->" . $encounter->gold);
+  WriteLog("rerolls->" . $encounter->rerolls);
+  WriteLog("costToHeal->" . $encounter->costToHeal);
+  WriteLog("costToRemove->" . $encounter->costToRemove);
+  WriteLog("===============================");
 }
 ?>

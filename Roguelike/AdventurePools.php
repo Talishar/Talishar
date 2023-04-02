@@ -1,39 +1,22 @@
 <?php
 
-/*
-Encounter variable
-encounter[0] = Encounter ID (001-099 Special Encounters | 101-199 Combat Encounters | 201-299 Event Encounters)
-encounter[1] = Encounter Subphase
-encounter[2] = Position in adventure
-encounter[3] = Hero ID
-encounter[4] = Adventure ID
-encounter[5] = A string made up of encounters that have already been visited, looks like "ID-subphase,ID-subphase,ID-subphase,etc."
-encounter[6] = majesticCard% (1-100, the higher it is, the more likely a majestic card is chosen) (Whole code is based off of the Slay the Spire rare card chance)
-encounter[7] = background chosen
-encounter[8] = adventure difficulty (to be used later)
-encounter[9] = current gold
-encounter[10] = rerolls remaining //TODO: Add in a reroll system
-encounter[11] = cost to heal at the shop
-encounter[12] = cost to remove card at the shop
-*/
-
 function GetNextEncounter() //TODO overhaul this whole function and children
 {
   $encounter = &GetZone(1, "Encounter");
   // WriteLog("hijacked GetNextEncounter");
-  // WriteLog("Encounter[0]: " . $encounter[0]);
-  // WriteLog("Encounter[1]: " . $encounter[1]);
-  // WriteLog("Encounter[2]: " . $encounter[2]);
-  ++$encounter[2];
-  switch($encounter[4])
+  // WriteLog("Encounter[0]: " . $encounter->encounterID);
+  // WriteLog("Encounter[1]: " . $encounter->subphase);
+  // WriteLog("Encounter[2]: " . $encounter->position);
+  ++$encounter->position;
+  switch($encounter->adventure)
   {
     case "Ira":
-      switch($encounter[8])
+      switch($encounter->difficulty)
       {
         case "Easy":
         case "Normal":
         case "Hard":
-          switch($encounter[2])
+          switch($encounter->position)
           {
             case 1: return CrossroadsDoubleChoice("Make_your_way_up_through_Metrix,Take_the_scenic_route_through_the_back_streets,Catch_a_ferry_across_the_lake");//combat choice of X, Y, and Z
             case 2: return RandomEvent();
@@ -61,9 +44,9 @@ function GetNextEncounter() //TODO overhaul this whole function and children
 function RandomEvent()
 {
   $devTestEvents = array(); //Put events in here to test them. They will be the only ones to show up. Make sure you put at least 2 options
-  $commonEvents = array("You_wander_through_a_fresh_battlefield", "You_find_a_great_library", "You_see_one_of_the_most_beautiful_views_in_all_of_rathe", "You_find_a_small_smithing_hut", "You_come_across_a_small_dojo", "A_lavish_noble_passes_you_by", "You_pass_a_strange_man_in_robes", "A_knight_approaches_you_asking_to_spar");
-  $rareEvents = array("You_see_a_small_temple_a_ways_from_the_path", "A_wandering_trader_approaches_you");
-  $majesticEvents = array("You_wander_through_a_fresh_battlefield", "You_find_a_great_library", "You_see_a_small_temple_a_ways_from_the_path");
+  $commonEvents = array("You_wander_through_a_fresh_battlefield", "You_find_a_great_library", "You_see_one_of_the_most_beautiful_views_in_all_of_rathe", "You_find_a_small_smithing_hut", "You_come_across_a_small_dojo", "A_lavish_noble_passes_you_by", "You_pass_a_strange_man_in_robes", "A_knight_approaches_you_asking_to_spar", "You_find_a_small_brown_chest", "You_find_a_small_white_chest", "You_find_a_small_green_chest", "You_find_a_small_blue_chest", "You_find_a_small_red_chest");
+  $rareEvents = array("You_see_a_small_temple_a_ways_from_the_path", "A_radiant_woman_comes_across_your_path");
+  $majesticEvents = array("", "", "");
   $randEvent = rand(1,100);
   if(count($devTestEvents) >= 2 ){
     $options = GetOptions(2, count($devTestEvents)-1);
@@ -96,15 +79,15 @@ function CrossroadsDoubleChoice($string)
 function GetCrossroadsDescription()
 {
   $encounter = &GetZone(1, "Encounter");
-  switch($encounter[4])
+  switch($encounter->adventure)
   {
     case "Ira":
-      switch($encounter[8])
+      switch($encounter->difficulty)
       {
         case "Easy":
         case "Normal":
         case "Hard":
-          switch($encounter[2])
+          switch($encounter->position)
           {
             case 1: return "Your destination lies beyond the Pits.";
             case 3: return "Ahead of you lies a fallen tree. It likely did not fall naturally.";
@@ -124,15 +107,15 @@ function GetCrossroadsDescription()
 
 function GetCrossroadsChoiceHeader() {
   $encounter = &GetZone(1, "Encounter");
-  switch($encounter[4])
+  switch($encounter->adventure)
   {
     case "Ira":
-      switch($encounter[8])
+      switch($encounter->difficulty)
       {
         case "Easy":
         case "Normal":
         case "Hard":
-          switch($encounter[2])
+          switch($encounter->position)
           {
             case 1: return "How would you like to leave?";
             case 3: return "What would you like to do?";
@@ -154,15 +137,15 @@ function GetCrossroadsImage()
 {
   {
     $encounter = &GetZone(1, "Encounter");
-    switch($encounter[4])
+    switch($encounter->adventure)
     {
       case "Ira":
-        switch($encounter[8])
+        switch($encounter->difficulty)
         {
           case "Easy":
           case "Normal":
           case "Hard":
-            switch($encounter[2])
+            switch($encounter->position)
             {
               case 1: return "CRU122_cropped.png";
               case 3: return "CRU006_cropped.png";

@@ -4,27 +4,10 @@ include "EncounterLogic.php";
 include "CardRewardPools.php";
 include "AdventurePools.php";
 
-/*
-Encounter variable
-encounter[0] = Encounter ID (001-099 Special Encounters | 101-199 Combat Encounters | 201-299 Event Encounters)
-encounter[1] = Encounter Subphase
-encounter[2] = Position in adventure
-encounter[3] = Hero ID
-encounter[4] = Adventure ID
-encounter[5] = A string made up of encounters that have already been visited, looks like "ID-subphase,ID-subphase,ID-subphase,etc."
-encounter[6] = majesticCard% (1-100, the higher it is, the more likely a majestic card is chosen) (Whole code is based off of the Slay the Spire rare card chance)
-encounter[7] = background chosen
-encounter[8] = adventure difficulty (to be used later)
-encounter[9] = current gold
-encounter[10] = rerolls remaining //TODO: Add in a reroll system
-encounter[11] = cost to heal at the shop
-encounter[12] = cost to remove card at the shop
-*/
-
 function EncounterDescription()
 {
   $encounter = &GetZone(1, "Encounter");
-  switch($encounter[0])
+  switch($encounter->encounterID)
   {
     case 001:
       return "Blackjack's Tavern is a lively space. You have been here many times before, and you come today with a purpose. What will you do?";
@@ -54,78 +37,78 @@ function EncounterDescription()
       return "Thank you for playing Blackjack's Tavern! We have a lot more in the works that we can't wait to show off. If you're interested in helping with future updates, join the Talishar discord!";
 
     case 101:
-      if($encounter[1] == "BeforeFight") return "You're attacked by a Woottonhog.";
-      else if($encounter[1] == "AfterFight") return "You defeated the Woottonhog.";
+      if($encounter->subphase == "BeforeFight") return "You're attacked by a Woottonhog.";
+      else if($encounter->subphase == "AfterFight") return "You defeated the Woottonhog.";
     case 102:
-      if($encounter[1] == "BeforeFight") return "While wandering through the woods, you're attacked by a mysterious and deadly looking creature.";
-      else if($encounter[1] == "AfterFight") return "You defeated the Ravenous Rabble. There don't seem to be any other threats in these woods... at least not right now. You continue your trek.";
+      if($encounter->subphase == "BeforeFight") return "While wandering through the woods, you're attacked by a mysterious and deadly looking creature.";
+      else if($encounter->subphase == "AfterFight") return "You defeated the Ravenous Rabble. There don't seem to be any other threats in these woods... at least not right now. You continue your trek.";
     case 103:
-      if($encounter[1] == "BeforeFight") return "You're attacked by a Barraging Brawnhide.";
-      else if($encounter[1] == "AfterFight") return "You defeated the Barraging Brawnhide.";
+      if($encounter->subphase == "BeforeFight") return "You're attacked by a Barraging Brawnhide.";
+      else if($encounter->subphase == "AfterFight") return "You defeated the Barraging Brawnhide.";
     case 104:
-      if($encounter[1] == "BeforeFight") return "You're attacked by a Shock Striker.";
-      else if($encounter[1] == "AfterFight") return "You defeated the Shock Striker.";
+      if($encounter->subphase == "BeforeFight") return "You're attacked by a Shock Striker.";
+      else if($encounter->subphase == "AfterFight") return "You defeated the Shock Striker.";
     case 105:
-      if($encounter[1] == "BeforeFight") return "You've finished the game (so far!). If you'd like to help out with adding new encounters/classes, check out our discord! The code is open source and can be found here: https://github.com/Talishar/Talishar/tree/main/Roguelike";
-      else if($encounter[1] == "AfterFight") return "You defeated the group of bandits.";
+      if($encounter->subphase == "BeforeFight") return "You've finished the game (so far!). If you'd like to help out with adding new encounters/classes, check out our discord! The code is open source and can be found here: https://github.com/Talishar/Talishar/tree/main/Roguelike";
+      else if($encounter->subphase == "AfterFight") return "You defeated the group of bandits.";
     case 106:
-      if($encounter[1] == "BeforeFight") return "You turn to find another way, only to see someone has been following. They knock an arrow, ready to fight.";
-      else if($encounter[1] == "AfterFight") return "You defeated the Quickshot Apprentice. His bow lies in pieces on the ground. ";
+      if($encounter->subphase == "BeforeFight") return "You turn to find another way, only to see someone has been following. They knock an arrow, ready to fight.";
+      else if($encounter->subphase == "AfterFight") return "You defeated the Quickshot Apprentice. His bow lies in pieces on the ground. ";
     case 107:
-      if($encounter[1] == "BeforeFight") return "You're attacked by a Cursed Scholar.";
-      else if($encounter[1] == "AfterFight") return "You defeated the Rune Scholar.";
+      if($encounter->subphase == "BeforeFight") return "You're attacked by a Cursed Scholar.";
+      else if($encounter->subphase == "AfterFight") return "You defeated the Rune Scholar.";
     case 108:
-      if($encounter[1] == "BeforeFight") return "You come upon Ira. Prepare to fight.";
-      else if($encounter[1] == "AfterFight") return "You defeated Ira.";
+      if($encounter->subphase == "BeforeFight") return "You come upon Ira. Prepare to fight.";
+      else if($encounter->subphase == "AfterFight") return "You defeated Ira.";
     case 113:
-      if($encounter[1] == "BeforeFight") return "You're attacked by a Cloaked Figure wielding two daggers.";
-      else if($encounter[1] == "AfterFight") return "You defeated the Cloaked Figure.";
+      if($encounter->subphase == "BeforeFight") return "You're attacked by a Cloaked Figure wielding two daggers.";
+      else if($encounter->subphase == "AfterFight") return "You defeated the Cloaked Figure.";
     case 114:
-      if($encounter[1] == "BeforeFight") return "You barely notice as a stranger raises a dagger behind your back.";
-      else if($encounter[1] == "AfterFight") return "You defended yourself, and defeated the assassin.";
+      if($encounter->subphase == "BeforeFight") return "You barely notice as a stranger raises a dagger behind your back.";
+      else if($encounter->subphase == "AfterFight") return "You defended yourself, and defeated the assassin.";
     case 115:
-      if($encounter[1] == "BeforeFight") return "A graceful figure stands atop a spire some distance away. He remains there, as if asking you to make the first move.";
-      else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
+      if($encounter->subphase == "BeforeFight") return "A graceful figure stands atop a spire some distance away. He remains there, as if asking you to make the first move.";
+      else if($encounter->subphase == "AfterFight") return "You defeated the Master of the Arts.";
     case 117:
-      if($encounter[1] == "BeforeFight") return "As night falls around you, you realize you aren't alone. A figure approaches, but does not draw their blade. Yet.";
-      else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
+      if($encounter->subphase == "BeforeFight") return "As night falls around you, you realize you aren't alone. A figure approaches, but does not draw their blade. Yet.";
+      else if($encounter->subphase == "AfterFight") return "You defeated the Master of the Arts.";
     case 118:
-      if($encounter[1] == "BeforeFight") return "As you travel, you encounter a boisterous traveler wearing leather armor with a green glimmer. \"Hail, bounty hunter. Would you like to spar?\"";
-      else if($encounter[1] == "AfterFight") return "\"Wow stranger, that was an exciting match. Thank you for the lessons learned!\"";
+      if($encounter->subphase == "BeforeFight") return "As you travel, you encounter a boisterous traveler wearing leather armor with a green glimmer. \"Hail, bounty hunter. Would you like to spar?\"";
+      else if($encounter->subphase == "AfterFight") return "\"Wow stranger, that was an exciting match. Thank you for the lessons learned!\"";
     case 119:
-      if($encounter[1] == "BeforeFight") return "As you cross the bridge, thunder cracks. A storm begins, and the winds nearly knock you into the chasm below. A figure runs towards you, as though dancing on the rain itself.";
-      else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
+      if($encounter->subphase == "BeforeFight") return "As you cross the bridge, thunder cracks. A storm begins, and the winds nearly knock you into the chasm below. A figure runs towards you, as though dancing on the rain itself.";
+      else if($encounter->subphase == "AfterFight") return "You defeated the Master of the Arts.";
     case 120:
-      if($encounter[1] == "BeforeFight") return "You emerge in the noticeably cleaner streets of Metrix. Just as you're emerging, a mailman sees you and panics, attempting to attack you.";
-      else if($encounter[1] == "AfterFight") return "You killed a poor mailman. You heartless monster! Oh well, no use dwelling on the past, now that you're out of the city it's time to move towards your objective.";
+      if($encounter->subphase == "BeforeFight") return "You emerge in the noticeably cleaner streets of Metrix. Just as you're emerging, a mailman sees you and panics, attempting to attack you.";
+      else if($encounter->subphase == "AfterFight") return "You killed a poor mailman. You heartless monster! Oh well, no use dwelling on the past, now that you're out of the city it's time to move towards your objective.";
     case 121:
-      if($encounter[1] == "BeforeFight") return "You hear a loud bellow from the other side of the fallen tree. The tree rises, revealing a brute picking it up. He seems incredibly angry at the block in the road.";
-      else if($encounter[1] == "AfterFight") return "After you deliver a humbling smackdown, the brute calms down and continues on his way. He gives no apology for his outburst before.";
+      if($encounter->subphase == "BeforeFight") return "You hear a loud bellow from the other side of the fallen tree. The tree rises, revealing a brute picking it up. He seems incredibly angry at the block in the road.";
+      else if($encounter->subphase == "AfterFight") return "After you deliver a humbling smackdown, the brute calms down and continues on his way. He gives no apology for his outburst before.";
     case 122:
-      if($encounter[1] == "BeforeFight") return "As you drift off to sleep, a scream pierces through your skull. You have a visitor.";
-      else if($encounter[1] == "AfterFight") return "You banished the spirit.";
+      if($encounter->subphase == "BeforeFight") return "As you drift off to sleep, a scream pierces through your skull. You have a visitor.";
+      else if($encounter->subphase == "AfterFight") return "You banished the spirit.";
     case 123:
-      if($encounter[1] == "BeforeFight") return "As you come upon the mountain pass, a great voice booms, \"Stop, stranger! You are not welcome here!\"";
-      else if($encounter[1] == "AfterFight") return "You bested the great Guardian.";
+      if($encounter->subphase == "BeforeFight") return "As you come upon the mountain pass, a great voice booms, \"Stop, stranger! You are not welcome here!\"";
+      else if($encounter->subphase == "AfterFight") return "You bested the great Guardian.";
     case 124:
-      if($encounter[1] == "BeforeFight") return "An arrow hits that water near you. As you look up, you see what looks to be an Arian Fisherman.";
-      else if($encounter[1] == "AfterFight") return "\"Whoah there friend! You should watch where you wade! I almost hit you there!\"";
+      if($encounter->subphase == "BeforeFight") return "An arrow hits that water near you. As you look up, you see what looks to be an Arian Fisherman.";
+      else if($encounter->subphase == "AfterFight") return "\"Whoah there friend! You should watch where you wade! I almost hit you there!\"";
     case 125:
-      if($encounter[1] == "BeforeFight") return "As you enter the cave, you find a great beast standing in front of a pile of treasures. You are not welcome here.";
-      else if($encounter[1] == "AfterFight") return "The beast lets out one last roar before toppling over. You've vanquished the greedy monster.";
+      if($encounter->subphase == "BeforeFight") return "As you enter the cave, you find a great beast standing in front of a pile of treasures. You are not welcome here.";
+      else if($encounter->subphase == "AfterFight") return "The beast lets out one last roar before toppling over. You've vanquished the greedy monster.";
     case 126:
-      if($encounter[1] == "BeforeFight") return "As you walk into a nearby shop, the door closes behind you. The shopkeeper flashes you a crooked grin";
-      else if($encounter[1] == "AfterFight") return "The shopkeeper turns into a pile of ash on the floor. You blink, and you find yourself standing in the burnt out husk of what was once a shop.";
+      if($encounter->subphase == "BeforeFight") return "As you walk into a nearby shop, the door closes behind you. The shopkeeper flashes you a crooked grin";
+      else if($encounter->subphase == "AfterFight") return "The shopkeeper turns into a pile of ash on the floor. You blink, and you find yourself standing in the burnt out husk of what was once a shop.";
     case 127:
-      if($encounter[1] == "BeforeFight") return "Partway across the lake, your ferry gets boarded by a feisty pirate. \"Empty yer wallets! Gimme yer gold!\"";
-      else if($encounter[1] == "AfterFight") return "You made sure the ferry made it to the other side safely, and defeated the pirate.";
+      if($encounter->subphase == "BeforeFight") return "Partway across the lake, your ferry gets boarded by a feisty pirate. \"Empty yer wallets! Gimme yer gold!\"";
+      else if($encounter->subphase == "AfterFight") return "You made sure the ferry made it to the other side safely, and defeated the pirate.";
     case 128:
-      if($encounter[1] == "BeforeFight") return "In the town, you see posters for a celebration tonight. You decide it would be fun to stay for the celebration.";
-      else if($encounter[1] == "AfterFight") return "As fireworks light up the sky, you can't help but feel at peace.";
+      if($encounter->subphase == "BeforeFight") return "In the town, you see posters for a celebration tonight. You decide it would be fun to stay for the celebration.";
+      else if($encounter->subphase == "AfterFight") return "As fireworks light up the sky, you can't help but feel at peace.";
     case 129:
-      if($encounter[1] == "BeforeFight") return "As you cross the bridge, a man bigger than a mountain yells a battlecry.";
-      else if($encounter[1] == "AfterFight") return "The defeated man falls. His eyes do not change, for nothing was ever behind his eyes.";
-    case 999: return "This text means something is wrong!"; //Maybe $encounter[1] is set to something weird? Maybe there's a typo?
+      if($encounter->subphase == "BeforeFight") return "As you cross the bridge, a man bigger than a mountain yells a battlecry.";
+      else if($encounter->subphase == "AfterFight") return "The defeated man falls. His eyes do not change, for nothing was ever behind his eyes.";
+    case 999: return "This text means something is wrong!"; //Maybe $encounter->subphase is set to something weird? Maybe there's a typo?
 
     case 201: return "There was a battle here recently. There aren't any combatants, but there are bodies littering the ground, still dripping with blood.";
     case 202: return "You found a library.";
@@ -143,6 +126,8 @@ function EncounterDescription()
     case 213: return "\"Hail, traveler. You look like you could use something powerful, and my pockets are awefully light at the moment. Care to trade?\"";
     case 214: return "\"Hello, traveler. I can see you have grown weary. Come, sit. You must have a great story to tell. Or perhaps you would like to hear one of mine? Maybe you just need some company.\"";
     case 215: return "The knight looks at you, smiles, and lowers his visor. \"Well friend, lets spar. Until you are tired, let us begin!\"";
+    case 216: return "The lady with a radiant aura approaches you. She puts on a mask and suddenly she is you. Then, she puts on another mask and shifts into someone else entirely. \"Now, Which one do you prefer?\"";
+    case 217: case 218: case 219: case 220: case 221: return "The chest is simple, but it should be easy enough to open.";
     default: return "No encounter text.";
   }
 }
@@ -151,17 +136,8 @@ function EncounterDescription()
 function InitializeEncounter($player)
 {
   $encounter = &GetZone($player, "Encounter");
-  /*WriteLog("===============================");
-  WriteLog("Encounter[0] = " . $encounter[0]);
-  WriteLog("Encounter[1] = " . $encounter[1]);
-  WriteLog("Encounter[2] = " . $encounter[2]);
-  WriteLog("Encounter[3] = " . $encounter[3]);
-  WriteLog("Encounter[4] = " . $encounter[4]);
-  WriteLog("Encounter[5] = " . $encounter[5]);
-  WriteLog("Encounter[6] = " . $encounter[6]);
-  WriteLog("Encounter[7] = " . $encounter[7]);
-  WriteLog("===============================");*/
-  switch($encounter[0])
+  //WriteFullEncounter();
+  switch($encounter->encounterID)
   {
     case 001:
       AddDecisionQueue("BUTTONINPUT", $player, "Change_your_hero,Change_your_bounty,Change_your_difficulty,Begin_adventure");
@@ -183,15 +159,15 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "001-PickMode");
       break;
     case 005:
-      $encounter[9] += 3;
-      AddDecisionQueue("BUTTONINPUT", $player, GetBackgrounds($encounter[3]));
+      $encounter->gold += 3;
+      AddDecisionQueue("BUTTONINPUT", $player, GetBackgrounds($encounter->hero));
       AddDecisionQueue("BACKGROUND", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
       break;
     case 006:
-      //$encounter[2] = 1; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
+      $encounter->position = 1; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
       AddDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,3"), "Power,3");
-      //AddDecisionQueue("SETENCOUNTER", $player, "212-PickMode"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
+      //AddDecisionQueue("SETENCOUNTER", $player, "216-PickMode"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
@@ -249,7 +225,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 208:
-      if($encounter[9] >= 2) AddDecisionQueue("BUTTONINPUT", $player, "Trade_1_gold_pieces_for_the_stone,Decline_his_offer_and_move_on");
+      if($encounter->gold >= 2) AddDecisionQueue("BUTTONINPUT", $player, "Trade_1_gold_pieces_for_the_stone,Decline_his_offer_and_move_on");
       else AddDecisionQueue("BUTTONINPUT", $player, "Decline_his_offer_and_move_on");
       AddDecisionQueue("ROCKS", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
@@ -289,6 +265,36 @@ function InitializeEncounter($player)
       AddDecisionQueue("SPARRINGKNIGHT", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
+    case 216:
+      AddDecisionQueue("BUTTONINPUT", $player, "Your_face,The_face_of_another");
+      AddDecisionQueue("SHIYANASPEC", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 217:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_brown_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 218:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_white_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 219:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_blue_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 220:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_red_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 221:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_green_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
     default: /*WriteLog("We Shouldn't Be Here");*/ break;
   }
 }
@@ -296,7 +302,7 @@ function InitializeEncounter($player)
 function EncounterImage()
 {
   $encounter = &GetZone(1, "Encounter");
-  switch($encounter[0])
+  switch($encounter->encounterID)
   {
     case 001: case 002: case 003: case 004: case 005: case 006:
       return "ROGUELORE001_cropped.png";
@@ -390,6 +396,10 @@ function EncounterImage()
       return "EVR050_cropped.png";
     case 215:
       return "DVR009_cropped.png";
+    case 216:
+      return "CRU097_cropped.png";
+    case 217: case 218: case 219: case 220: case 221:
+      return "DYN094_cropped.png";
 
     default: return "CRU054_cropped.png";
   }
@@ -397,7 +407,7 @@ function EncounterImage()
 
 function EncounterChoiceHeader(){
   $encounter = &GetZone(1, "Encounter");
-  switch($encounter[0]){
+  switch($encounter->encounterID){
     case 001:
       return "What will you do?";
     case 002:
@@ -443,6 +453,10 @@ function EncounterChoiceHeader(){
       return "What will you do?";
     case 215:
       return "What will you do?";
+    case 216:
+      return "Which do you prefer?";
+    case 217: case 218: case 219: case 220: case 221:
+      return "Will you open the chest?";
     default: return "";
   }
 }
