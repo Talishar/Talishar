@@ -7,8 +7,8 @@ include_once '../includes/dbh.inc.php';
 $_POST = json_decode(file_get_contents('php://input'), true);
 $selector = $_POST['selector'];
 $validator = $_POST['validator'];
-$password = $_POST['pwd'];
-$passwordRepeat = $_POST['pwd-repeat'];
+$password = $_POST['password'];
+$passwordRepeat = $_POST['passwordRepeat'];
 
 SetHeaders();
 $response = new stdClass();
@@ -96,7 +96,7 @@ $currentDate = date('U');
       } else {
         mysqli_stmt_bind_param($stmt, "s", $tokenEmail);
         mysqli_stmt_execute($stmt);
-        $response->error = "Password reset.";
+        $response->message = "Success!";
         echo (json_encode($response));
         exit();
       }
