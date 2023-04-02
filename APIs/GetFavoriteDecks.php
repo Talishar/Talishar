@@ -8,12 +8,6 @@ include_once "../Libraries/HTTPLibraries.php";
 
 SetHeaders();
 
-if(!IsUserLoggedIn()) {
-  if(isset($_COOKIE["rememberMeToken"])) {
-    loginFromCookie();
-  }
-}
-
 $response = new stdClass();
 $response->favoriteDecks = [];
 if (IsUserLoggedIn()) {
