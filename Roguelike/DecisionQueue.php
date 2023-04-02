@@ -484,6 +484,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Open_the_green_chest":
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Generic-Generic-Generic-Generic"), "Reward,Generic-Generic-Generic-Generic");
             break;
+          case "Open_the_purple_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,3,Common"), "Power,3,Common");
+            break;
           case "Leave":
             break;
         }
@@ -554,6 +557,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "You_find_a_small_green_chest": //Generic Chest
             PrependDecisionQueue("SETENCOUNTER", $player, "221-PickMode");
+            break;
+          case "You_find_a_small_purple_chest": //Power Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "222-PickMode");
             break;
           case "Take_the_scenic_route_through_the_back_streets": //Stealthy Stabber
             PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight");

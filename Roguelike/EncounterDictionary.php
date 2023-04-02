@@ -127,7 +127,8 @@ function EncounterDescription()
     case 214: return "\"Hello, traveler. I can see you have grown weary. Come, sit. You must have a great story to tell. Or perhaps you would like to hear one of mine? Maybe you just need some company.\"";
     case 215: return "The knight looks at you, smiles, and lowers his visor. \"Well friend, lets spar. Until you are tired, let us begin!\"";
     case 216: return "The lady with a radiant aura approaches you. She puts on a mask and suddenly she is you. Then, she puts on another mask and shifts into someone else entirely. \"Now, Which one do you prefer?\"";
-    case 217: case 218: case 219: case 220: case 221: return "The chest is simple, but it should be easy enough to open.";
+    case 217: case 218: case 219: case 220: case 221: case 222: return "The chest is simple, but it should be easy enough to open.";
+    case 223: case 224: case 225: case 226: case 227: case 228: return "The chest is ornate, elegant in design. It may be difficult, but it should be able to be opened.";
     default: return "No encounter text.";
   }
 }
@@ -295,6 +296,11 @@ function InitializeEncounter($player)
       AddDecisionQueue("CHEST", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
+    case 222:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_purple_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
     default: /*WriteLog("We Shouldn't Be Here");*/ break;
   }
 }
@@ -398,7 +404,7 @@ function EncounterImage()
       return "DVR009_cropped.png";
     case 216:
       return "CRU097_cropped.png";
-    case 217: case 218: case 219: case 220: case 221:
+    case 217: case 218: case 219: case 220: case 221: case 222:
       return "DYN094_cropped.png";
 
     default: return "CRU054_cropped.png";
@@ -455,7 +461,7 @@ function EncounterChoiceHeader(){
       return "What will you do?";
     case 216:
       return "Which do you prefer?";
-    case 217: case 218: case 219: case 220: case 221:
+    case 217: case 218: case 219: case 220: case 221: case 222:
       return "Will you open the chest?";
     default: return "";
   }
