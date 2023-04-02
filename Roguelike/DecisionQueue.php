@@ -591,6 +591,12 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "You_notice_a_mountain_pass_you_can_move_through": //Pass Guardian
             PrependDecisionQueue("SETENCOUNTER", $player, "123-BeforeFight");
             break;
+          case "A_river_flows_nearby_for_you_to_travel_alongside": //TODO - THIS ENCOUNTER - PLACEHOLDER
+            PrependDecisionQueue("SETENCOUNTER", $player, "130-BeforeFight");
+            break;
+          case "A_nearby_town_could_provide_some_directions":
+            PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
+            break;
           case "Attempt_to_cross_the_river_here": //Bow Fisherman
             PrependDecisionQueue("SETENCOUNTER", $player, "124-BeforeFight");
             break;
