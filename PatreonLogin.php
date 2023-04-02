@@ -15,7 +15,8 @@ include_once "./APIKeys/APIKeys.php";
 
   $client_id = $patreonClientID;
   $client_secret = $patreonClientSecret;
-  $redirect_uri = "https://www.talishar.net/game/PatreonLogin.php";
+  //$redirect_uri = "https://www.talishar.net/game/PatreonLogin.php";
+  $redirect_uri = "https://legacy.talishar.net/game/PatreonLogin.php";
 
 
   // The below code snippet needs to be active wherever the the user is landing in $redirect_uri parameter above. It will grab the auth code from Patreon and get the tokens via the oAuth client
