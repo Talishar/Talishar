@@ -41,6 +41,7 @@ function WeaponIndices($chooser, $player, $subtype = "")
 function ApplyEffectToEachWeapon($effectID)
 {
   global $currentPlayer;
+  $character = &GetPlayerCharacter($currentPlayer);
   for($i = 0; $i < count($character); $i += CharacterPieces()) {
     if(CardType($character[$i]) == "W") AddCharacterEffect($currentPlayer, $i, $effectID);
   }
