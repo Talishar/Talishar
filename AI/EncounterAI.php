@@ -20,6 +20,7 @@ function EncounterAI()
       $resources = &GetResources($currentPlayer);
       $items = &GetItems($currentPlayer);
       $allies = &GetAllies($currentPlayer);
+      CacheCombatResult();
       //LogHandArray($hand);
       //WriteLog("Turn[0]->".$turn[0]);
       //LogHandArray($decisionQueue);
