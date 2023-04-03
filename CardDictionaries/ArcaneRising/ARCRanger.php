@@ -110,7 +110,11 @@
 
   function LoadArrow($player, $facing = "UP")
   {
-    if(ArsenalFull($player)) return "Your arsenal is full, so you cannot put an arrow in your arsenal";
+    if(ArsenalFull($player))
+    {
+      AddDecisionQueue("PASSPARAMETER", $player, "PASS");//Pass any subsequent load effects
+      return "Your arsenal is full, so you cannot put an arrow in your arsenal";
+    }
     AddDecisionQueue("FINDINDICES", $player, "MYHANDARROW");
     AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
     AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
