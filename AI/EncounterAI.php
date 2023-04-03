@@ -11,7 +11,7 @@ function EncounterAI()
   if(!IsGameOver() && $currentPlayerIsAI)
   {
     $isBowActive = false;
-    for($logicCount=0; $logicCount<=20 && $currentPlayerIsAI; ++$logicCount)
+    for($logicCount=0; $logicCount<=30 && $currentPlayerIsAI; ++$logicCount)
     {
       global $turn;
       $hand = &GetHand($currentPlayer);
@@ -196,9 +196,9 @@ function EncounterAI()
       }
       ProcessMacros();
       $currentPlayerIsAI = ($currentPlayer == 2 ? true : false);
-      if($logicCount == 20 && $currentPlayerIsAI)
+      if($logicCount == 30 && $currentPlayerIsAI)
       {
-        for($i=0; $i<=20 && $currentPlayerIsAI; ++$i)
+        for($i=0; $i<=30 && $currentPlayerIsAI; ++$i)
         {
           PassInput();
           $currentPlayerIsAI = ($currentPlayer == 2 ? true : false);
