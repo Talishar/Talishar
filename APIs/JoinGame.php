@@ -107,7 +107,7 @@ if ($decklink != "") {
     $slug = $decklinkArr[count($decklinkArr) - 1];
     $apiLink = "https://api.fabmeta.net/deck/" . $slug;
   }
-
+  $response->apiLink = $apiLink;
   curl_setopt($curl, CURLOPT_URL, $apiLink);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
   $apiDeck = curl_exec($curl);
@@ -116,9 +116,9 @@ if ($decklink != "") {
 
   if ($apiDeck === FALSE) {
     WriteGameFile();
-    $response->error = "Deckbuilder API for this deck returns no data: " . implode("/", $decklink);
+    if(is_array($decklink)) $response->error = "Deckbuilder API for this deck returns no data: " . implode("/", $decklink);
+    else $response->error = "Deckbuilder API for this deck returns no data: " . $decklink;
     echo (json_encode($response));
-    LogDeckLoadFailure("API returned no data");
     exit;
   }
   $deckObj = json_decode($apiDeck);
@@ -126,13 +126,11 @@ if ($decklink != "") {
   if ($apiInfo['http_code'] == 403) {
     $response->error = "API FORBIDDEN! Invalid or missing token to access API: " . $apiLink . " The response from the deck hosting service was: " . $apiDeck;
     echo (json_encode($response));
-    LogDeckLoadFailure("Missing API Key");
     die();
   }
   if ($deckObj == null) {
     $response->error = 'Deck object is null. Failed to retrieve deck from API.';
     echo (json_encode($response));
-    LogDeckLoadFailure("Failed to retrieve deck from API.");
     exit;
   }
   if(!isset($deckObj->{'name'}))
@@ -316,7 +314,6 @@ if ($decklink != "") {
   if(!$deckLoaded) {
     $response->error = "Decklist link invalid.";
     echo(json_encode($response));
-    LogDeckLoadFailure("Decklist link invalid.");
     exit;
   }
 
@@ -636,16 +633,4 @@ function ReverseArt($cardID)
     default:
       return $cardID;
   }
-}
-
-function LogDeckLoadFailure($failure)
-{
-  global $gameName, $decklink;
-  $errorFileName = "./BugReports/LoadDeckFailure.txt";
-  $errorHandler = fopen($errorFileName, "a");
-  date_default_timezone_set('America/Chicago');
-  $errorDate = date('m/d/Y h:i:s a');
-  $errorOutput = "Deck load failure (type " . $failure . ") $gameName at $errorDate (deck link: $decklink)";
-  fwrite($errorHandler, $errorOutput . "\r\n");
-  fclose($errorHandler);
 }
