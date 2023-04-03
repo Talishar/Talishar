@@ -725,7 +725,7 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT101":
-        if(HasAimCounter()) {
+        if(HasAimCounter() && IsHeroAttackTarget()) {
           AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a pitch value", 1);
           AddDecisionQueue("BUTTONINPUT", $mainPlayer, "1,2,3", 1);
           AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
