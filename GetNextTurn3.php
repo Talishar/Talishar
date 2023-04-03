@@ -298,7 +298,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $response->opponentPitchCount = $theirResources[0];
   $opponentPitchArr = array();
-  for ($i = 0; $i < count($theirPitch); $i += PitchPieces()) {
+  for($i = count($theirPitch)-PitchPieces(); $i >= 0; $i -= PitchPieces()) {
     array_push($opponentPitchArr, JSONRenderedCard($theirPitch[$i]));
   }
   $response->opponentPitch = $opponentPitchArr;
@@ -380,10 +380,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->playerDiscard = $playerDiscardArr;
 
-  // TODO: Might need to put pitch as an array so FE can "stack" them like in the current UI
   $response->playerPitchCount = $myResources[0];
   $playerPitchArr = array();
-  for ($i = 0; $i < count($myPitch); $i += PitchPieces()) {
+  for($i = count($myPitch)-PitchPieces(); $i >= 0; $i -= PitchPieces()) {
     array_push($playerPitchArr, JSONRenderedCard($myPitch[$i]));
   }
   $response->playerPitch = $playerPitchArr;
