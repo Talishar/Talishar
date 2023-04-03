@@ -44,28 +44,32 @@ function GetNextEncounter() //TODO overhaul this whole function and children
 function RandomEvent()
 {
   $devTestEvents = array(); //Put events in here to test them. They will be the only ones to show up. Make sure you put at least 2 options
-  $commonEvents = array("You_wander_through_a_fresh_battlefield", "You_find_a_great_library", "You_see_one_of_the_most_beautiful_views_in_all_of_rathe", "You_find_a_small_smithing_hut", "You_come_across_a_small_dojo", "A_lavish_noble_passes_you_by", "You_pass_a_strange_man_in_robes", "A_knight_approaches_you_asking_to_spar", "You_find_a_small_brown_chest", "You_find_a_small_white_chest", "You_find_a_small_green_chest", "You_find_a_small_blue_chest", "You_find_a_small_red_chest");
-  $rareEvents = array("You_see_a_small_temple_a_ways_from_the_path", "A_radiant_woman_comes_across_your_path");
-  $majesticEvents = array("", "", "");
+  $commonEvents = array("You_wander_through_a_fresh_battlefield", "You_find_a_great_library", "You_see_one_of_the_most_beautiful_views_in_all_of_rathe", "You_find_a_small_smithing_hut", "You_come_across_a_small_dojo", "A_lavish_noble_passes_you_by", "You_pass_a_strange_man_in_robes", "A_knight_approaches_you_asking_to_spar", "You_find_a_small_brown_chest", "You_find_a_small_white_chest", "You_find_a_small_green_chest", "You_find_a_small_blue_chest", "You_find_a_small_red_chest", "You_stumble_into_a_lively_tavern");
+  $rareEvents = array("You_see_a_small_temple_a_ways_from_the_path", "A_radiant_woman_comes_across_your_path", "You_find_a_small_purple_chest", "You_find_an_ornate_brown_chest", "You_find_an_ornate_white_chest", "You_find_an_ornate_blue_chest", "You_find_an_ornate_red_chest", "You_find_an_ornate_green_chest", "You_see_smoke_rising_in_the_distance", "You_find_a_large_shrine", "You_find_a_large_mirror", "You_visit_an_old_friend", "You_come_across_a_strange_library", "You_find_an_old_cottage");
+  $majesticEvents = array("You_find_an_ornate_purple_chest", "You_see_a_beautiful_sigil", "You_find_a_clear_pool");
+
+  $encounter = &GetZone(1, "Encounter");
+  $rv = "";
+  if($encounter->cleanse) $rv = "Return_to_the_pool,";
   $randEvent = rand(1,100);
   if(count($devTestEvents) >= 2 ){
     $options = GetOptions(2, count($devTestEvents)-1);
-    return $devTestEvents[$options[0]].",".$devTestEvents[$options[1]];
+    return $rv.$devTestEvents[$options[0]].",".$devTestEvents[$options[1]];
   }
   if($randEvent > 90)
   {
     $options = GetOptions(2, count($majesticEvents)-1);
-    return $majesticEvents[$options[0]] . "," . $majesticEvents[$options[1]];
+    return $rv.$majesticEvents[$options[0]] . "," . $majesticEvents[$options[1]];
   }
   else if($randEvent > 70)
   {
     $options = GetOptions(2, count($rareEvents)-1);
-    return $rareEvents[$options[0]] . "," . $rareEvents[$options[1]];
+    return $rv.$rareEvents[$options[0]] . "," . $rareEvents[$options[1]];
   }
   else
   {
     $options = GetOptions(2, count($commonEvents)-1);
-    return $commonEvents[$options[0]] . "," . $commonEvents[$options[1]];
+    return $rv.$commonEvents[$options[0]] . "," . $commonEvents[$options[1]];
   }
 }
 

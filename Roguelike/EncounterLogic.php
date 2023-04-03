@@ -25,7 +25,7 @@ function GetBackgrounds($character)
   return $backgroundChoices[$options[0]] . "," . $backgroundChoices[$options[1]];
 }
 
-function GetPowers($amount = 3, $special = "-")
+function GetPowers($amount = 3, $rarity = "-", $special = "-")
 {
   //$common = array("ROGUE507", "ROGUE508", "ROGUE509", "ROGUE510", "ROGUE511", "ROGUE512", "ROGUE513", "ROGUE516", "ROGUE517");
   //$rare = array("ROGUE501", "ROGUE504", "ROGUE518", "ROGUE519", "ROGUE521", "ROGUE522", "ROGUE523", "ROGUE524", "ROGUE525");
@@ -39,10 +39,22 @@ function GetPowers($amount = 3, $special = "-")
     $rarityCount = array(0, 0, 0);
     for($i = 0; $i < $amount; ++$i)
     {
-      $random = rand(1,100); //current rarity numbers make rares appear about 1 in every 3 rewards and majestics appear about 1 in every 10 rewards. Feel free to change in testing.
-      if($random >= 95) ++$rarityCount[2]; //MAKE SURE THIS IS 95 WHEN PUSHED
-      else if($random >= 75) ++$rarityCount[1]; //MAKE SURE THIS IS 75 WHEN PUSHED
-      else ++$rarityCount[0];
+      if($rarity == "-")
+      {
+        $random = rand(1,100); //current rarity numbers make rares appear about 1 in every 3 rewards and majestics appear about 1 in every 10 rewards. Feel free to change in testing.
+        if($random >= 95) ++$rarityCount[2]; //MAKE SURE THIS IS 95 WHEN PUSHED
+        else if($random >= 75) ++$rarityCount[1]; //MAKE SURE THIS IS 75 WHEN PUSHED
+        else ++$rarityCount[0];
+      }
+      else
+      {
+        switch($rarity)
+        {
+          case "Common": ++$rarityCount[0]; break;
+          case "Rare": ++$rarityCount[1]; break;
+          case "Majestic": ++$rarityCount[2]; break;
+        }
+      }
     }
     if($rarityCount[0] > 0)
     {
@@ -86,6 +98,7 @@ function GetRandomCards($inputString)
   {
     case "Reward":
       $rarity = "-";
+      $specialTags = "-";
       for($i = 2; $i < count($parameters); ++$i)
       {
         $tags = explode("-", $parameters[$i]);
@@ -93,13 +106,17 @@ function GetRandomCards($inputString)
         {
           case "ForcedRarity":
             $rarity = $tags[1];
+            break;
+          case "SpecialTag":
+            $specialTags = $tags[1];
+            break;
         }
       }
       $tags = explode("-", $parameters[1]);
       $result = [];
       for($i = 0; $i < count($tags); ++$i)
       {
-        $pool = GeneratePool($result, $tags[$i], $rarity);
+        $pool = GeneratePool($result, $tags[$i], $rarity, $specialTags);
         array_push($result, $pool[rand(0, count($pool)-1)]);
       }
       $resultStr = "";
@@ -112,7 +129,8 @@ function GetRandomCards($inputString)
     case "Deck":
       return GetRandomDeckCard(1, $parameters[1]);
     case "Power":
-      return GetPowers($parameters[1]);
+      array_push($parameters, "-");
+      return GetPowers($parameters[1], $parameters[2]);
     case "Equipment":
       array_push($parameters, "");
       array_push($parameters, "");
@@ -161,7 +179,7 @@ function GetRandomDeckCard($player, $special = "") //TODO add in a seperate spec
   return "This should never happen";
 }
 
-function GeneratePool($selected, $type, $rarity = "-")
+function GeneratePool($selected, $type, $rarity = "-", $specialTags = "-")
 {
   $encounter = &GetZone(1, "Encounter");
   if($rarity == "-" && $type != "Equipment")
@@ -183,7 +201,8 @@ function GeneratePool($selected, $type, $rarity = "-")
       $rarity = "Common";
     }
   }
-  $pool = GetPool($type, $encounter->hero, $rarity, $encounter->background);
+  if($specialTags == "-") $pool = GetPool($type, $encounter->hero, $rarity, $encounter->background);
+  else if($specialTags == "AnyPool") $pool = GetPool($type, "ALL", $rarity, $encounter->background);
   $generatedPool = [];
 
   /*$options = GetOptions($selected, count($pool));
@@ -216,8 +235,8 @@ function GetShop($inputString = "Class,Class,Talent,Equipment-Common,Equipment,G
   for($i = 0; $i < count($input); ++$i)
   {
     $params = explode("-", $input[$i]);
-    array_push($params, "");
-    array_push($params, "");
+    array_push($params, "-");
+    array_push($params, "-");
     if($params[0] == "Power")
     {
       array_push($result, GetPowers($params[1]));
@@ -255,6 +274,7 @@ function GetShopCost($cardID)
   $encounter = &GetZone(1, "Encounter");
   if($encounter->encounterID == 211) $cost = $cost / 2;
   if($encounter->encounterID == 213) $cost -= 2;
+  if($encounter->encounterID == 230) $cost -= 1;
   return $cost;
 }
 

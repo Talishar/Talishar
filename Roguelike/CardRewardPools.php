@@ -3,7 +3,7 @@
 //For Maindeck cards, $tag1 and $tag2 can be any tag that you want to use to filter results. For equipment, set $tag1 according to note below
 function GetPool($type, $hero, $rarity, $background, $tag1="", $tag2 = "",){
   if(($hero == "Bravo" || $hero == "Dorinthea") && $type == "Talent") $type = "Class";
-
+  if($hero == "ALL") $background = $rarity;
   if($type == "Class") return GetPoolClass(array($rarity, $background));
   else if($type == "Generic") return GetPoolGeneric(array($rarity));
   else if($type == "Talent") return GetPoolTalent(array($type, $rarity, $background));
@@ -88,38 +88,38 @@ function GetPoolClass($arrayParameters){
     array("WTR108", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
     array("WTR109", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
 
-    array("WTR118", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR119", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR120", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //120-122 are Supers. I'm putting them in the majestic queue
-    array("WTR121", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR122", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR123", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Overpower
-    array("WTR124", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR125", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR126", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Steelblade Shunt
-    array("WTR127", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR128", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR129", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Warrior's Valor
-    array("WTR130", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR131", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR132", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Ironsong Response
-    array("WTR133", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR134", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR135", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Biting Blade
-    array("WTR136", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR137", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR138", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Stroke of Foresight
-    array("WTR139", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR140", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR141", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Sharpern Steel
-    array("WTR142", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR143", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR144", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Driving Blade
-    array("WTR145", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR146", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR147", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Nature's Path Pilgrimage
-    array("WTR148", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("WTR149", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("WTR118", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR119", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR120", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //120-122 are Supers. I'm putting them in the majestic queue
+    array("WTR121", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR122", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR123", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Overpower
+    array("WTR124", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR125", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR126", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Steelblade Shunt
+    array("WTR127", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR128", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR129", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Warrior's Valor
+    array("WTR130", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR131", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR132", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Ironsong Response
+    array("WTR133", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR134", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR135", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Biting Blade
+    array("WTR136", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR137", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR138", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Stroke of Foresight
+    array("WTR139", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR140", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR141", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Sharpern Steel
+    array("WTR142", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR143", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR144", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Driving Blade
+    array("WTR145", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR146", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR147", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Nature's Path Pilgrimage
+    array("WTR148", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("WTR149", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
 
     array("ARC044", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Three of a Kind
     array("ARC045", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Endless Arrow
@@ -167,19 +167,19 @@ function GetPoolClass($arrayParameters){
     array("CRU072", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Bittering Thorns
     array("CRU073", "Class", "Common", "Emberblade", "Kodachi", "Edge"), //Salt the Wound
 
-    array("CRU082", "Class", "Majestic", "Saber", "Dawnblade"), //Twinning Blade - Only Swords
-    array("CRU083", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Unified Decree
-    array("CRU084", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Spoils of War
+    array("CRU082", "Class", "Majestic", "Saber", "Dawnblade", "AllWeps"), //Twinning Blade - Only Swords
+    array("CRU083", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Unified Decree
+    array("CRU084", "Class", "Majestic", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Spoils of War
     //Dauntless - Can be added when the AI can handle taxes
-    array("CRU088", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Out for Blood
-    array("CRU089", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("CRU090", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("CRU091", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Hit and Run
-    array("CRU092", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("CRU093", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("CRU094", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Push Forward
-    array("CRU095", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("CRU096", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("CRU088", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Out for Blood
+    array("CRU089", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("CRU090", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("CRU091", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Hit and Run
+    array("CRU092", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("CRU093", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("CRU094", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Push Forward
+    array("CRU095", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("CRU096", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
 
     array("CRU123", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Remorseless
     array("CRU124", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Poison the Tips
@@ -188,15 +188,15 @@ function GetPoolClass($arrayParameters){
     array("CRU134", "Class", "Common", "Shiver", "Voltaire", "RedLiner"),
 
     array("MON109", "Class", "Majestic", "Hatchet", "Battleaxe"), //Spill Blood - Only Axes
-    array("MON110", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Dusk Path Pilgrimage
-    array("MON111", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("MON112", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("MON113", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Plow Through
-    array("MON114", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("MON115", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("MON116", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Second Swing
-    array("MON117", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("MON118", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
+    array("MON110", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Dusk Path Pilgrimage
+    array("MON111", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("MON112", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("MON113", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Plow Through
+    array("MON114", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("MON115", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("MON116", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Second Swing
+    array("MON117", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("MON118", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
 
     array("ELE035", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Frost Lock
     array("ELE036", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Light it Up
@@ -269,19 +269,19 @@ function GetPoolClass($arrayParameters){
 
     array("EVR054", "Class", "Majestic", "Dawnblade", "Battleaxe"), //Shatter
     //EVR055 Blood on Her Hands - Not playable in any of our heroes
-    array("EVR056", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //Oath of Steel
-    array("EVR057", "Class", "Rare", "Saber", "Dawnblade"), //Slice and Dice - Sword / Dagger only
-    array("EVR058", "Class", "Rare", "Saber", "Dawnblade"),
-    array("EVR059", "Class", "Rare", "Saber", "Dawnblade"),
-    array("EVR060", "Class", "Common", "Saber", "Hatchet"), //Blade Runner - 1H weapon
-    array("EVR061", "Class", "Common", "Saber", "Hatchet"),
-    array("EVR062", "Class", "Common", "Saber", "Hatchet"),
-    array("EVR063", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"), //In the Swing
-    array("EVR064", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("EVR065", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe"),
-    array("EVR066", "Class", "Common", "Saber", "Hatchet"), //Outland Skirmish - 1H weapon
-    array("EVR067", "Class", "Common", "Saber", "Hatchet"),
-    array("EVR068", "Class", "Common", "Saber", "Hatchet"),
+    array("EVR056", "Class", "Rare", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //Oath of Steel
+    array("EVR057", "Class", "Rare", "Saber", "Dawnblade", "AllWeps"), //Slice and Dice - Sword / Dagger only
+    array("EVR058", "Class", "Rare", "Saber", "Dawnblade", "AllWeps"),
+    array("EVR059", "Class", "Rare", "Saber", "Dawnblade", "AllWeps"),
+    array("EVR060", "Class", "Common", "Saber", "Hatchet", "AllWeps"), //Blade Runner - 1H weapon
+    array("EVR061", "Class", "Common", "Saber", "Hatchet", "AllWeps"),
+    array("EVR062", "Class", "Common", "Saber", "Hatchet", "AllWeps"),
+    array("EVR063", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"), //In the Swing
+    array("EVR064", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("EVR065", "Class", "Common", "Saber", "Dawnblade", "Hatchet", "Battleaxe", "AllWeps"),
+    array("EVR066", "Class", "Common", "Saber", "Hatchet", "AllWeps"), //Outland Skirmish - 1H weapon
+    array("EVR067", "Class", "Common", "Saber", "Hatchet", "AllWeps"),
+    array("EVR068", "Class", "Common", "Saber", "Hatchet", "AllWeps"),
 
     array("EVR090", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Rain Razors
     array("EVR091", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Release the Tension - might be worth ommiting due to the AI not being able to play DRs, but it's still a buff, so it stays for now
@@ -368,20 +368,20 @@ function GetPoolClass($arrayParameters){
     array("DYN063", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
     array("DYN064", "Class", "Common", "Emberblade", "Kodachi", "Edge"),
 
-    array("DYN071", "Class", "Majestic", "Hatchet", "Battleaxe"), //Cleave - Since there aren't any Ally cards yet, I could see omitting this, but the buff is still playable so I'm keeping it
+    array("DYN071", "Class", "Majestic", "Hatchet", "Battleaxe", "AllWeps"), //Cleave - Since there aren't any Ally cards yet, I could see omitting this, but the buff is still playable so I'm keeping it
     array("DYN072", "Class", "Majestic"), //Ironsong Ride - Limited to sword backgrounds
-    array("DYN073", "Class", "Rare", "Hatchet", "Battleaxe"), //Blessing of Steel
-    array("DYN074", "Class", "Rare", "Hatchet", "Battleaxe"),
-    array("DYN075", "Class", "Rare", "Hatchet", "Battleaxe"),
-    array("DYN076", "Class", "Rare", "Hatchet", "Battleaxe"), //Precision Press
-    array("DYN077", "Class", "Rare", "Hatchet", "Battleaxe"),
-    array("DYN078", "Class", "Rare", "Hatchet", "Battleaxe"),
-    array("DYN079", "Class", "Common", "Saber", "Dawnblade"), //Puncture - Swords/Dagger only
-    array("DYN080", "Class", "Common", "Saber", "Dawnblade"),
-    array("DYN081", "Class", "Common", "Saber", "Dawnblade"),
-    array("DYN082", "Class", "Common", "Hatchet", "Battleaxe"), //Felling Swing
-    array("DYN083", "Class", "Common", "Hatchet", "Battleaxe"),
-    array("DYN084", "Class", "Common", "Hatchet", "Battleaxe"),
+    array("DYN073", "Class", "Rare", "Hatchet", "Battleaxe", "AllWeps"), //Blessing of Steel
+    array("DYN074", "Class", "Rare", "Hatchet", "Battleaxe", "AllWeps"),
+    array("DYN075", "Class", "Rare", "Hatchet", "Battleaxe", "AllWeps"),
+    array("DYN076", "Class", "Rare", "Hatchet", "Battleaxe", "AllWeps"), //Precision Press
+    array("DYN077", "Class", "Rare", "Hatchet", "Battleaxe", "AllWeps"),
+    array("DYN078", "Class", "Rare", "Hatchet", "Battleaxe", "AllWeps"),
+    array("DYN079", "Class", "Common", "Saber", "Dawnblade", "AllWeps"), //Puncture - Swords/Dagger only
+    array("DYN080", "Class", "Common", "Saber", "Dawnblade", "AllWeps"),
+    array("DYN081", "Class", "Common", "Saber", "Dawnblade", "AllWeps"),
+    array("DYN082", "Class", "Common", "Hatchet", "Battleaxe", "AllWeps"), //Felling Swing
+    array("DYN083", "Class", "Common", "Hatchet", "Battleaxe", "AllWeps"),
+    array("DYN084", "Class", "Common", "Hatchet", "Battleaxe", "AllWeps"),
     //DYN085-087 Visit the Imperial Forge - I've decided to omit these, since armor isn't hugely relevant right now and I don't know how the AI can handle piercing. It feels like this card would only be good in an exploitative manner
 
     array("DYN153", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //only Heat Seeker. No way to gain aim counters yet. Might reevaluate if we make an aim centric power.

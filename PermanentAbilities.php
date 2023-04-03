@@ -342,7 +342,7 @@ function PermanentStartTurnAbilities()
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
       case "ROGUE801":
-        array_push($hand, $hand[rand(0, count($hand)-1)]);
+        if(count($hand) > 0) array_push($hand, $hand[rand(0, count($hand)-1)]);
         break;
       case "ROGUE802":
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
@@ -358,11 +358,12 @@ function PermanentStartTurnAbilities()
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
       case "ROGUE806":
-        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         SoulShackleStartTurn($mainPlayer);
         SoulShackleStartTurn($mainPlayer);
         SoulShackleStartTurn($mainPlayer);
         SoulShackleStartTurn($mainPlayer);
+        $deck = &GetDeck($currentPlayer);
+        if(count($deck) < 1) AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
       case "ROGUE807":
         MyDrawCard();
