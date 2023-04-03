@@ -2377,10 +2377,11 @@ function Draw($player, $mainPhase = true)
       for($i=0; $i<$numBrainstorm; ++$i) DealArcane(1, 2, "TRIGGER", $character[0]);
     }
   }
-  if ($player == $mainPlayer && SearchPermanentsForCard($player, "ROGUE601"))
+  /*if ($player == $mainPlayer && SearchPermanentsForCard($player, "ROGUE601"))
   {
     AddCurrentTurnEffect("ROGUE601", $player);
-  }
+  }*/
+  PermanentDrawCardAbilities();
   $hand = array_values($hand);
   return $hand[count($hand) - 1];
 }

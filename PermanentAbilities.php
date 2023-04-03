@@ -352,7 +352,18 @@ function PermanentStartTurnAbilities()
         break;
       case "ROGUE804":
         $options = array("ROGUE601", "ROGUE602", "ROGUE603", "ROGUE605", "ROGUE606", "ROGUE607", "ROGUE608", "ROGUE610");
-        PutPermanentIntoPlay(1, $options[rand(0, count($options)-1)]);
+        $choice = $options[rand(0, count($options)-1)];
+        PutPermanentIntoPlay(1, $choice);
+        switch($choice)
+        {
+          case "ROGUE603":
+            AddCurrentTurnEffect($choice, $mainPlayer);
+            break;
+          case "ROGUE605":
+            AddCurrentTurnEffect("ROGUE605-first", $mainPlayer);
+            AddCurrentTurnEffect("ROGUE605-second", $mainPlayer);
+            break;
+        }
         break;
       case "ROGUE805":
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
@@ -456,6 +467,24 @@ function PermanentAddAttackAbilities()
     }
   }
   return $amount;
+}
+
+function PermanentDrawCardAbilities()
+{
+  global $mainPlayer, $defPlayer;
+
+  $permanents = &GetPermanents($mainPlayer);
+  $defPermanents = &GetPermanents($defPlayer);
+
+  for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
+    switch ($permanents[$i]) {
+      case "ROGUE601":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
+      default:
+        break;
+    }
+  }
 }
 /*
 function DestroyAlly($player, $index)
