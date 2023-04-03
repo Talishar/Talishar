@@ -14,6 +14,11 @@ $response = new stdClass();
 session_start();
 if (!isset($gameName)) {
   $_POST = json_decode(file_get_contents('php://input'), true);
+  if($_POST == NULL) {
+    $response->error = "Parameters were not passed";
+    echo json_encode($response);
+    exit;
+  }
   $gameName = $_POST["gameName"];
 }
 if (!IsGameNameValid($gameName)) {
