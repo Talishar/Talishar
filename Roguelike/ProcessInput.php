@@ -236,7 +236,7 @@
           $health = &GetZone($playerID, "Health");
           if($buttonInput == "shop_heal"){
             $health = &GetZone($playerID, "Health");
-            WriteLog("\$encounter->costToHeal: ".$encounter->costToHeal);
+            //WriteLog("\$encounter->costToHeal: ".$encounter->costToHeal);
 
             $gain = (20 - $health[0] > 5 ? 5 : 20 - $health[0]);
             if($gain < 0) $gain = 0;

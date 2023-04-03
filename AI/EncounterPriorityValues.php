@@ -77,17 +77,17 @@ function GetPriority($cardID, $heroID, $type)
       case "ROGUE008":
         switch($cardID)
         {
-          case "CRU050": $priority = array(0.5, 0.85, 0.85, 0, 0, 0.5, 0.85, 0); return $priority[$type];
+          case "CRU050": $priority = array(0, 0.85, 0.85, 0, 0, 0.5, 0.85, 0); return $priority[$type];
           case "DYN049": $priority = array(0.5, 0.9, 0.9, 0, 0, 1.5, 0.9, 0); return $priority[$type];
           case "CRU074": $priority = array(0.5, 0.82, 0.82, 0, 0, 1.5, 0.82, 0); return $priority[$type];
           case "CRU072": $priority = array(0.5, 0.8, 0.8, 0, 0, 1.5, 0.8, 0); return $priority[$type];
           case "OUT052": $priority = array(0.5, 0.81, 0.81, 0, 0, 0.5, 0.81, 0); return $priority[$type];
-          case "DYN065": $priority = array(0.5, 0.7, 0.7, 0, 0, 0.5, 0.7, 0); return $priority[$type];
+          case "DYN065": $priority = array(0.5, 0.7, 0.7, 0, 0, 0, 0.7, 0); return $priority[$type];
           case "ARC159": $priority = array(0.5, 0.61, 0.61, 0, 0, 0.5, 0.61, 0); return $priority[$type];
           case "CRU063": $priority = array(0.5, 0.6, 0.6, 0, 0, 0.5, 0.6, 0); return $priority[$type];
           case "WTR082": $priority = array(0.5, 0, 0, 0.9, 0.9, 0.5, 0.9, 0); return $priority[$type];
           case "CRU065": case "OUT051": case "CRU054": case "WTR088": case "CRU068": case "OUT142": case "EVR040": $priority = array(10.9, 0.1, 0.1, 0, 0, 2.5, 0, 0); return $priority[$type];
-          case "CRU050": case "WTR079": case "WTR157": case "WTR158": case "WTR156": $priority = array(0.9, 0, 0, 0, 0, 0, 0, 0); return $priority[$type];
+          case "WTR079": case "WTR157": case "WTR158": case "WTR156": $priority = array(0.9, 0, 0, 0, 0, 0, 0, 0); return $priority[$type];
           default: return 0;
         }
       case "ROGUE009":

@@ -212,7 +212,7 @@ function ROGUECardType($cardID)
       case "ROGUE711":
         return "A";
       case "ROGUE801": case "ROGUE802": case "ROGUE803": case "ROGUE804": case "ROGUE805":
-      case "ROGUE806":
+      case "ROGUE806": case "ROGUE807":
         return "A";
       default:
         return "";
