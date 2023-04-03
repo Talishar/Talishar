@@ -60,6 +60,7 @@ $cacheVal = intval(GetCachePiece($gameName, 1));
 
 while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   usleep(100000); //100 milliseconds
+  if(!file_exists("./Games/" . $gameName . "/GameFile.txt")) break;
   $currentTime = round(microtime(true) * 1000);
   $cacheVal = GetCachePiece($gameName, 1);
   if ($isGamePlayer) {
