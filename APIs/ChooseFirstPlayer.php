@@ -6,6 +6,8 @@ include "../Libraries/SHMOPLibraries.php";
 
 SetHeaders();
 
+$response = new stdClass();
+
 $_POST = json_decode(file_get_contents('php://input'), true);
 
 if($_POST == NULL) {
@@ -47,6 +49,5 @@ GamestateUpdated($gameName);
 
 WriteGameFile();
 
-$response = new stdClass();
 $response->success = true;
 echo (json_encode($response));
