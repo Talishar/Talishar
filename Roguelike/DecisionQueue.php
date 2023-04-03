@@ -415,8 +415,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Spar_until_nightfall":
             $health = &GetZone($player, "Health");
             $health[0] -= 4;
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomDeckCard($player, 4));
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomDeckCard($player, 4));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Deck,4"), "Deck,4");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Deck,4"), "Deck,4");
             break;
           case "Politely_decline":
             break;
