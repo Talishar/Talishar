@@ -748,7 +748,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $layerIndex = count($layers) - LayerPieces();//Only the earliest layer can be an attack
       $layerID = $layers[$layerIndex];
       if(strlen($layerID) != 6) return true;//Game phase, not a card - sorta hacky
-      if(CardType($layerID) == "AA") return false;
+      $layerType = CardType($layerID);
       if($layerType == "AA" || $layerType == "W") return false;//It's an attack
       if(GetResolvedAbilityType($layers[$layerIndex]) == "AA") return false;
       return true;
