@@ -235,8 +235,8 @@ function GetShop($inputString = "Class,Class,Talent,Equipment-Common,Equipment,G
   for($i = 0; $i < count($input); ++$i)
   {
     $params = explode("-", $input[$i]);
-    array_push($params, "");
-    array_push($params, "");
+    array_push($params, "-");
+    array_push($params, "-");
     if($params[0] == "Power")
     {
       array_push($result, GetPowers($params[1]));

@@ -73,7 +73,7 @@
   }
   if($encounter->position != 17) {
     AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards("Reward,Class-Class-Talent-Generic"), "Reward,Class-Class-Talent-Generic");
-    AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards("Reward,Class-Class-Talent-Generic"), "Reward,Class-Class-Talent-Generic");
+    //AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards("Reward,Class-Class-Talent-Generic"), "Reward,Class-Class-Talent-Generic");
     AddDecisionQueue("SETENCOUNTER", $playerID, "009-PickMode");
   }
   else {

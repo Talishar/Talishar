@@ -149,9 +149,7 @@ function ROGUECombatEffectActive($cardID, $attackID)
         case "ROGUE711": return true;
         case "ROGUE802": return CardType($attackID) == "AA";
         case "ROGUE805": return true;
-        case "ROGUE806":
-          $deck = &GetDeck($currentPlayer);
-          return count($deck) < 1;
+        case "ROGUE806": return true;
         default:
             return false;
     }
