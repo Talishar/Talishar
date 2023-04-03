@@ -457,6 +457,24 @@ function PermanentAddAttackAbilities()
   }
   return $amount;
 }
+
+function PermanentDrawCardAbilities()
+{
+  global $mainPlayer, $defPlayer;
+
+  $permanents = &GetPermanents($mainPlayer);
+  $defPermanents = &GetPermanents($defPlayer);
+
+  for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
+    switch ($permanents[$i]) {
+      case "ROGUE601":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
+      default:
+        break;
+    }
+  }
+}
 /*
 function DestroyAlly($player, $index)
 {

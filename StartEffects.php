@@ -29,7 +29,8 @@ if ($p2Char[0] == "DUMMY") {
 //roguelike gamemode powers
 if(CardSet($p2Char[0]) == "ROG") {
   $deck = &GetDeck(1);
-  //array_unshift($deck, "ROGUE807");
+  array_unshift($deck, "ROGUE601");
+  array_unshift($deck, "ROGUE601");
   $powers = SearchDeck(1, "", "Power");
   //WriteLog(strlen($powers));
   //WriteLog($powersArray[0]);
