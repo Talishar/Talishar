@@ -16,7 +16,7 @@
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENAL", $currentPlayer, "DECK-UP", 1);
         AddDecisionQueue("ALLCARDSUBTYPEORPASS", $currentPlayer, "Arrow", 1);
-        AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",DECK", 1);
         return "";
       case "ARC040":
         if(!ArsenalEmpty($currentPlayer)) return "Your arsenal is not empty so you cannot load an arrow.";
