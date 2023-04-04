@@ -376,7 +376,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 33: //Fully re-order layers
       break;
     case 99: //Pass
-      if (CanPassPhase($turn[0])) {
+      if(CanPassPhase($turn[0])) {
         PassInput(false);
       }
       break;
@@ -606,45 +606,28 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100013: //Enable Spectate
       SetCachePiece($gameName, 9, "1");
       break;
-    default:
-      break;
+    default: break;
   }
   return true;
 }
 
-
-//If true, allows for the case to be doable by any player when they don't have the priority.
 function IsModeAsync($mode)
 {
-  switch ($mode) {
-    case 26:
-      return true;
-    case 102:
-      return true;
-    case 103:
-      return true;
-    case 104:
-      return true;
-    case 10000:
-      return true;
-    case 10003:
-      return true;
-    case 100000:
-      return true;
-    case 100001:
-      return true;
-    case 100002:
-      return true;
-    case 100003:
-      return true;;
-    case 100004:
-      return true;
-    case 100007:
-      return true;
-    case 100010:
-      return true;
-    case 100012:
-      return true;
+  switch($mode) {
+    case 26: return true;
+    case 102: return true;
+    case 103: return true;
+    case 104: return true;
+    case 10000: return true;
+    case 10003: return true;
+    case 100000: return true;
+    case 100001: return true;
+    case 100002: return true;
+    case 100003: return true;
+    case 100004: return true;
+    case 100007: return true;
+    case 100010: return true;
+    case 100012: return true;
   }
   return false;
 }
@@ -652,10 +635,8 @@ function IsModeAsync($mode)
 function IsModeAllowedForSpectators($mode)
 {
   switch ($mode) {
-    case 100001:
-      return true;
-    default:
-      return false;
+    case 100001: return true;
+    default: return false;
   }
 }
 
@@ -697,13 +678,13 @@ function Passed(&$turn, $playerID)
 function PassInput($autopass = true)
 {
   global $turn, $currentPlayer;
-  if ($turn[0] == "END" || $turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MAYCHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSEMULTIZONE" ||$turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "INSTANT" || $turn[0] == "OK") {
+  if($turn[0] == "END" || $turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MAYCHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSEMULTIZONE" ||$turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "MAYCHOOSEMYSOUL" || $turn[0] == "INSTANT" || $turn[0] == "OK") {
     ContinueDecisionQueue("PASS");
   } else {
-    if ($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed.");
+    if($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed.");
     else WriteLog("Player " . $currentPlayer . " passed.");
-    if (Pass($turn, $currentPlayer, $currentPlayer)) {
-      if ($turn[0] == "M") BeginTurnPass();
+    if(Pass($turn, $currentPlayer, $currentPlayer)) {
+      if($turn[0] == "M") BeginTurnPass();
       else PassTurn();
     }
   }
