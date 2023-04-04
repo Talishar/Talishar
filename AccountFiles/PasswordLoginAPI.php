@@ -12,9 +12,15 @@ include_once './AccountDatabaseAPI.php';
 include_once '../Libraries/HTTPLibraries.php';
 
 SetHeaders();
-
+$response = new stdClass();
 
 $_POST = json_decode(file_get_contents('php://input'), true);
+
+if($_POST == NULL) {
+  $response->error = "Parameters were not passed";
+  echo json_encode($response);
+  exit;
+}
 
 $username = $_POST["userID"];
 $password = $_POST["password"];
@@ -25,8 +31,6 @@ try {
 } catch (\Exception $e) {
 }
 
-
-$response = new stdClass();
 $response->isUserLoggedIn = IsUserLoggedIn();
 if ($response->isUserLoggedIn) {
   $response->loggedInUserID = LoggedInUser();
