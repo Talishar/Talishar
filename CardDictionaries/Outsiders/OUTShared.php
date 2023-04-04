@@ -650,9 +650,12 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT012":
-        $deck = new Deck($defPlayer);
-        $deckCard = $deck->Top(true);
-        if($deckCard != "") BanishCardForPlayer($deckCard, $mainPlayer, "THEIRDECK", "NT", $cardID);
+        if(IsHeroAttackTarget())
+        {
+          $deck = new Deck($defPlayer);
+          $deckCard = $deck->Top(true);
+          if($deckCard != "") BanishCardForPlayer($deckCard, $mainPlayer, "THEIRDECK", "NT", $cardID);
+        }
         break;
       case "OUT013":
         if(HasPlayedAttackReaction())
