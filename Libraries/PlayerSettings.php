@@ -88,6 +88,13 @@ function IsLanguageJP($player)
   return false;
 }
 
+function GetPlaymat($player)
+{
+  global $SET_Playmat;
+  $settings = GetSettings($player);
+  return $settings[$SET_Playmat];
+}
+
 function GetCardBack($player)
 {
   global $SET_Cardback;

@@ -182,11 +182,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   $blankZone = 'blankZone';
+  $otherPlayer = ($playerID == 1 ? 2 : 1);
 
   //Choose Cardback
   $MyCardBack = GetCardBack($playerID);
-  $TheirCardBack = GetCardBack($playerID == 1 ? 2 : 1);
-  $otherPlayer = ($playerID == 1 ? 2 : 1);
+  $TheirCardBack = GetCardBack($otherPlayer);
+
+  $response->MyPlaymat = GetPlaymat($playerID);
+  $response->TheirPlaymat = GetPlaymat($otherPlayer);
 
   //Display active chain link
   $activeChainLink = new stdClass();
