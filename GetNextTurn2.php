@@ -901,7 +901,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
   }
   if (count($theirItems) > 0) {
-    for ($i = 0; $i < count($theirItems); $i += ItemPieces()) {
+    for ($i = 0; $i+ItemPieces()-1 < count($theirItems); $i += ItemPieces()) {
       if (IsTileable($theirItems[$i])) continue;
       echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($theirItems[$i], "concat", $cardSizeAura, 0, 1, $theirItems[$i + 2] != 2 ? 1 : 0, 0, $theirItems[$i + 1], "", "", false, 0, 0, 0, "ITEMS", controller: $otherPlayer) . "&nbsp");
@@ -916,7 +916,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $theirAllies = GetAllies($otherPlayer);
   if (count($theirAllies) > 0) {
-    for ($i = 0; $i < count($theirAllies); $i += AllyPieces()) {
+    for ($i = 0; $i+AllyPieces()-1 < count($theirAllies); $i += AllyPieces()) {
       $lifeCounters = $theirAllies[$i + 2];
       $enduranceCounters = $theirAllies[$i + 6];
       $subcard = $theirAllies[$i + 4];
