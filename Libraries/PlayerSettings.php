@@ -450,6 +450,22 @@ function FormatCode($format)
   }
 }
 
+function FormatName($formatCode)
+{
+  switch($formatCode)
+  {
+    case 0: return "cc";
+    case 1: return "compcc";
+    case 2: return "blitz";
+    case 3: return "compblitz";
+    case 4: return "livinglegendscc";
+    case 5: return "commoner";
+    case 6: return "sealed";
+    case 7: return "draft";
+    default: return "-";
+  }
+}
+
 function IsTeamCardAdvantage($userID)
 {
   switch ($userID) {

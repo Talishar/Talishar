@@ -36,7 +36,7 @@ if (IsUserLoggedIn()) {
   }
 
   //Load other settings
-  if (isset($settingArray[$SET_Format])) $response->lastFormat = $settingArray[$SET_Format];
+  if (isset($settingArray[$SET_Format])) $response->lastFormat = FormatName($settingArray[$SET_Format]);
   if (isset($settingArray[$SET_GameVisibility])) $response->lastVisibility = $settingArray[$SET_GameVisibility];
 }
 echo json_encode($response);
