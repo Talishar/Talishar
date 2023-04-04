@@ -2,7 +2,7 @@
 
 //For Maindeck cards, $tag1 and $tag2 can be any tag that you want to use to filter results. For equipment, set $tag1 according to note below
 function GetPool($type, $hero, $rarity, $background, $tag1="", $tag2 = "",){
-  if(($hero == "Bravo" || $hero == "Dorinthea") && $type == "Talent") $type = "Class";
+  if(($hero == "Bravo" || $hero == "Dorinthea" || $hero == "Arakni") && $type == "Talent") $type = "Class";
   if($hero == "ALL") $background = $rarity;
   if($type == "Class") return GetPoolClass(array($rarity, $background));
   else if($type == "Generic") return GetPoolGeneric(array($rarity));
@@ -386,6 +386,39 @@ function GetPoolClass($arrayParameters){
 
     array("DYN153", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //only Heat Seeker. No way to gain aim counters yet. Might reevaluate if we make an aim centric power.
 
+    array("DYN119", "Class", "Majestic", "Contract", "Stealth", "Reaction"), //Eradicate
+    array("DYN120", "Class", "Majestic", "Contract", "Stealth", "Reaction"), //Leave No Witnesses
+    array("DYN121", "Class", "Majestic", "Contract", "Stealth", "Reaction"), //Regicide
+    array("DYN122", "Class", "Majestic", "Contract", "Stealth", "Reaction"), //Surgical Extraction
+    array("DYN123", "Class", "Majestic", "Contract"), //Pay Day
+    array("DYN124", "Class", "Rare", "Contract", "Stealth", "Reaction"), //Plunder the Poor
+    array("DYN125", "Class", "Rare", "Contract", "Stealth", "Reaction"),
+    array("DYN126", "Class", "Rare", "Contract", "Stealth", "Reaction"),
+    array("DYN127", "Class", "Rare", "Contract", "Stealth", "Reaction"), //Rob the Rich
+    array("DYN128", "Class", "Rare", "Contract", "Stealth", "Reaction"),
+    array("DYN129", "Class", "Rare", "Contract", "Stealth", "Reaction"),
+    array("DYN130", "Class", "Rare", "Contract", "Stealth", "Reaction"), //Shred
+    array("DYN131", "Class", "Rare", "Contract", "Stealth", "Reaction"),
+    array("DYN132", "Class", "Rare", "Contract", "Stealth", "Reaction"),
+    array("DYN133", "Class", "Common", "Contract", "Stealth", "Reaction"), //Annihilate the Armed
+    array("DYN134", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("DYN135", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("DYN136", "Class", "Common", "Contract", "Stealth", "Reaction"), //Fleece the Frail
+    array("DYN137", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("DYN138", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("DYN139", "Class", "Common", "Contract", "Stealth", "Reaction"), //Nix the Nimble
+    array("DYN140", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("DYN141", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("DYN142", "Class", "Common", "Contract", "Stealth", "Reaction"), //Sack the Shifty
+    array("DYN143", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("DYN144", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("DYN145", "Class", "Common", "Contract", "Stealth", "Reaction"), //Slay the Scholars
+    array("DYN146", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("DYN147", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("DYN148", "Class", "Common", "Contract"), //Cut to the Chase
+    array("DYN149", "Class", "Common", "Contract"),
+    array("DYN150", "Class", "Common", "Contract"),
+
     array("OUT100", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Amplifying Arrow
     array("OUT105", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Melting Point
     array("OUT109", "Class", "Rare", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Fletch a [color] tail
@@ -403,11 +436,66 @@ function GetPoolClass($arrayParameters){
     array("OUT136", "Class", "Rare", "Shiver", "Voltaire", "RedLiner"), //Withering Shot
     array("OUT136", "Class", "Rare", "Shiver", "Voltaire", "RedLiner"),
     array("OUT136", "Class", "Rare", "Shiver", "Voltaire", "RedLiner"),
-    array("OUT159", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Codexes
-    array("OUT160", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
-    array("OUT161", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner"),
 
     array("OUT052", "Class", "Majestic", "Emberblade", "Kodachi", "Edge"), //Head Leads the Tail
+
+    array("OUT012", "Class", "Majestic", "Contract", "Stealth", "Reaction"), //Infiltrate
+    array("OUT014", "Class", "Majestic", "Contract", "Stealth", "Reaction"), //Spreading Plague
+    array("OUT015", "Class", "Rare", "Contract", "Stealth", "Reaction"), //Back Stab
+    array("OUT016", "Class", "Rare", "Contract", "Stealth", "Reaction"),
+    array("OUT017", "Class", "Rare", "Contract", "Stealth", "Reaction"),
+    //Sneak Attack is not presently playable by Arakni. Only gains the effects on Uzuri
+    array("OUT021", "Class", "Rare", "Stealth", "Reaction"), //Spikes
+    array("OUT022", "Class", "Rare", "Stealth", "Reaction"),
+    array("OUT023", "Class", "Rare", "Stealth", "Reaction"),
+    array("OUT024", "Class", "Common", "Contract", "Stealth", "Reaction"), //Infect
+    array("OUT025", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("OUT026", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("OUT027", "Class", "Common", "Contract", "Stealth", "Reaction"), //Isolate
+    array("OUT028", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("OUT029", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("OUT030", "Class", "Common", "Contract", "Stealth", "Reaction"), //Malign
+    array("OUT031", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("OUT032", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("OUT033", "Class", "Common", "Contract", "Stealth", "Reaction"), //Prowl
+    array("OUT034", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("OUT035", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("OUT036", "Class", "Common", "Contract", "Stealth", "Reaction"), //Sedate
+    array("OUT037", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("OUT038", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("OUT039", "Class", "Common", "Contract", "Stealth", "Reaction"), //Wither
+    array("OUT040", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("OUT041", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("OUT042", "Class", "Common", "Stealth", "Reaction"), //Razor's Edge
+    array("OUT043", "Class", "Common", "Stealth", "Reaction"),
+    array("OUT044", "Class", "Common", "Stealth", "Reaction"),
+    array("OUT142", "Class", "Majestic", "Kodachi", "Contract", "Stealth", "Reaction"), //Stab Wound
+    array("OUT143", "Class", "Majestic", "Kodachi", "Contract", "Stealth", "Reaction"), //Concealed Blade
+    array("OUT144", "Class", "Majestic", "Kodachi", "Contract", "Stealth", "Reaction"), //Knives Out
+    array("OUT145", "Class", "Rare", "Kodachi", "Contract", "Stealth", "Reaction"), //Bleed Out
+    array("OUT146", "Class", "Rare", "Kodachi", "Contract", "Stealth", "Reaction"),
+    array("OUT147", "Class", "Rare", "Kodachi", "Contract", "Stealth", "Reaction"),
+    array("OUT148", "Class", "Rare", "Kodachi", "Contract", "Stealth", "Reaction"), //Hurl
+    array("OUT149", "Class", "Rare", "Kodachi", "Contract", "Stealth", "Reaction"),
+    array("OUT150", "Class", "Rare", "Kodachi", "Contract", "Stealth", "Reaction"),
+    array("OUT151", "Class", "Common", "Kodachi", "Contract", "Stealth", "Reaction"), //Plunge
+    array("OUT152", "Class", "Common", "Kodachi", "Contract", "Stealth", "Reaction"),
+    array("OUT153", "Class", "Common", "Kodachi", "Contract", "Stealth", "Reaction"),
+    array("OUT154", "Class", "Common", "Kodachi", "Contract", "Stealth", "Reaction"), //Short and Sharp
+    array("OUT155", "Class", "Common", "Kodachi", "Contract", "Stealth", "Reaction"),
+    array("OUT156", "Class", "Common", "Kodachi", "Contract", "Stealth", "Reaction"),
+    array("OUT159", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner", "Contract", "Stealth", "Reaction"), //Codexes
+    array("OUT160", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner", "Contract", "Stealth", "Reaction"),
+    array("OUT161", "Class", "Majestic", "Shiver", "Voltaire", "DeathDealer", "RedLiner", "Contract", "Stealth", "Reaction"),
+    array("OUT162", "Class", "Rare", "Contract", "Stealth", "Reaction"), //Death Touch
+    array("OUT163", "Class", "Rare", "Contract", "Stealth", "Reaction"),
+    array("OUT164", "Class", "Rare", "Contract", "Stealth", "Reaction"),
+    array("OUT165", "Class", "Rare", "Contract", "Stealth", "Reaction"), //Toxicity
+    array("OUT166", "Class", "Rare", "Contract", "Stealth", "Reaction"),
+    array("OUT167", "Class", "Rare", "Contract", "Stealth", "Reaction"),
+    array("OUT168", "Class", "Common", "Contract", "Stealth", "Reaction"), //Virulent Touch
+    array("OUT169", "Class", "Common", "Contract", "Stealth", "Reaction"),
+    array("OUT170", "Class", "Common", "Contract", "Stealth", "Reaction"),
   );
 
   return ProcessPool($CardRewardPool, $arrayParameters);
@@ -870,10 +958,31 @@ function GetPoolEquipment($arrayParameters){
   array("DYN027", "Bravo", "Rare", "Offhand"), //Steelbraid Buckler
   array("DYN045", "Fai", "Majestic", "Chest"), //Blazing Yoroi
   array("DYN046", "Fai", "Rare", "Arms"), //Tearing Shuko
+  array("DYN117", "Arakni", "Legendary", "Legs"), //Blacktek Whisperers
+  array("DYN118", "Arakni", "Majestic", "Head"), //Mask of Perdition
   array("DYN152", "Lexi", "Rare", "Arms"), //Hornet's Sting
   //DYN236 thru 29 - Spellfray equipment. I do want to put these in the pool, but I'd like to tag them as arcane first and put them in my 2nd draft
   array("DYN234", "Generic", "Legendary", "Head"), //Crown of Dominion
-  array("DYN235", "Generic", "Rare", "Offhand") //Ornate Tessen
+  array("DYN235", "Generic", "Rare", "Offhand"), //Ornate Tessen
+
+  array("OUT011", "Arakni", "Legendary", "Chest"), //Redback Shroud
+  array("OUT049", "Fai", "Common", "Head"), //Mask of Many Faces
+  array("OUT094", "Lexi", "Legendary", "Chest"), //Trench of Sunken Treasure
+  array("OUT099", "Lexi", "Common", "Head"), //Wayfinder's Crest
+  array("OUT139", "Fai", "Arakni", "Legendary", "Arms"), //Flick Knives
+  array("OUT140", "Fai", "Arakni", "Common", "Head"), //Mask of Shifting Perspectives
+  array("OUT141", "Fai", "Arakni", "Common", "Arms"), //Blade Cuff
+  array("OUT157", "Arakni", "Lexi", "Common", "Head"), //Mask of Malicious Manifestations
+  array("OUT157", "Arakni", "Lexi", "Common", "Arms"), //Toxic Tips
+  array("OUT174", "Generic", "Legendary", "Arms"), //Vambrace of Determination
+  array("OUT175", "Generic", "Common", "Head"), //Seekers
+  array("OUT176", "Generic", "Common", "Chest"),
+  array("OUT177", "Generic", "Common", "Arms"),
+  array("OUT178", "Generic", "Common", "Legs"),
+  array("OUT179", "Generic", "Common", "Chest"), //Silken Gi
+  array("OUT180", "Generic", "Common", "Chest"), //Threadbare Tunic
+  array("OUT181", "Generic", "Common", "Arms"), //Fisticuffs
+  array("OUT182", "Generic", "Common", "Legs"), //Fleet Foot Sandals
   );
 
   return ProcessPool($CardRewardPool, $arrayParameters);

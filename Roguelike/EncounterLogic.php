@@ -20,6 +20,7 @@ function GetBackgrounds($character)
     case "Bravo": $backgroundChoices = array("The_Everfest_Showman", "The_Reclusive_Blacksmith", "The_Slumbering_Giant"); break;
     case "Lexi": $backgroundChoices = array("The_Ancient_Ollin", "The_Exuberant_Adventurer", "The_Hired_Crow", "The_Roadside_Bandit"); break;
     case "Fai": $backgroundChoices = array("The_Rebel_Organizer", "The_Travelling_Duo", "The_Archaeologist"); break;
+    case "Arakni": $backgroundChoices = array("The_Emperor", "The_Doctor", "The_Warrior"); break;
   }
   $options = getOptions(2, count($backgroundChoices)-1);
   return $backgroundChoices[$options[0]] . "," . $backgroundChoices[$options[1]];

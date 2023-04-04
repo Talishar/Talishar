@@ -160,7 +160,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("STARTADVENTURE", $player, "-");
       break;
     case 002:
-      AddDecisionQueue("BUTTONINPUT", $player, "Dorinthea,Bravo,Lexi,Fai");
+      AddDecisionQueue("BUTTONINPUT", $player, "Dorinthea,Bravo,Lexi,Fai,Arakni");
       AddDecisionQueue("CHOOSEHERO", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "001-PickMode");
       break;
