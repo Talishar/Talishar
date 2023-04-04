@@ -255,6 +255,21 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             array_push($character, "CRU050");
             array_push($deck, "UPR051", "UPR052", "UPR072", "UPR074", "WTR208");
             break;
+          case "The_Emperor":
+            $encounter->background = "Contract";
+            array_push($character, "DYN115", "OUT010");
+            array_push($deck, "DYN149", "DYN138", "DYN142", "DYN124", "DYN128");
+            break;
+          case "The_Doctor":
+            $encounter->background = "Stealth";
+            array_push($character, "DYN115", "OUT005");
+            array_push($deck, "OUT034", "OUT024", "OUT036", "OUT039", "OUT017");
+            break;
+          case "The_Warrior":
+            $encounter->background = "Reaction";
+            array_push($character, "DYN115", "OUT008");
+            array_push($deck, "OUT027", "OUT030", "OUT042", "OUT044", "OUT021");
+            break;
         }
         return 1;
       case "STARTADVENTURE":
@@ -415,8 +430,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Spar_until_nightfall":
             $health = &GetZone($player, "Health");
             $health[0] -= 4;
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomDeckCard($player, 4));
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomDeckCard($player, 4));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Deck,4"), "Deck,4");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Deck,4"), "Deck,4");
             break;
           case "Politely_decline":
             break;
@@ -445,6 +460,10 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
                 PrependDecisionQueue("CHOOSECARD", $player, "ELE036", "-", "NoReroll");
                 PrependDecisionQueue("CHOOSECARD", $player, "ELE036,ELE036", "-", "NoReroll");
                 break;
+              case "Arakni":
+                PrependDecisionQueue("CHOOSECARD", $player, "DYN121", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "DYN121,DYN121", "-", "NoReroll");
+                break;
             }
             break;
           case "The_face_of_another":
@@ -455,6 +474,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
               case "Bravo": $cardChoices = array("WTR006", "ARC080", "OUT013"); break;
               case "Fai": $cardChoices = array("ELE066", "CRU074", "EVR039"); break;
               case "Lexi": $cardChoices = array("ARC043", "UPR126", "ELE004"); break;
+              case "Arakni": $cardChoices = array("WTR119", "WTR043", "MON199"); break;
             }
             $randNum = rand(0, 2);
             PrependDecisionQueue("CHOOSECARD", $player, $cardChoices[$randNum], "-", "NoReroll");
@@ -619,6 +639,11 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
                 PrependDecisionQueue("CHOOSECARD", $player, "OUT093", "-", "NoReroll");
                 PrependDecisionQueue("CHOOSECARD", $player, "EVR087", "-", "NoReroll");
                 PrependDecisionQueue("CHOOSECARD", $player, "DYN151", "-", "NoReroll");
+                break;
+              case "Arakni":
+                PrependDecisionQueue("CHOOSECARD", $player, "WTR078", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "ELE203", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "CRU051", "-", "NoReroll");
                 break;
             }
             break;

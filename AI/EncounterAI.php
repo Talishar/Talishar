@@ -216,6 +216,7 @@ function IsEncounterAI($enemyHero)
 
 function LogPriorityArray($priorityArray)
 {
+  WriteLog("Priority Array:");
   for($i = 0; $i < count($priorityArray); ++$i)
   {
     WriteLog("[" . $priorityArray[$i][0] . "," . $priorityArray[$i][1] . "," . $priorityArray[$i][2] . "," . $priorityArray[$i][3] . "]");
