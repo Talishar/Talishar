@@ -147,6 +147,11 @@ function EncounterDescription()
 function InitializeEncounter($player)
 {
   $encounter = &GetZone($player, "Encounter");
+  /*if($encounter->subphase == "ContinueLore")
+  {
+    InitializeLore($player);
+    return;
+  }*/
   //WriteFullEncounter();
   switch($encounter->encounterID)
   {
@@ -394,6 +399,15 @@ function InitializeEncounter($player)
   }
 }
 
+/*function InitializeLore($player)
+{
+  $encounter = &GetZone(1, "Encounter");
+  switch($encounter->encounterID)
+  {
+
+  }
+}*/
+
 function EncounterImage()
 {
   $encounter = &GetZone(1, "Encounter");
@@ -524,6 +538,7 @@ function EncounterImage()
 
 function EncounterChoiceHeader(){
   $encounter = &GetZone(1, "Encounter");
+  if($encounter->subphase = "ContineLore") return "";
   switch($encounter->encounterID){
     case 001:
       return "What will you do?";
