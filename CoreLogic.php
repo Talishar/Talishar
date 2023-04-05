@@ -516,6 +516,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           array_unshift($deck, $cardID);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
+        break;
       case "ROGUE003":
         if(CardType($cardID) == "AA")
         {
@@ -535,6 +536,12 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           $choices = array("CRU054", "CRU056");
           $hand = &GetHand($currentPlayer);
           array_unshift($hand, $choices[rand(0, count($choices)-1)]);
+        }
+        break;
+      case "ROGUE031":
+        global $actionPoints;
+        if(CardTalent($cardID) == "LIGHTNING"){
+          $actionPoints++;
         }
         break;
       default:

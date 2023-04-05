@@ -8,6 +8,7 @@ function ROGUEAbilityCost($cardID)
       case "ROGUE002": return 0;
       case "ROGUE005": return 0;
       case "ROGUE007": return 0;
+      case "ROGUE032": return 0;
       default: return 0;
     }
 }
@@ -18,6 +19,7 @@ function ROGUEAbilityType($cardID, $index = -1)
       case "ROGUE002": return "AA";
       case "ROGUE005": return "AA";
       case "ROGUE007": return "A";
+      case "ROGUE032": return "AA";
       default: return "";
     }
 }
@@ -197,6 +199,9 @@ function ROGUECardType($cardID)
       case "ROGUE027": return "C";
       case "ROGUE028": return "C";
       case "ROGUE029": return "C";
+      case "ROGUE030": return "C";
+      case "ROGUE031": return "C";
+      case "ROGUE032": return "W";
 
       case "ROGUE501": case "ROGUE502": case "ROGUE503": case "ROGUE504": case "ROGUE505": case "ROGUE506": case "ROGUE507": case "ROGUE508": case "ROGUE509": case "ROGUE510": case "ROGUE511": case "ROGUE512": case "ROGUE513": case "ROGUE514":
       case "ROGUE515": case "ROGUE516": case "ROGUE517": case "ROGUE518": case "ROGUE519": case "ROGUE520": case "ROGUE521": case "ROGUE522": case "ROGUE523": case "ROGUE524": case "ROGUE525": case "ROGUE526": case "ROGUE527": case "ROGUE528":
@@ -249,6 +254,9 @@ function ROGUECardSubtype($cardID)
       case "ROGUE027": return "Warrior";
       case "ROGUE028": return "Illusionist";
       case "ROGUE029": return "Warrior";
+      case "ROGUE030": return "Thug";
+      case "ROGUE031": return "Draconic Elemental";
+      case "ROGUE032": return "Draconic Elemental";
 
       case "ROGUE501": //Broken Hourglass
       case "ROGUE502": //Perfect Mirror
@@ -433,6 +441,7 @@ function ROGUEPitchValue($cardID)
       case "ROGUE010": return -1;
       case "ROGUE013": return -1;
       case "ROGUE014": return -1;
+      case "ROGUE032": return -1;
       case "ROGUE501": return 3;
       case "ROGUE501": return -1; //Broken Hourglass
       case "ROGUE502": return -1; //Perfect Mirror
@@ -494,6 +503,7 @@ function ROGUEBlockValue($cardID)
       case "ROGUE010": return -1;
       case "ROGUE013": return -1;
       case "ROGUE014": return -1;
+      case "ROGUE032": return -1;
       case "ROGUE501": return -1;
       default:
         return 3;
@@ -506,6 +516,7 @@ function ROGUEAttackValue($cardID)
       case "ROGUE002": return 2;
       case "ROGUE005": return 4;
       case "ROGUE007": return 2;
+      case "ROGUE032": return 2;
       default:
         return 0;
     }

@@ -161,6 +161,8 @@
       case 127: return "Swashbuckler";
       case 128: return "SpectralImage";
       case 129: return "MindscarredBerserker";
+      case 130: return "ClubThug";
+      case 131: return "Azvolai";
       default: return "Woottonhog";
     }
   }
