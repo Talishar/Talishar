@@ -29,7 +29,7 @@ function GetNextEncounter() //TODO overhaul this whole function and children
             case 9: return "Search_through_the_treasures"; //Get a power
             case 10: return CrossroadsDoubleChoice("Attempt_to_cross_the_river_here,Travel_downstream_to_find_a_bridge,Travel_upstream_to_the_nearest_town");//combat choice of X, Y, and Z
             case 11: return RandomEvent();
-            case 12: return CrossroadsDoubleChoice("You_notice_a_mountain_pass_you_can_move_through,A_river_flows_nearby_for_you_to_travel_alongside,A_nearby_town_could_provide_some_directions");//combat choice of X, Y, and Z
+            case 12: return CrossroadsDoubleChoice("You_notice_a_mountain_pass_you_can_move_through,Travel_through_a_thin_ravine,Travel_through_a_nearby_cavern");//combat choice of X, Y, and Z
             case 13: return RandomEvent();
             case 14: return CrossroadsDoubleChoice("Use_the_cover_of_darkness_to_cross,Take_precaution_and_find_a_different_way_across,Brave_the_bridge");//combat choice of X, Y, and Z
             case 15: return RandomEvent();

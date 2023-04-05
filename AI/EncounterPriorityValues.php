@@ -337,11 +337,26 @@ function GetPriority($cardID, $heroID, $type)
         {
           case "WTR206": $priority = array(10.4, 0, 0, 1.7, 1.9, 0.3, 1.4); return $priority[$type];
           case "WTR208": $priority = array(11.3, 0, 0, 1.6, 1.8, 2.2, 0.4); return $priority[$type];
-          case "ARC161": $priority = array(0.7, 1.8, 1.8, 0, 0); return $priority[$type];
-          case "ARC159": $priority = array(0.8, 1.9, 1.9, 0, 0); return $priority[$type];
-          case "CRU194": $priority = array(11.8, 1.1, 1.7, 0, 0); return $priority[$type];
-          case "CRU192": $priority = array(0.9, 1.2, 1.6, 0, 0); return $priority[$type];
-          case "MON263": $priority = array(1.1, 1.3, 1.5, 0, 0); return $priority[$type];
+          case "ARC161": $priority = array(0.7, 1.7, 1.8, 0, 0, 2.1, 0.8); return $priority[$type];
+          case "ARC159": $priority = array(0.8, 1.8, 1.9, 0, 0, 0.1, 2.8); return $priority[$type];
+          case "CRU194": $priority = array(11.8, 1.1, 1.7, 0, 0, 2.5, 0.5); return $priority[$type];
+          case "CRU192": $priority = array(2.2, 1.2, 1.6, 0, 0, 0.2, 0.4); return $priority[$type];
+          case "MON263": $priority = array(2.1, 1.3, 1.5, 0, 0, 0.5, 0.9); return $priority[$type];
+          case "ARC150": $priority = array(2.1, 0, 0, 0, 0, 0, 0, 0); return $priority[$type];
+          case "WTR153": $priority = array(0, 1.9, 0, 0, 0, 0, 0, 1.9); return $priority[$type];
+          default: return 0;
+        }
+      case "ROGUE031":
+        switch($cardID)
+        {
+          case "ELE188": $priority = array(0, 0.7); return $priority[$type];
+          case "ELE187": $priority = array(0, 0.6); return $priority[$type];
+          case "ELE186": $priority = array(0, 0.5); return $priority[$type];
+          case "UPR092": $priority = array(0.5, 0.4); return $priority[$type];
+          case "UPR098": $priority = array(10.6, 0.1, 0.2, 0, 0, 0, 0.5); return $priority[$type];
+          case "ROGUE032": $priority = array(0, ROG032ActionPoint()); return $priority[$type];
+          case "UPR084": $priority = array(2.2, 0, 0, 0, 0); return $priority[$type];
+          default: return 0;
         }
       default: return 0;
   }
@@ -464,4 +479,20 @@ function ROGUE027IronsongPrio()
   else return 0;
 }
 
+function ROG031Blaze()
+{
+  //TODO: Get Combat Chain
+  return 0.4;
+}
+
+function ROG032ActionPoint()
+{
+  global $actionPoints;
+  if($actionPoints > 1){
+    return 0.9;
+  }
+  else {
+    return 0;
+  }
+}
 ?>

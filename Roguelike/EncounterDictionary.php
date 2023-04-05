@@ -111,7 +111,11 @@ function EncounterDescription()
     case 130:
       if($encounter->subphase == "BeforeFight") return "As you travel, a wandering thug carrying a spiked club jumps out from behind a large boulder and ambushes you. His size is impressive, yet he seems limber... keep your guard up against him."; //TODO
       else if($encounter->subphase == "AfterFight") return "The man runs away, with the pieces of his club on the ground. You were too clever for him!";
-    case 999: return "This text means something is wrong!"; //Maybe $encounter->subphase is set to something weird? Maybe there's a typo?
+    case 131:
+      if($encounter->subphase == "BeforeFight") return "Despite keeping an eye on your surroundings, you're caught by surprise when a giant winged creature made of crackling lightning suddenly attacks you.";
+      else if($encounter->subphase == "AfterFight") return "As you slay the creature, it falls to the ground, but leaves no trace of blood. Just before leaving, you turn back and see no body or evidence of your fight at all.";
+
+    case 999: return "This text is not the default! This text means something is wrong!"; //Maybe $encounter->subphase is set to something weird? Maybe there's a typo?
 
     case 201: return "There was a battle here recently. There aren't any combatants, but there are bodies littering the ground, still dripping with blood.";
     case 202: return "You found a library.";
@@ -168,7 +172,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
       break;
     case 006:
-      $encounter->position = 1; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
+      $encounter->position = 0; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
       AddDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,3"), "Power,3");
       //AddDecisionQueue("SETENCOUNTER", $player, "216-PickMode"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
@@ -374,6 +378,8 @@ function EncounterImage()
       return "DYN071_cropped.png";
     case 130:
       return "CRU192_cropped.png";
+    case 131:
+      return "UPR009_cropped.png";
 
     case 201:
       return "WTR194_cropped.png";

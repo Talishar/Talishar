@@ -270,9 +270,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             AddDecisionQueue("SETENCOUNTER", $player, "004-PickMode");
             break;
           case "Begin_adventure":
-            $devTest = false;
-            if($devTest) AddDecisionQueue("SETENCOUNTER", $player, "115-PickMode"); //set the above line to true and the last argument of this to your encounter to test it.
-            else AddDecisionQueue("SETENCOUNTER", $player, "005-PickMode");
+            AddDecisionQueue("SETENCOUNTER", $player, "005-PickMode");
             break;
           /*case "Shop_Test":
             AddDecisionQueue("SHOP", $player, "EVR060,DYN073,DYN071,MON107,WTR156,ROGUE501");
@@ -591,11 +589,11 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "You_notice_a_mountain_pass_you_can_move_through": //Pass Guardian
             PrependDecisionQueue("SETENCOUNTER", $player, "123-BeforeFight");
             break;
-          case "A_river_flows_nearby_for_you_to_travel_alongside": //TODO - THIS ENCOUNTER - PLACEHOLDER
+          case "Travel_through_a_thin_ravine": //Club Thug
             PrependDecisionQueue("SETENCOUNTER", $player, "130-BeforeFight");
             break;
-          case "A_nearby_town_could_provide_some_directions":
-            PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
+          case "Travel_through_a_nearby_cavern": //Azvolai
+            PrependDecisionQueue("SETENCOUNTER", $player, "131-BeforeFight");
             break;
           case "Attempt_to_cross_the_river_here": //Bow Fisherman
             PrependDecisionQueue("SETENCOUNTER", $player, "124-BeforeFight");

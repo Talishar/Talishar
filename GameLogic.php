@@ -964,6 +964,11 @@ function SelfCostModifier($cardID)
       return (ComboActive($cardID) ? -1 : 0);
     case "OUT145": case "OUT146": case "OUT147":
       return (-1 * DamageDealtBySubtype("Dagger"));
+    case "WTR206": case "WTR207": case "WTR208": 
+      if(GetPlayerCharacter($currentPlayer)[0] == "ROGUE030"){
+        return -1;
+      }
+      else return 0;
     default:
       return 0;
   }
