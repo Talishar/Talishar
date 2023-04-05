@@ -2017,6 +2017,11 @@ function SelfCostModifier($cardID)
       return (ComboActive($cardID) ? -1 : 0);
     case "OUT145": case "OUT146": case "OUT147":
       return (-1 * DamageDealtBySubtype("Dagger"));
+    case "WTR206": case "WTR207": case "WTR208":
+      if(GetPlayerCharacter($currentPlayer)[0] == "ROGUE030"){
+        return -1;
+      }
+      else return 0;
     default: return 0;
   }
 }
@@ -2329,6 +2334,16 @@ function Draw($player, $mainPhase = true)
       if($cardType == "A" || $cardType == "AA") PlayAura("WTR075", $player);
     }
   }
+  if(SearchCharacterActive($otherPlayer, "ROGUE026") && $mainPhase) {
+    //WriteLog("drawn card");
+    $health = &GetHealth($otherPlayer);
+    $health += -10;
+    if($health < 1)
+    {
+      $health = 1;
+      WriteLog("NO! You will not banish me! I refuse!");
+    }
+  }
   if($mainPhase)
   {
     $numBrainstorm = CountCurrentTurnEffects("DYN196", $player);
@@ -2338,6 +2353,7 @@ function Draw($player, $mainPhase = true)
       for($i=0; $i<$numBrainstorm; ++$i) DealArcane(1, 2, "TRIGGER", $character[0]);
     }
   }
+  PermanentDrawCardAbilities();
   $hand = array_values($hand);
   return $hand[count($hand) - 1];
 }
