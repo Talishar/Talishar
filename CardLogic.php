@@ -501,6 +501,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
 
+  $EffectContext = $parameter;
+
   switch ($parameter) {
     case "HEAVE":
       Heave();

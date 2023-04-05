@@ -172,6 +172,55 @@ function CharacterStartTurnAbility($index)
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
       break;
+    case "ROGUE015":
+      //WriteLog($mainCharacter[$index+1]);
+      if($mainCharacter[$index+1] == 2)
+      {
+        $hand = &GetHand($mainPlayer);
+        array_unshift($hand, "DYN065");
+      }
+      break;
+    case "ROGUE017":
+      //WriteLog($mainCharacter[$index+1]);
+      if($mainCharacter[$index+1] == 2)
+      {
+        $hand = &GetHand($mainPlayer);
+        array_unshift($hand, "CRU181");
+        MyDrawCard();
+      }
+      break;
+    case "ROGUE018":
+      PlayAura("ELE109", $mainPlayer);
+      break;
+    case "ROGUE010":
+      PlayAura("ARC112", $mainPlayer);
+      PlayAura("ARC112", $mainPlayer);
+      break;
+    case "ROGUE021":
+      $hand = &GetHand($mainPlayer);
+      array_unshift($hand, "MON226");
+      $resources = &GetResources($mainPlayer);
+      $resources[0] += 2;
+      break;
+    case "ROGUE022":
+      $defBanish = &GetBanish($otherPlayer);
+      $health = &GetHealth($mainPlayer);
+      $totalBD = 0;
+      for($i = 0; $i < count($defBanish); $i += BanishPieces())
+      {
+        if(HasBloodDebt($defBanish[$i])) ++$totalBD;
+      }
+      $health += $totalBD;
+      array_push($defBanish, "MON203");
+      array_push($defBanish, "");
+      array_push($defBanish, GetUniqueId());
+      break;
+    case "ROGUE024":
+      AddCurrentTurnEffect("ROGUE024", $otherPlayer);
+      break;
+    case "ROGUE028":
+      PlayAura("MON104", $mainPlayer);
+      break;
     default: break;
   }
 }
@@ -244,6 +293,9 @@ function MainCharacterEndTurnAbilities()
           $mainCharacter[$i + 2] = 0;
         }
         break;
+      case "ROGUE019":
+        DiscardRandom($currentPlayer, $cardID);
+        break;
       default: break;
     }
   }
@@ -309,6 +361,25 @@ function MainCharacterHitAbilities()
           AddLayer("TRIGGER", $mainPlayer, $characterID);
         }
         break;
+      case "ROGUE016":
+        if (CardType($attackID) == "AA")
+        {
+          $deck = &GetDeck($mainPlayer);
+          array_unshift($deck, "ARC069");
+        }
+        break;
+      case "ROGUE024":
+        if (IsHeroAttackTarget()) {
+          $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+          DamageTrigger($otherPlayer, 1, "ATTACKHIT");
+        }
+        break;
+      case "ROGUE028":
+        if (IsHeroAttackTarget()) {
+          PlayAura("MON104", $mainPlayer);
+          PlayAura("MON104", $mainPlayer);
+        }
+        break;
       default:
         break;
     }
@@ -332,6 +403,7 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
         case "MON105": case "MON106": $modifier += 1; break;
         case "MON113": case "MON114": case "MON115": $modifier += 1; break;
         case "EVR055-1": $modifier += 1; break;
+        case "ROGUE018": $modifier += 1; break;
         default:
           break;
       }
@@ -526,4 +598,59 @@ function CharacterTriggerInGraveyard($cardID)
   }
 }
 
+function CharacterDamageTakenAbilities($player, $damage)
+{
+  $char = &GetPlayerCharacter($player);
+  $otherPlayer = $player == 1 ? 1 : 2;
+  for ($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces())
+  {
+    switch ($char[$i]) {
+      case "ROGUE015":
+        $hand = &GetHand($player);
+        for($j = 0; $j < $damage; ++$j)
+        {
+          $randomNimb = rand(1,3);
+          if($randomNimb == 1) array_unshift($hand, "WTR218");
+          else if($randomNimb == 2) array_unshift($hand, "WTR219");
+          else array_unshift($hand, "WTR220");
+        }
+        break;
+      case "ROGUE019":
+        PlayAura("CRU075", $player, 4, false, true);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+function CharacterDealDamageAbilities($player, $damage)
+{
+  $char = &GetPlayerCharacter($player);
+  $otherPlayer = $player == 1 ? 1 : 2;
+  for ($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces())
+  {
+    switch ($char[$i]) {
+      case "ROGUE023":
+        if($damage >= 4)
+        {
+          PlayAura("CRU031", $player, 1, false, true);
+        }
+        break;
+      case "ROGUE029":
+        for($j = count($char) - CharacterPieces(); $j >= 0; $j -= CharacterPieces())
+        {
+          if($char[$j] == "DYN068") $indexCounter = $j+3;
+        }
+        $char[$indexCounter] += 1;
+        if($damage >= 4)
+        {
+          $char[$indexCounter] = $char[$indexCounter] * 2;
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
 ?>

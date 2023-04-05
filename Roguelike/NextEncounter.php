@@ -69,24 +69,41 @@ $cardIconTop = intval($cardSize / 4.2); //30
 
   //Display left sidebar
   echo("<div style='position:absolute; text-align: center; z-index:100; border: 3px solid black; border-radius:5px; left:10px; top:17px; height:calc(95% - 26px); width:14%; background-color:rgba(235, 213, 179, .85);'>");
-  echo("<h2 style='width:100%;'>Encounter #" . $encounter[0] . "</h2>");
+  echo("<h2 style='width:100%;'>Encounter #" . $encounter->encounterID . "</h2>");
 
   echo ("<div style='height:6vh; width:100%; z-index:-200;'><span title='Your remaining life' style='top: 10%; left: 50%; text-align: center; transform: translate(-50%, -50%); position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize/1.5 . "; width:" . $cardIconSize/1.5 . ";' src='../Images/Life.png'>
       <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 32px; height: 32px; padding: 1px;
       text-align: center; transform: translate(-50%, -50%); line-height: 1.2;
       position:absolute; font-size:32px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $health[0] . "</div></img></span></div>");
+  echo ("<div style='height:6vh; width:100%; z-index:-200;'><span title='Your remaining life' style='top: 10%; left: 50%; text-align: center; transform: translate(-50%, 70%); position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize/1.5 . "; width:" . $cardIconSize/1.5 . ";' src='../Images/Arsenal.png'>
+      <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 32px; height: 32px; padding: 1px;
+      text-align: center; transform: translate(-50%, -50%); line-height: 1.2;
+      position:absolute; font-size:32px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $encounter->gold . "</div></img></span></div>");
+  /*echo ("<div style='height:6vh; width:100%; z-index:-200;'><span title='Your remaining life' style='top: 10%; left: 50%; text-align: center; transform: translate(-50%, 190%); position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize/1.5 . "; width:" . $cardIconSize/1.5 . ";' src='../Images/Intellect.png'>
+      <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 32px; height: 32px; padding: 1px;
+      text-align: center; transform: translate(-50%, -50%); line-height: 1.2;
+      position:absolute; font-size:32px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $encounter->rerolls . "</div></img></span></div>");*/
 
   echo("<center>" . Card($character[0], "../concat", $cardSize, 0, 1) . "</center>");
   echo("<BR>");
 
   echo("<center><div style='cursor:pointer;' onclick='(function(){ document.getElementById(\"myDeckPopup\").style.display = \"inline\";})();'>" . Card("CardBack", "../concat", $cardSize, 0, 1, 0, 0, count($deck)) . "</div></center>");
 
+
   $myDQ = &GetZone($playerID, "DecisionQueue");
 
   $encounterContent = "";
+  // WriteLog("playerID: " . $playerID);
+  // WriteLog("encounter[0]: " . $encounter->encounterID);
+  // WriteLog("encounter[1]: " . $encounter->subphase);
+  // WriteLog($encounter->position);
+  // WriteLog("Next encounter[0]: " . GetNextEncounter($encounter->encounterID));
+  // WriteLog("myDQ: " . $myDQ[0] . ", " . $myDQ[1]);
   if(count($myDQ) > 0)
   {
-    if($myDQ[0] == "CHOOSECARD")
+    //WriteLog("myDQ[0]->".$myDQ[0]."myDQ[1]->".$myDQ[1]."myDQ[2]->".$myDQ[2]."myDQ[3]->".$myDQ[3]);
+    switch($myDQ[0]){
+    case "CHOOSECARD":
     {
       $options = explode(",", $myDQ[1]);
       //$encounterContent .= "<div style='position:absolute; text-align:center; top:30%; left: 250%; width:" . count($options)*155 . "; background-color: rgba(255,255,255,0.8); border: 3px solid black; border-radius: 5px;'>";
@@ -96,25 +113,141 @@ $cardIconTop = intval($cardSize / 4.2); //30
       {
         $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
       }
-      $encounterContent .= "</div>";
+      $encounterContent .= "</div><BR>";
+      $encounterContent .= "<div display:inline;'>";
+      if($encounter->rerolls > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
+        $rerollStringValue = "Reroll:_".$encounter->rerolls;
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $rerollStringValue), 2, strval("Reroll"), "24px");
+      }
+      $encounterContent .= "</div><BR>";
       //$encounterContent .= "<div>";
+      break;
     }
-    else if($myDQ[0] == "BUTTONINPUT")
+    case "BUTTONINPUT":
     {
-      $encounterContent = "<div display:inline;'>";
+      $headerContent = EncounterChoiceHeader();
+      $encounterContent .= "<h2>$headerContent</h2>";
+      $encounterContent .= "<div style='display:inline;'>";
       $options = explode(",", $myDQ[1]);
       for ($i = 0; $i < count($options); ++$i) {
         $encounterContent .= CreateButton($playerID, str_replace("_", " ", $options[$i]), 2, strval($options[$i]), "24px");
       }
       $encounterContent .= "</div>";
       $encounterContent .= "<BR>";
-      //echo CreatePopup("BUTTONINPUT", [], 0, 1, "Choose a button", 1, $content);
+      break;
     }
-    else {
+    /*case "CHOOSEHERO": //TODO: hero choices should have the hero card and not just the name
+    {
+      $options = explode(",", $myDQ[1]);
+      //$encounterContent .= "<div style='position:absolute; text-align:center; top:30%; left: 250%; width:" . count($options)*155 . "; background-color: rgba(255,255,255,0.8); border: 3px solid black; border-radius: 5px;'>";
+      $encounterContent .= "<h2>Choose a card</h2>";
+      $encounterContent .= "<div style='display:inline;'>";
+      for($i=0; $i<count($options); ++$i)
+      {
+        switch($options[$i])
+        {
+
+        }
+        $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
+      }
+      $encounterContent .= "</div>";
+      //$encounterContent .= "<div>";
+      break;
+    }*/
+    case "REMOVEDECKCARD":{
+      $options = explode(",", $myDQ[1]);
+      $encounterContent .= "<h2>Remove a card from your deck</h2>";
+      $encounterContent .= "<div style='display:inline;'>";
+      for($i=0; $i<count($options); ++$i)
+      {
+        $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
+      }
+      $encounterContent .= "</div><BR>";
+      $encounterContent .= "<div display:inline;'>";
+      if($encounter->rerolls > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
+        $rerollStringValue = "Reroll:_".$encounter->rerolls;
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $rerollStringValue), 2, strval("Reroll"), "24px");
+      }
+      $encounterContent .= "</div><BR>";
+      break;
+    }
+    case "REMOVEALLDECKCARD":{
+      $options = explode(",", $myDQ[1]);
+      $encounterContent .= "<h2>Choose a card to offer</h2>";
+      $encounterContent .= "<div style='display:inline;'>";
+      for($i=0; $i<count($options); ++$i)
+      {
+        $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
+      }
+      $encounterContent .= "</div><BR>";
+      $encounterContent .= "<div display:inline;'>";
+      if($encounter->rerolls > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
+        $rerollStringValue = "Reroll:_".$encounter->rerolls;
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $rerollStringValue), 2, strval("Reroll"), "24px");
+      }
+      $encounterContent .= "</div><BR>";
+      break;
+    }
+    case "DUPLICATECARD":{
+      $options = explode(",", $myDQ[1]);
+      $encounterContent .= "<h2>Offer a card in your deck</h2>";
+      $encounterContent .= "<div style='display:inline;'>";
+      for($i=0; $i<count($options); ++$i)
+      {
+        $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
+      }
+      $encounterContent .= "</div><BR>";
+      $encounterContent .= "<div display:inline;'>";
+      if($encounter->rerolls > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
+        $rerollStringValue = "Reroll:_".$encounter->rerolls;
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $rerollStringValue), 2, strval("Reroll"), "24px");
+      }
+      $encounterContent .= "</div><BR>";
+      break;
+    }
+    case "SHOP":
+    {
+      $options = explode(",", $myDQ[1]);
+      $encounterContent .= "<h2>Buy cards with gold</h2>";
+      $encounterContent .= "<div style='display:inline;'>";
+      for($i=0; $i<count($options)/2; ++$i)
+      {
+        $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, GetShopCost($options[$i]), strval($options[$i]));
+      }
+      $encounterContent .= "</div><BR>";
+      $encounterContent .= "<div style='display:inline;'>";
+      for($i=count($options)/2; $i<count($options); ++$i)
+      {
+        $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, GetShopCost($options[$i]), strval($options[$i]));
+      }
+      if($myDQ[3] != "NoSubchoice" && $myDQ[3] != "NoRS") {
+        $encounterContent .= "</div><BR>";
+        $encounterContent .= "<div display:inline;'>";
+        $shopHealStringValue = "Pay_".$encounter->costToHeal."g_to_hire_a_local_healer";
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $shopHealStringValue), 2, strval("shop_heal"), "24px");
+        $shopRemoveStringValue = "Offer_".$encounter->costToRemove."g_to_a_beggar";
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $shopRemoveStringValue), 2, strval("shop_reflect"), "24px");
+      }
+      //$encounterContent .= "</div><BR>";
+      //$encounterContent .= "<div display:inline;'>";
+      $encounterContent .= "</div><BR>";
+      $encounterContent .= "<div display:inline;'>";
+      if($encounter->rerolls > 0 && $myDQ[3] != "NoReroll" && $myDQ[3] != "NoRS") {
+        $rerollStringValue = "Reroll:_".$encounter->rerolls;
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $rerollStringValue), 2, strval("Reroll"), "24px");
+      }
+      $encounterContent .= CreateButton($playerID, str_replace("_", " ", "Leave"), 2, strval("Leave"), "24px");
+      $encounterContent .= "</div><BR>";
+
+      break;
+    }
+    default: {
       $encounterContent .= "Bug. This phase not implemented: " . $myDQ[0];
+      break;
     }
   }
-  else if(GetNextEncounter($encounter[0]) != ""){
+  }
+  else if($encounter->subphase != ""){
     $encounterContent .= "<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/Roguelike/PlayEncounter.php'>";
     $encounterContent .= "<input type='hidden' id='gameName' name='gameName' value='$gameName' />";
     $encounterContent .= "<input type='hidden' id='playerID' name='playerID' value='$playerID' />";
@@ -127,12 +260,12 @@ $cardIconTop = intval($cardSize / 4.2); //30
   echo("</div>");//End left sidebar div
 
   $content = "<div style='width:100%;'>";
-  $content .= "<center><img src='../crops/" . EncounterImage($encounter[0], $encounter[1]) . "' /></center>";
+  $content .= "<center><img src='../crops/" . EncounterImage() . "' /></center>";
   $content .= "<BR>";
   $content .= "</div>";
   $content .= "<center>" . $encounterContent . "</center>";
-  echo CreatePopup("BUTTONINPUT", [], 0, 1, EncounterDescription($encounter[0], $encounter[1]), 1, $content, size:2);
-  //EncounterImage($encounter[0], $encounter[1]);
+  echo CreatePopup("BUTTONINPUT", [], 0, 1, EncounterDescription(), 1, $content, size:2);
+  //EncounterImage($encounter->encounterID, $encounter->subphase);
 
 
   echo("</div>");//End background

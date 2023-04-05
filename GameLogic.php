@@ -1288,6 +1288,47 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "EQUIPCARD":
       EquipCard($player, $parameter);
       return "";
+    case "ROGUEMIRRORGAMESTART":
+      //WriteLog($lastResult);
+      $deck = &GetDeck($player);
+      for($mirrorAmount = 0; $mirrorAmount < 7; ++$mirrorAmount) { array_unshift($deck, $lastResult); }
+      return $lastResult;
+    case "ROGUEMIRRORTURNSTART":
+      //WriteLog($lastResult);
+      $deck = &GetDeck($player);
+      $hand = &GetHand($player);
+      //WriteLog($hand[$lastResult]);
+      //for($deckCount = 0; $deckCount < count($deck); ++$deckCount) { WriteLog("deck[$deckCount] = " . $deck[$deckCount]); }
+      if(count($deck) > 3)
+      {
+        $optionOne = rand(0, count($deck)-1);
+        $optionTwo = rand(0, count($deck)-1);
+        $optionThree = rand(0, count($deck)-1);
+        if($optionOne == $optionTwo)
+        {
+          if($optionOne == 0) ++$optionTwo;
+          else --$optionTwo;
+        }
+        for($i = 0; $i < 5 && ($optionThree == $optionOne || $optionThree == $optionOne); ++$i)
+        {
+          if($optionThree <= 4) $optionThree += 3;
+          else --$optionThree;
+        }
+        $deck[$optionOne] = $hand[$lastResult];
+        $deck[$optionTwo] = $hand[$lastResult];
+        $deck[$optionThree] = $hand[$lastResult];
+      }
+      else
+      {
+        for($deckCount = 0; $deckCount < count($deck); ++$deckCount) { $deck[$deckCount] = $hand[$lastResult]; }
+      }
+      //for($deckCount = 0; $deckCount < count($deck); ++$deckCount) { WriteLog("deck[$deckCount] = " . $deck[$deckCount]); }
+      return $lastResult;
+    case "ROGUEDECKCARDSTURNSTART":
+      $deck = &GetDeck($player);
+      $hand = &GetHand($player);
+      array_unshift($deck, $hand[$lastResult]);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

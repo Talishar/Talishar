@@ -100,6 +100,7 @@ function AddAttack(&$totalAttack, $amount)
   global $combatChain;
   if($amount > 0 && $combatChain[0] == "OUT100") $amount += 1;
   if($amount > 0 && ($combatChain[0] == "OUT065" || $combatChain[0] == "OUT066" || $combatChain[0] == "OUT067") && ComboActive()) $amount += 1;
+  if($amount > 0) $amount += PermanentAddAttackAbilities();
   $totalAttack += $amount;
 }
 
@@ -217,6 +218,7 @@ function StartTurnAbilities()
   DefCharacterStartTurnAbilities();
   ArsenalStartTurnAbilities();
   AuraStartTurnAbilities();
+  PermanentStartTurnAbilities();
   AllyStartTurnAbilities($mainPlayer);
   $mainItems = &GetItems($mainPlayer);
   for($i=count($mainItems)-ItemPieces(); $i>= 0; $i-=ItemPieces())
@@ -374,10 +376,40 @@ function CharacterPlayCardAbilities($cardID, $from)
           $character[$i+1] = 1;
         }
         break;
-      case "CRU046":
+      case "CRU046": case "ROGUE008":
         if (GetClassState($currentPlayer, $CS_NumAttacks) == 2) {
           AddCurrentTurnEffect($characterID, $currentPlayer);
           $character[$i + 1] = 1;
+        }
+        break;
+      case "ROGUE025":
+        $resources = &GetResources($currentPlayer);
+        ++$resources[0];
+        break;
+      default:
+        break;
+    }
+  }
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherCharacter = &GetPlayerCharacter($otherPlayer);
+  for($i=0; $i<count($otherCharacter); $i+=CharacterPieces())
+  {
+    //WriteLog("OtherPlayer->".$otherCharacter[0]);
+    $characterID = $otherCharacter[$i];
+    switch($characterID)
+    {
+      case "ROGUE026":
+        //WriteLog("cardID->".$cardID.",CardType->".CardType($cardID));
+        if(CardType($cardID) != "W" && CardType($cardID) != "E")
+        {
+          $generatedAmount = CardCost($cardID);
+          if($generatedAmount < 1) $generatedAmount = 1;
+          //WriteLog("GeneratedAmount->".$generatedAmount);
+          for($j = 0; $j < $generatedAmount; ++$j)
+          {
+            PutItemIntoPlayForPlayer("DYN243", $currentPlayer);
+            //PutItemIntoPlay(1, "DYN243");
+          }
         }
         break;
       default:
@@ -444,6 +476,41 @@ function MainCharacterPlayCardAbilities($cardID, $from)
       case "OUT091": case "OUT092": //Riptide
         if($from == "HAND") {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
+        }
+        break;
+      case "ROGUE017":
+        if(CardType($cardID) == "AA")
+        {
+          $deck = &GetDeck($currentPlayer);
+          array_unshift($deck, $cardID);
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        }
+        break;
+      case "ROGUE003":
+        if(CardType($cardID) == "AA")
+        {
+          $deck = &GetDeck($currentPlayer);
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        }
+        break;
+      case "ROGUE019":
+        if($cardID == "CRU066" || $cardID == "CRU067" || $cardID == "CRU068")
+        {
+          $choices = array("CRU057", "CRU058", "CRU059");
+          $hand = &GetHand($currentPlayer);
+          array_unshift($hand, $choices[rand(0, count($choices)-1)]);
+        }
+        else if($cardID == "CRU057" || $cardID == "CRU058" || $cardID == "CRU059")
+        {
+          $choices = array("CRU054", "CRU056");
+          $hand = &GetHand($currentPlayer);
+          array_unshift($hand, $choices[rand(0, count($choices)-1)]);
+        }
+        break;
+      case "ROGUE031":
+        global $actionPoints;
+        if(CardTalent($cardID) == "LIGHTNING"){
+          $actionPoints++;
         }
         break;
       default:
@@ -589,6 +656,8 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
 
     AuraDamageTakenAbilities($Auras, $damage);
     ItemDamageTakenAbilities($player, $damage);
+    CharacterDamageTakenAbilities($player, $damage);
+    CharacterDealDamageAbilities($otherPlayer, $damage);
     // The second condition after the OR is for when Merciful is destroyed, the target is lost for some reason
     if(SearchAuras("MON013", $otherPlayer) && (IsHeroAttackTarget() || !IsAllyAttackTarget() && $source == "MON012")) { LoseHealth(CountAura("MON013", $otherPlayer), $player); WriteLog("Lost 1 health from Ode to Wrath."); }
     $classState[$CS_DamageTaken] += $damage;
@@ -1948,6 +2017,11 @@ function SelfCostModifier($cardID)
       return (ComboActive($cardID) ? -1 : 0);
     case "OUT145": case "OUT146": case "OUT147":
       return (-1 * DamageDealtBySubtype("Dagger"));
+    case "WTR206": case "WTR207": case "WTR208":
+      if(GetPlayerCharacter($currentPlayer)[0] == "ROGUE030"){
+        return -1;
+      }
+      else return 0;
     default: return 0;
   }
 }
@@ -2260,6 +2334,16 @@ function Draw($player, $mainPhase = true)
       if($cardType == "A" || $cardType == "AA") PlayAura("WTR075", $player);
     }
   }
+  if(SearchCharacterActive($otherPlayer, "ROGUE026") && $mainPhase) {
+    //WriteLog("drawn card");
+    $health = &GetHealth($otherPlayer);
+    $health += -10;
+    if($health < 1)
+    {
+      $health = 1;
+      WriteLog("NO! You will not banish me! I refuse!");
+    }
+  }
   if($mainPhase)
   {
     $numBrainstorm = CountCurrentTurnEffects("DYN196", $player);
@@ -2269,6 +2353,7 @@ function Draw($player, $mainPhase = true)
       for($i=0; $i<$numBrainstorm; ++$i) DealArcane(1, 2, "TRIGGER", $character[0]);
     }
   }
+  PermanentDrawCardAbilities();
   $hand = array_values($hand);
   return $hand[count($hand) - 1];
 }

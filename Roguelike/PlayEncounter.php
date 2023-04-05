@@ -28,32 +28,85 @@
   $weapon2 = "";
   $weaponSideboard = "";
   $character = $charZone[0];
-  $weapon1 = $charZone[1];
+  //$weapon1 = $charZone[1]; //Old code
   $deckCards = implode(" ", $cards);
 
-  for($i=1; $i<count($charZone); ++$i)
-  {
+  for ($i = 1; $i < count($charZone); ++$i) {
+    $type = CardType($charZone[$i]);
+    switch ($type) {
+      case "E":
+        //We don't need to process equipment here, instead we look for relevant Subtypes
+      break;
+      case "W":
+        if ($weapon1 == "") { //If this is the first weapon read on the file,
+          $weapon1 = $charZone[$i]; // then equip it
+        }
+        elseif(is1H($weapon1) && is1H($charZone[$i])) { //If equipped and current are both 1h,
+          if($weapon2 == "" && $offhand == "") $weapon2 = $charZone[$i];
+          else {
+            if ($weaponSideboard != "")
+            $weaponSideboard .= " ";
+          $weaponSideboard .= $charZone[$i];
+          }
+        }
+        else { //If we have extra weapons, then sideboard them
+          if ($weaponSideboard != "")
+            $weaponSideboard .= " ";
+          $weaponSideboard .= $charZone[$i];
+        }
+       break;
+      default:
+        break;
+    }
     $subtype = CardSubType($charZone[$i]);
-    switch($subtype)
-    {
+    switch ($subtype) {
       case "Head":
-        if($head == "") $head = $charZone[$i];
-        else
-        {
-          if($headSideboard != "") $headSideboard .= " ";
+        if ($head == "")
+          $head = $charZone[$i];
+        else {
+          if ($headSideboard != "")
+            $headSideboard .= " ";
           $headSideboard .= $charZone[$i];
         }
         break;
       case "Chest":
-        if($chest == "") $chest = $charZone[$i];
-        else
-        {
-          if($chestSideboard != "") $chestSideboard .= " ";
+        if ($chest == "")
+          $chest = $charZone[$i];
+        else {
+          if ($chestSideboard != "")
+            $chestSideboard .= " ";
           $chestSideboard .= $charZone[$i];
         }
-        break;  
-      default: break;
-    }
+        break;
+      case "Arms":
+        if ($arms == "")
+          $arms = $charZone[$i];
+        else {
+          if ($armsSideboard != "")
+            $armsSideboard .= " ";
+          $armsSideboard .= $charZone[$i];
+        }
+        break;
+      case "Legs":
+       if ($legs == "")
+         $legs = $charZone[$i];
+       else {
+         if ($legsSideboard != "")
+           $legsSideboard .= " ";
+         $legsSideboard .= $charZone[$i];
+       }
+       break;
+     case "Off-Hand":
+       if ($offhand == "")
+         $offhand = $charZone[$i];
+         else {
+         if ($offhandSideboard != "")
+           $offhandSideboard .= " ";
+         $offhandSideboard .= $charZone[$i];
+         }
+     default:
+       break;
+   }
   }
 
     $filename = "./Games/" . $gameName . "/LimitedDeck.txt";
@@ -77,7 +130,7 @@
     fwrite($deckFile, $sideboardCards);
     fclose($deckFile);
 
-  $encounterName = GetEncounterName($encounter[0]);
+  $encounterName = GetEncounterName($encounter->encounterID);
 
   header("Location: " . $redirectPath . "/CreateGame.php?deckTestMode=" . $encounterName . "&roguelikeGameID=" . $gameName . "&deck=ROGUELIKE-" . $gameName. "&startingHealth=" . $health[0]);
 
@@ -85,10 +138,31 @@
   {
     switch($encounterId)
     {
-      case 1: return "Woottonhog";
-      case 3: return "RavenousRabble";
-      case 5: return "BarragingBrawnhide";
-      case 7: return "ShockStriker";
+      case 101: return "Woottonhog";
+      case 102: return "RavenousRabble";
+      case 103: return "BarragingBrawnhide";
+      case 104: return "ShockStriker";
+      case 106: return "QuickshotNovice";
+      case 107: return "RuneScholar";
+      case 108: return "Ira";
+      case 113: return "Man of Momentum";
+      case 114: return "StealthyStabber";
+      case 115: return "CraneMaster";
+      case 117: return "SparrowMaster";
+      case 118: return "ExuberantEarthmage";
+      case 119: return "HeronMaster";
+      case 120: return "CombustibleCourier";
+      case 121: return "SwingWithBigTree";
+      case 122: return "LostSoul";
+      case 123: return "PassGuardian";
+      case 124: return "BowFisher";
+      case 125: return "GreedyHermit";
+      case 126: return "ShadyMerchant";
+      case 127: return "Swashbuckler";
+      case 128: return "SpectralImage";
+      case 129: return "MindscarredBerserker";
+      case 130: return "ClubThug";
+      case 131: return "Azvolai";
       default: return "Woottonhog";
     }
   }

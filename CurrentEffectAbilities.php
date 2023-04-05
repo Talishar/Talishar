@@ -268,6 +268,7 @@ function EffectAttackModifier($cardID)
   else if($set == "UPR") return UPREffectAttackModifier($cardID);
   else if($set == "DYN") return DYNEffectAttackModifier($cardID);
   else if($set == "OUT") return OUTEffectAttackModifier($cardID);
+  else if($set == "ROG") return ROGUEEffectAttackModifier($cardID);
   return 0;
 }
 
@@ -445,6 +446,12 @@ function CurrentEffectCostModifiers($cardID, $from)
           break;
         case "OUT179_1":
           if(CardType($cardID) == "AA") { $costModifier -= 1; $remove = true; }
+          break;
+        case "ROGUE803":
+          if (IsStaticType(CardType($cardID), $from, $cardID)) { $costModifier -= 1; }
+          break;
+        case "ROGUE024":
+          $costModifier += 1;
           break;
         default: break;
       }
@@ -755,6 +762,7 @@ function CurrentEffectGrantsGoAgain()
         case "UPR081": case "UPR082": case "UPR083": return true;
         case "UPR094": return true;
         case "DYN076": case "DYN077": case "DYN078": return true;
+        case "ROGUE710-GA": return true;
         default:
           break;
       }
@@ -876,6 +884,7 @@ function IsCombatEffectActive($cardID)
   else if($set == "UPR") return UPRCombatEffectActive($cardID, $attackID);
   else if($set == "DYN") return DYNCombatEffectActive($cardID, $attackID);
   else if($set == "OUT") return OUTCombatEffectActive($cardID, $attackID);
+  else if($set == "ROG") return ROGUECombatEffectActive($cardID, $attackID);
 }
 
 function IsCombatEffectPersistent($cardID)
@@ -921,6 +930,17 @@ function IsCombatEffectPersistent($cardID)
     case "DYN089-UNDER": return true;
     case "DYN154": return true;
     case "OUT052": case "OUT140": case "OUT141": case "OUT144": case "OUT188_1": return true;
+    case "ROGUE601": return true;
+    case "ROGUE603": return true;
+    case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
+    case "ROGUE704": return true;
+    case "ROGUE707": return true;
+    case "ROGUE710-GA": return true;
+    case "ROGUE710-DO": return true;
+    case "ROGUE711": return true;
+    case "ROGUE802": return true;
+    case "ROGUE805": return true;
+    case "ROGUE806": return true;
     default:
       return false;
   }

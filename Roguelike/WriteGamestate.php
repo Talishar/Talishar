@@ -27,8 +27,14 @@
     {
       for($j=1; $j<=$numPlayers; ++$j)
       {
-        $varName = "p" . $j . $zones[$i][1];
-        fwrite($gameFile, implode(" ", $$varName) . "\r\n");
+        if($zones[$i][1] == "Encounter") {
+          $varName = "p" . $j . $zones[$i][1];
+          fwrite($gameFile, json_encode($$varName) . "\r\n");
+        }
+        else {
+          $varName = "p" . $j . $zones[$i][1];
+          fwrite($gameFile, implode(" ", $$varName) . "\r\n");
+        }
       }
     }
   }

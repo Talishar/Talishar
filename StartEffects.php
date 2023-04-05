@@ -26,6 +26,27 @@ if($p2Char[0] == "DUMMY") {
   SetCachePiece($gameName, 3, "99999999999999");
 }
 
+//roguelike gamemode powers
+if(CardSet($p2Char[0]) == "ROG") {
+  $deck = &GetDeck(1);
+  $powers = SearchDeck(1, "", "Power");
+  //WriteLog(strlen($powers));
+  //WriteLog($powersArray[0]);
+  //WriteLog($powersArray[1]);
+  if(strlen($powers) != 0) {
+    $powersArray = explode(",", $powers);
+    //WriteLog(count($powersArray));
+    for($i = count($powersArray)-1; $i >= 0; --$i)
+    {
+      PutPermanentIntoPlay(1, $deck[$powersArray[$i]]);
+      //WriteLog($deck[$powersArray[$i]]);
+      array_splice($deck, $powersArray[$i], 1);
+    }
+  //WriteLog($deck[$powers[0]]);
+  }
+  ROGUEPowerStart();
+}
+
 //CR 2.0 4.1.5b Meta-static abilities affecting deck composition
 //Dash
 $p1IsDash = $p1Char[0] == "ARC001" || $p1Char[0] == "ARC002";
@@ -85,6 +106,27 @@ if(SearchCharacterForCard(2, "DYN026")) {
   $index = FindCharacterIndex(2, "DYN026");
   $p2Char[$index + 4] = -2;
 }
+
+  //Quickshot Apprentice
+  if ($p2Char[0] == "ROGUE016") {
+    $p2Hand = &GetHand(2);
+    array_unshift($p2Hand, "ARC069");
+  }
+if ($p2Char[0] == "ROGUE025") {
+  $options = array("ROGUE801", "ROGUE803", "ROGUE805");
+  PutPermanentIntoPlay(0, $options[rand(0, count($options)-1)]);
+}
+
+if ($p2Char[0] == "ROGUE008") {
+  PutPermanentIntoPlay(0, "ROGUE601");
+  PutPermanentIntoPlay(0, "ROGUE603");
+  PutPermanentIntoPlay(0, "ROGUE803");
+}
+
+  //Runeblade Scholar, effect disabled for now
+  /* if ($p2Char[0] == "ROGUE010") {
+    PutItemIntoPlayForPlayer("ARC163", 1); //Rusted Relic for the main player, not the scholar
+  } */
 
 AddDecisionQueue("SHUFFLEDECK", 1, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck
 AddDecisionQueue("SHUFFLEDECK", 2, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck

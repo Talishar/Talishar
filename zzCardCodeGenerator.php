@@ -113,6 +113,10 @@
         {
           $data = $cardRarity;
         }
+        else if($propertyName == "rarity")
+        {
+          $data = $cardRarity;
+        }
         else if($propertyName == "subtype")
         {
           $data = "";

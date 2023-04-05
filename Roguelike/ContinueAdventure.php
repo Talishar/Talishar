@@ -17,10 +17,70 @@
   $health = &GetZone($playerID, "Health");
   $health[0] = $remainingHealth;
   $encounter = &GetZone($playerID, "Encounter");
-  $encounter[1] = "AfterFight";
+  $encounter->subphase = "AfterFight";
+  if ($encounter->position < 9){
+    $encounter->gold += 2;
+  } else {
+    $encounter->gold += 3;
+  }
+  //WriteLog($encounter->position);
+  if($encounter->position == 8 && $health[0] <= 20){
+    $health[0] = 20;
+  }
 
-  AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards(4));
-  AddDecisionQueue("SETENCOUNTER", $playerID, GetNextEncounter($encounter[0]));
+  $deck = &GetZone($playerID, "Deck");
+  for($i = 0; $i < count($deck); ++$i)
+  {
+    switch($deck[$i])
+    {
+      case "ROGUE611":
+        if($health[0] <= 5)
+        {
+          WriteLog("Your Bloodstone grows in strength.");
+          $deck[$i] = "ROGUE612";
+        }
+        break;
+      case "ROGUE612":
+        if($health[0] <= 5)
+        {
+          WriteLog("Your Bloodstone grows in strength.");
+          $deck[$i] = "ROGUE613";
+        }
+        break;
+      case "ROGUE613":
+        if($health[0] <= 5)
+        {
+          WriteLog("Your Bloodstone grows in strength.");
+          $deck[$i] = "ROGUE614";
+        }
+        break;
+      case "ROGUE614":
+        if($health[0] <= 5)
+        {
+          WriteLog("Your Bloodstone is perfect.");
+          $deck[$i] = "ROGUE615";
+        }
+        break;
+      case "ROGUE615":
+        if($health[0] <= 5)
+        {
+          WriteLog("Something Ancient awakens within your Bloodstone. Your name escapes you. Perhaps you shouldn't have disturbed it.");
+          $deck[$i] = "ROGUE616";
+        }
+        break;
+      default: break;
+    }
+  }
+  if($encounter->position != 17) {
+    AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards("Reward,Class-Class-Talent-Generic"), "Reward,Class-Class-Talent-Generic");
+    //AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards("Reward,Class-Class-Talent-Generic"), "Reward,Class-Class-Talent-Generic");
+    AddDecisionQueue("SETENCOUNTER", $playerID, "009-PickMode");
+  }
+  else {
+    $encounter->encounterID = "011";
+    $encounter->subphase = "";
+    InitializeEncounter($playerID);
+  }
 
   include "WriteGamestate.php";
 
