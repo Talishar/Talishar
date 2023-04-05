@@ -134,7 +134,18 @@ function EncounterDescription()
     case 214: return "\"Hello, traveler. I can see you have grown weary. Come, sit. You must have a great story to tell. Or perhaps you would like to hear one of mine? Maybe you just need some company.\"";
     case 215: return "The knight looks at you, smiles, and lowers his visor. \"Well friend, lets spar. Until you are tired, let us begin!\"";
     case 216: return "The lady with a radiant aura approaches you. She puts on a mask and suddenly she is you. Then, she puts on another mask and shifts into someone else entirely. \"Now, Which one do you prefer?\"";
-    case 217: case 218: case 219: case 220: case 221: return "The chest is simple, but it should be easy enough to open.";
+    case 217: case 218: case 219: case 220: case 221: case 222: return "The chest is simple, but it should be easy enough to open.";
+    case 223: case 224: case 225: case 226: case 227: case 228: return "The chest is ornate, elegant in design. It may be difficult, but it should be able to be opened.";
+    case 229: return "Inside the tavern, there is a man in the corner rolling dice. \"Come on over here! I haven't lost yet!\"";
+    case 230: return "You come across a small village. You wander through the market, investigating the various wares.";
+    case 231: return "You are pulled closer to the shrine. The shrine speaks to you in a cool, twisted voice: \"Make an offering, or your soul is forfeit.\"";
+    case 232: return "The mirror serves no purpose to be here. It's unsettling.";
+    case 233: return "You visit your old friend's shack, only to see the weaponmaster's house burnt to a crisp. There may be some weapons inside, but it might be worth finding your old friend's body and laying them to rest.";
+    case 234: return "You find a library twisted inside a tree. It may be worth searching through.";
+    case 235: return "An old woman beckons you inside. She quickly seats you and sets a plate in front of you. The food looks gross and disgusting, as though it were cooked a year ago.";
+    case 236: return "The sigil is beautiful where it sits.";
+    case 237: return "The waters of the pool are clear and calm. It's as though the pool is waiting for you.";
+    case 238: return "You know now that the pool was waiting for you, and it waits for you yet again, in a new place. You know it will wait for you wherever you should need it.";
     default: return "No encounter text.";
   }
 }
@@ -143,6 +154,11 @@ function EncounterDescription()
 function InitializeEncounter($player)
 {
   $encounter = &GetZone($player, "Encounter");
+  /*if($encounter->subphase == "ContinueLore")
+  {
+    InitializeLore($player);
+    return;
+  }*/
   //WriteFullEncounter();
   switch($encounter->encounterID)
   {
@@ -151,7 +167,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("STARTADVENTURE", $player, "-");
       break;
     case 002:
-      AddDecisionQueue("BUTTONINPUT", $player, "Dorinthea,Bravo,Lexi,Fai");
+      AddDecisionQueue("BUTTONINPUT", $player, "Dorinthea,Bravo,Lexi,Fai,Arakni");
       AddDecisionQueue("CHOOSEHERO", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "001-PickMode");
       break;
@@ -172,9 +188,9 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
       break;
     case 006:
-      $encounter->position = 0; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
+      //$encounter->position = 16; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
       AddDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,3"), "Power,3");
-      //AddDecisionQueue("SETENCOUNTER", $player, "216-PickMode"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
+      //AddDecisionQueue("SETENCOUNTER", $player, "213-PickMode"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
@@ -302,9 +318,102 @@ function InitializeEncounter($player)
       AddDecisionQueue("CHEST", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
+    case 222:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_purple_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 223:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_ornate_brown_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 224:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_ornate_white_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 225:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_ornate_blue_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 226:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_ornate_red_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 227:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_ornate_green_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 228:
+      AddDecisionQueue("BUTTONINPUT", $player, "Open_the_ornate_purple_chest,Leave");
+      AddDecisionQueue("CHEST", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 229:
+      AddDecisionQueue("BUTTONINPUT", $player, "Partake_in_some_entertainment,Leave");
+      AddDecisionQueue("GAMBLER", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 230:
+      AddDecisionQueue("SHOP", $player, GetShop("Class,Class,Talent,Equipment-Common,Equipment,Generic,Generic,Power-1"), "Class,Class,Talent,Equipment-Common,Equipment,Generic,Generic,Power-1", "NoSubchoice");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 231:
+      AddDecisionQueue("REMOVEALLDECKCARD", $player, GetRandomCards("Deck,4"), "Deck,4");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 232:
+      AddDecisionQueue("BUTTONINPUT", $player, "Stare_into_the_mirror,Shatter_the_mirror,Leave");
+      AddDecisionQueue("MIRROR", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 233:
+      AddDecisionQueue("BUTTONINPUT", $player, "Take_what_you_can,Put_the_bodies_to_rest");
+      AddDecisionQueue("WEAPONMASTER", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 234:
+      AddDecisionQueue("BUTTONINPUT", $player, "Search_the_library,Donate_to_the_library,Leave");
+      AddDecisionQueue("TWISTEDLIBRARY", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 235:
+      $health = &GetZone($player, "Health");
+      if($health[0] > 1) AddDecisionQueue("BUTTONINPUT", $player, "Take_a_bite,Save_some_for_later,Leave");
+      else AddDecisionQueue("BUTTONINPUT", $player, "Save_some_for_later,Leave");
+      AddDecisionQueue("COTTAGEWITCH", $player, "-", 1);
+      break;
+    case 236:
+      AddDecisionQueue("BUTTONINPUT", $player, "Rest_at_the_sigil,Take_the_sigil");
+      AddDecisionQueue("SIGILSOLACE", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 237:
+      AddDecisionQueue("BUTTONINPUT", $player, "Cleanse_yourself_in_the_pool,Leave");
+      AddDecisionQueue("CLEARPOOL", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 238:
+      AddDecisionQueue("BUTTONINPUT", $player, "Let_the_waters_wash_over_you,Leave");
+      AddDecisionQueue("CLEARPOOL", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
     default: /*WriteLog("We Shouldn't Be Here");*/ break;
   }
 }
+
+/*function InitializeLore($player)
+{
+  $encounter = &GetZone(1, "Encounter");
+  switch($encounter->encounterID)
+  {
+
+  }
+}*/
 
 function EncounterImage()
 {
@@ -409,8 +518,30 @@ function EncounterImage()
       return "DVR009_cropped.png";
     case 216:
       return "CRU097_cropped.png";
-    case 217: case 218: case 219: case 220: case 221:
+    case 217: case 218: case 219: case 220: case 221: case 222:
       return "DYN094_cropped.png";
+    case 223: case 224: case 225: case 226: case 227: case 228:
+      return "DYN242_cropped.png";
+    case 229:
+      return "CRU179_cropped.png";
+    case 230:
+      return "WTR151_cropped.png";
+    case 231:
+      return "ELE227_cropped.png";
+    case 232:
+      return "UPR187_cropped.png";
+    case 233:
+      return "ARC141_cropped.png";
+    case 234:
+      return "MON123_cropped.png";
+    case 235:
+      return "CRU151_cropped.png";
+    case 236:
+      return "WTR173_cropped.png";
+    case 237:
+      return "UPR176_cropped.png";
+    case 238:
+      return "UPR176_cropped.png";
 
     default: return "CRU054_cropped.png";
   }
@@ -418,6 +549,7 @@ function EncounterImage()
 
 function EncounterChoiceHeader(){
   $encounter = &GetZone(1, "Encounter");
+  if($encounter->subphase = "ContineLore") return "";
   switch($encounter->encounterID){
     case 001:
       return "What will you do?";
@@ -466,8 +598,30 @@ function EncounterChoiceHeader(){
       return "What will you do?";
     case 216:
       return "Which do you prefer?";
-    case 217: case 218: case 219: case 220: case 221:
+    case 217: case 218: case 219: case 220: case 221: case 222:
       return "Will you open the chest?";
+    case 223: case 224: case 225: case 226: case 227: case 228:
+      return "Will you open the chest?";
+    case 229:
+      return "What will you do?";
+    case 230:
+      return "What purchases will you make?";
+    case 231:
+      return "What will you offer?";
+    case 232:
+      return "What will you do?";
+    case 233:
+      return "What will you do?";
+    case 234:
+      return "What will you do?";
+    case 235:
+      return "What will you do?";
+    case 236:
+      return "What will you do?";
+    case 237:
+      return "What will you do?";
+    case 238:
+      return "What will you do?";
     default: return "";
   }
 }

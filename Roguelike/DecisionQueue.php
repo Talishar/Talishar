@@ -255,6 +255,21 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             array_push($character, "CRU050");
             array_push($deck, "UPR051", "UPR052", "UPR072", "UPR074", "WTR208");
             break;
+          case "The_Emperor":
+            $encounter->background = "Contract";
+            array_push($character, "DYN115", "OUT010");
+            array_push($deck, "DYN149", "DYN138", "DYN142", "DYN124", "DYN128");
+            break;
+          case "The_Doctor":
+            $encounter->background = "Stealth";
+            array_push($character, "DYN115", "OUT005");
+            array_push($deck, "OUT034", "OUT024", "OUT036", "OUT039", "OUT017");
+            break;
+          case "The_Warrior":
+            $encounter->background = "Reaction";
+            array_push($character, "DYN115", "OUT008");
+            array_push($deck, "OUT027", "OUT030", "OUT042", "OUT044", "OUT021");
+            break;
         }
         return 1;
       case "STARTADVENTURE":
@@ -413,8 +428,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Spar_until_nightfall":
             $health = &GetZone($player, "Health");
             $health[0] -= 4;
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomDeckCard($player, 4));
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomDeckCard($player, 4));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Deck,4"), "Deck,4");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Deck,4"), "Deck,4");
             break;
           case "Politely_decline":
             break;
@@ -443,6 +458,10 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
                 PrependDecisionQueue("CHOOSECARD", $player, "ELE036", "-", "NoReroll");
                 PrependDecisionQueue("CHOOSECARD", $player, "ELE036,ELE036", "-", "NoReroll");
                 break;
+              case "Arakni":
+                PrependDecisionQueue("CHOOSECARD", $player, "DYN121", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "DYN121,DYN121", "-", "NoReroll");
+                break;
             }
             break;
           case "The_face_of_another":
@@ -453,6 +472,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
               case "Bravo": $cardChoices = array("WTR006", "ARC080", "OUT013"); break;
               case "Fai": $cardChoices = array("ELE066", "CRU074", "EVR039"); break;
               case "Lexi": $cardChoices = array("ARC043", "UPR126", "ELE004"); break;
+              case "Arakni": $cardChoices = array("WTR119", "WTR043", "MON199"); break;
             }
             $randNum = rand(0, 2);
             PrependDecisionQueue("CHOOSECARD", $player, $cardChoices[$randNum], "-", "NoReroll");
@@ -481,6 +501,219 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Open_the_green_chest":
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Generic-Generic-Generic-Generic"), "Reward,Generic-Generic-Generic-Generic");
+            break;
+          case "Open_the_purple_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,3,Common"), "Power,3,Common");
+            break;
+          case "Open_the_ornate_brown_chest":
+            $encounter = &GetZone($player, "Encounter");
+            $foundGold = rand(14, 20);
+            $encounter->gold += $foundGold;
+            WriteLog("You dug through the chest and found " . $foundGold . " Gold.");
+            break;
+          case "Open_the_ornate_white_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Equipment,Legendary"), "Equipment,Legendary");
+            break;
+          case "Open_the_ornate_blue_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Class,ForcedRarity-Majestic"), "Reward,Class-Class-Class,ForcedRarity-Majestic");
+            break;
+          case "Open_the_ornate_red_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Talent-Talent-Talent,ForcedRarity-Majestic"), "Reward,Talent-Talent-Talent,ForcedRarity-Majestic");
+            break;
+          case "Open_the_ornate_green_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Generic-Generic-Generic,ForcedRarity-Majestic"), "Reward,Generic-Generic-Generic,ForcedRarity-Majestic");
+            break;
+          case "Open_the_ornate_purple_chest":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,2,Majestic"), "Power,2,Majestic");
+            break;
+          case "Leave":
+            break;
+        }
+        return 1;
+      case "GAMBLER":
+        switch($lastResult)
+        {
+          case "Partake_in_some_entertainment":
+            $entertainment = rand(1, 4);
+            $encounter = &GetZone($player, "Encounter");
+            $encounter->gold += rand(-4, -8);
+            if($encounter->gold < 0) $encounter->gold = 0;
+            switch($entertainment)
+            {
+              case 1:
+                WriteLog("You gambled and managed to win nearly every game! You should leave before they get angry.");
+                $encounter->rerolls += 3;
+                break;
+              case 2:
+                WriteLog("You gambled and did about as well as you expected.");
+                $encounter->rerolls += 2;
+                break;
+              case 3:
+                WriteLog("You gambled and barely scraped by with a win.");
+                $encounter->rerolls += 1;
+                break;
+              case 4:
+                WriteLog("You gambled and did horribly, losing every game. You should leave before you lose all your belongings");
+                break;
+            }
+          case "Leave":
+            break;
+        }
+        return 1;
+      case "MIRROR":
+        switch($lastResult)
+        {
+          case "Stare_into_the_mirror":
+            $deck = &GetZone($player, "Deck");
+            $newDeck = [];
+            for($i = 0; $i < count($deck); ++$i)
+            {
+              if(CardSubtype($deck[$i]) == "Power")
+              {
+                array_push($newDeck, $deck[$i]);
+              }
+              else
+              {
+                array_push($newDeck, $deck[$i]);
+                array_push($newDeck, $deck[$i]);
+              }
+            }
+            $deck = $newDeck;
+            WriteLog("You stare into the mirror. You feel your mind become cluttered with thoughts of thoughts.");
+            break;
+          case "Shatter_the_mirror":
+            $deck = &GetZone($player, "Deck");
+            $newDeck = [];
+            for($i = 0; $i < count($deck); ++$i)
+            {
+              if(CardSubtype($deck[$i]) == "Power")
+              {
+                array_push($newDeck, $deck[$i]);
+              }
+            }
+            $deck = $newDeck;
+            WriteLog("You shatter the mirror. Your mind becomes empty, and you forget your journey. A short while later, it comes to you.");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic"), "Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic"), "Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic"), "Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic"), "Reward,Class-Class-Talent-Generic,ForcedRarity-Majestic");
+            break;
+          case "Leave":
+            break;
+        }
+        return 1;
+      case "WEAPONMASTER":
+        switch($lastResult)
+        {
+          case "Take_what_you_can":
+            $encounter = &GetZone($player, "Encounter");
+            $character = &GetZone($player, "Character");
+            switch($encounter->hero)
+            {
+              case "Dorinthea":
+                PrependDecisionQueue("CHOOSECARD", $player, "CRU139", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "MON221", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "CRU100", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "CRU052", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "CRU052,CRU052", "-", "NoReroll");
+                $encounter->background = "AllWeps";
+                break;
+              case "Bravo":
+                PrependDecisionQueue("CHOOSECARD", $player, "MON229", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "MON221", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "EVR121", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "OUT008", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "OUT008,OUT008", "-", "NoReroll");
+                break;
+              case "Fai":
+                PrependDecisionQueue("CHOOSECARD", $player, "OUT009", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "OUT009,OUT009", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "DYN115", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "DYN115,DYN115", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "ELE222", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "ELE003", "-", "NoReroll");
+                break;
+              case "Lexi":
+                PrependDecisionQueue("CHOOSECARD", $player, "OUT093", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "EVR087", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "DYN151", "-", "NoReroll");
+                break;
+              case "Arakni":
+                PrependDecisionQueue("CHOOSECARD", $player, "WTR078", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "ELE203", "-", "NoReroll");
+                PrependDecisionQueue("CHOOSECARD", $player, "CRU051", "-", "NoReroll");
+                break;
+            }
+            break;
+          case "Put_the_bodies_to_rest":
+            PrependDecisionQueue("CHOOSECARD", $player, "WTR173", "-", "NoReroll");
+            PrependDecisionQueue("CHOOSECARD", $player, "WTR173,WTR173", "-", "NoReroll");
+            PrependDecisionQueue("CHOOSECARD", $player, "WTR173,WTR173,WTR173", "-", "NoReroll");
+            break;
+        }
+        return 1;
+      case "TWISTEDLIBRARY":
+        switch($lastResult)
+        {
+          case "Search_the_library":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic,SpecialTag-AnyPool"), "Reward,Class-Class-Talent-Generic,SpecialTag-AnyPool");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Reward,Class-Class-Talent-Generic,SpecialTag-AnyPool"), "Reward,Class-Class-Talent-Generic,SpecialTag-AnyPool");
+            break;
+          case "Donate_to_the_library":
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomCards("Deck,4"), "Deck,4");
+            break;
+          case "leave":
+            break;
+        }
+        return 1;
+      case "COTTAGEWITCH":
+        switch($lastResult)
+        {
+          case "Take_a_bite":
+            $health = &GetZone($player, "Health");
+            $health[0] -= $parameter2;
+            $nextCost = $parameter2 + 1;
+            PrependDecisionQueue("COTTAGEWITCH", $player, "-", $nextCost);
+            if($health[0] > $nextCost) PrependDecisionQueue("BUTTONINPUT", $player, "Take_a_bite,Leave");
+            else PrependDecisionQueue("BUTTONINPUT", $player, "Leave");
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomCards("Deck,4"), "Deck,4");
+            break;
+          case "Save_some_for_later":
+            AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+            PrependDecisionQueue("CHOOSECARD", $player, "MON191", "-", "NoReroll");
+            PrependDecisionQueue("CHOOSECARD", $player, "MON191,MON191", "-", "NoReroll");
+            break;
+          case "Leave":
+            WriteLog("The Witch is dissapointed in your rush to leave, but understands.");
+            AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+            break;
+        }
+        return 1;
+      case "SIGILSOLACE":
+        switch($lastResult)
+        {
+          case "Rest_at_the_sigil":
+            WriteLog("You feel more sure of yourself then you ever have been before. You can feel your destiny begin to change.");
+            $encounter = &GetZone($player, "Encounter");
+            $encounter->rerolls = 20;
+            break;
+          case "Take_the_sigil":
+            PrependDecisionQueue("CHOOSECARD", $player, "WTR173", "-", "NoReroll");
+            PrependDecisionQueue("CHOOSECARD", $player, "WTR173,WTR173", "-", "NoReroll");
+            PrependDecisionQueue("CHOOSECARD", $player, "WTR173,WTR173,WTR173", "-", "NoReroll");
+            break;
+        }
+        return 1;
+      case "CLEARPOOL":
+        switch($lastResult)
+        {
+          case "Cleanse_yourself_in_the_pool":
+            WriteLog("As you get out of the pool, there is a weight on you that was not there before.");
+            $encounter = &GetZone($player, "Encounter");
+            $encounter->cleanse = true;
+            break;
+          case "Let_the_waters_wash_over_you":
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,3,Rare"), "Power,3,Rare");
             break;
           case "Leave":
             break;
@@ -552,6 +785,57 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "You_find_a_small_green_chest": //Generic Chest
             PrependDecisionQueue("SETENCOUNTER", $player, "221-PickMode");
+            break;
+          case "You_find_a_small_purple_chest": //Power Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "222-PickMode");
+            break;
+          case "You_find_an_ornate_brown_chest": //Gold Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "223-PickMode");
+            break;
+          case "You_find_an_ornate_white_chest": //Equipment Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "224-PickMode");
+            break;
+          case "You_find_an_ornate_blue_chest": //Class Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "225-PickMode");
+            break;
+          case "You_find_an_ornate_red_chest": //Talent Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "226-PickMode");
+            break;
+          case "You_find_an_ornate_green_chest": //Generic Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "227-PickMode");
+            break;
+          case "You_find_an_ornate_purple_chest": //Power Chest
+            PrependDecisionQueue("SETENCOUNTER", $player, "228-PickMode");
+            break;
+          case "You_stumble_into_a_lively_tavern": //Gambler
+            PrependDecisionQueue("SETENCOUNTER", $player, "229-PickMode");
+            break;
+          case "You_see_smoke_rising_in_the_distance": //shop, but it is funky
+            PrependDecisionQueue("SETENCOUNTER", $player, "230-PickMode");
+            break;
+          case "You_find_a_large_shrine": //shrine
+            PrependDecisionQueue("SETENCOUNTER", $player, "231-PickMode");
+            break;
+          case "You_find_a_large_mirror": //mirror
+            PrependDecisionQueue("SETENCOUNTER", $player, "232-PickMode");
+            break;
+          case "You_visit_an_old_friend": //Weaponmaster
+            PrependDecisionQueue("SETENCOUNTER", $player, "233-PickMode");
+            break;
+          case "You_come_across_a_strange_library": //twisted library
+            PrependDecisionQueue("SETENCOUNTER", $player, "234-PickMode");
+            break;
+          case "You_find_an_old_cottage": //witch
+            PrependDecisionQueue("SETENCOUNTER", $player, "235-PickMode");
+            break;
+          case "You_see_a_beautiful_sigil": //Sigil of Solace
+            PrependDecisionQueue("SETENCOUNTER", $player, "236-PickMode");
+            break;
+          case "You_find_a_clear_pool": //clear pool
+            PrependDecisionQueue("SETENCOUNTER", $player, "237-PickMode");
+            break;
+          case "Return_to_the_pool": //clear pool
+            PrependDecisionQueue("SETENCOUNTER", $player, "238-PickMode");
             break;
           case "Take_the_scenic_route_through_the_back_streets": //Stealthy Stabber
             PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight");

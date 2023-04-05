@@ -11,7 +11,7 @@ function EncounterAI()
   if(!IsGameOver() && $currentPlayerIsAI)
   {
     $isBowActive = false;
-    for($logicCount=0; $logicCount<=20 && $currentPlayerIsAI; ++$logicCount)
+    for($logicCount=0; $logicCount<=30 && $currentPlayerIsAI; ++$logicCount)
     {
       global $turn;
       $hand = &GetHand($currentPlayer);
@@ -20,6 +20,7 @@ function EncounterAI()
       $resources = &GetResources($currentPlayer);
       $items = &GetItems($currentPlayer);
       $allies = &GetAllies($currentPlayer);
+      CacheCombatResult();
       //LogHandArray($hand);
       //WriteLog("Turn[0]->".$turn[0]);
       //LogHandArray($decisionQueue);
@@ -196,9 +197,9 @@ function EncounterAI()
       }
       ProcessMacros();
       $currentPlayerIsAI = ($currentPlayer == 2 ? true : false);
-      if($logicCount == 20 && $currentPlayerIsAI)
+      if($logicCount == 30 && $currentPlayerIsAI)
       {
-        for($i=0; $i<=20 && $currentPlayerIsAI; ++$i)
+        for($i=0; $i<=30 && $currentPlayerIsAI; ++$i)
         {
           PassInput();
           $currentPlayerIsAI = ($currentPlayer == 2 ? true : false);
@@ -215,6 +216,7 @@ function IsEncounterAI($enemyHero)
 
 function LogPriorityArray($priorityArray)
 {
+  WriteLog("Priority Array:");
   for($i = 0; $i < count($priorityArray); ++$i)
   {
     WriteLog("[" . $priorityArray[$i][0] . "," . $priorityArray[$i][1] . "," . $priorityArray[$i][2] . "," . $priorityArray[$i][3] . "]");

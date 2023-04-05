@@ -16,6 +16,7 @@ class Encounter { //There are a few things in this file that I will be using to 
   public $costToHeal; //current cost to heal
   public $costToRemove; //current cost to remove
   public $tags; //a list of tags that is currently unused but will be critical to dynamic card rewards
+  public $cleanse; //used for the ClearPool event
 
   function __construct() {
     $this->encounterID = 1;
@@ -32,6 +33,7 @@ class Encounter { //There are a few things in this file that I will be using to 
     $this->costToHeal = 1;
     $this->costToRemove = 1;
     $this->tags = array();
+    $this->cleanse = false;
   }
 
   /*public function AddCardTags($cardID) {

@@ -78,6 +78,18 @@
               }
               WriteLog("You removed " . CardLink($cardID, $cardID) . " from your deck.");
           }
+          if($myDQ[0] == "REMOVEALLDECKCARD"){ //If we're REMOVING all cards
+              $deck = &GetZone($playerID, "Deck");
+              for($i=0; $i<count($deck)-1; ++$i)
+              {
+                if($deck[$i] == $cardID)
+                {
+                  unset($deck[$i]);
+                  $deck = array_values($deck);
+                }
+              }
+              WriteLog("You removed all copies of " . CardLink($cardID, $cardID) . " from your deck.");
+          }
           if($myDQ[0] == "SHOP"){
             //WriteLog($cardID);
             $encounter = &GetZone($playerID, "Encounter");
@@ -183,6 +195,24 @@
             }
           }
         }
+        else if($myDQ[0] == "REMOVEALLDECKCARD"){
+          if($buttonInput == "Reroll")
+          {
+            $encounter = &GetZone($playerID, "Encounter");
+            if($encounter->rerolls >= 1) {
+              WriteLog("You used a reroll to alter the reward");
+              $encounter->rerolls -= 1;
+              $parameterOne = $myDQ[2];
+              $parameterTwo = $myDQ[3];
+              ClearPhase($playerID); //Clear the screen and keep going
+              PrependDecisionQueue("REMOVEALLDECKCARD", $playerID, GetRandomCards($parameterOne), $parameterOne, $parameterTwo);
+              ContinueDecisionQueue($playerID, "");
+            }
+            else {
+              WriteLog("You attempted to reroll, but fate is not so kind.");
+            }
+          }
+        }
         else if($myDQ[0] == "DUPLICATECARD"){
           if($buttonInput == "Reroll")
           {
@@ -206,7 +236,7 @@
           $health = &GetZone($playerID, "Health");
           if($buttonInput == "shop_heal"){
             $health = &GetZone($playerID, "Health");
-            WriteLog("\$encounter->costToHeal: ".$encounter->costToHeal);
+            //WriteLog("\$encounter->costToHeal: ".$encounter->costToHeal);
 
             $gain = (20 - $health[0] > 5 ? 5 : 20 - $health[0]);
             if($gain < 0) $gain = 0;
