@@ -8,6 +8,12 @@ include_once "../Libraries/HTTPLibraries.php";
 
 SetHeaders();
 
+if(!IsUserLoggedIn()) {
+  if(isset($_COOKIE["rememberMeToken"])) {
+    loginFromCookie();
+  }
+}
+
 $response = new stdClass();
 $response->favoriteDecks = [];
 if (IsUserLoggedIn()) {
@@ -34,5 +40,9 @@ if (IsUserLoggedIn()) {
       array_push($response->favoriteDecks, $deck);
     }
   }
+
+  //Load other settings
+  if (isset($settingArray[$SET_Format])) $response->lastFormat = FormatName($settingArray[$SET_Format]);
+  if (isset($settingArray[$SET_GameVisibility])) $response->lastVisibility = $settingArray[$SET_GameVisibility];
 }
 echo json_encode($response);

@@ -1,5 +1,41 @@
 <?php
 
+function PutItemIntoPlay($item, $steamCounterModifier = 0)
+{
+  global $currentPlayer;
+  PutItemIntoPlayForPlayer($item, $currentPlayer, $steamCounterModifier);
+}
+
+function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1)
+{
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  if(!DelimStringContains(CardSubType($item), "Item")) return;
+  $items = &GetItems($player);
+  $myHoldState = ItemDefaultHoldTriggerState($item);
+  if($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
+  $theirHoldState = ItemDefaultHoldTriggerState($item);
+  if($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
+  for($i = 0; $i < $number; ++$i) {
+    $uniqueID = GetUniqueId();
+    $steamCounters = SteamCounterLogic($item, $player, $uniqueID) + $steamCounterModifier;
+    array_push($items, $item);
+    array_push($items, $steamCounters);
+    array_push($items, 2);
+    array_push($items, ItemUses($item));
+    array_push($items, $uniqueID);
+    array_push($items, $myHoldState);
+    array_push($items, $theirHoldState);
+  }
+}
+
+function ItemUses($cardID)
+{
+  switch($cardID) {
+    case "EVR070": return 3;
+    default: return 1;
+  }
+}
+
 function PayItemAbilityAdditionalCosts($cardID, $from)
 {
   global $currentPlayer, $CS_PlayIndex, $combatChain;
@@ -53,7 +89,11 @@ function ItemPlayAbilities($cardID, $from)
     switch ($items[$i]) {
       case "EVR189":
         if ($from == "BANISH") {
-          TalismanOfCremationBanishPlay();
+          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Talisman of Cremation");
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "GY");
+          AddDecisionQueue("MAYCHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
+          AddDecisionQueue("SPECIFICCARD", $otherPlayer, "TALISMANOFCREMATION", 1);
           $remove = true;
         }
         break;
@@ -76,25 +116,24 @@ function DestroyMyItem($index)
   DestroyItemForPlayer($currentPlayer, $index);
 }
 
-function DestroyItemForPlayer($player, $index)
+function DestroyItemForPlayer($player, $index, $skipDestroy=false)
 {
   $items = &GetItems($player);
-  if (CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY") {
+  if(!$skipDestroy && CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY") {
     AddGraveyard($items[$index], $player, "PLAY");
   }
-  for ($i = $index + ItemPieces() - 1; $i >= $index; --$i) {
-
-    //Mechanoid Check
-    if ($items[$i] == "DYN492c") {
+  $cardID = $items[$index];
+  for($i = $index + ItemPieces() - 1; $i >= $index; --$i) {
+    if($items[$i] == "DYN492c") {
       $indexWeapon = FindCharacterIndex($player, "DYN492a"); // Weapon
       DestroyCharacter($player, $indexWeapon);
       $indexEquipment = FindCharacterIndex($player, "DYN492b"); // Equipment
       DestroyCharacter($player, $indexEquipment);
     }
-
     unset($items[$i]);
   }
   $items = array_values($items);
+  return $cardID;
 }
 
 function StealItem($srcPlayer, $index, $destPlayer)
@@ -155,3 +194,82 @@ function ItemTakeDamageAbilities($player, $damage, $type)
   }
   return $damage;
 }
+
+function ItemStartTurnAbility($index)
+{
+  global $mainPlayer;
+  $mainItems = &GetItems($mainPlayer);
+  switch($mainItems[$index]) {
+    case "ARC007": case "ARC035": case "EVR069": case "EVR071":
+      AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]);
+      break;
+    default:
+      break;
+  }
+}
+
+function ItemEndTurnAbilities()
+{
+  global $mainPlayer;
+  $items = &GetItems($mainPlayer);
+  for($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+    $remove = false;
+    switch($items[$i]) {
+      case "EVR188":
+        $remove = TalismanOfBalanceEndTurn();
+        break;
+      default: break;
+    }
+    if($remove) DestroyItemForPlayer($mainPlayer, $i);
+  }
+}
+
+function ItemDamageTakenAbilities($player, $damage)
+{
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  $items = &GetItems($otherPlayer);
+  for($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+    $remove = false;
+    switch($items[$i]) {
+      case "EVR193":
+        if (IsHeroAttackTarget() && $damage == 2) {
+          WriteLog("Talisman of Warfare destroyed both player's arsenal");
+          DestroyArsenal(1);
+          DestroyArsenal(2);
+          $remove = true;
+        }
+        break;
+      default: break;
+    }
+    if($remove) {
+      DestroyItemForPlayer($otherPlayer, $i);
+    }
+  }
+}
+
+function SteamCounterLogic($item, $playerID, $uniqueID)
+{
+  global $CS_NumBoosted;
+  $counters = ETASteamCounters($item);
+  switch($item) {
+    case "CRU104":
+      $counters += GetClassState($playerID, $CS_NumBoosted);
+      break;
+    default: break;
+  }
+  if(ClassContains($item, "MECHANOLOGIST", $playerID))
+  {
+    $items = &GetItems($playerID);
+    for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces())
+    {
+      if($items[$i] == "DYN093")
+      {
+        AddLayer("TRIGGER", $playerID, $items[$i], $uniqueID, "-", $items[$i + 4]);
+      }
+    }
+  }
+  return $counters;
+}
+
+
+?>

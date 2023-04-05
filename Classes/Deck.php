@@ -14,14 +14,20 @@ class Deck {
   }
 
   // Methods
+  function Empty() {
+    return count($this->deck) == 0;
+  }
+
   function RemainingCards() {
     // Code to return the number of remaining cards in the deck
     return count($this->deck);
   }
 
   function Remove($index) {
+    $cardID = $this->deck[$index];
     unset($this->deck[$index]);
     $this->deck = array_values($this->deck);
+    return $cardID;
   }
 
   function Reveal($revealCount=1) {
@@ -41,10 +47,15 @@ class Deck {
     }
   }
 
-  function Top($remove = false)
+  function Top($remove = false, $amount = 1)
   {
-    if(count($this->deck) == 0) return "";
-    return ($remove ? array_shift($this->deck) : $this->deck[0]);
+    $rv = "";
+    for($i=0; $i<$amount; ++$i)
+    {
+      if($rv != "") $rv .= ",";
+      $rv .= ($remove ? array_shift($this->deck) : $this->deck[$i]);
+    }
+    return $rv;
   }
 
   function Banish() {

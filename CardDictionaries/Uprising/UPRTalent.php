@@ -84,19 +84,20 @@
         return $rv;
       case "UPR136":
         if (ShouldAutotargetOpponent($currentPlayer)) {
-          AddDecisionQueue("CORONETPEAK", $currentPlayer, "Target_Opponent", 1);
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
+          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "CORONETPEAK", 1);
         } else {
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
           AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
-          AddDecisionQueue("CORONETPEAK", $currentPlayer, "<-", 1);
+          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "CORONETPEAK", 1);
         }
         return "Makes target hero pay 1 or discard a card.";
       case "UPR137":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRARS", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRALLY");
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRALLY");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
@@ -115,17 +116,17 @@
         else if($cardID == "UPR148") $cost = 2;
         else $cost = 1;
         $theirAllies = &GetAllies($otherPlayer);
-      if (!ArsenalEmpty($otherPlayer) || count($theirAllies) > 0) {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay $cost to prevent an arsenal or ally from being frozen");
-        AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
-        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
-        AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRALLY|THEIRARS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+        if (!ArsenalEmpty($otherPlayer) || count($theirAllies) > 0) {
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay $cost to prevent an arsenal or ally from being frozen");
+          AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
+          AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
+          AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRALLY&THEIRARS", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
         }
-        if($from == "ARS") MyDrawCard();
+        if($from == "ARS") Draw($currentPlayer);
         return "";
       case "UPR183":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -151,7 +152,7 @@
         AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("SIFT", $currentPlayer, "-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SIFT", 1);
         return "Lets you cycle $numCards cards.";
       case "UPR200": case "UPR201": case "UPR202":
         if($cardID == "UPR200") $maxCost = 2;
@@ -161,7 +162,7 @@
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card from a graveyard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("MZGETCARDID", $currentPlayer, "-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
         AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
@@ -206,7 +207,7 @@
           $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
           AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-          AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
+          AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
           AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
         }
         break;
@@ -222,7 +223,7 @@
         AddDecisionQueue("CHOOSEDISCARD", $mainPlayer, "<-", 1);
         AddDecisionQueue("REMOVEDISCARD", $mainPlayer, "-", 1);
         AddDecisionQueue("ADDHAND", $mainPlayer, "-", 1);
-        AddDecisionQueue("GIVEATTACKGOAGAIN", $mainPlayer, "-", 1);
+        AddDecisionQueue("OP", $mainPlayer, "GIVEATTACKGOAGAIN", 1);
         break;
       case "UPR187":
         if(IsHeroAttackTarget())

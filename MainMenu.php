@@ -165,11 +165,6 @@ if ($canSeeQueue) {
     <div style='vertical-align:middle; text-align:center;'>
 
       <div style="vertical-align:middle; position: relative;">
-        <h3>Outsiders</h3>
-        All spoiled cards implemented except:<BR>
-          Amnesia<br>
-Burden of the Past<br>
-        <br>
       </div>
       <BR>
       Test Outsiders sealed and draft FREE through our partner site, <a href='https://www.draftfab.com' target='_blank'>DRAFTFAB</a>!

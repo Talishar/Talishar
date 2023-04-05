@@ -41,11 +41,11 @@
     {
       case "MON004":
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
-        MainDrawCard();
-        MainDrawCard();
+        Draw($mainPlayer);
+        Draw($mainPlayer);
         break;
       case "MON007":
-        if (!IsAllyAttackTarget()) {
+        if(!IsAllyAttackTarget()) {
           AddCurrentTurnEffect($cardID, $defPlayer);
           AddNextTurnEffect($cardID, $defPlayer);
         }
@@ -65,7 +65,8 @@
         AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEDISCARD", $mainPlayer, "-", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
-        AddDecisionQueue("SHOWSELECTEDCARD", $mainPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was selected.", 1);
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
         break;
       case "MON023": case "MON024": case "MON025": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
@@ -238,16 +239,11 @@
     --$arsenal[$index+2];
     ++$arsenal[$index+3];
     Draw($player);
-    $log = CardLink("MON404","MON404") . " draw a card";
+    $log = CardLink("MON404","MON404") . " drew a card";
     if($arsenal[$index+3] == 3)
     {
       $log .= " and searched for a specialization card";
-      RemoveArsenal($player, $index);
-      BanishCardForPlayer("MON404", $player, "ARS", "-");
-      AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
-      AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
-      AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
-      AddDecisionQueue("SHUFFLEDECK", $player, "-");
+      MentorTrigger($player, $index);
     }
     WriteLog($log . ".");
   }

@@ -23,7 +23,8 @@
         AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was selected.", 1);
         return "Lets you put a non-attack action card with Blood Debt from your graveyard to your deck.";
       case "MON162": case "MON163": case "MON164":
         if($cardID == "MON162") $optAmt = 3;
@@ -33,7 +34,7 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "TOPDECK");
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
-        AddDecisionQueue("DIMENXXIONALGATEWAY", $currentPlayer, "-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "DIMENXXIONALGATEWAY", 1);
         return "Lets you Opt.";
       case "MON165": case "MON166": case "MON167":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -73,7 +74,7 @@
         $xVal = $resourcesPaid/2;
         $numRevealed = 3 + $xVal;
         WriteLog(CardLink($cardID, $cardID) . " reveals " . $numRevealed . " cards.");
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "FIRSTXDECK," . $numRevealed);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $numRevealed);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SONATAARCANIX", $currentPlayer, "-", 1);
@@ -158,13 +159,8 @@
       $arsenal[$index+3] += 1;
       if($arsenal[$index+3] >= 3)
       {
-        WriteLog(CardLink("MON407", "MON407") . " searched for a specialization card.");
-        RemoveArsenal($player, $index);
-        BanishCardForPlayer("MON407", $player, "ARS", "-");
-        AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
-        AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
-        AddDecisionQueue("SHUFFLEDECK", $player, "-");
+        WriteLog(CardLink("MON407", "MON407") . " searched for a specialization card");
+        MentorTrigger($player, $index);
       }
     }
   }

@@ -97,6 +97,12 @@ function WTRAbilityCost($cardID)
       case "WTR171": return 2;
       case "WTR185": return 1;
       case "WTR200": case "WTR201": case "WTR202": return 1;
+      case "WTR206": return 4;
+      case "WTR207": return 3;
+      case "WTR208": return 2;
+      case "WTR209": return 3;
+      case "WTR210": return 2;
+      case "WTR211": return 1;
       case "WTR218": return 3;
       case "WTR219": return 2;
       case "WTR220": return 1;
@@ -114,25 +120,21 @@ function WTRAbilityCost($cardID)
     $cardID = $idArr[0];
     switch ($cardID)
     {
-      //Brute
       case "WTR007": return ClassContains($attackID, "BRUTE", $mainPlayer);
       case "WTR017": case "WTR018": case "WTR019": return ClassContains($attackID, "BRUTE", $mainPlayer);
       case "WTR032": case "WTR033": case "WTR034": return CardType($attackID) == "AA" && ClassContains($attackID, "BRUTE", $mainPlayer);
       case "WTR035": case "WTR036": case "WTR037": return ClassContains($attackID, "BRUTE", $mainPlayer);
-      //Guardian
       case "WTR038": case "WTR039": return CardType($attackID) == "AA" && CardCost($attackID) >= 3;
       case "WTR066": case "WTR067": case "WTR068": return true;
       case "WTR069": case "WTR070": case "WTR071": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $mainPlayer);
-      //Ninja
       case "WTR081": return true;
-      //Warrior
       case "WTR116": return CardType($attackID) == "W";
       case "WTR129": case "WTR130": case "WTR131": return CardType($attackID) == "W";
       case "WTR141": case "WTR142": case "WTR143": return CardType($attackID) == "W";
       case "WTR144": case "WTR145": case "WTR146": return CardType($attackID) == "W";
       case "WTR147": case "WTR148": case "WTR149": return CardType($attackID) == "W";
-      //Generics
       case "WTR153": return CardType($attackID) == "AA" && CardCost($attackID) >= 2;
+      case "WTR154": return true;
       case "WTR159": return true;
       case "WTR161": return true;
       case "WTR162": return true;
@@ -140,6 +142,8 @@ function WTRAbilityCost($cardID)
       case "WTR185": return true;
       case "WTR197": return true;
       case "WTR200": case "WTR201": case "WTR202": return true;
+      case "WTR206": case "WTR207": case "WTR208": return true;
+      case "WTR209": case "WTR210": case "WTR211": return true;
       case "WTR218": case "WTR219": case "WTR220": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
       case "WTR221": case "WTR222": case "WTR223": return CardType($attackID) == "AA" && CardCost($attackID) >= 2;
       default: return false;
@@ -184,126 +188,116 @@ function WTRAbilityCost($cardID)
     switch ($cardID)
     {
       case "WTR054": case "WTR055": case "WTR056":
-        if(CountPitch(GetPitch($currentPlayer), 3) >= 1) MyDrawCard();
-        return CountPitch(GetPitch($currentPlayer), 3) . " cards in pitch.";
+        if(CountPitch(GetPitch($currentPlayer), 3) >= 1) Draw($currentPlayer);
+        return "";
       case "WTR004":
         $roll = GetDieRoll($currentPlayer);
-        $actionPoints += intval($roll/2);
-        return "Rolled $roll and gains " . intval($roll/2) . " action points.";
+        GainActionPoints(intval($roll/2), $currentPlayer);
+        return "Rolled $roll and gained " . intval($roll/2) . " action points";
       case "WTR005":
         $resources = &GetResources($currentPlayer);
         $roll = GetDieRoll($currentPlayer);
-        $resources[0] += intval($roll/2);
-        return "Rolled $roll and gains " . intval($roll/2) . " resources.";
+        GainResources($currentPlayer, intval($roll/2));
+        return "Rolled $roll and gained " . intval($roll/2) . " resources";
       case "WTR006":
         Intimidate();
-        return "Intimidates.";
+        return "";
       case "WTR007":
-          $rv .= "Gives your Brute attacks +2 this turn";
-        if(AttackValue($additionalCosts) >= 6)
-        {
-          MyDrawCard();
-          MyDrawCard();
-          if(!CurrentEffectPreventsGoAgain()) ++$actionPoints;
-          $rv .= ", draws 2 cards and gains go again";
+        if(AttackValue($additionalCosts) >= 6) {
+          Draw($currentPlayer);
+          Draw($currentPlayer);
+          if(!CurrentEffectPreventsGoAgain()) GainActionPoints(1, $currentPlayer);;
+          $rv = "Draws 2 cards and gains go again";
         }
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return $rv . ".";
+        return $rv;
       case "WTR008":
         $damaged = false;
         if(IsAllyAttacking())
         {
           return "<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>";
         }
-        else if(AttackValue($additionalCosts) >= 6) { $damaged = true; DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
-        return "Discarded a random card from your hand" . ($damaged ? " and does 2 damage." : ".");
+        else if(AttackValue($additionalCosts) >= 6) { WriteLog("Deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
+        return "";
       case "WTR009":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("SANDSKETCH", $currentPlayer, "-");
+        AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SANDSKETCH");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       case "WTR010":
         $roll = GetDieRoll($currentPlayer);
         IncrementClassState($currentPlayer, $CS_DamagePrevention, $roll);
-        return "Prevents the next $roll damage that will be dealt to you this turn.";
+        return "Prevents the next $roll damage that will be dealt to you this turn";
       case "WTR011": case "WTR012": case "WTR013":
-        if(AttackValue($additionalCosts) >= 6)
-        {
-          $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-          $rv .= "Discarded a 6 power card and gains go again.";
+        if(AttackValue($additionalCosts) >= 6) {
+          GiveAttackGoAgain();
+          $rv = "Discarded a 6 power card and gains go again.";
         }
         return $rv;
       case "WTR014": case "WTR015": case "WTR016":
-        if(AttackValue($additionalCosts) >= 6)
-        {
-          MyDrawCard();
+        if(AttackValue($additionalCosts) >= 6) {
+          Draw($currentPlayer);
         }
-        return "Discarded a random card from your hand.";
+        return "";
       case "WTR017": case "WTR018": case "WTR019":
         AddCurrentTurnEffect($cardID, $mainPlayer);
         Intimidate();
-        return "Intimidates and gives the next Brute attack this turn +" . EffectAttackModifier($cardID) . ".";
+        return "";
       case "WTR023": case "WTR024": case "WTR025":
         Intimidate();
-        return "Intimidates.";
+        return "";
       case "WTR026": case "WTR027": case "WTR028":
         Intimidate();
-        return "Intimidates.";
+        return "";
       case "WTR032": case "WTR033": case "WTR034":
         AddCurrentTurnEffect($cardID, $mainPlayer);
         Intimidate();
-        return "Intimidates.";
+        return "";
       case "WTR035": case "WTR036": case "WTR037":
         AddCurrentTurnEffect($cardID, $mainPlayer);
-        return "Discarded a random card from your hand and gives the next Brute attack this turn +" . EffectAttackModifier($cardID) . ".";
+        return "";
       //Guardian
       case "WTR038": case "WTR039":
         AddCurrentTurnEffect($cardID, $mainPlayer);
-        return "Gives your action cards with cost 3 or greater Dominate.";
+        return "";
       case "WTR041":
         PlayMyAura("WTR075");
-        return "Creates a Seismic Surge token.";
+        return "";
       case "WTR042":
         AddCurrentTurnEffect($cardID, $mainPlayer);
-        return "Gives you +1 Intellect until end of turn.";
+        return "";
       case "WTR047":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCLASSAA,GUARDIAN");
-        AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=AA;class=GUARDIAN");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
-        return "Lets you to search for a Guardian attack card.";
+        return "";
       //Ninja
       case "WTR078":
         if(CountPitch(GetPitch($currentPlayer), 0, 0)) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         return "";
       case "WTR082":
         if(CardName($combatChain[0]) == "Bonds of Ancestry") WriteLog("Your ancestors reward you for your loyalty.");
-        MyDrawCard();
+        Draw($currentPlayer);
         return "";
       case "WTR092": case "WTR093": case "WTR094":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives the next blocking Combo card +2 this turn.";
+        return "";
       //Warrior
       case "WTR116":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your next weapon attack +1 this turn.";
+        return "";
       case "WTR118":
-        $s1 = "";
-        $s2 = "";
-        if(CardType($combatChain[0]) == "W")
-        {
-          $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-          $s1 = "Gives your weapon attack go again";
+        GiveAttackGoAgain();
+        if(RepriseActive()) {
+          Draw($currentPlayer);
+          $rv = "Drew a card";
         }
-        if(RepriseActive())
-        {
-          MyDrawCard();
-          $s2 = " draws a card";
-        }
-        return $s1 . ($s1 != "" && $s2 != "" ? " and" : "") . $s2 . ".";
+        return $rv;
       case "WTR119": case "WTR122":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
@@ -325,81 +319,75 @@ function WTRAbilityCost($cardID)
         {
           $ARs = SearchDeck($currentPlayer, "AR");
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, $ARs);
-          AddDecisionQueue("BANISH", $currentPlayer, "TCL", 1);
-          AddDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
+          AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,TCL", 1);
+          AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+          AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         }
         return "";
-      case "WTR123": case "WTR124": case "WTR125":
-        if(CardType($combatChain[0]) != "W") return "Does nothing, because this is not a weapon attack.";
-        return "Gives your weapon attack +" . AttackModifier($cardID) . ".";
       case "WTR126": case "WTR127": case "WTR128":
-        if(CardType($combatChain[0]) == "W" || isAuraWeapon($combatChain[0], $mainPlayer, $combatChain[2]))
-        {
+        if(CardType($combatChain[0]) == "W" || IsAuraWeapon($combatChain[0], $mainPlayer, $combatChain[2])) {
           DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
-          $rv .= "DID";
-        } else { $rv .= "Did NOT"; }
-        $rv .= " deal 1 damage to the attacking hero.";
+          $rv = "Did 1 damage to the attacking hero";
+        }
         return $rv;
       case "WTR129": case "WTR130": case "WTR131":
         AddCurrentTurnEffect($cardID, $mainPlayer);
-        return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . " and if it hits, it gains go again";
-      case "WTR132": case "WTR133": case "WTR134":
-        if(CardType($combatChain[0]) != "W") return "Does nothing, because this is not a weapon attack.";
-        return "Gives your weapon attack +" . AttackModifier($cardID) . ".";
+        return "";
       case "WTR135": case "WTR136": case "WTR137":
-        $log = "Gives your weapon attack +" . AttackModifier($cardID);
-        if(RepriseActive()) { ApplyEffectToEachWeapon($cardID); $log .= " and gives weapons you control +1 for the rest of the turn"; }
-        return $log . ".";
+        if(RepriseActive()) { ApplyEffectToEachWeapon($cardID); $rv = "Gives weapons you control +1 for the rest of the turn"; }
+        return $rv;
       case "WTR138": case "WTR139": case "WTR140":
         if(RepriseActive())
         {
-          MyDrawCard();
+          Draw($currentPlayer);
           $hand = &GetHand($mainPlayer);
           if (count($hand) > 0) AddDecisionQueue("HANDTOPBOTTOM", $mainPlayer, "");
         }
-        return "Gives your weapon attack +" . AttackModifier($cardID) . ".";
+        return "";
       case "WTR141": case "WTR142": case "WTR143":
         AddCurrentTurnEffect($cardID, $mainPlayer);
-        return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . ".";
+        return "";
       case "WTR144": case "WTR145": case "WTR146":
         AddCurrentTurnEffect($cardID, $mainPlayer);
-        return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . " and go again.";
+        return "";
       case "WTR147": case "WTR148": case "WTR149":
         AddCurrentTurnEffect($cardID, $mainPlayer);
-        return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . " and a hit effect.";
+        return "";
       case "WTR150":
-        $resources = &GetResources($currentPlayer);
-        $resources[0] += 1;
-        return "Gain 1 resource.";
+        GainResources($currentPlayer, 1);
+        return "";
       case "WTR151":
         $indices = GetMyHandIndices();
         if($indices == "") return "";
-        AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, count(GetHand($currentPlayer)) . "-" . $indices);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIHAND");
+        AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("HOPEMERCHANTHOOD", $currentPlayer, "-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "HOPEMERCHANTHOOD", 1);
         return "";
       case "WTR152":
         AddCurrentTurnEffect($cardID, $mainPlayer);
-        return "Reduces the resource cost of your next attack action card by 2.";
+        return "";
+      case "WTR153":
+        AddCurrentTurnEffect($cardID, $mainPlayer);
+        return "";
       case "WTR154":
-        $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-        return "Gives your current attack go again.";
+        AddCurrentTurnEffect($cardID, $mainPlayer);
+        return "";
       case "WTR159":
-        PrependDecisionQueue("ESTRIKE", $currentPlayer, "-", 1);
+        PrependDecisionQueue("MODAL", $currentPlayer, "ESTRIKE", 1);
         PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
         return "";
       case "WTR160":
-        MyDrawCard();
-        MyDrawCard();
-        $hand = GetHand($currentPlayer); //Get hand size after draw for correct health gain
-        if($from == "ARS") GainHealth(count($hand), $currentPlayer);
+        Draw($currentPlayer);
+        Draw($currentPlayer);
+        if($from == "ARS") { $hand = &GetHand($currentPlayer); GainHealth(count($hand), $currentPlayer); }
         return "";
       case "WTR161":
         if(count(GetDeck($currentPlayer)) == 0) {
-          $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
+          GiveAttackGoAgain();
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Gains go again and +4.";
         }
@@ -412,20 +400,20 @@ function WTRAbilityCost($cardID)
           if($roll <= 2)
           {
             LoseHealth(2, $currentPlayer);
-            $actionPoints += 1;
+            GainActionPoints(1, $currentPlayer);
             $rv .= " and lost you 2 health.";
           }
           else if($roll <= 4)
           {
             GainHealth(2, $currentPlayer);
-            $actionPoints += 1;
+            GainActionPoints(1, $currentPlayer);
           }
           else if($roll <= 6)
           {
             $resources = &GetResources($currentPlayer);
             AddCurrentTurnEffect($cardID, $currentPlayer);
-            $resources[0] += 2;
-            $actionPoints += 2;
+            GainResources($currentPlayer, 2);
+            GainActionPoints(2, $currentPlayer);
             $rv .= " and gained 2 action points, resources, and power.";
           }
         }
@@ -437,56 +425,49 @@ function WTRAbilityCost($cardID)
         else if($attackActions != "") $actions = $actions . "," . $attackActions;
         if($actions == "") return "";
         AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "3-" . $actions);
-        AddDecisionQueue("REMEMBRANCE", $currentPlayer, "-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "REMEMBRANCE", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         return "";
       case "WTR170":
-        if($from == "PLAY")
-        {
-          $resources = &GetResources($currentPlayer);
-          $resources[0] += 2;
-        }
+        if($from == "PLAY") GainResources($currentPlayer, 2);
         return "";
       case "WTR171":
-        if($from == "PLAY")
-        {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-        }
+        if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "WTR172":
-        if($from == "PLAY")
-        {
-          $actionPoints += 2;
-        }
+        if($from == "PLAY") GainActionPoints(2, $currentPlayer);
         return "";
       case "WTR173": GainHealth(3, $currentPlayer); return "";
       case "WTR174": GainHealth(2, $currentPlayer); return "";
       case "WTR175": GainHealth(1, $currentPlayer); return "";
       case "WTR182": case "WTR183": case "WTR184":
         PlayMyAura("WTR225");
-        return "Creates a Quicken token.";
+        return "";
       case "WTR191": case "WTR192": case "WTR193":
-        if(IHaveLessHealth()) { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Gains go again."; }
+        if(IHaveLessHealth()) { GiveAttackGoAgain(); $rv = "Gains go again"; }
         return $rv;
       case "WTR194": case "WTR195": case "WTR196":
-        MayBottomDeckDraw();
-        if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Gains go again."; }
+        BottomDeck($currentPlayer, true, shouldDraw:true);
+        if($from == "ARS") { GiveAttackGoAgain(); $rv = "Gains go again"; }
         return $rv;
       case "WTR200": case "WTR201": case "WTR202":
-        if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $mainPlayer); $rv = "Gains +1."; }
+        if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $mainPlayer); $rv = "Gains +1 attack"; }
         return $rv;
+      case "WTR206": case "WTR207": case "WTR208":
+        AddCurrentTurnEffect($cardID, $mainPlayer);
+        return "";
+      case "WTR209": case "WTR210": case "WTR211":
+        AddCurrentTurnEffect($cardID, $mainPlayer);
+        return "";
       case "WTR215": case "WTR216": case "WTR217":
-        MayBottomDeckDraw();
+        BottomDeck($currentPlayer, true, shouldDraw:true);
         return "";
       case "WTR218": case "WTR219": case "WTR220":
         AddCurrentTurnEffect($cardID, $mainPlayer);
-        return "Gives the next attack action card with cost 1 or less this turn +" . EffectAttackModifier($cardID) . ".";
-      case "WTR221": case "WTR222": case "WTR223"://Sloggism
+        return "";
+      case "WTR221": case "WTR222": case "WTR223":
         AddCurrentTurnEffect($cardID, $mainPlayer);
-        return "Gives the next attack action card with cost greater than 2 this turn +" . EffectAttackModifier($cardID) . ".";
-      case "WTR153":
-        AddCurrentTurnEffect($cardID, $mainPlayer);
-        return "Gives your next attack action card with cost 2 or greater +" . EffectAttackModifier($cardID) . ".";
+        return "";
       default: return "";
     }
   }
@@ -510,27 +491,25 @@ function WTRAbilityCost($cardID)
         break;
       case "WTR084":
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $cardID);
-        if(ComboActive()){
-          AddDecisionQueue("ADDMAINHAND", $mainPlayer, "-"); //Only back to hand if combo is active
+        if(ComboActive()) {
+          AddDecisionQueue("ADDHAND", $mainPlayer, "-");
         }
         break;
       case "WTR085":
-        if(IsHeroAttackTarget() && ComboActive()){
+        if(IsHeroAttackTarget() && ComboActive()) {
           LoseHealth($combatChainState[$CCS_DamageDealt], $defPlayer);
         }
         break;
-      case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) { WriteLog(CardLink($cardID,$cardID) . " draw a card."); MainDrawCard(); } break;
+      case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) { Draw($mainPlayer); } break;
       case "WTR115":
-        if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 1 && $CCS_WeaponIndex < count($combatChainState)) {
+        if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 1) {
           $mainCharacter = &GetPlayerCharacter($mainPlayer);
           $index = FindCharacterIndex($mainPlayer, $cardID);
           ++$mainCharacter[$index+3];
         }
         IncrementClassState($mainPlayer, $CS_HitsWDawnblade, 1);
       break;
-      case "WTR167": case "WTR168": case "WTR169": MainDrawCard(); break;
-      case "WTR206": case "WTR207": case "WTR208": if(IsHeroAttackTarget() && CardType($attackID) == "AA") PummelHit(); break;
-      case "WTR209": case "WTR210": case "WTR211": if(CardType($attackID) == "AA") GiveAttackGoAgain(); break;
+      case "WTR167": case "WTR168": case "WTR169": Draw($mainPlayer); break;
       default: break;
     }
   }
@@ -550,7 +529,7 @@ function WTRAbilityCost($cardID)
         if(CardCost($deck[$i]) >= 3) ++$lifegain;
       }
     }
-    RevealCards($cards, $mainPlayer);//CanReveal called
+    RevealCards($cards, $mainPlayer);
     GainHealth($lifegain, $mainPlayer);
     return "";
   }
@@ -560,18 +539,18 @@ function WTRAbilityCost($cardID)
     global $mainPlayer;
     $hand = &GetHand($mainPlayer);
     if($context == "") $context = "to_use_Katsu's_ability";
-    //If hand is empty skip the popup
     if(count($hand) > 0)
     {
       AddDecisionQueue("YESNO", $mainPlayer, $context);
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-      AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-1", 1);
-      AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
-      AddDecisionQueue("DISCARDMYHAND", $mainPlayer, "-", 1);
-      AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-2", 1);
-      AddDecisionQueue("MAYCHOOSEDECK", $mainPlayer, "<-", 1);
-      AddDecisionQueue("BANISH", $mainPlayer, "TT", 1);
-      AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND:maxCost=0", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZDISCARD", $mainPlayer, "-", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK:comboOnly=true", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBANISH,DECK,TT", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
     }
   }
@@ -602,4 +581,89 @@ function WTRAbilityCost($cardID)
       }
     }
   }
+
+
+  function HasCrush($cardID)
+  {
+    switch($cardID) {
+      case "WTR043": case "WTR044": case "WTR045": case "WTR057": case "WTR058": case "WTR059":
+      case "WTR060": case "WTR061": case "WTR062": case "WTR063": case "WTR064": case "WTR065":
+      case "WTR066": case "WTR067": case "WTR068": case "WTR050": case "WTR049": case "WTR048":
+      case "CRU026": case "CRU027": case "CRU032": case "CRU033": case "CRU034": case "CRU035":
+      case "CRU036": case "CRU037":
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  function Mangle()
+  {
+    global $mainPlayer;
+    AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;hasNegCounters=true");
+    AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
+  }
+
+  function ProcessCrushEffect($cardID)
+  {
+    global $mainPlayer, $defPlayer, $defCharacter, $combatChain;
+    if(CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
+    if(!IsHeroAttackTarget()) return;
+    switch($cardID) {
+      case "WTR043":
+        DiscardRandom($defPlayer);
+        DiscardRandom($defPlayer);
+        break;
+      case "WTR044":
+        AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "WTR045":
+        AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "WTR048": case "WTR049": case "WTR050":
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put at the bottom of the deck", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZADDZONE", $mainPlayer, "THEIRBOTDECK", 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        break;
+      case "WTR057": case "WTR058": case "WTR059":
+        AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
+        AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
+        break;
+      case "WTR060": case "WTR061": case "WTR062":
+        AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "WTR063": case "WTR064": case "WTR065":
+        $defCharacter[1] = 3;
+        break;
+      case "WTR066": case "WTR067": case "WTR068":
+        AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "CRU026":
+        Mangle();
+        break;
+      case "CRU027":
+        AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES,5");
+        AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
+        AddDecisionQueue("COUNTPARAM", $defPlayer, "<-", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card(s) to banish", 1);
+        AddDecisionQueue("MULTICHOOSETHEIRDECK", $mainPlayer, "<-", 1, 1);
+        AddDecisionQueue("VALIDATEALLSAMENAME", $defPlayer, "DECK", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $defPlayer, "-", 1);
+        AddDecisionQueue("MULTIBANISH", $defPlayer, "DECK,-", 1);
+        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "RIGHTEOUSCLEANSING", 1);
+        break;
+      case "CRU032": case "CRU033": case "CRU034":
+        AddNextTurnEffect("CRU032", $defPlayer);
+        break;
+      case "CRU035": case "CRU036": case "CRU037":
+        AddNextTurnEffect("CRU035", $defPlayer);
+        break;
+      default: return;
+    }
+  }
+
 ?>

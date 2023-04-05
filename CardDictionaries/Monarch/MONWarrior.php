@@ -11,9 +11,8 @@
         GiveAttackGoAgain();
         return "Gives the current attack go again.";
       case "MON033":
-        $addCostValue = (int) $additionalCosts;
-        AddDecisionQueue("BEACONOFVICTORY-2", $currentPlayer, $addCostValue, 1);
-        if(GetClassState($currentPlayer, $CS_NumCharged) > 0 && DelimStringContains($additionalCosts, "BEACONOFVICTORY"))
+        AddDecisionQueue("ATTACKMODIFIER", $currentPlayer, intval($additionalCosts), 1);
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
@@ -77,7 +76,7 @@
     switch($cardID)
     {
       case "MON042": case "MON043": case "MON044":
-        if(GetClassState($mainPlayer, $CS_NumCharged) > 0) MainDrawCard();
+        if(GetClassState($mainPlayer, $CS_NumCharged) > 0) Draw($mainPlayer);
         break;
       case "MON048": case "MON049": case "MON050":
         if(GetClassState($mainPlayer, $CS_NumCharged) > 0) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
@@ -124,8 +123,7 @@
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
     AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     AddDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
-    AddDecisionQueue("WRITECARDLOG", $currentPlayer, "This_card_was_charged:_", 1);
-    AddDecisionQueue("FINISHCHARGE", $currentPlayer, "This_card_was_charged:_", 1);
+    AddDecisionQueue("FINISHCHARGE", $currentPlayer, "-", 1);
   }
 
   function DQCharge()
@@ -133,8 +131,7 @@
     global $currentPlayer;
     $hand = &GetHand($currentPlayer);
     if(count($hand) == 0) { WriteLog("No cards in hand to charge."); return; }
-    PrependDecisionQueue("FINISHCHARGE", $currentPlayer, "This_card_was_charged:_", 1);
-    PrependDecisionQueue("WRITECARDLOG", $currentPlayer, "This_card_was_charged:_", 1);
+    PrependDecisionQueue("FINISHCHARGE", $currentPlayer, "-", 1);
     PrependDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
     PrependDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     PrependDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
@@ -155,12 +152,7 @@
     if($arsenal[$index+3] == 3)
     {
       WriteLog(CardLink("MON405", "MON405") . " searched for a specialization card.");
-      RemoveArsenal($player, $index);
-      BanishCardForPlayer("MON405", $player, "ARS", "-");
-      AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
-      AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
-      AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
-      AddDecisionQueue("SHUFFLEDECK", $player, "-");
+      MentorTrigger($player, $index);
     }
   }
 

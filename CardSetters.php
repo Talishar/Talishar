@@ -21,7 +21,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   $rv = -1;
   if ($player == "") $player = $currentPlayer;
   AddEvent("BANISH", ($modifier == "INT" || $modifier == "UZURI" ? "CardBack" : $cardID));
-  if (($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
+  if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
     WriteLog(CardLink($cardID, $cardID) . " was banished from your deck face up by an action card. Gained 1 action point.");
     ++$actionPoints;
   }
@@ -30,11 +30,11 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     AddLayer("TRIGGER", $player, $cardID);
   }
   //Do effects that change where it goes, or banish it if not
-  if ($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
+  if($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
     $character = &GetPlayerCharacter($player);
     AddLayer("TRIGGER", $player, $character[0], $cardID);
   } else {
-    if (CardType($cardID) != "T") { //If you banish a token, the token ceases to exist.
+    if(CardType($cardID) != "T") { //If you banish a token, the token ceases to exist.
       $rv = count($banish);
       array_push($banish, $cardID);
       array_push($banish, $modifier);
@@ -42,22 +42,21 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     }
   }
   ++$classState[$CS_CardsBanished];
-  if (AttackValue($cardID) >= 6) {
+  if(AttackValue($cardID) >= 6) {
     $character = &GetPlayerCharacter($player);
-    if ($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer) {
-      if (($character[0] == "MON119" || $character[0] == "MON120" || SearchCurrentTurnEffects("MON119-SHIYANA", $player) || SearchCurrentTurnEffects("MON120-SHIYANA", $player)) && $character[1] == 2) { // Levia
-        WriteLog(CardLink($character[0], $character[0]) . " Banished a card with 6+ power, and won't lose health from Blood Debt this turn.");
+    if($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer) {
+      $characterID = ShiyanaCharacter($character[0]);
+      if(($characterID == "MON119" || $characterID == "MON120") && $character[1] == 2) { // Levia
+        WriteLog(CardLink($characterID, $characterID) . " banished a card with 6+ power, and won't lose health from Blood Debt this turn");
       }
     }
     ++$classState[$CS_Num6PowBan];
     $index = FindCharacterIndex($player, "MON122");
-    if ($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index) && $player == $mainPlayer) {
+    if($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index) && $player == $mainPlayer) {
       AddLayer("TRIGGER", $player, $character[$index]);
     }
   }
-
   if($banishedBy != "") CheckContracts($banishedBy, $cardID);
-
   return $rv;
 }
 
@@ -68,18 +67,6 @@ function RemoveBanish($player, $index)
     unset($banish[$i]);
   }
   $banish = array_values($banish);
-}
-
-function AddBottomMainDeck($cardID, $from)
-{
-  global $mainPlayer;
-  AddBottomDeck($cardID, $mainPlayer, $from);
-}
-
-function AddBottomMyDeck($cardID, $from)
-{
-  global $currentPlayer;
-  AddBottomDeck($cardID, $currentPlayer, $from);
 }
 
 function AddBottomDeck($cardID, $player, $from)
@@ -94,19 +81,6 @@ function AddTopDeck($cardID, $player, $from)
   array_unshift($deck, $cardID);
 }
 
-function RemoveTopMyDeck()
-{
-  global $myDeck;
-  if (count($myDeck) == 0) return "";
-  return array_shift($myDeck);
-}
-
-function AddMainHand($cardID, $from)
-{
-  global $mainPlayer;
-  AddPlayerHand($cardID, $mainPlayer, $from);
-}
-
 function AddPlayerHand($cardID, $player, $from)
 {
   $hand = &GetHand($player);
@@ -118,9 +92,7 @@ function RemoveHand($player, $index)
   $hand = &GetHand($player);
   if(count($hand) == 0) return "";
   $cardID = $hand[$index];
-  for ($j = $index + HandPieces() - 1; $j >= $index; --$j) {
-    unset($hand[$j]);
-  }
+  for($j = $index + HandPieces() - 1; $j >= $index; --$j) unset($hand[$j]);
   $hand = array_values($hand);
   return $cardID;
 }
@@ -143,17 +115,17 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
   $arsenal = &GetArsenal($player);
   $character = &GetPlayerCharacter($player);
   $cardSubType = CardSubType($cardID);
-  if ($facing == "UP" && $from == "DECK" && $cardSubType == "Arrow" && $character[CharacterPieces()] == "DYN151") $counters=1;
+  if($facing == "UP" && $from == "DECK" && $cardSubType == "Arrow" && $character[CharacterPieces()] == "DYN151") $counters=1;
   array_push($arsenal, $cardID);
   array_push($arsenal, $facing);
-  array_push($arsenal, ArsenalNumUsesPerTurn($cardID)); //Num uses
+  array_push($arsenal, 1); //Num uses - currently always 1
   array_push($arsenal, $counters); //Counters
   array_push($arsenal, "0"); //Is Frozen (1 = Frozen)
   array_push($arsenal, GetUniqueId()); //Unique ID
   $otherPlayer = $player == 1 ? 2 : 1;
   if($facing == "UP") {
     if($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
-      WriteLog("Back Alley Breakline was put into your arsenal from your deck face up. Gained 1 action point.");
+      WriteLog("Gained 1 action point from Back Alley Breakline");
       if ($player == $mainPlayer) GainActionPoints(1);
     }
     if($from == "DECK" && CardSubType($cardID) == "Arrow" && SearchCharacterActive($player, "OUT097"))
@@ -182,8 +154,8 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
 function ArsenalEndTurn($player)
 {
   $arsenal = &GetArsenal($player);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    $arsenal[$i + 2] = ArsenalNumUsesPerTurn($arsenal[$i]);
+  for($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    $arsenal[$i + 2] = 1;//Num uses - currently always 1
   }
 }
 
@@ -216,7 +188,7 @@ function RemoveArsenal($player, $index)
   $arsenal = &GetArsenal($player);
   if(count($arsenal) == 0) return "";
   $cardID = $arsenal[$index];
-  for ($i = $index + ArsenalPieces() - 1; $i >= $index; --$i) {
+  for($i = $index + ArsenalPieces() - 1; $i >= $index; --$i) {
     unset($arsenal[$i]);
   }
   $arsenal = array_values($arsenal);
@@ -258,25 +230,26 @@ function AddSpecificSoul($cardID, &$soul, $from)
   array_push($soul, $cardID);
 }
 
-function BanishFromSoul($player)
+function BanishFromSoul($player, $index=0)
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   global $myStateBuiltFor;
-
-  if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) BanishFromSpecificSoul($mainSoul, $player);
-    else BanishFromSpecificSoul($defSoul, $player);
+  if($mainPlayerGamestateStillBuilt) {
+    if($player == $mainPlayer) BanishFromSpecificSoul($mainSoul, $player, $index);
+    else BanishFromSpecificSoul($defSoul, $player, $index);
   } else {
-    if ($player == $myStateBuiltFor) BanishFromSpecificSoul($mySoul, $player);
-    else BanishFromSpecificSoul($theirSoul, $player);
+    if($player == $myStateBuiltFor) BanishFromSpecificSoul($mySoul, $player, $index);
+    else BanishFromSpecificSoul($theirSoul, $player, $index);
   }
 }
 
-function BanishFromSpecificSoul(&$soul, $player)
+function BanishFromSpecificSoul(&$soul, $player, $index=0)
 {
-  if (count($soul) == 0) return;
-  $cardID = array_shift($soul);
+  if(count($soul) == 0) return;
+  $cardID = $soul[$index];
+  unset($soul[$index]);
+  $soul = array_values($soul);
   BanishCardForPlayer($cardID, $player, "SOUL", "SOUL");
 }
 
@@ -541,4 +514,14 @@ function ClearAdditionalCosts($player)
 {
   global $CS_AdditionalCosts;
   SetClassState($player, $CS_AdditionalCosts, "-");
+}
+
+function FaceDownArsenalBotDeck($player)
+{
+  if(ArsenalHasFaceDownCard($player)) {
+    AddDecisionQueue("FINDINDICES", $player, "ARSENALDOWN");
+    AddDecisionQueue("CHOOSEARSENAL", $player, "<-", 1);
+    AddDecisionQueue("REMOVEARSENAL", $player, "-", 1);
+    AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
+  }
 }

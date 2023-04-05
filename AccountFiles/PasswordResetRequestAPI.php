@@ -12,7 +12,7 @@ $userEmail = $_POST["email"];
 $selector = bin2hex(random_bytes(8));
 $token = random_bytes(32);
 
-$url = "https://www.talishar.net/game/CreateNewPassword.php?selector=" . $selector . "&validator=" . bin2hex($token);
+$url = "https://talishar.net/user/login/reset-password?selector=" . $selector . "&validator=" . bin2hex($token);
 
 $expires = date("U") + 1800;
 

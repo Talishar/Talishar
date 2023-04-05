@@ -17,11 +17,11 @@
       }
       return " restrict play of instants and defense reactions";
     case "MON251": case "MON252": case "MON253":
-      if ($additionalCosts != "-") AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
+      if ($additionalCosts != "-") AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       return "";
     case "MON260": case "MON261": case "MON262":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-      AddDecisionQueue("CAPTAINSCALL", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("MODAL", $currentPlayer, $cardID, 1);
       return "";
     case "MON263": case "MON264": case "MON265":
       if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gets +3 power."; }
@@ -31,7 +31,7 @@
       {
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-2");
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         WriteLog(CardLink($cardID, $cardID) . " let you choose a card in hand to tutor Minnowism.");
@@ -68,7 +68,8 @@
       AddDecisionQueue("CHOOSEDISCARDCANCEL", $currentPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
-      AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+      AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was selected.", 1);
       return "";
       default: return "";
     }

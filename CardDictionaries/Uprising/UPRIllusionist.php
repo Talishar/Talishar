@@ -71,7 +71,7 @@
         return "";
       case "UPR036": case "UPR037": case "UPR038":
         Transform($currentPlayer, "Ash", "UPR042");
-        AddDecisionQueue("MZGETUNIQUEID", $currentPlayer, "-");
+        AddDecisionQueue("MZOP", $currentPlayer, "GETUNIQUEID");
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $currentPlayer, $cardID . "," . "HAND");
         return "";
       case "UPR151":
@@ -105,17 +105,14 @@
         if(IsHeroAttackTarget())
         {
           $items = &GetItems($defPlayer);
-          if(count($items) == 0)
-          {
+          if(count($items) == 0) {
             Draw($mainPlayer);
-            WriteLog(CardLink($cardID,$cardID) . " draw a card.");
-          }
-          else
-          {
-            AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMS");
-            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take control of");
-            AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);
-            AddDecisionQueue("ITEMGAINCONTROL", $mainPlayer, "-", 1);
+            WriteLog(CardLink($cardID,$cardID) . " drew a card");
+          } else {
+            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
+            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take");
+            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+            AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
           }
         }
         break;
@@ -151,16 +148,11 @@ function UPRIllusionistDealDamageEffect($cardID)
 
   function Transform($player, $materialType, $into, $optional=false, $subsequent=false)
   {
-    if ($materialType == "Ash") {
+    if($materialType == "Ash") {
       AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));
-      if ($optional) {
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into) . " or skip with the Pass button", 1);
-        AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
-      }
-      else {
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into), 1);
-        AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);
-      }
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into), 1);
+      if($optional) AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
+      else AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);
       AddDecisionQueue("TRANSFORM", $player, $into, 1);
     }
     else {
@@ -196,7 +188,7 @@ function UPRIllusionistDealDamageEffect($cardID)
   function ResolveTransformAura($player, $materialIndex, $into)
   {
     $materialType = DestroyAura($player, $materialIndex);
-    return PlayAlly($into, $player, $materialType);//Right now transform only happens into allies
+    return PlayAlly($into, $player, $materialType);
   }
 
   function GhostlyTouchPhantasmDestroy()

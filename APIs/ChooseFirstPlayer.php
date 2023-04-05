@@ -6,7 +6,16 @@ include "../Libraries/SHMOPLibraries.php";
 
 SetHeaders();
 
+$response = new stdClass();
+
 $_POST = json_decode(file_get_contents('php://input'), true);
+
+if($_POST == NULL) {
+  $response->error = "Parameters were not passed";
+  echo json_encode($response);
+  exit;
+}
+
 $gameName = $_POST["gameName"];
 $playerID = $_POST["playerID"];
 if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
@@ -40,6 +49,5 @@ GamestateUpdated($gameName);
 
 WriteGameFile();
 
-$response = new stdClass();
 $response->success = true;
 echo (json_encode($response));

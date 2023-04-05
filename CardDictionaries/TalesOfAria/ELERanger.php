@@ -12,55 +12,46 @@
         if(DelimStringContains($additionalCosts, "ICE")) { if($rv != "") $rv .= " "; $rv .= "The opponent gets a Frostbite."; PlayAura("ELE111", $otherPlayer); }
         return $rv;
       case "ELE033":
-        if(ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
+        LoadArrow($currentPlayer);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode", 1);
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Dominate", 1);
-        AddDecisionQueue("SHIVER", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("MODAL", $currentPlayer, "SHIVER", 1);
         return "";
       case "ELE034":
-        if(ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
+        LoadArrow($currentPlayer);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode", 1);
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Go_again", 1);
-        AddDecisionQueue("VOLTAIRE", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("MODAL", $currentPlayer, "VOLTAIRE", 1);
         return "";
       case "ELE035":
         AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
-        return "Makes cards and activating abilities by the opponent cost 1 more this turn.";
+        return "";
       case "ELE037":
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
-        if(DelimStringContains($additionalCosts, "ICE") && DelimStringContains($additionalCosts, "LIGHTNING"))
-        {
+        if(DelimStringContains($additionalCosts, "ICE") && DelimStringContains($additionalCosts, "LIGHTNING")) {
           AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
-          WriteLog(CardLink($cardID, $cardID)." gets fuse bonuses.");
         }
         return "";
       case "ELE214":
         $arsenal = &GetArsenal($currentPlayer);
-        for($i=0; $i < count($arsenal); $i+=ArsenalPieces())
-        {
+        for($i=0; $i < count($arsenal); $i+=ArsenalPieces()) {
           AddPlayerHand($arsenal[$i], $currentPlayer, "ARS");
         }
         $arsenal = [];
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
         AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDARSENALFACEDOWN", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("ADDARSENAL", $currentPlayer, "HAND-DOWN", 1);
         return "";
       case "ELE215":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your next arrow attack +3 and if it hits destroys your opponent's hand an arsenal next turn.";
+        return "";
       case "ELE219": case "ELE220": case "ELE221":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Reload();
-        return "Gives your next arrow attack this turn +" . EffectAttackModifier($cardID) . " and lets you reload.";
+        return "";
       default: return "";
     }
   }
@@ -74,9 +65,8 @@
         if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) DamageTrigger($defPlayer, NumEquipment($defPlayer), "ATTACKHIT");
         break;
       case "ELE216": case "ELE217": case "ELE218":
-        if(HasIncreasedAttack())
-        {
-          WriteLog(CardLink($cardID, $cardID). " allows you to Reload.");
+        if(HasIncreasedAttack()) {
+          WriteLog(CardLink($cardID, $cardID). " allows you to Reload");
           Reload($mainPlayer);
         }
         break;
@@ -86,47 +76,33 @@
 
   function Fuse($cardID, $player, $elements)
   {
-    if(!CanRevealCards($player))
-    {
-      WriteLog("Cannot fuse because you cannot reveal cards.");
+    if(!CanRevealCards($player)) {
+      WriteLog("Cannot fuse because you cannot reveal cards");
       return;
     }
     $elementArray = explode(",", $elements);
     $elementText = "";
     $isAndOrFuse = IsAndOrFuse($cardID);
-
-    // First fuse ask to fuse all elements
     for($i=0; $i<count($elementArray); ++$i)
     {
       $element = $elementArray[$i];
-      // If there's multiple elements and it's an AND fusion, subsequent elements
-      // depends on the previous ones being fulfilled.
       $subsequent = ($i > 0 && !$isAndOrFuse) ? 1 : 0;
       AddDecisionQueue("FINDINDICES", $player, "HAND" . $element, $subsequent);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to fuse", 1);
       AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
-      AddDecisionQueue("NOFUSE", $player, $cardID); //
       AddDecisionQueue("REVEALHANDCARDS", $player, "-", 1);
-      if ($isAndOrFuse)
-      {
+      if($isAndOrFuse) {
         AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
         if($i > 0) $elementText .= " and/or ";
       }
-      else
-      {
-        if($i > 0) $elementText .= " and ";
-      }
+      else if($i > 0) $elementText .= " and ";
       $elementText .= $element;
     }
-
-    // Then if all elements have been fused allow the fusion
-    if (!$isAndOrFuse)
-    {
+    if(!$isAndOrFuse) {
       $elements = implode(",", $elementArray);
       AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $elements, 1);
     }
-
-    WriteLog("You may fuse " . $elementText . " for " . CardLink($cardID, $cardID) . ".");
+    WriteLog("You may fuse " . $elementText . " for " . CardLink($cardID, $cardID));
   }
 
   function IsAndOrFuse($cardID)
@@ -178,7 +154,8 @@
       case "ELE073": case "ELE074": case "ELE075": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
       case "ELE076": case "ELE077": case "ELE078": SetClassState($player, $CS_NextNAAInstant, 1); break;
       case "ELE079": case "ELE080": case "ELE081":
-        PrependDecisionQueue("SHOWSELECTEDCARD", $player, "-", 1);
+        PrependDecisionQueue("WRITELOG", $player, "<0> was selected.", 1);
+        PrependDecisionQueue("SETDQVAR", $player, "0", 1);
         PrependDecisionQueue("ADDBOTDECK", $player, "-", 1);
         PrependDecisionQueue("REMOVEDISCARD", $player, "-", 1);
         PrependDecisionQueue("MAYCHOOSEDISCARD", $player, "<-", 1);
@@ -217,23 +194,21 @@
     $otherPlayer = ($player == 1 ? 2 : 1);
     if (count($targetHand) > 0) {
       if ($fromDQ) {
-        PrependDecisionQueue("SHOWDISCARDEDCARD", $player, "-", 1);
-        PrependDecisionQueue("DISCARDMYHAND", $player, "-", 1);
-        PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
-        PrependDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
-        PrependDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-        PrependDecisionQueue("FINDRESOURCECOST", $player, $amount, 1);
-        PrependDecisionQueue("PAYORDISCARD", $player, "if_they_want_to_pay_or_discard_a_card", ($passable ? 1 : 0), 1);
-        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " or discard a card");
+        PummelHit($player, passable:true, fromDQ:true);
+        PrependDecisionQueue("ELSE", $player, "-");
+        PrependDecisionQueue("PAYRESOURCES", $player, "-", 1);
+        PrependDecisionQueue("PASSPARAMETER", $player, $amount, 1);
+        PrependDecisionQueue("NOPASS", $player, "-", ($passable ? 1 : 0), 1);
+        PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding", ($passable ? 1 : 0), 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " to avoid discarding");
       } else {
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " or discard a card");
-        AddDecisionQueue("PAYORDISCARD", $player, "if_they_want_to_pay_or_discard_a_card", ($passable ? 1 : 0), 1);
-        AddDecisionQueue("FINDRESOURCECOST", $player, $amount, 1);
-        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-        AddDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
-        AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
-        AddDecisionQueue("DISCARDMYHAND", $player, "-", 1);
-        AddDecisionQueue("SHOWDISCARDEDCARD", $player, "-", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " to avoid discarding");
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding", ($passable ? 1 : 0), 1);
+        AddDecisionQueue("NOPASS", $player, "-", ($passable ? 1 : 0), 1);
+        AddDecisionQueue("PASSPARAMETER", $player, $amount, 1);
+        AddDecisionQueue("PAYRESOURCES", $player, "-", 1);
+        AddDecisionQueue("ELSE", $player, "-");
+        PummelHit($player, passable:true, fromDQ:false);
       }
     }
   }
@@ -242,7 +217,6 @@
   {
     switch($cardID)
     {
-      //Guardian
       case "ELE004": return "ICE";
       case "ELE005": return "EARTH,ICE";
       case "ELE006": return "EARTH";
@@ -333,9 +307,6 @@
         case "UPR140":
           if($element == "ICE")
           {
-            // PayOrDiscard(($player == 1 ? 2 : 1), 2, true);
-            // --$auras[$i+2];
-            // if($auras[$i+2] == 0) { WriteLog(CardLink($auras[$i], $auras[$i])." was destroyed."); DestroyAura($player, $i); }
             AddLayer("TRIGGER", $player, $auras[$i], $otherPlayer, uniqueID:$auras[$i+6]);
           }
           break;

@@ -16,13 +16,18 @@ SetHeaders();
 $_POST = json_decode(file_get_contents('php://input'), true);
 $gameName = TryPOST("gameName", 0);
 $playerID = TryPOST("playerID", 0);
-if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
-else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
+if($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
+else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
 else $authKey = TryPOST("authKey");
 
 $response = new stdClass();
-
 session_write_close();
+
+if($playerID != 1 && $playerID != 2) {
+  $response->error = "Invalid player ID";
+  echo(json_encode($response));
+  exit;
+}
 
 if (!file_exists("../Games/" . $gameName . "/GameFile.txt")) {
   echo (json_encode(new stdClass()));

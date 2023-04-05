@@ -25,7 +25,7 @@
         return "";
       case "ELE070": case "ELE071": case "ELE072":
         AddDecisionQueue("CLASSSTATEGREATERORPASS", $currentPlayer, $CS_ArcaneDamageDealt . "-1", 1);
-        AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
+        AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
         return "";
       case "ELE079": case "ELE080": case "ELE081":
         if(GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0)
@@ -34,7 +34,8 @@
           AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
           AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
           AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
-          AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
+          AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+          AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was selected.", 1);
         }
         return "";
       case "ELE085": case "ELE086": case "ELE087":
@@ -86,7 +87,8 @@
     AddDecisionQueue("MAYCHOOSEDISCARD", $otherPlayer, "<-", 1);
     AddDecisionQueue("REMOVEDISCARD", $otherPlayer, "-", 1);
     AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK,INST", 1);
-    AddDecisionQueue("SHOWBANISHEDCARD", $otherPlayer, "-", 1);
+    AddDecisionQueue("SETDQVAR", $otherPlayer, "0", 1);
+    AddDecisionQueue("WRITELOG", $otherPlayer, "<0> was banished.", 1);
   }
 
 ?>

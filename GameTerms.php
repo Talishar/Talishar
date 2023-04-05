@@ -80,8 +80,6 @@ function TypeToPlay($phase)
       return "cards from deck";
     case "YESNO":
       return str_replace("_", " ", $turn[2]);
-    case "PAYORDISCARD":
-      return str_replace("_", " ", $turn[2]);
     case "MULTICHOOSETEXT":
       return " options";
     case "MAYMULTICHOOSETEXT":
@@ -102,14 +100,14 @@ function TypeToPlay($phase)
       return "a card from banish";
     case "INSTANT":
       return "an instant";
+    case "END":
+      return "an order for triggers";
     case "CHOOSEFIRSTPLAYER":
       return "who will be the first player";
     case "MAYCHOOSETHEIRDISCARD":
       return "a card from their graveyard";
     case "CHOOSEMYAURA":
       return " an aura";
-    case "CHOOSETHEIRAURA":
-      return "one of their auras";
     case "DYNPITCH":
       return "how much you want to pay";
     case "CHOOSEMYSOUL": case "MAYCHOOSEMYSOUL":
