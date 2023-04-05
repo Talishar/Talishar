@@ -408,7 +408,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i + 1] && AbilityPlayableFromCombatChain($combatChain[$i]) && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
       $actionDisabled = 0;
       $aimCounters = 0;
-      if (SearchCurrentTurnEffects("AIM", $mainPlayer) && CardSubType($combatChain[$i]) == "Arrow") $aimCounters = 1;
+      if($i == 0 && HasAimCounter()) $aimCounters = 1;
       echo (Card($combatChain[$i], "concat", $cardSize, $action, 1, $actionDisabled, $combatChain[$i + 1] == $playerID ? 1 : 2, 0, strval($i), atkCounters: $aimCounters, controller: $combatChain[$i + 1]));
     }
   }
@@ -508,14 +508,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo CreatePopup("YESNO", [], 0, 1, $caption, 1, $content);
   }
 
-  if ($turn[0] == "PAYORDISCARD" && $turn[1] == $playerID) {
-    $content = CreateButton($playerID, "Pay", 28, "PAY", "20px");
-    $content .= CreateButton($playerID, "Discard", 28, "DISCARD", "20px");
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose " . TypeToPlay($turn[0]);
-    echo CreatePopup("PAYORDISCARD", [], 0, 1, $caption, 1, $content);
-  }
-
   if ($turn[0] == "OK" && $turn[1] == $playerID) {
     $content = CreateButton($playerID, "Ok", 99, "OK", "20px");
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
@@ -580,7 +572,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo CreatePopup("HANDTOPBOTTOM", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, $content);
   }
 
-  if (($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "CHOOSEMULTIZONE") && $turn[1] == $playerID) {
+  if(($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "CHOOSEMULTIZONE") && $turn[1] == $playerID) {
     $content = "";
     $content .= "<div display:inline;'>";
     $options = explode(",", $turn[2]);
@@ -702,15 +694,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   if (($turn[0] == "CHOOSETHEIRHAND") && $turn[1] == $playerID) {
-    ChoosePopup($theirHand, $turn[2], 16, "Choose a card from your opponent hand");
+    ChoosePopup($theirHand, $turn[2], 16, "Choose a card from your opponent's hand");
   }
 
   if (($turn[0] == "CHOOSEMYAURA") && $turn[1] == $playerID) {
     ChoosePopup($myAuras, $turn[2], 16, "Choose one of your auras");
-  }
-
-  if (($turn[0] == "CHOOSETHEIRAURA") && $turn[1] == $playerID) {
-    ChoosePopup($theirAuras, $turn[2], 16, "Choose one of your opponent auras");
   }
 
   if (($turn[0] == "CHOOSEDISCARD" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID) {
@@ -720,7 +708,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   if (($turn[0] == "MAYCHOOSETHEIRDISCARD") && $turn[1] == $playerID) {
-    ChoosePopup($theirDiscard, $turn[2], 16, "Choose a card from your opponent discard");
+    ChoosePopup($theirDiscard, $turn[2], 16, "Choose a card from your opponent's graveyard");
   }
 
   if (($turn[0] == "CHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSECOMBATCHAIN") && $turn[1] == $playerID) {
@@ -733,10 +721,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   if ($turn[0] == "CHOOSETHEIRCHARACTER" && $turn[1] == $playerID) {
     ChoosePopup($theirCharacter, $turn[2], 16, "Choose a card from your opponent character/equipment", CharacterPieces());
-  }
-
-  if ($turn[0] == "CHOOSETHEIRITEM" && $turn[1] == $playerID) {
-    ChoosePopup($theirItems, $turn[2], 16, "Choose one of your opponent items", ItemPieces());
   }
 
   if (($turn[0] == "CHOOSEMYSOUL" || $turn[0] == "MAYCHOOSEMYSOUL") && $turn[1] == $playerID) {
@@ -917,7 +901,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
   }
   if (count($theirItems) > 0) {
-    for ($i = 0; $i < count($theirItems); $i += ItemPieces()) {
+    for ($i = 0; $i+ItemPieces()-1 < count($theirItems); $i += ItemPieces()) {
       if (IsTileable($theirItems[$i])) continue;
       echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($theirItems[$i], "concat", $cardSizeAura, 0, 1, $theirItems[$i + 2] != 2 ? 1 : 0, 0, $theirItems[$i + 1], "", "", false, 0, 0, 0, "ITEMS", controller: $otherPlayer) . "&nbsp");
@@ -932,7 +916,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $theirAllies = GetAllies($otherPlayer);
   if (count($theirAllies) > 0) {
-    for ($i = 0; $i < count($theirAllies); $i += AllyPieces()) {
+    for ($i = 0; $i+AllyPieces()-1 < count($theirAllies); $i += AllyPieces()) {
       $lifeCounters = $theirAllies[$i + 2];
       $enduranceCounters = $theirAllies[$i + 6];
       $subcard = $theirAllies[$i + 4];

@@ -17,7 +17,7 @@
         return $rv;
       case "ELE103": case "ELE104": case "ELE105":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives the next attack you Fuse this turn +" . EffectAttackModifier($cardID) . ".";
+        return "";
       case "ELE106": GainHealth(3, $currentPlayer); return "";
       case "ELE107": GainHealth(2, $currentPlayer); return "";
       case "ELE108": GainHealth(1, $currentPlayer); return "";
@@ -27,7 +27,7 @@
         } else {
           AddCurrentTurnEffect($cardID, $currentPlayer);
         }
-        return "Gives your next Lightning, Ice, or Elemental attack this turn +4.";
+        return "";
       case "ELE113":
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "2-", 1);
@@ -48,27 +48,28 @@
         AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was selected.", 1);
         return "";
       case "ELE118":
-        MyDrawCard();
-        MyDrawCard();
-        MyDrawCard();
-        return "Draws 3 cards.";
+        Draw($currentPlayer);
+        Draw($currentPlayer);
+        Draw($currentPlayer);
+        return "";
       case "ELE119": case "ELE120": case "ELE121":
         if($from == "ARS")
         {
-          $rv = "Goes to the bottom of your deck when the combat chain closes.";
+          $rv = "Goes to the bottom of your deck when the combat chain closes";
         }
         return $rv;
       case "ELE122": case "ELE123": case "ELE124":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your next Earth or Elemental attack action card this turn +" . EffectAttackModifier($cardID) .", and +1 if it's fused.";
+        return "";
       case "ELE125": case "ELE126": case "ELE127":
        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
        AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
-       AddDecisionQueue("COMBATCHAINBUFFDEFENSE", $currentPlayer, PlayBlockModifier($cardID), 1);
-       return "Gives target defending card " . PlayBlockModifier($cardID) . ".";
+       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $currentPlayer, PlayBlockModifier($cardID), 1);
+       return "";
       case "ELE131": case "ELE132": case "ELE133":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
         AddDecisionQueue("MAYCHOOSEARSENAL", $currentPlayer, "<-", 1);
@@ -84,113 +85,108 @@
         AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was selected.", 1);
         if($from == "ARS") AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
       case "ELE143":
         if($from == "PLAY")
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Gives your attack actions cards +1 power and +1 defense for the rest of the turn.";
+          $rv = "Gives your attack actions cards +1 power and +1 defense for the rest of the turn";
         }
         return $rv;
       case "ELE144":
         AddCurrentTurnEffect($cardID, $otherPlayer);
-        return "Makes cards and activated abilities of your opponent cost +1 resource this turn.";
+        return "";
       case "ELE145":
         PlayAura("ELE111", $otherPlayer);
-        return "Creates a frostbite for the other player.";
+        return "";
       case "ELE147":
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_to_pay_2_or_you_lose_and_can't_gain_go_again.");
         AddDecisionQueue("BUTTONINPUT", $mainPlayer, "0,2", 0, 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-        AddDecisionQueue("BLIZZARDLOG", $mainPlayer, "-", 1);
         AddDecisionQueue("GREATERTHANPASS", $mainPlayer, "0", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $cardID, 1);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "Lost Go Again", 1);
+        AddDecisionQueue("ELSE", $mainPlayer, $cardID);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "Resources were paid", 1);
         return "";
       case "ELE151": case "ELE152": case "ELE153":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
-        return "Gives your next attack this turn +" . EffectAttackModifier($cardID) . " and each hit creates a frostbite.";
+        return "";
       case "ELE154": case "ELE155": case "ELE156":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your next Ice or Elemental attack action card this turn +" . EffectAttackModifier($cardID) . " and Dominate if it's fused.";
+        return "";
       case "ELE163": case "ELE164": case "ELE165":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Makes your next Ice or Elemental attack create Frostbites for your opponent.";
+        return "";
       case "ELE166": case "ELE167": case "ELE168":
         if($cardID == "ELE166") $cost = 3;
         else if($cardID == "ELE167") $cost = 2;
         else $cost = 1;
-        AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose_if_you_want_to_pay_".$cost."_to_prevent_your_opponent_next_attack_to_gain_Dominate.");
+        AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose_if_you_want_to_pay_".$cost."_to_prevent_Dominate.");
         AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
         AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
-        if($from == "ARS") MyDrawCard();
+        if($from == "ARS") Draw($currentPlayer);
         return "";
-      case "ELE169": PayOrDiscard($otherPlayer, 3); return "Makes the opponent pay 3 or discard a card.";
-      case "ELE170": PayOrDiscard($otherPlayer, 2); return "Makes the opponent pay 2 or discard a card.";
-      case "ELE171": PayOrDiscard($otherPlayer, 1); return "Makes the opponent pay 1 or discard a card.";
+      case "ELE169": PayOrDiscard($otherPlayer, 3); return "Makes the opponent pay 3 or discard";
+      case "ELE170": PayOrDiscard($otherPlayer, 2); return "Makes the opponent pay 2 or discard";
+      case "ELE171": PayOrDiscard($otherPlayer, 1); return "Makes the opponent pay 1 or discard";
       case "ELE172":
-        if($from == "PLAY")
-        {
+        if($from == "PLAY") {
           PayOrDiscard($otherPlayer, 2);
-          $rv = "Makes your opponent pay 2 resources or discard a card.";
+          $rv = "Makes your opponent pay 2 or discard";
         }
         return $rv;
-      //Lightning
       case "ELE173":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Makes your next attack action that hits deals 1 damage.";
+        return "";
       case "ELE176":
-        if($currentPlayer == $mainPlayer) {++$actionPoints; $rv = "Grants an action point."; }
-        return $rv;
+        GainActionPoints(1, $currentPlayer);
+        return "";
       case "ELE177": case "ELE178": case "ELE179":
         AddAfterResolveEffect($cardID, $currentPlayer);
-        return "Gives your next applicable action card go again.";
+        return "";
       case "ELE180": case "ELE181": case "ELE182":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your next lightning or elemental attack +" . EffectAttackModifier($cardID) . " and go again if it's fused.";
+        return "";
       case "ELE183": case "ELE184": case "ELE185":
         $amount = 3;
         if($cardID == "ELE184") $amount = 2;
         else if($cardID == "ELE185") $amount = 1;
         $targetIndex = intval(explode("-", $target)[1]);
-        if ($targetIndex != 0) {
-          CombatChainPowerModifier($targetIndex, $amount);
-        }
-        else {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-        }
+        if($targetIndex != 0) CombatChainPowerModifier($targetIndex, $amount);
+        else AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "ELE186": case "ELE187": case "ELE188":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "ELE189": case "ELE190": case "ELE191":
-        if($from == "ARS") { $rv = "Gains go again."; GiveAttackGoAgain(); }
-        return $rv;
+        if($from == "ARS") GiveAttackGoAgain();
+        return "";
       case "ELE195": case "ELE196": case "ELE197":
         if($from == "PLAY")
         {
           AddCurrentTurnEffect($cardID, $currentPlayer, "", 1);
-          $rv = "Deals 1 extra damage if hits a hero.";
+          $rv = "Deals 1 extra damage if hits a hero";
         }
         return $rv;
       case "ELE198": case "ELE199": case "ELE200":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        if($from == "ARS") MyDrawCard();
-        return $rv;
+        if($from == "ARS") Draw($currentPlayer);
+        return "";
       case "ELE201":
-        if($from == "PLAY")
-        {
-          if (count($combatChain) > 0) GiveAttackGoAgain();
+        if($from == "PLAY") {
+          if(count($combatChain) > 0) GiveAttackGoAgain();
           else AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Gives target action go again.";
         }
-        return $rv;
+        return "";
       case "ELE233":
-        MyDrawCard();
+        Draw($currentPlayer);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
         AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
@@ -198,13 +194,13 @@
         return "";
       case "ELE234":
         GainResources($currentPlayer, 3);
-        return "Gain 3 resources.";
+        return "";
       case "ELE235":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your next attack action card this turn +1.";
+        return "";
       case "ELE236":
         IncrementClassState($currentPlayer, $CS_DamagePrevention);
-        return "Prevents the next 1 damage that would be dealt to you this turn.";
+        return "";
       default: return "";
     }
   }
@@ -276,7 +272,7 @@
   function ExposedToTheElementsEarth($player)
   {
       $otherPlayer = $player == 1 ? 2 : 1;
-      PrependDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
+      PrependDecisionQueue("MODDEFCOUNTER", $otherPlayer, "-1", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
   }
@@ -284,7 +280,7 @@
   function ExposedToTheElementsIce($player)
   {
       $otherPlayer = $player == 1 ? 2 : 1;
-      PrependDecisionQueue("DESTROYTHEIRCHARACTER", $player, "-", 1);
+      PrependDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP0", 1);
       PrependDecisionQueue("WRITELOG", $player, "Declined_to_pay_for_Exposed_to_the_Elements.", 1);
@@ -300,7 +296,7 @@
     WriteLog("Korshem triggered by revealing a card.");
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose a bonus", 1);
     AddDecisionQueue("BUTTONINPUT", $player, "Gain_a_resource,Gain_a_life,1_Attack,1_Defense");
-    AddDecisionQueue("KORSHEM", $player, "-", 1);
+    AddDecisionQueue("MODAL", $player, "KORSHEM", 1);
   }
 
 ?>

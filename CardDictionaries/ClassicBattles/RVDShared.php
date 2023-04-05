@@ -44,44 +44,34 @@ function RVDPlayAbility($cardID)
 {
   global $currentPlayer;
   $rv = "";
-  switch ($cardID) {
+  switch($cardID) {
     case "RVD004":
-      $resources = &GetResources($currentPlayer);
-      $resources[0] += 1;
-      return "Gain 1 resource.";
-
+      GainResources($currentPlayer, 1);
+      return "";
     case "RVD013":
-      WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-      MyDrawCard();
+      Draw($currentPlayer);
       $card = DiscardRandom();
       $rv = "Discarded " . CardLink($card, $card);
-      if (AttackValue($card) >= 6) {
+      if(AttackValue($card) >= 6) {
         Intimidate();
-        $rv .= " and intimidate from discarding a card with 6 or more power";
+        $rv .= " and intimidated from discarding a card with 6 or more power";
       }
-      $rv .= ".";
       return $rv;
     case "RVD025":
-      $rv = "Intimidates";
       Intimidate();
-      return $rv;
+      return "";
   }
 }
 
 function ChiefRukutanAbility($player, $index)
 {
-  $log = CardLink("RVD007", "RVD007") . " Intimidates";
+  $rv = CardLink("RVD007", "RVD007") . " Intimidates";
   Intimidate();
   $arsenal = &GetArsenal($player);
   ++$arsenal[$index + 3];
   if ($arsenal[$index + 3] == 2) {
-    $log .= " and searches for an Alpha Rampage card";
-    RemoveArsenal($player, $index);
-    BanishCardForPlayer("RVD007", $player, "ARS", "-");
-    AddDecisionQueue("FINDINDICES", $player, "DECKCARD,WTR006");
-    AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
-    AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
-    AddDecisionQueue("SHUFFLEDECK", $player, "-");
+    $rv .= " and searches for an Alpha Rampage";
+    MentorTrigger($player, $index, specificCard:"WTR006");
   }
-  WriteLog($log . ".");
+  WriteLog($rv);
 }

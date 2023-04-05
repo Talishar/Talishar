@@ -215,7 +215,7 @@
     {
       case "EVR003":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Lets you roll an extra die this turn.";
+        return "";
       case "EVR004":
         $roll = GetDieRoll($currentPlayer);
         AddCurrentTurnEffect($cardID . "," . $roll, $currentPlayer);
@@ -233,8 +233,7 @@
         }
         return $rv . ".";
       case "EVR008": case "EVR009": case "EVR010":
-        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        MyDrawCard();
+        Draw($currentPlayer);
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
@@ -242,11 +241,9 @@
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv .= " and got +2 from discarding a card with 6 or more power";
         }
-        $rv .= ".";
         return $rv;
       case "EVR011": case "EVR012": case "EVR013":
-        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        MyDrawCard();
+        Draw($currentPlayer);
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
@@ -254,17 +251,14 @@
           GiveAttackGoAgain();
           $rv .= " and got go again from discarding a card with 6 or more power";
         }
-        $rv .= ".";
         return $rv;
       case "EVR014": case "EVR015": case "EVR016":
-        $rv = "Did nothing.";
         if($cardID == "EVR014") $target = 4;
         else if($cardID == "EVR015") $target = 5;
         else $target = 6;
         $roll = GetDieRoll($currentPlayer);
-        if($roll >= $target)
-        {
-          $rv = "Gives the next Brute attack action card +5.";
+        if($roll >= $target) {
+          $rv = "Gives the next Brute attack action card +5";
           AddCurrentTurnEffect($cardID, $currentPlayer);
         }
         return $rv;
@@ -273,26 +267,26 @@
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
-        return "Lets you tutor an aura.";
+        return "";
       case "EVR023":
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Chest;hasNegCounters=true");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which chest pieces to remove a -1 defense counter");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
-        AddDecisionQueue("REMOVENEGDEFCOUNTER", $currentPlayer, "-", 1);
-        return "Remove a -1 counter from a chest equipment.";
+        AddDecisionQueue("MZOP", $currentPlayer, "GETCARDINDEX", 1);
+        AddDecisionQueue("MODDEFCOUNTER", $currentPlayer, "1", 1);
+        return "";
       case "EVR030": case "EVR031": case "EVR032":
         if($cardID == "EVR030") $amount = 3;
         else if($cardID == "EVR031") $amount = 2;
         else $amount = 1;
         PlayAura("WTR075", $currentPlayer, $amount);
-        return "Creates " . $amount . " Seismic Surge tokens.";
+        return "";
       case "EVR033": case "EVR034": case "EVR035":
         if ($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard(($currentPlayer == 1 ? 2 : 1), $target));
-        return "Prevents damage this turn.";
+        return "";
       case "EVR047": case "EVR048": case "EVR049":
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-        AddDecisionQueue("TWINTWISTERS", $currentPlayer, $cardID);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts);
+        AddDecisionQueue("MODAL", $currentPlayer, "TWINTWISTERS");
         return "";
       case "EVR053":
         $rv = "You have no cards in your deck.";
@@ -331,11 +325,11 @@
         AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-Buff_Weapon,Buff_Weapon,Go_Again,Go_Again,Another_Swing,Another_Swing", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose {0} modes");
         AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "<-", 1);
-        AddDecisionQueue("BLOODONHERHANDS", $currentPlayer, "-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "BLOODONHERHANDS", 1);
         break;
       case "EVR056":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your weapon +1 each time you attack this turn, but loses all counters at end of turn.";
+        return "";
       case "EVR057": case "EVR058": case "EVR059":
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
@@ -343,7 +337,7 @@
       case "EVR060": case "EVR061": case "EVR062":
         GiveAttackGoAgain();
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
-        return "Gives go again and buffs your next 1H weapon attack.";
+        return "";
       case "EVR066": case "EVR067": case "EVR068":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
@@ -356,15 +350,14 @@
           if($items[GetClassState($currentPlayer, $CS_PlayIndex)+3] == 2) { $rv = "Gained an action point from Micro-Processor."; GainActionPoints(1); }
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
           AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Opt,Draw_then_top_deck,Banish_top_deck");
-          AddDecisionQueue("MICROPROCESSOR", $currentPlayer, "-", 1);
+          AddDecisionQueue("MODAL", $currentPlayer, "MICROPROCESSOR", 1);
         }
         return $rv;
       case "EVR073": case "EVR074": case "EVR075":
         if($combatChainState[$CCS_NumBoosted] && !IsAllyAttackTarget()) {
           $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
-          $rv = "Requires you to block with an equipment if able.";
         }
-        return $rv;
+        return "";
       case "EVR079": case "EVR080": case "EVR081":
         $numBoosts = GetClassState($currentPlayer, $CS_NumBoosted);
         Opt($cardID, $numBoosts);
@@ -386,46 +379,42 @@
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("DQVARPASSIFSET", $currentPlayer, "0");
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-        return "Let the opponent choose if they want to sink a card for a silver.";
+        return "";
       case "EVR087":
-        if(ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
-        AddDecisionQueue("DREADBORE", $currentPlayer, $cardID, 1);
+        LoadArrow($currentPlayer);
+        AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",HAND", 1);
         return "";
       case "EVR089":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON,Bow");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMZUSES", $currentPlayer, 2, 1);
-        return "Gives your bow 2 additional uses.";
+        return "";
       case "EVR090":
         AddCurrentTurnEffect($cardID, 1);
         AddCurrentTurnEffect($cardID, 2);
-        return "Gives Arrow attacks +2 this turn.";
+        return "";
       case "EVR091": case "EVR092": case "EVR093":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
-        return "Buffs your next arrow and prevents Defense reactions on the chain link.";
+        return "";
       case "EVR100": case "EVR101": case "EVR102":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Opt($cardID, 1);
         return "";
       case "EVR103":
         PlayAura("ARC112", $currentPlayer, 2);
-        return "Creates 2 Runechants.";
+        return "";
       case "EVR106":
         if(GetClassState($currentPlayer, $CS_NumNonAttackCards) > 1 && GetClassState($currentPlayer, $CS_NumAttackCards) > 0)
         {
           PlayAura("ARC112", $currentPlayer, 4);
-          $rv = "Creates 4 Runechants.";
+          $rv = "Creates 4 Runechants";
         }
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return $rv;
       case "EVR121":
         DealArcane(1, 1, "ABILITY", $cardID);
-        AddDecisionQueue("KRAKENAETHERVEIN", $currentPlayer, "-");
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "KRAKENAETHERVEIN");
         return "";
       case "EVR123":
         DealArcane(4, 1, "PLAYCARD", $cardID, resolvedTarget: $target);
@@ -438,9 +427,9 @@
       case "EVR124":
         for($i=0; $i<$resourcesPaid; ++$i)
         {
-          AddDecisionQueue("FINDINDICES", $otherPlayer, "AURAMAXCOST,0");
-          AddDecisionQueue("CHOOSETHEIRAURA", $currentPlayer, "<-", 1);
-          AddDecisionQueue("DESTROYAURA", $otherPlayer, "-", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:maxCost=0");
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         }
         AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid);
         return "";
@@ -459,28 +448,28 @@
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
-        AddDecisionQueue("PRY", $currentPlayer, "<-", 1);
-        return "Removes a card from target hero hand. Make sure you choose the right number of options.";
+        AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "PRY", 1);
+        return "";
       case "EVR134": case "EVR135": case "EVR136":
         DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
         return "";
       case "EVR137":
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may choose an Illusionist Aura to destroy and replace.");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an Illusionist Aura to destroy and replace");
         AddDecisionQueue("FINDINDICES", $currentPlayer, "AURACLASS,ILLUSIONIST");
         AddDecisionQueue("MULTIZONEFORMAT", $currentPlayer, "MYAURAS", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
+        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CROWNOFREFLECTION", 1);
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
-        return "Lets you destroy an aura and play a new one.";
+        return "";
       case "EVR138":
         FractalReplicationStats("Ability");
-        return "Will copy effects of other Illusionist cards on the combat chain. Note that cards that are no longer on the chain (for example, went to Soul) are not counted.";
+        return "";
       case "EVR150": case "EVR151": case "EVR152":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Buffs your next attack action card and makes it draw if it is destroyed.";
+        return "";
       case "EVR157":
         if($from == "PLAY")
         {
@@ -491,16 +480,9 @@
       case "EVR160":
         Draw(1);
         Draw(2);
-        if($currentPlayer != $mainPlayer)
-        {
-          AddCurrentTurnEffect($cardID, $otherPlayer); //If played as an instant, needs to apply to the current turn
-        }
-        else
-        {
-          AddCurrentTurnEffect($cardID . "-1", $currentPlayer); //Doesn't do anything just show it in the effects
-          AddNextTurnEffect($cardID, $otherPlayer);
-        }
-        return "Draws a card for each player and gave attacks targeting you -1.";
+        if($currentPlayer != $mainPlayer) AddCurrentTurnEffect($cardID, $otherPlayer); //If played as an instant, needs to apply to the current turn
+        else AddNextTurnEffect($cardID, $otherPlayer);
+        return "";
       case "EVR161": case "EVR162": case "EVR163":
         $rand = GetRandom(1, 3);
         $altCostPaid = DelimStringContains($additionalCosts, "ALTERNATIVECOST");
@@ -517,8 +499,11 @@
         else if($cardID == "EVR169") $times = 2;
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-        AddDecisionQueue("SHOWSELECTEDHANDCARD", $otherPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MYHAND-", 1);
+        AddDecisionQueue("MZOP", $otherPlayer, "GETCARDID", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<1> was chosen", 1);
         for($i=0; $i<$times; ++$i)
         {
           AddDecisionQueue("PICKACARD", $currentPlayer, "-", 1);
@@ -539,7 +524,7 @@
         else if($cardID == "EVR174") $opt = 2;
         else if($cardID == "EVR175") $opt = 1;
         Opt($cardID, $opt);
-        AddDecisionQueue("EVENBIGGERTHANTHAT", $currentPlayer, "-");
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVENBIGGERTHANTHAT");
         return "";
       case "EVR176":
         if($from == "PLAY")
@@ -556,17 +541,14 @@
       case "EVR177":
         if($from == "PLAY")
         {
-          if (ShouldAutotargetOpponent($currentPlayer)) {
-            $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-            PummelHit($otherPlayer);
-            PummelHit($otherPlayer);
+          if(ShouldAutotargetOpponent($currentPlayer)) {
+            AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
           }
-          else
-          {
+          else {
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
             AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
-            AddDecisionQueue("AMULETOFECHOES", $currentPlayer, "<-", 1);
           }
+          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "AMULETOFECHOES", 1);
         }
         return "";
       case "EVR178":
@@ -753,7 +735,7 @@
           AddDecisionQueue("FINDINDICES", $defPlayer, "AURACLASS,");
           AddDecisionQueue("MULTIZONEFORMAT", $defPlayer, "THEIRAURAS", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MULTIZONEDESTROY", $mainPlayer, "-", 1);
+          AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "ARC112", 1);
           AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
         }
@@ -766,7 +748,8 @@
         AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
         AddDecisionQueue("REMOVEDISCARD", $mainPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $mainPlayer, "-", 1);
-        AddDecisionQueue("SHOWSELECTEDCARD", $mainPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was selected.", 1);
         break;
       case "EVR113": case "EVR114": case "EVR115":
         if(IsHeroAttackTarget() && GetClassState($mainPlayer, $CS_NumAuras) > 0) PummelHit();
@@ -987,16 +970,6 @@
     }
   }
 
-  function TalismanOfCremationBanishPlay()
-  {
-    global $currentPlayer;
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may choose a card to banish with Talisman of Cremation.");
-    AddDecisionQueue("FINDINDICES", $otherPlayer, "GY");
-    AddDecisionQueue("MAYCHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
-    AddDecisionQueue("TALISMANOFCREMATION", $otherPlayer, "-", 1);
-  }
-
   function ShatterIndices($player, $pendingDamage)
   {
     $character = &GetPlayerCharacter($player);
@@ -1038,5 +1011,21 @@
     $itemIndices = SearchMultizoneFormat(SearchItems($player, "A"), "MYITEMS");
     $rv = CombineSearches($equipIndices, $weaponIndices);
     return CombineSearches($rv, $itemIndices);
+  }
+
+  function IsAmuletOfEchoesRestricted()
+  {
+    global $CS_NamesOfCardsPlayed;
+    if($from == "PLAY") {
+      $names = explode(",", GetClassState(1, $CS_NamesOfCardsPlayed));
+      foreach(array_count_values($names) as $name => $count) {
+        if($count > 1) return false;
+      }
+      $names = explode(",", GetClassState(2, $CS_NamesOfCardsPlayed));
+      foreach(array_count_values($names) as $name => $count) {
+        if($count > 1) return false;
+      }
+    }
+    return true;
   }
 ?>

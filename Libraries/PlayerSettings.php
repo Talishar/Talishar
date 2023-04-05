@@ -31,6 +31,7 @@ $SET_FavoriteDeckIndex = 20; //What deck did this player play a game with last
 $SET_GameVisibility = 21; //The visibility of the last game you created
 
 $SET_StreamerMode = 22; //Did this player enable caster mode
+$SET_Playmat = 23; //Did this player enable caster mode
 
 function HoldPrioritySetting($player)
 {
@@ -71,132 +72,85 @@ function IsPatron($player)
 {
   global $SET_IsPatron;
   $settings = GetSettings($player);
-  if (count($settings) < $SET_IsPatron) return false;
+  if(count($settings) < $SET_IsPatron) return false;
   return $settings[$SET_IsPatron] == "1";
 }
 
 function IsLanguageJP($player)
 {
   global $SET_Language;
-  if (function_exists("GetSettings")) {
+  if(function_exists("GetSettings")) {
     $settings = GetSettings($player);
     return $settings[$SET_Language] == "2";
-  } else if (isset($_SESSION['language'])) {
+  } else if(isset($_SESSION['language'])) {
     return $_SESSION['language'] == "2";
   }
   return false;
 }
 
-/*================
-      Card Backs
-  =================*/
+function GetPlaymat($player)
+{
+  global $SET_Playmat;
+  $settings = GetSettings($player);
+  return $settings[$SET_Playmat];
+}
+
 function GetCardBack($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
-  switch ($settings[$SET_Cardback]) {
-    case 1:
-      return "CBBlack";
-    case 2:
-      return "CBCreamWhite";
-    case 3:
-      return "CBGold";
-    case 4:
-      return "CBWhite";
-    case 5:
-      return "CBRed";
-    case 6:
-      return "CBParchment";
-    case 7:
-      return "CBBlue";
-    case 8:
-      return "CBRuneblood";
-    case 9:
-      return "CBPushThePoint";
-    case 10:
-      return "CBGoAgainGaming";
-    case 11:
-      return "CBGAG_AzaleaCult";
-    case 12:
-      return "CBGAG_Azalea";
-    case 13:
-      return "CBGAG_AzaleaShot";
-    case 14:
-      return "CBGAG_Dorinthea";
-    case 15:
-      return "CBGAG_Dromai";
-    case 16:
-      return "CBGAG_Kassai";
-    case 17:
-      return "CBRedZoneRogue";
-    case 18:
-      return "CBRZR_10k";
-    case 19:
-      return "CBRZR_KadikosLibrary";
-    case 20:
-      return "CBRZR_Vehya";
-    case 21:
-      return "CBFabrary1";
-    case 22:
-      return "CBFabrary2";
-    case 23:
-      return "CBManSant";
-    case 24:
-      return "CBAttackActionPodcast";
-    case 25:
-      return "CBArsenalPass";
-    case 26:
-      return "CBTekloFoundry";
-    case 27:
-      return "CBPummelowanko";
-    case 28:
-      return "CBDragonShieldProTeamWB";
-    case 29:
-      return "CBFleshAndCommonBlood";
-    case 30:
-      return "CBSinOnStream";
-    case 31:
-      return "CBFreshAndBuds";
-    case 32:
-      return "CBSloopdoop";
-    case 33:
-      return "CBDMArmada";
-    case 34:
-      return "CBInstantSpeed";
-    case 35:
-      return "CBTheCardGuyz";
-    case 36:
-      return "CBHomeTownTCG";
-    case 37:
-      return "CBAscentGaming";
-    case 38:
-      return "CBFleshAndPod";
-    case 39:
-      return "CBKappolo";
-    case 40:
-      return "CBLibrariansOfSolana";
-    case 41:
-      return "CBTheMetrixMetagame";
-    case 42:
-      return "CBEternalOracles";
-    case 43:
-      return "CBTheTablePit";
-    case 44:
-      return "CBTCGTed";
-    case 45:
-      return "CBLuminaris";
-    case 46:
-      return "CBFaBLab";
-    case 47:
-      return "CBCardAdvantage";
-    case 48:
-      return "CBOnHit";
-    case 49:
-      return "CBSecondCycle";
-    case 50:
-      return "CBRavenousBabble";
-    default:
-      return "CardBack";
+  switch($settings[$SET_Cardback]) {
+    case 1: return "CBBlack";
+    case 2: return "CBCreamWhite";
+    case 3: return "CBGold";
+    case 4: return "CBWhite";
+    case 5: return "CBRed";
+    case 6: return "CBParchment";
+    case 7: return "CBBlue";
+    case 8: return "CBRuneblood";
+    case 9: return "CBPushThePoint";
+    case 10: return "CBGoAgainGaming";
+    case 11: return "CBGAG_AzaleaCult";
+    case 12: return "CBGAG_Azalea";
+    case 13: return "CBGAG_AzaleaShot";
+    case 14: return "CBGAG_Dorinthea";
+    case 15: return "CBGAG_Dromai";
+    case 16: return "CBGAG_Kassai";
+    case 17: return "CBRedZoneRogue";
+    case 18: return "CBRZR_10k";
+    case 19: return "CBRZR_KadikosLibrary";
+    case 20: return "CBRZR_Vehya";
+    case 21: return "CBFabrary1";
+    case 22: return "CBFabrary2";
+    case 23: return "CBManSant";
+    case 24: return "CBAttackActionPodcast";
+    case 25: return "CBArsenalPass";
+    case 26: return "CBTekloFoundry";
+    case 27: return "CBPummelowanko";
+    case 28: return "CBDragonShieldProTeamWB";
+    case 29: return "CBFleshAndCommonBlood";
+    case 30: return "CBSinOnStream";
+    case 31: return "CBFreshAndBuds";
+    case 32: return "CBSloopdoop";
+    case 33: return "CBDMArmada";
+    case 34: return "CBInstantSpeed";
+    case 35: return "CBTheCardGuyz";
+    case 36: return "CBHomeTownTCG";
+    case 37: return "CBAscentGaming";
+    case 38: return "CBFleshAndPod";
+    case 39: return "CBKappolo";
+    case 40: return "CBLibrariansOfSolana";
+    case 41: return "CBTheMetrixMetagame";
+    case 42: return "CBEternalOracles";
+    case 43: return "CBTheTablePit";
+    case 44: return "CBTCGTed";
+    case 45: return "CBLuminaris";
+    case 46: return "CBFaBLab";
+    case 47: return "CBCardAdvantage";
+    case 48: return "CBOnHit";
+    case 49: return "CBSecondCycle";
+    case 50: return "CBRavenousBabble";
+    default: return "CardBack";
   }
 }
 
@@ -316,6 +270,7 @@ function ParseSettingsStringValueToIdInt(string $value)
     "DisableStats" => 15,
     "IsCasterMode" => 16,
     "IsStreamerMode" => 22,
+    "Playmat" => 23,
   );
   return $settingsToId[$value];
 }
@@ -323,42 +278,22 @@ function ParseSettingsStringValueToIdInt(string $value)
 function ChangeSetting($player, $setting, $value, $playerId = "")
 {
   global $SET_MuteChat, $SET_AlwaysHoldPriority, $layerPriority;
-  /*
-  global $SET_ManualMode;
-
-    if($setting == $SET_ManualMode && $value == 1)
-    {
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      WriteLog("Player " . $player . " has requested to enter manual mode.");
-      PrependDecisionQueue("APPROVEMANUALMODE", $player, "-", 1);
-      PrependDecisionQueue("NOPASS", $otherPlayer, "-");
-      PrependDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_allow_the_other_player_to_enter_manual_mode");
-      return;
-    }
-    */
-  if ($player != "") {
+  if($player != "") {
     $settings = &GetSettings($player);
     $settings[$setting] = $value;
-    if ($setting == $SET_MuteChat) {
-      if ($value == "1") {
+    if($setting == $SET_MuteChat) {
+      if($value == "1") {
         ClearLog(1);
         WriteLog("Chat disabled by player " . $player);
       } else {
         WriteLog("Chat enabled by player " . $player);
       }
-    } else if ($setting == $SET_AlwaysHoldPriority) {
+    } else if($setting == $SET_AlwaysHoldPriority) {
       $layerPriority[$player - 1] = "1";
     }
   }
-  if ($playerId != "" && SaveSettingInDatabase($setting)) SaveSetting($playerId, $setting, $value);
+  if($playerId != "" && SaveSettingInDatabase($setting)) SaveSetting($playerId, $setting, $value);
 }
-
-// function ApproveManualMode($player)
-// {
-//   global $SET_ManualMode;
-//   $settings = &GetSettings($player);
-//   $settings[$SET_ManualMode] = $value; // TODO: fix $value. The variable is undefined
-// }
 
 function GetSettingsUI($player)
 {
@@ -402,12 +337,12 @@ function GetSettingsUI($player)
 
   $rv .= "<h3>Card Backs</h3>";
   $hasCardBacks = false;
-  foreach (PatreonCampaign::cases() as $campaign) {
-    if (isset($_SESSION[$campaign->SessionID()]) || (isset($_SESSION["useruid"]) && $campaign->IsTeamMember($_SESSION["useruid"]))) {
+  foreach(PatreonCampaign::cases() as $campaign) {
+    if(isset($_SESSION[$campaign->SessionID()]) || (isset($_SESSION["useruid"]) && $campaign->IsTeamMember($_SESSION["useruid"]))) {
       $hasCardBacks = true;
       $cardBacks = $campaign->CardBacks();
       $cardBacks = explode(",", $cardBacks);
-      for ($i = 0; $i < count($cardBacks); ++$i) {
+      for($i = 0; $i < count($cardBacks); ++$i) {
         $name = $campaign->CampaignName() . (count($cardBacks) > 1 ? " " . $i + 1 : "");
         $rv .= CreateRadioButton($SET_Cardback . "-" . $cardBacks[$i], str_replace(' ', '', $name), 26, $SET_Cardback . "-" . $settings[$SET_Cardback], $name);
       }
@@ -415,50 +350,38 @@ function GetSettingsUI($player)
   }
 
   $rv .= "<BR>";
-  if ($settings[$SET_ManualMode] == 0) $rv .= CreateCheckbox($SET_ManualMode . "-1", "Manual Mode", 26, false, "Manual Mode");
+  if($settings[$SET_ManualMode] == 0) $rv .= CreateCheckbox($SET_ManualMode . "-1", "Manual Mode", 26, false, "Manual Mode");
   else $rv .= CreateCheckbox($SET_ManualMode . "-0", "Manual Mode", 26, true, "Manual Mode");
   $rv .= "<BR>";
 
-  if ($settings[$SET_ColorblindMode] == 0) $rv .= CreateCheckbox($SET_ColorblindMode . "-1", "Accessibility Mode", 26, false, "Accessibility Mode");
+  if($settings[$SET_ColorblindMode] == 0) $rv .= CreateCheckbox($SET_ColorblindMode . "-1", "Accessibility Mode", 26, false, "Accessibility Mode");
   else $rv .= CreateCheckbox($SET_ColorblindMode . "-0", "Accessibility Mode", 26, true, "Accessibility Mode");
   $rv .= "<BR>";
 
-  if ($settings[$SET_EnableDynamicScaling] == 0) $rv .= CreateCheckbox($SET_EnableDynamicScaling . "-1", "Dynamic Scaling (Under Dev)", 26, false, "Dynamic Scaling (Under Dev)", true);
+  if($settings[$SET_EnableDynamicScaling] == 0) $rv .= CreateCheckbox($SET_EnableDynamicScaling . "-1", "Dynamic Scaling (Under Dev)", 26, false, "Dynamic Scaling (Under Dev)", true);
   else $rv .= CreateCheckbox($SET_EnableDynamicScaling . "-0", "Dynamic Scaling (Under Dev)", 26, true, "Dynamic Scaling (Under Dev)", true);
   $rv .= "<BR>";
 
-  if ($settings[$SET_Mute] == 0) $rv .= CreateCheckbox($SET_Mute . "-1", "Mute", 26, false, "Mute", true);
+  if($settings[$SET_Mute] == 0) $rv .= CreateCheckbox($SET_Mute . "-1", "Mute", 26, false, "Mute", true);
   else $rv .= CreateCheckbox($SET_Mute . "-0", "Unmute", 26, true, "Unmute", true);
   $rv .= "<BR>";
 
-  if ($settings[$SET_MuteChat] == 0) $rv .= CreateCheckbox($SET_MuteChat . "-1", "Disable Chat", 26, false, "Disable Chat", true);
+  if($settings[$SET_MuteChat] == 0) $rv .= CreateCheckbox($SET_MuteChat . "-1", "Disable Chat", 26, false, "Disable Chat", true);
   else $rv .= CreateCheckbox($SET_MuteChat . "-0", "Disable Chat", 26, true, "Disable Chat", true);
   $rv .= "<BR>";
 
-  if ($settings[$SET_DisableStats] == 0) $rv .= CreateCheckbox($SET_DisableStats . "-1", "Disable Stats", 26, false, "Disable Stats", true);
+  if($settings[$SET_DisableStats] == 0) $rv .= CreateCheckbox($SET_DisableStats . "-1", "Disable Stats", 26, false, "Disable Stats", true);
   else $rv .= CreateCheckbox($SET_DisableStats . "-0", "Disable Stats", 26, true, "Disable Stats", true);
   $rv .= "<BR>";
 
-  if ($settings[$SET_CasterMode] == 0) $rv .= CreateCheckbox($SET_CasterMode . "-1", "Caster Mode", 26, false, "Caster Mode", true);
+  if($settings[$SET_CasterMode] == 0) $rv .= CreateCheckbox($SET_CasterMode . "-1", "Caster Mode", 26, false, "Caster Mode", true);
   else $rv .= CreateCheckbox($SET_CasterMode . "-0", "Caster Mode", 26, true, "Caster Mode", true);
   $rv .= "<BR>";
 
-  if ($settings[$SET_StreamerMode] == 0) $rv .= CreateCheckbox($SET_StreamerMode . "-1", "Streamer Mode", 26, false, "Streamer Mode", true);
+  if($settings[$SET_StreamerMode] == 0) $rv .= CreateCheckbox($SET_StreamerMode . "-1", "Streamer Mode", 26, false, "Streamer Mode", true);
   else $rv .= CreateCheckbox($SET_StreamerMode . "-0", "Streamer Mode", 26, true, "Streamer Mode", true);
   $rv .= "<BR>";
 
-  /*
-    $rv .= "<BR>";
-    if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Request Manual Mode", 26, $SET_ManualMode . "-1", "24px");
-    else $rv .= CreateButton($player, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "18px");
-    if(IsManualMode($player))
-    {
-      $rv .= "<h3>Manual Mode Options</h3>";
-      $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px");
-      $rv .= "<BR>";
-      $rv .= CreateButton($playerID, "+1 Action Point", 10002, 0, "24px");
-    }
-*/
   return $rv;
 }
 
@@ -466,8 +389,8 @@ function SaveSettingInDatabase($setting)
 {
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
   global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
-  global $SET_StreamerMode, $SET_AutotargetArcane;
-  switch ($setting) {
+  global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat;
+  switch($setting) {
     case $SET_DarkMode:
     case $SET_ColorblindMode:
     case $SET_Mute:
@@ -481,17 +404,17 @@ function SaveSettingInDatabase($setting)
     case $SET_ManualMode:
     case $SET_StreamerMode:
     case $SET_AutotargetArcane:
+    case $SET_Playmat:
       return true;
-    default:
-      return false;
+    default: return false;
   }
 }
 
 function TranslationExist($Language, $cardID)
 {
-  switch ($Language) {
+  switch($Language) {
     case "JP": //Japanese
-      switch ($cardID) {
+      switch($cardID) {
         case "CRU046":
         case "CRU050":
         case "CRU063":
@@ -505,76 +428,63 @@ function TranslationExist($Language, $cardID)
         case "WTR100":
         case "WTR191":
           return true;
-        default:
-          return false;
+        default: return false;
       }
       break;
-    default:
-      return false;
+    default: return false;
   }
 }
 
 function FormatCode($format)
 {
-  switch ($format) {
-    case "cc":
-      return 0;
-    case "compcc":
-      return 1;
-    case "blitz":
-      return 2;
-    case "compblitz":
-      return 3;
-    case "livinglegendscc":
-      return 4;
-    case "commoner":
-      return 5;
-    default:
-      return -1;
+  switch($format) {
+    case "cc": return 0;
+    case "compcc": return 1;
+    case "blitz": return 2;
+    case "compblitz": return 3;
+    case "livinglegendscc": return 4;
+    case "commoner": return 5;
+    case "sealed": return 6;
+    case "draft": return 7;
+    default: return -1;
+  }
+}
+
+function FormatName($formatCode)
+{
+  switch($formatCode)
+  {
+    case 0: return "cc";
+    case 1: return "compcc";
+    case 2: return "blitz";
+    case 3: return "compblitz";
+    case 4: return "livinglegendscc";
+    case 5: return "commoner";
+    case 6: return "sealed";
+    case 7: return "draft";
+    default: return "-";
   }
 }
 
 function IsTeamCardAdvantage($userID)
 {
   switch ($userID) {
-    case "JacobK":
-    case "Pastry Boi":
-    case "Brotworst":
-    case "1nigoMontoya (Cody)":
-    case "Motley":
-    case "jimmyhl1329":
-    case "Stilltzkin":
-    case "krav":
-    case "infamousb":
-    case "FatFabJesus":
-    case "MisterPNP":
+    case "JacobK": case "Pastry Boi": case "Brotworst": case "1nigoMontoya (Cody)": case "Motley":
+    case "jimmyhl1329": case "Stilltzkin": case "krav": case "infamousb": case "FatFabJesus": case "MisterPNP":
       return true;
-    default:
-      break;
+    default: break;
   }
   return false;
 }
 
 function IsTeamSecondCycle($userID)
 {
-  switch ($userID) {
-    case "The4thAWOL":
-    case "Beserk":
-    case "Dudebroski":
-    case "deathstalker182":
-    case "TryHardYeti":
-    case "Fledermausmann":
-    case "Kymo13":
-    case "Loganninty7":
-    case "flamedog3":
-    case "Swankypants":
-    case "Blazing For Lethal?":
-    case "Jeztus":
-    case "gokkar":
-    case "Kernalxklink":
+  switch($userID) {
+    case "The4thAWOL": case "Beserk": case "Dudebroski": case "deathstalker182": case "TryHardYeti": case "Fledermausmann":
+    case "Loganninty7": case "flamedog3": case "Swankypants": case "Blazing For Lethal?": case "Jeztus": case "gokkar":
+    case "Kernalxklink": case "Kymo13":
       return true;
-    default:
-      break;
+    default: break;
   }
   return false;
 }

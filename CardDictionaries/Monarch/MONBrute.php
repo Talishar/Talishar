@@ -12,12 +12,10 @@
         DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID);
         return "Does $damage damage to yourself.";
       case "MON125":
-        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        MyDrawCard();
+        Draw($currentPlayer);
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
-        if(AttackValue($card) >= 6)
-        {
+        if(AttackValue($card) >= 6) {
           AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
@@ -45,13 +43,12 @@
         }
         return $rv;
       case "MON138": case "MON139": case "MON140":
-        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        MyDrawCard();
+        Draw($currentPlayer);
         $card = DiscardRandom();
         if(AttackValue($card) >= 6)
         {
-          $rv = "Lets you banish a card from a graveyard.";
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,MYDISCARD|THEIRDISCARD");
+          $rv = "Lets you banish a card from a graveyard";
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD&THEIRDISCARD");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Deadwood Rumbler");
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
@@ -69,8 +66,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives your next Brute or Shadow attack action card +" . EffectAttackModifier($cardID) . ".";
       case "MON221":
-        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        MyDrawCard();
+        Draw($currentPlayer);
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
@@ -78,11 +74,9 @@
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv .= " and got +2 from discarding a card with 6 or more power";
         }
-        $rv .= ".";
         return $rv;
       case "MON222":
-        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        MyDrawCard();
+        Draw($currentPlayer);
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
@@ -90,18 +84,14 @@
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv .= " and doubled the base attack of your next Brute attack action card";
         }
-        $rv .= ".";
         return $rv;
       case "MON223": case "MON224": case "MON225":
-        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        MyDrawCard();
+        Draw($currentPlayer);
         $card = DiscardRandom();
         if(AttackValue($card) >= 6)
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Gains Dominate from discarding " . CardLink($card, $card) . " with 6 or more power.";
-        } else {
-          $rv = "Did not gain dominate from discarding " . CardLink($card, $card);
+          $rv = "Gains Dominate from discarding " . CardLink($card, $card) . " with 6 or more power";
         }
         return $rv;
       default: return "";
@@ -149,16 +139,23 @@
       if($arsenal[$index+3] == 2)
       {
         $log .= ", gave Dominate, and searched for a specialization card";
-        RemoveArsenal($player, $index);
-        BanishCardForPlayer("MON406", $player, "ARS", "-");
-        AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
-        AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
-        AddDecisionQueue("SHUFFLEDECK", $player, "-");
+        MentorTrigger($player, $index);
       }
       else $log .= " and gave Dominate";
       WriteLog($log . ".");
     }
+  }
+
+  function MentorTrigger($player, $index, $specificCard="")
+  {
+    $cardID = RemoveArsenal($player, $index);
+    BanishCardForPlayer($cardID, $player, "ARS", "-");
+    if($specificCard != "") AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:cardID=$specificCard");
+    else AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:specOnly=true");
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+    AddDecisionQueue("MZREMOVE", $player, "-", 1);
+    AddDecisionQueue("ADDARSENAL", $player, "DECK-DOWN", 1);
+    AddDecisionQueue("SHUFFLEDECK", $player, "-");
   }
 
 ?>

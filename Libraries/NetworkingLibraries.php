@@ -3,7 +3,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
 {
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $redirectPath, $CS_PlayedAsInstant;
-  global $dqState, $layers;
+  global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState;
   global $roguelikeGameID;
   switch ($mode) {
     case 0: break; //Deprecated
@@ -56,9 +56,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $arsenal = &GetArsenal($playerID);
       if ($index < count($arsenal)) {
         $cardToPlay = $arsenal[$index];
-        if (!IsPlayable($cardToPlay, $turn[0], "ARS", $index)) break; //Card not playable
+        if (!IsPlayable($cardToPlay, $turn[0], "ARS", $index)) break;
         $uniqueID = $arsenal[$index + 5];
-        if($arsenal[$index + 3] > 0 && CardSubType($cardToPlay) == "Arrow") AddCurrentTurnEffect("AIM", $playerID);
+        SetClassState($playerID, $CS_ArsenalFacing, $arsenal[$index+1]);
+        if($arsenal[$index + 3] > 0 && CardSubType($cardToPlay) == "Arrow") $combatChainState[$CCS_HasAimCounter] = 1;
         RemoveArsenal($playerID, $index);
         PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID);
       }
@@ -170,23 +171,21 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 14: //Banish
       $index = $cardID;
       $banish = &GetBanish($playerID);
-      $theirCharacter = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
+      $theirChar = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
       if($index < 0 || $index >= count($banish))
       {
         echo("Banish Index " . $index . " Invalid Input<BR>");
         return false;
       }
       $cardID = $banish[$index];
-      if ($banish[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
-      if ($banish[$index + 1] == "MON212" && TalentContains($theirCharacter[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("MON212", $currentPlayer);
+      if($banish[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
+      if($banish[$index + 1] == "MON212" && TalentContains($theirChar[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("MON212", $currentPlayer);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if(CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2]);
       break;
-    case 15:
-    case 16:
-    case 18: //CHOOSE (15 and 18 deprecated)
-      if (count($decisionQueue) > 0)
+    case 15: case 16: case 18: //Decision Queue (15 and 18 deprecated)
+      if(count($decisionQueue) > 0)
       {
         $index = $cardID;
         ContinueDecisionQueue($index);
@@ -314,11 +313,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         PlayCard($cardID, "HAND");
       }
       break;
-    case 28: //PAY OR DISCARD
-      if ($turn[0] == "PAYORDISCARD" && ($buttonInput == "PAY" || $buttonInput == "DISCARD")) ContinueDecisionQueue($buttonInput);
-      break;
+    case 28: break; //Deprecated
     case 29: //CHOOSETOPOPPONENT
-      if ($turn[0] == "CHOOSETOPOPPONENT") {
+      if($turn[0] == "CHOOSETOPOPPONENT") {
         $otherPlayer = ($playerID == 1 ? 2 : 1);
         $options = explode(",", $turn[2]);
         $found = -1;
@@ -328,14 +325,14 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
             break;
           }
         }
-        if ($found == -1) break; //Invalid input
+        if($found == -1) break; //Invalid input
         $deck = &GetDeck($otherPlayer);
-        if ($mode == 29) {
-          array_unshift($deck, $buttonInput);
-        }
+        array_unshift($deck, $buttonInput);
         unset($options[$found]);
         $options = array_values($options);
-        if (count($options) > 0) PrependDecisionQueue($turn[0], $currentPlayer, implode(",", $options));
+        if(count($options) > 0) {
+          PrependDecisionQueue($turn[0], $currentPlayer, implode(",", $options));
+        }
         ContinueDecisionQueue($buttonInput);
       } else {
         echo ("Choose top opponent " . $turn[0] . " Invalid Input<BR>");
@@ -345,6 +342,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 30://String input
       $cardName = CardName(strtoupper($inputText));
       if($cardName != "") $inputText = $cardName;
+      if($turn[2] == "OUT052" && $inputText == "Head Leads the Tail")//Validate the name
+      {
+        WriteLog("Must name another card");
+        break;
+      }
       ContinueDecisionQueue(GamestateSanitize($inputText));
       break;
     case 31: //Move layer deeper
@@ -374,7 +376,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 33: //Fully re-order layers
       break;
     case 99: //Pass
-      if (CanPassPhase($turn[0])) {
+      if(CanPassPhase($turn[0])) {
         PassInput(false);
       }
       break;
@@ -433,52 +435,52 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10003: //Revert to prior turn
       RevertGamestate($buttonInput);
-      WriteLog("Player " . $playerID . " revert back to a prior turn.");
+      WriteLog("Player " . $playerID . " reverted back to a prior turn.");
       break;
     case 10004:
-      if ($actionPoints > 0) {
-        WriteLog("Player " . $playerID ." manually subtract 1 action point.", highlight: true);
+      if($actionPoints > 0) {
+        WriteLog("Player " . $playerID ." manually subtracted 1 action point.", highlight: true);
         --$actionPoints;
       }
       break;
     case 10005:
-      WriteLog("Player " . $playerID ." manually subtract 1 health point from themselves.", highlight: true);
+      WriteLog("Player " . $playerID ." manually subtracted 1 health point from themselves.", highlight: true);
       LoseHealth(1, $playerID);
       break;
     case 10006:
-      WriteLog("Player " . $playerID ." manually add 1 health point to themselves.", highlight: true);
+      WriteLog("Player " . $playerID ." manually added 1 health point to themselves.", highlight: true);
       $health = &GetHealth($playerID);
       $health += 1;
       break;
     case 10007:
-      WriteLog("Player " . $playerID ." manually add 1 health point to themselves.", highlight: true);
+      WriteLog("Player " . $playerID ." manually added 1 health point to themselves.", highlight: true);
       LoseHealth(1, ($playerID == 1 ? 2 : 1));
       break;
     case 10008:
-      WriteLog("Player " . $playerID ." manually add 1 health point their opponent.", highlight: true);
+      WriteLog("Player " . $playerID ." manually added 1 health point their opponent.", highlight: true);
       $health = &GetHealth($playerID == 1 ? 2 : 1);
       $health += 1;
       break;
     case 10009:
-      WriteLog("Player " . $playerID ." manually draw a card for themselves.", highlight: true);
+      WriteLog("Player " . $playerID ." manually drew a card for themselves.", highlight: true);
       Draw($playerID, false);
       break;
     case 10010:
-      WriteLog("Player " . $playerID ." manually draw a card for their opponent.", highlight: true);
+      WriteLog("Player " . $playerID ." manually drew a card for their opponent.", highlight: true);
       Draw(($playerID == 1 ? 2 : 1), false);
       break;
     case 10011:
-      WriteLog("Player " . $playerID ." manually add a card to their hand.", highlight: true);
+      WriteLog("Player " . $playerID ." manually added a card to their hand.", highlight: true);
       $hand = &GetHand($playerID);
       array_push($hand, $cardID);
       break;
     case 10012:
-      WriteLog("Player " . $playerID ." manually add a resource to their pool.", highlight: true);
+      WriteLog("Player " . $playerID ." manually added a resource to their pool.", highlight: true);
       $resources = &GetResources($playerID);
       $resources[0] += 1;
       break;
     case 10013:
-      WriteLog("Player " . $playerID ." manually add a resource to their opponent's pool.", highlight: true);
+      WriteLog("Player " . $playerID ." manually added a resource to their opponent's pool.", highlight: true);
       $resources = &GetResources($playerID == 1 ? 2 : 1);
       $resources[0] += 1;
       break;
@@ -604,45 +606,28 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100013: //Enable Spectate
       SetCachePiece($gameName, 9, "1");
       break;
-    default:
-      break;
+    default: break;
   }
   return true;
 }
 
-
-//If true, allows for the case to be doable by any player when they don't have the priority.
 function IsModeAsync($mode)
 {
-  switch ($mode) {
-    case 26:
-      return true;
-    case 102:
-      return true;
-    case 103:
-      return true;
-    case 104:
-      return true;
-    case 10000:
-      return true;
-    case 10003:
-      return true;
-    case 100000:
-      return true;
-    case 100001:
-      return true;
-    case 100002:
-      return true;
-    case 100003:
-      return true;;
-    case 100004:
-      return true;
-    case 100007:
-      return true;
-    case 100010:
-      return true;
-    case 100012:
-      return true;
+  switch($mode) {
+    case 26: return true;
+    case 102: return true;
+    case 103: return true;
+    case 104: return true;
+    case 10000: return true;
+    case 10003: return true;
+    case 100000: return true;
+    case 100001: return true;
+    case 100002: return true;
+    case 100003: return true;
+    case 100004: return true;
+    case 100007: return true;
+    case 100010: return true;
+    case 100012: return true;
   }
   return false;
 }
@@ -650,10 +635,8 @@ function IsModeAsync($mode)
 function IsModeAllowedForSpectators($mode)
 {
   switch ($mode) {
-    case 100001:
-      return true;
-    default:
-      return false;
+    case 100001: return true;
+    default: return false;
   }
 }
 
@@ -671,19 +654,17 @@ function PitchHasCard($cardID)
 
 function HasCard($cardID)
 {
-  global $myHand, $myCharacter;
+  global $currentPlayer;
   $cardType = CardType($cardID);
-  if ($cardType == "C" || $cardType == "E" || $cardType == "W") {
-    for ($i = 0; $i < count($myCharacter); $i += CharacterPieces()) {
-      if ($myCharacter[$i] == $cardID) {
-        return $i;
-      }
+  if($cardType == "C" || $cardType == "E" || $cardType == "W") {
+    $character = &GetPlayerCharacter($currentPlayer);
+    for($i = 0; $i < count($character); $i += CharacterPieces()) {
+      if($character[$i] == $cardID) return $i;
     }
   } else {
-    for ($i = 0; $i < count($myHand); ++$i) {
-      if ($myHand[$i] == $cardID) {
-        return $i;
-      }
+    $hand = &GetHand($currentPlayer);
+    for($i = 0; $i < count($hand); ++$i) {
+      if($hand[$i] == $cardID) return $i;
     }
   }
   return -1;
@@ -697,13 +678,13 @@ function Passed(&$turn, $playerID)
 function PassInput($autopass = true)
 {
   global $turn, $currentPlayer;
-  if ($turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MAYCHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSEMULTIZONE" ||$turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "INSTANT" || $turn[0] == "OK") {
+  if($turn[0] == "END" || $turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MAYCHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSEMULTIZONE" ||$turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "MAYCHOOSEMYSOUL" || $turn[0] == "INSTANT" || $turn[0] == "OK") {
     ContinueDecisionQueue("PASS");
   } else {
-    if ($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed.");
+    if($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed.");
     else WriteLog("Player " . $currentPlayer . " passed.");
-    if (Pass($turn, $currentPlayer, $currentPlayer)) {
-      if ($turn[0] == "M") BeginTurnPass();
+    if(Pass($turn, $currentPlayer, $currentPlayer)) {
+      if($turn[0] == "M") BeginTurnPass();
       else PassTurn();
     }
   }
@@ -712,22 +693,23 @@ function PassInput($autopass = true)
 function Pass(&$turn, $playerID, &$currentPlayer)
 {
   global $mainPlayer, $defPlayer;
-  if ($turn[0] == "M" || $turn[0] == "ARS") {
+  if($turn[0] == "M" || $turn[0] == "ARS") {
     return 1;
-  } else if ($turn[0] == "B") {
+  } else if($turn[0] == "B") {
     AddLayer("DEFENDSTEP", $mainPlayer, "-");
     OnBlockResolveEffects();
+    BeginningReactionStepEffects();
     ProcessDecisionQueue();
-  } else if ($turn[0] == "A") {
-    if (count($turn) >= 3 && $turn[2] == "D") {
+  } else if($turn[0] == "A") {
+    if(count($turn) >= 3 && $turn[2] == "D") {
       return BeginChainLinkResolution();
     } else {
       $currentPlayer = $currentPlayer == 1 ? 2 : 1;
       $turn[0] = "D";
       $turn[2] = "A";
     }
-  } else if ($turn[0] == "D") {
-    if (count($turn) >= 3 && $turn[2] == "A") {
+  } else if($turn[0] == "D") {
+    if(count($turn) >= 3 && $turn[2] == "A") {
       return BeginChainLinkResolution();
     } else {
       $currentPlayer = $currentPlayer == 1 ? 2 : 1;
@@ -747,6 +729,48 @@ function BeginChainLinkResolution()
   ProcessDecisionQueue();
 }
 
+function ChainLinkBeginResolutionEffects()
+{
+  global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex, $CID_BloodRotPox;
+  if(CardType($combatChain[0]) == "W") {
+    $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
+    $index = $combatChainState[$CCS_WeaponIndex];
+    for($i = 0; $i < count($mainCharacterEffects); $i += CharacterEffectPieces()) {
+      if($mainCharacterEffects[$i] == $index) {
+        switch($mainCharacterEffects[$i + 1]) {
+          //CR 2.1 - 6.5.4. Standard-replacement: Third, each player applies any active standard-replacement effects they control.
+          //CR 2.1 - 6.5.5. Prevention: Fourth, each player applies any active prevention effects they control.
+          case "EVR054":
+            $pendingDamage = CachedTotalAttack() - CachedTotalBlock();
+            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Currently $pendingDamage damage would be dealt. Do you want to destroy a defending equipment instead?");
+            AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_a_blocking_equipment_instead_of_dealing_damage");
+            AddDecisionQueue("NOPASS", $mainPlayer, "-");
+            AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
+            AddDecisionQueue("SETCOMBATCHAINSTATE", $mainPlayer, $CCS_CombatDamageReplaced, 1);
+            AddDecisionQueue("FINDINDICES", $defPlayer, "SHATTER,$pendingDamage", 1);
+            AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+            AddDecisionQueue("DESTROYCHARACTER", $defPlayer, "-", 1);
+            break;
+          default: break;
+        }
+      }
+    }
+  }
+  switch($combatChain[0])
+  {
+    case "OUT168": case "OUT169": case "OUT170":
+      for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
+      {
+        if($combatChain[$i+1] != $defPlayer || $combatChain[$i+2] != "HAND") continue;
+        WriteLog("Virulent Touch creates a Bloodrot Pox from being blocked from hand.");
+        PlayAura($CID_BloodRotPox, $defPlayer);
+        break;
+      }
+      break;
+    default: break;
+  }
+}
+
 function ResolveChainLink()
 {
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
@@ -757,7 +781,6 @@ function ResolveChainLink()
   $totalAttack = 0;
   $totalDefense = 0;
   EvaluateCombatChain($totalAttack, $totalDefense);
-  CombatChainResolutionEffects();
 
   $combatChainState[$CCS_LinkTotalAttack] = $totalAttack;
 
@@ -793,7 +816,7 @@ function ResolveCombatDamage($damageDone)
 
   PrependLayer("FINALIZECHAINLINK", $mainPlayer, "0");
 
-  WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
+  WriteLog("Combat resolved with " . ($wasHit ? "a hit for $damageDone damage" : "no hit"));
 
   if (!DelimStringContains(CardSubtype($combatChain[0]), "Ally")) {
     SetClassState($mainPlayer, $CS_DamageDealt, GetClassState($mainPlayer, $CS_DamageDealt) + $damageDone);
@@ -871,10 +894,10 @@ function FinalizeChainLink($chainClosed = false)
       }
       switch ($goesWhere) {
         case "BOTDECK":
-          AddBottomMainDeck($combatChain[$i - 1], "CC");
+          AddBottomDeck($combatChain[$i - 1], $mainPlayer, "CC");
           break;
         case "HAND":
-          AddMainHand($combatChain[$i - 1], "CC");
+          AddPlayerHand($combatChain[$i - 1], $mainPlayer, "CC");
           break;
         case "SOUL":
           AddSoul($combatChain[$i - 1], $combatChain[$i], "CC");
@@ -901,7 +924,9 @@ function FinalizeChainLink($chainClosed = false)
   array_push($chainLinkSummary, TalentOverride($combatChain[0], $mainPlayer));
   array_push($chainLinkSummary, ClassOverride($combatChain[0], $mainPlayer));
   array_push($chainLinkSummary, SerializeCurrentAttackNames());
-  array_push($chainLinkSummary, ($combatChainState[$CCS_DamageDealt] > 0 || $combatChainState[$CCS_HitThisLink] == "1" ? "1" : "0"));//Hit on link
+  $numHitsOnLink = ($combatChainState[$CCS_DamageDealt] > 0 ? 1 : 0);
+  $numHitsOnLink += intval($combatChainState[$CCS_HitThisLink]);
+  array_push($chainLinkSummary, $numHitsOnLink);//Num hits on link
 
   //Clean up combat effects that were used and are one-time
   CleanUpCombatEffects();
@@ -940,12 +965,20 @@ function CleanUpCombatEffects($weaponSwap=false)
 function BeginTurnPass()
 {
   global $mainPlayer, $defPlayer, $decisionQueue;
-  WriteLog("Main player pass priority. Beginning of end phase.");
+  WriteLog("Main player passed priority; attempting to end turn.");
   ResetCombatChainState(); // The combat chain must be closed prior to the turn ending. The close step is outlined in 7.8 - specifically: CR 2.1 - 7.8.7. Fifth and finally, the Close Step ends, and the Action Phase continues. The Action Phase will always continue after the combat chain is closed - so there is another round of priority windows
   AddLayer("ENDTURN", $mainPlayer, "-");
+  ProcessDecisionQueue("");
+}
+
+function EndStep()
+{
+  global $mainPlayer, $turn;
+  $turn[0] = "END";
+  AddLayer("ENDSTEP", $mainPlayer, "-");
   AuraBeginEndPhaseTriggers();
   BeginEndPhaseEffectTriggers();
-  ProcessDecisionQueue("");
+  if(HeaveIndices() != "") AddLayer("TRIGGER", $mainPlayer, "HEAVE");
 }
 
 //CR 2.0 4.4.2. - Beginning of the end phase
@@ -954,7 +987,6 @@ function FinishTurnPass()
   global $mainPlayer;
   ClearLog();
   ResetCombatChainState();
-  Heave();
   QuellEndPhase(1);
   QuellEndPhase(2);
   ItemEndTurnAbilities();
@@ -1123,7 +1155,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $layerPriority[0] = ShouldHoldPriority(1);
   $layerPriority[1] = ShouldHoldPriority(2);
   $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
-  if ($dynCostResolved == -1) {
+  if($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
     if($playingCard)
     {
@@ -1134,11 +1166,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
     }
     //CR 5.1.2 Announce (CR 2.0)
-    if ($from == "ARS") WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);
+    if($from == "ARS") WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);
     else WriteLog("Player " . $playerID . " " . PlayTerm($turn[0], $from, $cardID) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
 
     LogPlayCardStats($currentPlayer, $cardID, $from);
-    if ($playingCard) {
+    if($playingCard) {
       ClearAdditionalCosts($currentPlayer);
       MakeGamestateBackup();
       $lastPlayed = [];
@@ -1148,13 +1180,13 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $lastPlayed[3] = "-";
       SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
     }
-    if (count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDTURN") $layers[count($layers)-LayerPieces()] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
+    if(count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDTURN") $layers[count($layers)-LayerPieces()] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
   }
-  if ($turn[0] != "P") {
-    if ($dynCostResolved >= 0) {
+  if($turn[0] != "P") {
+    if($dynCostResolved >= 0) {
       SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
       $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID)));
-      if (!$playingCard) $resources[1] += $dynCostResolved;
+      if(!$playingCard) $resources[1] += $dynCostResolved;
       else {
         $frostbitesPaid = AuraCostModifier();
         $isAlternativeCostPaid = IsAlternativeCostPaid($cardID, $from);
@@ -1166,17 +1198,17 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + $frostbitesPaid + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
         if($isAlternativeCostPaid && $resources[1] > 0) WriteLog("<span style='color:red;'>Alternative costs do not offset additional costs.</span>");
       }
-      if ($resources[1] < 0) $resources[1] = 0;
+      if($resources[1] < 0) $resources[1] = 0;
       LogResourcesUsedStats($currentPlayer, $resources[1]);
     } else {
       $dqCopy = $decisionQueue;
       $decisionQueue = [];
       //CR 5.1.3 Declare Costs Begin (CR 2.0)
       $resources[1] = 0;
-      if ($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
+      if($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
       else $dynCost = "";
-      if ($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
-      if ($dynCost != "") {
+      if($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
+      if($dynCost != "") {
         AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
       }
@@ -1188,15 +1220,15 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       //MISSING CR 5.1.3e Decide order of costs to be paid
       return;
     }
-  } else if ($turn[0] == "P") {
+  } else if($turn[0] == "P") {
     $pitchValue = PitchValue($cardID);
     $resources[0] += $pitchValue;
     array_push($pitch, $cardID);
-    if (CardCaresAboutPitch($turn[3])) AddAdditionalCost($currentPlayer, $cardID);
+    if(CardCaresAboutPitch($turn[3])) AddAdditionalCost($currentPlayer, $cardID);
     PitchAbility($cardID);
   }
-  if ($resources[0] < $resources[1]) {
-    if ($turn[0] != "P") {
+  if($resources[0] < $resources[1]) {
+    if($turn[0] != "P") {
       $turn[2] = $turn[0];
       $turn[3] = $cardID;
       $turn[4] = $from;
@@ -1207,37 +1239,35 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $resources[0] -= $resources[1];
   $resourcesPaid = GetClassState($currentPlayer, $CS_DynCostResolved);
   $resources[1] = 0;
-  if ($turn[0] == "P") {
+  if($turn[0] == "P") {
     $turn[0] = $turn[2];
     $cardID = $turn[3];
     $from = $turn[4];
     $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
   }
-  if (GetClassState($currentPlayer, $CS_LastDynCost) != 0 && DynamicCost($cardID) != "") WriteLog(CardLink($cardID, $cardID) . " was played with a cost of " . GetClassState($currentPlayer, $CS_LastDynCost));
+  if(GetClassState($currentPlayer, $CS_LastDynCost) != 0 && DynamicCost($cardID) != "") WriteLog(CardLink($cardID, $cardID) . " was played with a cost of " . GetClassState($currentPlayer, $CS_LastDynCost));
   $cardType = CardType($cardID);
   $abilityType = "";
   $playType = $cardType;
   PlayerMacrosCardPlayed();
   //We've paid resources, now pay action points if applicable
-  if ($playingCard) {
+  if($playingCard) {
     $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
-    if (IsStaticType($cardType, $from, $cardID)) {
+    if(IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
-      if ($abilityType == "A" && !$canPlayAsInstant) {
-        ResetCombatChainState();
-      }
+      if($abilityType == "A" && !$canPlayAsInstant) ResetCombatChainState();
       PayAbilityAdditionalCosts($cardID);
       ActivateAbilityEffects();
     } else {
-      if (GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
+      if(GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
       else SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) . "," . $cardID);
-      if ($cardType == "A" && !$canPlayAsInstant) {
+      if($cardType == "A" && !$canPlayAsInstant) {
         ResetCombatChainState();
       }
-      if ($cardType == "A" || $cardType == "AA") LoseHealth(CountCurrentTurnEffects("CRU123-DMG", $playerID), $playerID);
+      if($cardType == "A" || $cardType == "AA") LoseHealth(CountCurrentTurnEffects("CRU123-DMG", $playerID), $playerID);
       CombatChainPlayAbility($cardID);
       ItemPlayAbilities($cardID, $from);
       ResetCardPlayed($cardID);
@@ -1252,26 +1282,26 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
       IncrementClassState($currentPlayer, $CS_NumActionsPlayed);
     }
-    if ($from == "BANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
-    if (HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
-    if (PitchValue($cardID) == 1) IncrementClassState($currentPlayer, $CS_NumRedPlayed);
+    if($from == "BANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
+    if(HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
+    if(PitchValue($cardID) == 1) IncrementClassState($currentPlayer, $CS_NumRedPlayed);
     PayAdditionalCosts($cardID, $from);
   }
-  if ($cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
-  if ($cardID == "ARC185" || $cardID == "ARC186" || $cardID == "ARC187") IncrementClassState($currentPlayer, $CS_NumMoonWishPlayed);
-  if ($from == "BANISH") {
+  if($cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
+  if($cardID == "ARC185" || $cardID == "ARC186" || $cardID == "ARC187") IncrementClassState($currentPlayer, $CS_NumMoonWishPlayed);
+  if($from == "BANISH") {
     $index = GetClassState($currentPlayer, $CS_PlayIndex);
     $banish = &GetBanish($currentPlayer);
-    for ($i = $index + BanishPieces() - 1; $i >= $index; --$i) {
+    for($i = $index + BanishPieces() - 1; $i >= $index; --$i) {
       unset($banish[$i]);
     }
     $banish = array_values($banish);
   }
 
   //CR 5.1.4b Declare target of attack
-  if ($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
-  if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
-    if (HasBoost($cardID)) Boost();
+  if($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
+  if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
+    if(HasBoost($cardID)) Boost();
     GetLayerTarget($cardID); //Layer target
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
@@ -1302,8 +1332,7 @@ function GetLayerTarget($cardID)
   global $currentPlayer;
   switch ($cardID) {
     case "CRU164":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "LAYER,TYPE-I-MAXCOST-1");
-      AddDecisionQueue("MULTIZONEFORMAT", $currentPlayer, "LAYER", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "LAYER:type=I;maxCost=1");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
@@ -1329,8 +1358,7 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
     case "UPR169":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "LAYER,TYPE-A");
-      AddDecisionQueue("MULTIZONEFORMAT", $currentPlayer, "LAYER", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "LAYER:type:A");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
@@ -1383,9 +1411,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       }
       break;
-    case "ARC185":
-    case "ARC186":
-    case "ARC187":
+    case "ARC185": case "ARC186": case "ARC187":
       HandToTopDeck($currentPlayer);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "ARC185", 1);
       break;
@@ -1421,7 +1447,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
-      AddDecisionQueue("SOULREAPING", $currentPlayer, "-", 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SOULREAPING", 1);
       break;
     case "MON257": case "MON258": case "MON259":
       HandToTopDeck($currentPlayer);
@@ -1430,7 +1456,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "EVR161": case "EVR162": case "EVR163":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "LIFEOFPARTY");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "EVR161", 1);
       break;
     default:
@@ -1473,12 +1499,11 @@ function PayAbilityAdditionalCosts($cardID)
   global $currentPlayer;
   switch ($cardID) {
     case "MON000":
-      for ($i = 0; $i < 2; ++$i) {
+      for($i = 0; $i < 2; ++$i) {
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDPITCH,2");
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDDISCARD", $currentPlayer, "HAND", 1);
-        AddDecisionQueue("CARDDISCARDED", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND", 1);
       }
       break;
     default:
@@ -1520,7 +1545,7 @@ function PayAdditionalCosts($cardID, $from)
       BottomDeck();
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Draw_a_Card,Buff_Power,Go_Again");
-      AddDecisionQueue("SHOWSELECTEDMODE", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
     case "WTR179": case "WTR180": case "WTR181":
@@ -1534,24 +1559,19 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-");
       break;
     case "WTR185": case "WTR186": case "WTR187":
-      $indices = SearchDiscardForCard($currentPlayer, "WTR218", "WTR219", "WTR220");
-      if ($indices == "") {
-        return "No Nimblism to banish.";
-      }
-      AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, $indices);
-      AddDecisionQueue("REMOVEMYDISCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
-      AddDecisionQueue("NIMBLESTRIKE", $currentPlayer, "-", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:cardID=WTR218;cardID=WTR219;cardID=WTR220");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,GY,-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
     case "WTR197": case "WTR198": case "WTR199":
-      $indices = SearchDiscardForCard($currentPlayer, "WTR221", "WTR222", "WTR223");
-      if ($indices == "") {
-        return "No Sloggism to banish.";
-      }
-      AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, $indices);
-      AddDecisionQueue("REMOVEMYDISCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
-      AddDecisionQueue("SLOGGISM", $currentPlayer, "-", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:cardID=WTR221;cardID=WTR222;cardID=WTR223");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,GY,-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "ARC003":
       $abilityType = GetResolvedAbilityType($cardID);
@@ -1570,19 +1590,19 @@ function PayAdditionalCosts($cardID, $from)
     case "ARC122":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes");
       AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_Arcane,Buff_Arcane,Draw_card,Draw_card");
-      AddDecisionQueue("SETCLASSSTATEMULTICHOOSETEXT", $currentPlayer, $CS_AdditionalCosts, 1);
-      AddDecisionQueue("SHOWSELECTEDMODES", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "ARC160":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes");
       AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_your_attack_action_cards_this_turn,Your_next_attack_action_card_gains_go_again,Defend_with_attack_action_cards_from_arsenal,Banish_an_attack_action_card_to_draw_2_cards-2");
-      AddDecisionQueue("SETCLASSSTATEMULTICHOOSETEXT", $currentPlayer, $CS_AdditionalCosts, 1);
-      AddDecisionQueue("SHOWSELECTEDMODES", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "CRU097":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
-      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
+      if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
         PayAdditionalCosts($otherCharacter[0], $from);
       }
       break;
@@ -1605,9 +1625,10 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-1");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MULTIREMOVEMYSOUL", $currentPlayer, "-", 1);
-      AddDecisionQueue("BEACONOFVICTORY-1", $currentPlayer, "-", 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "GETINDICES,", 1);
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MULTIBANISHSOUL", $currentPlayer, "-", 1);
       break;
     case "MON035":
       AddDecisionQueue("VOFTHEVANGUARD", $currentPlayer, "-");
@@ -1635,7 +1656,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
-      AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
+      AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
     case "MON195":
     case "MON196":
@@ -1677,7 +1698,7 @@ function PayAdditionalCosts($cardID, $from)
     case "MON260": case "MON261": case "MON262":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Buff_Power,Go_Again");
-      AddDecisionQueue("SHOWSELECTEDMODE", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
     case "MON266": case "MON267": case "MON268":
@@ -1710,13 +1731,7 @@ function PayAdditionalCosts($cardID, $from)
       }
       break;
     case "ELE115":
-      if (ArsenalHasFaceDownCard($currentPlayer)) {
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALDOWN");
-        AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
-        WriteLog(CardLink($cardID, $cardID) . " put your arsenal at the bottom of your deck");
-      }
+      FaceDownArsenalBotDeck($currentPlayer);
       break;
     case "ELE118":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
@@ -1733,7 +1748,7 @@ function PayAdditionalCosts($cardID, $from)
     case "EVR047": case "EVR048": case "EVR049":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Hit_Effect,1_Attack");
-      AddDecisionQueue("SHOWSELECTEDMODE", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
     case "EVR158":
@@ -1741,10 +1756,10 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("FINDINDICES", $currentPlayer, "CASHOUT");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
-      AddDecisionQueue("CASHOUTCONTINUE", $currentPlayer, "-", 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CASHOUTCONTINUE", 1);
       break;
     case "EVR159":
       $numCopper = CountItem("CRU197", $currentPlayer);
@@ -1779,7 +1794,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("DIVIDE", $currentPlayer, "1"); //Useless line?
         AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
       }
-      AddDecisionQueue("KNICKKNACK", $currentPlayer, "-");
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "KNICKKNACK");
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       break;
     case "UPR094":
@@ -1797,13 +1812,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       break;
     case "OUT094":
-      if (ArsenalHasFaceDownCard($currentPlayer)) {
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALDOWN");
-        AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
-        WriteLog(CardLink($cardID, $cardID) . " put your arsenal at the bottom of your deck");
-      }
+      FaceDownArsenalBotDeck($currentPlayer);
       break;
     case "OUT148": case "OUT149": case "OUT150":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how much to pay for " . CardLink($cardID, $cardID));
@@ -1913,18 +1922,18 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
   }
   //Resolve Effects
-  if (!$isBlock) {
+  if(!$isBlock) {
     CurrentEffectPlayOrActivateAbility($cardID, $from);
-    if ($from != "PLAY") {
+    if($from != "PLAY") {
       CurrentEffectPlayAbility($cardID, $from);
       ArsenalPlayCardAbilities($cardID);
       CharacterPlayCardAbilities($cardID, $from);
     }
     $EffectContext = $cardID;
     $playText = "";
-    if (!$chainClosed) $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-    if ($playText != "" && $from != "EQUIP" && $from != "PLAY") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ": " . $playText);
-    else if($playText != "" && ($from == "EQUIP" || $from == "PLAY")) WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ": " . $playText);
+    if(!$chainClosed) $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+    if($from != "EQUIP" && $from != "PLAY") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
+    else if($from == "EQUIP" || $from == "PLAY") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
     if (!$openedChain) ResolveGoAgain($cardID, $currentPlayer, $from);
     CopyCurrentTurnEffectsFromAfterResolveEffects();
   }

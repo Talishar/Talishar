@@ -68,30 +68,6 @@ function SubmitChat() {
   chatBox.value = "";
 }
 
-function ReloadChat(lastUpdate) {
-  var xmlhttp = new XMLHttpRequest();
-  xmlhttp.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      el = document.getElementById("gamelog");
-      ReloadChat(this.responseText.substring(0, 11));
-      var logText = this.responseText.slice(11);
-      if (logText != "") {
-        el.innerHTML = logText;
-        el.scrollTop = el.scrollHeight;
-      }
-    }
-  };
-  var ajaxLink =
-    "ReloadChat.php?gameName=" + document.getElementById("gameName").value;
-  ajaxLink +=
-    "&playerID=" +
-    document.getElementById("playerID").value +
-    "&lastUpdate=" +
-    lastUpdate;
-  xmlhttp.open("GET", ajaxLink, true);
-  xmlhttp.send();
-}
-
 function AddCardToHand() {
   var card = document.getElementById("manualAddCardToHand").value;
   SubmitInput(10011, "&cardID=" + card);

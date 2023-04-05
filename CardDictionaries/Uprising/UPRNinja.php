@@ -19,8 +19,8 @@
         return "Buffs your draconic attacks this combat chain.";
       case "UPR050":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CCDEFLESSX," . NumDraconicChainLinks()-1);
-        AddDecisionQueue("CCFILTERTYPE", $currentPlayer, "E");
-        AddDecisionQueue("CCFILTERPLAYER", $currentPlayer, $currentPlayer);
+        AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-exclude-type-E", 1);
+        AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-include-player-" . ($player == 1 ? 2 : 1), 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
         AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVECOMBATCHAIN", $currentPlayer, "-", 1);
@@ -78,9 +78,10 @@
         AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $mainPlayer, "HAND,TT", 1);
-        AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was banished.", 1);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{I}", 1);
-        AddDecisionQueue("MZGETUNIQUEID", $mainPlayer, "-", 1);
+        AddDecisionQueue("MZOP", $mainPlayer, "GETUNIQUEID", 1);
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $cardID . ",HIT", 1);
         break;
       case "UPR161":

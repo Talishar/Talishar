@@ -22,6 +22,7 @@ $decksToTry = TryPOST("decksToTry"); //This is only used if there's no favorite 
 $favoriteDeck = TryPOST("favoriteDeck", false); //Set this to true to save the provided deck link to your favorites
 $favoriteDeckLink = TryPOST("favoriteDecks", "0"); //This one is kind of weird. It's the favorite deck index, then the string "<fav>" then the favorite deck link
 $gameDescription = htmlentities(TryPOST("gameDescription", "Game #"), ENT_QUOTES); //Just a string with the game name
+$deckbuilderID = TryPOST("user", "");
 
 if ($favoriteDeckLink != 0) {
   $favDeckArr = explode("<fav>", $favoriteDeckLink);
@@ -58,10 +59,11 @@ if (isset($_SESSION["userid"])) {
   }
   ChangeSetting("", $SET_Format, FormatCode($format), $_SESSION["userid"]);
   ChangeSetting("", $SET_GameVisibility, ($visibility == "public" ? 1 : 0), $_SESSION["userid"]);
-  //if ($deckbuilderID != "") {
-  //  if (str_contains($decklink, "fabrary")) storeFabraryId($_SESSION["userid"], $deckbuilderID);
-  //  else if (str_contains($decklink, "fabdb")) storeFabDBId($_SESSION["userid"], $deckbuilderID);
-  //}
+  if($deckbuilderID != "")
+  {
+    if(str_contains($decklink, "fabrary")) storeFabraryId($_SESSION["userid"], $deckbuilderID);
+    else if(str_contains($decklink, "fabdb")) storeFabDBId($_SESSION["userid"], $deckbuilderID);
+  }
 }
 
 session_write_close();
@@ -108,7 +110,8 @@ $handler = fopen($filename, "w");
 fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
-WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!" . $visibility . "!0!0!0"); //Initialize SHMOP cache for this game
+$cacheVisibility = ($visibility == "public" ? "1" : "0");
+WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!" . $cacheVisibility . "!0!0!0"); //Initialize SHMOP cache for this game
 
 $playerID = 1;
 

@@ -112,19 +112,14 @@ function DVRCombatEffectActive($cardID, $attackID)
 function HalaGoldenhelmAbility($player, $index)
 {
   GiveAttackGoAgain();
-  $log = CardLink("DVR007", "DVR007") . " gives the sword attack go again";
+  $rv = CardLink("DVR007", "DVR007") . " gave the attack go again";
   $arsenal = &GetArsenal($player);
   ++$arsenal[$index + 3];
   if ($arsenal[$index + 3] >= 2) {
-    $log .= " and searches for a Glistening Steelblade card.";
-    RemoveArsenal($player, $index);
-    BanishCardForPlayer("DVR007", $player, "ARS", "-");
-    AddDecisionQueue("FINDINDICES", $player, "DECKCARD,DVR008");
-    AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
-    AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
-    AddDecisionQueue("SHUFFLEDECK", $player, "-");
+    $rv .= " and searches for Glistening Steelblade";
+    MentorTrigger($player, $index, specificCard:"DVR008");
   }
-  WriteLog($log . ".");
+  WriteLog($rv);
 }
 
 function DoriQuicksilverProdigyEffect()

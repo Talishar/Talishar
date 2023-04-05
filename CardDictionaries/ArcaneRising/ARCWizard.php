@@ -23,13 +23,13 @@
         return "";
       case "ARC115":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives the next card that deals arcane damage +1.";
+        return "";
       case "ARC116":
         SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
-        return "You can play your next Wizard non-attack action as though it were an instant.";
+        return "";
       case "ARC117":
         GainResources($currentPlayer, 3);
-        return "Gain 3 resources.";
+        return "";
       case "ARC118":
         $damage = GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
         DealArcane($damage, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
@@ -55,14 +55,14 @@
         AddDecisionQueue("OK", $currentPlayer, "-", 1);
         return "";
       case "ARC120":
-        $damage = ArcaneDamage($cardID) + ConsumeArcaneBonus($currentPlayer) * 2; // TODO: Not exactly right. Should be able to target 2 differents heroes.
-        DealArcane($damage, 1, "PLAYCARD", $cardID, resolvedTarget: $target, nbArcaneInstance: 2); //Basically this just applies the bonus twice
+        $damage = ArcaneDamage($cardID) + ConsumeArcaneBonus($currentPlayer) * 2;
+        DealArcane($damage, 1, "PLAYCARD", $cardID, resolvedTarget: $target, nbArcaneInstance: 2);
         return "";
       case "ARC121":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
-        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_tutor_a_card?", 1);
+        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_tutor_a_card", 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID, 1);
@@ -73,11 +73,11 @@
         return "";
       case "ARC122":
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-        AddDecisionQueue("TOMEOFAETHERWIND", $currentPlayer, "-", 1);
+        AddDecisionQueue("MODAL", $currentPlayer, "TOMEOFAETHERWIND", 1);
         return "";
       case "ARC123": case "ARC124": case "ARC125":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives the next card that deals arcane damage +2.";
+        return "";
       case "ARC126": case "ARC127": case "ARC128":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("OPTX", $currentPlayer, "<-", 1);
@@ -85,7 +85,7 @@
       case "ARC129": case "ARC130": case "ARC131":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
-        return "Buffs your next arcane and lets you play your next Wizard non-attack action as though it were an instant.";
+        return "";
       case "ARC132": case "ARC133": case "ARC134":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD",$cardID, resolvedTarget: $target);
         AddDecisionQueue("BUFFARCANE", $currentPlayer, $cardID, 1);
@@ -94,26 +94,13 @@
         if($cardID == "ARC135") $count = 5;
         else if($cardID == "ARC136") $count = 4;
         else $count = 3;
-        $deck = &GetDeck($currentPlayer);
-        $cards = "";
-        for($i=0; $i<$count; ++$i)
-        {
-          if(count($deck) > 0)
-          {
-            if($cards != "") $cards .= ",";
-            $card = array_shift($deck);
-            $cards .= $card;
-          }
-        }
-        if($cards != "")
-        {
-          WriteLog("Choose a card to go on the top of your deck.");
-          AddDecisionQueue("CHOOSECARD", $currentPlayer, $cards, 1);
-          AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "DECK");
-          AddDecisionQueue("REMOVELAST", $currentPlayer, $cards, 1);
-          AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-", 1);
-        }
-        return "Lets you rearrange the cards of your deck.";
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXREMOVE," . $count);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("CHOOSECARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "DECK");
+        AddDecisionQueue("OP", $currentPlayer, "REMOVECARD", 1);
+        AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-", 1);
+        return "";
       case "ARC138": case "ARC139": case "ARC140":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
@@ -135,7 +122,7 @@
 
   function ARCWizardHitEffect($cardID)
   {
-
+    return "";
   }
 
   //Parameters:
@@ -312,8 +299,8 @@
   {
     global $currentTurnEffects;
     $modifier = 0;
-    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
-    {
+    for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+      $remove = false;
       $effectArr = explode(",", $currentTurnEffects[$i]);
       switch($effectArr[0])
       {
@@ -324,11 +311,12 @@
         case "DYN192":
           if (ActionsThatDoArcaneDamage($source)) {
             $modifier += $effectArr[1];
-            RemoveCurrentEffect($player, $currentTurnEffects[$i]);
+            $remove = true;
           }
           break;
         default: break;
       }
+      if($remove) RemoveCurrentTurnEffect($i);
     }
     return $modifier;
   }
@@ -503,6 +491,80 @@
       PrependDecisionQueue("SPELLVOIDCHOICES", $player, $damage, 1);
       PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $spellvoidChoices);
       PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to use a Spellvoid equipment");
+    }
+  }
+
+
+  function ArcaneHitEffect($player, $source, $target, $damage)
+  {
+    switch($source) {
+      case "UPR104":
+        if(MZIsPlayer($target) && $damage > 0) {
+          AddDecisionQueue("SPECIFICCARD", MZPlayerID($player, $target), "ENCASEDAMAGE", 1);
+        }
+        break;
+      case "UPR113": case "UPR114": case "UPR115":
+        if(MZIsPlayer($target)) PayOrDiscard(MZPlayerID($player, $target), 2, true);
+        break;
+      case "UPR119": case "UPR120": case "UPR121":
+        if(MZIsPlayer($target) && $damage > 0) {
+          AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to freeze", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+          AddDecisionQueue("MZOP", $player, "FREEZE", 1);
+        }
+        break;
+      case "UPR122": case "UPR123": case "UPR124":
+        if(MZIsPlayer($target) && $damage > 0) {
+          AddDecisionQueue("PLAYAURA", MZPlayerID($player, $target), "ELE111", 1);
+        }
+        break;
+      default:
+        break;
+    }
+
+    if($damage > 0 && CardType($source) != "W" && SearchCurrentTurnEffects("UPR125", $player, true)) AddDecisionQueue("OP", MZPlayerID($player, $target), "DESTROYFROZENARSENAL");
+
+    if(HasSurge($source) && $damage > ArcaneDamage($source)) {
+      ProcessSurge($source, $player, $target);
+    }
+  }
+
+  function ProcessSurge($cardID, $player, $target)
+  {
+    global $mainPlayer;
+    $targetPlayer = MZPlayerID($player, $target);
+    switch($cardID) {
+      case "DYN194":
+        $hand = &GetHand($targetPlayer);
+        $numToDraw = count($hand) - 1;
+        if($numToDraw < 0) $numToDraw = 0;
+        $deck = &GetDeck($targetPlayer);
+        while(count($hand) > 0) array_push($deck, array_shift($hand));
+        for($i=0; $i<$numToDraw; ++$i) array_push($hand, array_shift($deck));
+        WriteLog("Mind Warp warps the target's mind.");
+        AddDecisionQueue("SHUFFLEDECK", $targetPlayer, "-");
+        break;
+      case "DYN195":
+        PlayAura("DYN244", $player);
+        WriteLog(CardLink($cardID, $cardID) . " created a " . CardLink("DYN244", "DYN244") . " token");
+        break;
+      case "DYN197": case "DYN198": case "DYN199":
+        if(CurrentEffectPreventsGoAgain() || $player != $mainPlayer) break;
+        GainActionPoints();
+        WriteLog(CardLink($cardID, $cardID) . " gained go again");
+        break;
+      case "DYN203": case "DYN204": case "DYN205":
+        PlayerOpt($player, 1);
+        break;
+      case "DYN206": case "DYN207": case "DYN208":
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=E;hasEnergyCounters=true");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Remove an energy counter from a card");
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZOP", $player, "GETCARDINDEX", 1);
+        AddDecisionQueue("REMOVECOUNTER", $targetPlayer, $cardID, 1);
+        break;
+      default: break;
     }
   }
 

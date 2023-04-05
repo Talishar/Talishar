@@ -14,6 +14,11 @@ $response = new stdClass();
 session_start();
 if (!isset($gameName)) {
   $_POST = json_decode(file_get_contents('php://input'), true);
+  if($_POST == NULL) {
+    $response->error = "Parameters were not passed";
+    echo json_encode($response);
+    exit;
+  }
   $gameName = $_POST["gameName"];
 }
 if (!IsGameNameValid($gameName)) {
@@ -71,6 +76,16 @@ if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
   exit;
 }
 
+$deckLoaded = false;
+if(substr($decklink, 0, 9) == "DRAFTFAB-")
+{
+  $isDraftFaB = true;
+  $deckFile = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
+  ParseDraftFab(substr($decklink, 9), $deckFile);
+  $decklink = "";//Already loaded deck, so don't try to load again
+  $deckLoaded = true;
+}
+
 if ($decklink != "") {
   if ($playerID == 1) $p1DeckLink = $decklink;
   else if ($playerID == 2) $p2DeckLink = $decklink;
@@ -97,7 +112,7 @@ if ($decklink != "") {
     $slug = $decklinkArr[count($decklinkArr) - 1];
     $apiLink = "https://api.fabmeta.net/deck/" . $slug;
   }
-
+  $response->apiLink = $apiLink;
   curl_setopt($curl, CURLOPT_URL, $apiLink);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
   $apiDeck = curl_exec($curl);
@@ -106,9 +121,9 @@ if ($decklink != "") {
 
   if ($apiDeck === FALSE) {
     WriteGameFile();
-    $response->error = "Deckbuilder API for this deck returns no data: " . implode("/", $decklink);
+    if(is_array($decklink)) $response->error = "Deckbuilder API for this deck returns no data: " . implode("/", $decklink);
+    else $response->error = "Deckbuilder API for this deck returns no data: " . $decklink;
     echo (json_encode($response));
-    LogDeckLoadFailure("API returned no data");
     exit;
   }
   $deckObj = json_decode($apiDeck);
@@ -116,13 +131,11 @@ if ($decklink != "") {
   if ($apiInfo['http_code'] == 403) {
     $response->error = "API FORBIDDEN! Invalid or missing token to access API: " . $apiLink . " The response from the deck hosting service was: " . $apiDeck;
     echo (json_encode($response));
-    LogDeckLoadFailure("Missing API Key");
     die();
   }
   if ($deckObj == null) {
     $response->error = 'Deck object is null. Failed to retrieve deck from API.';
     echo (json_encode($response));
-    LogDeckLoadFailure("Failed to retrieve deck from API.");
     exit;
   }
   if(!isset($deckObj->{'name'}))
@@ -301,16 +314,25 @@ if ($decklink != "") {
         $totalCards += $numMainBoard + $numSideboard;
       }
     }
-  } else {
+    $deckLoaded = true;
+  }
+  if(!$deckLoaded) {
     $response->error = "Decklist link invalid.";
-    echo (json_encode($response));
-    LogDeckLoadFailure("Decklist link invalid.");
+    echo(json_encode($response));
     exit;
   }
 
-  if ($unsupportedCards != "") {
+  if($unsupportedCards != "") {
     $response->error = "The following cards are not yet supported: " . $unsupportedCards;
     echo (json_encode($response));
+    exit;
+  }
+
+  if(($format == "sealed" || $format == "draft") && substr($decklink, 0, 9) != "DRAFTFAB-")
+  {
+    //Currently must use draft fab for sealed/draft
+    $response->error = "You must use a DraftFaB deck for " . $format . ".";
+    echo json_encode($response);
     exit;
   }
 
@@ -446,6 +468,7 @@ session_write_close();
 
 function ParseDraftFab($deck, $filename)
 {
+  global $character;
   $character = "DYN001";
   $deckCards = "";
   $headSideboard = "";
@@ -532,190 +555,70 @@ function ParseDraftFab($deck, $filename)
 function GetAltCardID($cardID)
 {
   switch ($cardID) {
-    case "OXO001":
-      return "WTR155";
-    case "OXO002":
-      return "WTR156";
-    case "OXO003":
-      return "WTR157";
-    case "OXO004":
-      return "WTR158";
-    case "BOL002":
-      return "MON405";
-    case "BOL006":
-      return "MON400";
-    case "CHN002":
-      return "MON407";
-    case "CHN006":
-      return "MON401";
-    case "LEV002":
-      return "MON406";
-    case "LEV005":
-      return "MON400";
-    case "PSM002":
-      return "MON404";
-    case "PSM007":
-      return "MON402";
-    case "FAB015":
-      return "WTR191";
-    case "FAB016":
-      return "WTR162";
-    case "FAB023":
-      return "MON135";
-    case "FAB024":
-      return "ARC200";
-    case "FAB030":
-      return "DYN030";
-    case "FAB057":
-      return "EVR063";
-    case "DVR026":
-      return "WTR182";
-    case "RVD008":
-      return "WTR006";
-    case "UPR209":
-      return "WTR191";
-    case "UPR210":
-      return "WTR192";
-    case "UPR211":
-      return "WTR193";
-    case "HER075":
-      return "DYN025";
-    case "LGS112":
-      return "DYN070";
-    case "LGS116":
-      return "DYN200";
-    case "LGS117":
-      return "DYN201";
-    case "LGS118":
-      return "DYN202";
-    case "ARC218":
-    case "UPR224":
-    case "MON306":
-    case "ELE237": //Cracked Baubles
-      return "WTR224";
-    case "DYN238":
-      return "MON401";
-      // case "DYN000":
-      //   return "ARC159";
+    case "OXO001": return "WTR155";
+    case "OXO002": return "WTR156";
+    case "OXO003": return "WTR157";
+    case "OXO004": return "WTR158";
+    case "BOL002": return "MON405";
+    case "BOL006": return "MON400";
+    case "CHN002": return "MON407";
+    case "CHN006": return "MON401";
+    case "LEV002": return "MON406";
+    case "LEV005": return "MON400";
+    case "PSM002": return "MON404";
+    case "PSM007": return "MON402";
+    case "FAB015": return "WTR191";
+    case "FAB016": return "WTR162";
+    case "FAB023": return "MON135";
+    case "FAB024": return "ARC200";
+    case "FAB030": return "DYN030";
+    case "FAB057": return "EVR063";
+    case "DVR026": return "WTR182";
+    case "RVD008": return "WTR006";
+    case "UPR209": return "WTR191";
+    case "UPR210": return "WTR192";
+    case "UPR211": return "WTR193";
+    case "HER075": return "DYN025";
+    case "LGS112": return "DYN070";
+    case "LGS116": return "DYN200";
+    case "LGS117": return "DYN201";
+    case "LGS118": return "DYN202";
+    case "ARC218": case "UPR224": case "MON306": case "ELE237": return "WTR224";
+    case "DYN238": return "MON401";
   }
   return $cardID;
 }
 
 function IsBanned($cardID, $format)
 {
-  switch ($format) {
-
-      //  The following cards are banned in Blitz:
-      //  ARC076: Viserai
-      //  ARC077: Nebula Blade
-      //  ELE186: ELE187: ELE188: Awakening
-      //  ELE186: ELE187: ELE188: Ball Lightning
-      //  WTR164: WTR165: WTR166: Drone of Brutality
-      //  ELE223: Duskblade
-      //  WTR152: Heartened Cross Strap
-      //  CRU174: CRU175: CRU176: Snapback
-      //  ARC129: ARC130: ARC131: Stir the Aetherwind
-      //  MON239: Stubby Hammerers
-      //  ELE115: Crown of Seeds (Until Oldhim becomes Living Legend)
-      //  MON183: MON184: MON185: Seeds of Agony (Until Chane becomes Living Legend)
-      //  CRU141: Bloodsheath Skeleta
-      //  EVR037: Mask of the Pouncing Lynx
-    case "blitz":
-    case "compblitz":
-      switch ($cardID) {
-        case "ARC076":
-        case "ARC077":
-        case "ELE006":
-        case "ELE186":
-        case "ELE187":
-        case "ELE188":
-        case "WTR164":
-        case "WTR165":
-        case "WTR166":
-        case "ELE223":
-        case "WTR152":
-        case "CRU174":
-        case "CRU175":
-        case "CRU176":
-        case "ARC129":
-        case "ARC130":
-        case "ARC131":
-        case "MON239":
-        case "ELE115":
-        case "MON183":
-        case "MON184":
-        case "MON185":
-        case "CRU141":
-        case "EVR037":
-        case "EVR123": // Aether Wildfire
-        case "UPR113":
-        case "UPR114":
-        case "UPR115": // Aether Icevein
-        case "UPR139": // Hypothermia
+  switch($format) {
+    case "blitz": case "compblitz":
+      switch($cardID) {
+        case "ARC076": case "ARC077": case "ELE006": case "ELE186": case "ELE187": case "ELE188": case "WTR164":
+        case "WTR165": case "WTR166": case "ELE223": case "WTR152": case "CRU174": case "CRU175": case "CRU176":
+        case "ARC129": case "ARC130": case "ARC131": case "MON239": case "ELE115": case "MON183": case "MON184":
+        case "MON185": case "CRU141": case "EVR037": case "EVR123": case "UPR113": case "UPR114": case "UPR115": case "UPR139":
           return true;
-        default:
-          return false;
+        default: return false;
       }
       break;
-
-      //    MON001: Prism, Sculptor of Arc Light (as of August 30, 2022)
-      //    MON003: Luminaris (as of August 30, 2022)
-      //    EVR017: Bravo, Star of the Show
-      //    MON153: Chane, Bound by Shadow
-      //    MON155: Galaxxi Black
-
-      //    The following cards are banned in Classic Constructed:
-      //    ELE006: Awakening
-      //    ELE186: ELE187: ELE188: Ball Lightning
-      //    WTR164: WTR165: WTR166: Drone of Brutality
-      //    ELE223: Duskblade
-      //    ARC170: ARC171: ARC172: Plunder Run
-      //    MON239: Stubby Hammerers
-      //    CRU141: Bloodsheath Skeleta
-      //    ELE114: Pulse of Isenloft
-    case "cc":
-    case "compcc":
-      switch ($cardID) {
-        case "MON001":
-        case "MON003":
-        case "EVR017":
-        case "MON153":
-        case "MON155":
-        case "ELE006":
-        case "ELE186":
-        case "ELE187":
-        case "ELE188":
-        case "WTR164":
-        case "WTR165":
-        case "WTR166":
-        case "ELE223":
-        case "ARC170":
-        case "ARC171":
-        case "ARC172":
-        case "MON239":
-        case "CRU141":
-        case "ELE114":
+    case "cc": case "compcc":
+      switch($cardID) {
+        case "MON001": case "MON003": case "EVR017": case "MON153": case "MON155": case "ELE006": case "ELE186":
+        case "ELE187": case "ELE188": case "WTR164": case "WTR165": case "WTR166": case "ELE223": case "ARC170":
+        case "ARC171": case "ARC172": case "MON239": case "CRU141": case "ELE114":
           return true;
-        default:
-          return false;
+        default: return false;
       }
       break;
-
     case "commoner":
-      switch ($cardID) {
-        case "ELE186": //Ball Lightning
-        case "ELE187":
-        case "ELE188":
-        case "MON266": //Belittle
-        case "MON267":
-        case "MON268":
+      switch($cardID) {
+        case "ELE186": case "ELE187": case "ELE188": case "MON266": case "MON267": case "MON268":
           return true;
-        default:
-          return false;
+        default: return false;
       }
       break;
-    default:
-      return false;
+    default: return false;
   }
 }
 
@@ -735,16 +638,4 @@ function ReverseArt($cardID)
     default:
       return $cardID;
   }
-}
-
-function LogDeckLoadFailure($failure)
-{
-  global $gameName, $decklink;
-  $errorFileName = "./BugReports/LoadDeckFailure.txt";
-  $errorHandler = fopen($errorFileName, "a");
-  date_default_timezone_set('America/Chicago');
-  $errorDate = date('m/d/Y h:i:s a');
-  $errorOutput = "Deck load failure (type " . $failure . ") $gameName at $errorDate (deck link: $decklink)";
-  fwrite($errorHandler, $errorOutput . "\r\n");
-  fclose($errorHandler);
 }

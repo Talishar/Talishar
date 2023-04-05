@@ -97,9 +97,8 @@ if ($decklink != "") {
 
   if ($apiDeck === FALSE) {
     if(is_array($decklink)) echo  '<b>' . "⚠️ Deckbuilder API for this deck returns no data: " . implode("/", $decklink) . '</b>';
-    else echo  '<b>' . "⚠️ Deckbuilder API for this deck returns no data: " . implode("/", $decklink) . '</b>';
+    else echo  '<b>' . "⚠️ Deckbuilder API for this deck returns no data: " . $decklink . '</b>';
     WriteGameFile();
-    LogDeckLoadFailure("API returned no data");
     exit;
   }
   $deckObj = json_decode($apiDeck);
@@ -107,14 +106,12 @@ if ($decklink != "") {
   if ($apiInfo['http_code'] == 403) {
     $_SESSION['error'] =
       "API FORBIDDEN! Invalid or missing token to access API: " . $apiLink . " The response from the deck hosting service was: " . $apiDeck;
-    LogDeckLoadFailure("Missing API Key");
     header("Location: MainMenu.php");
     die();
   }
   if($deckObj == null)
   {
     echo 'Deck object is null. Failed to retrieve deck from API.';
-    LogDeckLoadFailure("Failed to retrieve deck from API.");
     exit;
   }
   $deckName = $deckObj->{'name'};
@@ -286,7 +283,6 @@ if ($decklink != "") {
       }
     }
   } else {
-    LogDeckLoadFailure("Decklist link invalid.");
     $_SESSION['error'] = '⚠️ The decklist link you have entered might be invalid or contain invalid cards (e.g Tokens).\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
     die();
@@ -612,16 +608,13 @@ function GetAltCardID($cardID)
     case "OUT222": return "ARC203";
     case "OUT223": return "ARC204";
     case "OUT224": return "ARC205";
+    case "WIN022": return "OUT091";
   }
   return $cardID;
 }
 
 function IsBanned($cardID, $format)
 {
-  if($format == "compblitz" || $format == "compcc")
-  {
-    if(substr($cardID, 0, 3) == "OUT") return true;
-  }
   switch ($format) {
     case "blitz":
     case "compblitz":
@@ -688,16 +681,4 @@ function IsBanned($cardID, $format)
     default:
       return false;
   }
-}
-
-function LogDeckLoadFailure($failure)
-{
-  global $gameName, $decklink;
-  $errorFileName = "./BugReports/LoadDeckFailure.txt";
-  $errorHandler = fopen($errorFileName, "a");
-  date_default_timezone_set('America/Chicago');
-  $errorDate = date('m/d/Y h:i:s a');
-  $errorOutput = "Deck load failure (type " . $failure . ") $gameName at $errorDate (deck link: $decklink)";
-  fwrite($errorHandler, $errorOutput . "\r\n");
-  fclose($errorHandler);
 }
