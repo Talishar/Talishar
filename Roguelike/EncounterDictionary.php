@@ -108,7 +108,14 @@ function EncounterDescription()
     case 129:
       if($encounter->subphase == "BeforeFight") return "As you cross the bridge, a man bigger than a mountain yells a battlecry.";
       else if($encounter->subphase == "AfterFight") return "The defeated man falls. His eyes do not change, for nothing was ever behind his eyes.";
-    case 999: return "This text means something is wrong!"; //Maybe $encounter->subphase is set to something weird? Maybe there's a typo?
+    case 130:
+      if($encounter->subphase == "BeforeFight") return "As you travel, a wandering thug carrying a spiked club jumps out from behind a large boulder and ambushes you. His size is impressive, yet he seems limber... keep your guard up against him."; //TODO
+      else if($encounter->subphase == "AfterFight") return "The man runs away, with the pieces of his club on the ground. You were too clever for him!";
+    case 131:
+      if($encounter->subphase == "BeforeFight") return "Despite keeping an eye on your surroundings, you're caught by surprise when a giant winged creature made of crackling lightning suddenly attacks you.";
+      else if($encounter->subphase == "AfterFight") return "As you slay the creature, it falls to the ground, but leaves no trace of blood. Just before leaving, you turn back and see no body or evidence of your fight at all.";
+
+    case 999: return "This text is not the default! This text means something is wrong!"; //Maybe $encounter->subphase is set to something weird? Maybe there's a typo?
 
     case 201: return "There was a battle here recently. There aren't any combatants, but there are bodies littering the ground, still dripping with blood.";
     case 202: return "You found a library.";
@@ -478,6 +485,10 @@ function EncounterImage()
       return "DYN230_cropped.png";
     case 129:
       return "DYN071_cropped.png";
+    case 130:
+      return "CRU192_cropped.png";
+    case 131:
+      return "UPR009_cropped.png";
 
     case 201:
       return "WTR194_cropped.png";

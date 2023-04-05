@@ -127,6 +127,10 @@ function RogSelfCostMod($cardID)
       $numHypers += CountItem("DYN111", $currentPlayer);
       $numHypers += CountItem("DYN112", $currentPlayer);
       return $numHypers > 0 ? -1 : 0;
+    case "WTR206": case "WTR207": case "WTR208": 
+      if(GetPlayerCharacter($currentPlayer)[0] == "ROGUE030"){
+        return -1;
+      }
     default:
       return 0;
   }
