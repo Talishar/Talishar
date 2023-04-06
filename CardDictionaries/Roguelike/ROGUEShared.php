@@ -48,6 +48,7 @@ function ROGUEEffectAttackModifier($cardID)
     if (count($params) > 1) $parameter = $params[1];
     switch ($cardID) {
       case "ROGUE008": return 1;
+      case "ROGUE018": return 1;
       case "ROGUE506": return 1;
       case "ROGUE509": return 1;
       case "ROGUE517":
@@ -125,6 +126,7 @@ function ROGUECombatEffectActive($cardID, $attackID)
     $cardID = $params[0];
     switch ($cardID) {
         case "ROGUE008": return true;
+        case "ROGUE018": return true;
         case "ROGUE506": return CardType($attackID) == "AA";
         case "ROGUE509": return $attackID == "DYN065";
         case "ROGUE512": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
