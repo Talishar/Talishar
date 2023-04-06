@@ -934,6 +934,7 @@ function IsCombatEffectPersistent($cardID)
     case "ROGUE601": return true;
     case "ROGUE603": return true;
     case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
+    case "ROGUE702": return true;
     case "ROGUE704": return true;
     case "ROGUE707": return true;
     case "ROGUE710-GA": return true;
