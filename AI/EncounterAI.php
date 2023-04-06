@@ -6,7 +6,8 @@ include "EncounterPlayLogic.php";
 
 function EncounterAI()
 {
-  global $currentPlayer, $p2CharEquip, $decisionQueue, $mainPlayer, $mainPlayerGamestateStillBuilt, $combatChain;
+  global $currentPlayer, $p2CharEquip, $decisionQueue, $mainPlayer, $mainPlayerGamestateStillBuilt, $combatChain, $actionPoints;
+  $AIDebug = false;
   $currentPlayerIsAI = ($currentPlayer == 2 && IsEncounterAI($p2CharEquip[0])) ? true : false;
   if(!IsGameOver() && $currentPlayerIsAI)
   {
@@ -21,24 +22,24 @@ function EncounterAI()
       $items = &GetItems($currentPlayer);
       $allies = &GetAllies($currentPlayer);
       CacheCombatResult();
-      //LogHandArray($hand);
-      //WriteLog("Turn[0]->".$turn[0]);
-      //LogHandArray($decisionQueue);
       if(count($decisionQueue) > 0)
       {
         global $EffectContext;
         if($EffectContext == "OUT234")
         {
+          if($AIDebug) WriteLog("AI Branch - Bloodrot");
           ContinueDecisionQueue("NO");
           continue;
         }
         if($decisionQueue[0] == "SHIVER")
         {
+          if($AIDebug) WriteLog("AI Branch - Shiver");
           $options = explode(",", $turn[2]);
           ContinueDecisionQueue($options[1]);
         }
         if($isBowActive)//was the last action a bow action?
         {
+          if($AIDebug) WriteLog("AI Branch - Bow Active");
           $optionIndex = 0;
           $index = 0;
           $largestIndex = 0;
@@ -60,16 +61,19 @@ function EncounterAI()
         }
         else if($turn[0] == "INPUTCARDNAME")
         {
+          if($AIDebug) WriteLog("AI Branch - Input Arcane");
           ProcessInput($currentPlayer, 30, "-", 0, 0, "-", false, "Crouching Tiger");
         }
         else
         {
+          if($AIDebug) WriteLog("AI Branch - DQ First Option");
           $options = explode(",", $turn[2]);
           ContinueDecisionQueue($options[0]);//Just pick the first option
         }
       }
       else if($turn[0] == "B")//The player is attacking the AI
       {
+        if($AIDebug) WriteLog("AI Branch - Block");
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Block"); //Generate the priority values array. Found in EncounterPriorityLogic.php
         //LogPriorityArray($priortyArray);
         $found = false;
@@ -93,8 +97,9 @@ function EncounterAI()
           PassInput();
         }
       }
-      else if($turn[0] == "M" && $mainPlayer == $currentPlayer)//AIs turn
+      else if($turn[0] == "M" && $mainPlayer == $currentPlayer && $actionPoints > 0)//AIs turn
       {
+        if($AIDebug) WriteLog("AI Branch - AI's Turn");
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Action");
         //LogPriorityArray($priortyArray);
         $found = false;
@@ -116,6 +121,7 @@ function EncounterAI()
       }
       else if($turn[0] == "A" && $mainPlayer == $currentPlayer)//attack reaction phase
       {
+        if($AIDebug) WriteLog("AI Branch - Attack Reactions");
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Reaction");
         //LogPriorityArray($priortyArray);
         $found = false;
@@ -136,6 +142,7 @@ function EncounterAI()
       }
       else if($turn[0] == "P" && $mainPlayer == $currentPlayer)//pitch phase
       {
+        if($AIDebug) WriteLog("AI Branch - Pitch");
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Pitch");
         //LogPriorityArray($priortyArray);
         $found = false;
@@ -156,12 +163,14 @@ function EncounterAI()
       }
       else if($turn[0] == "PDECK" && $mainPlayer == $currentPlayer)//choosing which card to bottom from pitch
       {
+        if($AIDebug) WriteLog("AI Branch - Pitch Deck");
         $pitch = &GetPitch($currentPlayer);
         ProcessInput($currentPlayer, 6, "", $pitch[0], 0, "");
         CacheCombatResult();
       }
       else if($turn[0] == "ARS" && $mainPlayer = $currentPlayer)//choose a card to arsenal
       {
+        if($AIDebug) WriteLog("AI Branch - Choose Arsenal");
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "ToArsenal");
         //LogPriorityArray($priortyArray);
         $found = false;
@@ -182,18 +191,21 @@ function EncounterAI()
       }
       else if($turn[0] == "OPT" && $mainPlayer = $currentPlayer)
       {
+        if($AIDebug) WriteLog("AI Branch - Opt");
         $options = explode(",", $turn[2]);
         ProcessInput($currentPlayer, 9, $options[0], 0, 0, "");
         CacheCombatResult();
       }
       else if($turn[0] == "HANDTOPBOTTOM"  && $mainPlayer = $currentPlayer)
       {
+        if($AIDebug) WriteLog("AI Branch - Hand Top/Bottom");
         $options = explode(",", $turn[2]);
         ProcessInput($currentPlayer, 12, $options[0], 0, 0, "");
         CacheCombatResult();
       }
       else
       {
+        if($AIDebug) WriteLog("AI Branch - Pass");
         PassInput();
       }
       ProcessMacros();
