@@ -173,21 +173,13 @@ function CharacterStartTurnAbility($index)
       }
       break;
     case "ROGUE015":
-      //WriteLog($mainCharacter[$index+1]);
-      if($mainCharacter[$index+1] == 2)
-      {
-        $hand = &GetHand($mainPlayer);
-        array_unshift($hand, "DYN065");
-      }
+      $hand = &GetHand($mainPlayer);
+      array_unshift($hand, "DYN065");
       break;
     case "ROGUE017":
-      //WriteLog($mainCharacter[$index+1]);
-      if($mainCharacter[$index+1] == 2)
-      {
-        $hand = &GetHand($mainPlayer);
-        array_unshift($hand, "CRU181");
-        MyDrawCard();
-      }
+      $hand = &GetHand($mainPlayer);
+      array_unshift($hand, "CRU181");
+      Draw($mainPlayer);
       break;
     case "ROGUE018":
       PlayAura("ELE109", $mainPlayer);

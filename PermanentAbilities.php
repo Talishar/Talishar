@@ -377,7 +377,7 @@ function PermanentStartTurnAbilities()
         if(count($deck) < 1) AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
       case "ROGUE807":
-        MyDrawCard();
+        Draw($mainPlayer);
         break;
       default:
         break;
@@ -444,7 +444,7 @@ function PermanentPlayAbilities($attackID, $from="")
         }
         break;
       case "ROGUE706":
-        if($from == "ARS") MyDrawCard();
+        if($from == "ARS") Draw($mainPlayer);
         break;
       default:
         break;
