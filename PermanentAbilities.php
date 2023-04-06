@@ -469,7 +469,7 @@ function PermanentAddAttackAbilities()
   return $amount;
 }
 
-function PermanentDrawCardAbilities()
+function PermanentDrawCardAbilities($player)
 {
   global $mainPlayer, $defPlayer, $currentPlayer;
 
@@ -479,7 +479,8 @@ function PermanentDrawCardAbilities()
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     switch ($permanents[$i]) {
       case "ROGUE601":
-        if($mainPlayer == $currentPlayer) AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        //WriteLog("Defending:".$defPlayer."Main:".$mainPlayer."Current:".$currentPlayer."Player:".$player);
+        if($mainPlayer == $player) AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
       default:
         break;

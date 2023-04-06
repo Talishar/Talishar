@@ -2353,7 +2353,7 @@ function Draw($player, $mainPhase = true)
       for($i=0; $i<$numBrainstorm; ++$i) DealArcane(1, 2, "TRIGGER", $character[0]);
     }
   }
-  PermanentDrawCardAbilities();
+  PermanentDrawCardAbilities($player);
   $hand = array_values($hand);
   return $hand[count($hand) - 1];
 }

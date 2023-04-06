@@ -125,6 +125,7 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 function CharacterStartTurnAbility($index)
 {
   global $mainPlayer;
+  $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $char = new Character($mainPlayer, $index);
   if($char->status == 0 && !CharacterTriggerInGraveyard($char->cardID)) return;
   if($char->status == 1) return;

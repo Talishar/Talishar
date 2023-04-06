@@ -257,8 +257,8 @@ function ROGUECardSubtype($cardID)
       case "ROGUE028": return "Illusionist";
       case "ROGUE029": return "Warrior";
       case "ROGUE030": return "Thug";
-      case "ROGUE031": return "Draconic Elemental";
-      case "ROGUE032": return "Draconic Elemental";
+      case "ROGUE031": return "Elemental";
+      case "ROGUE032": return "Elemental";
 
       case "ROGUE501": //Broken Hourglass
       case "ROGUE502": //Perfect Mirror
