@@ -155,7 +155,6 @@ $isMobile = IsMobile();
         <?php //if($isPatron) echo "<li><a href='Replays.php'>Replays[BETA]</a></li>";
         ?>
         <li><a href="https://www.draftfab.com/">DraftFaB</a></li>
-        <?php if (!$isMobile) echo '<li><a href="' . $roguelikePath . '">Roguelike</a></li>'; ?>
         <?php
         if (isset($_SESSION["useruid"])) {
           echo "<li><a href='ProfilePage.php'>Profile</a></li>";
