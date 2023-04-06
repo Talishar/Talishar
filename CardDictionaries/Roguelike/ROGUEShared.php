@@ -92,6 +92,8 @@ function ROGUEEffectAttackModifier($cardID)
         if(HasFusion($combatChain[0]) != "") ++$rv;
         if(HasCrush($combatChain[0])) ++$rv;
         if(IsPhantasmActive()) ++$rv;
+        if(HasStealth($combatChain[0])) ++$rv;
+        if(ContractType($combatChain[0]) != "") ++$rv;
         return $rv;
       case "ROGUE709": return -2;
       case "ROGUE711":

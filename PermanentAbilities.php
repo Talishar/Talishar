@@ -302,7 +302,7 @@ function PermanentStartTurnAbilities()
         AddCurrentTurnEffect("ROGUE605-second", $mainPlayer);
         break;
       case "ROGUE606":
-        MayBottomDeckDraw();
+        BottomDeck($currentPlayer, true, shouldDraw:true);
         break;
       case "ROGUE608":
         $items = &GetItems($mainPlayer);
