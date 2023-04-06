@@ -398,7 +398,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             $encounter->gold += 4;
             $health = &GetZone($player, "Health");
             $health[0] -= 4;
-            WriteLog("You stumble down a cliff, losing some life but retrieving some gold. You even found some cold someone else had lost.");
+            WriteLog("You stumble down a cliff, losing some life but retrieving some gold. You even found some gold someone else had lost.");
             break;
         }
         return 1;
@@ -750,7 +750,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Follow_the_sound_of_metallic_ringing": //Giant Forge
             PrependDecisionQueue("SETENCOUNTER", $player, "204-PickMode");
             break;
-          case "You_see_one_of_the_most_beautiful_views_in_all_of_rathe": //Cliffside
+          case "You_see_one_of_the_most_beautiful_views_in_all_of_Rathe": //Cliffside
             PrependDecisionQueue("SETENCOUNTER", $player, "210-PickMode");
             break;
           case "You_find_a_small_smithing_hut": //Armorer

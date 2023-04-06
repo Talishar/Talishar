@@ -30,6 +30,7 @@ function EncounterAI()
         if($EffectContext == "OUT234")
         {
           ContinueDecisionQueue("NO");
+          continue;
         }
         if($decisionQueue[0] == "SHIVER")
         {
