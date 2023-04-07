@@ -14,5 +14,6 @@
   $autoDeleteGames = false;
 
   $roguelikePath = $redirectPath . "/Roguelike/CreateGame.php";
+  $gameUIPath = $redirectPath . "/NextTurn4.php";
 
 ?>
