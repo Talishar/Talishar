@@ -113,6 +113,7 @@ function EncounterAI()
         {
           if(CardSubtype($storedPriorityNode[0]) == "Bow" ) $isBowActive = true;
           PlayCardAttempt($storedPriorityNode);
+          CacheCombatResult();
         }
         else
         {
@@ -134,6 +135,7 @@ function EncounterAI()
         if($found == true && $storedPriorityNode[3] != 0)
         {
           PlayCardAttempt($storedPriorityNode);
+          CacheCombatResult();
         }
         else
         {
