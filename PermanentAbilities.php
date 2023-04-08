@@ -472,14 +472,10 @@ function PermanentAddAttackAbilities()
 function PermanentDrawCardAbilities($player)
 {
   global $mainPlayer, $defPlayer, $currentPlayer;
-
   $permanents = &GetPermanents($mainPlayer);
-  $defPermanents = &GetPermanents($defPlayer);
-
-  for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
-    switch ($permanents[$i]) {
+  for($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
+    switch($permanents[$i]) {
       case "ROGUE601":
-        //WriteLog("Defending:".$defPlayer."Main:".$mainPlayer."Current:".$currentPlayer."Player:".$player);
         if($mainPlayer == $player) AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
       default:
@@ -487,14 +483,5 @@ function PermanentDrawCardAbilities($player)
     }
   }
 }
-/*
-function DestroyAlly($player, $index)
-{
-  $allies = &GetAllies($player);
-  for($j = $index+AllyPieces()-1; $j >= $index; --$j)
-  {
-    unset($allies[$j]);
-  }
-  $allies = array_values($allies);
-}
-*/
+
+?>

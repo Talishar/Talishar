@@ -29,21 +29,14 @@ if($p2Char[0] == "DUMMY") {
 //roguelike gamemode powers
 if(CardSet($p2Char[0]) == "ROG") {
   $deck = &GetDeck(1);
-  //array_unshift($deck, "ROGUE808");
   $powers = SearchDeck(1, "", "Power");
-  //WriteLog(strlen($powers));
-  //WriteLog($powersArray[0]);
-  //WriteLog($powersArray[1]);
   if(strlen($powers) != 0) {
     $powersArray = explode(",", $powers);
-    //WriteLog(count($powersArray));
     for($i = count($powersArray)-1; $i >= 0; --$i)
     {
       PutPermanentIntoPlay(1, $deck[$powersArray[$i]]);
-      //WriteLog($deck[$powersArray[$i]]);
       array_splice($deck, $powersArray[$i], 1);
     }
-  //WriteLog($deck[$powers[0]]);
   }
   ROGUEPowerStart();
 }
@@ -123,11 +116,6 @@ if ($p2Char[0] == "ROGUE008") {
   PutPermanentIntoPlay(0, "ROGUE603");
   PutPermanentIntoPlay(0, "ROGUE803");
 }
-
-  //Runeblade Scholar, effect disabled for now
-  /* if ($p2Char[0] == "ROGUE010") {
-    PutItemIntoPlayForPlayer("ARC163", 1); //Rusted Relic for the main player, not the scholar
-  } */
 
 AddDecisionQueue("SHUFFLEDECK", 1, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck
 AddDecisionQueue("SHUFFLEDECK", 2, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck
