@@ -48,6 +48,7 @@ function ROGUEEffectAttackModifier($cardID)
     if (count($params) > 1) $parameter = $params[1];
     switch ($cardID) {
       case "ROGUE008": return 1;
+      case "ROGUE018": return 1;
       case "ROGUE506": return 1;
       case "ROGUE509": return 1;
       case "ROGUE517":
@@ -91,6 +92,8 @@ function ROGUEEffectAttackModifier($cardID)
         if(HasFusion($combatChain[0]) != "") ++$rv;
         if(HasCrush($combatChain[0])) ++$rv;
         if(IsPhantasmActive()) ++$rv;
+        if(HasStealth($combatChain[0])) ++$rv;
+        if(ContractType($combatChain[0]) != "") ++$rv;
         return $rv;
       case "ROGUE709": return -2;
       case "ROGUE711":
@@ -125,6 +128,7 @@ function ROGUECombatEffectActive($cardID, $attackID)
     $cardID = $params[0];
     switch ($cardID) {
         case "ROGUE008": return true;
+        case "ROGUE018": return true;
         case "ROGUE506": return CardType($attackID) == "AA";
         case "ROGUE509": return $attackID == "DYN065";
         case "ROGUE512": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
@@ -255,8 +259,8 @@ function ROGUECardSubtype($cardID)
       case "ROGUE028": return "Illusionist";
       case "ROGUE029": return "Warrior";
       case "ROGUE030": return "Thug";
-      case "ROGUE031": return "Draconic Elemental";
-      case "ROGUE032": return "Draconic Elemental";
+      case "ROGUE031": return "Elemental";
+      case "ROGUE032": return "Elemental";
 
       case "ROGUE501": //Broken Hourglass
       case "ROGUE502": //Perfect Mirror

@@ -302,7 +302,7 @@ function PermanentStartTurnAbilities()
         AddCurrentTurnEffect("ROGUE605-second", $mainPlayer);
         break;
       case "ROGUE606":
-        MayBottomDeckDraw();
+        BottomDeck($currentPlayer, true, shouldDraw:true);
         break;
       case "ROGUE608":
         $items = &GetItems($mainPlayer);
@@ -373,7 +373,7 @@ function PermanentStartTurnAbilities()
         SoulShackleStartTurn($mainPlayer);
         SoulShackleStartTurn($mainPlayer);
         SoulShackleStartTurn($mainPlayer);
-        $deck = &GetDeck($currentPlayer);
+        $deck = &GetDeck($mainPlayer);
         if(count($deck) < 1) AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
       case "ROGUE807":
@@ -469,7 +469,7 @@ function PermanentAddAttackAbilities()
   return $amount;
 }
 
-function PermanentDrawCardAbilities()
+function PermanentDrawCardAbilities($player)
 {
   global $mainPlayer, $defPlayer, $currentPlayer;
 
@@ -479,7 +479,8 @@ function PermanentDrawCardAbilities()
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     switch ($permanents[$i]) {
       case "ROGUE601":
-        if($mainPlayer == $currentPlayer) AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        //WriteLog("Defending:".$defPlayer."Main:".$mainPlayer."Current:".$currentPlayer."Player:".$player);
+        if($mainPlayer == $player) AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
       default:
         break;

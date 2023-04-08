@@ -125,6 +125,7 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 function CharacterStartTurnAbility($index)
 {
   global $mainPlayer;
+  $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $char = new Character($mainPlayer, $index);
   if($char->status == 0 && !CharacterTriggerInGraveyard($char->cardID)) return;
   if($char->status == 1) return;
@@ -182,7 +183,7 @@ function CharacterStartTurnAbility($index)
       Draw($mainPlayer);
       break;
     case "ROGUE018":
-      PlayAura("ELE109", $mainPlayer);
+      AddCurrentTurnEffect("ROGUE018", $mainPlayer);
       break;
     case "ROGUE010":
       PlayAura("ARC112", $mainPlayer);
@@ -234,6 +235,9 @@ function DefCharacterStartTurnAbilities()
           AddDecisionQueue("PUTPLAY", $defPlayer, "0", 1);
         }
         break;
+      case "ROGUE018":
+        AddCurrentTurnEffect("ROGUE018", $mainPlayer);
+        break;
       default:
         break;
     }
@@ -284,6 +288,9 @@ function MainCharacterEndTurnAbilities()
           DestroyCharacter($mainPlayer, $i);
           $mainCharacter[$i + 2] = 0;
         }
+        break;
+      case "ROGUE018":
+        PlayAura("ELE109", $mainPlayer);
         break;
       case "ROGUE019":
         DiscardRandom($currentPlayer, $cardID);
@@ -395,7 +402,6 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
         case "MON105": case "MON106": $modifier += 1; break;
         case "MON113": case "MON114": case "MON115": $modifier += 1; break;
         case "EVR055-1": $modifier += 1; break;
-        case "ROGUE018": $modifier += 1; break;
         default:
           break;
       }
