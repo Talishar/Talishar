@@ -107,7 +107,15 @@ function EncounterAI()
           $storedPriorityNode = $priortyArray[count($priortyArray)-1];
           array_pop($priortyArray);
           //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
-          if(CardIsPlayable($storedPriorityNode, $hand, $resources)) $found = true;
+          if(CardIsPlayable($storedPriorityNode, $hand, $resources))
+          {
+            //Only attempt to play the card if you have excess resources compared to what needs to be saved
+            if($storedPriorityNode[0] != "Hand" || count($hand) > 1 || ResourcesNeededToSave($character[0]) >= ($resources[0] - CardCost($storedPriorityNode[0])))
+            {
+              WriteLog("found " . $storedPriorityNode[0]);
+              $found = true;
+            }
+          }
         }
         if($found == true && $storedPriorityNode[3] != 0)
         {
@@ -248,4 +256,14 @@ function LogHandArray($hand)
   }
   WriteLog($rv . "]");
 }
+
+function ResourcesNeededToSave($aiID)
+{
+  switch($aiID)
+  {
+    case "ROGUE027": return 1;
+    default: return 0;
+  }
+}
+
 ?>
