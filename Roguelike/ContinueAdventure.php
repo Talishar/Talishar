@@ -13,6 +13,9 @@
   include "../HostFiles/Redirector.php";
   include "DecisionQueue.php";
   include "../WriteLog.php";
+  include_once '../Libraries/HTTPLibraries.php';
+
+  SetHeaders();
 
   $health = &GetZone($playerID, "Health");
   $health[0] = $remainingHealth;
