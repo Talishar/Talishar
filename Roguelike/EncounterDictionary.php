@@ -1,7 +1,7 @@
 <?php
 
 include "EncounterLogic.php";
-include "CardRewardPools.php";
+include "/CardReward/Background/CardRewardPools.php";
 include "AdventurePools.php";
 
 function EncounterDescription()
