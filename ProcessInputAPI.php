@@ -138,6 +138,15 @@ switch ($mode) {
     }
     $layers = $newLayers;
     break;
+  case 100011: //Resume adventure (roguelike)
+    if($roguelikeGameID == "")
+    {
+      $response->error = "Cannot resume adventure - not a roguelike game.";
+      $isValid = false;
+      break;
+    }
+    $response->redirectLink = $redirectPath . "/Roguelike/ContinueAdventure.php?gameName=" . $roguelikeGameID . "&playerID=1&health=" . GetHealth(1);
+    break;
   default:
     break;
 }
