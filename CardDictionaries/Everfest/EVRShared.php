@@ -1013,7 +1013,7 @@
     return CombineSearches($rv, $itemIndices);
   }
 
-  function IsAmuletOfEchoesRestricted()
+  function IsAmuletOfEchoesRestricted($from)
   {
     global $CS_NamesOfCardsPlayed;
     if($from == "PLAY") {
