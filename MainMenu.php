@@ -163,20 +163,7 @@ if ($canSeeQueue) {
   <h1>News</h1>
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
-
-      <div style="vertical-align:middle; position: relative;">
-      </div>
-      <BR>
-      Test Outsiders sealed and draft FREE through our partner site, <a href='https://www.draftfab.com' target='_blank'>DRAFTFAB</a>!
-      <BR>
-      <a href='https://www.draftfab.com' target='_blank'><img src='./Images/logos/draftfab.png'></img></a>
-      <br><BR>
-      <div class='LanguageSelector'><?php echo ($languageText); ?>:
-        <select id='languageSelect' onchange='changeLanguage()' name='decksToTry' id='decksToTry'>
-          <option value='1' <?php if ($language == 1) echo (" selected"); ?>>English</option>
-          <option value='2' <?php if ($language == 2) echo (" selected"); ?>>Japanese (日本語)</option>
-        </select>
-      </div>
+      <h3>This is the old version of the site and is no longer supported, go to <a style='color:blue' href='https://talishar.net'>talishar.net</a></h3>
     </div>
   </div>
   <?php
