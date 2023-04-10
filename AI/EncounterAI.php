@@ -15,12 +15,14 @@ function EncounterAI()
     for($logicCount=0; $logicCount<=30 && $currentPlayerIsAI; ++$logicCount)
     {
       global $turn;
+      FixHand($currentPlayer);
       $hand = &GetHand($currentPlayer);
       $character = &GetPlayerCharacter($currentPlayer);
       $arsenal = &GetArsenal($currentPlayer);
       $resources = &GetResources($currentPlayer);
       $items = &GetItems($currentPlayer);
       $allies = &GetAllies($currentPlayer);
+      //LogHandArray($hand);
       CacheCombatResult();
       if(count($decisionQueue) > 0)
       {
@@ -112,7 +114,7 @@ function EncounterAI()
             //Only attempt to play the card if you have excess resources compared to what needs to be saved
             if($storedPriorityNode[0] != "Hand" || count($hand) > 1 || ResourcesNeededToSave($character[0]) >= ($resources[0] - CardCost($storedPriorityNode[0])))
             {
-              WriteLog("found " . $storedPriorityNode[0]);
+              //WriteLog("found " . $storedPriorityNode[0]);
               $found = true;
             }
           }
@@ -137,8 +139,8 @@ function EncounterAI()
         while (count($priortyArray) > 0 && !$found) {
           $storedPriorityNode = $priortyArray[count($priortyArray)-1];
           array_pop($priortyArray);
-          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
           if(ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)) $found = true;
+          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3] . ", Found=" . $found);
         }
         if($found == true && $storedPriorityNode[3] != 0)
         {
