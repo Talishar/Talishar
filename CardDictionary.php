@@ -939,6 +939,7 @@ function IsStaticType($cardType, $from = "", $cardID = "")
 
 function HasBladeBreak($cardID)
 {
+  global $defPlayer;
   switch($cardID) {
     case "WTR079": case "WTR150": case "WTR155": case "WTR156": case "WTR157": case "WTR158": return true;
     case "ARC041": return true;
@@ -951,6 +952,8 @@ function HasBladeBreak($cardID)
     case "UPR136": case "UPR158": case "UPR182": return true;
     case "DYN045": case "DYN152": case "DYN171": return true;
     case "OUT049": case "OUT094": case "OUT099": case "OUT139": case "OUT140": case "OUT141": case "OUT157": case "OUT158": return true;
+    case "MON241": case "MON242": case "MON243": case "MON244": //Ironhide
+    case "OUT174": return SearchCurrentTurnEffects($cardID, $defPlayer); //Vambrace of determination
     default: return false;
   }
 }
@@ -979,14 +982,6 @@ function HasTemper($cardID)
     case "UPR084": return true;
     case "DYN027": case "DYN492b": return true;
     default: return false;
-  }
-}
-
-function HasDynamicBlock($cardID)
-{
-  switch($cardID) {
-    case "MON241": case "MON242": case "MON243": case "MON244": case "RVD005": case "RVD006": case "OUT174": return true;
-  default: return false;
   }
 }
 

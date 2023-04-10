@@ -512,6 +512,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddCurrentTurnEffect($parameter, $player, "PLAY");
       return "1";
     case "ADDCURRENTEFFECT":
+      WriteLog($parameter . " abc " . $player);
       AddCurrentTurnEffect($parameter, $player);
       return "1";
     case "ADDCURRENTANDNEXTTURNEFFECT":
