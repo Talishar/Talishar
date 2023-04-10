@@ -271,7 +271,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" ? $layers[$i + 2] : $layers[$i]);
     $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]);
     $layer->layerID = $i;
-    $layer->isReorderable = $i < $dqState[8];
+    $layer->isReorderable = $i <= $dqState[8];
     array_push($reorderableLayers, $layer);
   }
   $target = GetAttackTarget();
