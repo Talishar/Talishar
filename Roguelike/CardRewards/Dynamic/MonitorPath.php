@@ -1,32 +1,63 @@
 <?php
 
-function TagGeneratePool($tag)
+function DynamicSortPools()
 {
-  $pool = GetPoolByTag($tag); //returns an array of CardReward classes
-  $result = [];
-  for($i = 0; $i < count($pool); ++$i)
-  {
-    if(CanBeAdded($pool[$i])) array_push($result, $pool[$i]);
-  }
-  return $result;
+  $encounter = &GetZone(1, "Encounter");
+  $smallTags
+  for($i = 0; $i)
 }
 
-function CanBeAdded($cardReward)
+function DynamicGetCards($input)
 {
-  if($cardReward->requirement == "-") return true; //no requirements to be in the pool
-  for($i = 0; $i < count($cardReward->requirement); ++$i)
+  //Use the input to determine the pools it's generating cards from
+  for(/*each item in the input*/)
   {
-    if(TagNotMet($cardReward->requirement[$i])) return false; //if the requirement isn't met
+    
   }
-  return true; //It's gone through all of the requirements and all of them are met
+  $addedReward = DynamicGetCard($tag, $rarity, $reward); //using the tags it's determined to get, it will then call GetCard to get an individual card
+  //NOTE: $addedReward might be empty. Or more specifically, "NoResult". Need to add in a fail case for that so it doesn't break.
 }
 
-function TagNotMet($tag)
+//In the encounter class, the tags array is an array of tag items. The information stored is: $name, $weight, $unused (true or false), $cardPool, and $removedCardPool
+
+function DynamicGetCard($tag, $rarity, $reward)
 {
   $encounter = &GetZone(1, "Encounter");
   for($i = 0; $i < count($encounter->tags); ++$i)
   {
-    if($tag == $encounter->tags[$i]->tag) return false;
+    if($encounter->tags[$i]->name == $tag) $pool = $encounter->tags[$i]->pool;
+  }
+  $pool = DynamicGeneratePool($rarity, $reward, $pool);
+  if(count($pool) == 0) return "NoResult";
+  else return $pool[rand(0, count($pool)-1)];
+}
+
+function DynamicGeneratePool($rarity, $reward, $pool)
+{
+  $generatedPool = [];
+  for($i = 0; $i < count($pool); ++$i)
+  {
+    if(DynamicCheckRarity($rarity, Rarity($pool[$i])) && DynamicCheckRewards($reward, $pool[$i])) array_push($generatedPool, $pool[$i]); //if it's the desired rarity and not already in the reward, add it to the pool
+  }
+  return $generatedPool;
+}
+
+function DynamicCheckRarity($rarityOrig, $rarityCheck)
+{
+  switch($rarity)
+  {
+    case "Common": return $rarityCheck == "C" || $rarityCheck == "T";
+    case "Rare": return $rarityCheck == "R";
+    case "Majestic": return $rarityCheck == "M" || $rarityCheck == "S";
+    case "Legendary": return $rarityCheck == "L";
+  }
+}
+
+function DynamicCheckRewards($reward, $cardID)
+{
+  for($i = 0; $i < count($reward); ++$i)
+  {
+    if($reward[$i] == $cardID) return false;
   }
   return true;
 }

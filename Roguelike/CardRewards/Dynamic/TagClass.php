@@ -1,7 +1,7 @@
 <?php
 
 class Tag {
-  public $tag;
+  public $name;
   public $inWeight;
   public $outWeight;
   public $ignore; //This is set to true if this tag only increments and does not create. If false, then it will both create and increment. Only used in the channel path.
