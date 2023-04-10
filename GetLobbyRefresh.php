@@ -53,7 +53,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       WriteLog("Player $otherP has disconnected.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "-1");
-      SetCachePiece($gameName, $otherP + 6, "");
+      if($otherP == 2) SetCachePiece($gameName, $otherP + 6, "");
       $kickPlayerTwo = true;
     }
   }
