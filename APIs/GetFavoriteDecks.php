@@ -8,8 +8,8 @@ include_once "../Libraries/HTTPLibraries.php";
 
 SetHeaders();
 
-if(!IsUserLoggedIn()) {
-  if(isset($_COOKIE["rememberMeToken"])) {
+if (!IsUserLoggedIn()) {
+  if (isset($_COOKIE["rememberMeToken"])) {
     loginFromCookie();
   }
 }
@@ -32,11 +32,12 @@ if (IsUserLoggedIn()) {
       $deck = new stdClass();
       $deck->index = $i;
       $deck->key = $i . "<fav>" . $favoriteDecks[$i];
-      $deck->name = $favoriteDecks[$i+1];
-      $deck->hero = $favoriteDecks[$i+2];
-      $deck->format = $favoriteDecks[$i+3];
+      $deck->name = $favoriteDecks[$i + 1];
+      $deck->hero = $favoriteDecks[$i + 2];
+      $deck->format = $favoriteDecks[$i + 3];
       $deck->cardBack = "DEFAULT";
       $deck->playmat = "DEFAULT";
+      $deck->link = $favoriteDecks[$i];
       array_push($response->favoriteDecks, $deck);
     }
   }
