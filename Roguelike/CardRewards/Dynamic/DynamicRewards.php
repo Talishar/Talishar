@@ -10,23 +10,26 @@ function DynamicSortPools()
 function DynamicGetCards($input)
 {
   $cardRewards = DynamicGetRewards($input);
-  $addedReward = DynamicGetCard($cardRewards, $rarity, $reward, $special); //using the tags it's determined to get, it will then call GetCard to get an individual card
-  //NOTE: $addedReward might be empty. Or more specifically, "NoResult". Need to add in a fail case for that so it doesn't break.
+  for($i = 0; $i < count($cardRewards); ++$i)
+  {
+    $addedReward = DynamicGetCard(DynamicGetTags($cardRewards[$i]), $rarity, $reward, $special); //using the tags it's determined to get, it will then call GetCard to get an individual card
+    //NOTE: $addedReward might be empty. Or more specifically, "NoResult". Need to add in a fail case for that so it doesn't break.
+  }
 }
 
 //In the encounter class, the tags array is an array of tag items. The information stored is: $name, $weight, $unused (true or false), $removedCardPool
 
-function DynamicGetCard($cardRewards, $rarity, $reward, $special)
+function DynamicGetCard($typeRewards, $rarity, $reward, $special)
 {
-  $tag = $cardRewards[count($cardRewards)-1];
-  array_pop($cardRewards);
+  $tag = $typeRewards[count($typeRewards)-1];
+  array_pop($typeRewards);
   $encounter = &GetZone(1, "Encounter");
   for($i = 0; $i < count($encounter->tags); ++$i)
   {
     if($encounter->tags[$i]->name == $tag) $pool = DynamicGeneratePool($rarity, $reward, DynamicGetPool($tag), $encounter->tags[$i]->removedCardPool, $special); break;
   }
   if(count($pool) == 0 && count($cardRewards) == 0) return "NoResult";
-  else if(count($pool) == 0) return DynamicGetCard($cardRewards, $rarity, $reward, $special);
+  else if(count($pool) == 0) return DynamicGetCard($typeRewards, $rarity, $reward, $special);
   else return $pool[rand(0, count($pool)-1)];
 }
 
@@ -66,5 +69,10 @@ function DynamicCheckRequirements($removed, $cardID)
 function DynamicGetRewardTypes($input)
 {
   //basically turns the input into an array of types
+}
+
+function DynamicGetTags($cardRewards)
+{
+ //turns a type into an array of shuffled choosable pools
 }
  ?>
