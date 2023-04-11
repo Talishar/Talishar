@@ -513,13 +513,14 @@ function EquipCard($player, $card)
   }
 }
 
-function ShiyanaCharacter($cardID)
+function ShiyanaCharacter($cardID, $player="")
 {
   global $currentPlayer;
+  if($player == "") $player = $currentPlayer;
   if($cardID == "CRU097") {
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $otherPlayer = ($player == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) $cardID = $otherCharacter[0];
+    if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) $cardID = $otherCharacter[0];
   }
   return $cardID;
 }
