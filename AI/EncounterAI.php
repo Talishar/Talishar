@@ -23,7 +23,7 @@ function EncounterAI()
       $items = &GetItems($currentPlayer);
       $allies = &GetAllies($currentPlayer);
       //LogHandArray($hand);
-      //CacheCombatResult();
+      CacheCombatResult();
       if(count($decisionQueue) > 0)
       {
         global $EffectContext;
