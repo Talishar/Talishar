@@ -1322,8 +1322,9 @@ function PlayableFromBanish($cardID, $mod="")
 
 function AbilityPlayableFromBanish($cardID)
 {
+  global $currentPlayer, $mainPlayer;
   switch($cardID) {
-    case "MON192": return true;
+    case "MON192": return $currentPlayer == $mainPlayer;
     default: return false;
   }
 }
