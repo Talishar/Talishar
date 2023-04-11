@@ -647,8 +647,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Put_the_bodies_to_rest":
             PrependDecisionQueue("CHOOSECARD", $player, "WTR173", "-", "NoReroll");
-            PrependDecisionQueue("CHOOSECARD", $player, "WTR173,WTR173", "-", "NoReroll");
-            PrependDecisionQueue("CHOOSECARD", $player, "WTR173,WTR173,WTR173", "-", "NoReroll");
+            //PrependDecisionQueue("CHOOSECARD", $player, "WTR173,WTR173", "-", "NoReroll");
+            //PrependDecisionQueue("CHOOSECARD", $player, "WTR173,WTR173,WTR173", "-", "NoReroll");
             break;
         }
         return 1;
