@@ -347,7 +347,7 @@ function SpecificCardLogic($player, $card, $lastResult)
       }
       return $lastResult;
     case "SOULREAPING":
-      $cards = explode(",", $lastResult);
+      $cards = $lastResult != "" ? explode(",", $lastResult) : [];
       if(count($cards) > 0) AddCurrentTurnEffect("MON199", $player);
       $numBD = 0;
       for($i = 0; $i < count($cards); ++$i) if (HasBloodDebt($cards[$i])) {
