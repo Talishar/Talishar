@@ -246,7 +246,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $cards;
     case "MULTIBANISHSOUL":
       if(!is_array($lastResult)) $lastResult = explode(",", $lastResult);
-      for($i = 0; $i < count($lastResult); ++$i) BanishFromSoul($player, $lastResult[$i]);
+      for($i = count($lastResult)-1; $i >= 0; --$i) BanishFromSoul($player, $lastResult[$i]);
       return $lastResult;
     case "ADDHAND":
       AddPlayerHand($lastResult, $player, "-");
