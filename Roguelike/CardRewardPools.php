@@ -519,8 +519,8 @@ function GetPoolGeneric($arrayParameters){
     array("WTR170", "Rare"), //Energy potion
     array("WTR171", "Rare"), //Potion of Strength
     array("WTR172", "Rare"), //Timesnap Potion
-    array("WTR173", "Rare"), //Sigil of Solace - Nate thinks that these shouldn't be in the pool because they're too strong.
-    array("WTR174", "Rare"), // Nate, if you're reading this, feel free to remove these from the pool!
+    //array("WTR173", "Rare"), //Sigil of Solace - Nate thinks that these shouldn't be in the pool because they're too strong.
+    //array("WTR174", "Rare"), // Nate, if you're reading this, feel free to remove these from the pool!
     array("WTR175", "Rare"), // Sigil of Solace (Blue)
     array("WTR176", "Common"), //Barraging Brawnhide
     array("WTR177", "Common"),

@@ -23,7 +23,7 @@ function EncounterAI()
       $items = &GetItems($currentPlayer);
       $allies = &GetAllies($currentPlayer);
       //LogHandArray($hand);
-      CacheCombatResult();
+      //CacheCombatResult();
       if(count($decisionQueue) > 0)
       {
         global $EffectContext;
@@ -173,7 +173,7 @@ function EncounterAI()
           PassInput();
         }
       }
-      else if($turn[0] == "PDECK" && $mainPlayer == $currentPlayer)//choosing which card to bottom from pitch
+      else if($turn[0] == "PDECK")//choosing which card to bottom from pitch
       {
         if($AIDebug) WriteLog("AI Branch - Pitch Deck");
         $pitch = &GetPitch($currentPlayer);

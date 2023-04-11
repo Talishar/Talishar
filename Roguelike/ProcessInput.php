@@ -101,8 +101,8 @@
               $parameterOne = $myDQ[2];
               $parameterTwo = $myDQ[3];
               ClearPhase($playerID); //Clear the screen and keep going
-              ContinueDecisionQueue($playerID, "");
               PrependDecisionQueue("SHOP", $playerID, $newShop, $parameterOne, $parameterTwo);
+              ContinueDecisionQueue($playerID, "");
               break;
             }
             else if($encounter->gold < $cost)
@@ -112,8 +112,8 @@
               $parameterOne = $myDQ[2];
               $parameterTwo = $myDQ[3];
               ClearPhase($playerID); //Clear the screen and keep going
-              ContinueDecisionQueue($playerID, "");
               PrependDecisionQueue("SHOP", $playerID, $newShop, $parameterOne, $parameterTwo);
+              ContinueDecisionQueue($playerID, "");
               break;
             }
             else
