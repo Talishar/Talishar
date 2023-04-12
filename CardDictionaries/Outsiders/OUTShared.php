@@ -872,7 +872,8 @@ function OUTAbilityCost($cardID)
   {
     global $mainPlayer, $defPlayer;
     $char = &GetPlayerCharacter($defPlayer);
-    if($char[0] == "OUT091" || $char[0] == "OUT092")
+    $characterID = ShiyanaCharacter($char[0], $defPlayer);
+    if($char[1] == 2 && $characterID == "OUT091" || $characterID == "OUT092")
     {
       WriteLog("Riptide deals 1 damage from a trap.");
       DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
