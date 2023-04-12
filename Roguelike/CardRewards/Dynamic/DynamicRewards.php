@@ -29,28 +29,23 @@ function DynamicGetCardInner($tagRewards, $rarity, $reward, $special) //$tagRewa
 {
   $tag = $tagRewards[1][count($typeRewards[1])-1]; //First, grab the first item in the $tagRewards tag array
   array_pop($tagRewards[1]); //Then, remove it
-  //$encounter = &GetZone(1, "Encounter");
-  /*for($i = 0; $i < count($encounter->tags); ++$i) //It will search through the encounter to find a tag with the chosen name (This is necessary to get the "removedCardPool" from the tag)
-  {
-    if($encounter->tags[$i]->name == $tag) $pool = DynamicGeneratePool($rarity, $reward, DynamicGetPool($tag), $encounter->tags[$i]->removedCardPool, $special); break;
-  }*/
-  $pool = DynamicGeneratePool($rarity, $reward, DynamicGetPool($tag), $tagRewards[0], $special);
-  if(count($pool) == 0 && count($cardRewards) == 0) return "NoResult";
-  else if(count($pool) == 0) return DynamicGetCardInner($tagRewards, $rarity, $reward, $special);
-  else return $pool[rand(0, count($pool)-1)];
+  $pool = DynamicGeneratePool($rarity, $reward, DynamicGetPool($tag), $tagRewards[0], $special); //Then, it generates the pool using the information (See -> DynamicGeneratePool and DynamicGetPool (The latter is in DynamicGetPool.php))
+  if(count($pool) == 0 && count($tagRewards[1]) == 0) return "NoResult"; //If there are no cards in the generated pool (nothing meets the requirement) and no more tags to check, return to the previous function with "NoResult"
+  else if(count($pool) == 0) return DynamicGetCardInner($tagRewards, $rarity, $reward, $special); //If there are no cards in the generated pool (and there's still tags to check) recursively return to the top of the function
+  else return $pool[rand(0, count($pool)-1)]; //If the pool has cards in it, return a random card from the generated pool
 }
 
-function DynamicGeneratePool($rarity, $reward, $pool, $requiredPool, $Special)
+function DynamicGeneratePool($rarity, $reward, $pool, $requiredPool, $special) //This generates the pool given the given information.
 {
   $generatedPool = [];
-  for($i = 0; $i < count($pool); ++$i)
-  {
-    if(DynamicCheckRarity($rarity, Rarity($pool[$i])) && DynamicCheckRewards($reward, $pool[$i]) && DynamicCheckRequirements($requiredPool, $pool[$i]), DynamicCheckSpecial($special, $pool[$i])) array_push($generatedPool, $pool[$i]); //if it's the desired rarity and not already in the reward, add it to the pool
+  for($i = 0; $i < count($pool); ++$i) //For each card in the $pool (acquired using DynamicGetPool($tag)), do the following
+  { //If the card is of the given rarity (See DynamicCheckRarity), Is not already in the rewards (See DynamicCheckRewards), Meets the requirements (See DynamicCheckRequirements), and meets the special requirements (See DynamicCheckSpecial),
+    if(DynamicCheckRarity($rarity, Rarity($pool[$i])) && DynamicCheckRewards($reward, $pool[$i]) && DynamicCheckRequirements($requiredPool, $pool[$i]), DynamicCheckSpecial($special, $pool[$i])) array_push($generatedPool, $pool[$i]); //push it into the array
   }
-  return $generatedPool;
+  return $generatedPool; //Once it has created the pool that meets all the requirements return it
 }
 
-function DynamicCheckRarity($rarityOrig, $rarityCheck)
+function DynamicCheckRarity($rarityOrig, $rarityCheck) //Checks the card for if it lines up with the rarity
 {
   switch($rarity)
   {
@@ -72,7 +67,7 @@ function DynamicNextRarity($rarity) //Based on a rarity input, it will return th
   }
 }
 
-function DynamicGetRarity()
+function DynamicGetRarity() //Will return a randomly chosen rarity based on MajesticCard chance
 {
   $encounter = &GetZone(1, $encounter);
   $randRarity = rand(1,100);
@@ -102,19 +97,19 @@ function DynamicUpdateMajesticCard($rarity) //Input is a rarity, based on the ra
   }
 }
 
-function DynamicCheckRewards($reward, $cardID)
+function DynamicCheckRewards($reward, $cardID) //If it's not already in the reward, it's good to go
 {
   if(in_array($cardID, $reward)) return false;
   else return true;
 }
 
-function DynamicCheckRequirements($removed, $cardID)
+function DynamicCheckRequirements($removed, $cardID) //If it's not in the removed cards, it's good to go
 {
   if(in_array($cardID, $removed)) return false;
   else return true;
 }
 
-function DynamicCheckSpecial($special, $cardID)
+function DynamicCheckSpecial($special, $cardID) //As there are no special cases implemented, it's good to go
 {
   return true;
 }
