@@ -12,7 +12,7 @@ function DynamicGetCards($amount, $rarity, $special = "-")
   if($rarity == "Random") $rarity = DynamicGetRarity(); //If the rarity *isn't* set, it'll grab a random rarity based on MajesticCard
   $typeRewards = DynamicGetRewards($amount); //Gets an array of types (See -> DynamicGetRewards)
   $reward = [];
-  for($i = 0; $i < count($cardRewards); ++$i) //For each type generated, it's going to add in a card to the reward pool
+  for($i = 0; $i < count($typeRewards); ++$i) //For each type generated, it's going to add in a card to the reward pool
   {
     array_push($reward, DynamicGetCardOuter(DynamicGetTags($typeRewards[$i]), $rarity, $reward, $special)); //Pushes a random card into the array (See -> DynamicGetCardOuter and DynamicGetTags)
   }
