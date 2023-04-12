@@ -78,7 +78,7 @@ function ROGUEEffectAttackModifier($cardID)
         $rv = -1;
         for($i = 0; $i < count($banish); $i += BanishPieces())
         {
-          if($banish[$i] == $combatChain[0]) ++$rv;
+          if(CardName($banish[$i]) == CardName($combatChain[0])) ++$rv;
         }
         return $rv;
       case "ROGUE707":
