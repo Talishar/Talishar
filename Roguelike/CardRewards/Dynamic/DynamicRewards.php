@@ -1,12 +1,5 @@
 <?php
 
-/*function DynamicSortPools()
-{
-  $encounter = &GetZone(1, "Encounter");
-  $smallTags
-  for($i = 0; $i)
-}*/
-
 function DynamicGetCards($amount, $rarity, $special = "-")
 {
   $typeRewards = DynamicGetRewards($amount); //Gets an array of types (See -> DynamicGetRewards)
