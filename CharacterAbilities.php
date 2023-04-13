@@ -223,7 +223,7 @@ function DefCharacterStartTurnAbilities()
   global $defPlayer, $mainPlayer;
   $character = &GetPlayerCharacter($defPlayer);
   for($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if($character[$i + 1] == 0) continue; //Do not process ability if it is destroyed
+    if($character[$i + 1] == 0 || $character[$i + 1] == 1) continue; //Do not process ability if it is destroyed
     switch($character[$i]) {
       case "EVR086":
         if (PlayerHasLessHealth($mainPlayer)) {
@@ -603,6 +603,7 @@ function CharacterDamageTakenAbilities($player, $damage)
   $otherPlayer = $player == 1 ? 1 : 2;
   for ($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces())
   {
+    if($char[$i + 1] != 2) continue;
     switch ($char[$i]) {
       case "ROGUE015":
         $hand = &GetHand($player);
@@ -629,6 +630,7 @@ function CharacterDealDamageAbilities($player, $damage)
   $otherPlayer = $player == 1 ? 1 : 2;
   for ($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces())
   {
+    if($char[$i + 1] != 2) continue;
     switch ($char[$i]) {
       case "ROGUE023":
         if($damage >= 4)
