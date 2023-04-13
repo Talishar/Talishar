@@ -1,7 +1,9 @@
 <?php
 
 include "EncounterLogic.php";
-include "/CardReward/Background/CardRewardPools.php";
+include "CardRewards/Background/CardRewardPools.php";
+include "CardRewards/Dynamic/DynamicGetPool.php";
+include "CardRewards/Dynamic/DynamicRewards.php";
 include "AdventurePools.php";
 
 function EncounterDescription()
@@ -190,8 +192,9 @@ function InitializeEncounter($player)
     case 006:
       //$encounter->position = 16; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
       AddDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,3"), "Power,3");
-      //AddDecisionQueue("SETENCOUNTER", $player, "213-PickMode"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
-      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      AddDecisionQueue("CHOOSECARD", $player, DynamicGetCards(4, "Random"), "-", "NoReroll");
+      AddDecisionQueue("SETENCOUNTER", $player, "202-PickMode"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
+      //AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
       AddDecisionQueue("BUTTONINPUT", $player, "Rest,Reflect");

@@ -9,45 +9,46 @@
 
 function DynamicGetCards($amount, $rarity, $special = "-")
 {
-  if($rarity == "Random") $rarity = DynamicGetRarity(); //If the rarity *isn't* set, it'll grab a random rarity based on MajesticCard
   $typeRewards = DynamicGetRewards($amount); //Gets an array of types (See -> DynamicGetRewards)
   $reward = [];
   for($i = 0; $i < count($typeRewards); ++$i) //For each type generated, it's going to add in a card to the reward pool
   {
     array_push($reward, DynamicGetCardOuter(DynamicGetTags($typeRewards[$i]), $rarity, $reward, $special)); //Pushes a random card into the array (See -> DynamicGetCardOuter and DynamicGetTags)
   }
+  return implode(",", $reward);
 }
 
 function DynamicGetCardOuter($tagRewards, $rarity, $reward, $special) //This returns a random card that matches the criteria
 {
   $addedReward = DynamicGetCardInner($tagRewards, $rarity, $reward, $special); //First, it grabs a random card option (See -> DynamicGetCardInner)
-  if($addedReward = "NoResult") return DynamicGetCardOuter($tagRewards, DynamicNextRarity($rarity), $reward, $special); //If it couldn't find an option, it goes down a rarity and recursively tries again (See -> DynamicNextRarity)
+  if($addedReward == "NoResult") return "NoResult"; //return DynamicGetCardOuter($tagRewards, DynamicNextRarity($rarity), $reward, $special); //If it couldn't find an option, it goes down a rarity and recursively tries again (See -> DynamicNextRarity)
   else DynamicUpdateMajesticCard($rarity); return $addedReward; //If it finds an option, it will update the MajesticCard chance and return the option (See -> DynamicUpdateMajesticCard)
 }
 
 function DynamicGetCardInner($tagRewards, $rarity, $reward, $special) //$tagRewards is an array of tags, $rarity is the rarity of cards, $reward is the previously chosen cards in this reward, $special does nothing
 {
-  $tag = $tagRewards[1][count($typeRewards[1])-1]; //First, grab the first item in the $tagRewards tag array
-  array_pop($tagRewards[1]); //Then, remove it
-  $pool = DynamicGeneratePool($rarity, $reward, DynamicGetPool($tag), $tagRewards[0], $special); //Then, it generates the pool using the information (See -> DynamicGeneratePool and DynamicGetPool (The latter is in DynamicGetPool.php))
-  if(count($pool) == 0 && count($tagRewards[1]) == 0) return "NoResult"; //If there are no cards in the generated pool (nothing meets the requirement) and no more tags to check, return to the previous function with "NoResult"
+  $tag = $tagRewards[count($tagRewards)-1]; //First, grab the first item in the $tagRewards tag array
+  array_pop($tagRewards); //Then, remove it
+  $pool = DynamicGeneratePool($rarity, $reward, DynamicGetPool($tag), DynamicGetRemoved($tag), $special); //Then, it generates the pool using the information (See -> DynamicGeneratePool and DynamicGetPool (The latter is in DynamicGetPool.php))
+  if(count($pool) == 0 && false) return "NoResult"; //If there are no cards in the generated pool (nothing meets the requirement) and no more tags to check, return to the previous function with "NoResult"
   else if(count($pool) == 0) return DynamicGetCardInner($tagRewards, $rarity, $reward, $special); //If there are no cards in the generated pool (and there's still tags to check) recursively return to the top of the function
   else return $pool[rand(0, count($pool)-1)]; //If the pool has cards in it, return a random card from the generated pool
 }
 
 function DynamicGeneratePool($rarity, $reward, $pool, $requiredPool, $special) //This generates the pool given the given information.
 {
+  if($rarity == "Random") $rarity = DynamicGetRarity(); //If the rarity *isn't* set, it'll grab a random rarity based on MajesticCard
   $generatedPool = [];
   for($i = 0; $i < count($pool); ++$i) //For each card in the $pool (acquired using DynamicGetPool($tag)), do the following
   { //If the card is of the given rarity (See DynamicCheckRarity), Is not already in the rewards (See DynamicCheckRewards), Meets the requirements (See DynamicCheckRequirements), and meets the special requirements (See DynamicCheckSpecial),
-    if(DynamicCheckRarity($rarity, Rarity($pool[$i])) && DynamicCheckRewards($reward, $pool[$i]) && DynamicCheckRequirements($requiredPool, $pool[$i]), DynamicCheckSpecial($special, $pool[$i])) array_push($generatedPool, $pool[$i]); //push it into the array
+    if(DynamicCheckRarity($rarity, Rarity($pool[$i])) && DynamicCheckRewards($reward, $pool[$i]) && DynamicCheckRequirements($requiredPool, $pool[$i]) && DynamicCheckSpecial($special, $pool[$i])) array_push($generatedPool, $pool[$i]); //push it into the array
   }
   return $generatedPool; //Once it has created the pool that meets all the requirements return it
 }
 
 function DynamicCheckRarity($rarityOrig, $rarityCheck) //Checks the card for if it lines up with the rarity
 {
-  switch($rarity)
+  switch($rarityOrig)
   {
     case "Common": return $rarityCheck == "C" || $rarityCheck == "T";
     case "Rare": return $rarityCheck == "R";
@@ -69,25 +70,16 @@ function DynamicNextRarity($rarity) //Based on a rarity input, it will return th
 
 function DynamicGetRarity() //Will return a randomly chosen rarity based on MajesticCard chance
 {
-  $encounter = &GetZone(1, $encounter);
+  $encounter = &GetZone(1, "Encounter");
   $randRarity = rand(1,100);
-  if($randRarity <= $encounter->majesticCard)
-  {
-    return "Majestic";
-  }
-  else if($randRarity >= 75)
-  {
-    return "Rare";
-  }
-  else
-  {
-    return "Common";
-  }
+  if($randRarity <= $encounter->majesticCard) return "Majestic";
+  else if($randRarity >= 75) return "Rare";
+  else return "Common";
 }
 
 function DynamicUpdateMajesticCard($rarity) //Input is a rarity, based on the rarity, it will update the MajesticCard chance
 {
-  $encounter = &GetZone(1, $encounter);
+  $encounter = &GetZone(1, "Encounter");
   switch($rarity)
   {
     case "Common": $encounter->majesticCard +=1; break;
@@ -118,12 +110,18 @@ function DynamicGetTags($cardReward) //NOT IMPLEMENTED YET (Will return a 2D arr
 {
   switch($cardReward)
   {
-    case "Perfect": return array(array(), array("Deck"));
-    case "High": return ;
-    case "Mid":
-    case "Low":
-    case "No":
+    case "Perfect": return array("Deck");
+    case "High": return DynamicShuffleArray(array("PhoenixFlame", "Wide"));
+    case "Mid": return DynamicShuffleArray(array("CrouchingTiger", "Sword"));
+    case "Low": return DynamicShuffleArray(array("Nimble", "Sloggish"));
+    case "No": return DynamicShuffleArray(array("Banish", "Stealth"));
   }
+}
+
+function DynamicShuffleArray($array) //This function exists solely for the readability of the above function
+{
+  shuffle($array);
+  return $array;
 }
 
 function DynamicGetRewards($amount) //This function recieves an amount and returns an array filled with that many types
@@ -144,5 +142,20 @@ function DynamicRandomReward() //This function just returns a random type. All n
   else if($result < 70) return "No"; //20% chance to return "No"
   else if($result < 80) return "High"; //10% chance to return "High"
   else return "Perfect"; //10% chance to return "Perfect"
+}
+
+function DynamicGetRemoved($tag)
+{
+  return array("None");
+  $encounter = &GetZone(1, "Encounter");
+  /*for($i = 0; $i < count($encounter->tags); ++$i)
+  {
+    if($encounter->tags[$i]->tag == $tag) return $encounter->tags[$i]->removed;
+  }*/
+}
+
+function WriteLogArray($array)
+{
+  WriteLog("[".implode(", ", $array)."]");
 }
  ?>
