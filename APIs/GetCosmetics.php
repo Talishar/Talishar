@@ -11,7 +11,8 @@ SetHeaders();
 
 $response = new stdClass();
 $response->cardBacks = [];
-if (IsUserLoggedIn()) {
+$response->playmats = [];
+if(IsUserLoggedIn()) {
   foreach (PatreonCampaign::cases() as $campaign) {
     if(isset($_SESSION[$campaign->SessionID()]) || (isset($_SESSION["useruid"]) && $campaign->IsTeamMember($_SESSION["useruid"])))
     {
@@ -27,5 +28,29 @@ if (IsUserLoggedIn()) {
       }
     }
   }
+
+  for($i=0; $i<8; ++$i)
+  {
+    $playmat = new stdClass();
+    $playmat->id = $i;
+    $playmat->name = GetPlaymatName($i);
+    array_push($response->playmats, $playmat);
+  }
 }
 echo json_encode($response);
+
+function GetPlaymatName($id)
+{
+  switch($id)
+  {
+    case 0: return "aria";
+    case 1: return "demonastery";
+    case 2: return "metrix";
+    case 3: return "misteria";
+    case 4: return "pits";
+    case 5: return "savage";
+    case 6: return "solana";
+    case 7: return "volcor";
+    default: return "N/A";
+  }
+}
