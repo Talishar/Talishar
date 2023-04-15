@@ -21,10 +21,7 @@ function DynamicTestGetTags($cardID, $specialTag)
 {
   switch($cardID)
   {
-    case "DYN062":
-      return array(CreateTag("Nimble", 1, true), CreateTag("Free", 1, true), CreateTag("Ninja", 1),
-                  CreateTag("Wide", 1), CreateTag("Red", 1, true), CreateTag("Keyword", 1, true),
-                  CreateTag("CrouchingTiger", 1), CreateTag("Tailwind", 1, true));
+    case "DYN062": return array("Banish", "Wide", "CrouchingTiger");
   }
 }
 

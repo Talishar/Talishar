@@ -14,6 +14,7 @@
   { //this is what I am currently working in
     $encounter = &GetZone($i, "Encounter");
     $encounter = new Encounter();
+    TestingInitialization();
 
     //See EncounterClass for the pieces of the encounter object
     InitializeEncounter($i);

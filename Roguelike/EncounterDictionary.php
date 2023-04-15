@@ -4,6 +4,10 @@ include "EncounterLogic.php";
 include "CardRewards/Background/CardRewardPools.php";
 include "CardRewards/Dynamic/DynamicGetPool.php";
 include "CardRewards/Dynamic/DynamicRewards.php";
+include "CardRewards/Dynamic/DynamicGetTagComponents.php";
+include "CardRewards/Dynamic/DynamicGetTags.php";
+include "CardRewards/Dynamic/DynamicAddCard.php";
+include "CardRewards/Dynamic/TagClass.php";
 include "AdventurePools.php";
 
 function EncounterDescription()

@@ -101,13 +101,25 @@ function DynamicCheckSpecial($special, $cardID) //As there are no special cases 
 
 function DynamicGetTags($cardReward) //NOT IMPLEMENTED YET (Will return a 2D array of tags/removed cards based on the type)
 {
+  $encounter = &GetZone(1, "Encounter");
+  $generatedTagPool = [];
+  for($i = 0; $i < count($encounter->tags); ++$i)
+  {
+    if(!$encounter->tags[$i]->unused) array_push($generatedTagPool, $encounter->tags[$i]->tag);
+  }
+
+  $countOffset = (int) (count($generatedTagPool) / 3);
+
   switch($cardReward)
   {
     case "Perfect": return array("Deck");
-    case "High": return DynamicShuffleArray(array("PhoenixFlame", "Wide"));
-    case "Mid": return DynamicShuffleArray(array("CrouchingTiger", "Sword"));
-    case "Low": return DynamicShuffleArray(array("Nimble", "Sloggish"));
-    case "No": return DynamicShuffleArray(array("Banish", "Stealth"));
+    //case "High": return DynamicShuffleArray(array("PhoenixFlame", "Wide"));
+    case "High": $newArray = array_slice($generatedTagPool, -$countOffset); return DynamicShuffleArray($newArray);
+    //case "Mid": return DynamicShuffleArray(array("CrouchingTiger", "Sword"));
+    case "Mid": $newArray = array_slice($generatedTagPool, $countOffset, -$countOffset); return DynamicShuffleArray($newArray);
+    //case "Low": return DynamicShuffleArray(array("Nimble", "Sloggish"));
+    case "Low": $newArray = array_slice($generatedTagPool, 0, $countOffset); return DynamicShuffleArray($newArray);
+    case "No": $newArray = $encounter->notInTags; return DynamicShuffleArray($newArray); //TODO: implement encounter->notInTags
   }
 }
 
@@ -139,12 +151,11 @@ function DynamicRandomReward() //This function just returns a random type. All n
 
 function DynamicGetRemoved($tag)
 {
-  return array("None");
   $encounter = &GetZone(1, "Encounter");
-  /*for($i = 0; $i < count($encounter->tags); ++$i)
+  for($i = 0; $i < count($encounter->tags); ++$i)
   {
     if($encounter->tags[$i]->tag == $tag) return $encounter->tags[$i]->removed;
-  }*/
+  }
 }
 
 function WriteLogArray($array)
