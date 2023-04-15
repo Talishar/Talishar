@@ -2,25 +2,19 @@
 
 class Tag {
   public $tag;
-  public $Weight;
+  public $weight;
   public $removed;
   public $unusedPool;
-}
 
-class CardReward {
-  public $cardID;
-  public $tags;
-  public $requirement; //This is "-" if it's empty. If it's filled, it's an array with requirements
-
-  function __construct($cardID, $tags, $requirement = "-") {
-    $this->cardID = $cardID;
-    $this->tags = $tags;
-    $this->requirement = $requirement;
+  function __construct($tag, $unused = false) {
+    $this->tag = $tag;
+    $this->weight = 0;
+    $this->removed = [];
+    $this->unused = $unused;
   }
 }
 
-
-class InnerTag {
+class CardTag {
   public $tag;
   public $weight;
   public $ignore;
