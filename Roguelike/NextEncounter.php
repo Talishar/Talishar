@@ -259,12 +259,20 @@ $cardIconTop = intval($cardSize / 4.2); //30
 
   echo("</div>");//End left sidebar div
 
-  $content = "<div style='width:100%;'>";
-  $content .= "<center><img src='../crops/" . EncounterImage() . "' /></center>";
-  $content .= "<BR>";
-  $content .= "</div>";
-  $content .= "<center>" . $encounterContent . "</center>";
-  echo CreatePopup("BUTTONINPUT", [], 0, 1, EncounterDescription(), 1, $content, size:2);
+  if($encounter->encounterID == 11)
+  {
+    $content = "<div style='width:100%;'>";
+    $content .= "</div>";
+    echo CreatePopup("BUTTONINPUT", [], 0, 1, EncounterDescription(), 1, $content, size:2);
+  }
+  else {
+    $content = "<div style='width:100%;'>";
+    $content .= "<center><img src='../crops/" . EncounterImage() . "' /></center>";
+    $content .= "<BR>";
+    $content .= "</div>";
+    $content .= "<center>" . $encounterContent . "</center>";
+    echo CreatePopup("BUTTONINPUT", [], 0, 1, EncounterDescription(), 1, $content, size:2);
+  }
   //EncounterImage($encounter->encounterID, $encounter->subphase);
 
 
