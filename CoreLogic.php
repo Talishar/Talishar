@@ -1655,9 +1655,21 @@ function DestroyCharacter($player, $index)
   $char[$index+1] = 0;
   $char[$index+4] = 0;
   $cardID = $char[$index];
+  if($char[$index+6] == 1) RemoveCombatChain(GetCombatChainIndex($cardID, $player));
+  $char[$index+6] = 0;
   AddGraveyard($cardID, $player, "CHAR");
   CharacterDestroyEffect($cardID, $player);
   return $cardID;
+}
+
+function RemoveCombatChain($index)
+{
+  global $combatChain;
+  if($index < 0) return;
+  for($i = CombatChainPieces() - 1; $i >= 0; --$i) {
+    unset($combatChain[$index + $i]);
+  }
+  $combatChain = array_values($combatChain);
 }
 
 function RemoveArsenalEffects($player, $cardToReturn){

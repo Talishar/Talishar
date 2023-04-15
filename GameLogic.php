@@ -195,10 +195,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "REMOVECOMBATCHAIN":
       $cardID = $combatChain[$lastResult];
-      for($i = CombatChainPieces() - 1; $i >= 0; --$i) {
-        unset($combatChain[$lastResult + $i]);
-      }
-      $combatChain = array_values($combatChain);
+      RemoveCombatChain($lastResult);
       return $cardID;
     case "COMBATCHAINPOWERMODIFIER":
       CombatChainPowerModifier($lastResult, $parameter);
