@@ -84,6 +84,7 @@ function AttemptPasswordLogin($username, $password, $rememberMe) {
 		$_SESSION["userspwd"] = $userData["usersPwd"];
 		$patreonAccessToken = $userData["patreonAccessToken"];
 		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
+		$rememberMeToken = $userData["rememberMeToken"];
 
 		try {
 			PatreonLogin($patreonAccessToken);
@@ -91,9 +92,13 @@ function AttemptPasswordLogin($username, $password, $rememberMe) {
 
 		if($rememberMe)
 		{
-			$cookie = hash("sha256", rand() . $_SESSION["userspwd"] . rand());
+			if($rememberMeToken == "")
+			{
+				$cookie = hash("sha256", rand() . $_SESSION["userspwd"] . rand());
+				storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
+			}
+			else $cookie = $rememberMeToken;
 			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/");
-			storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
 		}
 		session_write_close();
 
