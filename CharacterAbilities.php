@@ -309,7 +309,7 @@ function MainCharacterHitAbilities()
 
   for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     if(CardType($mainCharacter[$i]) == "W" || $mainCharacter[$i + 1] != "2") continue;
-    $characterID = ShiyanaCharacter($mainCharacter[$i]);
+    $characterID = ShiyanaCharacter($mainCharacter[$i], $mainPlayer);
     switch($characterID) {
       case "WTR076": case "WTR077":
         if(CardType($attackID) == "AA") {
