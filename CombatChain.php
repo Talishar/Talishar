@@ -109,7 +109,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return CountPitch($pitch, 3) >= 1 ? 1 : 0;
     case "EVR038": return (ComboActive() ? 3 : 0);
     case "EVR040": return (ComboActive() ? 2 : 0);
-    case "EVR041": case "EVR042": case "EVR043": return (ComboActive() ? CountCardOnChain("EVR041", "EVR042", "EVR043") : 0);
+    case "EVR041": case "EVR042": case "EVR043": return (ComboActive() ? NumChainLinksWithName("Hundred Winds") - 1 : 0);
     case "EVR063": return 3;
     case "EVR064": return 2;
     case "EVR065": return 1;
