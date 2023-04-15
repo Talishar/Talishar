@@ -117,7 +117,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "EVR116": case "EVR117": case "EVR118": return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 3 : 0);
     case "DVR002": return GetClassState($mainPlayer, $CS_AtksWWeapon) >= 1 ? 1 : 0;
     case "RVD009": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
-    case "UPR048": return (NumPhoenixFlameChainLinks() >= 2 ? 2 : 0);
+    case "UPR048": return (NumChainLinksWithName("Phoenix Flame") >= 2 ? 2 : 0);
     case "UPR050": return 1;
     case "UPR098": return (RuptureActive() ? 3 : 0);
     case "UPR101": return (NumDraconicChainLinks() >= 2 ? 1 : 0);

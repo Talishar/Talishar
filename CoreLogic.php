@@ -1529,7 +1529,7 @@ function DoesAttackHaveGoAgain()
     case "UPR046":
     case "UPR063": case "UPR064": case "UPR065":
     case "UPR069": case "UPR070": case "UPR071": return NumDraconicChainLinks() >= 2;
-    case "UPR048": return NumPhoenixFlameChainLinks() >= 1;
+    case "UPR048": return NumChainLinksWithName("Phoenix Flame") >= 1;
     case "UPR092": return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
     case "DYN047": return (ComboActive($combatChain[0]));
     case "DYN056": case "DYN057": case "DYN058": return (ComboActive($combatChain[0]));
@@ -2079,10 +2079,10 @@ function GetCurrentAttackNames()
     switch($effectArr[0])
     {
       case "OUT049":
-        $name = (count($effectArr) > 1 ? $effectArr[1] : "N/A");
+        $name = (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A");
         break;
       case "OUT068": case "OUT069": case "OUT070":
-        $name = (count($effectArr) > 1 ? $effectArr[1] : "N/A");
+        $name = (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A");
         break;
       default: break;
     }
