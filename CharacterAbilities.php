@@ -498,7 +498,7 @@ function EquipCard($player, $card)
       else $numHands += 2;
     }
   }
-  if($numHands < 2)
+  if($numHands < 2 && !$replaced)
   {
     $insertIndex = $lastWeapon + CharacterPieces();
     array_splice($char, $insertIndex, 0, $card);
