@@ -208,7 +208,7 @@
   function EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_NumBoosted;
-    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $CS_NumBoosted, $mainPlayer, $CCS_RequiredEquipmentBlock;
+    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $mainPlayer, $CCS_RequiredEquipmentBlock;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $rv = "";
     switch($cardID)
@@ -359,8 +359,7 @@
         }
         return "";
       case "EVR079": case "EVR080": case "EVR081":
-        $numBoosts = GetClassState($currentPlayer, $CS_NumBoosted);
-        Opt($cardID, $numBoosts);
+        Opt($cardID, $combatChainState[$CCS_NumBoosted]);
         return "Lets you opt " . $numBoosts . ".";
       case "EVR082": case "EVR083": case "EVR084":
         AddCurrentTurnEffect($cardID, $currentPlayer);
