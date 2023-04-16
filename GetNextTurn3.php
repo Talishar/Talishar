@@ -188,8 +188,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $MyCardBack = GetCardBack($playerID);
   $TheirCardBack = GetCardBack($otherPlayer);
 
-  $response->MyPlaymat = GetPlaymat($playerID);
-  $response->TheirPlaymat = GetPlaymat($otherPlayer);
+  $response->MyPlaymat = (IsColorblindMode($playerID) ? 0 : GetPlaymat($playerID));
+  $response->TheirPlaymat = (IsColorblindMode($playerID) ? 0 : GetPlaymat($otherPlayer));
 
   //Display active chain link
   $activeChainLink = new stdClass();
