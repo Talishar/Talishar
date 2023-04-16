@@ -39,6 +39,7 @@ if ($handle = opendir($path)) {
           $gameInProgress->p2Hero = GetCachePiece($gameToken, 8);
           $gameInProgress->secondsSinceLastUpdate = intval(($currentTime - $lastGamestateUpdate) / 1000);
           $gameInProgress->gameName = $gameToken;
+          $gameInProgress->format = GetCachePiece($gameToken, 13);
           array_push($response->gamesInProgress, $gameInProgress);
         }
       }
