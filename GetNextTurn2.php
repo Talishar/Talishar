@@ -129,6 +129,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $origDeck = "./Games/" . $gameName . "/p2DeckOrig.txt";
       if (file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p2Deck.txt");
       $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
+      SetCachePiece($gameName, 14, $gameStatus);
       $firstPlayer = 1;
       $firstPlayerChooser = ($winner == 1 ? 2 : 1);
       unlink("./Games/" . $gameName . "/gamestate.txt");

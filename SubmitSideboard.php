@@ -81,6 +81,7 @@ else if($playerID == 2) $p2SideboardSubmitted = "1";
 $gameStarted = false;
 if ($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   $gameStatus = $MGS_ReadyToStart;
+  SetCachePiece($gameName, 14, $gameStatus);
   $gameStarted = true;
 }
 WriteGameFile();

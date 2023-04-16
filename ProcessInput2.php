@@ -124,6 +124,7 @@ if ($inGameStatus == $GameStatus_Rematch) {
   include "MenuFiles/ParseGamefile.php";
   include "MenuFiles/WriteGamefile.php";
   $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
+  SetCachePiece($gameName, 14, $gameStatus);
   $firstPlayer = 1;
   $firstPlayerChooser = ($winner == 1 ? 2 : 1);
   $p1SideboardSubmitted = "0";

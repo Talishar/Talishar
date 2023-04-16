@@ -443,6 +443,7 @@ if ($matchup == "") {
   SetCachePiece($gameName, $playerID + 1, strval(round(microtime(true) * 1000)));
   SetCachePiece($gameName, $playerID + 3, "0");
   SetCachePiece($gameName, $playerID + 6, $character);
+  SetCachePiece($gameName, 14, $gameStatus);
   GamestateUpdated($gameName);
 
   //$authKey = ($playerID == 1 ? $p1Key : $p2Key);

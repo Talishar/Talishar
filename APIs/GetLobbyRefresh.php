@@ -88,6 +88,7 @@ if ($kickPlayerTwo) {
   if (file_exists("../Games/" . $gameName . "/p2Deck.txt")) unlink("../Games/" . $gameName . "/p2Deck.txt");
   if (file_exists("../Games/" . $gameName . "/p2DeckOrig.txt")) unlink("../Games/" . $gameName . "/p2DeckOrig.txt");
   $gameStatus = $MGS_Initial;
+  SetCachePiece($gameName, 14, $gameStatus);
   $p2Data = [];
   $p2uid = "";
   $p2id = "";
