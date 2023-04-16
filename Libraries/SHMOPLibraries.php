@@ -13,6 +13,8 @@
 10 - Is Replay
 11 - Number P2 disconnects
 12 - Current player status (0 = active, 1 = inactive)
+13 - Format (see function FormatCode)
+14 - Game status (see $GS_ constants)
 */
 
 // $useRedis = getenv('REDIS_ENABLED') ?? false;

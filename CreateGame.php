@@ -107,18 +107,6 @@ if ($deckTestMode != "") {
   $opponentDeck = "./Assets/Dummy.txt";
   $fileName = "./Roguelike/Encounters/".$deckTestMode.".txt";
   if(file_exists($fileName)) $opponentDeck = $fileName;
-  /*switch($deckTestMode)
-  {
-    case "Woottonhog": $opponentDeck = "./Roguelike/Encounters/Woottonhog.txt"; break;
-    case "RavenousRabble": $opponentDeck = "./Roguelike/Encounters/RavenousRabble.txt"; break;
-    case "BarragingBrawnhide": $opponentDeck = "./Roguelike/Encounters/BarragingBrawnhide.txt"; break;
-    case "ShockStriker": $opponentDeck = "./Roguelike/Encounters/ShockStriker.txt"; break;
-    case "QuickshotNovice": $opponentDeck = "./Roguelike/Encounters/QuickshotNovice.txt"; break;
-    case "RuneScholar": $opponentDeck = "./Roguelike/Encounters/RuneScholar.txt"; break;
-    case "Ira": $opponentDeck = "./Roguelike/Encounters/Ira.txt"; break;
-    case "ManOfMomentum": $opponentDeck = "./Roguelike/Encounters/ManOfMomentum.txt"; break;
-    default: break;
-  }*/
   copy($opponentDeck, "./Games/" . $gameName . "/p2Deck.txt");
 } else {
   $gameStatus = 0; //Initial
@@ -145,5 +133,5 @@ fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
 $cacheVisibility = ($visibility == "public" ? "1" : "0");
-WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!" . $cacheVisibility . "!0!0!0"); //Initialize SHMOP cache for this game
+WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!" . $cacheVisibility . "!0!0!0!" . $format . "!" . $gameStatus); //Initialize SHMOP cache for this game
 header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink&format=$format&set=$set&decksToTry=$decksToTry&favoriteDeck=$favoriteDeck&favoriteDecks=$favoriteDeckLink");
