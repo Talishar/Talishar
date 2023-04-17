@@ -5,6 +5,7 @@ include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../includes/dbh.inc.php";
 include_once "../includes/functions.inc.php";
 require_once '../Assets/patreon-php-master/src/PatreonLibraries.php';
+require_once '../Assets/patreon-php-master/src/API.php';
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 include_once '../APIKeys/APIKeys.php';
 

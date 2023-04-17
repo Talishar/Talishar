@@ -20,7 +20,10 @@ function LoadUserData($username) {
 
 function PasswordLogin($username, $password, $rememberMe) {
 	$conn = GetLocalMySQLConnection();
-	$userData = LoadUserData($username);
+	try {
+		$userData = LoadUserData($username);
+	}
+	catch (\Exception $e) { }
 
   if($userData == NULL) return false;
 
