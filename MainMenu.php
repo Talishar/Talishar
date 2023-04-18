@@ -6,20 +6,6 @@ include_once "Libraries/PlayerSettings.php";
 include_once 'Assets/patreon-php-master/src/PatreonDictionary.php';
 include_once "APIKeys/APIKeys.php";
 
-
-if (isset($_SESSION["useruid"])) {
-  $useruid = $_SESSION["useruid"];
-  $banfileHandler = fopen("./HostFiles/bannedPlayers.txt", "r");
-  while (!feof($banfileHandler)) {
-    $bannedPlayer = trim(fgets($banfileHandler), "\r\n");
-    if ($useruid == $bannedPlayer) {
-      fclose($banfileHandler);
-      exit;
-    }
-  }
-  fclose($banfileHandler);
-}
-
 if (!empty($_SESSION['error'])) {
   $error = $_SESSION['error'];
   unset($_SESSION['error']);
