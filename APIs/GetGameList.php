@@ -10,8 +10,6 @@ $path = "../Games";
 session_start();
 SetHeaders();
 
-$isMod = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk";
-
 $response = new stdClass();
 $response->gamesInProgress = [];
 $response->openGames = [];

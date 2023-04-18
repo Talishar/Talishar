@@ -31,8 +31,6 @@ while (!feof($bannedIPHandler)) {
 }
 fclose($bannedIPHandler);
 
-$isMod = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk";
-
 $canSeeQueue = isset($_SESSION["useruid"]);
 
 echo ("<div class='SpectatorContainer'>");
