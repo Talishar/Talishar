@@ -20,13 +20,13 @@ $livingLegendsCCLinks = "";
 // TODO: Have as a global variable.
 $reactFE = "https://fe.talishar.net/game/play";
 
-$isisShadowBanned = false;
+$isShadowBanned = false;
 
 $bannedIPHandler = fopen("./HostFiles/bannedIPs.txt", "r");
 while (!feof($bannedIPHandler)) {
   $bannedIP = trim(fgets($bannedIPHandler), "\r\n");
   if ($_SERVER['REMOTE_ADDR'] == $bannedIP) {
-    $isisShadowBanned = true;
+    $isShadowBanned = true;
   }
 }
 fclose($bannedIPHandler);
@@ -117,32 +117,20 @@ if ($handle = opendir($path)) {
       $link .= "<input type='hidden' name='gameName' value='$gameToken' />";
       $link .= "<input type='hidden' name='playerID' value='2' />";
       $link .= "</form>";
-      if ($format == "blitz") {
-        if (!$isisShadowBanned) $blitzLinks .= $link;
-      } else if ($format == "shadowblitz") {
-        if ($isisShadowBanned) $blitzLinks .= $link;
-        else if ($isMod) $otherFormatsLinks .= $link;
-      } else if ($format == "compblitz") {
-        if (!$isisShadowBanned) $compBlitzLinks .= $link;
-      } else if ($format == "cc") {
-        if (!$isisShadowBanned) $ccLinks .= $link;
-      } else if ($format == "shadowcc") {
-        if ($isisShadowBanned) $ccLinks .= $link;
-        else if ($isMod) $otherFormatsLinks .= $link;
-      } else if ($format == "compcc") {
-        if (!$isisShadowBanned) $compCCLinks .= $link;
-      } else if ($format == "shadowcompcc") {
-        if ($isisShadowBanned) $ccLinks .= $link;
-        else if ($isMod) $otherFormatsLinks .= $link;
-      } else if ($format == "livinglegendscc") {
-        if (!$isisShadowBanned) $otherFormatsLinks .= $link;
-      } else if ($format == "commoner") {
-        if (!$isisShadowBanned) $otherFormatsLinks .= $link;
-      } else if ($format == "clash") {
-        if (!$isisShadowBanned) $otherFormatsLinks .= $link;
-      } else if ($format == "shadowcommoner") {
-        if ($isisShadowBanned) $otherFormatsLinks .= $link;
-        else if ($isMod) $otherFormatsLinks .= $link;
+      if(!$isShadowBanned) {
+        switch($format) {
+          case "blitz": $blitzLinks .= $link; break;
+          case "compblitz": $compBlitzLinks .= $link; break;
+          case "cc": $ccLinks .= $link; break;
+          case "compcc": $compCCLinks .= $link; break;
+          default:
+            if($format != "shadowblitz" && $format != "shadowcc") $otherFormatsLinks .= $link;
+            break;
+        }
+      }
+      else {
+        if($format == "shadowblitz") $blitzLinks .= $link;
+        else if($format == "shadowcc") $ccLinks .= $link;
       }
     }
   }
