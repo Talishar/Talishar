@@ -44,6 +44,9 @@ if (!isset($_SESSION["userid"])) {
   }
 }
 
+$isShadowBanned = false;
+if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
+
 if ($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
   //Must be logged in to use matchmaking
   $response->error = "You must be logged in to create a public multiplayer game.";
@@ -77,6 +80,12 @@ if ((!file_exists("../Games/$gameName")) && (mkdir("../Games/$gameName", 0700, t
   $response->error = "Game file could not be created.";
   echo (json_encode($response));
   exit;
+}
+
+if($isShadowBanned) {
+  if($format == "cc" || $format == "livinglegendscc") $format = "shadowcc";
+  else if($format == "compcc") $format = "shadowcompcc";
+  else if($format == "blitz" || $format == "compblitz" || $format == "commoner") $format = "shadowblitz";
 }
 
 $p1Data = [1];

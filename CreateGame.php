@@ -32,9 +32,10 @@ if($favoriteDeckLink != 0)
   }
 }
 
-$isisShadowBanned = false;
-
 session_start();
+
+$isShadowBanned = false;
+if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
 
 if (!isset($_SESSION["userid"])) {
   if (isset($_COOKIE["rememberMeToken"])) {
@@ -72,22 +73,10 @@ if(isset($_SESSION["userid"]))
 }
 
 session_write_close();
-
-$bannedIPHandler = fopen("./HostFiles/bannedIPs.txt", "r");
-while (!feof($bannedIPHandler)) {
-  $bannedIP = trim(fgets($bannedIPHandler), "\r\n");
-  // echo ($_SERVER['REMOTE_ADDR'] . " " . $bannedIP . "<BR>");
-  if ($_SERVER['REMOTE_ADDR'] == $bannedIP) {
-    $isisShadowBanned = true;
-  }
-}
-fclose($bannedIPHandler);
-
-if ($isisShadowBanned) {
-  if ($format == "cc" || $format == "livinglegendscc") $format = "shadowcc";
-  else if ($format == "compcc") $format = "shadowcompcc";
-  else if ($format == "blitz" || $format == "compblitz") $format = "shadowblitz";
-  else if ($format == "commoner") $format = "shadowcommoner";
+if($isShadowBanned) {
+  if($format == "cc" || $format == "livinglegendscc") $format = "shadowcc";
+  else if($format == "compcc") $format = "shadowcompcc";
+  else if($format == "blitz" || $format == "compblitz" || $format == "commoner") $format = "shadowblitz";
 }
 
 $gameName = GetGameCounter();
