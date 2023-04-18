@@ -41,6 +41,7 @@ function PasswordLogin($username, $password, $rememberMe) {
 		$_SESSION["userspwd"] = $userData["usersPwd"];
 		$patreonAccessToken = $userData["patreonAccessToken"];
 		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
+		$_SESSION["isBanned"] = $userData["isBanned"];
 
 		try {
 			PatreonLogin($patreonAccessToken);
@@ -88,6 +89,7 @@ function AttemptPasswordLogin($username, $password, $rememberMe) {
 		$patreonAccessToken = $userData["patreonAccessToken"];
 		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
 		$rememberMeToken = $userData["rememberMeToken"];
+		$_SESSION["isBanned"] = $userData["isBanned"];
 
 		try {
 			PatreonLogin($patreonAccessToken);

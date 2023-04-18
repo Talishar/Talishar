@@ -21,15 +21,7 @@ $livingLegendsCCLinks = "";
 $reactFE = "https://fe.talishar.net/game/play";
 
 $isShadowBanned = false;
-
-$bannedIPHandler = fopen("./HostFiles/bannedIPs.txt", "r");
-while (!feof($bannedIPHandler)) {
-  $bannedIP = trim(fgets($bannedIPHandler), "\r\n");
-  if ($_SERVER['REMOTE_ADDR'] == $bannedIP) {
-    $isShadowBanned = true;
-  }
-}
-fclose($bannedIPHandler);
+if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
 
 $canSeeQueue = isset($_SESSION["useruid"]);
 

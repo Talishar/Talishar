@@ -116,7 +116,7 @@ function loginFromCookie()
 {
 	$token = $_COOKIE["rememberMeToken"];
 	$conn = GetDBConnection();
-	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum FROM users WHERE rememberMeToken=?";
+	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned FROM users WHERE rememberMeToken=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_bind_param($stmt, "s", $token);
@@ -133,6 +133,7 @@ function loginFromCookie()
 			$patreonAccessToken = $row[3];
 			$patreonRefreshToken = $row[4];
 			$_SESSION["patreonEnum"] = $row[5];
+			$_SESSION["isBanned"] = $row[6];
 			try {
 				PatreonLogin($patreonAccessToken);
 			} catch (\Exception $e) {

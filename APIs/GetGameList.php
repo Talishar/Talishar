@@ -15,6 +15,8 @@ $response->gamesInProgress = [];
 $response->openGames = [];
 $response->canSeeQueue = isset($_SESSION["useruid"]);
 
+$isShadowBanned = false;
+if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
 
 $gameInProgressCount = 0;
 if ($handle = opendir($path)) {
@@ -78,7 +80,11 @@ if ($handle = opendir($path)) {
         $openGame->formatName = $formatName;
         $openGame->description = $description;
         $openGame->gameName = $gameToken;
-        array_push($response->openGames, $openGame);
+        if($isShadowBanned) {
+          if($format == "shadowblitz" || $format == "shadowcc") array_push($response->openGames, $openGame);
+        } else {
+          if($format != "shadowblitz" && $format != "shadowcc") array_push($response->openGames, $openGame);
+        }
       }
     }
   }
