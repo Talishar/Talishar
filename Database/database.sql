@@ -63,7 +63,9 @@ CREATE TABLE `users` (
   `patreonRefreshToken` varchar(64) DEFAULT NULL,
   `fabraryId` varchar(64) DEFAULT NULL,
   `fabdbId` varchar(64) DEFAULT NULL,
-  `patreonEnum` varchar(64) DEFAULT NULL
+  `patreonEnum` varchar(64) DEFAULT NULL,
+  `isBanned` tinyint(1) NOT NULL DEFAULT 0,
+  `lastLoggedIP` varchar(32) DEFAULT NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 --
 -- Indexes for dumped tables
