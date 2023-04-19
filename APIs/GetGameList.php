@@ -4,16 +4,25 @@ include "../Libraries/SHMOPLibraries.php";
 include "../Libraries/HTTPLibraries.php";
 include "../HostFiles/Redirector.php";
 include "../CardDictionary.php";
+include "../AccountFiles/AccountSessionAPI.php";
 
 $path = "../Games";
 
 session_start();
 SetHeaders();
 
+if(!IsUserLoggedIn()) {
+  if(isset($_COOKIE["rememberMeToken"])) {
+    include_once '../includes/functions.inc.php';
+    include_once '../includes/dbh.inc.php';
+    loginFromCookie();
+  }
+}
 $response = new stdClass();
 $response->gamesInProgress = [];
 $response->openGames = [];
-$response->canSeeQueue = isset($_SESSION["useruid"]);
+$canSeeQueue = IsUserLoggedIn();
+$response->canSeeQueue = $canSeeQueue;
 
 $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
