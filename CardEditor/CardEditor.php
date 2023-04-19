@@ -32,6 +32,25 @@ echo("</td>");
 echo("<td style='width:50%;'>");
 echo("<h2>Add/Edit Card</h2>");
 echo("test");
+?>
+
+<form action="CardCreateEdit.php" method="post">
+  <label for="cardId">Card ID:</label>
+  <input type="text" id="cardId" name="cardId"><br><br>
+
+  <label for="hasGoAgain">Has Go Again:</label>
+  <select id="hasGoAgain" name="hasGoAgain">
+    <option value="true">True</option>
+    <option value="false" selected>False</option>
+  </select><br><br>
+
+  <label for="playAbility">Play Ability:</label>
+  <textarea id="playAbility" name="playAbility" rows="4" cols="50"></textarea><br><br>
+
+  <button type="submit">Submit</button>
+</form>
+
+<?php
 echo("</td>");
 
 echo("</tr></table>");
