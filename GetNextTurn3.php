@@ -816,7 +816,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->popup = CreatePopupAPI("CHOOSETOPOPPONENT", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "", cardsArray: $optCards);
   }
 
-  if ($turn[0] == "INPUTCARDNAME") {
+  if ($turn[0] == "INPUTCARDNAME" && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     $playerInputPopup->popup = CreatePopupAPI("INPUTCARDNAME", [], 0, 1, "Name a card");
   }
