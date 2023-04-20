@@ -1,12 +1,11 @@
 <?php
-include_once 'MenuBar.php';
-
 require_once '../Assets/patreon-php-master/src/OAuth.php';
 require_once '../Assets/patreon-php-master/src/API.php';
 require_once '../Assets/patreon-php-master/src/PatreonLibraries.php';
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 require_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
+include_once "../Libraries/HTTPLibraries.php";
 include_once "../APIKeys/APIKeys.php";
 
 
