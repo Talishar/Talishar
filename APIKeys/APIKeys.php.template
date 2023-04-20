@@ -1,6 +1,16 @@
 <?php
 // Key for development / test
-$FaBraryKey = "op://Dev/Fabrary/credential";
+$FaBraryKey = "op://${ENV}/Fabrary/credential";
 
 // Fake key for development / test
-$adsenseClientId = "";
+$sendgridKey = "op://${ENV}/Sendgrid/credential";
+
+$adsenseClientId = "op://${ENV}/Adsense/clientID";
+
+$fabDBToken = "op://${ENV}/FabDB/token";
+$fabDBSecret = "op://${ENV}/FabDB/secret";
+
+$patreonClientID = "op://${ENV}/Patreon/clientID";
+$patreonClientSecret = "op://${ENV}/Patreon/clientSecret";
+
+$fabraryOutgoingKey = "op://${ENV}/Patreon/OutgoingKey";
