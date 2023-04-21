@@ -1,6 +1,19 @@
 <?php
-// Key for development / test
-$FaBraryKey = "op://Dev/Fabrary/credential";
 
-// Fake key for development / test
-$adsenseClientId = "";
+// Fabrary
+$FaBraryKey = "op://${ENV}/Fabrary/credential";
+$fabraryOutgoingKey = "op://${ENV}/Fabrary/OutgoingKey";
+
+// Sendgrid
+$sendgridKey = "op://${ENV}/Sendgrid/credential";
+
+// Adsense - Not used
+$adsenseClientId = "op://${ENV}/Adsense/clientID";
+
+// FABDB
+$fabDBToken = "op://${ENV}/FabDB/token";
+$fabDBSecret = "op://${ENV}/FabDB/secret";
+
+// Patreon
+$patreonClientID = "op://${ENV}/Patreon/clientID";
+$patreonClientSecret = "op://${ENV}/Patreon/clientSecret";

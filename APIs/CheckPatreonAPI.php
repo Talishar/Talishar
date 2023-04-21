@@ -11,21 +11,21 @@ include_once "../Libraries/HTTPLibraries.php";
 
 SetHeaders();
 
-if(!IsUserLoggedIn()) {
-  if(isset($_COOKIE["rememberMeToken"])) {
+if (!IsUserLoggedIn()) {
+  if (isset($_COOKIE["rememberMeToken"])) {
     loginFromCookie();
   }
 }
 
 $response = new stdClass();
 
-if(IsUserLoggedIn()) {
+if (IsUserLoggedIn()) {
   $sql = "SELECT * FROM users where usersUid='" . LoggedInUserName() . "'";
   $stmt = mysqli_stmt_init($conn);
   if (!mysqli_stmt_prepare($stmt, $sql)) {
     echo ("ERROR");
     $response->error = "Error loading patreon token";
-    echo(json_encode($response));
+    echo (json_encode($response));
     exit();
   }
   mysqli_stmt_execute($stmt);
@@ -38,8 +38,7 @@ if(IsUserLoggedIn()) {
   } catch (\Exception $e) {
     $response->error = "There was a problem parsing the patreon info";
   }
-}
-else {
+} else {
   $response->error = "User not logged in";
 }
 
