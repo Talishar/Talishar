@@ -696,6 +696,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $player, $parameter, 1);
+      AddDecisionQueue("PASSPARAMETER", $player, 2, 1);
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
     case "ELE025": case "ELE026": case "ELE027":
@@ -1035,6 +1036,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $player, $parameter . "-BB", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
     case $CID_BloodRotPox:
