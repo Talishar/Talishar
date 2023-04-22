@@ -1034,7 +1034,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("BUTTONINPUT", $player, "0,1");
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $player, $parameter, 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $player, $parameter . "-BB", 1);
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
     case $CID_BloodRotPox:
