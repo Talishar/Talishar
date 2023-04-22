@@ -31,7 +31,6 @@ echo("</td>");
 
 echo("<td style='width:50%;'>");
 echo("<h2>Add/Edit Card</h2>");
-echo("test");
 ?>
 
 <form action="CardCreateEdit.php" method="post">
