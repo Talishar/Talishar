@@ -518,7 +518,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i + AuraPieces() - 1 < count($theirAuras); $i += AuraPieces()) {
     $type = CardType($theirAuras[$i]);
     $sType = CardSubType($theirAuras[$i]);
-    array_push($theirAurasOutput, JSONRenderedCard(cardNumber: $theirAuras[$i], actionDataOverride: strval($i), overlay: ($theirAuras[$i + 1] != 2 ? 1 : 0), counters: $theirAuras[$i + 2], controller: $otherPlayer, type: $type, sType: $sType, gem: $theirAuras[$i + 8]));
+    array_push($theirAurasOutput, JSONRenderedCard(cardNumber: $theirAuras[$i], actionDataOverride: strval($i), overlay: ($theirAuras[$i + 1] != 2 ? 1 : 0), counters: $theirAuras[$i + 2], atkCounters: $theirAuras[$i + 3], controller: $otherPlayer, type: $type, sType: $sType, gem: $theirAuras[$i + 8]));
   }
   $response->opponentAuras = $theirAurasOutput;
 
@@ -586,6 +586,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       cardNumber: $myAuras[$i],
       overlay: ($myAuras[$i + 1] != 2 ? 1 : 0),
       counters: $counters,
+      atkCounters: $atkCounters,
       action: $action,
       controller: $otherPlayer,
       borderColor: $border,
