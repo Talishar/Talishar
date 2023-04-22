@@ -875,9 +875,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $lifeCounters = 0;
       $enduranceCounters = 0;
       $atkCounters = 0;
+      $label = "";
 
       if (($option[0] == "MYALLY" || $option[0] == "THEIRALLY" || $option[0] == "THEIRAURAS") && $option[1] == $combatChainState[$CCS_WeaponIndex]) {
-        $counters = "Attacker";
+        $label = "Attacker";
       }
 
       if (count($layers) > 0) {
@@ -885,20 +886,20 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           $index = SearchLayer($otherPlayer, subtype: "Ally");
           if ($index != "") {
             $params = explode("|", $layers[$index + 2]);
-            if ($option[1] == $params[2]) $counters = "Attacker";
+            if ($option[1] == $params[2]) $label = "Attacker";
           }
         }
         if ($option[0] == "THEIRAURAS" && $layers[0] != "" && $mainPlayer != $currentPlayer) {
           $index = SearchLayer($otherPlayer, subtype: "Aura");
           if ($index != "") {
             $params = explode("|", $layers[$index + 2]);
-            if ($option[1] == $params[2]) $counters = "Attacker";
+            if ($option[1] == $params[2]) $label = "Attacker";
           }
         }
       }
 
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
-      if ($option[0] == "MYARS") $counters = "Arsenal";
+      if ($option[0] == "MYARS") $label = "Arsenal";
 
       $index = intval($option[1]);
       $card = $source[$index];
@@ -933,7 +934,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       } elseif ($option[0] == "MYAURAS") {
         $atkCounters = $myAuras[$index + 3];
       }
-      array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $playerBorderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, atkCounters: $atkCounters, controller: $playerBorderColor));
+      array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $playerBorderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, atkCounters: $atkCounters, controller: $playerBorderColor, label: $label));
     }
     $playerInputPopup->popup = CreatePopupAPI("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, cardsArray: $cardsMultiZone);
   }
