@@ -2314,7 +2314,7 @@ function CountPitch(&$pitch, $min = 0, $max = 9999)
   return $pitchCount;
 }
 
-function Draw($player, $mainPhase = true)
+function Draw($player, $mainPhase = true, $fromCardEffect = true)
 {
   global $EffectContext, $mainPlayer;
   $otherPlayer = ($player == 1 ? 2 : 1);
@@ -2327,7 +2327,7 @@ function Draw($player, $mainPhase = true)
       return "";
     }
   }
-  if($mainPhase && (SearchAurasForCard("UPR138", $otherPlayer) != "" || SearchAurasForCard("UPR138", $player) != "")) {
+  if($fromCardEffect && (SearchAurasForCard("UPR138", $otherPlayer) != "" || SearchAurasForCard("UPR138", $player) != "")) {
     WriteLog("Draw prevented by " . CardLink("UPR138", "UPR138"));
     return "";
   }

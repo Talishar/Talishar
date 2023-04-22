@@ -1091,12 +1091,12 @@ function FinalizeTurn()
   {
     $toDraw = CharacterIntellect($defCharacter[0]) - count($defHand);
     for ($i = 0; $i < $toDraw; ++$i) {
-      Draw($defPlayer, false);
+      Draw($defPlayer, false, false);
     }
   }
   $toDraw = CharacterIntellect($mainCharacter[0]) - count($mainHand) + CurrentEffectIntellectModifier();
   for ($i = 0; $i < $toDraw; ++$i) {
-    Draw($mainPlayer, false);
+    Draw($mainPlayer, false, false);
   }
   if ($toDraw > 0) WriteLog("Turn player draw up to " . CharacterIntellect($mainCharacter[0]) + CurrentEffectIntellectModifier() . " cards.");
 
