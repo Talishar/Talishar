@@ -31,6 +31,7 @@ include "CardDictionaries/Outsiders/OUTShared.php";
 include "CardDictionaries/Roguelike/ROGUEShared.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
+include "GeneratedCode/DatabaseGeneratedCardDictionaries.php";
 
 $CID_BloodRotPox = "OUT234";
 $CID_Frailty = "OUT235";
@@ -468,7 +469,8 @@ function AttackValue($cardID)
 function HasGoAgain($cardID)
 {
   $set = CardSet($cardID);
-  if($set == "WTR") return WTRHasGoAgain($cardID);
+  //if($set == "WTR") return WTRHasGoAgain($cardID);
+  if($set == "WTR") return GeneratedGoAgain($cardID);
   else if($set == "ARC") return ARCHasGoAgain($cardID);
   else if($set == "CRU") return CRUHasGoAgain($cardID);
   else if($set == "MON") return MONHasGoAgain($cardID);
