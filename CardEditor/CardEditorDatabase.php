@@ -1,17 +1,18 @@
 <?php
 
-	function LoadCardsForSet($set)
+	function LoadDatabaseCards($set="")
 	{
 		$cards = [];
 		$conn = GetDBConnection();
 		$setLike = $set . "%";
-		$sql = "SELECT * FROM carddefinition WHERE cardID LIKE ?";
+		if($set != "") $sql = "SELECT * FROM carddefinition WHERE cardID LIKE ?";
+		else $sql = "SELECT * FROM carddefinition";
 		$stmt = mysqli_stmt_init($conn);
 		if (!mysqli_stmt_prepare($stmt, $sql)) {
 			return $cards;
 		}
 
-		mysqli_stmt_bind_param($stmt, "s", $setLike);
+		if($set != "") mysqli_stmt_bind_param($stmt, "s", $setLike);
 		mysqli_stmt_execute($stmt);
 		$resultData = mysqli_stmt_get_result($stmt);
 		while($row = mysqli_fetch_assoc($resultData)) {

@@ -18,11 +18,13 @@ if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "LaustinSpay
 $setToEdit = TryGET("setToEdit", "");
 
 echo("<h1>Editing Set $setToEdit</h1>");
+echo("<a href='./DatabaseCardCodeGenerator.php' target='_blank'>Generate Code</a>");
+echo("<br><br>");
 echo("<table style='width:100%;'><tr>");
 
 echo("<td style='width:50%;'>");
 echo("<h2>Card List</h2>");
-$cards = LoadCardsForSet($setToEdit);
+$cards = LoadDatabaseCards($setToEdit);
 foreach($cards as $card) {
     echo $card->cardID . ", " . ($card->hasGoAgain ? "has go again" : "no go again") . "<br>";
 }
