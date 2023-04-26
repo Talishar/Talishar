@@ -6,6 +6,9 @@ include "Libraries/HTTPLibraries.php";
 include "Libraries/SHMOPLibraries.php";
 include_once "Libraries/PlayerSettings.php";
 include_once 'Assets/patreon-php-master/src/PatreonDictionary.php';
+include_once "./AccountFiles/AccountDatabaseAPI.php";
+include_once './includes/functions.inc.php';
+include_once './includes/dbh.inc.php';
 ob_end_clean();
 
 $deck = TryGET("deck");
@@ -34,19 +37,18 @@ if($favoriteDeckLink != 0)
 
 session_start();
 
-$isShadowBanned = false;
-if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
-
 if (!isset($_SESSION["userid"])) {
   if (isset($_COOKIE["rememberMeToken"])) {
-    include_once './includes/functions.inc.php';
-    include_once './includes/dbh.inc.php';
     include_once './Assets/patreon-php-master/src/PatreonLibraries.php';
     include_once './Assets/patreon-php-master/src/API.php';
     include_once './Assets/patreon-php-master/src/PatreonDictionary.php';
     loginFromCookie();
   }
 }
+
+$isShadowBanned = false;
+if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
+else $isShadowBanned = IsBanned($_SESSION["userid"]);
 
 if($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
   //Must be logged in to use matchmaking
@@ -57,8 +59,6 @@ if($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])
 if(isset($_SESSION["userid"]))
 {
   //Save game creation settings
-  include_once 'includes/functions.inc.php';
-  include_once 'includes/dbh.inc.php';
   if(isset($favoriteDeckIndex))
   {
     ChangeSetting("", $SET_FavoriteDeckIndex, $favoriteDeckIndex, $_SESSION["userid"]);

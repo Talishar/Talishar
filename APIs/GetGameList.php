@@ -8,6 +8,9 @@ include "../AccountFiles/AccountSessionAPI.php";
 require_once '../Assets/patreon-php-master/src/PatreonLibraries.php';
 include_once '../Assets/patreon-php-master/src/API.php';
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
+include_once "../AccountFiles/AccountDatabaseAPI.php";
+include_once '../includes/functions.inc.php';
+include_once '../includes/dbh.inc.php';
 
 $path = "../Games";
 
@@ -16,8 +19,6 @@ SetHeaders();
 
 if(!IsUserLoggedIn()) {
   if(isset($_COOKIE["rememberMeToken"])) {
-    include_once '../includes/functions.inc.php';
-    include_once '../includes/dbh.inc.php';
     loginFromCookie();
   }
 }
@@ -29,6 +30,7 @@ $response->canSeeQueue = $canSeeQueue;
 
 $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
+else if(IsUserLoggedIn()) $isShadowBanned = IsBanned(LoggedInUserName());
 
 $gameInProgressCount = 0;
 if ($handle = opendir($path)) {

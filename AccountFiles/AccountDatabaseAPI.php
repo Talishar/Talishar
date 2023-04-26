@@ -60,6 +60,13 @@ function PasswordLogin($username, $password, $rememberMe) {
   return false;
 }
 
+function IsBanned($username)
+{
+	$userData = LoadUserData($username);
+	$_SESSION["isBanned"] = $userData["isBanned"];
+	return (intval($userData["isBanned"]) == 1 ? true : false);
+}
+
 function AttemptPasswordLogin($username, $password, $rememberMe) {
 	$conn = GetLocalMySQLConnection();
 	$userData = LoadUserData($username);

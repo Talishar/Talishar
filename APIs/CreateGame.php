@@ -8,6 +8,9 @@ include_once "../Libraries/PlayerSettings.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 require_once '../Assets/patreon-php-master/src/API.php';
 include_once '../Assets/patreon-php-master/src/PatreonLibraries.php';
+include_once "../AccountFiles/AccountDatabaseAPI.php";
+include_once '../includes/functions.inc.php';
+include_once '../includes/dbh.inc.php';
 ob_end_clean();
 SetHeaders();
 
@@ -38,14 +41,13 @@ session_start();
 
 if (!isset($_SESSION["userid"])) {
   if (isset($_COOKIE["rememberMeToken"])) {
-    include_once '../includes/functions.inc.php';
-    include_once '../includes/dbh.inc.php';
     loginFromCookie();
   }
 }
 
 $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
+else $isShadowBanned = IsBanned($username);
 
 if ($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
   //Must be logged in to use matchmaking

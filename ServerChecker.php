@@ -4,6 +4,9 @@ include "Libraries/SHMOPLibraries.php";
 include "HostFiles/Redirector.php";
 include "CardDictionary.php";
 include_once 'MenuBar.php';
+include_once "./AccountFiles/AccountDatabaseAPI.php";
+include_once './includes/functions.inc.php';
+include_once './includes/dbh.inc.php';
 
 define('ROOTPATH', __DIR__);
 
@@ -22,6 +25,7 @@ $reactFE = "https://fe.talishar.net/game/play";
 
 $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
+else if(isset($_SESSION["useruid"])) $isShadowBanned = IsBanned($_SESSION["useruid"]);
 
 $canSeeQueue = isset($_SESSION["useruid"]);
 

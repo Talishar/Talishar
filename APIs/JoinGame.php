@@ -194,7 +194,7 @@ if ($decklink != "") {
       $cardType = CardType($id);
       $cardSet = substr($id, 0, 3);
 
-      if (IsBanned($id, $format)) {
+      if (IsCardBanned($id, $format)) {
         if ($bannedCard != "") $bannedCard .= ", ";
         $bannedCard .= CardName($id);
       }
@@ -590,7 +590,7 @@ function GetAltCardID($cardID)
   return $cardID;
 }
 
-function IsBanned($cardID, $format)
+function IsCardBanned($cardID, $format)
 {
   switch($format) {
     case "blitz": case "compblitz":
