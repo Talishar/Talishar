@@ -606,6 +606,25 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100013: //Enable Spectate
       SetCachePiece($gameName, 9, "1");
       break;
+    case 100014: //Report Player
+      if($isSimulation) return;
+      $reportCount = 0;
+      $folderName = "./BugReports/" . $gameName . "-" . $reportCount;
+      while ($reportCount < 5 && file_exists($folderName)) {
+        ++$reportCount;
+        $folderName = "./BugReports/" . $gameName . "-" . $reportCount;
+      }
+      if ($reportCount == 5) {
+        WriteLog("Report file is full for this game. Please use discord for further reports.");
+      }
+      mkdir($folderName, 0700, true);
+      copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");
+      copy("./Games/$gameName/gamestateBackup.txt", $folderName . "/gamestateBackup.txt");
+      copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
+      copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
+      copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
+      WriteLog("Thank you for reporting the player. The chat log has been saved to the server. Please report it to mods on the discord server with the game number for reference ($gameName).");
+      break;
     default: break;
   }
   return true;

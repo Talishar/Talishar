@@ -20,13 +20,17 @@ else if (isset($_POST["authKey"])) $authKey = $_POST["authKey"];
 
 session_write_close();
 
+$response = new stdClass();
+
 if (!IsGameNameValid($gameName)) {
-  echo (json_encode(new stdClass()));
+  $response->error = "Invalid game name";
+  echo (json_encode($response));
   exit;
 }
 
 if (!file_exists("../Games/" . $gameName . "/")) {
-  echo (json_encode(new stdClass()));
+  $response->error = "Game file does not exist";
+  echo (json_encode($response));
   exit;
 }
 
@@ -76,7 +80,8 @@ include "../MenuFiles/WriteGamefile.php";
 
 $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 if ($authKey != $targetAuth) {
-  echo (json_encode(new stdClass()));
+  $response->error = "Invalid auth key";
+  echo (json_encode($response));
   exit;
 }
 
