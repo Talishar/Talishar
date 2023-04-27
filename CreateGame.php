@@ -9,6 +9,7 @@ include_once 'Assets/patreon-php-master/src/PatreonDictionary.php';
 include_once "./AccountFiles/AccountDatabaseAPI.php";
 include_once './includes/functions.inc.php';
 include_once './includes/dbh.inc.php';
+include_once './Database/ConnectionManager.php';
 ob_end_clean();
 
 $deck = TryGET("deck");
@@ -48,7 +49,7 @@ if (!isset($_SESSION["userid"])) {
 
 $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
-else $isShadowBanned = IsBanned($_SESSION["userid"]);
+else if(isset($_SESSION["userid"])) $isShadowBanned = IsBanned($_SESSION["userid"]);
 
 if($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
   //Must be logged in to use matchmaking
