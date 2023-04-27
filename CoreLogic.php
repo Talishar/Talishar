@@ -1357,6 +1357,12 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   return false;
 }
 
+function HasLostClass($player)
+{
+  if(SearchCurrentTurnEffects("UPR187", $player)) return true;//Erase Face
+  return false;
+}
+
 function ClassOverride($cardID, $player="")
 {
   global $currentTurnEffects;

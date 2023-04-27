@@ -269,11 +269,17 @@ function WTRAbilityCost($cardID)
         AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
       case "WTR047":
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=AA;class=GUARDIAN");
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
+        if(HasLostClass($currentPlayer))
+        {
+          WriteLog("No valid search target for Show Time because your cards have lost their class.");
+        }
+        else {
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=AA;class=GUARDIAN");
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+          AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
+          AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
+        }
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       //Ninja
