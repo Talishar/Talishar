@@ -3,7 +3,7 @@
 
 function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CS_NumMoonWishPlayed;
+  global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain;
   global $CS_NextNAACardGoAgain, $CS_ArcaneDamagePrevention;
   $rv = "";
   switch ($cardID) {
@@ -88,7 +88,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       else if($cardID == "ARC213") $health = 2;
       else $health = 1;
       GainHealth($health, $currentPlayer);
-      if(GetClassState($currentPlayer, $CS_NumMoonWishPlayed) > 0) Draw($currentPlayer);
+      if(SearchCurrentTurnEffects("ARC185-GA", $currentPlayer)) Draw($currentPlayer);
       return "";
     case "ARC215": case "ARC216": case "ARC217":
       if ($cardID == "ARC215") $opt = 4;

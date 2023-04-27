@@ -698,19 +698,19 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID)
           }
           break;
         case "ELE177":
-          if (CardCost($cardID) >= 0) {
+          if(CardCost($cardID) >= 0) {
             $hasGoAgain = true;
             $remove = true;
           }
           break;
         case "ELE178":
-          if (CardCost($cardID) >= 1) {
+          if(CardCost($cardID) >= 1) {
             $hasGoAgain = true;
             $remove = true;
           }
           break;
         case "ELE179":
-          if (CardCost($cardID) >= 2) {
+          if(CardCost($cardID) >= 2) {
             $hasGoAgain = true;
             $remove = true;
           }
@@ -718,6 +718,9 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID)
         case "ELE201":
           $hasGoAgain = true;
           $remove = true;
+          break;
+        case "ARC185-GA":
+          $hasGoAgain = ($cardID == "ARC212" || $cardID == "ARC213" || $cardID == "ARC214");
           break;
         default:
           break;
@@ -1007,6 +1010,22 @@ function ActivateAbilityEffects()
     if($remove) RemoveCurrentTurnEffect($i);
   }
   $currentTurnEffects = array_values($currentTurnEffects);
+}
+
+function CurrentEffectNameModifier($effectID, $effectParameter)
+{
+  $name = "";
+  switch($effectID)
+  {
+    case "OUT049":
+      $name = $effectParameter;
+      break;
+    case "OUT068": case "OUT069": case "OUT070":
+      $name = $effectParameter;
+      break;
+    default: break;
+  }
+  return $name;
 }
 
 ?>

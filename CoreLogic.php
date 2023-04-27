@@ -2084,6 +2084,20 @@ function IsCurrentAttackName($name)
   return false;
 }
 
+function IsCardNamed($player, $cardID, $name)
+{
+  global $currentTurnEffects;
+  if(CardName($cardID) == $name) return true;
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
+  {
+    $effectArr = explode("-", $currentTurnEffects[$i]);
+    $name = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"));
+    //You have to do this at the end, or you might have a recursive loop -- e.g. with OUT052
+    if($name != "" && $currentTurnEffects[$i+1] == $player) return true;
+  }
+  return false;
+}
+
 function GetCurrentAttackNames()
 {
   global $combatChain, $currentTurnEffects, $mainPlayer;
@@ -2092,18 +2106,8 @@ function GetCurrentAttackNames()
   array_push($names, CardName($combatChain[0]));
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
-    $name = "";
     $effectArr = explode("-", $currentTurnEffects[$i]);
-    switch($effectArr[0])
-    {
-      case "OUT049":
-        $name = (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A");
-        break;
-      case "OUT068": case "OUT069": case "OUT070":
-        $name = (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A");
-        break;
-      default: break;
-    }
+    $name = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"));
     //You have to do this at the end, or you might have a recursive loop -- e.g. with OUT052
     if($name != "" && $currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) array_push($names, $name);
   }
