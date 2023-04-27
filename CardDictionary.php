@@ -469,9 +469,8 @@ function AttackValue($cardID)
 function HasGoAgain($cardID)
 {
   $set = CardSet($cardID);
-  //if($set == "WTR") return WTRHasGoAgain($cardID);
   if($set == "WTR") return GeneratedGoAgain($cardID);
-  else if($set == "ARC") return ARCHasGoAgain($cardID);
+  else if($set == "ARC") return GeneratedGoAgain($cardID);
   else if($set == "CRU") return CRUHasGoAgain($cardID);
   else if($set == "MON") return MONHasGoAgain($cardID);
   else if($set == "ELE") return ELEHasGoAgain($cardID);
