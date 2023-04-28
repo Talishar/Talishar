@@ -633,7 +633,6 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
   global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer, $mainPlayer;
   global $CCS_AttackFused;
   $classState = &GetPlayerClassState($player);
-  $Auras = &GetAuras($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   if($damage > 0)
   {
@@ -654,7 +653,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
       if($source == "DYN612") GainHealth($damage, $mainPlayer);
     }
 
-    AuraDamageTakenAbilities($Auras, $damage);
+    AuraDamageTakenAbilities($player, $damage);
     ItemDamageTakenAbilities($player, $damage);
     CharacterDamageTakenAbilities($player, $damage);
     CharacterDealDamageAbilities($otherPlayer, $damage);

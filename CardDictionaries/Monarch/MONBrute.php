@@ -10,90 +10,54 @@
         $numBD = SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true));
         $damage = 6 - $numBD;
         DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID);
-        return "Does $damage damage to yourself.";
+        return "Does $damage damage to yourself";
       case "MON125":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6) {
           AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
           AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,NA", 1);
-          $rv .= " and banished a card with Blood Debt your Deck.";
         }
-        return $rv;
-      case "MON126": case "MON127": case "MON128":
-        if(SearchCurrentTurnEffects($cardID, $currentPlayer))
-        {
-          $rv = "Gains +3 power from banishing a card with 6 or more power.";
-        }
-        return $rv;
-      case "MON129": case "MON130": case "MON131":
-        if(SearchCurrentTurnEffects($cardID, $currentPlayer))
-        {
-          $rv = "Gains Dominate from banishing a card with 6 or more power.";
-        }
-        return $rv;
-      case "MON132": case "MON133": case "MON134":
-        if(SearchCurrentTurnEffects($cardID, $currentPlayer))
-        {
-          $rv = "Gives your next attack action card +" . EffectAttackModifier($cardID) . " and Dominate from banishing a card with 6 or more power.";
-        }
-        return $rv;
+        return "";
       case "MON138": case "MON139": case "MON140":
         Draw($currentPlayer);
         $card = DiscardRandom();
         if(AttackValue($card) >= 6)
         {
-          $rv = "Lets you banish a card from a graveyard";
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD&THEIRDISCARD");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Deadwood Rumbler");
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         }
-        return $rv;
-      case "MON141": case "MON142": case "MON143":
-        if(SearchCurrentTurnEffects($cardID, $currentPlayer))
-        {
-          GiveAttackGoAgain();
-          $rv = "Gains go again from banishing a card with 6 or more power.";
-        }
-        return $rv;
+        return "";
       case "MON150": case "MON151": case "MON152":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your next Brute or Shadow attack action card +" . EffectAttackModifier($cardID) . ".";
+        return "";
       case "MON221":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        $rv = "Discarded " . CardLink($card, $card);
-        if(AttackValue($card) >= 6)
-        {
+        if(AttackValue($card) >= 6) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv .= " and got +2 from discarding a card with 6 or more power";
         }
-        return $rv;
+        return "";
       case "MON222":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        $rv = "Discarded " . CardLink($card, $card);
-        if(AttackValue($card) >= 6)
-        {
+        if(AttackValue($card) >= 6) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv .= " and doubled the base attack of your next Brute attack action card";
         }
-        return $rv;
+        return "";
       case "MON223": case "MON224": case "MON225":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(AttackValue($card) >= 6)
-        {
+        if(AttackValue($card) >= 6) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Gains Dominate from discarding " . CardLink($card, $card) . " with 6 or more power";
         }
-        return $rv;
+        return "";
       default: return "";
     }
   }

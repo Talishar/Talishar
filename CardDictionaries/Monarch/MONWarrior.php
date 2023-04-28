@@ -9,7 +9,7 @@
     {
       case "MON029": case "MON030":
         GiveAttackGoAgain();
-        return "Gives the current attack go again.";
+        return "";
       case "MON033":
         AddDecisionQueue("ATTACKMODIFIER", $currentPlayer, intval($additionalCosts), 1);
         if(GetClassState($currentPlayer, $CS_NumCharged) > 0)
@@ -33,15 +33,15 @@
               if($character[$i+1] != 0) { $character[$i+1] = 2; ++$character[$i+5]; }
             }
           }
-          $rv = "Gives each weapon an additional use this turn.";
+          $rv = "Gives each weapon an additional use this turn";
         }
         return $rv;
       case "MON036": case "MON037": case "MON038":
-        if(GetClassState($currentPlayer, $CS_NumCharged) > 0) { GiveAttackGoAgain(); $rv = "Gains go again."; }
-        return $rv;
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0) GiveAttackGoAgain();
+        return "";
       case "MON054": case "MON055": case "MON056":
-        if(GetClassState($currentPlayer, $CS_NumCharged) > 0) { GiveAttackGoAgain(); $rv = "Gains go again."; }
-        return $rv;
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0) GiveAttackGoAgain();
+        return "";
       case "MON105":
         if(GetClassState($currentPlayer, $CS_LastAttack) != "MON106") return "";
         AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
@@ -91,13 +91,12 @@
     $deck = &GetDeck($mainPlayer);
     if(count($deck) == 0) return;
     $cardID = array_shift($deck);
-    WriteLog(CardLink("MON034", "MON034") ."'s hit effect:");
     if(!RevealCards($cardID, $mainPlayer)) return;
     if(TalentContains($cardID, "LIGHT", $mainPlayer))
     {
       AddSoul($cardID, $mainPlayer, "DECK");
       GainHealth(1, $mainPlayer);
-      WriteLog("Lumina Ascension put a Light card in Soul.");
+      WriteLog("Lumina Ascension put a Light card in Soul");
     }
     else
     {
@@ -130,7 +129,7 @@
   {
     global $currentPlayer;
     $hand = &GetHand($currentPlayer);
-    if(count($hand) == 0) { WriteLog("No cards in hand to charge."); return; }
+    if(count($hand) == 0) { WriteLog("No cards in hand to charge"); return; }
     PrependDecisionQueue("FINISHCHARGE", $currentPlayer, "-", 1);
     PrependDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
     PrependDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
@@ -151,7 +150,7 @@
     ++$arsenal[$index+3];
     if($arsenal[$index+3] == 3)
     {
-      WriteLog(CardLink("MON405", "MON405") . " searched for a specialization card.");
+      WriteLog(CardLink("MON405", "MON405") . " searched for a specialization card");
       MentorTrigger($player, $index);
     }
   }
