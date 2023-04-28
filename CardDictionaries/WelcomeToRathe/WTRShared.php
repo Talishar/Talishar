@@ -152,11 +152,10 @@ function WTRAbilityCost($cardID)
 
   function WTRPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $mainPlayer, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer, $actionPoints;
+    global $mainPlayer, $combatChain, $currentPlayer, $defPlayer;
     global $CS_DamagePrevention;
     $rv = "";
-    switch ($cardID)
-    {
+    switch ($cardID) {
       case "WTR054": case "WTR055": case "WTR056":
         if(CountPitch(GetPitch($currentPlayer), 3) >= 1) Draw($currentPlayer);
         return "";
@@ -165,7 +164,6 @@ function WTRAbilityCost($cardID)
         GainActionPoints(intval($roll/2), $currentPlayer);
         return "Rolled $roll and gained " . intval($roll/2) . " action points";
       case "WTR005":
-        $resources = &GetResources($currentPlayer);
         $roll = GetDieRoll($currentPlayer);
         GainResources($currentPlayer, intval($roll/2));
         return "Rolled $roll and gained " . intval($roll/2) . " resources";
@@ -183,8 +181,7 @@ function WTRAbilityCost($cardID)
         return $rv;
       case "WTR008":
         $damaged = false;
-        if(IsAllyAttacking())
-        {
+        if(IsAllyAttacking()) {
           return "<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>";
         }
         else if(AttackValue($additionalCosts) >= 6) { WriteLog("Deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
@@ -239,8 +236,7 @@ function WTRAbilityCost($cardID)
         AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
       case "WTR047":
-        if(HasLostClass($currentPlayer))
-        {
+        if(HasLostClass($currentPlayer)) {
           WriteLog("No valid search target for Show Time because your cards have lost their class.");
         }
         else {
@@ -254,10 +250,10 @@ function WTRAbilityCost($cardID)
         return "";
       //Ninja
       case "WTR078":
-        if(CountPitch(GetPitch($currentPlayer), 0, 0)) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
+        if(CountPitch(GetPitch($currentPlayer), 0, 0)) GiveAttackGoAgain();
         return "";
       case "WTR082":
-        if(CardName($combatChain[0]) == "Bonds of Ancestry") WriteLog("Your ancestors reward you for your loyalty.");
+        if(CardName($combatChain[0]) == "Bonds of Ancestry") WriteLog("Your ancestors reward you for your loyalty");
         Draw($currentPlayer);
         return "";
       case "WTR092": case "WTR093": case "WTR094":
@@ -282,8 +278,7 @@ function WTRAbilityCost($cardID)
         AddDecisionQueue("ADDMZBUFF", $currentPlayer, $cardID, 1);
         return "";
       case "WTR120":
-        if(RepriseActive())
-        {
+        if(RepriseActive()) {
           $options = GetChainLinkCards(($mainPlayer == 1 ? 2 : 1), "", "E,C");
           AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $mainPlayer, $options);
           AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-", 1);
@@ -291,8 +286,7 @@ function WTRAbilityCost($cardID)
         }
         return "";
       case "WTR121":
-        if(RepriseActive() && SearchDeck($currentPlayer, "AR") != "")
-        {
+        if(RepriseActive() && SearchDeck($currentPlayer, "AR") != "") {
           $ARs = SearchDeck($currentPlayer, "AR");
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, $ARs);
           AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,TCL", 1);
@@ -302,7 +296,7 @@ function WTRAbilityCost($cardID)
         }
         return "";
       case "WTR126": case "WTR127": case "WTR128":
-        if(CardType($combatChain[0]) == "W" || IsAuraWeapon($combatChain[0], $mainPlayer, $combatChain[2])) {
+        if(IsWeaponAttack()) {
           DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
           $rv = "Did 1 damage to the attacking hero";
         }
@@ -314,8 +308,7 @@ function WTRAbilityCost($cardID)
         if(RepriseActive()) { ApplyEffectToEachWeapon($cardID); $rv = "Gives weapons you control +1 for the rest of the turn"; }
         return $rv;
       case "WTR138": case "WTR139": case "WTR140":
-        if(RepriseActive())
-        {
+        if(RepriseActive()) {
           Draw($currentPlayer);
           $hand = &GetHand($mainPlayer);
           if (count($hand) > 0) AddDecisionQueue("HANDTOPBOTTOM", $mainPlayer, "");
@@ -365,27 +358,22 @@ function WTRAbilityCost($cardID)
         if(count(GetDeck($currentPlayer)) == 0) {
           GiveAttackGoAgain();
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Gains go again and +4.";
+          $rv = "Gains go again and +4";
         }
         return $rv;
       case "WTR162":
-        if($from == "PLAY")
-        {
+        if($from == "PLAY") {
           $roll = GetDieRoll($currentPlayer);
           $rv = "Crazy Brew rolled " . $roll;
-          if($roll <= 2)
-          {
+          if($roll <= 2) {
             LoseHealth(2, $currentPlayer);
             GainActionPoints(1, $currentPlayer);
             $rv .= " and lost you 2 health.";
           }
-          else if($roll <= 4)
-          {
+          else if($roll <= 4) {
             GainHealth(2, $currentPlayer);
             GainActionPoints(1, $currentPlayer);
-          }
-          else if($roll <= 6)
-          {
+          } else {
             $resources = &GetResources($currentPlayer);
             AddCurrentTurnEffect($cardID, $currentPlayer);
             GainResources($currentPlayer, 2);
