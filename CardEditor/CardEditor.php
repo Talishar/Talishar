@@ -41,8 +41,8 @@ echo("<h2>Add/Edit Card</h2>");
 
   <label for="hasGoAgain">Has Go Again:</label>
   <select id="hasGoAgain" name="hasGoAgain">
-    <option value="true">True</option>
-    <option value="false" selected>False</option>
+    <option value="true" selected>True</option>
+    <option value="false">False</option>
   </select><br><br>
 
   <label for="playAbility">Play Ability:</label>

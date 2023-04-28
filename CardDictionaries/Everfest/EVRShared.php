@@ -57,43 +57,6 @@
     }
   }
 
-  function EVRHasGoAgain($cardID)
-  {
-    switch($cardID)
-    {
-      case "EVR003": return true;
-      case "EVR004": return true;
-      case "EVR005": case "EVR006": case "EVR007": return true;
-      case "EVR014": case "EVR015": case "EVR016": return true;
-      case "EVR022": return true;
-      case "EVR030": case "EVR031": case "EVR032": return true;
-      case "EVR039": return true;
-      case "EVR041": case "EVR042": case "EVR043": return true;
-      case "EVR044": case "EVR045": case "EVR046": return true;
-      case "EVR047": case "EVR048": case "EVR049": return true;
-      case "EVR055": return true;
-      case "EVR056": return true;
-      case "EVR057": case "EVR058": case "EVR059": return true;
-      case "EVR066": case "EVR067": case "EVR068": return true;
-      case "EVR082": case "EVR083": case "EVR084": return true;
-      case "EVR089": return true;
-      case "EVR091": case "EVR092": case "EVR093": return true;
-      case "EVR100": case "EVR101": case "EVR102": return true;
-      case "EVR106": return true;
-      case "EVR107": case "EVR108": case "EVR109": return true;
-      case "EVR150": case "EVR151": case "EVR152": return true;
-      case "EVR158": return true;
-      case "EVR160": return true;
-      case "EVR164": case "EVR165": case "EVR166": return true;
-      case "EVR167": case "EVR168": case "EVR169": return true;
-      case "EVR170": case "EVR171": case "EVR172": return true;
-      case "EVR176": case "EVR177": case "EVR178": case "EVR179": case "EVR180": return true;
-      case "EVR181": return true;
-      case "EVR188": case "EVR189": case "EVR190": case "EVR191": case "EVR192": case "EVR193": return true;
-      default: return false;
-    }
-  }
-
   function EVRAbilityHasGoAgain($cardID)
   {
     switch($cardID)

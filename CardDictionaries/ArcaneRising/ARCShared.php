@@ -67,36 +67,6 @@
     }
   }
 
-  function ARCHasGoAgain($cardID)
-  {
-    global $currentPlayer;
-    switch($cardID)
-    {
-      case "ARC006": return true;
-      case "ARC014": case "ARC015": case "ARC016": return true;
-      case "ARC032": case "ARC033": case "ARC034": return true;
-      case "ARC044": case "ARC046": case "ARC047":
-      case "ARC051": case "ARC052": case "ARC053":
-      case "ARC054": case "ARC055": case "ARC056":
-      case "ARC072": case "ARC073": case "ARC074": return true;
-      case "ARC081": return true;
-      case "ARC083": return true;
-      case "ARC084": return true;
-      case "ARC091": case "ARC092": case "ARC093": return true;
-      case "ARC100": case "ARC101": case "ARC102": return true;
-      case "ARC106": case "ARC107": case "ARC108": return true;
-      case "ARC162": return true;
-      case "ARC167": case "ARC168": case "ARC169": return true;
-      case "ARC170": case "ARC171": case "ARC172": return true;
-      case "ARC191": case "ARC192": case "ARC193": return true;
-      case "ARC203": case "ARC204": case "ARC205": return true;
-      case "ARC206": case "ARC207": case "ARC208": return true;
-      case "ARC209": case "ARC210": case "ARC211": return true;
-      case "ARC215": case "ARC216": case "ARC217": return true;
-      default: return false;
-    }
-  }
-
   function ARCAbilityHasGoAgain($cardID)
   {
     global $currentPlayer, $CS_PlayIndex, $combatChain;

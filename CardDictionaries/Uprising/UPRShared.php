@@ -51,54 +51,6 @@
     }
   }
 
-  function UPRHasGoAgain($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR005": return true;
-      case "UPR006": return true;
-      case "UPR007": return true;
-      case "UPR008": return true;
-      case "UPR009": return true;
-      case "UPR010": return true;
-      case "UPR011": return true;
-      case "UPR012": return true;
-      case "UPR013": return true;
-      case "UPR014": return true;
-      case "UPR015": return true;
-      case "UPR016": return true;
-      case "UPR017": return true;
-      case "UPR018": case "UPR019": case "UPR020": return true;
-      case "UPR021": case "UPR022": case "UPR023": return true;
-      case "UPR030": case "UPR031": case "UPR032": return true;
-      case "UPR033": case "UPR034": case "UPR035": return true;
-      case "UPR036": case "UPR037": case "UPR038": return true;
-      case "UPR049": return true;
-      case "UPR051": case "UPR052": case "UPR053": return true;
-      case "UPR054": case "UPR055": case "UPR056": return true;
-      case "UPR057": case "UPR058": case "UPR059": return true;
-      case "UPR060": case "UPR061": case "UPR062": return true;
-      case "UPR066": case "UPR067": case "UPR068": return true;
-      case "UPR072": case "UPR073": case "UPR074": return true;
-      case "UPR075": case "UPR076": case "UPR077": return true;
-      case "UPR078": case "UPR079": case "UPR080": return true;
-      case "UPR081": case "UPR082": case "UPR083": return true;
-      case "UPR088": return true;
-      case "UPR095": return true;
-      case "UPR096": return true;
-      case "UPR097": return true;
-      case "UPR101": return true;
-      case "UPR138": return true;
-      case "UPR141": case "UPR142": case "UPR143": return true;
-      case "UPR147": case "UPR148": case "UPR149": return true;
-      case "UPR155": case "UPR156": case "UPR157": return true;
-      case "UPR160": return true;
-      case "UPR197": case "UPR198": case "UPR199": return true;
-      case "UPR200": case "UPR201": case "UPR202": return true;
-      default: return false;
-    }
-  }
-
   function UPRAbilityHasGoAgain($cardID)
   {
     switch($cardID)

@@ -9,17 +9,6 @@
     }
   }
 
-
-  function RVDHasGoAgain($cardID)
-  {
-    switch($cardID)
-    {
-      case "RVD004": return true;
-      case "RVD025": return true;
-      default: return false;
-    }
-  }
-
   function RVDAbilityType($cardID)
   {
     switch($cardID)

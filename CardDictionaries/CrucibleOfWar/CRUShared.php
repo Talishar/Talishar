@@ -149,33 +149,6 @@
     }
   }
 
-  function CRUHasGoAgain($cardID)
-  {
-    switch($cardID)
-    {
-      //CRU Ninja
-      case "CRU084": return true;
-      case "CRU085": case "CRU086": case "CRU087": return true;
-      case "CRU091": case "CRU092": case "CRU093": return true;
-      case "CRU094": case "CRU095": case "CRU096": return true;
-      //CRU Brute
-      case "CRU009": return true;
-      case "CRU019": case "CRU020": case "CRU021": return true;
-      //CRU Ninja
-      case "CRU050": case "CRU051": case "CRU052": return true;
-      case "CRU072": case "CRU074": return true;
-      //CRU Ranger
-      case "CRU124": case "CRU135": case "CRU136": case "CRU137": return true;
-      //CRU Runeblade
-      case "CRU143": return true;
-      case "CRU145": case "CRU146": case "CRU147": return true;
-      case "CRU154": case "CRU155": case "CRU156": return true;
-      //CRU Generic
-      case "CRU181": case "CRU188": return true;
-      default: return false;
-    }
-  }
-
 function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
   global $mainPlayer, $CS_NumBoosted, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer;

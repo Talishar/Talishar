@@ -150,36 +150,6 @@ function WTRAbilityCost($cardID)
     }
   }
 
-  function WTRHasGoAgain($cardID)
-  {
-    switch ($cardID)
-    {
-      //Brute
-      case "WTR017": case "WTR018": case "WTR019": return true;
-      case "WTR032": case "WTR033": case "WTR034": return true;
-      case "WTR035": case "WTR036": case "WTR037": return true;
-      //Guardian
-      case "WTR046": return true;
-      case "WTR054": case "WTR055": case "WTR056": return true;
-      case "WTR069": case "WTR070": case "WTR071": return true;
-      case "WTR072": case "WTR073": case "WTR074": return true;
-      //Ninja
-      case "WTR098": case "WTR099": case "WTR100": return true;
-      case "WTR101": case "WTR102": case "WTR103": return true;
-      case "WTR107": case "WTR108": case "WTR109": return true;
-      //Warrior
-      case "WTR119": case "WTR122": return true;
-      case "WTR129": case "WTR130": case "WTR131": return true;
-      case "WTR141": case "WTR142": case "WTR143": return true;
-      case "WTR144": case "WTR145": case "WTR146": return true;
-      case "WTR147": case "WTR148": case "WTR149": return true;
-      //Generics
-      case "WTR218": case "WTR219": case "WTR220": return true;
-      case "WTR223": case "WTR222": case "WTR221": return true;
-      default: return false;
-    }
-  }
-
   function WTRPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $mainPlayer, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer, $actionPoints;

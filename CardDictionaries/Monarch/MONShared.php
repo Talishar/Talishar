@@ -59,40 +59,6 @@
     }
   }
 
-  function MONHasGoAgain($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON034": return true;
-      case "MON062": return true;
-      case "MON081": case "MON082": case "MON083": return true;
-      case "MON095": case "MON096": case "MON097": return true;
-      case "MON101": case "MON102": case "MON103": return true;
-      case "MON109": return true;
-      case "MON110": case "MON111": case "MON112": return true;
-      case "MON113": case "MON114": case "MON115": return true;
-      case "MON116": case "MON117": case "MON118": return true;
-      case "MON132": case "MON133": case "MON134": return true;
-      case "MON150": case "MON151": case "MON152": return true;
-      case "MON157": return true;
-      case "MON162": case "MON163": case "MON164": return true;
-      case "MON165": case "MON166": case "MON167": return true;
-      case "MON183": case "MON184": case "MON185": return true;
-      case "MON193": return true;
-      case "MON200": case "MON201": case "MON202": return true;
-      case "MON212": case "MON213": case "MON214": return true;
-      case "MON222": return true;
-      case "MON231": return true;
-      case "MON260": case "MON261": case "MON262": return true;
-      case "MON266": case "MON267": case "MON268": return true;
-      case "MON269": case "MON270": case "MON271": return true;
-      case "MON296": case "MON297": case "MON298": return true;
-      case "MON299": case "MON300": case "MON301": return true;
-      case "MON302": return true;
-      default: return false;
-    }
-  }
-
   function MONAbilityHasGoAgain($cardID)
   {
     switch($cardID)

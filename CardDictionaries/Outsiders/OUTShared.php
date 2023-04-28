@@ -167,38 +167,6 @@ function OUTAbilityCost($cardID)
     }
   }
 
-  function OUTHasGoAgain($cardID)
-  {
-    switch ($cardID)
-    {
-      case "OUT005": case "OUT006": return true;
-      case "OUT007": case "OUT008": return true;
-      case "OUT009": case "OUT010": return true;
-      case "OUT052": case "OUT053": return true;
-      case "OUT056": case "OUT057": case "OUT058": return ComboActive($cardID);
-      case "OUT062": case "OUT063": case "OUT064": return true;
-      case "OUT068": case "OUT069": case "OUT070": return true;
-      case "OUT071": case "OUT072": case "OUT073": return true;
-      case "OUT074": case "OUT075": case "OUT076": return true;
-      case "OUT105": return true;
-      case "OUT109": case "OUT110": case "OUT111": return true;
-      case "OUT112": return true;
-      case "OUT113": return true;
-      case "OUT114": return true;
-      case "OUT115": case "OUT116": case "OUT117": return true;
-      case "OUT145": case "OUT146": case "OUT147": return true;
-      case "OUT148": case "OUT149": case "OUT150": return true;
-      case "OUT151": case "OUT152": case "OUT153": return true;
-      case "OUT159": case "OUT160": case "OUT161": return true;//Codices
-      case "OUT165": case "OUT166": case "OUT167": return true;
-      case "OUT185": return true;
-      case "OUT187": return true;
-      case "OUT188": return true;
-      case "OUT225": case "OUT226": case "OUT227": return true;
-      default: return false;
-    }
-  }
-
   function OUTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer, $CS_PlayIndex, $mainPlayer, $defPlayer, $combatChain, $combatChainState, $CCS_LinkBaseAttack;
@@ -265,6 +233,7 @@ function OUTAbilityCost($cardID)
       case "OUT056": case "OUT057": case "OUT058":
         if(ComboActive())
         {
+          GiveAttackGoAgain();
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:comboOnly=true");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Combo to banish from your graveyard");
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);

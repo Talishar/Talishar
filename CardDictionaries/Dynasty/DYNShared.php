@@ -57,34 +57,6 @@ function DYNAbilityType($cardID, $index = -1)
   }
 }
 
-function DYNHasGoAgain($cardID)
-{
-  switch($cardID) {
-    case "DYN009":
-    case "DYN022": case "DYN023": case "DYN024":
-    case "DYN028":
-    case "DYN049":
-    case "DYN050": case "DYN051": case "DYN052":
-    case "DYN062": case "DYN063": case "DYN064":
-    case "DYN065":
-    case "DYN071":
-    case "DYN076": case "DYN077": case "DYN078":
-		case "DYN082": case "DYN083": case "DYN084":
-		case "DYN085": case "DYN086": case "DYN087":
-    case "DYN091":
-    case "DYN092":
-    case "DYN115": case "DYN116":
-    case "DYN155":
-		case "DYN168": case "DYN169": case "DYN170":
-		case "DYN185": case "DYN186": case "DYN187":
-    case "DYN188": case "DYN189": case "DYN190":
-    case "DYN209": case "DYN210": case "DYN211":
-    case "DYN212":
-    case "DYN230": case "DYN231": case "DYN232": return true;
-    default: return false;
-  }
-}
-
 function DYNAbilityHasGoAgain($cardID)
 {
   switch($cardID) {

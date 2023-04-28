@@ -469,18 +469,8 @@ function AttackValue($cardID)
 function HasGoAgain($cardID)
 {
   $set = CardSet($cardID);
-  if($set == "WTR") return GeneratedGoAgain($cardID);
-  else if($set == "ARC") return GeneratedGoAgain($cardID);
-  else if($set == "CRU") return CRUHasGoAgain($cardID);
-  else if($set == "MON") return MONHasGoAgain($cardID);
-  else if($set == "ELE") return ELEHasGoAgain($cardID);
-  else if($set == "EVR") return EVRHasGoAgain($cardID);
-  else if($set == "UPR") return UPRHasGoAgain($cardID);
-  else if($set == "DVR") return DVRHasGoAgain($cardID);
-  else if($set == "RVD") return RVDHasGoAgain($cardID);
-  else if($set == "DYN") return DYNHasGoAgain($cardID);
-  else if($set == "OUT") return OUTHasGoAgain($cardID);
-  else if($set == "ROG") return ROGUEHasGoAgain($cardID);
+  if($set == "ROG") return ROGUEHasGoAgain($cardID);
+  else return GeneratedGoAgain($cardID);
 }
 
 function GetAbilityType($cardID, $index = -1, $from="-")

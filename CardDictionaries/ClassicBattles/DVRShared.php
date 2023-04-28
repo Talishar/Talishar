@@ -1,20 +1,5 @@
 <?php
 
-  function DVRHasGoAgain($cardID)
-  {
-    switch($cardID)
-    {
-      case "DVR004": return true;
-      case "DVR005": return true;
-      case "DVR008": return true;
-      case "DVR009": return true;
-      case "DVR012": return true;
-      case "DVR019": return true;
-      case "DVR022": return true;
-      default: return false;
-    }
-  }
-
   function DVRAbilityType($cardID)
   {
     switch($cardID)
