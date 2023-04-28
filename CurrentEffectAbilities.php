@@ -619,7 +619,7 @@ function CurrentEffectAttackAbility()
 
 function CurrentEffectPlayAbility($cardID, $from)
 {
-  global $currentTurnEffects, $currentPlayer, $actionPoints, $CS_LastDynCost, $CCS_CurrentAttackGainedGoAgain;
+  global $currentTurnEffects, $currentPlayer, $actionPoints, $CS_LastDynCost;
 
   if(DynamicCost($cardID) != "") $cost = GetClassState($currentPlayer, $CS_LastDynCost);
   else $cost = CardCost($cardID);
@@ -733,7 +733,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID)
 
 function CurrentEffectGrantsGoAgain()
 {
-  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused, $CCS_CurrentAttackGainedGoAgain;
+  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused;
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       switch ($currentTurnEffects[$i]) {

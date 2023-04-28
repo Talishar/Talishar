@@ -3,7 +3,7 @@
 
 function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain;
+  global $currentPlayer, $combatChainState;
   global $CS_NextNAACardGoAgain, $CS_ArcaneDamagePrevention;
   $rv = "";
   switch ($cardID) {

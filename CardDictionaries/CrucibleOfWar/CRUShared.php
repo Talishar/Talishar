@@ -151,15 +151,15 @@
 
 function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $mainPlayer, $CS_NumBoosted, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer;
+  global $mainPlayer, $CS_NumBoosted, $combatChainState, $currentPlayer, $defPlayer;
   global $CS_AtksWWeapon, $CS_Num6PowDisc, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_PlayIndex, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
   global $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $CCS_RequiredEquipmentBlock, $CCS_NumBoosted;
   $rv = "";
   switch ($cardID) {
     case "CRU004": case "CRU005":
       if(GetClassState($currentPlayer, $CS_Num6PowDisc) > 0) {
-        $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-        $rv = "Gains go again.";
+        GiveAttackGoAgain();
+        $rv = "Gains go again";
       }
       return $rv;
     case "CRU006":
@@ -276,7 +276,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if(GetClassState($currentPlayer, $CS_AtksWWeapon) > 0)
       {
         AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
-        $rv = "Gives your next weapon +" . EffectAttackModifier($cardID . "-2") . " because you've attacked with a weapon.";
+        $rv = "Gives your next weapon +" . EffectAttackModifier($cardID . "-2") . " because you've attacked with a weapon";
       }
       return $rv;
     case "CRU094": case "CRU095": case "CRU096":
@@ -284,7 +284,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if(GetClassState($currentPlayer, $CS_AtksWWeapon) > 0)
       {
         AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
-        $rv = "Gives your attack dominate because you've attacked with a weapon.";
+        $rv = "Gives your attack dominate because you've attacked with a weapon";
       }
       return $rv;
     case "CRU101":
@@ -348,7 +348,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "CRU121":
-      if(!ArsenalEmpty($currentPlayer)) return "Your arsenal is not empty so you cannot load an arrow.";
+      if(!ArsenalEmpty($currentPlayer)) return "Your arsenal is not empty so you cannot load an arrow";
       LoadArrow($currentPlayer);
       return "";
     case "CRU122":

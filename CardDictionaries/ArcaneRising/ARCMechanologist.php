@@ -3,7 +3,7 @@
 function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $CS_NumBoosted, $actionPoints, $combatChainState, $CS_PlayIndex;
-  global $CCS_CurrentAttackGainedGoAgain, $combatChain, $CS_LastDynCost;
+  global $combatChain, $CS_LastDynCost;
   $rv = "";
   switch($cardID) {
     case "ARC003":

@@ -170,7 +170,7 @@ function DYNCardTalent($cardID)
 
 function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $CCS_CurrentAttackGainedGoAgain, $combatChain;
+  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $combatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
@@ -200,20 +200,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PutPermanentIntoPlay($currentPlayer, $cardID);
       return "";
     case "DYN016": case "DYN017": case "DYN018":
-      if (AttackValue($additionalCosts) >= 6) {
-        $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-        $rv .= "Discarded a 6 power card and gains go again.";
-      }
-      return $rv;
+      if(AttackValue($additionalCosts) >= 6) GiveAttackGoAgain();
+      return "";
     case "DYN019": case "DYN020": case "DYN021":
-      if(AttackValue($additionalCosts) >= 6) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        $rv .= "Discarded a 6 power card and gains +" . EffectAttackModifier($cardID);
-      }
-      return $rv;
+      if(AttackValue($additionalCosts) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "DYN022": case "DYN023": case "DYN024":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      $rv .= "Your next Brute attack this turn gains +" . EffectAttackModifier($cardID);
+      $rv .= "";
       return $rv;
     case "DYN028":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -669,7 +663,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function DYNHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_DamageDealt, $CCS_NumBoosted;
+  global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $CCS_NumBoosted;
   global $chainLinks, $combatChain;
   switch($cardID) {
     case "DYN047":
@@ -710,8 +704,8 @@ function DYNHitEffect($cardID)
       break;
     case "DYN117":
       if(IsHeroAttackTarget()) {
-        $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-        WriteLog(CardLink($cardID, $cardID) . " gives the current Assassin attack go again.");
+        GiveAttackGoAgain();
+        WriteLog(CardLink($cardID, $cardID) . " gives the current Assassin attack go again");
       }
       break;
     case "DYN118":
