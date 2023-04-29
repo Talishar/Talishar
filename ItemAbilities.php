@@ -104,12 +104,6 @@ function ItemPlayAbilities($cardID, $from)
   }
 }
 
-function DestroyMainItem($index)
-{
-  global $mainPlayer;
-  DestroyItemForPlayer($mainPlayer, $index);
-}
-
 function DestroyMyItem($index)
 {
   global $currentPlayer;

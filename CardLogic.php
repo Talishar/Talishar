@@ -540,13 +540,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       $index = SearchItemsForUniqueID($uniqueID, $player);
       --$items[$index + 1];
       GainResources($player, 2);
-      if($items[$index + 1] <= 0) DestroyMainItem($index);
+      if($items[$index + 1] <= 0) DestroyItemForPlayer($player, $index);
       WriteLog(CardLink($parameter, $parameter) . " produced 2 resources");
       break;
     case "ARC035":
       $index = SearchItemsForUniqueID($uniqueID, $player);
       --$items[$index + 1];
-      if($items[$index + 1] <= 0) DestroyMainItem($index);
+      if($items[$index + 1] <= 0) DestroyItemForPlayer($player, $index);
       break;
     case "ARC075": case "ARC076":
       ViseraiPlayCard($target);
@@ -750,12 +750,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "EVR069":
       $index = SearchItemsForUniqueID($uniqueID, $player);
       --$items[$index+1];
-      if($items[$index+1] < 0) DestroyMainItem($index);
+      if($items[$index+1] < 0) DestroyItemForPlayer($player, $index);
       break;
     case "EVR071":
       $index = SearchItemsForUniqueID($uniqueID, $player);
       --$items[$index+1];
-      if($items[$index+1] < 0) DestroyMainItem($index);
+      if($items[$index+1] < 0) DestroyItemForPlayer($player, $index);
       break;
     case "EVR107": case "EVR108": case "EVR109":
       $index = SearchAurasForUniqueID($uniqueID, $player);
