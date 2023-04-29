@@ -159,18 +159,25 @@ function DestroyAuraUniqueID($player, $uniqueID)
 function DestroyAura($player, $index, $uniqueID="")
 {
   $auras = &GetAuras($player);
-  $cardID = $auras[$index];
   $isToken = $auras[$index + 4] == 1;
-  AuraDestroyed($player, $cardID, $isToken);
   if($uniqueID != "") $index = SearchAurasForUniqueID($uniqueID, $player);
+  $cardID = RemoveAura($player, $index);
+  AuraDestroyed($player, $cardID, $isToken);
+  return $cardID;
+}
+
+function RemoveAura($player, $index)
+{
   AuraLeavesPlay($player, $index);
+  $auras = &GetAuras($player);
+  $cardID = $auras[$index];
+  for($i = $index + AuraPieces() - 1; $i >= $index; --$i) {
+    unset($auras[$i]);
+  }
+  $auras = array_values($auras);
   if(IsSpecificAuraAttacking($player, $index)) {
     CloseCombatChain();
   }
-  for($j = $index + AuraPieces() - 1; $j >= $index; --$j) {
-    unset($auras[$j]);
-  }
-  $auras = array_values($auras);
   return $cardID;
 }
 

@@ -1316,17 +1316,6 @@ function RemoveFromArsenal($player, $index)
   return $cardID;
 }
 
-function RemoveAura($player, $index)
-{
-  $auras = &GetAuras($player);
-  $cardID = $auras[$index];
-  for ($i = $index + AuraPieces() - 1; $i >= $index; --$i) {
-    unset($auras[$i]);
-  }
-  $auras = array_values($auras);
-  return $cardID;
-}
-
 function DestroyFrozenArsenal($player)
 {
   $arsenal = &GetArsenal($player);
@@ -1350,18 +1339,10 @@ function IsWeaponGreaterThanTwiceBasePower()
   return count($combatChain) > 0 && CardType($combatChain[0]) == "W" && CachedTotalAttack() > (AttackValue($combatChain[0]) * 2);
 }
 
-function HasNegativeCounters($array, $index)
-{
-  if ($array[$index + 4] < 0) return true;
-  return false;
-}
-
 function HasEnergyCounters($array, $index)
 {
-  switch ($array[$index]) {
-    case "WTR150": case "UPR166":
-      return $array[$index + 2] > 0;
-    default:
-      return false;
+  switch($array[$index]) {
+    case "WTR150": case "UPR166": return $array[$index+2] > 0;
+    default: return false;
   }
 }

@@ -103,8 +103,8 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
   for ($i = 0; $i < count($array); $i += $count) {
     if($zone == "CHAR" && $array[$i+1] == 0) continue;
     $cardID = $array[$i];
-    if (!isPriorityStep($cardID)) {
-      if (($type == "" || CardType($cardID) == $type)
+    if(!isPriorityStep($cardID)) {
+      if(($type == "" || CardType($cardID) == $type)
         && ($subtype == "" || DelimStringContains(CardSubType($cardID), $subtype))
         && ($maxCost == -1 || CardCost($cardID) <= $maxCost)
         && ($minCost == -1 || CardCost($cardID) >= $minCost)
@@ -115,14 +115,14 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
         && ($minAttack == -1 || AttackValue($cardID) >= $minAttack)
         && ($maxDef == -1 || BlockValue($cardID) <= $maxDef)
       ) {
-        if ($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
-        if ($phantasmOnly && !HasPhantasm($cardID)) continue;
-        if ($specOnly && !IsSpecialization($cardID)) continue;
-        if ($frozenOnly && !IsFrozenMZ($array, $zone, $i)) continue;
-        if ($hasNegCounters && !HasNegativeCounters($array, $i)) continue;
-        if ($hasEnergyCounters && !HasEnergyCounters($array, $i)) continue;
-        if ($comboOnly && !HasCombo($cardID)) continue;
-        if ($cardList != "") $cardList = $cardList . ",";
+        if($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
+        if($phantasmOnly && !HasPhantasm($cardID)) continue;
+        if($specOnly && !IsSpecialization($cardID)) continue;
+        if($frozenOnly && !IsFrozenMZ($array, $zone, $i)) continue;
+        if($hasNegCounters && $array[$index+4] > 0) continue;
+        if($hasEnergyCounters && !HasEnergyCounters($array, $i)) continue;
+        if($comboOnly && !HasCombo($cardID)) continue;
+        if($cardList != "") $cardList = $cardList . ",";
         $cardList = $cardList . $i;
       }
     }
