@@ -500,7 +500,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "CRU197":
       if($from == "PLAY") {
         Draw($currentPlayer);
-        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+        DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
       }
       return "";
     default: return "";

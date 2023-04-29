@@ -587,24 +587,22 @@
           while(($card = RemoveHand($currentPlayer, 0)) != "") { AddBottomDeck($card, $currentPlayer, "HAND"); ++$numToDraw; }
           while(($card = RemoveArsenal($currentPlayer, 0)) != "") { AddBottomDeck($card, $currentPlayer, "ARS"); ++$numToDraw; }
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-          for ($i = 0; $i < $numToDraw; $i++) {
+          for($i = 0; $i < $numToDraw; $i++) {
             AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
           }
           WriteLog(CardLink("EVR187","EVR187") . " shuffled your hand and arsenal into your deck and drew " . $numToDraw . " cards.");
         }
         return "";
       case "EVR190":
-        $rv = "Talisman of Featherfoot is a partially manual card. Activate the instant ability if you met the criteria.";
+        $rv = "Talisman of Featherfoot is a partially manual card. Activate the instant ability if you met the criteria";
         if($from == "PLAY"){
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
           GiveAttackGoAgain();
-          $rv = "Gives the current attack go again.";
         }
         return $rv;
       case "EVR195":
         if($from == "PLAY"){
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
-          $rv = "Draws a card.";
+          DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
           Draw($currentPlayer);
         }
         return $rv;

@@ -97,12 +97,6 @@ function ItemPlayAbilities($cardID, $from)
   }
 }
 
-function DestroyMyItem($index)
-{
-  global $currentPlayer;
-  DestroyItemForPlayer($currentPlayer, $index);
-}
-
 function DestroyItemForPlayer($player, $index, $skipDestroy=false)
 {
   $items = &GetItems($player);

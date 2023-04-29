@@ -920,7 +920,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         --$items[$index+1];
         $items[$index+2] = 1;
         GainResources($player, 1);
-        if($items[$index+1] <= 0) DestroyMyItem($index);
+        if($items[$index+1] <= 0) DestroyItemForPlayer($player, $index);
       }
       break;
     case "DYN113": case "DYN114":

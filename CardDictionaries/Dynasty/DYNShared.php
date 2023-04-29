@@ -610,11 +610,11 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN240":
       $rv = "";
       if($from == "PLAY") {
-        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
-        $rv = CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction.";
+        DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
+        $rv = CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction";
         if(IsRoyal($currentPlayer))
         {
-          $rv .= CardLink($cardID, $cardID) . " revealed the opponent's hand.";
+          $rv .= CardLink($cardID, $cardID) . " revealed the opponent's hand";
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
@@ -632,7 +632,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN242":
       if($from == "PLAY") {
-        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+        DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose any number of heroes");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Both_Heroes,Target_Yourself,Target_No_Heroes");
         AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "IMPERIALWARHORN", 1);
@@ -640,9 +640,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN243":
       $rv = "";
-      if ($from == "PLAY") {
-        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
-        $rv = "Draws a card";
+      if($from == "PLAY") {
+        DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
         Draw($currentPlayer);
       }
       return $rv;
