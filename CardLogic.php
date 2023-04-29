@@ -1270,20 +1270,13 @@ function Intimidate()
   global $defPlayer;
   $hand = &GetHand($defPlayer);
   if(count($hand) == 0) {
-    WriteLog("Intimidate did nothing because there are no cards in hand.");
+    WriteLog("Intimidate did nothing because there are no cards in hand");
     return;
   }
   $index = GetRandom() % count($hand);
   BanishCardForPlayer($hand[$index], $defPlayer, "HAND", "INT");
-  unset($hand[$index]);
-  $hand = array_values($hand);
+  RemoveCard($defPlayer, $index);
   WriteLog("Intimidate banished a card");
-}
-
-//Deprecated: Use BanishCard in CardSetters instead
-function Banish($player, $cardID, $from)
-{
-  BanishCardForPlayer($cardID, $player, $from);
 }
 
 function RemoveCard($player, $index)
@@ -1301,18 +1294,6 @@ function RemoveFromPitch($player, $index)
   $cardID = $pitch[$index];
   unset($pitch[$index]);
   $pitch = array_values($pitch);
-  return $cardID;
-}
-
-function RemoveFromArsenal($player, $index)
-{
-  $arsenal = &GetArsenal($player);
-  $cardID = $arsenal[$index];
-  RemoveArsenalEffects($player, $cardID);
-  for($i = $index + ArsenalPieces() - 1; $i >= $index; --$i) {
-    unset($arsenal[$i]);
-  }
-  $arsenal = array_values($arsenal);
   return $cardID;
 }
 
