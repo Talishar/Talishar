@@ -1103,6 +1103,7 @@ function FinalizeAction()
       }
     }
   } else if($turn[0] == "A") {
+    $currentPlayer = $mainPlayer;
     $turn[2] = "";
   } else if($turn[0] == "D") {
     $turn[0] = "A";

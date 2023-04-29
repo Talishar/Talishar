@@ -723,7 +723,7 @@ function Pass(&$turn, $playerID, &$currentPlayer)
     if(count($turn) >= 3 && $turn[2] == "D") {
       return BeginChainLinkResolution();
     } else {
-      $currentPlayer = $currentPlayer == 1 ? 2 : 1;
+      $currentPlayer = $defPlayer;
       $turn[0] = "D";
       $turn[2] = "A";
     }
@@ -731,7 +731,7 @@ function Pass(&$turn, $playerID, &$currentPlayer)
     if(count($turn) >= 3 && $turn[2] == "A") {
       return BeginChainLinkResolution();
     } else {
-      $currentPlayer = $currentPlayer == 1 ? 2 : 1;
+      $currentPlayer = $mainPlayer;
       $turn[0] = "A";
       $turn[2] = "D";
     }
