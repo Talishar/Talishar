@@ -1171,24 +1171,10 @@ function DiscardHand($player)
   $hand = [];
 }
 
-function DiscardIndex($player, $index)
-{
-  $hand = &GetHand($player);
-  AddGraveyard($hand[$index], $player, "HAND");
-  unset($hand[$index]);
-  $hand = array_values($hand);
-}
-
 function Opt($cardID, $amount)
 {
   global $currentPlayer;
   PlayerOpt($currentPlayer, $amount);
-}
-
-function OptMain($amount)
-{
-  global $mainPlayer;
-  PlayerOpt($mainPlayer, $amount);
 }
 
 function PlayerOpt($player, $amount, $optKeyword = true)
@@ -1208,7 +1194,7 @@ function DiscardRandom($player = "", $source = "")
   unset($hand[$index]);
   $hand = array_values($hand);
   AddGraveyard($discarded, $player, "HAND");
-  WriteLog(CardLink($discarded, $discarded) . " was randomly discarded.");
+  WriteLog(CardLink($discarded, $discarded) . " was randomly discarded");
   CardDiscarded($player, $discarded, $source);
   DiscardedAtRandomEffects($player, $discarded, $source);
   return $discarded;

@@ -125,7 +125,7 @@ function ARCGenericHitEffect($cardID)
       AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "1", 1);
       break;
     case "ARC182": case "ARC183":  case "ARC184":
-      OptMain(2);
+      PlayerOpt($mainPlayer, 2);
       break;
     case "ARC185": case "ARC186": case "ARC187":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK:cardID=ARC212,ARC213,ARC214");
