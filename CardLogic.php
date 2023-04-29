@@ -1275,17 +1275,8 @@ function Intimidate()
   }
   $index = GetRandom() % count($hand);
   BanishCardForPlayer($hand[$index], $defPlayer, "HAND", "INT");
-  RemoveCard($defPlayer, $index);
+  RemoveHand($defPlayer, $index);
   WriteLog("Intimidate banished a card");
-}
-
-function RemoveCard($player, $index)
-{
-  $hand = &GetHand($player);
-  $cardID = $hand[$index];
-  unset($hand[$index]);
-  $hand = array_values($hand);
-  return $cardID;
 }
 
 function DestroyFrozenArsenal($player)
