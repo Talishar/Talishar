@@ -39,8 +39,8 @@ function ItemUses($cardID)
 function PayItemAbilityAdditionalCosts($cardID, $from)
 {
   global $currentPlayer, $CS_PlayIndex, $combatChain;
-  $paidSteamCounter = "NOTPAID";
-  switch ($cardID) {
+  $index = GetClassState($currentPlayer, $CS_PlayIndex);
+  switch($cardID) {
     case "WTR162":
     case "WTR170": case "WTR171": case "WTR172":
     case "ELE143": case "ELE172": case "ELE201":
@@ -49,35 +49,29 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "EVR182": case "EVR183": case "EVR184":
     case "EVR185": case "EVR186": case "EVR187":
     case "OUT054":
-      DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+      DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "ARC035":
       $items = &GetItems($currentPlayer);
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      $paidSteamCounter = $items[$index + 1];
-      DestroyMyItem($index);
+      AddAdditionalCost($currentPlayer, $items[$index+1]);
+      DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "ARC010": case "ARC018":
       $items = &GetItems($currentPlayer);
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      if ($from == "PLAY" && $items[$index + 1] > 0 && count($combatChain) > 0) {
-        $items[$index + 1] -= 1;
-        $items[$index + 2] = 1;
-        $paidSteamCounter = "PAID";
+      if($from == "PLAY" && $items[$index+1] > 0 && count($combatChain) > 0) {
+        $items[$index+1] -= 1;
+        $items[$index+2] = 1;
       }
       break;
     case "CRU105":
       $items = &GetItems($currentPlayer);
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      if ($from == "PLAY" && $items[$index + 1] > 0) {
-        $items[$index + 1] = 0;
-        $paidSteamCounter = "PAID";
+      if($from == "PLAY" && $items[$index+1] > 0) {
+        $items[$index+1] -= 1;
+        AddAdditionalCost($currentPlayer, "PAID");
       }
       break;
-    default:
-      break;
+    default: break;
   }
-  return $paidSteamCounter;
 }
 
 function ItemPlayAbilities($cardID, $from)

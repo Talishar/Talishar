@@ -1534,19 +1534,17 @@ function PayAdditionalCosts($cardID, $from)
 {
   global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex;
   $cardSubtype = CardSubType($cardID);
-
-  if ($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
-    $paidSteamCounter = PayItemAbilityAdditionalCosts($cardID, $from);
-    SetClassState($currentPlayer, $CS_AdditionalCosts, $paidSteamCounter);
+  if($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
+    PayItemAbilityAdditionalCosts($cardID, $from);
     return;
   }
   $fuseType = HasFusion($cardID);
-  if ($fuseType != "") {
+  if($fuseType != "") {
     Fuse($cardID, $currentPlayer, $fuseType);
   }
-  if (RequiresDiscard($cardID)) {
+  if(RequiresDiscard($cardID)) {
     $discarded = DiscardRandom($currentPlayer, $cardID);
-    if ($discarded == "") {
+    if($discarded == "") {
       WriteLog("You do not have a card to discard. Reverting gamestate.");
       RevertGamestate();
       return;
@@ -1556,7 +1554,7 @@ function PayAdditionalCosts($cardID, $from)
   switch ($cardID) {
     case "WTR159":
       $hand = &GetHand($currentPlayer);
-      if (count($hand) == 0) {
+      if(count($hand) == 0) {
         WriteLog("You do not have a card to sink. Reverting gamestate.");
         RevertGamestate();
         return;
@@ -1664,7 +1662,7 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "MON126": case "MON127": case "MON128": case "MON129": case "MON130": case "MON131":
     case "MON132": case "MON133": case "MON134": case "MON141": case "MON142": case "MON143":
-      if (RandomBanish3GY()) AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(RandomBanish3GY()) AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "MON135": case "MON136": case "MON137": case "MON147": case "MON148": case "MON149":
     case "MON150": case "MON151": case "MON152":
@@ -1732,9 +1730,9 @@ function PayAdditionalCosts($cardID, $from)
       }
       break;
     case "MON281": case "MON282": case "MON283":
-      if ($from == "PLAY") {
+      if($from == "PLAY") {
         $hand = &GetHand($currentPlayer);
-        if (count($hand) == 0) {
+        if(count($hand) == 0) {
           WriteLog("This ability requires a discard as an additional cost, but you have no cards to discard. Reverting gamestate prior to the card declaration.");
           RevertGamestate();
         }
@@ -1743,7 +1741,7 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "ELE031":
     case "ELE032":
-      if (ArsenalHasFaceDownCard($currentPlayer)) {
+      if(ArsenalHasFaceDownCard($currentPlayer)) {
         $cardFlipped = SetArsenalFacing("UP", $currentPlayer);
         AddAdditionalCost($currentPlayer, TalentOverride($cardFlipped, $currentPlayer));
         WriteLog("Lexi turns " . CardLink($cardFlipped, $cardFlipped) . " face up.");
@@ -1782,9 +1780,9 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "EVR159":
       $numCopper = CountItem("CRU197", $currentPlayer);
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      if ($numCopper > 0) {
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+      if($numCopper > 0) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Copper to pay");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numCopper + 1));
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "CRU197-");
@@ -1794,7 +1792,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
       }
       $numSilver = CountItem("EVR195", $currentPlayer);
-      if ($numSilver > 0) {
+      if($numSilver > 0) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Silver to pay");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numSilver + 1));
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "EVR195-");
@@ -1804,7 +1802,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
       }
       $numGold = CountItem("DYN243", $currentPlayer);
-      if ($numGold > 0) {
+      if($numGold > 0) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numGold + 1));
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "DYN243-");
