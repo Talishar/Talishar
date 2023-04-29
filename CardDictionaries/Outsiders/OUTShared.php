@@ -306,7 +306,7 @@ function OUTAbilityCost($cardID)
           $numDraw = count($hand) - 1;
           DiscardHand($mainPlayer);
           for($i=0; $i<$numDraw; ++$i) Draw($mainPlayer);
-          WriteLog("Attacker discarded their hand and drew $numDraw cards.");
+          WriteLog("Attacker discarded their hand and drew $numDraw cards");
           TrapTriggered($cardID);
         }
         return "";

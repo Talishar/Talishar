@@ -1165,10 +1165,9 @@ function DestroyArsenal($player, $index=-1)
 function DiscardHand($player)
 {
   $hand = &GetHand($player);
-  for($i = 0; $i < count($hand); $i += HandPieces()) {
-    AddGraveyard($hand[$i], $player, "HAND");
+  for($i = count($hand)-HandPieces(); $i>=0; $i-=HandPieces()) {
+    DiscardCard($player, $i);
   }
-  $hand = [];
 }
 
 function Opt($cardID, $amount)
