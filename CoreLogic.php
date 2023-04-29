@@ -1678,10 +1678,10 @@ function RemoveCombatChain($index)
 }
 
 function RemoveArsenalEffects($player, $cardToReturn){
-  SearchCurrentTurnEffects("EVR087", $player, true); //If Dreadbore was played before, its effect on the removed Arsenal card should be removed
-  SearchCurrentTurnEffects("ARC042", $player, true); //If Bull's Eye Bracers was played before, its effect on the removed Arsenal card should be removed
-  if($cardToReturn == "ARC057" ){SearchCurrentTurnEffects("ARC057", $player, true);} //If the card removed from arsenal is 'Head Shot', remove its current turn effect.
-  if($cardToReturn == "ARC058" ){SearchCurrentTurnEffects("ARC058", $player, true);} //Else, another 'Head Shot' played this turn would get dubble buff.
+  SearchCurrentTurnEffects("EVR087", $player, true);
+  SearchCurrentTurnEffects("ARC042", $player, true);
+  if($cardToReturn == "ARC057" ){SearchCurrentTurnEffects("ARC057", $player, true);}
+  if($cardToReturn == "ARC058" ){SearchCurrentTurnEffects("ARC058", $player, true);}
   if($cardToReturn == "ARC059" ){SearchCurrentTurnEffects("ARC059", $player, true);}
 }
 

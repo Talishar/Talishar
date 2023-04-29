@@ -155,6 +155,7 @@
       case "MON126": case "MON127": case "MON128": return true;
       case "MON129": case "MON130": case "MON131": return true;
       case "MON132": case "MON133": case "MON134": return CardType($attackID) == "AA";
+      case "MON141": case "MON142": case "MON143": return true;
       case "MON150": case "MON151": case "MON152": return CardType($attackID) == "AA" && (ClassContains($attackID, "BRUTE", $mainPlayer) || TalentContains($attackID, "SHADOW", $mainPlayer));
       case "MON153": case "MON154": return ClassContains($attackID, "RUNEBLADE", $mainPlayer) || TalentContains($attackID, "SHADOW", $mainPlayer);
       case "MON165": return CardType($attackID) == "AA" && CardCost($attackID) <= 2;

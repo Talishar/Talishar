@@ -747,6 +747,7 @@ function CurrentEffectGrantsGoAgain()
         case "CRU091-1": case "CRU092-1": case "CRU093-1": return true;
         case "CRU122": return true;
         case "CRU145": case "CRU146": case "CRU147": return true;
+        case "MON141": case "MON142": case "MON143": return true;
         case "MON165": case "MON166": case "MON167": return true;
         case "MON193": return true;
         case "MON247": return true;
