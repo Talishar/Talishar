@@ -109,6 +109,15 @@ function AddResourceCost($player, $amount)
   $resources[1] += $amount;
 }
 
+function RemovePitch($player, $index)
+{
+  $pitch = &GetPitch($player);
+  $cardID = $pitch[$index];
+  unset($pitch[$index]);
+  $pitch = array_values($pitch);
+  return $cardID;
+}
+
 function AddArsenal($cardID, $player, $from, $facing, $counters=0)
 {
   global $mainPlayer;

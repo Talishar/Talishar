@@ -1288,15 +1288,6 @@ function RemoveCard($player, $index)
   return $cardID;
 }
 
-function RemoveFromPitch($player, $index)
-{
-  $pitch = &GetPitch($player);
-  $cardID = $pitch[$index];
-  unset($pitch[$index]);
-  $pitch = array_values($pitch);
-  return $cardID;
-}
-
 function DestroyFrozenArsenal($player)
 {
   $arsenal = &GetArsenal($player);

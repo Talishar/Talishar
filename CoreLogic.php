@@ -1819,11 +1819,9 @@ function NumEquipBlock()
 
   function PitchDeck($player, $index)
   {
-    $pitch = &GetPitch($player);
     $deck = &GetDeck($player);
-    array_push($deck, $pitch[$index]);
-    unset($pitch[$index]);
-    $pitch = array_values($pitch);
+    $cardID = RemovePitch($player, $index);
+    array_push($deck, $cardID);
   }
 
   function GetUniqueId()
