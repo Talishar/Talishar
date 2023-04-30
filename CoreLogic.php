@@ -569,7 +569,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
 
   $classState = &GetPlayerClassState($player);
   $Items = &GetItems($player);
-
+  if($type == "COMBAT" && EffectPreventsHit()) HitEffectsPreventedThisLink();
   if($type == "COMBAT" || $type == "ATTACKHIT") $source = $combatChain[0];
   $otherPlayer = $player == 1 ? 2 : 1;
   $damage = $damage > 0 ? $damage : 0;
@@ -740,10 +740,11 @@ function CurrentEffectDamageModifiers($player, $source, $type)
 function CurrentEffectDamageEffects($target, $source, $type, $damage)
 {
   global $currentTurnEffects;
-  if (CardType($source) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
+  if(CardType($source) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
     if($currentTurnEffects[$i+1] == $target) continue;
+    if($type == "COMBAT" && HitEffectsArePrevented()) continue;
     $remove = 0;
     switch($currentTurnEffects[$i])
     {
@@ -2146,6 +2147,12 @@ function HasPlayedAttackReaction()
     if(CardType($combatChain[$i]) == "AR" || GetResolvedAbilityType($combatChain[$i])) return true;
   }
   return false;
+}
+
+function HitEffectsArePrevented()
+{
+  global $combatChainState, $CCS_ChainLinkHitEffectsPrevented;
+  return $combatChainState[$CCS_ChainLinkHitEffectsPrevented];
 }
 
 function HitEffectsPreventedThisLink()

@@ -839,7 +839,7 @@ function ResolveChainLink()
 function ResolveCombatDamage($damageDone)
 {
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $currentTurnEffects;
-  global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CCS_ChainLinkHitEffectsPrevented;
+  global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt;
   global $CS_HitsWithSword;
   $wasHit = $damageDone > 0;
 
@@ -847,46 +847,43 @@ function ResolveCombatDamage($damageDone)
 
   WriteLog("Combat resolved with " . ($wasHit ? "a hit for $damageDone damage" : "no hit"));
 
-  if (!DelimStringContains(CardSubtype($combatChain[0]), "Ally")) {
+  if(!DelimStringContains(CardSubtype($combatChain[0]), "Ally")) {
     SetClassState($mainPlayer, $CS_DamageDealt, GetClassState($mainPlayer, $CS_DamageDealt) + $damageDone);
   }
 
-  if ($wasHit && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented] && !EffectPreventsHit())
+  if($wasHit)
   {
     $combatChainState[$CCS_DamageDealt] = $damageDone;
-    if (CardType($combatChain[0]) == "W") {
+    if(CardType($combatChain[0]) == "W") {
       ++$combatChainState[$CCS_HitsWithWeapon];
       IncrementClassState($mainPlayer, $CS_HitsWithWeapon);
       if(SubtypeContains($combatChain[0], "Sword", $mainPlayer)) IncrementClassState($mainPlayer, $CS_HitsWithSword);
     }
-    for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
-      if ($combatChain[$i] == $mainPlayer) {
-        $EffectContext = $combatChain[$i - 1];
-        ProcessHitEffect($combatChain[$i - 1]);
-        if ($damageDone >= 4) ProcessCrushEffect($combatChain[$i - 1]);
-      }
-    }
-    for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-      if ($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
-      if (IsCombatEffectActive($currentTurnEffects[$i])) {
-        if ($currentTurnEffects[$i + 1] == $mainPlayer) {
-          $shouldRemove = EffectHitEffect($currentTurnEffects[$i]);
-          if ($shouldRemove == 1) RemoveCurrentTurnEffect($i);
+    if(!HitEffectsArePrevented())
+    {
+      for($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
+        if($combatChain[$i] == $mainPlayer) {
+          $EffectContext = $combatChain[$i - 1];
+          ProcessHitEffect($combatChain[$i - 1]);
+          if($damageDone >= 4) ProcessCrushEffect($combatChain[$i - 1]);
         }
       }
-    }
-    $currentTurnEffects = array_values($currentTurnEffects); //In case any were removed
-    MainCharacterHitAbilities();
-    MainCharacterHitEffects();
-    ArsenalHitEffects();
-    AuraHitEffects($combatChain[0]);
-    ItemHitEffects($combatChain[0]);
-    AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
-  } else {
-    for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
-      if ($combatChain[$i] == $mainPlayer) {
-        $EffectContext = $combatChain[$i - 1];
+      for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+        if($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
+        if(IsCombatEffectActive($currentTurnEffects[$i])) {
+          if($currentTurnEffects[$i + 1] == $mainPlayer) {
+            $shouldRemove = EffectHitEffect($currentTurnEffects[$i]);
+            if($shouldRemove == 1) RemoveCurrentTurnEffect($i);
+          }
+        }
       }
+      $currentTurnEffects = array_values($currentTurnEffects); //In case any were removed
+      MainCharacterHitAbilities();
+      MainCharacterHitEffects();
+      ArsenalHitEffects();
+      AuraHitEffects($combatChain[0]);
+      ItemHitEffects($combatChain[0]);
+      AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
     }
   }
   $currentPlayer = $mainPlayer;

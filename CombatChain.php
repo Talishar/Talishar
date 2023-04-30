@@ -3,9 +3,9 @@
 function ProcessHitEffect($cardID)
 {
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
-  global $combatChainState, $CCS_ChainLinkHitEffectsPrevented, $currentPlayer, $combatChain;
+  global $currentPlayer, $combatChain;
   if(CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
-  if($combatChainState[$CCS_ChainLinkHitEffectsPrevented]) return;
+  if(HitEffectsArePrevented()) return;
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
