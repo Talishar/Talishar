@@ -703,7 +703,11 @@ function PassInput($autopass = true)
     if($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed.");
     else WriteLog("Player " . $currentPlayer . " passed.");
     if(Pass($turn, $currentPlayer, $currentPlayer)) {
-      if($turn[0] == "M") BeginTurnPass();
+      if($turn[0] == "M")
+      {
+        SkipHoldingPriorityNow($currentPlayer);
+        BeginTurnPass();
+      }
       else PassTurn();
     }
   }
