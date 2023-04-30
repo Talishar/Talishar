@@ -188,7 +188,13 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if(count($decisionQueue) > 0)
       {
         $index = $cardID;
-        ContinueDecisionQueue($index);
+        $isValid = false;
+        $validInputs = explode(",", $turn[2]);
+        for($i=0; $i<count($validInputs); ++$i)
+        {
+          if($validInputs[$i] == $index) $isValid = true;
+        }
+        if($isValid) ContinueDecisionQueue($index);
       }
       break;
     case 17: //BUTTONINPUT
