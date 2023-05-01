@@ -197,7 +197,7 @@ function SpecificCardLogic($player, $card, $lastResult)
       BloodOnHerHandsResolvePlay($lastResult);
       return $lastResult;
     case "RIGHTEOUSCLEANSING":
-      $numBanished = SearchCount(",", $lastResult);
+      $numBanished = SearchCount($lastResult);
       $numLeft = 5 - $numBanished;
       $deck = new Deck($player == 1 ? 2 : 1);
       $reorderCards = "";
