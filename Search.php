@@ -119,7 +119,7 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
         if($phantasmOnly && !HasPhantasm($cardID)) continue;
         if($specOnly && !IsSpecialization($cardID)) continue;
         if($frozenOnly && !IsFrozenMZ($array, $zone, $i)) continue;
-        if($hasNegCounters && $array[$index+4] > 0) continue;
+        if($hasNegCounters && $array[$i+4] == 0) continue;
         if($hasEnergyCounters && !HasEnergyCounters($array, $i)) continue;
         if($comboOnly && !HasCombo($cardID)) continue;
         if($cardList != "") $cardList = $cardList . ",";
