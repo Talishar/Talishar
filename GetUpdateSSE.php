@@ -27,6 +27,9 @@ if (!is_numeric($playerID)) {
 }
 
 $authKey = TryGet("authKey", "");
+if(($playerID == 1 || $playerID == 2) && $authKey == "") {
+  if(isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+}
 
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
