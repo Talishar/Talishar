@@ -44,8 +44,8 @@ while(true) {
   {
     $lastUpdate = $cacheVal;
     echo(json_encode($response));
-    // Flush buffer (force sending data to client)
-    flush();
+    flush();//Force send data to client
+    set_time_limit();//Reset script time limit
   }
 
   // Wait 100ms to check again
