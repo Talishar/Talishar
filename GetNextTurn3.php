@@ -730,6 +730,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $playerPrompt->buttons = $promptButtons;
   $response->playerPrompt = $playerPrompt;
 
+  $response->fullRematchAccepted = $turn[0] == "REMATCH";
+
   // ******************************
   // * PLAYER MUST CHOOSE A THING *
   // ******************************
