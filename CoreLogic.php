@@ -569,7 +569,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
 
   $classState = &GetPlayerClassState($player);
   $Items = &GetItems($player);
-  if($type == "COMBAT" && EffectPreventsHit()) HitEffectsPreventedThisLink();
+  if($type == "COMBAT" && $damage > 0 && EffectPreventsHit()) HitEffectsPreventedThisLink();
   if($type == "COMBAT" || $type == "ATTACKHIT") $source = $combatChain[0];
   $otherPlayer = $player == 1 ? 2 : 1;
   $damage = $damage > 0 ? $damage : 0;
