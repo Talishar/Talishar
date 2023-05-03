@@ -295,8 +295,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("PASSPARAMETER", $otherPlayer, $numBoosted, 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-        AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-{0}");
-        AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "{0}-");
+        AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-{0}", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "{0}-", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose $numBoosted card(s)", 1);
         AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
         AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
