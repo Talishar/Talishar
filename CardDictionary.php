@@ -569,7 +569,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($phase == "B" && $from == "BANISH") return false;
   if($from == "BANISH" && !(PlayableFromBanish($banish[$index], $banish[$index+1]) || AbilityPlayableFromBanish($banish[$index]))) return false;
   if($phase == "B" && $cardType == "E" && $character[$index + 6] == 1) { $restriction = "On combat chain"; return false; }
-  if($from == "CHAR" && $character[$index+1] != "2") return false;
+  if($phase != "B" && $from == "CHAR" && $character[$index+1] != "2") return false;
   if($from == "CHAR" && $phase != "B" && $character[$index + 8] == "1") { $restriction = "Frozen"; return false; }
   if($from == "PLAY" && $subtype == "Ally" && $phase != "B" && isset($myAllies[$index + 3]) && $myAllies[$index + 3] == "1") { $restriction = "Frozen"; return false; }
   if($from == "ARS" && $phase != "B" && $myArsenal[$index + 4] == "1") { $restriction = "Frozen"; return false; }
