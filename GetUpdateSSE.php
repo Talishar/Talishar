@@ -36,7 +36,9 @@ header('Cache-Control: no-cache');
 
 $lastUpdate = 0;
 $response->message = "update";
+$response->padding = str_pad("",4096);
 
+ob_start();
 // Loop until the client close the stream
 while(true) {
   $cacheVal = intval(GetCachePiece($gameName, 1));
@@ -44,7 +46,8 @@ while(true) {
   {
     $lastUpdate = $cacheVal;
     echo("data: " . json_encode($response));
-    flush();//Force send data to client
+    ob_flush();
+    flush();
     set_time_limit(120);//Reset script time limit
   }
 
@@ -52,5 +55,6 @@ while(true) {
   usleep(100000); //100 milliseconds
 }
 
+ob_end_flush();
 
 ?>
