@@ -93,7 +93,7 @@ ADD PRIMARY KEY (`pwdResetId`);
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-ADD PRIMARY KEY (`usersID`),
+ADD PRIMARY KEY (`usersId`),
   ADD KEY `usersUid` (`usersUid`);
 --
 -- AUTO_INCREMENT for dumped tables
@@ -115,7 +115,7 @@ MODIFY `pwdResetId` int(11) NOT NULL AUTO_INCREMENT,
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-MODIFY `usersID` int(11) NOT NULL AUTO_INCREMENT,
+MODIFY `usersId` int(11) NOT NULL AUTO_INCREMENT,
   AUTO_INCREMENT = 5;
 --
 -- Constraints for dumped tables
@@ -125,8 +125,8 @@ MODIFY `usersID` int(11) NOT NULL AUTO_INCREMENT,
 -- Constraints for table `completedgame`
 --
 ALTER TABLE `completedgame`
-ADD CONSTRAINT `FK_LOSING_PLAYER` FOREIGN KEY (`LosingPID`) REFERENCES `users` (`usersID`),
-  ADD CONSTRAINT `FK_WINNING_PLAYER` FOREIGN KEY (`WinningPID`) REFERENCES `users` (`usersID`);
+ADD CONSTRAINT `FK_LOSING_PLAYER` FOREIGN KEY (`LosingPID`) REFERENCES `users` (`usersId`),
+  ADD CONSTRAINT `FK_WINNING_PLAYER` FOREIGN KEY (`WinningPID`) REFERENCES `users` (`usersId`);
 COMMIT;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
