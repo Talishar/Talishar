@@ -966,14 +966,6 @@ function BeginEndPhaseEffects()
       case "UPR200": case "UPR201": case "UPR202":
         Draw($currentTurnEffects[$i + 1]);
         break;
-      case "DYN153":
-        $deck = &GetDeck($mainPlayer);
-        if(count($deck) == 0) break;
-        if(!ArsenalFull($mainPlayer)) {
-          $card = array_shift($deck);
-          AddArsenal($card, $mainPlayer, "DECK", "UP");
-        }
-        break;
       default:
         break;
     }
@@ -987,6 +979,9 @@ function BeginEndPhaseEffectTriggers()
     switch($currentTurnEffects[$i]) {
       case "ELE215-1":
         AddLayer("TRIGGER", $mainPlayer, "ELE215", $currentTurnEffects[$i+1], "-", "-");
+        break;
+      case "DYN153":
+        AddLayer("TRIGGER", $mainPlayer, "DYN153", $currentTurnEffects[$i+1], "-", "-");
         break;
       default: break;
     }

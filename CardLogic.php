@@ -966,6 +966,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         }
       }
       break;
+    case "DYN153":
+      $deck = &GetDeck($player);
+      if(count($deck) == 0) break;
+      if(!ArsenalFull($player)) {
+        $card = array_shift($deck);
+        AddArsenal($card, $player, "DECK", "UP");
+      }
+      break;
     case "DYN214":
       PlayAura("MON104", $player);
       break;
