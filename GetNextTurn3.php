@@ -196,21 +196,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $activeChainLink = new stdClass();
   $combatChainReactions = array();
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    // vars for active chain link: Is there an action?
+    $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i + 1] &&
+      AbilityPlayableFromCombatChain($combatChain[$i]) &&
+      IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
+
+    $borderColor = $action == 21 ? 1 : null;
+    // $borderColor = $combatChain[$i + 1] == $playerID ? 1 : 2;
+    $countersMap = new stdClass();
+    if (HasAimCounter()) $countersMap->aim = 1;
+
     if ($i == 0) {
-
-      // vars for active chain link: Is there an action?
-      $action = $currentPlayer == $playerID &&
-        $turn[0] != "P" &&
-        $currentPlayer == $combatChain[$i + 1] &&
-        AbilityPlayableFromCombatChain($combatChain[$i]) &&
-        IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
-
-      // $borderColor = $combatChain[$i + 1] == $playerID ? 1 : 2;
-      $borderColor = $action == 21 ? 1 : null;
-
-      $countersMap = new stdClass();
-      if (HasAimCounter()) $countersMap->aim = 1;
-
       $activeChainLink->attackingCard = JSONRenderedCard(
         cardNumber: $combatChain[$i],
         controller: $combatChain[$i + 1],
@@ -223,7 +219,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
     array_push($combatChainReactions, JSONRenderedCard(
       cardNumber: $combatChain[$i],
-      controller: $combatChain[$i + 1]
+      controller: $combatChain[$i + 1],
+      action: $action,
+      actionDataOverride: strval($i),
+      borderColor: $borderColor,
+      countersMap: $countersMap,
     ));
   }
   $activeChainLink->reactions = $combatChainReactions;
