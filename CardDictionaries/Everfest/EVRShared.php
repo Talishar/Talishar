@@ -985,7 +985,8 @@
       foreach(array_count_values($names) as $name => $count) {
         if($count > 1) return false;
       }
+      return true;
     }
-    return true;
+    return false;
   }
 ?>
