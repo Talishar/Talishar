@@ -1246,6 +1246,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if($turn[0] == "M" && (CardType($cardID) == "AA" || GetResolvedAbilityType($cardID, $from) == "AA")) GetTargetOfAttack();
 
       if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
+      else AddDecisionQueue("GETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
       AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index);
       $decisionQueue = array_merge($decisionQueue, $dqCopy);
       ProcessDecisionQueue();

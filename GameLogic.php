@@ -535,6 +535,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $data = is_array($lastResult) ? implode(",", $lastResult) : $lastResult;
       SetClassState($player, $parameter, $data);
       return $lastResult;
+    case "GETCLASSSTATE":
+      return GetClassState($player, $parameter);
     case "GAINACTIONPOINTS":
       GainActionPoints($parameter, $player);
       return $lastResult;
