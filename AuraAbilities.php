@@ -161,9 +161,26 @@ function DestroyAura($player, $index, $uniqueID="")
   $auras = &GetAuras($player);
   $isToken = $auras[$index + 4] == 1;
   if($uniqueID != "") $index = SearchAurasForUniqueID($uniqueID, $player);
+  AuraDestroyAbility($player, $index, $isToken);
   $cardID = RemoveAura($player, $index);
   AuraDestroyed($player, $cardID, $isToken);
   return $cardID;
+}
+
+function AuraDestroyAbility($player, $index, $isToken)
+{
+  $auras = &GetAuras($player);
+  $cardID = $auras[$index];
+  switch($cardID)
+  {
+    case "EVR141":
+      if(!$isToken && $auras[$index + 5] > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
+        --$auras[$index + 5];
+        PlayAura("MON104", $player);
+      }
+      break;
+    default: break;
+  }
 }
 
 function RemoveAura($player, $index)
