@@ -621,7 +621,6 @@ function IsBanned($cardID, $format)
     case "compblitz":
       switch ($cardID) {
         case "WTR152":
-        case "WTR164": case "WTR165": case "WTR166":
         case "ARC076": case "ARC077": //Viserai
         case "ARC129": case "ARC130": case "ARC131":
         case "ELE006":
@@ -630,12 +629,10 @@ function IsBanned($cardID, $format)
         case "CRU141":
         case "CRU174": case "CRU175": case "CRU176":
         case "MON239":
-        case "ELE115":
         case "MON183": case "MON184": case "MON185":
         case "EVR037":
         case "EVR123": // Aether Wildfire
-        case "UPR113": case "UPR114": case "UPR115": // Aether Icevein
-        case "UPR139": // Hypothermia
+        case "UPR103": case "EVR120": case "ELE002": case "ELE003": case "EVR121":
           return true;
         default:
           return false;

@@ -45,13 +45,12 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       if($cardID == "ARC173") $prevent = 6;
       else if($cardID == "ARC174") $prevent = 5;
       else $prevent = 4;
-      $deck = GetDeck($currentPlayer);
-      if(count($deck) > 0) {
-        $revealed = $deck[0];
-        $prevent -= PitchValue($revealed);
+      $deck = new Deck($currentPlayer);
+      if($deck->Reveal(1)) {
+        $prevent -= PitchValue($deck->Top());
       }
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
-      return "";
+      return "Eirina's Prayer reduces your next arcane damage by " . $prevent;
     case "ARC182": case "ARC183": case "ARC184":
       if($from == "ARS") GiveAttackGoAgain();
       return "";

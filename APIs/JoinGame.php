@@ -595,10 +595,11 @@ function IsCardBanned($cardID, $format)
   switch($format) {
     case "blitz": case "compblitz":
       switch($cardID) {
-        case "ARC076": case "ARC077": case "ELE006": case "ELE186": case "ELE187": case "ELE188": case "WTR164":
-        case "WTR165": case "WTR166": case "ELE223": case "WTR152": case "CRU174": case "CRU175": case "CRU176":
-        case "ARC129": case "ARC130": case "ARC131": case "MON239": case "ELE115": case "MON183": case "MON184":
-        case "MON185": case "CRU141": case "EVR037": case "EVR123": case "UPR113": case "UPR114": case "UPR115": case "UPR139":
+        case "ARC076": case "ARC077": case "ELE006": case "ELE186": case "ELE187": case "ELE188":
+        case "ELE223": case "WTR152": case "CRU174": case "CRU175": case "CRU176":
+        case "ARC129": case "ARC130": case "ARC131": case "MON239": case "MON183": case "MON184":
+        case "MON185": case "CRU141": case "EVR037": case "EVR123":
+        case "UPR103": case "EVR120": case "ELE002": case "ELE003": case "EVR121":
           return true;
         default: return false;
       }
