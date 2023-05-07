@@ -312,7 +312,7 @@ function IsGamePhase($phase)
 //Must be called with the my/their context
 function ContinueDecisionQueue($lastResult = "")
 {
-  global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer, $CS_LayerTarget;
+  global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID;
   if(count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {

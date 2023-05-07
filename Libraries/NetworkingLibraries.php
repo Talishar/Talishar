@@ -1238,6 +1238,13 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
       }
+
+      //CR 5.1.4. Declare Modes and Targets
+      //CR 5.1.4a Declare targets for resolution abilities
+      if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) GetLayerTarget($cardID);
+      //CR 5.1.4b Declare target of attack
+      if($turn[0] == "M" && (CardType($cardID) == "AA" || GetResolvedAbilityType($cardID, $from) == "AA")) GetTargetOfAttack();
+
       if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index);
       $decisionQueue = array_merge($decisionQueue, $dqCopy);
@@ -1253,6 +1260,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if(CardCaresAboutPitch($turn[3])) AddAdditionalCost($currentPlayer, $cardID);
     PitchAbility($cardID);
   }
+  //CR 2.0 5.1.7. Pay Asset-Costs
   if($resources[0] < $resources[1]) {
     if($turn[0] != "P") {
       $turn[2] = $turn[0];
@@ -1324,11 +1332,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $banish = array_values($banish);
   }
 
-  //CR 5.1.4b Declare target of attack
-  if($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
   if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
     if(HasBoost($cardID)) Boost();
-    GetLayerTarget($cardID); //Layer target
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
     PermanentPlayAbilities($cardID, $from);
@@ -1344,13 +1349,11 @@ function PlayCardSkipCosts($cardID, $from)
   if (($turn[0] == "M" || $turn[0] == "ATTACKWITHIT") && $cardType == "AA") GetTargetOfAttack();
   if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
     if (HasBoost($cardID)) Boost();
-    GetLayerTarget($cardID); //Layer target
+    GetLayerTarget($cardID);
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
   }
   PlayCardEffect($cardID, $from, 0);
-  //AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . 0 . "||");
-  //ProcessDecisionQueue();
 }
 
 function GetLayerTarget($cardID)
@@ -1362,17 +1365,13 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
-    case "MON084":
-    case "MON085":
-    case "MON086":
+    case "MON084": case "MON085": case "MON086":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "CCAA");
       AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
-    case "ELE183":
-    case "ELE184":
-    case "ELE185":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:maxCost=1;type=AA"); // &LAYER:maxCost=1;type=AA
+    case "ELE183": case "ELE184": case "ELE185":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:maxCost=1;type=AA");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;

@@ -2009,7 +2009,7 @@ function SameWeaponEquippedTwice()
 
 function SelfCostModifier($cardID)
 {
-  global $CS_NumCharged, $currentPlayer, $combatChain, $CS_LayerTarget;
+  global $CS_NumCharged, $currentPlayer, $combatChain, $layers;
   switch($cardID) {
     case "ARC080":
     case "ARC082":
@@ -2021,7 +2021,7 @@ function SelfCostModifier($cardID)
     case "MON032":
       return (-1 * (2 * GetClassState($currentPlayer, $CS_NumCharged)));
     case "MON084": case "MON085": case "MON086":
-      return TalentContains($combatChain[GetClassState($currentPlayer, $CS_LayerTarget)], "SHADOW") ? -1 : 0;
+      return TalentContains($combatChain[$layers[3]], "SHADOW") ? -1 : 0;
     case "DYN104": case "DYN105": case "DYN106":
       return CountItem("ARC036", $currentPlayer) > 0 || CountItem("DYN111", $currentPlayer) > 0 || CountItem("DYN112", $currentPlayer) > 0 ? -1 : 0;
     case "OUT056": case "OUT057": case "OUT058":
