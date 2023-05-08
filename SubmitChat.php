@@ -18,9 +18,9 @@ session_start();
 if ($authKey == "") $authKey = $_COOKIE["lastAuthKey"];
 
 $targetAuthKey = "";
-if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $targetAuthKey = $_SESSION["p1AuthKey"];
-else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $targetAuthKey = $_SESSION["p2AuthKey"];
-if ($authKey != $targetAuthKey) exit;
+if($playerID == 1 && isset($_SESSION["p1AuthKey"])) $targetAuthKey = $_SESSION["p1AuthKey"];
+else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) $targetAuthKey = $_SESSION["p2AuthKey"];
+if($targetAuthKey != "" && $authKey != $targetAuthKey) exit;
 
 $uid = "-";
 if (isset($_SESSION['useruid'])) $uid = $_SESSION['useruid'];
