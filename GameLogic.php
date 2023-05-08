@@ -1328,6 +1328,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $hand = &GetHand($player);
       array_unshift($deck, $hand[$lastResult]);
       return $lastResult;
+    case "GETTARGETOFATTACK":
+      $params = explode(",", $parameter);
+      if(CardType($params[0]) == "AA" || GetResolvedAbilityType($params[0], $params[1]) == "AA") GetTargetOfAttack();
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

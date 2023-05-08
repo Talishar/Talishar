@@ -1243,7 +1243,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       //CR 5.1.4a Declare targets for resolution abilities
       if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) GetLayerTarget($cardID);
       //CR 5.1.4b Declare target of attack
-      if($turn[0] == "M" && (CardType($cardID) == "AA" || GetResolvedAbilityType($cardID, $from) == "AA")) GetTargetOfAttack();
+      if($turn[0] == "M") AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from);
 
       if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       else AddDecisionQueue("GETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
@@ -1495,28 +1495,28 @@ function GetTargetOfAttack()
   global $mainPlayer, $combatChainState, $CCS_AttackTarget;
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   $numTargets = 1;
-  $targets = "THEIRCHAR-0"; //Their hero
+  $targets = "THEIRCHAR-0";
   $auras = &GetAuras($defPlayer);
   $arcLightIndex = -1;
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if (HasSpectra($auras[$i])) {
+  for($i = 0; $i < count($auras); $i += AuraPieces()) {
+    if(HasSpectra($auras[$i])) {
       $targets .= ",THEIRAURAS-" . $i;
       ++$numTargets;
       if ($auras[$i] == "MON005") $arcLightIndex = $i;
     }
   }
   $allies = &GetAllies($defPlayer);
-  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
+  for($i = 0; $i < count($allies); $i += AllyPieces()) {
     $targets .= ",THEIRALLY-" . $i;
     ++$numTargets;
   }
-  if ($arcLightIndex > -1) $targets = "THEIRAURAS-" . $arcLightIndex;
-  if ($numTargets > 1) {
-    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target for the attack");
-    AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $targets);
-    AddDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
+  if($arcLightIndex > -1) $targets = "THEIRAURAS-" . $arcLightIndex;
+  if($numTargets > 1) {
+    PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
+    PrependDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $targets);
+    PrependDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target for the attack");
   } else {
-    $combatChainState[$CCS_AttackTarget] = "THEIRCHAR-0"; //Their Hero
+    $combatChainState[$CCS_AttackTarget] = "THEIRCHAR-0";
   }
 }
 
