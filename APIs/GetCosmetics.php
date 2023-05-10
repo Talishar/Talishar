@@ -7,18 +7,20 @@ include_once "../Libraries/PlayerSettings.php";
 include_once "../Libraries/HTTPLibraries.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 
+session_start();
+
 SetHeaders();
 
 $response = new stdClass();
 $response->cardBacks = [];
 $response->playmats = [];
-if (IsUserLoggedIn()) {
-  foreach (PatreonCampaign::cases() as $campaign) {
-    if (isset($_SESSION[$campaign->SessionID()]) || (isset($_SESSION["useruid"]) && $campaign->IsTeamMember($_SESSION["useruid"]))) {
+if(IsUserLoggedIn()) {
+  foreach(PatreonCampaign::cases() as $campaign) {
+    if(isset($_SESSION[$campaign->SessionID()]) || (isset($_SESSION["useruid"]) && $campaign->IsTeamMember($_SESSION["useruid"]))) {
       //Check card backs first
       $cardBacks = $campaign->CardBacks();
       $cardBacks = explode(",", $cardBacks);
-      for ($i = 0; $i < count($cardBacks); ++$i) {
+      for($i = 0; $i < count($cardBacks); ++$i) {
         $cardBack = new stdClass();
         $cardBack->name = $campaign->CampaignName() . (count($cardBacks) > 1 ? " " . $i + 1 : "");
         $cardBack->id = $cardBacks[$i];
@@ -34,6 +36,8 @@ if (IsUserLoggedIn()) {
     array_push($response->playmats, $playmat);
   }
 }
+
+session_write_close();
 echo json_encode($response);
 
 function GetPlaymatName($id)
