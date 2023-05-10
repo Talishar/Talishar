@@ -92,6 +92,37 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($count == 100) break;
 }
 
+if($lastUpdate == 0)
+{
+  $currentTime = round(microtime(true) * 1000);
+  $cacheVal = GetCachePiece($gameName, 1);
+  if ($isGamePlayer) {
+    SetCachePiece($gameName, $playerID + 1, $currentTime);
+    $otherP = ($playerID == 1 ? 2 : 1);
+    $oppLastTime = intval(GetCachePiece($gameName, $otherP + 1));
+    $oppStatus = GetCachePiece($gameName, $otherP + 3);
+    if (($currentTime - $oppLastTime) > 3000 && (intval($oppStatus) == 0)) {
+      WriteLog("Opponent has disconnected. Waiting 60 seconds to reconnect.");
+      GamestateUpdated($gameName);
+      SetCachePiece($gameName, $otherP + 3, "1");
+    } else if (($currentTime - $oppLastTime) > 60000 && $oppStatus == "1") {
+      WriteLog("Opponent has left the game.");
+      GamestateUpdated($gameName);
+      SetCachePiece($gameName, $otherP + 3, "2");
+      $lastUpdate = 0;
+      $opponentDisconnected = true;
+    }
+    //Handle server timeout
+    $lastUpdateTime = GetCachePiece($gameName, 6);
+    if ($currentTime - $lastUpdateTime > 90000 && GetCachePiece($gameName, 12) != "1") //90 seconds
+    {
+      SetCachePiece($gameName, 12, "1");
+      $opponentInactive = true;
+      $lastUpdate = 0;
+    }
+  }
+}
+
 if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo "0";
   exit;
