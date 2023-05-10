@@ -194,7 +194,7 @@ enum PatreonCampaign : string
       case "5": return ($userName == "XIR");
       case "6": return ($userName == "wackzitt" || $userName == "RainyDays" || $userName == "HelpMeJace2");
       case "7": return IsTeamSecondCycle($userName);
-      case "7198186": return false;
+      case "7198186": return ($userName == "OotTheMonk");
       case "7579026": return ($userName == "Hamsack" || $userName == "BigMedSi" || $userName == "Tripp");
       case "7329070": return ($userName == "GoAgainGamingAz");
       case "1787491": return ($userName == "RedZoneRogue");
@@ -219,7 +219,7 @@ enum PatreonCampaign : string
       case "9404423": return ($userName == "TCGTed");
       case "8040288": return IsTeamCardAdvantage($userName);
       case "10147920": return ($userName == "RavenousBabble" || $userName == "Arty" || $userName == "jargowsky" || $userName == "Nick52cost" || $userName == "Boomerang" || $userName == "matthias" || $userName == "Repas801");
-      case "4006023": return ($userName == "BlackWingStudio") || ($userName == "OotTheMonk");
+      case "4006023": return ($userName == "BlackWingStudio");
       default: return "";
     }
   }
