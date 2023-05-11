@@ -39,6 +39,8 @@ $lastUpdate = 0;
 $response->message = "update";
 $response->padding = str_pad("", 4096);
 
+$isGamePlayer = $playerID == 1 || $playerID == 2;
+
 ob_start();
 // Loop until the client close the stream
 $cacheVal = intval(GetCachePiece($gameName, 1));
@@ -59,6 +61,35 @@ while (true) {
     set_time_limit(120); //Reset script time limit
   }
   if (connection_aborted()) break;
+
+  $currentTime = round(microtime(true) * 1000);
+  $cacheVal = GetCachePiece($gameName, 1);
+  if($isGamePlayer) {
+    SetCachePiece($gameName, $playerID + 1, $currentTime);
+    $otherP = ($playerID == 1 ? 2 : 1);
+    $oppLastTime = intval(GetCachePiece($gameName, $otherP + 1));
+    $oppStatus = GetCachePiece($gameName, $otherP + 3);
+    if (($currentTime - $oppLastTime) > 3000 && (intval($oppStatus) == 0)) {
+      WriteLog("Opponent has disconnected. Waiting 60 seconds to reconnect.");
+      GamestateUpdated($gameName);
+      SetCachePiece($gameName, $otherP + 3, "1");
+    } else if (($currentTime - $oppLastTime) > 60000 && $oppStatus == "1") {
+      WriteLog("Opponent has left the game.");
+      GamestateUpdated($gameName);
+      SetCachePiece($gameName, $otherP + 3, "2");
+      $lastUpdate = 0;
+      $opponentDisconnected = true;
+    }
+    //Handle server timeout
+    $lastUpdateTime = GetCachePiece($gameName, 6);
+    if ($currentTime - $lastUpdateTime > 90000 && GetCachePiece($gameName, 12) != "1") //90 seconds
+    {
+      SetCachePiece($gameName, 12, "1");
+      $opponentInactive = true;
+      $lastUpdate = 0;
+    }
+  }
+
   // Wait 100ms to check again
   usleep(100000); //100 milliseconds
 }
