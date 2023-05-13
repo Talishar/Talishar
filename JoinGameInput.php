@@ -283,7 +283,7 @@ if ($decklink != "") {
       }
     }
   } else {
-    $_SESSION['error'] = '⚠️ The decklist link you have entered might be invalid or contain invalid cards (e.g Tokens).\n\nPlease double-check your decklist link and try again.';
+    $_SESSION['error'] = '⚠️ Error retrieving deck from API: ' . $apiDeck;
     header("Location: MainMenu.php");
     die();
   }
