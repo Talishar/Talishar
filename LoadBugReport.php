@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit();
 }
 
-if ($_SERVER['SERVER_NAME'] !== 'localhost') {
+if ($_SERVER['SERVER_NAME'] !== 'localhost' && $_SERVER['SERVER_NAME'] !== '127.0.0.1') {
   http_response_code(403);
   exit();
 }
