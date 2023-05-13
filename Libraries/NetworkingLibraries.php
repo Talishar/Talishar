@@ -1305,7 +1305,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if($cardType == "A" && !$canPlayAsInstant) {
         ResetCombatChainState();
       }
-      if($cardType == "A" || $cardType == "AA") LoseHealth(CountCurrentTurnEffects("CRU123-DMG", $playerID), $playerID);
+      if($cardType == "A" || $cardType == "AA") { WriteLog("Lost 1 health to Remorseless"); LoseHealth(CountCurrentTurnEffects("CRU123-DMG", $playerID), $playerID); }
       if(IsCardNamed($currentPlayer, $cardID, "Moon Wish")) AddCurrentTurnEffect("ARC185-GA", $currentPlayer);
       CombatChainPlayAbility($cardID);
       ItemPlayAbilities($cardID, $from);
