@@ -5,7 +5,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $redirectPath, $CS_PlayedAsInstant;
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState;
   global $roguelikeGameID;
-  switch ($mode) {
+  switch($mode) {
     case 0: break; //Deprecated
     case 1: break; //Deprecated
     case 2: //Play card from hand - DEPRECATED
@@ -459,8 +459,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $health += 1;
       break;
     case 10007:
-      WriteLog("Player " . $playerID ." manually added 1 health point to themselves.", highlight: true);
-      LoseHealth(1, ($playerID == 1 ? 2 : 1));
+      //WriteLog("Player " . $playerID ." manually added 1 health point to themselves.", highlight: true);
+      WriteLog("Subtracting health from your opponent is not allowed.");
+      //LoseHealth(1, ($playerID == 1 ? 2 : 1));
       break;
     case 10008:
       WriteLog("Player " . $playerID ." manually added 1 health point their opponent.", highlight: true);
