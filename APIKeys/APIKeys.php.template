@@ -17,3 +17,8 @@ $fabDBSecret = "op://$APP_ENV/FabDB/secret";
 // Patreon
 $patreonClientID = "op://$APP_ENV/Patreon/username";
 $patreonClientSecret = "op://$APP_ENV/Patreon/credential";
+
+// SSH for loading bugged games
+$prodServerIP = "op://$APP_ENV/Production Server/URL";
+$prodServerUsername = "op://$APP_ENV/Production Server/username";
+$prodServerPassword = "op://$APP_ENV/Production Server/password";
