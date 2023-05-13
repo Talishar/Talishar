@@ -484,12 +484,14 @@ function OUTAbilityCost($cardID)
         return "";
       case "OUT161":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        if(!ArsenalFull($currentPlayer))
+        $myDeck = new Deck($currentPlayer);
+        if(!ArsenalFull($currentPlayer) && !$myDeck->Empty())
         {
           TopDeckToArsenal($currentPlayer);
           PummelHit($currentPlayer);
         }
-        if(!ArsenalFull($otherPlayer))
+        $theirDeck = new Deck($otherPlayer);
+        if(!ArsenalFull($otherPlayer) && !$theirDeck->Empty())
         {
           TopDeckToArsenal($otherPlayer);
           PummelHit($otherPlayer);
