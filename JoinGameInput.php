@@ -283,7 +283,7 @@ if ($decklink != "") {
       }
     }
   } else {
-    $_SESSION['error'] = '⚠️ Error retrieving deck from API: ' . $apiDeck . " Slug: " . $slug;
+    $_SESSION['error'] = '⚠️ Error retrieving deck from API: ' . $apiDeck . " Slug: " . $slug . " Deck: " . $deck . " Decklink: " . $decklink . " Decks to try: " . $decksToTry;
     header("Location: MainMenu.php");
     die();
   }

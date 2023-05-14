@@ -63,7 +63,6 @@ while (true) {
   if (connection_aborted()) break;
 
   $currentTime = round(microtime(true) * 1000);
-  $cacheVal = GetCachePiece($gameName, 1);
   $lastOppStatus = 0;
   if($isGamePlayer) {
     SetCachePiece($gameName, $playerID + 1, $currentTime);
@@ -78,7 +77,7 @@ while (true) {
       WriteLog("Opponent has left the game.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "2");
-      $lastUpdate = 0;
+      //$lastUpdate = 0;
       $opponentDisconnected = true;
     } else if (($currentTime - $oppLastTime) < 3000 && $oppStatus > 0) {
       SetCachePiece($gameName, $otherP + 3, "0");
@@ -90,7 +89,7 @@ while (true) {
     {
       SetCachePiece($gameName, 12, "1");
       $opponentInactive = true;
-      $lastUpdate = 0;
+      //$lastUpdate = 0;
     }
   }
 
