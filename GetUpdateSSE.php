@@ -50,7 +50,11 @@ echo ("data: " . json_encode($response) . "\n\n");
 ob_flush();
 flush();
 
+$count = 0;
+
 while (true) {
+  if(($count % 100 == 0) && !file_exists("./Games/" . $gameName . "/GameFile.txt")) exit;
+  ++$count;
   $cacheVal = intval(GetCachePiece($gameName, 1));
   if ($cacheVal > $lastUpdate) {
     $lastUpdate = $cacheVal;
