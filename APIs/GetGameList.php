@@ -57,7 +57,7 @@ if ($handle = opendir($path)) {
           array_push($response->gamesInProgress, $gameInProgress);
         }
       }
-      else if ($currentTime - $lastGamestateUpdate > 900000) //~1 hour
+      else if ($currentTime - $lastGamestateUpdate > 150000) //~10 minutes?
       {
         if ($autoDeleteGames) {
           deleteDirectory($folder);
