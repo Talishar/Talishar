@@ -59,7 +59,7 @@ while (true) {
   if ($cacheVal > $lastUpdate) {
     $lastUpdate = $cacheVal;
     $response->cacheVal = $cacheVal;
-    echo ("data: " . json_encode($response) . "\n\n");
+    echo("data: " . json_encode($response) . "\n\n");
     ob_flush();
     flush();
     set_time_limit(120); //Reset script time limit
@@ -93,6 +93,10 @@ while (true) {
     {
       SetCachePiece($gameName, 12, "1");
       $opponentInactive = true;
+      $response->cacheVal = $cacheVal;
+      echo ("data: " . json_encode($response) . "\n\n");
+      ob_flush();
+      flush();
       //$lastUpdate = 0;
     }
   }
