@@ -95,11 +95,9 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 if($lastUpdate == 0)
 {
   $lastUpdateTime = GetCachePiece($gameName, 6);
-  if ($currentTime - $lastUpdateTime > 90000 && GetCachePiece($gameName, 12) != "1") //90 seconds
+  if ($currentTime - $lastUpdateTime > 90000 && GetCachePiece($gameName, 12) == "1") //90 seconds
   {
-    SetCachePiece($gameName, 12, "1");
     $opponentInactive = true;
-    $lastUpdate = 0;
   }
 }
 
