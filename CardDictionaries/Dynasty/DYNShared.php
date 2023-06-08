@@ -583,6 +583,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN215":
       return CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction";
     case "DYN221": case "DYN222": case "DYN223":
+      if($from == "PLAY") return "";
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       $auras = &GetAuras($currentPlayer);
       $uniqueID = $auras[count($auras) - AuraPieces() + 6];
