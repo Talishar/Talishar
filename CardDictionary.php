@@ -1279,6 +1279,7 @@ function ComboActive($cardID = "")
 
 function HasBloodDebt($cardID)
 {
+  global $Card_VantomR, $Card_VantomY, $Card_VantomB;
   switch ($cardID) {
     case "MON123"; case "MON124"; case "MON125"; case "MON126": case "MON127": case "MON128"; case "MON129":
     case "MON130": case "MON131"; case "MON135": case "MON136": case "MON137"; case "MON138": case "MON139":
@@ -1289,6 +1290,18 @@ function HasBloodDebt($cardID)
     case "MON178": case "MON179": case "MON180": case "MON181": case "MON182": case "MON183": case "MON184":
     case "MON185": case "MON187": case "MON191": case "MON192": case "MON194": case "MON200": case "MON201":
     case "MON202": case "MON203": case "MON204": case "MON205": case "MON209": case "MON210": case "MON211":
+    case $Card_VantomR: case $Card_VantomY: case $Card_VantomB:
+      return true;
+    default: return false;
+  }
+}
+
+function HasRunegate($cardID)
+{
+  global $Card_VantomR, $Card_VantomY, $Card_VantomB;
+  switch($cardID)
+  {
+    case $Card_VantomR: case $Card_VantomY: case $Card_VantomB:
       return true;
     default: return false;
   }
@@ -1299,6 +1312,7 @@ function PlayableFromBanish($cardID, $mod="")
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
   $mod = explode("-", $mod)[0];
   if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
+  if(SearchAuras("ARC112", $currentPlayer) > 0 && HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer)) >= CardCost($cardID)) return true;
   switch($cardID) {
     case "MON123": return GetClassState($currentPlayer, $CS_Num6PowBan) > 0;
     case "MON156": case "MON158": return true;

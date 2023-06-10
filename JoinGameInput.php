@@ -617,7 +617,7 @@ function GetAltCardID($cardID)
 function IsBanned($cardID, $format)
 {
   $set = substr($cardID, 0, 3);
-  if($set == "LGS" || $set == "DTD" || $set == "HER") return true;
+  if($format != "livinglegendscc" && ($set == "LGS" || $set == "DTD" || $set == "HER")) return true;
   switch ($format) {
     case "blitz":
     case "compblitz":

@@ -367,6 +367,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             }
           }
           return implode(",", $cards);
+        case "LOSEHEALTH": LoseHealth(1, $player); return $lastResult;
         default: return $lastResult;
       }
     case "FILTER":

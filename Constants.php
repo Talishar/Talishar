@@ -1,5 +1,11 @@
 <?php
 
+$Card_VantomR = "LGS157";
+$Card_VantomY = "LGS158";
+$Card_VantomB = "LGS159";
+$Card_Vynnset = "HER085";
+$Card_Flail = "LGS156";
+
 $GameStatus_Over = 2;
 $GameStatus_Rematch = 3;
 

@@ -420,7 +420,7 @@ function CharacterPlayCardAbilities($cardID, $from)
 
 function MainCharacterPlayCardAbilities($cardID, $from)
 {
-  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumBoostPlayed;
+  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumBoostPlayed, $Card_Vynnset;
   $character = &GetPlayerCharacter($currentPlayer);
   for($i = 0; $i < count($character); $i += CharacterPieces()) {
     if($character[$i + 1] != 2) continue;
@@ -476,6 +476,15 @@ function MainCharacterPlayCardAbilities($cardID, $from)
       case "OUT091": case "OUT092": //Riptide
         if($from == "HAND") {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
+        }
+        break;
+      case $Card_Vynnset:
+        if(CardTalent($cardID) == "SHADOW")
+        {
+          AddDecisionQueue("YESNO", $currentPlayer, "if you want to pay 1 life for Vynnset");
+          AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+          AddDecisionQueue("OP", $currentPlayer, "LOSEHEALTH", 1);
+          AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $Card_Vynnset, 1);
         }
         break;
       case "ROGUE017":
@@ -555,8 +564,10 @@ function DamageTrigger($player, $damage, $type, $source="NA")
 
 function CanDamageBePrevented($player, $damage, $type, $source="-")
 {
+  global $Card_Vynnset;
   $otherPlayer = $player == 1 ? 2 : 1;
   if($type == "ARCANE" && SearchCurrentTurnEffects("EVR105", $player)) return false;
+  if($source == "ARC112" && SearchCurrentTurnEffects($Card_Vynnset, $otherPlayer, true)) return false;
   if(SearchCurrentTurnEffects("UPR158", $otherPlayer)) return false;
   if($source == "DYN005" || $source == "OUT030" || $source == "OUT031" || $source == "OUT032"|| $source == "OUT121" || $source == "OUT122" || $source == "OUT123") return false;
   return true;
@@ -2057,6 +2068,7 @@ function IsAlternativeCostPaid($cardID, $from)
       if($remove) RemoveCurrentTurnEffect($i);
     }
   }
+  if($from == "BANISH" && SearchAuras("ARC112", $currentPlayer) > 0 && HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer)) >= CardCost($cardID)) return true;
   return $isAlternativeCostPaid;
 }
 

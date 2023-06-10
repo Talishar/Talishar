@@ -123,7 +123,7 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 
 function CharacterStartTurnAbility($index)
 {
-  global $mainPlayer;
+  global $mainPlayer, $Card_Vynnset;
   $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $char = new Character($mainPlayer, $index);
   if($char->status == 0 && !CharacterTriggerInGraveyard($char->cardID)) return;
@@ -171,6 +171,15 @@ function CharacterStartTurnAbility($index)
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYDISCARD-" . $discardIndex, 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
+      break;
+    case $Card_Vynnset:
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to banish for Vynnset");
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBANISH,HAND,-", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, "ARC112", 1);
+      AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
       break;
     case "ROGUE015":
       $hand = &GetHand($mainPlayer);
