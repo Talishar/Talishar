@@ -64,18 +64,6 @@
         $set = substr($cardID, 0, 3);
         $cardNumber = substr($cardID, 3, 3);
         if(!in_array($set, $originalSets)) continue;
-        if(($set == "DVR" || $set == "RVD"))
-        {
-          $found = false;
-          for($k=$j+1; $k<count($cardArray[$i]->printings); ++$k)
-          {
-            $cardID2 = $cardArray[$i]->printings[$k]->id;
-            $set2 = substr($cardID2, 0, 3);
-            if($set2 == "RVD" || $set2 == "DVR") continue;
-            if(in_array($set, $originalSets)) { $found = true; break; }
-          }
-          if($found) continue;
-        }
         if($set == "LGS" && $cardNumber < 156) continue;
         if($set == "HER" && $cardNumber < 84) continue;
         $duplicate = false;
@@ -87,7 +75,7 @@
         {
           if($cardsSeen[$k] == $cardID) $duplicate = true;
         }
-        if($duplicate) continue;
+        if($duplicate && $set != "DVR" && $set != "RVD") continue;
         array_push($cardPrintings, $cardID);
         array_push($cardsSeen, $cardID);
         if($propertyName == "type") $data = MapType($cardArray[$i]);
