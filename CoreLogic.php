@@ -2331,6 +2331,18 @@ function PitchAbility($cardID)
   }
 }
 
+function UnityEffect($cardID)
+{
+  global $defPlayer;
+  switch($cardID)
+  {
+    case "DTD203":
+      PlayAura("WTR075", $defPlayer);
+      break;
+    default: break;
+  }
+}
+
 function CountPitch(&$pitch, $min = 0, $max = 9999)
 {
   $pitchCount = 0;

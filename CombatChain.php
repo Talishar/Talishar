@@ -278,8 +278,9 @@ function OnBlockResolveEffects()
     default: break;
   }
   $blockedFromHand = 0;
+  for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) if($combatChain[$i+2] == "HAND") ++$blockedFromHand;
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-    if($combatChain[$i+2] == "HAND") ++$blockedFromHand;
+    if($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") UnityEffect($combatChain[$i]);
     switch($combatChain[$i]) {
       case "EVR018":
         if(!IsAllyAttacking()) {
@@ -304,8 +305,7 @@ function OnBlockResolveEffects()
       case "OUT174": //Vambrace of Determination
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
-      default:
-        break;
+      default: break;
     }
   }
   if($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "ELE174", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer)))
