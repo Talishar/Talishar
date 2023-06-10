@@ -626,6 +626,10 @@ function WTRAbilityCost($cardID)
       case "CRU035": case "CRU036": case "CRU037":
         AddNextTurnEffect("CRU035", $defPlayer);
         break;
+      case "DTD203":
+        WriteLog("Star Struck is a partially manual card. Enforce play restriction for attacks.");
+        AddNextTurnEffect("DTD203", $defPlayer);
+        break;
       default: return;
     }
   }
