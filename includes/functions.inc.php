@@ -245,6 +245,7 @@ function logCompletedGameStats()
 	$loserDeck = file_get_contents("./Games/" . $gameName . "/p" . $loser . "Deck.txt");
 	$winHero = &GetPlayerCharacter($winner);
 	$loseHero = &GetPlayerCharacter($loser);
+	if(substr($winHero, 0, 3) == "HER" || substr($loseHero, 0, 3) == "HER") return;//Don't report results for unreleased heroes
 
 	$conn = GetDBConnection();
 
