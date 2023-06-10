@@ -4,7 +4,7 @@
   include './Libraries/Trie.php';
 
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/v5.0.0/json/english/card.json";
-  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/outsiders/json/english/card.json";
+  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/dusk-till-dawn/json/english/card.json";
   $curl = curl_init();
   $headers = array(
     "Content-Type: application/json",
@@ -44,7 +44,7 @@
   {
     echo("<BR>" . $functionName . "<BR>");
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
-    $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD"];
+    $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "LGS", "HER"];
     $isString = true;
     if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health") $isString = false;
     fwrite($handler, "if(strlen(\$cardID) < 6) return " . ($isString ? "\"\"" : "0") . ";\r\n");
@@ -62,6 +62,7 @@
         $cardRarity = $cardArray[$i]->printings[$j]->rarity;
         $cardID = $cardArray[$i]->printings[$j]->id;
         $set = substr($cardID, 0, 3);
+        $cardNumber = substr($cardID, 3, 3);
         if(!in_array($set, $originalSets)) continue;
         if(($set == "DVR" || $set == "RVD"))
         {
@@ -75,6 +76,8 @@
           }
           if($found) continue;
         }
+        if($set == "LGS" && $cardNumber < 156) continue;
+        if($set == "HER" && $cardNumber < 84) continue;
         $duplicate = false;
         for($k=0; $k<count($cardPrintings); ++$k)
         {
