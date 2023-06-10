@@ -28,6 +28,7 @@ include "CardDictionaries/ClassicBattles/DVRShared.php";
 include "CardDictionaries/ClassicBattles/RVDShared.php";
 include "CardDictionaries/Dynasty/DYNShared.php";
 include "CardDictionaries/Outsiders/OUTShared.php";
+include "CardDictionaries/DuskTillDawn/DTDShared.php";
 include "CardDictionaries/Roguelike/ROGUEShared.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
@@ -327,6 +328,7 @@ function CardTalent($cardID)
   else if($set == "ELE") return ELECardTalent($cardID);
   else if($set == "UPR") return UPRCardTalent($cardID);
   else if($set == "DYN") return DYNCardTalent($cardID);
+  else if($set == "DTD") return DTDCardTalent($cardID);
   else if($set == "ROG") return ROGUECardTalent($cardID);
   return "NONE";
 }
@@ -376,6 +378,7 @@ function AbilityCost($cardID)
   else if($set == "RVD") return RVDAbilityCost($cardID);
   else if($set == "DYN") return DYNAbilityCost($cardID);
   else if($set == "OUT") return OUTAbilityCost($cardID);
+  else if($set == "DTD") return DTDAbilityCost($cardID);
   else if($set == "ROG") return ROGUEAbilityCost($cardID);
   return CardCost($cardID);
 }
@@ -494,6 +497,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "RVD") return RVDAbilityType($cardID, $index);
   else if($set == "DYN") return DYNAbilityType($cardID, $index);
   else if($set == "OUT") return OUTAbilityType($cardID, $index);
+  else if($set == "DTD") return DTDAbilityType($cardID, $index);
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
 }
 
@@ -1027,6 +1031,7 @@ function AbilityHasGoAgain($cardID)
   else if($set == "UPR") return UPRAbilityHasGoAgain($cardID);
   else if($set == "DYN") return DYNAbilityHasGoAgain($cardID);
   else if($set == "OUT") return OUTAbilityHasGoAgain($cardID);
+  else if($set == "DTD") return DTDAbilityHasGoAgain($cardID);
   else if($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   switch($cardID) {
     case "RVD004": return true;

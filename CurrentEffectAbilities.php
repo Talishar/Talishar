@@ -268,6 +268,7 @@ function EffectAttackModifier($cardID)
   else if($set == "UPR") return UPREffectAttackModifier($cardID);
   else if($set == "DYN") return DYNEffectAttackModifier($cardID);
   else if($set == "OUT") return OUTEffectAttackModifier($cardID);
+  else if($set == "DTD") return DTDEffectAttackModifier($cardID);
   else if($set == "ROG") return ROGUEEffectAttackModifier($cardID);
   return 0;
 }
@@ -888,6 +889,7 @@ function IsCombatEffectActive($cardID)
   else if($set == "UPR") return UPRCombatEffectActive($cardID, $attackID);
   else if($set == "DYN") return DYNCombatEffectActive($cardID, $attackID);
   else if($set == "OUT") return OUTCombatEffectActive($cardID, $attackID);
+  else if($set == "DTD") return DTDCombatEffectActive($cardID, $attackID);
   else if($set == "ROG") return ROGUECombatEffectActive($cardID, $attackID);
 }
 
