@@ -323,6 +323,24 @@ default: return false;
 }
 case "D":
 switch($cardID[1]) {
+case "T":
+switch($cardID[2]) {
+case "D":
+switch($cardID[3]) {
+case "1":
+switch($cardID[4]) {
+case "9":
+switch($cardID[5]) {
+case "8":
+return true;
+default: return false;
+}
+default: return false;
+}
+default: return false;
+}
+default: return false;
+}
 case "V":
 switch($cardID[2]) {
 case "R":

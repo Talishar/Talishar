@@ -335,6 +335,20 @@ function OnBlockResolveEffects()
         default: break;
       }
     }
+    if($currentTurnEffects[$i + 1] == $mainPlayer) {
+      switch($currentTurnEffects[$i])
+      {
+        case "DTD198":
+          if($blockedFromHand >= 1)
+          {
+            WriteLog(CardLink("DTD198", "DTD198") . " deals 1 damage");
+            AddDecisionQueue("PASSPARAMETER", $mainPlayer, "THEIRCHAR-0");
+            AddDecisionQueue("MZDAMAGE", $mainPlayer, "1,DAMAGE," . $combatChain[0]);
+          }
+          break;
+        default: break;
+      }
+    }
     if($remove) RemoveCurrentTurnEffect($i);
   }
 }

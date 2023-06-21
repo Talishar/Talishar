@@ -43,7 +43,7 @@ function DTDCombatEffectActive($cardID, $attackID)
   $params = explode(",", $cardID);
   $cardID = $params[0];
   switch($cardID) {
-
+    case "DTD198": return true;//Call Down the Lightning
     default:
       return false;
   }
@@ -62,7 +62,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
-
+    case "DTD198"://Call Down the Lightning
+      AddCurrentTurnEffect("DTD198", $currentPlayer);
+      break;
     default:
       return "";
   }

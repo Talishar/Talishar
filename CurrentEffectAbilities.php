@@ -936,6 +936,7 @@ function IsCombatEffectPersistent($cardID)
     case "DYN089-UNDER": return true;
     case "DYN154": return true;
     case "OUT052": case "OUT140": case "OUT141": case "OUT144": case "OUT188_1": return true;
+    case "DTD198": return true;//Call Down the Lightning
     case "ROGUE018": return true;
     case "ROGUE601": return true;
     case "ROGUE603": return true;
