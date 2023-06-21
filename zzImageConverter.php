@@ -3,6 +3,7 @@
 function CheckImage($cardID)
 {
   $filename = "./WebpImages/" . $cardID . ".webp";
+  $filenameNew = "./New Cards/" . $cardID . ".webp";
   $filename2 = "../FaB-Online-React-Client/public/cardimages/" . $cardID . ".webp";
   if(!file_exists($filename) || !file_exists($filename2))
   {
@@ -25,6 +26,7 @@ function CheckImage($cardID)
       $image = imagescale($image, 450, 628);
       imagewebp($image, $filename);
       if(!file_exists($filename2)) imagewebp($image, $filename2);
+      if(!file_exists($filenameNew)) imagewebp($image, $filenameNew);
       // Free up memory
       imagedestroy($image);
     }
