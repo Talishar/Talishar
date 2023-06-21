@@ -337,6 +337,16 @@ default: return false;
 }
 default: return false;
 }
+case "2":
+switch($cardID[4]) {
+case "1":
+switch($cardID[5]) {
+case "9":
+return true;
+default: return false;
+}
+default: return false;
+}
 default: return false;
 }
 default: return false;

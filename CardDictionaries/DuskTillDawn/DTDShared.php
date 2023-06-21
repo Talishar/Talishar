@@ -65,6 +65,12 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD198"://Call Down the Lightning
       AddCurrentTurnEffect("DTD198", $currentPlayer);
       break;
+    case "DTD219"://Lost in Thought
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRHAND:type=A&THEIRHAND:type=AA");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+      return "";
     default:
       return "";
   }
