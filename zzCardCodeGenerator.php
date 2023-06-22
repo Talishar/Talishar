@@ -56,7 +56,7 @@
     {
       $cardRarity = "NA";
       $cardPrintings = [];
-      if(isset($cardArray[$i]->printings[0]->double_sided_card_info) && !$cardArray[$i]->printings[0]->double_sided_card_info[0]->is_front && $cardArray[$i]->name != "Aether Ashwing") continue;
+      if(isset($cardArray[$i]->printings[0]->double_sided_card_info) && !$cardArray[$i]->printings[0]->double_sided_card_info[0]->is_front && $cardArray[$i]->printings[0]->rarity != "T") continue;
       for($j=0; $j<count($cardArray[$i]->printings); ++$j)
       {
         $cardRarity = $cardArray[$i]->printings[$j]->rarity;
