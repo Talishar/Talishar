@@ -10,7 +10,7 @@
       case "MON153": case "MON154":
         PlayAura("MON186", $currentPlayer, 1, true);
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Creates a " . CardLink("MON186", "MON186") . " and gives your next Runeblade or Shadow action this turn go again.";
+        return "";
       case "MON158":
         AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
         AddDecisionQueue("MULTICHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
@@ -25,7 +25,7 @@
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was selected.", 1);
-        return "Lets you put a non-attack action card with Blood Debt from your graveyard to your deck.";
+        return "";
       case "MON162": case "MON163": case "MON164":
         if($cardID == "MON162") $optAmt = 3;
         else if($cardID == "MON163") $optAmt = 2;
@@ -35,41 +35,34 @@
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "DIMENXXIONALGATEWAY", 1);
-        return "Lets you Opt.";
+        return "";
       case "MON165": case "MON166": case "MON167":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your next attack +1 and go again.";
+        return "";
       case "MON168": case "MON169": case "MON170":
-        if($from == "BANISH")
-        {
+        if($from == "BANISH") {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Gains +1 because it was played from Banish.";
+          $rv = "Gains +1 because it was played from Banish";
         }
         return $rv;
       case "MON174": case "MON175": case "MON176":
-        if($from == "BANISH")
-        {
+        if($from == "BANISH") {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Gains +X because it was played from Banish.";
+          $rv = "Gains +X because it was played from Banish";
         }
         return $rv;
       case "MON177": case "MON178": case "MON179":
-        if($from == "BANISH")
-        {
-          DealArcane(1, 0, "PLAYCARD", $cardID);
-        }
+        if($from == "BANISH") DealArcane(1, 0, "PLAYCARD", $cardID);
         return "";
       case "MON183": case "MON184": case "MON185":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Deals 1 arcane damage to the next attack action card of certain cost.";
+        return "";
       case "MON229":
-        if (!IsAllyAttackTarget()) {
-          DealArcane(1, 0, "PLAYCARD", $cardID);
-        }
+        if(!IsAllyAttackTarget()) DealArcane(1, 0, "PLAYCARD", $cardID);
         return "";
       case "MON230":
         GainResources($currentPlayer, 2);
-        return "Gain 2 resources.";
+        return "";
       case "MON231":
         $xVal = $resourcesPaid/2;
         $numRevealed = 3 + $xVal;
@@ -97,13 +90,9 @@
   function MONRunebladeHitEffect($cardID)
   {
     global $mainPlayer;
-    switch($cardID)
-    {
+    switch($cardID) {
       case "MON155":
-        if(IsHeroAttackTarget())
-        {
-          DealArcane(1, 0, "PLAYCARD", "MON155", false, $mainPlayer);
-        }
+        if(IsHeroAttackTarget()) DealArcane(1, 0, "PLAYCARD", "MON155", false, $mainPlayer);
         break;
       default: break;
     }
@@ -112,8 +101,7 @@
   function SoulShackleStartTurn($player)
   {
     $deck = &GetDeck($player);
-    if(count($deck) > 0)
-    {
+    if(count($deck) > 0) {
       $card = array_shift($deck);
       BanishCardForPlayer($card, $player, "DECK", "-");
     }
@@ -142,7 +130,7 @@
   function LordSutcliffeAbility($player, $index)
   {
     global $currentPlayer;
-    WriteLog(CardLink("MON407", "MON407") . " deals 1 arcane damage to each player.");
+    WriteLog(CardLink("MON407", "MON407") . " deals 1 arcane damage to each player");
     DealArcane(1, 0, "ABILITY", "MON407", false, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
     AddDecisionQueue("LORDSUTCLIFFE", $currentPlayer, $index, 1);
@@ -155,7 +143,7 @@
   {
     $index = $parameter;
     $arsenal = &GetArsenal($player);
-    if (!ArsenalEmpty($player)) {
+    if(!ArsenalEmpty($player)) {
       $arsenal[$index+3] += 1;
       if($arsenal[$index+3] >= 3)
       {

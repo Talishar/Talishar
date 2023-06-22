@@ -6,6 +6,10 @@ include "Libraries/HTTPLibraries.php";
 include "Libraries/SHMOPLibraries.php";
 include_once "Libraries/PlayerSettings.php";
 include_once 'Assets/patreon-php-master/src/PatreonDictionary.php';
+include_once "./AccountFiles/AccountDatabaseAPI.php";
+include_once './includes/functions.inc.php';
+include_once './includes/dbh.inc.php';
+include_once './Database/ConnectionManager.php';
 ob_end_clean();
 
 $deck = TryGET("deck");
@@ -32,20 +36,20 @@ if($favoriteDeckLink != 0)
   }
 }
 
-$isisShadowBanned = false;
-
 session_start();
 
 if (!isset($_SESSION["userid"])) {
   if (isset($_COOKIE["rememberMeToken"])) {
-    include_once './includes/functions.inc.php';
-    include_once './includes/dbh.inc.php';
     include_once './Assets/patreon-php-master/src/PatreonLibraries.php';
     include_once './Assets/patreon-php-master/src/API.php';
     include_once './Assets/patreon-php-master/src/PatreonDictionary.php';
     loginFromCookie();
   }
 }
+
+$isShadowBanned = false;
+if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
+else if(isset($_SESSION["userid"])) $isShadowBanned = IsBanned($_SESSION["userid"]);
 
 if($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
   //Must be logged in to use matchmaking
@@ -56,8 +60,6 @@ if($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])
 if(isset($_SESSION["userid"]))
 {
   //Save game creation settings
-  include_once 'includes/functions.inc.php';
-  include_once 'includes/dbh.inc.php';
   if(isset($favoriteDeckIndex))
   {
     ChangeSetting("", $SET_FavoriteDeckIndex, $favoriteDeckIndex, $_SESSION["userid"]);
@@ -72,22 +74,10 @@ if(isset($_SESSION["userid"]))
 }
 
 session_write_close();
-
-$bannedIPHandler = fopen("./HostFiles/bannedIPs.txt", "r");
-while (!feof($bannedIPHandler)) {
-  $bannedIP = trim(fgets($bannedIPHandler), "\r\n");
-  // echo ($_SERVER['REMOTE_ADDR'] . " " . $bannedIP . "<BR>");
-  if ($_SERVER['REMOTE_ADDR'] == $bannedIP) {
-    $isisShadowBanned = true;
-  }
-}
-fclose($bannedIPHandler);
-
-if ($isisShadowBanned) {
-  if ($format == "cc" || $format == "livinglegendscc") $format = "shadowcc";
-  else if ($format == "compcc") $format = "shadowcompcc";
-  else if ($format == "blitz" || $format == "compblitz") $format = "shadowblitz";
-  else if ($format == "commoner") $format = "shadowcommoner";
+if($isShadowBanned) {
+  if($format == "cc" || $format == "livinglegendscc") $format = "shadowcc";
+  else if($format == "compcc") $format = "shadowcompcc";
+  else if($format == "blitz" || $format == "compblitz" || $format == "commoner") $format = "shadowblitz";
 }
 
 $gameName = GetGameCounter();
@@ -107,18 +97,6 @@ if ($deckTestMode != "") {
   $opponentDeck = "./Assets/Dummy.txt";
   $fileName = "./Roguelike/Encounters/".$deckTestMode.".txt";
   if(file_exists($fileName)) $opponentDeck = $fileName;
-  /*switch($deckTestMode)
-  {
-    case "Woottonhog": $opponentDeck = "./Roguelike/Encounters/Woottonhog.txt"; break;
-    case "RavenousRabble": $opponentDeck = "./Roguelike/Encounters/RavenousRabble.txt"; break;
-    case "BarragingBrawnhide": $opponentDeck = "./Roguelike/Encounters/BarragingBrawnhide.txt"; break;
-    case "ShockStriker": $opponentDeck = "./Roguelike/Encounters/ShockStriker.txt"; break;
-    case "QuickshotNovice": $opponentDeck = "./Roguelike/Encounters/QuickshotNovice.txt"; break;
-    case "RuneScholar": $opponentDeck = "./Roguelike/Encounters/RuneScholar.txt"; break;
-    case "Ira": $opponentDeck = "./Roguelike/Encounters/Ira.txt"; break;
-    case "ManOfMomentum": $opponentDeck = "./Roguelike/Encounters/ManOfMomentum.txt"; break;
-    default: break;
-  }*/
   copy($opponentDeck, "./Games/" . $gameName . "/p2Deck.txt");
 } else {
   $gameStatus = 0; //Initial
@@ -145,5 +123,5 @@ fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
 $cacheVisibility = ($visibility == "public" ? "1" : "0");
-WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!" . $cacheVisibility . "!0!0!0"); //Initialize SHMOP cache for this game
+WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!" . $cacheVisibility . "!0!0!0!" . $format . "!" . $gameStatus); //Initialize SHMOP cache for this game
 header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink&format=$format&set=$set&decksToTry=$decksToTry&favoriteDeck=$favoriteDeck&favoriteDecks=$favoriteDeckLink");

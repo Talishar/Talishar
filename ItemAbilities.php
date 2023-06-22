@@ -39,8 +39,8 @@ function ItemUses($cardID)
 function PayItemAbilityAdditionalCosts($cardID, $from)
 {
   global $currentPlayer, $CS_PlayIndex, $combatChain;
-  $paidSteamCounter = "NOTPAID";
-  switch ($cardID) {
+  $index = GetClassState($currentPlayer, $CS_PlayIndex);
+  switch($cardID) {
     case "WTR162":
     case "WTR170": case "WTR171": case "WTR172":
     case "ELE143": case "ELE172": case "ELE201":
@@ -49,46 +49,40 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "EVR182": case "EVR183": case "EVR184":
     case "EVR185": case "EVR186": case "EVR187":
     case "OUT054":
-      DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+      DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "ARC035":
       $items = &GetItems($currentPlayer);
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      $paidSteamCounter = $items[$index + 1];
-      DestroyMyItem($index);
+      AddAdditionalCost($currentPlayer, $items[$index+1]);
+      DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "ARC010": case "ARC018":
       $items = &GetItems($currentPlayer);
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      if ($from == "PLAY" && $items[$index + 1] > 0 && count($combatChain) > 0) {
-        $items[$index + 1] -= 1;
-        $items[$index + 2] = 1;
-        $paidSteamCounter = "PAID";
+      if($from == "PLAY" && $items[$index+1] > 0 && count($combatChain) > 0) {
+        $items[$index+1] -= 1;
+        $items[$index+2] = 1;
       }
       break;
     case "CRU105":
       $items = &GetItems($currentPlayer);
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      if ($from == "PLAY" && $items[$index + 1] > 0) {
-        $items[$index + 1] = 0;
-        $paidSteamCounter = "PAID";
+      if($from == "PLAY" && $items[$index+1] > 0) {
+        $items[$index+1] -= 1;
+        AddAdditionalCost($currentPlayer, "PAID");
       }
       break;
-    default:
-      break;
+    default: break;
   }
-  return $paidSteamCounter;
 }
 
 function ItemPlayAbilities($cardID, $from)
 {
   global $currentPlayer;
   $items = &GetItems($currentPlayer);
-  for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+  for($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
     $remove = false;
-    switch ($items[$i]) {
+    switch($items[$i]) {
       case "EVR189":
-        if ($from == "BANISH") {
+        if($from == "BANISH") {
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Talisman of Cremation");
           AddDecisionQueue("FINDINDICES", $otherPlayer, "GY");
@@ -97,23 +91,10 @@ function ItemPlayAbilities($cardID, $from)
           $remove = true;
         }
         break;
-      default:
-        break;
+      default: break;
     }
-    if ($remove) DestroyItemForPlayer($currentPlayer, $i);
+    if($remove) DestroyItemForPlayer($currentPlayer, $i);
   }
-}
-
-function DestroyMainItem($index)
-{
-  global $mainPlayer;
-  DestroyItemForPlayer($mainPlayer, $index);
-}
-
-function DestroyMyItem($index)
-{
-  global $currentPlayer;
-  DestroyItemForPlayer($currentPlayer, $index);
 }
 
 function DestroyItemForPlayer($player, $index, $skipDestroy=false)
@@ -125,9 +106,9 @@ function DestroyItemForPlayer($player, $index, $skipDestroy=false)
   $cardID = $items[$index];
   for($i = $index + ItemPieces() - 1; $i >= $index; --$i) {
     if($items[$i] == "DYN492c") {
-      $indexWeapon = FindCharacterIndex($player, "DYN492a"); // Weapon
+      $indexWeapon = FindCharacterIndex($player, "DYN492a");
       DestroyCharacter($player, $indexWeapon);
-      $indexEquipment = FindCharacterIndex($player, "DYN492b"); // Equipment
+      $indexEquipment = FindCharacterIndex($player, "DYN492b");
       DestroyCharacter($player, $indexEquipment);
     }
     unset($items[$i]);
@@ -140,9 +121,9 @@ function StealItem($srcPlayer, $index, $destPlayer)
 {
   $srcItems = &GetItems($srcPlayer);
   $destItems = &GetItems($destPlayer);
-  for ($i = 0; $i < ItemPieces(); ++$i) {
-    array_push($destItems, $srcItems[$index + $i]);
-    unset($srcItems[$index + $i]);
+  for($i = 0; $i < ItemPieces(); ++$i) {
+    array_push($destItems, $srcItems[$index+$i]);
+    unset($srcItems[$index+$i]);
   }
   $srcItems = array_values($srcItems);
 }
@@ -164,15 +145,14 @@ function ItemHitEffects($attackID)
   global $mainPlayer;
   $attackSubType = CardSubType($attackID);
   $items = &GetItems($mainPlayer);
-  for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
-    switch ($items[$i]) {
+  for($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+    switch($items[$i]) {
       case "DYN094":
-        if ($attackSubType == "Gun" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
-          AddLayer("TRIGGER", $mainPlayer, $items[$i], "-", "-", $items[$i + 4]);
+        if($attackSubType == "Gun" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
+          AddLayer("TRIGGER", $mainPlayer, $items[$i], "-", "-", $items[$i+4]);
         }
         break;
-      default:
-        break;
+      default: break;
     }
   }
 }
@@ -182,10 +162,8 @@ function ItemTakeDamageAbilities($player, $damage, $type)
   $otherPlayer = ($player == 1 ? 2 : 1);
   $items = &GetItems($player);
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
-  for($i=count($items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces())
-  {
-    switch($items[$i])
-    {
+  for($i=count($items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces()) {
+    switch($items[$i]) {
       case "CRU104":
         if($damage > $items[$i+1]) { if($preventable) $damage -= $items[$i+1]; $items[$i+1] = 0; }
         else { $items[$i+1] -= $damage; if($preventable) $damage = 0; }
@@ -203,8 +181,7 @@ function ItemStartTurnAbility($index)
     case "ARC007": case "ARC035": case "EVR069": case "EVR071":
       AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]);
       break;
-    default:
-      break;
+    default: break;
   }
 }
 
@@ -232,7 +209,7 @@ function ItemDamageTakenAbilities($player, $damage)
     $remove = false;
     switch($items[$i]) {
       case "EVR193":
-        if (IsHeroAttackTarget() && $damage == 2) {
+        if(IsHeroAttackTarget() && $damage == 2) {
           WriteLog("Talisman of Warfare destroyed both player's arsenal");
           DestroyArsenal(1);
           DestroyArsenal(2);
@@ -241,9 +218,7 @@ function ItemDamageTakenAbilities($player, $damage)
         break;
       default: break;
     }
-    if($remove) {
-      DestroyItemForPlayer($otherPlayer, $i);
-    }
+    if($remove) DestroyItemForPlayer($otherPlayer, $i);
   }
 }
 
@@ -257,14 +232,11 @@ function SteamCounterLogic($item, $playerID, $uniqueID)
       break;
     default: break;
   }
-  if(ClassContains($item, "MECHANOLOGIST", $playerID))
-  {
+  if(ClassContains($item, "MECHANOLOGIST", $playerID)) {
     $items = &GetItems($playerID);
-    for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces())
-    {
-      if($items[$i] == "DYN093")
-      {
-        AddLayer("TRIGGER", $playerID, $items[$i], $uniqueID, "-", $items[$i + 4]);
+    for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces()) {
+      if($items[$i] == "DYN093") {
+        AddLayer("TRIGGER", $playerID, $items[$i], $uniqueID, "-", $items[$i+4]);
       }
     }
   }

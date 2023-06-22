@@ -283,7 +283,7 @@ if ($decklink != "") {
       }
     }
   } else {
-    $_SESSION['error'] = '⚠️ The decklist link you have entered might be invalid or contain invalid cards (e.g Tokens).\n\nPlease double-check your decklist link and try again.';
+    $_SESSION['error'] = '⚠️ Error retrieving deck from API: ' . $apiDeck . " Slug: " . $slug . " Deck: " . $deck . " Decklink: " . $decklink . " Decks to try: " . $decksToTry;
     header("Location: MainMenu.php");
     die();
   }
@@ -443,6 +443,7 @@ if ($matchup == "") {
   SetCachePiece($gameName, $playerID + 1, strval(round(microtime(true) * 1000)));
   SetCachePiece($gameName, $playerID + 3, "0");
   SetCachePiece($gameName, $playerID + 6, $character);
+  SetCachePiece($gameName, 14, $gameStatus);
   GamestateUpdated($gameName);
 
   //$authKey = ($playerID == 1 ? $p1Key : $p2Key);
@@ -615,12 +616,14 @@ function GetAltCardID($cardID)
 
 function IsBanned($cardID, $format)
 {
+  $set = substr($cardID, 0, 3);
+  //Ban spoilers in formats besides Open Format
+  if($format != "livinglegendscc" && ($set == "LGS" || $set == "DTD" || $set == "HER")) return true;
   switch ($format) {
     case "blitz":
     case "compblitz":
       switch ($cardID) {
         case "WTR152":
-        case "WTR164": case "WTR165": case "WTR166":
         case "ARC076": case "ARC077": //Viserai
         case "ARC129": case "ARC130": case "ARC131":
         case "ELE006":
@@ -629,12 +632,10 @@ function IsBanned($cardID, $format)
         case "CRU141":
         case "CRU174": case "CRU175": case "CRU176":
         case "MON239":
-        case "ELE115":
         case "MON183": case "MON184": case "MON185":
         case "EVR037":
         case "EVR123": // Aether Wildfire
-        case "UPR113": case "UPR114": case "UPR115": // Aether Icevein
-        case "UPR139": // Hypothermia
+        case "UPR103": case "EVR120": case "ELE002": case "ELE003": case "EVR121":
           return true;
         default:
           return false;

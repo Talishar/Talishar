@@ -3,7 +3,9 @@
 function CheckImage($cardID)
 {
   $filename = "./WebpImages/" . $cardID . ".webp";
-  if(!file_exists($filename))
+  $filenameNew = "./New Cards/" . $cardID . ".webp";
+  $filename2 = "../FaB-Online-React-Client/public/cardimages/" . $cardID . ".webp";
+  if(!file_exists($filename) || !file_exists($filename2))
   {
     //$imageURL = "https://fabrary.net/images/cards/" . $cardID . ".webp";
     $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $cardID . ".webp";
@@ -16,7 +18,6 @@ function CheckImage($cardID)
     curl_exec($ch);
     curl_close($ch);
     if(filesize($filename) < 10000) { unlink($filename); return; }
-    echo(filesize($filename));
     if(file_exists($filename)) echo("Image for " . $cardID . " successfully retrieved.<BR>");
     if(file_exists($filename))
     {
@@ -24,12 +25,15 @@ function CheckImage($cardID)
       $image = imagecreatefromwebp($filename);
       $image = imagescale($image, 450, 628);
       imagewebp($image, $filename);
+      if(!file_exists($filename2)) imagewebp($image, $filename2);
+      if(!file_exists($filenameNew)) imagewebp($image, $filenameNew);
       // Free up memory
       imagedestroy($image);
     }
   }
   $concatFilename = "./concat/" . $cardID . ".webp";
-  if(!file_exists($concatFilename))
+  $concatFilename2 = "../FaB-Online-React-Client/public/cardsquares/" . $cardID . ".webp";
+  if(!file_exists($concatFilename) || !file_exists($concatFilename2))
   {
     echo("Concat image for " . $cardID . " does not exist.<BR>");
     if(file_exists($filename))
@@ -43,7 +47,8 @@ function CheckImage($cardID)
       imagecopy($dest, $imageTop, 0, 0, 0, 0, 450, 372);
       imagecopy($dest, $imageBottom, 0, 373, 0, 0, 450, 78);
 
-      imagewebp($dest, $concatFilename);
+      if(!file_exists($concatFilename)) imagewebp($dest, $concatFilename);
+      if(!file_exists($concatFilename2)) imagewebp($dest, $concatFilename2);
       // Free up memory
       imagedestroy($image);
       imagedestroy($dest);
@@ -53,7 +58,8 @@ function CheckImage($cardID)
     }
   }
   $cropFilename = "./crops/" . $cardID . "_cropped.png";
-  if(!file_exists($cropFilename))
+  $cropFilename2 = "../FaB-Online-React-Client/public/crops/" . $cardID . "_cropped.png";
+  if(!file_exists($cropFilename) || !file_exists($cropFilename2))
   {
     echo("Crop image for " . $cardID . " does not exist.<BR>");
     if(file_exists($filename))
@@ -61,7 +67,8 @@ function CheckImage($cardID)
       echo("Attempting to convert image for " . $cardID . " to crops.<BR>");
       $image = imagecreatefromwebp($filename);
       $image = imagecrop($image, ['x' => 50, 'y' => 100, 'width' => 350, 'height' => 270]);
-      imagepng($image, $cropFilename);
+      if(!file_exists($cropFilename)) imagepng($image, $cropFilename);
+      if(!file_exists($cropFilename2)) imagepng($image, $cropFilename2);
       imagedestroy($image);
       if(file_exists($cropFilename)) echo("Image for " . $cardID . " successfully converted to crops.<BR>");
     }

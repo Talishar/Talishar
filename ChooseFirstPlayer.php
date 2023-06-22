@@ -30,6 +30,7 @@ if ($action == "Go First") {
 }
 WriteLog("Player " . $firstPlayer . " will go first.");
 $gameStatus = $MGS_P2Sideboard;
+SetCachePiece($gameName, 14, $gameStatus);
 GamestateUpdated($gameName);
 
 WriteGameFile();

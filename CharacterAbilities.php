@@ -93,7 +93,6 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
   $otherPlayer = $player == 1 ? 1 : 2;
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $type = "-";//Add this if it ever matters
-  $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
   switch ($char[$index]) {
     case "DYN213":
       if ($damage > 0) {
@@ -124,7 +123,7 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 
 function CharacterStartTurnAbility($index)
 {
-  global $mainPlayer;
+  global $mainPlayer, $Card_Vynnset;
   $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $char = new Character($mainPlayer, $index);
   if($char->status == 0 && !CharacterTriggerInGraveyard($char->cardID)) return;
@@ -172,6 +171,15 @@ function CharacterStartTurnAbility($index)
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYDISCARD-" . $discardIndex, 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
+      break;
+    case $Card_Vynnset:
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to banish for Vynnset");
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBANISH,HAND,-", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, "ARC112", 1);
+      AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
       break;
     case "ROGUE015":
       $hand = &GetHand($mainPlayer);
@@ -248,6 +256,7 @@ function CharacterDestroyEffect($cardID, $player)
 {
   switch($cardID) {
     case "ELE213":
+      WriteLog("New Horizon destroys your arsenal");
       DestroyArsenal($player);
       break;
     case "DYN214":
@@ -308,7 +317,7 @@ function MainCharacterHitAbilities()
 
   for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     if(CardType($mainCharacter[$i]) == "W" || $mainCharacter[$i + 1] != "2") continue;
-    $characterID = ShiyanaCharacter($mainCharacter[$i]);
+    $characterID = ShiyanaCharacter($mainCharacter[$i], $mainPlayer);
     switch($characterID) {
       case "WTR076": case "WTR077":
         if(CardType($attackID) == "AA") {
@@ -497,7 +506,7 @@ function EquipCard($player, $card)
       else $numHands += 2;
     }
   }
-  if($numHands < 2)
+  if($numHands < 2 && !$replaced)
   {
     $insertIndex = $lastWeapon + CharacterPieces();
     array_splice($char, $insertIndex, 0, $card);

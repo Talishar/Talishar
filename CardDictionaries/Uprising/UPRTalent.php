@@ -186,7 +186,7 @@
         GainHealth($amount, $currentPlayer);
         return "";
       case "UPR221": case "UPR222": case "UPR223":
-        if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard(($currentPlayer == 1 ? 2 : 1), $target));
+        if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard($currentPlayer, $target));
         if(PlayerHasLessHealth($currentPlayer))
         {
           GainHealth(1, $currentPlayer);
@@ -280,16 +280,38 @@
     return $numLinks;
   }
 
-  function NumPhoenixFlameChainLinks()
+  function NumChainLinksWithName($name)
   {
-    global $chainLinks, $combatChain;
-    $numLinks = 0;
-    for($i=0; $i<count($chainLinks); ++$i)
+    global $mainPlayer, $chainLinkSummary, $combatChain;
+    $count = 0;
+    for($i=0; $i<count($chainLinkSummary); $i+=ChainLinkSummaryPieces())
     {
-      if($chainLinks[$i][0] == "UPR101") ++$numLinks;
+      if(ChainLinkNameContains($i, $name)) ++$count;
     }
-    if(count($combatChain) > 0 && $combatChain[0] == "UPR101") ++$numLinks;
-    return $numLinks;
+    $currentAttackNames = GetCurrentAttackNames();
+    for($i=0; $i<count($currentAttackNames); ++$i)
+    {
+      if($currentAttackNames[$i] == $name)
+      {
+        ++$count;
+        break;
+      }
+    }
+    return $count;
+  }
+
+  function ChainLinkNameContains($index, $name)
+  {
+    global $mainPlayer, $chainLinkSummary;
+    if(SearchCurrentTurnEffects("OUT183", $mainPlayer)) return false;
+    if($index >= count($chainLinkSummary)) return false;
+    $attackNames = explode(",", $chainLinkSummary[$index+4]);
+    for($i=0; $i<count($attackNames); ++$i)
+    {
+      $attackName = GamestateUnsanitize($attackNames[$i]);
+      if($attackName == $name) return true;
+    }
+    return false;
   }
 
   function ThawIndices($player)

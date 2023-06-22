@@ -7,12 +7,8 @@
     switch($cardID)
     {
       case "MON000":
-        $rv = "";
-        if($from == "PLAY") {
-          DestroyLandmark(GetClassState($currentPlayer, $CS_PlayIndex));
-          $rv = "The Great Library of Solana was destroyed";
-        }
-        return $rv;
+        if($from == "PLAY") DestroyLandmark(GetClassState($currentPlayer, $CS_PlayIndex));
+        return "";
       case "MON061":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");

@@ -3,7 +3,7 @@
 
 function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CS_NumMoonWishPlayed;
+  global $currentPlayer, $combatChainState;
   global $CS_NextNAACardGoAgain, $CS_ArcaneDamagePrevention;
   $rv = "";
   switch ($cardID) {
@@ -45,13 +45,12 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       if($cardID == "ARC173") $prevent = 6;
       else if($cardID == "ARC174") $prevent = 5;
       else $prevent = 4;
-      $deck = GetDeck($currentPlayer);
-      if(count($deck) > 0) {
-        $revealed = $deck[0];
-        $prevent -= PitchValue($revealed);
+      $deck = new Deck($currentPlayer);
+      if($deck->Reveal(1)) {
+        $prevent -= PitchValue($deck->Top());
       }
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
-      return "";
+      return "Eirina's Prayer reduces your next arcane damage by " . $prevent;
     case "ARC182": case "ARC183": case "ARC184":
       if($from == "ARS") GiveAttackGoAgain();
       return "";
@@ -88,7 +87,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       else if($cardID == "ARC213") $health = 2;
       else $health = 1;
       GainHealth($health, $currentPlayer);
-      if(GetClassState($currentPlayer, $CS_NumMoonWishPlayed) > 0) Draw($currentPlayer);
+      if(SearchCurrentTurnEffects("ARC185-GA", $currentPlayer)) Draw($currentPlayer);
       return "";
     case "ARC215": case "ARC216": case "ARC217":
       if ($cardID == "ARC215") $opt = 4;
@@ -125,7 +124,7 @@ function ARCGenericHitEffect($cardID)
       AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "1", 1);
       break;
     case "ARC182": case "ARC183":  case "ARC184":
-      OptMain(2);
+      PlayerOpt($mainPlayer, 2);
       break;
     case "ARC185": case "ARC186": case "ARC187":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK:cardID=ARC212,ARC213,ARC214");

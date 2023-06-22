@@ -28,9 +28,11 @@ include "CardDictionaries/ClassicBattles/DVRShared.php";
 include "CardDictionaries/ClassicBattles/RVDShared.php";
 include "CardDictionaries/Dynasty/DYNShared.php";
 include "CardDictionaries/Outsiders/OUTShared.php";
+include "CardDictionaries/DuskTillDawn/DTDShared.php";
 include "CardDictionaries/Roguelike/ROGUEShared.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
+include "GeneratedCode/DatabaseGeneratedCardDictionaries.php";
 
 $CID_BloodRotPox = "OUT234";
 $CID_Frailty = "OUT235";
@@ -326,6 +328,7 @@ function CardTalent($cardID)
   else if($set == "ELE") return ELECardTalent($cardID);
   else if($set == "UPR") return UPRCardTalent($cardID);
   else if($set == "DYN") return DYNCardTalent($cardID);
+  else if($set == "DTD") return DTDCardTalent($cardID);
   else if($set == "ROG") return ROGUECardTalent($cardID);
   return "NONE";
 }
@@ -375,6 +378,7 @@ function AbilityCost($cardID)
   else if($set == "RVD") return RVDAbilityCost($cardID);
   else if($set == "DYN") return DYNAbilityCost($cardID);
   else if($set == "OUT") return OUTAbilityCost($cardID);
+  else if($set == "DTD") return DTDAbilityCost($cardID);
   else if($set == "ROG") return ROGUEAbilityCost($cardID);
   return CardCost($cardID);
 }
@@ -468,18 +472,8 @@ function AttackValue($cardID)
 function HasGoAgain($cardID)
 {
   $set = CardSet($cardID);
-  if($set == "WTR") return WTRHasGoAgain($cardID);
-  else if($set == "ARC") return ARCHasGoAgain($cardID);
-  else if($set == "CRU") return CRUHasGoAgain($cardID);
-  else if($set == "MON") return MONHasGoAgain($cardID);
-  else if($set == "ELE") return ELEHasGoAgain($cardID);
-  else if($set == "EVR") return EVRHasGoAgain($cardID);
-  else if($set == "UPR") return UPRHasGoAgain($cardID);
-  else if($set == "DVR") return DVRHasGoAgain($cardID);
-  else if($set == "RVD") return RVDHasGoAgain($cardID);
-  else if($set == "DYN") return DYNHasGoAgain($cardID);
-  else if($set == "OUT") return OUTHasGoAgain($cardID);
-  else if($set == "ROG") return ROGUEHasGoAgain($cardID);
+  if($set == "ROG") return ROGUEHasGoAgain($cardID);
+  else return GeneratedGoAgain($cardID);
 }
 
 function GetAbilityType($cardID, $index = -1, $from="-")
@@ -503,6 +497,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "RVD") return RVDAbilityType($cardID, $index);
   else if($set == "DYN") return DYNAbilityType($cardID, $index);
   else if($set == "OUT") return OUTAbilityType($cardID, $index);
+  else if($set == "DTD") return DTDAbilityType($cardID, $index);
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
 }
 
@@ -578,7 +573,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($phase == "B" && $from == "BANISH") return false;
   if($from == "BANISH" && !(PlayableFromBanish($banish[$index], $banish[$index+1]) || AbilityPlayableFromBanish($banish[$index]))) return false;
   if($phase == "B" && $cardType == "E" && $character[$index + 6] == 1) { $restriction = "On combat chain"; return false; }
-  if($from == "CHAR" && $character[$index+1] != "2") return false;
+  if($phase != "B" && $from == "CHAR" && $character[$index+1] != "2") return false;
   if($from == "CHAR" && $phase != "B" && $character[$index + 8] == "1") { $restriction = "Frozen"; return false; }
   if($from == "PLAY" && $subtype == "Ally" && $phase != "B" && isset($myAllies[$index + 3]) && $myAllies[$index + 3] == "1") { $restriction = "Frozen"; return false; }
   if($from == "ARS" && $phase != "B" && $myArsenal[$index + 4] == "1") { $restriction = "Frozen"; return false; }
@@ -738,8 +733,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ARC004": return GetClassState($player, $CS_NumBoosted) < 1;
     case "ARC005": return GetClassState($player, $CS_NumBoosted) < 1;
     case "ARC008": return GetClassState($player, $CS_NumBoosted) < 3;
-    case "ARC010": return (count($combatChain) > 0 && $from == "PLAY" && $myItems[$index + 1] > 0 && (CardSubtype($combatChain[0]) != "Pistol" || $myItems[$index + 2] != 2));
-    case "ARC018": return (count($combatChain) > 0 && $from == "PLAY" && $myItems[$index + 1] > 0 && (CardType($combatChain[0]) != "AA" || $myItems[$index + 2] != 2));
+    case "ARC010": return (count($combatChain) > 0 && $from == "PLAY" && ($myItems[$index + 1] == 0 || CardSubtype($combatChain[0]) != "Pistol" || $myItems[$index + 2] != 2));
+    case "ARC018": return (count($combatChain) > 0 && $from == "PLAY" && ($myItems[$index + 1] > 0 || CardType($combatChain[0]) != "AA" || $myItems[$index + 2] != 2));
     case "ARC041": return !ArsenalHasFaceDownCard($player);
     case "CRU082": case "CRU083": return count($combatChain) == 0 || CardType($combatChain[0]) != "W";
     case "CRU088": case "CRU089": case "CRU090": return count($combatChain) == 0 || CardType($combatChain[0]) != "W";
@@ -952,8 +947,8 @@ function HasBladeBreak($cardID)
     case "UPR136": case "UPR158": case "UPR182": return true;
     case "DYN045": case "DYN152": case "DYN171": return true;
     case "OUT049": case "OUT094": case "OUT099": case "OUT139": case "OUT140": case "OUT141": case "OUT157": case "OUT158": return true;
-    case "MON241": case "MON242": case "MON243": case "MON244": //Ironhide
-    case "OUT174": return SearchCurrentTurnEffects($cardID, $defPlayer); //Vambrace of determination
+    case "MON241": case "MON242": case "MON243": case "MON244": return SearchCurrentTurnEffects($cardID, $defPlayer); //Ironhide
+    case "OUT174": return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer); //Vambrace of determination
     default: return false;
   }
 }
@@ -1036,6 +1031,7 @@ function AbilityHasGoAgain($cardID)
   else if($set == "UPR") return UPRAbilityHasGoAgain($cardID);
   else if($set == "DYN") return DYNAbilityHasGoAgain($cardID);
   else if($set == "OUT") return OUTAbilityHasGoAgain($cardID);
+  else if($set == "DTD") return DTDAbilityHasGoAgain($cardID);
   else if($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   switch($cardID) {
     case "RVD004": return true;
@@ -1283,6 +1279,7 @@ function ComboActive($cardID = "")
 
 function HasBloodDebt($cardID)
 {
+  global $Card_VantomR, $Card_VantomY, $Card_VantomB;
   switch ($cardID) {
     case "MON123"; case "MON124"; case "MON125"; case "MON126": case "MON127": case "MON128"; case "MON129":
     case "MON130": case "MON131"; case "MON135": case "MON136": case "MON137"; case "MON138": case "MON139":
@@ -1293,6 +1290,18 @@ function HasBloodDebt($cardID)
     case "MON178": case "MON179": case "MON180": case "MON181": case "MON182": case "MON183": case "MON184":
     case "MON185": case "MON187": case "MON191": case "MON192": case "MON194": case "MON200": case "MON201":
     case "MON202": case "MON203": case "MON204": case "MON205": case "MON209": case "MON210": case "MON211":
+    case $Card_VantomR: case $Card_VantomY: case $Card_VantomB:
+      return true;
+    default: return false;
+  }
+}
+
+function HasRunegate($cardID)
+{
+  global $Card_VantomR, $Card_VantomY, $Card_VantomB;
+  switch($cardID)
+  {
+    case $Card_VantomR: case $Card_VantomY: case $Card_VantomB:
       return true;
     default: return false;
   }
@@ -1303,6 +1312,7 @@ function PlayableFromBanish($cardID, $mod="")
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
   $mod = explode("-", $mod)[0];
   if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
+  if(SearchAuras("ARC112", $currentPlayer) > 0 && HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer)) >= CardCost($cardID)) return true;
   switch($cardID) {
     case "MON123": return GetClassState($currentPlayer, $CS_Num6PowBan) > 0;
     case "MON156": case "MON158": return true;

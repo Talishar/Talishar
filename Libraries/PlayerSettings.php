@@ -150,6 +150,8 @@ function GetCardBack($player)
     case 48: return "CBOnHit";
     case 49: return "CBSecondCycle";
     case 50: return "CBRavenousBabble";
+    case 51: return "CBBlackWingStudio";
+    case 52: return "CBManSantBlack";
     default: return "CardBack";
   }
 }

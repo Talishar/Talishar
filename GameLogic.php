@@ -19,7 +19,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {
   global $redirectPath, $playerID, $gameName;
   global $currentPlayer, $combatChain, $defPlayer;
-  global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints;
+  global $combatChainState;
   global $defCharacter, $CS_NumCharged, $otherPlayer;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
@@ -195,10 +195,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "REMOVECOMBATCHAIN":
       $cardID = $combatChain[$lastResult];
-      for($i = CombatChainPieces() - 1; $i >= 0; --$i) {
-        unset($combatChain[$lastResult + $i]);
-      }
-      $combatChain = array_values($combatChain);
+      RemoveCombatChain($lastResult);
       return $cardID;
     case "COMBATCHAINPOWERMODIFIER":
       CombatChainPowerModifier($lastResult, $parameter);
@@ -213,7 +210,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "COMBATCHAINCHARACTERDEFENSEMODIFIER":
       $character = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $combatChain[$parameter]);
-      $character[$index + 4] += 2;
+      $character[$index + 4] += $lastResult;
       return $lastResult;
     case "REMOVEDISCARD":
       $discard = &GetDiscard($player);
@@ -370,6 +367,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             }
           }
           return implode(",", $cards);
+        case "LOSEHEALTH": LoseHealth(1, $player); return $lastResult;
         default: return $lastResult;
       }
     case "FILTER":
@@ -538,6 +536,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $data = is_array($lastResult) ? implode(",", $lastResult) : $lastResult;
       SetClassState($player, $parameter, $data);
       return $lastResult;
+    case "GETCLASSSTATE":
+      return GetClassState($player, $parameter);
     case "GAINACTIONPOINTS":
       GainActionPoints($parameter, $player);
       return $lastResult;
@@ -1328,6 +1328,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = &GetDeck($player);
       $hand = &GetHand($player);
       array_unshift($deck, $hand[$lastResult]);
+      return $lastResult;
+    case "GETTARGETOFATTACK":
+      $params = explode(",", $parameter);
+      if(CardType($params[0]) == "AA" || GetResolvedAbilityType($params[0], $params[1]) == "AA") GetTargetOfAttack();
       return $lastResult;
     default:
       return "NOTSTATIC";

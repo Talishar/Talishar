@@ -3,9 +3,9 @@
 function ProcessHitEffect($cardID)
 {
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
-  global $combatChainState, $CCS_ChainLinkHitEffectsPrevented, $currentPlayer, $combatChain;
+  global $currentPlayer, $combatChain;
   if(CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
-  if($combatChainState[$CCS_ChainLinkHitEffectsPrevented]) return;
+  if(HitEffectsArePrevented()) return;
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
@@ -43,6 +43,7 @@ function ProcessHitEffect($cardID)
   else if ($set == "UPR") return UPRHitEffect($cardID);
   else if ($set == "DYN") return DYNHitEffect($cardID);
   else if ($set == "OUT") return OUTHitEffect($cardID);
+  else if ($set == "DTD") return DTDHitEffect($cardID);
 }
 
 function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)
@@ -109,7 +110,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return CountPitch($pitch, 3) >= 1 ? 1 : 0;
     case "EVR038": return (ComboActive() ? 3 : 0);
     case "EVR040": return (ComboActive() ? 2 : 0);
-    case "EVR041": case "EVR042": case "EVR043": return (ComboActive() ? CountCardOnChain("EVR041", "EVR042", "EVR043") : 0);
+    case "EVR041": case "EVR042": case "EVR043": return (ComboActive() ? NumChainLinksWithName("Hundred Winds") - 1 : 0);
     case "EVR063": return 3;
     case "EVR064": return 2;
     case "EVR065": return 1;
@@ -117,7 +118,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "EVR116": case "EVR117": case "EVR118": return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 3 : 0);
     case "DVR002": return GetClassState($mainPlayer, $CS_AtksWWeapon) >= 1 ? 1 : 0;
     case "RVD009": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
-    case "UPR048": return (NumPhoenixFlameChainLinks() >= 2 ? 2 : 0);
+    case "UPR048": return (NumChainLinksWithName("Phoenix Flame") >= 2 ? 2 : 0);
     case "UPR050": return 1;
     case "UPR098": return (RuptureActive() ? 3 : 0);
     case "UPR101": return (NumDraconicChainLinks() >= 2 ? 1 : 0);
@@ -238,6 +239,7 @@ function OnDefenseReactionResolveEffects()
     }
     if($remove) RemoveCurrentTurnEffect($i);
   }
+  ProcessMirageOnBlock(count($combatChain)-CombatChainPieces());
 }
 
 function OnBlockResolveEffects()
@@ -249,6 +251,7 @@ function OnBlockResolveEffects()
     if(SearchCurrentTurnEffects("ROGUE802", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
     if(SearchAurasForCard("ELE117", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 3);
     ProcessPhantasmOnBlock($i);
+    ProcessMirageOnBlock($i);
   }
   switch($combatChain[0]) {
     case "CRU051": case "CRU052":
@@ -277,8 +280,9 @@ function OnBlockResolveEffects()
     default: break;
   }
   $blockedFromHand = 0;
+  for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) if($combatChain[$i+2] == "HAND") ++$blockedFromHand;
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-    if($combatChain[$i+2] == "HAND") ++$blockedFromHand;
+    if($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") UnityEffect($combatChain[$i]);
     switch($combatChain[$i]) {
       case "EVR018":
         if(!IsAllyAttacking()) {
@@ -303,8 +307,7 @@ function OnBlockResolveEffects()
       case "OUT174": //Vambrace of Determination
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
-      default:
-        break;
+      default: break;
     }
   }
   if($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "ELE174", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer)))
@@ -330,6 +333,20 @@ function OnBlockResolveEffects()
         case "OUT009": case "OUT010":
           $count = ModifyBlockForType("E", 0);
           $remove = $count > 0;
+          break;
+        default: break;
+      }
+    }
+    if($currentTurnEffects[$i + 1] == $mainPlayer) {
+      switch($currentTurnEffects[$i])
+      {
+        case "DTD198":
+          if($blockedFromHand >= 1)
+          {
+            WriteLog(CardLink("DTD198", "DTD198") . " deals 1 damage");
+            AddDecisionQueue("PASSPARAMETER", $mainPlayer, "THEIRCHAR-0");
+            AddDecisionQueue("MZDAMAGE", $mainPlayer, "1,DAMAGE," . $combatChain[0]);
+          }
           break;
         default: break;
       }

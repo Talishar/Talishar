@@ -70,7 +70,7 @@ function initializePlayerState($handler, $deckHandler, $player)
     {
       case $SET_Mute: $value = $mute; break;
       case $SET_IsPatron: $value = $isPatron; break;
-      default: $value = SettingDefaultValue($i); break;
+      default: $value = SettingDefaultValue($i, $charEquip[0]); break;
     }
     array_push($settingArray, $value);
   }
@@ -81,15 +81,16 @@ function initializePlayerState($handler, $deckHandler, $player)
   fwrite($handler, implode(" ", $settingArray) . "\r\n"); //Settings
 }
 
-function SettingDefaultValue($setting)
+function SettingDefaultValue($setting, $hero)
 {
   global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_PassDRStep, $SET_AutotargetArcane;
   global $SET_ColorblindMode, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_IsPatron;
-  global $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_Language;
+  global $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_Language, $SET_Playmat;
   switch($setting)
   {
     case $SET_TryUI2: return "1";
     case $SET_AutotargetArcane: return "1";
+    case $SET_Playmat: return ($hero == "DUMMY" ? 8 : 0);
     default: return "0";
   }
 }

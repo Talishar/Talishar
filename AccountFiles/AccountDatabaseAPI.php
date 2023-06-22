@@ -20,7 +20,10 @@ function LoadUserData($username) {
 
 function PasswordLogin($username, $password, $rememberMe) {
 	$conn = GetLocalMySQLConnection();
-	$userData = LoadUserData($username);
+	try {
+		$userData = LoadUserData($username);
+	}
+	catch (\Exception $e) { }
 
   if($userData == NULL) return false;
 
@@ -38,6 +41,7 @@ function PasswordLogin($username, $password, $rememberMe) {
 		$_SESSION["userspwd"] = $userData["usersPwd"];
 		$patreonAccessToken = $userData["patreonAccessToken"];
 		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
+		$_SESSION["isBanned"] = $userData["isBanned"];
 
 		try {
 			PatreonLogin($patreonAccessToken);
@@ -54,6 +58,13 @@ function PasswordLogin($username, $password, $rememberMe) {
 		return true;
   }
   return false;
+}
+
+function IsBanned($username)
+{
+	$userData = LoadUserData($username);
+	$_SESSION["isBanned"] = $userData["isBanned"];
+	return (intval($userData["isBanned"]) == 1 ? true : false);
 }
 
 function AttemptPasswordLogin($username, $password, $rememberMe) {
@@ -84,6 +95,8 @@ function AttemptPasswordLogin($username, $password, $rememberMe) {
 		$_SESSION["userspwd"] = $userData["usersPwd"];
 		$patreonAccessToken = $userData["patreonAccessToken"];
 		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
+		$rememberMeToken = $userData["rememberMeToken"];
+		$_SESSION["isBanned"] = $userData["isBanned"];
 
 		try {
 			PatreonLogin($patreonAccessToken);
@@ -91,9 +104,13 @@ function AttemptPasswordLogin($username, $password, $rememberMe) {
 
 		if($rememberMe)
 		{
-			$cookie = hash("sha256", rand() . $_SESSION["userspwd"] . rand());
+			if($rememberMeToken == "")
+			{
+				$cookie = hash("sha256", rand() . $_SESSION["userspwd"] . rand());
+				storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
+			}
+			else $cookie = $rememberMeToken;
 			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/");
-			storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
 		}
 		session_write_close();
 

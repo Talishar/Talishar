@@ -50,49 +50,6 @@
     }
   }
 
-  function ELEHasGoAgain($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE000": return true;
-      case "ELE025": case "ELE026": case "ELE027": return true;
-      case "ELE028": case "ELE029": case "ELE030": return true;
-      case "ELE037": return true;
-      case "ELE065": case "ELE066": return true;
-      case "ELE085": case "ELE086": case "ELE087": return true;
-      case "ELE091": case "ELE092": return true;
-      case "ELE103": case "ELE104": case "ELE105": return true;
-      case "ELE113": return true;
-      case "ELE117": return true;
-      case "ELE118": return true;
-      case "ELE122": case "ELE123": case "ELE124": return true;
-      case "ELE143": return true;
-      case "ELE146": return true;
-      case "ELE151": case "ELE152": case "ELE153": return true;
-      case "ELE154": case "ELE155": case "ELE156": return true;
-      case "ELE163": case "ELE164": case "ELE165": return true;
-      case "ELE166": case "ELE167": case "ELE168": return true;
-      case "ELE172": return true;
-      case "ELE175": return true;
-      case "ELE137": case "ELE138": case "ELE139": return true;
-      case "ELE140": case "ELE141": case "ELE142": return true;
-      case "ELE151": case "ELE152": case "ELE153": return true;
-      case "ELE166": case "ELE167": case "ELE168": return true;
-      case "ELE169": case "ELE170": case "ELE171": return true;
-      case "ELE177": case "ELE178": case "ELE179": return true;
-      case "ELE180": case "ELE181": case "ELE182": return true;
-      case "ELE186": case "ELE187": case "ELE188": return true;
-      case "ELE198": case "ELE199": case "ELE200": return true;
-      case "ELE201": return true;
-      case "ELE205": return true;
-      case "ELE206": case "ELE207": case "ELE208": return true;
-      case "ELE215": return true;
-      case "ELE219": case "ELE220": case "ELE221": return true;
-      case "ELE226": return true;
-      default: return false;
-    }
-  }
-
   function ELEAbilityHasGoAgain($cardID)
   {
     switch($cardID)

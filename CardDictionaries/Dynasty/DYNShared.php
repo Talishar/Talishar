@@ -57,34 +57,6 @@ function DYNAbilityType($cardID, $index = -1)
   }
 }
 
-function DYNHasGoAgain($cardID)
-{
-  switch($cardID) {
-    case "DYN009":
-    case "DYN022": case "DYN023": case "DYN024":
-    case "DYN028":
-    case "DYN049":
-    case "DYN050": case "DYN051": case "DYN052":
-    case "DYN062": case "DYN063": case "DYN064":
-    case "DYN065":
-    case "DYN071":
-    case "DYN076": case "DYN077": case "DYN078":
-		case "DYN082": case "DYN083": case "DYN084":
-		case "DYN085": case "DYN086": case "DYN087":
-    case "DYN091":
-    case "DYN092":
-    case "DYN115": case "DYN116":
-    case "DYN155":
-		case "DYN168": case "DYN169": case "DYN170":
-		case "DYN185": case "DYN186": case "DYN187":
-    case "DYN188": case "DYN189": case "DYN190":
-    case "DYN209": case "DYN210": case "DYN211":
-    case "DYN212":
-    case "DYN230": case "DYN231": case "DYN232": return true;
-    default: return false;
-  }
-}
-
 function DYNAbilityHasGoAgain($cardID)
 {
   switch($cardID) {
@@ -198,7 +170,7 @@ function DYNCardTalent($cardID)
 
 function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $CCS_CurrentAttackGainedGoAgain, $combatChain;
+  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $combatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
@@ -228,20 +200,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PutPermanentIntoPlay($currentPlayer, $cardID);
       return "";
     case "DYN016": case "DYN017": case "DYN018":
-      if (AttackValue($additionalCosts) >= 6) {
-        $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-        $rv .= "Discarded a 6 power card and gains go again.";
-      }
-      return $rv;
+      if(AttackValue($additionalCosts) >= 6) GiveAttackGoAgain();
+      return "";
     case "DYN019": case "DYN020": case "DYN021":
-      if(AttackValue($additionalCosts) >= 6) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        $rv .= "Discarded a 6 power card and gains +" . EffectAttackModifier($cardID);
-      }
-      return $rv;
+      if(AttackValue($additionalCosts) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "DYN022": case "DYN023": case "DYN024":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      $rv .= "Your next Brute attack this turn gains +" . EffectAttackModifier($cardID);
+      $rv .= "";
       return $rv;
     case "DYN028":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -329,8 +295,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("PASSPARAMETER", $otherPlayer, $numBoosted, 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-        AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-{0}");
-        AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "{0}-");
+        AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-{0}", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "{0}-", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose $numBoosted card(s)", 1);
         AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
         AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
@@ -617,6 +583,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN215":
       return CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction";
     case "DYN221": case "DYN222": case "DYN223":
+      if($from == "PLAY") return "";
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       $auras = &GetAuras($currentPlayer);
       $uniqueID = $auras[count($auras) - AuraPieces() + 6];
@@ -644,11 +611,11 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN240":
       $rv = "";
       if($from == "PLAY") {
-        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
-        $rv = CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction.";
+        DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
+        $rv = CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction";
         if(IsRoyal($currentPlayer))
         {
-          $rv .= CardLink($cardID, $cardID) . " revealed the opponent's hand.";
+          $rv .= CardLink($cardID, $cardID) . " revealed the opponent's hand";
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
@@ -666,7 +633,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN242":
       if($from == "PLAY") {
-        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+        DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose any number of heroes");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Both_Heroes,Target_Yourself,Target_No_Heroes");
         AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "IMPERIALWARHORN", 1);
@@ -674,9 +641,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN243":
       $rv = "";
-      if ($from == "PLAY") {
-        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
-        $rv = "Draws a card";
+      if($from == "PLAY") {
+        DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
         Draw($currentPlayer);
       }
       return $rv;
@@ -697,7 +663,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function DYNHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_DamageDealt, $CCS_NumBoosted;
+  global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $CCS_NumBoosted;
   global $chainLinks, $combatChain;
   switch($cardID) {
     case "DYN047":
@@ -738,8 +704,8 @@ function DYNHitEffect($cardID)
       break;
     case "DYN117":
       if(IsHeroAttackTarget()) {
-        $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-        WriteLog(CardLink($cardID, $cardID) . " gives the current Assassin attack go again.");
+        GiveAttackGoAgain();
+        WriteLog(CardLink($cardID, $cardID) . " gives the current Assassin attack go again");
       }
       break;
     case "DYN118":

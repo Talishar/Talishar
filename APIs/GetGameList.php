@@ -4,19 +4,33 @@ include "../Libraries/SHMOPLibraries.php";
 include "../Libraries/HTTPLibraries.php";
 include "../HostFiles/Redirector.php";
 include "../CardDictionary.php";
+include "../AccountFiles/AccountSessionAPI.php";
+require_once '../Assets/patreon-php-master/src/PatreonLibraries.php';
+include_once '../Assets/patreon-php-master/src/API.php';
+include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
+include_once "../AccountFiles/AccountDatabaseAPI.php";
+include_once '../includes/functions.inc.php';
+include_once '../includes/dbh.inc.php';
 
 $path = "../Games";
 
 session_start();
 SetHeaders();
 
-$isMod = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk";
-
+if(!IsUserLoggedIn()) {
+  if(isset($_COOKIE["rememberMeToken"])) {
+    loginFromCookie();
+  }
+}
 $response = new stdClass();
 $response->gamesInProgress = [];
 $response->openGames = [];
-$response->canSeeQueue = isset($_SESSION["useruid"]);
+$canSeeQueue = IsUserLoggedIn();
+$response->canSeeQueue = $canSeeQueue;
 
+$isShadowBanned = false;
+if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
+else if(IsUserLoggedIn()) $isShadowBanned = IsBanned(LoggedInUserName());
 
 $gameInProgressCount = 0;
 if ($handle = opendir($path)) {
@@ -39,10 +53,11 @@ if ($handle = opendir($path)) {
           $gameInProgress->p2Hero = GetCachePiece($gameToken, 8);
           $gameInProgress->secondsSinceLastUpdate = intval(($currentTime - $lastGamestateUpdate) / 1000);
           $gameInProgress->gameName = $gameToken;
+          $gameInProgress->format = GetCachePiece($gameToken, 13);
           array_push($response->gamesInProgress, $gameInProgress);
         }
       }
-      else if ($currentTime - $lastGamestateUpdate > 900000) //~1 hour
+      else if ($currentTime - $lastGamestateUpdate > 300000) //~5 minutes?
       {
         if ($autoDeleteGames) {
           deleteDirectory($folder);
@@ -69,7 +84,7 @@ if ($handle = opendir($path)) {
       }
       if ($status == 0 && $visibility == "public" && intval(GetCachePiece($gameName, 11)) < 3) {
         $openGame = new stdClass();
-        $openGame->p1Hero = GetCachePiece($gameName, 7);
+        if($format != "compcc" && $format != "compblitz") $openGame->p1Hero = GetCachePiece($gameName, 7);
         $formatName = "";
         if ($format == "commoner") $formatName = "Commoner ";
         else if ($format == "livinglegendscc") $formatName = "Open Format";
@@ -79,7 +94,11 @@ if ($handle = opendir($path)) {
         $openGame->formatName = $formatName;
         $openGame->description = $description;
         $openGame->gameName = $gameToken;
-        array_push($response->openGames, $openGame);
+        if($isShadowBanned) {
+          if($format == "shadowblitz" || $format == "shadowcc") array_push($response->openGames, $openGame);
+        } else {
+          if($format != "shadowblitz" && $format != "shadowcc") array_push($response->openGames, $openGame);
+        }
       }
     }
   }

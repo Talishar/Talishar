@@ -268,6 +268,7 @@ function EffectAttackModifier($cardID)
   else if($set == "UPR") return UPREffectAttackModifier($cardID);
   else if($set == "DYN") return DYNEffectAttackModifier($cardID);
   else if($set == "OUT") return OUTEffectAttackModifier($cardID);
+  else if($set == "DTD") return DTDEffectAttackModifier($cardID);
   else if($set == "ROG") return ROGUEEffectAttackModifier($cardID);
   return 0;
 }
@@ -619,7 +620,7 @@ function CurrentEffectAttackAbility()
 
 function CurrentEffectPlayAbility($cardID, $from)
 {
-  global $currentTurnEffects, $currentPlayer, $actionPoints, $CS_LastDynCost, $CCS_CurrentAttackGainedGoAgain;
+  global $currentTurnEffects, $currentPlayer, $actionPoints, $CS_LastDynCost;
 
   if(DynamicCost($cardID) != "") $cost = GetClassState($currentPlayer, $CS_LastDynCost);
   else $cost = CardCost($cardID);
@@ -698,19 +699,19 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID)
           }
           break;
         case "ELE177":
-          if (CardCost($cardID) >= 0) {
+          if(CardCost($cardID) >= 0) {
             $hasGoAgain = true;
             $remove = true;
           }
           break;
         case "ELE178":
-          if (CardCost($cardID) >= 1) {
+          if(CardCost($cardID) >= 1) {
             $hasGoAgain = true;
             $remove = true;
           }
           break;
         case "ELE179":
-          if (CardCost($cardID) >= 2) {
+          if(CardCost($cardID) >= 2) {
             $hasGoAgain = true;
             $remove = true;
           }
@@ -718,6 +719,9 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID)
         case "ELE201":
           $hasGoAgain = true;
           $remove = true;
+          break;
+        case "ARC185-GA":
+          $hasGoAgain = ($cardID == "ARC212" || $cardID == "ARC213" || $cardID == "ARC214");
           break;
         default:
           break;
@@ -730,7 +734,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID)
 
 function CurrentEffectGrantsGoAgain()
 {
-  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused, $CCS_CurrentAttackGainedGoAgain;
+  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused;
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       switch ($currentTurnEffects[$i]) {
@@ -744,6 +748,7 @@ function CurrentEffectGrantsGoAgain()
         case "CRU091-1": case "CRU092-1": case "CRU093-1": return true;
         case "CRU122": return true;
         case "CRU145": case "CRU146": case "CRU147": return true;
+        case "MON141": case "MON142": case "MON143": return true;
         case "MON165": case "MON166": case "MON167": return true;
         case "MON193": return true;
         case "MON247": return true;
@@ -884,6 +889,7 @@ function IsCombatEffectActive($cardID)
   else if($set == "UPR") return UPRCombatEffectActive($cardID, $attackID);
   else if($set == "DYN") return DYNCombatEffectActive($cardID, $attackID);
   else if($set == "OUT") return OUTCombatEffectActive($cardID, $attackID);
+  else if($set == "DTD") return DTDCombatEffectActive($cardID, $attackID);
   else if($set == "ROG") return ROGUECombatEffectActive($cardID, $attackID);
 }
 
@@ -930,6 +936,7 @@ function IsCombatEffectPersistent($cardID)
     case "DYN089-UNDER": return true;
     case "DYN154": return true;
     case "OUT052": case "OUT140": case "OUT141": case "OUT144": case "OUT188_1": return true;
+    case "DTD198": return true;//Call Down the Lightning
     case "ROGUE018": return true;
     case "ROGUE601": return true;
     case "ROGUE603": return true;
@@ -962,14 +969,6 @@ function BeginEndPhaseEffects()
       case "UPR200": case "UPR201": case "UPR202":
         Draw($currentTurnEffects[$i + 1]);
         break;
-      case "DYN153":
-        $deck = &GetDeck($mainPlayer);
-        if(count($deck) == 0) break;
-        if(!ArsenalFull($mainPlayer)) {
-          $card = array_shift($deck);
-          AddArsenal($card, $mainPlayer, "DECK", "UP");
-        }
-        break;
       default:
         break;
     }
@@ -983,6 +982,9 @@ function BeginEndPhaseEffectTriggers()
     switch($currentTurnEffects[$i]) {
       case "ELE215-1":
         AddLayer("TRIGGER", $mainPlayer, "ELE215", $currentTurnEffects[$i+1], "-", "-");
+        break;
+      case "DYN153":
+        AddLayer("TRIGGER", $mainPlayer, "DYN153", $currentTurnEffects[$i+1], "-", "-");
         break;
       default: break;
     }
@@ -1007,6 +1009,22 @@ function ActivateAbilityEffects()
     if($remove) RemoveCurrentTurnEffect($i);
   }
   $currentTurnEffects = array_values($currentTurnEffects);
+}
+
+function CurrentEffectNameModifier($effectID, $effectParameter)
+{
+  $name = "";
+  switch($effectID)
+  {
+    case "OUT049":
+      $name = $effectParameter;
+      break;
+    case "OUT068": case "OUT069": case "OUT070":
+      $name = $effectParameter;
+      break;
+    default: break;
+  }
+  return $name;
 }
 
 ?>

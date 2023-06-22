@@ -5,11 +5,13 @@
 
 function PatreonLogin($access_token, $silent=true, $debugMode=false)
 {
-  if($access_token == "") return;
+  $output = new stdClass();
+  $output->patreonCampaigns = [];
+  if($access_token == "") return $output;
   if($access_token == "PERMANENT")
   {
     $_SESSION["isPatron"] = true;
-    return;
+    return $output;
   }
 
   $api_client = new API($access_token);
@@ -20,7 +22,7 @@ function PatreonLogin($access_token, $silent=true, $debugMode=false)
   if(is_string($patron_response))
   {
     if(!$silent) echo($patron_response);
-    return;
+    return $output;
   }
 
 	$patron = $patron_response->data;
@@ -28,7 +30,7 @@ function PatreonLogin($access_token, $silent=true, $debugMode=false)
 	$relationships = $patron->relationships;
 	if(isset($relationships)) $memberships = $relationships->memberships;
 
-  if(!isset($patron_response->included)) return;
+  if(!isset($patron_response->included)) return $output;
   $yourPatronages = [];
   $activeStatus = [];
 	for($i=0; $i<count($patron_response->included); ++$i)
@@ -55,6 +57,7 @@ function PatreonLogin($access_token, $silent=true, $debugMode=false)
       {
         $_SESSION[$campaign->SessionID()] = true;
   			array_push($yourPatronages, $campaign->CampaignName());
+        array_push($output->patreonCampaigns, $campaign->CampaignName());
       }
     }
 	}
@@ -70,7 +73,7 @@ function PatreonLogin($access_token, $silent=true, $debugMode=false)
     echo("<h4>1. Check your patreon page to make sure it's listed in your currently supported campaigns</h4>");
     echo("<h4>2. Reach out on our discord server!</h4>");
   }
-
+  return $output;
 }
 
 ?>

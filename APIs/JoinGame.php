@@ -194,7 +194,7 @@ if ($decklink != "") {
       $cardType = CardType($id);
       $cardSet = substr($id, 0, 3);
 
-      if (IsBanned($id, $format)) {
+      if (IsCardBanned($id, $format)) {
         if ($bannedCard != "") $bannedCard .= ", ";
         $bannedCard .= CardName($id);
       }
@@ -443,6 +443,7 @@ if ($matchup == "") {
   SetCachePiece($gameName, $playerID + 1, strval(round(microtime(true) * 1000)));
   SetCachePiece($gameName, $playerID + 3, "0");
   SetCachePiece($gameName, $playerID + 6, $character);
+  SetCachePiece($gameName, 14, $gameStatus);
   GamestateUpdated($gameName);
 
   //$authKey = ($playerID == 1 ? $p1Key : $p2Key);
@@ -589,15 +590,18 @@ function GetAltCardID($cardID)
   return $cardID;
 }
 
-function IsBanned($cardID, $format)
+function IsCardBanned($cardID, $format)
 {
+  $set = substr($cardID, 0, 3);
+  if($format != "livinglegendscc" && ($set == "LGS" || $set == "DTD" || $set == "HER")) return true;
   switch($format) {
     case "blitz": case "compblitz":
       switch($cardID) {
-        case "ARC076": case "ARC077": case "ELE006": case "ELE186": case "ELE187": case "ELE188": case "WTR164":
-        case "WTR165": case "WTR166": case "ELE223": case "WTR152": case "CRU174": case "CRU175": case "CRU176":
-        case "ARC129": case "ARC130": case "ARC131": case "MON239": case "ELE115": case "MON183": case "MON184":
-        case "MON185": case "CRU141": case "EVR037": case "EVR123": case "UPR113": case "UPR114": case "UPR115": case "UPR139":
+        case "ARC076": case "ARC077": case "ELE006": case "ELE186": case "ELE187": case "ELE188":
+        case "ELE223": case "WTR152": case "CRU174": case "CRU175": case "CRU176":
+        case "ARC129": case "ARC130": case "ARC131": case "MON239": case "MON183": case "MON184":
+        case "MON185": case "CRU141": case "EVR037": case "EVR123":
+        case "UPR103": case "EVR120": case "ELE002": case "ELE003": case "EVR121":
           return true;
         default: return false;
       }
@@ -606,7 +610,7 @@ function IsBanned($cardID, $format)
       switch($cardID) {
         case "MON001": case "MON003": case "EVR017": case "MON153": case "MON155": case "ELE006": case "ELE186":
         case "ELE187": case "ELE188": case "WTR164": case "WTR165": case "WTR166": case "ELE223": case "ARC170":
-        case "ARC171": case "ARC172": case "MON239": case "CRU141": case "ELE114":
+        case "ARC171": case "ARC172": case "MON239": case "CRU141": case "ELE114": case "ELE172":
           return true;
         default: return false;
       }

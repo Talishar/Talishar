@@ -6,7 +6,12 @@ include "../Libraries/HTTPLibraries.php";
 include "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
+require_once '../Assets/patreon-php-master/src/API.php';
 include_once '../Assets/patreon-php-master/src/PatreonLibraries.php';
+include_once "../AccountFiles/AccountDatabaseAPI.php";
+include_once '../includes/functions.inc.php';
+include_once '../includes/dbh.inc.php';
+include_once '../Database/ConnectionManager.php';
 ob_end_clean();
 SetHeaders();
 
@@ -37,11 +42,13 @@ session_start();
 
 if (!isset($_SESSION["userid"])) {
   if (isset($_COOKIE["rememberMeToken"])) {
-    include_once '../includes/functions.inc.php';
-    include_once '../includes/dbh.inc.php';
     loginFromCookie();
   }
 }
+
+$isShadowBanned = false;
+if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
+else if(isset($_SESSION["userid"])) $isShadowBanned = IsBanned($_SESSION["userid"]);
 
 if ($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
   //Must be logged in to use matchmaking
@@ -78,6 +85,12 @@ if ((!file_exists("../Games/$gameName")) && (mkdir("../Games/$gameName", 0700, t
   exit;
 }
 
+if($isShadowBanned) {
+  if($format == "cc" || $format == "livinglegendscc") $format = "shadowcc";
+  else if($format == "compcc") $format = "shadowcompcc";
+  else if($format == "blitz" || $format == "compblitz" || $format == "commoner") $format = "shadowblitz";
+}
+
 $p1Data = [1];
 $p2Data = [2];
 $p1SideboardSubmitted = "0";
@@ -111,7 +124,7 @@ fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
 $cacheVisibility = ($visibility == "public" ? "1" : "0");
-WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!" . $cacheVisibility . "!0!0!0"); //Initialize SHMOP cache for this game
+WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!" . $cacheVisibility . "!0!0!0!" . FormatCode($format) . "!" . $gameStatus); //Initialize SHMOP cache for this game
 
 $playerID = 1;
 

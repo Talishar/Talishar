@@ -71,12 +71,6 @@ $afterResolveEffects = [];
 $animations = [];
 $events = []; //Clear events each time so it's only updated ones that get sent
 
-if ((IsPatron(1) || IsPatron(2)) && !IsReplay()) {
-  $commandFile = fopen("./Games/" . $gameName . "/commandfile.txt", "a");
-  fwrite($commandFile, $playerID . " " . $mode . " " . $buttonInput . " " . $cardID . " " . $chkCount . " " . implode("|", $chkInput) . "\r\n");
-  fclose($commandFile);
-}
-
 $isSimulation = false;
 $response = new stdClass();
 
@@ -139,8 +133,7 @@ switch ($mode) {
     $layers = $newLayers;
     break;
   case 100011: //Resume adventure (roguelike)
-    if($roguelikeGameID == "")
-    {
+    if ($roguelikeGameID == "") {
       $response->error = "Cannot resume adventure - not a roguelike game.";
       $isValid = false;
       break;
@@ -161,6 +154,7 @@ if ($inGameStatus == $GameStatus_Rematch) {
   include "MenuFiles/ParseGamefile.php";
   include "MenuFiles/WriteGamefile.php";
   $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
+  SetCachePiece($gameName, 14, $gameStatus);
   $firstPlayer = 1;
   $firstPlayerChooser = ($winner == 1 ? 2 : 1);
   $p1SideboardSubmitted = "0";

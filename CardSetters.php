@@ -109,6 +109,15 @@ function AddResourceCost($player, $amount)
   $resources[1] += $amount;
 }
 
+function RemovePitch($player, $index)
+{
+  $pitch = &GetPitch($player);
+  $cardID = $pitch[$index];
+  unset($pitch[$index]);
+  $pitch = array_values($pitch);
+  return $cardID;
+}
+
 function AddArsenal($cardID, $player, $from, $facing, $counters=0)
 {
   global $mainPlayer;
@@ -193,6 +202,21 @@ function RemoveArsenal($player, $index)
   }
   $arsenal = array_values($arsenal);
   return $cardID;
+}
+
+function DestroyArsenal($player, $index=-1)
+{
+  $arsenal = &GetArsenal($player);
+  $cardIDs = "";
+  for($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if($index > -1 && $index != $i) continue;
+    if($cardIDs != "") $cardIDs .= ",";
+    $cardIDs .= $arsenal[$i];
+    WriteLog(CardLink($arsenal[$i], $arsenal[$i]) . " was destroyed from the arsenal");
+    AddGraveyard($arsenal[$i], $player, "ARS");
+  }
+  $arsenal = [];
+  return $cardIDs;
 }
 
 function SetCCAttackModifier($index, $amount)

@@ -8,28 +8,25 @@
     {
       case "MON001": case "MON002":
         PlayAura("MON104", $currentPlayer);
-        return "Creates a Spectral Shield.";
+        return "";
       case "MON090":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Makes your next Illusionist attack action card you play lose Phantasm.";
+        return "";
       case "MON091":
-        $rv = "";
-      if (!IsAllyAttackTarget()) {
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-        AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-        AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
-        AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
-        $rv .= "Lets you put a card from your opponent's hand on the bottom of their deck.";
-      }
-      return $rv;
-      case "MON092": PlayAura("MON104", $currentPlayer);
-      case "MON093": PlayAura("MON104", $currentPlayer);
-      case "MON094": PlayAura("MON104", $currentPlayer);
-        return "Creates Spectral Shields.";
+        if(!IsAllyAttackTarget()) {
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+          AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+          AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+          AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
+        }
+        return "";
+      case "MON092": PlayAura("MON104", $currentPlayer, 3); return "";
+      case "MON093": PlayAura("MON104", $currentPlayer, 2); return "";
+      case "MON094": PlayAura("MON104", $currentPlayer, 1); return "";
       case "MON095": case "MON096": case "MON097":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Makes your next attack be Illusionist, get +" . EffectAttackModifier($cardID) . " and phantasm.";
+        return "";
       default: return "";
     }
   }
@@ -79,28 +76,15 @@
   {
     switch($cardID)
     {
-      case "MON004":
-      case "MON007":
-      case "MON008": case "MON009": case "MON010":
-      case "MON014": case "MON015": case "MON016":
-      case "MON017": case "MON018": case "MON019":
-      case "MON020": case "MON021": case "MON022":
-      case "MON023": case "MON024": case "MON025":
-      case "MON026": case "MON027": case "MON028":
-      case "MON091":
-      case "MON098": case "MON099": case "MON100":
+      case "MON004": case "MON007": case "MON008": case "MON009": case "MON010": case "MON014":
+      case "MON015": case "MON016": case "MON017": case "MON018": case "MON019": case "MON020":
+      case "MON021": case "MON022": case "MON023": case "MON024": case "MON025": case "MON026":
+      case "MON027": case "MON028": case "MON091": case "MON098": case "MON099": case "MON100":
       case "MON101": case "MON102": case "MON103": return true;
       case "EVR138": FractalReplicationStats("HasPhantasm");
-      case "EVR139": return true;
-      case "EVR144": case "EVR145": case "EVR146": return true;
-      case "EVR147": case "EVR148": case "EVR149": return true;
-      case "UPR021": case "UPR022": case "UPR023": return true;
-      case "UPR027": case "UPR028": case "UPR029": return true;
-      case "UPR153": return true;
-      case "UPR551": return true;
-      case "DYN215": case "DYN216":
-      case "DYN224": case "DYN225": case "DYN226":
-      case "DYN227": case "DYN228": case "DYN229":
+      case "EVR139": case "EVR144": case "EVR145": case "EVR146": case "EVR147": case "EVR148": case "EVR149": return true;
+      case "UPR021": case "UPR022": case "UPR023": case "UPR027": case "UPR028": case "UPR029": case "UPR153": case "UPR551": return true;
+      case "DYN215": case "DYN216": case "DYN224": case "DYN225": case "DYN226": case "DYN227": case "DYN228": case "DYN229":
         return true;
       default: return false;
     }
@@ -118,9 +102,9 @@
     {
       $allies = &GetAllies($mainPlayer);
       if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "UPR043")) return true;
-      elseif (DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN002") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR415") return true;
-      elseif (DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN003") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR416") return true;
-      elseif (DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN004") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR413") return true;
+      else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN002") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR415") return true;
+      else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN003") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR416") return true;
+      else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN004") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR413") return true;
     }
     return HasPhantasm($combatChain[0]);
   }
@@ -128,10 +112,7 @@
   function ProcessPhantasmOnBlock($index)
   {
     global $mainPlayer;
-    if(IsPhantasmActive() && DoesBlockTriggerPhantasm($index))
-    {
-      AddLayer("LAYER", $mainPlayer, "PHANTASM");
-    }
+    if(IsPhantasmActive() && DoesBlockTriggerPhantasm($index)) AddLayer("LAYER", $mainPlayer, "PHANTASM");
   }
 
   function DoesBlockTriggerPhantasm($index)
@@ -144,7 +125,7 @@
     $origAV = $av;
     if($attackID == "MON008" || $attackID == "MON009" || $attackID == "MON010") --$av;
     $av += AuraAttackModifiers($index);
-    $av += $combatChain[$index+5]; //Add Attack Modifiers
+    $av += $combatChain[$index+5]; //Attack Modifiers
     return $av >= 6;
   }
 
@@ -160,17 +141,6 @@
     if(!$blockGreaterThan6) return false;
     if(SearchCurrentTurnEffects("MON090", $mainPlayer) || SearchCurrentTurnEffects("EVR142", $mainPlayer) || SearchCurrentTurnEffects("UPR154", $mainPlayer) || SearchCurrentTurnEffects("UPR412", $mainPlayer)) { return false; }
     return true;
-    /*
-    if(SearchCurrentTurnEffectsForCycle("EVR150", "EVR151", "EVR152", $mainPlayer)) return true;
-    if(SearchCurrentTurnEffectsForCycle("MON095", "MON096", "MON097", $mainPlayer)) return true;
-    if(SearchCurrentTurnEffectsForCycle("UPR155", "UPR156", "UPR157", $mainPlayer)) return true;
-    if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($combatChain[0]), "Ally"))
-    {
-      $allies = &GetAllies($mainPlayer);
-      if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "UPR043")) return true;
-    }
-    return false;
-    */
   }
 
   function PhantasmLayer()
@@ -189,7 +159,7 @@
       if(CardType($attackID) == "AA")
       {
         IncrementClassState($mainPlayer, $CS_NumPhantasmAADestroyed);
-        CloseCombatChain();//If it's an ally it will get destroyed with the ally
+        CloseCombatChain();
       }
       ProcessDecisionQueue();
     }
@@ -211,13 +181,8 @@
   {
     switch($cardID)
     {
-      case "MON005": return true;
-      case "MON006": return true;
-      case "MON011": return true;
-      case "MON012": return true;
-      case "MON013": return true;
-      case "EVR140": return true;
-      case "EVR141": case "EVR142": case "EVR143": return true;
+      case "MON005": case "MON006": case "MON011": case "MON012": case "MON013": return true;
+      case "EVR140": case "EVR141": case "EVR142": case "EVR143": return true;
       default: return false;
     }
   }
@@ -245,7 +210,6 @@
       $log .= " and searched for a specialization card";
       MentorTrigger($player, $index);
     }
-    WriteLog($log . ".");
   }
 
 ?>

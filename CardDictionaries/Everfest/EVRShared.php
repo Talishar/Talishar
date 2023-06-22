@@ -57,43 +57,6 @@
     }
   }
 
-  function EVRHasGoAgain($cardID)
-  {
-    switch($cardID)
-    {
-      case "EVR003": return true;
-      case "EVR004": return true;
-      case "EVR005": case "EVR006": case "EVR007": return true;
-      case "EVR014": case "EVR015": case "EVR016": return true;
-      case "EVR022": return true;
-      case "EVR030": case "EVR031": case "EVR032": return true;
-      case "EVR039": return true;
-      case "EVR041": case "EVR042": case "EVR043": return true;
-      case "EVR044": case "EVR045": case "EVR046": return true;
-      case "EVR047": case "EVR048": case "EVR049": return true;
-      case "EVR055": return true;
-      case "EVR056": return true;
-      case "EVR057": case "EVR058": case "EVR059": return true;
-      case "EVR066": case "EVR067": case "EVR068": return true;
-      case "EVR082": case "EVR083": case "EVR084": return true;
-      case "EVR089": return true;
-      case "EVR091": case "EVR092": case "EVR093": return true;
-      case "EVR100": case "EVR101": case "EVR102": return true;
-      case "EVR106": return true;
-      case "EVR107": case "EVR108": case "EVR109": return true;
-      case "EVR150": case "EVR151": case "EVR152": return true;
-      case "EVR158": return true;
-      case "EVR160": return true;
-      case "EVR164": case "EVR165": case "EVR166": return true;
-      case "EVR167": case "EVR168": case "EVR169": return true;
-      case "EVR170": case "EVR171": case "EVR172": return true;
-      case "EVR176": case "EVR177": case "EVR178": case "EVR179": case "EVR180": return true;
-      case "EVR181": return true;
-      case "EVR188": case "EVR189": case "EVR190": case "EVR191": case "EVR192": case "EVR193": return true;
-      default: return false;
-    }
-  }
-
   function EVRAbilityHasGoAgain($cardID)
   {
     switch($cardID)
@@ -208,7 +171,7 @@
   function EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_NumBoosted;
-    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $CS_NumBoosted, $mainPlayer, $CCS_RequiredEquipmentBlock;
+    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $mainPlayer, $CCS_RequiredEquipmentBlock;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $rv = "";
     switch($cardID)
@@ -359,8 +322,7 @@
         }
         return "";
       case "EVR079": case "EVR080": case "EVR081":
-        $numBoosts = GetClassState($currentPlayer, $CS_NumBoosted);
-        Opt($cardID, $numBoosts);
+        Opt($cardID, $combatChainState[$CCS_NumBoosted]);
         return "Lets you opt " . $numBoosts . ".";
       case "EVR082": case "EVR083": case "EVR084":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -625,24 +587,22 @@
           while(($card = RemoveHand($currentPlayer, 0)) != "") { AddBottomDeck($card, $currentPlayer, "HAND"); ++$numToDraw; }
           while(($card = RemoveArsenal($currentPlayer, 0)) != "") { AddBottomDeck($card, $currentPlayer, "ARS"); ++$numToDraw; }
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-          for ($i = 0; $i < $numToDraw; $i++) {
+          for($i = 0; $i < $numToDraw; $i++) {
             AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
           }
           WriteLog(CardLink("EVR187","EVR187") . " shuffled your hand and arsenal into your deck and drew " . $numToDraw . " cards.");
         }
         return "";
       case "EVR190":
-        $rv = "Talisman of Featherfoot is a partially manual card. Activate the instant ability if you met the criteria.";
+        $rv = "Talisman of Featherfoot is a partially manual card. Activate the instant ability if you met the criteria";
         if($from == "PLAY"){
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
           GiveAttackGoAgain();
-          $rv = "Gives the current attack go again.";
         }
         return $rv;
       case "EVR195":
         if($from == "PLAY"){
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
-          $rv = "Draws a card.";
+          DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
           Draw($currentPlayer);
         }
         return $rv;
@@ -1025,7 +985,8 @@
       foreach(array_count_values($names) as $name => $count) {
         if($count > 1) return false;
       }
+      return true;
     }
-    return true;
+    return false;
   }
 ?>

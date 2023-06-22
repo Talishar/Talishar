@@ -1,9 +1,10 @@
 <?php
 
   include './zzImageConverter.php';
+  include './Libraries/Trie.php';
 
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/v5.0.0/json/english/card.json";
-  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/outsiders/json/english/card.json";
+  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/dusk-till-dawn/json/english/card.json";
   $curl = curl_init();
   $headers = array(
     "Content-Type: application/json",
@@ -43,7 +44,7 @@
   {
     echo("<BR>" . $functionName . "<BR>");
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
-    $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD"];
+    $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "LGS", "HER"];
     $isString = true;
     if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health") $isString = false;
     fwrite($handler, "if(strlen(\$cardID) < 6) return " . ($isString ? "\"\"" : "0") . ";\r\n");
@@ -55,25 +56,16 @@
     {
       $cardRarity = "NA";
       $cardPrintings = [];
-      if($cardArray[$i]->name == "Nitro Mechanoid") continue;//This is due to the data set not yet differentiating faces
+      if(isset($cardArray[$i]->printings[0]->double_sided_card_info) && !$cardArray[$i]->printings[0]->double_sided_card_info[0]->is_front && $cardArray[$i]->name != "Aether Ashwing") continue;
       for($j=0; $j<count($cardArray[$i]->printings); ++$j)
       {
         $cardRarity = $cardArray[$i]->printings[$j]->rarity;
         $cardID = $cardArray[$i]->printings[$j]->id;
         $set = substr($cardID, 0, 3);
+        $cardNumber = substr($cardID, 3, 3);
         if(!in_array($set, $originalSets)) continue;
-        if(($set == "DVR" || $set == "RVD"))
-        {
-          $found = false;
-          for($k=$j+1; $k<count($cardArray[$i]->printings); ++$k)
-          {
-            $cardID2 = $cardArray[$i]->printings[$k]->id;
-            $set2 = substr($cardID2, 0, 3);
-            if($set2 == "RVD" || $set2 == "DVR") continue;
-            if(in_array($set, $originalSets)) { $found = true; break; }
-          }
-          if($found) continue;
-        }
+        if($set == "LGS" && $cardNumber < 156) continue;
+        if($set == "HER" && $cardNumber < 84) continue;
         $duplicate = false;
         for($k=0; $k<count($cardPrintings); ++$k)
         {
@@ -83,7 +75,7 @@
         {
           if($cardsSeen[$k] == $cardID) $duplicate = true;
         }
-        if($duplicate) continue;
+        if($duplicate && $set != "DVR" && $set != "RVD") continue;
         array_push($cardPrintings, $cardID);
         array_push($cardsSeen, $cardID);
         if($propertyName == "type") $data = MapType($cardArray[$i]);
@@ -142,41 +134,6 @@
     else TraverseTrie($trie, "", $handler, $isString, $defaultValue);
 
     fwrite($handler, "}\r\n\r\n");
-  }
-
-  function TraverseTrie(&$trie, $keySoFar, &$handler=null, $isString=true, $defaultValue="")
-  {
-    $default = ($defaultValue != "" ? ($isString ? "\"" . $defaultValue . "\"" : $defaultValue) : ($isString ? "\"\"" : "0"));
-    $depth = strlen($keySoFar);
-    if(is_array($trie))
-    {
-      fwrite($handler, "switch(\$cardID[" . $depth . "]) {\r\n");
-      foreach ($trie as $key => $value)
-      {
-        fwrite($handler, "case \"" . $key . "\":\r\n");
-        TraverseTrie($trie[$key], $keySoFar . $key, $handler, $isString, $defaultValue);
-      }
-      fwrite($handler, "default: return " . $default . ";\r\n");
-      fwrite($handler, "}\r\n");
-    }
-    else
-    {
-      if($handler != null)
-      {
-        if($isString) fwrite($handler, "return \"" . $trie . "\";\r\n");
-        else fwrite($handler, "return " . $trie . ";\r\n");
-      }
-    }
-  }
-
-  function AddToTrie(&$trie, $cardID, $depth, $value)
-  {
-    if($depth < strlen($cardID)-1)
-    {
-      if(!array_key_exists($cardID[$depth], $trie)) $trie[$cardID[$depth]] = [];
-      AddToTrie($trie[$cardID[$depth]], $cardID, $depth+1, $value);
-    }
-    else if(!isset($trie[$cardID[$depth]])) $trie[$cardID[$depth]] = $value;
   }
 
   function MapType($card)

@@ -35,7 +35,7 @@ echo ("<br><br><form  action='./BanPlayer.php'>");
 <?php
 
 
-$sql = "SELECT usersUid FROM users ORDER BY usersID DESC LIMIT 20";
+$sql = "SELECT usersUid FROM users ORDER BY usersId DESC LIMIT 20";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   //header("location: ../Signup.php?error=stmtfailed");

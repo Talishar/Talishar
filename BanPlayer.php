@@ -22,6 +22,7 @@ $playerNumberToBan = TryGET("playerNumberToBan", "");
 
 if ($playerToBan != "") {
   file_put_contents('./HostFiles/bannedPlayers.txt', $playerToBan . "\r\n", FILE_APPEND | LOCK_EX);
+  BanPlayer($playerToBan);
 }
 if ($ipToBan != "") {
   $gameName = $ipToBan;

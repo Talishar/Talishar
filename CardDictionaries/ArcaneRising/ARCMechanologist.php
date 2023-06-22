@@ -3,7 +3,7 @@
 function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $CS_NumBoosted, $actionPoints, $combatChainState, $CS_PlayIndex;
-  global $CCS_CurrentAttackGainedGoAgain, $combatChain, $CS_LastDynCost;
+  global $combatChain, $CS_LastDynCost;
   $rv = "";
   switch($cardID) {
     case "ARC003":
@@ -27,9 +27,6 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
         $rv .= "Banished " . CardLink($banished, $banished);
         if(ClassContains($banished, "MECHANOLOGIST", $currentPlayer)) {
           GainResources($currentPlayer, 1);
-          $rv .= " and gained 1 resource. ";
-        } else {
-          $rv .= ". ";
         }
         BanishCardForPlayer($banished, $currentPlayer, "DECK");
         unset($deck[$i]);
@@ -58,11 +55,9 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
         if(count($combatChain) > 0) {
           if(ClassContains($combatChain[0], "MECHANOLOGIST", $currentPlayer)) {
             GiveAttackGoAgain();
-            $rv = "Gives your pistol attack go again.";
           }
         } else {
           $items[$index + 1] = 1;
-          $rv = "Gained a steam counter.";
         }
       }
       return $rv;
@@ -83,9 +78,6 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
         if($items[$index + 1] == 0) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $items[$index + 2] = 2;
-          $rv = "Gains +2 arcane barrier this turn.";
-        } else {
-          $rv = "Gained a steam counter.";
         }
       }
       return $rv;
@@ -94,20 +86,18 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
         $items = &GetItems($currentPlayer);
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
         if(count($combatChain) > 0) {
-          $rv = "Makes your attack go on the bottom of your deck if it hits.";
         } else {
           $items[$index + 1] = 1;
-          $rv = "Gained a steam counter.";
         }
       }
       return $rv;
-    case "ARC019": //Convection Amplifier
+    case "ARC019":
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
       $items = &GetItems($currentPlayer);
       if($index != -1) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        --$items[$index + 1];
-        if ($items[$index + 1] <= 0) DestroyMyItem($index);
+        --$items[$index+1];
+        if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
         $rv = "Gives your next attack this turn Dominate.";
       }
       return $rv;
@@ -120,14 +110,13 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       AddCurrentTurnEffect($cardID . "-" . $additionalCosts, $currentPlayer, "PLAY");
       $rv = "";
       return $rv;
-    case "ARC037": //Optekal Monocle
+    case "ARC037":
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
       $items = &GetItems($currentPlayer);
-      if ($index != -1) {
+      if($index != -1) {
         Opt($cardID, 1);
-        --$items[$index + 1];
-        if ($items[$index + 1] <= 0) DestroyMyItem($index);
-        $rv = "Lets you Opt 1.";
+        --$items[$index+1];
+        if ($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
       }
       return $rv;
     default: return "";
@@ -222,17 +211,17 @@ function ItemBoostEffects()
     switch($items[$i]) {
       case "ARC036":
       case "DYN110": case "DYN111": case "DYN112":
-        if($items[$i + 2] == 2) {
+        if($items[$i+2] == 2) {
           AddLayer("TRIGGER", $currentPlayer, $items[$i], $i, "-", $items[$i + 4]);
         }
         break;
       case "EVR072":
-        if($items[$i + 2] == 2) {
+        if($items[$i+2] == 2) {
           WriteLog(CardLink($items[$i], $items[$i]) . " gives the attack +2.");
-          --$items[$i + 1];
-          $items[$i + 2] = 1;
+          --$items[$i+1];
+          $items[$i+2] = 1;
           AddCurrentTurnEffect("EVR072", $currentPlayer, "PLAY");
-          if($items[$i + 1] <= 0) DestroyMyItem($i);
+          if($items[$i+1] <= 0) DestroyItemForPlayer($currentPlayer, $i);
         }
         break;
       default:

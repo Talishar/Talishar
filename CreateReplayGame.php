@@ -59,7 +59,7 @@ fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
 $isReplay = "1";
-WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!0!" . $isReplay . "!0!0"); //Initialize SHMOP cache for this game
+WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!0!" . $isReplay . "!0!0!0!" . $gameStatus); //Initialize SHMOP cache for this game
 
 copy("./Replays/" . $userId . "/" . $replayNumber . "/origGamestate.txt", "./Games/" . $gameName . "/gamestate.txt");
 copy("./Replays/" . $userId . "/" . $replayNumber . "/replayCommands.txt", "./Games/" . $gameName . "/replayCommands.txt");

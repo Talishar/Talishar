@@ -8,7 +8,7 @@ include_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
 
   $conn = GetDBConnection();
-  $sql = "SELECT usersID, usersUid FROM users";
+  $sql = "SELECT usersId, usersUid FROM users";
   $stmt = mysqli_stmt_init($conn);
   if (!mysqli_stmt_prepare($stmt, $sql)) {
     echo("Problem loading user IDs");
@@ -23,7 +23,7 @@ include_once "./includes/dbh.inc.php";
   while ($row = mysqli_fetch_assoc($resultData)) {
   	//return $row;
     //array_push($userData, []);
-    $userID = intval($row["usersID"]);
+    $userID = intval($row["usersId"]);
     $userData[$userID] = [];
     $userData[$userID][0] = 1300;//Initial Elo
     $userData[$userID][1] = 0;//Num rated games
@@ -253,5 +253,3 @@ include_once "./includes/dbh.inc.php";
     }
     return min($numGames, $nStar);
   }
-
-?>
