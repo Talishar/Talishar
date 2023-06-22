@@ -239,6 +239,7 @@ function OnDefenseReactionResolveEffects()
     }
     if($remove) RemoveCurrentTurnEffect($i);
   }
+  ProcessMirageOnBlock(count($combatChain)-CombatChainPieces());
 }
 
 function OnBlockResolveEffects()
@@ -250,6 +251,7 @@ function OnBlockResolveEffects()
     if(SearchCurrentTurnEffects("ROGUE802", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
     if(SearchAurasForCard("ELE117", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 3);
     ProcessPhantasmOnBlock($i);
+    ProcessMirageOnBlock($i);
   }
   switch($combatChain[0]) {
     case "CRU051": case "CRU052":

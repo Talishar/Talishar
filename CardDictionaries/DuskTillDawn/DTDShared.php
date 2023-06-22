@@ -83,3 +83,64 @@ function DTDHitEffect($cardID)
     default: break;
   }
 }
+
+function DoesAttackTriggerMirage()
+{
+  global $combatChain, $mainPlayer;
+  if(ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer)) return false;
+  return CachedTotalAttack() >= 6;
+}
+
+function ProcessMirageOnBlock($index)
+{
+  global $mainPlayer;
+  if(IsMirageActive($index) && DoesAttackTriggerMirage())
+  {
+    AddLayer("LAYER", $mainPlayer, "MIRAGE");
+  }
+}
+
+function IsMirageActive($index)
+{
+  global $combatChain;
+  if(count($combatChain) == 0) return false;
+  return HasMirage($combatChain[$index]);
+}
+
+function HasMirage($cardID)
+{
+  switch($cardID)
+  {
+    case "DTD218": return true;
+    default: return false;
+  }
+}
+
+function MirageLayer()
+{
+  global $combatChain, $mainPlayer, $combatChainState, $defPlayer, $turn, $layers;
+  if(DoesAttackTriggerMirage())
+  {
+    for($i=count($combatChain)-CombatChainPieces(); $i>=CombatChainPieces(); $i-=CombatChainPieces())
+    {
+      if(IsMirageActive($i))
+      {
+        WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " is destroyed by Mirage.");
+        AddGraveyard($combatChain[$i], $defPlayer, "CC");
+        RemoveCombatChain($i);
+      }
+    }
+  }
+  else {
+    $turn[0] = "D";
+    $currentPlayer = $mainPlayer;
+    for($i=count($layers)-LayerPieces(); $i >= 0; $i-=LayerPieces())
+    {
+      if($layers[$i] == "DEFENDSTEP" || ($layers[$i] == "LAYER" && $layers[$i+2] == "MIRAGE"))
+      {
+        for($j=$i; $j<($i+LayerPieces()); ++$j) unset($layers[$j]);
+      }
+    }
+    $layers = array_values($layers);
+  }
+}

@@ -472,6 +472,9 @@ function ProcessLayer($player, $parameter)
     case "PHANTASM":
       PhantasmLayer();
       break;
+    case "MIRAGE":
+      MirageLayer();
+      break;
     default: break;
   }
 }

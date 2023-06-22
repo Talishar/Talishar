@@ -148,6 +148,10 @@ function CombatChainPowerModifier($index, $amount)
   global $combatChain;
   $combatChain[$index+5] += $amount;
   ProcessPhantasmOnBlock($index);
+  for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
+  {
+    ProcessMirageOnBlock($i);
+  }
 }
 
 function CacheCombatResult()
