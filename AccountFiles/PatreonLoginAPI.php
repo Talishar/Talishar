@@ -12,6 +12,7 @@ include_once "../APIKeys/APIKeys.php";
 use Patreon\API;
 use Patreon\OAuth;
 
+session_start();
 SetHeaders();
 
 $client_id = $patreonClientIDReact;
