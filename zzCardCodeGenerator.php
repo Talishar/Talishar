@@ -56,8 +56,7 @@
     {
       $cardRarity = "NA";
       $cardPrintings = [];
-      if(isset($cardArray[$i]->printings[0]->double_sided_card_info) && !$cardArray[$i]->printings[0]->double_sided_card_info[0]->is_front) continue;
-      if($cardArray[$i]->name == "Nitro Mechanoid") continue;//This is due to the data set not yet differentiating faces
+      if(isset($cardArray[$i]->printings[0]->double_sided_card_info) && !$cardArray[$i]->printings[0]->double_sided_card_info[0]->is_front && $cardArray[$i]->name != "Aether Ashwing") continue;
       for($j=0; $j<count($cardArray[$i]->printings); ++$j)
       {
         $cardRarity = $cardArray[$i]->printings[$j]->rarity;
