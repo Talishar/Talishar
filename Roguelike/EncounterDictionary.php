@@ -146,6 +146,7 @@ function EncounterDescription()
     case 236: return "The sigil is beautiful where it sits.";
     case 237: return "The waters of the pool are clear and calm. It's as though the pool is waiting for you.";
     case 238: return "You know now that the pool was waiting for you, and it waits for you yet again, in a new place. You know it will wait for you wherever you should need it.";
+    case 500: return "ERROR: There is currently a longstanding bug for the Rogulike Mode regarding the mini boss of the gamemode. We are currently unsure what causes it, and there are currently no active developers on the mode. To ensure you still get the best experience playing the gamemode, we have disabled the miniboss. Enjoy the rest of the mode, we should be back in time to continue making it the best it can be!";
     default: return "No encounter text.";
   }
 }
@@ -188,9 +189,9 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
       break;
     case 006:
-      //$encounter->position = 1; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
+      //$encounter->position = 7; //DON'T DELETE: I use this for easy hijacking into crossroad events to test crossroads
       AddDecisionQueue("CHOOSECARD", $player, GetRandomCards("Power,3"), "Power,3");
-      //AddDecisionQueue("SETENCOUNTER", $player, "115-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
+      //AddDecisionQueue("SETENCOUNTER", $player, "125-BeforeFight"); //DON'T DELETE: I use this for easy hijacking into the adventure to test new encounters
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
@@ -402,6 +403,10 @@ function InitializeEncounter($player)
       AddDecisionQueue("CLEARPOOL", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
+    case 500:
+      AddDecisionQueue("BUTTONINPUT", $player, "Leave");
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
     default: /*WriteLog("We Shouldn't Be Here");*/ break;
   }
 }
@@ -542,6 +547,9 @@ function EncounterImage()
       return "UPR176_cropped.png";
     case 238:
       return "UPR176_cropped.png";
+
+    case 500:
+      return "RVD025_cropped.png";
 
     default: return "CRU054_cropped.png";
   }

@@ -22,7 +22,7 @@ function GetNextEncounter() //TODO overhaul this whole function and children
             case 2: return RandomEvent();
             case 3: return CrossroadsDoubleChoice("Turn_back_and_take_the_long_way_around,Approach_the_roadblock_head_on,Venture_into_the_forest_and_attempt_to_sneak_past");//combat choice of X, Y, and Z
             case 4: return RandomEvent();
-            case 5: return CrossroadsDoubleChoice("Ignore_your_instincts_and_stop_for_the_night,Stay_very_briefly_to_stock_up,Leave_the_town_immediately");//combat choice of X, Y, and Z
+            case 5: return CrossroadsDoubleChoice("Ignore_your_instincts_and_stop_for_the_night,Leave_the_town_immediately");//combat choice of X, Y, and Z
             case 6: return RandomEvent();
             case 7: return "Follow_the_sounds_of_laughter"; //Campfire or a shop
             case 8: return "Explore_the_cave"; //Elite
