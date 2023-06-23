@@ -909,16 +909,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog(CardLink("MON247", "MON247") . " got +7 and go again");
       }
       return $lastResult;
-    case "CROWNOFDICHOTOMY":
-      $lastType = CardType($lastResult);
-      $indicesParam = ($lastType == "A" ? "GYCLASSAA,RUNEBLADE" : "GYCLASSNAA,RUNEBLADE");
-      PrependDecisionQueue("REVEALCARDS", $player, "-", 1);
-      PrependDecisionQueue("DECKCARDS", $player, "0", 1);
-      PrependDecisionQueue("MULTIADDTOPDECK", $player, "-", 1);
-      PrependDecisionQueue("MULTIREMOVEDISCARD", $player, "-", 1);
-      PrependDecisionQueue("CHOOSEDISCARD", $player, "<-", 1);
-      PrependDecisionQueue("FINDINDICES", $player, $indicesParam);
-      return 1;
     case "GENESIS":
       if(TalentContains($lastResult, "LIGHT", $player)) Draw($player, false);
       if(ClassContains($lastResult, "ILLUSIONIST", $player)) PlayAura("MON104", $player);

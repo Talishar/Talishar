@@ -10,13 +10,8 @@
         PlayAura("ARC112", $currentPlayer);
         return "Creates a runechant.";
       case "ARC079":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARC079");
-        AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
-        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
-        AddDecisionQueue("CROWNOFDICHOTOMY", $currentPlayer, "-", 1);
+        MZMoveCard($currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", "MYTOPDECK");
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CROWNOFDICHOTOMY", 1);
         return "";
       case "ARC081":
         AddCurrentTurnEffect($cardID, $currentPlayer);

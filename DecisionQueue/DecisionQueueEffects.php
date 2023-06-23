@@ -385,6 +385,11 @@ function SpecificCardLogic($player, $card, $lastResult)
         PrependDecisionQueue("SPECIFICCARD", $player, "BEASTWITHIN");
       }
       return 1;
+    case "CROWNOFDICHOTOMY":
+      $lastType = CardType($lastResult);
+      $newType = ($lastType == "A" ? "AA" : "A");
+      MZMoveCard($player, "MYDISCARD:type=" . $newType, "MYTOPDECK");
+      return 1;
     default: return "";
   }
 }
