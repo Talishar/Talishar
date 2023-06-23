@@ -109,10 +109,10 @@
         $theirCharacter = GetPlayerCharacter($otherPlayer);
         if(TalentContains($theirCharacter[0], "LIGHT", $otherPlayer)) {
           if(GetHealth($currentPlayer) > GetHealth($otherPlayer)) {
-            AddDecisionQueue("FINDINDICES", $currentPlayer, "GYTYPE,AA");
-            AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
-            AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
-            AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,NA", 1);
+            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA");
+            AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
+            AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
           }
           AddCurrentTurnEffect($cardID, $currentPlayer);
         }
