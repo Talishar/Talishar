@@ -66,21 +66,23 @@ function AuraDestroyed($player, $cardID, $isToken = false)
   for($i = 0; $i < count($auras); $i += AuraPieces()) {
     switch($auras[$i]) {
       case "EVR141":
-        if(!$isToken && $auras[$i + 5] > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
-          --$auras[$i + 5];
+        if(!$isToken && $auras[$i+5] > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
+          --$auras[$i+5];
           PlayAura("MON104", $player);
-        }
-        break;
-      case "DYN072":
-        if($auras[$i] == $cardID) {
-          $char = &GetPlayerCharacter($player);
-          for($j = 0; $j < count($char); $j += CharacterPieces()) {
-            if(CardSubType($char[$j]) == "Sword") $char[$j + 3] = 0;
-          }
         }
         break;
       default: break;
     }
+  }
+  switch($cardID)
+  {
+    case "DYN072":
+      $char = &GetPlayerCharacter($player);
+      for($j = 0; $j < count($char); $j += CharacterPieces()) {
+        if(CardSubType($char[$j]) == "Sword") $char[$j+3] = 0;
+      }
+      break;
+    default: break;
   }
   $goesWhere = GoesWhereAfterResolving($cardID);
   $numMercifulRetribution = SearchCount(SearchAurasForCard("MON012", $player)) + ($cardID == "MON012" ? 1 : 0);
