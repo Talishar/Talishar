@@ -99,11 +99,11 @@ function ModalAbilities($player, $card, $lastResult)
           case "Banish_an_attack_action_card_to_draw_2_cards":
             PrependDecisionQueue("DRAW", $player, "-", 1);
             PrependDecisionQueue("DRAW", $player, "-", 1);
-            PrependDecisionQueue("MULTIBANISH", $player, "HAND,-", 1);
-            PrependDecisionQueue("REMOVEMYHAND", $player, "-", 1);
-            PrependDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+            PrependDecisionQueue("MZREMOVE", $player, "-", 1);
+            PrependDecisionQueue("MZADDZONE", $player, "MYBANISH,HAND,-", 1);
+            PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
             PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to banish", 1);
-            PrependDecisionQueue("FINDINDICES", $player, "MYHANDAA");
+            PrependDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:type=AA");
             break;
           default: break;
         }
