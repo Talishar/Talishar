@@ -461,24 +461,8 @@ function OUTAbilityCost($cardID)
         return "";
       case "OUT160":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        if(!ArsenalFull($currentPlayer))
-        {
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "GYAA");
-          AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
-          AddDecisionQueue("WRITELOG", $currentPlayer, "Card chosen:", 1);
-          AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "1", 1);
-          AddDecisionQueue("ADDARSENAL", $currentPlayer, "GY-DOWN", 1);
-          PummelHit($currentPlayer, true);
-        }
-        if(!ArsenalFull($otherPlayer))
-        {
-          AddDecisionQueue("FINDINDICES", $otherPlayer, "GYAA");
-          AddDecisionQueue("CHOOSEDISCARD", $otherPlayer, "<-", 1);
-          AddDecisionQueue("WRITELOG", $currentPlayer, "Card chosen:", 1);
-          AddDecisionQueue("MULTIREMOVEDISCARD", $otherPlayer, "1", 1);
-          AddDecisionQueue("ADDARSENAL", $otherPlayer, "GY-DOWN", 1);
-          PummelHit($otherPlayer, true);
-        }
+        CodexOfFrailty($currentPlayer);
+        CodexOfFrailty($otherPlayer);
         PlayAura("DYN244", $currentPlayer);
         PlayAura($CID_Frailty, $otherPlayer);
         return "";
@@ -773,6 +757,20 @@ function OUTAbilityCost($cardID)
         PlayAura("DYN244", $mainPlayer);//Ponder
         break;
       default: break;
+    }
+  }
+
+  function CodexOfFrailty($player)
+  {
+    if(!ArsenalFull($player))
+    {
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:type=AA");
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $player, "MYARSENAL,GY,DOWN", 1);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      AddDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
+      PummelHit($player, true);
     }
   }
 
