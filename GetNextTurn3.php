@@ -200,6 +200,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $response->MyPlaymat = (IsColorblindMode($playerID) ? 0 : GetPlaymat($playerID));
   $response->TheirPlaymat = (IsColorblindMode($playerID) ? 0 : GetPlaymat($otherPlayer));
+  if($response->MyPlaymat == 0) $response->TheirPlaymat = 0;
 
   //Display active chain link
   $activeChainLink = new stdClass();
