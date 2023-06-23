@@ -73,14 +73,9 @@
       case "UPR075": case "UPR076": case "UPR077":
       case "UPR081": case "UPR082": case "UPR083":
         $numDraconicLinks = NumDraconicChainLinks();
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "HANDAAMAXCOST," . ($numDraconicLinks > 0 ? $numDraconicLinks - 1 : -2));
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to banish", 1);
-        AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
-        AddDecisionQueue("MULTIBANISH", $mainPlayer, "HAND,TT", 1);
-        AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was banished.", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{I}", 1);
+        MZMoveCard($mainPlayer, "MYHAND:type=AA;maxCost=" . ($numDraconicLinks > 0 ? $numDraconicLinks - 1 : -2), "MYBANISH,HAND,TT", may:true);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYBANISH", 1);
+        AddDecisionQueue("MZOP", $mainPlayer, "LASTMZINDEX", 1);
         AddDecisionQueue("MZOP", $mainPlayer, "GETUNIQUEID", 1);
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $cardID . ",HIT", 1);
         break;

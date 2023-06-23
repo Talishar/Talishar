@@ -102,8 +102,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "EQUIPONCC": $rv = GetEquipmentIndices($player, onCombatChain:true); break;
         case "CCAA": $rv = SearchCombatChainLink($player, "AA"); break;
         case "CCDEFLESSX": $rv = SearchCombatChainLink($player, "", "", -1, -1, "", "", false, false, -1, false, -1, $subparam); break;
-        case "HANDAAMAXCOST": $rv = SearchHand($player, "AA", "", $subparam); break;
-        case "MYHANDAA": $rv = SearchHand($player, "AA"); break;
         case "MYHANDARROW": $rv = SearchHand($player, "", "Arrow"); break;
         case "MYDISCARDARROW": $rv = SearchDiscard($player, "", "Arrow"); break;
         case "MAINHAND":
@@ -336,6 +334,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             case "BANISH": case "MYBANISH": case "THEIRBANISH": return $zone[$mzArr[1] + 2];
             default: return "-1";
           }
+        case "LASTMZINDEX": return MZLastIndex($player, $lastResult);
         default: break;
       }
       return $lastResult;

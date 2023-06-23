@@ -242,3 +242,12 @@ function MZMoveCard($player, $search, $where, $may=false)
   AddDecisionQueue("SETDQVAR", $player, "0", 1);
   AddDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
 }
+
+function MZLastIndex($player, $zone)
+{
+  switch($zone)
+  {
+    case "MYBANISH": $banish = &GetBanish($player); return "MYBANISH-" . count($banish)-BanishPieces();
+    default: return "";
+  }
+}
