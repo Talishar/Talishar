@@ -49,9 +49,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = LordOfWindIndices($player);
           if($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv;
           break;
-        case "ARC079":
-          $rv = CombineSearches(SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE"), SearchDiscard($player, "A", "", -1, -1, "RUNEBLADE"));
-          break;
         case "ARC121": $rv = SearchDeck($player, "", "", $lastResult, -1, "WIZARD"); break;
         case "CRU143": $rv = SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE"); break;
         case "DECK": $rv = SearchDeck($player); break;
@@ -120,8 +117,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $discard = &GetDiscard($player);
           $rv = GetIndices(count($discard));
           break;
-        case "GYCLASSAA": $rv = SearchDiscard($player, "AA", "", -1, -1, $subparam); break;
-        case "GYCLASSNAA": $rv = SearchDiscard($player, "A", "", -1, -1, $subparam); break;
         case "GYCARD": $rv = SearchDiscardForCard($player, $subparam); break;
         case "WEAPON": $rv = WeaponIndices($player, $player, $subparam); break;
         case "MON020": case "MON021": case "MON022": $rv = SearchDiscard($player, "", "", -1, -1, "", "", false, true); break;
