@@ -120,8 +120,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $discard = &GetDiscard($player);
           $rv = GetIndices(count($discard));
           break;
-        case "GYAA": $rv = SearchDiscard($player, "AA"); break;
-        case "GYNAA": $rv = SearchDiscard($player, "A"); break;
         case "GYCLASSAA": $rv = SearchDiscard($player, "AA", "", -1, -1, $subparam); break;
         case "GYCLASSNAA": $rv = SearchDiscard($player, "A", "", -1, -1, $subparam); break;
         case "GYCARD": $rv = SearchDiscardForCard($player, $subparam); break;

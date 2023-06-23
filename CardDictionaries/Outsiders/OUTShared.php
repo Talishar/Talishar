@@ -764,12 +764,7 @@ function OUTAbilityCost($cardID)
   {
     if(!ArsenalFull($player))
     {
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:type=AA");
-      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZADDZONE", $player, "MYARSENAL,GY,DOWN", 1);
-      AddDecisionQueue("MZREMOVE", $player, "-", 1);
-      AddDecisionQueue("SETDQVAR", $player, "0", 1);
-      AddDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
+      MZMoveCard($player, "MYDISCARD:type=AA", "MYARSENAL,GY,DOWN");
       PummelHit($player, true);
     }
   }

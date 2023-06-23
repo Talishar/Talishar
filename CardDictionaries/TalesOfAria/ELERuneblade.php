@@ -28,15 +28,7 @@
         AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
         return "";
       case "ELE079": case "ELE080": case "ELE081":
-        if(GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0)
-        {
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "GYNAA");
-          AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
-          AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-          AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
-          AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-          AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was selected.", 1);
-        }
+        if(GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0) MZMoveCard($currentPlayer, "MYDISCARD:type=A", "MYBOTDECK", may:true);
         return "";
       case "ELE085": case "ELE086": case "ELE087":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -78,17 +70,6 @@
     {
       default: break;
     }
-  }
-
-  function BlossomingSpellbladeDamageEffect($player)
-  {
-    $otherPlayer = $player == 1 ? 2 : 1;
-    AddDecisionQueue("FINDINDICES", $otherPlayer, "GYNAA");
-    AddDecisionQueue("MAYCHOOSEDISCARD", $otherPlayer, "<-", 1);
-    AddDecisionQueue("REMOVEDISCARD", $otherPlayer, "-", 1);
-    AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK,INST", 1);
-    AddDecisionQueue("SETDQVAR", $otherPlayer, "0", 1);
-    AddDecisionQueue("WRITELOG", $otherPlayer, "<0> was banished.", 1);
   }
 
 ?>

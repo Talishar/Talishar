@@ -154,12 +154,12 @@
       case "ELE073": case "ELE074": case "ELE075": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
       case "ELE076": case "ELE077": case "ELE078": SetClassState($player, $CS_NextNAAInstant, 1); break;
       case "ELE079": case "ELE080": case "ELE081":
-        PrependDecisionQueue("WRITELOG", $player, "<0> was selected.", 1);
+        PrependDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
         PrependDecisionQueue("SETDQVAR", $player, "0", 1);
-        PrependDecisionQueue("ADDBOTDECK", $player, "-", 1);
-        PrependDecisionQueue("REMOVEDISCARD", $player, "-", 1);
-        PrependDecisionQueue("MAYCHOOSEDISCARD", $player, "<-", 1);
-        PrependDecisionQueue("FINDINDICES", $player, "GYAA");
+        PrependDecisionQueue("MZREMOVE", $player, "-", 1);
+        PrependDecisionQueue("MZADDZONE", $player, "MYBOTDECK,GY,DOWN", 1);
+        PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:type=AA");
         break;
       case "ELE082": case "ELE083": case "ELE084": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE085": case "ELE086": case "ELE087": AddCurrentTurnEffect($cardID . "-FUSE", $player); break;

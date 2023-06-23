@@ -704,12 +704,7 @@
         if(IsHeroAttackTarget() && GetClassState($mainPlayer, $CS_NumAuras) >= 3) AddCurrentTurnEffect("EVR105", $defPlayer);
         break;
       case "EVR110": case "EVR111": case "EVR112":
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "GYNAA");
-        AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEDISCARD", $mainPlayer, "-", 1);
-        AddDecisionQueue("ADDBOTDECK", $mainPlayer, "-", 1);
-        AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was selected.", 1);
+        MZMoveCard($mainPlayer, "MYDISCARD:type=A", "MYBOTDECK", may:true);
         break;
       case "EVR113": case "EVR114": case "EVR115":
         if(IsHeroAttackTarget() && GetClassState($mainPlayer, $CS_NumAuras) > 0) PummelHit();
