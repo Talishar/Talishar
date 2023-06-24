@@ -55,9 +55,9 @@
     case "MON299": case "MON300": case "MON301":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "MON303": MZMoveCard($currentPlayer, "MYDISCARD:type=AA;maxCost=2", "TOPDECK"); return;
-    case "MON304": MZMoveCard($currentPlayer, "MYDISCARD:type=AA;maxCost=1", "TOPDECK"); return;
-    case "MON305": MZMoveCard($currentPlayer, "MYDISCARD:type=AA;maxCost=0", "TOPDECK"); return;
+    case "MON303": MZMoveCard($currentPlayer, "MYDISCARD:type=AA;maxCost=2", "MYTOPDECK"); return;
+    case "MON304": MZMoveCard($currentPlayer, "MYDISCARD:type=AA;maxCost=1", "MYTOPDECK"); return;
+    case "MON305": MZMoveCard($currentPlayer, "MYDISCARD:type=AA;maxCost=0", "MYTOPDECK"); return;
       default: return "";
     }
   }
