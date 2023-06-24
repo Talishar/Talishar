@@ -232,7 +232,7 @@ function MZStartTurnAbility($player, $MZIndex)
   }
 }
 
-function MZMoveCard($player, $search, $where, $may=false, $isReveal=false)
+function MZMoveCard($player, $search, $where, $may=false, $isReveal=false, $silent=false)
 {
   AddDecisionQueue("MULTIZONEINDICES", $player, $search);
   if($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
@@ -240,7 +240,8 @@ function MZMoveCard($player, $search, $where, $may=false, $isReveal=false)
   AddDecisionQueue("MZADDZONE", $player, $where, 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
   AddDecisionQueue("SETDQVAR", $player, "0", 1);
-  if($isReveal) AddDecisionQueue("REVEALCARDS", $player, "-", 1);
+  if($silent);
+  else if($isReveal) AddDecisionQueue("REVEALCARDS", $player, "-", 1);
   else AddDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
 }
 

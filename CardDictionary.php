@@ -733,8 +733,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ARC004": return GetClassState($player, $CS_NumBoosted) < 1;
     case "ARC005": return GetClassState($player, $CS_NumBoosted) < 1;
     case "ARC008": return GetClassState($player, $CS_NumBoosted) < 3;
-    case "ARC010": return (count($combatChain) > 0 && $from == "PLAY" && ($myItems[$index + 1] == 0 || CardSubtype($combatChain[0]) != "Pistol" || $myItems[$index + 2] != 2));
-    case "ARC018": return (count($combatChain) > 0 && $from == "PLAY" && ($myItems[$index + 1] > 0 || CardType($combatChain[0]) != "AA" || $myItems[$index + 2] != 2));
+    case "ARC010": return (count($combatChain) > 0 && $from == "PLAY" && ClassContains($combatChain[0], "MECHANOLOGIST", $player) && ($myItems[$index + 1] == 0 || CardSubtype($combatChain[0]) != "Pistol" || $myItems[$index + 2] != 2));
+    case "ARC018": return (count($combatChain) > 0 && $from == "PLAY" && ($myItems[$index+1] == 0 || CardType($combatChain[0]) != "AA" || $myItems[$index+2] != 2));
     case "ARC041": return !ArsenalHasFaceDownCard($player);
     case "CRU082": case "CRU083": return count($combatChain) == 0 || CardType($combatChain[0]) != "W";
     case "CRU088": case "CRU089": case "CRU090": return count($combatChain) == 0 || CardType($combatChain[0]) != "W";

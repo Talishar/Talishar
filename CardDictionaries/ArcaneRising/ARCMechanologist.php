@@ -20,14 +20,11 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       $deck = &GetDeck($currentPlayer);
       for($i = 0; $i < 2; ++$i) {
         if(count($deck) < $i) {
-          $rv .= "No cards in deck. Could not banish more cards.";
+          $rv .= "Could not banish more cards";
           return $rv;
         }
         $banished = $deck[$i];
-        $rv .= "Banished " . CardLink($banished, $banished);
-        if(ClassContains($banished, "MECHANOLOGIST", $currentPlayer)) {
-          GainResources($currentPlayer, 1);
-        }
+        if(ClassContains($banished, "MECHANOLOGIST", $currentPlayer)) GainResources($currentPlayer, 1);
         BanishCardForPlayer($banished, $currentPlayer, "DECK");
         unset($deck[$i]);
       }
@@ -51,20 +48,14 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
     case "ARC010":
       if($from == "PLAY") {
         $items = &GetItems($currentPlayer);
-        $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        if(count($combatChain) > 0) {
-          if(ClassContains($combatChain[0], "MECHANOLOGIST", $currentPlayer)) {
-            GiveAttackGoAgain();
-          }
-        } else {
-          $items[$index + 1] = 1;
-        }
+        if(count($combatChain) > 0) GiveAttackGoAgain();
+        else $items[GetClassState($currentPlayer, $CS_PlayIndex)+1] = 1;
       }
       return $rv;
     case "ARC014": case "ARC015": case "ARC016":
       if($cardID == "ARC014") $maxCost = 2;
       else if($cardID == "ARC015") $maxCost = 1;
-      if($cardID == "ARC016") $maxCost = 0;
+      else $maxCost = 0;
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:subtype=Item;maxCost=$maxCost;class=MECHANOLOGIST");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
@@ -74,21 +65,17 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
       $items = &GetItems($currentPlayer);
       if($index != -1) {
-        $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
-        if($items[$index + 1] == 0) {
+        $items[$index+1] = ($items[$index + 1] == 0 ? 1 : 0);
+        if($items[$index+1] == 0) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $items[$index + 2] = 2;
+          $items[$index+2] = 2;
         }
       }
       return $rv;
     case "ARC018":
       if($from == "PLAY") {
         $items = &GetItems($currentPlayer);
-        $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        if(count($combatChain) > 0) {
-        } else {
-          $items[$index + 1] = 1;
-        }
+        if(count($combatChain) == 0) $items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] = 1;
       }
       return $rv;
     case "ARC019":
@@ -98,13 +85,13 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
         AddCurrentTurnEffect($cardID, $currentPlayer);
         --$items[$index+1];
         if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
-        $rv = "Gives your next attack this turn Dominate.";
+        $rv = "Gives your next attack this turn Dominate";
       }
       return $rv;
     case "ARC032": case "ARC033": case "ARC034":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $boosted = GetClassState($currentPlayer, $CS_NumBoosted) > 0;
-      if ($boosted) Opt($cardID, 1);
+      if($boosted) Opt($cardID, 1);
       return "";
     case "ARC035":
       AddCurrentTurnEffect($cardID . "-" . $additionalCosts, $currentPlayer, "PLAY");
@@ -114,9 +101,9 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
       $items = &GetItems($currentPlayer);
       if($index != -1) {
-        Opt($cardID, 1);
+        PlayerOpt($currentPlayer, 1);
         --$items[$index+1];
-        if ($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
+        if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
       }
       return $rv;
     default: return "";
@@ -168,12 +155,9 @@ function Boost()
   AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_boost");
   AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
   AddDecisionQueue("OP", $currentPlayer, "BOOST", 1);
-  if (SearchCurrentTurnEffects("CRU102", $currentPlayer)) {
+  if(SearchCurrentTurnEffects("CRU102", $currentPlayer)) {
     AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-    AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-    AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
-    AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-    AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+    MZMoveCard($currentPlayer, "MYHAND", "MYTOPDECK", silent:true);
   }
 }
 
@@ -181,16 +165,11 @@ function DoBoost($player)
 {
   global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
   $deck = &GetDeck($player);
-  if(count($deck) == 0) {
-    WriteLog("Could not boost. No cards left in deck.");
-    return;
-  }
+  if(count($deck) == 0) { WriteLog("Could not boost"); return; }
   ItemBoostEffects();
   GainActionPoints(CountCurrentTurnEffects("ARC006", $player), $player);
   $cardID = $deck[0];
-  if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) {
-    PutItemIntoPlay($cardID);
-  }
+  if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) PutItemIntoPlay($cardID);
   else BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
   unset($deck[0]);
   $deck = array_values($deck);
@@ -211,21 +190,18 @@ function ItemBoostEffects()
     switch($items[$i]) {
       case "ARC036":
       case "DYN110": case "DYN111": case "DYN112":
-        if($items[$i+2] == 2) {
-          AddLayer("TRIGGER", $currentPlayer, $items[$i], $i, "-", $items[$i + 4]);
-        }
+        if($items[$i+2] == 2) AddLayer("TRIGGER", $currentPlayer, $items[$i], $i, "-", $items[$i + 4]);
         break;
       case "EVR072":
         if($items[$i+2] == 2) {
-          WriteLog(CardLink($items[$i], $items[$i]) . " gives the attack +2.");
+          WriteLog(CardLink($items[$i], $items[$i]) . " gives the attack +2");
           --$items[$i+1];
           $items[$i+2] = 1;
           AddCurrentTurnEffect("EVR072", $currentPlayer, "PLAY");
           if($items[$i+1] <= 0) DestroyItemForPlayer($currentPlayer, $i);
         }
         break;
-      default:
-        break;
+      default: break;
     }
   }
 }

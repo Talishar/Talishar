@@ -41,8 +41,8 @@
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:subtype=Arrow");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
         Reload();
         return "";
@@ -80,28 +80,19 @@
     switch($cardID)
     {
       case "ARC043":
-        if(IsHeroAttackTarget())
-        {
-          AddNextTurnEffect($cardID, $defPlayer);
-        }
+        if(IsHeroAttackTarget()) AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "ARC045":
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "HAND";
         break;
       case "ARC060": case "ARC061": case "ARC062":
-        if(IsHeroAttackTarget())
-        {
-          AddNextTurnEffect($cardID, $defPlayer);
-        }
+        if(IsHeroAttackTarget()) AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "ARC066": case "ARC067": case "ARC068":
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
       case "ARC069": case "ARC070": case "ARC071":
-        if(IsHeroAttackTarget())
-        {
-          PlayerLoseHealth($defPlayer, 1);
-        }
+        if(IsHeroAttackTarget()) PlayerLoseHealth($defPlayer, 1);
         break;
       default: break;
     }
@@ -115,40 +106,23 @@
       AddDecisionQueue("PASSPARAMETER", $player, "PASS");//Pass any subsequent load effects
       return "Your arsenal is full, so you cannot put an arrow in your arsenal";
     }
-    AddDecisionQueue("FINDINDICES", $player, "MYHANDARROW");
-    AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
-    AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
-    AddDecisionQueue("ADDARSENAL", $player, "HAND-" . $facing, 1);
+    MZMoveCard($player, "MYHAND:subtype=Arrow", "MYARSENAL,HAND," . $facing, may:true, silent:true);
   }
 
   function Reload($player=0)
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
-    if(!ArsenalEmpty($player)) {
-      WriteLog("Your arsenal is not empty, so you cannot Reload");
-      return;
-    }
-    AddDecisionQueue("FINDINDICES", $player, "HAND");
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to Reload");
-    AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
-    AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
-    AddDecisionQueue("ADDARSENAL", $player, "HAND-DOWN", 1);
+    if(!ArsenalEmpty($player)) { WriteLog("Your arsenal is not empty, so you cannot Reload"); return; }
+    MZMoveCard($player, "MYHAND", "MYARSENAL,HAND,DOWN", may:true, silent:true);
   }
 
   function SuperReload($player=0)
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
-    if(ArsenalFull($player))
-    {
-      WriteLog("Your arsenal is full, so you do not arsenal a card.");
-      return;
-    }
-    AddDecisionQueue("FINDINDICES", $player, "HAND");
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put in your arsenal");
-    AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
-    AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
-    AddDecisionQueue("ADDARSENAL", $player, "HAND-DOWN", 1);
+    if(ArsenalFull($player)) { WriteLog("Your arsenal is full, so you do not arsenal a card"); return; }
+    MZMoveCard($player, "MYHAND", "MYARSENAL,HAND,DOWN", may:true, silent:true);
   }
+
 ?>
