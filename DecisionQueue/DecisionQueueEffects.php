@@ -390,6 +390,16 @@ function SpecificCardLogic($player, $card, $lastResult)
       $newType = ($lastType == "A" ? "AA" : "A");
       MZMoveCard($player, "MYDISCARD:type=" . $newType, "MYTOPDECK");
       return 1;
+    case "PICKACARD":
+      $index = explode("-", $dqVars[0])[1];
+      $hand = &GetHand(($player == 1 ? 2 : 1));
+      $chosenName = CardName($hand[$index]);
+      $rand = GetRandom(0, count($hand) - 1);
+      if(RevealCards($hand[$rand], $player) && $chosenName == CardName($hand[$rand])) {
+        WriteLog("Bingo! Your opponent tossed you a silver.");
+        PutItemIntoPlayForPlayer("EVR195", $player);
+      }
+      return $lastResult;
     default: return "";
   }
 }

@@ -145,7 +145,7 @@ function CharacterStartTurnAbility($index)
       }
       break;
     case "EVR017":
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may reveal an Earth, Ice, and Lightning card for Bravo, Star of the Show.");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may reveal an Earth, Ice, and Lightning card for Bravo, Star of the Show");
       AddDecisionQueue("FINDINDICES", $mainPlayer, "BRAVOSTARSHOW");
       AddDecisionQueue("MULTICHOOSEHAND", $mainPlayer, "<-", 1);
       AddDecisionQueue("BRAVOSTARSHOW", $mainPlayer, "-", 1);

@@ -144,9 +144,9 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $currentPlayer = 1;
 }
 
-CacheCombatResult();
 CombatDummyAI(); //Only does anything if applicable
 EncounterAI();
+CacheCombatResult();
 
 if (!IsGameOver()) {
   if ($playerID == 1) $p1TotalTime += time() - intval($lastUpdateTime);

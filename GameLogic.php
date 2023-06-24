@@ -141,9 +141,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return ($rv == "" ? "PASS" : $rv);
     case "PUTPLAY":
       $subtype = CardSubType($lastResult);
-      if ($subtype == "Item") {
+      if($subtype == "Item") {
         PutItemIntoPlayForPlayer($lastResult, $player, ($parameter != "-" ? $parameter : 0));
-      } else if (DelimStringContains($subtype, "Aura")) {
+      } else if(DelimStringContains($subtype, "Aura")) {
         PlayAura($lastResult, $player);
         PlayAbility($lastResult, "-", 0);
       }
@@ -156,9 +156,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode(",", $parameter);
       if(count($params) < 3) array_push($params, "");
       $mzIndices = "";
-      for ($i = 0; $i < count($cards); ++$i) {
+      for($i = 0; $i < count($cards); ++$i) {
         $index = BanishCardForPlayer($cards[$i], $player, $params[0], $params[1], $params[2]);
-        if ($mzIndices != "") $mzIndices .= ",";
+        if($mzIndices != "") $mzIndices .= ",";
         $mzIndices .= "BANISH-" . $index;
       }
       $dqState[5] = $mzIndices;
@@ -180,7 +180,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "COMBATCHAINCHARACTERDEFENSEMODIFIER":
       $character = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $combatChain[$parameter]);
-      $character[$index + 4] += $lastResult;
+      $character[$index+4] += $lastResult;
       return $lastResult;
     case "REMOVEDISCARD":
       $discard = &GetDiscard($player);
@@ -233,7 +233,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "TURNARSENALFACEUP":
       $arsenal = &GetArsenal($player);
-      $arsenal[$lastResult + 1] = "UP";
+      $arsenal[$lastResult+1] = "UP";
       return $lastResult;
     case "REMOVEARSENAL":
       $index = $lastResult;
@@ -477,11 +477,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "WRITELOG":
       WriteLog(implode(" ", explode("_", $parameter)));
       return $lastResult;
-    case "ADDIMMEDIATECURRENTEFFECT":
-      AddCurrentTurnEffect($parameter, $player, "PLAY");
-      return "1";
     case "ADDCURRENTEFFECT":
-      AddCurrentTurnEffect($parameter, $player);
+      $params = explode(",", $parameter);
+      AddCurrentTurnEffect($params[0], $player, (count($params) > 1 ? $params[1] : ""));
       return "1";
     case "ADDCURRENTANDNEXTTURNEFFECT":
       AddCurrentTurnEffect($parameter, $player);
@@ -1101,14 +1099,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "AFTERDIEROLL":
       AfterDieRoll($player);
-      return $lastResult;
-    case "PICKACARD":
-      $hand = &GetHand(($player == 1 ? 2 : 1));
-      $rand = GetRandom(0, count($hand) - 1);
-      if(RevealCards($hand[$rand], $player) && CardName($hand[$dqVars[0]]) == CardName($hand[$rand])) {
-        WriteLog("Bingo! Your opponent tossed you a silver.");
-        PutItemIntoPlayForPlayer("EVR195", $player);
-      }
       return $lastResult;
     case "MODAL":
       return ModalAbilities($player, $parameter, $lastResult);

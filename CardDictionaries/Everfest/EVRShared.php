@@ -459,23 +459,20 @@
         if($cardID == "EVR167") $times = 4;
         else if($cardID == "EVR168") $times = 3;
         else if($cardID == "EVR169") $times = 2;
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-        AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRHAND");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MYHAND-", 1);
-        AddDecisionQueue("MZOP", $otherPlayer, "GETCARDID", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<1> was chosen", 1);
-        for($i=0; $i<$times; ++$i)
-        {
-          AddDecisionQueue("PICKACARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "Card chosen: <1>", 1);
+        for($i=0; $i<$times; ++$i) {
+          AddDecisionQueue("SPECIFICCARD", $currentPlayer, "PICKACARD", 1);
         }
         return "";
       case "EVR170": case "EVR171": case "EVR172":
         $rv = "Makes your next attack action that hits destroy an item";
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
-        if($from == "ARS")
-        {
+        if($from == "ARS") {
           AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
           $rv .= " and gives your next attack action card +" . EffectAttackModifier($cardID . "-2") . ".";
         }
@@ -489,8 +486,7 @@
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVENBIGGERTHANTHAT");
         return "";
       case "EVR176":
-        if($from == "PLAY")
-        {
+        if($from == "PLAY") {
           $deck = &GetDeck($currentPlayer);
           if(count($deck) == 0) return "Deck is empty.";
           $mod = "DECK";
@@ -514,8 +510,7 @@
         }
         return "";
       case "EVR178":
-        if($from == "PLAY")
-        {
+        if($from == "PLAY") {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "EVR178");
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDCARDTOCHAIN", $currentPlayer, "DECK", 1);
@@ -523,8 +518,7 @@
         }
         return "";
       case "EVR179":
-        if($from == "PLAY")
-        {
+        if($from == "PLAY") {
           AddCurrentTurnEffect($cardID, $currentPlayer, $from);
           $rv = "Reduces your next ability cost by 1.";
         }
