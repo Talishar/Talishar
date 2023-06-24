@@ -44,12 +44,7 @@
         AddDecisionQueue("ADDCLASSSTATE", $currentPlayer, $CS_DamagePrevention . "-1", 1);
         return "";
       case "ELE116":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-        AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was selected.", 1);
+        MZMoveCard($currentPlayer, "MYDISCARD:type=I;talent=EARTH&MYDISCARD:type=A;talent=EARTH&MYDISCARD:type=AA;talent=EARTH", "MYHAND");
         return "";
       case "ELE118":
         Draw($currentPlayer);
@@ -233,35 +228,6 @@
     $earth = CombineSearches(SearchDiscard($player, "A", "", -1, $minCost, "", "EARTH"), SearchDiscard($player, "AA", "", -1, $minCost, "", "EARTH"));
     $elemental = CombineSearches(SearchDiscard($player, "A", "", -1, $minCost, "", "ELEMENTAL"), SearchDiscard($player, "AA", "", -1, $minCost, "", "ELEMENTAL"));
     return CombineSearches($earth, $elemental);
-  }
-
-  function SummerwoodShelterIndices($player)
-  {
-    global $combatChain;
-    $indices = "";
-    for($i=0; $i<count($combatChain); $i += CombatChainPieces())
-    {
-      if($combatChain[$i+1] == $player)
-      {
-        $cardType = CardType($combatChain[$i]);
-        if($cardType == "A" || $cardType == "AA")
-        {
-          if(TalentContains($combatChain[$i], "EARTH") || TalentContains($combatChain[$i], "ELEMENTAL"))
-          {
-            if($indices != "") $indices .= ",";
-            $indices .= $i;
-          }
-        }
-      }
-    }
-    return $indices;
-  }
-
-  function PlumeOfEvergrowthIndices($player)
-  {
-    $indices = CombineSearches(SearchDiscard($player, "A", "", -1, -1, "", "EARTH"), SearchDiscard($player, "AA", "", -1, -1, "", "EARTH"));
-    $indices = CombineSearches($indices, SearchDiscard($player, "I", "", -1, -1, "", "EARTH"));
-    return $indices;
   }
 
   function PulseOfCandleholdIndices($player)

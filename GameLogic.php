@@ -115,10 +115,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = GetIndices(count($soul), 1);
           break;
         case "MON033-2": $rv = CombineSearches(SearchDeck($player, "A", "", $lastResult), SearchDeck($player, "AA", "", $lastResult)); break;
-        case "MON158": $rv = InvertExistenceIndices($player); break;
-        case "ELE113": $rv = PulseOfCandleholdIndices($player); break;
-        case "ELE116": $rv = PlumeOfEvergrowthIndices($player); break;
-        case "ELE125": case "ELE126": case "ELE127": $rv = SummerwoodShelterIndices($player); break;
+        case "MON158": $rv = InvertExistenceIndices($player); break;//This makes sense because it's a multi
+        case "ELE113": $rv = PulseOfCandleholdIndices($player); break;//This makes sense because it's a multi
+        case "ELE125": case "ELE126": case "ELE127": $rv = MZToIndices(SearchMultizone($player, "COMBATCHAINLINK:type=A;talent=EARTH,ELEMENTAL&COMBATCHAINLINK:type=AA;talent=EARTH,ELEMENTAL")); break;
         case "ELE140": case "ELE141": case "ELE142": $rv = SowTomorrowIndices($player, $parameter); break;
         case "EVR178": $rv = SearchDeckForCard($player, "MON281", "MON282", "MON283"); break;
         case "HEAVE": $rv = HeaveIndices(); break;
@@ -315,8 +314,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $mzArr = explode("-", $lastResult);
           $zone = &GetMZZone($player, $mzArr[0]);
           switch($mzArr[0]) {
-            case "ALLY": case "MYALLY": case "THEIRALLY": return $zone[$mzArr[1] + 5];
-            case "BANISH": case "MYBANISH": case "THEIRBANISH": return $zone[$mzArr[1] + 2];
+            case "ALLY": case "MYALLY": case "THEIRALLY": return $zone[$mzArr[1]+5];
+            case "BANISH": case "MYBANISH": case "THEIRBANISH": return $zone[$mzArr[1]+2];
             default: return "-1";
           }
         case "LASTMZINDEX": return MZLastIndex($player, $lastResult);

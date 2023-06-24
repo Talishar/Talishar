@@ -954,6 +954,19 @@ function SearchMultizone($player, $searches)
   return $rv;
 }
 
+function MZToIndices($mzSearch)
+{
+  $output = "";
+  $mzSearchArr = explode(",", $mzSearch);
+  for($i=0; $i<count($mzSearchArr); ++$i)
+  {
+    $mzArr = explode("-", $mzSearchArr[$i]);
+    if($output != "") $output .= ",";
+    $output .= $mzArr[1];
+  }
+  return $output;
+}
+
 function IntimidateCount($player)
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
