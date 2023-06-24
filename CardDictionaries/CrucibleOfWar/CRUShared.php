@@ -1,11 +1,8 @@
 <?php
 
-  function CRUAbilityCost($cardID)
-  {
+  function CRUAbilityCost($cardID) {
     global $CS_PlayIndex, $currentPlayer;
-
-    switch($cardID)
-    {
+    switch($cardID) {
       case "CRU004": case "CRU005": return 2;
       case "CRU024": return 4;
       case "CRU025": return 3;
@@ -24,10 +21,8 @@
     }
   }
 
-  function CRUAbilityType($cardID, $index=-1)
-  {
-    switch($cardID)
-    {
+  function CRUAbilityType($cardID, $index=-1) {
+    switch($cardID) {
       case "CRU004": case "CRU005": return "AA";
       case "CRU006": return "A";
       case "CRU024": return "AA";
@@ -51,10 +46,8 @@
     }
   }
 
-  function CRUAbilityHasGoAgain($cardID)
-  {
-    switch($cardID)
-    {
+  function CRUAbilityHasGoAgain($cardID) {
+    switch($cardID) {
       case "CRU006": return true;
       case "CRU025": return true;
       case "CRU081": return true;
@@ -68,10 +61,8 @@
     }
   }
 
-  function CRUEffectAttackModifier($cardID)
-  {
-    switch($cardID)
-    {
+  function CRUEffectAttackModifier($cardID) {
+    switch($cardID) {
       case "CRU008": return 2;
       case "CRU025": return 2;
       case "CRU029": return 10;
@@ -110,11 +101,9 @@
     }
   }
 
-  function CRUCombatEffectActive($cardID, $attackID)
-  {
+  function CRUCombatEffectActive($cardID, $attackID) {
     global $combatChain, $combatChainState, $mainPlayer, $CCS_IsBoosted, $CS_ArsenalFacing;
-    switch($cardID)
-    {
+    switch($cardID) {
       case "CRU008": return true;
       case "CRU013": case "CRU014": case "CRU015": return true;
       case "CRU025": return HasCrush($attackID);
@@ -149,13 +138,12 @@
     }
   }
 
-function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
-{
+function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts) {
   global $mainPlayer, $CS_NumBoosted, $combatChainState, $currentPlayer, $defPlayer;
   global $CS_AtksWWeapon, $CS_Num6PowDisc, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_PlayIndex, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
   global $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $CCS_RequiredEquipmentBlock, $CCS_NumBoosted;
   $rv = "";
-  switch ($cardID) {
+  switch($cardID) {
     case "CRU004": case "CRU005":
       if(GetClassState($currentPlayer, $CS_Num6PowDisc) > 0) {
         GiveAttackGoAgain();
@@ -175,8 +163,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "CRU009":
       $roll = GetDieRoll($currentPlayer);
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      for($i = 1; $i < $roll; $i += 2)
-      {
+      for($i = 1; $i < $roll; $i += 2) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
@@ -281,16 +268,14 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return $rv;
     case "CRU094": case "CRU095": case "CRU096":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
-      if(GetClassState($currentPlayer, $CS_AtksWWeapon) > 0)
-      {
+      if(GetClassState($currentPlayer, $CS_AtksWWeapon) > 0) {
         AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
         $rv = "Gives your attack dominate because you've attacked with a weapon";
       }
       return $rv;
     case "CRU101":
       $abilityType = GetResolvedAbilityType($cardID);
-      if($abilityType == "A")
-      {
+      if($abilityType == "A") {
         $character = &GetPlayerCharacter($currentPlayer);
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
         $character[$index + 2] = 1;
@@ -385,7 +370,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "CRU128":
-      if (!IsAllyAttacking()) {
+      if(!IsAllyAttacking()) {
         TrapTriggered($cardID);
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
@@ -419,9 +404,9 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "CRU154": case "CRU155": case "CRU156":
-      if (!CanRevealCards($currentPlayer)) return "Cannot reveal cards";
-      if ($cardID == "CRU154") $count = 3;
-      else if ($cardID == "CRU155") $count = 2;
+      if(!CanRevealCards($currentPlayer)) return "Cannot reveal cards";
+      if($cardID == "CRU154") $count = 3;
+      else if($cardID == "CRU155") $count = 2;
       else $count = 1;
       $deck = &GetDeck($currentPlayer);
       $cards = "";
@@ -446,7 +431,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "CRU163":
-      Opt($cardID, 2);
+      PlayerOpt($currentPlayer, 2);
       return "";
     case "CRU164":
       NegateLayer($target);
@@ -456,11 +441,11 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       else if($cardID == "CRU166") $optAmount = 2;
       else $optAmount = 1;
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      Opt($cardID, $optAmount);
+      PlayerOpt($currentPlayer, $optAmount);
       return "";
     case "CRU168": case "CRU169": case "CRU170":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-      Opt($cardID, 1);
+      PlayerOpt($currentPlayer, 1);
       return "";
     case "CRU171": case "CRU172": case "CRU173":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
@@ -471,9 +456,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "CRU181":
       $count = SearchCount(CombineSearches(SearchDiscardForCard(1, "CRU181"), SearchDiscardForCard(2, "CRU181")));
-      for($i = 0; $i < $count; ++$i) {
-        Draw($currentPlayer);
-      }
+      for($i = 0; $i < $count; ++$i) Draw($currentPlayer);
       return "Drew " . $count . " card" . ($count > 1 ? "s" : "");
     case "CRU182":
       AddCurrentTurnEffect("CRU182", ($currentPlayer == 1 ? 2 : 1));
@@ -490,7 +473,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "CRU188":
       Draw($currentPlayer);
       Draw($currentPlayer);
-      return "Draws 2 cards.";
+      return "";
     case "CRU189": case "CRU190": case "CRU191":
       $options = GetChainLinkCards($defPlayer, "AA");
       if($options == "") return "No defending attack action cards";
@@ -511,9 +494,7 @@ function CRUHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer, $combatChainState, $CS_ArcaneDamageTaken;
   switch($cardID) {
-    case "CRU054":
-      if(ComboActive()) PlayAura("CRU075", $mainPlayer);
-      break;
+    case "CRU054": if(ComboActive()) PlayAura("CRU075", $mainPlayer); break;
     case "CRU060": case "CRU061": case "CRU062":
       if(ComboActive()) {
         $num = NumAttacksHit()+1;
