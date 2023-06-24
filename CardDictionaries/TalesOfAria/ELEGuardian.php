@@ -55,13 +55,9 @@
         }
         return "";
       case "ELE006":
-        if(DelimStringContains($additionalCosts, "EARTH")) AddDecisionQueue("AWAKENINGTOKENS", $currentPlayer, "-");
-        AddDecisionQueue("AWAKENINGTOKENS", $currentPlayer, "-", 1);
-        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-        AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        $num = GetHealth($currentPlayer == 1 ? 2 : 1) - GetHealth($currentPlayer);
+        for($i = 0; $i < $num * (DelimStringContains($additionalCosts, "EARTH") ? 2 : 1); ++$i) PlayAura("WTR075", $currentPlayer);
+        MZMoveCard($currentPlayer, "MYDECK:type=AA;class=GUARDIAN;maxCost=" . CountAura("WTR075", $currentPlayer), "MYHAND", may:true, isReveal:true);
         return "";
       case "ELE205":
         AddCurrentTurnEffect($cardID, $currentPlayer);

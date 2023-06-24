@@ -116,7 +116,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "MON033-2": $rv = CombineSearches(SearchDeck($player, "A", "", $lastResult), SearchDeck($player, "AA", "", $lastResult)); break;
         case "MON158": $rv = InvertExistenceIndices($player); break;
-        case "ELE006": $rv = SearchDeck($player, "AA", "", CountAura("WTR075", $player), -1, "GUARDIAN"); break;
         case "ELE113": $rv = PulseOfCandleholdIndices($player); break;
         case "ELE116": $rv = PlumeOfEvergrowthIndices($player); break;
         case "ELE125": case "ELE126": case "ELE127": $rv = SummerwoodShelterIndices($player); break;
@@ -851,10 +850,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $arsenal = &GetArsenal($player);
       if(count($arsenal) > 0 && count($params) == 2) AddCurrentTurnEffect($params[0], $player, $params[1], $arsenal[count($arsenal) - ArsenalPieces() + 5]);
       return $lastResult;
-    case "AWAKENINGTOKENS":
-      $num = GetHealth($player == 1 ? 2 : 1) - GetHealth($player);
-      for($i = 0; $i < $num; ++$i) PlayAura("WTR075", $player);
-      return 1;
     case "INVERTEXISTENCE":
       if($lastResult == "") {
         WriteLog("No cards were selected, so Invert Existence did not banish any cards");
