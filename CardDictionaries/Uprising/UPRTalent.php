@@ -63,13 +63,7 @@
         AddLayer("TRIGGER", $currentPlayer, $cardID);
         return "";
       case "UPR097":
-        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1)
-        {
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "GYCARD,UPR101");
-          AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
-          AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-          AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
-        }
+        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1) MZMoveCard($currentPlayer, "MYDISCARD:cardID=UPR101", "MYHAND");
         return "";
       case "UPR099":
         $rv = "";
@@ -219,10 +213,7 @@
         }
         break;
       case "UPR100":
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "GYCARD,UPR101");
-        AddDecisionQueue("CHOOSEDISCARD", $mainPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEDISCARD", $mainPlayer, "-", 1);
-        AddDecisionQueue("ADDHAND", $mainPlayer, "-", 1);
+        MZMoveCard($mainPlayer, "MYDISCARD:cardID=UPR101", "MYHAND");
         AddDecisionQueue("OP", $mainPlayer, "GIVEATTACKGOAGAIN", 1);
         break;
       case "UPR187":

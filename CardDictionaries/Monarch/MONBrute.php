@@ -15,11 +15,8 @@
         Draw($currentPlayer);
         $card = DiscardRandom();
         if(AttackValue($card) >= 6) {
-          AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-          AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
-          AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
+          MZMoveCard($currentPlayer, "MYDECK:hasBloodDebt=true", "MYBANISH,DECK,-", may:true);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
-          AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,NA", 1);
         }
         return "";
       case "MON138": case "MON139": case "MON140":

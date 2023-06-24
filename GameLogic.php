@@ -104,15 +104,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "CCDEFLESSX": $rv = SearchCombatChainLink($player, "", "", -1, -1, "", "", false, false, -1, false, -1, $subparam); break;
         case "MYHANDARROW": $rv = SearchHand($player, "", "Arrow"); break;
         case "MYDISCARDARROW": $rv = SearchDiscard($player, "", "Arrow"); break;
-        case "MAINHAND":
-          $hand = &GetHand($mainPlayer);
-          $rv = GetIndices(count($hand)); break;
-        case "BANISHTYPE": $rv = SearchBanish($player, $subparam); break;
         case "GY":
           $discard = &GetDiscard($player);
           $rv = GetIndices(count($discard));
           break;
-        case "GYCARD": $rv = SearchDiscardForCard($player, $subparam); break;
         case "WEAPON": $rv = WeaponIndices($player, $player, $subparam); break;
         case "MON020": case "MON021": case "MON022": $rv = SearchDiscard($player, "", "", -1, -1, "", "", false, true); break;
         case "MON033-1":
@@ -120,8 +115,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = GetIndices(count($soul), 1);
           break;
         case "MON033-2": $rv = CombineSearches(SearchDeck($player, "A", "", $lastResult), SearchDeck($player, "AA", "", $lastResult)); break;
-        case "MON125": $rv = SearchDeck($player, "", "", -1, -1, "", "", true); break;
-        case "MON156": $rv = SearchHand($player, "", "", -1, -1, "", "", true); break;
         case "MON158": $rv = InvertExistenceIndices($player); break;
         case "MON159": case "MON160": case "MON161": $rv = SearchDiscard($player, "A", "", -1, -1, "", "", true); break;
         case "MON212": $rv = SearchBanish($player, "AA", "", $subparam); break;

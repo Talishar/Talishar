@@ -6,10 +6,7 @@
     switch($cardID)
     {
       case "UPR044": case "UPR045":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "GYCARD,UPR101");
-        AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
+        MZMoveCard($currentPlayer, "MYDISCARD:cardID=UPR101", "MYHAND");
         return "";
       case "UPR047":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -28,10 +25,7 @@
         return "";
       case "UPR057": case "UPR058": case "UPR059":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "GYCARD,UPR101");
-        AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
+        MZMoveCard($currentPlayer, "MYDISCARD:cardID=UPR101", "MYHAND", may:true);
         return "";
       case "UPR060": case "UPR061": case "UPR062":
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);

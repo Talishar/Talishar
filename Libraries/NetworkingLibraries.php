@@ -1680,19 +1680,11 @@ function PayAdditionalCosts($cardID, $from)
       RandomBanish3GY();
       break;
     case "MON156":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "MON156");
-      AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
+      MZMoveCard($currentPlayer, "MYHAND:hasBloodDebt=true", "MYBANISH,HAND,-", may:true);
       AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
-    case "MON195":
-    case "MON196":
-    case "MON197":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-      AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
+    case "MON195": case "MON196": case "MON197":
+      MZMoveCard($currentPlayer, "MYHAND", "MYBANISH,HAND,-", may:true);
       AddDecisionQueue("ALLCARDTALENTORPASS", $currentPlayer, "SHADOW", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       break;
@@ -1826,10 +1818,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       break;
     case "UPR094":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "GYCARD,UPR101");
-      AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
-      AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,-", 1);
+      MZMoveCard($currentPlayer, "MYDISCARD:cardID=UPR101", "MYBANISH,GY,-", may:true);
       AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-PHOENIXBANISH", 1);
       break;
     case "OUT001": case "OUT002":
