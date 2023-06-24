@@ -29286,33 +29286,33 @@ function GeneratedIs1H($cardID) {
 if(strlen($cardID) < 6) return 0;
 if(is_int($cardID)) return 0;
 switch($cardID) {
-case "CRU079": return 1;
-case "CRU080": return 1;
-case "LGS156": return 1;
-case "CRU048": return 1;
-case "CRU049": return 1;
-case "OUT048": return 1;
-case "WTR078": return 1;
-case "MON105": return 1;
-case "MON106": return 1;
-case "CRU004": return 1;
-case "CRU005": return 1;
-case "OUT005": return 1;
-case "OUT006": return 1;
-case "OUT007": return 1;
-case "OUT008": return 1;
-case "DYN069": return 1;
-case "DYN070": return 1;
-case "OUT009": return 1;
-case "OUT010": return 1;
-case "DYN115": return 1;
-case "DYN116": return 1;
-case "OUT004": return 1;
-case "ELE202": return 1;
-case "ELE003": return 1;
-case "CRU051": return 1;
-case "CRU052": return 1;
-default: return ;}
+case "CRU079": return true;
+case "CRU080": return true;
+case "LGS156": return true;
+case "CRU048": return true;
+case "CRU049": return true;
+case "OUT048": return true;
+case "WTR078": return true;
+case "MON105": return true;
+case "MON106": return true;
+case "CRU004": return true;
+case "CRU005": return true;
+case "OUT005": return true;
+case "OUT006": return true;
+case "OUT007": return true;
+case "OUT008": return true;
+case "DYN069": return true;
+case "DYN070": return true;
+case "OUT009": return true;
+case "OUT010": return true;
+case "DYN115": return true;
+case "DYN116": return true;
+case "OUT004": return true;
+case "ELE202": return true;
+case "ELE003": return true;
+case "CRU051": return true;
+case "CRU052": return true;
+default: return false;}
 }
 
 ?>

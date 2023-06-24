@@ -118,7 +118,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MON158": $rv = InvertExistenceIndices($player); break;//This makes sense because it's a multi
         case "ELE113": $rv = PulseOfCandleholdIndices($player); break;//This makes sense because it's a multi
         case "ELE125": case "ELE126": case "ELE127": $rv = MZToIndices(SearchMultizone($player, "COMBATCHAINLINK:type=A;talent=EARTH,ELEMENTAL&COMBATCHAINLINK:type=AA;talent=EARTH,ELEMENTAL")); break;
-        case "ELE140": case "ELE141": case "ELE142": $rv = SowTomorrowIndices($player, $parameter); break;
         case "EVR178": $rv = SearchDeckForCard($player, "MON281", "MON282", "MON283"); break;
         case "HEAVE": $rv = HeaveIndices(); break;
         case "BRAVOSTARSHOW": $rv = BravoStarOfTheShowIndices(); break;

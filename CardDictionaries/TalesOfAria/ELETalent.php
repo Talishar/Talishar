@@ -22,7 +22,7 @@
       case "ELE107": GainHealth(2, $currentPlayer); return "";
       case "ELE108": GainHealth(1, $currentPlayer); return "";
       case "ELE112":
-        if (count($combatChain) > 0 || CardType($layers[0]) == "AA" || GetAbilityType($layers[0]) == "AA") {
+        if(count($combatChain) > 0 || CardType($layers[0]) == "AA" || GetAbilityType($layers[0]) == "AA") {
           AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         } else {
           AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -38,7 +38,7 @@
         return "";
       case "ELE114":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your Ice, Earth, and Elemental action cards +1 defense this turn.";
+        return "";
       case "ELE115":
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDCLASSSTATE", $currentPlayer, $CS_DamagePrevention . "-1", 1);
@@ -52,10 +52,7 @@
         Draw($currentPlayer);
         return "";
       case "ELE119": case "ELE120": case "ELE121":
-        if($from == "ARS")
-        {
-          $rv = "Goes to the bottom of your deck when the combat chain closes";
-        }
+        if($from == "ARS") $rv = "Goes to the bottom of your deck when the combat chain closes";
         return $rv;
       case "ELE122": case "ELE123": case "ELE124":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -76,12 +73,10 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives your next attack action card this turn +" . EffectAttackModifier($cardID) .".";
       case "ELE140": case "ELE141": case "ELE142":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-        AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was selected.", 1);
+        if($cardID == "ELE140") $minCost = 0;
+        else if($cardID == "ELE141") $minCost = 1;
+        else $minCost = 2;
+        MZMoveCard($currentPlayer, "MYDISCARD:type=A;talent=EARTH,ELEMENTAL;minCost=" . $minCost . "&MYDISCARD:type=AA;talent=EARTH,ELEMENTAL;minCost=" . $minCost, "MYBOTDECK");
         if($from == "ARS") AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
       case "ELE143":
@@ -206,15 +201,10 @@
     switch($cardID)
     {
       case "ELE148": case "ELE149": case "ELE150":
-        if(IsHeroAttackTarget()) {
-          PayOrDiscard($defPlayer, 2);
-        }
+        if(IsHeroAttackTarget()) PayOrDiscard($defPlayer, 2);
         break;
       case "ELE157": case "ELE158": case "ELE159":
-        if(IsHeroAttackTarget())
-        {
-          PlayAura("ELE111", $defPlayer);
-        }
+        if(IsHeroAttackTarget()) PlayAura("ELE111", $defPlayer);
         break;
       default: break;
     }
