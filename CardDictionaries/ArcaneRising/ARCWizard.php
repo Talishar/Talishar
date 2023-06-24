@@ -128,58 +128,52 @@
   //Parameters:
   //Player = Player controlling the arcane effects
   //target =
-  // 0: My Hero + Their Hero
-  // 1: Their Hero only
-  // 2: Any Target
-  // 3: Their Hero + Their Allies
-  // 4: My Hero only (For afflications)
+  //0: My Hero + Their Hero
+  //1: Their Hero only
+  //2: Any Target
+  //3: Their Hero + Their Allies
+  //4: My Hero only (For afflictions)
   function DealArcane($damage, $target=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false, $skipHitEffect=false, $resolvedTarget="", $nbArcaneInstance=1)
   {
     global $currentPlayer, $CS_ArcaneTargetsSelected;
-    if ($player == 0) $player = $currentPlayer;
-    if ($damage > 0) {
+    if($player == 0) $player = $currentPlayer;
+    if($damage > 0) {
       $damage += CurrentEffectArcaneModifier($source, $player) * $nbArcaneInstance;
-      if ($type != "PLAYCARD") WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage.");
-      if ($fromQueue) {
-        if (!$limitDuplicates) {
+      if($type != "PLAYCARD") WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage.");
+      if($fromQueue) {
+        if(!$limitDuplicates) {
           PrependDecisionQueue("PASSPARAMETER", $player, "{0}");
           PrependDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected); //If already selected for arcane multiselect (e.g. Singe/Azvolai)
           PrependDecisionQueue("PASSPARAMETER", $player, "-");
         }
-        if (!$skipHitEffect) PrependDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
+        if(!$skipHitEffect) PrependDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
         PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
-        if ($resolvedTarget != "") {
+        if($resolvedTarget != "") {
           PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $resolvedTarget);
         } else {
           PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-          if ($mayAbility) {
-            PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-          } else {
-            PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-          }
+          if($mayAbility) PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+          else PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
           PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
           PrependDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
           PrependDecisionQueue("SETDQVAR", $currentPlayer, "0");
           PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
         }
       } else {
-        if ($resolvedTarget != "") {
+        if($resolvedTarget != "") {
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, $resolvedTarget);
         } else {
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
           AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
           AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
           AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
-          if ($mayAbility) {
-            AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-          } else {
-            AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-          }
+          if($mayAbility) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+          else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
           AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         }
         AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
-        if (!$skipHitEffect) AddDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
-        if (!$limitDuplicates) {
+        if(!$skipHitEffect) AddDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
+        if(!$limitDuplicates) {
           AddDecisionQueue("PASSPARAMETER", $player, "-");
           AddDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected);
           AddDecisionQueue("PASSPARAMETER", $player, "{0}");
@@ -191,57 +185,53 @@
 
   //target type return values
   //-1: no target
-  // 0: My Hero + Their Hero
-  // 1: Their Hero only
-  // 2: Any Target
-  // 3: Their Hero + Their Allies
-  // 4: My Hero only (For afflictions)
+  //0: My Hero + Their Hero
+  //1: Their Hero only
+  //2: Any Target
+  //3: Their Hero + Their Allies
+  //4: My Hero only (For afflictions)
   function PlayRequiresTarget($cardID)
   {
     switch($cardID)
     {
-    case "ARC118": return 0;
-    case "ARC119": return 1;
-    case "ARC120": return 1;
-    case "ARC121": return 1;
-    case "ARC126": case "ARC127": case "ARC128": return 1;
-    case "ARC132": case "ARC133": case "ARC134": return 1;
-    case "ARC138": case "ARC139": case "ARC140": return 1;
-    case "ARC141": case "ARC142": case "ARC143": return 0;
-    case "ARC144": case "ARC145": case "ARC146": return 0;
-    case "ARC147": case "ARC148": case "ARC149": return 0;
-    case "CRU162": return 1;
-    case "CRU168": case "CRU169": case "CRU170": return 0;
-    case "CRU171": case "CRU172": case "CRU173": return 0;
-    case "CRU174": case "CRU175": case "CRU176": return 0;
-    case "EVR123": return 1;
-    case "EVR124": return 1;
-    case "EVR125": case "EVR126": case "EVR127": return 0;
-    case "EVR134": case "EVR135": case "EVR136": return 0;
-    case "UPR104": return 2;
-    case "UPR105": return 0;
-    case "UPR109": return 0;
-    case "UPR110": case "UPR111": case "UPR112": return 2;
-    case "UPR113": case "UPR114": case "UPR115": return 2;
-    case "UPR119": case "UPR120": case "UPR121": return 2;
-    case "UPR122": case "UPR123": case "UPR124": return 2;
-    case "UPR127": case "UPR128": case "UPR129": return 2;
-    case "UPR130": case "UPR131": case "UPR132": return 2;
-    case "UPR133": case "UPR134": case "UPR135": return 2;
-    case "UPR165": return 0;
-    case "UPR170": case "UPR171": case "UPR172": return 2;
-    case "UPR173": case "UPR174": case "UPR175": return 2;
-    case "UPR179": case "UPR180": case "UPR181": return 1;
-    //Dynasty
-    case "DYN194": return 0;
-    case "DYN195": return 0;
-    case "DYN196": return 0;
-    case "DYN197": case "DYN198": case "DYN199": return 0;
-    case "DYN203": case "DYN204": case "DYN205": return 0;
-    case "DYN206": case "DYN207": case "DYN208": return 0;
-
-    default:
-      return -1;
+      case "ARC118": return 0;//Blazing Aether
+      case "ARC119": return 1;//Sonic Boom
+      case "ARC120": return 1;//Forked Lightning
+      case "ARC121": return 1;//Lesson in Lava
+      case "ARC126": case "ARC127": case "ARC128": return 1;//Aether Spindle
+      case "ARC132": case "ARC133": case "ARC134": return 1;//Aether Flare
+      case "ARC138": case "ARC139": case "ARC140": return 1;//Reverberate
+      case "ARC141": case "ARC142": case "ARC143": return 0;//Scalding Rain
+      case "ARC144": case "ARC145": case "ARC146": return 0;//Zap
+      case "ARC147": case "ARC148": case "ARC149": return 0;//Voltic Bolt
+      case "CRU162": return 1;//Chain Lightning
+      case "CRU168": case "CRU169": case "CRU170": return 0;//Foreboding Bolt
+      case "CRU171": case "CRU172": case "CRU173": return 0;//Rousing Aether
+      case "CRU174": case "CRU175": case "CRU176": return 0;//Snapback
+      case "EVR123": return 1;//Aether Wildfire
+      case "EVR124": return 1;//Scour
+      case "EVR125": case "EVR126": case "EVR127": return 0;//Emeritus Scolding
+      case "EVR134": case "EVR135": case "EVR136": return 0;//Timekeeper's Whim
+      case "UPR104": return 2;//Encase
+      case "UPR105": return 0;//Freezing Point
+      case "UPR109": return 0;//Ice Eternal
+      case "UPR110": case "UPR111": case "UPR112": return 2;//Succumb to Winter
+      case "UPR113": case "UPR114": case "UPR115": return 2;//Aether Icevein
+      case "UPR119": case "UPR120": case "UPR121": return 2;//Icebind
+      case "UPR122": case "UPR123": case "UPR124": return 2;//Polar Cap
+      case "UPR127": case "UPR128": case "UPR129": return 2;//Aether Hail
+      case "UPR130": case "UPR131": case "UPR132": return 2;//Frosting
+      case "UPR133": case "UPR134": case "UPR135": return 2;//Ice Bolt
+      case "UPR165": return 0;//Waning Moon
+      case "UPR170": case "UPR171": case "UPR172": return 2;//Dampen
+      case "UPR173": case "UPR174": case "UPR175": return 2;//Aether Dart
+      case "UPR179": case "UPR180": case "UPR181": return 1;//Singe
+      case "DYN194": return 0;//Mind Warp
+      case "DYN195": return 0;//Swell Tidings
+      case "DYN197": case "DYN198": case "DYN199": return 0;//Aether Quickening
+      case "DYN203": case "DYN204": case "DYN205": return 0;//Prognosticate
+      case "DYN206": case "DYN207": case "DYN208": return 0;//Sap
+      default: return -1;
     }
   }
 
@@ -257,41 +247,26 @@
   {
     global $CS_ArcaneTargetsSelected;
     $otherPlayer = ($player == 1 ? 2 : 1);
-    if ($target == 4) return "MYCHAR-0";
+    if($target == 4) return "MYCHAR-0";
     if($target != 3) $rv = "THEIRCHAR-0";
     else $rv = "";
-    if(($target == 0 && !ShouldAutotargetOpponent($player)) || $target == 2)
-    {
-      $rv .= ",MYCHAR-0";
-    }
-    if($target == 2)
-    {
+    if(($target == 0 && !ShouldAutotargetOpponent($player)) || $target == 2) $rv .= ",MYCHAR-0";
+    if($target == 2) {
       $theirAllies = &GetAllies($otherPlayer);
-      for($i=0; $i<count($theirAllies); $i+=AllyPieces())
-      {
-        $rv .= ",THEIRALLY-" . $i;
-      }
+      for($i=0; $i<count($theirAllies); $i+=AllyPieces()) $rv .= ",THEIRALLY-" . $i;
       $myAllies = &GetAllies($player);
-      for($i=0; $i<count($myAllies); $i+=AllyPieces())
-      {
-        $rv .= ",MYALLY-" . $i;
-      }
+      for($i=0; $i<count($myAllies); $i+=AllyPieces()) $rv .= ",MYALLY-" . $i;
     }
-    elseif($target == 3)
-    {
+    else if($target == 3) {
       $theirAllies = &GetAllies($otherPlayer);
-      for($i=0; $i<count($theirAllies); $i+=AllyPieces())
-      {
+      for($i=0; $i<count($theirAllies); $i+=AllyPieces()) {
         if($rv != "") $rv .= ",";
         $rv .= "THEIRALLY-" . $i;
       }
     }
     $targets = explode(",", $rv);
     $targetsSelected = GetClassState($player, $CS_ArcaneTargetsSelected);
-    for($i=count($targets)-1; $i>=0; --$i)
-    {
-      if(DelimStringContains($targetsSelected, $targets[$i])) unset($targets[$i]);
-    }
+    for($i=count($targets)-1; $i>=0; --$i) if(DelimStringContains($targetsSelected, $targets[$i])) unset($targets[$i]);
     return implode(",", $targets);
   }
 
@@ -302,14 +277,13 @@
     for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
       $remove = false;
       $effectArr = explode(",", $currentTurnEffects[$i]);
-      switch($effectArr[0])
-      {
+      switch($effectArr[0]) {
         case "EVR123":
           $cardType = CardType($source);
           if($cardType == "A" || $cardType == "AA") $modifier += $effectArr[1];
           break;
         case "DYN192":
-          if (ActionsThatDoArcaneDamage($source)) {
+          if(ActionsThatDoArcaneDamage($source)) {
             $modifier += $effectArr[1];
             $remove = true;
           }
@@ -334,12 +308,10 @@
       case "ARC119": case "ARC121": case "ARC127": case "ARC132": case "ARC138": case "ARC142": case "ARC144": case "ARC149": return 3;
       case "ARC128": case "ARC133": case "ARC139": case "ARC143": case "ARC145": return 2;
       case "ARC134": case "ARC140": case "ARC146": return 1;
-      //CRU
       case "CRU171": return 4;
       case "CRU162": case "CRU168": case "CRU172": case "CRU174": return 3;
       case "CRU169": case "CRU173": case "CRU175": return 2;
       case "CRU170": case "CRU176": return 1;
-      //Everfest
       case "EVR124": return $resourcesPaid;
       if ($cardID == "EVR125") return $oppTurn ? 6 : 4;
       if ($cardID == "EVR126") return $oppTurn ? 5 : 3;
@@ -347,16 +319,14 @@
       case "EVR134": return 5;
       case "EVR123": case "EVR135": return 4;
       case "EVR136": return 3;
-      //UPR
       case "UPR105": return 5 + CountAura("ELE111", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Affliction", -1, -1, "", "ICE")) + FrozenCount($otherPlayer);
       case "UPR133": case "UPR110": case "UPR113": return 5;
       case "UPR170": case "UPR134": case "UPR127": case "UPR122": case "UPR111": case "UPR114": return 4;
       case "UPR173": case "UPR171": case "UPR135": case "UPR130": case "UPR128": case "UPR123": case "UPR112": case "UPR115": case "UPR104": case "UPR119": return 3;
       case "UPR174": case "UPR172": case "UPR131": case "UPR129": case "UPR124": case "UPR120": case "UPR131": case "UPR129": case "UPR124": case "UPR120": return 2;
       case "UPR179": case "UPR180": case "UPR181": case "UPR172": case "UPR132": case "UPR121": case "UPR179": case "UPR180": case "UPR181": return 1;
-      //DYN
       case "DYN194": return 2;
-		  case "DYN195": return 5;
+      case "DYN195": return 5;
       case "DYN197": return 4;
       case "DYN198": case "DYN203": case "DYN206": return 3;
       case "DYN199": case "DYN204": case "DYN207": return 2;
@@ -366,56 +336,52 @@
   }
 
   function ActionsThatDoArcaneDamage($cardID)
-{
-  switch ($cardID) {
-    case "ARC118":
-    case "ARC119": case "ARC120": case "ARC121":
-    case "ARC126": case "ARC127": case "ARC128":
-    case "ARC132": case "ARC133": case "ARC134":
-    case "ARC138": case "ARC139": case "ARC140":
-    case "ARC141": case "ARC142": case "ARC143":
-    case "ARC144": case "ARC145": case "ARC146":
-    case "ARC147": case "ARC148": case "ARC149":
-      return true;
-    case "CRU162":
-    case "CRU168": case "CRU169": case "CRU170":
-    case "CRU171": case "CRU172": case "CRU173":
-    case "CRU174": case "CRU175": case "CRU176":
-      return true;
-    case "EVR123": case "EVR124":
-    case "EVR125": case "EVR126": case "EVR127":
-    case "EVR134": case "EVR135": case "EVR136":
-      return true;
-    case "UPR104": case "UPR105": case "UPR109":
-    case "UPR110": case "UPR111": case "UPR112":
-    case "UPR113": case "UPR114": case "UPR115":
-    case "UPR119": case "UPR120": case "UPR121":
-    case "UPR122": case "UPR123": case "UPR124":
-    case "UPR127": case "UPR128": case "UPR129":
-    case "UPR130": case "UPR131": case "UPR132":
-    case "UPR133": case "UPR134": case "UPR135":
-    case "UPR170": case "UPR171": case "UPR172":
-    case "UPR173": case "UPR174": case "UPR175":
-    case "UPR179": case "UPR180": case "UPR181":
-      return true;
-    case "DYN194": case "DYN195":
-    case "DYN197": case "DYN198": case "DYN199":
-    case "DYN203": case "DYN204": case "DYN205":
-    case "DYN206": case "DYN207": case "DYN208":
-      return true;
-    default:
-      return false;
+  {
+    switch($cardID) {
+      case "ARC118":
+      case "ARC119": case "ARC120": case "ARC121":
+      case "ARC126": case "ARC127": case "ARC128":
+      case "ARC132": case "ARC133": case "ARC134":
+      case "ARC138": case "ARC139": case "ARC140":
+      case "ARC141": case "ARC142": case "ARC143":
+      case "ARC144": case "ARC145": case "ARC146":
+      case "ARC147": case "ARC148": case "ARC149":
+        return true;
+      case "CRU162":
+      case "CRU168": case "CRU169": case "CRU170":
+      case "CRU171": case "CRU172": case "CRU173":
+      case "CRU174": case "CRU175": case "CRU176":
+        return true;
+      case "EVR123": case "EVR124":
+      case "EVR125": case "EVR126": case "EVR127":
+      case "EVR134": case "EVR135": case "EVR136":
+        return true;
+      case "UPR104": case "UPR105": case "UPR109":
+      case "UPR110": case "UPR111": case "UPR112":
+      case "UPR113": case "UPR114": case "UPR115":
+      case "UPR119": case "UPR120": case "UPR121":
+      case "UPR122": case "UPR123": case "UPR124":
+      case "UPR127": case "UPR128": case "UPR129":
+      case "UPR130": case "UPR131": case "UPR132":
+      case "UPR133": case "UPR134": case "UPR135":
+      case "UPR170": case "UPR171": case "UPR172":
+      case "UPR173": case "UPR174": case "UPR175":
+      case "UPR179": case "UPR180": case "UPR181":
+        return true;
+      case "DYN194": case "DYN195":
+      case "DYN197": case "DYN198": case "DYN199":
+      case "DYN203": case "DYN204": case "DYN205":
+      case "DYN206": case "DYN207": case "DYN208":
+        return true;
+      default: return false;
+    }
   }
-}
 
   function ArcaneBarrierChoices($playerID, $max)
   {
     global $currentTurnEffects;
     $barrierArray = [];
-    for($i=0; $i<4; ++$i)//4 is the current max arcane barrier + 1
-    {
-      $barrierArray[$i] = 0;
-    }
+    for($i=0; $i<4; ++$i) $barrierArray[$i] = 0;
     $character = GetPlayerCharacter($playerID);
     $total = 0;
     for($i=0; $i<count($character); $i+=CharacterPieces())

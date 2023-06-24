@@ -47,7 +47,7 @@
       case "ARC010": return count($combatChain) > 0 ? "AR" : "A";
       case "ARC017":
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        if (isset($items[$index + 1])) return ($items[$index + 1] > 0 ? "I" : "A");
+        if(isset($items[$index + 1])) return ($items[$index+1] > 0 ? "I" : "A");
         else return "A";
       case "ARC018":
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
@@ -80,10 +80,10 @@
         return count($combatChain) == 0;
       case "ARC017":
         $items = &GetItems($currentPlayer);
-        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? true : false);
+        return ($items[GetClassState($currentPlayer, $CS_PlayIndex)+1] > 0 ? true : false);
       case "ARC018":
         $items = &GetItems($currentPlayer);
-        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? true : false);
+        return ($items[GetClassState($currentPlayer, $CS_PlayIndex)+1] > 0 ? true : false);
       case "ARC019": return true;
       case "ARC037": return true;
       case "ARC038": case "ARC039": case "ARC040": case "ARC041": case "ARC042": return true;
@@ -126,32 +126,22 @@
 function ARCCombatEffectActive($cardID, $attackID)
 {
   global $combatChainState, $CCS_AttackPlayedFrom, $mainPlayer;
-  switch ($cardID) {
-    case "ARC011": case "ARC012": case "ARC013":
-      return true;
-    case "ARC019":
-      return CardType($attackID) == "AA";
-    case "ARC032": case "ARC033": case "ARC034":
-      return CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
-    case "ARC038": case "ARC039":
-      return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS";
-    case "ARC042":
-      return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS";
-    case "ARC047":
-      return CardSubType($attackID) == "Arrow";
-    case "ARC054": case "ARC055": case "ARC056":
-      return ClassContains($attackID, "RANGER", $mainPlayer) && CardType($attackID) == "AA";
-    case "ARC057": case "ARC058": case "ARC059":
-      return $cardID == $attackID;
-    case "ARC091": case "ARC092": case "ARC093":
-      return ClassContains($attackID, "RUNEBLADE", $mainPlayer);
-    case "ARC153-1": case "ARC153-2": case "ARC153-3":
-    case "ARC160-1": case "ARC160-3":
-    case "ARC170-1": case "ARC171-1": case "ARC172-1":
-    case "ARC170-2": case "ARC171-2": case "ARC172-2":
-    case "ARC203": case "ARC204": case "ARC205":
-    case "ARC206": case "ARC207": case "ARC208":
-      return CardType($attackID) == "AA";
+  switch($cardID) {
+    case "ARC011": case "ARC012": case "ARC013": return true;
+    case "ARC019": return CardType($attackID) == "AA";
+    case "ARC032": case "ARC033": case "ARC034": return CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
+    case "ARC038": case "ARC039": return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS";
+    case "ARC042": return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS";
+    case "ARC047": return CardSubType($attackID) == "Arrow";
+    case "ARC054": case "ARC055": case "ARC056": return ClassContains($attackID, "RANGER", $mainPlayer) && CardType($attackID) == "AA";
+    case "ARC057": case "ARC058": case "ARC059": return $cardID == $attackID;
+    case "ARC091": case "ARC092": case "ARC093": return ClassContains($attackID, "RUNEBLADE", $mainPlayer);
+    case "ARC153-1": case "ARC153-2": case "ARC153-3": return CardType($attackID) == "AA";
+    case "ARC160-1": case "ARC160-3": return CardType($attackID) == "AA";
+    case "ARC170-1": case "ARC171-1": case "ARC172-1": return CardType($attackID) == "AA";
+    case "ARC170-2": case "ARC171-2": case "ARC172-2": return CardType($attackID) == "AA";
+    case "ARC203": case "ARC204": case "ARC205": return CardType($attackID) == "AA";
+    case "ARC206": case "ARC207": case "ARC208": return CardType($attackID) == "AA";
     default: return false;
   }
 }

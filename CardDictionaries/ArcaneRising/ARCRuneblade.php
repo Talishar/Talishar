@@ -8,7 +8,7 @@
     {
       case "ARC078":
         PlayAura("ARC112", $currentPlayer);
-        return "Creates a runechant.";
+        return "";
       case "ARC079":
         MZMoveCard($currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", "MYTOPDECK");
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CROWNOFDICHOTOMY", 1);
@@ -18,17 +18,17 @@
         return "";
       case "ARC083":
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:type=A&MYHAND:type=AA");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to discard (or pass)", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to discard", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND", 1);
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "BECOMETHEARKNIGHT", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       case "ARC084":
         $deck = &GetDeck($currentPlayer);
-        if(count($deck) < 2) return "Not enough cards in deck.";
-        if(!RevealCards($deck[0] . "," . $deck[1])) return "Cannot reveal cards.";
+        if(count($deck) < 2) return "Not enough cards in deck";
+        if(!RevealCards($deck[0] . "," . $deck[1])) return "Cannot reveal cards";
         $type1 = CardType($deck[0]);
         $type2 = CardType($deck[1]);
         if(($type1 == "AA" && $type2 == "A") || ($type2 == "AA" && $type1 == "A"))
@@ -51,9 +51,7 @@
         PlayAura("ARC112", $currentPlayer);
         return "";
       case "ARC097": case "ARC098": case "ARC099": Draw($currentPlayer); return "";
-      case "ARC103": case "ARC104": case "ARC105":
-        PlayAura("ARC112", $currentPlayer);
-        return "";
+      case "ARC103": case "ARC104": case "ARC105": PlayAura("ARC112", $currentPlayer); return "";
       case "ARC109": PlayAura("ARC112", $currentPlayer, 3); return "";
       case "ARC110": PlayAura("ARC112", $currentPlayer, 2); return "";
       case "ARC111": PlayAura("ARC112", $currentPlayer); return "";
@@ -93,10 +91,7 @@
   {
     global $currentPlayer, $CS_NumNonAttackCards;
     $target = CardType($cardID) == "A" ? 1 : 0;
-    if(ClassContains($cardID, "RUNEBLADE", $currentPlayer) && GetClassState($currentPlayer, $CS_NumNonAttackCards) > $target)
-    {
-      PlayAura("ARC112", $currentPlayer);
-    }
+    if(ClassContains($cardID, "RUNEBLADE", $currentPlayer) && GetClassState($currentPlayer, $CS_NumNonAttackCards) > $target) PlayAura("ARC112", $currentPlayer);
   }
 
 ?>
