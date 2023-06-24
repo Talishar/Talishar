@@ -19,12 +19,7 @@
         AddDecisionQueue("INVERTEXISTENCE", $currentPlayer, "-", 1);
         return "";
       case "MON159": case "MON160": case "MON161":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-        AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was selected.", 1);
+        MZMoveCard($currentPlayer, "MYDISCARD:hasBloodDebt=true;type=A", "BOTDECK", may:true);
         return "";
       case "MON162": case "MON163": case "MON164":
         if($cardID == "MON162") $optAmt = 3;

@@ -28,10 +28,7 @@
     case "MON266": case "MON267": case "MON268":
       if(DelimStringContains($additionalCosts, "BELITTLE") && CanRevealCards($currentPlayer))
       {
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-2");
-        AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
+        MZMoveCard($currentPlayer, "MYDECK:sameName=MON296", "MYHAND", may:true, isReveal:true);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       }
       return "";
@@ -58,14 +55,9 @@
     case "MON299": case "MON300": case "MON301":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "MON303": case "MON304": case "MON305":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-      AddDecisionQueue("CHOOSEDISCARDCANCEL", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-      AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was selected.", 1);
-      return "";
+    case "MON303": MZMoveCard($currentPlayer, "MYDISCARD:type=AA;maxCost=2", "TOPDECK"); return;
+    case "MON304": MZMoveCard($currentPlayer, "MYDISCARD:type=AA;maxCost=1", "TOPDECK"); return;
+    case "MON305": MZMoveCard($currentPlayer, "MYDISCARD:type=AA;maxCost=0", "TOPDECK"); return;
       default: return "";
     }
   }

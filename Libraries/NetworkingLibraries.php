@@ -1724,9 +1724,10 @@ function PayAdditionalCosts($cardID, $from)
     case "MON266": case "MON267": case "MON268":
       if (CanRevealCards($currentPlayer)) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to reveal for Belittle");
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-1");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:type=AA;maxAttack=3");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
+        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "BELITTLE", 1);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
@@ -1742,8 +1743,7 @@ function PayAdditionalCosts($cardID, $from)
         PummelHit($currentPlayer);
       }
       break;
-    case "ELE031":
-    case "ELE032":
+    case "ELE031": case "ELE032":
       if(ArsenalHasFaceDownCard($currentPlayer)) {
         $cardFlipped = SetArsenalFacing("UP", $currentPlayer);
         AddAdditionalCost($currentPlayer, TalentOverride($cardFlipped, $currentPlayer));

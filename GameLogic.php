@@ -116,13 +116,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "MON033-2": $rv = CombineSearches(SearchDeck($player, "A", "", $lastResult), SearchDeck($player, "AA", "", $lastResult)); break;
         case "MON158": $rv = InvertExistenceIndices($player); break;
-        case "MON159": case "MON160": case "MON161": $rv = SearchDiscard($player, "A", "", -1, -1, "", "", true); break;
-        case "MON212": $rv = SearchBanish($player, "AA", "", $subparam); break;
-        case "MON266-1": $rv = SearchHand($player, "AA", "", -1, -1, "", "", false, false, -1, false, 3); break;
-        case "MON266-2": $rv = SearchDeckForCard($player, "MON296", "MON297", "MON298"); break;
-        case "MON303": $rv =  SearchDiscard($player, "AA", "", 2); break;
-        case "MON304": $rv = SearchDiscard($player, "AA", "", 1); break;
-        case "MON305": $rv = SearchDiscard($player, "AA", "", 0); break;
         case "ELE006": $rv = SearchDeck($player, "AA", "", CountAura("WTR075", $player), -1, "GUARDIAN"); break;
         case "ELE113": $rv = PulseOfCandleholdIndices($player); break;
         case "ELE116": $rv = PlumeOfEvergrowthIndices($player); break;
@@ -931,10 +924,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $roll;
     case "SETCOMBATCHAINSTATE":
       $combatChainState[$parameter] = $lastResult;
-      return $lastResult;
-    case "BANISHADDMODIFIER":
-      $banish = &GetBanish($player);
-      $banish[$lastResult + 1] = $parameter;
       return $lastResult;
     case "SETLAYERTARGET":
       global $layers;

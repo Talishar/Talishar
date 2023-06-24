@@ -90,9 +90,7 @@
         if($cardID == "MON212") $maxCost = 2;
         else if($cardID == "MON213") $maxCost = 1;
         else $maxCost = 0;
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON212," . $maxCost);
-        AddDecisionQueue("CHOOSEBANISH", $currentPlayer, "<-", 1);
-        AddDecisionQueue("BANISHADDMODIFIER", $currentPlayer, "MON212", 1);
+        MZMoveCard($currentPlayer, "MYBANISH:type=AA;maxCost=" . $maxCost, "MYBANISH,BANISH,MON212");
         return "";
       case "MON215": case "MON216": case "MON217":
         if($cardID == "MON215") $amount = 3;

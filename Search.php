@@ -794,7 +794,7 @@ function SearchMultizone($player, $searches)
       $conditions = explode(";", $searchArr[1]);
       for ($j = 0; $j < count($conditions); ++$j) {
         $condition = explode("=", $conditions[$j]);
-        switch ($condition[0]) {
+        switch($condition[0]) {
           case "type":
             $type = $condition[1];
             break;
