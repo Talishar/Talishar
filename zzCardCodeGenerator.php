@@ -35,6 +35,7 @@
   GenerateFunction($cardArray, $handler, "CardSubtype", "subtype", "");
   GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20", true);//Also images
   GenerateFunction($cardArray, $handler, "Rarity", "rarity", "C");
+  GenerateFunction($cardArray, $handler, "Is1H", "1H", false, true);
 
   fwrite($handler, "?>");
 
@@ -46,7 +47,9 @@
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
     $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "LGS", "HER"];
     $isString = true;
-    if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health") $isString = false;
+    $isBool = false;
+    if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "1H") $isString = false;
+    if($propertyName == "1H") $isBool = true;
     fwrite($handler, "if(strlen(\$cardID) < 6) return " . ($isString ? "\"\"" : "0") . ";\r\n");
     fwrite($handler, "if(is_int(\$cardID)) return " . ($isString ? "\"\"" : "0") . ";\r\n");
     if($sparse) fwrite($handler, "switch(\$cardID) {\r\n");
@@ -122,9 +125,20 @@
             }
           }
         }
-        if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
-        if($data != "-" && $data != "" && $data != "*" && $data != $defaultValue)
+        else if($propertyName == "1H")
         {
+          $data = false;
+          for($k=0; $k<count($cardArray[$i]->types); ++$k)
+          {
+            $type = $cardArray[$i]->types[$k];
+            if($type == "1H") $data = true;
+          }
+        }
+        if($isBool);
+        else if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
+        if(($isBool && $data == true) || ($data != "-" && $data != "" && $data != "*" && $data != $defaultValue))
+        {
+          if($isBool) echo($cardID . "<BR>");
           if($sparse) fwrite($handler, "case \"" . $cardID . "\": return " . ($isString ? "\"$data\"" : $data) . ";\r\n");
           else AddToTrie($trie, $cardID, 0, $data);
         }

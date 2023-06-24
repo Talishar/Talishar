@@ -1394,21 +1394,7 @@ function IsSpecialization($cardID)
 
 function Is1H($cardID)
 {
-  switch ($cardID) {
-    case "WTR078": case "CRU049":
-    case "CRU004": case "CRU005":
-    case "CRU051": case "CRU052":
-    case "CRU079": case "CRU080":
-    case "MON105": case "MON106":
-    case "ELE003": case "ELE202":
-    case "DYN069": case "DYN070":
-    case "DYN115": case "DYN116":
-    case "OUT005": case "OUT006":
-    case "OUT007": case "OUT008":
-    case "OUT009": case "OUT010": return true;
-    default:
-      return false;
-  }
+  return GeneratedIs1H($cardID);
 }
 
 function AbilityPlayableFromCombatChain($cardID)
