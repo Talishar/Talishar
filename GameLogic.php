@@ -493,11 +493,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $arsenal = &GetArsenal($player);
       $arsenal[$lastResult+3] += 1;
       return $lastResult;
-    case "ADDARSENALCURRENTEFFECT":
-      $arsenal = &GetArsenal($player);
-      $params = explode(",", $parameter);
-      AddCurrentTurnEffect($params[0], $player, $params[1], $arsenal[$lastResult+5]);
-      return $lastResult;
     case "OPTX":
       Opt("NA", $parameter);
       return $lastResult;

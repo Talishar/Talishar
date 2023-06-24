@@ -301,7 +301,7 @@ function AuraStartTurnAbilities()
         $index = BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
         $banish = &GetBanish($mainPlayer);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $banish[$index+2]);
-        AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $auras[$i] . "," . "BANISH");
+        AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $auras[$i] . ",BANISH");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
       case "DYN073": case "DYN074": case "DYN075":
