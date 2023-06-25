@@ -19,9 +19,7 @@
         return "";
       case "MON064":
         $hand = &GetHand($currentPlayer);
-        for($i = 0; $i < count($hand); ++$i) {
-          AddSoul($hand[$i], $currentPlayer, "HAND");
-        }
+        for($i = 0; $i < count($hand); ++$i) AddSoul($hand[$i], $currentPlayer, "HAND");
         $hand = [];
         return "";
       case "MON065":
@@ -30,11 +28,8 @@
         if(GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0) Draw($currentPlayer);
         return "";
       case "MON066": case "MON067": case "MON068":
-        if(count(GetSoul($currentPlayer)) == 0) {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Goes into your soul after the chain link closes";
-        }
-        return $rv;
+        if(count(GetSoul($currentPlayer)) == 0) AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "MON069": case "MON070": case "MON071":
         if($cardID == "MON069") $count = 4;
         else if($cardID == "MON070") $count = 3;
@@ -54,8 +49,7 @@
         if($cardID == "MON084") $amount = 3;
         else if($cardID == "MON085") $amount = 2;
         else $amount = 1;
-        if($target == "-") WriteLog("Blinding Beam gives no bonus because it does not have a valid target.");
-        else $combatChain[intval($target)+5] -= $amount;
+        if($target != "-") $combatChain[intval($target)+5] -= $amount;
         return "";
       case "MON087":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -96,7 +90,7 @@
         if($cardID == "MON215") $amount = 3;
         else if($cardID == "MON216") $amount = 2;
         else $amount = 1;
-        Opt($cardID, $amount);
+        PlayerOpt($currentPlayer, $amount);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "TOPDECK", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,NA", 1);
@@ -172,14 +166,11 @@
   function EndTurnBloodDebt()
   {
     global $mainPlayer;
-    if(IsImmuneToBloodDebt($mainPlayer)) {
-      WriteLog("No blood debt damage was taken because you are immune");
-      return;
-    }
+    if(IsImmuneToBloodDebt($mainPlayer)) return;
     $numBloodDebt = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
     if($numBloodDebt > 0) {
       LoseHealth($numBloodDebt, $mainPlayer);
-      WriteLog("Player $mainPlayer lost $numBloodDebt health from Blood Debt at end of turn", $mainPlayer);
+      WriteLog("Player $mainPlayer lost $numBloodDebt health from Blood Debt", $mainPlayer);
     }
   }
 

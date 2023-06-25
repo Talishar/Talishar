@@ -22,8 +22,7 @@
       case "MON138": case "MON139": case "MON140":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(AttackValue($card) >= 6)
-        {
+        if(AttackValue($card) >= 6) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD&THEIRDISCARD");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Deadwood Rumbler");
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -37,23 +36,17 @@
       case "MON221":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(AttackValue($card) >= 6) {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-        }
+        if(AttackValue($card) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "MON222":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(AttackValue($card) >= 6) {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-        }
+        if(AttackValue($card) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "MON223": case "MON224": case "MON225":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(AttackValue($card) >= 6) {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-        }
+        if(AttackValue($card) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       default: return "";
     }
@@ -74,8 +67,7 @@
     $discard = &GetDiscard($currentPlayer);
     if(count($discard) < 3) return;
     $BanishedIncludes6 = false;
-    for($i = 0; $i < 3; $i++)
-    {
+    for($i = 0; $i < 3; $i++) {
       $index = GetRandom() % count($discard);
       if(AttackValue($discard[$index]) >= 6) $BanishedIncludes6 = true;
       BanishCardForPlayer($discard[$index], $currentPlayer, "DISCARD", "NA");
@@ -92,18 +84,16 @@
     $topDeck = array_shift($deck);
     BanishCardForPlayer($topDeck, $player, "DECK", "-");
     $log = CardLink("MON406", "MON406") . " banished " . CardLink($topDeck, $topDeck);
-    if(AttackValue($topDeck) >= 6)
-    {
+    if(AttackValue($topDeck) >= 6) {
       $arsenal = &GetArsenal($player);
       ++$arsenal[$index+3];
       AddCurrentTurnEffect("MON406", $player);
-      if($arsenal[$index+3] == 2)
-      {
+      if($arsenal[$index+3] == 2) {
         $log .= ", gave Dominate, and searched for a specialization card";
         MentorTrigger($player, $index);
       }
       else $log .= " and gave Dominate";
-      WriteLog($log . ".");
+      WriteLog($log);
     }
   }
 

@@ -35,17 +35,11 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "MON168": case "MON169": case "MON170":
-        if($from == "BANISH") {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Gains +1 because it was played from Banish";
-        }
-        return $rv;
+        if($from == "BANISH") AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "MON174": case "MON175": case "MON176":
-        if($from == "BANISH") {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Gains +X because it was played from Banish";
-        }
-        return $rv;
+        if($from == "BANISH") AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "MON177": case "MON178": case "MON179":
         if($from == "BANISH") DealArcane(1, 0, "PLAYCARD", $cardID);
         return "";
@@ -140,11 +134,7 @@
     $arsenal = &GetArsenal($player);
     if(!ArsenalEmpty($player)) {
       $arsenal[$index+3] += 1;
-      if($arsenal[$index+3] >= 3)
-      {
-        WriteLog(CardLink("MON407", "MON407") . " searched for a specialization card");
-        MentorTrigger($player, $index);
-      }
+      if($arsenal[$index+3] >= 3) MentorTrigger($player, $index);
     }
   }
 

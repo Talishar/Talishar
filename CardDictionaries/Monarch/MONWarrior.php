@@ -12,8 +12,7 @@
         return "";
       case "MON033":
         AddDecisionQueue("ATTACKMODIFIER", $currentPlayer, intval($additionalCosts), 1);
-        if(GetClassState($currentPlayer, $CS_NumCharged) > 0)
-        {
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0) {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
@@ -24,18 +23,12 @@
       case "MON034":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         $character = &GetPlayerCharacter($currentPlayer);
-        if(GetClassState($currentPlayer, $CS_NumCharged) > 0)
-        {
-          for($i=0; $i<count($character); $i+=CharacterPieces())
-          {
-            if(CardType($character[$i]) == "W")
-            {
-              if($character[$i+1] != 0) { $character[$i+1] = 2; ++$character[$i+5]; }
-            }
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0) {
+          for($i=0; $i<count($character); $i+=CharacterPieces()) {
+            if(CardType($character[$i]) == "W" && $character[$i+1] != 0) { $character[$i+1] = 2; ++$character[$i+5]; }
           }
-          $rv = "Gives each weapon an additional use this turn";
         }
-        return $rv;
+        return "";
       case "MON036": case "MON037": case "MON038":
         if(GetClassState($currentPlayer, $CS_NumCharged) > 0) GiveAttackGoAgain();
         return "";
@@ -63,7 +56,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "MON116": case "MON117": case "MON118":
-        if(GetClassState($currentPlayer, $CS_AtksWWeapon) == 0) return "Does nothing because there were no weapon attacks this turn.";
+        if(GetClassState($currentPlayer, $CS_AtksWWeapon) == 0) return "Does nothing because there were no weapon attacks this turn";
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       default: return "";
@@ -92,22 +85,17 @@
     if(count($deck) == 0) return;
     $cardID = array_shift($deck);
     if(!RevealCards($cardID, $mainPlayer)) return;
-    if(TalentContains($cardID, "LIGHT", $mainPlayer))
-    {
+    if(TalentContains($cardID, "LIGHT", $mainPlayer)) {
       AddSoul($cardID, $mainPlayer, "DECK");
       GainHealth(1, $mainPlayer);
-      WriteLog("Lumina Ascension put a Light card in Soul");
     }
-    else
-    {
-      array_push($deck, $cardID);
-    }
+    else array_push($deck, $cardID);
   }
 
   function DuskPathPilgrimageHit()
   {
     global $mainCharacter, $combatChainState, $CCS_WeaponIndex;
-    if($mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] == 0) return;//Do nothing if it's destroyed
+    if($mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] == 0) return;
     $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] = 2;
     ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+5];
   }
@@ -116,7 +104,7 @@
   {
     global $currentPlayer;
     $hand = &GetHand($currentPlayer);
-    if(count($hand) == 0) { WriteLog("No cards in hand to charge."); return; }
+    if(count($hand) == 0) { WriteLog("No cards in hand to charge"); return; }
     AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to charge", 1);
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
@@ -148,11 +136,7 @@
   {
     $arsenal = &GetArsenal($player);
     ++$arsenal[$index+3];
-    if($arsenal[$index+3] == 3)
-    {
-      WriteLog(CardLink("MON405", "MON405") . " searched for a specialization card");
-      MentorTrigger($player, $index);
-    }
+    if($arsenal[$index+3] == 3) MentorTrigger($player, $index);
   }
 
 ?>

@@ -125,7 +125,7 @@
     $origAV = $av;
     if($attackID == "MON008" || $attackID == "MON009" || $attackID == "MON010") --$av;
     $av += AuraAttackModifiers($index);
-    $av += $combatChain[$index+5]; //Attack Modifiers
+    $av += $combatChain[$index+5];//Attack Modifiers
     return $av >= 6;
   }
 
@@ -149,7 +149,6 @@
     if(IsPhantasmStillActive())
     {
       $attackID = $combatChain[0];
-      WriteLog(CardLink($attackID, $attackID) . " is destroyed by phantasm.");
       if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($combatChain[0]), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
       if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer))
       {
@@ -204,12 +203,7 @@
     --$arsenal[$index+2];
     ++$arsenal[$index+3];
     Draw($player);
-    $log = CardLink("MON404","MON404") . " drew a card";
-    if($arsenal[$index+3] == 3)
-    {
-      $log .= " and searched for a specialization card";
-      MentorTrigger($player, $index);
-    }
+    if($arsenal[$index+3] == 3) MentorTrigger($player, $index);
   }
 
 ?>
