@@ -37,6 +37,7 @@
   GenerateFunction($cardArray, $handler, "Rarity", "rarity", "C");
   GenerateFunction($cardArray, $handler, "Is1H", "1H", "false", true);
   GenerateFunction($cardArray, $handler, "CardClass", "cardClass", "GENERIC");
+  GenerateFunction($cardArray, $handler, "CardTalent", "cardTalent", "NONE");
 
   fwrite($handler, "?>");
 
@@ -142,6 +143,19 @@
           {
             $type = $cardArray[$i]->types[$k];
             if(IsClass($type))
+            {
+              if($data != "") $data .= ",";
+              $data .= strtoupper($type);
+            }
+          }
+        }
+        else if($propertyName == "cardTalent")
+        {
+          $data = "";
+          for($k=0; $k<count($cardArray[$i]->types); ++$k)
+          {
+            $type = $cardArray[$i]->types[$k];
+            if(IsTalent($type))
             {
               if($data != "") $data .= ",";
               $data .= strtoupper($type);

@@ -49,13 +49,6 @@ function DTDCombatEffectActive($cardID, $attackID)
   }
 }
 
-function DTDCardTalent($cardID)
-{
-  $number = intval(substr($cardID, 3));
-  if($number <= 0) return "";
-  else return "NONE";
-}
-
 function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
   global $currentPlayer;

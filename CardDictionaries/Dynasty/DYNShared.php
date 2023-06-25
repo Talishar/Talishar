@@ -158,16 +158,6 @@ function DYNCombatEffectActive($cardID, $attackID)
   }
 }
 
-function DYNCardTalent($cardID)
-{
-  $number = intval(substr($cardID, 3));
-  if($number <= 0) return "";
-  else if($number >= 1 && $number <= 2) return "ROYAL,DRACONIC";
-  else if($number >= 3 && $number <= 4) return "DRACONIC";
-  else if($number == 66 || $number == 212 || $number == 612) return "LIGHT";
-  else return "NONE";
-}
-
 function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
   global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $combatChain;

@@ -201,14 +201,8 @@ function CardClass($cardID)
 
 function CardTalent($cardID)
 {
-  $set = substr($cardID, 0, 3);
-  if($set == "MON") return MONCardTalent($cardID);
-  else if($set == "ELE") return ELECardTalent($cardID);
-  else if($set == "UPR") return UPRCardTalent($cardID);
-  else if($set == "DYN") return DYNCardTalent($cardID);
-  else if($set == "DTD") return DTDCardTalent($cardID);
-  else if($set == "ROG") return ROGUECardTalent($cardID);
-  return "NONE";
+  if(substr($cardID, 0, 3) == "ROG") return ROGUECardTalent($cardID);
+  return GeneratedCardTalent($cardID);
 }
 
 //Minimum cost of the card
