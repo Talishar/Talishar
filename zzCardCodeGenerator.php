@@ -36,6 +36,7 @@
   GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20", true);//Also images
   GenerateFunction($cardArray, $handler, "Rarity", "rarity", "C");
   GenerateFunction($cardArray, $handler, "Is1H", "1H", "false", true);
+  GenerateFunction($cardArray, $handler, "CardClass", "cardClass", "GENERIC");
 
   fwrite($handler, "?>");
 
@@ -134,11 +135,23 @@
             if($type == "1H") $data = "true";
           }
         }
+        else if($propertyName == "cardClass")
+        {
+          $data = "";
+          for($k=0; $k<count($cardArray[$i]->types); ++$k)
+          {
+            $type = $cardArray[$i]->types[$k];
+            if(IsClass($type))
+            {
+              if($data != "") $data .= ",";
+              $data .= strtoupper($type);
+            }
+          }
+        }
         if($isBool);
         else if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
         if(($isBool && $data == "true") || ($data != "-" && $data != "" && $data != "*" && $data != $defaultValue))
         {
-          if($isBool) echo($cardID . "<BR>");
           if($sparse) fwrite($handler, "case \"" . $cardID . "\": return " . ($isString ? "\"$data\"" : $data) . ";\r\n");
           else AddToTrie($trie, $cardID, 0, $data);
         }
