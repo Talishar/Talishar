@@ -245,6 +245,13 @@ function MZMoveCard($player, $search, $where, $may=false, $isReveal=false, $sile
   else AddDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
 }
 
+function MZChooseAndDestroy($player, $zone)
+{
+  AddDecisionQueue("MULTIZONEINDICES", $player, "MYALLY");
+  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-");
+  AddDecisionQueue("MZDESTROY", $player, "-", 1);
+}
+
 function MZLastIndex($player, $zone)
 {
   switch($zone)

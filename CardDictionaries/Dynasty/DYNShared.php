@@ -215,7 +215,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN030": case "DYN031": case "DYN032":
       if(!IsAllyAttacking()){
         $index = SearchCombatChainLink($currentPlayer, subtype:"Off-Hand", class:"GUARDIAN");
-        if ($index != ""){
+        if($index != ""){
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Discard a card or take 1 damage");
           AddDecisionQueue("MAYCHOOSEHAND", $otherPlayer, "<-", 1);
@@ -252,9 +252,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if($cardID == "DYN062") $amount = 3;
       else if($cardID == "DYN063") $amount = 2;
       else $amount = 1;
-      for($i=0; $i < $amount; $i++) {
-        BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
-      }
+      for($i=0; $i < $amount; $i++) BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
       return "";
     case "DYN068":
       CacheCombatResult();
@@ -354,7 +352,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         if($mechMaterial != "") $mechMaterial .= ",";
         $mechMaterial .= $items[$i];
         if($items[$i] == "ARC036" || $items[$i] == "DYN111" || $items[$i] == "DYN112") DestroyItemForPlayer($currentPlayer, $i);
-        $hyperToDestroy--;
+        --$hyperToDestroy;
       }
       //Now add the new stuff
       PutCharacterIntoPlayForPlayer("DYN492a", $currentPlayer);//Weapon
@@ -395,22 +393,21 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN151":
-      $deck = &GetDeck($currentPlayer);
+      $deck = new Deck($currentPlayer);
       AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       if(ArsenalFull($currentPlayer)) {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sandscour Greatbow shows you the top of your deck: <0>");
-        AddDecisionQueue("OK", $currentPlayer, "whether to put an arrow in arsenal", 1);
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "NO");
-        return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Top of your deck: <0>");
+        AddDecisionQueue("OK", $currentPlayer, "", 1);
+        return "Your arsenal is full";
       }
-      if(CardSubType($deck[0]) != "Arrow") {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sandscour Greatbow shows you the top of your deck: <0>");
-        AddDecisionQueue("OK", $currentPlayer, "whether to put an arrow in arsenal", 1);
+      if(CardSubType($deck->Top()) != "Arrow") {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Top of your deck: <0>");
+        AddDecisionQueue("OK", $currentPlayer, "", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "NO");
       } else {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to put <0> in your arsenal", 1);
-        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_put_the_card_in_arsenal", 1);
+        AddDecisionQueue("YESNO", $currentPlayer, "", 1);
       }
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SANDSCOURGREATBOW");
       return "";
@@ -435,61 +432,25 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN172":
-      $pitchArr = explode(",", $additionalCosts);
-      $attackActionPitched = 0;
-      $naaPitched = 0;
-      for($i = 0; $i < count($pitchArr); ++$i) {
-        if(CardType($pitchArr[$i]) == "A") $naaPitched = 1;
-        if(CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
-      }
       Draw($currentPlayer);
-      if($naaPitched && $attackActionPitched) {
-        PlayAura("ARC112", $currentPlayer);
-        $rv .= "Created a Runechant token";
-      }
+      if(SearchPitch($currentPlayer, type:"A") != "" && SearchPitch($currentPlayer, type:"AA") != "") PlayAura("ARC112", $currentPlayer);
       return $rv;
     case "DYN173":
-      $pitchArr = explode(",", $additionalCosts);
-      $attackActionPitched = 0;
-      $naaPitched = 0;
-      for ($i = 0; $i < count($pitchArr); ++$i) {
-        if (CardType($pitchArr[$i]) == "A") $naaPitched = 1;
-        if (CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
-      }
-      if($naaPitched && $attackActionPitched && IsHeroAttackTarget()) {
+      if(SearchPitch($currentPlayer, type:"A") != "" && SearchPitch($currentPlayer, type:"AA") != "" && IsHeroAttackTarget()) {
         AddCurrentTurnEffect($cardID, $currentPlayer, $from);
         return "The next time " . CardLink($cardID, $cardID) . "deals damage they discard a card and you draw a card";
       }
       return "";
     case "DYN174":
-      $pitchArr = explode(",", $additionalCosts);
-      $attackPitched = false;
-      $nonAttackPitched = false;
-      for($i = 0; $i < count($pitchArr); ++$i) {
-        if(CardType($pitchArr[$i]) == "A") $nonAttackPitched = true;
-        if(CardType($pitchArr[$i]) == "AA") $attackPitched = true;
+      if(SearchPitch($currentPlayer, type:"AA") != "") {
+        MZChooseAndDestroy($otherPlayer, "MYALLY");
+        MZChooseAndDestroy($currentPlayer, "MYALLY");
       }
-      $rv = "";
-      if($attackPitched) {
-        AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYALLY");
-        AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-");
-        AddDecisionQueue("MZDESTROY", $otherPlayer, "-", 1);
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYALLY");
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-");
-        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-        $rv .= "Each hero chooses and destroys an ally they control";
+      if(SearchPitch($currentPlayer, type:"A") != "") {
+        MZChooseAndDestroy($otherPlayer, "MYAURAS");
+        MZChooseAndDestroy($currentPlayer, "MYAURAS");
       }
-      if($nonAttackPitched) {
-        AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYAURAS");
-        AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-");
-        AddDecisionQueue("MZDESTROY", $otherPlayer, "-", 1);
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-");
-        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-        if ($rv != "") $rv .= " and an aura they control";
-        else $rv = "Each hero chooses and destroys an aura they control";
-      }
-      return $rv;
+      return "";
     case "DYN175":
       $numRunechants = DestroyAllThisAura($currentPlayer, "ARC112");
       $auras = &GetAuras($currentPlayer);
@@ -497,56 +458,23 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $auras[$index+2] = $numRunechants;
       return "";
     case "DYN176": case "DYN177": case "DYN178":
-      $pitchArr = explode(",", $additionalCosts);
-      $attackActionPitched = 0;
-      $naaPitched = 0;
-      $rv = "";
-      for ($i = 0; $i < count($pitchArr); ++$i) {
-        if (CardType($pitchArr[$i]) == "A") $naaPitched = 1;
-        if (CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
-      }
-      if ($attackActionPitched) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        $rv .= "Gain +2 power";
-      }
-      if ($naaPitched) {
-        PlayAura("ARC112", $currentPlayer, 2, true);
-        if ($rv != "") $rv .= " and ";
-        $rv .= "creates 2 Runechant.";
-      }
+      if(SearchPitch($currentPlayer, type:"AA") != "") AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(SearchPitch($currentPlayer, type:"A") != "") PlayAura("ARC112", $currentPlayer, 2, true);
       return $rv;
 		case "DYN182": case "DYN183": case "DYN184":
-      $pitchArr = explode(",", $additionalCosts);
-      $naaPitched = 0;
-      for ($i = 0; $i < count($pitchArr); ++$i) {
-        if (CardType($pitchArr[$i]) == "A") $naaPitched = 1;
-      }
-      if ($naaPitched) {
-        DealArcane(1, 2, "PLAYCARD", $cardID);
-      }
+      if(SearchPitch($currentPlayer, type:"A") != "") DealArcane(1, 2, "PLAYCARD", $cardID);
       return "";
 		case "DYN185": case "DYN186": case "DYN187":
       if($cardID == "DYN185") $amount = 3;
       else if($cardID == "DYN186") $amount = 2;
       else $amount = 1;
-      $pitchArr = explode(",", $additionalCosts);
-      $attackActionPitched = 0;
-      $rv = "The next Runeblade attack action card you play creates Runechants on-hit";
-      for($i = 0; $i < count($pitchArr); ++$i) {
-        if(CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
-      }
       AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
-      if($attackActionPitched) {
-        AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
-        $rv .= " and gains +1 power";
-      }
-      return $rv;
+      if(SearchPitch($currentPlayer, type:"AA") != "") AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
+      return "";
     case "DYN188": case "DYN189": case "DYN190":
       $deck = new Deck($currentPlayer);
       if($deck->Reveal(1)) {
-        if(PitchValue($deck->Top()) == PitchValue($cardID)) {
-          PlayAura("ARC112", $currentPlayer, 1, true);
-        }
+        if(PitchValue($deck->Top()) == PitchValue($cardID)) PlayAura("ARC112", $currentPlayer, 1, true);
       }
       return "";
     case "DYN192":
@@ -558,23 +486,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PlayerOpt($currentPlayer, 1, false);
       PlayAura("DYN244", $currentPlayer);
       return "";
-  	case "DYN194":
-      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-      return "";
-    case "DYN195":
+  	case "DYN194": case "DYN195": case "DYN197": case "DYN198": case "DYN199": case "DYN203": case "DYN204": case "DYN205":
+    case "DYN206": case "DYN207": case "DYN208":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     case "DYN196":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "DYN197": case "DYN198": case "DYN199":
-      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-      return "";
-    case "DYN203": case "DYN204": case "DYN205":
-      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-      return "";
-    case "DYN206": case "DYN207": case "DYN208":
-      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     case "DYN209": case "DYN210": case "DYN211":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -658,8 +575,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("THREATENARCANE", $currentPlayer, $cardID, 1);
       }
       return "";
-    default:
-      return "";
+    default: return "";
   }
 }
 
@@ -866,7 +782,7 @@ function ContractType($cardID)
 function ContractCompleted($player, $cardID)
 {
   global $CS_NumContractsCompleted;
-  WriteLog("Player " . $player . " completed the contract for " . CardLink($cardID, $cardID) . ".");
+  WriteLog("Player " . $player . " completed the contract for " . CardLink($cardID, $cardID));
   IncrementClassState($player, $CS_NumContractsCompleted);
   switch($cardID)
   {
