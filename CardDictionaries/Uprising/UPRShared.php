@@ -108,18 +108,6 @@
     }
   }
 
-  function UPRCardSubType($cardID)
-  {
-    $class = CardClass($cardID);
-    switch($class)
-    {
-      case "ILLUSIONIST": return UPRIllusionistCardSubtype($cardID);
-      case "NINJA": return UPRNinjaCardSubtype($cardID);
-      case "WIZARD": return UPRWizardCardSubtype($cardID);
-      default: return UPRTalentCardSubtype($cardID);
-    }
-  }
-
   function UPRCardCost($cardID)
   {
     $class = CardClass($cardID);
