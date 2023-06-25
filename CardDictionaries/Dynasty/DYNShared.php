@@ -433,20 +433,20 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN172":
       Draw($currentPlayer);
-      if(SearchPitch($currentPlayer, type:"A") != "" && SearchPitch($currentPlayer, type:"AA") != "") PlayAura("ARC112", $currentPlayer);
+      if(SearchCardList($additionalCosts, $currentPlayer, "A") != "" && SearchCardList($additionalCosts, $currentPlayer, "AA") != "") PlayAura("ARC112", $currentPlayer);
       return $rv;
     case "DYN173":
-      if(SearchPitch($currentPlayer, type:"A") != "" && SearchPitch($currentPlayer, type:"AA") != "" && IsHeroAttackTarget()) {
+      if(SearchCardList($additionalCosts, $currentPlayer, "A") != "" && SearchCardList($additionalCosts, $currentPlayer, "AA") != "" && IsHeroAttackTarget()) {
         AddCurrentTurnEffect($cardID, $currentPlayer, $from);
         return "The next time " . CardLink($cardID, $cardID) . "deals damage they discard a card and you draw a card";
       }
       return "";
     case "DYN174":
-      if(SearchPitch($currentPlayer, type:"AA") != "") {
+      if(SearchCardList($additionalCosts, $currentPlayer, "AA") != "") {
         MZChooseAndDestroy($otherPlayer, "MYALLY");
         MZChooseAndDestroy($currentPlayer, "MYALLY");
       }
-      if(SearchPitch($currentPlayer, type:"A") != "") {
+      if(SearchCardList($additionalCosts, $currentPlayer, "A") != "") {
         MZChooseAndDestroy($otherPlayer, "MYAURAS");
         MZChooseAndDestroy($currentPlayer, "MYAURAS");
       }
@@ -458,18 +458,18 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $auras[$index+2] = $numRunechants;
       return "";
     case "DYN176": case "DYN177": case "DYN178":
-      if(SearchPitch($currentPlayer, type:"AA") != "") AddCurrentTurnEffect($cardID, $currentPlayer);
-      if(SearchPitch($currentPlayer, type:"A") != "") PlayAura("ARC112", $currentPlayer, 2, true);
+      if(SearchCardList($additionalCosts, $currentPlayer, "AA") != "") AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(SearchCardList($additionalCosts, $currentPlayer, "A") != "") PlayAura("ARC112", $currentPlayer, 2, true);
       return $rv;
 		case "DYN182": case "DYN183": case "DYN184":
-      if(SearchPitch($currentPlayer, type:"A") != "") DealArcane(1, 2, "PLAYCARD", $cardID);
+      if(SearchCardList($additionalCosts, $currentPlayer, "A") != "") DealArcane(1, 2, "PLAYCARD", $cardID);
       return "";
 		case "DYN185": case "DYN186": case "DYN187":
       if($cardID == "DYN185") $amount = 3;
       else if($cardID == "DYN186") $amount = 2;
       else $amount = 1;
       AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
-      if(SearchPitch($currentPlayer, type:"AA") != "") AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
+      if(SearchCardList($additionalCosts, $currentPlayer, "AA") != "") AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
       return "";
     case "DYN188": case "DYN189": case "DYN190":
       $deck = new Deck($currentPlayer);
