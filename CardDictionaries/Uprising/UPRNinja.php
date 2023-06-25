@@ -13,7 +13,7 @@
         return "";
       case "UPR049":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Buffs your draconic attacks this combat chain.";
+        return "";
       case "UPR050":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CCDEFLESSX," . NumDraconicChainLinks()-1);
         AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-exclude-type-E", 1);
@@ -32,7 +32,7 @@
         return "";
       case "UPR159":
         GiveAttackGoAgain();
-        return "Gives the attack go again.";
+        return "";
       default: return "";
     }
   }
@@ -40,11 +40,9 @@
   function UPRNinjaHitEffect($cardID)
   {
     global $mainPlayer, $combatChainState;
-    switch($cardID)
-    {
+    switch($cardID) {
       case "UPR048":
-        if(IsHeroAttackTarget() && NumChainLinksWithName("Phoenix Flame") >= 3)
-        {
+        if(IsHeroAttackTarget() && NumChainLinksWithName("Phoenix Flame") >= 3) {
           Draw($mainPlayer);
           Draw($mainPlayer);
           Draw($mainPlayer);
@@ -53,12 +51,9 @@
       case "UPR051": case "UPR052": case "UPR053":
         $deck = &GetDeck($mainPlayer);
         $cardRevealed = RevealCards($deck[0]);
-        if($cardRevealed)
-        {
-          if(CardType($deck[0]) == "AA" && CardCost($deck[0]) < NumDraconicChainLinks())
-          {
+        if($cardRevealed) {
+          if(CardType($deck[0]) == "AA" && CardCost($deck[0]) < NumDraconicChainLinks()) {
             BanishCardForPlayer($deck[0], $mainPlayer, "PLAY", "TT");
-            WriteLog(CardLink($deck[0], $deck[0]) . " was banished and can be played this turn.");
             array_shift($deck);
           }
         }
@@ -75,23 +70,10 @@
         break;
       case "UPR161":
         $rv = "";
-        if(HitsInCombatChain() >= 2)
-        {
+        if(HitsInCombatChain() >= 2) {
           $deck = &GetDeck($mainPlayer);
-          $rv .= CardLink($deck[0], $deck[0]) . " was banished.";
-          if(CardType($deck[0]) == "AA")
-          {
-            BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "NT");
-            $rv .= " It can be played until the end of next turn";
-            array_shift($deck);
-          }
-          else
-          {
-            BanishCardForPlayer($deck[0], $mainPlayer, "DECK");
-            array_shift($deck);
-          }
-          $rv .= ".";
-          WriteLog($rv);
+          $mod = CardType($deck[0]) == "AA" ? "NT" : "-";
+          BanishCardForPlayer(array_shift($deck), $mainPlayer, "DECK", $mod);
         }
         break;
       default: break;

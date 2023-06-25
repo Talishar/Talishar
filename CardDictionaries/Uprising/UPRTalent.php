@@ -10,22 +10,19 @@
       case "UPR084":
         $pitch = &GetPitch($currentPlayer);
         $numRed = 0;
-        for($i=0; $i<count($pitch); $i+=PitchPieces())
-        {
-          if(PitchValue($pitch[$i]) == 1) ++$numRed;
-        }
+        for($i=0; $i<count($pitch); $i+=PitchPieces()) if(PitchValue($pitch[$i]) == 1) ++$numRed;
         GainResources($currentPlayer, $numRed);
-        return "Gain 1 resource for each red in your pitch zone.";
+        return "";
       case "UPR085":
         GainResources($currentPlayer, 1);
-        return "Gain 1 resource.";
+        return "";
       case "UPR088":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gives your next 4 Draconic attacks +1.";
+        return "";
       case "UPR089":
         Draw($currentPlayer);
         Draw($currentPlayer);
-        return "Draws 2 cards.";
+        return "";
       case "UPR090":
         if(RuptureActive())
         {
@@ -49,15 +46,12 @@
           }
           else return "Cannot reveal cards";
         }
-        return CardLink($cardID, $cardID) . " lets you reveal and deal damage.";
+        return "";
       case "UPR091":
-        if(RuptureActive())
-        {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-        }
+        if(RuptureActive()) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "UPR094":
-        if($additionalCosts != "-") { AddCurrentTurnEffect($cardID, $currentPlayer); WriteLog("Gains +2 and go again from banishing."); }
+        if($additionalCosts != "-") AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "UPR096":
         AddLayer("TRIGGER", $currentPlayer, $cardID);
@@ -67,10 +61,9 @@
         return "";
       case "UPR099":
         $rv = "";
-        if(RuptureActive())
-        {
+        if(RuptureActive()) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage.");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage");
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
@@ -85,7 +78,7 @@
           AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
           AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "CORONETPEAK", 1);
         }
-        return "Makes target hero pay 1 or discard a card.";
+        return "";
       case "UPR137":
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
@@ -95,16 +88,16 @@
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
-        return "Lets you freeze an arsenal card and ally.";
+        return "";
       case "UPR141": case "UPR142": case "UPR143":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Creates frostbites the next time you Ice fuse.";
+        return "";
       case "UPR144": case "UPR145": case "UPR146":
         if($cardID == "UPR144") $numFrostbites = 3;
         else if($cardID == "UPR145") $numFrostbites = 2;
         else $numFrostbites = 1;
         PlayAura("ELE111", ($currentPlayer == 1 ? 2 : 1), $numFrostbites);
-        return "Creates frostbites.";
+        return "";
       case "UPR147": case "UPR148": case "UPR149":
         if($cardID == "UPR147") $cost = 3;
         else if($cardID == "UPR148") $cost = 2;
@@ -133,7 +126,7 @@
         AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
-        return "Lets you pay 2 to give it +2 power.";
+        return "";
       case "UPR194": case "UPR195": case "UPR196":
         if(PlayerHasLessHealth($currentPlayer)) { GainHealth(1, $currentPlayer); }
         return "";
@@ -147,7 +140,7 @@
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SIFT", 1);
-        return "Lets you cycle $numCards cards.";
+        return "";
       case "UPR200": case "UPR201": case "UPR202":
         if($cardID == "UPR200") $maxCost = 2;
         else if($cardID == "UPR201") $maxCost = 1;
@@ -162,9 +155,9 @@
         AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<1> recurred from Strategic Planning.", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<1> recurred from Strategic Planning", 1);
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Lets you return a card and draw a card.";
+        return "";
       case "UPR212": case "UPR213": case "UPR214":
         if($from == "ARS") GiveAttackGoAgain();
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
@@ -181,11 +174,8 @@
         return "";
       case "UPR221": case "UPR222": case "UPR223":
         if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard($currentPlayer, $target));
-        if(PlayerHasLessHealth($currentPlayer))
-        {
-          GainHealth(1, $currentPlayer);
-        }
-        return "Prevents damage this turn.";
+        if(PlayerHasLessHealth($currentPlayer)) GainHealth(1, $currentPlayer);
+        return "";
       default: return "";
     }
   }
@@ -206,30 +196,23 @@
         }
         break;
       case "UPR093":
-        if(IsHeroAttackTarget() && RuptureActive())
-        {
-          WriteLog("Breaking Point destroyed the defending player's arsenal.");
-          DestroyArsenal($defPlayer);
-        }
+        if(IsHeroAttackTarget() && RuptureActive()) DestroyArsenal($defPlayer);
         break;
       case "UPR100":
         MZMoveCard($mainPlayer, "MYDISCARD:cardID=UPR101", "MYHAND");
         AddDecisionQueue("OP", $mainPlayer, "GIVEATTACKGOAGAIN", 1);
         break;
       case "UPR187":
-        if(IsHeroAttackTarget())
-        {
+        if(IsHeroAttackTarget()) {
           AddCurrentTurnEffect($cardID, $defPlayer);
           AddNextTurnEffect($cardID, $defPlayer);
         }
         break;
       case "UPR188":
-        if(IsHeroAttackTarget())
-        {
+        if(IsHeroAttackTarget()) {
           $hand = &GetHand($defPlayer);
           $amount = count($hand)/HandPieces();
           LoseHealth($amount, $defPlayer);
-          WriteLog("Vipox made player $defPlayer lose $amount health.");
         }
         break;
       default: break;
@@ -249,12 +232,8 @@
   function RuptureActive($beforePlay=false, $notAttack=false)
   {
     global $combatChainState;
-    if($notAttack)
-    {
-      $target = 4; //Doesn't show rupture border for Attack Reactions and future d.react or instants
-    } else {
-      $target = ($beforePlay ? 3 : 4);
-    }
+    if($notAttack) $target = 4;
+    else $target = ($beforePlay ? 3 : 4);
     if(NumChainLinks() >= $target) return true;
     return false;
   }
@@ -263,8 +242,7 @@
   {
     global $combatChain, $mainPlayer, $chainLinkSummary;
     $numLinks = 0;
-    for($i=0; $i<count($chainLinkSummary); $i+=ChainLinkSummaryPieces())
-    {
+    for($i=0; $i<count($chainLinkSummary); $i+=ChainLinkSummaryPieces()) {
       if(DelimStringContains($chainLinkSummary[$i+2], "DRACONIC")) ++$numLinks;
     }
     if(count($combatChain) > 0 && TalentContains($combatChain[0], "DRACONIC", $mainPlayer)) ++$numLinks;
@@ -280,10 +258,8 @@
       if(ChainLinkNameContains($i, $name)) ++$count;
     }
     $currentAttackNames = GetCurrentAttackNames();
-    for($i=0; $i<count($currentAttackNames); ++$i)
-    {
-      if($currentAttackNames[$i] == $name)
-      {
+    for($i=0; $i<count($currentAttackNames); ++$i) {
+      if($currentAttackNames[$i] == $name) {
         ++$count;
         break;
       }
@@ -297,16 +273,14 @@
     if(SearchCurrentTurnEffects("OUT183", $mainPlayer)) return false;
     if($index >= count($chainLinkSummary)) return false;
     $attackNames = explode(",", $chainLinkSummary[$index+4]);
-    for($i=0; $i<count($attackNames); ++$i)
-    {
+    for($i=0; $i<count($attackNames); ++$i) {
       $attackName = GamestateUnsanitize($attackNames[$i]);
       if($attackName == $name) return true;
     }
     return false;
   }
 
-  function ThawIndices($player)
-  {
+  function ThawIndices($player) {
     $iceAfflictions = SearchMultiZoneFormat(SearchAura($player, "", "Affliction", -1, -1, "", "ICE"), "MYAURAS");
     $frostBites = SearchMultiZoneFormat(SearchAurasForCard("ELE111", $player), "MYAURAS");
     $search = CombineSearches($iceAfflictions, $frostBites);

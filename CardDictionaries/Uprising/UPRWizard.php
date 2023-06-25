@@ -10,8 +10,7 @@
         DealArcane(3, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "";
       case "UPR105":
-        if(DelimStringContains($additionalCosts, "ICE"))
-        {
+        if(DelimStringContains($additionalCosts, "ICE")) {
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           $damage = 5 + CountAura("ELE111", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Affliction", -1, -1, "", "ICE")) + FrozenCount($otherPlayer);
         }
@@ -19,34 +18,21 @@
         DealArcane($damage, 0, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         return "";
       case "UPR106": case "UPR107": case "UPR108":
-        $rv = "";
-        if(DelimStringContains($additionalCosts, "ICE"))
-        {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Makes your next arcane damage create frostbites.";
-        }
-        return $rv;
+        if(DelimStringContains($additionalCosts, "ICE")) AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "UPR109":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         $numFrostBite = GetClassState($currentPlayer, $CS_LastDynCost)/2;
-        WriteLog(CardLink($cardID, $cardID) . " created " . $numFrostBite . " Frostbites.");
-        for($i=0; $i<$numFrostBite; ++$i)
-        {
-          PlayAura("ELE111", $otherPlayer);
-        }
+        for($i=0; $i<$numFrostBite; ++$i) PlayAura("ELE111", $otherPlayer);
         $amountArcane = SearchCount(SearchAurasForCard("ELE111", $otherPlayer));
-        if(DelimStringContains($additionalCosts, "ICE"))
-        {
-          DealArcane($amountArcane, 0, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
-        }
+        if(DelimStringContains($additionalCosts, "ICE")) DealArcane($amountArcane, 0, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         return "";
       case "UPR110": case "UPR111": case "UPR112":
         if($cardID == "UPR110") $damage = 5;
         else if($cardID == "UPR111") $damage = 4;
         else $damage = 3;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
-        if(DelimStringContains($additionalCosts, "ICE"))
-        {
+        if(DelimStringContains($additionalCosts, "ICE")) {
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, $target . "-" . $cardID, 1);
           AddDecisionQueue("SUCCUMBTOWINTER", $currentPlayer, "-", 1);
         }
@@ -61,14 +47,12 @@
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         $hand = &GetHand($otherPlayer);
         $cards = "";
-        for($i=0; $i<count($hand); ++$i)
-        {
+        for($i=0; $i<count($hand); ++$i) {
           if($cards != "") $cards .= ",";
           $cards .= $hand[$i];
         }
         $cardsRevealed = RevealCards($cards);
-        if($cardsRevealed && DelimStringContains($additionalCosts, "ICE"))
-        {
+        if($cardsRevealed && DelimStringContains($additionalCosts, "ICE")) {
           if($cardID == "UPR116") $maxCost = 2;
           else if($cardID == "UPR117") $maxCost = 1;
           else $maxCost = 0;
@@ -130,7 +114,7 @@
       case "UPR169":
         NegateLayer($target, "HAND");
         if($currentPlayer != $mainPlayer) GainActionPoints(1, $mainPlayer);
-        return "Negates a non-attack action and returned it to it's owners hand";
+        return "";
       case "UPR170": case "UPR171": case "UPR172":
         if($cardID == "UPR170") $damage = 4;
         else if($cardID == "UPR171") $damage = 3;
@@ -153,10 +137,7 @@
         if(count($allies) < $maxAllies) $maxAllies = count($allies);
         $damage = ArcaneDamage($cardID) + ConsumeArcaneBonus($currentPlayer);
         DealArcane($damage, 1, "PLAYCARD", $cardID, false, $currentPlayer, false, false, resolvedTarget: $target);
-        for($i=1; $i<$maxAllies; ++$i)
-        {
-          DealArcane($damage, 3, "PLAYCARD", $cardID, false, $currentPlayer, true, true);
-        }
+        for($i=1; $i<$maxAllies; ++$i) DealArcane($damage, 3, "PLAYCARD", $cardID, false, $currentPlayer, true, true);
         DealArcane($damage, 3, "PLAYCARD", $cardID, false, $currentPlayer, true, false);
         return "";
       default: return "";

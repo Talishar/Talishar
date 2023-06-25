@@ -10,13 +10,7 @@
     global $mainPlayer, $currentPlayer;
     switch($cardID)
     {
-      case "UPR044": case "UPR045":
-        if($mainPlayer == $currentPlayer) {
-          $cost = 3 - NumDraconicChainLinks();
-        } else {
-          $cost = 3;
-        }
-        return $cost;
+      case "UPR044": case "UPR045": return 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0);
       case "UPR046": return 2;
       case "UPR084": return 1;
       case "UPR136": return 3;
@@ -138,7 +132,6 @@
     }
   }
 
-  //Minimum cost of the card
   function UPRCardCost($cardID)
   {
     $class = CardClass($cardID);
@@ -240,17 +233,13 @@ function UPRDealDamageEffect($cardID)
   {
     $character = &GetPlayerCharacter($player);
     $quellAmount = 0;
-    for($i=0; $i<count($character); $i+=CharacterPieces())
-    {
+    for($i=0; $i<count($character); $i+=CharacterPieces()) {
       if($character[$i+1] == "0" || $character[$i+9] == "0") continue;
       $quellAmount += QuellAmount($character[$i]);
     }
     if($quellAmount > $damage) $quellAmount = $damage;
     $rv = "0";
-    for($i=1; $i<=$quellAmount; ++$i)
-    {
-      $rv .= "," . $i;
-    }
+    for($i=1; $i<=$quellAmount; ++$i) $rv .= "," . $i;
     return $rv;
   }
 

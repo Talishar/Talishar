@@ -5,70 +5,33 @@
     global $currentPlayer;
     switch($cardID)
     {
-      case "UPR004":
-        Transform($currentPlayer, "Ash", "UPR042");
-        return "";
-      case "UPR006":
-        Transform($currentPlayer, "Ash", "UPR406");
-        return "";
-      case "UPR007":
-        Transform($currentPlayer, "Ash", "UPR407");
-        return "";
-      case "UPR008":
-        Transform($currentPlayer, "Ash", "UPR408");
-        return "";
-      case "UPR009":
-        Transform($currentPlayer, "Ash", "UPR409");
-        return "";
-      case "UPR010":
-        Transform($currentPlayer, "Ash", "UPR410");
-        return "";
-      case "UPR011":
-        Transform($currentPlayer, "Ash", "UPR411");
-        return "";
-      case "UPR012":
-        Transform($currentPlayer, "Ash", "UPR412");
-        return "";
-      case "UPR013":
-        Transform($currentPlayer, "Ash", "UPR413");
-        return "";
-      case "UPR014":
-        Transform($currentPlayer, "Ash", "UPR414");
-        return "";
-      case "UPR015":
-        Transform($currentPlayer, "Ash", "UPR415");
-        return "";
-      case "UPR016":
-        Transform($currentPlayer, "Ash", "UPR416");
-        return "";
-      case "UPR017":
-        Transform($currentPlayer, "Ash", "UPR417");
-        return "";
-      case "UPR018": case "UPR019": case "UPR020":
-        Transform($currentPlayer, "Ash", "UPR042", true);
-        return "";
+      case "UPR004": Transform($currentPlayer, "Ash", "UPR042"); return "";
+      case "UPR006": Transform($currentPlayer, "Ash", "UPR406"); return "";
+      case "UPR007": Transform($currentPlayer, "Ash", "UPR407"); return "";
+      case "UPR008": Transform($currentPlayer, "Ash", "UPR408"); return "";
+      case "UPR009": Transform($currentPlayer, "Ash", "UPR409"); return "";
+      case "UPR010": Transform($currentPlayer, "Ash", "UPR410"); return "";
+      case "UPR011": Transform($currentPlayer, "Ash", "UPR411"); return "";
+      case "UPR012": Transform($currentPlayer, "Ash", "UPR412"); return "";
+      case "UPR013": Transform($currentPlayer, "Ash", "UPR413"); return "";
+      case "UPR014": Transform($currentPlayer, "Ash", "UPR414"); return "";
+      case "UPR015": Transform($currentPlayer, "Ash", "UPR415"); return "";
+      case "UPR016": Transform($currentPlayer, "Ash", "UPR416"); return "";
+      case "UPR017": Transform($currentPlayer, "Ash", "UPR417"); return "";
+      case "UPR018": case "UPR019": case "UPR020": Transform($currentPlayer, "Ash", "UPR042", true); return "";
       case "UPR030": case "UPR031": case "UPR032":
         PutPermanentIntoPlay($currentPlayer, "UPR043");
-        return "Sweeping Blow created an Ash token.";
+        return "";
       case "UPR033": case "UPR034": case "UPR035":
         PutPermanentIntoPlay($currentPlayer, "UPR043");
         if($cardID == "UPR033") $maxTransform = 3;
         else if($cardID == "UPR034") $maxTransform = 2;
         else $maxTransform = 1;
-        for($i=0; $i<$maxTransform; ++$i)
-        {
-          Transform($currentPlayer, "Ash", "UPR042", true, ($i == 0 ? false : true));
-        }
+        for($i=0; $i<$maxTransform; ++$i) Transform($currentPlayer, "Ash", "UPR042", true, ($i == 0 ? false : true));
         return "";
-      case "UPR039":
-          TransformPermanent($currentPlayer, "Ash", "UPR439");
-        return "";
-      case "UPR040":
-          TransformPermanent($currentPlayer, "Ash", "UPR440");
-        return "";
-      case "UPR041":
-          TransformPermanent($currentPlayer, "Ash", "UPR441");
-        return "";
+      case "UPR039": TransformPermanent($currentPlayer, "Ash", "UPR439"); return "";
+      case "UPR040": TransformPermanent($currentPlayer, "Ash", "UPR440"); return "";
+      case "UPR041": TransformPermanent($currentPlayer, "Ash", "UPR441"); return "";
       case "UPR036": case "UPR037": case "UPR038":
         Transform($currentPlayer, "Ash", "UPR042");
         AddDecisionQueue("MZOP", $currentPlayer, "GETUNIQUEID");
@@ -81,13 +44,13 @@
         $allies = &GetAllies($currentPlayer);
         $allies[$index+2] = $char[$gtIndex+2];
         AddCurrentTurnEffect($cardID . "-" . $char[$gtIndex+2], $currentPlayer);
-        return "Animates itself into an Ally.";
+        return "";
       case "UPR154":
         AddCurrentTurnEffect("UPR154", $currentPlayer);
-        return "Makes target illusionist attack lose Phantasm.";
+        return "";
       case "UPR155": case "UPR156": case "UPR157":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Makes your next attack action card Illusionist, modify its base attack and gain Phantasm.";
+        return "";
       default: return "";
     }
   }
@@ -102,12 +65,10 @@
         Transform($mainPlayer, "Ash", "UPR042", true);
         break;
       case "UPR411":
-        if(IsHeroAttackTarget())
-        {
+        if(IsHeroAttackTarget()) {
           $items = &GetItems($defPlayer);
           if(count($items) == 0) {
             Draw($mainPlayer);
-            WriteLog(CardLink($cardID,$cardID) . " drew a card");
           } else {
             AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
             AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take");
@@ -122,7 +83,6 @@
         $allies[$index+2] -= 1;
         $allies[$index+7] -= 1;
         PutPermanentIntoPlay($mainPlayer, "UPR043");
-        WriteLog(CardLink($cardID,$cardID) . " got a -1 health counter and created an ash token.");
         break;
       case "UPR416": if(IsHeroAttackTarget()) { DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); } break;
       default: break;
@@ -139,7 +99,6 @@ function UPRIllusionistDealDamageEffect($cardID)
       $allies[$index + 2] -= 1;
       $allies[$index + 7] -= 1;
       PutPermanentIntoPlay($mainPlayer, "UPR043");
-      WriteLog(CardLink($cardID, $cardID) . " got a -1 health counter and created an ash token.");
       break;
     default:
       break;
@@ -167,7 +126,7 @@ function UPRIllusionistDealDamageEffect($cardID)
   function ResolveTransform($player, $materialIndex, $into)
   {
     $materialType = RemovePermanent($player, $materialIndex);
-    return PlayAlly($into, $player, $materialType);//Right now transform only happens into allies
+    return PlayAlly($into, $player, $materialType);
   }
 
   function TransformPermanent($player, $materialType, $into, $optional=false)
@@ -195,8 +154,7 @@ function UPRIllusionistDealDamageEffect($cardID)
   {
     global $mainPlayer;
     $ghostlyTouchIndex = FindCharacterIndex($mainPlayer, "UPR151");
-    if($ghostlyTouchIndex > -1)
-    {
+    if($ghostlyTouchIndex > -1) {
       $char = &GetPlayerCharacter($mainPlayer);
       ++$char[$ghostlyTouchIndex+2];
     }
