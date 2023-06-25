@@ -232,9 +232,9 @@ function MZStartTurnAbility($player, $MZIndex)
   }
 }
 
-function MZMoveCard($player, $search, $where, $may=false, $isReveal=false, $silent=false)
+function MZMoveCard($player, $search, $where, $may=false, $isReveal=false, $silent=false, $isSubsequent=false)
 {
-  AddDecisionQueue("MULTIZONEINDICES", $player, $search);
+  AddDecisionQueue("MULTIZONEINDICES", $player, $search, ($isSubsequent ? 1 : 0));
   if($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZADDZONE", $player, $where, 1);
