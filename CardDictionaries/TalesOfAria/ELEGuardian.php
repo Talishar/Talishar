@@ -7,25 +7,10 @@
     switch($cardID)
     {
       case "ELE001": case "ELE002":
-        $pitchArr = explode(",", $additionalCosts);
-        $earthPitched = 0; $icePitched = 0;
-        for($i=0; $i<count($pitchArr); ++$i)
+        if(SearchCardList($additionalCosts, $currentPlayer, talent:"EARTH") != "") IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
+        if(SearchCardList($additionalCosts, $currentPlayer, talent:"ICE") != "")
         {
-          if(TalentContains($pitchArr[$i], "EARTH", $currentPlayer)) $earthPitched = 1;
-          if(TalentContains($pitchArr[$i], "ICE", $currentPlayer)) $icePitched = 1;
-        }
-        $rv = "";
-        if($earthPitched)
-        {
-          IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
-          $rv .= "Prevent the next 2 damage that would be dealt to Oldhim this turn";
-        }
-        if($icePitched)
-        {
-          if(IsAllyAttacking())
-          {
-            $rv .= "<span style='color:red;'>No card is put on top because there is no attacking hero when allies attack.</span>";
-          }
+          if(IsAllyAttacking()) $rv .= "<span style='color:red;'>No card is put on top because there is no attacking hero when allies attack.</span>";
           else
           {
             $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -38,21 +23,10 @@
         }
         return $rv;
       case "ELE003":
-        $pitchArr = explode(",", $additionalCosts);
-        $icePitched = 0;
-        for($i=0; $i<count($pitchArr); ++$i) {
-          if(TalentContains($pitchArr[$i], "ICE", $currentPlayer)) $icePitched = 1;
-        }
-        if($icePitched) {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv .= "Your opponent gains a frostbite if this hits";
-        }
-        return $rv;
+        if(SearchCardList($additionalCosts, $currentPlayer, talent:"ICE") != "") AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "ELE005":
-        if(DelimStringContains($additionalCosts, "ICE") && DelimStringContains($additionalCosts, "EARTH")) {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-          WriteLog(CardLink($cardID, $cardID) . " gets +2, Dominate, and discards cards on hit");
-        }
+        if(DelimStringContains($additionalCosts, "ICE") && DelimStringContains($additionalCosts, "EARTH")) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "ELE006":
         $num = GetHealth($currentPlayer == 1 ? 2 : 1) - GetHealth($currentPlayer);
@@ -75,25 +49,16 @@
     switch($cardID)
     {
       case "ELE004":
-        if(IsHeroAttackTarget())
-        {
+        if(IsHeroAttackTarget()) {
           AddCurrentTurnEffect($cardID . "-HIT", $defPlayer);
           AddNextTurnEffect($cardID . "-HIT", $defPlayer);
-          WriteLog(CardLink($cardID, $cardID) . " makes the defending player get a frostbite when activating an ability until the end of their next turn.");
         }
         break;
       case "ELE013": case "ELE014": case "ELE015":
-        if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused])
-        {
-          AddNextTurnEffect($cardID, $defPlayer);
-          WriteLog(CardLink($cardID, $cardID) . " gives the opponent's first attack next turn -2.");
-        }
+        if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "ELE209": case "ELE210": case "ELE211":
-        if(IsHeroAttackTarget() && HasIncreasedAttack())
-        {
-          PummelHit();
-        }
+        if(IsHeroAttackTarget() && HasIncreasedAttack()) PummelHit();
         break;
       default: break;
     }

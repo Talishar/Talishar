@@ -8,8 +8,7 @@
     switch($cardID)
     {
       case "ELE064":
-        if(DelimStringContains($additionalCosts, "EARTH") && DelimStringContains($additionalCosts, "LIGHTNING"))
-        {
+        if(DelimStringContains($additionalCosts, "EARTH") && DelimStringContains($additionalCosts, "LIGHTNING")) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
           DealArcane(1, 0, "PLAYCARD", $cardID, false);
         }
@@ -48,14 +47,12 @@
         return $rv;
       case "ELE224":
         SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
-        return "Lets you play your next non-attack action as if it was an instant.";
+        return "";
       case "ELE225":
         GiveAttackGoAgain();
-        return "Gives the current attack go again.";
+        return "";
       case "ELE227": case "ELE228": case "ELE229":
-        if (!IsAllyAttacking()) {
-          DealArcane(1, 0, "PLAYCARD", $cardID);
-        }
+        if(!IsAllyAttacking()) DealArcane(1, 0, "PLAYCARD", $cardID);
         return "";
       case "ELE230": case "ELE231": case "ELE232":
         DealArcane(1, 0, "PLAYCARD", $cardID);

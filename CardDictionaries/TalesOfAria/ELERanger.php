@@ -40,10 +40,7 @@
           AddPlayerHand($arsenal[$i], $currentPlayer, "ARS");
         }
         $arsenal = [];
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-        AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDARSENAL", $currentPlayer, "HAND-DOWN", 1);
+        MZMoveCard($currentPlayer, "MYHAND", "MYARSENAL,HAND,DOWN", silent:true);
         return "";
       case "ELE215":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -65,10 +62,7 @@
         if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) DamageTrigger($defPlayer, NumEquipment($defPlayer), "ATTACKHIT");
         break;
       case "ELE216": case "ELE217": case "ELE218":
-        if(HasIncreasedAttack()) {
-          WriteLog(CardLink($cardID, $cardID). " allows you to Reload");
-          Reload($mainPlayer);
-        }
+        if(HasIncreasedAttack()) Reload($mainPlayer);
         break;
       default: break;
     }
@@ -76,10 +70,7 @@
 
   function Fuse($cardID, $player, $elements)
   {
-    if(!CanRevealCards($player)) {
-      WriteLog("Cannot fuse because you cannot reveal cards");
-      return;
-    }
+    if(!CanRevealCards($player)) { WriteLog("Cannot fuse because you cannot reveal cards"); return; }
     $elementArray = explode(",", $elements);
     $elementText = "";
     $isAndOrFuse = IsAndOrFuse($cardID);
@@ -103,7 +94,6 @@
       $elements = implode(",", $elementArray);
       AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $elements, 1);
     }
-    WriteLog("You may fuse " . $elementText . " for " . CardLink($cardID, $cardID));
   }
 
   function IsAndOrFuse($cardID)
@@ -277,13 +267,10 @@
     for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
     {
       $remove = 0;
-      if($player == $currentTurnEffects[$i+1])
-      {
-        switch($currentTurnEffects[$i])
-        {
+      if($player == $currentTurnEffects[$i+1]) {
+        switch($currentTurnEffects[$i]) {
           case "UPR141": case "UPR142": case "UPR143":
-            if($element == "ICE")
-            {
+            if($element == "ICE") {
               $otherPlayer = ($player == 1 ? 2 : 1);
               AddLayer("TRIGGER", $player, $currentTurnEffects[$i], $otherPlayer);
               $remove = 1;
@@ -301,15 +288,10 @@
   {
     $auras = &GetAuras($player);
     $otherPlayer = $player == 1 ? 2 : 1;
-    for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
-    {
-      switch($auras[$i])
-      {
+    for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces()) {
+      switch($auras[$i]) {
         case "UPR140":
-          if($element == "ICE")
-          {
-            AddLayer("TRIGGER", $player, $auras[$i], $otherPlayer, uniqueID:$auras[$i+6]);
-          }
+          if($element == "ICE") AddLayer("TRIGGER", $player, $auras[$i], $otherPlayer, uniqueID:$auras[$i+6]);
           break;
         default: break;
       }
