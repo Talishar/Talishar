@@ -386,11 +386,7 @@
         DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
         return "";
       case "EVR137":
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an Illusionist Aura to destroy and replace");
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "AURACLASS,ILLUSIONIST");
-        AddDecisionQueue("MULTIZONEFORMAT", $currentPlayer, "MYAURAS", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+        MZChooseAndDestroy($currentPlayer, "MYAURAS:class=ILLUSIONIST");
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CROWNOFREFLECTION", 1);
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
@@ -605,10 +601,7 @@
         break;
       case "EVR104":
         if(IsHeroAttackTarget()) {
-          AddDecisionQueue("FINDINDICES", $defPlayer, "AURACLASS,");
-          AddDecisionQueue("MULTIZONEFORMAT", $defPlayer, "THEIRAURAS", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
+          MZChooseAndDestroy($mainPlayer, "THEIRAURAS");
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "ARC112", 1);
           AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
         }
@@ -726,8 +719,7 @@
   function MirragingMetamorphDestroyed()
   {
     global $mainPlayer;
-    AddDecisionQueue("FINDINDICES", $mainPlayer, "AURACLASS,");
-    AddDecisionQueue("MULTIZONEFORMAT", $mainPlayer, "MYAURAS", 1);
+    AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYAURAS", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
     AddDecisionQueue("MULTIZONETOKENCOPY", $mainPlayer, "-", 1);
   }

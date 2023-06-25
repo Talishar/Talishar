@@ -245,9 +245,9 @@ function MZMoveCard($player, $search, $where, $may=false, $isReveal=false, $sile
   else AddDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
 }
 
-function MZChooseAndDestroy($player, $zone)
+function MZChooseAndDestroy($player, $search)
 {
-  AddDecisionQueue("MULTIZONEINDICES", $player, "MYALLY");
+  AddDecisionQueue("MULTIZONEINDICES", $player, $search);
   AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-");
   AddDecisionQueue("MZDESTROY", $player, "-", 1);
 }
