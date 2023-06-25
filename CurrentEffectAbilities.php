@@ -364,7 +364,7 @@ function OnAttackEffects($attack)
           AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,2", 0, 1);
           AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
           AddDecisionQueue("GREATERTHANPASS", $defPlayer, "0", 1);
-          AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $currentTurnEffects[$i] . "ATK,PLAY", 1);
+          AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $currentTurnEffects[$i] . "ATK!PLAY", 1);
           break;
         default:
           break;

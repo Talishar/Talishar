@@ -478,7 +478,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog(implode(" ", explode("_", $parameter)));
       return $lastResult;
     case "ADDCURRENTEFFECT":
-      $params = explode(",", $parameter);
+      $params = explode("!", $parameter);
       AddCurrentTurnEffect($params[0], $player, (count($params) > 1 ? $params[1] : ""));
       return "1";
     case "ADDCURRENTANDNEXTTURNEFFECT":
