@@ -92,8 +92,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($count == 100) break;
 }
 
-if($lastUpdate == 0)
-{
+if ($lastUpdate == 0) {
   $lastUpdateTime = GetCachePiece($gameName, 6);
   if ($currentTime - $lastUpdateTime > 90000 && GetCachePiece($gameName, 12) == "1") //90 seconds
   {
@@ -284,7 +283,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]);
     $layer->layerID = $i;
     $layer->isReorderable = $playerID == $mainPlayer && $i <= $dqState[8] && ($i > 0 || $numReorderable > 0);
-    if($layer->isReorderable) ++$numReorderable;
+    if ($layer->isReorderable) ++$numReorderable;
     array_push($reorderableLayers, $layer);
   }
   $target = GetAttackTarget();
@@ -1061,6 +1060,15 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $playerInputPopup->buttons = $playerInputButtons;
   $response->playerInputPopUp = $playerInputPopup;
   $response->canPassPhase = (CanPassPhase($turn[0]) && $currentPlayer == $playerID) || (IsReplay() && $playerID == 3);
+
+  $response->preventPassPrompt = "";
+  // Prompt the player if they want to skip arsenal with cards in hand.
+  if ((CanPassPhase($turn[0]) && $currentPlayer == $playerID) || (IsReplay() && $playerID == 3)) {
+    if ($turn[0] == "ARS" && count($myHand) > 0 && !ArsenalFull($playerID) && !IsReplay()) {
+      $response->preventPassPrompt = "Are you sure you want to skip arsenal?";
+    }
+  }
+
   // encode and send it out
   echo json_encode($response);
   exit;
