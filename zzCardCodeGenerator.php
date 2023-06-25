@@ -36,7 +36,7 @@
   GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20", true);//Also images
   GenerateFunction($cardArray, $handler, "Rarity", "rarity", "C");
   GenerateFunction($cardArray, $handler, "Is1H", "1H", "false", true);
-  GenerateFunction($cardArray, $handler, "CardClass", "cardClass", "GENERIC");
+  GenerateFunction($cardArray, $handler, "CardClass", "cardClass", "NONE");
   GenerateFunction($cardArray, $handler, "CardTalent", "cardTalent", "NONE");
 
   fwrite($handler, "?>");
