@@ -302,7 +302,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "MZOP":
-      switch ($parameter)
+      $paramArr = explode(",", $parameter);
+      $parameter = $paramArr[0];
+      switch($parameter)
       {
         case "FREEZE": MZFreeze($lastResult); break;
         case "GAINCONTROL": MZGainControl($player, $lastResult); break;
@@ -317,6 +319,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             default: return "-1";
           }
         case "LASTMZINDEX": return MZLastIndex($player, $lastResult);
+        case "SETPIECE":
+          $pieceArr = explode("=", $paramArr[1]);
+          $mzArr = explode("-", $lastResult);
+          $zone = &GetMZZone($player, $mzArr[0]);
+          $zone[$mzArr[1]+$pieceArr[0]] = $pieceArr[1];
+          break;
         default: break;
       }
       return $lastResult;
