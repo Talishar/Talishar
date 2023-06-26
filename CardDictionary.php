@@ -196,12 +196,52 @@ function CardSet($cardID)
 function CardClass($cardID)
 {
   if(!$cardID) return "";
+  $number = intval(substr($cardID, 3));
+  if($number >= 400)
+  {
+    $set = substr($cardID, 0, 3);
+    switch($set)
+    {
+      case "MON":
+        if($number == 404) return "ILLUSIONIST";
+        else if($number == 405) return "WARRIOR";
+        else if($number == 406) return "BRUTE";
+        else if($number == 407) return "RUNEBLADE";
+        else return "NONE";
+      case "UPR":
+        if($number >= 406 && $number <= 417) return "ILLUSIONIST";
+        else if($number >= 439 && $number <= 441) return "ILLUSIONIST";
+        else if($number == 551) return "ILLUSIONIST";
+        else return "NONE";
+      case "DYN":
+        if($number == 612) return "ILLUSIONIST";
+        else return "NONE";
+    }
+  }
   return GeneratedCardClass($cardID);
 }
 
 function CardTalent($cardID)
 {
-  if(substr($cardID, 0, 3) == "ROG") return ROGUECardTalent($cardID);
+  $set = substr($cardID, 0, 3);
+  if($set == "ROG") return ROGUECardTalent($cardID);
+  $number = intval(substr($cardID, 3));
+  if($number >= 400)
+  {
+    switch($set)
+    {
+      case "MON":
+        if($number == 520) return "SHADOW";
+        else return "NONE";
+      case "UPR":
+        if($number >= 406 && $number <= 417 ) return "DRACONIC";
+        else if($number >= 439 && $number <= 441) return "DRACONIC";
+        else return "NONE";
+      case "DYN":
+        if($number == 612) return "LIGHT";
+        else return "NONE";
+    }
+  }
   return GeneratedCardTalent($cardID);
 }
 
