@@ -19,7 +19,6 @@ function DTDAbilityType($cardID, $index = -1)
 function DTDAbilityHasGoAgain($cardID)
 {
   switch($cardID) {
-
     default: return false;
   }
 }
@@ -31,7 +30,7 @@ function DTDEffectAttackModifier($cardID)
   $cardID = $params[0];
   if(count($params) > 1) $parameter = $params[1];
   switch($cardID) {
-
+    case "DTD196": return 1;//Anthem of Spring
     default:
       return 0;
   }
@@ -43,6 +42,7 @@ function DTDCombatEffectActive($cardID, $attackID)
   $params = explode(",", $cardID);
   $cardID = $params[0];
   switch($cardID) {
+    case "DTD196": return CardType($attackID) == "AA";//Anthem of Spring
     case "DTD198": return true;//Call Down the Lightning
     default:
       return false;
@@ -55,6 +55,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
+    case "DTD196"://Anthem of Spring
+      AddCurrentTurnEffect("DTD196", $currentPlayer);
+      break;
     case "DTD198"://Call Down the Lightning
       AddCurrentTurnEffect("DTD198", $currentPlayer);
       break;
