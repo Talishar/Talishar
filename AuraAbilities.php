@@ -191,7 +191,7 @@ function RemoveAura($player, $index)
     CloseCombatChain();
   }
   //TODO: Remove temporary integrity checking code
-  if(count($auras) > 0 && strlen($auras[0]) < 6) ReportBug();
+  if(count($auras) > 0 && count($auras) % AuraPieces() != 0) ReportBug();
   return $cardID;
 }
 
