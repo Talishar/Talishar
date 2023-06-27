@@ -529,22 +529,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100003: //Report Bug
       if($isSimulation) return;
-      $bugCount = 0;
-      $folderName = "./BugReports/" . $gameName . "-" . $bugCount;
-      while ($bugCount < 5 && file_exists($folderName)) {
-        ++$bugCount;
-        $folderName = "./BugReports/" . $gameName . "-" . $bugCount;
-      }
-      if ($bugCount == 5) {
-        WriteLog("Bug report file is temporarily full for this game. Please use the discord to report further bugs.");
-      }
-      mkdir($folderName, 0700, true);
-      copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");
-      copy("./Games/$gameName/gamestateBackup.txt", $folderName . "/gamestateBackup.txt");
-      copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
-      copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
-      copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
-      WriteLog("Thank you for reporting a bug. To describe what happened, please report it on the discord server with the game number for reference ($gameName).");
+      ReportBug();
       break;
     case 100004: //Full Rematch
       if($isSimulation) return;
@@ -2083,6 +2068,27 @@ function AddEvent($type, $value)
   global $events;
   array_push($events, $type);
   array_push($events, $value);
+}
+
+function ReportBug()
+{
+  global $gameName;
+  $bugCount = 0;
+  $folderName = "./BugReports/" . $gameName . "-" . $bugCount;
+  while ($bugCount < 5 && file_exists($folderName)) {
+    ++$bugCount;
+    $folderName = "./BugReports/" . $gameName . "-" . $bugCount;
+  }
+  if ($bugCount == 5) {
+    WriteLog("Bug report file is temporarily full for this game. Please use the discord to report further bugs.");
+  }
+  mkdir($folderName, 0700, true);
+  copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");
+  copy("./Games/$gameName/gamestateBackup.txt", $folderName . "/gamestateBackup.txt");
+  copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
+  copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
+  copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
+  WriteLog("Thank you for reporting a bug. To describe what happened, please report it on the discord server with the game number for reference ($gameName).");
 }
 
 ?>

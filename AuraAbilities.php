@@ -190,6 +190,8 @@ function RemoveAura($player, $index)
   if(IsSpecificAuraAttacking($player, $index)) {
     CloseCombatChain();
   }
+  //TODO: Remove temporary integrity checking code
+  if(count($auras) > 0 && strlen($auras[0]) < 6) ReportBug();
   return $cardID;
 }
 
