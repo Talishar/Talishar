@@ -597,7 +597,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       counters: $counters,
       atkCounters: $atkCounters,
       action: $action,
-      controller: $otherPlayer,
+      controller: $playerID,
       borderColor: $border,
       type: $type,
       actionDataOverride: strval($i),
@@ -621,7 +621,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $gem = $myItems[$i + 5];
     if (isset($itemTileMap[$myItems[$i]])) $gem = $itemTileMap[$myItems[$i]];
     else $itemTileMap[$myItems[$i]] = $gem;
-    array_push($myItemsOutput, JSONRenderedCard(cardNumber: $myItems[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, overlay: ItemOverlay($myItems[$i], $myItems[$i + 2], $myItems[$i + 3]), counters: $myItems[$i + 1], controller: $otherPlayer, type: $type, sType: $sType, gem: $gem, restriction: $restriction));
+    array_push($myItemsOutput, JSONRenderedCard(cardNumber: $myItems[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, overlay: ItemOverlay($myItems[$i], $myItems[$i + 2], $myItems[$i + 3]), counters: $myItems[$i + 1], controller: $playerID, type: $type, sType: $sType, gem: $gem, restriction: $restriction));
   }
   $response->playerItems = $myItemsOutput;
 
@@ -632,7 +632,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i + PermanentPieces() - 1 < count($myPermanents); $i += PermanentPieces()) {
     $type = CardType($myPermanents[$i]);
     $sType = CardSubType($myPermanents[$i]);
-    array_push($myPermanentsOutput, JSONRenderedCard(cardNumber: $myPermanents[$i], controller: $otherPlayer, type: $type, sType: $sType));
+    array_push($myPermanentsOutput, JSONRenderedCard(cardNumber: $myPermanents[$i], controller: $playerID, type: $type, sType: $sType));
   }
   $response->playerPermanents = $myPermanentsOutput;
 
