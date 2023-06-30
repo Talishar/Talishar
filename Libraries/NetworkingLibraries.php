@@ -412,6 +412,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         case "ITEMS": $zone = &GetItems($playerID); $offset = 5; break;
         default: $zone = &GetAuras($playerID); $offset = 7; break;
       }
+      if(($index+$offset) > count($zone)) break;
       $zone[$index + $offset] = ($zone[$index + $offset] == "1" ? "0" : "1");
       break;
     case 104: //Toggle other player permanent Active
@@ -423,6 +424,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         case "ITEMS": $zone = &GetItems($playerID == 1 ? 2 : 1); $offset = 6; break;
         default: $zone = &GetAuras($playerID == 1 ? 2 : 1); $offset = 8; break;
       }
+      if(($index+$offset) > count($zone)) break;
       $zone[$index + $offset] = ($zone[$index + $offset] == "1" ? "0" : "1");
       break;
     case 10000: //Undo
