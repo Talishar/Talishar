@@ -1898,15 +1898,17 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($definedCardType == "DR") OnDefenseReactionResolveEffects();
     }
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
-  } else if ($from != "PLAY") {
+  } else if($from != "PLAY") {
     $cardSubtype = CardSubType($cardID);
-    if (DelimStringContains($cardSubtype, "Aura")) {
+    if(DelimStringContains($cardSubtype, "Aura")) {
       PlayMyAura($cardID);
-    } else if (DelimStringContains($cardSubtype, "Item")) {
+    } else if(DelimStringContains($cardSubtype, "Item")) {
       PutItemIntoPlay($cardID);
-    } else if ($cardSubtype == "Landmark") {
+    } else if($cardSubtype == "Landmark") {
       PlayLandmark($cardID, $currentPlayer);
-    } else if ($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W") {
+    } else if(DelimStringContains($cardSubtype, "Figment")) {
+      PutPermanentIntoPlay($currentPlayer, $cardID);
+    } else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W") {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer);
       switch ($goesWhere) {
         case "BOTDECK":

@@ -125,7 +125,8 @@
     $origAV = $av;
     if($attackID == "MON008" || $attackID == "MON009" || $attackID == "MON010") --$av;
     $av += AuraAttackModifiers($index);
-    $av += $combatChain[$index+5];//Attack Modifiers
+    $av += $combatChain[$index+5];
+    $av += EffectDefenderAttackModifiers();
     return $av >= 6;
   }
 

@@ -2,8 +2,10 @@
 
 function DTDAbilityCost($cardID)
 {
+  global $Card_Lumi2;
   switch($cardID) {
     case "DTD060": return 1;
+    //case $Card_Lumi2: return 2;
     default: return 0;
   }
 }
@@ -12,6 +14,7 @@ function DTDAbilityType($cardID, $index = -1)
 {
   switch($cardID) {
     case "DTD060": return "AR";
+    //case $Card_Lumi2: return "I";
     default: return "";
   }
 }
@@ -60,14 +63,22 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
+    case "DTD011":
+      AddCurrentTurnEffect($cardID, $otherPlayer);
+      break;
+      /*
+    case $Card_Lumi2:
+      GiveAttackGoAgain();
+      break;
+      */
     case "DTD060": case "DTD061": case "DTD062"://V for Valor
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer, from:"PLAY");
       break;
     case "DTD196"://Anthem of Spring
-      AddCurrentTurnEffect("DTD196", $currentPlayer);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "DTD198"://Call Down the Lightning
-      AddCurrentTurnEffect("DTD198", $currentPlayer);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "DTD219"://Lost in Thought
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRHAND:type=A&THEIRHAND:type=AA");

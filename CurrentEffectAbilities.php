@@ -1028,4 +1028,23 @@ function CurrentEffectNameModifier($effectID, $effectParameter)
   return $name;
 }
 
+function EffectDefenderAttackModifiers()
+{
+  $mod = 0;
+  global $defPlayer, $currentTurnEffects;
+  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $remove = false;
+    if($currentTurnEffects[$i + 1] == $defPlayer) {
+      switch($currentTurnEffects[$i]) {
+        case "DTD011": $mod -= 1; break;
+        default:
+          break;
+      }
+    }
+    if($remove) RemoveCurrentTurnEffect($i);
+  }
+  $currentTurnEffects = array_values($currentTurnEffects);
+  return $mod;
+}
+
 ?>
