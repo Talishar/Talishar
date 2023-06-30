@@ -19,7 +19,7 @@
         AddDecisionQueue("INVERTEXISTENCE", $currentPlayer, "-", 1);
         return "";
       case "MON159": case "MON160": case "MON161":
-        MZMoveCard($currentPlayer, "MYDISCARD:bloodDebtOnly=true;type=A", "BOTDECK", may:true);
+        MZMoveCard($currentPlayer, "MYDISCARD:bloodDebtOnly=true;type=A", "MYBOTDECK", may:true);
         return "";
       case "MON162": case "MON163": case "MON164":
         if($cardID == "MON162") $optAmt = 3;
