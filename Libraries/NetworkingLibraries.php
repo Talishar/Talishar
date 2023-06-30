@@ -1531,6 +1531,9 @@ function PayAdditionalCosts($cardID, $from)
   if($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
     return;
+  } else if($from == "PLAY" && DelimStringContains($cardSubtype, "Aura")) {
+    PayAuraAbilityAdditionalCosts($cardID, $from);
+    return;
   }
   $fuseType = HasFusion($cardID);
   if($fuseType != "") {
@@ -1855,8 +1858,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $openedChain = false;
   $chainClosed = false;
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
-  if (GoesOnCombatChain($turn[0], $cardID, $from)) {
-    if($from == "PLAY" && $uniqueID != "-1" && $index == -1 && !DelimStringContains(CardSubType($cardID), "Item")) { WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play."); return; }
+  if(GoesOnCombatChain($turn[0], $cardID, $from)) {
+    if($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains(CardSubType($cardID), "Item")) { WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play."); return; }
     $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
     if ($index == 0) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);

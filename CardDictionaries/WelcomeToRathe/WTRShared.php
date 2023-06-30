@@ -418,10 +418,10 @@ function WTRAbilityCost($cardID)
         if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $mainPlayer); $rv = "Gains +1 attack"; }
         return $rv;
       case "WTR206": case "WTR207": case "WTR208":
-        AddCurrentTurnEffect($cardID, $mainPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "WTR209": case "WTR210": case "WTR211":
-        AddCurrentTurnEffect($cardID, $mainPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "WTR215": case "WTR216": case "WTR217":
         BottomDeck($currentPlayer, true, shouldDraw:true);

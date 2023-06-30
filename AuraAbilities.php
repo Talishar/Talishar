@@ -747,3 +747,16 @@ function GetAuraGemState($player, $cardID)
   }
   return $state;
 }
+
+function PayAuraAbilityAdditionalCosts($cardID, $from)
+{
+  global $currentPlayer, $CS_PlayIndex;
+  $index = GetClassState($currentPlayer, $CS_PlayIndex);
+  switch($cardID) {
+    case "DTD060": case "DTD061": case "DTD062":
+      DestroyAura($currentPlayer, $index);
+      Charge();
+      break;
+    default: break;
+  }
+}
