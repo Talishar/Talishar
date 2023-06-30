@@ -755,7 +755,7 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
   switch($cardID) {
     case "DTD060": case "DTD061": case "DTD062":
       DestroyAura($currentPlayer, $index);
-      Charge();
+      Charge(may:false);
       break;
     default: break;
   }

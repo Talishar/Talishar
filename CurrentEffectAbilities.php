@@ -248,6 +248,7 @@ function EffectHitEffect($cardID)
     case "OUT166": LoseHealth(4, $defPlayer); break;
     case "OUT167": LoseHealth(3, $defPlayer); break;
     case "OUT188_1": if(IsHeroAttackTarget()) { PlayAura("DYN244", $mainPlayer); return 1; } break;
+    case "DTD066": case "DTD067": case "DTD068": GiveAttackGoAgain(); break;
     default:
       break;
   }

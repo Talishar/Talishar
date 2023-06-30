@@ -46,6 +46,7 @@ function DTDCombatEffectActive($cardID, $attackID)
   $cardID = $params[0];
   switch($cardID) {
     case "DTD060": case "DTD061": case "DTD062": return true;
+    case "DTD066": case "DTD067": case "DTD068": return true;
     case "DTD196": return CardType($attackID) == "AA";//Anthem of Spring
     case "DTD198": return true;//Call Down the Lightning
     default:

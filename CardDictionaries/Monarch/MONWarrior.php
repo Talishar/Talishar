@@ -100,14 +100,15 @@
     ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+5];
   }
 
-  function Charge()
+  function Charge($may=true)
   {
     global $currentPlayer;
     $hand = &GetHand($currentPlayer);
     if(count($hand) == 0) { WriteLog("No cards in hand to charge"); return; }
     AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to charge", 1);
-    AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
+    if($may) AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
+    else AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-");
     AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     AddDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
     AddDecisionQueue("FINISHCHARGE", $currentPlayer, "-", 1);
