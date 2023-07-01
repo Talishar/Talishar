@@ -146,6 +146,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD0100": case "DTD101": case "DTD102":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "DTD140":
+      PlayAura("ARC112", $currentPlayer);
+      return "";
     case "DTD196"://Anthem of Spring
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
