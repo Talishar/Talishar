@@ -101,6 +101,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD072": case "DTD073": case "DTD074"://Charge of the Light Brigade
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "DTD085": GainHealth(3, $currentPlayer); break;//Blessing of Salvation
+    case "DTD086": GainHealth(2, $currentPlayer); break;
+    case "DTD087": GainHealth(1, $currentPlayer); break;
     case "DTD196"://Anthem of Spring
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
