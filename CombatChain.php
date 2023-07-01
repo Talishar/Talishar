@@ -626,6 +626,10 @@ function CombatChainClosedEffects()
           if(GetClassState($mainPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($mainPlayer, "MYARS", "ARS,-");
           if(GetClassState($defPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($defPlayer, "MYARS", "ARS,-");
           break;
+        case "DTD139":
+          if(GetClassState($mainPlayer, $CS_LifeLost) > 0) { $deck = new Deck($mainPlayer); $deck->BanishTop(); }
+          if(GetClassState($defPlayer, $CS_LifeLost) > 0) { $deck = new Deck($defPlayer); $deck->BanishTop(); }
+          break;
         default: break;
       }
     }

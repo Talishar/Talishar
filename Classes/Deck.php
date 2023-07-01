@@ -58,8 +58,9 @@ class Deck {
     return $rv;
   }
 
-  function Banish() {
-    // Code to banish x number of cards from the top of the deck
+  function BanishTop($modifier = "-", $banishedBy = "") {
+    $cardID = $this->Remove(0);
+    BanishCardForPlayer($cardID, $this->playerID, "DECK", $modifier, $banishedBy);
   }
 }
 

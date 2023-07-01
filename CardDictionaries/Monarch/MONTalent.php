@@ -96,8 +96,6 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "TOPDECK", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,NA", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
         return "";
       case "MON218":
         $theirCharacter = GetPlayerCharacter($otherPlayer);
