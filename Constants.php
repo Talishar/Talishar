@@ -9,6 +9,7 @@ $Card_CourageBanner = "FAB161";
 $Card_QuickenBanner = "FAB162";
 $Card_SpellbaneBanner = "FAB163";
 $Card_LifeBanner = "LGS180";
+$Card_BlockBanner = "LGS179";
 
 
 $GameStatus_Over = 2;

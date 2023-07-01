@@ -410,6 +410,7 @@ function ModifyBlockForType($type, $amount)
 function OnBlockEffects($index, $from)
 {
   global $currentTurnEffects, $combatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  global $Card_BlockBanner;
   $cardType = CardType($combatChain[$index]);
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
@@ -448,6 +449,12 @@ function OnBlockEffects($index, $from)
           break;
         case "OUT009": case "OUT010":
           if($cardType == "E") $combatChain[$index + 6] -= 1;
+          break;
+        case $Card_BlockBanner:
+          if($cardType == "A" || $cardType == "AA") {
+            $combatChain[$index + 6] += 1;
+            $remove = true;
+          }
           break;
         default:
           break;
