@@ -255,6 +255,7 @@ function EffectHitEffect($cardID)
       PlayAura("DTD232", $mainPlayer);
       break;
     case "DTD066": case "DTD067": case "DTD068": GiveAttackGoAgain(); break;
+    case "DTD207": PlayAura("DTD232", $mainPlayer); break;
     default:
       break;
   }

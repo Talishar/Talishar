@@ -7,6 +7,7 @@ function DTDAbilityCost($cardID)
     case "DTD060": return 1;
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return 0;
     case "DTD205": return 3;
+    case "DTD207": return 1;
     default: return 0;
   }
 }
@@ -18,6 +19,7 @@ function DTDAbilityType($cardID, $index = -1)
     case "DTD060": return "AR";
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return "I";
     case "DTD205": return "AA";
+    case "DTD207": return "A";
     default: return "";
   }
 }
@@ -25,6 +27,7 @@ function DTDAbilityType($cardID, $index = -1)
 function DTDAbilityHasGoAgain($cardID)
 {
   switch($cardID) {
+    case "DTD207": return true;
     default: return false;
   }
 }
@@ -57,7 +60,7 @@ function DTDEffectAttackModifier($cardID)
 
 function DTDCombatEffectActive($cardID, $attackID)
 {
-  global $combatChainState, $CCS_IsBoosted, $mainPlayer, $combatChainState, $CCS_AttackNumCharged;
+  global $combatChainState, $CCS_IsBoosted, $mainPlayer, $combatChainState, $CCS_AttackNumCharged, $combatChain;
   $params = explode(",", $cardID);
   $cardID = $params[0];
   switch($cardID) {
@@ -75,6 +78,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD196": return CardType($attackID) == "AA";//Anthem of Spring
     case "DTD198": return true;//Call Down the Lightning
     case "DTD206": return true;
+    case "DTD207": return SubtypeContains($combatChain[0], "Sword", $mainPlayer);//Ironsong Versus
     case "DTD232": return true;//Courage
     default:
       return false;
@@ -139,6 +143,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD198"://Call Down the Lightning
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "DTD207"://Ironsong Versus
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "DTD219"://Lost in Thought
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRHAND:type=A&THEIRHAND:type=AA");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
