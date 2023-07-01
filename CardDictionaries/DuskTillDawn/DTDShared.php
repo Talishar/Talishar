@@ -2,11 +2,10 @@
 
 function DTDAbilityCost($cardID)
 {
-  global $Card_Lumi2;
   switch($cardID) {
     case "DTD046": return 2;
     case "DTD060": return 1;
-    //case $Card_Lumi2: return 2;
+    case "DTD075": case "DTD076": case "DTD077": case "DTD078": return 0;
     default: return 0;
   }
 }
@@ -16,7 +15,7 @@ function DTDAbilityType($cardID, $index = -1)
   switch($cardID) {
     case "DTD046": return "AA";
     case "DTD060": return "AR";
-    //case $Card_Lumi2: return "I";
+    case "DTD075": case "DTD076": case "DTD077": case "DTD078": return "I";
     default: return "";
   }
 }
@@ -77,7 +76,7 @@ function DTDCombatEffectActive($cardID, $attackID)
 
 function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $currentPlayer, $CS_NumCharged;
+  global $currentPlayer, $CS_NumCharged, $CS_DamagePrevention;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
@@ -103,6 +102,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       break;
     case "DTD072": case "DTD073": case "DTD074"://Charge of the Light Brigade
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "DTD075": case "DTD076": case "DTD077": case "DTD078":
+      IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       break;
     case "DTD085": GainHealth(3, $currentPlayer); break;//Blessing of Salvation
     case "DTD086": GainHealth(2, $currentPlayer); break;

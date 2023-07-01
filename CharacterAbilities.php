@@ -590,6 +590,13 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "OUT175": case "OUT176": case "OUT177": case "OUT178": case "OUT179": case "OUT180": case "OUT181": case "OUT182":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
+    case "DTD075": case "DTD076": case "DTD077": case "DTD078":
+      $char = new Character($currentPlayer, $cardIndex);
+      $char->status = 0;
+      BanishCardForPlayer($char->cardID, $mainPlayer, "EQUIP", "NA");
+      $char->Finished();
+      BanishFromSoul($currentPlayer);
+      break;
     default:
       --$character[$cardIndex+5];
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1; //By default, if it's used, set it to used
