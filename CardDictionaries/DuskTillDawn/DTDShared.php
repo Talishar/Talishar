@@ -61,6 +61,7 @@ function DTDEffectAttackModifier($cardID)
 function DTDCombatEffectActive($cardID, $attackID)
 {
   global $combatChainState, $CCS_IsBoosted, $mainPlayer, $combatChainState, $CCS_AttackNumCharged, $combatChain;
+  global $Card_LifeBanner;
   $params = explode(",", $cardID);
   $cardID = $params[0];
   switch($cardID) {
@@ -80,6 +81,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD206": return true;
     case "DTD207": return SubtypeContains($combatChain[0], "Sword", $mainPlayer);//Ironsong Versus
     case "DTD232": return true;//Courage
+    case $Card_LifeBanner: return true;
     default:
       return false;
   }

@@ -8,6 +8,8 @@ $Card_Flail = "LGS156";
 $Card_CourageBanner = "FAB161";
 $Card_QuickenBanner = "FAB162";
 $Card_SpellbaneBanner = "FAB163";
+$Card_LifeBanner = "LGS180";
+
 
 $GameStatus_Over = 2;
 $GameStatus_Rematch = 3;
