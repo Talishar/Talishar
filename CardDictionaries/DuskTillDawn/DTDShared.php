@@ -68,6 +68,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD069": case "DTD070": case "DTD071": return true;//Resounding Courage
     case "DTD196": return CardType($attackID) == "AA";//Anthem of Spring
     case "DTD198": return true;//Call Down the Lightning
+    case "DTD206": return true;
     case "DTD232": return true;//Courage
     default:
       return false;

@@ -2363,6 +2363,9 @@ function UnityEffect($cardID)
     case "DTD203":
       PlayAura("WTR075", $defPlayer);
       break;
+    case "DTD206":
+      AddCurrentTurnEffect("DTD206", $defPlayer);
+      break;
     default: break;
   }
 }

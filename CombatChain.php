@@ -283,7 +283,7 @@ function OnBlockResolveEffects()
   $blockedFromHand = 0;
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) if($combatChain[$i+2] == "HAND") ++$blockedFromHand;
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-    if($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") UnityEffect($combatChain[$i]);
+    if(($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i+2] != "HAND")) UnityEffect($combatChain[$i], $i);
     switch($combatChain[$i]) {
       case "EVR018":
         if(!IsAllyAttacking()) {
@@ -307,6 +307,10 @@ function OnBlockResolveEffects()
       case "OUT099": //Wayfinder's Crest
       case "OUT174": //Vambrace of Determination
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
+        break;
+      case "DTD094": case "DTD095": case "DTD096":
+        $mainChar = &GetPlayerCharacter($mainPlayer);
+        if(TalentContains($mainChar[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
         break;
       default: break;
     }

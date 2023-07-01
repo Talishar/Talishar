@@ -292,6 +292,7 @@ function EffectHasBlockModifier($cardID)
     case "OUT109":
     case "OUT110":
     case "OUT111":
+    case "DTD206":
     return true;
     default: return false;
   }
@@ -316,6 +317,8 @@ function EffectBlockModifier($cardID, $index)
       return (PitchValue($combatChain[$index]) == 2 && HasAimCounter() ? -1 : 0);
     case "OUT111":
       return (PitchValue($combatChain[$index]) == 3 && HasAimCounter() ? -1 : 0);
+    case "DTD206":
+      return ($combatChain[$index] == "DTD206" ? 1 : 0);
     default:
       return 0;
   }
@@ -943,6 +946,7 @@ function IsCombatEffectPersistent($cardID)
     case "OUT052": case "OUT140": case "OUT141": case "OUT144": case "OUT188_1": return true;
     case "DTD052": return true;//Spirit of War
     case "DTD198": return true;//Call Down the Lightning
+    case "DTD206": return true;
     case "ROGUE018": return true;
     case "ROGUE601": return true;
     case "ROGUE603": return true;
