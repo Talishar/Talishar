@@ -238,11 +238,11 @@ function AddSoul($cardID, $player, $from)
     PutItemIntoPlayForPlayer($cardID, $player);
   }
   else {
-    if ($mainPlayerGamestateStillBuilt) {
-      if ($player == $mainPlayer) AddSpecificSoul($cardID, $mainSoul, $from);
+    if($mainPlayerGamestateStillBuilt) {
+      if($player == $mainPlayer) AddSpecificSoul($cardID, $mainSoul, $from);
       else AddSpecificSoul($cardID, $defSoul, $from);
     } else {
-      if ($player == $myStateBuiltFor) AddSpecificSoul($cardID, $mySoul, $from);
+      if($player == $myStateBuiltFor) AddSpecificSoul($cardID, $mySoul, $from);
       else AddSpecificSoul($cardID, $theirSoul, $from);
     }
     IncrementClassState($player, $CS_NumAddedToSoul);

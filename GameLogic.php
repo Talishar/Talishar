@@ -658,6 +658,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DQCharge();
       return "1";
     case "FINISHCHARGE":
+      //Abilities when you charge it
+      global $Card_CourageBanner;
+      switch($lastResult)
+      {
+        case $Card_CourageBanner: PlayAura("DTD232", $player); break;
+        default: break;
+      }
       WriteLog("This card was charged: " . CardLink($lastResult, $lastResult));
       IncrementClassState($player, $CS_NumCharged);
       global $CCS_AttackNumCharged;
