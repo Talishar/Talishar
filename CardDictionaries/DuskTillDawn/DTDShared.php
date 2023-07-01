@@ -45,6 +45,7 @@ function DTDEffectAttackModifier($cardID)
     case "DTD072": return 3;//Charge of the Light Brigade
     case "DTD073": return 2;
     case "DTD074": return 1;
+    case "DTD082": case "DTD083": case "DTD084": return 1;
     case "DTD196": return 1;//Anthem of Spring
     case "DTD232": return 1;//Courage
     default:
@@ -65,8 +66,9 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD060": case "DTD061": case "DTD062": return true;
     case "DTD063": case "DTD064": case "DTD065": return true;//Glaring Impact
     case "DTD066": case "DTD067": case "DTD068": return true;
-    case "DTD072": case "DTD073": case "DTD074": return $combatChainState[$CCS_AttackNumCharged] > 0;//Charge of the Light Brigade
     case "DTD069": case "DTD070": case "DTD071": return true;//Resounding Courage
+    case "DTD072": case "DTD073": case "DTD074": return $combatChainState[$CCS_AttackNumCharged] > 0;//Charge of the Light Brigade
+    case "DTD082": case "DTD083": case "DTD084": return true;
     case "DTD196": return CardType($attackID) == "AA";//Anthem of Spring
     case "DTD198": return true;//Call Down the Lightning
     case "DTD206": return true;
@@ -108,6 +110,10 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD075": case "DTD076": case "DTD077": case "DTD078":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       break;
+    case "DTD082": case "DTD083": case "DTD084"://Lay to Rest
+      $theirChar = &GetPlayerCharacter($otherPlayer);
+      if(TalentContains($theirChar[0], "SHADOW", $otherPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     case "DTD085": GainHealth(3, $currentPlayer); break;//Blessing of Salvation
     case "DTD086": GainHealth(2, $currentPlayer); break;
     case "DTD087": GainHealth(1, $currentPlayer); break;
@@ -141,7 +147,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 function DTDHitEffect($cardID)
 {
   switch($cardID) {
-
+    case "DTD082": case "DTD083": case "DTD084":
+      WriteLog("The banish face down effect of this card is not implemented yet. Choose the card in chat and enforce play restrictions manually.");
+      break;
     default: break;
   }
 }
