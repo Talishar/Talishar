@@ -1835,6 +1835,8 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-BANISH1ATTACK", 1);
       break;
+    case "DTD052"://Spirit of War
+    case "DTD057": case "DTD058": case "DTD059":
     case "DTD066": case "DTD067": case "DTD068":
       Charge();
       AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "2", 1);

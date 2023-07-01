@@ -248,6 +248,9 @@ function EffectHitEffect($cardID)
     case "OUT166": LoseHealth(4, $defPlayer); break;
     case "OUT167": LoseHealth(3, $defPlayer); break;
     case "OUT188_1": if(IsHeroAttackTarget()) { PlayAura("DYN244", $mainPlayer); return 1; } break;
+    case "DTD052":
+      PlayAura("DTD232", $mainPlayer);
+      break;
     case "DTD066": case "DTD067": case "DTD068": GiveAttackGoAgain(); break;
     default:
       break;
@@ -337,6 +340,7 @@ function RemoveEffectsOnChainClose()
       case "OUT033": case "OUT034": case "OUT035": //Prowl
       case "OUT052": //Head Leads the Tail
       case "OUT071": case "OUT072": case "OUT073": //Deadly Duo
+      case "DTD052"://Spirit of War
         $remove = 1;
         break;
       default:
@@ -937,6 +941,7 @@ function IsCombatEffectPersistent($cardID)
     case "DYN089-UNDER": return true;
     case "DYN154": return true;
     case "OUT052": case "OUT140": case "OUT141": case "OUT144": case "OUT188_1": return true;
+    case "DTD052": return true;//Spirit of War
     case "DTD198": return true;//Call Down the Lightning
     case "ROGUE018": return true;
     case "ROGUE601": return true;

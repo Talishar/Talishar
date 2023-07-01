@@ -19,7 +19,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {
   global $redirectPath, $playerID, $gameName;
   global $currentPlayer, $combatChain, $defPlayer;
-  global $combatChainState;
+  global $combatChainState, $EffectContext;
   global $defCharacter, $CS_NumCharged, $otherPlayer;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
@@ -654,6 +654,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "FINISHCHARGE":
       WriteLog("This card was charged: " . CardLink($lastResult, $lastResult));
       IncrementClassState($player, $CS_NumCharged);
+      global $CCS_AttackNumCharged;
+      if(count($combatChain) > 0 && CardType($EffectContext) == "AA") ++$combatChainState[$CCS_AttackNumCharged];
       return $lastResult;
     case "DEALDAMAGE":
       $target = (is_array($lastResult) ? $lastResult : explode("-", $lastResult));

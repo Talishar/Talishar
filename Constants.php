@@ -270,7 +270,7 @@ $CS_HitsWithSword = 65;
 $CCS_CurrentAttackGainedGoAgain = 0;
 $CCS_WeaponIndex = 1;
 $CCS_HasAimCounter = 2;
-$CCS_NumHits = 3;//Deprecated -- use HitsInCombatChain() or NumAttacksHit() instead
+$CCS_AttackNumCharged = 3;
 $CCS_DamageDealt = 4;
 $CCS_HitsInRow = 5;//Deprecated -- use HitsInRow() instead
 $CCS_HitsWithWeapon = 6;
@@ -311,12 +311,13 @@ function ResetCombatChainState()
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
   global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
-  global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter;
+  global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged;
   if (count($chainLinks) > 0) WriteLog("The combat chain was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;
   $combatChainState[$CCS_HasAimCounter] = 0;
   $combatChainState[$CCS_DamageDealt] = 0;
+  $combatChainState[$CCS_AttackNumCharged] = 0;
   $combatChainState[$CCS_HitsWithWeapon] = 0;
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
   $combatChainState[$CCS_AttackPlayedFrom] = "NA";
@@ -398,11 +399,12 @@ function ResetChainLinkState()
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
   global $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
-  global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink;
+  global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged;
   WriteLog("The chain link was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;
   $combatChainState[$CCS_HasAimCounter] = 0;
+  $combatChainState[$CCS_AttackNumCharged] = 0;
   $combatChainState[$CCS_DamageDealt] = 0;
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
   $combatChainState[$CCS_AttackPlayedFrom] = "NA";

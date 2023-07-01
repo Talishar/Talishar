@@ -800,6 +800,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DTD060": case "DTD061": case "DTD062":
       $hand = &GetHand($currentPlayer);
       return $from == "PLAY" && count($hand) == 0;
+    case "DTD069": case "DTD070": case "DTD071"://Resounding Courage
+      return count($combatChain) == 0 || !ClassContains($combatChain[0], "WARRIOR", $mainPlayer) || !TalentContains($combatChain[0], "LIGHT", $mainPlayer);
     default: return false;
   }
 }

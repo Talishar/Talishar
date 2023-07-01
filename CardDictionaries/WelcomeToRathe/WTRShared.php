@@ -405,7 +405,7 @@ function WTRAbilityCost($cardID)
       case "WTR174": GainHealth(2, $currentPlayer); return "";
       case "WTR175": GainHealth(1, $currentPlayer); return "";
       case "WTR182": case "WTR183": case "WTR184":
-        PlayMyAura("WTR225");
+        PlayAura("WTR225", $currentPlayer);
         return "";
       case "WTR191": case "WTR192": case "WTR193":
         if(IHaveLessHealth()) { GiveAttackGoAgain(); $rv = "Gains go again"; }

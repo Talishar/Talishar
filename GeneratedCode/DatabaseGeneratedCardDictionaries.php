@@ -327,6 +327,26 @@ case "T":
 switch($cardID[2]) {
 case "D":
 switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "5":
+switch($cardID[5]) {
+case "3":
+return true;
+default: return false;
+}
+case "7":
+switch($cardID[5]) {
+case "2":
+return true;
+case "3":
+return true;
+case "4":
+return true;
+default: return false;
+}
+default: return false;
+}
 case "1":
 switch($cardID[4]) {
 case "9":

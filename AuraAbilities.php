@@ -607,6 +607,12 @@ function AuraPlayAbilities($attackID, $from="")
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], $cardType, "-", $auras[$i + 6]);
         }
         break;
+      case "DTD232":
+        if($cardType == "AA" || ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA")) {
+          AddCurrentTurnEffect("DTD232", $currentPlayer);
+          $remove = 1;
+        }
+        break;
       default: break;
     }
     if($remove == 1) DestroyAura($currentPlayer, $i);

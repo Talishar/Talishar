@@ -2343,11 +2343,11 @@ function UnityEffect($cardID)
   {
     case "DTD079"://United We Stand
       $char = &GetPlayerCharacter($defPlayer);
-      if($char[0] == "MON029" || $char[0] == "MON030") PlayAura("WTR075", $defPlayer);//DTD TODO: Courage
+      if($char[0] == "MON029" || $char[0] == "MON030") PlayAura("DTD232", $defPlayer);
       else if($char[0] == "WTR038" || $char[0] == "WTR039") PlayAura("WTR075", $defPlayer);
       else if($char[0] == "ELE062" || $char[0] == "ELE063") PlayAura("ELE109", $defPlayer);
       else if($char[0] == "ELE062" || $char[0] == "ELE063") PlayAura("ELE109", $defPlayer);
-      else if($char[0] == "WTR113" || $char[0] == "WTR114") PlayAura("WTR075", $defPlayer);//DTD TODO: Courage
+      else if($char[0] == "WTR113" || $char[0] == "WTR114") PlayAura("DTD232", $defPlayer);
       else if($char[0] == "ELE031" || $char[0] == "ELE032") PlayAura("ELE110", $defPlayer);
       else if($char[0] == "ELE001" || $char[0] == "ELE002") PlayAura("DYN246", $defPlayer);
       else if($char[0] == "MON001" || $char[0] == "MON002") PlayAura("MON104", $defPlayer);
