@@ -277,6 +277,7 @@ function AbilityCost($cardID)
   if($class == "ILLUSIONIST" && $subtype == "Aura") {
     if(SearchCharacterForCard($currentPlayer, "MON003")) return 0;
     if(SearchCharacterForCard($currentPlayer, "MON088")) return 3;
+    if(SearchCharacterForCard($currentPlayer, "DTD216")) return 2;
   }
   if(DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "UPR003")) return 0;
   if($set == "WTR") return WTRAbilityCost($cardID);
@@ -352,6 +353,7 @@ function AttackValue($cardID)
   if($class == "ILLUSIONIST" && $subtype == "Aura") {
     if(SearchCharacterForCard($mainPlayer, "MON003")) return 1;
     if(SearchCharacterForCard($mainPlayer, "MON088")) return 4;
+    if(SearchCharacterForCard($mainPlayer, "DTD216")) return 5;
   }
   if($cardID == "CRU101") return 1 + $combatChainState[$CCS_NumBoosted];
   else if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
@@ -395,7 +397,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   $set = CardSet($cardID);
   $subtype = CardSubtype($cardID);
   if($from == "PLAY" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $subtype == "Aura") {
-    if(SearchCharacterForCard($currentPlayer, "MON003") || SearchCharacterForCard($currentPlayer, "MON088")) return "AA";
+    if(SearchCharacterForCard($currentPlayer, "MON003") || SearchCharacterForCard($currentPlayer, "MON088") || SearchCharacterForCard($currentPlayer, "DTD216")) return "AA";
   }
   if(DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "UPR003")) return "AA";
   if($set == "WTR") return WTRAbilityType($cardID, $index);
