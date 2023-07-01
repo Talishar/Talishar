@@ -4,6 +4,7 @@ function DTDAbilityCost($cardID)
 {
   global $Card_Lumi2;
   switch($cardID) {
+    case "DTD046": return 2;
     case "DTD060": return 1;
     //case $Card_Lumi2: return 2;
     default: return 0;
@@ -13,6 +14,7 @@ function DTDAbilityCost($cardID)
 function DTDAbilityType($cardID, $index = -1)
 {
   switch($cardID) {
+    case "DTD046": return "AA";
     case "DTD060": return "AR";
     //case $Card_Lumi2: return "I";
     default: return "";

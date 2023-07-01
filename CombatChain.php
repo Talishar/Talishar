@@ -144,6 +144,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "OUT181": return 1;
     case "OUT207": case "OUT208": case "OUT209": return (NumActionsBlocking() > 0 ? 2 : 0);
     case "OUT210": case "OUT211": case "OUT212": return (NumActionsBlocking() > 0 ? -2 : 0);
+    case "DTD046": return GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 5 : 0;
     default: return 0;
   }
 }
