@@ -248,6 +248,9 @@ function EffectHitEffect($cardID)
     case "OUT166": LoseHealth(4, $defPlayer); break;
     case "OUT167": LoseHealth(3, $defPlayer); break;
     case "OUT188_1": if(IsHeroAttackTarget()) { PlayAura("DYN244", $mainPlayer); return 1; } break;
+    case "DTD051":
+      MZMoveCard($mainPlayer, "MYDISCARD:type=AA", "MYTOPDECK", may:true);
+      break;
     case "DTD052":
       PlayAura("DTD232", $mainPlayer);
       break;
@@ -917,49 +920,22 @@ function IsCombatEffectPersistent($cardID)
     case "ELE047": case "ELE048": case "ELE049": return true;
     case "ELE050": case "ELE051": case "ELE052": return true;
     case "ELE059": case "ELE060": case "ELE061": return true;
-    case "ELE066-HIT": return true;
-    case "ELE067": case "ELE068": case "ELE069": return true;
-    case "ELE091-BUFF": case "ELE091-GA": return true;
-    case "ELE092-DOM": case "ELE092-BUFF": return true;
-    case "ELE143": return true;
-    case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": return true;
-    case "ELE173": return true;
-    case "ELE198": case "ELE199": case "ELE200": return true;
-    case "ELE203": return true;
-    case "EVR001": return true;
-    case "EVR019": return true;
-    case "EVR066-1": case "EVR067-1": case "EVR068-1": return true;
-    case "EVR090": return true;
-    case "EVR160": return true;
-    case "EVR164": case "EVR165": case "EVR166": return true;
-    case "EVR170-1": case "EVR171-1": case "EVR172-1": return true;
-    case "EVR186": return true;
+    case "ELE066-HIT": case "ELE067": case "ELE068": case "ELE069": case "ELE091-BUFF": case "ELE091-GA": return true;
+    case "ELE092-DOM": case "ELE092-BUFF": case "ELE143": case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": return true;
+    case "ELE173": case "ELE198": case "ELE199": case "ELE200": case "ELE203": return true;
+    case "EVR001": case "EVR019": case "EVR066-1": case "EVR067-1": case "EVR068-1": case "EVR090": return true;
+    case "EVR160": case "EVR164": case "EVR165": case "EVR166": case "EVR170-1": case "EVR171-1": case "EVR172-1": case "EVR186": return true;
     case "DVR008-1": return true;
-    case "UPR036": case "UPR037": case "UPR038": return true;
-    case "UPR047": return true;
-    case "UPR049": return true;
-    case "DYN009": return true;
-    case "DYN049": return true;
-    case "DYN085": case "DYN086": case "DYN087": return true;
-    case "DYN089-UNDER": return true;
-    case "DYN154": return true;
+    case "UPR036": case "UPR037": case "UPR038": case "UPR047": case "UPR049": return true;
+    case "DYN009": case "DYN049": case "DYN085": case "DYN086": case "DYN087": case "DYN089-UNDER": case "DYN154": return true;
     case "OUT052": case "OUT140": case "OUT141": case "OUT144": case "OUT188_1": return true;
+    case "DTD051": return true;//Beckoning Light
     case "DTD052": return true;//Spirit of War
     case "DTD198": return true;//Call Down the Lightning
     case "DTD206": return true;
-    case "ROGUE018": return true;
-    case "ROGUE601": return true;
-    case "ROGUE603": return true;
-    case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
-    case "ROGUE702": return true;
-    case "ROGUE704": return true;
-    case "ROGUE707": return true;
-    case "ROGUE710-GA": return true;
-    case "ROGUE710-DO": return true;
-    case "ROGUE711": return true;
-    case "ROGUE802": return true;
-    case "ROGUE805": return true;
-    case "ROGUE806": return true;
+    case "ROGUE018": case "ROGUE601": case "ROGUE702": case "ROGUE704": case "ROGUE707": return true;
+    case "ROGUE603": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
+    case "ROGUE710-GA": case "ROGUE710-DO": case "ROGUE711": case "ROGUE802": case "ROGUE805": case "ROGUE806": return true;
     default:
       return false;
   }

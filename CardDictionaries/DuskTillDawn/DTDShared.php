@@ -58,6 +58,7 @@ function DTDCombatEffectActive($cardID, $attackID)
   $params = explode(",", $cardID);
   $cardID = $params[0];
   switch($cardID) {
+    case "DTD051": return CardType($attackID) == "AA";//Beckoning Light
     case "DTD052": return CardType($attackID) == "AA";//Spirit of War
     case "DTD053": return true;//Prayer of Bellona
     case "DTD057": case "DTD058": case "DTD059": return true;//Beaming Bravado
