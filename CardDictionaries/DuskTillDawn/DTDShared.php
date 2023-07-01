@@ -63,6 +63,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD053": return true;//Prayer of Bellona
     case "DTD057": case "DTD058": case "DTD059": return true;//Beaming Bravado
     case "DTD060": case "DTD061": case "DTD062": return true;
+    case "DTD063": case "DTD064": case "DTD065": return true;//Glaring Impact
     case "DTD066": case "DTD067": case "DTD068": return true;
     case "DTD072": case "DTD073": case "DTD074": return $combatChainState[$CCS_AttackNumCharged] > 0;//Charge of the Light Brigade
     case "DTD069": case "DTD070": case "DTD071": return true;//Resounding Courage

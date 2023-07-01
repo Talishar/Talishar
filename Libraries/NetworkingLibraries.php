@@ -1838,6 +1838,7 @@ function PayAdditionalCosts($cardID, $from)
     case "DTD051":
     case "DTD052"://Spirit of War
     case "DTD057": case "DTD058": case "DTD059":
+    case "DTD063": case "DTD064": case "DTD065"://Glaring Impact
     case "DTD066": case "DTD067": case "DTD068":
       Charge();
       AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "2", 1);
