@@ -87,13 +87,19 @@ function DTDCombatEffectActive($cardID, $attackID)
 
 function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $currentPlayer, $CS_NumCharged, $CS_DamagePrevention, $CS_NumCardsDrawn;
+  global $currentPlayer, $CS_NumCharged, $CS_DamagePrevention, $CS_NumCardsDrawn, $combatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
     case "DTD011":
       AddCurrentTurnEffect($cardID, $otherPlayer);
-      break;
+      return "";
+    case "DTD038": case "DTD039": case "DTD040":
+      if($cardID == "DTD038") $amount = 3;
+      else if($cardID == "DTD039") $amount = 2;
+      else $amount = 1;
+      if($target != "-") $combatChain[intval($target)+5] -= $amount;
+      return "";
     case "DTD053":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $deck = new Deck($currentPlayer);
@@ -103,24 +109,24 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddPlayerHand($card, $currentPlayer, "DECK");
         Charge();
       }
-      break;
+      return "";
     case "DTD060": case "DTD061": case "DTD062"://V for Valor
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer, from:"PLAY");
-      break;
+      return "";
     case "DTD069": case "DTD070": case "DTD071"://Resounding Courage
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if(GetClassState($currentPlayer, $CS_NumCharged) > 0) PlayAura("DTD232", $currentPlayer);
-      break;
+      return "";
     case "DTD072": case "DTD073": case "DTD074"://Charge of the Light Brigade
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
+      return "";
     case "DTD075": case "DTD076": case "DTD077": case "DTD078":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
-      break;
+      return "";
     case "DTD082": case "DTD083": case "DTD084"://Lay to Rest
       $theirChar = &GetPlayerCharacter($otherPlayer);
       if(TalentContains($theirChar[0], "SHADOW", $otherPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
+      return "";
     case "DTD085": GainHealth(3, $currentPlayer); break;//Blessing of Salvation
     case "DTD086": GainHealth(2, $currentPlayer); break;
     case "DTD087": GainHealth(1, $currentPlayer); break;
@@ -130,19 +136,19 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       else if($cardID == "DTD090") $targetPitch = 3;
       WriteLog($taregtPitch);
       MZChooseAndDestroy($currentPlayer, "THEIRAURAS:pitch=" . $targetPitch . "&MYAURAS:pitch=" . $targetPitch);
-      break;
+      return "";
     case "DTD091": case "DTD092": case "DTD093":
       if(SearchPitchForColor($currentPlayer, 2) > 0) GiveAttackGoAgain();
-      break;
+      return "";
     case "DTD0100": case "DTD101": case "DTD102":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
+      return "";
     case "DTD196"://Anthem of Spring
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
+      return "";
     case "DTD198"://Call Down the Lightning
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
+      return "";
     case "DTD207"://Ironsong Versus
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";

@@ -1386,6 +1386,11 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
+    case "DTD038": case "DTD039": case "DTD040":
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "CCDEFLESSX,999");
+      AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
     default:
       break;
   }
