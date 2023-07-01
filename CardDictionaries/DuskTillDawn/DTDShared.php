@@ -106,6 +106,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD085": GainHealth(3, $currentPlayer); break;//Blessing of Salvation
     case "DTD086": GainHealth(2, $currentPlayer); break;
     case "DTD087": GainHealth(1, $currentPlayer); break;
+    case "DTD091": case "DTD092": case "DTD093":
+      if(SearchPitchForColor($currentPlayer, 2) > 0) GiveAttackGoAgain();
+      break;
     case "DTD196"://Anthem of Spring
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
