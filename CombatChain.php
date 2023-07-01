@@ -311,8 +311,7 @@ function OnBlockResolveEffects()
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "DTD094": case "DTD095": case "DTD096":
-        $mainChar = &GetPlayerCharacter($mainPlayer);
-        if(TalentContains($mainChar[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
+        if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
         break;
       default: break;
     }

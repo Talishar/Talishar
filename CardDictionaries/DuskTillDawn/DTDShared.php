@@ -69,6 +69,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD069": case "DTD070": case "DTD071": return true;//Resounding Courage
     case "DTD072": case "DTD073": case "DTD074": return $combatChainState[$CCS_AttackNumCharged] > 0;//Charge of the Light Brigade
     case "DTD082": case "DTD083": case "DTD084": return true;
+    case "DTD094": case "DTD095": case "DTD096": return true;
     case "DTD196": return CardType($attackID) == "AA";//Anthem of Spring
     case "DTD198": return true;//Call Down the Lightning
     case "DTD206": return true;

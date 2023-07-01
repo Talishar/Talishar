@@ -295,6 +295,7 @@ function EffectHasBlockModifier($cardID)
     case "OUT109":
     case "OUT110":
     case "OUT111":
+    case "DTD094": case "DTD095": case "DTD096":
     case "DTD206":
     return true;
     default: return false;
@@ -320,6 +321,8 @@ function EffectBlockModifier($cardID, $index)
       return (PitchValue($combatChain[$index]) == 2 && HasAimCounter() ? -1 : 0);
     case "OUT111":
       return (PitchValue($combatChain[$index]) == 3 && HasAimCounter() ? -1 : 0);
+    case "DTD094": case "DTD095": case "DTD096":
+      return (CardType($combatChain[$index]) != "E" && TalentContains($combatChain[$index], "LIGHT", $defPlayer) && TalentContains($combatChain[0], "SHADOW", $mainPlayer) ? 1 : 0);
     case "DTD206":
       return ($combatChain[$index] == "DTD206" ? 1 : 0);
     default:
