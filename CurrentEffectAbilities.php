@@ -495,6 +495,7 @@ function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
 function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable)
 {
   global $currentPlayer, $currentTurnEffects;
+  $otherPlayer = ($player == 1 ? 2 : 1);
   for($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0 && $damage > 0; $i -= CurrentTurnEffectPieces()) {
     $remove = false;
     if($currentTurnEffects[$i + 1] == $player) {
@@ -581,6 +582,16 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           break;
         case "OUT233":
           if($type == "COMBAT") {
+            if($preventable) $damage -= 2;
+            $remove = true;
+          }
+          break;
+        case "DTD100": case "DTD101": case "DTD102":
+          if($effects[0] == "DTD100") $prevention = 4;
+          else if($effects[0] == "DTD101") $prevention = 3;
+          else if($effects[0] == "DTD102") $prevention = 2;
+          if(TalentContains($source, "SHADOW", $otherPlayer))
+          {
             if($preventable) $damage -= 2;
             $remove = true;
           }

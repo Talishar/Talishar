@@ -127,6 +127,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD091": case "DTD092": case "DTD093":
       if(SearchPitchForColor($currentPlayer, 2) > 0) GiveAttackGoAgain();
       break;
+    case "DTD0100": case "DTD101": case "DTD102":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     case "DTD196"://Anthem of Spring
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
