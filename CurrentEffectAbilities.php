@@ -5,7 +5,7 @@
 function EffectHitEffect($cardID)
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $combatChain, $CCS_DamageDealt;
-  global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner;
+  global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner;
   if(CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   $attackID = $combatChain[0];
   switch($cardID) {
@@ -258,6 +258,9 @@ function EffectHitEffect($cardID)
     case "DTD207": PlayAura("DTD232", $mainPlayer); break;
     case $Card_LifeBanner:
         GainHealth(1, $mainPlayer);
+        return 1;
+    case $Card_ResourceBanner:
+        GainResources($mainPlayer, 1);
         return 1;
     default:
       break;
@@ -923,6 +926,7 @@ function IsCombatEffectActive($cardID)
   switch($cardID)
   {
     case "LGS180": return DTDCombatEffectActive($cardID, $attackID);
+    case "LGS181": return DTDCombatEffectActive($cardID, $attackID);
     default: return;
   }
 }
@@ -930,7 +934,7 @@ function IsCombatEffectActive($cardID)
 function IsCombatEffectPersistent($cardID)
 {
   global $currentPlayer;
-  global $Card_LifeBanner;
+  global $Card_LifeBanner, $Card_ResourceBanner;
   $effectArr = explode(",", $cardID);
   $cardID = ShiyanaCharacter($effectArr[0]);
   switch($cardID) {
@@ -958,6 +962,7 @@ function IsCombatEffectPersistent($cardID)
     case "DTD198": return true;//Call Down the Lightning
     case "DTD206": return true;
     case $Card_LifeBanner: return true;
+    case $Card_ResourceBanner: return true;
     case "ROGUE018": case "ROGUE601": case "ROGUE702": case "ROGUE704": case "ROGUE707": return true;
     case "ROGUE603": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
     case "ROGUE710-GA": case "ROGUE710-DO": case "ROGUE711": case "ROGUE802": case "ROGUE805": case "ROGUE806": return true;

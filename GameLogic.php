@@ -659,7 +659,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "1";
     case "FINISHCHARGE":
       //Abilities when you charge it
-      global $Card_CourageBanner, $Card_QuickenBanner, $Card_SpellbaneBanner, $Card_LifeBanner, $Card_BlockBanner;
+      global $Card_CourageBanner, $Card_QuickenBanner, $Card_SpellbaneBanner, $Card_LifeBanner, $Card_BlockBanner, $Card_ResourceBanner;
       switch($lastResult)
       {
         case $Card_CourageBanner: PlayAura("DTD232", $player); break;
@@ -667,6 +667,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case $Card_SpellbaneBanner: PlayAura("DYN246", $player); break;
         case $Card_LifeBanner: AddCurrentTurnEffect($Card_LifeBanner, $player); break;
         case $Card_BlockBanner: AddCurrentTurnEffect($Card_BlockBanner, $player); break;
+        case $Card_ResourceBanner: AddCurrentTurnEffect($Card_ResourceBanner, $player); break;
         default: break;
       }
       WriteLog("This card was charged: " . CardLink($lastResult, $lastResult));
