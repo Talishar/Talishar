@@ -382,6 +382,7 @@ function ResetCombatChainState()
     }
   }
   UnsetCombatChainBanish();
+  CombatChainClosedEffects();
   CombatChainClosedCharacterEffects();
   CombatChainClosedMainCharacterEffects();
   RemoveEffectsOnChainClose();

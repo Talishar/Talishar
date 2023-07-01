@@ -252,6 +252,14 @@ function MZChooseAndDestroy($player, $search)
   AddDecisionQueue("MZDESTROY", $player, "-", 1);
 }
 
+function MZChooseAndBanish($player, $search, $fromMod)
+{
+  AddDecisionQueue("MULTIZONEINDICES", $player, $search);
+  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-");
+  AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
+  AddDecisionQueue("MZREMOVE", $player, "-", 1);
+}
+
 function MZLastIndex($player, $zone)
 {
   switch($zone)

@@ -612,5 +612,24 @@ function IsOverpowerActive()
   return false;
 }
 
+function CombatChainClosedEffects()
+{
+  global $chainLinks, $mainPlayer, $defPlayer, $CS_LifeLost;
+  for($i=0; $i<count($chainLinks); ++$i)
+  {
+    for($j=0; $j<count($chainLinks[$i]); $j += ChainLinksPieces())
+    {
+      if($chainLinks[$i][$j+1] != $mainPlayer) continue;
+      switch($chainLinks[$i][$j])
+      {
+        case "DTD138":
+          if(GetClassState($mainPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($mainPlayer, "MYARS", "ARS,-");
+          if(GetClassState($defPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($defPlayer, "MYARS", "ARS,-");
+          break;
+        default: break;
+      }
+    }
+  }
+}
 
 ?>
