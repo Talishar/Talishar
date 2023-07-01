@@ -47,7 +47,7 @@
   {
     echo("<BR>" . $functionName . "<BR>");
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
-    $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "LGS", "HER"];
+    $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "LGS", "HER", "FAB"];
     $isString = true;
     $isBool = false;
     if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "1H") $isString = false;
@@ -71,6 +71,7 @@
         if(!in_array($set, $originalSets)) continue;
         if($set == "LGS" && $cardNumber < 156) continue;
         if($set == "HER" && $cardNumber < 84) continue;
+        if($set == "FAB" && $cardNumber < 161) continue;
         $duplicate = false;
         for($k=0; $k<count($cardPrintings); ++$k)
         {
