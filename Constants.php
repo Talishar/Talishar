@@ -210,7 +210,7 @@ $CS_ArsenalFacing = 8;
 $CS_CharacterIndex = 9;
 $CS_PlayIndex = 10;
 $CS_NumNonAttackCards = 11;
-$CS_NumMoonWishPlayed = 12; //Deprecated. Use current effect ARC185-GA instead
+$CS_NumCardsDrawn = 12;
 $CS_NumAddedToSoul = 13;
 $CS_NextNAACardGoAgain = 14;
 $CS_NumCharged = 15;
@@ -445,7 +445,7 @@ function ResetMainClassState()
   global $CS_HighestRoll, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_AlluvionUsed;
   global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
   global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks, $CS_ArcaneDamageDealt, $CS_LayerPlayIndex, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumBoostPlayed;
-  global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain, $CS_NumContractsCompleted, $CS_HitsWithSword;
+  global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain, $CS_NumContractsCompleted, $CS_HitsWithSword, $CS_NumCardsDrawn;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -510,6 +510,7 @@ function ResetMainClassState()
   $mainClassState[$CS_AnotherWeaponGainedGoAgain] = "-";
   $mainClassState[$CS_NumContractsCompleted] = 0;
   $mainClassState[$CS_HitsWithSword] = 0;
+  $mainClassState[$CS_NumCardsDrawn] = 0;
 }
 
 function ResetCardPlayed($cardID)

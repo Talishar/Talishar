@@ -2382,7 +2382,7 @@ function CountPitch(&$pitch, $min = 0, $max = 9999)
 
 function Draw($player, $mainPhase = true, $fromCardEffect = true)
 {
-  global $EffectContext, $mainPlayer;
+  global $EffectContext, $mainPlayer, $CS_NumCardsDrawn;
   $otherPlayer = ($player == 1 ? 2 : 1);
   if($mainPhase && $player != $mainPlayer) {
     $talismanOfTithes = SearchItemsForCard("EVR192", $otherPlayer);
@@ -2402,6 +2402,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true)
   if(count($deck) == 0) return -1;
   if(CurrentEffectPreventsDraw($player, $mainPhase)) return -1;
   array_push($hand, array_shift($deck));
+  IncrementClassState($player, $CS_NumCardsDrawn, 1);
   if($mainPhase && (SearchCharacterActive($otherPlayer, "EVR019") || (SearchCurrentTurnEffects("EVR019-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "CRU097")))) PlayAura("WTR075", $otherPlayer);
   if(SearchCharacterActive($player, "EVR020")) {
     if($EffectContext != "-") {
