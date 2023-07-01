@@ -294,18 +294,19 @@ function OnBlockResolveEffects()
           WriteLog("<span style='color:red;'>No frostbite is created because there is no attacking hero when allies attack.</span>");
         }
         break;
-      case "MON241": case "MON242": case "MON243": case "MON244": case "RVD005": case "RVD006": //Ironhide
-      case "RVD015": //Pack Call
-      case "ELE203": //Rampart of the Ram's Head
-      case "MON089": //Phantasmal Footsteps
-      case "UPR095": //Flameborn Retribution
-      case "UPR182": //Crown of Providence
-      case "UPR191": case "UPR192": case "UPR193": // Flex
-      case "UPR194": case "UPR195": case "UPR196": //Fyendal's Fighting Spirit
-      case "UPR203": case "UPR204": case "UPR205": //Brothers in Arms
-      case "DYN152": //Hornet's Sting
-      case "OUT099": //Wayfinder's Crest
-      case "OUT174": //Vambrace of Determination
+      case "MON241": case "MON242": case "MON243": case "MON244": case "RVD005": case "RVD006"://Ironhide
+      case "RVD015"://Pack Call
+      case "ELE203"://Rampart of the Ram's Head
+      case "MON089"://Phantasmal Footsteps
+      case "UPR095"://Flameborn Retribution
+      case "UPR182"://Crown of Providence
+      case "UPR191": case "UPR192": case "UPR193":// Flex
+      case "UPR194": case "UPR195": case "UPR196"://Fyendal's Fighting Spirit
+      case "UPR203": case "UPR204": case "UPR205"://Brothers in Arms
+      case "DYN152"://Hornet's Sting
+      case "OUT099"://Wayfinder's Crest
+      case "OUT174"://Vambrace of Determination
+      case "DTD047"://Soulbond Resolve
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "DTD094": case "DTD095": case "DTD096":

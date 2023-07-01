@@ -1022,6 +1022,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
+    case "DTD047":
+      Charge();
+      break;
     case $CID_BloodRotPox:
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_3_to_avoid_taking_2_damage", 0, 1);
       AddDecisionQueue("NOPASS", $player, "-", 1);

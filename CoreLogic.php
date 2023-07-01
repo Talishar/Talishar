@@ -624,6 +624,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   $damage = AuraTakeDamageAbilities($player, $damage, $type);
   $damage = PermanentTakeDamageAbilities($player, $damage, $type);
   $damage = ItemTakeDamageAbilities($player, $damage, $type);
+  $damage = CharacterTakeDamageAbilities($player, $damage, $type, $preventable);
   if($damage == 1 && $preventable && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
   $dqVars[0] = $damage;
   if($type == "COMBAT") $dqState[6] = $damage;
