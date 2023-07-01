@@ -117,6 +117,13 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD085": GainHealth(3, $currentPlayer); break;//Blessing of Salvation
     case "DTD086": GainHealth(2, $currentPlayer); break;
     case "DTD087": GainHealth(1, $currentPlayer); break;
+    case "DTD088": case "DTD089": case "DTD090"://Cleansing Light
+      if($cardID == "DTD088") $targetPitch = 1;
+      else if($cardID == "DTD089") $targetPitch = 2;
+      else if($cardID == "DTD090") $targetPitch = 3;
+      WriteLog($taregtPitch);
+      MZChooseAndDestroy($currentPlayer, "THEIRAURAS:pitch=" . $targetPitch . "&MYAURAS:pitch=" . $targetPitch);
+      break;
     case "DTD091": case "DTD092": case "DTD093":
       if(SearchPitchForColor($currentPlayer, 2) > 0) GiveAttackGoAgain();
       break;
