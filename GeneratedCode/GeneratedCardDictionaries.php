@@ -4809,6 +4809,8 @@ case "1":
 switch($cardID[4]) {
 case "3":
 switch($cardID[5]) {
+case "8":
+return 6;
 case "9":
 return 6;
 default: return 0;
@@ -13517,6 +13519,8 @@ default: return "";
 }
 case "3":
 switch($cardID[5]) {
+case "8":
+return "Widespread Destruction";
 case "9":
 return "Widespread Ruin";
 default: return "";
@@ -18489,6 +18493,12 @@ case "1":
 return 2;
 default: return 1;
 }
+case "3":
+switch($cardID[5]) {
+case "8":
+return 2;
+default: return 1;
+}
 default: return 1;
 }
 default: return 1;
@@ -22973,6 +22983,8 @@ case "1":
 switch($cardID[4]) {
 case "3":
 switch($cardID[5]) {
+case "8":
+return 3;
 case "9":
 return 2;
 default: return 0;
@@ -33214,6 +33226,8 @@ default: return "NONE";
 }
 case "3":
 switch($cardID[5]) {
+case "8":
+return "RUNEBLADE";
 case "9":
 return "RUNEBLADE";
 default: return "NONE";
@@ -36572,6 +36586,8 @@ default: return "NONE";
 }
 case "3":
 switch($cardID[5]) {
+case "8":
+return "SHADOW";
 case "9":
 return "SHADOW";
 default: return "NONE";
