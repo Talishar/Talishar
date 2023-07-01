@@ -279,6 +279,17 @@ function OnBlockResolveEffects()
         AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
       }
       break;
+    case "DTD205":
+      if(!SearchCurrentTurnEffects("DTD205", $mainPlayer))
+      {
+        $options = GetChainLinkCards($defPlayer, "", "E");
+        if($options != "") {
+          AddCurrentTurnEffect("DTD205", $mainPlayer);
+          AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
+          AddDecisionQueue("HALVEBASEDEFENSE", $currentPlayer, "-", 1);
+        }
+      }
+      break;
     default: break;
   }
   $blockedFromHand = 0;

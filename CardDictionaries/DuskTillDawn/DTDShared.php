@@ -6,6 +6,7 @@ function DTDAbilityCost($cardID)
     case "DTD046": return 2;
     case "DTD060": return 1;
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return 0;
+    case "DTD205": return 3;
     default: return 0;
   }
 }
@@ -16,6 +17,7 @@ function DTDAbilityType($cardID, $index = -1)
     case "DTD046": return "AA";
     case "DTD060": return "AR";
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return "I";
+    case "DTD205": return "AA";
     default: return "";
   }
 }
