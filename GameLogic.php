@@ -659,10 +659,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "1";
     case "FINISHCHARGE":
       //Abilities when you charge it
-      global $Card_CourageBanner;
+      global $Card_CourageBanner, $Card_QuickenBanner;
       switch($lastResult)
       {
         case $Card_CourageBanner: PlayAura("DTD232", $player); break;
+        case $Card_QuickenBanner: PlayAura("WTR225", $player); break;
         default: break;
       }
       WriteLog("This card was charged: " . CardLink($lastResult, $lastResult));
