@@ -7,6 +7,7 @@ $Card_Vynnset = "HER085";
 $Card_Flail = "LGS156";
 $Card_CourageBanner = "FAB161";
 $Card_QuickenBanner = "FAB162";
+$Card_SpellbaneBanner = "FAB163";
 
 $GameStatus_Over = 2;
 $GameStatus_Rematch = 3;
