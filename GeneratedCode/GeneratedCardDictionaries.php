@@ -2039,6 +2039,12 @@ case "1":
 return "I";
 default: return "AA";
 }
+case "4":
+switch($cardID[5]) {
+case "0":
+return "A";
+default: return "AA";
+}
 default: return "AA";
 }
 case "2":
@@ -13421,6 +13427,12 @@ case "0":
 switch($cardID[5]) {
 case "1":
 return "Break of Dawn";
+default: return "";
+}
+case "4":
+switch($cardID[5]) {
+case "0":
+return "Funeral Moon";
 default: return "";
 }
 default: return "";
@@ -28153,6 +28165,12 @@ case "7":
 return "M";
 default: return "C";
 }
+case "4":
+switch($cardID[5]) {
+case "0":
+return "M";
+default: return "C";
+}
 default: return "C";
 }
 case "0":
@@ -32950,6 +32968,16 @@ default: return "NONE";
 }
 default: return "NONE";
 }
+case "1":
+switch($cardID[4]) {
+case "4":
+switch($cardID[5]) {
+case "0":
+return "RUNEBLADE";
+default: return "NONE";
+}
+default: return "NONE";
+}
 default: return "NONE";
 }
 default: return "NONE";
@@ -36264,6 +36292,12 @@ case "0":
 switch($cardID[5]) {
 case "1":
 return "LIGHT";
+default: return "NONE";
+}
+case "4":
+switch($cardID[5]) {
+case "0":
+return "SHADOW";
 default: return "NONE";
 }
 default: return "NONE";
