@@ -8,6 +8,7 @@ function DTDAbilityCost($cardID)
     case "DTD060": return 1;
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return 0;
     case "DTD193": return 0;
+    case "DTD199": return 1;
     case "DTD205": return 3;
     case "DTD207": return 1;
     case "DTD405": case "DTD406": case "DTD407": case "DTD408"://Angels
@@ -24,6 +25,7 @@ function DTDAbilityType($cardID, $index = -1)
     case "DTD060": return "AR";
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return "I";
     case "DTD193": return "AA";
+    case "DTD199": return "AA";
     case "DTD205": return "AA";
     case "DTD207": return "A";
     case "DTD405": case "DTD406": case "DTD407": case "DTD408"://Angels

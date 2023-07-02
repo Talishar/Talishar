@@ -556,7 +556,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumBoosted, $combatChain, $currentPlayer, $mainPlayer, $CS_Num6PowBan;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $CS_NumAttacks, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_NamesOfCardsPlayed, $CS_Num6PowDisc;
+  global $CS_NamesOfCardsPlayed, $CS_Num6PowDisc, $CS_HighestRoll;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -760,6 +760,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return count($combatChain) == 0 || !ClassContains($combatChain[0], "WARRIOR", $mainPlayer) || !TalentContains($combatChain[0], "LIGHT", $mainPlayer);
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return count($mySoul) == 0;
     case "DTD142": return CountAura("ARC112", $currentPlayer) != 6;
+    case "DTD199": return GetClassState($currentPlayer, $CS_HighestRoll) != 6;
     default: return false;
   }
 }
