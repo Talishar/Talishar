@@ -45,6 +45,7 @@ function DTDEffectAttackModifier($cardID)
   $cardID = $params[0];
   if(count($params) > 1) $parameter = $params[1];
   switch($cardID) {
+    case "DTD033": return 2;
     case "DTD053": return 2;//Prayer of Bellona
     case "DTD057": case "DTD058": case "DTD059": return 1;//Beaming Bravado
     case "DTD060": return 3;
@@ -71,6 +72,8 @@ function DTDCombatEffectActive($cardID, $attackID)
   $params = explode(",", $cardID);
   $cardID = $params[0];
   switch($cardID) {
+    case "DTD010": return true;
+    case "DTD033": return SubtypeContains($combatChain[0], "Angel", $mainPlayer);
     case "DTD051": return CardType($attackID) == "AA";//Beckoning Light
     case "DTD052": return CardType($attackID) == "AA";//Spirit of War
     case "DTD053": return true;//Prayer of Bellona
@@ -106,8 +109,30 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("AWAKEN", $currentPlayer, "-", 1);
       return "";
+    case "DTD005":
+      PlayAura("DYN244", $currentPlayer);
+      return "";
+    case "DTD007":
+      PlayAura("DYN233", $currentPlayer);
+      return "";
+    case "DTD008":
+      DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+      return "";
+    case "DTD009":
+      MZMoveCard($currentPlayer, "MYDISCARD:type=A;pitch=2", "MYTOPDECK"); 
+      return;
+    case "DTD010":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "DTD011":
       AddCurrentTurnEffect($cardID, $otherPlayer);
+      return "";
+    case "DTD012":
+      PlayAura("DTD232", $currentPlayer);
+      return "";
+    case "DTD033":
+      GiveAttackGoAgain();
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD038": case "DTD039": case "DTD040":
       if($cardID == "DTD038") $amount = 3;
