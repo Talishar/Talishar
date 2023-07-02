@@ -1563,6 +1563,7 @@ function PayAdditionalCosts($cardID, $from)
       RevertGamestate();
       return;
     }
+    SetClassState($currentPlayer, $CS_AdditionalCosts, $banished);
   }
   switch ($cardID) {
     case "WTR159":
