@@ -64,7 +64,7 @@
         return "";
       case "MON189":
         PlayAlly("MON219", $currentPlayer);
-        return "Creates a Blasmophet Ally.";
+        return "";
       case "MON190":
         PlayAlly("MON220", $currentPlayer);
         return "";

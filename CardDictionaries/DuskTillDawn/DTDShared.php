@@ -210,6 +210,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD140":
       PlayAura("ARC112", $currentPlayer);
       return "";
+    case "DTD142":
+      PlayAlly("DTD193", $currentPlayer);
+      return "";
     case "DTD175": GainHealth(3, $currentPlayer); return "";
     case "DTD176": GainHealth(2, $currentPlayer); return "";
     case "DTD177": GainHealth(1, $currentPlayer); return "";

@@ -759,6 +759,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DTD069": case "DTD070": case "DTD071"://Resounding Courage
       return count($combatChain) == 0 || !ClassContains($combatChain[0], "WARRIOR", $mainPlayer) || !TalentContains($combatChain[0], "LIGHT", $mainPlayer);
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return count($mySoul) == 0;
+    case "DTD142": return CountAura("ARC112", $currentPlayer) != 6;
     default: return false;
   }
 }
