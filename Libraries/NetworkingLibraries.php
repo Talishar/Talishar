@@ -1861,6 +1861,11 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "2", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       break;
+    case "DTD110":
+      $banish = &GetBanish($currentPlayer);
+      $index = count($banish) - BanishPieces();
+      $banish[$index+1] = "NT";
+      break;
     default:
       break;
   }

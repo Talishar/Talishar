@@ -871,6 +871,7 @@ function RequiresDiscard($cardID)
 function RequiresBanish($cardID)
 {
   switch($cardID) {
+    case "DTD110":
     case "DTD112": case "DTD113": case "DTD114":
     case "DTD118": case "DTD119": case "DTD120":
     case "DTD127": case "DTD128": case "DTD129":
