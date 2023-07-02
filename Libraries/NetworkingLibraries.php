@@ -940,7 +940,7 @@ function FinalizeChainLink($chainClosed = false)
   array_push($chainLinkSummary, SerializeCurrentAttackNames());
   $numHitsOnLink = ($combatChainState[$CCS_DamageDealt] > 0 ? 1 : 0);
   $numHitsOnLink += intval($combatChainState[$CCS_HitThisLink]);
-  array_push($chainLinkSummary, $numHitsOnLink);//Num hits on link
+  array_push($chainLinkSummary, $numHitsOnLink);
 
   //Clean up combat effects that were used and are one-time
   CleanUpCombatEffects();
@@ -961,6 +961,8 @@ function FinalizeChainLink($chainClosed = false)
   } else {
     ResetChainLinkState();
   }
+
+  ProcessDecisionQueue();
 }
 
 function CleanUpCombatEffects($weaponSwap=false)
@@ -1875,7 +1877,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   if(GoesOnCombatChain($turn[0], $cardID, $from)) {
     if($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains(CardSubType($cardID), "Item")) { WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play."); return; }
     $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
-    if ($index == 0) {
+    if($index == 0) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
       $combatChainState[$CCS_AttackPlayedFrom] = $from;
       $chainClosed = ProcessAttackTarget();
@@ -1883,24 +1885,24 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
       $combatChainState[$CCS_LinkBaseAttack] = BaseAttackModifiers($attackValue);
       $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
-      if ($definedCardType == "AA" && $attackValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
-      if ($definedCardType == "AA" && (SearchCharacterActive($currentPlayer, "CRU002") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects("CRU002-SHIYANA", $currentPlayer))) && $attackValue >= 6) KayoStaticAbility();
+      if($definedCardType == "AA" && $attackValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
+      if($definedCardType == "AA" && (SearchCharacterActive($currentPlayer, "CRU002") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects("CRU002-SHIYANA", $currentPlayer))) && $attackValue >= 6) KayoStaticAbility();
       $openedChain = true;
-      if ($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
-      if ($additionalCosts != "-" && HasFusion($cardID)) $combatChainState[$CCS_AttackFused] = 1;
+      if($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
+      if($additionalCosts != "-" && HasFusion($cardID)) $combatChainState[$CCS_AttackFused] = 1;
       // If you attacked an aura with Spectra
-      if (!$chainClosed && ($definedCardType == "AA" || $definedCardType == "W")) {
+      if(!$chainClosed && ($definedCardType == "AA" || $definedCardType == "W")) {
         IncrementClassState($currentPlayer, $CS_NumAttacks);
         ArsenalAttackAbilities();
         OnAttackEffects($cardID);
       }
-      if (!$chainClosed || $definedCardType == "AA") {
-        if (DelimStringContains(CardSubType($cardID), "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
-        if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
-        if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
+      if(!$chainClosed || $definedCardType == "AA") {
+        if(DelimStringContains(CardSubType($cardID), "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
+        if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
+        if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
         AuraAttackAbilities($cardID);
-        if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
-        if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) SpecificAllyAttackAbilities($cardID);
+        if($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
+        if($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) SpecificAllyAttackAbilities($cardID);
       }
     }
     else { //On chain, but not index 0
