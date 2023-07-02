@@ -109,6 +109,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("AWAKEN", $currentPlayer, "-", 1);
       return "";
+    case "DTD005":
+      PlayAura("DYN244", $currentPlayer); // Creates Ponder
+      return "";
     case "DTD008":
       DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
       return "";
