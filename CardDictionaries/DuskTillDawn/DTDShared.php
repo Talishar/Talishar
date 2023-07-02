@@ -94,6 +94,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
+    case "DTD008":
+      DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+      return "";
     case "DTD011":
       AddCurrentTurnEffect($cardID, $otherPlayer);
       return "";
