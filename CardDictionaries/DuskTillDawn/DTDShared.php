@@ -65,6 +65,7 @@ function DTDCombatEffectActive($cardID, $attackID)
   $params = explode(",", $cardID);
   $cardID = $params[0];
   switch($cardID) {
+    case "DTD010": return true;
     case "DTD051": return CardType($attackID) == "AA";//Beckoning Light
     case "DTD052": return CardType($attackID) == "AA";//Spirit of War
     case "DTD053": return true;//Prayer of Bellona
@@ -100,6 +101,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD009":
       MZMoveCard($currentPlayer, "MYDISCARD:type=A;pitch=2", "MYTOPDECK"); 
       return;
+    case "DTD010":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "DTD011":
       AddCurrentTurnEffect($cardID, $otherPlayer);
       return "";
