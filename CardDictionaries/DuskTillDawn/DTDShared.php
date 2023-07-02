@@ -112,6 +112,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD005":
       PlayAura("DYN244", $currentPlayer); // Creates Ponder
       return "";
+    case "DTD007":
+      PlayAura("DYN233", $currentPlayer); // Creates Spectral Shield
+      return "";
     case "DTD008":
       DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
       return "";
