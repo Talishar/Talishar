@@ -1188,6 +1188,7 @@ function HasBloodDebt($cardID)
     case "DTD130": case "DTD131": case "DTD132":
     case "DTD137": case "DTD138": case "DTD139": case "DTD140":
     case "DTD158": case "DTD159": case "DTD160":
+    case "DTD172": case "DTD173": case "DTD174":
     case "DTD175": case "DTD176": case "DTD177":
     case "DTD181": case "DTD182": case "DTD183":
     case $Card_VantomR: case $Card_VantomY: case $Card_VantomB:
@@ -1230,6 +1231,9 @@ function PlayableFromBanish($cardID, $mod="")
     case "MON204": case "MON205": case "MON209": case "MON210": case "MON211": return true;
     case "DTD175": case "DTD176": case "DTD177":
     case "DTD140": return true;
+    case "DTD172": case "DTD173": case "DTD174":
+      $soul = &GetSoul($currentPlayer == 1 ? 2 : 1);
+      return count($soul) > 0;
     default: return false;
   }
 }
