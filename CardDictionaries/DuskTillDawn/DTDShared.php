@@ -247,9 +247,13 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function DTDHitEffect($cardID)
 {
+  global $mainPlayer;
   switch($cardID) {
     case "DTD082": case "DTD083": case "DTD084":
       WriteLog("The banish face down effect of this card is not implemented yet. Choose the card in chat and enforce play restrictions manually.");
+      break;
+    case "DTD193":
+      if(IsHeroAttackTarget()) MZMoveCard($mainPlayer, "THEIRSOUL", "THEIRBANISH,SOUL,-");
       break;
     default: break;
   }

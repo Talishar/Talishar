@@ -286,6 +286,15 @@ function BanishFromSpecificSoul(&$soul, $player, $index=0)
   BanishCardForPlayer($cardID, $player, "SOUL", "SOUL");
 }
 
+function RemoveSoul($player, $index)
+{
+  $soul = &GetSoul($player);
+  $cardID = $soul[$index];
+  unset($soul[$index]);
+  $soul = array_values($soul);
+  return $cardID;
+}
+
 function EffectArcaneBonus($cardID)
 {
   $idArr = explode("-", $cardID);

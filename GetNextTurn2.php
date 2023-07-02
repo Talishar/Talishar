@@ -605,6 +605,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "THEIRPITCH") $source = $theirPitch;
       else if ($option[0] == "MYDECK") $source = $myDeck;
       else if ($option[0] == "THEIRDECK") $source = $theirDeck;
+      else if ($option[0] == "MYSOUL") $source = $mySoul;
+      else if ($option[0] == "THEIRSOUL") $source = $theirSoul;
       else if ($option[0] == "LANDMARK") $source = $landmarks;
       else if ($option[0] == "CC") $source = $combatChain;
       else if ($option[0] == "COMBATCHAINLINK") $source = $combatChain;
