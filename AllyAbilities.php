@@ -278,6 +278,13 @@ function SpecificAllyAttackAbilities($attackID)
       AddDecisionQueue("NOPASS", $mainPlayer, "-");
       MZMoveCard($mainPlayer, "MYDISCARD:pitch=2", "MYTOPDECK", isSubsequent:true);
       break;
+    case "DTD410":
+      $soul = &GetSoul($mainPlayer);
+      if(count($soul) == 0) break;
+      AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
+      AddDecisionQueue("NOPASS", $mainPlayer, "-");
+      AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "DTD410", 1);
+      break;
     default: break;
   }
 }

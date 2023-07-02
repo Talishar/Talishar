@@ -964,6 +964,7 @@ function IsCombatEffectPersistent($cardID)
     case "DTD052": return true;//Spirit of War
     case "DTD198": return true;//Call Down the Lightning
     case "DTD206": return true;
+    case "DTD410": return true;
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
     case "ROGUE018": case "ROGUE601": case "ROGUE702": case "ROGUE704": case "ROGUE707": return true;
