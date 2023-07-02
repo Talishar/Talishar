@@ -263,6 +263,14 @@ function SpecificAllyAttackAbilities($attackID)
       AddDecisionQueue("PLAYAURA", $mainPlayer, "MON104", 1);
       AddDecisionQueue("PLAYAURA", $mainPlayer, "MON104", 1);
       break;
+    case "DTD408":
+      $soul = &GetSoul($mainPlayer);
+      if(count($soul) == 0) break;
+      AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
+      AddDecisionQueue("NOPASS", $mainPlayer, "-");
+      MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
+      AddDecisionQueue("DEALARCANE", $otherPlayer, $damage . "-" . $source . "-" . $type, 1);
+      break;
     default: break;
   }
 }
