@@ -110,10 +110,10 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("AWAKEN", $currentPlayer, "-", 1);
       return "";
     case "DTD005":
-      PlayAura("DYN244", $currentPlayer); // Creates Ponder
+      PlayAura("DYN244", $currentPlayer);
       return "";
     case "DTD007":
-      PlayAura("DYN233", $currentPlayer); // Creates Spectral Shield
+      PlayAura("DYN233", $currentPlayer);
       return "";
     case "DTD008":
       DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
@@ -126,6 +126,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DTD011":
       AddCurrentTurnEffect($cardID, $otherPlayer);
+      return "";
+    case "DTD012":
+      PlayAura("DTD232", $currentPlayer);
       return "";
     case "DTD033":
       GiveAttackGoAgain();
