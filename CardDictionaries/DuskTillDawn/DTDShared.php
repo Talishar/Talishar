@@ -39,6 +39,7 @@ function DTDEffectAttackModifier($cardID)
   $cardID = $params[0];
   if(count($params) > 1) $parameter = $params[1];
   switch($cardID) {
+    case "DTD033": return 2;
     case "DTD053": return 2;//Prayer of Bellona
     case "DTD057": case "DTD058": case "DTD059": return 1;//Beaming Bravado
     case "DTD060": return 3;
@@ -66,6 +67,7 @@ function DTDCombatEffectActive($cardID, $attackID)
   $cardID = $params[0];
   switch($cardID) {
     case "DTD010": return true;
+    case "DTD033": return SubtypeContains($combatChain[0], "Angel", $mainPlayer);
     case "DTD051": return CardType($attackID) == "AA";//Beckoning Light
     case "DTD052": return CardType($attackID) == "AA";//Spirit of War
     case "DTD053": return true;//Prayer of Bellona
@@ -106,6 +108,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DTD011":
       AddCurrentTurnEffect($cardID, $otherPlayer);
+      return "";
+    case "DTD033":
+      GiveAttackGoAgain();
       return "";
     case "DTD038": case "DTD039": case "DTD040":
       if($cardID == "DTD038") $amount = 3;
