@@ -123,6 +123,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DTD033":
       GiveAttackGoAgain();
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD038": case "DTD039": case "DTD040":
       if($cardID == "DTD038") $amount = 3;
