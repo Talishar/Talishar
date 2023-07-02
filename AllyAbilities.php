@@ -271,6 +271,13 @@ function SpecificAllyAttackAbilities($attackID)
       MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
       DealArcane(2, 2, "PLAYCARD", $allies[$i], false, $mainPlayer, isPassable:1);
       break;
+    case "DTD409":
+      $soul = &GetSoul($mainPlayer);
+      if(count($soul) == 0) break;
+      AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
+      AddDecisionQueue("NOPASS", $mainPlayer, "-");
+      MZMoveCard($mainPlayer, "MYDISCARD:pitch=2", "MYTOPDECK", isSubsequent:true);
+      break;
     default: break;
   }
 }
