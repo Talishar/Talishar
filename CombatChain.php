@@ -627,6 +627,10 @@ function CombatChainClosedEffects()
       if($chainLinks[$i][$j+1] != $mainPlayer) continue;
       switch($chainLinks[$i][$j])
       {
+        case "DTD137":
+          if(GetClassState($mainPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($mainPlayer, "MYHAND", "ARS,-");
+          if(GetClassState($defPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($defPlayer, "MYHAND", "ARS,-");
+          break;
         case "DTD138":
           if(GetClassState($mainPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($mainPlayer, "MYARS", "ARS,-");
           if(GetClassState($defPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($defPlayer, "MYARS", "ARS,-");
