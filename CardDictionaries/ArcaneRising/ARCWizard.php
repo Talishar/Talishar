@@ -133,7 +133,7 @@
   //2: Any Target
   //3: Their Hero + Their Allies
   //4: My Hero only (For afflictions)
-  function DealArcane($damage, $target=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false, $skipHitEffect=false, $resolvedTarget="", $nbArcaneInstance=1)
+  function DealArcane($damage, $target=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false, $skipHitEffect=false, $resolvedTarget="", $nbArcaneInstance=1, $isPassable=0)
   {
     global $currentPlayer, $CS_ArcaneTargetsSelected;
     if($player == 0) $player = $currentPlayer;
@@ -161,12 +161,12 @@
         }
       } else {
         if($resolvedTarget != "") {
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $resolvedTarget);
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $resolvedTarget, ($isPassable ? 1 : 0));
         } else {
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
-          AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-          AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source, ($isPassable ? 1 : 0));
+          AddDecisionQueue("SETDQVAR", $currentPlayer, "0", ($isPassable ? 1 : 0));
+          AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target, ($isPassable ? 1 : 0));
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", ($isPassable ? 1 : 0));
           if($mayAbility) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
           else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
           AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);

@@ -269,7 +269,7 @@ function SpecificAllyAttackAbilities($attackID)
       AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
       AddDecisionQueue("NOPASS", $mainPlayer, "-");
       MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
-      AddDecisionQueue("DEALARCANE", $otherPlayer, $damage . "-" . $source . "-" . $type, 1);
+      DealArcane(2, 2, "PLAYCARD", $allies[$i], false, $mainPlayer, isPassable:1);
       break;
     default: break;
   }
