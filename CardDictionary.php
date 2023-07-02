@@ -949,7 +949,7 @@ function DoesEffectGrantDominate($cardID)
     case "EVR017": case "EVR019": case "UPR091":
     case "DYN028":
     case "ROGUE710-DO":
-    case "DTD010":
+    case "DTD010": case "DTD410":
       return true;
     case "ELE154": case "ELE155": case "ELE156": return $combatChainState[$CCS_AttackFused] == 1;
     default: return false;
