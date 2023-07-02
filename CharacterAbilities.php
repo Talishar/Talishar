@@ -172,7 +172,7 @@ function CharacterStartTurnAbility($index)
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
       break;
-    case $Card_Vynnset:
+    case $Card_Vynnset: case "DTD133":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND");
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to banish for Vynnset");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);

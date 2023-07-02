@@ -482,13 +482,13 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
-      case $Card_Vynnset:
+      case $Card_Vynnset: case "DTD133":
         if(CardTalent($cardID) == "SHADOW")
         {
           AddDecisionQueue("YESNO", $currentPlayer, "if you want to pay 1 life for Vynnset");
           AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
           AddDecisionQueue("OP", $currentPlayer, "LOSEHEALTH", 1);
-          AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $Card_Vynnset, 1);
+          AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $characterID, 1);
         }
         break;
       case "ROGUE017":
@@ -571,7 +571,7 @@ function CanDamageBePrevented($player, $damage, $type, $source="-")
   global $Card_Vynnset;
   $otherPlayer = $player == 1 ? 2 : 1;
   if($type == "ARCANE" && SearchCurrentTurnEffects("EVR105", $player)) return false;
-  if($source == "ARC112" && SearchCurrentTurnEffects($Card_Vynnset, $otherPlayer, true)) return false;
+  if($source == "ARC112" && (SearchCurrentTurnEffects($Card_Vynnset, $otherPlayer, true) || SearchCurrentTurnEffects("DTD133", $otherPlayer, true))) return false;
   if(SearchCurrentTurnEffects("UPR158", $otherPlayer)) return false;
   if($source == "DYN005" || $source == "OUT030" || $source == "OUT031" || $source == "OUT032"|| $source == "OUT121" || $source == "OUT122" || $source == "OUT123") return false;
   return true;
