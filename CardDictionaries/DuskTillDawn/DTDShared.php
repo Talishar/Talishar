@@ -3,11 +3,14 @@
 function DTDAbilityCost($cardID)
 {
   switch($cardID) {
+    case "DTD001": case "DTD002": return 2;
     case "DTD046": return 2;
     case "DTD060": return 1;
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return 0;
     case "DTD205": return 3;
     case "DTD207": return 1;
+    case "DTD405": case "DTD406": case "DTD407": case "DTD408"://Angels
+    case "DTD409": case "DTD410": case "DTD411": case "DTD412": return 2;
     default: return 0;
   }
 }
@@ -15,11 +18,14 @@ function DTDAbilityCost($cardID)
 function DTDAbilityType($cardID, $index = -1)
 {
   switch($cardID) {
+    case "DTD001": case "DTD002": return "I";
     case "DTD046": return "AA";
     case "DTD060": return "AR";
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return "I";
     case "DTD205": return "AA";
     case "DTD207": return "A";
+    case "DTD405": case "DTD406": case "DTD407": case "DTD408"://Angels
+    case "DTD409": case "DTD410": case "DTD411": case "DTD412": return "AA";
     default: return "";
   }
 }
@@ -97,6 +103,12 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
+    case "DTD001": case "DTD002":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Figment");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a figment to awaken");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("AWAKEN", $currentPlayer, "-", 1);
+      return "";
     case "DTD008":
       DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
       return "";

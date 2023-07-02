@@ -8,7 +8,7 @@ function CardName($cardID)
     if($set != "ROG" && $set != "DUM")
     {
       $number = intval(substr($cardID, 3));
-      if($number < 400) return GeneratedCardName($cardID);
+      if($number < 400 || ($set != "MON" && $set != "DYN")) return GeneratedCardName($cardID);
     }
     if ($set == "ROG") {
       return ROGUEName($cardID);
@@ -22,19 +22,6 @@ function CardName($cardID)
 		  case "MON405": return "Minerva Themis";
 		  case "MON406": return "Lady Barthimont";
 		  case "MON407": return "Lord Sutcliffe";
-      case "UPR406": return "Dracona Optimai";
-      case "UPR407": return "Tomeltai";
-      case "UPR408": return "Dominia";
-      case "UPR409": return "Azvolai";
-      case "UPR410": return "Cromai";
-      case "UPR411": return "Kyloria";
-      case "UPR412": return "Miragai";
-      case "UPR413": return "Nekria";
-      case "UPR414": return "Ouvia";
-      case "UPR415": return "Themai";
-      case "UPR416": return "Vynserakai";
-      case "UPR417": return "Yendurai";
-      case "UPR551": return "Ghostly Touch";
       case "DYN492": return "Nitro Mechanoid";
 		  case "DYN492a": return "Nitro Mechanoid";
 		  case "DYN492b": return "Nitro Mechanoid";

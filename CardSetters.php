@@ -249,6 +249,7 @@ function AddSoul($cardID, $player, $from, $isMainPhase=true)
     if($isMainPhase && str_contains(NameOverride($cardID, $player), "Herald") && (SearchCharacterActive($player, "DTD001") || SearchCharacterActive($player, "DTD002")))
     {
       MZMoveCard($player, "MYDECK:subtype=Figment", "MYPERMANENTS", may:true);
+      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
     }
   }
 }
