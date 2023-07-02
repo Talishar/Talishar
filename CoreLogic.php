@@ -2057,6 +2057,7 @@ function SelfCostModifier($cardID, $from)
       }
       else return 0;
     case "DTD175": case "DTD176": case "DTD177": return ($from == "BANISH" ? -2 : 0);
+    case "DTD213": return (-1 * NumRunechants($currentPlayer));
     default: return 0;
   }
 }
