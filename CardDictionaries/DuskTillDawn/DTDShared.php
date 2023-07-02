@@ -110,6 +110,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD232": return true;//Courage
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
+    case "DTD410": return true;
     default:
       return false;
   }
