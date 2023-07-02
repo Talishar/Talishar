@@ -80,6 +80,7 @@ function AllyHealth($cardID)
     case "UPR416": return 1;
     case "UPR417": return 3;
     case "DYN612": return 4;
+    case "DTD193": return 6;
     case "DTD405": return 4;
     case "DTD406": return 4;
     case "DTD407": return 4;
