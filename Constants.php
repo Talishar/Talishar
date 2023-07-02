@@ -12,7 +12,6 @@ $Card_BlockBanner = "LGS179";
 $Card_LifeBanner = "LGS180";
 $Card_ResourceBanner = "LGS181";
 
-
 $GameStatus_Over = 2;
 $GameStatus_Rematch = 3;
 
@@ -280,7 +279,7 @@ $CCS_WeaponIndex = 1;
 $CCS_HasAimCounter = 2;
 $CCS_AttackNumCharged = 3;
 $CCS_DamageDealt = 4;
-$CCS_HitsInRow = 5;//Deprecated -- use HitsInRow() instead
+$CCS_WasRuneGate = 5;
 $CCS_HitsWithWeapon = 6;
 $CCS_GoesWhereAfterLinkResolves = 7;
 $CCS_AttackPlayedFrom = 8;
@@ -315,7 +314,7 @@ function ResetCombatChainState()
 {
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt;
   global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented;
-  global $CCS_NumBoosted, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
+  global $CCS_NumBoosted, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget, $CCS_WasRuneGate;
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
   global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
@@ -325,6 +324,7 @@ function ResetCombatChainState()
   $combatChainState[$CCS_WeaponIndex] = -1;
   $combatChainState[$CCS_HasAimCounter] = 0;
   $combatChainState[$CCS_DamageDealt] = 0;
+  $combatChainState[$CCS_WasRuneGate] = 0;
   $combatChainState[$CCS_AttackNumCharged] = 0;
   $combatChainState[$CCS_HitsWithWeapon] = 0;
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
@@ -408,13 +408,14 @@ function ResetChainLinkState()
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
   global $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
-  global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged;
+  global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate;
   WriteLog("The chain link was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;
   $combatChainState[$CCS_HasAimCounter] = 0;
   $combatChainState[$CCS_AttackNumCharged] = 0;
   $combatChainState[$CCS_DamageDealt] = 0;
+  $combatChainState[$CCS_WasRuneGate] = 0;
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
   $combatChainState[$CCS_AttackPlayedFrom] = "NA";
   $combatChainState[$CCS_ChainLinkHitEffectsPrevented] = 0;

@@ -65,6 +65,9 @@ function DTDEffectAttackModifier($cardID)
     case "DTD120": return 3;
     case "DTD127": case "DTD128": case "DTD129": return 2;
     case "DTD130": case "DTD131": case "DTD132": return 2;
+    case "DTD149": return 3;
+    case "DTD150": return 2;
+    case "DTD151": return 1;
     case "DTD196": return 1;//Anthem of Spring
     case "DTD213": return 3;
     case "DTD232": return 1;//Courage
@@ -76,7 +79,7 @@ function DTDEffectAttackModifier($cardID)
 function DTDCombatEffectActive($cardID, $attackID)
 {
   global $combatChainState, $CCS_IsBoosted, $mainPlayer, $combatChainState, $CCS_AttackNumCharged, $combatChain;
-  global $Card_LifeBanner, $Card_ResourceBanner;
+  global $Card_LifeBanner, $Card_ResourceBanner, $CCS_WasRuneGate;
   $params = explode(",", $cardID);
   $cardID = $params[0];
   switch($cardID) {
@@ -96,6 +99,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD118": case "DTD119": case "DTD120": return ClassContains($attackID, "BRUTE", $mainPlayer) || TalentContains($attackID, "SHADOW", $mainPlayer);
     case "DTD127": case "DTD128": case "DTD129": return true;
     case "DTD130": case "DTD131": case "DTD132": return true;
+    case "DTD149": case "DTD150": case "DTD151": return $combatChainState[$CCS_WasRuneGate] == 1;
     case "DTD196": return CardType($attackID) == "AA";//Anthem of Spring
     case "DTD198": return true;//Call Down the Lightning
     case "DTD206": return true;
@@ -216,6 +220,10 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DTD142":
       PlayAlly("DTD193", $currentPlayer);
+      return "";
+    case "DTD149": case "DTD150": case "DTD151":
+      PlayAura("ARC112", $currentPlayer);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD175": GainHealth(3, $currentPlayer); return "";
     case "DTD176": GainHealth(2, $currentPlayer); return "";

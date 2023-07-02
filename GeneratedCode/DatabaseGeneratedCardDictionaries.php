@@ -363,6 +363,20 @@ case "0":
 return true;
 default: return false;
 }
+case "4":
+switch($cardID[5]) {
+case "9":
+return true;
+default: return false;
+}
+case "5":
+switch($cardID[5]) {
+case "0":
+return true;
+case "1":
+return true;
+default: return false;
+}
 case "9":
 switch($cardID[5]) {
 case "6":

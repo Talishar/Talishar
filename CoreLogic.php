@@ -2064,7 +2064,7 @@ function SelfCostModifier($cardID, $from)
 
 function IsAlternativeCostPaid($cardID, $from)
 {
-  global $currentTurnEffects, $currentPlayer;
+  global $currentTurnEffects, $currentPlayer, $combatChainState, $CCS_WasRuneGate;
   $isAlternativeCostPaid = false;
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = false;
@@ -2080,7 +2080,7 @@ function IsAlternativeCostPaid($cardID, $from)
       if($remove) RemoveCurrentTurnEffect($i);
     }
   }
-  if($from == "BANISH" && SearchAuras("ARC112", $currentPlayer) > 0 && HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer)) >= CardCost($cardID)) return true;
+  if($from == "BANISH" && SearchAuras("ARC112", $currentPlayer) > 0 && HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer)) >= CardCost($cardID)) { $combatChainState[$CCS_WasRuneGate] = 1; return true; }
   return $isAlternativeCostPaid;
 }
 
