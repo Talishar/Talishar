@@ -119,7 +119,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
       return "";
     case "DTD009":
-      MZMoveCard($currentPlayer, "MYDISCARD:type=A;pitch=2", "MYTOPDECK"); 
+      MZMoveCard($currentPlayer, "MYDISCARD:type=A;pitch=2", "MYTOPDECK");
       return;
     case "DTD010":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -186,6 +186,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD140":
       PlayAura("ARC112", $currentPlayer);
       return "";
+    case "DTD175": GainHealth(3, $currentPlayer); return "";
+    case "DTD176": GainHealth(2, $currentPlayer); return "";
+    case "DTD177": GainHealth(1, $currentPlayer); return "";
     case "DTD196"://Anthem of Spring
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";

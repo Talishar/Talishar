@@ -1168,6 +1168,7 @@ function HasBloodDebt($cardID)
     case "MON202": case "MON203": case "MON204": case "MON205": case "MON209": case "MON210": case "MON211":
     case "DTD138": case "DTD139": case "DTD140":
     case "DTD158": case "DTD159": case "DTD160":
+    case "DTD175": case "DTD176": case "DTD177":
     case $Card_VantomR: case $Card_VantomY: case $Card_VantomB:
       return true;
     default: return false;
@@ -1206,6 +1207,7 @@ function PlayableFromBanish($cardID, $mod="")
     case "MON183": case "MON184": case "MON185": return true;
     case "MON190": case "MON191": case "MON194": case "MON200": case "MON201": case "MON202": case "MON203":
     case "MON204": case "MON205": case "MON209": case "MON210": case "MON211": return true;
+    case "DTD175": case "DTD176": case "DTD177":
     case "DTD140": return true;
     default: return false;
   }

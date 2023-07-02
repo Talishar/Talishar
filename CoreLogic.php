@@ -2028,7 +2028,7 @@ function SameWeaponEquippedTwice()
   return false;
 }
 
-function SelfCostModifier($cardID)
+function SelfCostModifier($cardID, $from)
 {
   global $CS_NumCharged, $currentPlayer, $combatChain, $layers;
   switch($cardID) {
@@ -2056,6 +2056,7 @@ function SelfCostModifier($cardID)
         return -1;
       }
       else return 0;
+    case "DTD175": case "DTD176": case "DTD177": return ($from == "BANISH" ? -2 : 0);
     default: return 0;
   }
 }
