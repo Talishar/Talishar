@@ -61,7 +61,6 @@
     {
       $cardRarity = "NA";
       $cardPrintings = [];
-      if(isset($cardArray[$i]->printings[0]->double_sided_card_info) && !$cardArray[$i]->printings[0]->double_sided_card_info[0]->is_front && $cardArray[$i]->printings[0]->rarity != "T") continue;
       for($j=0; $j<count($cardArray[$i]->printings); ++$j)
       {
         $cardRarity = $cardArray[$i]->printings[$j]->rarity;
@@ -72,16 +71,19 @@
         if($set == "LGS" && $cardNumber < 156) continue;
         if($set == "HER" && $cardNumber < 84) continue;
         if($set == "FAB" && $cardNumber < 161) continue;
-        $duplicate = false;
-        for($k=0; $k<count($cardPrintings); ++$k)
-        {
-          if($cardPrintings[$k] == $cardID) $duplicate = true;
+        if(isset($cardArray[$i]->printings[0]->double_sided_card_info) && !$cardArray[$i]->printings[0]->double_sided_card_info[0]->is_front && $cardArray[$i]->printings[0]->rarity != "T") { $cardNumber += 400; $cardID = $set . $cardNumber; }
+        else {
+          $duplicate = false;
+          for($k=0; $k<count($cardPrintings); ++$k)
+          {
+            if($cardPrintings[$k] == $cardID) $duplicate = true;
+          }
+          for($k=0; $k<count($cardsSeen); ++$k)
+          {
+            if($cardsSeen[$k] == $cardID) $duplicate = true;
+          }
+          if($duplicate && $set != "DVR" && $set != "RVD") continue;
         }
-        for($k=0; $k<count($cardsSeen); ++$k)
-        {
-          if($cardsSeen[$k] == $cardID) $duplicate = true;
-        }
-        if($duplicate && $set != "DVR" && $set != "RVD") continue;
         array_push($cardPrintings, $cardID);
         array_push($cardsSeen, $cardID);
         if($propertyName == "type") $data = MapType($cardArray[$i]);
@@ -195,6 +197,7 @@
       else if($card->types[$i] == "Token") return "T";
       else if($card->types[$i] == "Resource") return "R";
       else if($card->types[$i] == "Mentor") return "M";
+      else if($card->types[$i] == "Ally") return "-";
     }
     if($hasAction && $hasAttack) return "AA";
     else if($hasAction) return "A";

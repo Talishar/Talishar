@@ -2,13 +2,16 @@
 
 function CheckImage($cardID)
 {
+  $set = substr($cardID, 0, 3);
+  $number = substr($cardID, 3);
+  $adjustedCardID = $set . ($number >= 400 ? $number - 400 : $number);
   $filename = "./WebpImages/" . $cardID . ".webp";
   $filenameNew = "./New Cards/" . $cardID . ".webp";
   $filename2 = "../FaB-Online-React-Client/public/cardimages/" . $cardID . ".webp";
   if(!file_exists($filename) || !file_exists($filename2))
   {
     //$imageURL = "https://fabrary.net/images/cards/" . $cardID . ".webp";
-    $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $cardID . ".webp";
+    $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $adjustedCardID . ".webp";
     //$imageURL = "https://fabrary.net/images/cards/" . $cardID . ".width-450.webp";
     echo("Image for " . $cardID . " does not exist.<BR>");
     $handler = fopen($filename, "w");
