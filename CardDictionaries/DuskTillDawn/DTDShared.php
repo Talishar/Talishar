@@ -3,6 +3,7 @@
 function DTDAbilityCost($cardID)
 {
   switch($cardID) {
+    case "DTD001": case "DTD002": return 2;
     case "DTD046": return 2;
     case "DTD060": return 1;
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return 0;
@@ -15,6 +16,7 @@ function DTDAbilityCost($cardID)
 function DTDAbilityType($cardID, $index = -1)
 {
   switch($cardID) {
+    case "DTD001": case "DTD002": return "I";
     case "DTD046": return "AA";
     case "DTD060": return "AR";
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return "I";
@@ -94,6 +96,12 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
+    case "DTD001": case "DTD002":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Figment");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a figment to awaken");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("AWAKEN", $currentPlayer, "-", 1);
+      return "";
     case "DTD011":
       AddCurrentTurnEffect($cardID, $otherPlayer);
       return "";

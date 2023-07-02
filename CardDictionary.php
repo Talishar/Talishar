@@ -44,7 +44,7 @@ function CardType($cardID)
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
-    if($number < 400) return GeneratedCardType($cardID);
+    if($number < 400 || ($set != "MON" && $set != "DYN")) return GeneratedCardType($cardID);
   }
   if($set == "ROG") return ROGUECardType($cardID);
   switch ($cardID) {
@@ -53,22 +53,6 @@ function CardType($cardID)
     case "MON404": return "M";
     case "MON405": return "M";
     case "MON406": case "MON407": return "M";
-    case "UPR406": return "-";
-    case "UPR407": return "-";
-    case "UPR408": return "-";
-    case "UPR409": return "-";
-    case "UPR410": return "-";
-    case "UPR411": return "-";
-    case "UPR412": return "-";
-    case "UPR413": return "-";
-    case "UPR414": return "-";
-    case "UPR415": return "-";
-    case "UPR416": return "-";
-    case "UPR417": return "-";
-    case "UPR439": return "-";
-    case "UPR440": return "-";
-    case "UPR441": return "-";
-    case "UPR551": return "-";
     case "DYN492a": return "W";
     case "DYN492b": return "E";
     case "DYN612": return "-";
@@ -86,7 +70,7 @@ function CardSubType($cardID)
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
-    if($number < 400) return GeneratedCardSubtype($cardID);
+    if($number < 400 || ($set != "MON" && $set != "DYN")) return GeneratedCardSubtype($cardID);
   }
   if($set == "ROG") return ROGUECardSubtype($cardID);
   switch($cardID) {
@@ -94,20 +78,6 @@ function CardSubType($cardID)
       case "MON400": return "Chest";
       case "MON401": return "Arms";
       case "MON402": return "Legs";
-      case "UPR406": return "Dragon,Ally";
-      case "UPR407": return "Dragon,Ally";
-      case "UPR408": return "Dragon,Ally";
-      case "UPR409": return "Dragon,Ally";
-      case "UPR410": return "Dragon,Ally";
-      case "UPR411": return "Dragon,Ally";
-      case "UPR412": return "Dragon,Ally";
-      case "UPR413": return "Dragon,Ally";
-      case "UPR414": return "Dragon,Ally";
-      case "UPR415": return "Dragon,Ally";
-      case "UPR416": return "Dragon,Ally";
-      case "UPR417": return "Dragon,Ally";
-      case "UPR439": case "UPR440": case "UPR441": return "Ash";
-      case "UPR551": return "Ally";
       case "DYN612": return "Angel,Ally";
       return "";
   }
@@ -116,10 +86,7 @@ function CardSubType($cardID)
 function CharacterHealth($cardID)
 {
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM") {
-    $number = intval(substr($cardID, 3));
-    if($number < 400) return GeneratedCharacterHealth($cardID);
-  }
+  if($set != "ROG" && $set != "DUM") return GeneratedCharacterHealth($cardID);
   switch($cardID) {
     case "DUMMY": return 1000;
     case "ROGUE001": return 6;
@@ -261,8 +228,7 @@ function CardCost($cardID)
     default: break;
   }
   if($set != "ROG" && $set != "DUM") {
-    $number = intval(substr($cardID, 3));
-    if($number < 400) return GeneratedCardCost($cardID);
+    return GeneratedCardCost($cardID);
   }
   if($set == "ROG") return ROGUECardCost($cardID);
 }
@@ -315,8 +281,7 @@ function PitchValue($cardID)
   if(!$cardID) return "";
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM") {
-    $number = intval(substr($cardID, 3));
-    if($number < 400) return GeneratedPitchValue($cardID);
+    return GeneratedPitchValue($cardID);
   }
   if($set == "ROG") return ROGUEPitchValue($cardID);
 }
@@ -330,7 +295,7 @@ function BlockValue($cardID)
   else if($cardID == "EVR138") return FractalReplicationStats("Block");
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
-    if($number < 400) return GeneratedBlockValue($cardID);
+    if($number < 400 || ($set != "MON" && $set != "DYN")) return GeneratedBlockValue($cardID);
   }
   $class = CardClass($cardID);
   if($set == "ROG") return ROGUEBlockValue($cardID);
@@ -361,22 +326,10 @@ function AttackValue($cardID)
   else if($cardID == "DYN216") return CountAura("MON104", $currentPlayer);
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
-    if($number < 400) return GeneratedAttackValue($cardID);
+    if($number < 400 || ($set != "MON" && $set != "DYN")) return GeneratedAttackValue($cardID);
   }
   if($set == "ROG") return ROGUEAttackValue($cardID);
   switch ($cardID) {
-    case "UPR406": return 6;
-    case "UPR407": return 5;
-    case "UPR408": return 4;
-    case "UPR409": return 2;
-    case "UPR410": return 3;
-    case "UPR411": return 4;
-    case "UPR412": return 2;
-    case "UPR413": return 4;
-    case "UPR414": return 1;
-    case "UPR415": return 3;
-    case "UPR416": return 6;
-    case "UPR417": return 3;
     case "DYN492a": return 5;
     case "DYN612": return 4;
     default: return 0;
@@ -683,9 +636,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MON230": return GetClassState($player, $CS_NumAttackCards) == 0 || GetClassState($player, $CS_NumNonAttackCards) == 0;
     case "MON238": return GetClassState($player, $CS_DamageTaken) == 0 && GetClassState($otherPlayer, $CS_DamageTaken) == 0;
     case "MON281": case "MON282": case "MON283": return SearchCurrentTurnEffects($cardID, $player);
-    case "MON303": return SearchDiscard($player, "AA", "", 2) == "";
-    case "MON304": return SearchDiscard($player, "AA", "", 1) == "";
-    case "MON305": return SearchDiscard($player, "AA", "", 0) == "";
     case "ELE031": case "ELE032": case "ELE115": return !ArsenalHasFaceDownCard($player);
     case "ELE118": return $from == "ARS" || ArsenalEmpty($player);
     case "ELE125": case "ELE126": case "ELE127":
@@ -1442,8 +1392,7 @@ function Rarity($cardID)
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM")
   {
-    $number = intval(substr($cardID, 3));
-    if($number < 400) return GeneratedRarity($cardID);
+    return GeneratedRarity($cardID);
   }
   if ($set == "ROG") {
     return ROGUERarity($cardID);

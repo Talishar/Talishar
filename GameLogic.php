@@ -1224,6 +1224,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "HITEFFECT":
       ProcessHitEffect($parameter);
       return $parameter;
+    case "AWAKEN":
+      $mzArr = explode("-", $lastResult);
+      $permanents = &GetPermanents($player);
+      $cardID = $permanents[$mzArr[1]];
+      $num = intval(substr($cardID, 3));
+      $num += 400;
+      $newCardID = substr($cardID, 0, 3) . $num;
+      WriteLog(CardLink($cardID, $cardID) . " awakened into " . CardLink($newCardID, $newCardID));
+      RemovePermanent($player, $mzArr[1]);
+      PlayAlly($newCardID, $player);
+      return "1";
     case "PROCESSDAMAGEPREVENTION":
       $mzIndex = explode("-", $lastResult);
       $params =  explode("-", $parameter);
