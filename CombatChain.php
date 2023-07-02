@@ -329,6 +329,7 @@ function OnBlockResolveEffects()
       case "DTD094": case "DTD095": case "DTD096":
         if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
         break;
+      case "DTD200": Intimidate($mainPlayer); break;
       default: break;
     }
   }

@@ -999,6 +999,18 @@ function EndStep()
   if(HeaveIndices() != "") AddLayer("TRIGGER", $mainPlayer, "HEAVE");
 }
 
+function UndoIntimidate($player)
+{
+  $banish = &GetBanish($player);
+  $hand = &GetHand($player);
+  for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+    if ($banish[$i + 1] == "INT") {
+      array_push($hand, $banish[$i]);
+      RemoveBanish($player, $i);
+    }
+  }
+}
+
 //CR 2.0 4.4.2. - Beginning of the end phase
 function FinishTurnPass()
 {
@@ -1007,6 +1019,8 @@ function FinishTurnPass()
   ResetCombatChainState();
   QuellEndPhase(1);
   QuellEndPhase(2);
+  UndoIntimidate(1);
+  UndoIntimidate(2);
   ItemEndTurnAbilities();
   AuraBeginEndPhaseAbilities();
   LandmarkBeginEndPhaseAbilities();
@@ -1050,30 +1064,21 @@ function FinalizeTurn()
 
   $EffectContext = "-";
 
-  //4.4.2. First, the “beginning of the end phase” event occurs and abilities that trigger at the beginning of the end phase are triggered.
-  //Undo Intimidate
-  $defBanish = &GetBanish($defPlayer);
-  for ($i = count($defBanish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
-    if ($defBanish[$i + 1] == "INT") {
-      array_push($defHand, $defBanish[$i]);
-      RemoveBanish($defPlayer, $i);
-    }
-  }
-
+  //4.4.2. First, the “beginning of the end phase” event occurs and abilities that trigger at the beginning of the end phase are triggered
   LogEndTurnStats($mainPlayer);
   CurrentEffectEndTurnAbilities();
   AuraEndTurnAbilities();
   AllyEndTurnAbilities();
   MainCharacterEndTurnAbilities();
 
-  //4.4.3a All allies’ life totals are reset to their base life, modified by any counters on the object.
+  //4.4.3a All allies’ life totals are reset to their base life, modified by any counters on the object
   AllyBeginEndTurnEffects();
 
-  //4.4.3b The turn player may put a card from their hand face down into an empty arsenal zone they own.
+  //4.4.3b The turn player may put a card from their hand face down into an empty arsenal zone they own
   ArsenalEndTurn($mainPlayer);
   ArsenalEndTurn($defPlayer);
 
-  //4.4.3c Each player puts all cards in their pitch zone (if any) on the bottom of their deck in any order.The order cards are put on the bottom of the deck this way is hidden information.
+  //4.4.3c Each player puts all cards in their pitch zone (if any) on the bottom of their deck in any order.The order cards are put on the bottom of the deck this way is hidden information
   //Reset characters/equipment
   for ($i = 1; $i < count($mainCharacter); $i += CharacterPieces()) {
     if ($mainCharacter[$i - 1] == "CRU177" && $mainCharacter[$i + 1] >= 3) $mainCharacter[$i] = 0; //Destroy Talishar if >= 3 rust counters
