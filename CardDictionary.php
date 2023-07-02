@@ -871,8 +871,10 @@ function RequiresDiscard($cardID)
 function RequiresBanish($cardID)
 {
   switch($cardID) {
+    case "DTD112": case "DTD113": case "DTD114":
     case "DTD118": case "DTD119": case "DTD120":
     case "DTD127": case "DTD128": case "DTD129":
+    case "DTD130": case "DTD131": case "DTD132":
       return true;
     default: return false;
   }
@@ -1176,8 +1178,10 @@ function HasBloodDebt($cardID)
     case "MON178": case "MON179": case "MON180": case "MON181": case "MON182": case "MON183": case "MON184":
     case "MON185": case "MON187": case "MON191": case "MON192": case "MON194": case "MON200": case "MON201":
     case "MON202": case "MON203": case "MON204": case "MON205": case "MON209": case "MON210": case "MON211":
+    case "DTD112": case "DTD113": case "DTD114":
     case "DTD121": case "DTD122": case "DTD123":
     case "DTD127": case "DTD128": case "DTD129":
+    case "DTD130": case "DTD131": case "DTD132":
     case "DTD138": case "DTD139": case "DTD140":
     case "DTD158": case "DTD159": case "DTD160":
     case "DTD175": case "DTD176": case "DTD177":
