@@ -469,6 +469,9 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "OUT179_1":
           if(CardType($cardID) == "AA") { $costModifier -= 1; $remove = true; }
           break;
+        case "DTD004":
+          if(CardType($cardID) == "C") { $costModifier -= 2; $remove = true; }
+          break;
         case "ROGUE803":
           if (IsStaticType(CardType($cardID), $from, $cardID)) { $costModifier -= 1; }
           break;
