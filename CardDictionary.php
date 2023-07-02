@@ -1175,6 +1175,7 @@ function HasBloodDebt($cardID)
     case "MON178": case "MON179": case "MON180": case "MON181": case "MON182": case "MON183": case "MON184":
     case "MON185": case "MON187": case "MON191": case "MON192": case "MON194": case "MON200": case "MON201":
     case "MON202": case "MON203": case "MON204": case "MON205": case "MON209": case "MON210": case "MON211":
+    case "DTD121": case "DTD122": case "DTD123":
     case "DTD138": case "DTD139": case "DTD140":
     case "DTD158": case "DTD159": case "DTD160":
     case "DTD175": case "DTD176": case "DTD177":
