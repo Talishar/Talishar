@@ -868,6 +868,15 @@ function RequiresDiscard($cardID)
   }
 }
 
+function RequiresBanish($cardID)
+{
+  switch($cardID) {
+    case "DTD118": case "DTD119": case "DTD120":
+      return true;
+    default: return false;
+  }
+}
+
 function ETASteamCounters($cardID)
 {
   switch ($cardID) {

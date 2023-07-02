@@ -1555,6 +1555,15 @@ function PayAdditionalCosts($cardID, $from)
     }
     SetClassState($currentPlayer, $CS_AdditionalCosts, $discarded);
   }
+  if(RequiresBanish($cardID))
+  {
+    $banished = BanishRandom($currentPlayer, $cardID);
+    if($banished == "") {
+      WriteLog("You do not have a card to banish. Reverting gamestate.");
+      RevertGamestate();
+      return;
+    }
+  }
   switch ($cardID) {
     case "WTR159":
       $hand = &GetHand($currentPlayer);

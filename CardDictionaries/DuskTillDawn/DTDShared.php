@@ -58,6 +58,9 @@ function DTDEffectAttackModifier($cardID)
     case "DTD073": return 2;
     case "DTD074": return 1;
     case "DTD082": case "DTD083": case "DTD084": return 1;
+    case "DTD118": return 5;
+    case "DTD119": return 4;
+    case "DTD120": return 3;
     case "DTD196": return 1;//Anthem of Spring
     case "DTD232": return 1;//Courage
     default:
@@ -85,6 +88,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD072": case "DTD073": case "DTD074": return $combatChainState[$CCS_AttackNumCharged] > 0;//Charge of the Light Brigade
     case "DTD082": case "DTD083": case "DTD084": return true;
     case "DTD094": case "DTD095": case "DTD096": return true;
+    case "DTD118": case "DTD119": case "DTD120": return ClassContains($attackID, "BRUTE", $mainPlayer) || TalentContains($attackID, "SHADOW", $mainPlayer);
     case "DTD196": return CardType($attackID) == "AA";//Anthem of Spring
     case "DTD198": return true;//Call Down the Lightning
     case "DTD206": return true;
@@ -181,6 +185,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if(SearchPitchForColor($currentPlayer, 2) > 0) GiveAttackGoAgain();
       return "";
     case "DTD0100": case "DTD101": case "DTD102":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "DTD118": case "DTD119": case "DTD120":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD140":

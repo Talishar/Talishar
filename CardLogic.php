@@ -1151,6 +1151,19 @@ function PlayerOpt($player, $amount, $optKeyword = true)
   AddDecisionQueue("OPT", $player, "<-", 1);
 }
 
+function BanishRandom($player, $source)
+{
+  $hand = &GetHand($player);
+  if(count($hand) == 0) return "";
+  $index = GetRandom() % count($hand);
+  $banished = $hand[$index];
+  unset($hand[$index]);
+  $hand = array_values($hand);
+  BanishCardForPlayer($banished, $player, "HAND");
+  WriteLog(CardLink($banished, $banished) . " was randomly banished");
+  return $banished;
+}
+
 function DiscardRandom($player = "", $source = "")
 {
   global $currentPlayer;
