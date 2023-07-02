@@ -400,6 +400,11 @@ function SpecificCardLogic($player, $card, $lastResult)
         PutItemIntoPlayForPlayer("EVR195", $player);
       }
       return $lastResult;
+    case "GENESIS":
+      AddSoul($lastResult, $player, "HAND", false);
+      if(TalentContains($lastResult, "LIGHT", $player)) Draw($player, false);
+      if(ClassContains($lastResult, "ILLUSIONIST", $player)) PlayAura("MON104", $player);
+      return 1;
     default: return "";
   }
 }

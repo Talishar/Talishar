@@ -225,7 +225,7 @@ function SetCCAttackModifier($index, $amount)
   $combatChain[$index + 5] += $amount;
 }
 
-function AddSoul($cardID, $player, $from)
+function AddSoul($cardID, $player, $from, $isMainPhase=true)
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
@@ -246,6 +246,10 @@ function AddSoul($cardID, $player, $from)
       else AddSpecificSoul($cardID, $theirSoul, $from);
     }
     IncrementClassState($player, $CS_NumAddedToSoul);
+    if($isMainPhase && str_contains(NameOverride($cardID, $player), "Herald") && (SearchCharacterActive($player, "DTD001") || SearchCharacterActive($player, "DTD002")))
+    {
+      MZMoveCard($player, "MYDECK:subtype=Figment", "MYPERMANENTS", may:true);
+    }
   }
 }
 

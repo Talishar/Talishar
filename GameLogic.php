@@ -902,10 +902,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog(CardLink("MON247", "MON247") . " got +7 and go again");
       }
       return $lastResult;
-    case "GENESIS":
-      if(TalentContains($lastResult, "LIGHT", $player)) Draw($player, false);
-      if(ClassContains($lastResult, "ILLUSIONIST", $player)) PlayAura("MON104", $player);
-      return 1;
     case "GIVEACTIONGOAGAIN":
       if($parameter == "A") SetClassState($player, $CS_NextNAACardGoAgain, 1);
       else if($parameter == "AA") GiveAttackGoAgain();
