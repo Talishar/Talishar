@@ -245,6 +245,15 @@ function SpecificAllyAttackAbilities($attackID)
         WriteLog("Gained 1 action point from " . CardLink($allies[$i], $allies[$i]));
       }
       break;
+    case "DTD407":
+      $soul = &GetSoul($mainPlayer);
+      if(count($soul) == 0) break;
+      AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
+      AddDecisionQueue("NOPASS", $mainPlayer, "-");
+      MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
+      AddDecisionQueue("PLAYAURA", $mainPlayer, "MON104", 1);
+      AddDecisionQueue("PLAYAURA", $mainPlayer, "MON104", 1);
+      break;
     default: break;
   }
 }
