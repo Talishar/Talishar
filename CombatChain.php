@@ -605,7 +605,7 @@ function IsDominateActive()
 
 function IsOverpowerActive()
 {
-  global $combatChain, $mainPlayer;
+  global $combatChain, $mainPlayer, $CS_Num6PowBan;
   if(count($combatChain) == 0) return false;
   switch($combatChain[0]) {
     case "DYN068": return SearchCurrentTurnEffects("DYN068", $mainPlayer);
@@ -613,6 +613,7 @@ function IsOverpowerActive()
     case "DYN227": case "DYN228": case "DYN229": return SearchCurrentTurnEffects("DYN227", $mainPlayer);
     case "DYN492a": return true;
     case "DTD063": case "DTD064": case "DTD065": return SearchCurrentTurnEffects($combatChain[0], $mainPlayer);
+    case "DTD115": case "DTD116": case "DTD117": return GetClassState($mainPlayer, $CS_Num6PowBan) > 0;
     default: break;
   }
   return false;
