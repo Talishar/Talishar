@@ -349,6 +349,20 @@ default: return false;
 }
 case "1":
 switch($cardID[4]) {
+case "1":
+switch($cardID[5]) {
+case "8":
+return true;
+case "9":
+return true;
+default: return false;
+}
+case "2":
+switch($cardID[5]) {
+case "0":
+return true;
+default: return false;
+}
 case "9":
 switch($cardID[5]) {
 case "6":
