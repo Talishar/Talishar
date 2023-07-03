@@ -40,6 +40,7 @@ function AuraNumUses($cardID)
   switch ($cardID) {
     case "EVR140": case "EVR141": case "EVR142": case "EVR143":
     case "UPR005": return 1;
+    case "DTD081": return 1;
     default: return 0;
   }
 }
@@ -480,7 +481,7 @@ function AuraEndTurnCleanup()
   for($i = 0; $i < count($auras); $i += AuraPieces()) $auras[$i + 5] = AuraNumUses($auras[$i]);
 }
 
-function AuraDamagePreventionAmount($player, $index, &$cancelRemove=false)
+function AuraDamagePreventionAmount($player, $index, $active=false, &$cancelRemove=false)
 {
   $auras = &GetAuras($player);
   switch($auras[$index])
@@ -497,27 +498,24 @@ function AuraDamagePreventionAmount($player, $index, &$cancelRemove=false)
     case "DYN218": case "DYN219": case "DYN220": return 1;
     case "DYN221": case "DYN222": case "DYN223": return 1;
     case "DTD081":
-    /*
       $auras = &GetAuras($player);
-      $active = true;
       if($active)
       {
         $soul = &GetSoul($player);
         if(count($soul) > 0)
         {
-          $cancelRemove = true;
-          if($auras[$index+5] > 0)
-          {
-            $auras[$index+5] = 0;
-            MZMoveCard($player, "MYSOUL", "MYBANISH,SOUL,-");
-            return 1;
-          }
-          else $auras[$index+5] = 1;
+          $cancelRemove = count($soul) > 1 ? true : false;
+          MZMoveCard($player, "MYSOUL", "MYBANISH,SOUL,-");
+          $auras[$index+5] = 0;
+          return 1;
         }
       }
-      else return $auras[$index+5] == 0;
-      */
-      return 0;
+      else if($auras[$index+5] == 1) return 1;
+      else
+      {
+        $auras[$index+5] = 1;
+        return 0;
+      }
     default: break;
   }
 }
@@ -526,7 +524,7 @@ function AuraDamagePreventionAmount($player, $index, &$cancelRemove=false)
 function AuraTakeDamageAbility($player, $index, $damage, $preventable)
 {
   $cancelRemove = false;
-  if($preventable) $damage -= AuraDamagePreventionAmount($player, $index, $cancelRemove);
+  if($preventable) $damage -= AuraDamagePreventionAmount($player, $index, true, $cancelRemove);
   if(!$cancelRemove) DestroyAura($player, $index);
   return $damage;
 }
