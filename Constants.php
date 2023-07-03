@@ -4,7 +4,6 @@ $Card_VantomR = "LGS157";
 $Card_VantomY = "LGS158";
 $Card_VantomB = "LGS159";
 $Card_Vynnset = "HER085";
-$Card_Flail = "LGS156";
 $Card_CourageBanner = "FAB161";
 $Card_QuickenBanner = "FAB162";
 $Card_SpellbaneBanner = "FAB163";

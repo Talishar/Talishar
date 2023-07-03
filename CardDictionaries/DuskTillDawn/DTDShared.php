@@ -7,6 +7,7 @@ function DTDAbilityCost($cardID)
     case "DTD046": return 2;
     case "DTD060": return 1;
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return 0;
+    case "DTD135": return 0;
     case "DTD193": return 0;
     case "DTD199": return 1;
     case "DTD205": return 3;
@@ -24,6 +25,7 @@ function DTDAbilityType($cardID, $index = -1)
     case "DTD046": return "AA";
     case "DTD060": return "AR";
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return "I";
+    case "DTD135": return "AA";
     case "DTD193": return "AA";
     case "DTD199": return "AA";
     case "DTD205": return "AA";
@@ -272,6 +274,9 @@ function DTDHitEffect($cardID)
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $mainPlayer, "TURNBANISHFACEDOWN", 1);
       }
+      break;
+    case "DTD135":
+      PlayAura("ARC112", $mainPlayer);
       break;
     case "DTD172": case "DTD173": case "DTD174":
       if(IsHeroAttackTarget()) MZMoveCard($mainPlayer, "THEIRSOUL", "THEIRBANISH,SOUL,-");
