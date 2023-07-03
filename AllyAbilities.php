@@ -313,6 +313,8 @@ function AllyTakeDamageAbilities($player, $index, $damage, $preventable)
   for($i = count($allies) - AllyPieces(); $i >= 0; $i -= AllyPieces()) {
     $remove = false;
     switch($allies[$i]) {
+      case "DTD405": case "DTD406": case "DTD407": case "DTD408"://Angels
+      case "DTD409": case "DTD410": case "DTD411": case "DTD412":
       case "DYN612":
         if($damage > 0) {
           if($preventable) $damage -= 4;
