@@ -73,6 +73,7 @@ function DTDEffectAttackModifier($cardID)
     case "DTD196": return 1;//Anthem of Spring
     case "DTD213": return 3;
     case "DTD232": return 1;//Courage
+    case "DTD411": return -1;
     default:
       return 0;
   }
@@ -110,7 +111,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD232": return true;//Courage
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
-    case "DTD410": return true;
+    case "DTD410": case "DTD411": return true;
     default:
       return false;
   }
