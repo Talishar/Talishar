@@ -161,6 +161,12 @@ function LandmarkPieces()
 }
 
 //0 - Card ID
+function InventoryPieces()
+{
+  return 1;
+}
+
+//0 - Card ID
 //1 - Player ID
 //2 - Still on chain? 1 = yes, 0 = no
 //3 - From

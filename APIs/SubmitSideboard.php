@@ -137,7 +137,11 @@ if ($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   fwrite($handler, "0\r\n"); //Player 1 total time
   fwrite($handler, "0\r\n"); //Player 2 total time
   fwrite($handler, time() . "\r\n"); //Last update time
-  fwrite($handler, $roguelikeGameID . "\r\n"); //Last update time
+  fwrite($handler, $roguelikeGameID . "\r\n"); //Roguelike game ID
+  fwrite($handler, "\r\n");//Events
+  fwrite($handler, "-\r\n");//Effect Context
+  fwrite($handler, "\r\n"); //p1 Inventory
+  fwrite($handler, "\r\n"); //p2 Inventory
   fclose($handler);
 
   //Set up log file
