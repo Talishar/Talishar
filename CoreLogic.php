@@ -2358,7 +2358,7 @@ function UnityEffect($cardID)
       else if($char[0] == "ELE031" || $char[0] == "ELE032") PlayAura("ELE110", $defPlayer);
       else if($char[0] == "ELE001" || $char[0] == "ELE002") PlayAura("DYN246", $defPlayer);
       else if($char[0] == "MON001" || $char[0] == "MON002") PlayAura("MON104", $defPlayer);
-      else if($char[0] == "CRU097") PlayAura("WTR075", $defPlayer);//DTD TODO: Eloquence
+      else if($char[0] == "CRU097") PlayAura("DTD233", $defPlayer);
       break;
     case "DTD196"://Anthem of Spring
       PlayAura("ELE109", $defPlayer);
