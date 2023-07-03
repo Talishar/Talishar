@@ -254,6 +254,16 @@ function SpecificAllyAttackAbilities($attackID)
       AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
       AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
       break;
+    case "DTD406":
+      $soul = &GetSoul($mainPlayer);
+      if(count($soul) == 0) break;
+      AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
+      AddDecisionQueue("NOPASS", $mainPlayer, "-");
+      MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYBANISH&THEIRBANISH", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $mainPlayer, "TURNBANISHFACEDOWN", 1);
+    break;    
     case "DTD407":
       $soul = &GetSoul($mainPlayer);
       if(count($soul) == 0) break;
