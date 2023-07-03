@@ -677,7 +677,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("This card was charged: " . CardLink($lastResult, $lastResult));
       IncrementClassState($player, $CS_NumCharged);
       global $CCS_AttackNumCharged;
-      if(count($combatChain) > 0 && CardType($EffectContext) == "AA") ++$combatChainState[$CCS_AttackNumCharged];
+      if(CardType($EffectContext) == "AA") ++$combatChainState[$CCS_AttackNumCharged];
       return $lastResult;
     case "DEALDAMAGE":
       $target = (is_array($lastResult) ? $lastResult : explode("-", $lastResult));
