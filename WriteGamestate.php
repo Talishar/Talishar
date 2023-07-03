@@ -95,6 +95,8 @@ $gamestateContent .= $lastUpdateTime . "\r\n"; //Last update time
 $gamestateContent .= $roguelikeGameID . "\r\n"; //Last update time
 $gamestateContent .= implode(" ", $events) . "\r\n";//Events
 $gamestateContent .= $EffectContext . "\r\n";//Update number the gamestate is for
+$gamestateContent .= implode(" ", $p1Inventory) . "\r\n";
+$gamestateContent .= implode(" ", $p1Inventory) . "\r\n";
 
 fwrite($handler, $gamestateContent);
 
