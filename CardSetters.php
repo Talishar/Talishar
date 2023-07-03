@@ -63,10 +63,16 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
 function RemoveBanish($player, $index)
 {
   $banish = &GetBanish($player);
-  for ($i = $index + BanishPieces() - 1; $i >= $index; --$i) {
+  for($i = $index + BanishPieces() - 1; $i >= $index; --$i) {
     unset($banish[$i]);
   }
   $banish = array_values($banish);
+}
+
+//When it matters, make it save this off to a different zone
+function TurnBanishFaceDown($player, $index)
+{
+  RemoveBanish($player, $index);
 }
 
 function AddBottomDeck($cardID, $player, $from)

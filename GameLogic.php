@@ -331,6 +331,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $zone = &GetMZZone($player, $mzArr[0]);
           $zone[$mzArr[1]+$pieceArr[0]] = $pieceArr[1];
           break;
+        case "TURNBANISHFACEDOWN":
+          $mzArr = explode("-", $lastResult);
+          TurnBanishFaceDown(substr($mzArr[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1), $mzArr[1]);
+          break;
         default: break;
       }
       return $lastResult;
