@@ -61,6 +61,7 @@ class Deck {
   function BanishTop($modifier = "-", $banishedBy = "") {
     $cardID = $this->Remove(0);
     BanishCardForPlayer($cardID, $this->playerID, "DECK", $modifier, $banishedBy);
+    return $cardID;
   }
 }
 

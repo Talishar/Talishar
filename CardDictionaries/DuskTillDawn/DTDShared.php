@@ -271,6 +271,13 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD161": case "DTD162": case "DTD163":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "DTD169":
+      $deck = new Deck($currentPlayer);
+      if($deck->Empty()) return "Ravenous Dabble does not get negative attack because your deck is empty";
+      $top = $deck->BanishTop();
+      $pitch = PitchValue($top);
+      SetCCAttackModifier(0, -$pitch);
+      return "";
     case "DTD175": GainHealth(3, $currentPlayer); return "";
     case "DTD176": GainHealth(2, $currentPlayer); return "";
     case "DTD177": GainHealth(1, $currentPlayer); return "";
