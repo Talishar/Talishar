@@ -2411,7 +2411,9 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true)
   $hand = &GetHand($player);
   if(count($deck) == 0) return -1;
   if(CurrentEffectPreventsDraw($player, $mainPhase)) return -1;
-  array_push($hand, array_shift($deck));
+  $cardID = array_shift($deck);
+  if($mainPhase && (SearchAurasForCard("DTD170", 1) != "" || SearchAurasForCard("DTD170", 2) != "")) BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
+  else array_push($hand, $cardID);
   IncrementClassState($player, $CS_NumCardsDrawn, 1);
   if($mainPhase && (SearchCharacterActive($otherPlayer, "EVR019") || (SearchCurrentTurnEffects("EVR019-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "CRU097")))) PlayAura("WTR075", $otherPlayer);
   if(SearchCharacterActive($player, "EVR020")) {
@@ -2420,8 +2422,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true)
       if($cardType == "A" || $cardType == "AA") PlayAura("WTR075", $player);
     }
   }
-  if(SearchCharacterActive($otherPlayer, "ROGUE026") && $mainPhase) {
-    //WriteLog("drawn card");
+  if($mainPhase && SearchCharacterActive($otherPlayer, "ROGUE026")) {
     $health = &GetHealth($otherPlayer);
     $health += -10;
     if($health < 1)

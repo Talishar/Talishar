@@ -351,6 +351,10 @@ function AuraStartTurnAbilities()
         PlayAura("MON104", $mainPlayer, $amount);
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         break;
+      case "DTD170":
+        if($auras[$i+2] > 0) --$auras[$i+2];
+        else DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
+        break;
       default: break;
     }
   }

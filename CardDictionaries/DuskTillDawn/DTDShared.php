@@ -278,6 +278,14 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $pitch = PitchValue($top);
       SetCCAttackModifier(0, -$pitch);
       return "";
+    case "DTD170":
+      if($from == "BANISH")
+      {
+        $auras = &GetAuras($currentPlayer);
+        $index = count($auras) - AuraPieces();
+        $auras[$index+2] = 1;
+      }
+      return "";
     case "DTD175": GainHealth(3, $currentPlayer); return "";
     case "DTD176": GainHealth(2, $currentPlayer); return "";
     case "DTD177": GainHealth(1, $currentPlayer); return "";
