@@ -1198,6 +1198,7 @@ function HasBloodDebt($cardID)
     case "DTD172": case "DTD173": case "DTD174":
     case "DTD175": case "DTD176": case "DTD177":
     case "DTD181": case "DTD182": case "DTD183":
+    case "DTD184": case "DTD185": case "DTD186":
     case $Card_VantomR: case $Card_VantomY: case $Card_VantomB:
       return true;
     default: return false;

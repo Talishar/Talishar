@@ -254,6 +254,10 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD175": GainHealth(3, $currentPlayer); return "";
     case "DTD176": GainHealth(2, $currentPlayer); return "";
     case "DTD177": GainHealth(1, $currentPlayer); return "";
+    case "DTD184": case "DTD185": case "DTD186":
+      $theirSoul = &GetSoul($otherPlayer);
+      if(count($theirSoul) > 0) GiveAttackGoAgain();
+      return "";
     case "DTD196"://Anthem of Spring
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
