@@ -1243,6 +1243,7 @@ function PlayableFromBanish($cardID, $mod="")
     case "MON183": case "MON184": case "MON185": return true;
     case "MON190": case "MON191": case "MON194": case "MON200": case "MON201": case "MON202": case "MON203":
     case "MON204": case "MON205": case "MON209": case "MON210": case "MON211": return true;
+    case "DTD141":
     case "DTD161": case "DTD162": case "DTD163":
     case "DTD175": case "DTD176": case "DTD177":
     case "DTD140": return true;

@@ -258,6 +258,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD140":
       PlayAura("ARC112", $currentPlayer);
       return "";
+    case "DTD141":
+      PlayAura("DTD233", $currentPlayer);
+      return "";
     case "DTD142":
       PlayAlly("DTD193", $currentPlayer);
       return "";
