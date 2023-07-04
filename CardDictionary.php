@@ -879,6 +879,7 @@ function RequiresBanish($cardID)
     case "DTD110":
     case "DTD112": case "DTD113": case "DTD114":
     case "DTD118": case "DTD119": case "DTD120":
+    case "DTD124": case "DTD125": case "DTD126":
     case "DTD127": case "DTD128": case "DTD129":
     case "DTD130": case "DTD131": case "DTD132":
       return true;
@@ -1187,6 +1188,7 @@ function HasBloodDebt($cardID)
     case "DTD112": case "DTD113": case "DTD114":
     case "DTD115": case "DTD116": case "DTD117":
     case "DTD121": case "DTD122": case "DTD123":
+    case "DTD124": case "DTD125": case "DTD126":
     case "DTD127": case "DTD128": case "DTD129":
     case "DTD130": case "DTD131": case "DTD132":
     case "DTD137": case "DTD138": case "DTD139": case "DTD140":
