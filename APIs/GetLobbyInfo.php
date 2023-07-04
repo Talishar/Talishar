@@ -57,7 +57,7 @@ $response->displayName = ($yourName != "-" ? $yourName : "Player " . $playerID);
 
 $deckFile = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
 $handler = fopen($deckFile, "r");
-if ($handler) {
+if($handler) {
   $character = GetArray($handler);
   $response->overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($character[0]) : "");
   $response->deck = new stdClass();
@@ -72,9 +72,10 @@ if ($handler) {
   $response->deck->offhand = [];
   $response->deck->quiver = [];
   $response->deck->hands = [];
-  for ($i = 1; $i < count($character); ++$i) {
+  $response->deck->demiHero = [];//TODO: Move from cards to here
+  for($i = 1; $i < count($character); ++$i) {
     $subtype = CardSubtype($character[$i]);
-    switch ($subtype) {
+    switch($subtype) {
       case "Head":
         array_push($response->deck->head, $character[$i]);
         break;

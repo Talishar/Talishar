@@ -51,26 +51,27 @@ if ($authKey != $targetAuth) {
 
 $submission = json_decode($submissionString);
 $character = $submission->hero;
-if (!isset($submission->hands)) $hands = "";
+if(!isset($submission->hands)) $hands = "";
 else $hands = implode(" ", $submission->hands);
-if ($hands != "") $character .= " " . $hands;
-if (isset($submission->quiver) && $submission->quiver != "") $character .= " " . $submission->quiver;
-if (isset($submission->head) && $submission->head != "") $character .= " " . $submission->head;
-if (isset($submission->chest) && $submission->chest != "") $character .= " " . $submission->chest;
-if (isset($submission->arms) && $submission->arms != "") $character .= " " . $submission->arms;
-if (isset($submission->legs) && $submission->legs != "") $character .= " " . $submission->legs;
+if($hands != "") $character .= " " . $hands;
+if(isset($submission->quiver) && $submission->quiver != "") $character .= " " . $submission->quiver;
+if(isset($submission->head) && $submission->head != "") $character .= " " . $submission->head;
+if(isset($submission->chest) && $submission->chest != "") $character .= " " . $submission->chest;
+if(isset($submission->arms) && $submission->arms != "") $character .= " " . $submission->arms;
+if(isset($submission->legs) && $submission->legs != "") $character .= " " . $submission->legs;
 $deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
+//TODO: parse inventory
 
 
 $playerDeck = $submission->deck;
 $deckCount = count($playerDeck);
-if ($deckCount < 60 && ($format == "cc" || $format == "compcc")) {
+if($deckCount < 60 && ($format == "cc" || $format == "compcc")) {
   $response->status = "FAIL";
   $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is below the minimum.";
   echo json_encode($response);
   exit;
 }
-if ($deckCount < 40 && ($format == "blitz" || $format == "compblitz" || $format == "commoner")) {
+if($deckCount < 40 && ($format == "blitz" || $format == "compblitz" || $format == "commoner")) {
   $response->status = "FAIL";
   $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is below the minimum.";
   echo json_encode($response);
@@ -84,10 +85,10 @@ fwrite($deckFile, $character . "\r\n");
 fwrite($deckFile, $deck);
 fclose($deckFile);
 
-if ($playerID == 1) $p1SideboardSubmitted = "1";
-else if ($playerID == 2) $p2SideboardSubmitted = "1";
+if($playerID == 1) $p1SideboardSubmitted = "1";
+else if($playerID == 2) $p2SideboardSubmitted = "1";
 
-if ($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
+if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   $gameStatus = $MGS_ReadyToStart;
 
   //First initialize the initial state of the game
