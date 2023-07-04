@@ -647,6 +647,12 @@ function CombatChainClosedEffects()
           if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numRunechant;
           if($numRunechant > 0) PlayAura("ARC112", $mainPlayer, $numRunechant);
           break;
+        case "DTD143": case "DTD144": case "DTD145":
+          $numLife = 0;
+          if(GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numLife;
+          if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numLife;
+          if($numLife > 0) GainHealth($numLife, $mainPlayer);
+          break;
         default: break;
       }
     }
