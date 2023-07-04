@@ -256,12 +256,12 @@ function SpecificCardLogic($player, $card, $lastResult)
       }
       return $lastResult;
     case "KRAKENAETHERVEIN":
-      if($lastResult > 0) {
+      if(intval($lastResult) > 0) {
         for ($i = 0; $i < $lastResult; ++$i) Draw($player);
       }
       return $lastResult;
     case "SCEPTEROFPAIN":
-      if($lastResult > 0) {
+      if(intval($lastResult) > 0) {
         for ($i = 0; $i < $lastResult; ++$i) PlayAura("ARC112", $player);
       }
       return $lastResult;

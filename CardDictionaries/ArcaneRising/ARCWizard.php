@@ -248,7 +248,7 @@
     global $CS_ArcaneTargetsSelected;
     $otherPlayer = ($player == 1 ? 2 : 1);
     if($target == 4) return "MYCHAR-0";
-    if($target != 3) $rv = "THEIRCHAR-0";
+    if($target != 4) $rv = "THEIRCHAR-0";
     else $rv = "";
     if(($target == 0 && !ShouldAutotargetOpponent($player)) || $target == 2) $rv .= ",MYCHAR-0";
     if($target == 2) {
