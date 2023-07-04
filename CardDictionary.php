@@ -288,11 +288,12 @@ function PitchValue($cardID)
 
 function BlockValue($cardID)
 {
-  global $defPlayer;
+  global $defPlayer, $CS_Num6PowBan;
   if(!$cardID) return "";
   $set = CardSet($cardID);
   if($cardID == "MON191") return SearchPitchForNumCosts($defPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Block");
+  else if($cardID == "DTD107") return GetClassState($defPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400 || ($set != "MON" && $set != "DYN")) return GeneratedBlockValue($cardID);
@@ -310,7 +311,7 @@ function BlockValue($cardID)
 
 function AttackValue($cardID)
 {
-  global $combatChainState, $CCS_NumBoosted, $mainPlayer, $currentPlayer;
+  global $combatChainState, $CCS_NumBoosted, $mainPlayer, $currentPlayer, $CS_Num6PowBan;
   if(!$cardID) return "";
   $set = CardSet($cardID);
   $class = CardClass($cardID);
@@ -324,6 +325,7 @@ function AttackValue($cardID)
   else if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Attack");
   else if($cardID == "DYN216") return CountAura("MON104", $currentPlayer);
+  else if($cardID == "DTD107") return GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400 || ($set != "MON" && $set != "DYN")) return GeneratedAttackValue($cardID);
@@ -1185,7 +1187,7 @@ function HasBloodDebt($cardID)
     case "MON178": case "MON179": case "MON180": case "MON181": case "MON182": case "MON183": case "MON184":
     case "MON185": case "MON187": case "MON191": case "MON192": case "MON194": case "MON200": case "MON201":
     case "MON202": case "MON203": case "MON204": case "MON205": case "MON209": case "MON210": case "MON211":
-    case "DTD105": case "DTD108": case "DTD109":
+    case "DTD105": case "DTD107": case "DTD108": case "DTD109":
     case "DTD112": case "DTD113": case "DTD114":
     case "DTD115": case "DTD116": case "DTD117":
     case "DTD121": case "DTD122": case "DTD123":
