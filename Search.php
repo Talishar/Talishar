@@ -138,7 +138,7 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
 
 function isPriorityStep($cardID)
 {
-  switch ($cardID) {
+  switch($cardID) {
     case "ENDTURN": case "RESUMETURN": case "PHANTASM": case "FINALIZECHAINLINK": case "DEFENDSTEP": case "ENDSTEP":
       return true;
     default: return false;
@@ -149,9 +149,9 @@ function SearchHandForCard($player, $card)
 {
   $hand = &GetHand($player);
   $indices = "";
-  for ($i = 0; $i < count($hand); $i += HandPieces()) {
-    if ($hand[$i] == $card) {
-      if ($indices != "") $indices .= ",";
+  for($i = 0; $i < count($hand); $i += HandPieces()) {
+    if($hand[$i] == $card) {
+      if($indices != "") $indices .= ",";
       $indices .= $i;
     }
   }
@@ -162,10 +162,10 @@ function SearchDeckForCard($player, $card1, $card2 = "", $card3 = "")
 {
   $deck = &GetDeck($player);
   $cardList = "";
-  for ($i = 0; $i < count($deck); $i += DeckPieces()) {
+  for($i = 0; $i < count($deck); $i += DeckPieces()) {
     $id = $deck[$i];
-    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
-      if ($cardList != "") $cardList = $cardList . ",";
+    if(($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
+      if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
   }
@@ -176,8 +176,8 @@ function SearchDeckByName($player, $name)
 {
   $deck = &GetDeck($player);
   $cardList = "";
-  for ($i = 0; $i < count($deck); $i += DeckPieces()) {
-    if (CardName($deck[$i]) == $name) {
+  for($i = 0; $i < count($deck); $i += DeckPieces()) {
+    if(CardName($deck[$i]) == $name) {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
@@ -189,9 +189,9 @@ function SearchDiscardByName($player, $name)
 {
   $discard = &GetDiscard($player);
   $cardList = "";
-  for ($i = 0; $i < count($discard); $i += DeckPieces()) {
-    if (CardName($discard[$i]) == $name) {
-      if ($cardList != "") $cardList = $cardList . ",";
+  for($i = 0; $i < count($discard); $i += DeckPieces()) {
+    if(CardName($discard[$i]) == $name) {
+      if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
   }
@@ -202,10 +202,10 @@ function SearchDiscardForCard($player, $card1, $card2 = "", $card3 = "")
 {
   $discard = &GetDiscard($player);
   $cardList = "";
-  for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
+  for($i = 0; $i < count($discard); $i += DiscardPieces()) {
     $id = $discard[$i];
-    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
-      if ($cardList != "") $cardList = $cardList . ",";
+    if(($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
+      if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
   }
@@ -216,10 +216,10 @@ function SearchAlliesForCard($player, $card1, $card2 = "", $card3 = "")
 {
   $allies = &GetAllies($player);
   $cardList = "";
-  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
+  for($i = 0; $i < count($allies); $i += AllyPieces()) {
     $id = $allies[$i];
-    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
-      if ($cardList != "") $cardList = $cardList . ",";
+    if(($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
+      if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
   }
@@ -230,10 +230,10 @@ function SearchAlliesActive($player, $card1, $card2 = "", $card3 = "")
 {
   $allies = &GetAllies($player);
   $cardList = "";
-  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
+  for($i = 0; $i < count($allies); $i += AllyPieces()) {
     $id = $allies[$i];
-    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
-      if ($cardList != "") $cardList = $cardList . ",";
+    if(($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
+      if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
   }
@@ -244,9 +244,9 @@ function SearchPermanentsForCard($player, $card)
 {
   $permanents = &GetPermanents($player);
   $indices = "";
-  for ($i = 0; $i < count($permanents); $i += PermanentPieces()) {
-    if ($permanents[$i] == $card) {
-      if ($indices != "") $indices .= ",";
+  for($i = 0; $i < count($permanents); $i += PermanentPieces()) {
+    if($permanents[$i] == $card) {
+      if($indices != "") $indices .= ",";
       $indices .= $i;
     }
   }
@@ -256,9 +256,9 @@ function SearchPermanentsForCard($player, $card)
 function SearchEquipNegCounter(&$character)
 {
   $equipList = "";
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if (CardType($character[$i]) == "E" && $character[$i + 4] < 0 && $character[$i + 1] != 0) {
-      if ($equipList != "") $equipList = $equipList . ",";
+  for($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if(CardType($character[$i]) == "E" && $character[$i + 4] < 0 && $character[$i + 1] != 0) {
+      if($equipList != "") $equipList = $equipList . ",";
       $equipList = $equipList . $i;
     }
   }
@@ -268,15 +268,15 @@ function SearchEquipNegCounter(&$character)
 function SearchCharacterActive($player, $cardID, $checkGem=false)
 {
   $index = FindCharacterIndex($player, $cardID);
-  if ($index == -1) return false;
+  if($index == -1) return false;
   return IsCharacterAbilityActive($player, $index, $checkGem);
 }
 
 function SearchCharacterForCard($player, $cardID)
 {
   $character = &GetPlayerCharacter($player);
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i] == $cardID) return true;
+  for($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if($character[$i] == $cardID) return true;
   }
   return false;
 }
@@ -284,8 +284,8 @@ function SearchCharacterForCard($player, $cardID)
 function SearchCharacterAliveSubtype($player, $subtype)
 {
   $character = &GetPlayerCharacter($player);
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i+1] != 0 && CardSubType($character[$i]) == $subtype) return true;
+  for($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if($character[$i+1] != 0 && CardSubType($character[$i]) == $subtype) return true;
   }
   return false;
 }
@@ -293,25 +293,25 @@ function SearchCharacterAliveSubtype($player, $subtype)
 function FindCharacterIndex($player, $cardID)
 {
   $character = &GetPlayerCharacter($player);
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i] == $cardID) return $i;
+  for($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if($character[$i] == $cardID) return $i;
   }
   return -1;
 }
 
 function CombineSearches($search1, $search2)
 {
-  if ($search2 == "") return $search1;
-  else if ($search1 == "") return $search2;
+  if($search2 == "") return $search1;
+  else if($search1 == "") return $search2;
   return $search1 . "," . $search2;
 }
 
 function SearchRemoveDuplicates($search)
 {
   $indices = explode(",", $search);
-  for ($i = count($indices) - 1; $i >= 0; --$i) {
-    for ($j = $i - 1; $j >= 0; --$j) {
-      if ($indices[$j] == $indices[$i]) unset($indices[$i]);
+  for($i = count($indices) - 1; $i >= 0; --$i) {
+    for($j = $i - 1; $j >= 0; --$j) {
+      if($indices[$j] == $indices[$i]) unset($indices[$i]);
     }
   }
   return implode(",", array_values($indices));

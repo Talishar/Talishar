@@ -1175,7 +1175,7 @@ function ComboActive($cardID = "")
 function HasBloodDebt($cardID)
 {
   global $Card_VantomR, $Card_VantomY, $Card_VantomB;
-  switch ($cardID) {
+  switch($cardID) {
     case "MON123"; case "MON124"; case "MON125"; case "MON126": case "MON127": case "MON128"; case "MON129":
     case "MON130": case "MON131"; case "MON135": case "MON136": case "MON137"; case "MON138": case "MON139":
     case "MON140"; case "MON141": case "MON142": case "MON143"; case "MON144": case "MON145": case "MON146";
@@ -1185,14 +1185,14 @@ function HasBloodDebt($cardID)
     case "MON178": case "MON179": case "MON180": case "MON181": case "MON182": case "MON183": case "MON184":
     case "MON185": case "MON187": case "MON191": case "MON192": case "MON194": case "MON200": case "MON201":
     case "MON202": case "MON203": case "MON204": case "MON205": case "MON209": case "MON210": case "MON211":
-    case "DTD108":
+    case "DTD105": case "DTD108":
     case "DTD112": case "DTD113": case "DTD114":
     case "DTD115": case "DTD116": case "DTD117":
     case "DTD121": case "DTD122": case "DTD123":
     case "DTD124": case "DTD125": case "DTD126":
     case "DTD127": case "DTD128": case "DTD129":
     case "DTD130": case "DTD131": case "DTD132":
-    case "DTD137": case "DTD138": case "DTD139": case "DTD140":
+    case "DTD137": case "DTD138": case "DTD139": case "DTD140": case "DTD141":
     case "DTD143": case "DTD144": case "DTD145":
     case "DTD146": case "DTD147": case "DTD148":
     case "DTD152": case "DTD153": case "DTD154":

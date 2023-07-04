@@ -629,6 +629,13 @@ function CombatChainClosedEffects()
       if($chainLinks[$i][$j+1] != $mainPlayer) continue;
       switch($chainLinks[$i][$j])
       {
+        case "DTD105":
+          $index = FindCharacterIndex($mainPlayer, "DTD105");
+          if($index > -1 && SearchCurrentTurnEffects("DTD105", $mainPlayer, true)) {
+            BanishCardForPlayer("DTD105", $mainPlayer, "CC");
+            DestroyCharacter($mainPlayer, $index, true);
+          }
+          break;
         case "DTD137":
           if(GetClassState($mainPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($mainPlayer, "MYHAND", "ARS,-");
           if(GetClassState($defPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($defPlayer, "MYHAND", "ARS,-");

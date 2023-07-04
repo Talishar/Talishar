@@ -1676,7 +1676,7 @@ function UndestroyCharacter($player, $index)
   $char[$index+4] = 0;
 }
 
-function DestroyCharacter($player, $index)
+function DestroyCharacter($player, $index, $skipDestroy=false)
 {
   $char = &GetPlayerCharacter($player);
   $char[$index+1] = 0;
@@ -1684,8 +1684,11 @@ function DestroyCharacter($player, $index)
   $cardID = $char[$index];
   if($char[$index+6] == 1) RemoveCombatChain(GetCombatChainIndex($cardID, $player));
   $char[$index+6] = 0;
-  AddGraveyard($cardID, $player, "CHAR");
-  CharacterDestroyEffect($cardID, $player);
+  if(!$skipDestroy)
+  {
+    AddGraveyard($cardID, $player, "CHAR");
+    CharacterDestroyEffect($cardID, $player);
+  }
   return $cardID;
 }
 

@@ -8,6 +8,7 @@ function DTDAbilityCost($cardID)
     case "DTD046": return 2;
     case "DTD060": case "DTD061": case "DTD062": return 1;
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return 0;
+    case "DTD105": return 2;
     case "DTD135": return 0;
     case "DTD193": return 0;
     case "DTD199": return 1;
@@ -28,6 +29,7 @@ function DTDAbilityType($cardID, $index = -1)
     case "DTD046": return "AA";
     case "DTD060": case "DTD061": case "DTD062": return "AR";
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return "I";
+    case "DTD105": return "AA";
     case "DTD135": return "AA";
     case "DTD193": return "AA";
     case "DTD199": return "AA";
@@ -221,7 +223,10 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD091": case "DTD092": case "DTD093":
       if(SearchPitchForColor($currentPlayer, 2) > 0) GiveAttackGoAgain();
       return "";
-    case "DTD0100": case "DTD101": case "DTD102":
+    case "DTD100": case "DTD101": case "DTD102":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "DTD105":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD108":
