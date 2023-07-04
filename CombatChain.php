@@ -641,6 +641,12 @@ function CombatChainClosedEffects()
           if(GetClassState($mainPlayer, $CS_LifeLost) > 0) { $deck = new Deck($mainPlayer); $deck->BanishTop(); }
           if(GetClassState($defPlayer, $CS_LifeLost) > 0) { $deck = new Deck($defPlayer); $deck->BanishTop(); }
           break;
+        case "DTD146": case "DTD147": case "DTD148":
+          $numRunechant = 0;
+          if(GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numRunechant;
+          if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numRunechant;
+          if($numRunechant > 0) PlayAura("ARC112", $mainPlayer, $numRunechant);
+          break;
         default: break;
       }
     }
