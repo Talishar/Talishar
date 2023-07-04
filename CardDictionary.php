@@ -1192,6 +1192,7 @@ function HasBloodDebt($cardID)
     case "DTD137": case "DTD138": case "DTD139": case "DTD140":
     case "DTD143": case "DTD144": case "DTD145":
     case "DTD146": case "DTD147": case "DTD148":
+    case "DTD152": case "DTD153": case "DTD154":
     case "DTD158": case "DTD159": case "DTD160":
     case "DTD172": case "DTD173": case "DTD174":
     case "DTD175": case "DTD176": case "DTD177":
@@ -1210,6 +1211,7 @@ function HasRunegate($cardID)
     case "DTD137": case "DTD138": case "DTD139":
     case "DTD143": case "DTD144": case "DTD145":
     case "DTD146": case "DTD147": case "DTD148":
+    case "DTD152": case "DTD153": case "DTD154":
     case "DTD158": case "DTD159": case "DTD160":
     case $Card_VantomR: case $Card_VantomY: case $Card_VantomB:
       return true;

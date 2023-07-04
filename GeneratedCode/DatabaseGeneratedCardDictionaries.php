@@ -375,6 +375,12 @@ case "0":
 return true;
 case "1":
 return true;
+case "2":
+return true;
+case "3":
+return true;
+case "4":
+return true;
 default: return false;
 }
 case "9":
