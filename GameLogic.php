@@ -150,6 +150,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PlayAbility($lastResult, "-", 0);
       }
       return $lastResult;
+    case "PLAYABILITY":
+      PlayAbility($lastResult, "-", 0);
+      return $lastResult;
     case "DRAW":
       return Draw($player);
     case "MULTIBANISH":
