@@ -1176,7 +1176,6 @@ function ComboActive($cardID = "")
 
 function HasBloodDebt($cardID)
 {
-  global $Card_VantomR, $Card_VantomY, $Card_VantomB;
   switch($cardID) {
     case "MON123"; case "MON124"; case "MON125"; case "MON126": case "MON127": case "MON128"; case "MON129":
     case "MON130": case "MON131"; case "MON135": case "MON136": case "MON137"; case "MON138": case "MON139":
@@ -1198,13 +1197,13 @@ function HasBloodDebt($cardID)
     case "DTD143": case "DTD144": case "DTD145":
     case "DTD146": case "DTD147": case "DTD148":
     case "DTD152": case "DTD153": case "DTD154":
+    case "DTD155": case "DTD156": case "DTD157":
     case "DTD158": case "DTD159": case "DTD160":
     case "DTD161": case "DTD162": case "DTD163":
     case "DTD172": case "DTD173": case "DTD174":
     case "DTD175": case "DTD176": case "DTD177":
     case "DTD181": case "DTD182": case "DTD183":
     case "DTD184": case "DTD185": case "DTD186":
-    case $Card_VantomR: case $Card_VantomY: case $Card_VantomB:
       return true;
     default: return false;
   }
@@ -1212,15 +1211,14 @@ function HasBloodDebt($cardID)
 
 function HasRunegate($cardID)
 {
-  global $Card_VantomR, $Card_VantomY, $Card_VantomB;
   switch($cardID)
   {
     case "DTD137": case "DTD138": case "DTD139":
     case "DTD143": case "DTD144": case "DTD145":
     case "DTD146": case "DTD147": case "DTD148":
     case "DTD152": case "DTD153": case "DTD154":
+    case "DTD155": case "DTD156": case "DTD157":
     case "DTD158": case "DTD159": case "DTD160":
-    case $Card_VantomR: case $Card_VantomY: case $Card_VantomB:
       return true;
     default: return false;
   }
@@ -1231,7 +1229,7 @@ function PlayableFromBanish($cardID, $mod="")
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
   $mod = explode("-", $mod)[0];
   if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
-  if(SearchAuras("ARC112", $currentPlayer) > 0 && HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer)) >= CardCost($cardID)) return true;
+  if(HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer, false)) >= CardCost($cardID)) return true;
   switch($cardID) {
     case "MON123": return GetClassState($currentPlayer, $CS_Num6PowBan) > 0;
     case "MON156": case "MON158": return true;

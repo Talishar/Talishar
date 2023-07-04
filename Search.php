@@ -520,8 +520,9 @@ function SearchAuras($cardID, $player)
   return false;
 }
 
-function SearchAurasForCard($cardID, $player)
+function SearchAurasForCard($cardID, $player, $selfReferential=true)
 {
+  if(!$selfReferential && SearchCurrentTurnEffects("OUT183", $player)) return "";
   $auras = &GetAuras($player);
   $indices = "";
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
