@@ -315,6 +315,9 @@ function DTDHitEffect($cardID)
     case "DTD193":
       if(IsHeroAttackTarget()) MZMoveCard($mainPlayer, "THEIRSOUL", "THEIRBANISH,SOUL,-");
       break;
+    case "DTD226":
+      WriteLog("This is a partially manual card. Name the card in chat and enforce the restriction manually.");
+      break;
     default: break;
   }
 }
