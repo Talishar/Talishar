@@ -407,6 +407,8 @@ case "2":
 switch($cardID[4]) {
 case "1":
 switch($cardID[5]) {
+case "2":
+return true;
 case "3":
 return true;
 case "9":

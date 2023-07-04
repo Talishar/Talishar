@@ -472,6 +472,9 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "DTD004":
           if(CardType($cardID) == "C") { $costModifier -= 2; $remove = true; }
           break;
+        case "DTD212":
+          if(CardType($cardID) == "AA" && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) { $costModifier -= CountAura("ARC112", $currentPlayer); $remove = true; }
+          break;
         case "ROGUE803":
           if (IsStaticType(CardType($cardID), $from, $cardID)) { $costModifier -= 1; }
           break;
