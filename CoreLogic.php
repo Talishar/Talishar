@@ -483,7 +483,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         }
         break;
       case $Card_Vynnset: case "DTD133":
-        if(CardTalent($cardID) == "SHADOW")
+        if(CardType($cardID) == "A" && CardTalent($cardID) == "SHADOW")
         {
           AddDecisionQueue("YESNO", $currentPlayer, "if you want to pay 1 life for Vynnset");
           AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);

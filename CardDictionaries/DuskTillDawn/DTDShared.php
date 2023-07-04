@@ -303,7 +303,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD210":
-      DealArcane(1, 2, "ABILITY", $cardID);
+      DealArcane(1, 3, "ABILITY", $cardID);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SCEPTEROFPAIN");
       return "";
     case "DTD212":
