@@ -605,7 +605,7 @@ function AuraPlayAbilities($attackID, $from="")
     switch($auras[$i]) {
       case "WTR225":
         if($cardType == "AA" || ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA")) {
-          WriteLog(CardLink($auras[$i], $auras[$i]) . " grants go again");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack go again");
           GiveAttackGoAgain();
           $remove = 1;
         }
@@ -635,6 +635,14 @@ function AuraPlayAbilities($attackID, $from="")
       case "DTD232":
         if($cardType == "AA" || ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA")) {
           AddCurrentTurnEffect("DTD232", $currentPlayer);
+          $remove = 1;
+        }
+        break;
+      case "DTD233":
+        if($cardType == "A") {
+          global $CS_NextNAACardGoAgain;
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the card go again");
+          SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);
           $remove = 1;
         }
         break;
