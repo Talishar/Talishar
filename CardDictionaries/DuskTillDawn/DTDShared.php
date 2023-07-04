@@ -13,6 +13,7 @@ function DTDAbilityCost($cardID)
     case "DTD199": return 1;
     case "DTD205": return 3;
     case "DTD207": return 1;
+    case "DTD210": return 2;
     case "DTD405": case "DTD406": case "DTD407": case "DTD408"://Angels
     case "DTD409": case "DTD410": case "DTD411": case "DTD412": return 2;
     default: return 0;
@@ -32,6 +33,7 @@ function DTDAbilityType($cardID, $index = -1)
     case "DTD199": return "AA";
     case "DTD205": return "AA";
     case "DTD207": return "A";
+    case "DTD210": return "A";
     case "DTD405": case "DTD406": case "DTD407": case "DTD408"://Angels
     case "DTD409": case "DTD410": case "DTD411": case "DTD412": return "AA";
     default: return "";
@@ -266,6 +268,10 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DTD207"://Ironsong Versus
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "DTD210":
+      DealArcane(1, 2, "ABILITY", $cardID);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SCEPTEROFPAIN");
       return "";
     case "DTD213":
       AddCurrentTurnEffect($cardID, $currentPlayer);
