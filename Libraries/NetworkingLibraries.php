@@ -1872,6 +1872,18 @@ function PayAdditionalCosts($cardID, $from)
       $index = count($banish) - BanishPieces();
       $banish[$index+1] = "NT";
       break;
+    case "DTD111":
+      $hand = &GetHand($currentPlayer);
+      $banishedCards = "";
+      for($i = 0; $i < count($hand); ++$i)
+      {
+        if($banishedCards != "") $banishedCards .= ",";
+        $banishedCards .= $hand[$i];
+        BanishCardForPlayer($hand[$i], $currentPlayer, "HAND", "-", $currentPlayer);
+      }
+      $hand = [];
+      SetClassState($currentPlayer, $CS_AdditionalCosts, $banishedCards);
+      break;
     default:
       break;
   }

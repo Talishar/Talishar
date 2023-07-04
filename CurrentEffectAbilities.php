@@ -965,6 +965,7 @@ function IsCombatEffectPersistent($cardID)
     case "OUT052": case "OUT140": case "OUT141": case "OUT144": case "OUT188_1": return true;
     case "DTD051": return true;//Beckoning Light
     case "DTD052": return true;//Spirit of War
+    case "DTD111": return true;
     case "DTD198": return true;//Call Down the Lightning
     case "DTD206": return true;
     case "DTD410": return true;

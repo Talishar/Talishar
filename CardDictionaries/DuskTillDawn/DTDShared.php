@@ -77,6 +77,7 @@ function DTDEffectAttackModifier($cardID)
     case "DTD073": return 2;
     case "DTD074": return 1;
     case "DTD082": case "DTD083": case "DTD084": return 1;
+    case "DTD111": return $parameter;
     case "DTD118": return 5;
     case "DTD119": return 4;
     case "DTD120": return 3;
@@ -117,6 +118,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD072": case "DTD073": case "DTD074": return $combatChainState[$CCS_AttackNumCharged] > 0;//Charge of the Light Brigade
     case "DTD082": case "DTD083": case "DTD084": return true;
     case "DTD094": case "DTD095": case "DTD096": return true;
+    case "DTD111": return ClassContains($attackID, "BRUTE", $mainPlayer) || TalentContains($attackID, "SHADOW", $mainPlayer);
     case "DTD118": case "DTD119": case "DTD120": return ClassContains($attackID, "BRUTE", $mainPlayer) || TalentContains($attackID, "SHADOW", $mainPlayer);
     case "DTD127": case "DTD128": case "DTD129": return true;
     case "DTD130": case "DTD131": case "DTD132": return true;
@@ -235,6 +237,16 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $numBD = SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true));
       $damage = 13 - $numBD;
       DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID);
+      return "";
+    case "DTD111":
+      $cards = explode(",", $additionalCosts);
+      $num6Pow = 0;
+      for($i=0; $i<count($cards); ++$i)
+      {
+        if(HasBloodDebt($cards[$i])) Draw($currentPlayer);
+        if(AttackValue($cards[$i]) >= 6) ++$num6Pow;
+      }
+      if($num6Pow > 0) AddCurrentTurnEffect("DTD111," . $num6Pow, $currentPlayer);
       return "";
     case "DTD112": case "DTD113": case "DTD114":
       if(AttackValue($additionalCosts) >= 6) GiveAttackGoAgain();
