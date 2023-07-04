@@ -127,7 +127,7 @@ function CharacterStartTurnAbility($index)
   $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $char = new Character($mainPlayer, $index);
   if($char->status == 0 && !CharacterTriggerInGraveyard($char->cardID)) return;
-  if($char->status == 1) return;
+  if($char->status == 1 || $char->status == 3) return;
   switch($char->cardID) {
     case "WTR150":
       if($char->numCounters < 3) ++$char->numCounters;
