@@ -631,7 +631,6 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
   $otherPlayer = $player == 1 ? 1 : 2;
   for($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces())
   {
-    if($char[$i + 1] != 2) continue;
     switch($char[$i]) {
       case "DTD047":
         if($damage > 0 && $preventable && $char[$i+5] > 0)
