@@ -605,6 +605,10 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       --$character[$cardIndex+5];
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1; //By default, if it's used, set it to used
       break;
+    case "DTD136":
+      BanishCardForPlayer("DTD136", $currentPlayer, "EQUIP", "NA");
+      DestroyCharacter($currentPlayer, $cardIndex, true);
+      break;
     default:
       --$character[$cardIndex+5];
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1; //By default, if it's used, set it to used

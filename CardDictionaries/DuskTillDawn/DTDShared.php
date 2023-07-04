@@ -10,6 +10,7 @@ function DTDAbilityCost($cardID)
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return 0;
     case "DTD105": return 2;
     case "DTD135": return 0;
+    case "DTD136": return 1;
     case "DTD193": return 0;
     case "DTD199": return 1;
     case "DTD205": return 3;
@@ -31,6 +32,7 @@ function DTDAbilityType($cardID, $index = -1)
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return "I";
     case "DTD105": return "AA";
     case "DTD135": return "AA";
+    case "DTD136": return "I";
     case "DTD193": return "AA";
     case "DTD199": return "AA";
     case "DTD205": return "AA";
@@ -249,6 +251,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if(AttackValue($additionalCosts) >= 6) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
+      return "";
+    case "DTD136":
+      PlayAura("DTD233", $currentPlayer);
       return "";
     case "DTD140":
       PlayAura("ARC112", $currentPlayer);
