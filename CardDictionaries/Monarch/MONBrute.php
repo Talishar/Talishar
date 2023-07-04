@@ -10,7 +10,7 @@
         $numBD = SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true));
         $damage = 6 - $numBD;
         DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID);
-        return "Does $damage damage to yourself";
+        return "";
       case "MON125":
         Draw($currentPlayer);
         $card = DiscardRandom();

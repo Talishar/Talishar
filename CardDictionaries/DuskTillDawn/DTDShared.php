@@ -224,6 +224,11 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD0100": case "DTD101": case "DTD102":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "DTD108":
+      $numBD = SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true));
+      $damage = 13 - $numBD;
+      DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID);
+      return "";
     case "DTD112": case "DTD113": case "DTD114":
       if(AttackValue($additionalCosts) >= 6) GiveAttackGoAgain();
       return "";
