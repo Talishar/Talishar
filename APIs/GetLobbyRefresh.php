@@ -69,7 +69,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       WriteLog("Player $otherP has disconnected.", path: "../");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "-1");
-      if($otherP == 2) SetCachePiece($gameName, $otherP + 6, "");
+      if ($otherP == 2) SetCachePiece($gameName, $otherP + 6, "");
       $kickPlayerTwo = true;
     }
   }
@@ -165,6 +165,10 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $matchups = ($playerID == 1 ? $p1Matchups : $p2Matchups);
   $response->myDeckLink = $decklink;
   $response->matchups = $matchups;
+
+  // If both players have enabled chat, is true, else false
+  // TODO: Implement this (also in GetNextTurn3)
+  $response->chatEnabled = true;
 
   echo json_encode($response);
   exit;

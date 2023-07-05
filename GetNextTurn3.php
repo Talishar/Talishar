@@ -199,7 +199,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $response->MyPlaymat = (IsColorblindMode($playerID) ? 0 : GetPlaymat($playerID));
   $response->TheirPlaymat = (IsColorblindMode($playerID) ? 0 : GetPlaymat($otherPlayer));
-  if($response->MyPlaymat == 0) $response->TheirPlaymat = 0;
+  if ($response->MyPlaymat == 0) $response->TheirPlaymat = 0;
 
   //Display active chain link
   $activeChainLink = new stdClass();
@@ -1071,6 +1071,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $response->preventPassPrompt = "Are you sure you want to skip arsenal?";
     }
   }
+
+  // If both players have enabled chat, is true, else false
+  // TODO: Implement this (also in GetNextTurn3)
+  $response->chatEnabled = true;
 
   // encode and send it out
   echo json_encode($response);
