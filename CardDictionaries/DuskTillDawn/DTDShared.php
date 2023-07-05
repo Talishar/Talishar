@@ -157,7 +157,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PlayAura("DYN244", $currentPlayer);
       return "";
     case "DTD007":
-      PlayAura("DYN233", $currentPlayer);
+      PlayAura("MON104", $currentPlayer);
       return "";
     case "DTD008":
       DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);

@@ -1093,6 +1093,12 @@ default: return "AA";
 }
 case "2":
 switch($cardID[5]) {
+case "1":
+return "E";
+case "2":
+return "E";
+case "4":
+return "E";
 case "8":
 return "DR";
 case "0":
@@ -4710,9 +4716,9 @@ return 3;
 case "6":
 return 6;
 case "7":
-return 6;
+return 5;
 case "8":
-return 6;
+return 4;
 default: return 0;
 }
 case "3":
@@ -8579,6 +8585,12 @@ default: return 3;
 }
 case "2":
 switch($cardID[5]) {
+case "1":
+return 2;
+case "2":
+return 2;
+case "4":
+return 2;
 case "8":
 return 2;
 case "0":
@@ -13111,6 +13123,12 @@ case "2":
 switch($cardID[5]) {
 case "6":
 return "Censor";
+case "1":
+return "Crown of Providence";
+case "2":
+return "Frontline Helm";
+case "4":
+return "Frontline Gauntlets";
 case "8":
 return "Hold the Line";
 case "0":
@@ -18921,6 +18939,12 @@ default: return 1;
 }
 case "2":
 switch($cardID[5]) {
+case "1":
+return 0;
+case "2":
+return 0;
+case "4":
+return 0;
 case "8":
 return 3;
 case "0":
@@ -23381,6 +23405,12 @@ case "2":
 switch($cardID[5]) {
 case "6":
 return 1;
+case "1":
+return -1;
+case "2":
+return -1;
+case "4":
+return -1;
 case "0":
 return -1;
 default: return 0;
@@ -27457,6 +27487,18 @@ case "5":
 return "Aura";
 default: return "";
 }
+case "2":
+switch($cardID[5]) {
+case "1":
+return "Head";
+case "2":
+return "Head";
+case "4":
+return "Arms";
+case "0":
+return "Aura";
+default: return "";
+}
 case "1":
 switch($cardID[5]) {
 case "7":
@@ -27469,12 +27511,6 @@ case "4":
 return "Aura";
 case "0":
 return "Scepter";
-default: return "";
-}
-case "2":
-switch($cardID[5]) {
-case "0":
-return "Aura";
 default: return "";
 }
 default: return "";
@@ -30081,6 +30117,12 @@ case "2":
 switch($cardID[5]) {
 case "6":
 return "M";
+case "1":
+return "L";
+case "2":
+return "R";
+case "4":
+return "R";
 case "8":
 return "M";
 default: return "C";
@@ -35897,6 +35939,12 @@ default: return "NONE";
 case "2":
 switch($cardID[5]) {
 case "6":
+return "GENERIC";
+case "1":
+return "GENERIC";
+case "2":
+return "GENERIC";
+case "4":
 return "GENERIC";
 case "8":
 return "GENERIC";
