@@ -27,9 +27,8 @@
     else $authKey = TryGet("authKey", "");
     session_write_close();
 
-    if(($playerID == 1 || $playerID == 2) && $authKey == "")
-    {
-      if(isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+    if (($playerID == 1 || $playerID == 2) && $authKey == "") {
+      if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
     }
 
     //First we need to parse the game state from the file
@@ -77,7 +76,9 @@
       //var cardSize = 96;
 
       function Hotkeys(event) {
-        if (event.keyCode === 32) { if(document.getElementById("passConfirm").innerText == "false" || confirm("Do you want to skip arsenal?")) SubmitInput(99, ""); } //Space = pass
+        if (event.keyCode === 32) {
+          if (document.getElementById("passConfirm").innerText == "false" || confirm("Do you want to skip arsenal?")) SubmitInput(99, "");
+        } //Space = pass
         if (event.keyCode === 117) SubmitInput(10000, ""); //U = undo
         if (event.keyCode === 104) SubmitInput(3, "&cardID=0"); //H = hero ability
         if (event.keyCode === 109) ShowPopup("menuPopup"); //M = open menu
@@ -236,13 +237,44 @@
 
       function CardHasAltArt(cardID) {
         switch (cardID) {
-          case "WTR002": case "WTR150": case "WTR162": case "WTR224":
-          case "MON155": case "MON215": case "MON216": case "MON217": case "MON219": case "MON220":
+          case "WTR002":
+          case "WTR150":
+          case "WTR162":
+          case "WTR224":
+          case "MON155":
+          case "MON215":
+          case "MON216":
+          case "MON217":
+          case "MON219":
+          case "MON220":
           case "ELE146":
-          case "UPR006": case "UPR007": case "UPR008": case "UPR009": case "UPR010": case "UPR011": case "UPR012":
-          case "UPR013": case "UPR014": case "UPR015": case "UPR016": case "UPR017": case "UPR042": case "UPR043":
-          case "UPR169": case "UPR406": case "UPR407": case "UPR408": case "UPR409": case "UPR410": case "UPR411":
-          case "UPR412": case "UPR413": case "UPR414": case "UPR415": case "UPR416": case "UPR417":
+          case "UPR006":
+          case "UPR007":
+          case "UPR008":
+          case "UPR009":
+          case "UPR010":
+          case "UPR011":
+          case "UPR012":
+          case "UPR013":
+          case "UPR014":
+          case "UPR015":
+          case "UPR016":
+          case "UPR017":
+          case "UPR042":
+          case "UPR043":
+          case "UPR169":
+          case "UPR406":
+          case "UPR407":
+          case "UPR408":
+          case "UPR409":
+          case "UPR410":
+          case "UPR411":
+          case "UPR412":
+          case "UPR413":
+          case "UPR414":
+          case "UPR415":
+          case "UPR416":
+          case "UPR417":
           case "DYN234":
             return true;
           default:
@@ -250,8 +282,7 @@
         }
       }
 
-      function TranslationExist(Language, cardID)
-      {
+      function TranslationExist(Language, cardID) {
         switch (Language) {
           case "JP": //Japanese
             switch (cardID) {
@@ -357,7 +388,7 @@
 
           }
           var restriction = cardArr[12];
-          if(typeof restriction != "string") restriction = "";
+          if (typeof restriction != "string") restriction = "";
           restriction = restriction.replace(/_/g, ' ');
           newHTML += Card(cardArr[0], folder, size, cardArr[1], 1, cardArr[2], cardArr[3], cardArr[4], cardArr[5], "", false, cardArr[6], cardArr[7], cardArr[8], cardArr[9], restriction, cardArr[13], cardArr[14], cardArr[15], cardArr[16]);
           newHTML += "</span>";
@@ -384,7 +415,8 @@
             return (cardSize + 105) + "px";
           case "Legs":
             return "95px";
-          case "Off-Hand": case "Quiver":
+          case "Off-Hand":
+          case "Quiver":
             return "calc(50% + " + (cardSize / 2 + 10) + "px)";
         }
       }
@@ -407,7 +439,8 @@
             return (cardSize + 15) + "px";
           case "Legs":
             return "5px";
-          case "Off-Hand": case "Quiver":
+          case "Off-Hand":
+          case "Quiver":
             return (cardSize * 2 + 25) + "px";
         }
       }
@@ -430,7 +463,8 @@
             return (cardSize + 15) + "px";
           case "Legs":
             return (cardSize * 2 + 25) + "px";
-          case "Off-Hand": case "Quiver":
+          case "Off-Hand":
+          case "Quiver":
             return (cardSize * 2 + 25) + "px";
         }
       }
@@ -613,7 +647,7 @@
               document.getElementById("mainDiv").innerHTML = responseArr[1];
               var update = parseInt(responseArr[0]);
               if (update != "NaN") CheckReloadNeeded(update);
-              if(update < _lastUpdate) return;
+              if (update < _lastUpdate) return;
               _lastUpdate = update;
 
               var readyIcon = document.getElementById("iconHolder").innerText;
@@ -634,13 +668,10 @@
               PopulateZone("myChar", cardSize);
               PopulateZone("theirChar", cardSize);
               var sidebarWrapper = document.getElementById("sidebarWrapper");
-              if(sidebarWrapper)
-              {
+              if (sidebarWrapper) {
                 var sidebarWrapperWidth = sidebarWrapper.style.width;
                 var chatbox = document.getElementById("chatbox");
-                if(chatbox) chatbox.style.width = (parseInt(sidebarWrapperWidth)-10) + "px";
-                var chatText = document.getElementById("chatText");
-                if(chatText) chatText.style.width = (parseInt(sidebarWrapperWidth)-100) + "px";
+                if (chatbox) chatbox.style.width = (parseInt(sidebarWrapperWidth) - 10) + "px";
               }
             } else {
               CheckReloadNeeded(lastUpdate);
@@ -675,8 +706,7 @@
         SubmitInput(mode, input);
       }
 
-      function suppressEventPropagation(e)
-      {
+      function suppressEventPropagation(e) {
         e.stopPropagation();
       }
     </script>
@@ -688,12 +718,10 @@
     echo ("<div id='mainDiv' style='position:fixed; z-index:20; left:0px; top:0px; width:100%;height:100%;'></div>");
     echo ("<div id='chatbox' style='z-index:40; position:fixed; bottom:0px; right:18px; width:200px; height: 32px;'>");
     if ($playerID != 3 && !IsChatMuted()) {
-      echo ("<input id='chatText' style='margin-left: 4px; margin-right: 1px; width:110px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
-      echo ("<button style='display:inline; border: 2px solid " . $borderColor . "; width:45px; color: #1a1a1a; border:" . $backgroundColor . "; padding: 0; font: inherit; cursor: pointer; outline: inherit; box-shadow: none;' onclick='SubmitChat()'>Chat</button>");
-      echo ("<button title='Disable Chat' " . ProcessInputLink($playerID, 26, $SET_MuteChat . "-1", fullRefresh:true) . "style='display:inline; border: 2px solid " . $borderColor . "; width:20px; color: #1a1a1a; border:" . $backgroundColor . "; padding: 0; font: inherit; cursor: pointer; outline: inherit; box-shadow: none;'>&#128681;</button>");
-    }
-    else {
-      echo ("<button title='Re-enable Chat' " . ProcessInputLink($playerID, 26, $SET_MuteChat . "-0", fullRefresh:true) . "style='display:inline; border: 2px solid " . $borderColor . "; width:210px; color: #1a1a1a; border:" . $backgroundColor . "; padding: 0; font: inherit; cursor: pointer; outline: inherit; box-shadow: none;'>⌨️ Re-enable Chat</button>");
+      echo ("<input id='chatText' style='background0color: grey; color: black; margin-left: 4px; margin-right: 1px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' disabled value='chat disabled in legacy' autocomplete='off' >");
+      echo ("<button title='Disable Chat' " . ProcessInputLink($playerID, 26, $SET_MuteChat . "-1", fullRefresh: true) . "style='display:inline; border: 2px solid " . $borderColor . "; width:20px; color: #1a1a1a; border:" . $backgroundColor . "; padding: 0; font: inherit; cursor: pointer; outline: inherit; box-shadow: none;'>&#128681;</button>");
+    } else {
+      echo ("<button title='Re-enable Chat' " . ProcessInputLink($playerID, 26, $SET_MuteChat . "-0", fullRefresh: true) . "style='display:inline; border: 2px solid " . $borderColor . "; width:210px; color: #1a1a1a; border:" . $backgroundColor . "; padding: 0; font: inherit; cursor: pointer; outline: inherit; box-shadow: none;'>⌨️ Re-enable Chat</button>");
     }
     echo ("</div>");
     echo ("<input type='hidden' id='gameName' value='" . $gameName . "'>");

@@ -45,7 +45,7 @@ $theirName = ($playerID == 1 ? $p2uid : $p1uid);
 
 if ($gameStatus == $MGS_GameStarted) {
   $authKey = ($playerID == 1 ? $p1Key : $p2Key);
-  if(isset($gameUIPath)) header("Location: " . $gameUIPath . "?gameName=$gameName&playerID=$playerID");
+  if (isset($gameUIPath)) header("Location: " . $gameUIPath . "?gameName=$gameName&playerID=$playerID");
   else header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=$playerID");
   exit;
 }
@@ -306,9 +306,8 @@ $isMobile = IsMobile();
         sort($deck);
         for ($i = 0; $i < count($deck); ++$i) {
           $id = "DECK-" . $count;
-          if(!($roguelikeGameID >= 0)) echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deck[$i], "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
-          else
-          {
+          if (!($roguelikeGameID >= 0)) echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deck[$i], "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+          else {
             echo (Card($deck[$i], "concat", $cardSize, 0, 1, 0, 0, 0, "", $id));
           }
           ++$count;
@@ -347,8 +346,7 @@ $isMobile = IsMobile();
 
     echo ("<div id='chatbox' style='position:absolute; bottom:3%; left:3%; width:97%;'>");
     //echo ("<div id='chatbox' style='position:relative; left:3%; width:97%; margin-top:4px;'>");
-    echo ("<input class='GameLobby_Input' style='width:82%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
-    echo ("<button class='GameLobby_Button' style='display:inline; width:11.5%; margin-left:3px; cursor:pointer;' onclick='SubmitChat()'>Chat</button>");
+    echo ("<input id='chatText' style='background0color: grey; color: black; margin-left: 4px; margin-right: 1px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' name='chatText' disabled value='chat disabled in legacy' autocomplete='off' >");
     echo ("<input type='hidden' id='gameName' value='" . $gameName . "'>");
     echo ("<input type='hidden' id='playerID' value='" . $playerID . "'>");
     echo ("</div>");
@@ -439,7 +437,7 @@ $isMobile = IsMobile();
 
       function GetCharacterCards() {
         var types = ["WEAPONS", "OFFHAND", "QUIVER", "HEAD", "CHEST", "ARMS", "LEGS"];
-        var returnValue = "<?php echo(isset($character) ? $character[0] : ""); ?>";
+        var returnValue = "<?php echo (isset($character) ? $character[0] : ""); ?>";
         for (var i = 0; i < types.length; ++i) {
           var selected = GetSelectedEquipType(types[i]);
           if (selected != "") returnValue += "," + selected;
@@ -472,7 +470,7 @@ $isMobile = IsMobile();
             var imageSrc = document.getElementById("DECK-" + count + "-img").src;
             if (returnValue != "") returnValue += ",";
             var splitArr = imageSrc.split("/");
-            returnValue += splitArr[splitArr.length-1].split(".")[0];
+            returnValue += splitArr[splitArr.length - 1].split(".")[0];
           }
           ++count;
           var overlay = document.getElementById("DECK-" + count + "-ovr");
@@ -528,100 +526,118 @@ $isMobile = IsMobile();
       }
     </script>
 
-  <?php
+    <?php
 
-  function DisplayEquipRow($equip, $equipSB, $name)
-  {
-    $cardSize = 110;
-    $count = 0;
-    if ($equip != "" || count($equipSB) > 0) echo ("<tr><td>");
-    if ($equip != "") {
-      $id = $name . "-" . $count;
-      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
-      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equip, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
-      echo ("</div>");
-      ++$count;
-    }
-    for ($i = 0; $i < count($equipSB); ++$i) {
-      $id = $name . "-" . $count;
-      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
-      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equipSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
-      echo ("</div>");
-      ++$count;
-    }
-
-    if ($equip != "" || count($equipSB) > 0) echo ("</td></tr>");
-  }
-
-  function DisplayWeaponRow($weapon1, $weapon2, $weaponSB, $name)
-  {
-    $cardSize = 110;
-    $count = 0;
-    if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("<tr><td>");
-    if ($weapon1 != "") {
-      $id = $name . "-" . $count;
-      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
-      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon1, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
-      echo ("</div>");
-      ++$count;
-    }
-    if ($weapon2 != "") {
-      if (HasReverseArt($weapon1) && $weapon2 == $weapon1) {
-        $weapon2 = ReverseArt($weapon1);
+    function DisplayEquipRow($equip, $equipSB, $name)
+    {
+      $cardSize = 110;
+      $count = 0;
+      if ($equip != "" || count($equipSB) > 0) echo ("<tr><td>");
+      if ($equip != "") {
+        $id = $name . "-" . $count;
+        echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
+        echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equip, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+        echo ("</div>");
+        ++$count;
       }
-      $id = $name . "-" . $count;
-      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
-      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon2, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
-      echo ("</div>");
-      ++$count;
+      for ($i = 0; $i < count($equipSB); ++$i) {
+        $id = $name . "-" . $count;
+        echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
+        echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equipSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
+        echo ("</div>");
+        ++$count;
+      }
+
+      if ($equip != "" || count($equipSB) > 0) echo ("</td></tr>");
     }
-    for ($i = 0; $i < count($weaponSB); ++$i) {
-      if (isset($weaponSB[$i + 1])) {
-        if (HasReverseArt($weaponSB[$i]) && $weaponSB[$i + 1] == $weaponSB[$i]) {
-          $weaponSB[$i + 1] = ReverseArt($weaponSB[$i]);
+
+    function DisplayWeaponRow($weapon1, $weapon2, $weaponSB, $name)
+    {
+      $cardSize = 110;
+      $count = 0;
+      if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("<tr><td>");
+      if ($weapon1 != "") {
+        $id = $name . "-" . $count;
+        echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
+        echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon1, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+        echo ("</div>");
+        ++$count;
+      }
+      if ($weapon2 != "") {
+        if (HasReverseArt($weapon1) && $weapon2 == $weapon1) {
+          $weapon2 = ReverseArt($weapon1);
         }
+        $id = $name . "-" . $count;
+        echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
+        echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon2, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+        echo ("</div>");
+        ++$count;
       }
-      $id = $name . "-" . $count;
-      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
-      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weaponSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
-      echo ("</div>");
-      ++$count;
+      for ($i = 0; $i < count($weaponSB); ++$i) {
+        if (isset($weaponSB[$i + 1])) {
+          if (HasReverseArt($weaponSB[$i]) && $weaponSB[$i + 1] == $weaponSB[$i]) {
+            $weaponSB[$i + 1] = ReverseArt($weaponSB[$i]);
+          }
+        }
+        $id = $name . "-" . $count;
+        echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
+        echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weaponSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
+        echo ("</div>");
+        ++$count;
+      }
+
+      if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("</td></tr>");
     }
 
-    if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("</td></tr>");
-  }
-
-  function HasReverseArt($cardID)
-  {
-    switch ($cardID) {
-      case "WTR078": return true;
-      case "CRU004": case "CRU051": case "CRU079": return true;
-      case "DYN069": case "DYN115": return true;
-      case "OUT005": case "OUT007": case "OUT009": return true;
-      default:
-        return false;
-        break;
+    function HasReverseArt($cardID)
+    {
+      switch ($cardID) {
+        case "WTR078":
+          return true;
+        case "CRU004":
+        case "CRU051":
+        case "CRU079":
+          return true;
+        case "DYN069":
+        case "DYN115":
+          return true;
+        case "OUT005":
+        case "OUT007":
+        case "OUT009":
+          return true;
+        default:
+          return false;
+          break;
+      }
     }
-  }
 
-  function ReverseArt($cardID)
-  {
-    switch ($cardID) {
-      case "WTR078": return "CRU049";
-      case "CRU004": return "CRU005";
-      case "CRU051": return "CRU052";
-      case "CRU079": return "CRU080";
-      case "DYN069": return "DYN070";
-      case "DYN115": return "DYN116";
-      case "OUT005": return "OUT006";
-      case "OUT007": return "OUT008";
-      case "OUT009": return "OUT010";
-      default:
-        break;
+    function ReverseArt($cardID)
+    {
+      switch ($cardID) {
+        case "WTR078":
+          return "CRU049";
+        case "CRU004":
+          return "CRU005";
+        case "CRU051":
+          return "CRU052";
+        case "CRU079":
+          return "CRU080";
+        case "DYN069":
+          return "DYN070";
+        case "DYN115":
+          return "DYN116";
+        case "OUT005":
+          return "OUT006";
+        case "OUT007":
+          return "OUT008";
+        case "OUT009":
+          return "OUT010";
+        default:
+          break;
+      }
     }
-  }
-  ?>
+    ?>
 
-  <?php
-  include_once 'Disclaimer.php'
-  ?>
+    <?php
+    include_once 'Disclaimer.php'
+    ?>

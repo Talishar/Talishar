@@ -44,28 +44,8 @@ function HideCardDetail() {
 function ChatKey(event) {
   if (event.keyCode === 13) {
     event.preventDefault();
-    SubmitChat();
   }
   event.stopPropagation();
-}
-
-function SubmitChat() {
-  var chatBox = document.getElementById("chatText");
-  if (chatBox.value == "") return;
-  var xmlhttp = new XMLHttpRequest();
-  xmlhttp.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-    }
-  };
-  var ajaxLink =
-    "SubmitChat.php?gameName=" + document.getElementById("gameName").value;
-  ajaxLink +=
-    "&playerID=" + document.getElementById("playerID").value +
-    "&chatText=" + encodeURI(chatBox.value) +
-    "&authKey=" + document.getElementById("authKey").value;
-  xmlhttp.open("GET", ajaxLink, true);
-  xmlhttp.send();
-  chatBox.value = "";
 }
 
 function AddCardToHand() {
