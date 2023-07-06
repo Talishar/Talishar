@@ -100,13 +100,11 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   //Player 1
   $p1DeckHandler = fopen("../Games/" . $gameName . "/p1Deck.txt", "r");
   initializePlayerState($handler, $p1DeckHandler, 1);
-  $p1Inventory = GetArray($p1DeckHandler);
   fclose($p1DeckHandler);
 
   //Player 2
   $p2DeckHandler = fopen("../Games/" . $gameName . "/p2Deck.txt", "r");
   initializePlayerState($handler, $p2DeckHandler, 2);
-  $p2Inventory = GetArray($p2DeckHandler);
   fclose($p2DeckHandler);
 
   fwrite($handler, "\r\n"); //Landmarks

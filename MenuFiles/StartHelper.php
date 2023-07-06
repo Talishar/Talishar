@@ -5,9 +5,12 @@ function initializePlayerState($handler, $deckHandler, $player)
   global $p1IsPatron, $p2IsPatron, $p1IsChallengeActive, $p2IsChallengeActive, $p1id, $p2id;
   global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_PassDRStep, $SET_AutotargetArcane;
   global $SET_ColorblindMode, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_IsPatron;
-  global $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_Language;
+  global $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_Language, $p1Inventory, $p2Inventory;
   $charEquip = GetArray($deckHandler);
   $deckCards = GetArray($deckHandler);
+  $inventory = GetArray($deckHandler);
+  if($player == 1) $p1Inventory = $inventory;
+  else $p2Inventory = $inventory;
   $deckSize = count($deckCards);
   fwrite($handler, "\r\n"); //Hand
 
