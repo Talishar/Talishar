@@ -432,6 +432,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playable = $playerID == $currentPlayer && $myCharacter[$i + 1] > 0 && IsPlayable($myCharacter[$i], $turn[0], "CHAR", $i, $restriction);
     $border = CardBorderColor($myCharacter[$i], "CHAR", $playable);
     $type = CardType($myCharacter[$i]);
+    if($type == "D") $type = "C";
     $sType = CardSubType($myCharacter[$i]);
     if ($type == "W") {
       ++$numWeapons;

@@ -179,6 +179,7 @@
     global $CS_Num6PowBan;
     $character = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($character[0]);
+    if($character[1] == 2 && $characterID == "DTD164") return true;
     if($character[1] == 2 && ($characterID == "MON119" || $characterID == "MON120") && GetClassState($player, $CS_Num6PowBan) > 0) return true;
     return false;
   }

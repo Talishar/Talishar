@@ -9,7 +9,7 @@ function PutItemIntoPlay($item, $steamCounterModifier = 0)
 function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1)
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
-  if(!DelimStringContains(CardSubType($item), "Item")) return;
+  if(!DelimStringContains(CardSubType($item), "Item") && $item != "DTD164") return;
   $items = &GetItems($player);
   $myHoldState = ItemDefaultHoldTriggerState($item);
   if($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;

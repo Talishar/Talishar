@@ -101,6 +101,16 @@ if(SearchCharacterForCard(2, "DYN026")) {
   $p2Char[$index + 4] = -2;
 }
 
+//Levia Redeemed
+for($i=0; $i<count($p1Inventory); $i+=InventoryPieces())
+{
+  if($p1Inventory[$i] == "DTD164") PutItemIntoPlayForPlayer("DTD164", 1);
+}
+for($i=0; $i<count($p2Inventory); $i+=InventoryPieces())
+{
+  if($p2Inventory[$i] == "DTD164") PutItemIntoPlayForPlayer("DTD164", 2);
+}
+
   //Quickshot Apprentice
   if ($p2Char[0] == "ROGUE016") {
     $p2Hand = &GetHand(2);
