@@ -28,9 +28,16 @@ if (!IsGameNameValid($gameName)) {
 }
 $playerID = $_GET["playerID"];
 $authKey = $_GET["authKey"];
+$mode = $_GET["mode"];
+
+if($mode == 100015)
+{
+  if($playerID == 1 && intval(GetCachePiece($gameName, 15)) == 1) exit;
+  else if($playerID == 2 && intval(GetCachePiece($gameName, 16)) == 1) exit;
+  else if($playerID != 1 && $playerID != 2) exit;
+}
 
 //We should also have some information on the type of command
-$mode = $_GET["mode"];
 $buttonInput = isset($_GET["buttonInput"]) ? $_GET["buttonInput"] : ""; //The player that is the target of the command - e.g. for changing health total
 $cardID = isset($_GET["cardID"]) ? $_GET["cardID"] : "";
 $chkCount = isset($_GET["chkCount"]) ? $_GET["chkCount"] : 0;
