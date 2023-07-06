@@ -98,7 +98,7 @@ function AllyDestroyedAbility($player, $index)
   global $mainPlayer;
   $allies = &GetAllies($player);
   $cardID = $allies[$index];
-  if(HasWard($cardID) && CardType($cardID) != "T" && SearchCharacterActive($player, "DYN213")) {
+  if(HasWard($cardID, $player) && CardType($cardID) != "T" && SearchCharacterActive($player, "DYN213")) {
     $index = FindCharacterIndex($player, "DYN213");
     $char = &GetPlayerCharacter($player);
     $char[$index + 1] = 1;

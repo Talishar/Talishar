@@ -110,7 +110,7 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
       break;
   }
   if ($remove == 1) {
-    if (HasWard($char[$index]) && (SearchCharacterActive($player, "DYN213") || $char[$index] == "DYN213") && CardType($char[$index]) != "T") {
+    if (HasWard($char[$index], $player) && (SearchCharacterActive($player, "DYN213") || $char[$index] == "DYN213") && CardType($char[$index]) != "T") {
       $kimonoIndex = FindCharacterIndex($player, "DYN213");
       $char[$kimonoIndex + 1] = 1;
       GainResources($player, 1);
@@ -633,6 +633,12 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
   for($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces())
   {
     switch($char[$i]) {
+      case "DTD004":
+        if($preventable && SearchCurrentTurnEffects("DTD004", $player)) {
+          --$damage;
+        }
+        DestroyCharacter($player, $i);
+        break;
       case "DTD047":
         if($damage > 0 && $preventable && $char[$i+5] > 0 && GetClassState($player, $CS_NumCharged) > 0)
         {
