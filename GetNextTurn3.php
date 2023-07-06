@@ -1073,7 +1073,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   // If both players have enabled chat, is true, else false
-  $response->chatEnabled = intval(GetCachePiece($gameName, 15)) == 1 ? true : false;
+  $response->chatEnabled = intval(GetCachePiece($gameName, 15)) == 1 && intval(GetCachePiece($gameName, 16)) == 1 ? true : false;
 
   // encode and send it out
   echo json_encode($response);

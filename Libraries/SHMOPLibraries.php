@@ -15,7 +15,8 @@
 12 - Current player status (0 = active, 1 = inactive)
 13 - Format (see function FormatCode)
 14 - Game status (see $GS_ constants)
-15 - 0 = Chat disabled, 1 = Chat enabled
+15 - Player 1 is chat enabled
+16 - Player 2 is chat enabled
 */
 
 // $useRedis = getenv('REDIS_ENABLED') ?? false;
