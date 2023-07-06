@@ -10,7 +10,7 @@ if (!IsGameNameValid($gameName)) {
   exit;
 }
 $playerID = $_GET["playerID"];
-$chatText = htmlspecialchars($_GET["chatText"]);
+
 $authKey = $_GET["authKey"];
 
 session_start();
@@ -18,13 +18,20 @@ session_start();
 if ($authKey == "") $authKey = $_COOKIE["lastAuthKey"];
 
 $targetAuthKey = "";
-if($playerID == 1 && isset($_SESSION["p1AuthKey"])) $targetAuthKey = $_SESSION["p1AuthKey"];
-else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) $targetAuthKey = $_SESSION["p2AuthKey"];
-if($targetAuthKey != "" && $authKey != $targetAuthKey) exit;
+if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $targetAuthKey = $_SESSION["p1AuthKey"];
+else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $targetAuthKey = $_SESSION["p2AuthKey"];
+if ($targetAuthKey != "" && $authKey != $targetAuthKey) exit;
 
 $uid = "-";
 if (isset($_SESSION['useruid'])) $uid = $_SESSION['useruid'];
 $displayName = ($uid != "-" ? $uid : "Player " . $playerID);
+
+$chatText = "";
+if (tryGet("quickChat")) {
+  $chatText = parseQuickChat($_GET["quickChat"]);
+} else {
+  $chatText = htmlspecialchars($_GET["chatText"]);
+}
 
 //array for contributors
 $contributors = array("sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar");
@@ -55,3 +62,31 @@ fclose($handler);
 
 GamestateUpdated($gameName);
 if ($playerID == 1) SetCachePiece($gameName, 11, 0);
+
+function parseQuickChat($inputEnum)
+{
+  switch ($inputEnum) {
+    case "1":
+      return "Hello";
+    case "2":
+      return "Want to Chat?";
+    case "3":
+      return "Mind if I undo?";
+    case "4":
+      return "Do you want to undo?";
+    case "5":
+      return "Yes";
+    case "6":
+      return "No";
+    case "7":
+      return "Thanks!";
+    case "8":
+      return "Thinking... Please bear with me!";
+    case "9":
+      return "Good game!";
+    case "10":
+      return "Good luck, have fun";
+    default:
+      return "";
+  };
+}
