@@ -367,6 +367,15 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 33: //Fully re-order layers
       break;
+    case 34: //Permanent ability
+      $index = $cardID; //Overridden to be index instead
+      $permanents = &GetPermanents($playerID);
+      if($index >= count($permanents)) break; //Permanent doesn't exist
+      $cardID = $permanents[$index];
+      if(!IsPlayable($cardID, $turn[0], "PLAY", $index)) break; //Permanent not playable
+      SetClassState($playerID, $CS_PlayIndex, $index);
+      PlayCard($cardID, "PLAY", -1, $index);
+      break;
     case 99: //Pass
       if (CanPassPhase($turn[0])) {
         PassInput(false);

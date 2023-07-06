@@ -633,7 +633,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i + PermanentPieces() - 1 < count($myPermanents); $i += PermanentPieces()) {
     $type = CardType($myPermanents[$i]);
     $sType = CardSubType($myPermanents[$i]);
-    array_push($myPermanentsOutput, JSONRenderedCard(cardNumber: $myPermanents[$i], controller: $playerID, type: $type, sType: $sType));
+    $playable = ($currentPlayer == $playerID ? IsPlayable($myPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false);
+    $border = CardBorderColor($myPermanents[$i], "PLAY", $playable);
+    $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? 34 : 0);
+    if($restriction != "") $restriction = implode("_", explode(" ", $restriction));
+    $actionDataOverride = strval($i);
+    array_push($myPermanentsOutput, JSONRenderedCard(cardNumber: $myPermanents[$i], controller: $playerID, type: $type, sType: $sType, action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, restriction: $restriction));
   }
   $response->playerPermanents = $myPermanentsOutput;
 

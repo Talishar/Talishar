@@ -286,11 +286,13 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD164":
-      $itemIndex = SearchItemsForCard("DTD164", $currentPlayer);
-      DestroyItemForPlayer($currentPlayer, $itemIndex, true);
+      $permIndex = SearchPermanentsForCard($currentPlayer, "DTD164");
+      RemovePermanent($currentPlayer, $permIndex);
       $char = &GetPlayerCharacter($currentPlayer);
       $char[0] = "DTD164";
       AddEvent("HERO_TRANSFORM", $cardID);
+      $health = &GetHealth($currentPlayer);
+      $health = 8;
       $banish = &GetBanish($currentPlayer);
       for($i=count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces())
       {

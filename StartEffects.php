@@ -104,11 +104,11 @@ if(SearchCharacterForCard(2, "DYN026")) {
 //Levia Redeemed
 for($i=0; $i<count($p1Inventory); $i+=InventoryPieces())
 {
-  if($p1Inventory[$i] == "DTD164") PutItemIntoPlayForPlayer("DTD164", 1);
+  if($p1Inventory[$i] == "DTD164") PutPermanentIntoPlay(1, "DTD164");
 }
 for($i=0; $i<count($p2Inventory); $i+=InventoryPieces())
 {
-  if($p2Inventory[$i] == "DTD164") PutItemIntoPlayForPlayer("DTD164", 2);
+  if($p2Inventory[$i] == "DTD164") PutPermanentIntoPlay(2, "DTD164");
 }
 
   //Quickshot Apprentice
