@@ -167,8 +167,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->matchups = $matchups;
 
   // If both players have enabled chat, is true, else false
-  // TODO: Implement this (also in GetNextTurn3)
-  $response->chatEnabled = true;
+  $response->chatEnabled = intval(GetCachePiece($gameName, 15)) == 1 ? true : false;
 
   echo json_encode($response);
   exit;
