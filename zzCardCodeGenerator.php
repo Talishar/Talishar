@@ -198,6 +198,7 @@
       else if($card->types[$i] == "Resource") return "R";
       else if($card->types[$i] == "Mentor") return "M";
       else if($card->types[$i] == "Ally") return "ALLY";
+      else if($card->types[$i] == "Demi-Hero") return "D";
     }
     if($hasAction && $hasAttack) return "AA";
     else if($hasAction) return "A";

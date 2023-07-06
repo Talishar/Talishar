@@ -106,6 +106,17 @@ if($handler) {
   $response->format = $format;
 
   $response->deck->cards = GetArray($handler);
+  //Remove deck cards that don't belong
+  for($i=count($response->deck->cards)-1; $i>=0; --$i)
+  {
+    if(CardType($response->deck->cards[$i]) == "D")
+    {
+      array_push($response->deck->demiHero, $response->deck->cards[$i]);
+      unset($response->deck->cards[$i]);
+    }
+  }
+  $response->deck->cards = array_values($response->deck->cards);
+
   $response->deck->headSB = GetArray($handler);
   $response->deck->chestSB = GetArray($handler);
   $response->deck->armsSB = GetArray($handler);
@@ -113,6 +124,17 @@ if($handler) {
   $offhandSB = GetArray($handler);
   $weaponSB = GetArray($handler);
   $response->deck->cardsSB = GetArray($handler);
+  //Remove deck cards that don't belong
+  for($i=count($response->deck->cardsSB)-1; $i>=0; --$i)
+  {
+    if(CardType($response->deck->cardsSB[$i]) == "D")
+    {
+      array_push($response->deck->demiHero, $response->deck->cardsSB[$i]);
+      unset($response->deck->cardsSB[$i]);
+    }
+  }
+  $response->deck->cardsSB = array_values($response->deck->cardsSB);
+
   $quiverSB = GetArray($handler);
   $handsSB = array_merge($weaponSB, $offhandSB, $quiverSB);
   $response->deck->handsSB = [];
