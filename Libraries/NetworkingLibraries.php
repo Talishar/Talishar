@@ -660,6 +660,8 @@ function IsModeAsync($mode)
       return true;
     case 100012:
       return true;
+    case 100015:
+      return true;
   }
   return false;
 }
