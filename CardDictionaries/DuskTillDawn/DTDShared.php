@@ -322,6 +322,14 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD175": GainHealth(3, $currentPlayer); return "";
     case "DTD176": GainHealth(2, $currentPlayer); return "";
     case "DTD177": GainHealth(1, $currentPlayer); return "";
+    case "DTD178": case "DTD179": case "DTD180":
+      if($cardID == "DTD178") $pitchTarget = 1;
+      else if($cardID == "DTD179") $pitchTarget = 2;
+      else $pitchTarget = 3;
+      $deck = new Deck($otherPlayer);
+      $banished = $deck->BanishTop();
+      if(PitchValue($banished) == $pitchTarget) LoseHealth(1, $otherPlayer);
+      return "";
     case "DTD184": case "DTD185": case "DTD186":
       $theirSoul = &GetSoul($otherPlayer);
       if(count($theirSoul) > 0) GiveAttackGoAgain();
