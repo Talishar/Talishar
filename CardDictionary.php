@@ -1232,6 +1232,8 @@ function PlayableFromBanish($cardID, $mod="")
   $mod = explode("-", $mod)[0];
   if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
   if(HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer, false)) >= CardCost($cardID)) return true;
+  $char = &GetPlayerCharacter($currentPlayer);
+  if($char[0] == "DTD564" && SearchCurrentTurnEffects("DTD564", $currentPlayer)) return true;
   switch($cardID) {
     case "MON123": return GetClassState($currentPlayer, $CS_Num6PowBan) > 0;
     case "MON156": case "MON158": return true;
