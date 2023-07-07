@@ -487,6 +487,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         {
           AddDecisionQueue("YESNO", $currentPlayer, "if you want to pay 1 life for Vynnset");
           AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
           AddDecisionQueue("OP", $currentPlayer, "LOSEHEALTH", 1);
           AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $characterID, 1);
         }

@@ -358,7 +358,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             }
           }
           return implode(",", $cards);
-        case "LOSEHEALTH": LoseHealth(1, $player); return $lastResult;
+        case "LOSEHEALTH": LoseHealth($lastResult, $player); return $lastResult;
         default: return $lastResult;
       }
     case "FILTER":
@@ -1164,6 +1164,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "PERMANENT-" . ResolveTransformPermanent($player, $lastResult, $parameter);
     case "TRANSFORMAURA":
       return "AURA-" . ResolveTransformAura($player, $lastResult, $parameter);
+    case "TRANSFORMHERO":
+      return ResolveTransformHero($player, $parameter, $lastResult);
     case "AFTERTHAW":
       $otherPlayer = ($player == 1 ? 2 : 1);
       $params = explode("-", $lastResult);

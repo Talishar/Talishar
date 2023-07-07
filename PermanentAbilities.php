@@ -12,7 +12,7 @@ function RemovePermanent($player, $index)
   $index = intval($index);
   $permanents = &GetPermanents($player);
   $cardID = $permanents[$index];
-  for ($j = $index + PermanentPieces() - 1; $j >= $index; --$j) {
+  for($j = $index + PermanentPieces() - 1; $j >= $index; --$j) {
     unset($permanents[$j]);
   }
   $permanents = array_values($permanents);

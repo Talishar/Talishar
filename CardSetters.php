@@ -19,14 +19,14 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
 {
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer;
   $rv = -1;
-  if ($player == "") $player = $currentPlayer;
+  if($player == "") $player = $currentPlayer;
   AddEvent("BANISH", ($modifier == "INT" || $modifier == "UZURI" ? "CardBack" : $cardID));
   if($cardID == "DTD109" && $from == "HAND") $modifier = "TT";
   if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
     WriteLog(CardLink($cardID, $cardID) . " was banished from your deck face up by an action card. Gained 1 action point.");
     ++$actionPoints;
   }
-  if (($modifier == "BOOST" && $from == "DECK") && ($cardID == "DYN101" || $cardID == "DYN102" || $cardID == "DYN103")) {
+  if(($modifier == "BOOST" && $from == "DECK") && ($cardID == "DYN101" || $cardID == "DYN102" || $cardID == "DYN103")) {
     WriteLog(CardLink($cardID, $cardID) . " was banished to pay a boost cost. Put a counter on a Hyper Drive you control.");
     AddLayer("TRIGGER", $player, $cardID);
   }
@@ -43,8 +43,8 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     }
   }
   ++$classState[$CS_CardsBanished];
+  $character = &GetPlayerCharacter($player);
   if(AttackValue($cardID) >= 6) {
-    $character = &GetPlayerCharacter($player);
     if($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer) {
       $characterID = ShiyanaCharacter($character[0]);
       if(($characterID == "MON119" || $characterID == "MON120") && $character[1] == 2) { // Levia
@@ -58,6 +58,10 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     }
   }
   if($banishedBy != "") CheckContracts($banishedBy, $cardID);
+  if($character[0] == "DTD564") {
+    TurnBanishFaceDown($player, $rv);
+    return -1;
+  }
   return $rv;
 }
 
@@ -574,4 +578,16 @@ function FaceDownArsenalBotDeck($player)
     AddDecisionQueue("REMOVEARSENAL", $player, "-", 1);
     AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
   }
+}
+
+function RemoveInventory($player, $index)
+{
+  $index = intval($index);
+  $inventory = &GetInventory($player);
+  $cardID = $inventory[$index];
+  for($j = $index + InventoryPieces() - 1; $j >= $index; --$j) {
+    unset($inventory[$j]);
+  }
+  $inventory = array_values($inventory);
+  return $cardID;
 }

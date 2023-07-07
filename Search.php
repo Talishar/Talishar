@@ -632,6 +632,19 @@ function SearchItemsForCard($cardID, $player)
   return $indices;
 }
 
+function SearchInventoryForCard($player, $cardID)
+{
+  $inventory = &GetInventory($player);
+  $indices = "";
+  for($i = 0; $i < count($inventory); $i += InventoryPieces()) {
+    if($inventory[$i] == $cardID) {
+      if($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
+}
+
 function SearchLandmark($cardID)
 {
   global $landmarks;

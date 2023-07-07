@@ -286,18 +286,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD164":
-      $permIndex = SearchPermanentsForCard($currentPlayer, "DTD164");
-      RemovePermanent($currentPlayer, $permIndex);
-      $char = &GetPlayerCharacter($currentPlayer);
-      $char[0] = "DTD164";
-      AddEvent("HERO_TRANSFORM", $cardID);
-      $health = &GetHealth($currentPlayer);
-      $health = 8;
-      $banish = &GetBanish($currentPlayer);
-      for($i=count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces())
-      {
-        TurnBanishFaceDown($currentPlayer, $i);
-      }
+      ResolveTransformHero($currentPlayer, "DTD164", "");
       return "";
     case "DTD169":
       $deck = new Deck($currentPlayer);
@@ -444,5 +433,42 @@ function MirageLayer()
       }
     }
     $layers = array_values($layers);
+  }
+}
+
+function ResolveTransformHero($player, $cardID, $parameter)
+{
+  //TODO: Expand this for other demi-heros
+  $permIndex = SearchPermanentsForCard($player, "DTD164");
+  if($permIndex != "") RemovePermanent($player, $permIndex);
+  $inventoryIndex = SearchInventoryForCard($player, "DTD564");
+  if($inventoryIndex != "") RemoveInventory($player, $inventoryIndex);
+  $char = &GetPlayerCharacter($player);
+  $char[0] = $cardID;
+  AddEvent("HERO_TRANSFORM", $cardID);
+  $health = &GetHealth($player);
+  $health = DemiHeroHealth($cardID);
+  $banish = &GetBanish($player);
+  switch($cardID)
+  {
+    case "DTD164":
+      for($i=count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) TurnBanishFaceDown($player, $i);
+      break;
+    case "DTD564":
+      $deck = new Deck($player);
+      for($i=0; $i<$parameter; ++$i) $deck->BanishTop();
+      WriteLog("Banished $parameter cards to your remaining blood debt triggers");
+      break;
+    default: break;
+  }
+}
+
+function DemiHeroHealth($cardID)
+{
+  switch($cardID)
+  {
+    case "DTD164": return 8;
+    case "DTD564": return 13;
+    default: return 0;
   }
 }
