@@ -172,7 +172,7 @@
     if($char[0] == "DTD564") { $deck = new Deck($mainPlayer); for($i=0; $i<$numBloodDebt; ++$i) $deck->BanishTop(); return; }
     $health = &GetHealth($mainPlayer);
     if($numBloodDebt > 0) {
-      if($health - $numBloodDebt <= 13)
+      if($health > 13 && $health - $numBloodDebt <= 13)
       {
         $numBloodDebt -= ($health - 13);
         $health = 13;
