@@ -831,6 +831,7 @@ function HasBladeBreak($cardID)
     case "MON241": case "MON242": case "MON243": case "MON244": return SearchCurrentTurnEffects($cardID, $defPlayer); //Ironhide
     case "OUT174": return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer); //Vambrace of determination
     case "DTD200": return true;
+    case "DTD222": case "DTD223": case "DTD224": case "DTD225": return true;
     default: return false;
   }
 }
