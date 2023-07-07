@@ -334,6 +334,8 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $otherPlayer, "DYN244");
+      AddDecisionQueue("PUTPLAY", $otherPlayer, "-");
       return "";
     case "DTD228":
       if(GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2)
