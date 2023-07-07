@@ -92,6 +92,9 @@ function DTDEffectAttackModifier($cardID)
     case "DTD161": return 5;
     case "DTD162": return 4;
     case "DTD163": return 3;
+    case "DTD187": return 3;
+    case "DTD188": return 2;
+    case "DTD189": return 1;
     case "DTD196": return 1;//Anthem of Spring
     case "DTD213": return 3;
     case "DTD232": return 1;//Courage
@@ -130,6 +133,10 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD161": case "DTD162": case "DTD163": return $combatChainState[$CCS_WasRuneGate] == 1;
     case "DTD196": return CardType($attackID) == "AA";//Anthem of Spring
     case "DTD198": return true;//Call Down the Lightning
+    case "DTD187": case "DTD188": case "DTD189": return $combatChain[2] == "BANISH";
+    case "DTD190": return $combatChain[2] == "BANISH" && PitchValue($combatChain[0]) == 1;
+    case "DTD191": return $combatChain[2] == "BANISH" && PitchValue($combatChain[0]) == 2;
+    case "DTD192": return $combatChain[2] == "BANISH" && PitchValue($combatChain[0]) == 3;
     case "DTD206": return true;
     case "DTD207": return SubtypeContains($combatChain[0], "Sword", $mainPlayer);//Ironsong Versus
     case "DTD213": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
@@ -333,6 +340,10 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD184": case "DTD185": case "DTD186":
       $theirSoul = &GetSoul($otherPlayer);
       if(count($theirSoul) > 0) GiveAttackGoAgain();
+      return "";
+    case "DTD187": case "DTD188": case "DTD189":
+    case "DTD190": case "DTD191": case "DTD192":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD196"://Anthem of Spring
       AddCurrentTurnEffect($cardID, $currentPlayer);

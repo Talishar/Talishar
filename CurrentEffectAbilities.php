@@ -807,6 +807,7 @@ function CurrentEffectGrantsGoAgain()
         case "UPR081": case "UPR082": case "UPR083": return true;
         case "UPR094": return true;
         case "DYN076": case "DYN077": case "DYN078": return true;
+        case "DTD190": case "DTD191": case "DTD192": return true;
         case "ROGUE710-GA": return true;
         default:
           break;
