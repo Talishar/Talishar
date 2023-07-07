@@ -1972,7 +1972,7 @@ function GetDamagePreventionIndices($player)
   $indices = "";
   for($i=0; $i<count($char); $i+=CharacterPieces())
   {
-    if($char[$i+1] != 0 && WardAmount($char[$i]) > 0)
+    if($char[$i+1] != 0 && WardAmount($char[$i], $player) > 0)
     {
       if($indices != "") $indices .= ",";
       $indices .= $i;
@@ -1985,7 +1985,7 @@ function GetDamagePreventionIndices($player)
   $indices = "";
   for($i=0; $i<count($ally); $i+=AllyPieces())
   {
-    if($ally[$i+1] != 0 && WardAmount($ally[$i]) > 0)
+    if($ally[$i+1] != 0 && WardAmount($ally[$i], $player) > 0)
     {
       if($indices != "") $indices .= ",";
       $indices .= $i;
