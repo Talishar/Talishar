@@ -326,6 +326,10 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $auras[$index+2] = 1;
       }
       return "";
+    case "DTD171":
+      MZMoveCard($currentPlayer, "MYARS", "MYBANISH,ARS,-");
+      MZMoveCard($otherPlayer, "MYARS", "MYBANISH,ARS,-");
+      return "";
     case "DTD175": GainHealth(3, $currentPlayer); return "";
     case "DTD176": GainHealth(2, $currentPlayer); return "";
     case "DTD177": GainHealth(1, $currentPlayer); return "";
