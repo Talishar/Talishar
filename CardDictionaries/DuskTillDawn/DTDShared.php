@@ -78,6 +78,7 @@ function DTDEffectAttackModifier($cardID)
     case "DTD072": return 3;//Charge of the Light Brigade
     case "DTD073": return 2;
     case "DTD074": return 1;
+    case "DTD080-1": return 2;
     case "DTD082": case "DTD083": case "DTD084": return 1;
     case "DTD111": return $parameter;
     case "DTD118": return 5;
@@ -118,6 +119,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD066": case "DTD067": case "DTD068": return true;
     case "DTD069": case "DTD070": case "DTD071": return true;//Resounding Courage
     case "DTD072": case "DTD073": case "DTD074": return $combatChainState[$CCS_AttackNumCharged] > 0;//Charge of the Light Brigade
+    case "DTD080-1": case "DTD080-2": case "DTD080-3": return true;
     case "DTD082": case "DTD083": case "DTD084": return true;
     case "DTD094": case "DTD095": case "DTD096": return true;
     case "DTD111": return ClassContains($attackID, "BRUTE", $mainPlayer) || TalentContains($attackID, "SHADOW", $mainPlayer);
@@ -211,6 +213,20 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DTD075": case "DTD076": case "DTD077": case "DTD078":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
+      return "";
+    case "DTD080":
+      $modes = explode(",", $additionalCosts);
+      for($i=0; $i<count($modes); ++$i)
+      {
+        BanishFromSoul($currentPlayer);
+        switch($modes[$i])
+        {
+          case "+2_Attack": AddCurrentTurnEffect("DTD080-1", $currentPlayer); break;
+          case "Draw_on_hit": AddCurrentTurnEffect("DTD080-2", $currentPlayer); break;
+          case "Go_again_on_hit": AddCurrentTurnEffect("DTD080-3", $currentPlayer); break;
+          default: break;
+        }
+      }
       return "";
     case "DTD082": case "DTD083": case "DTD084"://Lay to Rest
       $theirChar = &GetPlayerCharacter($otherPlayer);
