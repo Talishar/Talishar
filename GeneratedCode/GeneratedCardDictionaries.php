@@ -849,6 +849,8 @@ case "8":
 return "I";
 case "9":
 return "I";
+case "0":
+return "R";
 case "3":
 return "W";
 case "2":
@@ -1097,9 +1099,13 @@ case "2":
 switch($cardID[5]) {
 case "1":
 return "E";
+case "4":
+return "E";
 case "2":
 return "E";
-case "4":
+case "5":
+return "E";
+case "3":
 return "E";
 case "8":
 return "DR";
@@ -8599,9 +8605,13 @@ case "2":
 switch($cardID[5]) {
 case "1":
 return 2;
+case "4":
+return 2;
 case "2":
 return 2;
-case "4":
+case "5":
+return 2;
+case "3":
 return 2;
 case "8":
 return 2;
@@ -8706,6 +8716,8 @@ return -1;
 case "8":
 return -1;
 case "9":
+return -1;
+case "0":
 return -1;
 case "3":
 return -1;
@@ -13137,10 +13149,14 @@ case "6":
 return "Censor";
 case "1":
 return "Crown of Providence";
-case "2":
-return "Frontline Helm";
 case "4":
 return "Frontline Gauntlets";
+case "2":
+return "Frontline Helm";
+case "5":
+return "Frontline Legs";
+case "3":
+return "Frontline Plating";
 case "8":
 return "Hold the Line";
 case "0":
@@ -13325,6 +13341,8 @@ case "8":
 return "Figment of Ravages";
 case "9":
 return "Figment of Rebirth";
+case "0":
+return "Light of Sol";
 case "3":
 return "Luminaris, Celestial Fury";
 case "2":
@@ -18953,9 +18971,13 @@ case "2":
 switch($cardID[5]) {
 case "1":
 return 0;
+case "4":
+return 0;
 case "2":
 return 0;
-case "4":
+case "5":
+return 0;
+case "3":
 return 0;
 case "8":
 return 3;
@@ -19096,6 +19118,8 @@ return 2;
 case "8":
 return 2;
 case "9":
+return 2;
+case "0":
 return 2;
 case "3":
 return 0;
@@ -23419,9 +23443,13 @@ case "6":
 return 1;
 case "1":
 return -1;
+case "4":
+return -1;
 case "2":
 return -1;
-case "4":
+case "5":
+return -1;
+case "3":
 return -1;
 case "0":
 return -1;
@@ -23519,6 +23547,8 @@ case "8":
 return 4;
 case "9":
 return 4;
+case "0":
+return -1;
 case "3":
 return -1;
 case "2":
@@ -27503,10 +27533,14 @@ case "2":
 switch($cardID[5]) {
 case "1":
 return "Head";
-case "2":
-return "Head";
 case "4":
 return "Arms";
+case "2":
+return "Head";
+case "5":
+return "Legs";
+case "3":
+return "Chest";
 case "0":
 return "Aura";
 default: return "";
@@ -27553,6 +27587,8 @@ case "8":
 return "Figment";
 case "9":
 return "Figment";
+case "0":
+return "Gem";
 case "3":
 return "Scepter";
 case "2":
@@ -30131,9 +30167,13 @@ case "6":
 return "M";
 case "1":
 return "L";
+case "4":
+return "R";
 case "2":
 return "R";
-case "4":
+case "5":
+return "R";
+case "3":
 return "R";
 case "8":
 return "M";
@@ -30377,6 +30417,8 @@ case "8":
 return "M";
 case "9":
 return "M";
+case "0":
+return "F";
 case "3":
 return "R";
 case "2":
@@ -35954,9 +35996,13 @@ case "6":
 return "GENERIC";
 case "1":
 return "GENERIC";
+case "4":
+return "GENERIC";
 case "2":
 return "GENERIC";
-case "4":
+case "5":
+return "GENERIC";
+case "3":
 return "GENERIC";
 case "8":
 return "GENERIC";
@@ -38793,6 +38839,8 @@ return "LIGHT";
 case "8":
 return "LIGHT";
 case "9":
+return "LIGHT";
+case "0":
 return "LIGHT";
 case "3":
 return "LIGHT";
