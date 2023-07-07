@@ -1022,6 +1022,18 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
+    case "DTD000":
+      $deck = new Deck($player);
+      if($deck->Reveal() && PitchValue($deck->Top()) == 2)
+      {
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_put_the_card_in_your_soul");
+        AddDecisionQueue("NOPASS", $player, "-");
+        AddDecisionQueue("PASSPARAMETER", $player, "MYDECK-0", 1);
+        AddDecisionQueue("MZADDZONE", $player, "MYSOUL,DECK", 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        AddDecisionQueue("WRITELOG", $player, "Added to soul by Light of Sol", 1);
+      }
+      break;
     case "DTD047":
       Charge();
       break;

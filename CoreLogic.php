@@ -2334,7 +2334,7 @@ function PitchAbility($cardID)
     }
   }
   switch($cardID) {
-    case "WTR000": case "ARC000": case "CRU000": case "OUT000":
+    case "WTR000": case "ARC000": case "CRU000": case "OUT000": case "DTD000":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "EVR000":

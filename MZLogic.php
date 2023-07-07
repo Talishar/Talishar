@@ -100,6 +100,7 @@ function MZAddZone($player, $parameter, $lastResult)
       case "MYARSENAL": AddArsenal($cardIDs[$i], $player, $params[1], $params[2]); break;
       case "THEIRARSENAL": AddArsenal($cardIDs[$i], $otherPlayer, $params[1], $params[2]); break;
       case "MYPERMANENTS": PutPermanentIntoPlay($player, $cardIDs[$i]); break;
+      case "MYSOUL": AddSoul($cardIDs[$i], $player, $params[1]); break;
       default: break;
     }
   }
