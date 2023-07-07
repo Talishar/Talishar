@@ -162,20 +162,19 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $index = $cardID;
       $banish = &GetBanish($playerID);
       $theirChar = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
-      if ($index < 0 || $index >= count($banish)) {
-        echo ("Banish Index " . $index . " Invalid Input<BR>");
+      if($index < 0 || $index >= count($banish)) {
+        echo("Banish Index " . $index . " Invalid Input<BR>");
         return false;
       }
       $cardID = $banish[$index];
-      if ($banish[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
-      if ($banish[$index + 1] == "MON212" && TalentContains($theirChar[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("MON212", $currentPlayer);
+      if($banish[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
+      if($banish[$index + 1] == "MON212" && TalentContains($theirChar[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("MON212", $currentPlayer);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
-      if (CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
+      if(CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
+      SearchCurrentTurnEffects("DTD564", $currentPlayer, remove:true);
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2]);
       break;
-    case 15:
-    case 16:
-    case 18: //Decision Queue (15 and 18 deprecated)
+    case 15: case 16: case 18: //Decision Queue (15 and 18 deprecated)
       if (count($decisionQueue) > 0) {
         $index = $cardID;
         $isValid = false;
