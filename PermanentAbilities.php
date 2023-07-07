@@ -180,7 +180,7 @@ function PermanentTakeDamageAbilities($player, $damage, $type)
         break;
     }
     if ($remove == 1) {
-      if (HasWard($permanents[$i]) && SearchCharacterActive($player, "DYN213") && CardType($permanents[$i]) != "T") {
+      if (HasWard($permanents[$i], $player) && SearchCharacterActive($player, "DYN213") && CardType($permanents[$i]) != "T") {
         $index = FindCharacterIndex($player, "DYN213");
         $char[$index + 1] = 1;
         GainResources($player, 1);
