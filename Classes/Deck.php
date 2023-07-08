@@ -58,11 +58,21 @@ class Deck {
     return $rv;
   }
 
-  function BanishTop($modifier = "-", $banishedBy = "") {
+  function BanishTop($modifier = "-", $banishedBy = "", $amount=1) {
+    global $currentPlayer;
     if($this->Empty()) return "";
-    $cardID = $this->Remove(0);
-    BanishCardForPlayer($cardID, $this->playerID, "DECK", $modifier, $banishedBy);
+    if($banishedBy == "") $banishedBy = $currentPlayer;
+    for($i=0; $i<$amount; ++$i)
+    {
+      $cardID = $this->Remove(0);
+      BanishCardForPlayer($cardID, $this->playerID, "DECK", $modifier, $banishedBy);
+    }
     return $cardID;
+  }
+
+  function AddBottom($cardID, $from)
+  {
+    array_push($this->deck, $cardID);
   }
 }
 

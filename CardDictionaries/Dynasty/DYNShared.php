@@ -535,8 +535,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if($from == "PLAY") {
         DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex), true);
         PutItemIntoPlayForPlayer((IsRoyal($currentPlayer) ? "DYN243": "CRU197"), $currentPlayer);
-        $deck = &GetDeck($currentPlayer);
-        array_push($deck, "DYN241");
+        $deck = new Deck($currentPlayer);
+        $deck->AddBottom("DYN241", "PLAY");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       }
       return "";
@@ -618,26 +618,16 @@ function DYNHitEffect($cardID)
       break;
     case "DYN118":
       if(IsHeroAttackTarget()) {
-        $deck = &GetDeck($defPlayer);
-        if (count($deck) == 0) WriteLog("The opponent deck is already... depleted.");
-        $cardToBanish = array_shift($deck);
-        BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
-        WriteLog(CardLink($cardToBanish, $cardToBanish) . " was banished.");
+        $deck = new Deck($defPlayer);
+        if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
+        $deck->BanishTop(banishedBy:$mainPlayer);
       }
       break;
     case "DYN119":
       if(IsHeroAttackTarget()) {
-        $deck = &GetDeck($defPlayer);
-        if(count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
-        $cardsName = "";
-        for($i = 0; $i < $combatChainState[$CCS_DamageDealt]; ++$i) {
-          if (count($deck) == 0) break;
-          $cardToBanish = array_shift($deck);
-          BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
-          if ($cardsName != "") $cardsName .= ", ";
-          $cardsName .= CardLink($cardToBanish, $cardToBanish);
-        }
-        if($cardsName != "") WriteLog(CardLink($cardID, $cardID) . " Banished the following cards: " . $cardsName);
+        $deck = new Deck($defPlayer);
+        if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
+        $deck->BanishTop(banishedBy:$mainPlayer, amount:$combatChainState[$CCS_DamageDealt]);
       }
       break;
     case "DYN121":
@@ -652,23 +642,17 @@ function DYNHitEffect($cardID)
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZBANISH", $mainPlayer, "ARS,-," . $mainPlayer, 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-        $deck = &GetDeck($defPlayer);
-        if (count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
-        $cardToBanish = array_shift($deck);
-        BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
-        WriteLog(CardLink($cardToBanish, $cardToBanish) . " was banished");
+        $deck = new Deck($defPlayer);
+        if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
+        $deck->BanishTop(banishedBy:$mainPlayer);
       }
       break;
     case "DYN122":
       if(IsHeroAttackTarget()) {
-        $deck = &GetDeck($defPlayer);
-        if(count($deck) == 0) WriteLog("The opponent deck is already... depleted.");
-        else {
-          $cardToBanish = array_shift($deck);
-          BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
-          WriteLog(CardLink($cardToBanish, $cardToBanish) . " was banished.");
-        }
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND", 1);
+        $deck = new Deck($defPlayer);
+        if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
+        $deck->BanishTop(banishedBy:$mainPlayer);
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZBANISH", $mainPlayer, "HAND,-," . $mainPlayer, 1);
@@ -683,11 +667,9 @@ function DYNHitEffect($cardID)
     case "DYN142": case "DYN143": case "DYN144":
     case "DYN145": case "DYN146": case "DYN147":
       if(IsHeroAttackTarget()) {
-        $deck = &GetDeck($defPlayer);
-        if (count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
-        $cardToBanish = array_shift($deck);
-        BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
-        WriteLog(CardLink($cardToBanish, $cardToBanish) . " was banished.");
+        $deck = new Deck($defPlayer);
+        if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
+        $deck->BanishTop(banishedBy:$mainPlayer);
       }
       break;
     case "DYN153":
