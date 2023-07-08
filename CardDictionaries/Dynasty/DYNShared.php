@@ -490,7 +490,11 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       Transform($currentPlayer, "MON104", "DYN612");
       return "";
     case "DYN215":
-      return CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction";
+      AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+      AddDecisionQueue("WRITELOG", $currentPlayer, "{0} was chosen");
+      AddDecisionQueue("ADDCURRENTEFFECT", $otherPlayer, "DYN215");
+      return CardLink($cardID, $cardID) . " is a partially manual card. Enforce play restriction.";
     case "DYN221": case "DYN222": case "DYN223":
       if($from == "PLAY") return "";
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
