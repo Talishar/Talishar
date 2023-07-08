@@ -220,7 +220,7 @@ function PlayBlockModifier($cardID)
 
 function OnDefenseReactionResolveEffects()
 {
-  global $currentTurnEffects, $defPlayer, $combatChain;
+  global $currentTurnEffects, $mainPlayer, $defPlayer, $combatChain;
   switch($combatChain[0])
   {
     case "CRU051": case "CRU052":
@@ -231,7 +231,18 @@ function OnDefenseReactionResolveEffects()
         }
       }
       break;
-      default: break;
+    case "DTD205":
+      if(!SearchCurrentTurnEffects("DTD205", $mainPlayer))
+      {
+        $options = GetChainLinkCards($defPlayer, "", "E");
+        if($options != "") {
+          AddCurrentTurnEffect("DTD205", $mainPlayer);
+          AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
+          AddDecisionQueue("HALVEBASEDEFENSE", $defPlayer, "-", 1);
+        }
+      }
+      break;
+    default: break;
   }
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = false;
