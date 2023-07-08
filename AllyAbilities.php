@@ -188,16 +188,13 @@ function SpecificAllyAttackAbilities($attackID)
   switch($allies[$i]) {
     case "UPR406":
       if(IsHeroAttackTarget() && CanRevealCards($mainPlayer)) {
-        $deck = &GetDeck($mainPlayer);
-        $redCount = 0;
-        $cards = "";
-        for($j = 0; $j < 3 && $j < count($deck); ++$j) {
-          if(PitchValue($deck[$j]) == 1) ++$redCount;
-          if($cards != "") $cards .= ",";
-          $cards .= $deck[$j];
+        $deck = new Deck($mainPlayer);
+        if($deck->Reveal(3)) {
+          $cards = explode(",", $deck->Top(amount:3));
+          $numRed = 0;
+          for($j = 0; $j < count($cards); ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
+          if($numRed > 0) DealArcane($numRed * 2, 2, "ABILITY", $allies[$i], false, $mainPlayer);
         }
-        RevealCards($cards);
-        if($redCount > 0) DealArcane($redCount * 2, 2, "ABILITY", $allies[$i], false, $mainPlayer);
       }
       return "";
     case "UPR407":
