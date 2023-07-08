@@ -666,16 +666,7 @@ function DYNHitEffect($cardID)
       }
       break;
     case "DYN162": case "DYN163": case "DYN164":
-      if(HasAimCounter() && IsHeroAttackTarget()) {
-        MZChooseAndDestroy($mainPlayer, "THEIRARS");
-        /*
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to destroy", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZDISCARD", $mainPlayer, "ARS,-," . $mainPlayer, 1);
-        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-        */
-      }
+      if(HasAimCounter() && IsHeroAttackTarget()) MZChooseAndDestroy($mainPlayer, "THEIRARS");
       break;
     default: break;
   }
@@ -684,10 +675,8 @@ function DYNHitEffect($cardID)
 function IsRoyal($player)
 {
   $mainCharacter = &GetPlayerCharacter($player);
-
   if(SearchCharacterForCard($player, "DYN234")) return true;
-
-  switch ($mainCharacter[0]) {
+  switch($mainCharacter[0]) {
     case "DYN001": return true;
     default: break;
   }
