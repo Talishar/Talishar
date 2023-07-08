@@ -521,7 +521,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $rv = "";
       if($from == "PLAY") {
         DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
-        $rv = CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction";
+        $rv = CardLink($cardID, $cardID) . " is a partially manual card. Enforce play restriction.";
         if(IsRoyal($currentPlayer))
         {
           $rv .= CardLink($cardID, $cardID) . " revealed the opponent's hand";
@@ -529,6 +529,10 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
         }
+        AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        AddDecisionQueue("WRITELOG", $currentPlayer, "{0} was chosen");
+        AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $otherPlayer, "DYN240");
       }
       return $rv;
     case "DYN241":
