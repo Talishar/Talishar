@@ -639,7 +639,7 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
   {
     switch($char[$i]) {
       case "DTD004":
-        if(SearchCurrentTurnEffects("DTD004", $player))
+        if(SearchCurrentTurnEffects("DTD004-1", $player))
         {
           if($preventable) {
             --$damage;

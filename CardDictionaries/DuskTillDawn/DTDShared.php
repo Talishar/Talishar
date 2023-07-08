@@ -167,7 +167,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       GiveAttackGoAgain();
       return "";
     case "DTD004":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
       return "";
     case "DTD005":
       PlayAura("DYN244", $currentPlayer);
