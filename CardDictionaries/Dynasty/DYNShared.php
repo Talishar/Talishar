@@ -90,28 +90,28 @@ function DYNEffectAttackModifier($cardID)
 		case "DYN073": return 3;
     case "DYN074": return 2;
     case "DYN075": return 1;
-    case "DYN076": return NumEquipBlock() > 0 ? 3 : 0;
-    case "DYN077": return NumEquipBlock() > 0 ? 2 : 0;
-    case "DYN078": return NumEquipBlock() > 0 ? 1 : 0;
+    case "DYN076": return (NumEquipBlock() > 0 ? 3 : 0);
+    case "DYN077": return (NumEquipBlock() > 0 ? 2 : 0);
+    case "DYN078": return (NumEquipBlock() > 0 ? 1 : 0);
     case "DYN082": return 6;
     case "DYN083": return 5;
     case "DYN084": return 4;
-    case "DYN085": return NumEquipBlock() > 0 ? 3 : 0;
-    case "DYN086": return NumEquipBlock() > 0 ? 2 : 0;
-    case "DYN087": return NumEquipBlock() > 0 ? 1 : 0;
+    case "DYN085": return (NumEquipBlock() > 0 ? 3 : 0);
+    case "DYN086": return (NumEquipBlock() > 0 ? 2 : 0);
+    case "DYN087": return (NumEquipBlock() > 0 ? 1 : 0);
     case "DYN089-UNDER": return 1;
     case "DYN091-1": return 3;
     case "DYN148": return 3;
     case "DYN149": return 2;
     case "DYN150": return 1;
     case "DYN155": return 3;
-    case "DYN156": case "DYN157": case "DYN158": return NumEquipBlock() > 0 ? 1 : 0;
+    case "DYN156": case "DYN157": case "DYN158": return (NumEquipBlock() > 0 ? 1 : 0);
     case "DYN165": case "DYN166": case "DYN167": return 2;
     case "DYN168": return 3;
     case "DYN169": return 2;
     case "DYN170": return 1;
     case "DYN176": case "DYN177": case "DYN178": return 2;
-		case "DYN185-BUFF": case "DYN186-BUFF": case "DYN187-BUFF": return 1;
+    case "DYN185-BUFF": case "DYN186-BUFF": case "DYN187-BUFF": return 1;
     default:
       return 0;
   }
@@ -136,9 +136,9 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN073": case "DYN074": case "DYN075": return CardType($attackID) == "W";
     case "DYN076": case "DYN077": case "DYN078":
       $subtype = CardSubType($attackID);
-      return $subtype == "Sword" || $subtype == "Dagger";
+      return ($subtype == "Sword") || ($subtype == "Dagger");
     case "DYN082": case "DYN083": case "DYN084": return CardSubType($attackID) == "Axe";
-		case "DYN085": case "DYN086": case "DYN087": return (CardSubType($attackID) == "Sword" || CardSubType($attackID) == "Dagger");
+    case "DYN085": case "DYN086": case "DYN087": return (CardSubType($attackID) == "Sword" || CardSubType($attackID) == "Dagger");
     case "DYN089-UNDER":
       $character = &GetPlayerCharacter($mainPlayer);
       $index = FindCharacterIndex($mainPlayer, "DYN492a");
@@ -172,45 +172,23 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       return "";
     case "DYN007":
-      if (AttackValue($additionalCosts) >= 6) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        $rv .= "Discarded a 6 power card and gains +" . EffectAttackModifier($cardID) . " power.";
-      }
-      return $rv;
-    case "DYN009":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "DYN002":
-      PutPermanentIntoPlay($currentPlayer, $cardID);
-      return "";
-    case "DYN003":
-      PutPermanentIntoPlay($currentPlayer, $cardID);
-      return "";
-    case "DYN004":
-      PutPermanentIntoPlay($currentPlayer, $cardID);
-      return "";
-    case "DYN016": case "DYN017": case "DYN018":
-      if(AttackValue($additionalCosts) >= 6) GiveAttackGoAgain();
-      return "";
-    case "DYN019": case "DYN020": case "DYN021":
       if(AttackValue($additionalCosts) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "DYN022": case "DYN023": case "DYN024":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      $rv .= "";
-      return $rv;
-    case "DYN028":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
+    case "DYN009": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
+    case "DYN002": PutPermanentIntoPlay($currentPlayer, $cardID); return "";
+    case "DYN003": PutPermanentIntoPlay($currentPlayer, $cardID); return "";
+    case "DYN004": PutPermanentIntoPlay($currentPlayer, $cardID); return "";
+    case "DYN016": case "DYN017": case "DYN018": if(AttackValue($additionalCosts) >= 6) GiveAttackGoAgain(); return "";
+    case "DYN019": case "DYN020": case "DYN021": if(AttackValue($additionalCosts) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer); return "";
+    case "DYN022": case "DYN023": case "DYN024": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
+    case "DYN028": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "DYN030": case "DYN031": case "DYN032":
-      if(!IsAllyAttacking()){
-        $index = SearchCombatChainLink($currentPlayer, subtype:"Off-Hand", class:"GUARDIAN");
-        if($index != ""){
-          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-          AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Discard a card or take 1 damage");
-          AddDecisionQueue("MAYCHOOSEHAND", $otherPlayer, "<-", 1);
-          AddDecisionQueue("REMOVEMYHAND", $otherPlayer, "-", 1);
-          AddDecisionQueue("DISCARDCARD", $otherPlayer, "HAND", 1);
+      if(!IsAllyAttacking()) {
+        if(SearchCombatChainLink($currentPlayer, subtype:"Off-Hand", class:"GUARDIAN") != "") {
+          AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYHAND", 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $otherPlayer, "<-", 1);
+          AddDecisionQueue("MZDISCARD", $otherPlayer, "-", 1);
+          AddDecisionQueue("MZREMOVE", $otherPlayer, "-", 1);
           AddDecisionQueue("ELSE", $otherPlayer, "-");
           AddDecisionQueue("TAKEDAMAGE", $otherPlayer, 1, 1);
         }
@@ -235,8 +213,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       return "";
     case "DYN049":
+      AddPlayerHand("DYN065", $currentPlayer, "NA");
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      AddPlayerHand("DYN065", $currentPlayer, "-");
       return "";
     case "DYN062": case "DYN063": case "DYN064":
       if($cardID == "DYN062") $amount = 3;
@@ -246,10 +224,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN068":
       CacheCombatResult();
-      if(IsWeaponGreaterThanTwiceBasePower()) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return CardLink($cardID, $cardID) . " gains overpower";
-      }
+      if(IsWeaponGreaterThanTwiceBasePower()) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN071":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -264,12 +239,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
 		case "DYN082": case "DYN083": case "DYN084":
-      if ($cardID == "DYN082") $amount = 3;
-      else if ($cardID == "DYN083") $amount = 2;
+      if($cardID == "DYN082") $amount = 3;
+      else if($cardID == "DYN083") $amount = 2;
       else $amount = 1;
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-		case "DYN085": case "DYN086": case "DYN087":
+    case "DYN085": case "DYN086": case "DYN087":
       if($cardID == "DYN085") $amount = 3;
       else if($cardID == "DYN086") $amount = 2;
       else $amount = 1;
@@ -321,15 +296,15 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
           }
         }
       }
-      if(!$hasHead || !$hasChest || !$hasArms || !$hasLegs || !$hasWeapon) return "You do not meet the equipment requirement.";
+      if(!$hasHead || !$hasChest || !$hasArms || !$hasLegs || !$hasWeapon) return "You do not meet the equipment requirement";
       $numHypers = CountItem("ARC036", $currentPlayer);
       $numHypers += CountItem("DYN111", $currentPlayer);
       $numHypers += CountItem("DYN112", $currentPlayer);
-      if($numHypers < 3) return "You do not meet the Hyper Driver requirement.";
+      if($numHypers < 3) return "You do not meet the Hyper Driver requirement";
       //Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
       $mechMaterial = "";
-      for($i=count($char)-1; $i>=CharacterPieces(); --$i) {
-        if ($char[$i] == "DYN089") AddCurrentTurnEffect($char[$i] . "-UNDER", $currentPlayer);
+      for($i = count($char)-1; $i >= CharacterPieces(); --$i) {
+        if($char[$i] == "DYN089") AddCurrentTurnEffect($char[$i] . "-UNDER", $currentPlayer);
         if($mechMaterial != "") $mechMaterial .= ",";
         $mechMaterial .= $char[$i];
         unset($char[$i]);
@@ -337,8 +312,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $char = array_values($char);
       $items = &GetItems($currentPlayer);
       $hyperToDestroy = 3;
-      for($i=count($items)-ItemPieces(); $i>=0 && $hyperToDestroy>0; $i-=ItemPieces())
-      {
+      for($i = count($items)-ItemPieces(); $i >= 0 && $hyperToDestroy > 0; $i -= ItemPieces()) {
         if($mechMaterial != "") $mechMaterial .= ",";
         $mechMaterial .= $items[$i];
         if($items[$i] == "ARC036" || $items[$i] == "DYN111" || $items[$i] == "DYN112") DestroyItemForPlayer($currentPlayer, $i);
@@ -349,11 +323,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PutCharacterIntoPlayForPlayer("DYN492b", $currentPlayer);//Armor
       PutItemIntoPlayForPlayer("DYN492c", $currentPlayer);//Item
       return "";
-    case "DYN095": case "DYN096": case "DYN097":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
+    case "DYN095": case "DYN096": case "DYN097": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "DYN123":
-      if (GetClassState($currentPlayer, $CS_NumContractsCompleted) > 0) {
+      if(GetClassState($currentPlayer, $CS_NumContractsCompleted) > 0) {
         PutItemIntoPlayForPlayer("EVR195", $currentPlayer, 0, 4);
       }
       return "";
@@ -401,35 +373,21 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SANDSCOURGREATBOW");
       return "";
-    case "DYN155":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "DYN156": case "DYN157": case "DYN158":
-      if(HasAimCounter()) AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "DYN165": case "DYN166": case "DYN167":
-      if(HasAimCounter()) AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
+    case "DYN155": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
+    case "DYN156": case "DYN157": case "DYN158": if(HasAimCounter()) AddCurrentTurnEffect($cardID, $currentPlayer); return "";
+    case "DYN165": case "DYN166": case "DYN167": if(HasAimCounter()) AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "DYN168": case "DYN169": case "DYN170":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALUP");
-      AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
-      AddDecisionQueue("ADDAIMCOUNTER", $currentPlayer, "-", 1);
-      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MYARSENAL-", 1);
-      AddDecisionQueue("MZOP", $currentPlayer, "GETUNIQUEID", 1);
-      AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $currentPlayer, $cardID . ",HAND", 1);
+      $arsenal = &GetArsenal($currentPlayer);
+      $arsenal[3] = 1;
+      AddCurrentTurnEffect($cardID, $currentPlayer, "HAND", $arsenal[5]);
       return "";
-    case "DYN171":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
+    case "DYN171": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "DYN172":
       Draw($currentPlayer);
       if(SearchCardList($additionalCosts, $currentPlayer, "A") != "" && SearchCardList($additionalCosts, $currentPlayer, "AA") != "") PlayAura("ARC112", $currentPlayer);
       return $rv;
     case "DYN173":
-      if(SearchCardList($additionalCosts, $currentPlayer, "A") != "" && SearchCardList($additionalCosts, $currentPlayer, "AA") != "" && IsHeroAttackTarget()) {
-        AddCurrentTurnEffect($cardID, $currentPlayer, $from);
-        return "The next time " . CardLink($cardID, $cardID) . "deals damage they discard a card and you draw a card";
-      }
+      if(SearchCardList($additionalCosts, $currentPlayer, "A") != "" && SearchCardList($additionalCosts, $currentPlayer, "AA") != "" && IsHeroAttackTarget()) AddCurrentTurnEffect($cardID, $currentPlayer, $from);
       return "";
     case "DYN174":
       if(SearchCardList($additionalCosts, $currentPlayer, "AA") != "") {
@@ -450,11 +408,11 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN176": case "DYN177": case "DYN178":
       if(SearchCardList($additionalCosts, $currentPlayer, "AA") != "") AddCurrentTurnEffect($cardID, $currentPlayer);
       if(SearchCardList($additionalCosts, $currentPlayer, "A") != "") PlayAura("ARC112", $currentPlayer, 2, true);
-      return $rv;
-		case "DYN182": case "DYN183": case "DYN184":
+      return "";
+    case "DYN182": case "DYN183": case "DYN184":
       if(SearchCardList($additionalCosts, $currentPlayer, "A") != "") DealArcane(1, 2, "PLAYCARD", $cardID);
       return "";
-		case "DYN185": case "DYN186": case "DYN187":
+    case "DYN185": case "DYN186": case "DYN187":
       if($cardID == "DYN185") $amount = 3;
       else if($cardID == "DYN186") $amount = 2;
       else $amount = 1;
@@ -463,9 +421,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN188": case "DYN189": case "DYN190":
       $deck = new Deck($currentPlayer);
-      if($deck->Reveal(1)) {
-        if(PitchValue($deck->Top()) == PitchValue($cardID)) PlayAura("ARC112", $currentPlayer, 1, true);
-      }
+      if($deck->Reveal(1)) if(PitchValue($deck->Top()) == PitchValue($cardID)) PlayAura("ARC112", $currentPlayer, 1, true);
       return "";
     case "DYN192":
       DealArcane(1, 1, "ABILITY", $cardID, resolvedTarget: $target);
@@ -477,18 +433,10 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PlayAura("DYN244", $currentPlayer);
       return "";
   	case "DYN194": case "DYN195": case "DYN197": case "DYN198": case "DYN199": case "DYN203": case "DYN204": case "DYN205":
-    case "DYN206": case "DYN207": case "DYN208":
-      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-      return "";
-    case "DYN196":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "DYN209": case "DYN210": case "DYN211":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "DYN212":
-      Transform($currentPlayer, "MON104", "DYN612");
-      return "";
+    case "DYN206": case "DYN207": case "DYN208": DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target); return "";
+    case "DYN196": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
+    case "DYN209": case "DYN210": case "DYN211": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
+    case "DYN212": Transform($currentPlayer, "MON104", "DYN612"); return "";
     case "DYN215":
       AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
@@ -564,8 +512,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return $rv;
     case "DYN612":
-      $mySoul = &GetSoul($currentPlayer);
-      if(count($mySoul) > 0){
+      $soul = &GetSoul($currentPlayer);
+      if(count($soul) > 0){
         AddDecisionQueue("FINDINDICES", $currentPlayer, "SOUL");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish");
         AddDecisionQueue("MAYCHOOSEMYSOUL", $currentPlayer, "<-", 1);
@@ -583,16 +531,9 @@ function DYNHitEffect($cardID)
   global $chainLinks, $combatChain;
   switch($cardID) {
     case "DYN047":
-      if(ComboActive())
-      {
-        $numLinks = 0;
-        for($i = 0; $i < count($chainLinks); ++$i) {
-          if($chainLinks[$i][0] == "DYN065") ++$numLinks;
-        }
-        if(count($combatChain) > 0 && $combatChain[0] == "DYN065") ++$numLinks;
-        for($i=0; $i < $numLinks; $i++) {
-          BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
-        }
+      if(ComboActive()) {
+        $numLinks = NumChainLinksWithName("Crouching Tiger");
+        for($i=0; $i < $numLinks; $i++) BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
       }
       break;
     case "DYN050": case "DYN051": case "DYN052":

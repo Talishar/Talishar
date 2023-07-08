@@ -94,7 +94,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         //These are needed because MZ search doesn't have facedown parameter
         case "ARSENALDOWN": $rv = GetArsenalFaceDownIndices($player); break;
-        case "ARSENALUP": $rv = GetArsenalFaceUpIndices($player); break;
         case "ITEMSMAX": $rv = SearchItems($player, "", "", $subparam); break;
         case "EQUIP": $rv = GetEquipmentIndices($player); break;
         case "EQUIP0": $rv = GetEquipmentIndices($player, 0); break;
