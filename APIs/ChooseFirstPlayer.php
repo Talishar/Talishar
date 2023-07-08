@@ -10,7 +10,7 @@ $response = new stdClass();
 
 $_POST = json_decode(file_get_contents('php://input'), true);
 
-if($_POST == NULL) {
+if ($_POST == NULL) {
   $response->error = "Parameters were not passed";
   echo json_encode($response);
   exit;
@@ -38,12 +38,27 @@ if ($authKey != $targetAuth) {
   exit;
 }
 
-if ($action == "Go First") {
-  $firstPlayer = $playerID;
-} else {
-  $firstPlayer = ($playerID == 1 ? 2 : 1);
+switch ($action) {
+  case "Request Chat":
+    include_once "../WriteLog.php";
+    if ($playerID == 1) SetCachePiece($gameName, 15, 1);
+    else if ($playerID == 2) SetCachePiece($gameName, 16, 1);
+    $myName = ($playerID == 1 ? $p1uid : $p2uid);
+    WriteLog($myName . " wants to enable chat", path: "../");
+    break;
+  case "Go First":
+    $firstPlayer = $playerID;
+    WriteLog("Player " . $firstPlayer . " will go first.", path: "../");
+    break;
+  case "Go Second":
+    $firstPlayer = ($playerID == 1 ? 2 : 1);
+    WriteLog("Player " . $firstPlayer . " will go first.", path: "../");
+    break;
+  default:
+    break;
 }
-WriteLog("Player " . $firstPlayer . " will go first.", path: "../");
+
+// WriteLog("Player " . $firstPlayer . " will go first.", path: "../");
 $gameStatus = $MGS_P2Sideboard;
 SetCachePiece($gameName, 14, $gameStatus);
 GamestateUpdated($gameName);
