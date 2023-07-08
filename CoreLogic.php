@@ -424,7 +424,7 @@ function CharacterPlayCardAbilities($cardID, $from)
 
 function MainCharacterPlayCardAbilities($cardID, $from)
 {
-  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumBoostPlayed, $Card_Vynnset;
+  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumBoostPlayed;
   $character = &GetPlayerCharacter($currentPlayer);
   for($i = 0; $i < count($character); $i += CharacterPieces()) {
     if($character[$i + 1] != 2) continue;
@@ -482,7 +482,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
-      case $Card_Vynnset: case "DTD133":
+      case "DTD133": case "DTD134":
         if(CardType($cardID) == "A" && CardTalent($cardID) == "SHADOW")
         {
           AddDecisionQueue("YESNO", $currentPlayer, "if you want to pay 1 life for Vynnset");
@@ -569,11 +569,11 @@ function DamageTrigger($player, $damage, $type, $source="NA")
 
 function CanDamageBePrevented($player, $damage, $type, $source="-")
 {
-  global $Card_Vynnset;
   $otherPlayer = $player == 1 ? 2 : 1;
   if($type == "ARCANE" && SearchCurrentTurnEffects("EVR105", $player)) return false;
-  if($source == "ARC112" && (SearchCurrentTurnEffects($Card_Vynnset, $otherPlayer, true) || SearchCurrentTurnEffects("DTD133", $otherPlayer, true))) return false;
+  if($source == "ARC112" && (SearchCurrentTurnEffects("DTD134", $otherPlayer, true) || SearchCurrentTurnEffects("DTD133", $otherPlayer, true))) return false;
   if(SearchCurrentTurnEffects("UPR158", $otherPlayer)) return false;
+  if(SearchCurrentTurnEffects("DTD208", $player)) return false;
   if($source == "DYN005" || $source == "OUT030" || $source == "OUT031" || $source == "OUT032"|| $source == "OUT121" || $source == "OUT122" || $source == "OUT123") return false;
   return true;
 }

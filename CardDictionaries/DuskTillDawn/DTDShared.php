@@ -98,6 +98,7 @@ function DTDEffectAttackModifier($cardID)
     case "DTD188": return 2;
     case "DTD189": return 1;
     case "DTD196": return 1;//Anthem of Spring
+    case "DTD208": return 1;
     case "DTD213": return 3;
     case "DTD232": return 1;//Courage
     default:
@@ -141,6 +142,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD192": return $combatChain[2] == "BANISH" && PitchValue($combatChain[0]) == 3;
     case "DTD206": return true;
     case "DTD207": return SubtypeContains($combatChain[0], "Sword", $mainPlayer);//Ironsong Versus
+    case "DTD208": return true;
     case "DTD213": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     case "DTD232": return true;//Courage
     case $Card_LifeBanner: return true;
@@ -361,6 +363,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD207"://Ironsong Versus
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "DTD208":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD210":

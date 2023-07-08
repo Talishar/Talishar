@@ -123,7 +123,7 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 
 function CharacterStartTurnAbility($index)
 {
-  global $mainPlayer, $Card_Vynnset;
+  global $mainPlayer;
   $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $char = new Character($mainPlayer, $index);
   if($char->status == 0 && !CharacterTriggerInGraveyard($char->cardID)) return;
@@ -175,12 +175,9 @@ function CharacterStartTurnAbility($index)
     case "DTD564":
       AddCurrentTurnEffect("DTD564", $mainPlayer);
       break;
-    case $Card_Vynnset: case "DTD133":
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND");
+    case "DTD133": case "DTD134":
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to banish for Vynnset");
-      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBANISH,HAND,-", 1);
-      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      MZMoveCard($mainPlayer, "MYHAND", "MYBANISH,HAND,-");
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, "ARC112", 1);
       AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
       break;

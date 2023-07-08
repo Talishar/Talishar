@@ -1,6 +1,5 @@
 <?php
 
-$Card_Vynnset = "HER085";
 $Card_CourageBanner = "FAB161";
 $Card_QuickenBanner = "FAB162";
 $Card_SpellbaneBanner = "FAB163";

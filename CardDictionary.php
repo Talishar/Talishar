@@ -766,6 +766,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DTD142": return CountAura("ARC112", $currentPlayer) != 6;
     case "DTD164": return $from != "PLAY" || SearchCount(SearchBanish($currentPlayer, bloodDebtOnly:true)) < 13;
     case "DTD199": return GetClassState($currentPlayer, $CS_HighestRoll) != 6;
+    case "DTD208": return count($combatChain) == 0 || CardType($combatChain[0]) != "W";
     default: return false;
   }
 }
