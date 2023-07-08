@@ -536,26 +536,13 @@ function DYNHitEffect($cardID)
         for($i=0; $i < $numLinks; $i++) BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
       }
       break;
-    case "DYN050": case "DYN051": case "DYN052":
-      BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
-      break;
-    case "DYN067":
-      if(IsHeroAttackTarget() && !SearchAuras("DYN246", $mainPlayer)) {
-        PlayAura("DYN246", $mainPlayer);
-      }
-      break;
+    case "DYN050": case "DYN051": case "DYN052": BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer); break;
+    case "DYN067": if(IsHeroAttackTarget() && !SearchAuras("DYN246", $mainPlayer)) PlayAura("DYN246", $mainPlayer); break;
     case "DYN107": case "DYN108": case "DYN109":
       MZMoveCard($mainPlayer, "MYHAND:subtype=Item;class=MECHANOLOGIST;maxCost=" . $combatChainState[$CCS_NumBoosted], "MYITEMS", may:true);
       break;
-    case "DYN115": case "DYN116":
-      if(IsHeroAttackTarget()) AddCurrentTurnEffect($cardID, $defPlayer);
-      break;
-    case "DYN117":
-      if(IsHeroAttackTarget()) {
-        GiveAttackGoAgain();
-        WriteLog(CardLink($cardID, $cardID) . " gives the current Assassin attack go again");
-      }
-      break;
+    case "DYN115": case "DYN116": if(IsHeroAttackTarget()) AddCurrentTurnEffect($cardID, $defPlayer); break;
+    case "DYN117": if(IsHeroAttackTarget()) GiveAttackGoAgain(); break;
     case "DYN118":
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
@@ -570,9 +557,7 @@ function DYNHitEffect($cardID)
         $deck->BanishTop(banishedBy:$mainPlayer, amount:$combatChainState[$CCS_DamageDealt]);
       }
       break;
-    case "DYN121":
-      if(IsHeroAttackTarget() && IsRoyal($defPlayer)) PlayerLoseHealth($defPlayer, GetHealth($defPlayer));
-      break;
+    case "DYN121": if(IsHeroAttackTarget() && IsRoyal($defPlayer)) PlayerLoseHealth($defPlayer, GetHealth($defPlayer)); break;
     case "DYN120":
       if(IsHeroAttackTarget()) {
         MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer);
@@ -599,14 +584,8 @@ function DYNHitEffect($cardID)
         $deck->BanishTop(banishedBy:$mainPlayer);
       }
       break;
-    case "DYN153":
-      AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
-      break;
-    case "DYN154":
-      if(HasAimCounter() && IsHeroAttackTarget()) {
-        AddNextTurnEffect($cardID, $defPlayer);
-      }
-      break;
+    case "DYN153": AddCurrentTurnEffectFromCombat($cardID, $mainPlayer); break;
+    case "DYN154": if(HasAimCounter() && IsHeroAttackTarget()) AddNextTurnEffect($cardID, $defPlayer); break;
     case "DYN156": case "DYN157": case "DYN158":
       if(IsHeroAttackTarget()){
         AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
@@ -614,9 +593,7 @@ function DYNHitEffect($cardID)
         AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
       }
       break;
-    case "DYN162": case "DYN163": case "DYN164":
-      if(HasAimCounter() && IsHeroAttackTarget()) MZChooseAndDestroy($mainPlayer, "THEIRARS");
-      break;
+    case "DYN162": case "DYN163": case "DYN164": if(HasAimCounter() && IsHeroAttackTarget()) MZChooseAndDestroy($mainPlayer, "THEIRARS"); break;
     default: break;
   }
 }
@@ -635,17 +612,14 @@ function IsRoyal($player)
 function HasSurge($cardID)
 {
   switch($cardID) {
-		case "DYN194": return true;
-		case "DYN195": return true;
-    case "DYN197": case "DYN198": case "DYN199": return true;
-    case "DYN203": case "DYN204": case "DYN205": return true;
-    case "DYN206": case "DYN207": case "DYN208": return true;
+    case "DYN194": case "DYN195": case "DYN197": case "DYN198": case "DYN199":
+    case "DYN203": case "DYN204": case "DYN205": case "DYN206": case "DYN207": case "DYN208":
+      return true;
     default: return false;
   }
 }
 
-function HasEphemeral($cardID)
-{
+function HasEphemeral($cardID) {
   switch($cardID) {
     case "DYN065": return true;
     default: return false;
