@@ -640,12 +640,9 @@ function DYNHitEffect($cardID)
         MZMoveCard($mainPlayer, "THEIRHAND", "THEIRBANISH,HAND,-," . $mainPlayer);
       }
       break;
-    case "DYN124": case "DYN125": case "DYN126":
-    case "DYN127": case "DYN128": case "DYN129":
-    case "DYN133": case "DYN134": case "DYN135":
-    case "DYN136": case "DYN137": case "DYN138":
-    case "DYN139": case "DYN140": case "DYN141":
-    case "DYN142": case "DYN143": case "DYN144":
+    case "DYN124": case "DYN125": case "DYN126": case "DYN127": case "DYN128": case "DYN129":
+    case "DYN133": case "DYN134": case "DYN135": case "DYN136": case "DYN137": case "DYN138":
+    case "DYN139": case "DYN140": case "DYN141": case "DYN142": case "DYN143": case "DYN144":
     case "DYN145": case "DYN146": case "DYN147":
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
@@ -670,11 +667,14 @@ function DYNHitEffect($cardID)
       break;
     case "DYN162": case "DYN163": case "DYN164":
       if(HasAimCounter() && IsHeroAttackTarget()) {
+        MZChooseAndDestroy($mainPlayer, "THEIRARS");
+        /*
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to destroy", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZDISCARD", $mainPlayer, "ARS,-," . $mainPlayer, 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        */
       }
       break;
     default: break;
