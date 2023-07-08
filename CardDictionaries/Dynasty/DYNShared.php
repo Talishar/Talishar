@@ -606,9 +606,7 @@ function DYNHitEffect($cardID)
       AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       break;
     case "DYN115": case "DYN116":
-      if(IsHeroAttackTarget()) {
-        AddCurrentTurnEffect($cardID, $defPlayer);
-      }
+      if(IsHeroAttackTarget()) AddCurrentTurnEffect($cardID, $defPlayer);
       break;
     case "DYN117":
       if(IsHeroAttackTarget()) {
@@ -631,17 +629,11 @@ function DYNHitEffect($cardID)
       }
       break;
     case "DYN121":
-      if(IsHeroAttackTarget() && IsRoyal($defPlayer)) {
-        PlayerLoseHealth($defPlayer, GetHealth($defPlayer));
-      }
+      if(IsHeroAttackTarget() && IsRoyal($defPlayer)) PlayerLoseHealth($defPlayer, GetHealth($defPlayer));
       break;
     case "DYN120":
       if(IsHeroAttackTarget()) {
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to banish", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZBANISH", $mainPlayer, "ARS,-," . $mainPlayer, 1);
-        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer);
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
         $deck->BanishTop(banishedBy:$mainPlayer);
@@ -652,11 +644,7 @@ function DYNHitEffect($cardID)
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
         $deck->BanishTop(banishedBy:$mainPlayer);
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND");
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to banish", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZBANISH", $mainPlayer, "HAND,-," . $mainPlayer, 1);
-        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        MZMoveCard($mainPlayer, "THEIRHAND", "THEIRBANISH,HAND,-," . $mainPlayer);
       }
       break;
     case "DYN124": case "DYN125": case "DYN126":

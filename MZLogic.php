@@ -91,8 +91,14 @@ function MZAddZone($player, $parameter, $lastResult)
   {
     switch($params[0])
     {
-      case "MYBANISH": BanishCardForPlayer($cardIDs[$i], $player, $params[1], $params[2]); break;
-      case "THEIRBANISH": BanishCardForPlayer($cardIDs[$i], $otherPlayer, $params[1], $params[2]); break;
+      case "MYBANISH":
+        if(count($params) < 4) array_push($params, $player);
+        BanishCardForPlayer($cardIDs[$i], $player, $params[1], $params[2], $params[3]);
+        break;
+      case "THEIRBANISH":
+        if(count($params) < 4) array_push($params, $player);
+        BanishCardForPlayer($cardIDs[$i], $otherPlayer, $params[1], $params[2], $params[3]);
+        break;
       case "MYHAND": AddPlayerHand($cardIDs[$i], $player, "-"); break;
       case "MYTOPDECK": AddTopDeck($cardIDs[$i], $player, "-"); break;
       case "MYBOTDECK": AddBottomDeck($cardIDs[$i], $player, "-"); break;
