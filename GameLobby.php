@@ -346,7 +346,7 @@ $isMobile = IsMobile();
 
     echo ("<div id='chatbox' style='position:absolute; bottom:3%; left:3%; width:97%;'>");
     //echo ("<div id='chatbox' style='position:relative; left:3%; width:97%; margin-top:4px;'>");
-    echo ("<input id='chatText' style='background0color: grey; color: black; margin-left: 4px; margin-right: 1px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' name='chatText' disabled value='chat disabled in legacy' autocomplete='off' >");
+    echo ("<input id='chatText' style='background0color: grey; color: black; margin-left: 4px; margin-right: 1px; display:inline; border: 2px solid white; border-radius: 3px; font-weight: 500;' type='text' name='chatText' disabled value='chat disabled in legacy' autocomplete='off' >");
     echo ("<input type='hidden' id='gameName' value='" . $gameName . "'>");
     echo ("<input type='hidden' id='playerID' value='" . $playerID . "'>");
     echo ("</div>");
