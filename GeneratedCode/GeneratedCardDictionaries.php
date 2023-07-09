@@ -4537,6 +4537,8 @@ case "2":
 switch($cardID[5]) {
 case "6":
 return 5;
+case "7":
+return 2;
 default: return 0;
 }
 case "0":
@@ -8614,6 +8616,8 @@ return 2;
 case "3":
 return 2;
 case "8":
+return 2;
+case "7":
 return 2;
 case "0":
 return -1;
@@ -13159,6 +13163,8 @@ case "3":
 return "Frontline Plating";
 case "8":
 return "Hold the Line";
+case "7":
+return "Mischievous Meeps";
 case "0":
 return "Spectral Shield";
 default: return "";
@@ -23451,6 +23457,8 @@ case "5":
 return -1;
 case "3":
 return -1;
+case "7":
+return 1;
 case "0":
 return -1;
 default: return 0;
@@ -30177,6 +30185,8 @@ case "3":
 return "R";
 case "8":
 return "M";
+case "7":
+return "M";
 default: return "C";
 }
 case "3":
@@ -36005,6 +36015,8 @@ return "GENERIC";
 case "3":
 return "GENERIC";
 case "8":
+return "GENERIC";
+case "7":
 return "GENERIC";
 case "0":
 return "ILLUSIONIST";

@@ -433,6 +433,12 @@ case "9":
 return true;
 default: return false;
 }
+case "2":
+switch($cardID[5]) {
+case "7":
+return true;
+default: return false;
+}
 default: return false;
 }
 default: return false;

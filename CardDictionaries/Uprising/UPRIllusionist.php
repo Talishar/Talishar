@@ -66,15 +66,12 @@
         break;
       case "UPR411":
         if(IsHeroAttackTarget()) {
-          $items = &GetItems($defPlayer);
-          if(count($items) == 0) {
-            Draw($mainPlayer);
-          } else {
-            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
-            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take");
-            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-            AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
-          }
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take");
+          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
+          AddDecisionQueue("ELSE", $mainPlayer, "-");
+          AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
         }
         break;
       case "UPR413":

@@ -407,7 +407,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function DTDHitEffect($cardID)
 {
-  global $mainPlayer;
+  global $mainPlayer, $defPlayer;
   switch($cardID) {
     case "DTD082": case "DTD083": case "DTD084":
       if(IsHeroAttackTarget())
@@ -428,6 +428,16 @@ function DTDHitEffect($cardID)
       break;
     case "DTD226":
       WriteLog("This is a partially manual card. Name the card in chat and enforce the restriction manually.");
+      break;
+    case "DTD227":
+      if(IsHeroAttackTarget()) {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
+        AddDecisionQueue("ELSE", $mainPlayer, "-");
+        AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
+      }
       break;
     default: break;
   }
