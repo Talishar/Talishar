@@ -369,6 +369,24 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD198"://Call Down the Lightning
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "DTD202":
+      $discard = new Discard($currentPlayer);
+      $deck = new Deck($currentPlayer);
+      $cards = explode(",", $discard->RemoveRandom(3));
+      $num6plus = 0;
+      for($i=0; $i<count($cards); ++$i)
+      {
+        if(AttackValue($cards[$i]) >= 6) {
+          ++$num6plus;
+          $deck->AddBottom($cards[$i], "GY");
+        }
+        else $discard->Add($cards[$i]);
+      }
+      if($num6plus > 0) {
+        GainHealth($num6plus, $currentPlayer);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+      }
+      return "";
     case "DTD207"://Ironsong Versus
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";

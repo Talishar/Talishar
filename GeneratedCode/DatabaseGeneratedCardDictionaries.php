@@ -423,6 +423,12 @@ default: return false;
 }
 case "2":
 switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "2":
+return true;
+default: return false;
+}
 case "1":
 switch($cardID[5]) {
 case "2":

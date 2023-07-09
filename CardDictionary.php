@@ -529,6 +529,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
         return "BANISH,TCC";
       } else SearchCurrentTurnEffects($cardID, $player, 1);
       return "GY";
+    case "DTD202": return "BANISH";
     default: return "GY";
   }
 }
