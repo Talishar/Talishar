@@ -410,6 +410,11 @@ function SpecificCardLogic($player, $card, $lastResult)
       if(TalentContains($lastResult, "LIGHT", $player)) Draw($player, false);
       if(ClassContains($lastResult, "ILLUSIONIST", $player)) PlayAura("MON104", $player);
       return 1;
+    case "SPOILEDSKULL":
+      $rand = GetRandom(0, count($lastResult) - 1);
+      $banish = &GetBanish($player);
+      $banish[$lastResult[$rand]+1] = "TT";
+      return $lastResult;
     default: return "";
   }
 }

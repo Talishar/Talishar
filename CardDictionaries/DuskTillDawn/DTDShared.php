@@ -278,6 +278,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD106":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIBANISH,3");
       AddDecisionQueue("MULTICHOOSEBANISH", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SPOILEDSKULL", 1);
       return "";
     case "DTD108":
       $numBD = SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true));
