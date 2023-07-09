@@ -10,6 +10,7 @@ function DTDAbilityCost($cardID)
     case "DTD060": case "DTD061": case "DTD062": return 1;
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return 0;
     case "DTD105": return 2;
+    case "DTD106": return 1;
     case "DTD135": return 0;
     case "DTD136": return 1;
     case "DTD164": return 0;
@@ -34,6 +35,7 @@ function DTDAbilityType($cardID, $index = -1)
     case "DTD060": case "DTD061": case "DTD062": return "AR";
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return "I";
     case "DTD105": return "AA";
+    case "DTD106": return "A";
     case "DTD135": return "AA";
     case "DTD136": return "I";
     case "DTD164": return "A";
@@ -51,6 +53,7 @@ function DTDAbilityType($cardID, $index = -1)
 function DTDAbilityHasGoAgain($cardID)
 {
   switch($cardID) {
+    case "DTD106": return true;
     case "DTD207": return true;
     default: return false;
   }
@@ -271,6 +274,10 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DTD105":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "DTD106":
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIBANISH,3");
+      AddDecisionQueue("MULTICHOOSEBANISH", $currentPlayer, "<-", 1);
       return "";
     case "DTD108":
       $numBD = SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true));

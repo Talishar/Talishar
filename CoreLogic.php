@@ -1793,6 +1793,7 @@ function NumEquipBlock()
       case "MULTICHOOSEHAND": return 0;
       case "CHOOSEMULTIZONE": return 0;
       case "CHOOSEBANISH": return 0;
+      case "MULTICHOOSEBANISH": return 0;
       case "BUTTONINPUTNOPASS": return 0;
       case "CHOOSEFIRSTPLAYER": return 0;
       case "MULTICHOOSEDECK": return 0;

@@ -306,6 +306,7 @@ $cardIconTop = intval($cardSize / 4.2); //30
       case "CHOOSEARSENAL": return 0;
       case "CHOOSEDISCARD": return 0;
       case "MULTICHOOSEHAND": return 0;
+      case "MULTICHOOSEBANISH": return 0;
       default: return 1;
     }
   }

@@ -85,6 +85,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $hand = &GetHand($player);
           $rv = count($hand) . "-" . GetIndices(count($hand));
           break;
+        case "MULTIBANISH":
+          $banish = &GetBanish($player);
+          $rv = $subparam . "-" . GetIndices(count($banish), 0, BanishPieces());
+          break;
         case "MULTIHANDAA":
           $search = SearchHand($player, "AA");
           $rv = SearchCount($search) . "-" . $search;
