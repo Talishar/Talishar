@@ -10,16 +10,11 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       PlayerOpt($currentPlayer, 2);
       return "";
     case "ARC153":
-      $pitch = 0;
-      $deck = &GetDeck($currentPlayer);
-      if(count($deck) > 0) {
-        $pitch = PitchValue($deck[0]);
-        $rv = "Revealed " . CardLink($deck[0], $deck[0]) . " and gives the next attack action card +" . (3 - $pitch);
-      } else {
-        $rv = "There are no cards in deck for Bracers of Belief to reveal, so the next attack gets +3";
+      $deck = new Deck($currentPlayer);
+      if($deck->Reveal()) {
+        $bonus = 3 - PitchValue($deck->Top());
+        if($bonus > 0) AddCurrentTurnEffect($cardID . "-" . $bonus, $currentPlayer);
       }
-      $bonus = 3 - $pitch;
-      if($bonus > 0) AddCurrentTurnEffect($cardID . "-" . $bonus, $currentPlayer);
       return $rv;
     case "ARC154":
       SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);

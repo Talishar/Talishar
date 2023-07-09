@@ -17,19 +17,12 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       }
       return "";
     case "ARC004":
-      $deck = &GetDeck($currentPlayer);
-      for($i = 0; $i < 2; ++$i) {
-        if(count($deck) < $i) {
-          $rv .= "Could not banish more cards";
-          return $rv;
-        }
-        $banished = $deck[$i];
+      $deck = new Deck($currentPlayer);
+      for($i = 0; $i < 2 && !$deck->Empty(); ++$i) {
+        $banished = $deck->BanishTop();
         if(ClassContains($banished, "MECHANOLOGIST", $currentPlayer)) GainResources($currentPlayer, 1);
-        BanishCardForPlayer($banished, $currentPlayer, "DECK");
-        unset($deck[$i]);
       }
-      $deck = array_values($deck);
-      return $rv;
+      return "";
     case "ARC005":
       GainActionPoints(1, $currentPlayer);
       return "";
@@ -164,15 +157,13 @@ function Boost()
 function DoBoost($player)
 {
   global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
-  $deck = &GetDeck($player);
-  if(count($deck) == 0) { WriteLog("Could not boost"); return; }
+  $deck = new Deck($player);
+  if($deck->Empty()) { WriteLog("Could not boost"); return; }
   ItemBoostEffects();
   GainActionPoints(CountCurrentTurnEffects("ARC006", $player), $player);
-  $cardID = $deck[0];
+  $cardID = $deck->Top(remove:true);
   if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) PutItemIntoPlay($cardID);
   else BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
-  unset($deck[0]);
-  $deck = array_values($deck);
   $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $player);
   WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again");
   IncrementClassState($player, $CS_NumBoosted);

@@ -26,18 +26,15 @@
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "BECOMETHEARKNIGHT", 1);
         return "";
       case "ARC084":
-        $deck = &GetDeck($currentPlayer);
-        if(count($deck) < 2) return "Not enough cards in deck";
-        if(!RevealCards($deck[0] . "," . $deck[1])) return "Cannot reveal cards";
-        $type1 = CardType($deck[0]);
-        $type2 = CardType($deck[1]);
-        if(($type1 == "AA" && $type2 == "A") || ($type2 == "AA" && $type1 == "A"))
-        {
-          AddPlayerHand($deck[0], $currentPlayer, $deck);
-          AddPlayerHand($deck[1], $currentPlayer, $deck);
-          unset($deck[1]);
-          unset($deck[0]);
-          $deck = array_values($deck);
+        $deck = new Deck($currentPlayer);
+        $deck->Reveal(2);
+        $cards = explode(",", $deck->Top(amount:2));
+        $type1 = CardType($cards[0]);
+        $type2 = CardType($cards[1]);
+        if(($type1 == "AA" && $type2 == "A") || ($type2 == "AA" && $type1 == "A")) {
+          $deck->Top(remove:true, amount:2);
+          AddPlayerHand($cards[0], $currentPlayer, "HAND");
+          AddPlayerHand($cards[1], $currentPlayer, "HAND");
         }
         return "";
       case "ARC085": case "ARC086": case "ARC087":
