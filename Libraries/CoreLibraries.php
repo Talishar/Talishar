@@ -1,10 +1,11 @@
 <?php
-function DelimStringContains($str, $find)
+function DelimStringContains($str, $find, $partial=false)
 {
   $arr = explode(",", $str);
   for($i=0; $i<count($arr); ++$i)
   {
-    if($arr[$i] == $find) return true;
+    if($partial && str_contains($arr[$i], $find)) return true;
+    else if($arr[$i] == $find) return true;
   }
   return false;
 }

@@ -903,7 +903,7 @@ function UnsetTurnBanish()
   ReplaceBanishModifier($defPlayer, "NT", "TT");
 }
 
-function GetChainLinkCards($playerID="", $cardType="", $exclCardTypes="")
+function GetChainLinkCards($playerID="", $cardType="", $exclCardTypes="", $nameContains="")
 {
   global $combatChain;
   $pieces = "";
@@ -911,7 +911,7 @@ function GetChainLinkCards($playerID="", $cardType="", $exclCardTypes="")
   for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
   {
     $thisType = CardType($combatChain[$i]);
-    if(($playerID == "" || $combatChain[$i+1] == $playerID) && ($cardType == "" || $thisType == $cardType))
+    if(($playerID == "" || $combatChain[$i+1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial:true)))
     {
       $excluded = false;
       for($j=0; $j<count($exclArray); ++$j)
@@ -1440,10 +1440,10 @@ function SubtypeContains($cardID, $subtype, $player="")
   return DelimStringContains($cardSubtype, $subtype);
 }
 
-function CardNameContains($cardID, $name, $player="")
+function CardNameContains($cardID, $name, $player="", $partial=false)
 {
   $cardName = NameOverride($cardID, $player);
-  return DelimStringContains($cardName, $name);
+  return DelimStringContains($cardName, $name, $partial);
 }
 
 function TalentOverride($cardID, $player="")

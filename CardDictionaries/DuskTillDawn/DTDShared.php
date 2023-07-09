@@ -155,7 +155,7 @@ function DTDCombatEffectActive($cardID, $attackID)
 
 function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $currentPlayer, $CS_NumCharged, $CS_DamagePrevention, $CS_NumCardsDrawn, $combatChain;
+  global $currentPlayer, $defPlayer, $CS_NumCharged, $CS_DamagePrevention, $CS_NumCardsDrawn, $combatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
@@ -204,6 +204,13 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       else if($cardID == "DTD039") $amount = 2;
       else $amount = 1;
       if($target != "-") $combatChain[intval($target)+5] -= $amount;
+      return "";
+    case "DTD041": case "DTD042": case "DTD043":
+      $options = GetChainLinkCards($defPlayer, nameContains:"Herald");
+      if($options == "") return "No defending attack action cards";
+      WriteLog($options);
+      AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, $options);
+      AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $currentPlayer, PlayBlockModifier($cardID), 1);
       return "";
     case "DTD053":
       AddCurrentTurnEffect($cardID, $currentPlayer);

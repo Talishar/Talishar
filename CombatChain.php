@@ -214,6 +214,9 @@ function PlayBlockModifier($cardID)
     case "ELE125": return 4;
     case "ELE126": return 3;
     case "ELE127": return 2;
+    case "DTD041": return 5;
+    case "DTD042": return 4;
+    case "DTD043": return 3;
     default: return 0;
   }
 }

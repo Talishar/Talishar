@@ -757,6 +757,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DTD035": case "DTD036": case "DTD037": return count($combatChain) == 0 || !str_contains(NameOverride($combatChain[0], $mainPlayer), "Herald");
     case "DTD038": case "DTD039": case "DTD040":
       return count($combatChain) < (CombatChainPieces() * 2) || !str_contains(NameOverride($combatChain[0], $mainPlayer), "Herald");
+    case "DTD041": case "DTD042": case "DTD043":
+      return count($combatChain) < (CombatChainPieces() * 2) || GetChainLinkCards($defPlayer, nameContains:"Herald") == "";
     case "DTD060": case "DTD061": case "DTD062":
       $hand = &GetHand($currentPlayer);
       return $from == "PLAY" && count($hand) == 0;
