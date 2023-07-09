@@ -50,7 +50,7 @@ class Deck {
   function Top($remove = false, $amount = 1)
   {
     $rv = "";
-    for($i=0; $i<$amount && count($this->deck) > $i; ++$i)
+    for($i=0; $i<$amount && count($this->deck) > ($remove ? 0 : $i); ++$i)
     {
       if($rv != "") $rv .= ",";
       $rv .= ($remove ? array_shift($this->deck) : $this->deck[$i]);

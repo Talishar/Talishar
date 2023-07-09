@@ -404,22 +404,17 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "CRU154": case "CRU155": case "CRU156":
-      if(!CanRevealCards($currentPlayer)) return "Cannot reveal cards";
       if($cardID == "CRU154") $count = 3;
       else if($cardID == "CRU155") $count = 2;
       else $count = 1;
-      $deck = &GetDeck($currentPlayer);
-      $cards = "";
-      for($i = 0; $i < $count; ++$i) {
-        if(count($deck) > 0) {
-          if($cards != "") $cards .= ",";
-          $card = array_shift($deck);
-          $cards .= $card;
-          if(ClassContains($card, "RUNEBLADE", $currentPlayer) && CardType($card) == "AA") PlayAura("ARC112", $currentPlayer);
-        }
+      $deck = new Deck($currentPlayer);
+      $numRunechants = 0;
+      if($deck->Reveal(3)) {
+        $cards = explode(",", $deck->Top(remove:true, amount:3));
+        for($i=0; $i<count($cards); ++$i) if(ClassContains($cards[$i], "RUNEBLADE", $currentPlayer) && CardType($cards[$i]) == "AA") ++$numRunechants;
+        if($numRunechants > 0) PlayAura("ARC112", $currentPlayer, number:$numRunechants);
+        AddDecisionQueue("CHOOSETOP", $currentPlayer, implode(",", $cards));
       }
-      RevealCards($cards);
-      AddDecisionQueue("CHOOSETOP", $currentPlayer, $cards);
       return "";
     case "CRU160":
       DealArcane(2, 0, "ABILITY", $cardID);
