@@ -803,6 +803,12 @@ function GainHealth($amount, $player)
   $otherPlayer = ($player == 1 ? 2 : 1);
   $health = &GetHealth($player);
   $otherHealth = &GetHealth($otherPlayer);
+  if(SearchCurrentTurnEffects("DTD231", 1, remove:true) || SearchCurrentTurnEffects("DTD231", 2, remove:true))
+  {
+    WriteLog("<span style='color:green;'>Somebody poisoned the water hole</span>");
+    LoseHealth($amount, $player);
+    return false;
+  }
   if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog(CardLink("MON229","MON229") . " prevented you from gaining health."); return; }
   if(SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140"))
   {

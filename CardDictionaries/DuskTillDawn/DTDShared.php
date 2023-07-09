@@ -400,6 +400,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         WriteLog("Prevents the next 3 damage");
       }
       return "";
+    case "DTD231":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     default:
       return "";
   }
