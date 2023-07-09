@@ -187,7 +187,7 @@ function SpecificAllyAttackAbilities($attackID)
   $i = $combatChainState[$CCS_WeaponIndex];
   switch($allies[$i]) {
     case "UPR406":
-      if(IsHeroAttackTarget() && CanRevealCards($mainPlayer)) {
+      if(IsHeroAttackTarget()) {
         $deck = new Deck($mainPlayer);
         if($deck->Reveal(3)) {
           $cards = explode(",", $deck->Top(amount:3));
@@ -198,22 +198,19 @@ function SpecificAllyAttackAbilities($attackID)
       }
       return "";
     case "UPR407":
-      if(IsHeroAttackTarget() && CanRevealCards($mainPlayer)) {
-        $deck = &GetDeck($mainPlayer);
-        $redCount = 0;
-        $cards = "";
-        for($j = 0; $j < 2 && $j < count($deck); ++$j) {
-          if(PitchValue($deck[$j]) == 1) ++$redCount;
-          if($cards != "") $cards .= ",";
-          $cards .= $deck[$j];
-        }
-        RevealCards($cards);
-        if($redCount > 0) {
-          $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-          AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-          AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MODDEFCOUNTER", $otherPlayer, (-1 * $redCount), 1);
-          AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
+      if(IsHeroAttackTarget()) {
+        $deck = new Deck($mainPlayer);
+        if($deck->Reveal(2)) {
+          $cards = explode(",", $deck->Top(amount:2));
+          $numRed = 0;
+          for($j = 0; $j < count($cards); ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
+          if($numRed > 0) {
+            $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+            AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+            AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+            AddDecisionQueue("MODDEFCOUNTER", $otherPlayer, (-1 * $numRed), 1);
+            AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
+          }
         }
       }
       return "";
