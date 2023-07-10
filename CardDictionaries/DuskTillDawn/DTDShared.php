@@ -541,6 +541,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
   $inventoryIndex = SearchInventoryForCard($player, "DTD564");
   if($inventoryIndex != "") RemoveInventory($player, $inventoryIndex);
   $char = &GetPlayerCharacter($player);
+  AddSoul($char[0], $player, "PLAY");
   $char[0] = $cardID;
   AddEvent("HERO_TRANSFORM", $cardID);
   $health = &GetHealth($player);
