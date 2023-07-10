@@ -233,15 +233,8 @@
         AddDecisionQueue("MODAL", $currentPlayer, "TWINTWISTERS");
         return "";
       case "EVR053":
-        $rv = "You have no cards in your deck";
-        $deck = &GetDeck($currentPlayer);
-        if(count($deck) > 0) {
-          $card = array_shift($deck);
-          $mod = "-";
-          $cardType = CardType($card);
-          if ($cardType == "AR" || $cardType == "I" || $cardType == "AA" || CanPlayAsInstant($card)) $mod = "TCC";
-          BanishCardForPlayer($card, $currentPlayer, "DECK", $mod);
-        }
+        $deck = new Deck($currentPlayer);
+        $deck->BanishTop("TCC");
         return "";
       case "EVR054":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");

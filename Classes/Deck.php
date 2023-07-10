@@ -65,6 +65,8 @@ class Deck {
     for($i=0; $i<$amount; ++$i)
     {
       $cardID = $this->Remove(0);
+      $cardType = CardType($cardID);
+      if($mod == "TCC" && $cardType != "AR" && $cardType != "I" && $cardType != "AA" && !CanPlayAsInstant($card)) $mod = "-";
       BanishCardForPlayer($cardID, $this->playerID, "DECK", $modifier, $banishedBy);
     }
     return $cardID;
