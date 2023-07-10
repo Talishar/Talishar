@@ -102,17 +102,14 @@
         if($cardID == "UPR147") $cost = 3;
         else if($cardID == "UPR148") $cost = 2;
         else $cost = 1;
-        $theirAllies = &GetAllies($otherPlayer);
-        if (!ArsenalEmpty($otherPlayer) || count($theirAllies) > 0) {
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay $cost to prevent an arsenal or ally from being frozen");
-          AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
-          AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
-          AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRALLY&THEIRARS", 1);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
-        }
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay $cost to prevent an arsenal or ally from being frozen");
+        AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
+        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
+        AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRALLY&THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
         if($from == "ARS") Draw($currentPlayer);
         return "";
       case "UPR183":
