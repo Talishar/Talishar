@@ -49,14 +49,8 @@
         }
         break;
       case "UPR051": case "UPR052": case "UPR053":
-        $deck = &GetDeck($mainPlayer);
-        $cardRevealed = RevealCards($deck[0]);
-        if($cardRevealed) {
-          if(CardType($deck[0]) == "AA" && CardCost($deck[0]) < NumDraconicChainLinks()) {
-            BanishCardForPlayer($deck[0], $mainPlayer, "PLAY", "TT");
-            array_shift($deck);
-          }
-        }
+        $deck = new Deck($mainPlayer);
+        if($deck->Reveal() && CardType($deck->Top()) == "AA" && CardCost($deck->Top()) < NumDraconicChainLinks()) $deck->BanishTop("TT", $mainPlayer);
         break;
       case "UPR054": case "UPR055": case "UPR056":
       case "UPR075": case "UPR076": case "UPR077":
@@ -70,11 +64,8 @@
         break;
       case "UPR161":
         $rv = "";
-        if(HitsInCombatChain() >= 2) {
-          $deck = &GetDeck($mainPlayer);
-          $mod = CardType($deck[0]) == "AA" ? "NT" : "-";
-          BanishCardForPlayer(array_shift($deck), $mainPlayer, "DECK", $mod);
-        }
+        $deck = new Deck($mainPlayer);
+        if(HitsInCombatChain() >= 2) $deck->BanishTop(CardType($deck->Top()) == "AA" ? "NT" : "-", $mainPlayer);
         break;
       default: break;
     }

@@ -181,8 +181,8 @@ function OUTAbilityCost($cardID)
         if($index == -1) return "Uzuri's knife is re-sheathed.";
         if(CardType($banish[$index]) != "AA") { $banish[$index+1] = "-"; return "Uzuri was bluffing."; }
         if(CardCost($banish[$index]) > 2) { $banish[$index+1] = "-"; return "Uzuri was bluffing."; }
-        $deck = &GetDeck($currentPlayer);
-        array_push($deck, $combatChain[0]);
+        $deck = new Deck($currentPlayer);
+        $deck->AddBottom($combatChain[0], "CC");
         AttackReplaced();
         $combatChain[0] = $banish[$index];
         $combatChainState[$CCS_LinkBaseAttack] = AttackValue($combatChain[0]);
