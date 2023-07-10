@@ -134,8 +134,13 @@
       case "MON198":
         if(IsHeroAttackTarget()) {
           $numSoul = count(GetSoul($defPlayer));
+          if($numSoul > 0) {
+            LoseHealth($numSoul, $defPlayer);
+            $char = &GetPlayerCharacter($defPlayer);
+            if($char[0] == "DTD164") WriteLog("<span style='color:red;'>I find your lack of faith disturbing.</span>");
+            else if($char[0] == "DTD564") WriteLog("<span style='color:red;'>When I left you, I was but the learner. Now I am the master.</span>");
+          }
           for($i=0; $i<$numSoul; ++$i) BanishFromSoul($defPlayer);
-          LoseHealth($numSoul, $defPlayer);
         }
         break;
       case "MON206": case "MON207": case "MON208":
