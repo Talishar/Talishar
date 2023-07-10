@@ -35,7 +35,13 @@ function EffectHitEffect($cardID)
       PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2);
       break;
     case "MON034":
-      LuminaAscensionHit();
+      $deck = new Deck($mainPlayer);
+      if(!$deck->Reveal()) return;
+      if(TalentContains($deck->Top(), "LIGHT", $mainPlayer)) {
+        $cardID = $deck->Top(remove:true);
+        AddSoul($cardID, $mainPlayer, "DECK");
+        GainHealth(1, $mainPlayer);
+      }
       break;
     case "MON081": case "MON082": case "MON083":
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";

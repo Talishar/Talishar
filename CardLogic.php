@@ -664,7 +664,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
       break;
     case "MON186":
-      SoulShackleStartTurn($player);
+      $deck = new Deck($player);
+      $deck->BanishTop(banishedBy:$player);
       break;
     case "MON241": case "MON242": case "MON243":
     case "MON244": case "RVD005": case "RVD006":

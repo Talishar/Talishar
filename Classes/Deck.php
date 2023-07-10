@@ -32,9 +32,9 @@ class Deck {
 
   function Reveal($revealCount=1) {
     // Code the reveal x number of cards from the top of the deck
-    if (CanRevealCards($this->playerID)) {
-      if ($this->RemainingCards() > 0) {
-        for ($revealedCards = 0; $revealedCards < $revealCount && count($this->deck) > $revealedCards; $revealedCards++) {
+    if(CanRevealCards($this->playerID)) {
+      if($this->RemainingCards() > 0) {
+        for($revealedCards = 0; $revealedCards < $revealCount && count($this->deck) > $revealedCards; $revealedCards++) {
           WriteLog("Reveals " . CardLink($this->deck[$revealedCards], $this->deck[$revealedCards]));
           AddEvent("REVEAL", $this->deck[$revealedCards]);
         }
@@ -45,6 +45,7 @@ class Deck {
         return false;
       }
     }
+    return false;
   }
 
   function Top($remove = false, $amount = 1)

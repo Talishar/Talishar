@@ -369,10 +369,8 @@ function PermanentStartTurnAbilities()
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
       case "ROGUE806":
-        SoulShackleStartTurn($mainPlayer);
-        SoulShackleStartTurn($mainPlayer);
-        SoulShackleStartTurn($mainPlayer);
-        SoulShackleStartTurn($mainPlayer);
+        $deck = new Deck($player);
+        $deck->BanishTop(banishedBy:$player, amount:4);
         $deck = &GetDeck($mainPlayer);
         if(count($deck) < 1) AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;

@@ -87,15 +87,6 @@
     }
   }
 
-  function SoulShackleStartTurn($player)
-  {
-    $deck = &GetDeck($player);
-    if(count($deck) > 0) {
-      $card = array_shift($deck);
-      BanishCardForPlayer($card, $player, "DECK", "-");
-    }
-  }
-
   function InvertExistenceIndices($player)
   {
     $discard = &GetDiscard($player);

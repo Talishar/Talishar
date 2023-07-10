@@ -78,20 +78,6 @@
     }
   }
 
-  function LuminaAscensionHit()
-  {
-    global $mainPlayer;
-    $deck = &GetDeck($mainPlayer);
-    if(count($deck) == 0) return;
-    $cardID = array_shift($deck);
-    if(!RevealCards($cardID, $mainPlayer)) return;
-    if(TalentContains($cardID, "LIGHT", $mainPlayer)) {
-      AddSoul($cardID, $mainPlayer, "DECK");
-      GainHealth(1, $mainPlayer);
-    }
-    else array_push($deck, $cardID);
-  }
-
   function DuskPathPilgrimageHit()
   {
     global $mainCharacter, $combatChainState, $CCS_WeaponIndex;
