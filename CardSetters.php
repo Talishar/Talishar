@@ -21,15 +21,6 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   $rv = -1;
   if($player == "") $player = $currentPlayer;
   AddEvent("BANISH", ($modifier == "INT" || $modifier == "UZURI" ? "CardBack" : $cardID));
-  if($cardID == "DTD109" && $from == "HAND") $modifier = "TT";
-  if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
-    WriteLog(CardLink($cardID, $cardID) . " was banished from your deck face up by an action card. Gained 1 action point.");
-    ++$actionPoints;
-  }
-  if(($modifier == "BOOST" && $from == "DECK") && ($cardID == "DYN101" || $cardID == "DYN102" || $cardID == "DYN103")) {
-    WriteLog(CardLink($cardID, $cardID) . " was banished to pay a boost cost. Put a counter on a Hyper Drive you control.");
-    AddLayer("TRIGGER", $player, $cardID);
-  }
   //Do effects that change where it goes, or banish it if not
   if($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
     $character = &GetPlayerCharacter($player);
@@ -43,6 +34,17 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     }
   }
   ++$classState[$CS_CardsBanished];
+  if($modifier == "INT") return $rv;
+  //Do additional effects
+  if($cardID == "DTD109" && $from == "HAND") $banish[count($banish)-2] = "TT";
+  if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
+    WriteLog(CardLink($cardID, $cardID) . " was banished from your deck face up by an action card. Gained 1 action point.");
+    ++$actionPoints;
+  }
+  if(($modifier == "BOOST" && $from == "DECK") && ($cardID == "DYN101" || $cardID == "DYN102" || $cardID == "DYN103")) {
+    WriteLog(CardLink($cardID, $cardID) . " was banished to pay a boost cost. Put a counter on a Hyper Drive you control.");
+    AddLayer("TRIGGER", $player, $cardID);
+  }
   $character = &GetPlayerCharacter($player);
   if(AttackValue($cardID) >= 6) {
     if($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer) {
