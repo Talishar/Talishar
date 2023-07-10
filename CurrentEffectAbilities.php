@@ -37,11 +37,12 @@ function EffectHitEffect($cardID)
     case "MON034":
       $deck = new Deck($mainPlayer);
       if(!$deck->Reveal()) return;
-      if(TalentContains($deck->Top(), "LIGHT", $mainPlayer)) {
-        $cardID = $deck->Top(remove:true);
-        AddSoul($cardID, $mainPlayer, "DECK");
+      $top = $deck->Top(remove:true);
+      if(TalentContains($top, "LIGHT", $mainPlayer)) {
+        AddSoul($top, $mainPlayer, "DECK");
         GainHealth(1, $mainPlayer);
       }
+      else $deck->AddBottom($top, "DECK");
       break;
     case "MON081": case "MON082": case "MON083":
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
