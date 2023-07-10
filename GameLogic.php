@@ -805,7 +805,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $parameters[0];
       $source = $parameters[1];
       $playerSource = $parameters[2];
-      if(!CanDamageBePrevented($player, $damage, "ARCANE")) $lastResult = 0;
+      if(!CanDamageBePrevented($player, $damage, "ARCANE", $source)) $lastResult = 0;
       $damage = DealDamageAsync($player, $damage - $lastResult, "ARCANE", $source);
       if($damage < 0) $damage = 0;
       if($damage > 0) IncrementClassState($playerSource, $CS_ArcaneDamageDealt, $damage);
