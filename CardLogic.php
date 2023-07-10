@@ -1039,6 +1039,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       Charge();
       break;
     case "DTD200":
+      global $mainPlayer;
       Intimidate($mainPlayer);
       break;
     case $CID_BloodRotPox:
