@@ -143,7 +143,7 @@
         else if($cardID == "UPR201") $maxCost = 1;
         else $maxCost = 0;
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer,"MYDISCARD:maxCost=".$maxCost.";type=AA&MYDISCARD:maxCost=".$maxCost.";type=A&THEIRDISCARD:maxCost=".$maxCost.";type=AA&THEIRDISCARD:maxCost=".$maxCost.";type=A");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card from a graveyard", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a graveyard card", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
@@ -183,8 +183,7 @@
     switch($cardID)
     {
       case "UPR087":
-        if(IsHeroAttackTarget() && RuptureActive())
-        {
+        if(IsHeroAttackTarget() && RuptureActive()) {
           $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
           AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
@@ -208,8 +207,7 @@
       case "UPR188":
         if(IsHeroAttackTarget()) {
           $hand = &GetHand($defPlayer);
-          $amount = count($hand)/HandPieces();
-          LoseHealth($amount, $defPlayer);
+          LoseHealth(count($hand)/HandPieces(), $defPlayer);
         }
         break;
       default: break;
