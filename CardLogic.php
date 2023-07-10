@@ -1038,6 +1038,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "DTD047":
       Charge();
       break;
+    case "DTD200":
+      Intimidate($mainPlayer);
+      break;
     case $CID_BloodRotPox:
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_3_to_avoid_taking_2_damage", 0, 1);
       AddDecisionQueue("NOPASS", $player, "-", 1);

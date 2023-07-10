@@ -317,13 +317,8 @@ function OnBlockResolveEffects()
     if(($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i+2] != "HAND")) UnityEffect($combatChain[$i], $i);
     switch($combatChain[$i]) {
       case "EVR018":
-        if(!IsAllyAttacking()) {
-          WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " trigger creates a layer.");
-          AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
-        }
-        else {
-          WriteLog("<span style='color:red;'>No frostbite is created because there is no attacking hero when allies attack.</span>");
-        }
+        if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
+        else WriteLog("<span style='color:red;'>No frostbite is created because there is no attacking hero when allies attack.</span>");
         break;
       case "MON241": case "MON242": case "MON243": case "MON244": case "RVD005": case "RVD006"://Ironhide
       case "RVD015"://Pack Call
@@ -343,7 +338,7 @@ function OnBlockResolveEffects()
       case "DTD094": case "DTD095": case "DTD096":
         if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
         break;
-      case "DTD200": Intimidate($mainPlayer); break;
+      case "DTD200": AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]); break;
       default: break;
     }
   }
