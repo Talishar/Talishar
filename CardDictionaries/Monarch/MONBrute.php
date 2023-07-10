@@ -79,21 +79,14 @@
 
   function LadyBarthimontAbility($player, $index)
   {
-    $deck = &GetDeck($player);
-    if(count($deck) == 0) return;
-    $topDeck = array_shift($deck);
-    BanishCardForPlayer($topDeck, $player, "DECK", "-");
-    $log = CardLink("MON406", "MON406") . " banished " . CardLink($topDeck, $topDeck);
+    $deck = new Deck($player);
+    if($deck->Empty()) return;
+    $topDeck = $deck->BanishTop("-", $player);
     if(AttackValue($topDeck) >= 6) {
       $arsenal = &GetArsenal($player);
       ++$arsenal[$index+3];
       AddCurrentTurnEffect("MON406", $player);
-      if($arsenal[$index+3] == 2) {
-        $log .= ", gave Dominate, and searched for a specialization card";
-        MentorTrigger($player, $index);
-      }
-      else $log .= " and gave Dominate";
-      WriteLog($log);
+      if($arsenal[$index+3] == 2) MentorTrigger($player, $index);
     }
   }
 

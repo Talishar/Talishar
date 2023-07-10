@@ -436,12 +436,9 @@
         return "";
       case "EVR176":
         if($from == "PLAY") {
-          $deck = &GetDeck($currentPlayer);
-          if(count($deck) == 0) return "Deck is empty.";
-          $mod = "DECK";
-          if(CardType($deck[0]) == "AA") $mod = "TT";
-          BanishCardForPlayer($deck[0], $mainPlayer, "DECK", $mod);
-          array_shift($deck);
+          $deck = new Deck($currentPlayer);
+          if($deck->Empty()) return "Deck is empty";
+          $deck->BanishTop(CardType($deck->Top()) == "AA" ? "TT" : "-");
         }
         return "";
       case "EVR177":
@@ -532,11 +529,9 @@
         if(IsHeroAttackTarget()) AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "EVR038":
-        if(ComboActive())
-        {
-          $deck = &GetDeck($mainPlayer);
-          BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "NT");
-          array_shift($deck);
+        if(ComboActive()) {
+          $deck = new Deck($mainPlayer);
+          $deck->BanishTop("NT", $mainPlayer);
         }
         break;
       case "EVR039":
@@ -545,14 +540,14 @@
       case "EVR040":
         if(ComboActive())
         {
-          $deck = &GetDeck($mainPlayer);
+          $deck = new Deck($mainPlayer);
           for($i=0; $i<count($chainLinks); ++$i)
           {
             $attackID = $chainLinks[$i][0];
             if($chainLinks[$i][2] == "1" && ($attackID == "EVR041" || $attackID == "EVR042" || $attackID == "EVR043"))
             {
               $chainLinks[$i][2] = "0";
-              array_push($deck, $attackID);
+              $deck->AddBottom($attackID, "CC");
             }
           }
           AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
@@ -683,9 +678,8 @@
     $defArs = &GetArsenal($defPlayer);
     if(count($mainArs) < count($defArs))
     {
-      $deck = &GetDeck($mainPlayer);
-      $card = array_shift($deck);
-      AddArsenal($card, $mainPlayer, "DECK", "DOWN");
+      $deck = new Deck($mainPlayer);
+      AddArsenal($deck->Top(remove:true), $mainPlayer, "DECK", "DOWN");
       WriteLog("Talisman of Balance destroyed itself and put a card in your arsenal");
       return true;
     }
