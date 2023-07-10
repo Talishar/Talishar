@@ -63,7 +63,6 @@
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $cardID . ",HIT", 1);
         break;
       case "UPR161":
-        $rv = "";
         $deck = new Deck($mainPlayer);
         if(HitsInCombatChain() >= 2) $deck->BanishTop(CardType($deck->Top()) == "AA" ? "NT" : "-", $mainPlayer);
         break;
