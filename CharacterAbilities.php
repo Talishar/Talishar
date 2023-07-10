@@ -634,6 +634,7 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
   $otherPlayer = $player == 1 ? 1 : 2;
   for($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces())
   {
+    if($char[$i+1] == 0) continue;
     switch($char[$i]) {
       case "DTD004":
         if(SearchCurrentTurnEffects("DTD004-1", $player))
