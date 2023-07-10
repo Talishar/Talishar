@@ -70,7 +70,7 @@
         }
         return $rv;
       case "UPR136":
-        if (ShouldAutotargetOpponent($currentPlayer)) {
+        if(ShouldAutotargetOpponent($currentPlayer)) {
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
           AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "CORONETPEAK", 1);
         } else {
@@ -116,9 +116,9 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         $char = &GetPlayerCharacter($currentPlayer);
         $char[GetClassState($currentPlayer, $CS_PlayIndex)+7] = 1;
-        return "Prevents the next 1 damage.";
+        return "";
       case "UPR191": case "UPR192": case "UPR193":
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how much you want to pay", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay to buff Flex", 1);
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0," . 2, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
