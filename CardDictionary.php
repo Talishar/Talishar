@@ -1256,7 +1256,7 @@ function PlayableFromBanish($cardID, $mod="")
     case "DTD141":
     case "DTD161": case "DTD162": case "DTD163":
     case "DTD175": case "DTD176": case "DTD177":
-    case "DTD140": case "DTD170": return true;
+    case "DTD140": case "DTD170": case "DTD171": return true;
     case "DTD172": case "DTD173": case "DTD174":
       $soul = &GetSoul($currentPlayer == 1 ? 2 : 1);
       return count($soul) > 0;
