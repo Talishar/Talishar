@@ -552,6 +552,7 @@ function WTRAbilityCost($cardID)
       case "WTR066": case "WTR067": case "WTR068": case "WTR050": case "WTR049": case "WTR048":
       case "CRU026": case "CRU027": case "CRU032": case "CRU033": case "CRU034": case "CRU035":
       case "CRU036": case "CRU037":
+      case "DTD203":
         return true;
       default:
         return false;
