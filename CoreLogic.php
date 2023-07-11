@@ -1033,16 +1033,10 @@ function CombatChainClosedCharacterEffects()
           }
           break;
         case "RVD003":
-          Writelog("Processing " . Cardlink($chainLinks[$i][$j], $chainLinks[$i][$j]) . " trigger: ");
-          $deck = &GetDeck($defPlayer);
-          $rv = "";
-          if (count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";
-          $wasRevealed = RevealCards($deck[0]);
-          if ($wasRevealed) {
-            if (AttackValue($deck[0]) < 6) {
-              WriteLog("The card was put on the bottom of your deck.");
-              array_push($deck, array_shift($deck));
-            }
+          $deck = new Deck($defPlayer);
+          if($deck->Reveal() && AttackValue($deck->Top()) < 6) {
+            $card = $deck->AddBottom($deck->Top(remove:true), "DECK");
+            WriteLog(CardLink("RVD015", "RVD015") . " put " . CardLink($card, $card) . " on the bottom of your deck");
           }
           break;
         default: break;
@@ -1056,10 +1050,8 @@ function NumDefendedFromHand() //Reprise
 {
   global $combatChain, $defPlayer;
   $num = 0;
-  for($i=0; $i<count($combatChain); $i += CombatChainPieces())
-  {
-    if($combatChain[$i+1] == $defPlayer)
-    {
+  for($i=0; $i<count($combatChain); $i += CombatChainPieces()) {
+    if($combatChain[$i+1] == $defPlayer) {
       $type = CardType($combatChain[$i]);
       if($type != "I" && $combatChain[$i+2] == "HAND") ++$num;
     }
@@ -1071,15 +1063,15 @@ function NumBlockedFromHand() //Dominate
 {
   global $combatChain, $defPlayer, $layers;
   $num = 0;
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    if ($combatChain[$i + 1] == $defPlayer) {
+  for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if($combatChain[$i+1] == $defPlayer) {
       $type = CardType($combatChain[$i]);
-      if ($type != "I" && $combatChain[$i + 2] == "HAND") ++$num;
+      if($type != "I" && $combatChain[$i+2] == "HAND") ++$num;
     }
   }
-  for ($i = 0; $i < count($layers); $i += LayerPieces()) {
-    $params = explode("|", $layers[$i + 2]);
-    if ($params[0] == "HAND" && CardType($layers[$i]) == "DR") ++$num;
+  for($i = 0; $i < count($layers); $i += LayerPieces()) {
+    $params = explode("|", $layers[$i+2]);
+    if($params[0] == "HAND" && CardType($layers[$i]) == "DR") ++$num;
   }
   return $num;
 }
@@ -1088,10 +1080,10 @@ function NumActionBlocked()
 {
   global $combatChain, $defPlayer;
   $num = 0;
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    if ($combatChain[$i + 1] == $defPlayer) {
+  for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if($combatChain[$i + 1] == $defPlayer) {
       $type = CardType($combatChain[$i]);
-      if ($type == "A" || $type == "AA") ++$num;
+      if($type == "A" || $type == "AA") ++$num;
     }
   }
   return $num;
@@ -1101,10 +1093,8 @@ function NumCardsBlocking()
 {
   global $combatChain, $defPlayer;
   $num = 0;
-  for($i=0; $i<count($combatChain); $i += CombatChainPieces())
-  {
-    if($combatChain[$i+1] == $defPlayer)
-    {
+  for($i=0; $i<count($combatChain); $i += CombatChainPieces()) {
+    if($combatChain[$i+1] == $defPlayer) {
       $type = CardType($combatChain[$i]);
       if($type != "I" && $type != "C") ++$num;
     }
@@ -1116,10 +1106,10 @@ function NumCardsNonEquipBlocking()
 {
   global $combatChain, $defPlayer;
   $num = 0;
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    if ($combatChain[$i + 1] == $defPlayer) {
+  for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if($combatChain[$i + 1] == $defPlayer) {
       $type = CardType($combatChain[$i]);
-      if ($type != "E" && $type != "I" && $type != "C") ++$num;
+      if($type != "E" && $type != "I" && $type != "C") ++$num;
     }
   }
   return $num;
@@ -1129,12 +1119,8 @@ function NumAttacksBlocking()
 {
   global $combatChain, $defPlayer;
   $num = 0;
-  for($i=0; $i<count($combatChain); $i += CombatChainPieces())
-  {
-    if($combatChain[$i+1] == $defPlayer)
-    {
-      if(CardType($combatChain[$i]) == "AA") ++$num;
-    }
+  for($i=0; $i<count($combatChain); $i += CombatChainPieces()) {
+    if($combatChain[$i+1] == $defPlayer && CardType($combatChain[$i]) == "AA") ++$num;
   }
   return $num;
 }
@@ -1143,10 +1129,8 @@ function NumActionsBlocking()
 {
   global $combatChain, $defPlayer;
   $num = 0;
-  for($i=0; $i<count($combatChain); $i += CombatChainPieces())
-  {
-    if($combatChain[$i+1] == $defPlayer)
-    {
+  for($i=0; $i<count($combatChain); $i += CombatChainPieces()) {
+    if($combatChain[$i+1] == $defPlayer) {
       $cardType = CardType($combatChain[$i]);
       if($cardType == "A" || $cardType == "AA") ++$num;
     }
@@ -1160,8 +1144,7 @@ function NumNonAttackActionBlocking()
   $num = 0;
   for($i=0; $i<count($combatChain); $i += CombatChainPieces())
   {
-    if($combatChain[$i+1] == $defPlayer)
-    {
+    if($combatChain[$i+1] == $defPlayer) {
       $type = CardType($combatChain[$i]);
       if($type == "A") ++$num;
     }
@@ -1173,10 +1156,8 @@ function NumReactionBlocking()
 {
   global $combatChain, $defPlayer;
   $num = 0;
-  for($i=0; $i<count($combatChain); $i += CombatChainPieces())
-  {
-    if($combatChain[$i+1] == $defPlayer)
-    {
+  for($i=0; $i<count($combatChain); $i += CombatChainPieces()) {
+    if($combatChain[$i+1] == $defPlayer) {
       $type = CardType($combatChain[$i]);
       if($type == "AR" || $type == "DR") ++$num;
     }
