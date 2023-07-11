@@ -994,6 +994,7 @@ function CharacterDefaultActiveState($cardID)
     case "EVR037": return 1;
     case "UPR004": case "UPR047": case "UPR125": case "UPR184": case "UPR185": case "UPR186": return 0;
     case "DYN006": return 1;
+    case "DTD165": case "DTD166": case "DTD167": case "DTD168": return 0;
     default: return 2;
   }
 }
@@ -1206,6 +1207,7 @@ function HasBloodDebt($cardID)
     case "DTD155": case "DTD156": case "DTD157":
     case "DTD158": case "DTD159": case "DTD160":
     case "DTD161": case "DTD162": case "DTD163":
+    case "DTD165": case "DTD166": case "DTD167": case "DTD168":
     case "DTD169": case "DTD170": case "DTD171":
     case "DTD172": case "DTD173": case "DTD174":
     case "DTD175": case "DTD176": case "DTD177":

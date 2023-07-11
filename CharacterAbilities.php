@@ -639,9 +639,7 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
       case "DTD004":
         if(SearchCurrentTurnEffects("DTD004-1", $player))
         {
-          if($preventable) {
-            --$damage;
-          }
+          if($preventable) --$damage;
           DestroyCharacter($player, $i);
         }
         break;
@@ -650,6 +648,14 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
         {
           --$damage;
           --$char[$i+5];
+        }
+        break;
+      case "DTD165": case "DTD166": case "DTD167": case "DTD168":
+        if($char[$i+9] == 0) break;
+        if($damage > 0) {
+          if($preventable) $damage -= 2;
+          BanishCardForPlayer($char[$i], $player, "PLAY");
+          DestroyCharacter($player, $i, skipDestroy:true);
         }
         break;
       default:
