@@ -1524,13 +1524,14 @@ function DoesAttackHaveGoAgain()
   if(count($combatChain) == 0) return false;//No combat chain, so no
   $attackType = CardType($combatChain[0]);
   $attackSubtype = CardSubType($combatChain[0]);
+  $isAura = DelimStringContains(CardSubtype($combatChain[0]), "Aura");
   if(CurrentEffectPreventsGoAgain()) return false;
   if(SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false; //Blizzard
-  if(HasGoAgain($combatChain[0])) return true;
+  if(!$isAura && HasGoAgain($combatChain[0])) return true;
   if(ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer))
   {
     if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
-    if(DelimStringContains(CardSubtype($combatChain[0]), "Aura") && SearchCharacterForCard($mainPlayer, "MON088")) return true;
+    if($isAura && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
   if(SearchAuras("UPR139", $mainPlayer)) return false;//Hypothermia
   if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
