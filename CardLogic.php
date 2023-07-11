@@ -487,7 +487,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
   $auras = &GetAuras($player);
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
-  switch ($parameter) {
+  switch($parameter) {
     case "HEAVE":
       Heave();
       break;
@@ -495,7 +495,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       if(IHaveLessHealth()) GainHealth(1, $player);
       break;
     case "WTR001": case "WTR002": case "RVD001":
-      WriteLog(CardLink($parameter, $parameter) . " Intimidates");
       Intimidate();
       break;
     case "WTR046":
@@ -503,7 +502,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "WTR047":
       Draw($player);
-      WriteLog(CardLink($parameter, $parameter) . " drew a card");
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "WTR054": case "WTR055": case "WTR056":
@@ -514,7 +512,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "WTR069": case "WTR070": case "WTR071":
-      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter));
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
@@ -529,7 +526,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       KatsuHit();
       break;
     case "WTR079":
-      WriteLog(CardLink($parameter, $parameter) . " drew a card");
       Draw($player);
       break;
     case "WTR117":
@@ -549,7 +545,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       --$items[$index + 1];
       GainResources($player, 2);
       if($items[$index + 1] <= 0) DestroyItemForPlayer($player, $index);
-      WriteLog(CardLink($parameter, $parameter) . " produced 2 resources");
       break;
     case "ARC035":
       $index = SearchItemsForUniqueID($uniqueID, $player);
@@ -587,12 +582,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "CRU029": case "CRU030": case "CRU031":
-      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter));
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "CRU038": case "CRU039": case "CRU040":
-      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter) . " and dominate");
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
@@ -678,28 +671,21 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
     case "ELE025": case "ELE026": case "ELE027":
-      WriteLog(CardLink($parameter, $parameter) . " gives the next attack action card this turn +" . EffectAttackModifier($parameter));
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ELE028": case "ELE029": case "ELE030":
-      WriteLog(CardLink($parameter, $parameter) . " gives the next attack action card this turn +" . EffectAttackModifier($parameter));
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ELE062": case "ELE063":
       PlayAura("ELE110", $player);
-      WriteLog(CardLink($parameter, $parameter) . " created an Embodiment of Lightning aura");
       break;
     case "ELE066":
       if(HasIncreasedAttack()) Draw($player);
       break;
     case "ELE004":
-      for($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
-        if($combatChain[$i] == $player) {
-          PlayAura("ELE111", $player);
-        }
-      }
+      for($i = 1; $i < count($combatChain); $i += CombatChainPieces()) if($combatChain[$i] == $player) PlayAura("ELE111", $player);
       break;
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
@@ -731,12 +717,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("ADDCURRENTEFFECT", $player, "ELE203", 1);
       break;
     case "ELE206": case "ELE207": case "ELE208":
-      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter));
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ELE215":
-      WriteLog(CardLink("ELE215", "ELE215") . " discarded your hand and arsenal");
       DestroyArsenal($target);
       DiscardHand($target);
       break;
@@ -779,7 +763,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "EVR120": case "UPR102": case "UPR103":
       $otherPlayer = ($player == 1 ? 2 : 1);
       PlayAura("ELE111", $otherPlayer);
-      WriteLog(CardLink($parameter, $parameter) . " created a Frostbite for playing an ice card");
       break;
     case "EVR131": case "EVR132": case "EVR133":
       DestroyAuraUniqueID($player, $uniqueID);
@@ -804,9 +787,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       $index = SearchAurasForUniqueID($uniqueID, $player);
       if($index == -1) break;
       $auras = &GetAuras($player);
-      --$auras[$index + 2];
+      --$auras[$index+2];
       PayOrDiscard($target, 2, true);
-      if($auras[$index + 2] == 0) {
+      if($auras[$index+2] == 0) {
         WriteLog(CardLink($auras[$index], $auras[$index]) . " is destroyed");
         DestroyAura($player, $index);
       }
@@ -823,7 +806,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "UPR190":
       DestroyAuraUniqueID($player, $uniqueID);
-      WriteLog(CardLink($parameter, $parameter) . " is destroyed");
       break;
     case "UPR191": case "UPR192": case "UPR193":
       ChooseToPay($player, $parameter, "0,2");
@@ -869,7 +851,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       RemoveGraveyard($player, $found);
       AddBottomDeck($parameter, $player, "GY");
-      WriteLog(CardLink($parameter, $parameter) . " was put at the bottom of the deck");
       break;
     case "DYN093":
       $targetIndex = SearchItemsForUniqueID($target, $player);
@@ -922,7 +903,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "DYN152":
       $otherPlayer = ($player == 1 ? 2 : 1);
       $deck = &GetDeck($player);
-      if(count($deck) == 0) WriteLog("Your deck is empty. No card is revealed.");
+      if(count($deck) == 0) WriteLog("Your deck is empty; No card is revealed");
       $wasRevealed = RevealCards($deck[0]);
       if($wasRevealed) {
         if(CardSubType($deck[0]) == "Arrow") {
@@ -1118,7 +1099,6 @@ function TopDeckToArsenal($player)
   $deck = &GetDeck($player);
   if(ArsenalFull($player) || count($deck) == 0) return;
   AddArsenal(array_shift($deck), $player, "DECK", "DOWN");
-  WriteLog("The top card of player " . $player . "'s deck was put in their arsenal");
 }
 
 function DiscardHand($player)
@@ -1150,7 +1130,6 @@ function BanishRandom($player, $source)
   unset($hand[$index]);
   $hand = array_values($hand);
   BanishCardForPlayer($banished, $player, "HAND");
-  WriteLog(CardLink($banished, $banished) . " was randomly banished");
   return $banished;
 }
 
@@ -1165,7 +1144,6 @@ function DiscardRandom($player = "", $source = "")
   unset($hand[$index]);
   $hand = array_values($hand);
   AddGraveyard($discarded, $player, "HAND");
-  WriteLog(CardLink($discarded, $discarded) . " was randomly discarded");
   CardDiscarded($player, $discarded, $source);
   DiscardedAtRandomEffects($player, $discarded, $source);
   return $discarded;
@@ -1232,7 +1210,6 @@ function Intimidate($player="")
   $index = GetRandom() % count($hand);
   BanishCardForPlayer($hand[$index], $player, "HAND", "INT");
   RemoveHand($player, $index);
-  WriteLog("Intimidate banished a card");
 }
 
 function DestroyFrozenArsenal($player)
