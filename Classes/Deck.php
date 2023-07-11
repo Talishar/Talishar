@@ -76,6 +76,7 @@ class Deck {
   function AddBottom($cardID, $from="GY")
   {
     array_push($this->deck, $cardID);
+    return $cardID;
   }
 }
 

@@ -785,13 +785,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "RVD015":
-      $deck = &GetDeck($player);
-      $rv = "";
-      if(count($deck) == 0) $rv .= "Your deck is empty. No card is revealed";
-      $wasRevealed = RevealCards($deck[0]);
-      if($wasRevealed && AttackValue($deck[0]) < 6) {
-          WriteLog("The card was put on the bottom of your deck");
-          array_push($deck, array_shift($deck));
+      $deck = new Deck($player);
+      if($deck->Reveal() && AttackValue($deck->Top()) < 6) {
+        $card = $deck->AddBottom($deck->Top(remove:true), "DECK");
+        WriteLog(CardLink("RVD015", "RVD015") . " put " . CardLink($card, $card) . " on the bottom of your deck");
       }
       break;
     case "UPR095":
