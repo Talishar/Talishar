@@ -792,26 +792,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       break;
     case "UPR095":
-      if(GetClassState($player, $CS_DamageTaken) > 0) {
-        $discard = &GetDiscard($player);
-        $found = -1;
-        for($i = 0; $i < count($discard) && $found == -1; $i += DiscardPieces()) {
-          if($discard[$i] == "UPR101") $found = $i;
-        }
-        if($found == -1) WriteLog("No Phoenix Flames in discard");
-        else {
-          RemoveGraveyard($player, $found);
-          AddPlayerHand("UPR101", $player, "GY");
-        }
-      }
+      if(GetClassState($player, $CS_DamageTaken) > 0) MZMoveCard($player, "MYDISCARD:sameName=UPR101", "MYHAND", may:true);
       break;
     case "UPR096":
-      if(GetClassState($player, $CS_NumRedPlayed) > 1 && CanRevealCards($player))
-      {
-        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:cardID=UPR101");
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZREMOVE", $player, "-", 1);
-        AddDecisionQueue("ADDHAND", $player, "-", 1);
+      if(GetClassState($player, $CS_NumRedPlayed) > 1 && CanRevealCards($player)) {
+        MZMoveCard($player, "MYDECK:sameName=UPR101", "MYHAND", may:true);
         AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
       }
       return "";
@@ -841,10 +826,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       WriteLog(CardLink($parameter, $parameter) . " is destroyed");
       break;
     case "UPR191": case "UPR192": case "UPR193":
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
-      AddDecisionQueue("BUTTONINPUT", $player, "0,2");
-      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      AddDecisionQueue("LESSTHANPASS", $player, "2", 1);
+      ChooseToPay($player, $parameter, "0,2");
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
       AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $player, "2", 1);
       break;
@@ -852,10 +834,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       if(PlayerHasLessHealth($player)) GainHealth(1, $player);
       break;
     case "UPR203": case "UPR204": case "UPR205":
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
-      AddDecisionQueue("BUTTONINPUT", $player, "0,1");
-      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
+      ChooseToPay($player, $parameter, "0,1");
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
       break;
@@ -876,11 +855,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       GainResources($player, 1);
       break;
     case "DYN009":
-      $deck = &GetDeck($player);
-      $rv = "";
-      if(count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";
-      $wasRevealed = RevealCards($deck[0]);
-      if($wasRevealed && AttackValue($deck[0]) >= 6) {
+      $deck = new Deck($player);
+      if($deck->Reveal() && AttackValue($deck->Top()) >= 6) {
         Draw($player);
         WriteLog(CardLink($parameter, $parameter) . " drew a card");
       }
