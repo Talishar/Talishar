@@ -184,6 +184,14 @@ function PlayerTargetedAbility($player, $card, $lastResult)
       PummelHit($target);
       PummelHit($target);
       return "";
+    case "DTD178": case "DTD179": case "DTD180":
+      if($card == "DTD178") $pitchTarget = 1;
+      else if($card == "DTD179") $pitchTarget = 2;
+      else $pitchTarget = 3;
+      $deck = new Deck($target);
+      $banished = $deck->BanishTop();
+      if(PitchValue($banished) == $pitchTarget) LoseHealth(1, $target);
+      return "";
     default: return $lastResult;
   }
 }
