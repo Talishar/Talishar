@@ -24,27 +24,21 @@
         Draw($currentPlayer);
         return "";
       case "UPR090":
-        if(RuptureActive())
-        {
-          $deck = &GetDeck($currentPlayer);
-          $cards = "";
-          $numRed = 0;
-          for($i=0; $i<NumDraconicChainLinks(); $i+=DeckPieces())
-          {
-            if($cards != "") $cards .= ",";
-            $cards .= $deck[$i];
-            if(PitchValue($deck[$i]) == 1) ++$numRed;
+        if(RuptureActive()) {
+          $deck = new Deck($currentPlayer);
+          $num = NumDraconicChainLinks();
+          if($deck->Reveal($num)) {
+            $cards = explode(",", $deck->Top(amount:$num));
+            $numRed = 0;
+            for($j = 0; $j < count($cards); ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
+            if($numRed > 0) {
+              AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
+              AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal ". $numRed ." damage.");
+              AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+              AddDecisionQueue("MZDAMAGE", $currentPlayer, $numRed . ",DAMAGE," . $cardID, 1);
+              AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+            }
           }
-          $reveals = RevealCards($cards);
-          if($reveals)
-          {
-            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
-            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal ". $numRed ." damage.");
-            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-            AddDecisionQueue("MZDAMAGE", $currentPlayer, $numRed . ",DAMAGE," . $cardID, 1);
-            AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-          }
-          else return "Cannot reveal cards";
         }
         return "";
       case "UPR091":
