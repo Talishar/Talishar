@@ -902,11 +902,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "DYN152":
       $otherPlayer = ($player == 1 ? 2 : 1);
-      $deck = &GetDeck($player);
-      if(count($deck) == 0) WriteLog("Your deck is empty; No card is revealed");
-      $wasRevealed = RevealCards($deck[0]);
-      if($wasRevealed) {
-        if(CardSubType($deck[0]) == "Arrow") {
+      $deck = new Deck($player);
+      if($deck->Reveal()) {
+        if(CardSubType($deck->Top()) == "Arrow") {
           if(IsAllyAttacking()) {
             $allyIndex = "THEIRALLY-" . GetAllyIndex($combatChain[0], $otherPlayer);
             AddDecisionQueue("PASSPARAMETER", $player, $allyIndex, 1);
@@ -919,17 +917,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         }
         else {
           WriteLog("The card was put on the bottom of your deck");
-          array_push($deck, array_shift($deck));
+          $deck->AddBottom($deck->Top(remove:true), "DECK");
         }
       }
       break;
     case "DYN153":
-      $deck = &GetDeck($player);
-      if(count($deck) == 0) break;
-      if(!ArsenalFull($player)) {
-        $card = array_shift($deck);
-        AddArsenal($card, $player, "DECK", "UP");
-      }
+      $deck = new Deck($player);
+      if(!$deck->Empty() && !ArsenalFull($player)) AddArsenal($deck->Top(remove:true), $player, "DECK", "UP");
       break;
     case "DYN214":
       PlayAura("MON104", $player);
@@ -1007,15 +1001,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case $CID_Inertia:
-      $deck = &GetDeck($player);
+      $deck = new Deck($player);
       $arsenal = &GetArsenal($player);
       while(count($arsenal) > 0) {
-        array_push($deck, $arsenal[0]);
+        $deck->AddBottom($arsenal[0], "ARS");
         RemoveArsenal($player, 0);
       }
       $hand = &GetHand($player);
       while(count($hand) > 0) {
-        array_push($deck, $hand[0]);
+        $deck->AddBottom($hand[0], "HAND");
         RemoveHand($player, 0);
       }
       DestroyAuraUniqueID($player, $uniqueID);
@@ -1096,9 +1090,9 @@ function GiveAttackGoAgain()
 
 function TopDeckToArsenal($player)
 {
-  $deck = &GetDeck($player);
-  if(ArsenalFull($player) || count($deck) == 0) return;
-  AddArsenal(array_shift($deck), $player, "DECK", "DOWN");
+  $deck = new Deck($player);
+  if(ArsenalFull($player) || $deck->Empty()) return;
+  AddArsenal($deck->Top(remove:true), $player, "DECK", "DOWN");
 }
 
 function DiscardHand($player)

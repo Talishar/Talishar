@@ -534,14 +534,11 @@ function WTRAbilityCost($cardID)
   function NaturesPathPilgrimageHit()
   {
     global $mainPlayer;
-    $deck = &GetDeck($mainPlayer);
-    if(!ArsenalFull($mainPlayer) && count($deck) > 0)
-    {
-      $type = CardType($deck[0]);
-      if(RevealCards($deck[0], $mainPlayer) && ($type == "A" || $type == "AA"))
-      {
-        AddArsenal($deck[0], $mainPlayer, "DECK", "DOWN");
-        array_shift($deck);
+    $deck = new Deck($mainPlayer);
+    if(!ArsenalFull($mainPlayer) && !$deck->Empty()) {
+      $type = CardType($deck->Top());
+      if($deck->Reveal() && ($type == "A" || $type == "AA")) {
+        AddArsenal($deck->Top(remove:true), $mainPlayer, "DECK", "DOWN");
       }
     }
   }
