@@ -2446,5 +2446,5 @@ function ChooseToPay($player, $cardID, $amounts)
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($cardID, $cardID));
   AddDecisionQueue("BUTTONINPUT", $player, $amounts);
   AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-  AddDecisionQueue("LESSTHANPASS", $player, "2", 1);
+  AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
 }
