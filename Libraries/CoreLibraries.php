@@ -37,12 +37,12 @@ function SeedRandom()
 
   $discard = &GetDiscard(1);
   for($i=0; $i<count($discard); ++$i) $seedString .= $discard[$i];
-  $banish = &GetDiscard(2);
+  $discard = &GetDiscard(2);
   for($i=0; $i<count($discard); ++$i) $seedString .= $discard[$i];
 
   $deck = &GetDeck(1);
   for($i=0; $i<count($deck); ++$i) $seedString .= $deck[$i];
-  $banish = &GetDeck(2);
+  $deck = &GetDeck(2);
   for($i=0; $i<count($deck); ++$i) $seedString .= $deck[$i];
 
   $seedString = hash("sha256", $seedString);
