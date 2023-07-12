@@ -973,6 +973,7 @@ function IsCombatEffectPersistent($cardID)
     case "UPR036": case "UPR037": case "UPR038": case "UPR047": case "UPR049": return true;
     case "DYN009": case "DYN049": case "DYN085": case "DYN086": case "DYN087": case "DYN089-UNDER": case "DYN154": return true;
     case "OUT052": case "OUT140": case "OUT141": case "OUT144": case "OUT188_1": return true;
+    case "DTD011": return true;
     case "DTD051": return true;//Beckoning Light
     case "DTD052": return true;//Spirit of War
     case "DTD111": return true;
