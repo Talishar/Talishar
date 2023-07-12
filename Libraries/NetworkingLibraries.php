@@ -146,7 +146,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 13: //HANDBOTTOM
       if ($turn[0] == "HANDTOPBOTTOM") {
         $hand = &GetHand($playerID);
-        $deck = GetDeck($playerID);
+        $deck = new Deck($playerID);
         $cardID = $hand[$buttonInput];
         $deck->AddBottom($cardID);
         unset($hand[$buttonInput]);
