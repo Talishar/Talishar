@@ -200,6 +200,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "DYN036": case "DYN037": case "DYN038":
       $blockModifier += SearchCharacter($defPlayer, subtype: "Off-Hand", class: "GUARDIAN") != "" ? 4 : 0;
       break;
+    case "DTD206":
+      $blockModifier += CountCurrentTurnEffects("DTD206", $defPlayer);
+      break;
     default: break;
   }
   return $blockModifier;

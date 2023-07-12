@@ -145,7 +145,6 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD190": return $combatChain[2] == "BANISH" && PitchValue($combatChain[0]) == 1;
     case "DTD191": return $combatChain[2] == "BANISH" && PitchValue($combatChain[0]) == 2;
     case "DTD192": return $combatChain[2] == "BANISH" && PitchValue($combatChain[0]) == 3;
-    case "DTD206": return true;
     case "DTD207": return SubtypeContains($combatChain[0], "Sword", $mainPlayer);//Ironsong Versus
     case "DTD208": return true;
     case "DTD213": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);

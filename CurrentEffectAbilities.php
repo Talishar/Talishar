@@ -312,7 +312,6 @@ function EffectHasBlockModifier($cardID)
     case "OUT110":
     case "OUT111":
     case "DTD094": case "DTD095": case "DTD096":
-    case "DTD206":
     return true;
     default: return false;
   }
@@ -339,8 +338,6 @@ function EffectBlockModifier($cardID, $index)
       return (PitchValue($combatChain[$index]) == 3 && HasAimCounter() ? -1 : 0);
     case "DTD094": case "DTD095": case "DTD096":
       return (CardType($combatChain[$index]) != "E" && TalentContains($combatChain[$index], "LIGHT", $defPlayer) && TalentContains($combatChain[0], "SHADOW", $mainPlayer) ? 1 : 0);
-    case "DTD206":
-      return ($combatChain[$index] == "DTD206" ? 1 : 0);
     default:
       return 0;
   }
@@ -978,7 +975,6 @@ function IsCombatEffectPersistent($cardID)
     case "DTD052": return true;//Spirit of War
     case "DTD111": return true;
     case "DTD198": return true;//Call Down the Lightning
-    case "DTD206": return true;
     case "DTD410": return true;
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
