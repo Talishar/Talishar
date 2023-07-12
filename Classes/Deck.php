@@ -23,11 +23,16 @@ class Deck {
     return count($this->deck);
   }
 
-  function Remove($index) {
-    $cardID = $this->deck[$index];
-    unset($this->deck[$index]);
-    $this->deck = array_values($this->deck);
-    return $cardID;
+  function Remove($indices) {
+    $indexArr = explode(",", $index);
+    $cardIDs = "";
+    for($i=count($indexArr)-1; $i>= 0; --$i) {
+      if($cardIDs != "") $cardIDs .= ",";
+      $cardIDs .= $this->deck[$i];
+      unset($this->deck[$i]);
+      $this->deck = array_values($this->deck);
+    }
+    return $cardIDs;
   }
 
   function Reveal($revealCount=1) {
@@ -70,6 +75,12 @@ class Deck {
       if($mod == "TCC" && $cardType != "AR" && $cardType != "I" && $cardType != "AA" && !CanPlayAsInstant($card)) $mod = "-";
       BanishCardForPlayer($cardID, $this->playerID, "DECK", $modifier, $banishedBy);
     }
+    return $cardID;
+  }
+
+  function AddTop($cardID, $from="GY")
+  {
+    array_unshift($this->deck, $cardID);
     return $cardID;
   }
 

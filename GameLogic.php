@@ -54,16 +54,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "CRU143": $rv = SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE"); break;
         case "DECK": $rv = SearchDeck($player); break;
         case "TOPDECK":
-          $deck = &GetDeck($player);
-          if(count($deck) > 0) $rv = "0";
+          $deck = new Deck($player);
+          if(!$deck->Empty()) $rv = "0";
           break;
         case "DECKTOPXINDICES":
-          $deck = &GetDeck($player);
-          for($i=0; $i<$subparam && $i<count($deck); ++$i)
-          {
-            if($rv != "") $rv .= ",";
-            $rv .= $i;
-          }
+        $deck = new Deck($player);
+          $amount = ($subparam > $deck->RemainingCards() ? $deck->RemainingCards() : $subparam);
+          $rv = GetIndices($amount);
           break;
         case "DECKTOPXREMOVE":
           $deck = new Deck($player);
@@ -406,33 +403,26 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddGraveyard($lastResult, $player, $parameter);
       return $lastResult;
     case "ADDBOTDECK":
-      $deck = &GetDeck($player);
-      array_push($deck, $lastResult);
+      $deck = new Deck($player);
+      $deck->AddBottom($lastResult);
       return $lastResult;
     case "MULTIADDDECK":
-      $deck = &GetDeck($player);
+      $deck = new Deck($player);
       $cards = explode(",", $lastResult);
-      for($i = 0; $i < count($cards); ++$i) array_push($deck, $cards[$i]);
+      for($i = 0; $i < count($cards); ++$i) $deck->AddBottom($cards[$i]);
       return $lastResult;
     case "MULTIADDTOPDECK":
-      $deck = &GetDeck($player);
+      $deck = new Deck($player);
       $cards = explode(",", $lastResult);
       for($i = 0; $i < count($cards); ++$i) {
         if($parameter == "1") WriteLog(CardLink($cards[$i], $cards[$i]));
-        array_unshift($deck, $cards[$i]);
+        $deck->AddTop($cards[$i]);
       }
       return $lastResult;
     case "MULTIREMOVEDECK":
-      if(!is_array($lastResult)) $lastResult = ($lastResult == "" ? [] : explode(",", $lastResult));
-      $cards = "";
-      $deck = &GetDeck($player);
-      for($i = 0; $i < count($lastResult); ++$i) {
-        if($cards != "") $cards .= ",";
-        $cards .= $deck[$lastResult[$i]];
-        unset($deck[$lastResult[$i]]);
-      }
-      $deck = array_values($deck);
-      return $cards;
+      if(is_array($lastResult)) $lastResult = ($lastResult == [] ? "" : implode(",", $lastResult));
+      $deck = new Deck($player);
+      return $deck->Remove($lastResult);
     case "PLAYAURA":
       PlayAura($parameter, $player);
       break;
@@ -935,12 +925,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       StartTurnAbilities();
       return 1;
     case "DRAWTOINTELLECT":
-      $deck = &GetDeck($player);
-      $hand = &GetHand($player);
       $char = &GetPlayerCharacter($player);
-      for($i = 0; $i < CharacterIntellect($char[0]); ++$i) {
-        array_push($hand, array_shift($deck));
-      }
+      for($i = 0; $i < CharacterIntellect($char[0]); ++$i) Draw($player, mainPhase:false, fromCardEffect:false);
       return 1;
     case "ROLLDIE":
       $roll = RollDie($player, true, $parameter == "1");

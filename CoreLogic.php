@@ -1836,9 +1836,9 @@ function NumEquipBlock()
 
   function PitchDeck($player, $index)
   {
-    $deck = &GetDeck($player);
+    $deck = new Deck($player);
     $cardID = RemovePitch($player, $index);
-    array_push($deck, $cardID);
+    $deck->AddBottom($cardID, "PITCH");
   }
 
   function GetUniqueId()
@@ -2403,11 +2403,11 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true)
     WriteLog("Draw prevented by " . CardLink("UPR138", "UPR138"));
     return "";
   }
-  $deck = &GetDeck($player);
+  $deck = new Deck($player);
   $hand = &GetHand($player);
-  if(count($deck) == 0) return -1;
+  if($deck->Empty()) return -1;
   if(CurrentEffectPreventsDraw($player, $mainPhase)) return -1;
-  $cardID = array_shift($deck);
+  $cardID = $deck->Top(remove:true);
   if($mainPhase && (SearchAurasForCard("DTD170", 1) != "" || SearchAurasForCard("DTD170", 2) != "")) BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
   else array_push($hand, $cardID);
   IncrementClassState($player, $CS_NumCardsDrawn, 1);

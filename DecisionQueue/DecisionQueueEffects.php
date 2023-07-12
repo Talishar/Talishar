@@ -319,10 +319,10 @@ function SpecificCardLogic($player, $card, $lastResult)
       return "1";
     case "REMEMBRANCE":
       $cards = "";
-      $deck = &GetDeck($player);
+      $deck = new Deck($player);
       $discard = &GetDiscard($player);
       for($i = 0; $i < count($lastResult); ++$i) {
-        array_push($deck, $discard[$lastResult[$i]]);
+        $deck->AddBottom($discard[$lastResult[$i]], "GY");
         if($cards != "") $cards .= ", ";
         if($i == count($lastResult) - 1) $cards .= "and ";
         $cards .= CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]);
@@ -354,8 +354,8 @@ function SpecificCardLogic($player, $card, $lastResult)
     case "SANDSCOURGREATBOW":
       if($lastResult == "NO") LoadArrow($player);
       else {
-        $deck = &GetDeck($player);
-        $cardID = array_shift($deck);
+        $deck = new Deck($player);
+        $cardID = $deck->Top(remove:true);
         AddArsenal($cardID, $player, "DECK", "UP");
       }
       return $lastResult;
@@ -379,13 +379,13 @@ function SpecificCardLogic($player, $card, $lastResult)
       }
       return $lastResult;
     case "BEASTWITHIN":
-      $deck = &GetDeck($player);
-      if(count($deck) == 0) {
+      $deck = new Deck($player);
+      if($deck->Empty()) {
         LoseHealth(9999, $player);
         WriteLog("Your deck has no cards, so " . CardLink("CRU007", "CRU007") . " continues damaging you until you die");
         return 1;
       }
-      $card = array_shift($deck);
+      $card = $deck->Top(remove:true);
       LoseHealth(1, $player);
       WriteLog(CardLink("CRU007", "CRU007") . " banished " . CardLink($card, $card) . " and lost 1 health");
       if(AttackValue($card) >= 6) {
