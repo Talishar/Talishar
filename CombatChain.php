@@ -224,7 +224,7 @@ function PlayBlockModifier($cardID)
   }
 }
 
-function OnDefenseReactionResolveEffects()
+function OnDefenseReactionResolveEffects($from)
 {
   global $currentTurnEffects, $mainPlayer, $defPlayer, $combatChain;
   switch($combatChain[0])
@@ -252,12 +252,17 @@ function OnDefenseReactionResolveEffects()
   }
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = false;
-    if($currentTurnEffects[$i + 1] == $defPlayer) {
+    if($currentTurnEffects[$i+1] == $defPlayer) {
       switch($currentTurnEffects[$i]) {
         case "OUT005": case "OUT006":
           $count = ModifyBlockForType("DR", -1); //AR is handled in OnBlockResolveEffects
           $remove = $count > 0;
           break;
+        default: break;
+      }
+    } else {
+      switch($currentTurnEffects[$i]) {
+        case "DTD198": if($from == "HAND") CallDownLightning(); break;
         default: break;
       }
     }
@@ -375,14 +380,7 @@ function OnBlockResolveEffects()
     if($currentTurnEffects[$i + 1] == $mainPlayer) {
       switch($currentTurnEffects[$i])
       {
-        case "DTD198":
-          if($blockedFromHand >= 1)
-          {
-            WriteLog(CardLink("DTD198", "DTD198") . " deals 1 damage");
-            AddDecisionQueue("PASSPARAMETER", $mainPlayer, "THEIRCHAR-0");
-            AddDecisionQueue("MZDAMAGE", $mainPlayer, "1,DAMAGE," . $combatChain[0]);
-          }
-          break;
+        case "DTD198": if($blockedFromHand >= 1) CallDownLightning(); break;
         default: break;
       }
     }

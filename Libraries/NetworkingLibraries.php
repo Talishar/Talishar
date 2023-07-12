@@ -1885,23 +1885,23 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CS_NumDragonAttacks, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks, $CCS_IsBoosted;
   global $SET_PassDRStep;
 
-  if ($layerIndex > -1) SetClassState($currentPlayer, $CS_PlayIndex, $layerIndex);
+  if($layerIndex > -1) SetClassState($currentPlayer, $CS_PlayIndex, $layerIndex);
   $index = SearchForUniqueID($uniqueID, $currentPlayer);
-  if ($cardID == "ARC003" || $cardID == "CRU101") $index = FindCharacterIndex($currentPlayer, $cardID); //TODO: Fix this. This is an issue with the entire "multiple abilities" framework
-  if ($index > -1) SetClassState($currentPlayer, $CS_PlayIndex, $index);
+  if($cardID == "ARC003" || $cardID == "CRU101") $index = FindCharacterIndex($currentPlayer, $cardID); //TODO: Fix this. This is an issue with the entire "multiple abilities" framework
+  if($index > -1) SetClassState($currentPlayer, $CS_PlayIndex, $index);
 
   $definedCardType = CardType($cardID);
   //Figure out where it goes
   $openedChain = false;
   $chainClosed = false;
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
-  if (GoesOnCombatChain($turn[0], $cardID, $from)) {
-    if ($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains(CardSubType($cardID), "Item")) {
+  if(GoesOnCombatChain($turn[0], $cardID, $from)) {
+    if($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains(CardSubType($cardID), "Item")) {
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play.");
       return;
     }
     $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
-    if ($index == 0) {
+    if($index == 0) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
       $combatChainState[$CCS_AttackPlayedFrom] = $from;
       $chainClosed = ProcessAttackTarget();
@@ -1909,82 +1909,64 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
       $combatChainState[$CCS_LinkBaseAttack] = BaseAttackModifiers($attackValue);
       $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
-      if ($definedCardType == "AA" && $attackValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
-      if ($definedCardType == "AA" && (SearchCharacterActive($currentPlayer, "CRU002") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects("CRU002-SHIYANA", $currentPlayer))) && $attackValue >= 6) KayoStaticAbility();
+      if($definedCardType == "AA" && $attackValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
+      if($definedCardType == "AA" && (SearchCharacterActive($currentPlayer, "CRU002") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects("CRU002-SHIYANA", $currentPlayer))) && $attackValue >= 6) KayoStaticAbility();
       $openedChain = true;
-      if ($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
-      if ($additionalCosts != "-" && HasFusion($cardID)) $combatChainState[$CCS_AttackFused] = 1;
+      if($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
+      if($additionalCosts != "-" && HasFusion($cardID)) $combatChainState[$CCS_AttackFused] = 1;
       // If you attacked an aura with Spectra
-      if (!$chainClosed && ($definedCardType == "AA" || $definedCardType == "W")) {
+      if(!$chainClosed && ($definedCardType == "AA" || $definedCardType == "W")) {
         IncrementClassState($currentPlayer, $CS_NumAttacks);
         ArsenalAttackAbilities();
         OnAttackEffects($cardID);
       }
-      if (!$chainClosed || $definedCardType == "AA") {
-        if (DelimStringContains(CardSubType($cardID), "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
-        if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
-        if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
+      if(!$chainClosed || $definedCardType == "AA") {
+        if(DelimStringContains(CardSubType($cardID), "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
+        if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
+        if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
         AuraAttackAbilities($cardID);
-        if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
-        if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) SpecificAllyAttackAbilities($cardID);
+        if($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
+        if($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) SpecificAllyAttackAbilities($cardID);
       }
     } else { //On chain, but not index 0
-      if ($definedCardType == "DR") OnDefenseReactionResolveEffects();
+      if($definedCardType == "DR") OnDefenseReactionResolveEffects($from);
     }
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
-  } else if ($from != "PLAY") {
+  } else if($from != "PLAY") {
     $cardSubtype = CardSubType($cardID);
-    if (DelimStringContains($cardSubtype, "Aura")) {
-      PlayMyAura($cardID);
-    } else if (DelimStringContains($cardSubtype, "Item")) {
-      PutItemIntoPlay($cardID);
-    } else if ($cardSubtype == "Landmark") {
-      PlayLandmark($cardID, $currentPlayer);
-    } else if (DelimStringContains($cardSubtype, "Figment")) {
-      PutPermanentIntoPlay($currentPlayer, $cardID);
-    } else if ($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W") {
+    if(DelimStringContains($cardSubtype, "Aura")) PlayMyAura($cardID);
+    else if(DelimStringContains($cardSubtype, "Item")) PutItemIntoPlay($cardID);
+    else if($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer);
+    else if(DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID);
+    else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W") {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer);
-      switch ($goesWhere) {
-        case "BOTDECK":
-          AddBottomDeck($cardID, $currentPlayer, $from);
-          break;
-        case "HAND":
-          AddPlayerHand($cardID, $currentPlayer, $from);
-          break;
-        case "GY":
-          AddGraveyard($cardID, $currentPlayer, $from);
-          break;
-        case "SOUL":
-          AddSoul($cardID, $currentPlayer, $from);
-          break;
-        case "BANISH":
-          BanishCardForPlayer($cardID, $currentPlayer, $from, "NA");
-          break;
-        default:
-          break;
+      switch($goesWhere) {
+        case "BOTDECK": AddBottomDeck($cardID, $currentPlayer, $from); break;
+        case "HAND": AddPlayerHand($cardID, $currentPlayer, $from); break;
+        case "GY": AddGraveyard($cardID, $currentPlayer, $from); break;
+        case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;
+        case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, $from, "NA"); break;
+        default: break;
       }
     }
   }
   //Resolve Effects
-  if (!$isBlock) {
+  if(!$isBlock) {
     CurrentEffectPlayOrActivateAbility($cardID, $from);
-    if ($from != "PLAY") {
+    if($from != "PLAY") {
       CurrentEffectPlayAbility($cardID, $from);
       ArsenalPlayCardAbilities($cardID);
       CharacterPlayCardAbilities($cardID, $from);
     }
     $EffectContext = $cardID;
     $playText = "";
-    if (!$chainClosed) $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-    if ($from != "EQUIP" && $from != "PLAY") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
-    else if ($from == "EQUIP" || $from == "PLAY") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
-    if (!$openedChain) ResolveGoAgain($cardID, $currentPlayer, $from);
+    if(!$chainClosed) $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+    if($from != "EQUIP" && $from != "PLAY") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
+    else if($from == "EQUIP" || $from == "PLAY") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
+    if(!$openedChain) ResolveGoAgain($cardID, $currentPlayer, $from);
     CopyCurrentTurnEffectsFromAfterResolveEffects();
   }
-
-  if ($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID)) {
-    RemoveCharacterEffects($currentPlayer, GetClassState($currentPlayer, $CS_CharacterIndex), "INSTANT");
-  }
+  if($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID)) RemoveCharacterEffects($currentPlayer, GetClassState($currentPlayer, $CS_CharacterIndex), "INSTANT");
   //Now determine what needs to happen next
   SetClassState($currentPlayer, $CS_PlayIndex, -1);
   SetClassState($currentPlayer, $CS_CharacterIndex, -1);

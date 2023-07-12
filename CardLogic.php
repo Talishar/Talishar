@@ -243,6 +243,12 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent = 0, $mak
   array_unshift($decisionQueue, $phase);
 }
 
+function IsDecisionQueueActive()
+{
+  global $dqState;
+  return $dqState[0] == "1";
+}
+
 function ProcessDecisionQueue()
 {
   global $turn, $decisionQueue, $dqState;

@@ -574,3 +574,16 @@ function DemiHeroHealth($cardID)
     default: return 0;
   }
 }
+
+function CallDownLightning()
+{
+  global $mainPlayer, $combatChain;
+  WriteLog(CardLink("DTD198", "DTD198") . " deals 1 damage");
+  if(IsDecisionQueueActive()) {
+    PrependDecisionQueue("MZDAMAGE", $mainPlayer, "1,DAMAGE," . $combatChain[0]);
+    PrependDecisionQueue("PASSPARAMETER", $mainPlayer, "THEIRCHAR-0");
+  } else {
+    AddDecisionQueue("PASSPARAMETER", $mainPlayer, "THEIRCHAR-0");
+    AddDecisionQueue("MZDAMAGE", $mainPlayer, "1,DAMAGE," . $combatChain[0]);
+  }
+}
