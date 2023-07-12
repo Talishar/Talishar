@@ -24,12 +24,12 @@ class Deck {
   }
 
   function Remove($indices) {
-    $indexArr = explode(",", $index);
+    $indexArr = explode(",", $indices);
     $cardIDs = "";
     for($i=count($indexArr)-1; $i>= 0; --$i) {
       if($cardIDs != "") $cardIDs .= ",";
-      $cardIDs .= $this->deck[$i];
-      unset($this->deck[$i]);
+      $cardIDs .= $this->deck[$indexArr[$i]];
+      unset($this->deck[$indexArr[$i]]);
       $this->deck = array_values($this->deck);
     }
     return $cardIDs;
