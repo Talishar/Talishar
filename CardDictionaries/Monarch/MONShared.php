@@ -178,7 +178,7 @@
       case "MON261-1": case "MON261-2": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
       case "MON262-1": case "MON262-2": return CardType($attackID) == "AA" && CardCost($attackID) <= 0;
       case "MON263": case "MON264": case "MON265": return true;
-      case "MON269": case "MON270": case "MON271": return CardType($attackID) == "W";
+      case "MON269": case "MON270": case "MON271": return IsWeaponAttack();
       case "MON278": case "MON279": case "MON280": return true;
       case "MON296": case "MON297": case "MON298": return CardType($attackID) == "AA" && AttackValue($attackID) <= 3;
       case "MON299": case "MON300": case "MON301": return CardType($attackID) == "AA";
