@@ -88,12 +88,7 @@ function AuraDestroyed($player, $cardID, $isToken = false)
     if(CardType($cardID) != "T" && $isToken) WriteLog("<span style='color:red;'>The card is not put in your soul from Merciful Retribution because it is a token copy</span>");
     DealArcane(1, 0, "STATIC", "MON012", false, $player);
   }
-  if(HasWard($cardID, $player) && SearchCharacterActive($player, "DYN213") && !$isToken) {
-    $char = &GetPlayerCharacter($player);
-    $index = FindCharacterIndex($player, "DYN213");
-    $char[$index + 1] = 1;
-    GainResources($player, 1);
-  }
+  if(HasWard($cardID, $player) && !$isToken) WardPoppedAbility($player, $cardID);
   if(CardType($cardID) == "T" || $isToken) return;//Don't need to add to anywhere if it's a token
   switch($goesWhere) {
     case "GY":

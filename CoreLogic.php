@@ -2449,3 +2449,9 @@ function ChooseToPay($player, $cardID, $amounts)
   AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
   AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
 }
+
+function WardPoppedAbility($player, $cardID)
+{
+  if(SearchCharacterActive($player, "DYN213", setInactive:true)) GainResources($player, 1);
+  if(SearchCharacterActive($player, "DTD217", setInactive:true)) PlayAura("DYN244", $player);
+}

@@ -98,25 +98,17 @@ function AllyDestroyedAbility($player, $index)
   global $mainPlayer;
   $allies = &GetAllies($player);
   $cardID = $allies[$index];
-  if(HasWard($cardID, $player) && CardType($cardID) != "T" && SearchCharacterActive($player, "DYN213")) {
-    $index = FindCharacterIndex($player, "DYN213");
-    $char = &GetPlayerCharacter($player);
-    $char[$index + 1] = 1;
-    GainResources($player, 1);
-  }
+  if(HasWard($cardID, $player) && CardType($cardID) != "T") WardPoppedAbility($player, $cardID);
   switch($cardID) {
     case "UPR410":
-      if($player == $mainPlayer && $allies[$index + 8] > 0) {
+      if($player == $mainPlayer && $allies[$index+8] > 0) {
         GainActionPoints(1, $player);
-        WriteLog(CardLink($cardID, $cardID) . " leaves the arena. Gain 1 action point.");
-        --$allies[$index + 8];
+        --$allies[$index+8];
       }
       break;
     case "UPR551":
-      $gtIndex = FindCharacterIndex($player, "UPR151");
-      if ($gtIndex > -1) {
-        DestroyCharacter($player, $gtIndex);
-      }
+      $charIndex = FindCharacterIndex($player, "UPR151");
+      if($charIndex > -1) DestroyCharacter($player, $charIndex);
       break;
     default: break;
   }

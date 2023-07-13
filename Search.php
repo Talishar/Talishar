@@ -265,11 +265,16 @@ function SearchEquipNegCounter(&$character)
   return $equipList;
 }
 
-function SearchCharacterActive($player, $cardID, $checkGem=false)
+function SearchCharacterActive($player, $cardID, $checkGem=false, $setInactive=false)
 {
   $index = FindCharacterIndex($player, $cardID);
   if($index == -1) return false;
-  return IsCharacterAbilityActive($player, $index, $checkGem);
+  $isActive = IsCharacterAbilityActive($player, $index, $checkGem);
+  if($isActive && $setInactive) {
+    $char = &GetPlayerCharacter($player);
+    $char[$index+1] = 1;
+  }
+  return $isActive;
 }
 
 function SearchCharacterForCard($player, $cardID)
