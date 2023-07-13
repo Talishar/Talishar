@@ -1423,6 +1423,7 @@ function HasWard($cardID, $player)
     case "DYN218": case "DYN219": case "DYN220":
     case "DYN221": case "DYN222": case "DYN223":
     case "DYN612":
+      return true;
     case "DTD004": return SearchCurrentTurnEffects("DTD004-1", $player);
     case "DTD217":
     case "DTD405": case "DTD406": case "DTD407": case "DTD408"://Angels
