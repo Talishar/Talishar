@@ -98,7 +98,6 @@ function AllyDestroyedAbility($player, $index)
   global $mainPlayer;
   $allies = &GetAllies($player);
   $cardID = $allies[$index];
-  if(HasWard($cardID, $player) && CardType($cardID) != "T") WardPoppedAbility($player, $cardID);
   switch($cardID) {
     case "UPR410":
       if($player == $mainPlayer && $allies[$index+8] > 0) {
@@ -298,15 +297,12 @@ function AllyTakeDamageAbilities($player, $index, $damage, $preventable)
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
   for($i = count($allies) - AllyPieces(); $i >= 0; $i -= AllyPieces()) {
     $remove = false;
+    if($damage > 0 && HasWard($allies[$i], $player)) {
+      if($preventable) $damage -= WardAmount($allies[$i], $player);
+      $remove = true;
+      WardPoppedAbility($player, $cardID);
+    }
     switch($allies[$i]) {
-      case "DTD405": case "DTD406": case "DTD407": case "DTD408"://Angels
-      case "DTD409": case "DTD410": case "DTD411": case "DTD412":
-      case "DYN612":
-        if($damage > 0) {
-          if($preventable) $damage -= 4;
-          $remove = true;
-        }
-        break;
       default: break;
     }
     if($remove) DestroyAlly($player, $i);
