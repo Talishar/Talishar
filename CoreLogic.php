@@ -1483,6 +1483,7 @@ function RevealCards($cards, $player="")
   global $currentPlayer;
   if($player == "") $player = $currentPlayer;
   if(!CanRevealCards($player)) return false;
+  if($cards == "") return true;
   $cardArray = explode(",", $cards);
   $string = "";
   for($i=0; $i<count($cardArray); ++$i)
