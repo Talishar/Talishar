@@ -571,7 +571,7 @@ function CanDamageBePrevented($player, $damage, $type, $source="-")
 {
   $otherPlayer = $player == 1 ? 2 : 1;
   if($type == "ARCANE" && SearchCurrentTurnEffects("EVR105", $player)) return false;
-  if($source == "ARC112" && (SearchCurrentTurnEffects("DTD134", $otherPlayer, true) || SearchCurrentTurnEffects("DTD133", $otherPlayer, true))) return false;
+  if($source == "ARC112" && (SearchCurrentTurnEffects("DTD134", $otherPlayer) || SearchCurrentTurnEffects("DTD133", $otherPlayer))) return false;
   if(SearchCurrentTurnEffects("UPR158", $otherPlayer)) return false;
   if(SearchCurrentTurnEffects("DTD208", $player)) return false;
   if($source == "DYN005" || $source == "OUT030" || $source == "OUT031" || $source == "OUT032"|| $source == "OUT121" || $source == "OUT122" || $source == "OUT123") return false;
@@ -634,6 +634,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   {
     AddDamagePreventionSelection($player, $damage, $preventable);
   }
+  if($source == "ARC112") { SearchCurrentTurnEffects("DTD134", $otherPlayer, true); SearchCurrentTurnEffects("DTD133", $otherPlayer, true); }
   return $damage;
 }
 
