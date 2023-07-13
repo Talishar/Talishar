@@ -624,6 +624,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       WriteLog("Thank you for reporting the player. The chat log has been saved to the server. Please report it to mods on the discord server with the game number for reference ($gameName).");
       break;
     case 100015: // request to enable chat.
+      AddEvent("REQUESTCHAT", $playerID);
       if($playerID == 1) SetCachePiece($gameName, 15, 1);
       else if($playerID == 2) SetCachePiece($gameName, 16, 1);
       WriteLog($myName . " wants to enable chat");
