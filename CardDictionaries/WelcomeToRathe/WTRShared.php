@@ -155,10 +155,8 @@ function WTRAbilityCost($cardID)
     global $mainPlayer, $combatChain, $currentPlayer, $defPlayer;
     global $CS_DamagePrevention;
     $rv = "";
-    switch ($cardID) {
-      case "WTR054": case "WTR055": case "WTR056":
-        if(CountPitch(GetPitch($currentPlayer), 3) >= 1) Draw($currentPlayer);
-        return "";
+    switch($cardID) {
+      case "WTR054": case "WTR055": case "WTR056": if(SearchCount(SearchPitch($currentPlayer, minCost:3)) > 0) Draw($currentPlayer); return "";
       case "WTR004":
         $roll = GetDieRoll($currentPlayer);
         GainActionPoints(intval($roll/2), $currentPlayer);
@@ -249,9 +247,7 @@ function WTRAbilityCost($cardID)
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       //Ninja
-      case "WTR078":
-        if(CountPitch(GetPitch($currentPlayer), 0, 0)) GiveAttackGoAgain();
-        return "";
+      case "WTR078": if(SearchCount(SearchPitch($currentPlayer, minCost:0, maxCost:0)) > 0) GiveAttackGoAgain(); return "";
       case "WTR082":
         if(CardName($combatChain[0]) == "Bonds of Ancestry") WriteLog("Your ancestors reward you for your loyalty");
         Draw($currentPlayer);

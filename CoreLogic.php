@@ -2378,16 +2378,6 @@ function UnityEffect($cardID)
   }
 }
 
-function CountPitch(&$pitch, $min = 0, $max = 9999)
-{
-  $pitchCount = 0;
-  for($i = 0; $i < count($pitch); ++$i) {
-    $cost = CardCost($pitch[$i]);
-    if($cost >= $min && $cost <= $max) ++$pitchCount;
-  }
-  return $pitchCount;
-}
-
 function Draw($player, $mainPhase = true, $fromCardEffect = true)
 {
   global $EffectContext, $mainPlayer, $CS_NumCardsDrawn;

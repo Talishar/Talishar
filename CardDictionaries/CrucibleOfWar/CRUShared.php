@@ -179,16 +179,13 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "CRU028":
-      if(CountPitch(GetPitch($currentPlayer), 3) >= 2) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        $rv = "Stamp Authority gives you +1 intellect until end of turn";
-      }
+      if(SearchCount(SearchPitch($mainPlayer, minCost:3)) >= 2) AddCurrentTurnEffect($cardID, $currentPlayer);
       return $rv;
     case "CRU041": case "CRU042": case "CRU043":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "CRU049":
-      if(CountPitch(GetPitch($currentPlayer), 0, 0)) GiveAttackGoAgain();
+      if(SearchCount(SearchPitch($currentPlayer, minCost:0, maxCost:0)) > 0) GiveAttackGoAgain();
       return "";
     case "CRU054":
       if(ComboActive()) {

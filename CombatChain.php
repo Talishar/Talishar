@@ -54,9 +54,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
   if($repriseActive == -1) $repriseActive = RepriseActive();
   switch($cardID) {
     case "WTR003": return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
-    case "WTR040":
-      $pitch = &GetPitch($mainPlayer);
-      return CountPitch($pitch, 3) >= 2 ? 2 : 0;
+    case "WTR040": return SearchCount(SearchPitch($mainPlayer, minCost:3)) >= 2 ? 2 : 0;
     case "WTR080": return 1;
     case "WTR081": return (ComboActive() ? $resourcesPaid : 0);
     case "WTR082": return 1;
@@ -105,9 +103,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "MON290": case "MON291": case "MON292": return count($mainAuras) >= 1 ? 1 : 0;
     case "ELE082": case "ELE083": case "ELE084": return GetClassState($defPlayer,  $CS_ArcaneDamageTaken) >= 1 ? 2 : 0;
     case "ELE134": case "ELE135": case "ELE136": return $from == "ARS" ? 1 : 0;
-    case "ELE202":
-      $pitch = &GetPitch($mainPlayer);
-      return CountPitch($pitch, 3) >= 1 ? 1 : 0;
+    case "ELE202": return SearchCount(SearchPitch($mainPlayer, minCost:3)) >= 1 ? 1 : 0;
     case "EVR038": return (ComboActive() ? 3 : 0);
     case "EVR040": return (ComboActive() ? 2 : 0);
     case "EVR041": case "EVR042": case "EVR043": return (ComboActive() ? NumChainLinksWithName("Hundred Winds") - 1 : 0);
