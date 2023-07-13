@@ -228,15 +228,13 @@ function WTRAbilityCost($cardID)
         AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
       case "WTR041":
-        PlayMyAura("WTR075");
+        PlayAura("WTR075", $mainPlayer);
         return "";
       case "WTR042":
         AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
       case "WTR047":
-        if(HasLostClass($currentPlayer)) {
-          WriteLog("No valid search target for Show Time because your cards have lost their class.");
-        }
+        if(HasLostClass($currentPlayer)) WriteLog("No valid search target for Show Time because your cards have lost their class");
         else {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=AA;class=GUARDIAN");
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);

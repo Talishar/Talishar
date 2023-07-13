@@ -51,12 +51,6 @@ function TokenCopyAura($player, $index)
   PlayAura($auras[$index], $player, 1, true);
 }
 
-function PlayMyAura($cardID)
-{
-  global $currentPlayer;
-  PlayAura($cardID, $currentPlayer, 1);
-}
-
 function AuraDestroyed($player, $cardID, $isToken = false)
 {
   $auras = &GetAuras($player);
