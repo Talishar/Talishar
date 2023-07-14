@@ -1393,8 +1393,7 @@ function RevealCards($cards, $player="")
   if($cards == "") return true;
   $cardArray = explode(",", $cards);
   $string = "";
-  for($i=0; $i<count($cardArray); ++$i)
-  {
+  for($i=0; $i<count($cardArray); ++$i) {
     if($string != "") $string .= ", ";
     $string .= CardLink($cardArray[$i], $cardArray[$i]);
     AddEvent("REVEAL", $cardArray[$i]);
@@ -1410,7 +1409,6 @@ function DoesAttackHaveGoAgain()
 {
   global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_NumRedPlayed, $CS_NumNonAttackCards;
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $myDeck, $CS_AnotherWeaponGainedGoAgain;
-
   if(count($combatChain) == 0) return false;//No combat chain, so no
   $attackType = CardType($combatChain[0]);
   $attackSubtype = CardSubType($combatChain[0]);
@@ -1418,21 +1416,16 @@ function DoesAttackHaveGoAgain()
   if(CurrentEffectPreventsGoAgain()) return false;
   if(SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false; //Blizzard
   if(!$isAura && HasGoAgain($combatChain[0])) return true;
-  if(ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer))
-  {
+  if(ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer)) {
     if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if($isAura && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
   if(SearchAuras("UPR139", $mainPlayer)) return false;//Hypothermia
   if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
-  if(ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer))
-  {
-    if($attackType == "AA" && SearchAuras("MON013", $mainPlayer)) return true;
-  }
+  if($attackType == "AA" && ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer) && SearchAuras("MON013", $mainPlayer)) return true;
   if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $mainPlayer))) return true;
   $mainPitch = &GetPitch($mainPlayer);
-  switch($combatChain[0])
-  {
+  switch($combatChain[0]) {
     case "WTR083": case "WTR084": return ComboActive($combatChain[0]);
     case "WTR095": case "WTR096": case "WTR097": return ComboActive($combatChain[0]);
     case "WTR104": case "WTR105": case "WTR106": return ComboActive($combatChain[0]);
@@ -1461,20 +1454,12 @@ function DoesAttackHaveGoAgain()
     case "DYN056": case "DYN057": case "DYN058": return (ComboActive($combatChain[0]));
     case "DYN069": case "DYN070":
       $anotherWeaponGainedGoAgain = GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain);
-      if (SameWeaponEquippedTwice()) return $anotherWeaponGainedGoAgain != "-";
+      if(SameWeaponEquippedTwice()) return $anotherWeaponGainedGoAgain != "-";
       else return $anotherWeaponGainedGoAgain != "-" && $anotherWeaponGainedGoAgain != $combatChain[0];
     default: break;
   }
   return false;
 }
-
-function IsEquipUsable($player, $index)
-{
-  $character = &GetPlayerCharacter($player);
-  if($index >= count($character) || $index < 0) return false;
-  return $character[$index + 1] == 2;
-}
-
 
 function UndestroyCurrentWeapon()
 {

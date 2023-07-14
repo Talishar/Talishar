@@ -55,7 +55,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     }
     ++$classState[$CS_Num6PowBan];
     $index = FindCharacterIndex($player, "MON122");
-    if($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index) && $player == $mainPlayer) {
+    if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer) {
       AddLayer("TRIGGER", $player, $character[$index]);
     }
   }

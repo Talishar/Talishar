@@ -407,7 +407,7 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
 
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
-    if(!IsEquipUsable($mainPlayer, $i)) continue;
+    if(!IsCharacterAbilityActive($mainPlayer, $i)) continue;
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
     switch($characterID) {
       case "MON029": case "MON030":

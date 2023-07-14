@@ -1177,7 +1177,7 @@ function CardDiscarded($player, $discarded, $source = "")
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
     }
     $index = FindCharacterIndex($player, "DYN006");
-    if($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index) && $player == $mainPlayer) {
+    if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer) {
       AddLayer("TRIGGER", $player, $character[$index]);
     }
     if(SearchCurrentTurnEffects("DYN009", $player)) {
