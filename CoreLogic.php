@@ -2001,17 +2001,6 @@ function HasAttackName($name)
   return false;
 }
 
-function HasPlayedAttackReaction()
-{
-  global $combatChain, $mainPlayer;
-  for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
-  {
-    if($combatChain[$i+1] != $mainPlayer) continue;
-    if(CardType($combatChain[$i]) == "AR" || GetResolvedAbilityType($combatChain[$i])) return true;
-  }
-  return false;
-}
-
 function HitEffectsArePrevented()
 {
   global $combatChainState, $CCS_ChainLinkHitEffectsPrevented;
