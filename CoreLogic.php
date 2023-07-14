@@ -1521,7 +1521,7 @@ function NumEquipBlock()
   $numEquipBlock = 0;
   for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
   {
-    if(CardType($combatChain[$i]) == "E" && $combatChain[$i + 1] == $defPlayer) ++$numEquipBlock;
+    if(CardType($combatChain[$i]) == "E" && $combatChain[$i+1] == $defPlayer) ++$numEquipBlock;
   }
   return $numEquipBlock;
 }
@@ -1732,30 +1732,19 @@ function GetDamagePreventionIndices($player)
   return $rv;
 }
 
-function GetDamagePreventionTargetIndices()
-{
+function GetDamagePreventionTargetIndices() {
   global $combatChain, $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $rv = "";
   $rv = SearchMultizone($otherPlayer, "LAYER");
-  if(count($combatChain) > 0) {
-    if ($rv != "") $rv .= ",";
-    $rv .= "CC-0";
-  }
+  if(count($combatChain) > 0) CombineSearches($rv, "CC-0");
   if(SearchLayer($otherPlayer, "W") == "" && (count($combatChain) == 0 || CardType($combatChain[0]) != "W")) {
-    $theirWeapon = SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR");
-    $rv = CombineSearches($rv, $theirWeapon);
+    $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR"));
   }
-  $theirAllies = SearchMultiZoneFormat(SearchAllies($otherPlayer), "THEIRALLY");
-  $rv = CombineSearches($rv, $theirAllies);
-  $theirAuras = SearchMultiZoneFormat(SearchAura($otherPlayer), "THEIRAURAS");
-  $rv = CombineSearches($rv, $theirAuras);
-  if(ArsenalHasFaceUpCard($otherPlayer)) {
-    $theirArsenal = SearchMultiZoneFormat(SearchArsenal($otherPlayer), "THEIRARS");
-    $rv = CombineSearches($rv, $theirArsenal);
-  }
-  $theirHero = SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "C"), "THEIRCHAR");
-  $rv = CombineSearches($rv, $theirHero);
+  $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAllies($otherPlayer), "THEIRALLY"));
+  $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAura($otherPlayer), "THEIRAURAS"));
+  if(ArsenalHasFaceUpCard($otherPlayer)) $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($otherPlayer), "THEIRARS"));
+  $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "C"), "THEIRCHAR"));
   return $rv;
 }
 
