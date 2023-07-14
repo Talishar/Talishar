@@ -399,7 +399,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "DTD207"://Ironsong Versus
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(IsHeroAttackTarget()) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD208":
       AddCurrentTurnEffect($cardID, $currentPlayer);
