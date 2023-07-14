@@ -87,11 +87,10 @@ function CharacterCounters ($cardID)
   }
 }
 
-function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
-{
+//CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced
+function CharacterTakeDamageAbility($player, $index, $damage, $preventable) {
   $char = &GetPlayerCharacter($player);
-  //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced
-  $type = "-";//Add this if it ever matters
+  $type = "-";
   $remove = false;
   if($damage > 0 && HasWard($char[$index], $player)) {
     if($preventable) $damage -= WardAmount($char[$index], $player);
