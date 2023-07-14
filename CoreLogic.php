@@ -7,92 +7,89 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
 {
   global $combatChain, $mainPlayer, $currentTurnEffects, $defCharacter, $playerID, $combatChainState, $CCS_LinkBaseAttack;
   global $CCS_WeaponIndex, $mainCharacter, $mainAuras;
-    UpdateGameState($playerID);
-    BuildMainPlayerGameState();
-    $attackType = CardType($combatChain[0]);
-    $canGainAttack = CanGainAttack();
-    $snagActive = SearchCurrentTurnEffects("CRU182", $mainPlayer) && $attackType == "AA";
-    for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
+  UpdateGameState($playerID);
+  BuildMainPlayerGameState();
+  $attackType = CardType($combatChain[0]);
+  $canGainAttack = CanGainAttack();
+  $snagActive = SearchCurrentTurnEffects("CRU182", $mainPlayer) && $attackType == "AA";
+  for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
+  {
+    $from = $combatChain[$i+1];
+    $resourcesPaid = $combatChain[$i+2];
+    if($combatChain[$i] == $mainPlayer)
     {
-      $from = $combatChain[$i+1];
-      $resourcesPaid = $combatChain[$i+2];
-
-      if($combatChain[$i] == $mainPlayer)
+      if($i == 1) $attack = $combatChainState[$CCS_LinkBaseAttack];
+      else $attack = AttackValue($combatChain[$i-1]);
+      if($canGainAttack || $i == 1 || $attack < 0)
       {
-        if($i == 1) $attack = $combatChainState[$CCS_LinkBaseAttack];
-        else $attack = AttackValue($combatChain[$i-1]);
-        if($canGainAttack || $i == 1 || $attack < 0)
-        {
-          array_push($attackModifiers, $combatChain[$i-1]);
-          array_push($attackModifiers, $attack);
-          if($i == 1) $totalAttack += $attack;
-          else AddAttack($totalAttack, $attack);
-        }
-        $attack = AttackModifier($combatChain[$i-1], $combatChain[$i+1], $combatChain[$i+2], $combatChain[$i+3]) + $combatChain[$i + 4];
-        if(($canGainAttack && !$snagActive) || $attack < 0)
-        {
-          array_push($attackModifiers, $combatChain[$i-1]);
-          array_push($attackModifiers, $attack);
-          AddAttack($totalAttack, $attack);
-        }
+        array_push($attackModifiers, $combatChain[$i-1]);
+        array_push($attackModifiers, $attack);
+        if($i == 1) $totalAttack += $attack;
+        else AddAttack($totalAttack, $attack);
       }
-      else
+      $attack = AttackModifier($combatChain[$i-1], $combatChain[$i+1], $combatChain[$i+2], $combatChain[$i+3]) + $combatChain[$i + 4];
+      if(($canGainAttack && !$snagActive) || $attack < 0)
       {
-        $totalDefense += BlockingCardDefense($i-1, $combatChain[$i+1], $combatChain[$i+2]);
-      }
-    }
-
-    //Now check current turn effects
-    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
-    {
-      if(IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i))
-      {
-        if($currentTurnEffects[$i+1] == $mainPlayer)
-        {
-          $attack = EffectAttackModifier($currentTurnEffects[$i]);
-          if(($canGainAttack || $attack < 0) && !($snagActive && $currentTurnEffects[$i] == $combatChain[0]))
-          {
-            array_push($attackModifiers, $currentTurnEffects[$i]);
-            array_push($attackModifiers, $attack);
-            AddAttack($totalAttack, $attack);
-          }
-        }
-      }
-    }
-
-    if($combatChainState[$CCS_WeaponIndex] != -1)
-    {
-      $attack = 0;
-      if($attackType == "W") $attack = $mainCharacter[$combatChainState[$CCS_WeaponIndex]+3];
-      else if(DelimStringContains(CardSubtype($combatChain[0]), "Aura")) $attack = $mainAuras[$combatChainState[$CCS_WeaponIndex]+3];
-      if($canGainAttack || $attack < 0)
-      {
-        array_push($attackModifiers, "+1 Attack Counters");
+        array_push($attackModifiers, $combatChain[$i-1]);
         array_push($attackModifiers, $attack);
         AddAttack($totalAttack, $attack);
       }
     }
-    $attack = MainCharacterAttackModifiers();
+    else
+    {
+      $totalDefense += BlockingCardDefense($i-1, $combatChain[$i+1], $combatChain[$i+2]);
+    }
+  }
+  //Now check current turn effects
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
+  {
+    if(IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i))
+    {
+      if($currentTurnEffects[$i+1] == $mainPlayer)
+      {
+        $attack = EffectAttackModifier($currentTurnEffects[$i]);
+        if(($canGainAttack || $attack < 0) && !($snagActive && $currentTurnEffects[$i] == $combatChain[0]))
+        {
+          array_push($attackModifiers, $currentTurnEffects[$i]);
+          array_push($attackModifiers, $attack);
+          AddAttack($totalAttack, $attack);
+        }
+      }
+    }
+  }
+  if($combatChainState[$CCS_WeaponIndex] != -1)
+  {
+    $attack = 0;
+    if($attackType == "W") $attack = $mainCharacter[$combatChainState[$CCS_WeaponIndex]+3];
+    else if(DelimStringContains(CardSubtype($combatChain[0]), "Aura")) $attack = $mainAuras[$combatChainState[$CCS_WeaponIndex]+3];
     if($canGainAttack || $attack < 0)
     {
-      array_push($attackModifiers, "Character/Equipment");
+      array_push($attackModifiers, "+1 Attack Counters");
       array_push($attackModifiers, $attack);
       AddAttack($totalAttack, $attack);
     }
-    $attack = AuraAttackModifiers(0);
-    if($canGainAttack || $attack < 0)
-    {
-      array_push($attackModifiers, "Aura Ability");
-      array_push($attackModifiers, $attack);
-      AddAttack($totalAttack, $attack);
-    }
-    $attack = ArsenalAttackModifier();
-    if($canGainAttack || $attack < 0)
-    {
-      array_push($attackModifiers, "Arsenal Ability");
-      array_push($attackModifiers, $attack);
-      AddAttack($totalAttack, $attack);
-    }
+  }
+  $attack = MainCharacterAttackModifiers();
+  if($canGainAttack || $attack < 0)
+  {
+    array_push($attackModifiers, "Character/Equipment");
+    array_push($attackModifiers, $attack);
+    AddAttack($totalAttack, $attack);
+  }
+  $attack = AuraAttackModifiers(0);
+  if($canGainAttack || $attack < 0)
+  {
+    array_push($attackModifiers, "Aura Ability");
+    array_push($attackModifiers, $attack);
+    AddAttack($totalAttack, $attack);
+  }
+  $attack = ArsenalAttackModifier();
+  if($canGainAttack || $attack < 0)
+  {
+    array_push($attackModifiers, "Arsenal Ability");
+    array_push($attackModifiers, $attack);
+    AddAttack($totalAttack, $attack);
+  }
 }
 
 function AddAttack(&$totalAttack, $amount)
