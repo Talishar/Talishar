@@ -80,7 +80,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HANDACTIONMAXCOST": $rv = CombineSearches(SearchHand($player, "A", "", $subparam), SearchHand($player, "AA", "", $subparam)); break;
         case "MULTIHAND":
           $hand = &GetHand($player);
-          $rv = count($hand) . "-" . GetIndices(count($hand));
+          if(count($hand) == 0) $rv = "";
+          else $rv = count($hand) . "-" . GetIndices(count($hand));
           break;
         case "MULTIBANISH":
           $banish = &GetBanish($player);

@@ -1213,25 +1213,6 @@ function GetIndices($count, $add=0, $pieces=1)
   return $indices;
 }
 
-function GetMyHandIndices()
-{
-  global $currentPlayer;
-  return GetIndices(count(GetHand($currentPlayer)));
-}
-
-function GetDefHandIndices()
-{
-  global $defPlayer;
-  return GetIndices(count(GetHand($defPlayer)));
-}
-
-function CurrentAttack()
-{
-  global $combatChain;
-  if(count($combatChain) == 0) return "";
-  return $combatChain[0];
-}
-
 function RollDie($player, $fromDQ=false, $subsequent=false)
 {
   global $CS_DieRoll;

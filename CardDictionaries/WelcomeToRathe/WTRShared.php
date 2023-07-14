@@ -202,9 +202,7 @@ function WTRAbilityCost($cardID)
         }
         return $rv;
       case "WTR014": case "WTR015": case "WTR016":
-        if(AttackValue($additionalCosts) >= 6) {
-          Draw($currentPlayer);
-        }
+        if(AttackValue($additionalCosts) >= 6) Draw($currentPlayer);
         return "";
       case "WTR017": case "WTR018": case "WTR019":
         AddCurrentTurnEffect($cardID, $mainPlayer);
@@ -259,11 +257,8 @@ function WTRAbilityCost($cardID)
         return "";
       case "WTR118":
         GiveAttackGoAgain();
-        if(RepriseActive()) {
-          Draw($currentPlayer);
-          $rv = "Drew a card";
-        }
-        return $rv;
+        if(RepriseActive()) Draw($currentPlayer);
+        return "";
       case "WTR119": case "WTR122":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
@@ -305,7 +300,7 @@ function WTRAbilityCost($cardID)
         if(RepriseActive()) {
           Draw($currentPlayer);
           $hand = &GetHand($mainPlayer);
-          if (count($hand) > 0) AddDecisionQueue("HANDTOPBOTTOM", $mainPlayer, "");
+          if(count($hand) > 0) AddDecisionQueue("HANDTOPBOTTOM", $mainPlayer, "");
         }
         return "";
       case "WTR141": case "WTR142": case "WTR143":
@@ -321,8 +316,6 @@ function WTRAbilityCost($cardID)
         GainResources($currentPlayer, 1);
         return "";
       case "WTR151":
-        $indices = GetMyHandIndices();
-        if($indices == "") return "";
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIHAND");
         AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
