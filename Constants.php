@@ -303,7 +303,7 @@ $CCS_CombatDamageReplaced = 24; //CR 6.5.3, CR 6.5.4 (CR 2.0)
 $CCS_AttackUniqueID = 25;
 $CCS_RequiredEquipmentBlock = 26;
 $CCS_CachedDominateActive = 27;
-$CCS_CachedNumBlockedFromHand = 28;
+$CCS_CachedNumBlockedFromHand = 28; //Deprecated by 6/22/23 Rules Bulletin
 $CCS_IsBoosted = 29;
 $CCS_AttackTargetUID = 30;
 $CCS_CachedOverpowerActive = 31;
@@ -318,7 +318,7 @@ function ResetCombatChainState()
   global $CCS_NumBoosted, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget, $CCS_WasRuneGate;
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
-  global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
+  global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged;
   if (count($chainLinks) > 0) WriteLog("The combat chain was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -346,7 +346,6 @@ function ResetCombatChainState()
   $combatChainState[$CCS_AttackUniqueID] = -1;
   $combatChainState[$CCS_RequiredEquipmentBlock] = 0;
   $combatChainState[$CCS_CachedDominateActive] = 0;
-  $combatChainState[$CCS_CachedNumBlockedFromHand] = 0;
   $combatChainState[$CCS_IsBoosted] = 0;
   $combatChainState[$CCS_AttackTargetUID] = "-";
   $combatChainState[$CCS_CachedOverpowerActive] = 0;
@@ -408,7 +407,7 @@ function ResetChainLinkState()
   global $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
-  global $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
+  global $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate;
   WriteLog("The chain link was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -434,7 +433,6 @@ function ResetChainLinkState()
   $combatChainState[$CCS_AttackUniqueID] = -1;
   $combatChainState[$CCS_RequiredEquipmentBlock] = 0;
   $combatChainState[$CCS_CachedDominateActive] = 0;
-  $combatChainState[$CCS_CachedNumBlockedFromHand] = 0;
   $combatChainState[$CCS_IsBoosted] = 0;
   $combatChainState[$CCS_AttackTargetUID] = "-";
   $combatChainState[$CCS_CachedOverpowerActive] = 0;

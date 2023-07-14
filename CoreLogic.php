@@ -156,14 +156,13 @@ function CombatChainPowerModifier($index, $amount)
 
 function CacheCombatResult()
 {
-  global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand, $CCS_CachedOverpowerActive;
+  global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
   global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand;
   if(count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalAttack] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
   EvaluateCombatChain($combatChainState[$CCS_CachedTotalAttack], $combatChainState[$CCS_CachedTotalBlock]);
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
-  if ($combatChainState[$CCS_CachedNumBlockedFromHand] == 0) $combatChainState[$CCS_CachedNumBlockedFromHand] = NumBlockedFromHand();
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionBlocked();
   $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand(); //Reprise
@@ -191,12 +190,6 @@ function CachedOverpowerActive()
 {
   global $combatChainState, $CCS_CachedOverpowerActive;
   return ($combatChainState[$CCS_CachedOverpowerActive] == "1" ? true : false);
-}
-
-function CachedNumBlockedFromHand() //Dominate
-{
-  global $combatChainState, $CCS_CachedNumBlockedFromHand;
-  return $combatChainState[$CCS_CachedNumBlockedFromHand];
 }
 
 function CachedNumDefendedFromHand() //Reprise
@@ -1056,23 +1049,6 @@ function NumDefendedFromHand() //Reprise
       $type = CardType($combatChain[$i]);
       if($type != "I" && $combatChain[$i+2] == "HAND") ++$num;
     }
-  }
-  return $num;
-}
-
-function NumBlockedFromHand() //Dominate
-{
-  global $combatChain, $defPlayer, $layers;
-  $num = 0;
-  for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    if($combatChain[$i+1] == $defPlayer) {
-      $type = CardType($combatChain[$i]);
-      if($type != "I" && $combatChain[$i+2] == "HAND") ++$num;
-    }
-  }
-  for($i = 0; $i < count($layers); $i += LayerPieces()) {
-    $params = explode("|", $layers[$i+2]);
-    if($params[0] == "HAND" && CardType($layers[$i]) == "DR") ++$num;
   }
   return $num;
 }
