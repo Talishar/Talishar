@@ -264,7 +264,7 @@ function EffectHitEffect($cardID)
     case "DTD066": case "DTD067": case "DTD068": GiveAttackGoAgain(); break;
     case "DTD080-2": Draw($mainPlayer); break;
     case "DTD080-3": GiveAttackGoAgain(); break;
-    case "DTD207": PlayAura("DTD232", $mainPlayer); break;
+    case "DTD207": if(IsHeroAttackTarget()) PlayAura("DTD232", $mainPlayer); break;
     case $Card_LifeBanner:
         GainHealth(1, $mainPlayer);
         return 1;
