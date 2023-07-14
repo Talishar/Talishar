@@ -1151,8 +1151,7 @@ function PlayerHasLessHealth($player)
 function GetIndices($count, $add=0, $pieces=1)
 {
   $indices = "";
-  for($i=0; $i<$count; $i+=$pieces)
-  {
+  for($i=0; $i<$count; $i+=$pieces) {
     if($indices != "") $indices .= ",";
     $indices .= ($i + $add);
   }
@@ -1164,8 +1163,7 @@ function RollDie($player, $fromDQ=false, $subsequent=false)
   global $CS_DieRoll;
   $numRolls = 1 + CountCurrentTurnEffects("EVR003", $player);
   $highRoll = 0;
-  for($i=0; $i<$numRolls; ++$i)
-  {
+  for($i=0; $i<$numRolls; ++$i) {
     $roll = GetRandom(1, 6);
     WriteLog($roll . " was rolled.");
     if($roll > $highRoll) $highRoll = $roll;
@@ -1173,15 +1171,12 @@ function RollDie($player, $fromDQ=false, $subsequent=false)
   AddEvent("ROLL", $highRoll);
   SetClassState($player, $CS_DieRoll, $highRoll);
   $GGActive = HasGamblersGloves(1) || HasGamblersGloves(2);
-  if($GGActive)
-  {
+  if($GGActive) {
     if($fromDQ && !$subsequent) PrependDecisionQueue("AFTERDIEROLL", $player, "-");
     GamblersGloves($player, $player, $fromDQ);
     GamblersGloves(($player == 1 ? 2 : 1), $player, $fromDQ);
     if(!$fromDQ && !$subsequent) AddDecisionQueue("AFTERDIEROLL", $player, "-");
-  }
-  else
-  {
+  } else {
     if(!$subsequent) AfterDieRoll($player);
   }
 }
@@ -1193,8 +1188,8 @@ function AfterDieRoll($player)
   $skullCrusherIndex = FindCharacterIndex($player, "EVR001");
   if($skullCrusherIndex > -1 && IsCharacterAbilityActive($player, $skullCrusherIndex))
   {
-    if($roll == 1) { WriteLog("Skull Crushers was destroyed."); DestroyCharacter($player, $skullCrusherIndex); }
-    if($roll == 5 || $roll == 6) { WriteLog("Skull Crushers gives +1 this turn."); AddCurrentTurnEffect("EVR001", $player); }
+    if($roll == 1) { WriteLog("Skull Crushers was destroyed"); DestroyCharacter($player, $skullCrusherIndex); }
+    if($roll == 5 || $roll == 6) { WriteLog("Skull Crushers gives +1 this turn"); AddCurrentTurnEffect("EVR001", $player); }
   }
   if($roll > GetClassState($player, $CS_HighestRoll)) SetClassState($player, $CS_HighestRoll, $roll);
 }
@@ -1256,26 +1251,17 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   $cardType = CardType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
   if($cardID == "MON034" && SearchItemsForCard("DYN066", $currentPlayer) != "") return true;
-  if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
-  {
-    if(ClassContains($cardID, "WIZARD", $currentPlayer) && $cardType == "A") return true;
-  }
+  if($cardType == "A" && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) && ClassContains($cardID, "WIZARD", $currentPlayer)) return true;
   if(GetClassState($currentPlayer, $CS_NumWizardNonAttack) && ($cardID == "CRU174" || $cardID == "CRU175" || $cardID == "CRU176")) return true;
   if($currentPlayer != $mainPlayer && ($cardID == "CRU165" || $cardID == "CRU166" || $cardID == "CRU167")) return true;
-  if(GetClassState($currentPlayer, $CS_NextNAAInstant))
-  {
-    if($cardType == "A") return true;
-  }
-  if($cardType == "C" || $cardType == "E" || $cardType == "W")
-  {
+  if($cardType == "A" && GetClassState($currentPlayer, $CS_NextNAAInstant)) return true;
+  if($cardType == "C" || $cardType == "E" || $cardType == "W") {
     if($index == -1) $index = GetClassState($currentPlayer, $CS_CharacterIndex);
     if(SearchCharacterEffects($currentPlayer, $index, "INSTANT")) return true;
   }
-  if($from == "BANISH")
-  {
+  if($from == "BANISH") {
     $banish = GetBanish($currentPlayer);
-    if($index < count($banish))
-    {
+    if($index < count($banish)) {
       $mod = explode("-", $banish[$index+1])[0];
       if(($cardType == "I" && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212")) || $mod == "INST" || $mod == "ARC119") return true;
     }
@@ -1292,12 +1278,6 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   if($isStaticType) $abilityType = GetAbilityType($cardID, $index, $from);
   if(($cardType == "AR" || ($abilityType == "AR" && $isStaticType)) && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
   if(($cardType == "DR" || ($abilityType == "DR" && $isStaticType)) && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
-  return false;
-}
-
-function HasLostClass($player)
-{
-  if(SearchCurrentTurnEffects("UPR187", $player)) return true;//Erase Face
   return false;
 }
 
