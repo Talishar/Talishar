@@ -395,14 +395,14 @@ function WTRAbilityCost($cardID)
         PlayAura("WTR225", $currentPlayer);
         return "";
       case "WTR191": case "WTR192": case "WTR193":
-        if(IHaveLessHealth()) { GiveAttackGoAgain(); $rv = "Gains go again"; }
+        if(PlayerHasLessHealth($mainPlayer)) { GiveAttackGoAgain(); $rv = "Gains go again"; }
         return $rv;
       case "WTR194": case "WTR195": case "WTR196":
         BottomDeck($currentPlayer, true, shouldDraw:true);
         if($from == "ARS") { GiveAttackGoAgain(); $rv = "Gains go again"; }
         return $rv;
       case "WTR200": case "WTR201": case "WTR202":
-        if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $mainPlayer); $rv = "Gains +1 attack"; }
+        if(PlayerHasLessHealth($mainPlayer)) { AddCurrentTurnEffect($cardID, $mainPlayer); $rv = "Gains +1 attack"; }
         return $rv;
       case "WTR206": case "WTR207": case "WTR208":
         AddCurrentTurnEffect($cardID, $currentPlayer);

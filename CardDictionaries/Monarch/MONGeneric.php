@@ -20,7 +20,7 @@
         AddDecisionQueue("MODAL", $currentPlayer, $cardID, 1);
         return "";
       case "MON263": case "MON264": case "MON265":
-        if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gets +3 power"; }
+        if(PlayerHasLessHealth($currentPlayer)) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gets +3 power"; }
         return $rv;
       case "MON266": case "MON267": case "MON268":
         if(DelimStringContains($additionalCosts, "BELITTLE") && CanRevealCards($currentPlayer)) {
@@ -37,7 +37,7 @@
         if($from == "ARS") GiveAttackGoAgain();
         return "";
       case "MON278": case "MON279": case "MON280":
-        if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gains Dominate."; }
+        if(PlayerHasLessHealth($currentPlayer)) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gains Dominate."; }
         return $rv;
       case "MON281": case "MON282": case "MON283":
         if($from == "PLAY") {

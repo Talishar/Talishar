@@ -218,7 +218,7 @@ function AuraCostModifier()
 // CR 2.1 - 4.3.1. The “beginning of the action phase” event occurs and abilities that trigger at the beginning of the action phase are triggered.
 function AuraStartTurnAbilities()
 {
-  global $mainPlayer, $EffectContext;
+  global $mainPlayer, $EffectContext, $defPlayer;
   $auras = &GetAuras($mainPlayer);
   for($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $EffectContext = $auras[$i];
@@ -259,7 +259,7 @@ function AuraStartTurnAbilities()
         if(PlayerHasLessHealth($mainPlayer)) {
           GainHealth(2, $mainPlayer);
         }
-        if(PlayerHasFewerEquipment($mainPlayer)) {
+        if(SearchCount(SearchCharacter($mainPlayer, type:"E")) < SearchCount(SearchCharacter($defPlayer, type:"E"))) {
           AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=E;hasNegCounters=true");
           AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment to remove a -1 defense counter", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);

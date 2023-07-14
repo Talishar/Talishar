@@ -498,7 +498,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       Heave();
       break;
     case "WTR000":
-      if(IHaveLessHealth()) GainHealth(1, $player);
+      if(PlayerHasLessHealth($player)) GainHealth(1, $player);
       break;
     case "WTR001": case "WTR002": case "RVD001":
       Intimidate();

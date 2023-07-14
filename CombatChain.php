@@ -177,7 +177,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       $blockModifier += ($resourcesPaid >= 6 ? 3 : 0);
       break;
     case "ARC150":
-      $blockModifier += (DefHasLessHealth() ? 1 : 0);
+      $blockModifier += (PlayerHasLessHealth($defPlayer) ? 1 : 0);
       break;
     case "CRU187":
       $blockModifier += ($from == "ARS" ? 2 : 0);
