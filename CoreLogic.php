@@ -1594,7 +1594,7 @@ function GetDamagePreventionTargetIndices() {
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $rv = "";
   $rv = SearchMultizone($otherPlayer, "LAYER");
-  if(count($combatChain) > 0) CombineSearches($rv, "CC-0");
+  if(count($combatChain) > 0) $rv = CombineSearches($rv, "CC-0");
   if(SearchLayer($otherPlayer, "W") == "" && (count($combatChain) == 0 || CardType($combatChain[0]) != "W")) {
     $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR"));
   }
