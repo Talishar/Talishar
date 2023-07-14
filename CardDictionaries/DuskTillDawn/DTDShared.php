@@ -430,12 +430,25 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         WriteLog("Prevents the next 3 damage");
       }
       return "";
+    case "DTD230":
+      WarmongersDiplomacy($otherPlayer);
+      WarmongersDiplomacy($currentPlayer);
+      return "Choose your mode then enforce play restriction manually";
     case "DTD231":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     default:
       return "";
   }
+}
+
+function WarmongersDiplomacy($player)
+{
+  AddDecisionQueue("BUTTONINPUT", $player, "War,Peace");
+  AddDecisionQueue("SETDQVAR", $player, "0", 1);
+  AddDecisionQueue("WRITELOG", $player, "Player $player chose {0}", 1);
+  AddDecisionQueue("PREPENDLASTRESULT", $player, "DTD230-");
+  AddDecisionQueue("ADDCURRENTEFFECT", $player, "<-");
 }
 
 function DTDHitEffect($cardID)
@@ -460,7 +473,11 @@ function DTDHitEffect($cardID)
       if(IsHeroAttackTarget()) MZMoveCard($mainPlayer, "THEIRSOUL", "THEIRBANISH,SOUL,-");
       break;
     case "DTD226":
-      WriteLog("This is a partially manual card. Name the card in chat and enforce the restriction manually.");
+      AddDecisionQueue("INPUTCARDNAME", $mainPlayer, "-");
+      AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
+      AddDecisionQueue("WRITELOG", $mainPlayer, "{0} was chosen");
+      AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "DTD226");
+      WriteLog("This is a partially manual card. Name the card and enforce the restriction manually.");
       break;
     case "DTD227":
       if(IsHeroAttackTarget()) {
