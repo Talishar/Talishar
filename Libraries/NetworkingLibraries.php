@@ -623,11 +623,18 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
       WriteLog("Thank you for reporting the player. The chat log has been saved to the server. Please report it to mods on the discord server with the game number for reference ($gameName).");
       break;
-    case 100015: // request to enable chat.
-      AddEvent("REQUESTCHAT", $playerID);
+    case 100015: // request to enable chat
+      include "MenuFiles/ParseGamefile.php";
+      $myName = ($playerID == 1 ? $p1uid : $p2uid);
       if($playerID == 1) SetCachePiece($gameName, 15, 1);
       else if($playerID == 2) SetCachePiece($gameName, 16, 1);
-      WriteLog($myName . " wants to enable chat");
+      if(GetCachePiece($gameName, 15) != 1 || GetCachePiece($gameName, 16) != 1)
+      {
+        AddEvent("REQUESTCHAT", $playerID);
+        $theirChar = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
+        if($theirChar[0] == "DUMMY") WriteLog("The dummy beeps at you");
+        else WriteLog($myName . " wants to enable chat");
+      }
       break;
     default:
       break;
