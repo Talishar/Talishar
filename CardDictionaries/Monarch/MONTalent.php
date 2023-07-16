@@ -181,14 +181,14 @@
       {
         $numBloodDebt -= ($health - 13);
         $health = 13;
-      }
-      if($health == 13 && SearchInventoryForCard($mainPlayer, "DTD564") != "")
-      {
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to transform into Levia Consumed");
-        AddDecisionQueue("NOPASS", $mainPlayer, "-");
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numBloodDebt, 1);
-        AddDecisionQueue("TRANSFORMHERO", $mainPlayer, "DTD564", 1);
-        AddDecisionQueue("ELSE", $mainPlayer, "-");
+        if(SearchInventoryForCard($mainPlayer, "DTD564") != "")
+        {
+          AddDecisionQueue("YESNO", $mainPlayer, "if you want to transform into Levia Consumed");
+          AddDecisionQueue("NOPASS", $mainPlayer, "-");
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numBloodDebt, 1);
+          AddDecisionQueue("TRANSFORMHERO", $mainPlayer, "DTD564", 1);
+          AddDecisionQueue("ELSE", $mainPlayer, "-");
+        }
       }
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numBloodDebt, 1);
       AddDecisionQueue("OP", $mainPlayer, "LOSEHEALTH", 1);
