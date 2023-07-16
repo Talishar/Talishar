@@ -245,7 +245,7 @@ function logCompletedGameStats()
 	$loserDeck = file_get_contents("./Games/" . $gameName . "/p" . $loser . "Deck.txt");
 	$winHero = &GetPlayerCharacter($winner);
 	$loseHero = &GetPlayerCharacter($loser);
-	if(substr($winHero[0], 0, 3) == "HER" || substr($loseHero[0], 0, 3) == "HER") return;//Don't report results for unreleased heroes
+	if (substr($winHero[0], 0, 3) == "HER" || substr($loseHero[0], 0, 3) == "HER") return; //Don't report results for unreleased heroes
 
 	$conn = GetDBConnection();
 
@@ -411,6 +411,39 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$deck["turnResults"][$i]["damageDealt"] = $turnStats[$i + $TurnStats_DamageDealt];
 		$deck["turnResults"][$i]["damageTaken"] = $otherPlayerTurnStats[$i + $TurnStats_DamageDealt];
 	}
+
+	//Damage stats
+	$totalDamageThreatened = 0;
+	$totalDamageDealt = 0;
+	$totalResourcesUsed = 0;
+	$totalCardsLeft = 0;
+	$totalDefensiveCards = 0;
+	$totalBlocked = 0;
+	$numTurns = 0;
+	$start = ($player == $firstPlayer ? TurnStatPieces() : 0); // TODO: Not skip first turn for first player
+	for ($i = $start; $i < count($turnStats); $i += TurnStatPieces()) {
+		$totalDamageThreatened += $turnStats[$i + $TurnStats_DamageThreatened];
+		$totalDamageDealt += $turnStats[$i + $TurnStats_DamageDealt];
+		$totalResourcesUsed += $turnStats[$i + $TurnStats_ResourcesUsed];
+		$totalCardsLeft += $turnStats[$i + $TurnStats_CardsLeft];
+		$totalDefensiveCards += ($turnStats[$i + $TurnStats_CardsPlayedDefense] + $turnStats[$i + $TurnStats_CardsBlocked]); //TODO: Separate out pitch for offense and defense
+		$totalBlocked += $turnStats[$i + $TurnStats_DamageBlocked];
+		++$numTurns;
+	}
+
+	if ($numTurns < 1) $numTurns = 1;
+	$totalOffensiveCards = 4 * $numTurns - $totalDefensiveCards;
+	if ($totalOffensiveCards == 0) $totalOffensiveCards = 1;
+
+	$deck["totalDamageThreatened"] = $totalDamageThreatened;
+	$deck["totalDamageDealt"] = $totalDamageDealt;
+	$deck["averageDamageThreatenedPerTurn"] = round($totalDamageThreatened / $numTurns, 2);
+	$deck["averageDamageDealtPerTurn"] = round($totalDamageDealt / $numTurns, 2);
+	$deck["averageDamageThreatenedPerCard"] = round($totalDamageThreatened / $totalOffensiveCards, 2);
+	$deck["averageResourcesUsedPerTurn"] = round($totalResourcesUsed / $numTurns, 2);
+	$deck["averageCardsLeftOverPerTurn"] = round($totalCardsLeft / $numTurns, 2);
+	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2);
+
 	return json_encode($deck);
 }
 
