@@ -46,8 +46,8 @@ if($action == "Request Chat")
   if(GetCachePiece($gameName, 15) != 1 || GetCachePiece($gameName, 16) != 1)
   {
     WriteLog($myName . " wants to enable chat", path: "../");
-    GamestateUpdated($gameName);
   }
+  GamestateUpdated($gameName);
 }
 
 WriteGameFile();
