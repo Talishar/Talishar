@@ -8,7 +8,7 @@
     switch($cardID)
     {
       case "MON029": case "MON030":
-        GiveAttackGoAgain();
+        if(HasIncreasedAttack()) GiveAttackGoAgain();
         return "";
       case "MON033":
         AddDecisionQueue("ATTACKMODIFIER", $currentPlayer, intval($additionalCosts), 1);
