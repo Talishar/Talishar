@@ -334,7 +334,7 @@ function BorderColorMap($code)
   }
 }
 
-function CreateButton($playerID, $caption, $mode, $input, $size = "", $image = "", $tooltip = "", $fullRefresh = false, $fullReload = false, $prompt = "", $useInput=false)
+function CreateButton($playerID, $caption, $mode, $input, $size = "", $image = "", $tooltip = "", $fullRefresh = false, $fullReload = false, $prompt = "", $useInput = false)
 {
   global $gameName, $authKey;
 
@@ -350,7 +350,7 @@ function CreateButton($playerID, $caption, $mode, $input, $size = "", $image = "
 
   if ($image != "")
     $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick='" . $onClick . "'>";
-  else if($useInput)
+  else if ($useInput)
     $rv = "<input type='button' value='$caption' title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick='" . $onClick . "'></input>";
   else
     $rv = "<button class='button' title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick='" . $onClick . "'>" . $caption . "</button>";
@@ -690,7 +690,7 @@ function BanishUI($from = "")
       $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i)); //Display banished cards that are playable
     else // if($from != "HAND")
     {
-      if (PlayableFromBanish($banish[$i], $banish[$i+1]) || AbilityPlayableFromBanish($banish[$i]))
+      if (PlayableFromBanish($banish[$i], $banish[$i + 1]) || AbilityPlayableFromBanish($banish[$i]))
         $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));
       else if ($from != "HAND")
         $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
@@ -713,14 +713,11 @@ function BanishUIMinimal($from = "")
       if ($rv != "") $rv .= "|";
       if ($playerID == 3) ClientRenderedCard(cardNumber: $MyCardBack, overlay: 1, controller: $playerID);
       else $rv .= ClientRenderedCard(cardNumber: $banish[$i], overlay: 1, controller: $playerID);
-    }
-    else {
+    } else {
       if ($action > 0) {
         if ($rv != "") $rv .= "|";
         $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
-      }
-      else if ($from != "HAND")
-      {
+      } else if ($from != "HAND") {
         $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
       }
     }
@@ -831,7 +828,7 @@ function MainMenuUI()
   $rv .= PreviousTurnSelectionUI() . "<BR>";
   $rv .= "<img style='width: 66vh; height: 33vh;' src='./Images/ShortcutMenu.png'>";
   $isSpectateEnabled = GetCachePiece($gameName, 9) == "1";
-  if($isSpectateEnabled) $rv .= "<div><input class='GameLobby_Input' onclick='copyText()' style='width:40%;' type='text' id='gameLink' value='" . $reactFE . "?gameName=$gameName&playerID=3'>&nbsp;<button class='GameLobby_Button' style='margin-left:3px;' onclick='copyText()'>Copy Spectate Link</button></div><br>";
+  if ($isSpectateEnabled) $rv .= "<div><input class='GameLobby_Input' onclick='copyText()' style='width:40%;' type='text' id='gameLink' value='" . $reactFE . "?gameName=$gameName&playerID=3'>&nbsp;<button class='GameLobby_Button' style='margin-left:3px;' onclick='copyText()'>Copy Spectate Link</button></div><br>";
   else $rv .= CreateButton($playerID, "Enable Spectating", 100013, 0, "24px", "", "Enable Spectating", 1) . "<BR>";
   if (isset($_SESSION["userid"])) {
     $userID = $_SESSION["userid"];
