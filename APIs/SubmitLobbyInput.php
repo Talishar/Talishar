@@ -38,19 +38,17 @@ if ($authKey != $targetAuth) {
   exit;
 }
 
-WriteLog($action);
-
-/*
-if ($action == "Go First") {
-  $firstPlayer = $playerID;
-} else {
-  $firstPlayer = ($playerID == 1 ? 2 : 1);
+if($action == "Request Chat")
+{
+  $myName = ($playerID == 1 ? $p1uid : $p2uid);
+  if($playerID == 1) SetCachePiece($gameName, 15, 1);
+  else if($playerID == 2) SetCachePiece($gameName, 16, 1);
+  if(GetCachePiece($gameName, 15) != 1 || GetCachePiece($gameName, 16) != 1)
+  {
+    WriteLog($myName . " wants to enable chat", path: "../");
+    GamestateUpdated($gameName);
+  }
 }
-WriteLog("Player " . $firstPlayer . " will go first.", path: "../");
-$gameStatus = $MGS_P2Sideboard;
-SetCachePiece($gameName, 14, $gameStatus);
-GamestateUpdated($gameName);
-*/
 
 WriteGameFile();
 
