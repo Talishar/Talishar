@@ -39,14 +39,14 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false)
     CloseCombatChain();
   }
   $cardID = $allies[$index];
-  AllyAddGraveyard($player, $cardID, "Invocation");
-  AllyAddGraveyard($player, $allies[$index+4], "Ash");
+  AllyAddGraveyard($player, $cardID);
+  AllyAddGraveyard($player, $allies[$index+4]);
   for($j = $index + AllyPieces() - 1; $j >= $index; --$j) unset($allies[$j]);
   $allies = array_values($allies);
   return $cardID;
 }
 
-function AllyAddGraveyard($player, $cardID, $subtype)
+function AllyAddGraveyard($player, $cardID)
 {
   if(CardType($cardID) != "T") {
     $set = substr($cardID, 0, 3);
@@ -57,7 +57,7 @@ function AllyAddGraveyard($player, $cardID, $subtype)
     if($number < 100) $id = "0" . $id;
     if($number < 10) $id = "0" . $id;
     $id = $set . $id;
-    if(!SubtypeContains($id, $subtype, $player)) return;
+    if(!SubtypeContains($id, "Invocation", $player) && !SubtypeContains($id, "Figment", $player) && !SubtypeContains($id, "Ash", $player)) return;
     AddGraveyard($id, $player, "PLAY");
   }
 }
