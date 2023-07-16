@@ -1943,6 +1943,9 @@ function UnityEffect($cardID)
     case "DTD208":
       PlayAura("DTD232", $defPlayer);
       break;
+    case "DTD215":
+      PlayAura("DTD233", $defPlayer);
+      break;
     default: break;
   }
 }
