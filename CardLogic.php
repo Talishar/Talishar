@@ -1024,9 +1024,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "DTD233":
-      global $CS_NextNAACardGoAgain;
-      WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the card go again");
-      SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     default:
