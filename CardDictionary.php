@@ -1014,6 +1014,7 @@ function AuraDefaultHoldTriggerState($cardID)
     case "EVR107": case "EVR108": case "EVR109": case "EVR131": case "EVR132": case "EVR133": return 0;
     case "UPR190": case "UPR218": case "UPR219": case "UPR220": return 0;
     case "DYN217": return 0;
+    case "DTD233": return 0;
     default: return 2;
   }
 }
