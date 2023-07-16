@@ -57,7 +57,7 @@ function parseQuickChat($inputEnum)
   switch($inputEnum) {
     case "1": return "Hello";
     case "2": return "Want to Chat?";
-    case "3": return "Mind if I undo?";
+    case "3": return "Can I undo?";
     case "4": return "Do you want to undo?";
     case "5": return "Yes";
     case "6": return "No";
@@ -68,6 +68,7 @@ function parseQuickChat($inputEnum)
     case "11": return "Sorry!";
     case "12": return "I think there's a bug";
     case "13": return "Got to go";
+    case "14": return "Be right back";
     default: return "";
   };
 }
