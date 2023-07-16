@@ -423,6 +423,11 @@ function SpecificCardLogic($player, $card, $lastResult)
       $banish = &GetBanish($player);
       $banish[$lastResult[$rand]+1] = "TT";
       return $lastResult;
+    case "ALLURINGINDUCEMENT":
+      global $combatChain, $combatChainState, $CCS_LinkBaseAttack;
+      $combatChain[0] = $lastResult;
+      $combatChainState[$CCS_LinkBaseAttack] = AttackValue($combatChain[0]);
+      return $lastResult;
     default: return "";
   }
 }
