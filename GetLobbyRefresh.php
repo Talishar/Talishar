@@ -79,6 +79,7 @@ if ($kickPlayerTwo) {
   if (file_exists("./Games/" . $gameName . "/p2DeckOrig.txt")) unlink("./Games/" . $gameName . "/p2DeckOrig.txt");
   $gameStatus = $MGS_Initial;
   SetCachePiece($gameName, 14, $gameStatus);
+  $p2SideboardSubmitted = "0";
   $p2Data = [];
   WriteGameFile();
 }
