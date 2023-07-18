@@ -104,6 +104,7 @@ function DTDEffectAttackModifier($cardID)
     case "DTD196": return 1;//Anthem of Spring
     case "DTD208": return 1;
     case "DTD213": return 3;
+    case "DTD229": return 2;
     case "DTD232": return 1;//Courage
     default:
       return 0;
@@ -148,6 +149,8 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD207": return SubtypeContains($combatChain[0], "Sword", $mainPlayer);//Ironsong Versus
     case "DTD208": return true;
     case "DTD213": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
+    case "DTD229": return true;
+    case "DTD229-HIT": return true;
     case "DTD232": return true;//Courage
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
@@ -264,7 +267,6 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if($cardID == "DTD088") $targetPitch = 1;
       else if($cardID == "DTD089") $targetPitch = 2;
       else if($cardID == "DTD090") $targetPitch = 3;
-      WriteLog($taregtPitch);
       MZChooseAndDestroy($currentPlayer, "THEIRAURAS:pitch=" . $targetPitch . "&MYAURAS:pitch=" . $targetPitch);
       return "";
     case "DTD091": case "DTD092": case "DTD093":
@@ -436,6 +438,10 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         IncrementClassState($currentPlayer, $CS_DamagePrevention, 3);
         WriteLog("Prevents the next 3 damage");
       }
+      return "";
+    case "DTD229":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
       return "";
     case "DTD230":
       WarmongersDiplomacy($otherPlayer);

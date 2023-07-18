@@ -266,11 +266,17 @@ function EffectHitEffect($cardID)
     case "DTD080-3": GiveAttackGoAgain(); break;
     case "DTD207": if(IsHeroAttackTarget()) PlayAura("DTD232", $mainPlayer); break;
     case $Card_LifeBanner:
-        GainHealth(1, $mainPlayer);
-        return 1;
+      GainHealth(1, $mainPlayer);
+      return 1;
     case $Card_ResourceBanner:
-        GainResources($mainPlayer, 1);
+      GainResources($mainPlayer, 1);
+      return 1;
+    case "DTD229-HIT":
+      if(IsHeroAttackTarget()) {
+        MZChooseAndDestroy($mainPlayer, "THEIRAURAS:type=A;maxCost=" . $combatChainState[$CCS_DamageDealt] . "&THEIRAURAS:type=I;maxCost=" . $combatChainState[$CCS_DamageDealt]);
         return 1;
+      }
+      break;
     default:
       break;
   }
@@ -975,6 +981,7 @@ function IsCombatEffectPersistent($cardID)
     case "DTD052": return true;//Spirit of War
     case "DTD111": return true;
     case "DTD198": return true;//Call Down the Lightning
+    case "DTD229-HIT": return true;
     case "DTD410": return true;
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;

@@ -1107,6 +1107,8 @@ case "5":
 return "E";
 case "3":
 return "E";
+case "9":
+return "A";
 case "8":
 return "DR";
 case "0":
@@ -8615,6 +8617,8 @@ case "5":
 return 2;
 case "3":
 return 2;
+case "9":
+return 2;
 case "8":
 return 2;
 case "7":
@@ -13161,6 +13165,8 @@ case "5":
 return "Frontline Legs";
 case "3":
 return "Frontline Plating";
+case "9":
+return "Hack to Reality";
 case "8":
 return "Hold the Line";
 case "7":
@@ -13580,7 +13586,7 @@ default: return "";
 case "7":
 switch($cardID[5]) {
 case "0":
-return "Chains of Mephistis";
+return "Chains of Mephetis";
 case "1":
 return "Dimenxxional Vortex";
 case "5":
@@ -18985,6 +18991,8 @@ case "5":
 return 0;
 case "3":
 return 0;
+case "9":
+return 2;
 case "8":
 return 3;
 case "0":
@@ -23457,6 +23465,8 @@ case "5":
 return -1;
 case "3":
 return -1;
+case "9":
+return 1;
 case "7":
 return 1;
 case "0":
@@ -30183,6 +30193,8 @@ case "5":
 return "R";
 case "3":
 return "R";
+case "9":
+return "M";
 case "8":
 return "M";
 case "7":
@@ -36013,6 +36025,8 @@ return "GENERIC";
 case "5":
 return "GENERIC";
 case "3":
+return "GENERIC";
+case "9":
 return "GENERIC";
 case "8":
 return "GENERIC";
