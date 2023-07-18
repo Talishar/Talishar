@@ -177,13 +177,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($lastUpdate == 0) {
     include "MenuFiles/ParseGamefile.php";
     $initialLoad = new stdClass();
-    $initialLoad->playerName = $playerID == 1 ? $p1uid : $p2uid;
-    $initialLoad->opponentName = $playerID == 1 ? $p2uid : $p1uid;
+
+    $initialLoad->p1Name = $p1uid;
+    $initialLoad->p2Name = $p2uid;
     $contributors = array("sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar");
-    $initialLoad->playerIsPatron = ($playerID == 1 ? $p1IsPatron : $p2IsPatron);
-    $initialLoad->playerIsContributor = in_array($initialLoad->playerName, $contributors);
-    $initialLoad->opponentIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron);
-    $initialLoad->opponentIsContributor = in_array($initialLoad->opponentName, $contributors);
+    $initialLoad->p1IsPatron = $p1IsPatron;
+    $initialLoad->p1IsContributor = in_array($initialLoad->p1Name, $contributors);
+    $initialLoad->p2IsPatron = $p2IsPatron;
+    $initialLoad->p2IsContributor = in_array($initialLoad->p2Name, $contributors);
     $initialLoad->roguelikeGameID = $roguelikeGameID;
     $response->initialLoad = $initialLoad;
   }
@@ -192,19 +193,18 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $otherPlayer = ($playerID == 1 ? 2 : 1);
 
   //Choose Cardback
-  $MyCardBack = GetCardBack($playerID);
-  $TheirCardBack = GetCardBack($otherPlayer);
+  $p1CardBack = GetCardBack(1);
+  $p2CardBack = GetCardBack(2);
 
-  $response->MyPlaymat = (IsColorblindMode($playerID) ? 0 : GetPlaymat($playerID));
-  $response->TheirPlaymat = (IsColorblindMode($playerID) ? 0 : GetPlaymat($otherPlayer));
-  if ($response->MyPlaymat == 0) $response->TheirPlaymat = 0;
+  $response->p1Playmat = (IsColorblindMode(1) ? 0 : GetPlaymat(1));
+  $response->p2Playmat = (IsColorblindMode(2) ? 0 : GetPlaymat(2));
 
   //Display active chain link
   $activeChainLink = new stdClass();
   $combatChainReactions = array();
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     // vars for active chain link: Is there an action?
-    $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i + 1] &&
+    $action = $turn[0] != "P" && $currentPlayer == $combatChain[$i + 1] &&
       AbilityPlayableFromCombatChain($combatChain[$i]) &&
       IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
 
