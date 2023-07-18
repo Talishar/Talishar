@@ -167,7 +167,11 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->matchups = $matchups;
 
   // If both players have enabled chat, is true, else false
-  $response->chatEnabled = intval(GetCachePiece($gameName, 15)) == 1 && intval(GetCachePiece($gameName, 16)) == 1 ? true : false;
+  $p1ChatStatus = intval(GetCachePiece($gameName, 15));
+  $p2ChatStatus = intval(GetCachePiece($gameName, 16));
+  $response->chatEnabled = ($p1ChatStatus == 1 && $p2ChatStatus == 1 ? true : false);
+  if($playerID == 1) $response->chatInvited = ($p1ChatStatus == 0 && $p2ChatStatus == 1);
+  else if($playerID == 2) $response->chatInvited = ($p2ChatStatus == 0 && $p1ChatStatus == 1);
 
   echo json_encode($response);
   exit;
