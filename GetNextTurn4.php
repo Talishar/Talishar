@@ -173,22 +173,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     exit();
   }
 
-  // send initial on-load information if our first time connecting.
-  if ($lastUpdate == 0) {
-    include "MenuFiles/ParseGamefile.php";
-    $initialLoad = new stdClass();
-
-    $initialLoad->p1Name = $p1uid;
-    $initialLoad->p2Name = $p2uid;
-    $contributors = array("sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar");
-    $initialLoad->p1IsPatron = $p1IsPatron;
-    $initialLoad->p1IsContributor = in_array($initialLoad->p1Name, $contributors);
-    $initialLoad->p2IsPatron = $p2IsPatron;
-    $initialLoad->p2IsContributor = in_array($initialLoad->p2Name, $contributors);
-    $initialLoad->roguelikeGameID = $roguelikeGameID;
-    $response->initialLoad = $initialLoad;
-  }
-
   $blankZone = 'blankZone';
   $otherPlayer = ($playerID == 1 ? 2 : 1);
 
