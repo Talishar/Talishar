@@ -90,9 +90,9 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($count == 100) break;
 }
 
-if($lastUpdate == 0) {
+if ($lastUpdate == 0) {
   $lastUpdateTime = GetCachePiece($gameName, 6);
-  if($currentTime - $lastUpdateTime > 90000 && GetCachePiece($gameName, 12) == "1") //90 seconds
+  if ($currentTime - $lastUpdateTime > 90000 && GetCachePiece($gameName, 12) == "1") //90 seconds
   {
     $opponentInactive = true;
   }
@@ -430,7 +430,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playable = $playerID == $currentPlayer && $myCharacter[$i + 1] > 0 && IsPlayable($myCharacter[$i], $turn[0], "CHAR", $i, $restriction);
     $border = CardBorderColor($myCharacter[$i], "CHAR", $playable);
     $type = CardType($myCharacter[$i]);
-    if($type == "D") $type = "C";
+    if ($type == "D") $type = "C";
     $sType = CardSubType($myCharacter[$i]);
     if ($type == "W") {
       ++$numWeapons;
@@ -634,7 +634,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playable = ($currentPlayer == $playerID ? IsPlayable($myPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false);
     $border = CardBorderColor($myPermanents[$i], "PLAY", $playable);
     $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? 34 : 0);
-    if($restriction != "") $restriction = implode("_", explode(" ", $restriction));
+    if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
     $actionDataOverride = strval($i);
     array_push($myPermanentsOutput, JSONRenderedCard(cardNumber: $myPermanents[$i], controller: $playerID, type: $type, sType: $sType, action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, restriction: $restriction));
   }
@@ -643,9 +643,20 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Landmarks
   $landmarksOutput = array();
   for ($i = 0; $i + LandmarkPieces() - 1 < count($landmarks); $i += LandmarkPieces()) {
+    $isPlayable = $playerID == $currentPlayer && IsPlayable($landmarks[$i], $turn[0], "PLAY", $i, $restriction);
+    $action = ($isPlayable && $currentPlayer == $playerID ? 25 : 0);
+    $border = CardBorderColor($landmarks[$i], "PLAY", $isPlayable);
+    $counters = 0;
     $type = CardType($landmarks[$i]);
     $sType = CardSubType($landmarks[$i]);
-    array_push($landmarksOutput, JSONRenderedCard(cardNumber: $landmarks[$i], type: $type, sType: $sType));
+    array_push($landmarksOutput, JSONRenderedCard(
+      cardNumber: $landmarks[$i],
+      type: $type,
+      sType: $sType,
+      actionDataOverride: strval($i),
+      action: $action,
+      borderColor: $border
+    ));
   }
   $response->landmarks = $landmarksOutput;
 
