@@ -358,6 +358,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $firstPlayer;
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked;
 	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $TurnStats_ResourcesLeft;
+	global $p1TotalTime, $p2TotalTime;
 	$DeckLink = explode("/", $DeckLink);
 	$DeckLink = $DeckLink[count($DeckLink) - 1];
 	$deckAfterSB = explode("\r\n", $deckAfterSB);
@@ -411,6 +412,12 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$deck["turnResults"][$i]["damageDealt"] = $turnStats[$i + $TurnStats_DamageDealt];
 		$deck["turnResults"][$i]["damageTaken"] = $otherPlayerTurnStats[$i + $TurnStats_DamageDealt];
 	}
+
+	$time = ($player == 1 ? $p1TotalTime : $p2TotalTime);
+	$totalTime = $p1TotalTime + $p2TotalTime;
+
+	$deck["yourTime"] = $time;
+	$deck["totalTime"] = $totalTime;
 
 	//Damage stats
 	$totalDamageThreatened = 0;
