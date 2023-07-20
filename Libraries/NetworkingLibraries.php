@@ -457,10 +457,19 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       WriteLog("Player " . $playerID . " manually add 1 action point.", highlight: true);
       ++$actionPoints;
       break;
-    case 10003: //Revert to prior turn
-    WriteLog($buttonInput);
-      RevertGamestate($buttonInput);
-      WriteLog("Player " . $playerID . " reverted back to a prior turn.");
+    case 10003: //Undo/Revert to prior turn
+      $format = GetCachePiece($gameName, 13);
+      if($format != 1 && $format != 3)
+      {
+        RevertGamestate($buttonInput);
+        WriteLog("Player " . $playerID . " reverted back to a prior turn");
+      }
+      else {
+        //It's competitive queue, so we must request confirmation
+        WriteLog("Player " . $playerID . " requests to undo the last action");
+        if($buttonInput == "beginTurnGamestate.txt") AddEvent("REQUESTTHISTURNUNDO", $playerID);
+        else if($buttonInput == "lastTurnGamestate.txt") AddEvent("REQUESTLASTTURNUNDO", $playerID);
+      }
       break;
     case 10004:
       if($actionPoints > 0) {
@@ -653,6 +662,14 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100017://Decline Undo
       WriteLog("Player " . $playerID . " declined the Undo request");
+      break;
+    case 100018://Confirm this turn undo
+      RevertGamestate("beginTurnGamestate.txt");
+      WriteLog("Player " . $playerID . " reverted to the start of the turn");
+      break;
+    case 100019://Confirm last turn undo
+      RevertGamestate("lastTurnGamestate.txt");
+      WriteLog("Player " . $playerID . " reverted to the last turn");
       break;
     default:
       break;
