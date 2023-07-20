@@ -695,6 +695,11 @@ function IsModeAsync($mode)
     case 100010: return true;
     case 100012: return true;
     case 100015: return true;
+    case 100016://Confirm Undo
+    case 100017://Decline Undo
+    case 100018://Confirm This Turn Undo
+    case 100019://Confirm Last Turn Undo
+    return true;
   }
   return false;
 }
