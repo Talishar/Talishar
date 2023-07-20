@@ -76,18 +76,6 @@ function IsPatron($player)
   return $settings[$SET_IsPatron] == "1";
 }
 
-function IsLanguageJP($player)
-{
-  global $SET_Language;
-  if(function_exists("GetSettings")) {
-    $settings = GetSettings($player);
-    return $settings[$SET_Language] == "2";
-  } else if(isset($_SESSION['language'])) {
-    return $_SESSION['language'] == "2";
-  }
-  return false;
-}
-
 function GetPlaymat($player)
 {
   global $SET_Playmat;
@@ -408,31 +396,6 @@ function SaveSettingInDatabase($setting)
     case $SET_AutotargetArcane:
     case $SET_Playmat:
       return true;
-    default: return false;
-  }
-}
-
-function TranslationExist($Language, $cardID)
-{
-  switch($Language) {
-    case "JP": //Japanese
-      switch($cardID) {
-        case "CRU046":
-        case "CRU050":
-        case "CRU063":
-        case "CRU069":
-        case "CRU072":
-        case "CRU073":
-        case "CRU074":
-        case "CRU186":
-        case "CRU187":
-        case "CRU194":
-        case "WTR100":
-        case "WTR191":
-          return true;
-        default: return false;
-      }
-      break;
     default: return false;
   }
 }

@@ -100,18 +100,9 @@
         fileExt = ".png";
         folderPath = folder;
 
-        var LanguageJP = <?php echo ((IsLanguageJP($playerID) ? "true" : "false")); ?>;
-        LanguageJP = LanguageJP && TranslationExist('JP', cardNumber);
-
         if (cardNumber == "ENDSTEP" || cardNumber == "ENDTURN" || cardNumber == "RESUMETURN" || cardNumber == "PHANTASM" || cardNumber == "FINALIZECHAINLINK" || cardNumber == "DEFENDSTEP") {
           showHover = 0;
           borderColor = 0;
-        } else if (folder == "concat" && LanguageJP) { // Japanese
-          folderPath = "concat/JP";
-          fileExt = ".webp";
-        } else if (folder == "WebpImages" && LanguageJP) { // Japanese
-          folderPath = "WebpImages/JP";
-          fileExt = ".webp";
         } else if (folder == "concat") {
           fileExt = ".webp";
         } else if (folder == "WebpImages") {
@@ -277,32 +268,6 @@
           case "UPR417":
           case "DYN234":
             return true;
-          default:
-            return false;
-        }
-      }
-
-      function TranslationExist(Language, cardID) {
-        switch (Language) {
-          case "JP": //Japanese
-            switch (cardID) {
-              case "CRU046":
-              case "CRU050":
-              case "CRU063":
-              case "CRU069":
-              case "CRU072":
-              case "CRU073":
-              case "CRU074":
-              case "CRU186":
-              case "CRU187":
-              case "CRU194":
-              case "WTR100":
-              case "WTR191":
-                return true;
-              default:
-                return false;
-            }
-            break;
           default:
             return false;
         }

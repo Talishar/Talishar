@@ -312,7 +312,6 @@ $cardIconTop = intval($cardSize / 4.2); //30
   }
 
   function IsDarkMode() { return false; } // This must exist for UILibraries2
-  function IsLanguageJP() { return false; } // This must exist for UILibraries2
   function IsGameOver() { return false; } // This must exist for UILibraries2
 
 ?>
