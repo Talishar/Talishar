@@ -32,6 +32,7 @@ $SET_GameVisibility = 21; //The visibility of the last game you created
 
 $SET_StreamerMode = 22; //Did this player enable caster mode
 $SET_Playmat = 23; //Did this player enable caster mode
+$SET_AlwaysAllowUndo = 24;//Do you want to always allow undo
 
 function HoldPrioritySetting($player)
 {
@@ -261,6 +262,7 @@ function ParseSettingsStringValueToIdInt(string $value)
     "IsCasterMode" => 16,
     "IsStreamerMode" => 22,
     "Playmat" => 23,
+    "AlwaysAllowUndo" => 24,
   );
   return $settingsToId[$value];
 }
@@ -379,7 +381,7 @@ function SaveSettingInDatabase($setting)
 {
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
   global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
-  global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat;
+  global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo;
   switch($setting) {
     case $SET_DarkMode:
     case $SET_ColorblindMode:
@@ -395,6 +397,7 @@ function SaveSettingInDatabase($setting)
     case $SET_StreamerMode:
     case $SET_AutotargetArcane:
     case $SET_Playmat:
+    case $SET_AlwaysAllowUndo:
       return true;
     default: return false;
   }
