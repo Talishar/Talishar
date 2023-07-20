@@ -241,6 +241,14 @@ function IsStreamerMode($player)
   return $settings[$SET_StreamerMode] == "1";
 }
 
+function AlwaysAllowUndo($player)
+{
+  global $SET_AlwaysAllowUndo;
+  $settings = GetSettings($player);
+  if($settings == null) return false;
+  return $settings[$SET_AlwaysAllowUndo] == "1";
+}
+
 function ParseSettingsStringValueToIdInt(string $value)
 {
   //TODO NOTE: use array_flip to turn it the other way around (int -> string);

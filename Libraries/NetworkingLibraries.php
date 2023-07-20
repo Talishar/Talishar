@@ -437,7 +437,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 10000: //Undo
       $format = GetCachePiece($gameName, 13);
       $char = &GetPlayerCharacter($otherPlayer);
-      if(($format != 1 && $format != 3) || $char[0] == "DUMMY" || $turn[0] == "P")
+      if(($format != 1 && $format != 3) || $char[0] == "DUMMY" || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer))
       {
         RevertGamestate();
         $skipWriteGamestate = true;
@@ -461,7 +461,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 10003: //Undo/Revert to prior turn
       $format = GetCachePiece($gameName, 13);
       $char = &GetPlayerCharacter($otherPlayer);
-      if(($format != 1 && $format != 3) || $char[0] == "DUMMY" || $turn[0] == "P")
+      if(($format != 1 && $format != 3) || $char[0] == "DUMMY" || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer))
       {
         RevertGamestate($buttonInput);
         WriteLog("Player " . $playerID . " reverted back to a prior turn");
