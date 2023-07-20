@@ -435,9 +435,18 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $zone[$index + $offset] = ($zone[$index + $offset] == "1" ? "0" : "1");
       break;
     case 10000: //Undo
-      RevertGamestate();
-      $skipWriteGamestate = true;
-      WriteLog("Player " . $playerID . " undid their last action.");
+      $format = GetCachePiece($gameName, 13);
+      if($format != 1 && $format != 3)
+      {
+        RevertGamestate();
+        $skipWriteGamestate = true;
+        WriteLog("Player " . $playerID . " undid their last action");
+      }
+      else {
+        //It's competitive queue, so we must request confirmation
+        WriteLog("Player " . $playerID . " requests to undo the last action");
+        AddEvent("REQUESTUNDO", $playerID);
+      }
       break;
     case 10001:
       RevertGamestate("preBlockBackup.txt");
@@ -449,6 +458,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       ++$actionPoints;
       break;
     case 10003: //Revert to prior turn
+    WriteLog($buttonInput);
       RevertGamestate($buttonInput);
       WriteLog("Player " . $playerID . " reverted back to a prior turn.");
       break;
@@ -635,6 +645,14 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         if($theirChar[0] == "DUMMY") WriteLog("The dummy beeps at you");
         else WriteLog($myName . " wants to enable chat");
       }
+      break;
+    case 100016://Confirm Undo
+      RevertGamestate();
+      $skipWriteGamestate = true;
+      WriteLog("Player " . $playerID . " allowed undoing the last action");
+      break;
+    case 100017://Decline Undo
+      WriteLog("Player " . $playerID . " declined the Undo request");
       break;
     default:
       break;
