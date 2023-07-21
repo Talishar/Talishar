@@ -536,12 +536,15 @@ function OUTAbilityCost($cardID)
         }
         return "";
       case "OUT187":
-        if(SearchCount(SearchDiscard(($currentPlayer == 1 ? 2 : 1), "DR")) >= 10)
-        {
-          Draw($currentPlayer);
-          WriteLog("Drew a card");
+        if(ShouldAutotargetOpponent($currentPlayer)) {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
+          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "BURDENSOFTHEPAST", 1);
+        } else {
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
+          AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
+          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "BURDENSOFTHEPAST", 1);
         }
-        return "This is a partially manual card. Enforce defense reaction play restriction manually.";
+        return "This is a partially manual card - Enforce defense reaction play restriction manually";
       case "OUT188":
         AddCurrentTurnEffect($cardID . "_1", $currentPlayer);
         AddCurrentTurnEffect($cardID . "_2", $currentPlayer);

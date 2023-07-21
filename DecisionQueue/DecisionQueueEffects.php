@@ -192,6 +192,10 @@ function PlayerTargetedAbility($player, $card, $lastResult)
       $banished = $deck->BanishTop();
       if(PitchValue($banished) == $pitchTarget) LoseHealth(1, $target);
       return "";
+    case "BURDENSOFTHEPAST":
+      if(SearchCount(SearchDiscard($target, "DR")) >= 10) Draw($player);
+      AddCurrentTurnEffect("OUT187", $target);
+      return "";
     default: return $lastResult;
   }
 }
