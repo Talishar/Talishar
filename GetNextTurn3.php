@@ -285,8 +285,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($layer->isReorderable) ++$numReorderable;
     array_push($reorderableLayers, $layer);
   }
-  $target = GetAttackTarget();
-  $layerObject->target = $target;
+  $layerObject->target = GetMZCardLink($playerID, GetAttackTarget());
   $layerObject->layerContents = $layerContents;
   $layerObject->reorderableLayers = $reorderableLayers;
   $response->layerDisplay = $layerObject;
