@@ -590,6 +590,7 @@ function GetAltCardID($cardID)
     case "LGS158": return "DTD156";
     case "LGS159": return "DTD157";
     case "HER085": return "DTD134";
+    case "DTD013": return "MON007";
 
     case "DTD048": return "FAB161";
     case "DTD049": return "FAB162";
