@@ -632,7 +632,7 @@ function AuraPlayAbilities($attackID, $from="")
         }
         break;
       case "DTD233":
-        if($cardType == "A") {
+        if($cardType == "A" && $from != "PLAY") {
           global $CS_NextNAACardGoAgain;
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the card go again");
           SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);
