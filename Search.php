@@ -774,8 +774,19 @@ function SearchChainLinks($minPower = -1, $maxPower = -1, $cardType = "")
   return $links;
 }
 
+function GetRelativeMZCardLink($player, $MZ)
+{
+  $params = explode("-", $MZ);
+  if(count($params) < 2 || $params[0] == "" || $params[1] == "") return "";
+  $zoneDS = &GetRelativeMZZone($player, $params[0]);
+  $index = $params[1];
+  if($index == "") return "";
+  return CardLink($zoneDS[$index], $zoneDS[$index]);
+}
+
 function GetMZCardLink($player, $MZ)
 {
+  if($MZ == "") return "";
   $params = explode("-", $MZ);
   $zoneDS = &GetMZZone($player, $params[0]);
   $index = $params[1];
