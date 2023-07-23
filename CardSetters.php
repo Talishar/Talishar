@@ -243,7 +243,7 @@ function AddSoul($cardID, $player, $from, $isMainPhase=true)
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   AddEvent("SOUL", $cardID);
-  global $CS_NumAddedToSoul;
+  global $CS_NumAddedToSoul, $CS_NumYellowPutSoul;
   global $myStateBuiltFor;
   if($cardID == "DYN066")
   {
@@ -259,6 +259,7 @@ function AddSoul($cardID, $player, $from, $isMainPhase=true)
       else AddSpecificSoul($cardID, $theirSoul, $from);
     }
     IncrementClassState($player, $CS_NumAddedToSoul);
+    if(PitchValue($cardID) == 2) IncrementClassState($player, $CS_NumYellowPutSoul);
     if($isMainPhase && str_contains(NameOverride($cardID, $player), "Herald"))
     {
       if(SearchCharacterActive($player, "DTD001") || SearchCharacterActive($player, "DTD002"))

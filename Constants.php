@@ -246,7 +246,7 @@ $CS_ArcaneDamagePrevention = 37;
 $CS_DynCostResolved = 38;
 $CS_CardsEnteredGY = 39;
 $CS_HighestRoll = 40;
-$CS_EffectContext = 41; //Deprecated -- use $EffectContext instead
+$CS_NumYellowPutSoul = 41;
 $CS_NumAuras = 42;
 $CS_AbilityIndex = 43;
 $CS_AdditionalCosts = 44;
@@ -455,7 +455,7 @@ function ResetMainClassState()
   global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
   global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks, $CS_ArcaneDamageDealt, $CS_LayerPlayIndex, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumBoostPlayed;
   global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain, $CS_NumContractsCompleted, $CS_HitsWithSword, $CS_NumCardsDrawn;
-  global $CS_LifeLost;
+  global $CS_LifeLost, $CS_NumYellowPutSoul;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -496,6 +496,7 @@ function ResetMainClassState()
   $mainClassState[$CS_DynCostResolved] = 0;
   $mainClassState[$CS_CardsEnteredGY] = 0;
   $mainClassState[$CS_HighestRoll] = 0;
+  $mainClassState[$CS_NumYellowPutSoul] = 0;
   $mainClassState[$CS_NumAuras] = 0;
   $mainClassState[$CS_AbilityIndex] = "-";
   $mainClassState[$CS_AdditionalCosts] = "-";

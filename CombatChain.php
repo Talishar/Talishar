@@ -49,7 +49,7 @@ function ProcessHitEffect($cardID)
 function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)
 {
   global $mainPlayer, $mainPitch, $CS_Num6PowDisc, $combatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
-  global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken;
+  global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul;
   global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan;
   if($repriseActive == -1) $repriseActive = RepriseActive();
   switch($cardID) {
@@ -140,7 +140,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "OUT181": return 1;
     case "OUT207": case "OUT208": case "OUT209": return (NumActionsBlocking() > 0 ? 2 : 0);
     case "OUT210": case "OUT211": case "OUT212": return (NumActionsBlocking() > 0 ? -2 : 0);
-    case "DTD046": return GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 5 : 0;
+    case "DTD046": return GetClassState($mainPlayer, $CS_NumYellowPutSoul) > 0 ? 5 : 0;
     case "DTD097": case "DTD098": case "DTD099": return (SearchPitchForColor($mainPlayer, 2) > 0 ? 2 : 0);
     case "DTD121": case "DTD122": case "DTD123":
       return GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 1 : 0;
