@@ -633,7 +633,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return 1;
     case "ATTACKMODIFIER":
       $amount = intval($parameter);
-      WriteLog($amount);
       $combatChain[5] += $amount;
       return $parameter;
     case "SONATAARCANIX":
