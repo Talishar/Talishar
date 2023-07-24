@@ -461,7 +461,7 @@ function WarmongersDiplomacy($player)
   AddDecisionQueue("SETDQVAR", $player, "0", 1);
   AddDecisionQueue("WRITELOG", $player, "Player $player chose {0}", 1);
   AddDecisionQueue("PREPENDLASTRESULT", $player, "DTD230-");
-  AddDecisionQueue("ADDCURRENTEFFECT", $player, "<-");
+  AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $player, "<-");
 }
 
 function DTDHitEffect($cardID)
