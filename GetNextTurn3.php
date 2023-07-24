@@ -770,7 +770,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $caption = "";
     if ($turn[0] == "CHOOSEARCANE") {
       $vars = explode("-", $dqVars[0]);
-      $caption .= "Source: " . CardLink($vars[1], $vars[1]) . " Total Damage: " . $vars[0];
+      $caption .= "Source: " . CardLink($vars[1], $vars[1]) . " Total Damage: " . $vars[0] . " ";
     }
     for ($i = 0; $i < count($options); ++$i) {
       array_push($playerInputButtons, CreateButtonAPI($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i]), "24px"));
