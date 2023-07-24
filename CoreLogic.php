@@ -392,8 +392,18 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     if($source != "NA")
     {
       $damage += CurrentEffectDamageModifiers($player, $source, $type);
+      $otherCharacter = &GetPlayerCharacter($otherPlayer);
+      $characterID = ShiyanaCharacter($otherCharacter[0]);
       DamageDealtAbilities($player, $damage, $type, $source);
       if($source == "MON229") AddNextTurnEffect("MON229", $player);
+      if(($characterID == "ELE062" || $characterID == "ELE063") && $type == "ARCANE" && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) {
+        PlayAura("ELE109", $otherPlayer);
+      }
+      if($source == "DYN173" && SearchCurrentTurnEffects("DYN173", $mainPlayer, true)) {
+        WriteLog("Player " . $mainPlayer . " drew a card and Player " . $otherPlayer . " must discard a card");
+        Draw($mainPlayer);
+        PummelHit();
+      }
     }
     AuraDamageTakenAbilities($player, $damage);
     ItemDamageTakenAbilities($player, $damage);
@@ -414,17 +424,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
 function DamageDealtAbilities($player, $damage, $type, $source) {
   global $mainPlayer, $combatChainState, $CCS_AttackFused;
   $otherPlayer = $player == 1 ? 2 : 1;
-  $otherCharacter = &GetPlayerCharacter($otherPlayer);
-  $characterID = ShiyanaCharacter($otherCharacter[0]);
-  if(($characterID == "ELE062" || $characterID == "ELE063") && $type == "ARCANE" && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) {
-    PlayAura("ELE109", $otherPlayer);
-  }
   if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused]) AddCurrentTurnEffect($source, $mainPlayer);
-  if($source == "DYN173" && SearchCurrentTurnEffects("DYN173", $mainPlayer, true)) {
-    WriteLog("Player " . $mainPlayer . " drew a card and Player " . $otherPlayer . " must discard a card");
-    Draw($mainPlayer);
-    PummelHit();
-  }
   if($source == "DYN612") GainHealth($damage, $mainPlayer);
 }
 
