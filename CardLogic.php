@@ -1227,8 +1227,13 @@ function CanGainAttack()
 
 function IsWeaponGreaterThanTwiceBasePower()
 {
-  global $combatChainState, $CCS_CachedTotalAttack, $combatChain;
-  return count($combatChain) > 0 && CardType($combatChain[0]) == "W" && CachedTotalAttack() > (AttackValue($combatChain[0]) * 2);
+  global $combatChainState, $CCS_CachedTotalAttack, $combatChain, $mainPlayer, $CS_NumCharged, $CS_NumYellowPutSoul;
+  if(count($combatChain) == 0) return false;
+  if(CardType($combatChain[0]) == "W" && CachedTotalAttack() > (AttackValue($combatChain[0]) * 2)) return true;
+  $char = &GetPlayerCharacter($mainPlayer);
+  if($char[CharacterPieces()] == "MON031" && GetClassState($mainPlayer, $CS_NumCharged) > 0) return true;
+  if($char[CharacterPieces()] == "DTD046" && GetClassState($mainPlayer, $CS_NumYellowPutSoul) > 0) return true;
+  return false;
 }
 
 function HasEnergyCounters($array, $index)
