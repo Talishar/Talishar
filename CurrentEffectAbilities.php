@@ -1109,4 +1109,27 @@ function EffectAttackRestricted()
   return false;
 }
 
+function EffectPlayCardRestricted($cardID, $type)
+{
+  global $currentTurnEffects, $currentPlayer;
+  $restrictedBy = "";
+  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    if($currentTurnEffects[$i+1] == $currentPlayer) {
+      $effectArr = explode(",", $currentTurnEffects[$i]);
+      $effectID = $effectArr[0];
+      switch($effectID) {
+        case "DTD230-War": if($type == "A")$restrictedBy = "DTD230"; break;
+        default:
+          break;
+      }
+    }
+  }
+  if($restrictedBy != "") {
+    WriteLog("The card play is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.");
+    RevertGamestate();
+    return true;
+  }
+  return false;
+}
+
 ?>

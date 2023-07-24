@@ -1323,6 +1323,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       ItemPlayAbilities($cardID, $from);
       ResetCardPlayed($cardID);
     }
+    if(EffectPlayCardRestricted($cardID, $playType)) return;
     if($playType == "A" || $playType == "AA") {
       if(!$canPlayAsInstant) --$actionPoints;
       if($cardType == "A" && $abilityType == "") {
