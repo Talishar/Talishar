@@ -164,7 +164,7 @@
       ProcessDecisionQueue();
     }
     else {
-      $turn[0] = "D";
+      $turn[0] = "A";
       $currentPlayer = $mainPlayer;
       for($i=count($layers)-LayerPieces(); $i >= 0; $i-=LayerPieces())
       {
