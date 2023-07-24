@@ -27,8 +27,8 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("WRITELOG", $currentPlayer, "{0} was chosen");
-      AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", ($currentPlayer == 1 ? 2 : 1), "ARC162");
-      return "Chains of Eminence is currently a partially manual card. Enforce play restriction manually.";
+      AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", ($currentPlayer == 1 ? 2 : 1), "ARC162,{0}");
+      return "";
     case "ARC164": case "ARC165": case "ARC166":
       if(PlayerHasLessHealth($currentPlayer)) GiveAttackGoAgain();
       return "";
