@@ -433,14 +433,17 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $myAllies = &GetAllies($player);
   $character = &GetPlayerCharacter($player);
   $myHand = &GetHand($player);
-  $banish = &GetBanish($player);
+  $banish = new Banish($player);
   $restriction = "";
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
   $abilityType = GetAbilityType($cardID, $index, $from);
   if($phase == "P" && $from != "HAND") return false;
   if($phase == "B" && $from == "BANISH") return false;
-  if($from == "BANISH" && !(PlayableFromBanish($banish[$index], $banish[$index+1]) || AbilityPlayableFromBanish($banish[$index]))) return false;
+  if($from == "BANISH") {
+    $banishCard = $banish->Card($index);
+    if(!(PlayableFromBanish($banishCard->ID(), $banishCard->Modifier()) || AbilityPlayableFromBanish($banishCard->ID()))) return false;
+  }
   if($phase == "B" && $cardType == "E" && $character[$index + 6] == 1) { $restriction = "On combat chain"; return false; }
   if($phase != "B" && $from == "CHAR" && $character[$index+1] != "2") return false;
   if($from == "CHAR" && $phase != "B" && $character[$index + 8] == "1") { $restriction = "Frozen"; return false; }

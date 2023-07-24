@@ -65,6 +65,11 @@ class BanishCard {
       return $this->banish[$this->index];
     }
 
+    function Modifier()
+    {
+      return $this->banish[$this->index+1];
+    }
+
     function UniqueID()
     {
       return $this->banish[$this->index+2];
