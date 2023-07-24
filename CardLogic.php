@@ -850,13 +850,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       break;
 		case "DYN010": case "DYN011": case "DYN012":
-      $discard = &GetDiscard($player);
-      $found = -1;
-      for($i = 0; $i < count($discard) && $found == -1; $i += DiscardPieces()) {
-        if($discard[$i] == $parameter) $found = $i;
-      }
-      RemoveGraveyard($player, $found);
-      AddBottomDeck($parameter, $player, "GY");
+      $index = SearchGetFirstIndex(SearchMultizone($player, "MYDISCARD:cardID=" . $parameter));
+      RemoveGraveyard($player, $index);
+      $deck = new Deck($player);
+      $deck->AddBottom($parameter, "GY");
       break;
     case "DYN093":
       $targetIndex = SearchItemsForUniqueID($target, $player);
@@ -1184,12 +1181,8 @@ function CardDiscarded($player, $discarded, $source = "")
       AddLayer("TRIGGER", $player, $character[$index]);
     }
     if(SearchCurrentTurnEffects("DYN009", $player)) {
-      $discard = &GetDiscard($player);
-      $found = -1;
-      for($i = 0; $i < count($discard) && $found == -1; $i += DiscardPieces()) {
-        if($discard[$i] == $discarded) $found = $i;
-      }
-      RemoveGraveyard($player, $found);
+      $index = SearchGetFirstIndex(SearchMultizone($player, "MYDISCARD:cardID=" . $discarded));
+      RemoveGraveyard($player, $index);
       BanishCardForPlayer($discarded, $player, "GY", "-", $player);
       AddLayer("TRIGGER", $player, "DYN009");
     }

@@ -84,10 +84,14 @@ function ItemPlayAbilities($cardID, $from)
       case "EVR189":
         if($from == "BANISH") {
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Talisman of Cremation");
-          AddDecisionQueue("FINDINDICES", $otherPlayer, "GY");
-          AddDecisionQueue("MAYCHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
-          AddDecisionQueue("SPECIFICCARD", $otherPlayer, "TALISMANOFCREMATION", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card name to banish with Talisman of Cremation");
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD");
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
+          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "THEIRDISCARD:sameName=", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
           $remove = true;
         }
         break;

@@ -31,7 +31,7 @@ function MZRemove($player, $lastResult)
   //TODO: Make each removal function return the card ID that was removed, so you know what it was
   $lastResultArr = explode(",", $lastResult);
   $otherPlayer = ($player == 1 ? 2 : 1);
-  for($i = 0; $i < count($lastResultArr); ++$i) {
+  for($i = count($lastResultArr)-1; $i >= 0; --$i) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     switch($mzIndex[0]) {
       case "MYDISCARD": $lastResult = RemoveGraveyard($player, $mzIndex[1]); break;

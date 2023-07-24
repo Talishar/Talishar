@@ -567,7 +567,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $myArsenal = &GetArsenal($player);
   $myItems = &GetItems($player);
   $mySoul = &GetSoul($player);
-  $myDiscard = &GetDiscard($player);
+  $discard = new Discard($player);
   if(SearchCurrentTurnEffects("CRU032", $player) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) { $restriction = "CRU032"; return true; }
   if(SearchCurrentTurnEffects("MON007", $player) && $from == "BANISH") { $restriction = "MON007"; return true; }
   if(SearchCurrentTurnEffects("ELE036", $player) && CardType($cardID) == "E") { $restriction = "ELE036"; return true; }
@@ -632,10 +632,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MON141": case "MON142": case "MON143":
     case "MON147": case "MON148": case "MON149":
     case "MON150": case "MON151": case "MON152":
-      return count($myDiscard) < 3;
+      return $discard->NumCards() < 3;
     case "MON189": return SearchCount(SearchBanish($player, "", "", -1, -1, "", "", true)) < 6;
     case "MON190": return GetClassState($player, $CS_NumBloodDebtPlayed) < 6;
-    case "MON198": return count($myDiscard) < 6;
+    case "MON198": return $discard->NumCards() < 6;
     case "MON230": return GetClassState($player, $CS_NumAttackCards) == 0 || GetClassState($player, $CS_NumNonAttackCards) == 0;
     case "MON238": return GetClassState($player, $CS_DamageTaken) == 0 && GetClassState($otherPlayer, $CS_DamageTaken) == 0;
     case "MON281": case "MON282": case "MON283": return SearchCurrentTurnEffects($cardID, $player);

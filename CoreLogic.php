@@ -202,10 +202,8 @@ function MZStartTurnIndices()
   global $mainPlayer;
   $mainDiscard = &GetDiscard($mainPlayer);
   $cards = "";
-  for($i=0; $i<count($mainDiscard); $i+=DiscardPieces())
-  {
-    switch($mainDiscard[$i])
-    {
+  for($i=0; $i<count($mainDiscard); $i+=DiscardPieces()) {
+    switch($mainDiscard[$i]) {
       case "UPR086": if(ThawIndices($mainPlayer) != "") $cards = CombineSearches($cards, SearchMultiZoneFormat($i, "MYDISCARD")); break;
       default: break;
     }

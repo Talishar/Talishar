@@ -277,19 +277,6 @@ function SpecificCardLogic($player, $card, $lastResult)
         for ($i = 0; $i < $lastResult; ++$i) PlayAura("ARC112", $player);
       }
       return $lastResult;
-    case "TALISMANOFCREMATION":
-      $discard = &GetDiscard($player);
-      $cardName = CardName($discard[$lastResult]);
-      $count = 0;
-      for($i = count($discard) - DiscardPieces(); $i >= 0; $i -= DiscardPieces()) {
-        if(CardName($discard[$i]) == $cardName) {
-          BanishCardForPlayer($discard[$i], $player, "GY");
-          RemoveGraveyard($player, $i);
-          ++$count;
-        }
-      }
-      WriteLog("Talisman of Cremation banished " . $count . " cards named " . $cardName);
-      return "";
     case "KNICKKNACK":
       for($i = 0; $i < ($dqVars[0] + 1); ++$i) {
         PrependDecisionQueue("PUTPLAY", $player, "-", 1);

@@ -801,6 +801,7 @@ function GetMZCardLink($player, $MZ)
 //Example: AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:maxAttack=3;type=AA");
 function SearchMultizone($player, $searches)
 {
+  $otherPlayer = ($player == 1 ? 2 : 1);
   $unionSearches = explode("&", $searches);
   $rv = "";
   for($i = 0; $i < count($unionSearches); ++$i) {
@@ -828,7 +829,7 @@ function SearchMultizone($player, $searches)
     if(count($searchArr) > 1) //Means there are conditions
     {
       $conditions = explode(";", $searchArr[1]);
-      for ($j = 0; $j < count($conditions); ++$j) {
+      for($j = 0; $j < count($conditions); ++$j) {
         $condition = explode("=", $conditions[$j]);
         switch($condition[0]) {
           case "type":
@@ -922,6 +923,7 @@ function SearchMultizone($player, $searches)
             {
               case "MYDECK": $searchResult = SearchDeckByName($player, $name); break;
               case "MYDISCARD": $searchResult = SearchDiscardByName($player, $name); break;
+              case "THEIRDISCARD": $searchResult = SearchDiscardByName($otherPlayer, $name); break;
               default: break;
             }
             $rv = SearchMultiZoneFormat($searchResult, $zone);
@@ -1047,4 +1049,19 @@ function SearchSpellvoidIndices($player)
   $indices = CombineSearches($indices, $auraIndices);
 
   return $indices;
+}
+
+function SearchGetFirst($search)
+{
+  if($search == "") return "";
+  $arr = explode(",", $search);
+  return $arr[0];
+}
+
+function SearchGetFirstIndex($search)
+{
+  $firstMZ = SearchGetFirst($search);
+  if($search == "") return "";
+  $arr = explode("-", $firstMZ);
+  return $arr[1];
 }

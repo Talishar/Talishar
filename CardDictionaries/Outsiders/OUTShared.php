@@ -315,16 +315,10 @@ function OUTAbilityCost($cardID)
         {
           $deck = new Deck($mainPlayer);
           $topDeck = $deck->Top(remove:true);
-          $name = CardName($topDeck);
           AddGraveyard($topDeck, $mainPlayer, "DECK");
-          $discard = &GetDiscard($mainPlayer);
-          $numName = 0;
-          for($i=0; $i<count($discard); $i+=DiscardPieces())
-          {
-            if(CardName($discard[$i]) == $name) ++$numName;
-          }
+          $numName = SearchCount(SearchMultizone($mainPlayer, "MYDISCARD:sameName=" . $topDeck));
           LoseHealth($numName, $mainPlayer);
-          $rv = Cardlink($topDeck, $topDeck) . " put into discard. Player $mainPlayer lost $numName health.";
+          $rv = Cardlink($topDeck, $topDeck) . " put into discard. Player $mainPlayer lost $numName health";
           TrapTriggered($cardID);
         }
         return $rv;

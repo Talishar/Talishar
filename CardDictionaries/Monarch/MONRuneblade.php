@@ -89,10 +89,10 @@
 
   function InvertExistenceIndices($player)
   {
-    $discard = &GetDiscard($player);
-    if(count($discard) == 0) return "";
-    $rv = (count($discard) == 1 ? "1" : "2") . "-";
-    $rv .= GetIndices(count($discard));
+    $discard = new Discard($player);
+    if($discard->Empty()) return "";
+    $rv = ($discard->NumCards() == 1 ? "1" : "2") . "-";
+    $rv .= GetIndices($discard->NumCards());
     return $rv;
   }
 
