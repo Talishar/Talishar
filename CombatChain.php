@@ -672,4 +672,55 @@ function CombatChainClosedEffects()
   }
 }
 
+
+function CacheCombatResult()
+{
+  global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
+  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand;
+  if(count($combatChain) == 0) return;
+  $combatChainState[$CCS_CachedTotalAttack] = 0;
+  $combatChainState[$CCS_CachedTotalBlock] = 0;
+  EvaluateCombatChain($combatChainState[$CCS_CachedTotalAttack], $combatChainState[$CCS_CachedTotalBlock]);
+  $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
+  $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
+  $combatChainState[$CSS_CachedNumActionBlocked] = NumActionBlocked();
+  $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand();
+}
+
+function CachedTotalAttack()
+{
+  global $combatChainState, $CCS_CachedTotalAttack;
+  return $combatChainState[$CCS_CachedTotalAttack];
+}
+
+function CachedTotalBlock()
+{
+  global $combatChainState, $CCS_CachedTotalBlock;
+  return $combatChainState[$CCS_CachedTotalBlock];
+}
+
+function CachedDominateActive()
+{
+  global $combatChainState, $CCS_CachedDominateActive;
+  return ($combatChainState[$CCS_CachedDominateActive] == "1" ? true : false);
+}
+
+function CachedOverpowerActive()
+{
+  global $combatChainState, $CCS_CachedOverpowerActive;
+  return ($combatChainState[$CCS_CachedOverpowerActive] == "1" ? true : false);
+}
+
+function CachedNumDefendedFromHand() //Reprise
+{
+  global $combatChainState, $CCS_CachedNumDefendedFromHand;
+  return $combatChainState[$CCS_CachedNumDefendedFromHand];
+}
+
+function CachedNumActionBlocked()
+{
+  global $combatChainState, $CSS_CachedNumActionBlocked;
+  return $combatChainState[$CSS_CachedNumActionBlocked];
+}
+
 ?>
