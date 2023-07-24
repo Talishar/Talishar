@@ -186,7 +186,6 @@ function OUTAbilityCost($cardID)
         $combatChain[0] = $card->ID();
         $combatChainState[$CCS_LinkBaseAttack] = AttackValue($combatChain[0]);
         $card->Remove();
-        RemoveBanish($currentPlayer, $index);
         return "";
       case "OUT011":
         AddCurrentTurnEffect($cardID, $currentPlayer);
