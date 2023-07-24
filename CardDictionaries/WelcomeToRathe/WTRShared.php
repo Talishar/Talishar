@@ -553,7 +553,7 @@ function WTRAbilityCost($cardID)
 
   function ProcessCrushEffect($cardID)
   {
-    global $mainPlayer, $defPlayer, $defCharacter, $combatChain;
+    global $mainPlayer, $defPlayer, $defCharacter, $combatChain, $combatChainState, $CCS_DamageDealt;
     if(CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
     if(!IsHeroAttackTarget()) return;
     switch($cardID) {
@@ -609,8 +609,8 @@ function WTRAbilityCost($cardID)
         AddNextTurnEffect("CRU035", $defPlayer);
         break;
       case "DTD203":
-        WriteLog("Star Struck is a partially manual card. Enforce play restriction for attacks.");
-        AddNextTurnEffect("DTD203", $defPlayer);
+        $damageDone = $combatChainState[$CCS_DamageDealt];
+        AddNextTurnEffect("DTD203," . $damageDone, $defPlayer);
         break;
       default: return;
     }
