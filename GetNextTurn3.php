@@ -457,14 +457,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           controller: ($playerID == 1 ? 2 : 1),
           facing: $theirArsenal[$i + 1],
           countersMap: (object) ["counters" => $theirArsenal[$i + 3]],
-          isFrozen: $theirArsenal[$i + 4]
+          isFrozen: $theirArsenal[$i + 4] == 1
         ));
       } else array_push($theirArse, (JSONRenderedCard(
         cardNumber: $TheirCardBack,
         controller: ($playerID == 1 ? 2 : 1),
         facing: $theirArsenal[$i + 1],
         countersMap: (object) ["counters" => $theirArsenal[$i + 3]],
-        isFrozen: $theirArsenal[$i + 4]
+        isFrozen: $theirArsenal[$i + 4] == 1
       )));
     }
   }
@@ -480,7 +480,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           controller: 2,
           facing: $myArsenal[$i + 1],
           countersMap: (object) ["counters" => $myArsenal[$i + 3]],
-          isFrozen: $myArsenal[$i + 4]
+          isFrozen: $myArsenal[$i + 4] == 1
         ));
       } else {
         if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myArsenal[$i], $turn[0], "ARS", $i, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
@@ -499,7 +499,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           restriction: $restriction,
           facing: $myArsenal[$i + 1],
           countersMap: (object) ["counters" => $myArsenal[$i + 3]],
-          isFrozen: $myArsenal[$i + 4]
+          isFrozen: $myArsenal[$i + 4] == 1
         ));
       }
     }
