@@ -446,7 +446,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD230":
       WarmongersDiplomacy($otherPlayer);
       WarmongersDiplomacy($currentPlayer);
-      return "Choose your mode then enforce play restriction manually";
+      return "";
     case "DTD231":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
@@ -489,8 +489,7 @@ function DTDHitEffect($cardID)
       AddDecisionQueue("INPUTCARDNAME", $mainPlayer, "-");
       AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
       AddDecisionQueue("WRITELOG", $mainPlayer, "{0} was chosen");
-      AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "DTD226");
-      WriteLog("This is a partially manual card. Name the card and enforce the restriction manually.");
+      AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $defPlayer, "DTD226,{0}");
       break;
     case "DTD227":
       if(IsHeroAttackTarget()) {

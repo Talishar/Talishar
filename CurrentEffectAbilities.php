@@ -1118,7 +1118,8 @@ function EffectPlayCardRestricted($cardID, $type)
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
       switch($effectID) {
-        case "DTD230-War": if($type == "A")$restrictedBy = "DTD230"; break;
+        case "DTD226": if(GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "DTD226"; break;
+        case "DTD230-War": if($type == "A") $restrictedBy = "DTD230"; break;
         default:
           break;
       }
