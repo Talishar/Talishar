@@ -546,6 +546,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $theirPermanentsOutput = array();
   $theirPermanents = GetPermanents($playerID == 1 ? 2 : 1);
   for ($i = 0; $i + PermanentPieces() - 1 < count($theirPermanents); $i += PermanentPieces()) {
+    if($theirPermanents[$i] == "DTD164") continue;//Demi-hero should not be shown to opponent
     $type = CardType($theirPermanents[$i]);
     $sType = CardSubType($theirPermanents[$i]);
     array_push($theirPermanentsOutput, JSONRenderedCard(cardNumber: $theirPermanents[$i], controller: $otherPlayer, type: $type, sType: $sType));
