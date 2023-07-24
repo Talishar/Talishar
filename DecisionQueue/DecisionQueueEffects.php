@@ -311,16 +311,15 @@ function SpecificCardLogic($player, $card, $lastResult)
     case "REMEMBRANCE":
       $cards = "";
       $deck = new Deck($player);
-      $discard = &GetDiscard($player);
-      for($i = 0; $i < count($lastResult); ++$i) {
-        $deck->AddBottom($discard[$lastResult[$i]], "GY");
+      $discard = new Discard($player);
+      for($i = count($lastResult)-1; $i >= 0; --$i) {
+        $cardID = $discard->Remove($lastResult[$i]);
+        $deck->AddBottom($cardID, "GY");
         if($cards != "") $cards .= ", ";
-        if($i == count($lastResult) - 1) $cards .= "and ";
-        $cards .= CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]);
-        unset($discard[$lastResult[$i]]);
+        if($i == 0) $cards .= "and ";
+        $cards .= CardLink($cardID, $cardID);
       }
       WriteLog("Remembrance shuffled " . $cards);
-      $discard = array_values($discard);
       return "1";
     case "PLASMAMAINLINE":
       $items = &GetItems($player);

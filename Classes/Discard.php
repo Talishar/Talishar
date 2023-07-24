@@ -34,6 +34,13 @@ class Discard {
     return $cards;
   }
 
+  function Remove($index) {
+    $cardID = $this->discard[$index];
+    unset($this->discard[$index]);
+    $this->discard = array_values($this->discard);
+    return $cardID;
+  }
+
   function Add($cardID, $from="GY") {
     array_push($this->discard, $cardID);
   }

@@ -10,6 +10,7 @@ include "LandmarkAbilities.php";
 include "CharacterAbilities.php";
 include "WeaponLogic.php";
 include "MZLogic.php";
+include "Classes/Banish.php";
 include "Classes/Deck.php";
 include "Classes/Discard.php";
 include "DecisionQueue/DecisionQueueEffects.php";
