@@ -580,11 +580,11 @@ function ResolveTransformHero($player, $cardID, $parameter)
   AddEvent("HERO_TRANSFORM", $cardID);
   $health = &GetHealth($player);
   $health = DemiHeroHealth($cardID);
-  $banish = &GetBanish($player);
+  $banish = new Banish($player);
   switch($cardID)
   {
     case "DTD164":
-      for($i=count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) TurnBanishFaceDown($player, $i);
+      for($i=$banish->NumCards() - BanishPieces(); $i >= 0; $i -= BanishPieces()) TurnBanishFaceDown($player, $i);
       break;
     case "DTD564":
       $deck = new Deck($player);

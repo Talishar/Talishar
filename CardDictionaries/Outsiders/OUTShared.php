@@ -175,17 +175,17 @@ function OUTAbilityCost($cardID)
     switch ($cardID)
     {
       case "OUT001": case "OUT002":
-        $banish = &GetBanish($currentPlayer);
-        $index = -1;
-        for($i=0; $i<count($banish); $i+=BanishPieces()) if($banish[$i+1] == "UZURI") $index = $i;
-        if($index == -1) return "Uzuri's knife is re-sheathed.";
-        if(CardType($banish[$index]) != "AA") { $banish[$index+1] = "-"; return "Uzuri was bluffing."; }
-        if(CardCost($banish[$index]) > 2) { $banish[$index+1] = "-"; return "Uzuri was bluffing."; }
+        $banish = new Banish($currentPlayer);
+        $card = $banish->FirstCardWithModifier("UZURI");
+        if($card == null) return "Uzuri's knife is re-sheathed";
+        if(CardType($card->ID()) != "AA") { $card->ClearModifier(); return "Uzuri was bluffing"; }
+        if(CardCost($card->ID()) > 2) { $card->ClearModifier(); return "Uzuri was bluffing"; }
         $deck = new Deck($currentPlayer);
         $deck->AddBottom($combatChain[0], "CC");
         AttackReplaced();
-        $combatChain[0] = $banish[$index];
+        $combatChain[0] = $card->ID();
         $combatChainState[$CCS_LinkBaseAttack] = AttackValue($combatChain[0]);
+        $card->Remove();
         RemoveBanish($currentPlayer, $index);
         return "";
       case "OUT011":
