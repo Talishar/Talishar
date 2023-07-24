@@ -584,7 +584,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
   switch($cardID)
   {
     case "DTD164":
-      for($i=$banish->NumCards() - BanishPieces(); $i >= 0; $i -= BanishPieces()) TurnBanishFaceDown($player, $i);
+      for($i=$banish->NumCards() - 1; $i >= 0; --$i) TurnBanishFaceDown($player, $i * BanishPieces());
       break;
     case "DTD564":
       $deck = new Deck($player);
