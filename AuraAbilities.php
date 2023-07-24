@@ -779,6 +779,12 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
   $index = GetClassState($currentPlayer, $CS_PlayIndex);
   switch($cardID) {
     case "DTD060": case "DTD061": case "DTD062":
+      $hand = &GetHand($currentPlayer);
+      if(count($hand) == 0) {
+        WriteLog("You do not have a card to charge. Reverting gamestate.");
+        RevertGamestate();
+        return;
+      }
       DestroyAura($currentPlayer, $index);
       Charge(may:false);
       break;
