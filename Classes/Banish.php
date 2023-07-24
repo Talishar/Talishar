@@ -27,7 +27,7 @@ class Banish {
     for($i=0; $i<count($this->banish); $i+=BanishPieces()) {
       if($this->banish[$i+1] == $modifier) $index = $i;
     }
-    return $index;
+    return new BanishCard($this->banish, $index);
   }
 
   function Remove($index) {
@@ -47,6 +47,11 @@ class BanishCard {
     function __construct(&$banish, $index) {
       $this->banish = $banish;
       $this->index = $index;
+    }
+
+    function Index()
+    {
+      return $this->index;
     }
 }
 
