@@ -436,6 +436,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $zone[$index + $offset] = ($zone[$index + $offset] == "1" ? "0" : "1");
       break;
     case 10000: //Undo
+      $otherPlayer = ($playerID == 1 ? 2 : 1);
       $format = GetCachePiece($gameName, 13);
       $char = &GetPlayerCharacter($otherPlayer);
       if(($format != 1 && $format != 3) || $char[0] == "DUMMY" || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer))
