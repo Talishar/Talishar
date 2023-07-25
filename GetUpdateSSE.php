@@ -89,7 +89,7 @@ while (true) {
     $lastOppStatus = intval($oppStatus);
     //Handle server timeout
     $lastUpdateTime = GetCachePiece($gameName, 6);
-    if ($currentTime - $lastUpdateTime > 90000 && GetCachePiece($gameName, 12) != "1") //90 seconds
+    if($lastUpdateTime != "" && $currentTime - $lastUpdateTime > 90000 && GetCachePiece($gameName, 12) != "1") //90 seconds
     {
       SetCachePiece($gameName, 12, "1");
       $opponentInactive = true;
