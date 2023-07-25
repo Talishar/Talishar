@@ -339,6 +339,7 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
 	$payloadArr['gameName'] = $gameName;
 	$payloadArr['deck1'] = json_decode(SerializeGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID));
 	$payloadArr['deck2'] = json_decode(SerializeGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID));
+	$payloadArr["format"] = GetCachePiece(intval($gameName), 13);
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
 	curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -362,22 +363,22 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$DeckLink = explode("/", $DeckLink);
 	$DeckLink = $DeckLink[count($DeckLink) - 1];
 	$deckAfterSB = explode("\r\n", $deckAfterSB);
-	if (count($deckAfterSB) == 1) return "";
+	if(count($deckAfterSB) == 1) return "";
 	$deckAfterSB = $deckAfterSB[1];
 	$deck = [];
-	if ($gameID != "") $deck["gameId"] = $gameID;
-	if ($gameName != "") $deck["gameName"] = $gameName;
+	if($gameID != "") $deck["gameId"] = $gameID;
+	if($gameName != "") $deck["gameName"] = $gameName;
 	$deck["deckId"] = $DeckLink;
 	$deck["turns"] = intval($currentTurn);
 	$deck["result"] = ($player == $winner ? 1 : 0);
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);
-	if ($opposingHero != "") $deck["opposingHero"] = $opposingHero;
-	if ($deckbuilderID != "") $deck["deckbuilderID"] = $deckbuilderID;
+	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
+	if($deckbuilderID != "") $deck["deckbuilderID"] = $deckbuilderID;
 	$deck["cardResults"] = [];
 	$deckAfterSB = explode(" ", $deckAfterSB);
 	$deduplicatedDeck = [];
-	for ($i = 0; $i < count($deckAfterSB); ++$i) {
-		if ($i > 0 && $deckAfterSB[$i] == $deckAfterSB[$i - 1]) continue; //Don't send duplicates
+	for($i = 0; $i < count($deckAfterSB); ++$i) {
+		if($i > 0 && $deckAfterSB[$i] == $deckAfterSB[$i - 1]) continue; //Don't send duplicates
 		array_push($deduplicatedDeck, $deckAfterSB[$i]);
 	}
 	for ($i = 0; $i < count($deduplicatedDeck); ++$i) {
@@ -390,9 +391,9 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$deck["cardResults"][$i]["pitchValue"] = PitchValue($deduplicatedDeck[$i]);
 	}
 	$cardStats = &GetCardStats($player);
-	for ($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
-		for ($j = 0; $j < count($deck["cardResults"]); ++$j) {
-			if ($deck["cardResults"][$j]["cardId"] == GetNormalCardID($cardStats[$i])) {
+	for($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
+		for($j = 0; $j < count($deck["cardResults"]); ++$j) {
+			if($deck["cardResults"][$j]["cardId"] == GetNormalCardID($cardStats[$i])) {
 				$deck["cardResults"][$j]["played"] = $cardStats[$i + $CardStats_TimesPlayed];
 				$deck["cardResults"][$j]["blocked"] = $cardStats[$i + $CardStats_TimesBlocked];
 				$deck["cardResults"][$j]["pitched"] = $cardStats[$i + $CardStats_TimesPitched];
@@ -402,7 +403,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	}
 	$turnStats = &GetTurnStats($player);
 	$otherPlayerTurnStats = &GetTurnStats(($player == 1 ? 2 : 1));
-	for ($i = 0; $i < count($turnStats); $i += TurnStatPieces()) {
+	for($i = 0; $i < count($turnStats); $i += TurnStatPieces()) {
 		$deck["turnResults"][$i]["cardsUsed"] = ($turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense]);
 		$deck["turnResults"][$i]["cardsBlocked"] = $turnStats[$i + $TurnStats_CardsBlocked];
 		$deck["turnResults"][$i]["cardsPitched"] = $turnStats[$i + $TurnStats_CardsPitched];
@@ -427,8 +428,8 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$totalDefensiveCards = 0;
 	$totalBlocked = 0;
 	$numTurns = 0;
-	$start = ($player == $firstPlayer ? TurnStatPieces() : 0); // TODO: Not skip first turn for first player
-	for ($i = $start; $i < count($turnStats); $i += TurnStatPieces()) {
+	$start = ($player == $firstPlayer ? TurnStatPieces() : 0);
+	for($i = $start; $i < count($turnStats); $i += TurnStatPieces()) {
 		$totalDamageThreatened += $turnStats[$i + $TurnStats_DamageThreatened];
 		$totalDamageDealt += $turnStats[$i + $TurnStats_DamageDealt];
 		$totalResourcesUsed += $turnStats[$i + $TurnStats_ResourcesUsed];
@@ -438,9 +439,9 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		++$numTurns;
 	}
 
-	if ($numTurns < 1) $numTurns = 1;
+	if($numTurns < 1) $numTurns = 1;
 	$totalOffensiveCards = 4 * $numTurns - $totalDefensiveCards;
-	if ($totalOffensiveCards == 0) $totalOffensiveCards = 1;
+	if($totalOffensiveCards == 0) $totalOffensiveCards = 1;
 
 	$deck["totalDamageThreatened"] = $totalDamageThreatened;
 	$deck["totalDamageDealt"] = $totalDamageDealt;
@@ -457,34 +458,26 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 function GetNormalCardID($cardID)
 {
 	switch ($cardID) {
-		case "MON405":
-			return "BOL002";
-		case "MON400":
-			return "BOL006";
-		case "MON407":
-			return "CHN002";
-		case "MON401":
-			return "CHN006";
-		case "MON406":
-			return "LEV002";
-		case "MON400":
-			return "LEV005";
-		case "MON404":
-			return "PSM002";
-		case "MON402":
-			return "PSM007";
+		case "MON405": return "BOL002";
+		case "MON400": return "BOL006";
+		case "MON407": return "CHN002";
+		case "MON401": return "CHN006";
+		case "MON406": return "LEV002";
+		case "MON400": return "LEV005";
+		case "MON404": return "PSM002";
+		case "MON402": return "PSM007";
 	}
 	return $cardID;
 }
 
 function SavePatreonTokens($accessToken, $refreshToken)
 {
-	if (!isset($_SESSION["userid"])) return;
+	if(!isset($_SESSION["userid"])) return;
 	$userID = $_SESSION["userid"];
 	$conn = GetDBConnection();
 	$sql = "UPDATE users SET patreonAccessToken=?, patreonRefreshToken=? WHERE usersid=?";
 	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
+	if(mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_bind_param($stmt, "sss", $accessToken, $refreshToken, $userID);
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
@@ -494,17 +487,17 @@ function SavePatreonTokens($accessToken, $refreshToken)
 
 function LoadBadges($userID)
 {
-	if ($userID == "") return "";
+	if($userID == "") return "";
 	$conn = GetDBConnection();
 	$sql = "SELECT pb.playerId,pb.badgeId,pb.intVariable,bs.topText,bs.bottomText,bs.image,bs.link FROM playerbadge pb join badges bs on bs.badgeId = pb.badgeId WHERE pb.playerId = ?;";
 	$stmt = mysqli_stmt_init($conn);
 	$output = [];
-	if (mysqli_stmt_prepare($stmt, $sql)) {
+	if(mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_bind_param($stmt, "s", $userID);
 		mysqli_stmt_execute($stmt);
 		$data = mysqli_stmt_get_result($stmt);
-		while ($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
-			for ($i = 0; $i < 7; ++$i) array_push($output, $row[$i]);
+		while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
+			for($i = 0; $i < 7; ++$i) array_push($output, $row[$i]);
 		}
 		mysqli_stmt_close($stmt);
 	}
@@ -514,16 +507,16 @@ function LoadBadges($userID)
 
 function GetMyAwardableBadges($userID)
 {
-	if ($userID == "") return "";
+	if($userID == "") return "";
 	$output = [];
 	$conn = GetDBConnection();
 	$sql = "select * from userassignablebadge where playerId=?";
 	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
+	if(mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_bind_param($stmt, "s", $userID);
 		mysqli_stmt_execute($stmt);
 		$data = mysqli_stmt_get_result($stmt);
-		while ($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
+		while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
 			array_push($output, $row[0]);
 		}
 		mysqli_stmt_close($stmt);
@@ -534,11 +527,11 @@ function GetMyAwardableBadges($userID)
 
 function AwardBadge($userID, $badgeID)
 {
-	if ($userID == "") return "";
+	if($userID == "") return "";
 	$conn = GetDBConnection();
 	$sql = "insert into playerbadge (playerId, badgeId, intVariable) values (?, ?, 1) ON DUPLICATE KEY UPDATE intVariable = intVariable + 1;";
 	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
+	if(mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_bind_param($stmt, "ss", $userID, $badgeID);
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
@@ -548,11 +541,11 @@ function AwardBadge($userID, $badgeID)
 
 function SaveSetting($playerId, $settingNumber, $value)
 {
-	if ($playerId == "") return;
+	if($playerId == "") return;
 	$conn = GetDBConnection();
 	$sql = "insert into savedsettings (playerId, settingNumber, settingValue) values (?, ?, ?) ON DUPLICATE KEY UPDATE settingValue = VALUES(settingValue);";
 	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
+	if(mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_bind_param($stmt, "sss", $playerId, $settingNumber, $value);
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
@@ -562,16 +555,16 @@ function SaveSetting($playerId, $settingNumber, $value)
 
 function LoadSavedSettings($playerId)
 {
-	if ($playerId == "") return [];
+	if($playerId == "") return [];
 	$output = [];
 	$conn = GetDBConnection();
 	$sql = "select settingNumber,settingValue from `savedsettings` where playerId=(?)";
 	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
+	if(mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_bind_param($stmt, "s", $playerId);
 		mysqli_stmt_execute($stmt);
 		$data = mysqli_stmt_get_result($stmt);
-		while ($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
+		while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
 			array_push($output, $row[0]);
 			array_push($output, $row[1]);
 		}
