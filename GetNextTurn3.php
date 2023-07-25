@@ -92,7 +92,8 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
 if($lastUpdate == 0) {
   $lastUpdateTime = GetCachePiece($gameName, 6);
-  if($lastUpdateTime != "" && $currentTime - $lastUpdateTime > 90000 && GetCachePiece($gameName, 12) == "1") //90 seconds
+  if($lastUpdateTime == "") { echo("The game no longer exists on the server."); exit; }
+  if($currentTime - $lastUpdateTime > 90000 && GetCachePiece($gameName, 12) == "1") //90 seconds
   {
     $opponentInactive = true;
   }
