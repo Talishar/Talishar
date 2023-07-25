@@ -309,7 +309,7 @@ function OnBlockResolveEffects()
         if($options != "") {
           AddCurrentTurnEffect("DTD205", $mainPlayer);
           AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
-          AddDecisionQueue("HALVEBASEDEFENSE", $currentPlayer, "-", 1);
+          AddDecisionQueue("HALVEBASEDEFENSE", $mainPlayer, "-", 1);
         }
       }
       break;

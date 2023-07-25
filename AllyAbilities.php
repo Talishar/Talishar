@@ -300,7 +300,7 @@ function AllyTakeDamageAbilities($player, $index, $damage, $preventable)
     if($damage > 0 && HasWard($allies[$i], $player)) {
       if($preventable) $damage -= WardAmount($allies[$i], $player);
       $remove = true;
-      WardPoppedAbility($player, $cardID);
+      WardPoppedAbility($player, $allies[$i]);
     }
     switch($allies[$i]) {
       default: break;

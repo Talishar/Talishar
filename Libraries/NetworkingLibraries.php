@@ -870,7 +870,7 @@ function ResolveChainLink()
     if($index < count($allies)) {
       $allies[$index + 2] = intval($allies[$index + 2]) - $totalAttack;
       if($totalAttack > 0) AllyDamageTakenAbilities($defPlayer, $index);
-      DamageDealtAbilities($mainPlayer, $damage, "COMBAT", $combatChain[0]);
+      DamageDealtAbilities($mainPlayer, $totalAttack, "COMBAT", $combatChain[0]);
       if($allies[$index + 2] <= 0) DestroyAlly($defPlayer, $index, false, true);
     }
     AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, $totalAttack);
