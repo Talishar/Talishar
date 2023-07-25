@@ -1961,5 +1961,10 @@ function ChooseToPay($player, $cardID, $amounts)
 function WardPoppedAbility($player, $cardID)
 {
   if(SearchCharacterActive($player, "DYN213", setInactive:true)) GainResources($player, 1);
-  if(SearchCharacterActive($player, "DTD217", setInactive:true)) PlayAura("DYN244", $player);
+  if(SearchCharacterActive($player, "DTD217", setInactive:true)) {
+    AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_create_a_ponder");
+    AddDecisionQueue("NOPASS", $player, "-");
+    AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
+    AddDecisionQueue("PLAYAURA", $player, "DYN244", 1);
+  }
 }
