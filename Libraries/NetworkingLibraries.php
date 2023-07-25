@@ -17,13 +17,13 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $found = -1;
       $character = &GetPlayerCharacter($playerID);
       $cardID = $character[$index];
-      if ($index != -1 && IsPlayable($character[$index], $turn[0], "CHAR", $index)) {
+      if($index != -1 && IsPlayable($character[$index], $turn[0], "CHAR", $index)) {
         SetClassState($playerID, $CS_CharacterIndex, $index);
         SetClassState($playerID, $CS_PlayIndex, $index);
         $character = &GetPlayerCharacter($playerID);
-        if ($turn[0] == "B") {
-          if ($cardID == "MON187") {
-            $character[$index + 1] = 0;
+        if($turn[0] == "B") {
+          if($cardID == "MON187") {
+            $character[$index+1] = 0;
             BanishCardForPlayer($cardID, $currentPlayer, "EQUIP", "NA");
           } else $character[$index + 6] = 1; //Else just put it on the combat chain
         } else {
@@ -31,56 +31,56 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         }
         PlayCard($cardID, "EQUIP", -1, $index);
       } else {
-        echo ("Play equipment ability " . $turn[0] . " Invalid Input<BR>");
+        echo("Play equipment ability " . $turn[0] . " Invalid Input<BR>");
         return false;
       }
       break;
     case 4: //Add something to your arsenal
       $found = HasCard($cardID);
-      if ($turn[0] == "ARS" && $found >= 0) {
+      if($turn[0] == "ARS" && $found >= 0) {
         $hand = &GetHand($playerID);
         unset($hand[$found]);
         $hand = array_values($hand);
         AddArsenal($cardID, $currentPlayer, "HAND", "DOWN");
         PassTurn();
       } else {
-        echo ($cardID . " " . $turn[0] . "<BR>");
-        echo ("Add to arsenal " . $turn[0] . " Invalid Input<BR>");
+        echo($cardID . " " . $turn[0] . "<BR>");
+        echo("Add to arsenal " . $turn[0] . " Invalid Input<BR>");
         return false;
       }
       break;
     case 5: //Card Played from Arsenal
       $index = $cardID;
       $arsenal = &GetArsenal($playerID);
-      if ($index < count($arsenal)) {
+      if($index < count($arsenal)) {
         $cardToPlay = $arsenal[$index];
-        if (!IsPlayable($cardToPlay, $turn[0], "ARS", $index)) break;
+        if(!IsPlayable($cardToPlay, $turn[0], "ARS", $index)) break;
         $uniqueID = $arsenal[$index + 5];
         SetClassState($playerID, $CS_ArsenalFacing, $arsenal[$index + 1]);
-        if ($arsenal[$index + 3] > 0 && CardSubType($cardToPlay) == "Arrow") $combatChainState[$CCS_HasAimCounter] = 1;
+        if($arsenal[$index + 3] > 0 && CardSubType($cardToPlay) == "Arrow") $combatChainState[$CCS_HasAimCounter] = 1;
         RemoveArsenal($playerID, $index);
         PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID);
       } else {
-        echo ("Play from arsenal " . $turn[0] . " Invalid Input<BR>");
+        echo("Play from arsenal " . $turn[0] . " Invalid Input<BR>");
         return false;
       }
       break;
     case 6: //Pitch Deck
-      if ($turn[0] != "PDECK") break;
+      if($turn[0] != "PDECK") break;
       $found = PitchHasCard($cardID);
-      if ($found >= 0) {
+      if($found >= 0) {
         PitchDeck($currentPlayer, $found);
         PassTurn(); //Resume passing the turn
       } else {
-        echo ("Pitch deck " . $turn[0] . " Invalid Input<BR>");
+        echo("Pitch deck " . $turn[0] . " Invalid Input<BR>");
         return false;
       }
       break;
     case 7: //Number input
-      if ($turn[0] == "DYNPITCH") {
+      if($turn[0] == "DYNPITCH") {
         ContinueDecisionQueue($buttonInput);
       } else {
-        echo ("Number input " . $turn[0] . " Invalid Input<BR>");
+        echo("Number input " . $turn[0] . " Invalid Input<BR>");
         return false;
       }
       break;
@@ -164,6 +164,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         return false;
       }
       $cardID = $banish[$index];
+      if(!IsPlayable($cardID, $turn[0], "BANISH", $index)) break;
       if($banish[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
       if($banish[$index + 1] == "MON212" && TalentContains($theirChar[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("MON212", $currentPlayer);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
