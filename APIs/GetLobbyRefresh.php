@@ -11,6 +11,7 @@ SetHeaders();
 session_start();
 
 $_POST = json_decode(file_get_contents('php://input'), true);
+if($_POST == null) exit;
 $gameName = $_POST["gameName"];
 $playerID = $_POST["playerID"];
 $lastUpdate = $_POST["lastUpdate"];
