@@ -364,6 +364,7 @@ function RemoveEffectsOnChainClose()
       case "ELE067": case "ELE068": case "ELE069": //Explosive Growth
       case "ELE186": case "ELE187": case "ELE188": //Ball Lightning
       case "UPR049": //Spreading Flames
+      case "UPR060": case "UPR061": case "UPR062": //Brand with Cinderclaw
       case "DYN095": case "DYN096": case "DYN097": //Scramble Pulse
       case "OUT033": case "OUT034": case "OUT035": //Prowl
       case "OUT052": //Head Leads the Tail
