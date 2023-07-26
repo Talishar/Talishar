@@ -1121,7 +1121,7 @@ function EffectPlayCardRestricted($cardID, $type)
       switch($effectID) {
         case "ARC162": if(GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "ARC162"; break;
         case "DTD226": if(GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "DTD226"; break;
-        case "DTD230-War": if($type == "A") $restrictedBy = "DTD230"; break;
+        case "DTD230-War": if($type == "A" && CardType($cardID) != "W") $restrictedBy = "DTD230"; break;
         default:
           break;
       }
