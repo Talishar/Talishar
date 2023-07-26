@@ -266,7 +266,7 @@ function DynamicCost($cardID)
 {
   global $currentPlayer;
   switch($cardID) {
-    case "WTR051": case "WTR052": case "WTR053": return "2,6";
+    case "WTR051": case "WTR052": case "WTR053": return "0,4";
     case "ARC009": return "0,2,4,6,8,10,12";
     case "MON231": return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40";
     case "EVR022": return "0,1,2,3,4,5,6,7,8,9,10,11,12";
