@@ -105,6 +105,7 @@ enum PatreonCampaign : string
   case CardAdvantage = "8040288";
   case RavenousBabble = "10147920";
   case BlackWingStudios = "4006023";
+  case OnHitEffect = "10811477";
 
   public function SessionID(): string
   {
@@ -136,6 +137,7 @@ enum PatreonCampaign : string
       case "8040288": return "isCardAdvantagePatron";
       case "10147920": return "isRavenousBabblePatron";
       case "4006023": return "isBlackWingStudiosPatron";
+      case "10811477": return "isOnHitEffectPatron";
       default: return "";
     }
   }
@@ -178,6 +180,7 @@ enum PatreonCampaign : string
       case "8040288": return "Card Advantage";
       case "10147920": return "Ravenous Babble";
       case "4006023": return "Black Wing Studios";
+      case "10811477": return "On Hit Effect";
       default: return "";
     }
   }
@@ -220,6 +223,7 @@ enum PatreonCampaign : string
       case "8040288": return IsTeamCardAdvantage($userName);
       case "10147920": return ($userName == "RavenousBabble" || $userName == "Arty" || $userName == "jargowsky" || $userName == "Nick52cost" || $userName == "Boomerang" || $userName == "matthias" || $userName == "Repas801");
       case "4006023": return ($userName == "BlackWingStudio");
+      case "10811477": return ($userName == "Mezzo");
       default: return "";
     }
   }
@@ -262,6 +266,7 @@ enum PatreonCampaign : string
       case "8040288": return "47";
       case "10147920": return "50";
       case "4006023": return "51";
+      case "10811477": return "53";
       default: return "";
     }
   }
