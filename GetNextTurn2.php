@@ -580,6 +580,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $otherPlayer = $playerID == 2 ? 1 : 2;
     $theirAllies = &GetAllies($otherPlayer);
     $myAllies = &GetAllies($playerID);
+    $theirPermanents = &GetPermanents($otherPlayer);
+    $myPermanents = &GetPermanents($playerID);
     for ($i = 0; $i < count($options); ++$i) {
       $option = explode("-", $options[$i]);
       if ($option[0] == "MYAURAS") $source = $myAuras;

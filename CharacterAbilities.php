@@ -583,7 +583,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "DTD075": case "DTD076": case "DTD077": case "DTD078":
       $char = new Character($currentPlayer, $cardIndex);
       $char->status = 0;
-      BanishCardForPlayer($char->cardID, $mainPlayer, "EQUIP", "NA");
+      BanishCardForPlayer($char->cardID, $currentPlayer, "EQUIP", "NA");
       $char->Finished();
       BanishFromSoul($currentPlayer);
       break;

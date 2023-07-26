@@ -1156,7 +1156,7 @@ function DiscardedAtRandomEffects($player, $discarded, $source) {
   }
 }
 
-function DiscardCard($player, $index)
+function DiscardCard($player, $index, $source="")
 {
   $hand = &GetHand($player);
   $discarded = RemoveHand($player, $index);

@@ -605,7 +605,8 @@ function UnsetBanishModifier($player, $modifier, $newMod="DECK")
 {
   $banish = &GetBanish($player);
   for($i=0; $i<count($banish); $i+=BanishPieces()) {
-    $cardModifier = explode("-", $banish[$i+1])[0];
+    $modArr = explode("-", $banish[$i+1]);
+    $cardModifier = $modArr[0];
     if($cardModifier == $modifier) $banish[$i+1] = $newMod;
   }
 }

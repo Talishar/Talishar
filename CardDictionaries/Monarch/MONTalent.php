@@ -68,9 +68,6 @@
       case "MON190":
         PlayAlly("MON220", $currentPlayer);
         return "";
-      case "MON192":
-        if($from == "BANISH") $rv = "Returns to hand";
-        return $rv;
       case "MON193":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";

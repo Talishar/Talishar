@@ -292,7 +292,7 @@
         return "";
       case "EVR079": case "EVR080": case "EVR081":
         Opt($cardID, $combatChainState[$CCS_NumBoosted]);
-        return "Lets you opt " . $numBoosts . ".";
+        return "Lets you opt " . $combatChainState[$CCS_NumBoosted];
       case "EVR082": case "EVR083": case "EVR084":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
