@@ -346,9 +346,6 @@ function MainCharacterHitAbilities()
         }
         break;
       case "ELE062": case "ELE063":
-        if(IsHeroAttackTarget() && CardType($attackID) == "AA" && !SearchAuras("ELE109", $mainPlayer)) {
-          PlayAura("ELE109", $mainPlayer);
-        }
         break;
       case "EVR037":
         if(CardType($attackID) == "AA" && IsCharacterActive($mainPlayer, $i)) {
@@ -420,9 +417,19 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
 
 function MainCharacterHitEffects()
 {
-  global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  global $combatChain, $combatChainState, $CS_NumAttacks, $CCS_WeaponIndex, $mainPlayer;
   $modifier = 0;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  $characterID = ShiyanaCharacter($mainCharacter[0]);
+  $attackID = $combatChain[0];
+  switch($characterID) {
+    case "ELE062": case "ELE063":
+      if(CardType($attackID) == "AA" && GetClassState($mainPlayer, $CS_NumAttacks) == 1) {
+        WriteLog($attackID);
+        PlayAura("ELE109", $mainPlayer);
+      }
+  }
   for($i = 0; $i < count($mainCharacterEffects); $i += 2) {
     if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
       switch($mainCharacterEffects[$i + 1]) {
