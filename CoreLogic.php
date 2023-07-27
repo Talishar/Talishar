@@ -100,12 +100,14 @@ function BlockingCardDefense($index, $from="", $resourcesPaid=-1)
 {
   global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects;
   $from = $combatChain[$index+2];
-  $resourcesPaid = $combatChain[$index+3];
-  $defense = BlockValue($combatChain[$index]) + BlockModifier($combatChain[$index], $from, $resourcesPaid) + $combatChain[$index + 6];
-  if(CardType($combatChain[$index]) == "E")
+  $cardID = $combatChain[$index];
+  $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
+  $resourcesPaid = $combatChain[$index+3] + $baseCost;
+  $defense = BlockValue($cardID) + BlockModifier($cardID, $from, $resourcesPaid) + $combatChain[$index + 6];
+  if(CardType($cardID) == "E")
   {
     $defCharacter = &GetPlayerCharacter($defPlayer);
-    $charIndex = FindDefCharacter($combatChain[$index]);
+    $charIndex = FindDefCharacter($cardID);
     $defense += $defCharacter[$charIndex+4];
   }
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
