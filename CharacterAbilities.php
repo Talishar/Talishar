@@ -423,7 +423,7 @@ function MainCharacterHitEffects()
   $attackID = $combatChain[0];
   switch($characterID) {
     case "ELE062": case "ELE063":
-      if(CardType($attackID) == "AA" && GetClassState($mainPlayer, $CS_NumAttacks) == 1) {
+      if(CardType($attackID) == "AA" && GetClassState($mainPlayer, $CS_NumAttacks) == 1 && IsHeroAttackTarget()) {
         PlayAura("ELE109", $mainPlayer);
       }
   }
