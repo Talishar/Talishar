@@ -375,18 +375,13 @@ function SpecificCardLogic($player, $card, $lastResult)
         WriteLog("Your deck has no cards, so " . CardLink("CRU007", "CRU007") . " continues damaging you until you die");
         return 1;
       }
-      $card = $deck->Top(remove:true);
+      $card = $deck->BanishTop("-", $player);
       LoseHealth(1, $player);
-      WriteLog(CardLink("CRU007", "CRU007") . " banished " . CardLink($card, $card) . " and lost 1 health");
       if(AttackValue($card) >= 6) {
-        BanishCardForPlayer($card, $player, "DECK", "-");
-        $banish = &GetBanish($player);
-        RemoveBanish($player, count($banish) - BanishPieces());
+        $banish = new Banish($player);
+        RemoveBanish($player, $banish->NumCards() - BanishPieces());
         AddPlayerHand($card, $player, "BANISH");
-      } else {
-        BanishCardForPlayer($card, $player, "DECK", "-");
-        PrependDecisionQueue("SPECIFICCARD", $player, "BEASTWITHIN");
-      }
+      } else PrependDecisionQueue("SPECIFICCARD", $player, "BEASTWITHIN");
       return 1;
     case "CROWNOFDICHOTOMY":
       $lastType = CardType($lastResult);
@@ -410,8 +405,10 @@ function SpecificCardLogic($player, $card, $lastResult)
       return 1;
     case "SPOILEDSKULL":
       $rand = GetRandom(0, count($lastResult) - 1);
-      $banish = &GetBanish($player);
-      $banish[$lastResult[$rand]+1] = "TT";
+      $banish = new Banish($player);
+      $card = $banish->Card($lastResult[$rand]);
+      $card->SetModifier("TT");
+      WriteLog("You may play " . CardLink($card->ID(), $card->ID()) . " this turn");
       return $lastResult;
     case "ALLURINGINDUCEMENT":
       global $combatChain, $combatChainState, $CCS_LinkBaseAttack;

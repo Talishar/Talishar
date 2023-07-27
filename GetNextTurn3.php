@@ -319,6 +319,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $response->opponentDeckCount = count($theirDeck);
   $response->opponentDeckCard = JSONRenderedCard(count($theirDeck) > 0 ? $TheirCardBack : $blankZone);
+  $opponentDeckArr = array();
+  if(IsGameOver()) {
+    for($i=0; $i<count($theirDeck); $i+=DeckPieces()) {
+      array_push($opponentDeckArr, JSONRenderedCard($theirDeck[$i]));
+    }
+  }
+  $response->opponentDeck = $opponentDeckArr;
 
   $opponentBanishArr = array();
   for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
@@ -403,6 +410,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $response->playerDeckCount = count($myDeck);
   $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
+  $playerDeckArr = array();
+  if(IsGameOver()) {
+    for($i=0; $i<count($myDeck); $i+=DeckPieces()) {
+      array_push($playerDeckArr, JSONRenderedCard($myDeck[$i]));
+    }
+  }
+  $response->playerDeck = $playerDeckArr;
 
   $banish = GetBanish($playerID);
   $playerBanishArr = array();

@@ -23,7 +23,7 @@ class Banish {
 
   function Card($index)
   {
-    return new BanishCard($this->banish, $index);
+    return new BanishCard($this->playerID, $index);
   }
 
   function FirstCardWithModifier($modifier)
@@ -33,7 +33,7 @@ class Banish {
       if($this->banish[$i+1] == $modifier) $index = $i;
     }
     if($index == -1) return null;
-    return new BanishCard($this->banish, $index);
+    return new BanishCard($this->playerID, $index);
   }
 
   function Remove($index) {
@@ -41,6 +41,14 @@ class Banish {
     for($i=0; $i<BanishPieces(); ++$i) unset($this->banish[$index+$i]);
     $this->banish = array_values($this->banish);
     return $cardID;
+  }
+
+  function UnsetModifier($modifier, $newMod="-") {
+    for($i=0; $i<count($this->banish); $i+=BanishPieces()) {
+      $modArr = explode("-", $this->banish[$i+1]);
+      $cardModifier = $modArr[0];
+      if($cardModifier == $modifier) $this->banish[$i+1] = $newMod;
+    }
   }
 }
 
@@ -50,8 +58,8 @@ class BanishCard {
     private $index;
 
     // Constructor
-    function __construct(&$banish, $index) {
-      $this->banish = $banish;
+    function __construct($playerID, $index) {
+      $this->banish = &GetBanish($playerID);
       $this->index = $index;
     }
 
