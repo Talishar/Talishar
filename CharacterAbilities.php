@@ -345,8 +345,6 @@ function MainCharacterHitAbilities()
           AddLayer("TRIGGER", $mainPlayer, $characterID);
         }
         break;
-      case "ELE062": case "ELE063":
-        break;
       case "EVR037":
         if(CardType($attackID) == "AA" && IsCharacterActive($mainPlayer, $i)) {
           AddLayer("TRIGGER", $mainPlayer, $characterID);
@@ -426,7 +424,6 @@ function MainCharacterHitEffects()
   switch($characterID) {
     case "ELE062": case "ELE063":
       if(CardType($attackID) == "AA" && GetClassState($mainPlayer, $CS_NumAttacks) == 1) {
-        WriteLog($attackID);
         PlayAura("ELE109", $mainPlayer);
       }
   }
