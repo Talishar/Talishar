@@ -601,44 +601,41 @@ function PlayerWon($playerID)
   } catch (Exception $e) { }
 }
 
-function UnsetBanishModifier($player, $modifier, $newMod="DECK")
-{
-  $banish = &GetBanish($player);
-  for($i=0; $i<count($banish); $i+=BanishPieces()) {
-    $modArr = explode("-", $banish[$i+1]);
-    $cardModifier = $modArr[0];
-    if($cardModifier == $modifier) $banish[$i+1] = $newMod;
-  }
-}
-
 function UnsetChainLinkBanish()
 {
-  UnsetBanishModifier(1, "TCL");
-  UnsetBanishModifier(2, "TCL");
+  $p1Banish = new Banish(1);
+  $p1Banish->UnsetModifier("TCL");
+  $p2Banish = new Banish(2);
+  $p2Banish->UnsetModifier("TCL");
 }
 
 function UnsetCombatChainBanish()
 {
-  UnsetBanishModifier(1, "TCC");
-  UnsetBanishModifier(2, "TCC");
-  UnsetBanishModifier(1, "TCL");
-  UnsetBanishModifier(2, "TCL");
+  $p1Banish = new Banish(1);
+  $p1Banish->UnsetModifier("TCL");
+  $p1Banish->UnsetModifier("TCC");
+  $p2Banish = new Banish(2);
+  $p2Banish->UnsetModifier("TCL");
+  $p2Banish->UnsetModifier("TCC");
 }
 
 function ReplaceBanishModifier($player, $oldMod, $newMod)
 {
-  UnsetBanishModifier($player, $oldMod, $newMod);
+  $banish = new Banish($player);
+  $banish->UnsetModifier($oldMod, $newMod);
 }
 
 function UnsetTurnBanish()
 {
   global $defPlayer;
-  UnsetBanishModifier(1, "TT");
-  UnsetBanishModifier(1, "INST");
-  UnsetBanishModifier(2, "TT");
-  UnsetBanishModifier(2, "INST");
-  UnsetBanishModifier(1, "ARC119");
-  UnsetBanishModifier(2, "ARC119");
+  $p1Banish = new Banish(1);
+  $p1Banish->UnsetModifier("TT");
+  $p1Banish->UnsetModifier("INST");
+  $p1Banish->UnsetModifier("ARC119");
+  $p2Banish = new Banish(2);
+  $p2Banish->UnsetModifier("TT");
+  $p2Banish->UnsetModifier("INST");
+  $p2Banish->UnsetModifier("ARC119");
   UnsetCombatChainBanish();
   ReplaceBanishModifier($defPlayer, "NT", "TT");
 }

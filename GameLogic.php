@@ -11,6 +11,7 @@ include "CharacterAbilities.php";
 include "WeaponLogic.php";
 include "MZLogic.php";
 include "Classes/Banish.php";
+include "Classes/CombatChain.php";
 include "Classes/Deck.php";
 include "Classes/Discard.php";
 include "DecisionQueue/DecisionQueueEffects.php";
@@ -85,8 +86,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           else $rv = count($hand) . "-" . GetIndices(count($hand));
           break;
         case "MULTIBANISH":
-          $banish = &GetBanish($player);
-          $rv = $subparam . "-" . GetIndices(count($banish), 0, BanishPieces());
+          $banish = new Banish($player);
+          $rv = $subparam . "-" . GetIndices($banish->NumCards()*BanishPieces(), 0, BanishPieces());
           break;
         case "MULTIHANDAA":
           $search = SearchHand($player, "AA");
