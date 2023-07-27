@@ -1876,6 +1876,9 @@ function UnityEffect($cardID)
     case "DTD196"://Anthem of Spring
       PlayAura("ELE109", $defPlayer);
       break;
+    case "DTD197"://Northern Winds
+      PlayAura("DYN246", $defPlayer);
+      break;
     case "DTD198":
       PlayAura("ELE110", $defPlayer);
       break;
