@@ -42,6 +42,14 @@ class Banish {
     $this->banish = array_values($this->banish);
     return $cardID;
   }
+
+  function UnsetModifier($modifier, $newMod="-") {
+    for($i=0; $i<count($this->banish); $i+=BanishPieces()) {
+      $modArr = explode("-", $this->banish[$i+1]);
+      $cardModifier = $modArr[0];
+      if($cardModifier == $modifier) $this->banish[$i+1] = $newMod;
+    }
+  }
 }
 
 class BanishCard {
