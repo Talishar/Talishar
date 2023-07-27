@@ -379,7 +379,7 @@ function SpecificCardLogic($player, $card, $lastResult)
       LoseHealth(1, $player);
       if(AttackValue($card) >= 6) {
         $banish = new Banish($player);
-        RemoveBanish($player, $banish->NumCards()*(BanishPieces()-1));
+        RemoveBanish($player, ($banish->NumCards()-1)*BanishPieces());
         AddPlayerHand($card, $player, "BANISH");
       } else PrependDecisionQueue("SPECIFICCARD", $player, "BEASTWITHIN");
       return 1;
