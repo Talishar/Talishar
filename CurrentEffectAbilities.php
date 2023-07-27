@@ -1095,7 +1095,7 @@ function EffectAttackRestricted()
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
       switch($effectID) {
-        case "DTD203": if($combatChainState[$CCS_LinkBaseAttack] < $effectArr[1]) $restrictedBy = "DTD203"; break;
+        case "DTD203": if($combatChainState[$CCS_LinkBaseAttack] <= $effectArr[1]) $restrictedBy = "DTD203"; break;
         case "DTD230-Peace": $restrictedBy = "DTD230"; break;
         default:
           break;
