@@ -405,8 +405,10 @@ function SpecificCardLogic($player, $card, $lastResult)
       return 1;
     case "SPOILEDSKULL":
       $rand = GetRandom(0, count($lastResult) - 1);
-      $banish = &GetBanish($player);
-      $banish[$lastResult[$rand]+1] = "TT";
+      $banish = new Banish($player);
+      $card = $banish->Card($lastResult[$rand]);
+      $card->SetModifier("TT");
+      WriteLog("You may play " . CardLink($card->ID(), $card->ID()) . " this turn");
       return $lastResult;
     case "ALLURINGINDUCEMENT":
       global $combatChain, $combatChainState, $CCS_LinkBaseAttack;
