@@ -375,18 +375,13 @@ function SpecificCardLogic($player, $card, $lastResult)
         WriteLog("Your deck has no cards, so " . CardLink("CRU007", "CRU007") . " continues damaging you until you die");
         return 1;
       }
-      $card = $deck->Top(remove:true);
+      $card = $deck->BanishTop("-", $player);
       LoseHealth(1, $player);
-      WriteLog(CardLink("CRU007", "CRU007") . " banished " . CardLink($card, $card) . " and lost 1 health");
       if(AttackValue($card) >= 6) {
-        BanishCardForPlayer($card, $player, "DECK", "-");
-        $banish = &GetBanish($player);
-        RemoveBanish($player, count($banish) - BanishPieces());
+        $banish = new Banish($player);
+        RemoveBanish($player, $banish->NumCards() - BanishPieces());
         AddPlayerHand($card, $player, "BANISH");
-      } else {
-        BanishCardForPlayer($card, $player, "DECK", "-");
-        PrependDecisionQueue("SPECIFICCARD", $player, "BEASTWITHIN");
-      }
+      } else PrependDecisionQueue("SPECIFICCARD", $player, "BEASTWITHIN");
       return 1;
     case "CROWNOFDICHOTOMY":
       $lastType = CardType($lastResult);
