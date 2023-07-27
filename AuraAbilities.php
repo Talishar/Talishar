@@ -467,7 +467,7 @@ function AuraEndTurnCleanup()
   for($i = 0; $i < count($auras); $i += AuraPieces()) $auras[$i + 5] = AuraNumUses($auras[$i]);
 }
 
-function AuraDamagePreventionAmount($player, $index, $active=false, &$cancelRemove=false)
+function AuraDamagePreventionAmount($player, $index, $damage=0, $active=false, &$cancelRemove=false)
 {
   $auras = &GetAuras($player);
   switch($auras[$index])
@@ -492,13 +492,13 @@ function AuraDamagePreventionAmount($player, $index, $active=false, &$cancelRemo
         {
           $cancelRemove = count($soul) > 1 ? true : false;
           MZMoveCard($player, "MYSOUL", "MYBANISH,SOUL,-");
-          $auras[$index+5] = 0;
+          if($damage > 1) $auras[$index+5] = 0;
           return 1;
         }
       }
-      else if($auras[$index+5] == 1) return 1;
-      else
-      {
+      else if($auras[$index+5] == 1) {
+        return 1;
+      } else {
         $auras[$index+5] = 1;
         return 0;
       }
@@ -510,7 +510,7 @@ function AuraDamagePreventionAmount($player, $index, $active=false, &$cancelRemo
 function AuraTakeDamageAbility($player, $index, $damage, $preventable)
 {
   $cancelRemove = false;
-  if($preventable) $damage -= AuraDamagePreventionAmount($player, $index, true, $cancelRemove);
+  if($preventable) $damage -= AuraDamagePreventionAmount($player, $index, $damage, true, $cancelRemove);
   if(!$cancelRemove) DestroyAura($player, $index);
   return $damage;
 }
