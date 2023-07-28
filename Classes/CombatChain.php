@@ -12,9 +12,8 @@ class CombatChain {
   }
 
   // Methods
-  function Card($index)
-  {
-    return new BanishCard($this->playerID, $index);
+  function Card($index) {
+    return new ChainCard($index);
   }
 }
 
@@ -24,7 +23,7 @@ class ChainCard {
     private $index;
 
     // Constructor
-    function __construct($playerID, $index) {
+    function __construct($index) {
       global $combatChain;
       $this->chain = $combatChain;
       $this->index = $index;

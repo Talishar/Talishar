@@ -651,7 +651,7 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
         break;
     }
   }
-  return $damage;
+  return $damage > 0 ? $damage : 0;
 }
 
 function CharacterDamageTakenAbilities($player, $damage)

@@ -1858,7 +1858,7 @@ function PayAdditionalCosts($cardID, $from)
     case "OUT001": case "OUT002":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Uzuri", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZBANISH", $currentPlayer, "HAND,UZURI," . $currentPlayer . ",1", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       break;
@@ -1948,6 +1948,12 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   if(GoesOnCombatChain($turn[0], $cardID, $from)) {
     if($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains(CardSubType($cardID), "Item")) {
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play.");
+      return;
+    }
+    if($definedCardType == "DR" && $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1) {
+      $discard = new Discard($currentPlayer);
+      $discard->Add($cardID, "LAYER");
+      WriteLog(CardLink($cardID, $cardID) . " does not resolve because dominate is active and there is already a card defending from hand");
       return;
     }
     $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
