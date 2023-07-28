@@ -487,6 +487,7 @@ function SavePatreonTokens($accessToken, $refreshToken)
 
 function LoadBadges($userID)
 {
+	return [];//Return empty until inefficient join can be fixed with index
 	if($userID == "") return "";
 	$conn = GetDBConnection();
 	$sql = "SELECT pb.playerId,pb.badgeId,pb.intVariable,bs.topText,bs.bottomText,bs.image,bs.link FROM playerbadge pb join badges bs on bs.badgeId = pb.badgeId WHERE pb.playerId = ?;";
