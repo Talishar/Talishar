@@ -19,6 +19,7 @@ $expires = date("U") + 1800;
 $response = new stdClass();
 
 // Delete any existing entries.
+$conn = GetDBConnection();
 $sql = "DELETE FROM pwdReset WHERE pwdResetEmail=?";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {

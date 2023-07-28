@@ -12,6 +12,7 @@ $decklink = $_POST["deckLink"];
 if (IsUserLoggedIn()) {
   $sql = "DELETE FROM favoritedeck WHERE decklink=? AND usersId=?";
 
+  $conn = GetDBConnection();
   $stmt = mysqli_stmt_init($conn);
   if (mysqli_stmt_prepare($stmt, $sql)) {
     $userID = LoggedInUser();

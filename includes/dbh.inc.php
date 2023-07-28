@@ -10,11 +10,13 @@ $reportingDBUsername = (!empty(getenv("MYSQL_SERVER_USER_NAME")) ? getenv("MYSQL
 $reportingDBPassword = (!empty(getenv("MYSQL_ROOT_PASSWORD")) ? getenv("MYSQL_ROOT_PASSWORD") : "");
 $reportingDBName = "fabonline";
 
+/*
 $conn = GetDBConnection();
 
 if (!$conn) {
 	die("Connection failed: " . mysqli_connect_error());
 }
+*/
 
 function GetDBConnection()
 {

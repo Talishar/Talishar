@@ -20,12 +20,14 @@ if (!IsUserLoggedIn()) {
 $response = new stdClass();
 
 if (IsUserLoggedIn()) {
+  $conn = GetDBConnection();
   $sql = "SELECT * FROM users where usersUid='" . LoggedInUserName() . "'";
   $stmt = mysqli_stmt_init($conn);
   if (!mysqli_stmt_prepare($stmt, $sql)) {
     echo ("ERROR");
     $response->error = "Error loading patreon token";
     echo (json_encode($response));
+    mysqli_close($conn);
     exit();
   }
   mysqli_stmt_execute($stmt);
@@ -42,4 +44,5 @@ if (IsUserLoggedIn()) {
   $response->error = "User not logged in";
 }
 
+mysqli_close($conn);
 echo (json_encode($response));

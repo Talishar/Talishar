@@ -26,11 +26,13 @@ if (empty($password) || empty($passwordRepeat)) {
 $currentDate = date('U');
 
 
+  $conn = GetDBConnection();
   $sql = "SELECT * FROM pwdReset WHERE pwdResetSelector=? AND pwdResetExpires >= ?";
   $stmt = mysqli_stmt_init($conn);
   if (!mysqli_stmt_prepare($stmt, $sql)) {
     $response->error = "There was an error finding your password reset selector.";
     echo (json_encode($response));
+  	mysqli_close($conn);
     exit();
   }
 
@@ -40,6 +42,7 @@ $currentDate = date('U');
   if (!$row = mysqli_fetch_assoc($result)) {
     $response->error = "You need to resubmit your reset request.";
     echo (json_encode($response));
+  	mysqli_close($conn);
     exit();
   }
 
@@ -50,6 +53,7 @@ $currentDate = date('U');
   if ($tokenCheck === false) {
     $response->error = "Your reset token does not match.";
     echo (json_encode($response));
+  	mysqli_close($conn);
     exit();
   }
 
@@ -62,6 +66,7 @@ $currentDate = date('U');
   if (!mysqli_stmt_prepare($stmt, $sql)) {
     $response->error = "There was an error preparing the email query.";
     echo (json_encode($response));
+  	mysqli_close($conn);
     exit();
   }
 
@@ -71,6 +76,7 @@ $currentDate = date('U');
   if (!$row = mysqli_fetch_assoc($result)) {
     $response->error = "Your email was not found in the database.";
     echo (json_encode($response));
+  	mysqli_close($conn);
     exit();
   } else {
 
@@ -80,6 +86,7 @@ $currentDate = date('U');
     if (!mysqli_stmt_prepare($stmt, $sql)) {
       $response->error = "There was an issue resetting your password.";
       echo (json_encode($response));
+    	mysqli_close($conn);
       exit();
     } else {
       $newPwdHash = password_hash($password, PASSWORD_DEFAULT);
@@ -92,12 +99,14 @@ $currentDate = date('U');
       if (!mysqli_stmt_prepare($stmt, $sql)) {
         $response->error = "There was an issue deleting the reset request.";
         echo (json_encode($response));
+      	mysqli_close($conn);
         exit();
       } else {
         mysqli_stmt_bind_param($stmt, "s", $tokenEmail);
         mysqli_stmt_execute($stmt);
         $response->message = "Success!";
         echo (json_encode($response));
+      	mysqli_close($conn);
         exit();
       }
     }
@@ -105,5 +114,6 @@ $currentDate = date('U');
 
 
 echo (json_encode($response));
+mysqli_close($conn);
 
 exit;

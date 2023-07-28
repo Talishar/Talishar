@@ -41,10 +41,12 @@
     echo(json_encode($response));
     exit;
   }
+  $conn = GetDBConnection();
   // Is the username taken already
   if (uidExists($conn, $username) !== false) {
     $response->error = "The chosen username is taken.";
     echo(json_encode($response));
+    mysqli_close($conn);
     exit;
   }
 
@@ -52,5 +54,6 @@
 
   $response->message = "Success!";
   echo(json_encode($response));
+  mysqli_close($conn);
   exit;
 ?>
