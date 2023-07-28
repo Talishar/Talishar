@@ -884,4 +884,13 @@ function CharacterDealDamageAbilities($player, $damage)
     }
   }
 }
+
+function GetCharacterGemState($player, $cardID)
+{
+  $char = &GetPlayerCharacter($player);
+  for($i=0; $i<count($char); $i+=CharacterPieces()) {
+    if($char[$i] == $cardID) return $char[$i+9];
+  }
+  return 0;
+}
 ?>

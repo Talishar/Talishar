@@ -998,7 +998,7 @@ function CharacterDefaultActiveState($cardID)
     case "UPR004": case "UPR047": case "UPR125": case "UPR184": case "UPR185": case "UPR186": return 0;
     case "DYN006": return 1;
     case "DTD165": case "DTD166": case "DTD167": case "DTD168": return 0;
-    //case "DTD564": return 0;
+    case "DTD564": return 0;
     default: return 2;
   }
 }

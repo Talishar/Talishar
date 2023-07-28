@@ -408,6 +408,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $zone = &GetItems($playerID);
           $offset = 5;
           break;
+        case "HERO":
+          $zone = &GetPlayerCharacter($playerID);
+          $offset = 9;
+          break;
         default:
           $zone = &GetAuras($playerID);
           $offset = 7;
