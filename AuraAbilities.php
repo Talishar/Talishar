@@ -599,7 +599,6 @@ function AuraPlayAbilities($attackID, $from="")
       case "ARC112":
         if($cardType == "AA"|| ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA")) {
           $numRunechants = CountAura("ARC112", $currentPlayer);
-          if($cardType == "AA" && $numRunechants > 0) WriteLog("Runechants trigger " . $numRunechants . " total incoming arcane damage");
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
         break;
