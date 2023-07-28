@@ -20,7 +20,14 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer;
   $rv = -1;
   if($player == "") $player = $currentPlayer;
+  $character = &GetPlayerCharacter($player);
+  $characterID = ShiyanaCharacter($character[0]);
   AddEvent("BANISH", ($modifier == "INT" || $modifier == "UZURI" ? "CardBack" : $cardID));
+  //Effects that change the modifier
+  if($characterID == "DTD564") {
+    AddLayer("TRIGGER", $player, $characterID);
+    if($modifier != "INT") $modifier = "DTD564";
+  }
   //Do effects that change where it goes, or banish it if not
   if($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
     $character = &GetPlayerCharacter($player);
@@ -38,17 +45,15 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   //Do additional effects
   if($cardID == "DTD109" && $from == "HAND") $banish[count($banish)-2] = "TT";
   if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
-    WriteLog(CardLink($cardID, $cardID) . " was banished from your deck face up by an action card. Gained 1 action point.");
+    WriteLog("Gained 1 action point from banishing " . CardLink($cardID, $cardID));
     ++$actionPoints;
   }
   if(($modifier == "BOOST" && $from == "DECK") && ($cardID == "DYN101" || $cardID == "DYN102" || $cardID == "DYN103")) {
     WriteLog(CardLink($cardID, $cardID) . " was banished to pay a boost cost. Put a counter on a Hyper Drive you control.");
     AddLayer("TRIGGER", $player, $cardID);
   }
-  $character = &GetPlayerCharacter($player);
   if(AttackValue($cardID) >= 6) {
     if($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer) {
-      $characterID = ShiyanaCharacter($character[0]);
       if(($characterID == "MON119" || $characterID == "MON120") && $character[1] == 2) { // Levia
         WriteLog(CardLink($characterID, $characterID) . " banished a card with 6+ power, and won't lose health from Blood Debt this turn");
       }
@@ -60,10 +65,6 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     }
   }
   if($banishedBy != "") CheckContracts($banishedBy, $cardID);
-  if($character[0] == "DTD564") {
-    TurnBanishFaceDown($player, $rv);
-    return -1;
-  }
   return $rv;
 }
 

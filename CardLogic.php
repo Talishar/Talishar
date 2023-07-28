@@ -1022,6 +1022,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "DTD233":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "DTD564":
+      $banish = &GetBanish($player);
+      for($i=count($banish)-BanishPieces(); $i>=0; $i-=BanishPieces()) {
+        if($banish[$i+1] == "DTD564") { TurnBanishFaceDown($player, $i); break; }
+      }
+      break;
     default:
       break;
   }

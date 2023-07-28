@@ -772,6 +772,15 @@ function GetAuraGemState($player, $cardID)
   return $state;
 }
 
+function GetCharacterGemState($player, $cardID)
+{
+  $char = &GetPlayerCharacter($player);
+  for($i=0; $i<count($char); $i+=CharacterPieces()) {
+    if($char[$i] == $cardID) return $char[$i+9];
+  }
+  return 0;
+}
+
 function PayAuraAbilityAdditionalCosts($cardID, $from)
 {
   global $currentPlayer, $CS_PlayIndex;
