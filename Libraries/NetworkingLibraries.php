@@ -1858,7 +1858,7 @@ function PayAdditionalCosts($cardID, $from)
     case "OUT001": case "OUT002":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Uzuri", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZBANISH", $currentPlayer, "HAND,UZURI," . $currentPlayer . ",1", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       break;
