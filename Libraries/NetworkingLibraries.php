@@ -886,7 +886,7 @@ function ResolveChainLink()
 function ResolveCombatDamage($damageDone)
 {
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $currentTurnEffects;
-  global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt;
+  global $CCS_DamageDealt, $CCS_HitsWithWeapon, $CCS_HitThisLink, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt;
   global $CS_HitsWithSword;
   $wasHit = $damageDone > 0;
   PrependLayer("FINALIZECHAINLINK", $mainPlayer, "0");
@@ -894,6 +894,7 @@ function ResolveCombatDamage($damageDone)
   if(!DelimStringContains(CardSubtype($combatChain[0]), "Ally")) SetClassState($mainPlayer, $CS_DamageDealt, GetClassState($mainPlayer, $CS_DamageDealt) + $damageDone);
   if($wasHit) {
     $combatChainState[$CCS_DamageDealt] = $damageDone;
+    $combatChainState[$CCS_HitThisLink] = 1;
     if(CardType($combatChain[0]) == "W") {
       ++$combatChainState[$CCS_HitsWithWeapon];
       IncrementClassState($mainPlayer, $CS_HitsWithWeapon);
@@ -982,10 +983,7 @@ function FinalizeChainLink($chainClosed = false)
   array_push($chainLinkSummary, TalentOverride($combatChain[0], $mainPlayer));
   array_push($chainLinkSummary, ClassOverride($combatChain[0], $mainPlayer));
   array_push($chainLinkSummary, SerializeCurrentAttackNames());
-  $numHitsOnLink = ($combatChainState[$CCS_DamageDealt] > 0 ? 1 : 0);
-  $numHitsOnLink += intval($combatChainState[$CCS_HitThisLink]);
-  array_push($chainLinkSummary, $numHitsOnLink);
-
+  array_push($chainLinkSummary, $combatChainState[$CCS_HitThisLink]);
   //Clean up combat effects that were used and are one-time
   CleanUpCombatEffects();
   CopyCurrentTurnEffectsFromCombat();

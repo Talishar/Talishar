@@ -415,7 +415,7 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
 
 function MainCharacterHitEffects()
 {
-  global $combatChain, $combatChainState, $CS_NumAttacks, $CCS_WeaponIndex, $mainPlayer;
+  global $combatChain, $combatChainState, $CCS_HitThisLink, $CCS_WeaponIndex, $mainPlayer;
   $modifier = 0;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
@@ -423,9 +423,11 @@ function MainCharacterHitEffects()
   $attackID = $combatChain[0];
   switch($characterID) {
     case "ELE062": case "ELE063":
-      if(CardType($attackID) == "AA" && GetClassState($mainPlayer, $CS_NumAttacks) == 1 && IsHeroAttackTarget()) {
+      if(CardType($attackID) == "AA" && intval($combatChainState[$CCS_HitThisLink]) == 1 && IsHeroAttackTarget()) {
         PlayAura("ELE109", $mainPlayer);
+        break;
       }
+    default: break;
   }
   for($i = 0; $i < count($mainCharacterEffects); $i += 2) {
     if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
