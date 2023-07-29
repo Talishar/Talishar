@@ -318,11 +318,12 @@ function DamageTrigger($player, $damage, $type, $source="NA")
 
 function CanDamageBePrevented($player, $damage, $type, $source="-")
 {
+  global $mainPlayer;
   $otherPlayer = ($player == 1 ? 2 : 1);
   if($type == "ARCANE" && SearchCurrentTurnEffects("EVR105", $player)) return false;
   if($source == "ARC112" && (SearchCurrentTurnEffects("DTD134", $otherPlayer) || SearchCurrentTurnEffects("DTD133", $otherPlayer))) return false;
   if(SearchCurrentTurnEffects("UPR158", $otherPlayer)) return false;
-  if(SearchCurrentTurnEffects("DTD208", $player)) return false;
+  if($type == "COMBAT" && SearchCurrentTurnEffects("DTD208", $mainPlayer)) return false;
   if($source == "DYN005" || $source == "OUT030" || $source == "OUT031" || $source == "OUT032"|| $source == "OUT121" || $source == "OUT122" || $source == "OUT123") return false;
   return true;
 }
