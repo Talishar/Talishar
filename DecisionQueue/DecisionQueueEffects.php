@@ -312,6 +312,7 @@ function SpecificCardLogic($player, $card, $lastResult)
       $cards = "";
       $deck = new Deck($player);
       $discard = new Discard($player);
+      sort($lastResult);
       for($i = count($lastResult)-1; $i >= 0; --$i) {
         $cardID = $discard->Remove($lastResult[$i]);
         $deck->AddBottom($cardID, "GY");
