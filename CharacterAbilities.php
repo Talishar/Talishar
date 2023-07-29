@@ -587,6 +587,12 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       $char->Finished();
       BanishFromSoul($currentPlayer);
       break;
+    case "DTD106":
+      $char = new Character($currentPlayer, $cardIndex);
+      $char->status = 0;
+      BanishCardForPlayer($char->cardID, $currentPlayer, "EQUIP", "NA");
+      $char->Finished();
+      break;
     case "DTD135":
       LoseHealth(1, $currentPlayer);
       --$character[$cardIndex+5];
