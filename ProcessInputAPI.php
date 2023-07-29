@@ -122,18 +122,20 @@ switch ($mode) {
     }
     //Now if it's valid, do the swap
     $newLayers = [];
-    for ($i = 0; $i < count($submission->layers); ++$i) {
-      for ($j = $submission->layers[$i]; $j < $submission->layers[$i] + LayerPieces(); ++$j) {
+    for($i = 0; $i < count($submission->layers); ++$i) {
+      for($j = $submission->layers[$i]; $j < $submission->layers[$i] + LayerPieces(); ++$j) {
         array_push($newLayers, $layers[$j]);
       }
     }
-    for ($i = $dqState[8] + LayerPieces(); $i < $dqState[8] + LayerPieces() * 2; ++$i) {
-      array_push($newLayers, $layers[$i]);
+    if(count($layers) > count($newLayers)) {
+      for($i = $dqState[8] + LayerPieces(); $i < $dqState[8] + LayerPieces() * 2; ++$i) {
+        array_push($newLayers, $layers[$i]);
+      }
     }
     $layers = $newLayers;
     break;
   case 100011: //Resume adventure (roguelike)
-    if ($roguelikeGameID == "") {
+    if($roguelikeGameID == "") {
       $response->error = "Cannot resume adventure - not a roguelike game.";
       $isValid = false;
       break;
