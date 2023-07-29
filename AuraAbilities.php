@@ -349,6 +349,7 @@ function AuraBeginEndPhaseTriggers()
   $auras = &GetAuras($mainPlayer);
   for($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     switch($auras[$i]) {
+      case "UPR176": case "UPR177": case "UPR178":
       case "DYN244":
       case "OUT234": case "OUT235": case "OUT236":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i+6]);
@@ -392,14 +393,6 @@ function AuraBeginEndPhaseAbilities()
         break;
       case "UPR138":
         ChannelTalent($i, "ICE");
-        break;
-      case "UPR176": case "UPR177": case "UPR178":
-        if($auras[$i] == "UPR176") $numOpt = 3;
-        else if($auras[$i] == "UPR177") $numOpt = 2;
-        else $numOpt = 1;
-        for($j = 0; $j < $numOpt; ++$j) PlayerOpt($mainPlayer, 1);
-        AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
-        $remove = 1;
         break;
       case "ELE111":
         FrostHexEndTurnAbility($mainPlayer);

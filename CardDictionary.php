@@ -1015,7 +1015,7 @@ function AuraDefaultHoldTriggerState($cardID)
     case "WTR072": case "WTR073": case "WTR074": case "WTR075": return 0;
     case "ARC112": return 1;
     case "CRU028": case "CRU029": case "CRU030": case "CRU031": case "CRU038": case "CRU039": case "CRU040":
-     case "CRU075": case "CRU144": return 0;
+    case "CRU075": case "CRU144": return 0;
     case "MON186": return 0;
     case "ELE025": case "ELE026": case "ELE027": case "ELE028": case "ELE029": case "ELE030":
     case "ELE206": case "ELE207": case "ELE208": case "ELE109": case "ELE110": case "ELE111": return 0;
