@@ -754,7 +754,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "OUT168": case "OUT169": case "OUT170": return $from == "HAND";
     case "OUT180": return count($myHand) > 0;
     case "OUT181": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA";
-    case "OUT182": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || AttackValue($combatChain[0]) > 1;
+    case "OUT182": return count($combatChain) == 0 || (CardType($combatChain[0]) != "AA" && CardType($combatChain[0]) != "W") || AttackValue($combatChain[0]) > 1;
     case "DTD001": case "DTD002": return count($mySoul) == 0;
     case "DTD003": return count($combatChain) == 0 || (!str_contains(NameOverride($combatChain[0], $mainPlayer), "Herald") && !SubtypeContains($combatChain[0], "Angel", $mainPlayer));
     case "DTD032": case "DTD033": case "DTD034": return count($combatChain) == 0 || !str_contains(NameOverride($combatChain[0], $mainPlayer), "Herald");
