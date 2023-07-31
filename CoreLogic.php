@@ -736,6 +736,10 @@ function CombatChainClosedCharacterEffects()
       if($chainLinks[$i][$j+1] != $defPlayer) continue;
       $charIndex = FindCharacterIndex($defPlayer, $chainLinks[$i][$j]);
       if($charIndex == -1) continue;
+      if($chainLinks[$i][$j] == "MON187") {
+        $character[$charIndex+1] = 0;
+        BanishCardForPlayer($chainLinks[$i][$j], $defPlayer, "EQUIP", "NA");
+      }
       if(!$nervesOfSteelActive)
       {
         if(HasTemper($chainLinks[$i][$j]))

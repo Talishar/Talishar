@@ -22,14 +22,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         SetClassState($playerID, $CS_CharacterIndex, $index);
         SetClassState($playerID, $CS_PlayIndex, $index);
         $character = &GetPlayerCharacter($playerID);
-        if($turn[0] == "B") {
-          if($cardID == "MON187") {
-            $character[$index+1] = 0;
-            BanishCardForPlayer($cardID, $currentPlayer, "EQUIP", "NA");
-          } else $character[$index + 6] = 1; //Else just put it on the combat chain
-        } else {
-          EquipPayAdditionalCosts($index, "EQUIP");
-        }
+        if($turn[0] == "B") $character[$index + 6] = 1;
+        else EquipPayAdditionalCosts($index, "EQUIP");
         PlayCard($cardID, "EQUIP", -1, $index);
       } else {
         echo("Play equipment ability " . $turn[0] . " Invalid Input<BR>");
