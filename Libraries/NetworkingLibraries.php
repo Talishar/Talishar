@@ -458,10 +458,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 10001:
       RevertGamestate("preBlockBackup.txt");
       $skipWriteGamestate = true;
-      WriteLog("Player " . $playerID . " cancel their blocks.");
+      WriteLog("Player " . $playerID . " canceled their blocks");
       break;
     case 10002:
-      WriteLog("Player " . $playerID . " manually add 1 action point.", highlight: true);
+      WriteLog("Player " . $playerID . " manually added 1 action point", highlight: true);
       ++$actionPoints;
       break;
     case 10003: //Undo/Revert to prior turn
@@ -486,54 +486,54 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 10005:
-      WriteLog("Player " . $playerID . " manually subtracted 1 health point from themselves.", highlight: true);
+      WriteLog("Player " . $playerID . " manually subtracted 1 health from themself", highlight: true);
       LoseHealth(1, $playerID);
       break;
     case 10006:
-      WriteLog("Player " . $playerID . " manually added 1 health point to themselves.", highlight: true);
+      WriteLog("Player " . $playerID . " manually added 1 health to themself", highlight: true);
       $health = &GetHealth($playerID);
       $health += 1;
       break;
     case 10007:
       //WriteLog("Player " . $playerID ." manually added 1 health point to themselves.", highlight: true);
-      WriteLog("Subtracting health from your opponent is not allowed.");
+      WriteLog("Subtracting health from your opponent is not allowed");
       //LoseHealth(1, ($playerID == 1 ? 2 : 1));
       break;
     case 10008:
-      WriteLog("Player " . $playerID . " manually added 1 health point their opponent.", highlight: true);
+      WriteLog("Player " . $playerID . " manually added 1 health to their opponent", highlight: true);
       $health = &GetHealth($playerID == 1 ? 2 : 1);
       $health += 1;
       break;
     case 10009:
-      WriteLog("Player " . $playerID . " manually drew a card for themselves.", highlight: true);
+      WriteLog("Player " . $playerID . " manually drew a card for themself", highlight: true);
       Draw($playerID, false);
       break;
     case 10010:
-      WriteLog("Player " . $playerID . " manually drew a card for their opponent.", highlight: true);
+      WriteLog("Player " . $playerID . " manually drew a card for their opponent", highlight: true);
       Draw(($playerID == 1 ? 2 : 1), false);
       break;
     case 10011:
-      WriteLog("Player " . $playerID . " manually added a card to their hand.", highlight: true);
+      WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
       $hand = &GetHand($playerID);
       array_push($hand, $cardID);
       break;
     case 10012:
-      WriteLog("Player " . $playerID . " manually added a resource to their pool.", highlight: true);
+      WriteLog("Player " . $playerID . " manually added a resource to their pool", highlight: true);
       $resources = &GetResources($playerID);
       $resources[0] += 1;
       break;
     case 10013:
-      WriteLog("Player " . $playerID . " manually added a resource to their opponent's pool.", highlight: true);
+      WriteLog("Player " . $playerID . " manually added a resource to their opponent's pool", highlight: true);
       $resources = &GetResources($playerID == 1 ? 2 : 1);
       $resources[0] += 1;
       break;
     case 10014:
-      WriteLog("Player " . $playerID . " manually removed a resource from their opponent's pool.", highlight: true);
+      WriteLog("Player " . $playerID . " manually removed a resource from their opponent's pool", highlight: true);
       $resources = &GetResources($playerID == 1 ? 2 : 1);
       $resources[0] -= 1;
       break;
     case 10015:
-      WriteLog("Player " . $playerID . " manually removed a resource from their pool.", highlight: true);
+      WriteLog("Player " . $playerID . " manually removed a resource from their pool", highlight: true);
       $resources = &GetResources($playerID);
       $resources[0] -= 1;
       break;
