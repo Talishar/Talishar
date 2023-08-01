@@ -10,6 +10,9 @@
 //7 - Flagged for destruction (1 = yes, 0 = no)
 //8 - Frozen (1 = yes, 0 = no)
 //9 - Is Active (2 = always active, 1 = yes, 0 = no)
+//10 - Material
+//11 - Unique ID
+//12 - Extra piece (unused)
 class Character
 {
     // property declaration
@@ -23,6 +26,8 @@ class Character
     public $flaggedForDestruction = 0;
     public $frozen = 0;
     public $isActive = 2;
+    public $material = "";
+    public $uniqueID = 0;
 
     private $player = null;
     private $arrIndex = -1;
@@ -43,6 +48,8 @@ class Character
       $this->flaggedForDestruction = $array[$index+7];
       $this->frozen = $array[$index+8];
       $this->isActive = $array[$index+9];
+      $this->material = $array[$index+10];
+      $this->uniqueID = $array[$index+11];
     }
 
     public function Finished()
@@ -58,6 +65,8 @@ class Character
       $array[$this->arrIndex+7] = $this->flaggedForDestruction;
       $array[$this->arrIndex+8] = $this->frozen;
       $array[$this->arrIndex+9] = $this->isActive;
+      $array[$this->arrIndex+10] = $this->material;
+      $array[$this->arrIndex+11] = $this->uniqueID;
     }
 
 }
@@ -76,6 +85,8 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   array_push($char, 0);
   array_push($char, 0);
   array_push($char, 2);
+  array_push($char, "");
+  array_push($char, 0);
   return $index;
 }
 
@@ -488,6 +499,9 @@ function EquipCard($player, $card)
         $char[$i+7] = 0;
         $char[$i+8] = 0;
         $char[$i+9] = 2;
+        $char[$i+10] = "";
+        $char[$i+11] = 0;
+        $char[$i+12] = 0;
         $replaced = 1;
       }
       else if(Is1H($char[$i])) ++$numHands;
@@ -507,6 +521,9 @@ function EquipCard($player, $card)
     array_splice($char, $insertIndex+7, 0, 0);
     array_splice($char, $insertIndex+8, 0, 0);
     array_splice($char, $insertIndex+9, 0, 2);
+    array_splice($char, $insertIndex+10, 0, "");
+    array_splice($char, $insertIndex+11, 0, 0);
+    array_splice($char, $insertIndex+12, 0, 0);
   }
 }
 

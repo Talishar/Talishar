@@ -35,9 +35,12 @@ function DiscardPieces()
 //7 - Flagged for destruction (1 = yes, 0 = no)
 //8 - Frozen (1 = yes, 0 = no)
 //9 - Is Active (2 = always active, 1 = yes, 0 = no)
+//10 - Material
+//11 - Unique ID
+//12 - Extra piece (unused)
 function CharacterPieces()
 {
-  return 10;
+  return 13;
 }
 
 //0 - Card ID
