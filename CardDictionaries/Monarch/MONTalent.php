@@ -153,7 +153,7 @@
   function ShadowPuppetryHitEffect()
   {
     global $mainPlayer;
-    AddDecisionQueue("DECKCARDS", $mainPlayer, "0", 1);
+    AddDecisionQueue("DECKCARDS", $mainPlayer, "0");
     AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
     AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose if you want to banish <0> with Shadow Puppetry", 1);
     AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_the_card", 1);
