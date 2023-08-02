@@ -273,8 +273,9 @@ function SpecificCardLogic($player, $card, $lastResult)
       }
       return $lastResult;
     case "SCEPTEROFPAIN":
-      if(intval($lastResult) > 0) {
-        for ($i = 0; $i < $lastResult; ++$i) PlayAura("ARC112", $player);
+      global $dqVars;
+      if(intval($dqVars[0]) > 0) {
+        PlayAura("ARC112", $player, number:intval($dqVars[0]));
       }
       return $lastResult;
     case "KNICKKNACK":
