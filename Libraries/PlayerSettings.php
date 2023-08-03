@@ -142,6 +142,8 @@ function GetCardBack($player)
     case 51: return "CBBlackWingStudio";
     case 52: return "CBManSantBlack";
     case 53: return "CBOnHitEffect";
+    case 54: return "CBDaganWhite";
+    case 55: return "CBSonicDoom";
     default: return "CardBack";
   }
 }
@@ -460,6 +462,18 @@ function IsTeamSecondCycle($userID)
     case "The4thAWOL": case "Beserk": case "Dudebroski": case "deathstalker182": case "TryHardYeti": case "Fledermausmann":
     case "Loganninty7": case "flamedog3": case "Swankypants": case "Blazing For Lethal?": case "Jeztus": case "gokkar":
     case "Kernalxklink": case "Kymo13":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
+function IsTeamSonicDoom($userID)
+{
+  switch($userID) {
+    case "KanoSux": case "BestBoy": case "CRGrey": case "jujubeans": case "tog": case "YodasUncle":
+    case "ravenklath": case "Blazing For Lethal?": case "DimGuy": case "JoeyReads": case "OompaLoompaTron": case "OceansForce":
+    case "radiotoast": case "ThePitchStack": case "KanosWaterBottle": case "yamsandwic": case "OotTheMonk":
       return true;
     default: break;
   }
