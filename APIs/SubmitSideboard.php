@@ -83,7 +83,7 @@ $deckFile = fopen($filename, "w");
 fwrite($deckFile, $character . "\r\n");
 
 fwrite($deckFile, $deck . "\r\n");
-fwrite($deckFile, implode(" ", $submission->inventory));
+fwrite($deckFile, (isset($submission->inventory) ? implode(" ", $submission->inventory) : ""));
 fclose($deckFile);
 
 if($playerID == 1) $p1SideboardSubmitted = "1";
