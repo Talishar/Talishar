@@ -513,8 +513,8 @@ function DTDHitEffect($cardID)
 
 function DoesAttackTriggerMirage()
 {
-  global $combatChain, $mainPlayer;
-  if(ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer)) return false;
+  global $CombatChain, $mainPlayer;
+  if(ClassContains($CombatChain->CurrentAttack(), "ILLUSIONIST", $mainPlayer)) return false;
   return CachedTotalAttack() >= 6;
 }
 
@@ -529,9 +529,9 @@ function ProcessMirageOnBlock($index)
 
 function IsMirageActive($index)
 {
-  global $combatChain;
-  if(count($combatChain) == 0) return false;
-  return HasMirage($combatChain[$index]);
+  global $CombatChain;
+  if(!$CombatChain->HasCurrentLink()) return false;
+  return HasMirage($CombatChain->Card($index)->ID());
 }
 
 function HasMirage($cardID)
@@ -612,13 +612,13 @@ function DemiHeroHealth($cardID)
 
 function CallDownLightning()
 {
-  global $mainPlayer, $combatChain;
+  global $mainPlayer, $CombatChain;
   WriteLog(CardLink("DTD198", "DTD198") . " deals 1 damage");
   if(IsDecisionQueueActive()) {
-    PrependDecisionQueue("MZDAMAGE", $mainPlayer, "1,DAMAGE," . $combatChain[0]);
+    PrependDecisionQueue("MZDAMAGE", $mainPlayer, "1,DAMAGE," . $CombatChain->CurrentAttack());
     PrependDecisionQueue("PASSPARAMETER", $mainPlayer, "THEIRCHAR-0");
   } else {
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "THEIRCHAR-0");
-    AddDecisionQueue("MZDAMAGE", $mainPlayer, "1,DAMAGE," . $combatChain[0]);
+    AddDecisionQueue("MZDAMAGE", $mainPlayer, "1,DAMAGE," . $CombatChain->CurrentAttack());
   }
 }
