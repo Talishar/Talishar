@@ -113,7 +113,7 @@ function DTDEffectAttackModifier($cardID)
 
 function DTDCombatEffectActive($cardID, $attackID)
 {
-  global $combatChainState, $CCS_IsBoosted, $mainPlayer, $combatChainState, $CCS_AttackNumCharged, $combatChain;
+  global $combatChainState, $CCS_IsBoosted, $mainPlayer, $combatChainState, $CCS_AttackNumCharged, $CombatChain;
   global $Card_LifeBanner, $Card_ResourceBanner, $CCS_WasRuneGate;
   $params = explode(",", $cardID);
   $cardID = $params[0];
@@ -142,11 +142,11 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD161": case "DTD162": case "DTD163": return $combatChainState[$CCS_WasRuneGate] == 1;
     case "DTD196": return CardType($attackID) == "AA";//Anthem of Spring
     case "DTD198": return true;//Call Down the Lightning
-    case "DTD187": case "DTD188": case "DTD189": return $combatChain[2] == "BANISH";
-    case "DTD190": return $combatChain[2] == "BANISH" && PitchValue($combatChain[0]) == 1;
-    case "DTD191": return $combatChain[2] == "BANISH" && PitchValue($combatChain[0]) == 2;
-    case "DTD192": return $combatChain[2] == "BANISH" && PitchValue($combatChain[0]) == 3;
-    case "DTD207": return SubtypeContains($combatChain[0], "Sword", $mainPlayer);//Ironsong Versus
+    case "DTD187": case "DTD188": case "DTD189": return $CombatChain->AttackCard()->From() == "BANISH";
+    case "DTD190": return $CombatChain->AttackCard()->From() == "BANISH" && PitchValue($attackID) == 1;
+    case "DTD191": return $CombatChain->AttackCard()->From() == "BANISH" && PitchValue($attackID) == 2;
+    case "DTD192": return $CombatChain->AttackCard()->From() == "BANISH" && PitchValue($attackID) == 3;
+    case "DTD207": return SubtypeContains($attackID, "Sword", $mainPlayer);//Ironsong Versus
     case "DTD208": return true;
     case "DTD213": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     case "DTD229": return true;
