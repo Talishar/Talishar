@@ -160,7 +160,7 @@ function DYNCombatEffectActive($cardID, $attackID)
 
 function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $combatChain;
+  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
@@ -528,7 +528,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 function DYNHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $CCS_NumBoosted;
-  global $chainLinks, $combatChain;
   switch($cardID) {
     case "DYN047":
       if(ComboActive()) {
@@ -667,16 +666,17 @@ function ContractCompleted($player, $cardID)
 
 function CheckContracts($banishedBy, $cardBanished)
 {
-  global $combatChain, $chainLinks;
-  for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    if($combatChain[$i + 1] != $banishedBy) continue;
-    $contractType = ContractType($combatChain[$i]);
-    if($contractType != "" && CheckContract($contractType, $cardBanished)) ContractCompleted($banishedBy, $combatChain[$i]);
+  global $CombatChain, $chainLinks;
+  for($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $chainCard = $CombatChain->Card($i, cardNumber:true);
+    if($chainCard->PlayerID() != $banishedBy) continue;
+    $contractType = ContractType($chainCard->ID());
+    if($contractType != "" && CheckContract($contractType, $cardBanished)) ContractCompleted($banishedBy, $chainCard->ID());
   }
   for($i = 0; $i < count($chainLinks); ++$i) {
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
-      if($chainLinks[$i][$j + 1] != $banishedBy) continue;
-      if($chainLinks[$i][$j + 2] == 0) continue;
+      if($chainLinks[$i][$j+1] != $banishedBy) continue;
+      if($chainLinks[$i][$j+2] == 0) continue;
       $contractType = ContractType($chainLinks[$i][$j]);
       if($contractType != "" && CheckContract($contractType, $cardBanished)) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
     }

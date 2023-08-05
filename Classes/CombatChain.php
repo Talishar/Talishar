@@ -15,7 +15,8 @@ class CombatChain {
   }
 
   // Methods
-  function Card($index) {
+  function Card($index, $cardNumber=false) {
+    if($cardNumber) $index = $index * CombatChainPieces();
     return new ChainCard($index);
   }
 
