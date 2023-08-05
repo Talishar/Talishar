@@ -31,6 +31,10 @@ class CombatChain {
   function NumCardsActiveLink() {
     return count($this->chain) / CombatChainPieces();
   }
+
+  function HasCurrentLink() {
+    return count($this->chain) > 0;
+  }
 }
 
 class ChainCard {
