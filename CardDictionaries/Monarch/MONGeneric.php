@@ -2,7 +2,7 @@
 
   function MONGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
   {
-    global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $CS_PlayIndex;
+    global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CombatChain, $CS_PlayIndex;
     $rv = "";
     switch($cardID)
     {
@@ -10,7 +10,7 @@
       case "MON239": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
       case "MON240": GainActionPoints(2, $currentPlayer); return "";
       case "MON245":
-        if($from == "PLAY") $combatChain[5] += 2;
+        if($from == "PLAY") $CombatChain->AttackCard()->ModifyPower(2);
         return "";
       case "MON251": case "MON252": case "MON253":
         if($additionalCosts != "-") AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
@@ -37,11 +37,11 @@
         if($from == "ARS") GiveAttackGoAgain();
         return "";
       case "MON278": case "MON279": case "MON280":
-        if(PlayerHasLessHealth($currentPlayer)) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gains Dominate."; }
-        return $rv;
+        if(PlayerHasLessHealth($currentPlayer)) { AddCurrentTurnEffect($cardID, $currentPlayer); }
+        return "";
       case "MON281": case "MON282": case "MON283":
         if($from == "PLAY") {
-          $combatChain[GetClassState($currentPlayer, $CS_PlayIndex) + 6] += 3;
+          $CombatChain->AbilityCard()->ModifyDefense(3);
           AddCurrentTurnEffect($cardID, $currentPlayer);
         }
         return "";

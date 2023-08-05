@@ -24,6 +24,11 @@ class CombatChain {
     return new ChainCard(0);
   }
 
+  function AbilityCard() {
+    global $currentPlayer, $CS_PlayIndex;
+    return new ChainCard(GetClassState($currentPlayer, $CS_PlayIndex));
+  }
+
   function Remove($index, $cardNumber=false) {
     if($cardNumber) $index = $index * CombatChainPieces();
     if($index < 0 || $index >= count($this->chain)) return "";
@@ -77,6 +82,10 @@ class ChainCard {
 
     function ModifyPower($amount) {
       $this->chain[$this->index+5] += $amount;
+    }
+
+    function ModifyDefense($amount) {
+      $this->chain[$this->index+6] += $amount;
     }
 }
 
