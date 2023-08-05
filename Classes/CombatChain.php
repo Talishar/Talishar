@@ -73,6 +73,10 @@ class ChainCard {
     function From() {
       return $this->chain[$this->index+2];
     }
+
+    function ModifyPower($amount) {
+      $this->chain[$this->index+5] += $amount;
+    }
 }
 
 ?>

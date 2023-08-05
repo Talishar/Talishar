@@ -162,7 +162,7 @@ function DTDCombatEffectActive($cardID, $attackID)
 
 function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $currentPlayer, $defPlayer, $CS_NumCharged, $CS_DamagePrevention, $CS_NumCardsDrawn, $combatChain;
+  global $currentPlayer, $defPlayer, $CS_NumCharged, $CS_DamagePrevention, $CS_NumCardsDrawn, $CombatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
@@ -212,10 +212,10 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer, "PLAY");
       break;
     case "DTD038": case "DTD039": case "DTD040":
-      if($cardID == "DTD038") $amount = 3;
-      else if($cardID == "DTD039") $amount = 2;
-      else $amount = 1;
-      if($target != "-") $combatChain[intval($target)+5] -= $amount;
+      if($cardID == "DTD038") $amount = -3;
+      else if($cardID == "DTD039") $amount = -2;
+      else $amount = -1;
+      if($target != "-") $CombatChain->Card(intval($target))->ModifyPower($amount);//$combatChain[intval($target)+5] -= $amount;
       return "";
     case "DTD041": case "DTD042": case "DTD043":
       $options = GetChainLinkCards($defPlayer, nameContains:"Herald");
