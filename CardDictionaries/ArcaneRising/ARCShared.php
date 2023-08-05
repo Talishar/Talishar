@@ -2,7 +2,7 @@
 
   function ARCAbilityCost($cardID)
   {
-    global $CS_CharacterIndex, $CS_PlayIndex, $currentPlayer, $combatChain;
+    global $CS_CharacterIndex, $CS_PlayIndex, $currentPlayer, $CombatChain;
     switch($cardID)
     {
       case "ARC003":
@@ -11,13 +11,13 @@
       case "ARC004": return 1;
       case "ARC010":
         $abilityType = GetResolvedAbilityType($cardID);
-        return count($combatChain) > 0 ? 0 : 1;
+        return $CombatChain->HasCurrentLink() ? 0 : 1;
       case "ARC017":
         $items = &GetItems($currentPlayer);
         return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
       case "ARC018":
         $abilityType = GetResolvedAbilityType($cardID);
-        return count($combatChain) > 0 ? 0 : 1;
+        return $CombatChain->HasCurrentLink() ? 0 : 1;
       case "ARC040": return 1;
       case "ARC077": return 2;
       case "ARC078": return 2 + NumRunechants($currentPlayer);
@@ -36,7 +36,7 @@
 
   function ARCAbilityType($cardID, $index=-1)
   {
-    global $currentPlayer, $CS_PlayIndex, $combatChain;
+    global $currentPlayer, $CS_PlayIndex, $CombatChain;
     $items = &GetItems($currentPlayer);
     switch($cardID)
     {
@@ -44,14 +44,14 @@
         return "A";
       case "ARC004": return "A";
       case "ARC005": return "I";
-      case "ARC010": return count($combatChain) > 0 ? "AR" : "A";
+      case "ARC010": return $CombatChain->HasCurrentLink() ? "AR" : "A";
       case "ARC017":
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
         if(isset($items[$index + 1])) return ($items[$index+1] > 0 ? "I" : "A");
         else return "A";
       case "ARC018":
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        return (count($combatChain) > 0 ? "AR" : "A");
+        return ($CombatChain->HasCurrentLink() ? "AR" : "A");
       case "ARC019": return "A";
       case "ARC035": return "I";
       case "ARC037": return "A";
@@ -69,7 +69,7 @@
 
   function ARCAbilityHasGoAgain($cardID)
   {
-    global $currentPlayer, $CS_PlayIndex, $combatChain;
+    global $currentPlayer, $CS_PlayIndex, $CombatChain;
     switch($cardID)
     {
       case "ARC003":
@@ -77,7 +77,7 @@
         return $abilityType == "A";
       case "ARC004": return true;
       case "ARC010":
-        return count($combatChain) == 0;
+        return !$CombatChain->HasCurrentLink();
       case "ARC017":
         $items = &GetItems($currentPlayer);
         return ($items[GetClassState($currentPlayer, $CS_PlayIndex)+1] > 0 ? true : false);
