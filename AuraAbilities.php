@@ -703,28 +703,28 @@ function AuraHitEffects($attackID)
 
 function AuraAttackModifiers($index)
 {
-  global $combatChain, $combatChainState, $CCS_AttackPlayedFrom;
+  global $CombatChain, $combatChainState, $CCS_AttackPlayedFrom;
   global $CID_Frailty;
+  $chainCard = $CombatChain->Card($index);
   $modifier = 0;
-  $player = $combatChain[$index + 1];
-  $otherPlayer = ($player == 1 ? 2 : 1);
-  $controlAuras = &GetAuras($player);
-  for($i = 0; $i < count($controlAuras); $i += AuraPieces()) {
-    switch($controlAuras[$i]) {
+  $player = $chainCard->PlayerID();
+  $myAuras = &GetAuras($player);
+  for($i = 0; $i < count($myAuras); $i += AuraPieces()) {
+    switch($myAuras[$i]) {
       case "ELE117":
-        if(CardType($combatChain[$index]) == "AA") $modifier += 3;
+        if(CardType($chainCard->ID()) == "AA") $modifier += 3;
         break;
       case $CID_Frailty:
-        if(IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS") $modifier -= 1;
+        if($i == 0 && IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS") $modifier -= 1;
         break;
       default: break;
     }
   }
-  $otherAuras = &GetAuras($otherPlayer);
-  for($i = 0; $i < count($otherAuras); $i += AuraPieces()) {
-    switch($otherAuras[$i]) {
+  $theirAuras = &GetAuras($player == 1 ? 2 : 1);
+  for($i = 0; $i < count($theirAuras); $i += AuraPieces()) {
+    switch($theirAuras[$i]) {
       case "MON011":
-        if(CardType($combatChain[$index]) == "AA") $modifier -= 1;
+        if(CardType($CombatChain->CurrentAttack()) == "AA") $modifier -= 1;
         break;
       default: break;
     }

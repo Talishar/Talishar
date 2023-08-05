@@ -54,14 +54,16 @@ class ChainCard {
       $this->index = $index;
     }
 
-    function Index()
-    {
+    function Index() {
       return $this->index;
     }
 
-    function ID()
-    {
+    function ID() {
       return $this->chain[$this->index];
+    }
+
+    function PlayerID() {
+      return $this->chain[$this->index+1];
     }
 }
 
