@@ -664,9 +664,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE172": return $from == "PLAY" && GetClassState($player, $CS_NumFusedIce) == 0;
     case "ELE183": case "ELE184": case "ELE185":
       if(count($layers) == 0 && !$CombatChain->HasCurrentLink()) return true;
-      for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-        if(CardType($combatChain[$i]) == "AA" && CardCost($combatChain[$i]) <= 1) return false;
-      }
+      if(SearchCount(SearchCombatChainLink($currentPlayer, type:"AA", maxCost:1)) > 0) return false;
       for($i = 0; $i < count($layers); $i += LayerPieces()) {
         if(strlen($layers[$i]) == 6 && CardType($layers[$i]) == "AA" && CardCost($layers[$i]) <= 1) return false;
       }
@@ -724,7 +722,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DYN117": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "DYN118": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "DYN130": case "DYN131": case "DYN132": return NumCardsBlocking() < 1 || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer);
-    case "DYN148": case "DYN149": case "DYN150": return count($combatChain) <= 1 || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || ContractType($CombatChain->AttackCard()->ID()) == "";
+    case "DYN148": case "DYN149": case "DYN150": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || ContractType($CombatChain->AttackCard()->ID()) == "";
     case "DYN168": case "DYN169": case "DYN170":
       $arsenalHasFaceUp = ArsenalHasFaceUpArrowCard($mainPlayer);
       if(!$arsenalHasFaceUp) $restriction = "There must be a face up arrow in your arsenal.";
@@ -1094,14 +1092,14 @@ function ComboActive($cardID = "")
 {
   global $combatChainState, $CombatChain, $chainLinkSummary, $mainPlayer;
   if(SearchCurrentTurnEffects("OUT183", $mainPlayer)) return false;
-  if ($cardID == "" && $CombatChain->HasCurrentLink()) $cardID = $CombatChain->AttackCard()->ID();
-  if ($cardID == "") return false;
+  if($cardID == "" && $CombatChain->HasCurrentLink()) $cardID = $CombatChain->AttackCard()->ID();
+  if($cardID == "") return false;
   if(count($chainLinkSummary) == 0) return false;//No combat active if no previous chain links
   $lastAttackNames = explode(",", $chainLinkSummary[count($chainLinkSummary)-ChainLinkSummaryPieces()+4]);
   for($i=0; $i<count($lastAttackNames); ++$i)
   {
     $lastAttackName = GamestateUnsanitize($lastAttackNames[$i]);
-    switch ($cardID) {
+    switch($cardID) {
       case "WTR081":
         if($lastAttackName == "Mugenshi: RELEASE") return true;
         break;
@@ -1291,7 +1289,7 @@ function RequiresDieRoll($cardID, $from, $player)
   if($turn[0] == "B") return false;
   $type = CardType($cardID);
   if($type == "AA" && AttackValue($cardID) >= 6 && (SearchCharacterActive($player, "CRU002") || SearchCurrentTurnEffects("CRU002-SHIYANA", $player))) return true;
-  switch ($cardID) {
+  switch($cardID) {
     case "WTR004": case "WTR005": case "WTR010": return true;
     case "WTR162": return $from == "PLAY";
     case "CRU009": return true;
@@ -1321,7 +1319,7 @@ function SpellVoidAmount($cardID, $player)
 
 function IsSpecialization($cardID)
 {
-  switch ($cardID) {
+  switch($cardID) {
     case "WTR006": case "WTR009": case "WTR043": case "WTR047": case "WTR081": case "WTR083": case "WTR119": case "WTR121":
     case "ARC007": case "ARC009": case "ARC043": case "ARC046": case "ARC080": case "ARC083": case "ARC118": case "ARC121":
     case "CRU000": case "CRU074":
@@ -1370,7 +1368,7 @@ function CardCaresAboutPitch($cardID)
 
 function CardHasAltArt($cardID)
 {
-  switch ($cardID) {
+  switch($cardID) {
     case "WTR002": case "WTR150": case "WTR162":
     case "WTR224":
       return true;
@@ -1422,7 +1420,7 @@ function WardAmount($cardID, $player)
 
 function HasWard($cardID, $player)
 {
-  switch ($cardID) {
+  switch($cardID) {
     case "MON103":
     case "UPR039": case "UPR040": case "UPR041":
     case "UPR218": case "UPR219": case "UPR220":
@@ -1445,7 +1443,7 @@ function HasDominate($cardID)
 {
   global $mainPlayer, $combatChainState;
   global $CS_NumAuras, $CCS_NumBoosted;
-  switch ($cardID)
+  switch($cardID)
   {
     case "WTR095": case "WTR096": case "WTR097": return (ComboActive() ? true : false);
     case "WTR179": case "WTR180": case "WTR181": return true;
@@ -1468,11 +1466,10 @@ function HasDominate($cardID)
 function Rarity($cardID)
 {
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM")
-  {
+  if($set != "ROG" && $set != "DUM") {
     return GeneratedRarity($cardID);
   }
-  if ($set == "ROG") {
+  if($set == "ROG") {
     return ROGUERarity($cardID);
   }
 }
