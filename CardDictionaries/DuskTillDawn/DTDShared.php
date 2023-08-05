@@ -215,7 +215,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if($cardID == "DTD038") $amount = -3;
       else if($cardID == "DTD039") $amount = -2;
       else $amount = -1;
-      if($target != "-") $CombatChain->Card(intval($target))->ModifyPower($amount);//$combatChain[intval($target)+5] -= $amount;
+      if($target != "-") $CombatChain->Card(intval($target))->ModifyPower($amount);
       return "";
     case "DTD041": case "DTD042": case "DTD043":
       $options = GetChainLinkCards($defPlayer, nameContains:"Herald");
