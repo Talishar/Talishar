@@ -21,7 +21,7 @@ include "CombatChain.php";
 function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {
   global $redirectPath, $playerID, $gameName;
-  global $currentPlayer, $combatChain, $defPlayer;
+  global $currentPlayer, $combatChain, $CombatChain, $defPlayer;
   global $combatChainState, $EffectContext;
   global $defCharacter, $CS_NumCharged, $otherPlayer;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
@@ -173,9 +173,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $dqState[5] = $mzIndices;
       return $lastResult;
     case "REMOVECOMBATCHAIN":
-      $cardID = $combatChain[$lastResult];
-      RemoveCombatChain($lastResult);
-      return $cardID;
+      return $CombatChain->Remove($lastResult);
     case "COMBATCHAINPOWERMODIFIER":
       CombatChainPowerModifier($lastResult, $parameter);
       return $lastResult;

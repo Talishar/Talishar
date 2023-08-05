@@ -551,7 +551,7 @@ function MirageLayer()
     for($i=$CombatChain->NumCardsActiveLink()-1; $i>=1; --$i)
     {
       if(IsMirageActive($i*CombatChainPieces())) {
-        $cardID = $CombatChain->Remove($i);
+        $cardID = $CombatChain->Remove($i, cardNumber:true);
         AddGraveyard($cardID, $defPlayer, "CC");
         WriteLog(CardLink($cardID, $cardID) . " is destroyed by Mirage");
       }

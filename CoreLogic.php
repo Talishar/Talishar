@@ -1255,12 +1255,13 @@ function UndestroyCharacter($player, $index)
 
 function DestroyCharacter($player, $index, $skipDestroy=false)
 {
+  global $CombatChain;
   $char = &GetPlayerCharacter($player);
   $char[$index+1] = 0;
   $char[$index+2] = 0;
   $char[$index+4] = 0;
   $cardID = $char[$index];
-  if($char[$index+6] == 1) RemoveCombatChain(GetCombatChainIndex($cardID, $player));
+  if($char[$index+6] == 1) $CombatChain->Remove(GetCombatChainIndex($cardID, $player));
   $char[$index+6] = 0;
   if(!$skipDestroy) {
     AddGraveyard($cardID, $player, "CHAR");
