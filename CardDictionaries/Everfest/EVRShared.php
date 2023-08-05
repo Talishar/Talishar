@@ -170,7 +170,7 @@
 
   function EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_NumBoosted;
+    global $currentPlayer, $CombatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_NumBoosted;
     global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $mainPlayer, $CCS_RequiredEquipmentBlock;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $rv = "";
@@ -392,7 +392,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "EVR157":
-        if($from == "PLAY") ++$combatChain[5];
+        if($from == "PLAY") $CombatChain->AttackCard()->ModifyPower(1);
         return "";
       case "EVR160":
         Draw(1);
@@ -746,7 +746,7 @@
 
   function FractalReplicationStats($stat)
   {
-    global $chainLinks, $combatChain, $currentPlayer, $chainLinkSummary;
+    global $chainLinks, $CombatChain, $currentPlayer, $chainLinkSummary;
     $highestAttack = 0;
     $highestBlock = 0;
     $hasPhantasm = false;
@@ -770,18 +770,19 @@
         }
       }
     }
-    for($i=0; $i<count($combatChain); $i+=CombatChainPieces()) {
-      if($combatChain[$i] != "EVR138" && ClassContains($combatChain[$i], "ILLUSIONIST", $currentPlayer) && CardType($combatChain[$i]) == "AA")
+    for($i=0; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
+      $cardID = $CombatChain->Card($i, cardNumber:true)->ID();
+      if($cardID != "EVR138" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && CardType($cardID) == "AA")
       {
-        if($stat == "Hit") ProcessHitEffect($combatChain[$i]);
-        elseif ($stat == "Ability") PlayAbility($combatChain[$i], "HAND", 0);
+        if($stat == "Hit") ProcessHitEffect($cardID);
+        elseif ($stat == "Ability") PlayAbility($cardID, "HAND", 0);
         else {
-          $attack = AttackValue($combatChain[$i]);
+          $attack = AttackValue($cardID);
           if($attack > $highestAttack) $highestAttack = $attack;
-          $block = BlockValue($combatChain[$i]);
+          $block = BlockValue($cardID);
           if($block > $highestBlock) $highestBlock = $block;
-          if(!$hasPhantasm) $hasPhantasm = HasPhantasm($combatChain[$i]);
-          if(!$hasGoAgain) $hasGoAgain = HasGoAgain($combatChain[$i]);
+          if(!$hasPhantasm) $hasPhantasm = HasPhantasm($cardID);
+          if(!$hasGoAgain) $hasGoAgain = HasGoAgain($cardID);
         }
       }
     }
