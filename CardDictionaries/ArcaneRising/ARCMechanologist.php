@@ -2,8 +2,8 @@
 
 function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $CS_NumBoosted, $actionPoints, $combatChainState, $CS_PlayIndex;
-  global $combatChain, $CS_LastDynCost;
+  global $currentPlayer, $CS_NumBoosted, $actionPoints, $CS_PlayIndex;
+  global $CombatChain, $CS_LastDynCost;
   $rv = "";
   switch($cardID) {
     case "ARC003":
@@ -41,7 +41,7 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
     case "ARC010":
       if($from == "PLAY") {
         $items = &GetItems($currentPlayer);
-        if(count($combatChain) > 0) GiveAttackGoAgain();
+        if($CombatChain->HasCurrentLink()) GiveAttackGoAgain();
         else $items[GetClassState($currentPlayer, $CS_PlayIndex)+1] = 1;
       }
       return $rv;
@@ -68,7 +68,7 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
     case "ARC018":
       if($from == "PLAY") {
         $items = &GetItems($currentPlayer);
-        if(count($combatChain) == 0) $items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] = 1;
+        if(!$CombatChain->HasCurrentLink()) $items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] = 1;
       }
       return $rv;
     case "ARC019":
