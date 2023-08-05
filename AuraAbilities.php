@@ -634,7 +634,7 @@ function AuraPlayAbilities($attackID, $from="")
 
 function AuraAttackAbilities($attackID)
 {
-  global $combatChain, $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
+  global $CombatChain, $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
   $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
   for($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
@@ -648,7 +648,7 @@ function AuraAttackAbilities($attackID)
         }
         break;
       case "ELE226":
-        if($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
+        if($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $CombatChain->CurrentAttack());
         break;
       case "EVR140":
         if($auras[$i + 5] > 0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {

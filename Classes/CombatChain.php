@@ -35,6 +35,11 @@ class CombatChain {
   function HasCurrentLink() {
     return count($this->chain) > 0;
   }
+
+  function CurrentAttack() {
+    if(!$this->HasCurrentLink()) return "";
+    return $this->chain[0];
+  }
 }
 
 class ChainCard {
@@ -45,7 +50,7 @@ class ChainCard {
     // Constructor
     function __construct($index) {
       global $combatChain;
-      $this->chain = $combatChain;
+      $this->chain = &$combatChain;
       $this->index = $index;
     }
 
