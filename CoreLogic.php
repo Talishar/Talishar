@@ -1270,14 +1270,6 @@ function DestroyCharacter($player, $index, $skipDestroy=false)
   return $cardID;
 }
 
-function RemoveCombatChain($index)
-{
-  global $combatChain;
-  if($index < 0) return;
-  for($i = CombatChainPieces() - 1; $i >= 0; --$i) unset($combatChain[$index + $i]);
-  $combatChain = array_values($combatChain);
-}
-
 function RemoveArsenalEffects($player, $cardToReturn){
   SearchCurrentTurnEffects("EVR087", $player, true);
   SearchCurrentTurnEffects("ARC042", $player, true);
