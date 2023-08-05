@@ -545,16 +545,15 @@ function HasMirage($cardID)
 
 function MirageLayer()
 {
-  global $combatChain, $mainPlayer, $combatChainState, $defPlayer, $turn, $layers;
+  global $CombatChain, $mainPlayer, $combatChainState, $defPlayer, $turn, $layers;
   if(DoesAttackTriggerMirage())
   {
-    for($i=count($combatChain)-CombatChainPieces(); $i>=CombatChainPieces(); $i-=CombatChainPieces())
+    for($i=$CombatChain->NumCardsActiveLink()-1; $i>=1; --$i)
     {
-      if(IsMirageActive($i))
-      {
-        WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " is destroyed by Mirage.");
-        AddGraveyard($combatChain[$i], $defPlayer, "CC");
-        RemoveCombatChain($i);
+      if(IsMirageActive($i*CombatChainPieces())) {
+        $cardID = $CombatChain->Remove($i);
+        AddGraveyard($cardID, $defPlayer, "CC");
+        WriteLog(CardLink($cardID, $cardID) . " is destroyed by Mirage");
       }
     }
   }

@@ -1,5 +1,8 @@
 <?php
 
+global $CombatChain;
+$CombatChain = new CombatChain();
+
 class CombatChain {
 
   // Properties
@@ -8,12 +11,25 @@ class CombatChain {
   // Constructor
   function __construct() {
     global $combatChain;
-    $this->chain = $combatChain;
+    $this->chain = &$combatChain;
   }
 
   // Methods
   function Card($index) {
     return new ChainCard($index);
+  }
+
+  function Remove($index) {
+    $index = $index * CombatChainPieces();
+    if($index < 0 || $index >= count($this->chain)) return "";
+    $cardID = $this->chain[$index];
+    for($i = CombatChainPieces() - 1; $i >= 0; --$i) unset($this->chain[$index+$i]);
+    $this->chain = array_values($this->chain);
+    return $cardID;
+  }
+
+  function NumCardsActiveLink() {
+    return count($this->chain) / CombatChainPieces();
   }
 }
 
