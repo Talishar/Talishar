@@ -102,7 +102,7 @@
   }
 
   function CRUCombatEffectActive($cardID, $attackID) {
-    global $combatChain, $combatChainState, $mainPlayer, $CCS_IsBoosted, $CS_ArsenalFacing;
+    global $CombatChain, $combatChainState, $mainPlayer, $CCS_IsBoosted, $CS_ArsenalFacing;
     switch($cardID) {
       case "CRU008": return true;
       case "CRU013": case "CRU014": case "CRU015": return true;
@@ -111,7 +111,7 @@
       case "CRU038": case "CRU039": case "CRU040": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $mainPlayer);
       case "CRU046": return true;
       case "CRU047": return true;
-      case "CRU053": return HasCombo($combatChain[0]);
+      case "CRU053": return HasCombo($attackID);
       case "CRU055": return true;
       case "CRU072": return true;
       case "CRU084": return CardType($attackID) == "W";
@@ -126,9 +126,9 @@
       case "CRU105": return CardType($attackID) == "W" && CardSubtype($attackID) == "Pistol" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
       case "CRU106": case "CRU107": case "CRU108": return $combatChainState[$CCS_IsBoosted] == "1";
       case "CRU109": case "CRU110": case "CRU111": return $combatChainState[$CCS_IsBoosted] == "1";
-      case "CRU122": return $combatChain[2] == "ARS" && GetClassState($mainPlayer, $CS_ArsenalFacing) == "UP" && CardSubtype($attackID) == "Arrow"; //The card being played from ARS and being an Arrow implies that the card is UP.
+      case "CRU122": return $CombatChain->AttackCard()->From() == "ARS" && GetClassState($mainPlayer, $CS_ArsenalFacing) == "UP" && CardSubtype($attackID) == "Arrow"; //The card being played from ARS and being an Arrow implies that the card is UP.
       case "CRU123": return $attackID == "CRU123";
-      case "CRU124": return CardSubtype($combatChain[0]) == "Arrow";
+      case "CRU124": return CardSubtype($attackID) == "Arrow";
       case "CRU125": return true;
       case "CRU135": case "CRU136": case "CRU137": return CardSubtype($attackID) == "Arrow";
       case "CRU135-1": case "CRU136-1": case "CRU137-1": return CardSubtype($attackID) == "Arrow";

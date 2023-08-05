@@ -19,6 +19,10 @@ class CombatChain {
     return new ChainCard($index);
   }
 
+  function AttackCard() {
+    return new ChainCard(0);
+  }
+
   function Remove($index, $cardNumber=false) {
     if($cardNumber) $index = $index * CombatChainPieces();
     if($index < 0 || $index >= count($this->chain)) return "";
@@ -64,6 +68,10 @@ class ChainCard {
 
     function PlayerID() {
       return $this->chain[$this->index+1];
+    }
+
+    function From() {
+      return $this->chain[$this->index+2];
     }
 }
 
