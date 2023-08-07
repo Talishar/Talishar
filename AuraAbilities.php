@@ -715,7 +715,7 @@ function AuraAttackModifiers($index)
         if(CardType($chainCard->ID()) == "AA") $modifier += 3;
         break;
       case $CID_Frailty:
-        if($i == 0 && IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS") $modifier -= 1;
+        if($index == 0 && (IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS")) $modifier -= 1;
         break;
       default: break;
     }
