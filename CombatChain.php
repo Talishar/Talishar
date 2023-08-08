@@ -3,15 +3,15 @@
 function ProcessHitEffect($cardID)
 {
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
-  global $currentPlayer, $combatChain;
-  if(CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
+  global $currentPlayer, $CombatChain;
+  if(CardType($CombatChain->AttackCard()->ID()) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   if(HitEffectsArePrevented()) return;
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   if($set == "WTR") return WTRHitEffect($cardID);
   else if($set == "ARC") {
-    switch ($class) {
+    switch($class) {
       case "MECHANOLOGIST": return ARCMechanologistHitEffect($cardID);
       case "RANGER": return ARCRangerHitEffect($cardID);
       case "RUNEBLADE": return ARCRunebladeHitEffect($cardID);
@@ -20,8 +20,8 @@ function ProcessHitEffect($cardID)
     }
   }
   else if($set == "CRU") return CRUHitEffect($cardID);
-  else if ($set == "MON") {
-    switch ($class) {
+  else if($set == "MON") {
+    switch($class) {
       case "BRUTE": return MONBruteHitEffect($cardID);
       case "ILLUSIONIST": return MONIllusionistHitEffect($cardID);
       case "RUNEBLADE": return MONRunebladeHitEffect($cardID);
@@ -32,23 +32,23 @@ function ProcessHitEffect($cardID)
     }
   }
   else if($set == "ELE") {
-    switch ($class) {
+    switch($class) {
       case "GUARDIAN": return ELEGuardianHitEffect($cardID);
       case "RANGER": return ELERangerHitEffect($cardID);
       case "RUNEBLADE": return ELERunebladeHitEffect($cardID);
       default: return ELETalentHitEffect($cardID);
     }
   }
-  else if ($set == "EVR") return EVRHitEffect($cardID);
-  else if ($set == "UPR") return UPRHitEffect($cardID);
-  else if ($set == "DYN") return DYNHitEffect($cardID);
-  else if ($set == "OUT") return OUTHitEffect($cardID);
-  else if ($set == "DTD") return DTDHitEffect($cardID);
+  else if($set == "EVR") return EVRHitEffect($cardID);
+  else if($set == "UPR") return UPRHitEffect($cardID);
+  else if($set == "DYN") return DYNHitEffect($cardID);
+  else if($set == "OUT") return OUTHitEffect($cardID);
+  else if($set == "DTD") return DTDHitEffect($cardID);
 }
 
 function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)
 {
-  global $mainPlayer, $mainPitch, $CS_Num6PowDisc, $combatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
+  global $mainPlayer, $mainPitch, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul;
   global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan;
   if($repriseActive == -1) $repriseActive = RepriseActive();
@@ -70,9 +70,9 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "WTR123": return $repriseActive ? 6 : 4;
     case "WTR124": return $repriseActive ? 5 : 3;
     case "WTR125": return $repriseActive ? 4 : 2;
-    case "WTR132": return CardType($combatChain[0]) == "W" && $repriseActive ? 3 : 0;
-    case "WTR133": return CardType($combatChain[0]) == "W" && $repriseActive ? 2 : 0;
-    case "WTR134": return CardType($combatChain[0]) == "W" && $repriseActive ? 1 : 0;
+    case "WTR132": return CardType($CombatChain->AttackCard()->ID()) == "W" && $repriseActive ? 3 : 0;
+    case "WTR133": return CardType($CombatChain->AttackCard()->ID()) == "W" && $repriseActive ? 2 : 0;
+    case "WTR134": return CardType($CombatChain->AttackCard()->ID()) == "W" && $repriseActive ? 1 : 0;
     case "WTR135": return 3;
     case "WTR136": return 2;
     case "WTR137": return 1;
