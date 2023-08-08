@@ -66,40 +66,33 @@ function AutopassPhaseWithOneOption($phase)
 
 function HasPlayableCard($player, $phase)
 {
+  global $CombatChain;
   $restriction = "";
   $character = &GetPlayerCharacter($player);
-  for($i=0; $i<count($character); $i+=CharacterPieces())
-  {
+  for($i=0; $i<count($character); $i+=CharacterPieces()) {
     if($character[$i+1] == 2 && IsPlayable($character[$i], $phase, "CHAR", $i, $restriction, $player)) return true;
   }
   $hand = &GetHand($player);
-  for($i=0; $i<count($hand); $i+=HandPieces())
-  {
+  for($i=0; $i<count($hand); $i+=HandPieces()) {
     if(IsPlayable($hand[$i], $phase, "HAND", $i, $restriction, $player)) return true;
   }
-  global $combatChain;
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces())
-  {
-    if(IsPlayable($combatChain[$i], $phase, "CC", $i, $restriction, $player)) return true;
+  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    if(IsPlayable($CombatChain->Card($i, cardNumber:true)->ID(), $phase, "CC", $i, $restriction, $player)) return true;
   }
   $arsenal = &GetArsenal($player);
-  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
-  {
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces()) {
     if(IsPlayable($arsenal[$i], $phase, "ARS", $i, $restriction, $player)) return true;
   }
   $items = &GetItems($player);
-  for($i=0; $i<count($items); $i+=ItemPieces())
-  {
+  for($i=0; $i<count($items); $i+=ItemPieces()) {
     if(IsPlayable($items[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
   $banish = &GetBanish($player);
-  for($i=0; $i<count($banish); $i+=BanishPieces())
-  {
+  for($i=0; $i<count($banish); $i+=BanishPieces()) {
     if(IsPlayable($banish[$i], $phase, "BANISH", $i, $restriction, $player)) return true;
   }
   $auras = &GetItems($player);
-  for($i=0; $i<count($auras); $i+=AuraPieces())
-  {
+  for($i=0; $i<count($auras); $i+=AuraPieces()) {
     if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
   return false;
