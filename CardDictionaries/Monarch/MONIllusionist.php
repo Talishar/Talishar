@@ -92,13 +92,14 @@
 
   function IsPhantasmActive()
   {
-    global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
-    if(count($combatChain) == 0) return false;
-    if((SearchCurrentTurnEffects("MON090", $mainPlayer) && CardType($combatChain[0]) == "AA") || SearchCurrentTurnEffects("EVR142", $mainPlayer) || SearchCurrentTurnEffects("UPR154", $mainPlayer) || SearchCurrentTurnEffects("UPR412", $mainPlayer)) { return false; }
+    global $CombatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+    if(!$CombatChain->HasCurrentLink()) return false;
+    $attackID = $CombatChain->AttackCard()->ID();
+    if((SearchCurrentTurnEffects("MON090", $mainPlayer) && CardType($attackID) == "AA") || SearchCurrentTurnEffects("EVR142", $mainPlayer) || SearchCurrentTurnEffects("UPR154", $mainPlayer) || SearchCurrentTurnEffects("UPR412", $mainPlayer)) { return false; }
     if(SearchCurrentTurnEffectsForCycle("EVR150", "EVR151", "EVR152", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("MON095", "MON096", "MON097", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("UPR155", "UPR156", "UPR157", $mainPlayer)) return true;
-    if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($combatChain[0]), "Ally"))
+    if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($attackID), "Ally"))
     {
       $allies = &GetAllies($mainPlayer);
       if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "UPR043")) return true;
@@ -106,7 +107,7 @@
       else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN003") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR416") return true;
       else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN004") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR413") return true;
     }
-    return HasPhantasm($combatChain[0]);
+    return HasPhantasm($attackID);
   }
 
   function ProcessPhantasmOnBlock($index)
@@ -117,22 +118,23 @@
 
   function DoesBlockTriggerPhantasm($index)
   {
-    global $combatChain, $mainPlayer, $defPlayer;
-    if(CardType($combatChain[$index]) != "AA") return false;
-    if(ClassContains($combatChain[$index], "ILLUSIONIST", $defPlayer)) return false;
-    $attackID = $combatChain[0];
-    $av = AttackValue($combatChain[$index]);
+    global $CombatChain, $mainPlayer, $defPlayer;
+    $card = $CombatChain->Card($index);
+    if(CardType($card->ID()) != "AA") return false;
+    if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
+    $attackID = $CombatChain->AttackCard()->ID();
+    $av = AttackValue($card->ID());
     $origAV = $av;
     if($attackID == "MON008" || $attackID == "MON009" || $attackID == "MON010") --$av;
     $av += AuraAttackModifiers($index);
-    $av += $combatChain[$index+5];
+    $av += $card->AttackValue();
     $av += EffectDefenderAttackModifiers();
     return $av >= 6;
   }
 
   function IsPhantasmStillActive()
   {
-    global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+    global $combatChain, $CombatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
     if(count($combatChain) == 0) return false;
     $blockGreaterThan6 = false;
     for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
@@ -140,17 +142,17 @@
       if(DoesBlockTriggerPhantasm($i)) $blockGreaterThan6 = true;
     }
     if(!$blockGreaterThan6) return false;
-    if((SearchCurrentTurnEffects("MON090", $mainPlayer) && CardType($combatChain[0]) == "AA") || SearchCurrentTurnEffects("EVR142", $mainPlayer) || SearchCurrentTurnEffects("UPR154", $mainPlayer) || SearchCurrentTurnEffects("UPR412", $mainPlayer)) { return false; }
+    if((SearchCurrentTurnEffects("MON090", $mainPlayer) && CardType($CombatChain->AttackCard->ID()) == "AA") || SearchCurrentTurnEffects("EVR142", $mainPlayer) || SearchCurrentTurnEffects("UPR154", $mainPlayer) || SearchCurrentTurnEffects("UPR412", $mainPlayer)) { return false; }
     return true;
   }
 
   function PhantasmLayer()
   {
-    global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CS_NumPhantasmAADestroyed, $defPlayer, $turn, $layers;
+    global $CombatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CS_NumPhantasmAADestroyed, $defPlayer, $turn, $layers;
     if(IsPhantasmStillActive())
     {
-      $attackID = $combatChain[0];
-      if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($combatChain[0]), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
+      $attackID = $CombatChain->AttackCard()->ID();
+      if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($attackID), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
       if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer))
       {
         GhostlyTouchPhantasmDestroy();

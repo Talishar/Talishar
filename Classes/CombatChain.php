@@ -80,6 +80,10 @@ class ChainCard {
       return $this->chain[$this->index+2];
     }
 
+    function AttackValue() {
+      return $this->chain[$this->index+5];
+    }
+
     function ModifyPower($amount) {
       $this->chain[$this->index+5] += $amount;
     }
