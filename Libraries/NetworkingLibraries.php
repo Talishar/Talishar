@@ -1339,7 +1339,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if(PitchValue($cardID) == 1) IncrementClassState($currentPlayer, $CS_NumRedPlayed);
     PayAdditionalCosts($cardID, $from);
   }
-  if($cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
+  if($turn[0] == "B" && $cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
   if($from == "BANISH") {
     $banish = new Banish($currentPlayer);
     $banish->Remove(GetClassState($currentPlayer, $CS_PlayIndex));
@@ -1930,7 +1930,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $turn, $combatChain, $currentPlayer, $defPlayer, $combatChainState, $CCS_AttackPlayedFrom, $CS_PlayIndex;
   global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex, $CS_NumAttacks, $CCS_LinkBaseAttack;
   global $CCS_WeaponIndex, $EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
-  global $CS_NumDragonAttacks, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks, $CCS_IsBoosted;
+  global $CS_NumDragonAttacks, $CS_NumAttackCards, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks, $CCS_IsBoosted;
   global $SET_PassDRStep;
 
   if($layerIndex > -1) SetClassState($currentPlayer, $CS_PlayIndex, $layerIndex);
@@ -2007,6 +2007,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   }
   //Resolve Effects
   if(!$isBlock) {
+    if($definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
     CurrentEffectPlayOrActivateAbility($cardID, $from);
     if($from != "PLAY") {
       CurrentEffectPlayAbility($cardID, $from);
