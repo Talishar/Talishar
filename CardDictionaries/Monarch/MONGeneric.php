@@ -72,10 +72,11 @@
 
   function ExudeConfidenceReactionsPlayable()
   {
-    global $combatChain, $defPlayer;
+    global $CombatChain, $defPlayer;
     $found = false;
-    for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces()) {
-      if(!IsAllyAttackTarget() && $combatChain[$i+1] == $defPlayer && AttackValue($combatChain[$i]) >= CachedTotalAttack()) $found = true;
+    for($i=1; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
+      $card = $CombatChain->Card($i, cardNumber:true);
+      if(!IsAllyAttackTarget() && $card->PlayerID() == $defPlayer && AttackValue($card->ID()) >= CachedTotalAttack()) $found = true;
     }
     return $found;
   }
