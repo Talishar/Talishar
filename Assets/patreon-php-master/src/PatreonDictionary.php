@@ -94,7 +94,7 @@ enum PatreonCampaign : string
   case FreshandBuds = "8458487";
   case Sloopdoop = "6996822";
   case DMArmada = "1919413";
-  case InstantSpeedPodcast = "8306478";
+  case InstantSpeedPodcast = "10651350";
   case TheCardGuyz = "7733166";
   case HomeTownTCG = "7009853";
   case FleshAndPod = "8338817";
@@ -127,7 +127,7 @@ enum PatreonCampaign : string
       case "8458487": return "isFreshAndBudsPatreon";
       case "6996822": return "isSloopdoopPatron";
       case "1919413": return "isDMArmadaPatron";
-      case "8306478": return "isInstantSpeedPatron";
+      case "10651350": return "isInstantSpeedPatron";
       case "7733166": return "isTheCardGuyzPatron";
       case "7009853": return "isHomeTownTCGPatron";
       case "8338817": return "isFleshAndPodPatron";
@@ -172,7 +172,7 @@ enum PatreonCampaign : string
       case "8458487": return "Fresh and Buds";
       case "6996822": return "Sloopdoop";
       case "1919413": return "DM Armada";
-      case "8306478": return "Instant Speed Podcast";
+      case "10651350": return "Instant Speed Podcast";
       case "7733166": return "The Card Guyz";
       case "7009853": return "HomeTownTCG";
       case "8338817": return "Flesh And Pod";
@@ -217,7 +217,7 @@ enum PatreonCampaign : string
       case "8458487": return ($userName == "FreshLord");
       case "6996822": return ($userName == "Sloopdoop");
       case "1919413": return ($userName == "DMArmada");
-      case "8306478": return ($userName == "Flake");
+      case "10651350": return ($userName == "Flake");
       case "7733166": return ($userName == "NamVoTCGz" || $userName == "AlexTheCardGuy" || $userName == "RegularDegular" || $userName == "joshlau7" || $userName == "WillyB" || $userName == "Spoofy");
       case "7009853": return ($userName == "hometowntcg");
       case "8338817": return ($userName == "imjorman" || $userName == "ADavis83" || $userName == "loganpetersen");
@@ -231,6 +231,15 @@ enum PatreonCampaign : string
       case "4006023": return ($userName == "BlackWingStudio");
       case "10811477": return ($userName == "Mezzo");
       case "9851977": return ($userName == "DaganTheZookeeper" || $userName == "OotTheMonk");
+      default: return "";
+    }
+  }
+
+  public function AltArts(): string
+  {
+    switch($this->value)
+    {
+      case "10651350": return "WTR038=WTR038-InstantSpeed";
       default: return "";
     }
   }
@@ -262,7 +271,7 @@ enum PatreonCampaign : string
       case "8458487": return "31";
       case "6996822": return "32";
       case "1919413": return "33";
-      case "8306478": return "34";
+      case "10651350": return "34";
       case "7733166": return "35";
       case "7009853": return "36";
       case "8338817": return "38";

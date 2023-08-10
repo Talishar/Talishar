@@ -37,6 +37,23 @@ $response->p2IsPatron = $p2IsPatron == "" ? false : true;
 $response->p2IsContributor = in_array($response->p2Name, $contributors);
 $response->roguelikeGameID = $roguelikeGameID;
 
+$response->altArts = [];
+
+//Get Alt arts
+foreach(PatreonCampaign::cases() as $campaign) {
+  if(isset($_SESSION[$campaign->SessionID()]) || (IsUserLoggedIn() && $campaign->IsTeamMember(LoggedInUser()))) {
+    $altArts = $campaign->AltArts();
+    $altArts = explode(",", $altArts);
+    for($i = 0; $i < count($altArts); ++$i) {
+      $arr = explode("=", $altArts[$i]);
+      $altArt = new stdClass();
+      $altArt->name = $campaign->CampaignName() . (count($cardBacks) > 1 ? " " . $i + 1 : "");
+      $altArt->cardId = $arr[0];
+      $altArt->altPath = $arr[1];
+      array_push($response->altArts, $altArt);
+    }
+  }
+}
 
 echo json_encode($response);
 
