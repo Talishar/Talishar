@@ -41,7 +41,7 @@ $response->altArts = [];
 
 //Get Alt arts
 foreach(PatreonCampaign::cases() as $campaign) {
-  if(isset($_SESSION[$campaign->SessionID()]) || (IsUserLoggedIn() && $campaign->IsTeamMember(LoggedInUser()))) {
+  if(isset($_SESSION[$campaign->SessionID()]) || (IsUserLoggedIn() && $campaign->IsTeamMember(LoggedInUserName()))) {
     $altArts = $campaign->AltArts();
     $altArts = explode(",", $altArts);
     for($i = 0; $i < count($altArts); ++$i) {

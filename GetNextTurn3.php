@@ -4,6 +4,8 @@ include 'Libraries/HTTPLibraries.php';
 include "HostFiles/Redirector.php";
 include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
+include_once "./Assets/patreon-php-master/src/PatreonDictionary.php";
+include_once "./AccountFiles/AccountSessionAPI.php";
 
 // array holding allowed Origin domains
 SetHeaders();
@@ -186,6 +188,25 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $initialLoad->opponentIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron);
     $initialLoad->opponentIsContributor = in_array($initialLoad->opponentName, $contributors);
     $initialLoad->roguelikeGameID = $roguelikeGameID;
+
+    $initialLoad->altArts = [];
+
+    //Get Alt arts
+    foreach(PatreonCampaign::cases() as $campaign) {
+      if(isset($_SESSION[$campaign->SessionID()]) || (IsUserLoggedIn() && $campaign->IsTeamMember(LoggedInUserName()))) {
+        $altArts = $campaign->AltArts();
+        if($altArts == "") continue;
+        $altArts = explode(",", $altArts);
+        for($i = 0; $i < count($altArts); ++$i) {
+          $arr = explode("=", $altArts[$i]);
+          $altArt = new stdClass();
+          $altArt->name = $campaign->CampaignName() . (count($altArts) > 1 ? " " . $i + 1 : "");
+          $altArt->cardId = $arr[0];
+          $altArt->altPath = $arr[1];
+          array_push($initialLoad->altArts, $altArt);
+        }
+      }
+    }
     $response->initialLoad = $initialLoad;
   }
 
