@@ -4,10 +4,10 @@
 //Return 1 if the effect should be removed
 function EffectHitEffect($cardID)
 {
-  global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $combatChain, $CCS_DamageDealt;
+  global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $CombatChain, $CCS_DamageDealt;
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner;
-  if(CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
-  $attackID = $combatChain[0];
+  $attackID = $CombatChain->AttackCard()->ID();
+  if(CardType($attackID) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   switch($cardID) {
     case "WTR129": case "WTR130": case "WTR131":
       GiveAttackGoAgain();
@@ -24,7 +24,7 @@ function EffectHitEffect($cardID)
       if(IsHeroAttackTarget()) PummelHit();
       break;
     case "CRU145": case "CRU146": case "CRU147":
-      if(ClassContains($combatChain[0], "RUNEBLADE", $mainPlayer)){
+      if(ClassContains($attackID, "RUNEBLADE", $mainPlayer)){
         if ($cardID == "CRU145") $amount = 3;
         else if($cardID == "CRU146") $amount = 2;
         else $amount = 1;
@@ -199,7 +199,7 @@ function EffectHitEffect($cardID)
       }
       break;
     case "DYN185-HIT": case "DYN186-HIT": case "DYN187-HIT":
-      if(ClassContains($combatChain[0], "RUNEBLADE", $mainPlayer)) {
+      if(ClassContains($attackID, "RUNEBLADE", $mainPlayer)) {
         if($cardID == "DYN185-HIT") $amount = 3;
         else if($cardID == "DYN186-HIT") $amount = 2;
         else $amount = 1;
