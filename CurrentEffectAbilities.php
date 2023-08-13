@@ -925,7 +925,7 @@ function CurrentEffectEndTurnAbilities()
 function IsCombatEffectActive($cardID)
 {
   global $CombatChain, $currentPlayer;
-  if(count($combatChain) == 0) return;
+  if(!$CombatChain->HasCurrentLink()) return;
   if($cardID == "AIM") return true;
   $cardID = ShiyanaCharacter($cardID);
   $attackID = $CombatChain->AttackCard()->ID();
