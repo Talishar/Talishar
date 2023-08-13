@@ -12,6 +12,8 @@ function ProcessMacros()
   {
     for($i=0; $i<10 && $somethingChanged; ++$i)
     {
+      if($lastPhase != $turn[0]) $i = 0;
+      $lastPhase = $turn[0];
       $somethingChanged = false;
       if($turn[0] == "A" && ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }
       else if($turn[0] == "D" && ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
