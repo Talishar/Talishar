@@ -33,6 +33,7 @@ $SET_GameVisibility = 21; //The visibility of the last game you created
 $SET_StreamerMode = 22; //Did this player enable caster mode
 $SET_Playmat = 23; //Did this player enable caster mode
 $SET_AlwaysAllowUndo = 24;//Do you want to always allow undo
+$SET_DisableAltArts = 25;//Do you want to disable alt arts
 
 function HoldPrioritySetting($player)
 {
@@ -252,6 +253,14 @@ function AlwaysAllowUndo($player)
   return $settings[$SET_AlwaysAllowUndo] == "1";
 }
 
+function AltArtsDisabled($player)
+{
+  global $SET_DisableAltArts;
+  $settings = GetSettings($player);
+  if($settings == null) return false;
+  return $settings[$SET_DisableAltArts] == "1";
+}
+
 function ParseSettingsStringValueToIdInt(string $value)
 {
   //TODO NOTE: use array_flip to turn it the other way around (int -> string);
@@ -274,6 +283,7 @@ function ParseSettingsStringValueToIdInt(string $value)
     "IsStreamerMode" => 22,
     "Playmat" => 23,
     "AlwaysAllowUndo" => 24,
+    "DisableAltArts" => 25,
   );
   return $settingsToId[$value];
 }
@@ -392,7 +402,7 @@ function SaveSettingInDatabase($setting)
 {
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
   global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
-  global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo;
+  global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts;
   switch($setting) {
     case $SET_DarkMode:
     case $SET_ColorblindMode:
@@ -409,6 +419,7 @@ function SaveSettingInDatabase($setting)
     case $SET_AutotargetArcane:
     case $SET_Playmat:
     case $SET_AlwaysAllowUndo:
+    case $SET_DisableAltArts:
       return true;
     default: return false;
   }
