@@ -257,7 +257,7 @@ function AltArtsDisabled($player)
 {
   global $SET_DisableAltArts;
   $settings = GetSettings($player);
-  if($settings == null) return false;
+  if($settings == null || count($settings) <= $SET_DisableAltArts) return false;
   return $settings[$SET_DisableAltArts] == "1";
 }
 
