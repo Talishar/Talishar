@@ -325,25 +325,25 @@ function EffectHasBlockModifier($cardID)
 
 function EffectBlockModifier($cardID, $index)
 {
-  global $combatChain, $defPlayer, $mainPlayer;
+  global $CombatChain, $defPlayer, $mainPlayer;
   switch($cardID) {
     case "MON089":
-      if($combatChain[$index] == $cardID) return 1;
+      if($CombatChain->Card($index)->ID() == $cardID) return 1;
       return 0;
     case "ELE000-2":
       return 1;
     case "ELE143":
       return 1;
     case "ELE203":
-      return ($combatChain[$index] == "ELE203" ? 1 : 0);
+      return ($CombatChain->Card($index)->ID() == "ELE203" ? 1 : 0);
     case "OUT109":
-      return (PitchValue($combatChain[$index]) == 1 && HasAimCounter() ? -1 : 0);
+      return (PitchValue($CombatChain->Card($index)->ID()) == 1 && HasAimCounter() ? -1 : 0);
     case "OUT110":
-      return (PitchValue($combatChain[$index]) == 2 && HasAimCounter() ? -1 : 0);
+      return (PitchValue($CombatChain->Card($index)->ID()) == 2 && HasAimCounter() ? -1 : 0);
     case "OUT111":
-      return (PitchValue($combatChain[$index]) == 3 && HasAimCounter() ? -1 : 0);
+      return (PitchValue($CombatChain->Card($index)->ID()) == 3 && HasAimCounter() ? -1 : 0);
     case "DTD094": case "DTD095": case "DTD096":
-      return (CardType($combatChain[$index]) != "E" && TalentContains($combatChain[$index], "LIGHT", $defPlayer) && TalentContains($combatChain[0], "SHADOW", $mainPlayer) ? 1 : 0);
+      return (CardType($CombatChain->Card($index)->ID()) != "E" && TalentContains($CombatChain->Card($index)->ID(), "LIGHT", $defPlayer) && TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $mainPlayer) ? 1 : 0);
     default:
       return 0;
   }
@@ -636,17 +636,17 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
 
 function CurrentEffectAttackAbility()
 {
-  global $currentTurnEffects, $combatChain, $mainPlayer;
+  global $currentTurnEffects, $CombatChain, $mainPlayer;
   global $CS_PlayIndex;
-  if(count($combatChain) == 0) return;
-  $attackID = $combatChain[0];
+  if(!$CombatChain->HasCurrentLink()) return;
+  $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = false;
     if($currentTurnEffects[$i + 1] == $mainPlayer) {
-      switch ($currentTurnEffects[$i]) {
+      switch($currentTurnEffects[$i]) {
         case "EVR056":
-          if ($attackType == "W") {
+          if($attackType == "W") {
             $character = &GetPlayerCharacter($mainPlayer);
             ++$character[GetClassState($mainPlayer, $CS_PlayIndex) + 3];
           }
@@ -661,8 +661,7 @@ function CurrentEffectAttackAbility()
             $remove = true;
           }
           break;
-        default:
-          break;
+        default: break;
       }
     }
     if($remove) RemoveCurrentTurnEffect($i);
@@ -925,11 +924,11 @@ function CurrentEffectEndTurnAbilities()
 
 function IsCombatEffectActive($cardID)
 {
-  global $combatChain, $currentPlayer;
+  global $CombatChain, $currentPlayer;
   if(count($combatChain) == 0) return;
   if($cardID == "AIM") return true;
   $cardID = ShiyanaCharacter($cardID);
-  $attackID = $combatChain[0];
+  $attackID = $CombatChain->AttackCard()->ID();
   $set = CardSet($cardID);
   if($set == "WTR") return WTRCombatEffectActive($cardID, $attackID);
   else if($set == "ARC") return ARCCombatEffectActive($cardID, $attackID);
