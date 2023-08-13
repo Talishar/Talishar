@@ -299,10 +299,9 @@ function MainCharacterEndTurnAbilities()
 
 function MainCharacterHitAbilities()
 {
-  global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
-  $attackID = $combatChain[0];
+  global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  $attackID = $CombatChain->AttackCard()->ID();
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
-
   for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     if(CardType($mainCharacter[$i]) == "W" || $mainCharacter[$i + 1] != "2") continue;
     $characterID = ShiyanaCharacter($mainCharacter[$i], $mainPlayer);
@@ -310,20 +309,20 @@ function MainCharacterHitAbilities()
       case "WTR076": case "WTR077":
         if(CardType($attackID) == "AA") {
           AddLayer("TRIGGER", $mainPlayer, $characterID);
-          $mainCharacter[$i + 1] = 1;
+          $mainCharacter[$i+1] = 1;
         }
         break;
       case "WTR079":
         if(CardType($attackID) == "AA" && HitsInRow() >= 2) {
           AddLayer("TRIGGER", $mainPlayer, $characterID);
-          $mainCharacter[$i + 1] = 1;
+          $mainCharacter[$i+1] = 1;
         }
         break;
       case "WTR113": case "WTR114":
-        if($mainCharacter[$i + 1] == 2 && CardType($attackID) == "W" && $mainCharacter[$combatChainState[$CCS_WeaponIndex] + 1] != 0) {
-          $mainCharacter[$i + 1] = 1;
-          $mainCharacter[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
-          ++$mainCharacter[$combatChainState[$CCS_WeaponIndex] + 5];
+        if($mainCharacter[$i+1] == 2 && CardType($attackID) == "W" && $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] != 0) {
+          $mainCharacter[$i+1] = 1;
+          $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] = 2;
+          ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+5];
         }
         break;
       case "WTR117":
@@ -358,26 +357,24 @@ function MainCharacterHitAbilities()
         }
         break;
       case "ROGUE016":
-        if (CardType($attackID) == "AA")
-        {
+        if(CardType($attackID) == "AA") {
           $deck = &GetDeck($mainPlayer);
           array_unshift($deck, "ARC069");
         }
         break;
       case "ROGUE024":
-        if (IsHeroAttackTarget()) {
+        if(IsHeroAttackTarget()) {
           $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
           DamageTrigger($otherPlayer, 1, "ATTACKHIT");
         }
         break;
       case "ROGUE028":
-        if (IsHeroAttackTarget()) {
+        if(IsHeroAttackTarget()) {
           PlayAura("MON104", $mainPlayer);
           PlayAura("MON104", $mainPlayer);
         }
         break;
-      default:
-        break;
+      default: break;
     }
   }
 }

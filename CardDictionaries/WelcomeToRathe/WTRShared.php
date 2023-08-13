@@ -152,7 +152,7 @@ function WTRAbilityCost($cardID)
 
   function WTRPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $mainPlayer, $combatChain, $currentPlayer, $defPlayer;
+    global $mainPlayer, $currentPlayer, $defPlayer;
     global $CS_DamagePrevention;
     $rv = "";
     switch($cardID) {
@@ -242,7 +242,6 @@ function WTRAbilityCost($cardID)
       //Ninja
       case "WTR078": if(SearchCount(SearchPitch($currentPlayer, minCost:0, maxCost:0)) > 0) GiveAttackGoAgain(); return "";
       case "WTR082":
-        if(CardName($combatChain[0]) == "Bonds of Ancestry") WriteLog("Your ancestors reward you for your loyalty");
         Draw($currentPlayer);
         return "";
       case "WTR092": case "WTR093": case "WTR094":
@@ -423,9 +422,8 @@ function WTRAbilityCost($cardID)
   function WTRHitEffect($cardID)
   {
     global $CS_HitsWDawnblade, $combatChainState, $CCS_WeaponIndex;
-    global $mainPlayer, $defPlayer, $CCS_DamageDealt, $combatChain;
-    $attackID = $combatChain[0];
-    switch ($cardID)
+    global $mainPlayer, $defPlayer, $CCS_DamageDealt;
+    switch($cardID)
     {
       case "WTR083":
         if(ComboActive())
@@ -553,8 +551,8 @@ function WTRAbilityCost($cardID)
 
   function ProcessCrushEffect($cardID)
   {
-    global $mainPlayer, $defPlayer, $defCharacter, $combatChain, $combatChainState, $CCS_DamageDealt;
-    if(CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
+    global $mainPlayer, $defPlayer, $defCharacter, $CombatChain, $combatChainState, $CCS_DamageDealt;
+    if(CardType($CombatChain->AttackCard()->ID()) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
     if(!IsHeroAttackTarget()) return;
     switch($cardID) {
       case "WTR043":
