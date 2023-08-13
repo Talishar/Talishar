@@ -88,7 +88,7 @@ class BanishCard {
       $this->banish[$this->index+1] = $newModifier;
     }
 
-    function ClearModifier($newModifier)
+    function ClearModifier()
     {
       $this->banish[$this->index+1] = "-";
     }
