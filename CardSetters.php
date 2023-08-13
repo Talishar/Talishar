@@ -233,12 +233,6 @@ function DestroyArsenal($player, $index=-1)
   return $cardIDs;
 }
 
-function SetCCAttackModifier($index, $amount)
-{
-  global $combatChain;
-  $combatChain[$index + 5] += $amount;
-}
-
 function AddSoul($cardID, $player, $from, $isMainPhase=true)
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;

@@ -3,7 +3,7 @@
 
 function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $CS_NextNAACardGoAgain, $CS_ArcaneDamagePrevention;
+  global $currentPlayer, $CS_NextNAACardGoAgain, $CS_ArcaneDamagePrevention, $CombatChain;
   $rv = "";
   switch($cardID) {
     case "ARC151":
@@ -58,7 +58,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       if($deck->Reveal(1)) {
         $top = $deck->Top();
         $pitch = PitchValue($top);
-        SetCCAttackModifier(0, -$pitch);
+        $CombatChain->AttackCard()->ModifyPower(-$pitch);
         return "Reveals " . CardLink($top, $top) . " and gets -" . $pitch . " attack";
       }
       return "Ravenous Rabble does not get negative attack because the reveal was prevented";

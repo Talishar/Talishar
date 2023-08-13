@@ -346,7 +346,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if($deck->Empty()) return "Ravenous Dabble does not get negative attack because your deck is empty";
       $top = $deck->BanishTop();
       $pitch = PitchValue($top);
-      SetCCAttackModifier(0, -$pitch);
+      $CombatChain->AttackCard()->ModifyPower(-$pitch);
       return "";
     case "DTD170":
       if($from == "BANISH")
