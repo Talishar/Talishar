@@ -107,7 +107,7 @@
 
   function FuseAbility($cardID, $player, $element)
   {
-    global $CS_NextNAAInstant, $CS_PlayCCIndex, $combatChain;
+    global $CS_NextNAAInstant, $CS_PlayCCIndex, $CombatChain;
     $otherPlayer = ($player == 2 ? 1 : 2);
     $set = CardSet($cardID);
     switch($cardID)
@@ -120,7 +120,7 @@
         break;
       case "ELE010": case "ELE011": case "ELE012":
         $index = GetClassState($player, $CS_PlayCCIndex);
-        $combatChain[$index + 6] += 2;
+        $CombatChain->Card($index)->ModifyDefense(2);
         break;
       case "ELE016": case "ELE017": case "ELE018": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE019": case "ELE020": case "ELE021": AddCurrentTurnEffect($cardID, $player); break;
@@ -171,7 +171,7 @@
         break;
       case "ELE094": case "ELE095": case "ELE096":
         $index = GetClassState($player, $CS_PlayCCIndex);
-        $combatChain[$index + 5] += 2;
+        $CombatChain->Card($index)->ModifyPower(2);
         break;
       case "ELE097": case "ELE098": case "ELE099": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE100": case "ELE101": case "ELE102": GiveAttackGoAgain(); break;

@@ -75,7 +75,7 @@
 
   function MONEffectAttackModifier($cardID)
   {
-    global $mainPlayer, $CS_NumNonAttackCards, $combatChain;
+    global $mainPlayer, $CS_NumNonAttackCards, $CombatChain;
     $arr = explode(",", $cardID);
     $cardID = $arr[0];
     switch($cardID)
@@ -117,7 +117,7 @@
       case "MON202": return 1;
       case "MON212": return 2;
       case "MON221": return 2;
-      case "MON222": return AttackValue($combatChain[0]);
+      case "MON222": return AttackValue($CombatChain->AttackCard()->ID());
       case "MON239": return 1;
       case "MON247": return 7;
       case "MON260-1": case "MON261-1": case "MON262-1": return 2;

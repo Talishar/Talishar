@@ -2,7 +2,7 @@
 
   function MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts = "")
   {
-    global $currentPlayer, $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAddedToSoul, $combatChain, $CS_PlayIndex;
+    global $currentPlayer, $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAddedToSoul, $CombatChain, $CS_PlayIndex;
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     switch($cardID)
     {
@@ -46,10 +46,10 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "MON084": case "MON085": case "MON086":
-        if($cardID == "MON084") $amount = 3;
-        else if($cardID == "MON085") $amount = 2;
-        else $amount = 1;
-        if($target != "-") $combatChain[intval($target)+5] -= $amount;
+        if($cardID == "MON084") $amount = -3;
+        else if($cardID == "MON085") $amount = -2;
+        else $amount = -1;
+        if($target != "-") $CombatChain->Card(intval($target))->ModifyPower($amount);
         return "";
       case "MON087":
         AddCurrentTurnEffect($cardID, $currentPlayer);
