@@ -145,6 +145,7 @@ function GetCardBack($player)
     case 53: return "CBOnHitEffect";
     case 54: return "CBDaganWhite";
     case 55: return "CBSonicDoom";
+    case 56: return "CBBrandao";
     default: return "CardBack";
   }
 }
