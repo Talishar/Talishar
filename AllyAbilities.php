@@ -234,7 +234,7 @@ function SpecificAllyAttackAbilities($attackID)
       AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
       AddDecisionQueue("NOPASS", $mainPlayer, "-");
       MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRBANISH");
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRBANISH", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $mainPlayer, "TURNBANISHFACEDOWN", 1);
       break;
