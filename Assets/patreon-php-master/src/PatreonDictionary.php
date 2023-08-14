@@ -234,7 +234,7 @@ enum PatreonCampaign : string
       case "4006023": return ($userName == "BlackWingStudio");
       case "10811477": return ($userName == "Mezzo");
       case "9851977": return ($userName == "DaganTheZookeeper" || $userName == "OotTheMonk");
-      case "279086": return ($userName == "BrandaoTCG" || $userName == "OotTheMonk");
+      case "279086": return ($userName == "brandaotcg" || $userName == "OotTheMonk");
       default: return "";
     }
   }
@@ -245,7 +245,7 @@ enum PatreonCampaign : string
     {
       case "10651350": return "WTR038=WTR038-InstantSpeed";
       case "8955846": return "MON119=MON119-ManSant,MON120=MON120-ManSant";
-      case "279086": return "ARC001=ARC001-Brandao,ARC113=ARC113-Brandao,CRU077=CRU077-Brandao,ELE031=ELE031-Brandao,OUT091=OUT091-Brandao,UPR001=UPR001-Brandao,WTR038=WTR038-Brandao";
+      case "279086": return "ARC001=ARC001-Brandao,ARC113=ARC113-Brandao,CRU077=CRU077-Brandao,ELE031=ELE031-Brandao,OUT091=OUT091-Brandao,UPR001=UPR001-Brandao,WTR038=WTR038-Brandao,ARC003=ARC003-Brandao,CRU079=CRU079-Brandao,CRU080=CRU080-Brandao,CRU197=CRU197-Brandao,ELE111=ELE111-Brandao,UPR003=UPR003-Brandao,UPR042=UPR042-Brandao,UPR043=UPR043-Brandao,WTR040=WTR040-Brandao,WTR075=WTR075-Brandao";
       default: return "";
     }
   }
