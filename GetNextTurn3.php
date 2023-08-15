@@ -815,6 +815,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($turn[0] == "CHOOSEARCANE") {
       $vars = explode("-", $dqVars[0]);
       $caption .= "Source: " . CardLink($vars[1], $vars[1]) . " Total Damage: " . $vars[0] . " ";
+      if(!CanDamageBePrevented($playerID, $vars[0], "ARCANE", $vars[1])) {
+        $caption .= " <span style='color:red;'>**WARNING: THIS DAMAGE IS UNPREVENTABLE**</span><br>";
+        $caption .= " <span style='font-style:italic;'>When arcane damage is unpreventable, you still have the opportunity to pitch into Arcane Barrier</span><br>";
+      }
     }
     for ($i = 0; $i < count($options); ++$i) {
       array_push($playerInputButtons, CreateButtonAPI($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i]), "24px"));
