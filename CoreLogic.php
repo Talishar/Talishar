@@ -18,10 +18,10 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
     if($chainCard->PlayerID() == $mainPlayer) {
       if($i == 0) $attack = $combatChainState[$CCS_LinkBaseAttack];
       else $attack = AttackValue($chainCard->ID());
-      if($canGainAttack || $i == 1 || $attack < 0) {
+      if($canGainAttack || $i == 0 || $attack < 0) {
         array_push($attackModifiers, $chainCard->ID());
         array_push($attackModifiers, $attack);
-        if($i == 1) $totalAttack += $attack;
+        if($i == 0) $totalAttack += $attack;
         else AddAttack($totalAttack, $attack);
       }
       $attack = AttackModifier($chainCard->ID(), $chainCard->From(), $chainCard->ResourcesPaid(), $chainCard->RepriseActive()) + $chainCard->AttackValue();
