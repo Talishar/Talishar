@@ -153,7 +153,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 
 function BlockModifier($cardID, $from, $resourcesPaid)
 {
-  global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $combatChain, $chainLinks;
+  global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks;
   $blockModifier = 0;
   $cardType = CardType($cardID);
   if($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
@@ -162,6 +162,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   if($cardType == "E" && (SearchCurrentTurnEffects("DYN095", $mainPlayer) || SearchCurrentTurnEffects("DYN096", $mainPlayer) || SearchCurrentTurnEffects("DYN097", $mainPlayer))) $blockModifier -= 1;
   if(SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
   $defAuras = &GetAuras($defPlayer);
+  $attackID = $CombatChain->AttackCard()->ID();
   for($i = 0; $i < count($defAuras); $i += AuraPieces()) {
     if($defAuras[$i] == "WTR072" && CardCost($cardID) >= 3) $blockModifier += 4;
     if($defAuras[$i] == "WTR073" && CardCost($cardID) >= 3) $blockModifier += 3;
@@ -189,7 +190,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "ELE227": case "ELE228": case "ELE229":
       return GetClassState($mainPlayer, $CS_ArcaneDamageTaken) > 0 ? 1 : 0;
     case "EVR050": case "EVR051": case "EVR052":
-      return (CardCost($combatChain[0]) == 0 && CardType($combatChain[0]) == "AA" ? 2 : 0);
+      return (CardCost($attackID) == 0 && CardType($attackID) == "AA" ? 2 : 0);
     case "DYN045":
       $blockModifier += (count($chainLinks) >= 3 ? 4 : 0);
       break;
