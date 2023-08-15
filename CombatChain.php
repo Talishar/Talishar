@@ -422,76 +422,71 @@ function ModifyBlockForType($type, $amount)
 
 function OnBlockEffects($index, $from)
 {
-  global $currentTurnEffects, $combatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  global $currentTurnEffects, $CombatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   global $Card_BlockBanner;
-  $cardType = CardType($combatChain[$index]);
+  $chainCard = $CombatChain->Card($index);
+  $cardType = CardType($chainCard->ID());
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = false;
     if($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch($currentTurnEffects[$i]) {
         case "WTR092": case "WTR093": case "WTR094":
-          if(HasCombo($combatChain[$index])) {
-            $combatChain[$index + 6] += 2;
-          }
+          if(HasCombo($chainCard->ID())) $chainCard->ModifyDefense(2);
           $remove = true;
           break;
         case "ELE004":
-          if($cardType == "DR") {
-            PlayAura("ELE111", $currentPlayer);
-          }
+          if($cardType == "DR") PlayAura("ELE111", $currentPlayer);
           break;
         case "DYN042": case "DYN043": case "DYN044":
-          if(ClassContains($combatChain[$index], "GUARDIAN", $currentPlayer) && CardSubType($combatChain[$index]) == "Off-Hand")
+          if(ClassContains($chainCard->ID(), "GUARDIAN", $currentPlayer) && CardSubType($chainCard->ID()) == "Off-Hand")
           {
             if($currentTurnEffects[$i] == "DYN042") $amount = 6;
             else if($currentTurnEffects[$i] == "DYN043") $amount = 5;
             else $amount = 4;
-            $combatChain[$index + 6] += $amount;
+            $chainCard->ModifyDefense($amount);
             $remove = true;
           }
           break;
         case "DYN115": case "DYN116":
-          if($cardType == "AA") $combatChain[$index + 6] -= 1;
+          if($cardType == "AA") $chainCard->ModifyDefense(-1);
           break;
         case "OUT005": case "OUT006":
-          if($cardType == "AR") $combatChain[$index + 6] -= 1;
+          if($cardType == "AR") $chainCard->ModifyDefense(-1);
           break;
         case "OUT007": case "OUT008":
-          if($cardType == "A") $combatChain[$index + 6] -= 1;
+          if($cardType == "A") $chainCard->ModifyDefense(-1);
           break;
         case "OUT009": case "OUT010":
-          if($cardType == "E") $combatChain[$index + 6] -= 1;
+          if($cardType == "E") $chainCard->ModifyDefense(-1);
           break;
         case $Card_BlockBanner:
           if($cardType == "A" || $cardType == "AA") {
-            $combatChain[$index + 6] += 1;
+            $chainCard->ModifyDefense(1);
             $remove = true;
           }
           break;
-        default:
-          break;
+        default: break;
       }
     } else if($currentTurnEffects[$i + 1] == $otherPlayer) {
       switch($currentTurnEffects[$i]) {
         case "MON113": case "MON114": case "MON115":
           if($cardType == "AA" && NumAttacksBlocking() == 1) {
               AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $currentTurnEffects[$i]);
-              WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " gives your weapon +1 for the rest of the turn.");
+              WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " gives your weapon +1 for the rest of the turn");
           }
           break;
-        default:
-          break;
+        default: break;
       }
     }
     if($remove) RemoveCurrentTurnEffect($i);
   }
   $currentTurnEffects = array_values($currentTurnEffects);
-  switch($combatChain[0]) {
+  switch($CombatChain->AttackCard()->ID()) {
     case "CRU079": case "CRU080":
       if($cardType == "AA" && NumAttacksBlocking() == 1) {
-        AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $combatChain[0]);
-        WriteLog(CardLink($combatChain[0], $combatChain[0]) . " got +1 for the rest of the turn.");
+        AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $CombatChain->AttackCard()->ID());
+        WriteLog(CardLink($CombatChain->AttackCard()->ID(), $CombatChain->AttackCard()->ID()) . " got +1 for the rest of the turn.");
       }
       break;
     default:
