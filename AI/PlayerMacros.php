@@ -4,6 +4,7 @@ function ProcessMacros()
 {
   global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass;
   $somethingChanged = true;
+  $lastPhase = $turn[0];
   for($i=0; $i<$numPass; ++$i)
   {
     PassInput();
