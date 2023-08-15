@@ -80,6 +80,14 @@ class ChainCard {
       return $this->chain[$this->index+2];
     }
 
+    function ResourcesPaid() {
+      return $this->chain[$this->index+3];
+    }
+
+    function RepriseActive() {
+      return $this->chain[$this->index+4];
+    }
+
     function AttackValue() {
       return $this->chain[$this->index+5];
     }

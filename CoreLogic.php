@@ -5,39 +5,34 @@
 
 function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[])
 {
-  global $combatChain, $mainPlayer, $currentTurnEffects, $defCharacter, $playerID, $combatChainState, $CCS_LinkBaseAttack;
-  global $CCS_WeaponIndex, $mainCharacter, $mainAuras;
+  global $CombatChain, $mainPlayer, $currentTurnEffects, $playerID, $combatChainState, $CCS_LinkBaseAttack;
+  global $CCS_WeaponIndex;
   UpdateGameState($playerID);
   BuildMainPlayerGameState();
-  $attackType = CardType($combatChain[0]);
+  $attackType = CardType($CombatChain->AttackCard()->ID());
   $canGainAttack = CanGainAttack();
   $snagActive = SearchCurrentTurnEffects("CRU182", $mainPlayer) && $attackType == "AA";
-  for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
+  for($i=0; $i<$CombatChain->NumCardsActiveLink(); ++$i)
   {
-    $from = $combatChain[$i+1];
-    $resourcesPaid = $combatChain[$i+2];
-    if($combatChain[$i] == $mainPlayer)
-    {
-      if($i == 1) $attack = $combatChainState[$CCS_LinkBaseAttack];
-      else $attack = AttackValue($combatChain[$i-1]);
-      if($canGainAttack || $i == 1 || $attack < 0)
-      {
-        array_push($attackModifiers, $combatChain[$i-1]);
+    $chainCard = $CombatChain->Card($i, true);
+    if($chainCard->PlayerID() == $mainPlayer) {
+      if($i == 0) $attack = $combatChainState[$CCS_LinkBaseAttack];
+      else $attack = AttackValue($chainCard->ID());
+      if($canGainAttack || $i == 1 || $attack < 0) {
+        array_push($attackModifiers, $chainCard->ID());
         array_push($attackModifiers, $attack);
         if($i == 1) $totalAttack += $attack;
         else AddAttack($totalAttack, $attack);
       }
-      $attack = AttackModifier($combatChain[$i-1], $combatChain[$i+1], $combatChain[$i+2], $combatChain[$i+3]) + $combatChain[$i + 4];
-      if(($canGainAttack && !$snagActive) || $attack < 0)
-      {
-        array_push($attackModifiers, $combatChain[$i-1]);
+      $attack = AttackModifier($chainCard->ID(), $chainCard->From(), $chainCard->ResourcesPaid(), $chainCard->RepriseActive()) + $chainCard->AttackValue();
+      if(($canGainAttack && !$snagActive) || $attack < 0) {
+        array_push($attackModifiers, $chainCard->ID());
         array_push($attackModifiers, $attack);
         AddAttack($totalAttack, $attack);
       }
     }
-    else
-    {
-      $totalDefense += BlockingCardDefense($i-1, $combatChain[$i+1], $combatChain[$i+2]);
+    else {
+      $totalDefense += BlockingCardDefense($i*CombatChainPieces());
     }
   }
   //Now check current turn effects
@@ -48,7 +43,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       if($currentTurnEffects[$i+1] == $mainPlayer)
       {
         $attack = EffectAttackModifier($currentTurnEffects[$i]);
-        if(($canGainAttack || $attack < 0) && !($snagActive && $currentTurnEffects[$i] == $combatChain[0]))
+        if(($canGainAttack || $attack < 0) && !($snagActive && $currentTurnEffects[$i] == $CombatChain->AttackCard()->ID()))
         {
           array_push($attackModifiers, $currentTurnEffects[$i]);
           array_push($attackModifiers, $attack);
@@ -59,8 +54,14 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
   }
   if($combatChainState[$CCS_WeaponIndex] != -1) {
     $attack = 0;
-    if($attackType == "W") $attack = $mainCharacter[$combatChainState[$CCS_WeaponIndex]+3];
-    else if(DelimStringContains(CardSubtype($combatChain[0]), "Aura")) $attack = $mainAuras[$combatChainState[$CCS_WeaponIndex]+3];
+    if($attackType == "W") {
+      $char = &GetPlayerCharacter($mainPlayer);
+      $attack = $char[$combatChainState[$CCS_WeaponIndex]+3];
+    }
+    else if(DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Aura")) {
+      $auras = &GetAuras($mainPlayer);
+      $attack = $auras[$combatChainState[$CCS_WeaponIndex]+3];
+    }
     if($canGainAttack || $attack < 0) {
       array_push($attackModifiers, "+1 Attack Counters");
       array_push($attackModifiers, $attack);
@@ -96,7 +97,7 @@ function AddAttack(&$totalAttack, $amount)
   $totalAttack += $amount;
 }
 
-function BlockingCardDefense($index, $from="", $resourcesPaid=-1)
+function BlockingCardDefense($index)
 {
   global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects;
   $from = $combatChain[$index+2];
