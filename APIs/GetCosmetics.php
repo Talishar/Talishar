@@ -29,7 +29,8 @@ if(IsUserLoggedIn()) {
     }
   }
 
-  for ($i = 0; $i < 8; ++$i) {
+  for ($i = 0; $i < 16; ++$i) {
+    if($i == 7) continue;
     $playmat = new stdClass();
     $playmat->id = $i;
     $playmat->name = GetPlaymatName($i);
@@ -63,6 +64,18 @@ function GetPlaymatName($id)
       return "training-dummy";
     case 9:
       return "aria";
+    case 10:
+      return "bare-fangs";
+    case 11:
+      return "erase-face";
+    case 12:
+      return "DuskTillDawnAHS";
+    case 13:
+      return "exude-confidence";
+    case 14:
+      return "cnc";
+    case 15:
+      return "swarming-gloomveil";
     default:
       return "N/A";
   }
