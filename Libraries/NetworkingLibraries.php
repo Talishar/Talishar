@@ -164,7 +164,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if($banish[$index + 1] == "MON212" && TalentContains($theirChar[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("MON212", $currentPlayer);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if(CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
-      SearchCurrentTurnEffects("DTD564", $currentPlayer, remove:true);
+      if(!PlayableFromBanish($cardID, mod:$banish[$index+1], nonLimitedOnly:true)) SearchCurrentTurnEffects("DTD564", $currentPlayer, remove:true);
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2]);
       break;
     case 15: case 16: case 18: //Decision Queue (15 and 18 deprecated)
