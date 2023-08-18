@@ -65,17 +65,17 @@ function GetPlaymatName($id)
     case 9:
       return "aria";
     case 10:
-      return "bare-fangs";
+      return "Bare-Fangs-AHS";
     case 11:
-      return "erase-face";
+      return "Erase-Face-AHS";
     case 12:
-      return "DuskTillDawnAHS";
+      return "Dusk-Till-Dawn-AHS";
     case 13:
-      return "exude-confidence";
+      return "Exude-Confidence-AHS";
     case 14:
-      return "cnc";
+      return "Command-and-Conquer-AHS";
     case 15:
-      return "swarming-gloomveil";
+      return "Swarming-Gloomveil-AHS";
     default:
       return "N/A";
   }
