@@ -237,13 +237,11 @@ function ArsenalStartTurnAbilities()
 
 function ArsenalAttackAbilities()
 {
-  global $combatChain, $mainPlayer;
-  $attackID = $combatChain[0];
+  global $CombatChain, $mainPlayer;
+  $attackID = $CombatChain->AttackCard()->ID();
   $arsenal = GetArsenal($mainPlayer);
-  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
-  {
-    switch($arsenal[$i])
-    {
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces()) {
+    switch($arsenal[$i]) {
       case "MON406": if(CardType($attackID) == "AA" && $arsenal[$i+1] == "UP") LadyBarthimontAbility($mainPlayer, $i); break;
       case "RVD007": if(CardType($attackID) == "AA" && AttackValue($attackID) >= 6 && $arsenal[$i+1] == "UP") ChiefRukutanAbility($mainPlayer, $i); break;
       default: break;
@@ -253,15 +251,13 @@ function ArsenalAttackAbilities()
 
 function ArsenalAttackModifier()
 {
-  global $combatChain, $mainPlayer;
-  $attackID = $combatChain[0];
+  global $CombatChain, $mainPlayer;
+  $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
   $arsenal = GetArsenal($mainPlayer);
   $modifier = 0;
-  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
-  {
-    switch($arsenal[$i])
-    {
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces()) {
+    switch($arsenal[$i]) {
       case "MON405": $modifier += ($arsenal[$i+1] == "UP" && $attackType == "W" && Is1H($attackID) ? 1 : 0); break;
       default: break;
     }
@@ -271,14 +267,12 @@ function ArsenalAttackModifier()
 
 function ArsenalHitEffects()
 {
-  global $combatChain, $mainPlayer;
-  $attackID = $combatChain[0];
+  global $CombatChain, $mainPlayer;
+  $attackID = $CombatChain->AttackCard()->ID();
   $arsenal = GetArsenal($mainPlayer);
   $modifier = 0;
-  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
-  {
-    switch($arsenal[$i])
-    {
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces()) {
+    switch($arsenal[$i]) {
       case "MON405": if($arsenal[$i+1] == "UP" && CardType($attackID) == "W") MinervaThemisAbility($mainPlayer, $i); break;
       case "DVR007": if($arsenal[$i+1] == "UP" && CardType($attackID) == "W" && CardSubType($attackID) == "Sword") HalaGoldenhelmAbility($mainPlayer, $i); break;
       default: break;
@@ -302,12 +296,12 @@ function ArsenalPlayCardAbilities($cardID)
 
 function HasIncreasedAttack()
 {
-  global $combatChain;
-  if(count($combatChain) > 0) {
+  global $CombatChain;
+  if($CombatChain->HasCurrentLink()) {
     $attack = 0;
     $defense = 0;
     EvaluateCombatChain($attack, $defense);
-    if($attack > AttackValue($combatChain[0])) return true;
+    if($attack > AttackValue($CombatChain->AttackCard()->ID())) return true;
   }
   return false;
 }
@@ -1139,41 +1133,42 @@ function RevealCards($cards, $player="")
 
 function DoesAttackHaveGoAgain()
 {
-  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer;
+  global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer;
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $myDeck, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
-  if(count($combatChain) == 0) return false;//No combat chain, so no
-  $attackType = CardType($combatChain[0]);
-  $attackSubtype = CardSubType($combatChain[0]);
-  $isAura = DelimStringContains(CardSubtype($combatChain[0]), "Aura");
+  if(!$CombatChain->HasCurrentLink()) return false;
+  $attackID = $CombatChain->AttackCard()->ID();
+  $attackType = CardType($attackID);
+  $attackSubtype = CardSubType($attackID);
+  $isAura = DelimStringContains(CardSubtype($attackID), "Aura");
   if(CurrentEffectPreventsGoAgain()) return false;
   if(SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false;
-  if(!$isAura && HasGoAgain($combatChain[0])) return true;
-  if(ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer)) {
+  if(!$isAura && HasGoAgain($attackID)) return true;
+  if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
     if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if($isAura && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
   if(SearchAuras("UPR139", $mainPlayer)) return false;
   if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
-  if($attackType == "AA" && ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer) && SearchAuras("MON013", $mainPlayer)) return true;
+  if($attackType == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchAuras("MON013", $mainPlayer)) return true;
   if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $mainPlayer))) return true;
   $mainPitch = &GetPitch($mainPlayer);
-  switch($combatChain[0]) {
-    case "WTR083": case "WTR084": return ComboActive($combatChain[0]);
-    case "WTR095": case "WTR096": case "WTR097": return ComboActive($combatChain[0]);
-    case "WTR104": case "WTR105": case "WTR106": return ComboActive($combatChain[0]);
-    case "WTR110": case "WTR111": case "WTR112": return ComboActive($combatChain[0]);
+  switch($attackID) {
+    case "WTR083": case "WTR084": return ComboActive($attackID);
+    case "WTR095": case "WTR096": case "WTR097": return ComboActive($attackID);
+    case "WTR104": case "WTR105": case "WTR106": return ComboActive($attackID);
+    case "WTR110": case "WTR111": case "WTR112": return ComboActive($attackID);
     case "WTR161": return count($myDeck) == 0;
     case "ARC197": case "ARC198": case "ARC199": return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0;
     case "CRU010": case "CRU011": case "CRU012": if(NumCardsNonEquipBlocking() < 2) return true;
-    case "CRU057": case "CRU058": case "CRU059": return ComboActive($combatChain[0]);
-    case "CRU060": case "CRU061": case "CRU062": return ComboActive($combatChain[0]);
+    case "CRU057": case "CRU058": case "CRU059": return ComboActive($attackID);
+    case "CRU060": case "CRU061": case "CRU062": return ComboActive($attackID);
     case "CRU151": case "CRU152": case "CRU153": return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
     case "MON180": case "MON181": case "MON182": return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
     case "MON199": case "MON220": return (count(GetSoul($defPlayer)) > 0 && !IsAllyAttackTarget());
     case "MON223": case "MON224": case "MON225": return NumCardsNonEquipBlocking() < 2;
     case "MON248": case "MON249": case "MON250": return SearchHighestAttackDefended() < CachedTotalAttack();
-    case "MON293": case "MON294": case "MON295": return SearchPitchHighestAttack($mainPitch) > AttackValue($combatChain[0]);
-    case "ELE216": case "ELE217": case "ELE218": return CachedTotalAttack() > AttackValue($combatChain[0]);
+    case "MON293": case "MON294": case "MON295": return SearchPitchHighestAttack($mainPitch) > AttackValue($attackID);
+    case "ELE216": case "ELE217": case "ELE218": return CachedTotalAttack() > AttackValue($attackID);
     case "ELE216": case "ELE217": case "ELE218": return HasIncreasedAttack();
     case "EVR105": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "EVR138": return FractalReplicationStats("GoAgain");
@@ -1182,8 +1177,8 @@ function DoesAttackHaveGoAgain()
     case "UPR069": case "UPR070": case "UPR071": return NumDraconicChainLinks() >= 2;
     case "UPR048": return NumChainLinksWithName("Phoenix Flame") >= 1;
     case "UPR092": return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
-    case "DYN047": return (ComboActive($combatChain[0]));
-    case "DYN056": case "DYN057": case "DYN058": return (ComboActive($combatChain[0]));
+    case "DYN047": return (ComboActive($attackID));
+    case "DYN056": case "DYN057": case "DYN058": return (ComboActive($attackID));
     case "DYN069": case "DYN070": return GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) != "-";
     default: return false;
   }
