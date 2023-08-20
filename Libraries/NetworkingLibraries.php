@@ -1026,7 +1026,7 @@ function BeginTurnPass()
   ResetCombatChainState(); // The combat chain must be closed prior to the turn ending. The close step is outlined in 7.8 - specifically: CR 2.1 - 7.8.7. Fifth and finally, the Close Step ends, and the Action Phase continues. The Action Phase will always continue after the combat chain is closed - so there is another round of priority windows
 
   // Only attempt to end turn if no triggers remain on stack
-  if ($layers[0] != 'TRIGGER') {
+  if(count($layers) == 0 || $layers[0] != 'TRIGGER') {
     WriteLog("Main player passed priority; attempting to end turn");
     AddLayer("ENDTURN", $mainPlayer, "-");
   }
