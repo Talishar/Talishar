@@ -799,11 +799,12 @@ function NumCardsBlocking()
 
 function NumCardsNonEquipBlocking()
 {
-  global $combatChain, $defPlayer;
+  global $CombatChain, $defPlayer;
   $num = 0;
-  for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    if($combatChain[$i + 1] == $defPlayer) {
-      $type = CardType($combatChain[$i]);
+  for($i=0; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
+    $chainCard = $CombatChain->Card($i, cardNumber:true);
+    if($chainCard->PlayerID() == $defPlayer) {
+      $type = CardType($chainCard->ID());
       if($type != "E" && $type != "I" && $type != "C") ++$num;
     }
   }
@@ -812,22 +813,24 @@ function NumCardsNonEquipBlocking()
 
 function NumAttacksBlocking()
 {
-  global $combatChain, $defPlayer;
+  global $CombatChain, $defPlayer;
   $num = 0;
-  for($i=0; $i<count($combatChain); $i += CombatChainPieces()) {
-    if($combatChain[$i+1] == $defPlayer && CardType($combatChain[$i]) == "AA") ++$num;
+  for($i=0; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
+    $chainCard = $CombatChain->Card($i, cardNumber:true);
+    if($chainCard->PlayerID() == $defPlayer && CardType($chainCard->ID()) == "AA") ++$num;
   }
   return $num;
 }
 
 function NumActionsBlocking()
 {
-  global $combatChain, $defPlayer;
+  global $CombatChain, $defPlayer;
   $num = 0;
-  for($i=0; $i<count($combatChain); $i += CombatChainPieces()) {
-    if($combatChain[$i+1] == $defPlayer) {
-      $cardType = CardType($combatChain[$i]);
-      if($cardType == "A" || $cardType == "AA") ++$num;
+  for($i=0; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
+    $chainCard = $CombatChain->Card($i, cardNumber:true);
+    if($chainCard->PlayerID() == $defPlayer) {
+      $type = CardType($chainCard->ID());
+      if($type == "A" || $type == "AA") ++$num;
     }
   }
   return $num;
