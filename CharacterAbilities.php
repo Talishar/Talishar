@@ -402,14 +402,13 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
     }
   }
   if($onlyBuffs) return $modifier;
-
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     if(!IsCharacterAbilityActive($mainPlayer, $i)) continue;
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
     switch($characterID) {
       case "MON029": case "MON030":
-        if (HaveCharged($mainPlayer) && NumAttacksBlocking() > 0) $modifier += 1;
+        if(HaveCharged($mainPlayer) && NumAttacksBlocking() > 0) $modifier += 1;
         break;
       default: break;
     }

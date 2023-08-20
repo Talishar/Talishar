@@ -772,12 +772,12 @@ function CombatChainClosedCharacterEffects()
 
 function NumDefendedFromHand()
 {
-  global $combatChain, $defPlayer;
+  global $CombatChain, $defPlayer;
   $num = 0;
-  for($i=0; $i<count($combatChain); $i += CombatChainPieces()) {
-    if($combatChain[$i+1] == $defPlayer) {
-      $type = CardType($combatChain[$i]);
-      if($type != "I" && $combatChain[$i+2] == "HAND") ++$num;
+  for($i=0; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
+    $chainCard = $CombatChain->Card($i, cardNumber:true);
+    if($chainCard->PlayerID() == $defPlayer) {
+      if(CardType($chainCard->Index()) != "I" && $chainCard->From() == "HAND") ++$num;
     }
   }
   return $num;
