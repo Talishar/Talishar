@@ -783,19 +783,6 @@ function NumDefendedFromHand()
   return $num;
 }
 
-function NumActionBlocked()
-{
-  global $combatChain, $defPlayer;
-  $num = 0;
-  for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    if($combatChain[$i+1] == $defPlayer) {
-      $type = CardType($combatChain[$i]);
-      if($type == "A" || $type == "AA") ++$num;
-    }
-  }
-  return $num;
-}
-
 function NumCardsBlocking()
 {
   global $combatChain, $defPlayer;

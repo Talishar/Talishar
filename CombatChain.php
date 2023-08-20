@@ -138,8 +138,8 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "OUT074": case "OUT075": case "OUT076": return (ComboActive() ? 2 : 0);
     case "OUT133": case "OUT134": case "OUT135": return NumCardsDefended() < 2 ? 3 : 0;
     case "OUT181": return 1;
-    case "OUT207": case "OUT208": case "OUT209": return (NumActionsBlocking() > 0 ? 2 : 0);
-    case "OUT210": case "OUT211": case "OUT212": return (NumActionsBlocking() > 0 ? -2 : 0);
+    case "OUT207": case "OUT208": case "OUT209": return (CachedNumActionBlocked() > 0 ? 2 : 0);
+    case "OUT210": case "OUT211": case "OUT212": return (CachedNumActionBlocked() > 0 ? -2 : 0);
     case "DTD046": return GetClassState($mainPlayer, $CS_NumYellowPutSoul) > 0 ? 5 : 0;
     case "DTD097": case "DTD098": case "DTD099": return (SearchPitchForColor($mainPlayer, 2) > 0 ? 2 : 0);
     case "DTD121": case "DTD122": case "DTD123":
@@ -294,7 +294,7 @@ function OnBlockResolveEffects()
       }
       break;
     case "OUT185":
-      for($i=0; $i<NumActionsBlocking(); ++$i)
+      for($i=0; $i<CachedNumActionBlocked(); ++$i)
       {
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack());
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an action card to put on top of your deck");
@@ -679,7 +679,7 @@ function CacheCombatResult()
   EvaluateCombatChain($combatChainState[$CCS_CachedTotalAttack], $combatChainState[$CCS_CachedTotalBlock]);
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
-  $combatChainState[$CSS_CachedNumActionBlocked] = NumActionBlocked();
+  $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();
   $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand();
 }
 
