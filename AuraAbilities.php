@@ -384,7 +384,7 @@ function AuraBeginEndPhaseAbilities()
         $discardReds = SearchCount(SearchDiscard($mainPlayer, pitch:1));
         if($toBanish <= $discardReds) {
           for($j = $toBanish; $j > 0; --$j) {
-            MZMoveCard($mainPlayer, "MYDISCARD:pitch=1", "MYBANISH", may:true, isSubsequent:$j < $toBanish);
+            MZMoveCard($mainPlayer, "MYDISCARD:pitch=1", "MYBANISH,GY,-", may:true, isSubsequent:$j < $toBanish);
           }
           AddDecisionQueue("ELSE", $mainPlayer, "-");
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $i, 1);
