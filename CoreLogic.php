@@ -1098,7 +1098,7 @@ function RevealCards($cards, $player="")
 function DoesAttackHaveGoAgain()
 {
   global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer;
-  global $CS_NumAuras, $CS_ArcaneDamageTaken, $myDeck, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
+  global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
   if(!$CombatChain->HasCurrentLink()) return false;
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
@@ -1121,7 +1121,9 @@ function DoesAttackHaveGoAgain()
     case "WTR095": case "WTR096": case "WTR097": return ComboActive($attackID);
     case "WTR104": case "WTR105": case "WTR106": return ComboActive($attackID);
     case "WTR110": case "WTR111": case "WTR112": return ComboActive($attackID);
-    case "WTR161": return count($myDeck) == 0;
+    case "WTR161":
+      $deck = new Deck($mainPlayer);
+      return $deck->Empty();
     case "ARC197": case "ARC198": case "ARC199": return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0;
     case "CRU010": case "CRU011": case "CRU012": if(NumCardsNonEquipBlocking() < 2) return true;
     case "CRU057": case "CRU058": case "CRU059": return ComboActive($attackID);
