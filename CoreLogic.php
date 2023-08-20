@@ -777,7 +777,7 @@ function NumDefendedFromHand()
   for($i=0; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber:true);
     if($chainCard->PlayerID() == $defPlayer) {
-      if(CardType($chainCard->Index()) != "I" && $chainCard->From() == "HAND") ++$num;
+      if(CardType($chainCard->ID()) != "I" && $chainCard->From() == "HAND") ++$num;
     }
   }
   return $num;
@@ -785,11 +785,12 @@ function NumDefendedFromHand()
 
 function NumCardsBlocking()
 {
-  global $combatChain, $defPlayer;
+  global $CombatChain, $defPlayer;
   $num = 0;
-  for($i=0; $i<count($combatChain); $i += CombatChainPieces()) {
-    if($combatChain[$i+1] == $defPlayer) {
-      $type = CardType($combatChain[$i]);
+  for($i=0; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
+    $chainCard = $CombatChain->Card($i, cardNumber:true);
+    if($chainCard->PlayerID() == $defPlayer) {
+      $type = CardType($chainCard->ID());
       if($type != "I" && $type != "C") ++$num;
     }
   }
