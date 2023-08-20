@@ -90,9 +90,10 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
 
 function AddAttack(&$totalAttack, $amount)
 {
-  global $combatChain;
-  if($amount > 0 && $combatChain[0] == "OUT100") $amount += 1;
-  if($amount > 0 && ($combatChain[0] == "OUT065" || $combatChain[0] == "OUT066" || $combatChain[0] == "OUT067") && ComboActive()) $amount += 1;
+  global $CombatChain;
+  $attackID = $CombatChain->AttackCard()->ID();
+  if($amount > 0 && $attackID == "OUT100") $amount += 1;
+  if($amount > 0 && ($attackID == "OUT065" || $attackID == "OUT066" || $attackID == "OUT067") && ComboActive()) $amount += 1;
   if($amount > 0) $amount += PermanentAddAttackAbilities();
   $totalAttack += $amount;
 }
