@@ -44,7 +44,8 @@ function CardType($cardID)
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
-    if($number < 400 || ($set != "MON" && $set != "DYN")) return GeneratedCardType($cardID);
+    if($number < 400) return GeneratedCardType($cardID);
+    else if($set != "MON" && $set != "DYN" && $cardID != "UPR551") return GeneratedCardType($cardID);
   }
   if($set == "ROG") return ROGUECardType($cardID);
   switch ($cardID) {
@@ -53,6 +54,7 @@ function CardType($cardID)
     case "MON404": return "M";
     case "MON405": return "M";
     case "MON406": case "MON407": return "M";
+    case "UPR551": return "-";
     case "DYN492a": return "W";
     case "DYN492b": return "E";
     case "DYN612": return "-";
@@ -70,7 +72,8 @@ function CardSubType($cardID)
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
-    if($number < 400 || ($set != "MON" && $set != "DYN")) return GeneratedCardSubtype($cardID);
+    if($number < 400) return GeneratedCardSubtype($cardID);
+    else if($set != "MON" && $set != "DYN" && $cardID != "UPR551") return GeneratedCardSubtype($cardID);
   }
   if($set == "ROG") return ROGUECardSubtype($cardID);
   switch($cardID) {
@@ -78,6 +81,7 @@ function CardSubType($cardID)
       case "MON400": return "Chest";
       case "MON401": return "Arms";
       case "MON402": return "Legs";
+      case "UPR551": return "Ally";
       case "DYN612": return "Angel,Ally";
       return "";
   }
