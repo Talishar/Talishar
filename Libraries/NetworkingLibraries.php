@@ -2028,6 +2028,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     else if($from == "EQUIP" || $from == "PLAY") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
     if(!$openedChain) ResolveGoAgain($cardID, $currentPlayer, $from);
     CopyCurrentTurnEffectsFromAfterResolveEffects();
+    CacheCombatResult();
+    if(!$isBlock) ProcessAllMirage();
   }
   if($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID)) RemoveCharacterEffects($currentPlayer, GetClassState($currentPlayer, $CS_CharacterIndex), "INSTANT");
   //Now determine what needs to happen next

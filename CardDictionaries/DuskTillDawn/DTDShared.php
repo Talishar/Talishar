@@ -527,6 +527,14 @@ function ProcessMirageOnBlock($index)
   }
 }
 
+function ProcessAllMirage()
+{
+  global $CombatChain;
+  for($i=1; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
+    ProcessMirageOnBlock($i*CombatChainPieces());
+  }
+}
+
 function IsMirageActive($index)
 {
   global $CombatChain;
