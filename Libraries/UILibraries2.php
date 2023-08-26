@@ -69,7 +69,8 @@ function JSONRenderedCard(
   $countersMap = new stdClass(), // new object for counters
   $label = NULL,
   $facing = NULL,
-  $numUses = NULL
+  $numUses = NULL,
+  $subcard = NULL
 ) {
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -127,6 +128,7 @@ function JSONRenderedCard(
     'label' => $label,
     'facing' => $facing,
     'numUses' => $numUses,
+    'subcards' => [$subcard]
   ];
 
   if ($gem != NULL) {
