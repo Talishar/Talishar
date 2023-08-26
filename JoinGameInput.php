@@ -22,6 +22,7 @@ $favoriteDeckLink = TryGet("favoriteDecks", "0");
 $set = TryGet("set");
 $matchup = TryGet("matchup", "");
 $starterDeck = false;
+$isDraftFab = false;
 
 if ($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "") {
   $_SESSION['error'] = '⚠️ Another player has already joined the game.';
@@ -398,6 +399,7 @@ if ($decklink != "") {
     //Draftfab
     $deckFile = "./Games/" . $gameName . "/p" . $playerID . "DraftDeck.txt";
     ParseDraftFab($deck, $deckFile);
+    $isDraftFab = true;
   }
   copy($deckFile, "./Games/" . $gameName . "/p" . $playerID . "Deck.txt");
   copy($deckFile, "./Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
@@ -446,7 +448,6 @@ if ($matchup == "") {
   SetCachePiece($gameName, 14, $gameStatus);
   GamestateUpdated($gameName);
 
-  //$authKey = ($playerID == 1 ? $p1Key : $p2Key);
   //$_SESSION["authKey"] = $authKey;
   $domain = (!empty(getenv("DOMAIN")) ? getenv("DOMAIN") : "talishar.net");
   if ($playerID == 1) {
@@ -459,8 +460,10 @@ if ($matchup == "") {
 }
 
 session_write_close();
+//$authKey = ($playerID == 1 ? $p1Key : $p2Key);
+//if($isDraftFab) header("Location: https://talishar.net/game/lobby/$gameName/?playerID=$playerID&authKey=$authKey");
+//else header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
 header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
-
 
 function ParseDraftFab($deck, $filename)
 {
