@@ -92,6 +92,7 @@ function AddAttack(&$totalAttack, $amount)
 {
   global $CombatChain;
   $attackID = $CombatChain->AttackCard()->ID();
+  if($attackID == "DTD201") return;
   if($amount > 0 && $attackID == "OUT100") $amount += 1;
   if($amount > 0 && ($attackID == "OUT065" || $attackID == "OUT066" || $attackID == "OUT067") && ComboActive()) $amount += 1;
   if($amount > 0) $amount += PermanentAddAttackAbilities();
