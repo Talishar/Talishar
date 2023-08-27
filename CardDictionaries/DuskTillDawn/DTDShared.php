@@ -451,8 +451,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DTD230":
       WarmongersDiplomacy($otherPlayer);
-      AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $otherPlayer, "<-");
+      AddDecisionQueue("ADDTHEIRNEXTTURNEFFECT", $otherPlayer, "<-");
       WarmongersDiplomacy($currentPlayer);
+      AddDecisionQueue("ADDTHEIRNEXTTURNEFFECT", $currentPlayer, "<-");
       return "";
     case "DTD231":
       AddCurrentTurnEffect($cardID, $currentPlayer);

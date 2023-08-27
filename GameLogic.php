@@ -500,6 +500,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddCurrentTurnEffect($parameter, $player);
       AddNextTurnEffect($parameter, $player);
       return "1";
+    case "ADDTHEIRNEXTTURNEFFECT":
+      $numTurns = $player == $mainPlayer ? 2 : 1;
+      AddNextTurnEffect($parameter, $player, numTurns:$numTurns);
+      return "1";
     case "ADDLIMITEDCURRENTEFFECT":
       $params = explode(",", $parameter);
       AddCurrentTurnEffect($params[0], $player, $params[1], $lastResult);

@@ -1160,16 +1160,23 @@ function FinalizeTurn()
   AuraEndTurnCleanup();
   DoGamestateUpdate();
   //Update all the player neutral stuff
-  if ($mainPlayer == 2) {
-    $currentTurn += 1;
-  }
+  if($mainPlayer == 2) $currentTurn += 1;
   $turn[0] = "M";
   $turn[2] = "";
   $turn[3] = "";
   $actionPoints = 1;
   $combatChain = [];
-  $currentTurnEffects = $nextTurnEffects;
-  $nextTurnEffects = [];
+  $currentTurnEffects = [];
+  for($i=count($nextTurnEffects)-NextTurnPieces(); $i>=0; $i-=NextTurnPieces()) {
+    if($nextTurnEffects[$i+4] == 1) {
+      for($j=0; $j<NextTurnPieces(); ++$j) {
+        if($j < CurrentTurnPieces()) array_push($currentTurnEffects, $nextTurnEffects[$i+$j]);
+        unset($nextTurnEffects[$i+$j]);
+      }
+    }
+    else --$nextTurnEffects[$i+4];
+  }
+  $nextTurnEffects = array_values($nextTurnEffects);
   $defPlayer = $mainPlayer;
   $mainPlayer = ($mainPlayer == 1 ? 2 : 1);
   $currentPlayer = $mainPlayer;
