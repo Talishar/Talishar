@@ -106,7 +106,7 @@ function BlockingCardDefense($index)
   $cardID = $combatChain[$index];
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
   $resourcesPaid = intval($combatChain[$index+3]) + intval($baseCost);
-  $defense = intval(BlockValue($cardID)) + intval(BlockModifier($cardID, $from, $resourcesPaid)) + intval($combatChain[$index + 6]);
+  $defense = intval(BlockValue($cardID)) + (CanBlockBeModified($cardID) ? intval(BlockModifier($cardID, $from, $resourcesPaid)) + intval($combatChain[$index + 6]) : 0);
   if(CardType($cardID) == "E")
   {
     $defCharacter = &GetPlayerCharacter($defPlayer);
