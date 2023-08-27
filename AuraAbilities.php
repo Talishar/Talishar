@@ -180,7 +180,7 @@ function RemoveAura($player, $index)
   return $cardID;
 }
 
-function AuraCostModifier()
+function AuraCostModifier($cardID="")
 {
   global $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -206,7 +206,7 @@ function AuraCostModifier()
         break;
     }
   }
-  return $modifier;
+  return CanCostBeModified($cardID) ? $modifier : 0;
 }
 
 // CR 2.1 - 4.2.1. Players do not get priority during the Start Phase.

@@ -25,7 +25,7 @@ function CombatDummyAI()
         $cardID = $character[$index];
         $from = "EQUIP";
         $baseCost = AbilityCost($cardID);
-        $frostbitesPaid = AuraCostModifier();
+        $frostbitesPaid = AuraCostModifier($cardID);
         $cost = $baseCost + CurrentEffectCostModifiers($cardID, $from) + $frostbitesPaid + CharacterCostModifier($cardID, $from);
 
         if($index != -1 && $cost == 0)

@@ -499,7 +499,7 @@ function CurrentEffectCostModifiers($cardID, $from)
       if($remove) RemoveCurrentTurnEffect($i);
     }
   }
-  return $costModifier;
+  return CanCostBeModified($cardID) ? $costModifier : 0;
 }
 
 function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)

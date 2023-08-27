@@ -1469,6 +1469,14 @@ function HasDominate($cardID)
   return false;
 }
 
+function CanCostBeModified($cardID)
+{
+  switch($cardID) {
+    case "DTD201": return false;
+    default: return true;
+  }
+}
+
 function Rarity($cardID)
 {
   $set = CardSet($cardID);

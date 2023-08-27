@@ -457,7 +457,7 @@ function CharacterCostModifier($cardID, $from)
   if(CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumSwordAttacks) == 1 && SearchCharacterActive($currentPlayer, "CRU077")) {
     --$modifier;
   }
-  return $modifier;
+  return CanCostBeModified($cardID) ? $modifier : 0;
 }
 
 function EquipCard($player, $card)
