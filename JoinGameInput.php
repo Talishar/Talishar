@@ -459,8 +459,9 @@ if ($matchup == "") {
 }
 
 session_write_close();
-header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
-
+$authKey = ($playerID == 1 ? $p1Key : $p2Key);
+if($isDraftFab) header("Location: https://talishar.net/game/lobby/$gameName/?playerID=$playerID&authKey=$authKey");
+else header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
 
 function ParseDraftFab($deck, $filename)
 {
