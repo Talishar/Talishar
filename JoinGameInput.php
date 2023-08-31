@@ -627,7 +627,7 @@ function IsBanned($cardID, $format)
 {
   $set = substr($cardID, 0, 3);
   //Ban spoilers in formats besides Open Format
-  //if($format != "livinglegendscc" && ($set == "LGS" || $set == "DTD" || $set == "HER")) return true;
+  if($format != "livinglegendscc" && ($set == "TCC" || $set == "EVO")) return true;
   switch ($format) {
     case "blitz":
     case "compblitz":
