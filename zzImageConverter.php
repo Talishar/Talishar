@@ -10,9 +10,9 @@ function CheckImage($cardID)
   if(!file_exists($filename) || !file_exists($filename2))
   {
     //$imageURL = "https://fabrary.net/images/cards/" . $cardID . ".webp";
+    //$imageURL = "https://fabrary.net/images/cards/" . $cardID . ".width-450.webp";
     if($number >= 400) $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $set . NormalizeCardBackID($number) . "_Back.webp";
     else $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $cardID . ".webp";
-    //$imageURL = "https://fabrary.net/images/cards/" . $cardID . ".width-450.webp";
     echo("Image for " . $cardID . " does not exist.<BR>");
     $handler = fopen($filename, "w");
     $ch = curl_init();

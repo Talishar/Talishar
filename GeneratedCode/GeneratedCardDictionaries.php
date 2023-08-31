@@ -2837,6 +2837,34 @@ default: return "AA";
 }
 default: return "AA";
 }
+case "O":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "4":
+return "E";
+case "3":
+return "E";
+case "2":
+return "E";
+case "5":
+return "E";
+default: return "AA";
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return "C";
+case "7":
+return "C";
+default: return "AA";
+}
+default: return "AA";
+}
+default: return "AA";
+}
 default: return "AA";
 }
 case "L":
@@ -3563,8 +3591,24 @@ case "2":
 return "I";
 case "3":
 return "I";
+case "8":
+return "W";
+case "9":
+return "I";
+case "4":
+return "W";
 case "0":
 return "W";
+default: return "AA";
+}
+case "7":
+switch($cardID[5]) {
+case "0":
+return "I";
+case "1":
+return "I";
+case "2":
+return "I";
 default: return "AA";
 }
 case "5":
@@ -3573,10 +3617,16 @@ case "6":
 return "W";
 default: return "AA";
 }
-case "7":
+case "8":
 switch($cardID[5]) {
-case "2":
-return "I";
+case "8":
+return "E";
+case "7":
+return "E";
+case "6":
+return "E";
+case "9":
+return "E";
 default: return "AA";
 }
 default: return "AA";
@@ -3927,6 +3977,120 @@ default: return "AA";
 }
 default: return "AA";
 }
+case "T":
+switch($cardID[1]) {
+case "C":
+switch($cardID[2]) {
+case "C":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "9":
+return "E";
+case "7":
+return "C";
+case "8":
+return "W";
+default: return "AA";
+}
+case "3":
+switch($cardID[5]) {
+case "1":
+return "E";
+case "2":
+return "E";
+case "0":
+return "E";
+case "3":
+return "E";
+default: return "AA";
+}
+case "6":
+switch($cardID[5]) {
+case "1":
+return "A";
+case "4":
+return "A";
+case "5":
+return "A";
+case "9":
+return "A";
+case "6":
+return "A";
+case "7":
+return "A";
+case "8":
+return "A";
+default: return "AA";
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return "E";
+case "9":
+return "E";
+case "7":
+return "E";
+case "1":
+return "C";
+case "2":
+return "W";
+default: return "AA";
+}
+case "1":
+switch($cardID[5]) {
+case "0":
+return "E";
+default: return "AA";
+}
+case "5":
+switch($cardID[5]) {
+case "8":
+return "I";
+case "0":
+return "W";
+default: return "AA";
+}
+case "7":
+switch($cardID[5]) {
+case "7":
+return "C";
+case "9":
+return "E";
+default: return "AA";
+}
+case "4":
+switch($cardID[5]) {
+case "9":
+return "C";
+default: return "AA";
+}
+case "8":
+switch($cardID[5]) {
+case "2":
+return "E";
+default: return "AA";
+}
+default: return "AA";
+}
+case "1":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "5":
+return "T";
+default: return "AA";
+}
+default: return "AA";
+}
+default: return "AA";
+}
+default: return "AA";
+}
+default: return "AA";
+}
 case "F":
 switch($cardID[1]) {
 case "A":
@@ -3937,6 +4101,10 @@ case "1":
 switch($cardID[4]) {
 case "6":
 switch($cardID[5]) {
+case "5":
+return "T";
+case "7":
+return "W";
 case "6":
 return "W";
 default: return "AA";
@@ -3960,6 +4128,8 @@ switch($cardID[4]) {
 case "8":
 switch($cardID[5]) {
 case "4":
+return "C";
+case "6":
 return "C";
 case "5":
 return "C";
@@ -4836,9 +5006,9 @@ return 4;
 case "4":
 return 6;
 case "5":
-return 6;
+return 5;
 case "6":
-return 6;
+return 4;
 default: return 0;
 }
 default: return 0;
@@ -6785,6 +6955,66 @@ default: return 0;
 }
 default: return 0;
 }
+case "T":
+switch($cardID[1]) {
+case "C":
+switch($cardID[2]) {
+case "C":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "1":
+switch($cardID[5]) {
+case "1":
+return 6;
+case "3":
+return 5;
+default: return 0;
+}
+case "8":
+switch($cardID[5]) {
+case "3":
+return 4;
+case "6":
+return 3;
+case "8":
+return 5;
+default: return 0;
+}
+case "5":
+switch($cardID[5]) {
+case "7":
+return 1;
+case "0":
+return 2;
+default: return 0;
+}
+case "2":
+switch($cardID[5]) {
+case "8":
+return 3;
+default: return 0;
+}
+case "3":
+switch($cardID[5]) {
+case "5":
+return 7;
+default: return 0;
+}
+case "0":
+switch($cardID[5]) {
+case "2":
+return 2;
+default: return 0;
+}
+default: return 0;
+}
+default: return 0;
+}
+default: return 0;
+}
+default: return 0;
+}
 case "E":
 switch($cardID[1]) {
 case "L":
@@ -7327,6 +7557,20 @@ default: return 0;
 }
 default: return 0;
 }
+case "O":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "5":
+switch($cardID[5]) {
+case "5":
+return 6;
+default: return 0;
+}
+default: return 0;
+}
+default: return 0;
+}
 default: return 0;
 }
 default: return 0;
@@ -7347,6 +7591,8 @@ case "2":
 return 4;
 case "3":
 return 4;
+case "7":
+return 1;
 default: return 0;
 }
 default: return 0;
@@ -7383,6 +7629,20 @@ case "0":
 return 3;
 case "1":
 return 3;
+default: return 0;
+}
+case "6":
+switch($cardID[5]) {
+case "8":
+return 0;
+case "4":
+return 6;
+case "5":
+return 6;
+case "6":
+return 5;
+case "7":
+return 4;
 default: return 0;
 }
 case "5":
@@ -9987,6 +10247,34 @@ default: return 3;
 }
 default: return 3;
 }
+case "O":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "4":
+return -1;
+case "3":
+return -1;
+case "2":
+return -1;
+case "5":
+return -1;
+default: return 3;
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return -1;
+case "7":
+return -1;
+default: return 3;
+}
+default: return 3;
+}
+default: return 3;
+}
 default: return 3;
 }
 case "L":
@@ -10395,7 +10683,23 @@ case "2":
 return -1;
 case "3":
 return -1;
+case "8":
+return -1;
+case "9":
+return -1;
+case "4":
+return -1;
 case "0":
+return -1;
+default: return 3;
+}
+case "7":
+switch($cardID[5]) {
+case "0":
+return -1;
+case "1":
+return -1;
+case "2":
 return -1;
 default: return 3;
 }
@@ -10405,10 +10709,16 @@ case "6":
 return -1;
 default: return 3;
 }
-case "7":
+case "8":
 switch($cardID[5]) {
-case "2":
-return -1;
+case "8":
+return 1;
+case "7":
+return 1;
+case "6":
+return 1;
+case "9":
+return 1;
 default: return 3;
 }
 default: return 3;
@@ -11201,6 +11511,112 @@ default: return 3;
 }
 default: return 3;
 }
+case "T":
+switch($cardID[1]) {
+case "C":
+switch($cardID[2]) {
+case "C":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "9":
+return 2;
+case "7":
+return -1;
+case "8":
+return -1;
+default: return 3;
+}
+case "8":
+switch($cardID[5]) {
+case "3":
+return 2;
+case "6":
+return 2;
+case "2":
+return 1;
+default: return 3;
+}
+case "3":
+switch($cardID[5]) {
+case "1":
+return 2;
+case "2":
+return 2;
+case "0":
+return 2;
+case "3":
+return 2;
+default: return 3;
+}
+case "6":
+switch($cardID[5]) {
+case "1":
+return 2;
+default: return 3;
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return 2;
+case "9":
+return 2;
+case "7":
+return 2;
+case "1":
+return -1;
+case "2":
+return -1;
+default: return 3;
+}
+case "1":
+switch($cardID[5]) {
+case "0":
+return 2;
+default: return 3;
+}
+case "5":
+switch($cardID[5]) {
+case "8":
+return -1;
+case "0":
+return -1;
+default: return 3;
+}
+case "7":
+switch($cardID[5]) {
+case "7":
+return -1;
+case "9":
+return 0;
+default: return 3;
+}
+case "4":
+switch($cardID[5]) {
+case "9":
+return -1;
+default: return 3;
+}
+default: return 3;
+}
+case "1":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "5":
+return -1;
+default: return 3;
+}
+default: return 3;
+}
+default: return 3;
+}
+default: return 3;
+}
+default: return 3;
+}
 case "F":
 switch($cardID[1]) {
 case "A":
@@ -11211,6 +11627,10 @@ case "1":
 switch($cardID[4]) {
 case "6":
 switch($cardID[5]) {
+case "5":
+return -1;
+case "7":
+return -1;
 case "6":
 return -1;
 default: return 3;
@@ -11234,6 +11654,8 @@ switch($cardID[4]) {
 case "8":
 switch($cardID[5]) {
 case "4":
+return -1;
+case "6":
 return -1;
 case "5":
 return -1;
@@ -15507,6 +15929,40 @@ default: return "";
 }
 default: return "";
 }
+case "O":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "4":
+return "Proto Base Arms";
+case "3":
+return "Proto Base Chest";
+case "2":
+return "Proto Base Head";
+case "5":
+return "Proto Base Legs";
+default: return "";
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return "Teklovossen";
+case "7":
+return "Teklovossen, Esteemed Magnate";
+default: return "";
+}
+case "5":
+switch($cardID[5]) {
+case "5":
+return "Terminator Tank";
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
 default: return "";
 }
 case "L":
@@ -17367,6 +17823,18 @@ case "2":
 return "Angelic Wrath";
 case "3":
 return "Angelic Wrath";
+case "8":
+return "Beaming Blade";
+case "9":
+return "Break of Dawn";
+case "4":
+return "Hell Hammer";
+case "5":
+return "Hungering Demigon";
+case "6":
+return "Hungering Demigon";
+case "7":
+return "Hungering Demigon";
 case "0":
 return "Luminaris, Celestial Fury";
 default: return "";
@@ -17375,6 +17843,10 @@ case "7":
 switch($cardID[5]) {
 case "9":
 return "Banneret of Resilience";
+case "0":
+return "Break of Dawn";
+case "1":
+return "Break of Dawn";
 case "2":
 return "Genesis";
 case "3":
@@ -17391,6 +17863,14 @@ case "0":
 return "Banneret of Salvation";
 case "1":
 return "Banneret of Vigor";
+case "8":
+return "Teklo Base Arms";
+case "7":
+return "Teklo Base Chest";
+case "6":
+return "Teklo Base Head";
+case "9":
+return "Teklo Base Legs";
 default: return "";
 }
 case "5":
@@ -17403,6 +17883,136 @@ case "8":
 return "Vantom Banshee";
 case "9":
 return "Vantom Banshee";
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
+case "T":
+switch($cardID[1]) {
+case "C":
+switch($cardID[2]) {
+case "C":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "1":
+switch($cardID[5]) {
+case "1":
+return "Apocalypse Automaton";
+case "0":
+return "Evo Rapid Fire";
+case "3":
+return "Mechanical Strength";
+default: return "";
+}
+case "2":
+switch($cardID[5]) {
+case "9":
+return "Bastion of Duty";
+case "7":
+return "Brevant, Civic Protector";
+case "8":
+return "Hammer of Havenhold";
+default: return "";
+}
+case "8":
+switch($cardID[5]) {
+case "3":
+return "Bittering Thorns";
+case "6":
+return "Growl";
+case "8":
+return "Mauling Qi";
+case "2":
+return "Pouncing Paws";
+default: return "";
+}
+case "4":
+switch($cardID[5]) {
+case "8":
+return "Chivalry";
+case "9":
+return "Melody, Sing-along";
+default: return "";
+}
+case "3":
+switch($cardID[5]) {
+case "1":
+return "Civic Duty";
+case "2":
+return "Civic Guide";
+case "0":
+return "Civic Peak";
+case "3":
+return "Civic Steps";
+case "5":
+return "Lay Down the Law";
+default: return "";
+}
+case "6":
+switch($cardID[5]) {
+case "1":
+return "Encore";
+case "4":
+return "Song of Jack-Be-Quick";
+case "5":
+return "Song of Sweet Nectar";
+case "9":
+return "Song of Yesteryears";
+case "6":
+return "Song of the Rosen Matador";
+case "7":
+return "Song of the Shining Knight";
+case "8":
+return "Song of the Wandering Mind";
+default: return "";
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return "Evo Energy Matrix";
+case "9":
+return "Evo Scatter Shot";
+case "7":
+return "Evo Tekloscope";
+case "1":
+return "Professor Teklovossen";
+case "2":
+return "Teklo Blaster";
+default: return "";
+}
+case "5":
+switch($cardID[5]) {
+case "7":
+return "Final Act";
+case "8":
+return "Interlude";
+case "0":
+return "Jinglewood, Smash Hit";
+default: return "";
+}
+case "7":
+switch($cardID[5]) {
+case "7":
+return "Ira, Crimson Haze";
+case "9":
+return "Mask of Three Tails";
+default: return "";
+}
+default: return "";
+}
+case "1":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "5":
+return "Might";
 default: return "";
 }
 default: return "";
@@ -17429,6 +18039,12 @@ case "2":
 return "Banneret of Gallantry";
 case "3":
 return "Banneret of Protection";
+case "4":
+return "Diabolic Offering";
+case "5":
+return "Diamond";
+case "7":
+return "Flail of Agony";
 case "6":
 return "Luminaris, Celestial Fury";
 default: return "";
@@ -17453,6 +18069,8 @@ case "8":
 switch($cardID[5]) {
 case "4":
 return "Prism, Advent of Thrones";
+case "6":
+return "Prism, Awakener of Sol";
 case "5":
 return "Vynnset";
 default: return "";
@@ -21215,6 +21833,34 @@ default: return 1;
 }
 default: return 1;
 }
+case "O":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "4":
+return 0;
+case "3":
+return 0;
+case "2":
+return 0;
+case "5":
+return 0;
+default: return 1;
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return 0;
+case "7":
+return 0;
+default: return 1;
+}
+default: return 1;
+}
+default: return 1;
+}
 default: return 1;
 }
 case "L":
@@ -21691,6 +22337,14 @@ case "2":
 return 2;
 case "3":
 return 3;
+case "8":
+return 0;
+case "4":
+return 0;
+case "6":
+return 2;
+case "7":
+return 3;
 case "0":
 return 0;
 default: return 1;
@@ -21699,6 +22353,10 @@ case "7":
 switch($cardID[5]) {
 case "9":
 return 2;
+case "0":
+return 2;
+case "1":
+return 3;
 case "2":
 return 2;
 case "4":
@@ -21713,6 +22371,14 @@ case "0":
 return 2;
 case "1":
 return 2;
+case "8":
+return 0;
+case "7":
+return 0;
+case "6":
+return 0;
+case "9":
+return 0;
 default: return 1;
 }
 case "5":
@@ -22191,6 +22857,12 @@ case "2":
 return 2;
 case "3":
 return 2;
+case "4":
+return 3;
+case "5":
+return 0;
+case "7":
+return 0;
 case "6":
 return 0;
 default: return 1;
@@ -22271,6 +22943,120 @@ default: return 1;
 }
 default: return 1;
 }
+case "T":
+switch($cardID[1]) {
+case "C":
+switch($cardID[2]) {
+case "C":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "9":
+return 0;
+case "7":
+return 0;
+case "8":
+return 0;
+default: return 1;
+}
+case "4":
+switch($cardID[5]) {
+case "8":
+return 3;
+case "9":
+return 0;
+default: return 1;
+}
+case "3":
+switch($cardID[5]) {
+case "1":
+return 0;
+case "2":
+return 0;
+case "0":
+return 0;
+case "3":
+return 0;
+default: return 1;
+}
+case "6":
+switch($cardID[5]) {
+case "1":
+return 2;
+case "4":
+return 3;
+case "5":
+return 3;
+case "9":
+return 3;
+case "6":
+return 3;
+case "7":
+return 3;
+case "8":
+return 3;
+default: return 1;
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return 3;
+case "9":
+return 3;
+case "7":
+return 3;
+case "1":
+return 0;
+case "2":
+return 0;
+default: return 1;
+}
+case "1":
+switch($cardID[5]) {
+case "0":
+return 3;
+default: return 1;
+}
+case "7":
+switch($cardID[5]) {
+case "7":
+return 0;
+case "9":
+return 0;
+default: return 1;
+}
+case "5":
+switch($cardID[5]) {
+case "0":
+return 0;
+default: return 1;
+}
+case "8":
+switch($cardID[5]) {
+case "2":
+return 0;
+default: return 1;
+}
+default: return 1;
+}
+case "1":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "5":
+return 0;
+default: return 1;
+}
+default: return 1;
+}
+default: return 1;
+}
+default: return 1;
+}
+default: return 1;
+}
 case "H":
 switch($cardID[1]) {
 case "E":
@@ -22282,6 +23068,8 @@ switch($cardID[4]) {
 case "8":
 switch($cardID[5]) {
 case "4":
+return 0;
+case "6":
 return 0;
 case "5":
 return 0;
@@ -25593,6 +26381,40 @@ default: return 0;
 }
 default: return 0;
 }
+case "O":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "4":
+return -1;
+case "3":
+return -1;
+case "2":
+return -1;
+case "5":
+return -1;
+default: return 0;
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return -1;
+case "7":
+return -1;
+default: return 0;
+}
+case "5":
+switch($cardID[5]) {
+case "5":
+return 6;
+default: return 0;
+}
+default: return 0;
+}
+default: return 0;
+}
 default: return 0;
 }
 case "L":
@@ -26971,6 +27793,120 @@ default: return 0;
 }
 default: return 0;
 }
+case "T":
+switch($cardID[1]) {
+case "C":
+switch($cardID[2]) {
+case "C":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "1":
+switch($cardID[5]) {
+case "1":
+return 3;
+case "0":
+return 3;
+case "3":
+return 3;
+default: return 0;
+}
+case "2":
+switch($cardID[5]) {
+case "9":
+return -1;
+case "7":
+return -1;
+case "8":
+return -1;
+default: return 0;
+}
+case "8":
+switch($cardID[5]) {
+case "3":
+return 1;
+case "8":
+return 1;
+case "2":
+return -1;
+default: return 0;
+}
+case "4":
+switch($cardID[5]) {
+case "8":
+return -1;
+case "9":
+return -1;
+default: return 0;
+}
+case "3":
+switch($cardID[5]) {
+case "1":
+return -1;
+case "2":
+return -1;
+case "0":
+return -1;
+case "3":
+return -1;
+case "5":
+return 3;
+default: return 0;
+}
+case "6":
+switch($cardID[5]) {
+case "1":
+return 1;
+default: return 0;
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return 3;
+case "9":
+return 3;
+case "7":
+return 3;
+case "1":
+return -1;
+case "2":
+return -1;
+default: return 0;
+}
+case "5":
+switch($cardID[5]) {
+case "7":
+return 1;
+case "0":
+return -1;
+default: return 0;
+}
+case "7":
+switch($cardID[5]) {
+case "7":
+return -1;
+case "9":
+return -1;
+default: return 0;
+}
+default: return 0;
+}
+case "1":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "5":
+return -1;
+default: return 0;
+}
+default: return 0;
+}
+default: return 0;
+}
+default: return 0;
+}
+default: return 0;
+}
 case "F":
 switch($cardID[1]) {
 case "A":
@@ -26987,6 +27923,12 @@ case "2":
 return 1;
 case "3":
 return 1;
+case "4":
+return 1;
+case "5":
+return -1;
+case "7":
+return -1;
 case "6":
 return -1;
 default: return 0;
@@ -27007,6 +27949,22 @@ case "S":
 switch($cardID[3]) {
 case "1":
 switch($cardID[4]) {
+case "6":
+switch($cardID[5]) {
+case "8":
+return -1;
+case "4":
+return -1;
+case "5":
+return 2;
+case "6":
+return 2;
+case "7":
+return 2;
+case "0":
+return -1;
+default: return 0;
+}
 case "5":
 switch($cardID[5]) {
 case "6":
@@ -27031,9 +27989,15 @@ case "5":
 return 2;
 default: return 0;
 }
-case "6":
+case "8":
 switch($cardID[5]) {
-case "0":
+case "8":
+return -1;
+case "7":
+return -1;
+case "6":
+return -1;
+case "9":
 return -1;
 default: return 0;
 }
@@ -27056,6 +28020,8 @@ switch($cardID[4]) {
 case "8":
 switch($cardID[5]) {
 case "4":
+return -1;
+case "6":
 return -1;
 case "5":
 return -1;
@@ -28933,6 +29899,32 @@ default: return "";
 }
 default: return "";
 }
+case "O":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "4":
+return "Base,Arms";
+case "3":
+return "Base,Chest";
+case "2":
+return "Base,Head";
+case "5":
+return "Base,Legs";
+default: return "";
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return "Young";
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
 default: return "";
 }
 case "L":
@@ -29321,6 +30313,174 @@ default: return "";
 }
 default: return "";
 }
+case "T":
+switch($cardID[1]) {
+case "C":
+switch($cardID[2]) {
+case "C":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "9":
+return "Off-Hand";
+case "7":
+return "Young";
+case "8":
+return "Hammer";
+default: return "";
+}
+case "4":
+switch($cardID[5]) {
+case "8":
+return "Block";
+case "9":
+return "Bard,Young";
+default: return "";
+}
+case "3":
+switch($cardID[5]) {
+case "1":
+return "Chest";
+case "2":
+return "Arms";
+case "0":
+return "Head";
+case "3":
+return "Legs";
+default: return "";
+}
+case "6":
+switch($cardID[5]) {
+case "1":
+return "Bard";
+case "4":
+return "Bard,Song";
+case "5":
+return "Bard,Song";
+case "9":
+return "Bard,Song";
+case "6":
+return "Bard,Song";
+case "7":
+return "Bard,Song";
+case "8":
+return "Bard,Song";
+default: return "";
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return "Evo,Chest";
+case "9":
+return "Evo,Arms";
+case "7":
+return "Evo,Head";
+case "1":
+return "Young";
+case "2":
+return "Gun";
+default: return "";
+}
+case "1":
+switch($cardID[5]) {
+case "0":
+return "Evo,Legs";
+default: return "";
+}
+case "5":
+switch($cardID[5]) {
+case "7":
+return "Bard";
+case "8":
+return "Bard";
+case "0":
+return "Bard,Fiddle";
+default: return "";
+}
+case "7":
+switch($cardID[5]) {
+case "7":
+return "Young";
+case "9":
+return "Head";
+default: return "";
+}
+case "8":
+switch($cardID[5]) {
+case "2":
+return "Legs";
+default: return "";
+}
+default: return "";
+}
+case "1":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "5":
+return "Aura";
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
+case "L":
+switch($cardID[1]) {
+case "G":
+switch($cardID[2]) {
+case "S":
+switch($cardID[3]) {
+case "1":
+switch($cardID[4]) {
+case "6":
+switch($cardID[5]) {
+case "8":
+return "Sword";
+case "4":
+return "Hammer";
+case "0":
+return "Scepter";
+default: return "";
+}
+case "5":
+switch($cardID[5]) {
+case "6":
+return "Flail";
+default: return "";
+}
+case "7":
+switch($cardID[5]) {
+case "2":
+return "Aura";
+default: return "";
+}
+case "8":
+switch($cardID[5]) {
+case "8":
+return "Base,Arms";
+case "7":
+return "Base,Chest";
+case "6":
+return "Base,Head";
+case "9":
+return "Base,Legs";
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
 case "R":
 switch($cardID[1]) {
 case "V":
@@ -29353,40 +30513,6 @@ default: return "";
 }
 default: return "";
 }
-case "L":
-switch($cardID[1]) {
-case "G":
-switch($cardID[2]) {
-case "S":
-switch($cardID[3]) {
-case "1":
-switch($cardID[4]) {
-case "5":
-switch($cardID[5]) {
-case "6":
-return "Flail";
-default: return "";
-}
-case "7":
-switch($cardID[5]) {
-case "2":
-return "Aura";
-default: return "";
-}
-case "6":
-switch($cardID[5]) {
-case "0":
-return "Scepter";
-default: return "";
-}
-default: return "";
-}
-default: return "";
-}
-default: return "";
-}
-default: return "";
-}
 case "F":
 switch($cardID[1]) {
 case "A":
@@ -29397,6 +30523,10 @@ case "1":
 switch($cardID[4]) {
 case "6":
 switch($cardID[5]) {
+case "5":
+return "Item";
+case "7":
+return "Flail";
 case "6":
 return "Scepter";
 default: return "";
@@ -29507,6 +30637,7 @@ case "UPR414": return 6;
 case "DTD002": return 16;
 case "HER084": return 16;
 case "DTD001": return 32;
+case "HER086": return 32;
 case "MON001": return 40;
 case "CRU001": return 40;
 case "WTR001": return 40;
@@ -29521,6 +30652,7 @@ case "DTD405": return 4;
 case "DYN612": return 4;
 case "DYN612": return 4;
 case "DYN612": return 4;
+case "EVO007": return 40;
 case "UPR415": return 4;
 case "UPR415": return 4;
 case "DTD406": return 4;
@@ -30309,6 +31441,8 @@ case "0":
 switch($cardID[5]) {
 case "7":
 return "M";
+case "5":
+return "R";
 case "8":
 return "M";
 case "9":
@@ -31639,6 +32773,40 @@ default: return "C";
 }
 default: return "C";
 }
+case "O":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "4":
+return "T";
+case "3":
+return "T";
+case "2":
+return "T";
+case "5":
+return "T";
+default: return "C";
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return "T";
+case "7":
+return "M";
+default: return "C";
+}
+case "5":
+switch($cardID[5]) {
+case "5":
+return "M";
+default: return "C";
+}
+default: return "C";
+}
+default: return "C";
+}
 default: return "C";
 }
 case "L":
@@ -32591,6 +33759,18 @@ case "2":
 return "P";
 case "3":
 return "P";
+case "8":
+return "P";
+case "9":
+return "P";
+case "4":
+return "P";
+case "5":
+return "P";
+case "6":
+return "P";
+case "7":
+return "P";
 case "0":
 return "P";
 default: return "C";
@@ -32598,6 +33778,10 @@ default: return "C";
 case "7":
 switch($cardID[5]) {
 case "9":
+return "P";
+case "0":
+return "P";
+case "1":
 return "P";
 case "2":
 return "P";
@@ -32615,6 +33799,14 @@ case "0":
 return "P";
 case "1":
 return "P";
+case "8":
+return "P";
+case "7":
+return "P";
+case "6":
+return "P";
+case "9":
+return "P";
 default: return "C";
 }
 case "5":
@@ -32627,6 +33819,116 @@ case "8":
 return "P";
 case "9":
 return "P";
+default: return "C";
+}
+default: return "C";
+}
+default: return "C";
+}
+default: return "C";
+}
+default: return "C";
+}
+case "T":
+switch($cardID[1]) {
+case "C":
+switch($cardID[2]) {
+case "C":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "1":
+switch($cardID[5]) {
+case "1":
+return "M";
+case "0":
+return "R";
+case "3":
+return "R";
+default: return "C";
+}
+case "2":
+switch($cardID[5]) {
+case "9":
+return "R";
+case "7":
+return "M";
+case "8":
+return "R";
+default: return "C";
+}
+case "3":
+switch($cardID[5]) {
+case "1":
+return "R";
+case "2":
+return "R";
+case "0":
+return "R";
+case "3":
+return "R";
+case "5":
+return "R";
+default: return "C";
+}
+case "6":
+switch($cardID[5]) {
+case "1":
+return "R";
+default: return "C";
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return "R";
+case "9":
+return "R";
+case "7":
+return "R";
+case "1":
+return "M";
+case "2":
+return "R";
+default: return "C";
+}
+case "5":
+switch($cardID[5]) {
+case "7":
+return "M";
+case "0":
+return "R";
+default: return "C";
+}
+case "8":
+switch($cardID[5]) {
+case "6":
+return "R";
+case "8":
+return "M";
+case "2":
+return "R";
+default: return "C";
+}
+case "7":
+switch($cardID[5]) {
+case "9":
+return "R";
+default: return "C";
+}
+case "4":
+switch($cardID[5]) {
+case "9":
+return "M";
+default: return "C";
+}
+default: return "C";
+}
+case "1":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "5":
+return "T";
 default: return "C";
 }
 default: return "C";
@@ -33051,6 +34353,12 @@ case "2":
 return "P";
 case "3":
 return "P";
+case "4":
+return "P";
+case "5":
+return "P";
+case "7":
+return "P";
 case "6":
 return "P";
 default: return "C";
@@ -33075,6 +34383,8 @@ case "8":
 switch($cardID[5]) {
 case "4":
 return "P";
+case "6":
+return "P";
 case "5":
 return "P";
 default: return "C";
@@ -33098,7 +34408,9 @@ switch($cardID) {
 case "CRU079": return true;
 case "CRU080": return true;
 case "DTD135": return true;
+case "FAB167": return true;
 case "LGS156": return true;
+case "TCC028": return true;
 case "CRU048": return true;
 case "CRU049": return true;
 case "OUT048": return true;
@@ -36974,6 +38286,40 @@ default: return "NONE";
 }
 default: return "NONE";
 }
+case "O":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "4":
+return "MECHANOLOGIST";
+case "3":
+return "MECHANOLOGIST";
+case "2":
+return "MECHANOLOGIST";
+case "5":
+return "MECHANOLOGIST";
+default: return "NONE";
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return "MECHANOLOGIST";
+case "7":
+return "MECHANOLOGIST";
+default: return "NONE";
+}
+case "5":
+switch($cardID[5]) {
+case "5":
+return "MECHANOLOGIST";
+default: return "NONE";
+}
+default: return "NONE";
+}
+default: return "NONE";
+}
 default: return "NONE";
 }
 case "L":
@@ -38566,6 +39912,10 @@ case "2":
 return "ILLUSIONIST";
 case "3":
 return "ILLUSIONIST";
+case "8":
+return "WARRIOR";
+case "4":
+return "BRUTE";
 case "0":
 return "ILLUSIONIST";
 default: return "NONE";
@@ -38590,6 +39940,14 @@ case "0":
 return "WARRIOR";
 case "1":
 return "WARRIOR";
+case "8":
+return "MECHANOLOGIST";
+case "7":
+return "MECHANOLOGIST";
+case "6":
+return "MECHANOLOGIST";
+case "9":
+return "MECHANOLOGIST";
 default: return "NONE";
 }
 case "5":
@@ -38602,6 +39960,106 @@ case "8":
 return "RUNEBLADE";
 case "9":
 return "RUNEBLADE";
+default: return "NONE";
+}
+default: return "NONE";
+}
+default: return "NONE";
+}
+default: return "NONE";
+}
+default: return "NONE";
+}
+case "T":
+switch($cardID[1]) {
+case "C":
+switch($cardID[2]) {
+case "C":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "1":
+switch($cardID[5]) {
+case "1":
+return "MECHANOLOGIST";
+case "0":
+return "MECHANOLOGIST";
+case "3":
+return "MECHANOLOGIST";
+default: return "NONE";
+}
+case "2":
+switch($cardID[5]) {
+case "9":
+return "GUARDIAN";
+case "7":
+return "GUARDIAN";
+case "8":
+return "GUARDIAN";
+default: return "NONE";
+}
+case "8":
+switch($cardID[5]) {
+case "3":
+return "NINJA";
+case "6":
+return "NINJA";
+case "8":
+return "NINJA";
+case "2":
+return "NINJA";
+default: return "NONE";
+}
+case "4":
+switch($cardID[5]) {
+case "8":
+return "GUARDIAN";
+default: return "NONE";
+}
+case "3":
+switch($cardID[5]) {
+case "1":
+return "GUARDIAN";
+case "2":
+return "GUARDIAN";
+case "0":
+return "GUARDIAN";
+case "3":
+return "GUARDIAN";
+case "5":
+return "GUARDIAN";
+default: return "NONE";
+}
+case "0":
+switch($cardID[5]) {
+case "8":
+return "MECHANOLOGIST";
+case "9":
+return "MECHANOLOGIST";
+case "7":
+return "MECHANOLOGIST";
+case "1":
+return "MECHANOLOGIST";
+case "2":
+return "MECHANOLOGIST";
+default: return "NONE";
+}
+case "7":
+switch($cardID[5]) {
+case "7":
+return "NINJA";
+case "9":
+return "NINJA";
+default: return "NONE";
+}
+default: return "NONE";
+}
+case "1":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "5":
+return "GENERIC";
 default: return "NONE";
 }
 default: return "NONE";
@@ -38628,6 +40086,12 @@ case "2":
 return "WARRIOR";
 case "3":
 return "WARRIOR";
+case "4":
+return "BRUTE";
+case "5":
+return "GENERIC";
+case "7":
+return "RUNEBLADE";
 case "6":
 return "ILLUSIONIST";
 default: return "NONE";
@@ -38651,6 +40115,8 @@ switch($cardID[4]) {
 case "8":
 switch($cardID[5]) {
 case "4":
+return "ILLUSIONIST";
+case "6":
 return "ILLUSIONIST";
 case "5":
 return "RUNEBLADE";
@@ -40244,6 +41710,18 @@ case "2":
 return "LIGHT";
 case "3":
 return "LIGHT";
+case "8":
+return "LIGHT";
+case "9":
+return "LIGHT";
+case "4":
+return "SHADOW";
+case "5":
+return "SHADOW";
+case "6":
+return "SHADOW";
+case "7":
+return "SHADOW";
 case "0":
 return "LIGHT";
 default: return "NONE";
@@ -40251,6 +41729,10 @@ default: return "NONE";
 case "7":
 switch($cardID[5]) {
 case "9":
+return "LIGHT";
+case "0":
+return "LIGHT";
+case "1":
 return "LIGHT";
 case "2":
 return "LIGHT";
@@ -40794,6 +42276,10 @@ case "2":
 return "LIGHT";
 case "3":
 return "LIGHT";
+case "4":
+return "SHADOW";
+case "7":
+return "SHADOW";
 case "6":
 return "LIGHT";
 default: return "NONE";
@@ -40817,6 +42303,8 @@ switch($cardID[4]) {
 case "8":
 switch($cardID[5]) {
 case "4":
+return "LIGHT";
+case "6":
 return "LIGHT";
 case "5":
 return "SHADOW";
