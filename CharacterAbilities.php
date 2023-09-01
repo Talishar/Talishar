@@ -736,6 +736,9 @@ function CharacterPlayCardAbilities($cardID, $from) {
         $resources = &GetResources($currentPlayer);
         ++$resources[0];
         break;
+      case "TCC049"://Melody, Sing-Along
+        if(SubtypeContains($cardID, "Song", $currentPlayer)) PutItemIntoPlayForPlayer("CRU197", $currentPlayer);
+        break;
       default: break;
     }
   }
