@@ -30336,7 +30336,7 @@ switch($cardID[5]) {
 case "8":
 return "Block";
 case "9":
-return "Bard,Young";
+return "Young";
 default: return "";
 }
 case "3":
@@ -30349,24 +30349,6 @@ case "0":
 return "Head";
 case "3":
 return "Legs";
-default: return "";
-}
-case "6":
-switch($cardID[5]) {
-case "1":
-return "Bard";
-case "4":
-return "Bard,Song";
-case "5":
-return "Bard,Song";
-case "9":
-return "Bard,Song";
-case "6":
-return "Bard,Song";
-case "7":
-return "Bard,Song";
-case "8":
-return "Bard,Song";
 default: return "";
 }
 case "0":
@@ -30389,16 +30371,6 @@ case "0":
 return "Evo,Legs";
 default: return "";
 }
-case "5":
-switch($cardID[5]) {
-case "7":
-return "Bard";
-case "8":
-return "Bard";
-case "0":
-return "Bard,Fiddle";
-default: return "";
-}
 case "7":
 switch($cardID[5]) {
 case "7":
@@ -30407,10 +30379,32 @@ case "9":
 return "Head";
 default: return "";
 }
+case "5":
+switch($cardID[5]) {
+case "0":
+return "Fiddle";
+default: return "";
+}
 case "8":
 switch($cardID[5]) {
 case "2":
 return "Legs";
+default: return "";
+}
+case "6":
+switch($cardID[5]) {
+case "4":
+return "Song";
+case "5":
+return "Song";
+case "9":
+return "Song";
+case "6":
+return "Song";
+case "7":
+return "Song";
+case "8":
+return "Song";
 default: return "";
 }
 default: return "";
@@ -40014,6 +40008,8 @@ case "4":
 switch($cardID[5]) {
 case "8":
 return "GUARDIAN";
+case "9":
+return "BARD";
 default: return "NONE";
 }
 case "3":
@@ -40030,6 +40026,24 @@ case "5":
 return "GUARDIAN";
 default: return "NONE";
 }
+case "6":
+switch($cardID[5]) {
+case "1":
+return "BARD";
+case "4":
+return "BARD";
+case "5":
+return "BARD";
+case "9":
+return "BARD";
+case "6":
+return "BARD";
+case "7":
+return "BARD";
+case "8":
+return "BARD";
+default: return "NONE";
+}
 case "0":
 switch($cardID[5]) {
 case "8":
@@ -40042,6 +40056,16 @@ case "1":
 return "MECHANOLOGIST";
 case "2":
 return "MECHANOLOGIST";
+default: return "NONE";
+}
+case "5":
+switch($cardID[5]) {
+case "7":
+return "BARD";
+case "8":
+return "BARD";
+case "0":
+return "BARD";
 default: return "NONE";
 }
 case "7":

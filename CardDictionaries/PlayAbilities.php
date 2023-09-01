@@ -9,6 +9,12 @@
         $numPitch = SearchCount(SearchPitch($currentPlayer));
         AddCurrentTurnEffect($cardID . "," . ($numPitch*2), $currentPlayer);
         return "";
+      case "TCC058":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "TCC061":
+        MZMoveCard($currentPlayer, "MYDISCARD:class=BARD,type=AA", "MYHAND", may:false, isSubsequent:false);
+        return "";
       case "TCC064":
         PlayAura("WTR225", $defPlayer);
         return "";
