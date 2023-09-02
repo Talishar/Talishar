@@ -211,7 +211,7 @@ enum PatreonCampaign : string
       case "7329070": return ($userName == "GoAgainGamingAz");
       case "1787491": return ($userName == "RedZoneRogue");
       case "8997252": return ($userName == "phillip");
-      case "8955846": return ($userName == "Man_Sant" || $userName == "OotTheMonk");
+      case "8955846": return ($userName == "Man_Sant");
       case "6839952": return ($userName == "chonigman" || $userName == "Ijaque");
       case "7285727": return ($userName == "Brendan" || $userName == "TheClub");
       case "8635931": return ($userName == "TheTekloFoundry");
@@ -268,7 +268,7 @@ enum PatreonCampaign : string
       case "7579026": return "9";
       case "7329070": return "10,11,12,13,14,15,16";
       case "1787491": return "17,18,19,20";
-      case "8997252": return "21,22";
+      case "8997252": return "21,22,57,58,59,60,61,62";
       case "8955846": return "23,52";
       case "6839952": return "24";
       case "7285727": return "25";

@@ -151,7 +151,7 @@ function GetCardBack($player)
     case 59: return "CBFabrary5";
     case 60: return "CBFabrary6";
     case 61: return "CBFabrary7";
-    case 61: return "CBFabrary8";
+    case 62: return "CBFabrary8";
     default: return "CardBack";
   }
 }
