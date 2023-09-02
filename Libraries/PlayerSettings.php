@@ -146,6 +146,12 @@ function GetCardBack($player)
     case 54: return "CBDaganWhite";
     case 55: return "CBSonicDoom";
     case 56: return "CBBrandao";
+    case 57: return "CBFabrary3";
+    case 58: return "CBFabrary4";
+    case 59: return "CBFabrary5";
+    case 60: return "CBFabrary6";
+    case 61: return "CBFabrary7";
+    case 61: return "CBFabrary8";
     default: return "CardBack";
   }
 }
