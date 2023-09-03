@@ -5,6 +5,9 @@
     global $mainPlayer, $currentPlayer, $defPlayer;
     $rv = "";
     switch($cardID) {
+      case "TCC035":
+        AddCurrentTurnEffect($cardID, $defPlayer);
+        return "";
       case "TCC057":
         $numPitch = SearchCount(SearchPitch($currentPlayer));
         AddCurrentTurnEffect($cardID . "," . ($numPitch*2), $currentPlayer);

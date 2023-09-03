@@ -17,6 +17,7 @@
       $idArr = explode(",", $cardID);
       $cardID = $idArr[0];
       switch($cardID) {
+        case "TCC035": return true;
         case "TCC057": return true;
         case "TCC083": return true;
         default: return false;
