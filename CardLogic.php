@@ -1040,8 +1040,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         if($banish[$i+1] == "DTD564") { TurnBanishFaceDown($player, $i); break; }
       }
       break;
-    default:
+    case "TCC030": Draw($mainPlayer); break;
+    case "TCC031": //TODO:Add vigor token
       break;
+    case "TCC032": //TODO: Add might token
+      break;
+    case "TCC033": PlayAura("WTR225", $player); break;//Quicken
+    default: break;
   }
 }
 
