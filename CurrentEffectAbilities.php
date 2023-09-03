@@ -1141,4 +1141,12 @@ function EffectPlayCardRestricted($cardID, $type)
   return false;
 }
 
+function EffectCardID($effect) {
+  if($effect == "") return $effect;
+  $arr = explode(",", $effect);
+  $id = $arr[0];
+  $arr = explode("-", $id);
+  return $arr[0];
+}
+
 ?>

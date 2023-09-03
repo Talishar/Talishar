@@ -24,7 +24,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
         if($i == 0) $totalAttack += $attack;
         else AddAttack($totalAttack, $attack);
       }
-      $attack = AttackModifier($chainCard->ID(), $chainCard->From(), $chainCard->ResourcesPaid(), $chainCard->RepriseActive()) + $chainCard->AttackValue();
+      $attack = AttackModifier($chainCard->ID(), $chainCard->From(), $chainCard->ResourcesPaid(), $chainCard->RepriseActive());
       if(($canGainAttack && !$snagActive) || $attack < 0) {
         array_push($attackModifiers, $chainCard->ID());
         array_push($attackModifiers, $attack);
@@ -43,7 +43,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       if($currentTurnEffects[$i+1] == $mainPlayer)
       {
         $attack = EffectAttackModifier($currentTurnEffects[$i]);
-        if(($canGainAttack || $attack < 0) && !($snagActive && $currentTurnEffects[$i] == $CombatChain->AttackCard()->ID()))
+        if(($canGainAttack || $attack < 0) && !($snagActive && ($currentTurnEffects[$i] == $CombatChain->AttackCard()->ID() || CardType(EffectCardID($currentTurnEffects[$i])) == "AR")))
         {
           array_push($attackModifiers, $currentTurnEffects[$i]);
           array_push($attackModifiers, $attack);
