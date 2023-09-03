@@ -27,6 +27,7 @@ include "CardDictionaries/card_names.php";
 include "CardDictionaries/PlayAbilities.php";
 include "CardDictionaries/HitEffects.php";
 include "CardDictionaries/CurrentEffects.php";
+include "CardDictionaries/ActivatedAbilities.php";
 include "CardDictionaries/ClassicBattles/DVRShared.php";
 include "CardDictionaries/ClassicBattles/RVDShared.php";
 include "CardDictionaries/Dynasty/DYNShared.php";
@@ -270,6 +271,7 @@ function AbilityCost($cardID)
   else if($set == "DYN") return DYNAbilityCost($cardID);
   else if($set == "OUT") return OUTAbilityCost($cardID);
   else if($set == "DTD") return DTDAbilityCost($cardID);
+  else if($set == "TCC") return TCCAbilityCost($cardID);
   else if($set == "ROG") return ROGUEAbilityCost($cardID);
   return CardCost($cardID);
 }
@@ -379,6 +381,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "DYN") return DYNAbilityType($cardID, $index);
   else if($set == "OUT") return OUTAbilityType($cardID, $index);
   else if($set == "DTD") return DTDAbilityType($cardID, $index);
+  else if($set == "TCC") return TCCAbilityType($cardID, $index);
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
 }
 
@@ -951,6 +954,7 @@ function AbilityHasGoAgain($cardID)
   else if($set == "DYN") return DYNAbilityHasGoAgain($cardID);
   else if($set == "OUT") return OUTAbilityHasGoAgain($cardID);
   else if($set == "DTD") return DTDAbilityHasGoAgain($cardID);
+  else if($set == "TCC") return TCCAbilityHasGoAgain($cardID);
   else if($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   switch($cardID) {
     case "RVD004": return true;

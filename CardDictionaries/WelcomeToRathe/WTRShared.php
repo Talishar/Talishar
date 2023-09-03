@@ -1,24 +1,24 @@
 <?php
 
-function WTRAbilityCost($cardID)
-{
-  switch($cardID)
+  function WTRAbilityCost($cardID)
   {
-    case "WTR003": return 2;
-    case "WTR038": case "WTR039": return 2;
-    case "WTR040": return 3;
-    case "WTR041": return 1;
-    case "WTR042": return 1;
-    case "WTR078": return 1;
-    case "WTR115": return 1;
-    case "WTR116": return 1;
-    default: return 0;
+    switch($cardID)
+    {
+      case "WTR003": return 2;
+      case "WTR038": case "WTR039": return 2;
+      case "WTR040": return 3;
+      case "WTR041": return 1;
+      case "WTR042": return 1;
+      case "WTR078": return 1;
+      case "WTR115": return 1;
+      case "WTR116": return 1;
+      default: return 0;
+    }
   }
-}
 
   function WTRAbilityType($cardID, $index=-1)
   {
-    switch ($cardID)
+    switch($cardID)
     {
       case "WTR003": return "AA";
       case "WTR004": return "A";
@@ -44,7 +44,7 @@ function WTRAbilityCost($cardID)
 
   function WTRAbilityHasGoAgain($cardID)
   {
-    switch ($cardID)
+    switch($cardID)
     {
       case "WTR038": case "WTR039": return true;
       case "WTR041": return true;
@@ -60,7 +60,7 @@ function WTRAbilityCost($cardID)
   {
     $idArr = explode("-", $cardID);
     $cardID = $idArr[0];
-    switch ($cardID)
+    switch($cardID)
     {
       case "WTR007": return 2;
       case "WTR017": return NumNonEquipmentDefended() < 2 ? 4 : 0;
@@ -118,7 +118,7 @@ function WTRAbilityCost($cardID)
     global $mainPlayer;
     $idArr = explode("-", $cardID);
     $cardID = $idArr[0];
-    switch ($cardID)
+    switch($cardID)
     {
       case "WTR007": return ClassContains($attackID, "BRUTE", $mainPlayer);
       case "WTR017": case "WTR018": case "WTR019": return ClassContains($attackID, "BRUTE", $mainPlayer);
