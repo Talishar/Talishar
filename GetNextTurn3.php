@@ -370,8 +370,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $atkCounters = 0;
     $counters = 0;
     $type = CardType($theirCharacter[$i]); //NOTE: This is not reliable type
-    $sType = "";
     $sTypeArr = explode(",", CardSubType($theirCharacter[$i]));
+    $sType = $sTypeArr[0];
     for($j=0; $j<count($sTypeArr); ++$j) {
       if($sTypeArr[$j] == "Head" || $sTypeArr[$j] == "Chest" || $sTypeArr[$j] == "Arms" || $sTypeArr[$j] == "Legs") {
         $sType = $sTypeArr[$j];
@@ -475,8 +475,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $border = CardBorderColor($myCharacter[$i], "CHAR", $playable);
     $type = CardType($myCharacter[$i]);
     if ($type == "D") $type = "C";
-    $sType = "";
     $sTypeArr = explode(",", CardSubType($myCharacter[$i]));
+    $sType = $sTypeArr[0];
     for($j=0; $j<count($sTypeArr); ++$j) {
       if($sTypeArr[$j] == "Head" || $sTypeArr[$j] == "Chest" || $sTypeArr[$j] == "Arms" || $sTypeArr[$j] == "Legs") {
         $sType = $sTypeArr[$j];
