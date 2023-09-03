@@ -41,6 +41,11 @@ $CID_BloodRotPox = "OUT234";
 $CID_Frailty = "OUT235";
 $CID_Inertia = "OUT236";
 
+$CID_TekloHead = "LGS186";
+$CID_TekloChest = "LGS187";
+$CID_TekloArms = "LGS188";
+$CID_TekloLegs = "LGS189";
+
 function CardType($cardID)
 {
   if(!$cardID) return "";
@@ -829,7 +834,7 @@ function IsStaticType($cardType, $from = "", $cardID = "")
 
 function HasBladeBreak($cardID)
 {
-  global $defPlayer;
+  global $defPlayer, $CID_TekloHead, $CID_TekloChest, $CID_TekloArms, $CID_TekloLegs;
   switch($cardID) {
     case "WTR079": case "WTR150": case "WTR155": case "WTR156": case "WTR157": case "WTR158": return true;
     case "ARC041": return true;
@@ -846,6 +851,7 @@ function HasBladeBreak($cardID)
     case "OUT174": return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer); //Vambrace of determination
     case "DTD200": return true;
     case "DTD222": case "DTD223": case "DTD224": case "DTD225": return true;
+    case $CID_TekloHead: case $CID_TekloChest: case $CID_TekloArms: case $CID_TekloLegs: return true;
     default: return false;
   }
 }
