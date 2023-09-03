@@ -1557,6 +1557,28 @@ default: return false;
 }
 default: return false;
 }
+case "T":
+switch($cardID[1]) {
+case "C":
+switch($cardID[2]) {
+case "C":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "8":
+switch($cardID[5]) {
+case "3":
+return true;
+default: return false;
+}
+default: return false;
+}
+default: return false;
+}
+default: return false;
+}
+default: return false;
+}
 case "U":
 switch($cardID[1]) {
 case "P":
