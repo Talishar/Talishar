@@ -13,7 +13,7 @@
   {
     switch($cardID)
     {
-
+      case "TCC079": return "I";
       default: return "";
     }
   }

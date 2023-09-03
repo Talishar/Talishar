@@ -572,6 +572,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "DYN046": case "DYN117": case "DYN118": case "DYN171": case "DYN235":
     case "OUT011": case "OUT049": case "OUT095": case "OUT098": case "OUT140": case "OUT141": case "OUT157": case "OUT158":
     case "OUT175": case "OUT176": case "OUT177": case "OUT178": case "OUT179": case "OUT180": case "OUT181": case "OUT182":
+    case "TCC079":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "DTD001": case "DTD002":

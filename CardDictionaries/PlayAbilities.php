@@ -4,6 +4,7 @@
   {
     global $mainPlayer, $currentPlayer, $defPlayer;
     $rv = "";
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID) {
       case "TCC035":
         AddCurrentTurnEffect($cardID, $defPlayer);
@@ -19,16 +20,19 @@
         MZMoveCard($currentPlayer, "MYDISCARD:class=BARD,type=AA", "MYHAND", may:false, isSubsequent:false);
         return "";
       case "TCC064":
-        PlayAura("WTR225", $defPlayer);
+        PlayAura("WTR225", $otherPlayer);
         return "";
       case "TCC065":
-        GainHealth(1, $defPlayer);
+        GainHealth(1, $otherPlayer);
         return "";
       case "TCC066": case "TCC067"://TODO: Add right Aura
-        PlayAura("DTD232", $defPlayer);
+        PlayAura("DTD232", $otherPlayer);
         return "";
       case "TCC068":
-        Draw($defPlayer);
+        Draw($otherPlayer);
+        return "";
+      case "TCC079":
+        Draw($currentPlayer);
         return "";
       case "TCC083":
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
