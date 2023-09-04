@@ -24,7 +24,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
         if($i == 0) $totalAttack += $attack;
         else AddAttack($totalAttack, $attack);
       }
-      $attack = AttackModifier($chainCard->ID(), $chainCard->From(), $chainCard->ResourcesPaid(), $chainCard->RepriseActive());
+      $attack = AttackModifier($chainCard->ID(), $chainCard->From(), $chainCard->ResourcesPaid(), $chainCard->RepriseActive()) + $chainCard->AttackValue();
       if(($canGainAttack && !$snagActive) || $attack < 0) {
         array_push($attackModifiers, $chainCard->ID());
         array_push($attackModifiers, $attack);
