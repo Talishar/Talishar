@@ -143,16 +143,16 @@ function DYNCombatEffectActive($cardID, $attackID)
       $character = &GetPlayerCharacter($mainPlayer);
       $index = FindCharacterIndex($mainPlayer, "DYN492a");
       return $attackID == "DYN492a" && $character[$index + 2] >= 1;
-    case "DYN091-1": return $combatChainState[$CCS_IsBoosted];
+      case "DYN091-1": return $combatChainState[$CCS_IsBoosted];
     case "DYN148": case "DYN149": case "DYN150": return true;
     case "DYN154": return true;
     case "DYN155": return CardSubType($attackID) == "Arrow";
     case "DYN156": case "DYN157": case "DYN158": return true;
-		case "DYN165": case "DYN166": case "DYN167": return true;
-		case "DYN168": case "DYN169": case "DYN170": return CardSubType($attackID) == "Arrow";
+    case "DYN165": case "DYN166": case "DYN167": return true;
+    case "DYN168": case "DYN169": case "DYN170": return CardSubType($attackID) == "Arrow";
     case "DYN176": case "DYN177": case "DYN178": return true;
-		case "DYN185-BUFF": case "DYN186-BUFF": case "DYN187-BUFF": return ClassContains($attackID, "RUNEBLADE", $mainPlayer);
-		case "DYN185-HIT": case "DYN186-HIT": case "DYN187-HIT": return true;
+    case "DYN185-BUFF": case "DYN186-BUFF": case "DYN187-BUFF": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
+    case "DYN185-HIT": case "DYN186-HIT": case "DYN187-HIT": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     default:
       return false;
   }
