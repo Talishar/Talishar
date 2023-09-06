@@ -412,8 +412,8 @@ function SearchPitchForNumCosts($player)
 function SearchPitchForCard($playerID, $cardID)
 {
   $pitch = GetPitch($playerID);
-  for ($i = 0; $i < count($pitch); ++$i) {
-    if ($pitch[$i] == $cardID) return $i;
+  for($i = 0; $i < count($pitch); ++$i) {
+    if($pitch[$i] == $cardID) return $i;
   }
   return -1;
 }
