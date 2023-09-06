@@ -1103,6 +1103,7 @@ function HasCombo($cardID)
     case "OUT065": case "OUT066": case "OUT067":
     case "OUT074": case "OUT075": case "OUT076":
     case "OUT080": case "OUT081": case "OUT082":
+    case "TCC088":
       return true;
   }
   return false;
@@ -1199,6 +1200,9 @@ function ComboActive($cardID = "")
         break;
       case "OUT080": case "OUT081": case "OUT082":
         if($lastAttackName == "Head Jab") return true;
+        break;
+      case "TCC088":
+        if($lastAttackName == "Crouching Tiger") return true;
         break;
       default: break;
     }

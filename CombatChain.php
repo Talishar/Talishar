@@ -44,6 +44,7 @@ function ProcessHitEffect($cardID)
   else if($set == "DYN") return DYNHitEffect($cardID);
   else if($set == "OUT") return OUTHitEffect($cardID);
   else if($set == "DTD") return DTDHitEffect($cardID);
+  else if($set == "TCC") return TCCHitEffect($cardID);
 }
 
 function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)

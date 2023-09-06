@@ -54,7 +54,6 @@
         if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1) MZMoveCard($currentPlayer, "MYDISCARD:cardID=UPR101", "MYHAND");
         return "";
       case "UPR099":
-        $rv = "";
         if(RuptureActive()) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage");
@@ -62,7 +61,7 @@
           AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
-        return $rv;
+        return "";
       case "UPR136":
         if(ShouldAutotargetOpponent($currentPlayer)) {
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
