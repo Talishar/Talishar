@@ -37,6 +37,9 @@
       case "TCC083":
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         break;
+      case "TCC086":
+        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        break;
       default: return "";
     }
   }
