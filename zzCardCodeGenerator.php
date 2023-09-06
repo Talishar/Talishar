@@ -86,98 +86,102 @@
         }
         array_push($cardPrintings, $cardID);
         array_push($cardsSeen, $cardID);
-        if($propertyName == "type") $data = MapType($cardArray[$i]);
-        else if($propertyName == "attack") $data = $cardArray[$i]->power;
-        else if($propertyName == "block")
-        {
-          $data = $cardArray[$i]->defense;
-          if($data == "") $data = -1;
-        }
-        else if($propertyName == "name") $data = $cardArray[$i]->name;
-        else if($propertyName == "pitch")
-        {
-          $data = $cardArray[$i]->pitch;
-          if($data == "") $data = 0;
-        }
-        else if($propertyName == "cost")
-        {
-          $data = $cardArray[$i]->cost;
-          if($data == "") $data = -1;
-        }
-        else if($propertyName == "health")
-        {
-          $data = $cardArray[$i]->health;
-          CheckImage($cardID);
-        }
-        else if($propertyName == "rarity")
-        {
-          $data = $cardRarity;
-        }
-        else if($propertyName == "rarity")
-        {
-          $data = $cardRarity;
-        }
-        else if($propertyName == "subtype")
-        {
-          $data = "";
-          for($k=0; $k<count($cardArray[$i]->types); ++$k)
-          {
-            $type = $cardArray[$i]->types[$k];
-            if(!IsCardType($type) && !IsClass($type) && !IsTalent($type) && !IsHandedness($type))
-            {
-              if($data != "") $data .= ",";
-              $data .= $type;
-            }
-          }
-        }
-        else if($propertyName == "1H")
-        {
-          $data = "false";
-          for($k=0; $k<count($cardArray[$i]->types); ++$k)
-          {
-            $type = $cardArray[$i]->types[$k];
-            if($type == "1H") $data = "true";
-          }
-        }
-        else if($propertyName == "cardClass")
-        {
-          $data = "";
-          for($k=0; $k<count($cardArray[$i]->types); ++$k)
-          {
-            $type = $cardArray[$i]->types[$k];
-            if(IsClass($type))
-            {
-              if($data != "") $data .= ",";
-              $data .= strtoupper($type);
-            }
-          }
-        }
-        else if($propertyName == "cardTalent")
-        {
-          $data = "";
-          for($k=0; $k<count($cardArray[$i]->types); ++$k)
-          {
-            $type = $cardArray[$i]->types[$k];
-            if(IsTalent($type))
-            {
-              if($data != "") $data .= ",";
-              $data .= strtoupper($type);
-            }
-          }
-        }
-        if($isBool);
-        else if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
-        if(($isBool && $data == "true") || ($data != "-" && $data != "" && $data != "*" && $data != $defaultValue))
-        {
-          if($sparse) fwrite($handler, "case \"" . $cardID . "\": return " . ($isString ? "\"$data\"" : $data) . ";\r\n");
-          else AddToTrie($trie, $cardID, 0, $data);
-        }
+        PopulateTrie($cardArray, $handler, $trie, $propertyName, $cardID, $i, $sparse, $isBool, $isString, $defaultValue, $cardRarity);
       }
     }
     if($sparse) fwrite($handler, "default: return " . ($isString ? "\"$defaultValue\"" : $defaultValue) . ";}\r\n");
     else TraverseTrie($trie, "", $handler, $isString, $defaultValue);
 
     fwrite($handler, "}\r\n\r\n");
+  }
+
+  function PopulateTrie(&$cardArray, $handler, &$trie, $propertyName, $cardID, $i, $sparse, $isBool, $isString, $defaultValue, $cardRarity) {
+    if($propertyName == "type") $data = MapType($cardArray[$i]);
+    else if($propertyName == "attack") $data = $cardArray[$i]->power;
+    else if($propertyName == "block")
+    {
+      $data = $cardArray[$i]->defense;
+      if($data == "") $data = -1;
+    }
+    else if($propertyName == "name") $data = $cardArray[$i]->name;
+    else if($propertyName == "pitch")
+    {
+      $data = $cardArray[$i]->pitch;
+      if($data == "") $data = 0;
+    }
+    else if($propertyName == "cost")
+    {
+      $data = $cardArray[$i]->cost;
+      if($data == "") $data = -1;
+    }
+    else if($propertyName == "health")
+    {
+      $data = $cardArray[$i]->health;
+      CheckImage($cardID);
+    }
+    else if($propertyName == "rarity")
+    {
+      $data = $cardRarity;
+    }
+    else if($propertyName == "rarity")
+    {
+      $data = $cardRarity;
+    }
+    else if($propertyName == "subtype")
+    {
+      $data = "";
+      for($k=0; $k<count($cardArray[$i]->types); ++$k)
+      {
+        $type = $cardArray[$i]->types[$k];
+        if(!IsCardType($type) && !IsClass($type) && !IsTalent($type) && !IsHandedness($type))
+        {
+          if($data != "") $data .= ",";
+          $data .= $type;
+        }
+      }
+    }
+    else if($propertyName == "1H")
+    {
+      $data = "false";
+      for($k=0; $k<count($cardArray[$i]->types); ++$k)
+      {
+        $type = $cardArray[$i]->types[$k];
+        if($type == "1H") $data = "true";
+      }
+    }
+    else if($propertyName == "cardClass")
+    {
+      $data = "";
+      for($k=0; $k<count($cardArray[$i]->types); ++$k)
+      {
+        $type = $cardArray[$i]->types[$k];
+        if(IsClass($type))
+        {
+          if($data != "") $data .= ",";
+          $data .= strtoupper($type);
+        }
+      }
+    }
+    else if($propertyName == "cardTalent")
+    {
+      $data = "";
+      for($k=0; $k<count($cardArray[$i]->types); ++$k)
+      {
+        $type = $cardArray[$i]->types[$k];
+        if(IsTalent($type))
+        {
+          if($data != "") $data .= ",";
+          $data .= strtoupper($type);
+        }
+      }
+    }
+    if($isBool);
+    else if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
+    if(($isBool && $data == "true") || ($data != "-" && $data != "" && $data != "*" && $data != $defaultValue))
+    {
+      if($sparse) fwrite($handler, "case \"" . $cardID . "\": return " . ($isString ? "\"$data\"" : $data) . ";\r\n");
+      else AddToTrie($trie, $cardID, 0, $data);
+    }
   }
 
   function MapType($card)
