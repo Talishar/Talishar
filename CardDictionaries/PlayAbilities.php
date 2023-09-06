@@ -34,6 +34,9 @@
       case "TCC079":
         Draw($currentPlayer);
         return "";
+      case "TCC082":
+        BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
+        return "";
       case "TCC083":
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         break;

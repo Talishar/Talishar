@@ -871,6 +871,7 @@ function HasBattleworn($cardID)
     case "DVR005": return true;
     case "DYN006": case "DYN026": case "DYN046": case "DYN089": case "DYN117": case "DYN118": return true;
     case "OUT011": return true;
+    case "TCC082": return true;
     default: return false;
   }
 }
