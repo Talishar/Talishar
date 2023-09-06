@@ -193,7 +193,7 @@
       else if($card->types[$i] == "Instant") return "I";
       else if($card->types[$i] == "Weapon") return "W";
       else if($card->types[$i] == "Hero") return "C";
-      else if($card->types[$i] == "Equipment") return "E";
+      else if($card->types[$i] == "Equipment" && !$hasAction) return "E";
       else if($card->types[$i] == "Token") return "T";
       else if($card->types[$i] == "Resource") return "R";
       else if($card->types[$i] == "Mentor") return "M";

@@ -4028,11 +4028,11 @@ default: return "AA";
 case "0":
 switch($cardID[5]) {
 case "8":
-return "E";
+return "A";
 case "9":
-return "E";
+return "A";
 case "7":
-return "E";
+return "A";
 case "1":
 return "C";
 case "2":
@@ -4042,7 +4042,7 @@ default: return "AA";
 case "1":
 switch($cardID[5]) {
 case "0":
-return "E";
+return "A";
 default: return "AA";
 }
 case "5":
@@ -7559,6 +7559,16 @@ default: return 0;
 }
 case "O":
 switch($cardID[3]) {
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "7":
+return 6;
+default: return 0;
+}
+default: return 0;
+}
 case "0":
 switch($cardID[4]) {
 case "5":
@@ -10267,6 +10277,16 @@ case "0":
 switch($cardID[5]) {
 case "8":
 return -1;
+case "7":
+return -1;
+default: return 3;
+}
+default: return 3;
+}
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
 case "7":
 return -1;
 default: return 3;
@@ -15957,6 +15977,16 @@ case "5":
 switch($cardID[5]) {
 case "5":
 return "Terminator Tank";
+default: return "";
+}
+default: return "";
+}
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "7":
+return "Smashing Performance";
 default: return "";
 }
 default: return "";
@@ -21859,6 +21889,16 @@ default: return 1;
 }
 default: return 1;
 }
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "7":
+return 2;
+default: return 1;
+}
+default: return 1;
+}
 default: return 1;
 }
 default: return 1;
@@ -26409,6 +26449,16 @@ case "5":
 switch($cardID[5]) {
 case "5":
 return 6;
+default: return 0;
+}
+default: return 0;
+}
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "7":
+return 3;
 default: return 0;
 }
 default: return 0;
@@ -32799,6 +32849,16 @@ default: return "C";
 }
 default: return "C";
 }
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "7":
+return "M";
+default: return "C";
+}
+default: return "C";
+}
 default: return "C";
 }
 default: return "C";
@@ -38308,6 +38368,16 @@ case "5":
 switch($cardID[5]) {
 case "5":
 return "MECHANOLOGIST";
+default: return "NONE";
+}
+default: return "NONE";
+}
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "7":
+return "BRUTE";
 default: return "NONE";
 }
 default: return "NONE";
