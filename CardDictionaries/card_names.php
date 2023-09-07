@@ -28,6 +28,7 @@ function CardName($cardID)
 		  case "DYN492c": return "Nitro Mechanoid";
       case "DYN612": return "Suraya, Archangel of Knowledge";
       case "DUMMY": return "Practice Dummy";
+      case "DUMMYDISHONORED": return "Dishonored Hero";
       default: return "";
     }
     return "";
