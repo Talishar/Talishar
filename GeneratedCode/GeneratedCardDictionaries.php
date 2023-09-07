@@ -4075,6 +4075,26 @@ default: return "AA";
 }
 default: return "AA";
 }
+case "4":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "8":
+return "E";
+case "9":
+return "E";
+case "7":
+return "E";
+default: return "AA";
+}
+case "1":
+switch($cardID[5]) {
+case "0":
+return "E";
+default: return "AA";
+}
+default: return "AA";
+}
 case "1":
 switch($cardID[4]) {
 case "0":
@@ -11621,6 +11641,26 @@ default: return 3;
 }
 default: return 3;
 }
+case "4":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "8":
+return 2;
+case "9":
+return 2;
+case "7":
+return 2;
+default: return 3;
+}
+case "1":
+switch($cardID[5]) {
+case "0":
+return 2;
+default: return 3;
+}
+default: return 3;
+}
 case "1":
 switch($cardID[4]) {
 case "0":
@@ -18037,6 +18077,26 @@ default: return "";
 }
 default: return "";
 }
+case "4":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "8":
+return "Evo Energy Matrix";
+case "9":
+return "Evo Scatter Shot";
+case "7":
+return "Evo Tekloscope";
+default: return "";
+}
+case "1":
+switch($cardID[5]) {
+case "0":
+return "Evo Rapid Fire";
+default: return "";
+}
+default: return "";
+}
 case "1":
 switch($cardID[4]) {
 case "0":
@@ -23081,6 +23141,26 @@ default: return 1;
 }
 default: return 1;
 }
+case "4":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "8":
+return 3;
+case "9":
+return 3;
+case "7":
+return 3;
+default: return 1;
+}
+case "1":
+switch($cardID[5]) {
+case "0":
+return 3;
+default: return 1;
+}
+default: return 1;
+}
 case "1":
 switch($cardID[4]) {
 case "0":
@@ -27941,6 +28021,26 @@ default: return 0;
 }
 default: return 0;
 }
+case "4":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "8":
+return 3;
+case "9":
+return 3;
+case "7":
+return 3;
+default: return 0;
+}
+case "1":
+switch($cardID[5]) {
+case "0":
+return 3;
+default: return 0;
+}
+default: return 0;
+}
 case "1":
 switch($cardID[4]) {
 case "0":
@@ -30455,6 +30555,26 @@ case "7":
 return "Song";
 case "8":
 return "Song";
+default: return "";
+}
+default: return "";
+}
+case "4":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "8":
+return "Evo,Chest";
+case "9":
+return "Evo,Arms";
+case "7":
+return "Evo,Head";
+default: return "";
+}
+case "1":
+switch($cardID[5]) {
+case "0":
+return "Evo,Legs";
 default: return "";
 }
 default: return "";
@@ -33973,6 +34093,26 @@ case "4":
 switch($cardID[5]) {
 case "9":
 return "M";
+default: return "C";
+}
+default: return "C";
+}
+case "4":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "8":
+return "R";
+case "9":
+return "R";
+case "7":
+return "R";
+default: return "C";
+}
+case "1":
+switch($cardID[5]) {
+case "0":
+return "R";
 default: return "C";
 }
 default: return "C";
@@ -40144,6 +40284,26 @@ case "7":
 return "NINJA";
 case "9":
 return "NINJA";
+default: return "NONE";
+}
+default: return "NONE";
+}
+case "4":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "8":
+return "MECHANOLOGIST";
+case "9":
+return "MECHANOLOGIST";
+case "7":
+return "MECHANOLOGIST";
+default: return "NONE";
+}
+case "1":
+switch($cardID[5]) {
+case "0":
+return "MECHANOLOGIST";
 default: return "NONE";
 }
 default: return "NONE";

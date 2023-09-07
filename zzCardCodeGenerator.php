@@ -87,6 +87,7 @@
         array_push($cardPrintings, $cardID);
         array_push($cardsSeen, $cardID);
         PopulateTrie($cardArray, $handler, $trie, $propertyName, $cardID, $i, $sparse, $isBool, $isString, $defaultValue, $cardRarity);
+        if(ShouldDuplicate($cardArray[$i])) PopulateTrie($cardArray, $handler, $trie, $propertyName, $set . ($cardNumber + 400), $i, $sparse, $isBool, $isString, $defaultValue, $cardRarity);
       }
     }
     if($sparse) fwrite($handler, "default: return " . ($isString ? "\"$defaultValue\"" : $defaultValue) . ";}\r\n");
@@ -96,7 +97,7 @@
   }
 
   function PopulateTrie(&$cardArray, $handler, &$trie, $propertyName, $cardID, $i, $sparse, $isBool, $isString, $defaultValue, $cardRarity) {
-    if($propertyName == "type") $data = MapType($cardArray[$i]);
+    if($propertyName == "type") $data = MapType($cardArray[$i], $cardID);
     else if($propertyName == "attack") $data = $cardArray[$i]->power;
     else if($propertyName == "block")
     {
@@ -184,9 +185,10 @@
     }
   }
 
-  function MapType($card)
+  function MapType($card, $cardID)
   {
     $hasAction = false; $hasAttack = false;
+    $cardNumber = substr($cardID, 3, 3);
     for($i=0; $i<count($card->types); ++$i)
     {
       if($card->types[$i] == "Action") $hasAction = true;
@@ -197,7 +199,7 @@
       else if($card->types[$i] == "Instant") return "I";
       else if($card->types[$i] == "Weapon") return "W";
       else if($card->types[$i] == "Hero") return "C";
-      else if($card->types[$i] == "Equipment" && !$hasAction) return "E";
+      else if($card->types[$i] == "Equipment" && ($cardNumber >= 400 || !$hasAction)) return "E";
       else if($card->types[$i] == "Token") return "T";
       else if($card->types[$i] == "Resource") return "R";
       else if($card->types[$i] == "Mentor") return "M";
@@ -255,5 +257,15 @@
     }
   }
 
+  function ShouldDuplicate($card)
+  {
+    $hasAction = false; $hasEquipment = false;
+    for($i=0; $i<count($card->types); ++$i)
+    {
+      if($card->types[$i] == "Action") $hasAction = true;
+      else if($card->types[$i] == "Equipment") $hasEquipment = true;
+    }
+    return $hasAction && $hasEquipment;
+  }
 
 ?>
