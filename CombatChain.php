@@ -239,8 +239,9 @@ function OnDefenseReactionResolveEffects($from)
     case "DTD205":
       if(!SearchCurrentTurnEffects("DTD205", $mainPlayer))
       {
-        $options = GetChainLinkCards($defPlayer, "", "E");
-        if($options != "") {
+        $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", "E");
+        if($nonEquipBlockingCards != "") {
+          $options = GetChainLinkCards($defPlayer);
           AddCurrentTurnEffect("DTD205", $mainPlayer);
           AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
           AddDecisionQueue("HALVEBASEDEFENSE", $defPlayer, "-", 1);
@@ -308,8 +309,9 @@ function OnBlockResolveEffects()
     case "DTD205":
       if(!SearchCurrentTurnEffects("DTD205", $mainPlayer))
       {
-        $options = GetChainLinkCards($defPlayer, "", "E");
-        if($options != "") {
+        $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", "E");
+        if($nonEquipBlockingCards != "") {
+          $options = GetChainLinkCards($defPlayer);
           AddCurrentTurnEffect("DTD205", $mainPlayer);
           AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
           AddDecisionQueue("HALVEBASEDEFENSE", $mainPlayer, "-", 1);
