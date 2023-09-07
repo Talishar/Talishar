@@ -297,14 +297,7 @@ function OnBlockResolveEffects()
       }
       break;
     case "OUT185":
-      for($i=0; $i<CachedNumActionBlocked(); ++$i)
-      {
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack());
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an action card to put on top of your deck");
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-        AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
-      }
+      for($i=0; $i<CachedNumActionBlocked(); ++$i) MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack(), "MYTOPDECK", may:true);
       break;
     case "DTD205":
       if(!SearchCurrentTurnEffects("DTD205", $mainPlayer))
