@@ -2004,6 +2004,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     else if(DelimStringContains($cardSubtype, "Item")) PutItemIntoPlay($cardID);
     else if($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer);
     else if(DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID);
+    else if(DelimStringContains($cardSubtype, "Evo")) WriteLog("Evo Stuff");
     else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W") {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer);
       switch($goesWhere) {
