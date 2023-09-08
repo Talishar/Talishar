@@ -54,7 +54,7 @@ if ($handle = opendir($path)) {
           $gameInProgress->secondsSinceLastUpdate = intval(($currentTime - $lastGamestateUpdate) / 1000);
           $gameInProgress->gameName = $gameToken;
           $gameInProgress->format = GetCachePiece($gameToken, 13);
-          array_push($response->gamesInProgress, $gameInProgress);
+          if($gameInProgress->p2Hero != "DUMMY" && $gameInProgress->p2Hero != "") array_push($response->gamesInProgress, $gameInProgress);
         }
       }
       else if ($currentTime - $lastGamestateUpdate > 300000) //~5 minutes?
