@@ -4005,6 +4005,14 @@ case "8":
 return "W";
 default: return "AA";
 }
+case "4":
+switch($cardID[5]) {
+case "8":
+return "B";
+case "9":
+return "C";
+default: return "AA";
+}
 case "3":
 switch($cardID[5]) {
 case "1":
@@ -4069,12 +4077,6 @@ case "7":
 return "C";
 case "9":
 return "E";
-default: return "AA";
-}
-case "4":
-switch($cardID[5]) {
-case "9":
-return "C";
 default: return "AA";
 }
 case "8":

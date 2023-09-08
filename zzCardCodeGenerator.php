@@ -205,6 +205,7 @@
       else if($card->types[$i] == "Mentor") return "M";
       else if($card->types[$i] == "Ally") return "ALLY";
       else if($card->types[$i] == "Demi-Hero") return "D";
+      else if($card->types[$i] == "Block") return "B";
     }
     if($hasAction && $hasAttack) return "AA";
     else if($hasAction) return "A";
