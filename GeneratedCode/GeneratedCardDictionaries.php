@@ -2863,6 +2863,16 @@ default: return "AA";
 }
 default: return "AA";
 }
+case "2":
+switch($cardID[4]) {
+case "4":
+switch($cardID[5]) {
+case "5":
+return "A";
+default: return "AA";
+}
+default: return "AA";
+}
 default: return "AA";
 }
 default: return "AA";
@@ -10311,6 +10321,12 @@ case "7":
 return -1;
 default: return 3;
 }
+case "4":
+switch($cardID[5]) {
+case "5":
+return -1;
+default: return 3;
+}
 default: return 3;
 }
 default: return 3;
@@ -16027,6 +16043,12 @@ case "3":
 switch($cardID[5]) {
 case "7":
 return "Smashing Performance";
+default: return "";
+}
+case "4":
+switch($cardID[5]) {
+case "5":
+return "Tome of Imperial Flame";
 default: return "";
 }
 default: return "";
@@ -26541,6 +26563,12 @@ case "7":
 return 3;
 default: return 0;
 }
+case "4":
+switch($cardID[5]) {
+case "5":
+return -1;
+default: return 0;
+}
 default: return 0;
 }
 default: return 0;
@@ -32974,6 +33002,12 @@ switch($cardID[4]) {
 case "3":
 switch($cardID[5]) {
 case "7":
+return "M";
+default: return "C";
+}
+case "4":
+switch($cardID[5]) {
+case "5":
 return "M";
 default: return "C";
 }
@@ -41938,6 +41972,20 @@ case "2":
 switch($cardID[5]) {
 case "0":
 return "ELEMENTAL";
+default: return "NONE";
+}
+default: return "NONE";
+}
+default: return "NONE";
+}
+case "O":
+switch($cardID[3]) {
+case "2":
+switch($cardID[4]) {
+case "4":
+switch($cardID[5]) {
+case "5":
+return "DRACONIC";
 default: return "NONE";
 }
 default: return "NONE";
