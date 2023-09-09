@@ -125,7 +125,8 @@
     global $combatChainState, $CCS_AttackFused, $mainPlayer;
     switch($cardID)
     {
-      case "ELE000-1": case "ELE000-2": return CardType($attackID) == "AA";
+      case "ELE000-1": return true;
+      case "ELE000-2": return true;
       case "ELE003": return true;
       case "ELE004": return true;
       case "ELE005": return true;
