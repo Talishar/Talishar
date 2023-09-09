@@ -1045,7 +1045,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "TCC032": //TODO: Add might token
       break;
-    case "TCC033": PlayAura("WTR225", $player); break;//Quicken
+    case "TCC033": PlayAura("WTR225", $mainPlayer); break;//Quicken
     default: break;
   }
 }
