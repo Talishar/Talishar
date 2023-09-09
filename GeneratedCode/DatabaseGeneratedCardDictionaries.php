@@ -911,6 +911,20 @@ default: return false;
 }
 case "V":
 switch($cardID[2]) {
+case "O":
+switch($cardID[3]) {
+case "2":
+switch($cardID[4]) {
+case "4":
+switch($cardID[5]) {
+case "5":
+return true;
+default: return false;
+}
+default: return false;
+}
+default: return false;
+}
 case "R":
 switch($cardID[3]) {
 case "0":
