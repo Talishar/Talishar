@@ -421,4 +421,16 @@ function SpecificCardLogic($player, $card, $lastResult)
   }
 }
 
+function PitchCard($player, $search="MYHAND", $skipGain=false)
+{
+  if(!$skipGain) PrependDecisionQueue("GAINPITCHVALUE", $player, "-", 1);
+  PrependDecisionQueue("PITCHABILITY", $player, "-", 1);
+  PrependDecisionQueue("ADDMYPITCH", $player, "-", 1);
+  PrependDecisionQueue("REMOVEMYHAND", $player, "-", 1);
+  PrependDecisionQueue("CHOOSEHANDCANCEL", $player, "<-", 1);
+  PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to pitch", 1);
+  PrependDecisionQueue("MZOP", $player, "GETCARDINDICES", 1);
+  PrependDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
+}
+
 ?>

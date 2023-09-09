@@ -47,4 +47,27 @@
     }
   }
 
+
+  function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
+  {
+    global $mainPlayer, $currentPlayer, $defPlayer;
+    $rv = "";
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    switch($cardID) {
+      case "EVO245":
+        Draw($currentPlayer);
+        if(IsRoyal($currentPlayer)) Draw($currentPlayer);
+        PrependDecisionQueue("OP", $currentPlayer, "BANISHHAND");
+        if(SearchCount(SearchHand($currentPlayer, pitch:1)) >= 2) {
+          PrependDecisionQueue("ELSE", $currentPlayer, "-");
+          PitchCard($currentPlayer, "MYHAND:pitch=1");
+          PitchCard($currentPlayer, "MYHAND:pitch=1");
+          PrependDecisionQueue("NOPASS", $currentPlayer, "-");
+          PrependDecisionQueue("YESNO", $currentPlayer, "if you want to pitch 2 red cards");
+        }
+        return "";
+      default: return "";
+    }
+  }
+
 ?>

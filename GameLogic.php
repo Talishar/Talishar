@@ -321,6 +321,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "GAINCONTROL": MZGainControl($player, $lastResult); break;
         case "GETCARDID": return GetMZCard($player, $lastResult);
         case "GETCARDINDEX": $mzArr = explode("-", $lastResult); return $mzArr[1];
+        case "GETCARDINDICES":
+          $arr = explode(",", $lastResult);
+          $output = [];
+          for($i=0; $i<count($arr); ++$i) {
+            $mzArr = explode("-", $arr[$i]);
+            array_push($output, $mzArr[1]);
+          }
+          return implode(",", $output);
         case "GETUNIQUEID":
           $mzArr = explode("-", $lastResult);
           $zone = &GetMZZone($player, $mzArr[0]);
@@ -361,6 +369,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           return implode(",", $cards);
         case "LOSEHEALTH": LoseHealth($lastResult, $player); return $lastResult;
+        case "BANISHHAND": BanishHand($player); return $lastResult;
         default: return $lastResult;
       }
     case "FILTER":
@@ -826,12 +835,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         PrependDecisionQueue("PAYRESOURCES", $player, $parameter, 1);
         PrependDecisionQueue("SUBPITCHVALUE", $player, $lastResult, 1);
-        PrependDecisionQueue("PITCHABILITY", $player, "-", 1);
-        PrependDecisionQueue("ADDMYPITCH", $player, "-", 1);
-        PrependDecisionQueue("REMOVEMYHAND", $player, "-", 1);
-        PrependDecisionQueue("CHOOSEHANDCANCEL", $player, "<-", 1);
-        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a pitch card", 1);
-        PrependDecisionQueue("FINDINDICES", $player, "HAND", 1);
+        PitchCard($player, skipGain:true);
       }
       return $parameter;
     case "ADDCLASSSTATE":
@@ -863,6 +867,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SUBPITCHVALUE":
       return $parameter - PitchValue($lastResult);
+    case "GAINPITCHVALUE":
+      $resources = &GetResources($player);
+      $resources[0] += PitchValue($lastResult);
+      return $lastResult;
     case "BUFFARCANE":
       AddCurrentTurnEffect($parameter . "-" . $lastResult, $player);
       return $lastResult;

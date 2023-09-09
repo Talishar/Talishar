@@ -1777,6 +1777,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   else if($set == "OUT") return OUTPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "DTD") return DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "TCC") return TCCPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if($set == "EVO") return EVOPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else return ROGUEPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
 }
 
@@ -1930,4 +1931,17 @@ function WardPoppedAbility($player, $cardID)
     AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
     AddDecisionQueue("PLAYAURA", $player, "DYN244", 1);
   }
+}
+
+function BanishHand($player)
+{
+  $hand = &GetHand($player);
+  $banishedCards = "";
+  for($i = 0; $i < count($hand); ++$i) {
+    if($banishedCards != "") $banishedCards .= ",";
+    $banishedCards .= $hand[$i];
+    BanishCardForPlayer($hand[$i], $player, "HAND", "-", $player);
+  }
+  $hand = [];
+  return $banishedCards;
 }
