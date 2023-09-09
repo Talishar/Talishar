@@ -4,6 +4,7 @@
   {
     switch($cardID)
     {
+      case "TCC002": return 3;
       case "TCC028": return 3;
       default: return 0;
     }
@@ -13,6 +14,7 @@
   {
     switch($cardID)
     {
+      case "TCC002": return "AA";
       case "TCC028": return "AA";
       case "TCC079": return "I";
       case "TCC082": return "I";
