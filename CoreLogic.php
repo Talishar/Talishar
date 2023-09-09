@@ -1831,7 +1831,7 @@ function UnityEffect($cardID)
       else if($char[0] == "WTR113" || $char[0] == "WTR114") PlayAura("DTD232", $defPlayer);
       else if($char[0] == "ELE031" || $char[0] == "ELE032") PlayAura("ELE110", $defPlayer);
       else if($char[0] == "ELE001" || $char[0] == "ELE002") PlayAura("DYN246", $defPlayer);
-      else if($char[0] == "MON001" || $char[0] == "MON002") PlayAura("MON104", $defPlayer);
+      else if($char[0] == "MON001" || $char[0] == "MON002" || $char[0] == "DTD001" || $char[0] == "DTD002") PlayAura("MON104", $defPlayer);
       else if($char[0] == "CRU097") PlayAura("DTD233", $defPlayer);
       break;
     case "DTD196"://Anthem of Spring
