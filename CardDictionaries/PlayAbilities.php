@@ -57,7 +57,7 @@
       case "EVO245":
         Draw($currentPlayer);
         if(IsRoyal($currentPlayer)) Draw($currentPlayer);
-        PrependDecisionQueue("OP", $currentPlayer, "BANISHHAND");
+        PrependDecisionQueue("OP", $currentPlayer, "BANISHHAND", 1);
         if(SearchCount(SearchHand($currentPlayer, pitch:1)) >= 2) {
           PrependDecisionQueue("ELSE", $currentPlayer, "-");
           PitchCard($currentPlayer, "MYHAND:pitch=1");
