@@ -92,6 +92,8 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($count == 100) break;
 }
 
+if($count == 100) $lastUpdate = 0;//If we waited the full 10 seconds with nothing happening, send back an update in case it got stuck
+
 if($lastUpdate == 0) {
   $lastUpdateTime = GetCachePiece($gameName, 6);
   if($lastUpdateTime == "") { echo("The game no longer exists on the server."); exit; }
