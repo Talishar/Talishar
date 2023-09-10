@@ -639,6 +639,7 @@ function ContractType($cardID)
     case "DYN139": case "DYN140": case "DYN141": return "REACTIONS";
     case "DYN142": case "DYN143": case "DYN144": return "GOAGAIN";
     case "DYN145": case "DYN146": case "DYN147": return "NAA";
+    case "EVO236": return "NONACTION";
     default: return "";
   }
 }
@@ -658,6 +659,7 @@ function ContractCompleted($player, $cardID)
     case "DYN139": case "DYN140": case "DYN141":
     case "DYN142": case "DYN143": case "DYN144":
     case "DYN145": case "DYN146": case "DYN147":
+    case "EVO236":
       PutItemIntoPlayForPlayer("EVR195", $player);
       break;
     default: break;
@@ -704,6 +706,7 @@ function CheckContract($contractType, $cardBanished)
     case "NAA": return CardType($cardBanished) == "A";
     case "BLOCK2ORLESS": return BlockValue($cardBanished) <= 2 && BlockValue($cardBanished) >= 0;
     case "REACTIONS": return CardType($cardBanished) == "AR" || CardType($cardBanished) == "DR";
+    case "NONACTION": $cardType = CardType($cardBanished); return $cardType != "A" && $cardType != "AA";
     default: return false;
     }
 }
