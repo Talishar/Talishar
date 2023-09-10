@@ -791,6 +791,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DTD199": return GetClassState($currentPlayer, $CS_HighestRoll) != 6;
     case "DTD208": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
     case "TCC079": return HitsInCombatChain() < 3;
+    case "EVO235": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     default: return false;
   }
 }
@@ -874,6 +875,7 @@ function HasBattleworn($cardID)
     case "DYN006": case "DYN026": case "DYN046": case "DYN089": case "DYN117": case "DYN118": return true;
     case "OUT011": return true;
     case "TCC082": return true;
+    case "EVO235": return true;
     default: return false;
   }
 }

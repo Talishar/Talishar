@@ -142,7 +142,7 @@ function CharacterStartTurnAbility($index)
         AddCurrentTurnEffect("EVR019", $mainPlayer);
       }
       break;
-    case "DYN117": case "DYN118": case "OUT011":
+    case "DYN117": case "DYN118": case "OUT011": case "EVO235":
       $discardIndex = SearchDiscardForCard($mainPlayer, $char->cardID);
       if(CountItem("EVR195", $mainPlayer) >= 2 && $discardIndex != "") {
         AddDecisionQueue("COUNTITEM", $mainPlayer, "EVR195");
@@ -573,7 +573,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "OUT011": case "OUT049": case "OUT095": case "OUT098": case "OUT140": case "OUT141": case "OUT157": case "OUT158":
     case "OUT175": case "OUT176": case "OUT177": case "OUT178": case "OUT179": case "OUT180": case "OUT181": case "OUT182":
     case "TCC079": case "TCC082":
-    case "EVO247":
+    case "EVO235": case "EVO247":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "DTD001": case "DTD002":
@@ -614,6 +614,7 @@ function CharacterTriggerInGraveyard($cardID)
   switch($cardID) {
     case "DYN117": case "DYN118": return true;
     case "OUT011": return true;
+    case "EVO235": return true;
     default: return false;
   }
 }

@@ -54,6 +54,13 @@
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID) {
+      case "EVO235":
+        $options = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "AA");
+        if($options != "") {
+          AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, $options);
+          AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $currentPlayer, -1, 1);
+        }
+        return "";
       case "EVO245":
         Draw($currentPlayer);
         if(IsRoyal($currentPlayer)) Draw($currentPlayer);
