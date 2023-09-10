@@ -26593,8 +26593,6 @@ default: return 0;
 }
 case "4":
 switch($cardID[5]) {
-case "5":
-return -1;
 case "7":
 return -1;
 default: return 0;
