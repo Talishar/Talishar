@@ -272,6 +272,7 @@ function AbilityCost($cardID)
   else if($set == "OUT") return OUTAbilityCost($cardID);
   else if($set == "DTD") return DTDAbilityCost($cardID);
   else if($set == "TCC") return TCCAbilityCost($cardID);
+  else if($set == "EVO") return EVOAbilityCost($cardID);
   else if($set == "ROG") return ROGUEAbilityCost($cardID);
   return CardCost($cardID);
 }
@@ -382,6 +383,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "OUT") return OUTAbilityType($cardID, $index);
   else if($set == "DTD") return DTDAbilityType($cardID, $index);
   else if($set == "TCC") return TCCAbilityType($cardID, $index);
+  else if($set == "EVO") return EVOAbilityType($cardID, $index);
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
 }
 
@@ -886,6 +888,7 @@ function HasTemper($cardID)
     case "DYN027": case "DYN492b": return true;
     case "DTD047": case "DTD206": case "DTD207": case "DTD211": return true;
     case "TCC029": case "TCC030": case "TCC031": case "TCC032": case "TCC033": return true;
+    case "EVO247": return true;
     default: return false;
   }
 }
@@ -957,6 +960,7 @@ function AbilityHasGoAgain($cardID)
   else if($set == "OUT") return OUTAbilityHasGoAgain($cardID);
   else if($set == "DTD") return DTDAbilityHasGoAgain($cardID);
   else if($set == "TCC") return TCCAbilityHasGoAgain($cardID);
+  else if($set == "EVO") return EVOAbilityHasGoAgain($cardID);
   else if($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   switch($cardID) {
     case "RVD004": return true;

@@ -30,4 +30,31 @@
     }
   }
 
+  function EVOAbilityCost($cardID)
+  {
+    switch($cardID)
+    {
+      case "EVO247": return 2;
+      default: return 0;
+    }
+  }
+
+  function EVOAbilityType($cardID, $index=-1)
+  {
+    switch($cardID)
+    {
+      case "EVO247": return "A";
+      default: return "";
+    }
+  }
+
+  function EVOAbilityHasGoAgain($cardID)
+  {
+    switch($cardID)
+    {
+      case "EVO247": return true;
+      default: return false;
+    }
+  }
+
 ?>

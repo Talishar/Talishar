@@ -402,6 +402,12 @@ function OnAttackEffects($attack)
           AddDecisionQueue("GREATERTHANPASS", $defPlayer, "0", 1);
           AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $currentTurnEffects[$i] . "ATK!PLAY", 1);
           break;
+        case "EVO247":
+          Charge(may:true, player:$mainPlayer);
+          AddDecisionQueue("ALLCARDPITCHORPASS", $mainPlayer, "2", 1);
+          AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
+          $remove = true;
+          break;
         default:
           break;
       }
@@ -687,27 +693,26 @@ function CurrentEffectPlayAbility($cardID, $from)
       switch($currentTurnEffects[$i]) {
         case "ARC209":
           $cardType = CardType($cardID);
-          if (($cardType == "A" || $cardType == "AA") && $cost >= 0) {
+          if(($cardType == "A" || $cardType == "AA") && $cost >= 0) {
             ++$actionPoints;
             $remove = true;
           }
           break;
         case "ARC210":
           $cardType = CardType($cardID);
-          if (($cardType == "A" || $cardType == "AA") && $cost >= 1) {
+          if(($cardType == "A" || $cardType == "AA") && $cost >= 1) {
             ++$actionPoints;
             $remove = true;
           }
           break;
         case "ARC211":
           $cardType = CardType($cardID);
-          if (($cardType == "A" || $cardType == "AA") && $cost >= 2) {
+          if(($cardType == "A" || $cardType == "AA") && $cost >= 2) {
             ++$actionPoints;
             $remove = true;
           }
           break;
-        default:
-          break;
+        default: break;
       }
       if($remove) RemoveCurrentTurnEffect($i);
     }
