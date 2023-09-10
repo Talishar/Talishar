@@ -406,8 +406,8 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       else $count = 1;
       $deck = new Deck($currentPlayer);
       $numRunechants = 0;
-      if($deck->Reveal(3)) {
-        $cards = explode(",", $deck->Top(remove:true, amount:3));
+      if($deck->Reveal($count)) {
+        $cards = explode(",", $deck->Top(remove:true, amount:$count));
         for($i=0; $i<count($cards); ++$i) if(ClassContains($cards[$i], "RUNEBLADE", $currentPlayer) && CardType($cards[$i]) == "AA") ++$numRunechants;
         if($numRunechants > 0) PlayAura("ARC112", $currentPlayer, number:$numRunechants);
         AddDecisionQueue("CHOOSETOP", $currentPlayer, implode(",", $cards));
