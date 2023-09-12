@@ -1964,3 +1964,8 @@ function EvoHandling($cardID, $player)
     }
   }
 }
+
+function EvoUpgradeAmount($player)
+{
+  return SearchCount(SearchCharacter($player, subtype:"Evo"));
+}
