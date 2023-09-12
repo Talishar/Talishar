@@ -898,11 +898,18 @@ function CharacterAttackAbilities($attackID)
   global $mainPlayer;
   $char = &GetPlayerCharacter($mainPlayer);
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
+    if($char[$i+1] == 0) continue;//Don't do effect if destroyed
     switch($char[$i]) {
+      case "TCC409":
+        if($attackID == "TCC002") {
+          AddCurrentTurnEffect($char[$i], $mainPlayer);
+          WriteLog("Evo Scatter Shot gives +1");
+        }
+        break;
       case "TCC410":
         if($attackID == "TCC002") {
           GiveAttackGoAgain();
-          WriteLog("Evo Rapid Fire gave Go Again");
+          WriteLog("Evo Rapid Fire gives Go Again");
         }
         break;
       default: break;

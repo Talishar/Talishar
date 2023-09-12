@@ -1950,9 +1950,12 @@ function EvoHandling($cardID, $player)
 {
   $char = &GetPlayerCharacter($player);
   $slot = "";
-  if(SubtypeContains($cardID, "Legs")) $slot = "Legs";
+  if(SubtypeContains($cardID, "Head")) $slot = "Head";
+  else if(SubtypeContains($cardID, "Chest")) $slot = "Chest";
+  else if(SubtypeContains($cardID, "Arms")) $slot = "Arms";
+  else if(SubtypeContains($cardID, "Legs")) $slot = "Legs";
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
-    if(SubtypeContains($char[$i], "Legs")) {
+    if(SubtypeContains($char[$i], $slot)) {
       if(SubtypeContains($char[$i], "Base")) {
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
       }

@@ -8,6 +8,7 @@
       case "TCC057": return $idArr[1];
       case "TCC083": return 1;
       case "TCC086": return 1;
+      case "TCC409": return 1;
       default: return 0;
     }
   }
@@ -22,6 +23,7 @@
         case "TCC057": return true;
         case "TCC083": return true;
         case "TCC086": return CardName($attackID) == "Crouching Tiger";
+        case "TCC409": return true;
         default: return false;
       }
     }
