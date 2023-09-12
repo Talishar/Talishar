@@ -81,6 +81,7 @@ if(IsReplay() && $mode == 99)
 }
 
 //First we need to parse the game state from the file
+$isProcessInput = true;
 include "ParseGamestate.php";
 
 $otherPlayer = $currentPlayer == 1 ? 2 : 1;

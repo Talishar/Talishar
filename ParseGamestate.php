@@ -28,6 +28,7 @@ function GamestateUnsanitize($input)
 
 function ParseGamestate($useRedis = false)
 {
+  global $isProcessInput;
   global $gameName, $playerHealths;
   global $p1Hand, $p1Deck, $p1CharEquip, $p1Resources, $p1Arsenal, $p1Items, $p1Auras, $p1Discard, $p1Pitch, $p1Banish;
   global $p1ClassState, $p1CharacterEffects, $p1Soul, $p1CardStats, $p1TurnStats, $p1Allies, $p1Permanents, $p1Settings;
@@ -67,7 +68,8 @@ function ParseGamestate($useRedis = false)
   } //Game does not exist
 
   $lockTries = 0;
-  while (!flock($handler, LOCK_SH) && $lockTries < 10) {
+  $lockType = isset($isProcessInput) && $isProcessInput ? LOCK_EX : LOCK_SH;
+  while (!flock($handler, $lockType) && $lockTries < 10) {
     usleep(100000); //100ms
     ++$lockTries;
   }
@@ -76,7 +78,7 @@ function ParseGamestate($useRedis = false)
 
   $gamestateContent = "";
   if($useRedis) $gamestateContent = ReadCache($gameName . "GS");
-  if($gamestateContent == "") $gamestateContent = file_get_contents($filename);
+  if($gamestateContent == "") $gamestateContent = fread($handler, filesize($filename));
   $gamestateContent = explode("\r\n", $gamestateContent);
   if(count($gamestateContent) < 60) exit;
 
