@@ -87,7 +87,7 @@
         array_push($cardPrintings, $cardID);
         array_push($cardsSeen, $cardID);
         PopulateTrie($cardArray, $handler, $trie, $propertyName, $cardID, $i, $sparse, $isBool, $isString, $defaultValue, $cardRarity);
-        if(ShouldDuplicate($cardArray[$i])) PopulateTrie($cardArray, $handler, $trie, $propertyName, $set . ($cardNumber + 400), $i, $sparse, $isBool, $isString, $defaultValue, $cardRarity);
+        if(ShouldDuplicate($cardArray[$i])) PopulateTrie($cardArray, $handler, $trie, $propertyName, $set . ($cardNumber + 400), $i, $sparse, $isBool, $isString, $defaultValue, $cardRarity, true);
       }
     }
     if($sparse) fwrite($handler, "default: return " . ($isString ? "\"$defaultValue\"" : $defaultValue) . ";}\r\n");
@@ -96,7 +96,7 @@
     fwrite($handler, "}\r\n\r\n");
   }
 
-  function PopulateTrie(&$cardArray, $handler, &$trie, $propertyName, $cardID, $i, $sparse, $isBool, $isString, $defaultValue, $cardRarity) {
+  function PopulateTrie(&$cardArray, $handler, &$trie, $propertyName, $cardID, $i, $sparse, $isBool, $isString, $defaultValue, $cardRarity, $isDuplicate=false) {
     if($propertyName == "type") $data = MapType($cardArray[$i], $cardID);
     else if($propertyName == "attack") $data = $cardArray[$i]->power;
     else if($propertyName == "block")
@@ -118,7 +118,7 @@
     else if($propertyName == "health")
     {
       $data = $cardArray[$i]->health;
-      CheckImage($cardID);
+      CheckImage($cardID, $isDuplicate);
     }
     else if($propertyName == "rarity")
     {
