@@ -1541,6 +1541,7 @@ function SelfCostModifier($cardID, $from)
     case "DTD175": case "DTD176": case "DTD177": return ($from == "BANISH" ? -2 : 0);
     case "DTD178": case "DTD179": case "DTD180": return ($from == "BANISH" ? -2 : 0);
     case "DTD213": return (-1 * NumRunechants($currentPlayer));
+    case "EVO055": return EvoUpgradeAmount($currentPlayer) >= 2? -3 : 0;
     default: return 0;
   }
 }

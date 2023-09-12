@@ -18,6 +18,9 @@
     global $mainPlayer, $defPlayer;
     switch($cardID)
     {
+      case "EVO055":
+        if(EvoUpgradeAmount($mainPlayer) >= 1) PummelHit();
+        break;
       case "EVO236":
         if(IsHeroAttackTarget()) {
           $deck = new Deck($defPlayer);
