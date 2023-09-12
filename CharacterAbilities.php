@@ -893,6 +893,23 @@ function CharacterDealDamageAbilities($player, $damage)
   }
 }
 
+function CharacterAttackAbilities($attackID)
+{
+  global $mainPlayer;
+  $char = &GetPlayerCharacter($mainPlayer);
+  for($i=0; $i<count($char); $i+=CharacterPieces()) {
+    switch($char[$i]) {
+      case "TCC410":
+        if($attackID == "TCC002") {
+          GiveAttackGoAgain();
+          WriteLog("Evo Rapid Fire gave Go Again");
+        }
+        break;
+      default: break;
+    }
+  }
+}
+
 function GetCharacterGemState($player, $cardID)
 {
   $char = &GetPlayerCharacter($player);

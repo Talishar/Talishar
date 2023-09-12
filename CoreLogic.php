@@ -1953,7 +1953,10 @@ function EvoHandling($cardID, $player)
   if(SubtypeContains($cardID, "Legs")) $slot = "Legs";
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
     if(SubtypeContains($char[$i], "Legs")) {
-      $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
+      if(SubtypeContains($char[$i], "Base")) {
+        $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
+      }
+      else WriteLog("*ERR0R*//No base of that type equipped//");
       break;
     }
   }
