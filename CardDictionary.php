@@ -790,6 +790,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DTD164": return $from != "PLAY" || SearchCount(SearchBanish($currentPlayer, bloodDebtOnly:true)) < 13;
     case "DTD199": return GetClassState($currentPlayer, $CS_HighestRoll) != 6;
     case "DTD208": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
+    case "TCC011": return EvoUpgradeAmount($player) == 0;//Restricted if no EVOs
     case "TCC079": return HitsInCombatChain() < 3;
     case "EVO235": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     default: return false;
