@@ -454,8 +454,14 @@ function CharacterCostModifier($cardID, $from)
 {
   global $currentPlayer, $CS_NumSwordAttacks;
   $modifier = 0;
-  if(CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumSwordAttacks) == 1 && SearchCharacterActive($currentPlayer, "CRU077")) {
-    --$modifier;
+  $char = &GetPlayerCharacter($currentPlayer);
+  for($i=0; $i<count($char); $i+=CharacterPieces()) {
+    if($char[$i+1] < 2) continue;
+    switch($char[$i]) {
+      case "CRU077": if(CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumSwordAttacks) == 1) --$modifier; break;
+      case "TCC408": if($cardID == "TCC002") --$modifier; break;
+      default: break;
+    }
   }
   return CanCostBeModified($cardID) ? $modifier : 0;
 }
