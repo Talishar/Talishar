@@ -55,6 +55,9 @@
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID) {
+      case "EVO007": case "EVO008":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "EVO235":
         $options = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "AA");
         if($options != "") {

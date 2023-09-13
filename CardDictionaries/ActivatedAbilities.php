@@ -34,6 +34,7 @@
   {
     switch($cardID)
     {
+      case "EVO007": case "EVO008": return 3;
       case "EVO235": return 2;
       case "EVO247": return 2;
       default: return 0;
@@ -44,6 +45,7 @@
   {
     switch($cardID)
     {
+      case "EVO007": case "EVO008": return "I";
       case "EVO235": return "AR";
       case "EVO247": return "A";
       default: return "";
