@@ -31,6 +31,9 @@
       case "TCC068":
         Draw($otherPlayer);
         return "";
+      case "TCC069":
+        MZMoveCard($otherPlayer, "MYDISCARD:type=AA", "MYBOTDECK", may:true);
+        return "";
       case "TCC079":
         Draw($currentPlayer);
         return "";
