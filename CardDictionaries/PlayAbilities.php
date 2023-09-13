@@ -51,6 +51,7 @@
   function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $mainPlayer, $currentPlayer, $defPlayer;
+    global $CS_NamesOfCardsPlayed;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID) {
@@ -59,6 +60,15 @@
         if($options != "") {
           AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, $options);
           AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $currentPlayer, -1, 1);
+        }
+        return "";
+      case "EVO239":
+        $cardsPlayed = explode(",", GetClassState($currentPlayer, $CS_NamesOfCardsPlayed));
+        for($i=0; $i<count($cardsPlayed); ++$i) {
+          if(CardName($cardsPlayed[$i]) == "Wax On") {
+            PlayAura("CRU075", $currentPlayer);
+            break;
+          }
         }
         return "";
       case "EVO245":
