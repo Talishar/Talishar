@@ -21,6 +21,16 @@ services:
       REDIS_HOST: "app_redis"
       REDIS_ENABLED: true
       DOMAIN: "localhost"
+  socket-server:
+    build:
+      dockerfile: ./ws/Dockerfile
+      context: .
+    restart: always
+    volumes:
+      - "./:/var/www/html/game"
+    command: bash "/var/www/html/game/ws/bun --hot run index.ts"
+    ports:
+      - "3000:3000"
   mysql-server:
     image: mysql:latest
     restart: always
