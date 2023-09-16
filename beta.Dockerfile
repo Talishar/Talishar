@@ -17,6 +17,8 @@ RUN docker-php-ext-install zip mysqli pdo pdo_mysql shmop bz2
 
 COPY --chown=www-data:www-data . /var/www/html/game
 
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+
 EXPOSE 80
 EXPOSE 443
 
