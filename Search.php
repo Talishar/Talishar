@@ -748,6 +748,7 @@ function SearchArcaneReplacement($player, $zone)
   for ($i = 0; $i < count($array); $i += $count) {
     if ($zone == "MYCHAR" && !IsCharacterAbilityActive($player, $i)) continue;
     $cardID = $array[$i];
+    if ($array[$i+7] == 0) continue;
     if (SpellVoidAmount($cardID, $player) > 0 && IsCharacterActive($player, $i)) {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
