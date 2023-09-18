@@ -441,7 +441,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->playerPitch = $playerPitchArr;
 
   $response->playerDeckCount = count($myDeck);
-  $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
+  if($myCharacter[1] > 0 && ($myCharacter[0] == "EVO002" || $myCharacter[0] == "EVO001")) $response->playerDeckCard = JSONRenderedCard($myDeck[0], action:($myCharacter[1] > 1 ? 35 : 0), actionDataOverride:1, borderColor:6, controller:$playerID);
+  else $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
   $playerDeckArr = array();
   if(IsGameOver()) {
     for($i=0; $i<count($myDeck); $i+=DeckPieces()) {

@@ -368,6 +368,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       SetClassState($playerID, $CS_PlayIndex, $index);
       PlayCard($cardID, "PLAY", -1, $index);
       break;
+    case 35: //Play card from deck
+      WriteLog("test");
+      break;
     case 99: //Pass
       if(CanPassPhase($turn[0])) {
         PassInput(false);
