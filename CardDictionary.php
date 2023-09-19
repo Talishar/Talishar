@@ -461,6 +461,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $banishCard = $banish->Card($index);
     if(!(PlayableFromBanish($banishCard->ID(), $banishCard->Modifier()) || AbilityPlayableFromBanish($banishCard->ID()))) return false;
   }
+  if($from == "DECK" && ($character[1] < 2 || $character[0] != "EVO001" && $character[0] != "EVO002" || CardCost($cardID) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if($phase == "B" && $cardType == "E" && $character[$index+6] == 1) { $restriction = "On combat chain"; return false; }
   if($phase != "B" && $from == "CHAR" && $character[$index+1] != "2") return false;
   if($from == "CHAR" && $phase != "B" && $character[$index+8] == "1") { $restriction = "Frozen"; return false; }

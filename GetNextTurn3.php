@@ -352,6 +352,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->opponentDeck = $opponentDeckArr;
 
+  $response->opponentCardBack = JSONRenderedCard($TheirCardBack);
+
   $opponentBanishArr = array();
   for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
     $cardID = $theirBanish[$i];
@@ -441,7 +443,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->playerPitch = $playerPitchArr;
 
   $response->playerDeckCount = count($myDeck);
-  if($myCharacter[1] > 0 && ($myCharacter[0] == "EVO002" || $myCharacter[0] == "EVO001")) $response->playerDeckCard = JSONRenderedCard($myDeck[0], action:($myCharacter[1] > 1 ? 35 : 0), actionDataOverride:1, borderColor:6, controller:$playerID);
+  if(count($myDeck) > 0 && $myCharacter[1] > 0 && ($myCharacter[0] == "EVO002" || $myCharacter[0] == "EVO001")) {
+    $playable = IsPlayable($myDeck[0], $turn[0], "DECK", 0);
+    $response->playerDeckCard = JSONRenderedCard($myDeck[0], action:($playable ? 35 : 0), actionDataOverride:strval(0), borderColor: ($playable ? 6 : 0), controller:$playerID);
+  }
   else $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
   $playerDeckArr = array();
   if(IsGameOver()) {
@@ -450,6 +455,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
   }
   $response->playerDeck = $playerDeckArr;
+
+  $response->playerCardBack = JSONRenderedCard($MyCardBack);
 
   $banish = GetBanish($playerID);
   $playerBanishArr = array();

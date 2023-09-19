@@ -369,7 +369,14 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       PlayCard($cardID, "PLAY", -1, $index);
       break;
     case 35: //Play card from deck
-      WriteLog("test");
+      $index = $cardID; //Overridden to be index instead
+      $deck = &GetDeck($playerID);
+      if($index >= count($deck)) break;
+      $cardID = $deck[$index];
+      if(!IsPlayable($cardID, $turn[0], "DECK", $index)) break;
+      unset($deck[$index]);
+      $deck = array_values($deck);
+      PlayCard($cardID, "DECK");
       break;
     case 99: //Pass
       if(CanPassPhase($turn[0])) {
