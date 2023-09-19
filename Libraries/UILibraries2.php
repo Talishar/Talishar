@@ -124,11 +124,11 @@ function JSONRenderedCard(
     'isBroken' => $isBroken,
     'onChain' => $onChain,
     'isFrozen' => $isFrozen,
-    'countersMap' => $countersMap,
+    'countersMap' => $countersMap == json_decode('{}') ? null : $countersMap,
     'label' => $label,
     'facing' => $facing,
     'numUses' => $numUses,
-    'subcards' => [$subcard]
+    'subcards' => $subcard == NULL ? null : [$subcard]
   ];
 
   if ($gem != NULL) {
