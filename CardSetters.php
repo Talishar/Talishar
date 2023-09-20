@@ -64,6 +64,10 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
       AddLayer("TRIGGER", $player, $character[$index]);
     }
   }
+  if ($from == "EQUIP") {
+    $charIndex = FindCharacterIndex($player, $cardID);
+    DestroyCharacter($player, $charIndex, true);
+  }
   if($banishedBy != "") CheckContracts($banishedBy, $cardID);
   return $rv;
 }
