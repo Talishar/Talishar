@@ -1890,6 +1890,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
       AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-PAY1", 1);
+      AddDecisionQueue("WRITELOG", $currentPlayer, "Paid extra resource to throw a dagger", 1);
       break;
     case "OUT157":
       BottomDeckMultizone($currentPlayer, "MYHAND", "MYARS");
