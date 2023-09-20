@@ -243,12 +243,13 @@
   // 2: Any Target
   // 3: Their Hero + Their Allies
   // 4: My Hero only (For afflictions)
+  // 5: Their Allies only
   function GetArcaneTargetIndices($player, $target)
   {
     global $CS_ArcaneTargetsSelected;
     $otherPlayer = ($player == 1 ? 2 : 1);
     if($target == 4) return "MYCHAR-0";
-    if($target != 4) $rv = "THEIRCHAR-0";
+    if($target != 4 && $target != 5) $rv = "THEIRCHAR-0";
     else $rv = "";
     if(($target == 0 && !ShouldAutotargetOpponent($player)) || $target == 2) $rv .= ",MYCHAR-0";
     if($target == 2) {
@@ -257,7 +258,7 @@
       $myAllies = &GetAllies($player);
       for($i=0; $i<count($myAllies); $i+=AllyPieces()) $rv .= ",MYALLY-" . $i;
     }
-    else if($target == 3) {
+    else if($target == 3 || $target == 5) {
       $theirAllies = &GetAllies($otherPlayer);
       for($i=0; $i<count($theirAllies); $i+=AllyPieces()) {
         if($rv != "") $rv .= ",";

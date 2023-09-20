@@ -137,8 +137,8 @@
         if(count($allies) < $maxAllies) $maxAllies = count($allies);
         $damage = ArcaneDamage($cardID) + ConsumeArcaneBonus($currentPlayer);
         DealArcane($damage, 1, "PLAYCARD", $cardID, false, $currentPlayer, false, false, resolvedTarget: $target);
-        for($i=1; $i<$maxAllies; ++$i) DealArcane($damage, 3, "PLAYCARD", $cardID, false, $currentPlayer, true, true);
-        DealArcane($damage, 3, "PLAYCARD", $cardID, false, $currentPlayer, true, false);
+        for($i=1; $i<$maxAllies; ++$i) DealArcane($damage, 5, "PLAYCARD", $cardID, false, $currentPlayer, true, true);
+        DealArcane($damage, 5, "PLAYCARD", $cardID, false, $currentPlayer, true, false);
         return "";
       default: return "";
     }
