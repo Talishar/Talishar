@@ -69,7 +69,8 @@ function SetHeaders()
   $allowedOrigins = array(
     "[0-9a-z\-]*\.talishar\.net",
     "https\:\/\/talishar\.net",
-    "[0-9a-z\-]*\.talishar-fe\.pages\.dev"
+    "[0-9a-z\-]*\.talishar-fe\.pages\.dev",
+    "talishar.surge.sh"
   );
 
   if (isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] != '') {
@@ -84,7 +85,6 @@ function SetHeaders()
       }
     }
   }
-
 }
 
 function isMobile()
@@ -92,20 +92,19 @@ function isMobile()
   $tablet_browser = 0;
   $mobile_browser = 0;
 
-  if(isset($_SERVER['HTTP_USER_AGENT']) && preg_match('/(tablet|ipad|playbook)|(android(?!.*(mobi|opera mini)))/i', strtolower($_SERVER['HTTP_USER_AGENT']))) {
+  if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match('/(tablet|ipad|playbook)|(android(?!.*(mobi|opera mini)))/i', strtolower($_SERVER['HTTP_USER_AGENT']))) {
     $tablet_browser++;
   }
 
-  if(preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android|iemobile)/i', strtolower($_SERVER['HTTP_USER_AGENT']))) {
+  if (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android|iemobile)/i', strtolower($_SERVER['HTTP_USER_AGENT']))) {
     $mobile_browser++;
   }
 
-  if((isset($_SERVER['HTTP_ACCEPT']) && strpos(strtolower($_SERVER['HTTP_ACCEPT']), 'application/vnd.wap.xhtml+xml') > 0) or ((isset($_SERVER['HTTP_X_WAP_PROFILE']) or isset($_SERVER['HTTP_PROFILE'])))) {
+  if ((isset($_SERVER['HTTP_ACCEPT']) && strpos(strtolower($_SERVER['HTTP_ACCEPT']), 'application/vnd.wap.xhtml+xml') > 0) or ((isset($_SERVER['HTTP_X_WAP_PROFILE']) or isset($_SERVER['HTTP_PROFILE'])))) {
     $mobile_browser++;
   }
 
-  if(isset($_SERVER['HTTP_USER_AGENT']))
-  {
+  if (isset($_SERVER['HTTP_USER_AGENT'])) {
     $mobile_ua = strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 4));
     $mobile_agents = array(
       'w3c ', 'acs-', 'alav', 'alca', 'amoi', 'audi', 'avan', 'benq', 'bird', 'blac',
@@ -119,11 +118,11 @@ function isMobile()
       'wapr', 'webc', 'winw', 'winw', 'xda ', 'xda-'
     );
 
-    if(in_array($mobile_ua, $mobile_agents)) {
+    if (in_array($mobile_ua, $mobile_agents)) {
       $mobile_browser++;
     }
 
-    if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'opera mini') > 0) {
+    if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'opera mini') > 0) {
       $mobile_browser++;
       //Check for tablets on opera mini alternative headers
       $stock_ua = strtolower(isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA']) ? $_SERVER['HTTP_X_OPERAMINI_PHONE_UA'] : (isset($_SERVER['HTTP_DEVICE_STOCK_UA']) ? $_SERVER['HTTP_DEVICE_STOCK_UA'] : ''));
