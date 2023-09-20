@@ -413,8 +413,8 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     CurrentEffectDamageEffects($player, $source, $type, $damage);
   }
   if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer) && IsHeroAttackTarget()) { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $player); }
-  PlayerLoseHealth($player, $damage);
   LogDamageStats($player, $damageThreatened, $damage);
+  PlayerLoseHealth($player, $damage);
   return $damage;
 }
 
