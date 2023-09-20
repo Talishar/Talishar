@@ -1020,7 +1020,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       for ($i = 0; $i < count(GetArsenal($player)) + count(GetHand($player)); $i++) {
         BottomDeckMultizone($player, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add to the bottom of your deck");
       }
-      AddDecisionQueue("WRITELOG", $player, ("Player " . $player . " cards and arsenal was put on the bottom of their deck."));
+      AddDecisionQueue("WRITELOG", $player, ("The cards and arsenal of Player " . $player . " was put on the bottom of their deck."));
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case $CID_Frailty:
