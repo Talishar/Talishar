@@ -46,11 +46,11 @@ function BottomDeck($player="", $mayAbility=false, $shouldDraw=false)
   if($shouldDraw) AddDecisionQueue("DRAW", $player, "-", 1);
 }
 
-function BottomDeckMultizone($player, $zone1, $zone2)
+function BottomDeckMultizone($player, $zone1, $zone2, $isMandatory = false, $context = "Choose a card to sink (or Pass)")
 {
   AddDecisionQueue("MULTIZONEINDICES", $player, $zone1 . "&" . $zone2, 1);
-  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to sink (or Pass)", 1);
-  AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+  AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
+  AddDecisionQueue($isMandatory ? "CHOOSEMULTIZONE" : "MAYCHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
   AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
 }
@@ -1015,17 +1015,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case $CID_Inertia:
-      $deck = new Deck($player);
-      $arsenal = &GetArsenal($player);
-      while(count($arsenal) > 0) {
-        $deck->AddBottom($arsenal[0], "ARS");
-        RemoveArsenal($player, 0);
+      WriteLog("Processing the end of turn effect of Inertia.");
+      for ($i = 0; $i < count(GetArsenal($player)) + count(GetHand($player)); $i++) {
+        BottomDeckMultizone($player, "MYHAND", "MYARS", true, " ");
       }
-      $hand = &GetHand($player);
-      while(count($hand) > 0) {
-        $deck->AddBottom($hand[0], "HAND");
-        RemoveHand($player, 0);
-      }
+      AddDecisionQueue("WRITELOG", $player, ("Player " . $player . " cards and arsenal was put on the bottom of their deck."));
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case $CID_Frailty:
