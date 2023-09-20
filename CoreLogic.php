@@ -971,6 +971,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   if($isStaticType) $abilityType = GetAbilityType($cardID, $index, $from);
   if(($cardType == "AR" || ($abilityType == "AR" && $isStaticType)) && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
   if(($cardType == "DR" || ($abilityType == "DR" && $isStaticType)) && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
+  if($from == "DECK" && SearchCharacterActive($currentPlayer, "EVO001") || SearchCharacterActive($currentPlayer, "EVO002")) return true;
   return false;
 }
 
