@@ -154,6 +154,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
       WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
     }
+    $format = is_numeric($format) ? FormatName($format) : $format; // the frontend expects the name of the format
     WriteGameFile();
     $currentTime = round(microtime(true) * 1000);
     SetCachePiece($gameName, 2, $currentTime);
