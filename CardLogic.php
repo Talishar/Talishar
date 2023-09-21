@@ -1213,16 +1213,18 @@ function CardDiscarded($player, $discarded, $source = "")
 
 function Intimidate($player="")
 {
-  global $defPlayer;
-  if($player == "") $player = $defPlayer;
-  $hand = &GetHand($player);
-  if(count($hand) == 0) {
-    WriteLog("Intimidate did nothing because there are no cards in hand");
+  global $currentPlayer, $defPlayer;
+  
+  if (!ShouldAutotargetOpponent($currentPlayer) && $player == "") {
+    AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=C&THEIRCHAR:type=C", 1);
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose hero to intimidate.", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    AddDecisionQueue("INTIMIDATE", $currentPlayer, "-" , 1);
     return;
   }
-  $index = GetRandom() % count($hand);
-  BanishCardForPlayer($hand[$index], $player, "HAND", "INT");
-  RemoveHand($player, $index);
+
+  if ($player != "") AddDecisionQueue("INTIMIDATE", $currentPlayer, $player , 1);
+  else AddDecisionQueue("INTIMIDATE", $currentPlayer, $defPlayer , 1);
 }
 
 function DestroyFrozenArsenal($player)
