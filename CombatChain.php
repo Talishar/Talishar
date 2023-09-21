@@ -387,12 +387,11 @@ function OnBlockResolveEffects()
 }
 
 function GetDefendingEquipmentsFromCombatChainLink($chainLink, $defPlayer) {
+  // returns array of equipments played by the defending hero which is still on the chain
   $defendingEquipments = array();
   for ($i = 0; $i < count($chainLink); $i += ChainLinksPieces()) {
-    // if it's an equipment played by the defending hero which is still on the chain
     if ($chainLink[$i+3] == "EQUIP" && $chainLink[$i+2] == 1 && $chainLink[$i+1] == $defPlayer) {
       array_push($defendingEquipments, $chainLink[$i]);
-      //WriteLog($chainLink[$i] . " is an equipment");
     }
   }
   return $defendingEquipments;
@@ -408,7 +407,6 @@ function BeginningReactionStepEffects()
       {
         $equipmentsToBanish = array();
 
-        // populate equipmentsToBanish from previous chain links's history
         for($i=0; $i<count($chainLinks); $i++) {
           if (count($chainLinks[$i]) == ChainLinksPieces()) continue;
           $defendingEquipments = GetDefendingEquipmentsFromCombatChainLink($chainLinks[$i], $defPlayer);
@@ -418,7 +416,6 @@ function BeginningReactionStepEffects()
           }
         }
         
-        // add the currently defending equipments
         $defendingEquipments = GetChainLinkCards($defPlayer, "E");
         if ($defendingEquipments != "") {
           $defendingEquipments = explode(",", $defendingEquipments);
