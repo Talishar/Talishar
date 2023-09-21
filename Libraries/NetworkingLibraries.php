@@ -1539,7 +1539,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   }
 }
 
-function GetTargetOfAttack()
+function GetTargetOfAttack($attackingCardID = "")
 {
   global $mainPlayer, $combatChainState, $CCS_AttackTarget;
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
@@ -1561,7 +1561,7 @@ function GetTargetOfAttack()
   }
   if ($arcLightIndex > -1) $targets = "THEIRAURAS-" . $arcLightIndex;
   if ($numTargets > 1) {
-    PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
+    PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, $attackingCardID != "" ? "-," . $attackingCardID : "-");
     PrependDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $targets);
     PrependDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target for the attack");
   } else {

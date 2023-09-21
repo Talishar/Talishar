@@ -936,7 +936,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $combatChainState[$CCS_AttackTargetUID] = $uid;
       WriteLog(GetMZCardLink($defPlayer, $lastResult) . " was chosen as the attack target");
-      return 1;
+      $params = explode(",", $parameter);
+      return count($params) > 1 ? $params[1] : 1;
     case "STARTTURNABILITIES":
       StartTurnAbilities();
       return 1;
@@ -1094,7 +1095,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddCombatChain($lastResult, $player, $parameter, 0);
       return $lastResult;
     case "ATTACKWITHIT":
-      PlayCardSkipCosts($lastResult, "DECK");
+      PlayCardEffect($lastResult, "DECK", 0);
       return $lastResult;
     case "HEAVE":
       PrependDecisionQueue("PAYRESOURCES", $player, "<-");
@@ -1306,7 +1307,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "GETTARGETOFATTACK":
       $params = explode(",", $parameter);
-      if(CardType($params[0]) == "AA" || GetResolvedAbilityType($params[0], $params[1]) == "AA") GetTargetOfAttack();
+      $useLastResult = false;
+      if ($params[0] == "-") $useLastResult = true;
+      if(CardType($useLastResult ? $lastResult : $params[0]) == "AA" || GetResolvedAbilityType($lastResult ? $attackingCardID : $params[0], $params[1]) == "AA") GetTargetOfAttack($lastResult);
       return $lastResult;
     default:
       return "NOTSTATIC";
