@@ -32,6 +32,10 @@
         AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $defPlayer, "CC,-,EVO236", 1);
         break;
+      case "EVO241":
+        PlayAura("DTD232", $defPlayer);
+        PlayAura("WTR225", $defPlayer);
+        break;
       default: break;
     }
   }
