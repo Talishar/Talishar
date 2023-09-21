@@ -65,7 +65,10 @@ CREATE TABLE `users` (
   `fabdbId` varchar(64) DEFAULT NULL,
   `patreonEnum` varchar(64) DEFAULT NULL,
   `isBanned` tinyint(1) NOT NULL DEFAULT 0,
-  `lastLoggedIP` varchar(32) DEFAULT NULL
+  `lastLoggedIP` varchar(32) DEFAULT NULL,
+  `lastGameName` int(11) NOT NULL DEFAULT 0,
+  `lastPlayerId` int(11) NOT NULL DEFAULT 0,
+  `lastAuthKey` varchar(128) DEFAULT NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 --
 -- Indexes for dumped tables
