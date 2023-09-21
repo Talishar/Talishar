@@ -77,6 +77,15 @@
           }
         }
         return "";
+      case "EVO242":
+        $xVal = $resourcesPaid/2;
+        PlayAura("ARC112", $currentPlayer, $xVal);
+        if($xVal >= 6) {
+          DiscardRandom($otherPlayer);
+          DiscardRandom($otherPlayer);
+          DiscardRandom($otherPlayer);
+        }
+        return "";
       case "EVO245":
         Draw($currentPlayer);
         if(IsRoyal($currentPlayer)) Draw($currentPlayer);

@@ -114,6 +114,7 @@
     {
       $data = $cardArray[$i]->cost;
       if($data == "") $data = -1;
+      $data = intval($data);
     }
     else if($propertyName == "health")
     {
