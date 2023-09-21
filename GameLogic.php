@@ -166,9 +166,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if(count($params) < 3) array_push($params, "");
       $mzIndices = "";
       for($i = 0; $i < count($cards); ++$i) {
-        if (CardType($cards[$i]) == "E") {
-          $params[0] = "EQUIP";
-        }
         $index = BanishCardForPlayer($cards[$i], $player, $params[0], $params[1], $params[2]);
         if($mzIndices != "") $mzIndices .= ",";
         $mzIndices .= "BANISH-" . $index;
