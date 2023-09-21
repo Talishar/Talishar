@@ -121,7 +121,7 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
         && ($minAttack == -1 || AttackValue($cardID) >= $minAttack)
         && ($maxDef == -1 || BlockValue($cardID) <= $maxDef)
       ) {
-        if($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
+        if($bloodDebtOnly && (!HasBloodDebt($cardID) || $array[$i+1] == "INT")) continue;
         if($phantasmOnly && !HasPhantasm($cardID)) continue;
         if($specOnly && !IsSpecialization($cardID)) continue;
         if($frozenOnly && !IsFrozenMZ($array, $zone, $i)) continue;

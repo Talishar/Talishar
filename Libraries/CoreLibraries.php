@@ -26,9 +26,15 @@ function SeedRandom()
   if(count($combatChain) > 0) for($i=0; $i<count($combatChain); ++$i) $seedString .= $combatChain[$i];
 
   $char = &GetPlayerCharacter(1);
-  for($i=0; $i<count($char); ++$i) $seedString .= $char[$i];
+  for($i=0; $i<count($char); ++$i) {
+    if ($i % CharacterPieces() == 9) continue;
+    $seedString .= $char[$i];
+  }
   $char = &GetPlayerCharacter(2);
-  for($i=0; $i<count($char); ++$i) $seedString .= $char[$i];
+  for($i=0; $i<count($char); ++$i) {
+    if ($i % CharacterPieces() == 9) continue;
+    $seedString .= $char[$i];
+  }
 
   $banish = &GetBanish(1);
   for($i=0; $i<count($banish); ++$i) $seedString .= $banish[$i];
