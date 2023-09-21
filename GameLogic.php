@@ -370,6 +370,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           return implode(",", $cards);
         case "LOSEHEALTH": LoseHealth($lastResult, $player); return $lastResult;
         case "BANISHHAND": BanishHand($player); return $lastResult;
+        case "DOCRANK": DoCrank($player, $lastResult); return $lastResult;
         default: return $lastResult;
       }
     case "FILTER":

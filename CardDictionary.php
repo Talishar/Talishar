@@ -28,6 +28,7 @@ include "CardDictionaries/PlayAbilities.php";
 include "CardDictionaries/HitEffects.php";
 include "CardDictionaries/CurrentEffects.php";
 include "CardDictionaries/ActivatedAbilities.php";
+include "CardDictionaries/Keywords.php";
 include "CardDictionaries/ClassicBattles/DVRShared.php";
 include "CardDictionaries/ClassicBattles/RVDShared.php";
 include "CardDictionaries/Dynasty/DYNShared.php";

@@ -18,6 +18,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
   for($i = 0; $i < $number; ++$i) {
     $uniqueID = GetUniqueId();
     $steamCounters = SteamCounterLogic($item, $player, $uniqueID) + $steamCounterModifier;
+    $index = count($items);
     array_push($items, $item);
     array_push($items, $steamCounters);
     array_push($items, 2);
@@ -25,6 +26,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     array_push($items, $uniqueID);
     array_push($items, $myHoldState);
     array_push($items, $theirHoldState);
+    if(HasCrank($item, $player)) Crank($player, $index);
   }
 }
 
