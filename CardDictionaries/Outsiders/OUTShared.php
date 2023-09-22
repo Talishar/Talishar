@@ -537,7 +537,7 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
           AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "BURDENSOFTHEPAST", 1);
         }
-        return "This is a partially manual card - Enforce defense reaction play restriction manually";
+        return "";
       case "OUT188":
         AddCurrentTurnEffect($cardID . "_1", $currentPlayer);
         AddCurrentTurnEffect($cardID . "_2", $currentPlayer);
