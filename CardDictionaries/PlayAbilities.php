@@ -13,7 +13,7 @@
         $numPitch = SearchCount(SearchPitch($currentPlayer));
         AddCurrentTurnEffect($cardID . "," . ($numPitch*2), $currentPlayer);
         return "";
-      case "TCC058":
+      case "TCC058": case "TCC062": case "TCC075":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "TCC061":

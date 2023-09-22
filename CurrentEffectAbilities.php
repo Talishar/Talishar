@@ -637,6 +637,14 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if($preventable) { $damage -= 3; }
           $remove = true;
           break;
+        case "TCC062":
+          if($preventable) { $damage -= 2; }
+          $remove = true;
+          break;
+        case "TCC075":
+          if($preventable) { $damage -= 1; }
+          $remove = true;
+          break;
         default:
           break;
       }
