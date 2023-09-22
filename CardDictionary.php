@@ -457,7 +457,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
   $abilityType = GetAbilityType($cardID, $index, $from);
-  if(($phase == "DF" || $phase == "AF" || $phase == "M" || $phase == "INSTANT") && EffectPlayCardRestricted($cardID, CardType($cardID), false, $restriction)) return false;
+  if(($phase == "DR" || $phase == "AR" || $phase == "M" || $phase == "INSTANT") && EffectPlayCardRestricted($cardID, CardType($cardID), false, $restriction)) return false;
   if($phase == "P" && $from != "HAND") return false;
   if($phase == "B" && $from == "BANISH") return false;
   if($from == "BANISH") {
