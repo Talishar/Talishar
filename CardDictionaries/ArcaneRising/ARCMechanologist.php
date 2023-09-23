@@ -137,6 +137,8 @@ function HasBoost($cardID)
     case "DYN095": case "DYN096": case "DYN097":
 		case "DYN101": case "DYN102": case "DYN103":
 		case "DYN104": case "DYN105": case "DYN106":
+    case "EVO192": case "EVO193": case "EVO194":
+    case "EVO195": case "EVO196": case "EVO197":
     case "EVO210": case "EVO211": case "EVO212":
       return true;
     default: return false;
@@ -163,6 +165,7 @@ function DoBoost($player)
   ItemBoostEffects();
   GainActionPoints(CountCurrentTurnEffects("ARC006", $player), $player);
   $cardID = $deck->Top(remove:true);
+  SelfBoostEffects($player, $cardID);
   if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) PutItemIntoPlay($cardID);
   else BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
   $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $player);
@@ -172,6 +175,19 @@ function DoBoost($player)
   $combatChainState[$CCS_IsBoosted] = 1;
   if($grantsGA) GiveAttackGoAgain();
   return $grantsGA;
+}
+
+function SelfBoostEffects($player, $boosted)
+{
+  global $layers;
+  $cardID = $layers[0];
+  switch($cardID) {
+    case "EVO192": case "EVO193": case "EVO194":
+    case "EVO195": case "EVO196": case "EVO197":
+      if(SubtypeContains($boosted, "Item", $player) || IsEquipment($boosted, $player)) AddCurrentTurnEffect($cardID, $player);
+      break;
+    default: break;
+  }
 }
 
 function ItemBoostEffects()

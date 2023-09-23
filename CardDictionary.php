@@ -1548,3 +1548,8 @@ function Rarity($cardID)
     return ROGUERarity($cardID);
   }
 }
+
+function IsEquipment($cardID, $player="")
+{
+  return CardType($cardID) == "E" || SubtypeContains($cardID, "Evo", $player);
+}

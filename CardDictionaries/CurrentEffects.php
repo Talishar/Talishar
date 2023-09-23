@@ -41,6 +41,8 @@
     $cardID = $idArr[0];
     switch($cardID) {
       case "EVO126": case "EVO127": case "EVO128": return 1;
+      case "EVO192": case "EVO193": case "EVO194":
+      case "EVO195": case "EVO196": case "EVO197": return 1;
       default: return 0;
     }
   }
@@ -52,6 +54,8 @@
     $cardID = $idArr[0];
     switch($cardID) {
       case "EVO126": case "EVO127": case "EVO128": return true;
+      case "EVO192": case "EVO193": case "EVO194":
+      case "EVO195": case "EVO196": case "EVO197": return true;
       default: return false;
     }
   }
