@@ -142,6 +142,7 @@ function HasBoost($cardID)
     case "EVO204": case "EVO205": case "EVO206":
     case "EVO207": case "EVO208": case "EVO209":
     case "EVO210": case "EVO211": case "EVO212":
+    case "EVO213": case "EVO214": case "EVO215":
       return true;
     default: return false;
   }
