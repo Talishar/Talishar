@@ -476,7 +476,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if(CachedOverpowerActive() && CachedNumActionBlocked() >= 1 && ($cardType == "A" || $cardType == "AA")) return false;
     if(CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "CRU047") || SearchCurrentTurnEffects("CRU047-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "CRU047") || SearchCharacterActive($mainPlayer, "CRU097")) && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
   }
-  if($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player)) || $cardID == "OUT184")) return false;
+  if($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player)) || $cardID == "OUT184" || HasAmbush($cardID))) return false;
   if($phase == "B" || $phase == "D") {
     if($cardType == "AA") {
       $baseAttackMax = $combatChainState[$CCS_BaseAttackDefenseMax];
@@ -1499,6 +1499,15 @@ function HasDominate($cardID)
     default: break;
   }
   return false;
+}
+
+function HasAmbush($cardID)
+{
+  switch($cardID)
+  {
+    case "TCC098": case "TCC102": return true;
+    default: return false;
+  }
 }
 
 function CanCostBeModified($cardID)

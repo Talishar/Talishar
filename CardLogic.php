@@ -1036,9 +1036,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       break;
     case "TCC030": Draw($mainPlayer); break;
-    case "TCC031": //TODO:Add vigor token
+    case "TCC031":
+      PlayAura("TCC107", $otherPlayer);
       break;
-    case "TCC032": //TODO: Add might token
+    case "TCC032":
+      PlayAura("TCC105", $otherPlayer);
+      break;
+    case "TCC098": case "TCC102":
+      BanishCardForPlayer("DYN065", $player, "-", "NT", $player);
       break;
     case "TCC033": PlayAura("WTR225", $mainPlayer); break;//Quicken
     default: break;
@@ -1214,7 +1219,7 @@ function CardDiscarded($player, $discarded, $source = "")
 function Intimidate($player="")
 {
   global $currentPlayer, $defPlayer;
-  
+
   if (!ShouldAutotargetOpponent($currentPlayer) && $player == "") {
     AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=C&THEIRCHAR:type=C", 1);
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose hero to intimidate.", 1);

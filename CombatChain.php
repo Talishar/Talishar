@@ -338,7 +338,7 @@ function OnBlockResolveEffects()
       case "OUT099"://Wayfinder's Crest
       case "OUT174"://Vambrace of Determination
       case "DTD047"://Soulbond Resolve
-      case "TCC030": case "TCC031": case "TCC032": case "TCC033":
+      case "TCC030": case "TCC031": case "TCC032": case "TCC033": case "TCC098": case "TCC102":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "DTD094": case "DTD095": case "DTD096":
@@ -415,7 +415,7 @@ function BeginningReactionStepEffects()
             array_push($equipmentsToBanish, $defendingEquipments[$randomIndex]);
           }
         }
-        
+
         $defendingEquipments = GetChainLinkCards($defPlayer, "E");
         if ($defendingEquipments != "") {
           $defendingEquipments = explode(",", $defendingEquipments);
@@ -423,7 +423,7 @@ function BeginningReactionStepEffects()
           array_push($equipmentsToBanish, $combatChain[$defendingEquipments[$randomIndex]]);
         }
 
-        for ($i = 0; $i < count($equipmentsToBanish); $i++) 
+        for ($i = 0; $i < count($equipmentsToBanish); $i++)
           BanishCardForPlayer($equipmentsToBanish[$i], $defPlayer, "EQUIP");
 
         for ($i = 0; $i < count($equipmentsToBanish); $i++) {
