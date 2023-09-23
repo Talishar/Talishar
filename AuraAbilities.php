@@ -343,6 +343,14 @@ function AuraStartTurnAbilities()
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         break;
+      case "TCC105":
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
+        break;
+      case "TCC107":
+        GainResources($mainPlayer, 1);
+        DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
+        break;
       default: break;
     }
   }
