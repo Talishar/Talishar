@@ -645,14 +645,7 @@ function OUTAbilityCost($cardID)
         KatsuHit("to_discard_and_search_for_a_combo_card");
         break;
       case "OUT059": case "OUT060": case "OUT061":
-        if(ComboActive() && IsHeroAttackTarget())
-        {
-          AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
-          AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
-          AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
-          AddDecisionQueue("MULTIADDTOPDECK", $defPlayer, "-", 1);
-          WriteLog("The opponent must put a card from their hand on top of their deck.");
-        }
+        if(ComboActive() && IsHeroAttackTarget()) MZMoveCard($defPlayer, "MYHAND", "MYTOPDECK", silent:true);
         break;
       case "OUT062": case "OUT063": case "OUT064":
         if(ComboActive()) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";

@@ -610,6 +610,9 @@
         $damageDone = $combatChainState[$CCS_DamageDealt];
         AddNextTurnEffect("DTD203," . $damageDone, $defPlayer);
         break;
+      case "TCC039": case "TCC044":
+        MZMoveCard($defPlayer, "MYHAND", "MYTOPDECK", silent:true);
+        break;
       default: return;
     }
   }
