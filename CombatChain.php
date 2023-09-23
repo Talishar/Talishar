@@ -152,6 +152,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "TCC013": return EvoUpgradeAmount($mainPlayer);
     case "TCC028": return SearchPitchForCard($mainPlayer, "TCC048") > -1 ? 1 : 0;
     case "EVO055": return EvoUpgradeAmount($mainPlayer) >= 4? 3 : 0;
+    case "EVO210": case "EVO211": case "EVO212": return NumEquipBlock();
     default: return 0;
   }
 }
