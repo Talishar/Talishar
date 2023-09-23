@@ -26,4 +26,17 @@
     WriteLog("Player $player cranked");
   }
 
+  function ProcessTowerEffect($cardID)
+  {
+    global $CombatChain, $mainPlayer;
+    if(!IsHeroAttackTarget()) return;
+    switch($cardID)
+    {
+      case "TCC034":
+        MZChooseAndDestroy($mainPlayer, "THEIRCHAR:type=E;maxDef=1");
+        break;
+      default: break;
+    }
+  }
+
 ?>

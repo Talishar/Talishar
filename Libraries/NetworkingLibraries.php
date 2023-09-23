@@ -913,6 +913,7 @@ function ResolveCombatDamage($damageDone)
           $EffectContext = $combatChain[$i - 1];
           ProcessHitEffect($combatChain[$i - 1]);
           if($damageDone >= 4) ProcessCrushEffect($combatChain[$i - 1]);
+          if(CachedTotalAttack() >= 13) ProcessTowerEffect($combatChain[$i - 1]);
         }
       }
       for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
