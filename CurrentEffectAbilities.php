@@ -371,7 +371,7 @@ function RemoveEffectsOnChainClose()
       case "OUT052": //Head Leads the Tail
       case "OUT071": case "OUT072": case "OUT073": //Deadly Duo
       case "DTD052"://Spirit of War
-      case "TCC086"://Growl
+      case "TCC086": case "TCC094"://Growl
         $remove = 1;
         break;
       default:
