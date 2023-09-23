@@ -67,6 +67,7 @@
       case "EVO192": case "EVO193": case "EVO194":
       case "EVO195": case "EVO196": case "EVO197": return true;
       case "EVO225": case "EVO226": case "EVO227": return $combatChainState[$CCS_IsBoosted];
+      case "EVO434": return CardType($attackID) == "W";
       default: return false;
     }
   }

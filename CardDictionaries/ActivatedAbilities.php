@@ -64,6 +64,7 @@
       case "EVO009": return EvoUpgradeAmount($currentPlayer) >= 1 ? "AA" : "";
       case "EVO235": return "AR";
       case "EVO247": return "A";
+      case "EVO434": case "EVO435": case "EVO436": case "EVO437": return "I";
       default: return "";
     }
   }

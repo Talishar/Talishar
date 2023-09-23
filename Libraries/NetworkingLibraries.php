@@ -2007,7 +2007,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($definedCardType == "DR") OnDefenseReactionResolveEffects($from);
     }
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
-  } else if($from != "PLAY") {
+  } else if($from != "PLAY" && $from != "EQUIP") {
     $cardSubtype = CardSubType($cardID);
     if(DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer);
     else if(DelimStringContains($cardSubtype, "Item")) PutItemIntoPlay($cardID);

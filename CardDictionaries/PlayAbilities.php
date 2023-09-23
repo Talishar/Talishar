@@ -163,6 +163,9 @@
       case "EVO247":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "EVO434":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       default: return "";
     }
   }

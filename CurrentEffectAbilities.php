@@ -285,6 +285,9 @@ function EffectHitEffect($cardID)
         AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
       }
       break;
+    case "EVO434":
+      Draw($mainPlayer);
+      break;
     default:
       break;
   }

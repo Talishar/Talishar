@@ -1967,6 +1967,7 @@ function EvoHandling($cardID, $player)
     if(SubtypeContains($char[$i], $slot)) {
       if(SubtypeContains($char[$i], "Base")) {
         EvoTransformAbility($cardID, $char[$i], $player);
+        ++$char[$i+2];//EVO TODO: Make this actually put the card underneath
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
       }
       else WriteLog("*ERR0R*//No base of that type equipped//");
@@ -1974,6 +1975,18 @@ function EvoHandling($cardID, $player)
     }
   }
   if(SearchCurrentTurnEffects("EVO007", $player, true) || SearchCurrentTurnEffects("EVO008", $player, true)) Draw($player);
+}
+
+function EvoDiscardUnderCard($player, $index)
+{
+  $char = &GetPlayerCharacter($player);
+  --$char[$index+2];
+}
+
+function EvoHasUnderCard($player, $index)
+{
+  $char = &GetPlayerCharacter($player);
+  return $char[$index+2] > 0;
 }
 
 function EvoTransformAbility($toCardID, $fromCardID, $player="")

@@ -817,6 +817,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "TCC011": return EvoUpgradeAmount($player) == 0;//Restricted if no EVOs
     case "TCC079": return HitsInCombatChain() < 3;
     case "EVO235": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
+    case "EVO434": case "EVO435": case "EVO436": case "EVO437": return !EvoHasUnderCard($currentPlayer, $index);
     default: return false;
   }
 }
