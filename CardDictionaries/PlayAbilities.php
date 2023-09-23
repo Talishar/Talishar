@@ -114,6 +114,9 @@
       case "EVO155": case "EVO156": case "EVO157":
         if(GetClassState($currentPlayer, $CS_NumBoosted) >= 2) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "EVO225": case "EVO226": case "EVO227":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "EVO235":
         $options = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "AA");
         if($options != "") {

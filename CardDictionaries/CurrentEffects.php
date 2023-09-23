@@ -46,13 +46,16 @@
       case "EVO155": case "EVO156": case "EVO157": return 2;
       case "EVO192": case "EVO193": case "EVO194":
       case "EVO195": case "EVO196": case "EVO197": return 1;
+      case "EVO225": return 4;
+      case "EVO226": return 3;
+      case "EVO227": return 2;
       default: return 0;
     }
   }
 
   function EVOCombatEffectActive($cardID, $attackID)
   {
-    global $mainPlayer;
+    global $mainPlayer, $combatChainState, $CCS_IsBoosted;
     $idArr = explode(",", $cardID);
     $cardID = $idArr[0];
     switch($cardID) {
@@ -61,6 +64,7 @@
       case "EVO155": case "EVO156": case "EVO157": return true;
       case "EVO192": case "EVO193": case "EVO194":
       case "EVO195": case "EVO196": case "EVO197": return true;
+      case "EVO225": case "EVO226": case "EVO227": return $combatChainState[$CCS_IsBoosted];
       default: return false;
     }
   }
