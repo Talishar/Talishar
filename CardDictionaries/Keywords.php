@@ -19,11 +19,13 @@
 
   function DoCrank($player, $index)
   {
+    global $CS_NumCranked;
     $items = &GetItems($player);
     if($items[$index+1] <= 0) return;
     --$items[$index+1];
     GainActionPoints(1, $player);
     WriteLog("Player $player cranked");
+    IncrementClassState($player, $CS_NumCranked);
   }
 
   function ProcessTowerEffect($cardID)
