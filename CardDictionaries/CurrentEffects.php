@@ -30,6 +30,7 @@
       case "TCC083": return true;
       case "TCC086": case "TCC094": return CardName($attackID) == "Crouching Tiger";
       case "TCC105": return true;
+      case "EVO155": case "EVO156": case "EVO157": return true;
       case "TCC409": return true;
       default: return false;
     }
@@ -41,6 +42,7 @@
     $cardID = $idArr[0];
     switch($cardID) {
       case "EVO126": case "EVO127": case "EVO128": return 1;
+      case "EVO155": case "EVO156": case "EVO157": return 2;
       case "EVO192": case "EVO193": case "EVO194":
       case "EVO195": case "EVO196": case "EVO197": return 1;
       default: return 0;
@@ -54,6 +56,7 @@
     $cardID = $idArr[0];
     switch($cardID) {
       case "EVO126": case "EVO127": case "EVO128": return true;
+      case "EVO155": case "EVO156": case "EVO157": return true;
       case "EVO192": case "EVO193": case "EVO194":
       case "EVO195": case "EVO196": case "EVO197": return true;
       default: return false;

@@ -70,7 +70,7 @@
   function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $mainPlayer, $currentPlayer, $defPlayer;
-    global $CS_NamesOfCardsPlayed;
+    global $CS_NamesOfCardsPlayed, $CS_NumBoosted;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID) {
@@ -94,6 +94,9 @@
         return "";
       case "EVO129": case "EVO130": case "EVO131":
         if($additionalCosts == "SCRAP") AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "EVO155": case "EVO156": case "EVO157":
+        if(GetClassState($currentPlayer, $CS_NumBoosted) >= 2) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "EVO235":
         $options = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "AA");
