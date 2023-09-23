@@ -137,6 +137,7 @@ function HasBoost($cardID)
     case "DYN095": case "DYN096": case "DYN097":
 		case "DYN101": case "DYN102": case "DYN103":
 		case "DYN104": case "DYN105": case "DYN106":
+    case "EVO183": case "EVO184": case "EVO185":
     case "EVO192": case "EVO193": case "EVO194":
     case "EVO195": case "EVO196": case "EVO197":
     case "EVO204": case "EVO205": case "EVO206":

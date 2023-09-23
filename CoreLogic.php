@@ -1547,6 +1547,7 @@ function SelfCostModifier($cardID, $from)
     case "DTD178": case "DTD179": case "DTD180": return ($from == "BANISH" ? -2 : 0);
     case "DTD213": return (-1 * NumRunechants($currentPlayer));
     case "EVO055": return EvoUpgradeAmount($currentPlayer) >= 2? -3 : 0;
+    case "EVO183": case "EVO184": case "EVO185": return SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036") != "" ? -1 : 0;
     default: return 0;
   }
 }
