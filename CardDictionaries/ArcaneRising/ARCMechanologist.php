@@ -171,6 +171,7 @@ function DoBoost($player)
   GainActionPoints(CountCurrentTurnEffects("ARC006", $player), $player);
   $cardID = $deck->Top(remove:true);
   SelfBoostEffects($player, $cardID);
+  OnBoostedEffects($player, $cardID);
   if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) PutItemIntoPlay($cardID);
   else BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
   $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $player);
@@ -180,6 +181,20 @@ function DoBoost($player)
   $combatChainState[$CCS_IsBoosted] = 1;
   if($grantsGA) GiveAttackGoAgain();
   return $grantsGA;
+}
+
+function OnBoostedEffects($player, $boosted)
+{
+  switch($boosted)
+  {
+    case "EVO177": case "EVO178": case "EVO179":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to get a steam counter", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:sameName=ARC036");
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZADDSTEAMCOUNTER", $player, "-", 1);
+      break;
+    default: break;
+  }
 }
 
 function SelfBoostEffects($player, $boosted)
