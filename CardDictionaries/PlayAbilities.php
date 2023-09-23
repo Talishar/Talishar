@@ -77,6 +77,9 @@
       case "EVO007": case "EVO008":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "EVO061": case "EVO062": case "EVO063":
+        WriteLog("This is a partially manual card. Do not block with attack action cards with cost less than " . EvoUpgradeAmount($currentPlayer));
+        return "";
       case "EVO101":
         $numScrap = 0;
         $costAry = explode(",", $additionalCosts);
