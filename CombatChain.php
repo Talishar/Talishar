@@ -656,6 +656,7 @@ function IsOverpowerActive()
     case "DTD063": case "DTD064": case "DTD065": return SearchCurrentTurnEffects($combatChain[0], $mainPlayer);
     case "DTD115": case "DTD116": case "DTD117": return GetClassState($mainPlayer, $CS_Num6PowBan) > 0;
     case "EVO054": case "EVO055": case "EVO056": return EvoUpgradeAmount($mainPlayer) >= 3;
+    case "EVO140": return CachedTotalAttack() >= 10;
     default: break;
   }
   return false;

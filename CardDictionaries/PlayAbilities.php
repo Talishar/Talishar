@@ -114,6 +114,9 @@
           AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
         }
         return "";
+      case "EVO140":
+        for($i=0; $i<$resourcesPaid; $i+=2) AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "EVO155": case "EVO156": case "EVO157":
         if(GetClassState($currentPlayer, $CS_NumBoosted) >= 2) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";

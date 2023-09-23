@@ -1591,28 +1591,28 @@ function PayAdditionalCosts($cardID, $from)
 {
   global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex;
   $cardSubtype = CardSubType($cardID);
-  if ($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
+  if($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
     return;
-  } else if ($from == "PLAY" && DelimStringContains($cardSubtype, "Aura")) {
+  } else if($from == "PLAY" && DelimStringContains($cardSubtype, "Aura")) {
     PayAuraAbilityAdditionalCosts($cardID, $from);
     return;
   }
   $fuseType = HasFusion($cardID);
   if($fuseType != "") Fuse($cardID, $currentPlayer, $fuseType);
   if(HasScrap($cardID)) Scrap($currentPlayer);
-  if (RequiresDiscard($cardID)) {
+  if(RequiresDiscard($cardID)) {
     $discarded = DiscardRandom($currentPlayer, $cardID);
-    if ($discarded == "") {
+    if($discarded == "") {
       WriteLog("You do not have a card to discard. Reverting gamestate.");
       RevertGamestate();
       return;
     }
     SetClassState($currentPlayer, $CS_AdditionalCosts, $discarded);
   }
-  if (RequiresBanish($cardID)) {
+  if(RequiresBanish($cardID)) {
     $banished = BanishRandom($currentPlayer, $cardID);
-    if ($banished == "") {
+    if($banished == "") {
       WriteLog("You do not have a card to banish. Reverting gamestate.");
       RevertGamestate();
       return;
@@ -1660,14 +1660,14 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "ARC003":
       $abilityType = GetResolvedAbilityType($cardID);
-      if ($abilityType == "AA") {
+      if($abilityType == "AA") {
         $character = &GetPlayerCharacter($currentPlayer);
         $index = GetClassState($currentPlayer, $CS_CharacterIndex);
         $character[$index + 2] = 0;
       }
       break;
     case "ARC041":
-      if (ArsenalHasFaceDownCard($currentPlayer)) {
+      if(ArsenalHasFaceDownCard($currentPlayer)) {
         SetArsenalFacing("UP", $currentPlayer);
       }
       break;
@@ -1686,13 +1686,13 @@ function PayAdditionalCosts($cardID, $from)
     case "CRU097":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
-      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
+      if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
         PayAdditionalCosts($otherCharacter[0], $from);
       }
       break;
     case "CRU101":
       $abilityType = GetResolvedAbilityType($cardID);
-      if ($abilityType == "AA") {
+      if($abilityType == "AA") {
         $character = &GetPlayerCharacter($currentPlayer);
         $index = GetClassState($currentPlayer, $CS_CharacterIndex);
         $character[$index + 2] = 0;
@@ -1727,7 +1727,7 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "MON126": case "MON127": case "MON128": case "MON129": case "MON130": case "MON131": case "MON132":
     case "MON133": case "MON134": case "MON141": case "MON142": case "MON143":
-      if (RandomBanish3GY()) AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(RandomBanish3GY()) AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "MON135": case "MON136": case "MON137": case "MON147": case "MON148": case "MON149": case "MON150": case "MON151": case "MON152":
       RandomBanish3GY();
@@ -1751,7 +1751,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,-", 1);
       break;
     case "MON247":
-      if (CanRevealCards($currentPlayer)) {
+      if(CanRevealCards($currentPlayer)) {
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIHANDAA");
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to reveal", 1);
@@ -1775,7 +1775,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
     case "MON266": case "MON267": case "MON268":
-      if (CanRevealCards($currentPlayer)) {
+      if(CanRevealCards($currentPlayer)) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to reveal for Belittle");
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:type=AA;maxAttack=3");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -1787,7 +1787,7 @@ function PayAdditionalCosts($cardID, $from)
       }
       break;
     case "MON281": case "MON282": case "MON283":
-      if ($from == "PLAY") {
+      if($from == "PLAY") {
         $hand = &GetHand($currentPlayer);
         if (count($hand) == 0) {
           WriteLog("This ability requires a discard as an additional cost, but you have no cards to discard. Reverting gamestate prior to the card declaration.");
@@ -1797,7 +1797,7 @@ function PayAdditionalCosts($cardID, $from)
       }
       break;
     case "ELE031": case "ELE032":
-      if (ArsenalHasFaceDownCard($currentPlayer)) {
+      if(ArsenalHasFaceDownCard($currentPlayer)) {
         $cardFlipped = SetArsenalFacing("UP", $currentPlayer);
         AddAdditionalCost($currentPlayer, TalentOverride($cardFlipped, $currentPlayer));
         WriteLog("Lexi turns " . CardLink($cardFlipped, $cardFlipped) . " face up.");
@@ -1838,7 +1838,7 @@ function PayAdditionalCosts($cardID, $from)
       $numCopper = CountItem("CRU197", $currentPlayer);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      if ($numCopper > 0) {
+      if($numCopper > 0) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Copper to pay");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numCopper + 1));
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "CRU197-");
@@ -1848,7 +1848,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
       }
       $numSilver = CountItem("EVR195", $currentPlayer);
-      if ($numSilver > 0) {
+      if($numSilver > 0) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Silver to pay");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numSilver + 1));
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "EVR195-");
@@ -1858,7 +1858,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
       }
       $numGold = CountItem("DYN243", $currentPlayer);
-      if ($numGold > 0) {
+      if($numGold > 0) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numGold + 1));
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "DYN243-");
@@ -1903,17 +1903,8 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-BANISH1ATTACK", 1);
       break;
-    case "DTD051":
-    case "DTD052": //Spirit of War
-    case "DTD057":
-    case "DTD058":
-    case "DTD059":
-    case "DTD063":
-    case "DTD064":
-    case "DTD065": //Glaring Impact
-    case "DTD066":
-    case "DTD067":
-    case "DTD068":
+    case "DTD051": case "DTD052": case "DTD057": case "DTD058": case "DTD059": case "DTD063": case "DTD064":
+    case "DTD065": case "DTD066": case "DTD067": case "DTD068":
       Charge();
       AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "2", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
@@ -1937,6 +1928,16 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "EVO101":
       Scrap($currentPlayer);
+      break;
+    case "EVO140":
+      global $CS_DynCostResolved;
+      $xVal = GetClassState($currentPlayer, $CS_DynCostResolved)/2;
+      if(SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) < $xVal) {
+        WriteLog("You do not have enough Hyper Drivers. Reverting gamestate.");
+        RevertGamestate();
+        return;
+      }
+      for($i=0; $i < $xVal; ++$i) MZChooseAndDestroy($currentPlayer, "MYITEMS:sameName=ARC036");
       break;
     default:
       break;
