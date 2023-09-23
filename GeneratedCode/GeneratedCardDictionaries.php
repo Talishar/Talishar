@@ -6384,18 +6384,14 @@ switch($cardID[5]) {
 case "8":
 return 5;
 case "0":
-return 4;
+return 2;
 case "1":
-return 3;
-case "2":
-return 2;
-case "3":
 return 1;
-case "4":
+case "2":
 return 6;
-case "5":
+case "3":
 return 5;
-case "6":
+case "4":
 return 4;
 default: return 0;
 }
@@ -6411,10 +6407,14 @@ default: return 0;
 }
 case "2":
 switch($cardID[5]) {
-case "8":
+case "6":
 return 6;
-case "9":
+case "7":
 return 5;
+case "8":
+return 4;
+case "9":
+return 3;
 default: return 0;
 }
 case "8":
@@ -16862,18 +16862,14 @@ switch($cardID[5]) {
 case "8":
 return "Heist";
 case "0":
-return "Junkyard Dogg";
+return "Scrap Compactor";
 case "1":
 return "Scrap Compactor";
 case "2":
-return "Scrap Compactor";
+return "Scrap Harvester";
 case "3":
-return "Scrap Compactor";
+return "Scrap Harvester";
 case "4":
-return "Scrap Harvester";
-case "5":
-return "Scrap Harvester";
-case "6":
 return "Scrap Harvester";
 default: return "";
 }
@@ -16891,10 +16887,14 @@ default: return "";
 }
 case "2":
 switch($cardID[5]) {
+case "6":
+return "Junkyard Dogg";
+case "7":
+return "Junkyard Dogg";
 case "8":
 return "Junkyard Dogg";
 case "9":
-return "Junkyard Dogg";
+return "Scrap Compactor";
 default: return "";
 }
 case "8":
@@ -23185,30 +23185,30 @@ default: return 1;
 }
 case "2":
 switch($cardID[5]) {
-case "9":
+case "7":
+return 2;
+case "8":
+return 3;
+default: return 1;
+}
+case "4":
+switch($cardID[5]) {
+case "3":
+return 3;
+case "4":
 return 2;
 default: return 1;
 }
 case "3":
 switch($cardID[5]) {
 case "0":
-return 3;
-case "2":
 return 2;
+case "1":
+return 3;
 case "3":
-return 3;
-case "5":
 return 2;
-case "6":
-return 3;
-default: return 1;
-}
 case "4":
-switch($cardID[5]) {
-case "3":
 return 3;
-case "4":
-return 2;
 default: return 1;
 }
 case "1":
@@ -28095,21 +28095,21 @@ case "3":
 switch($cardID[5]) {
 case "8":
 return 2;
-case "0":
+case "2":
+return 3;
+case "3":
 return 3;
 case "4":
-return 3;
-case "5":
-return 3;
-case "6":
 return 3;
 default: return 0;
 }
 case "2":
 switch($cardID[5]) {
-case "8":
+case "6":
 return 3;
-case "9":
+case "7":
+return 3;
+case "8":
 return 3;
 default: return 0;
 }
@@ -40929,10 +40929,6 @@ case "3":
 return "MECHANOLOGIST";
 case "4":
 return "MECHANOLOGIST";
-case "5":
-return "MECHANOLOGIST";
-case "6":
-return "MECHANOLOGIST";
 default: return "NONE";
 }
 case "0":
@@ -40949,6 +40945,10 @@ default: return "NONE";
 }
 case "2":
 switch($cardID[5]) {
+case "6":
+return "MECHANOLOGIST";
+case "7":
+return "MECHANOLOGIST";
 case "8":
 return "MECHANOLOGIST";
 case "9":
