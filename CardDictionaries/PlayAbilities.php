@@ -103,6 +103,14 @@
       case "EVO129": case "EVO130": case "EVO131":
         if($additionalCosts == "SCRAP") AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "EVO132": case "EVO133": case "EVO134":
+        if($additionalCosts == "SCRAP") {
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to get a steam counter", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:hasCrank=true");
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
+        }
+        return "";
       case "EVO155": case "EVO156": case "EVO157":
         if(GetClassState($currentPlayer, $CS_NumBoosted) >= 2) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
