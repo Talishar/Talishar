@@ -1510,6 +1510,15 @@ function HasAmbush($cardID)
   }
 }
 
+function HasScrap($cardID)
+{
+  switch($cardID)
+  {
+    case "EVO126": case "EVO127": case "EVO128": return true;
+    default: return false;
+  }
+}
+
 function CanCostBeModified($cardID)
 {
   switch($cardID) {

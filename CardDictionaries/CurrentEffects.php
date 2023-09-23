@@ -18,20 +18,41 @@
     }
   }
 
-    function TCCCombatEffectActive($cardID, $attackID)
-    {
-      global $mainPlayer;
-      $idArr = explode(",", $cardID);
-      $cardID = $idArr[0];
-      switch($cardID) {
-        case "TCC035": return true;
-        case "TCC037": case "TCC038": case "TCC042": case "TCC043": return ClassContains($attackID, "GUARDIAN", $mainPlayer) && CardType($attackID) == "AA";
-        case "TCC057": return true;
-        case "TCC083": return true;
-        case "TCC086": case "TCC094": return CardName($attackID) == "Crouching Tiger";
-        case "TCC105": return true;
-        case "TCC409": return true;
-        default: return false;
-      }
+  function TCCCombatEffectActive($cardID, $attackID)
+  {
+    global $mainPlayer;
+    $idArr = explode(",", $cardID);
+    $cardID = $idArr[0];
+    switch($cardID) {
+      case "TCC035": return true;
+      case "TCC037": case "TCC038": case "TCC042": case "TCC043": return ClassContains($attackID, "GUARDIAN", $mainPlayer) && CardType($attackID) == "AA";
+      case "TCC057": return true;
+      case "TCC083": return true;
+      case "TCC086": case "TCC094": return CardName($attackID) == "Crouching Tiger";
+      case "TCC105": return true;
+      case "TCC409": return true;
+      default: return false;
     }
+  }
+
+  function EVOEffectAttackModifier($cardID)
+  {
+    $idArr = explode(",", $cardID);
+    $cardID = $idArr[0];
+    switch($cardID) {
+      case "EVO126": case "EVO127": case "EVO128": return 1;
+      default: return 0;
+    }
+  }
+
+  function EVOCombatEffectActive($cardID, $attackID)
+  {
+    global $mainPlayer;
+    $idArr = explode(",", $cardID);
+    $cardID = $idArr[0];
+    switch($cardID) {
+      case "EVO126": case "EVO127": case "EVO128": return true;
+      default: return false;
+    }
+  }
 ?>

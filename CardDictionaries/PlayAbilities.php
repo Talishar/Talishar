@@ -77,6 +77,10 @@
       case "EVO007": case "EVO008":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "EVO126": case "EVO127": case "EVO128":
+      WriteLog($additionalCosts);
+        if($additionalCosts == "SCRAP") AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "EVO235":
         $options = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "AA");
         if($options != "") {

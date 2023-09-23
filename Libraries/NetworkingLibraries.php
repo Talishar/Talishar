@@ -1599,9 +1599,8 @@ function PayAdditionalCosts($cardID, $from)
     return;
   }
   $fuseType = HasFusion($cardID);
-  if ($fuseType != "") {
-    Fuse($cardID, $currentPlayer, $fuseType);
-  }
+  if($fuseType != "") Fuse($cardID, $currentPlayer, $fuseType);
+  if(HasScrap($cardID)) Scrap($currentPlayer);
   if (RequiresDiscard($cardID)) {
     $discarded = DiscardRandom($currentPlayer, $cardID);
     if ($discarded == "") {

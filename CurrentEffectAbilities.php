@@ -299,6 +299,7 @@ function EffectAttackModifier($cardID)
   else if($set == "OUT") return OUTEffectAttackModifier($cardID);
   else if($set == "DTD") return DTDEffectAttackModifier($cardID);
   else if($set == "TCC") return TCCEffectAttackModifier($cardID);
+  else if($set == "EVO") return EVOEffectAttackModifier($cardID);
   else if($set == "ROG") return ROGUEEffectAttackModifier($cardID);
   return 0;
 }
@@ -964,6 +965,7 @@ function IsCombatEffectActive($cardID)
   else if($set == "OUT") return OUTCombatEffectActive($cardID, $attackID);
   else if($set == "DTD") return DTDCombatEffectActive($cardID, $attackID);
   else if($set == "TCC") return TCCCombatEffectActive($cardID, $attackID);
+  else if($set == "EVO") return EVOCombatEffectActive($cardID, $attackID);
   else if($set == "ROG") return ROGUECombatEffectActive($cardID, $attackID);
   switch($cardID)
   {
