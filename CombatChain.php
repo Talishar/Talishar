@@ -208,6 +208,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "DTD206":
       $blockModifier += CountCurrentTurnEffects("DTD206", $defPlayer);
       break;
+    case "EVO231": case "EVO232": case "EVO233":
+      if(CachedOverpowerActive()) $blockModifier += 2;
+      break;
     default: break;
   }
   return $blockModifier;
