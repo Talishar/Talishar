@@ -151,7 +151,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (count($theirSoul) > 0 ? 2 : 0);
     case "TCC013": return EvoUpgradeAmount($mainPlayer);
     case "TCC028": return SearchPitchForCard($mainPlayer, "TCC048") > -1 ? 1 : 0;
-    case "EVO055": return EvoUpgradeAmount($mainPlayer) >= 4? 3 : 0;
+    case "EVO054": case "EVO055": case "EVO056": return EvoUpgradeAmount($mainPlayer) >= 4? 3 : 0;
     case "EVO067": case "EVO068": case "EVO069": return EvoUpgradeAmount($mainPlayer);
     case "EVO210": case "EVO211": case "EVO212":
     case "EVO213": case "EVO214": case "EVO215":
@@ -655,7 +655,7 @@ function IsOverpowerActive()
     case "DYN492a": return true;
     case "DTD063": case "DTD064": case "DTD065": return SearchCurrentTurnEffects($combatChain[0], $mainPlayer);
     case "DTD115": case "DTD116": case "DTD117": return GetClassState($mainPlayer, $CS_Num6PowBan) > 0;
-    case "EVO055": return EvoUpgradeAmount($mainPlayer) >= 3;
+    case "EVO054": case "EVO055": case "EVO056": return EvoUpgradeAmount($mainPlayer) >= 3;
     default: break;
   }
   return false;

@@ -19,7 +19,10 @@
     switch($cardID)
     {
       case "EVO055":
-        if(EvoUpgradeAmount($mainPlayer) >= 1) PummelHit();
+        if(IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) >= 1) PummelHit();
+        break;
+      case "EVO056":
+        if(IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) >= 1) DestroyArsenal($defPlayer);
         break;
       case "EVO236":
         if(IsHeroAttackTarget()) {

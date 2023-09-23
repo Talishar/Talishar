@@ -35,9 +35,15 @@
 
   function EVOAbilityCost($cardID)
   {
+    global $currentPlayer;
     switch($cardID)
     {
       case "EVO007": case "EVO008": return 3;
+      case "EVO009":
+        $evoAmt = EvoUpgradeAmount($currentPlayer);
+        if($evoAmt == 1) return 3;
+        else if($evoAmt >= 2) return 1;
+        else return 0;
       case "EVO235": return 2;
       case "EVO247": return 2;
       default: return 0;
@@ -46,9 +52,11 @@
 
   function EVOAbilityType($cardID, $index=-1)
   {
+    global $currentPlayer;
     switch($cardID)
     {
       case "EVO007": case "EVO008": return "I";
+      case "EVO009": return EvoUpgradeAmount($currentPlayer) >= 1 ? "AA" : "";
       case "EVO235": return "AR";
       case "EVO247": return "A";
       default: return "";
