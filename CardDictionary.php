@@ -464,7 +464,10 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if(!(PlayableFromBanish($banishCard->ID(), $banishCard->Modifier()) || AbilityPlayableFromBanish($banishCard->ID()))) return false;
   }
   if($from == "DECK" && ($character[1] < 2 || $character[0] != "EVO001" && $character[0] != "EVO002" || CardCost($cardID) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
-  if($phase == "B" && $cardType == "E" && $character[$index+6] == 1) { $restriction = "On combat chain"; return false; }
+  if($phase == "B") {
+    if($cardType == "E" && $character[$index+6] == 1) { $restriction = "On combat chain"; return false; }
+    if(IsBlockRestricted($cardID, $phase, $from, $index, $restriction, $player)) return false;
+  }
   if($phase != "B" && $from == "CHAR" && $character[$index+1] != "2") return false;
   if($from == "CHAR" && $phase != "B" && $character[$index+8] == "1") { $restriction = "Frozen"; return false; }
   if($from == "PLAY" && $subtype == "Ally" && $phase != "B" && isset($myAllies[$index + 3]) && $myAllies[$index + 3] == "1") { $restriction = "Frozen"; return false; }
@@ -522,6 +525,23 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       if(!IsDefenseReactionPlayable($cardID, $from)) { $restriction = "Defense reaction not playable."; return false; }
       return true;
     default: return false;
+  }
+}
+
+function IsBlockRestricted($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "")
+{
+  if(IsEquipment($cardID, $player) && !CanBlockWithEquipment()) { $restriction = "This attack disallows blocking with equipment"; return true; }
+  return false;
+}
+
+function CanBlockWithEquipment()
+{
+  global $CombatChain;
+  switch($CombatChain->AttackCard()->ID())
+  {
+    case "EVO204": case "EVO205": case "EVO206":
+    case "EVO207": case "EVO208": case "EVO209": return false;
+    default: return true;
   }
 }
 
