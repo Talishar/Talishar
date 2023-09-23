@@ -1515,6 +1515,7 @@ function HasScrap($cardID)
 {
   switch($cardID)
   {
+    case "EVO108": case "EVO109": case "EVO110":
     case "EVO126": case "EVO127": case "EVO128": return true;
     default: return false;
   }
