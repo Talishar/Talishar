@@ -39,6 +39,7 @@
     global $currentPlayer;
     switch($cardID)
     {
+      case "EVO004": case "EVO005": return 2;
       case "EVO006": return 1;
       case "EVO007": case "EVO008": return 3;
       case "EVO009":
@@ -54,9 +55,10 @@
 
   function EVOAbilityType($cardID, $index=-1)
   {
-    global $currentPlayer, $CS_NumCranked;
+    global $currentPlayer, $CS_NumCranked, $CS_NumBoosted;
     switch($cardID)
     {
+      case "EVO004": case "EVO005": return GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? "A" : "";
       case "EVO006": return GetClassState($currentPlayer, $CS_NumCranked) > 0 ? "AA" : "";
       case "EVO007": case "EVO008": return "I";
       case "EVO009": return EvoUpgradeAmount($currentPlayer) >= 1 ? "AA" : "";
