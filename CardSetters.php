@@ -75,10 +75,12 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
 function RemoveBanish($player, $index)
 {
   $banish = &GetBanish($player);
+  $cardID = $banish[$index];
   for($i = $index + BanishPieces() - 1; $i >= $index; --$i) {
     unset($banish[$i]);
   }
   $banish = array_values($banish);
+  return $cardID;
 }
 
 //When it matters, make it save this off to a different zone

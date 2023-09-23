@@ -36,8 +36,8 @@ function MZRemove($player, $lastResult)
     switch($mzIndex[0]) {
       case "MYDISCARD": $lastResult = RemoveGraveyard($player, $mzIndex[1]); break;
       case "THEIRDISCARD": $lastResult = RemoveGraveyard($otherPlayer, $mzIndex[1]); break;
-      case "MYBANISH": RemoveBanish($player, $mzIndex[1]); break;
-      case "THEIRBANISH": RemoveBanish($otherPlayer, $mzIndex[1]); break;
+      case "MYBANISH": $lastResult = RemoveBanish($player, $mzIndex[1]); break;
+      case "THEIRBANISH": $lastResult = RemoveBanish($otherPlayer, $mzIndex[1]); break;
       case "MYARS": $lastResult = RemoveArsenal($player, $mzIndex[1]); break;
       case "THEIRARS": $lastResult = RemoveArsenal($otherPlayer, $mzIndex[1]); break;
       case "MYPITCH": RemovePitch($player, $mzIndex[1]); break;
