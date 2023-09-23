@@ -18,6 +18,14 @@
     global $mainPlayer, $defPlayer;
     switch($cardID)
     {
+      case "EVO006":
+        if(IsHeroAttackTarget()) {
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card with Crank to get a steam counter", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYITEMS:hasCrank=true");
+          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("MZADDSTEAMCOUNTER", $mainPlayer, "-", 1);
+        }
+        break;
       case "EVO055":
         if(IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) >= 1) PummelHit();
         break;
