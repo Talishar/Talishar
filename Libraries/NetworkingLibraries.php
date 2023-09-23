@@ -1619,7 +1619,7 @@ function PayAdditionalCosts($cardID, $from)
     }
     SetClassState($currentPlayer, $CS_AdditionalCosts, $banished);
   }
-  switch ($cardID) {
+  switch($cardID) {
     case "WTR159":
       $hand = &GetHand($currentPlayer);
       if (count($hand) == 0) {
@@ -1934,6 +1934,9 @@ function PayAdditionalCosts($cardID, $from)
     case "DTD111":
       $banishedCards = BanishHand($currentPlayer);
       SetClassState($currentPlayer, $CS_AdditionalCosts, $banishedCards);
+      break;
+    case "EVO101":
+      Scrap($currentPlayer);
       break;
     default:
       break;
