@@ -917,7 +917,7 @@ function CurrentEffectIntellectModifier()
   for($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i + 1] == $mainPlayer) {
       switch($currentTurnEffects[$i]) {
-        case "WTR042": case "ARC161": case "CRU028": case "MON000": case "MON246":
+        case "WTR042": case "ARC161": case "CRU028": case "MON000": case "MON246": case "EVO026": case "EVO426":
           $intellectModifier += 1;
           break;
         default: break;

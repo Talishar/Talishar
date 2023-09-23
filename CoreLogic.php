@@ -1966,6 +1966,7 @@ function EvoHandling($cardID, $player)
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
     if(SubtypeContains($char[$i], $slot)) {
       if(SubtypeContains($char[$i], "Base")) {
+        EvoTransformAbility($cardID, $char[$i], $player);
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
       }
       else WriteLog("*ERR0R*//No base of that type equipped//");
@@ -1973,6 +1974,50 @@ function EvoHandling($cardID, $player)
     }
   }
   if(SearchCurrentTurnEffects("EVO007", $player, true) || SearchCurrentTurnEffects("EVO008", $player, true)) Draw($player);
+}
+
+function EvoTransformAbility($toCardID, $fromCardID, $player="")
+{
+  switch($toCardID)
+  {
+    case "EVO026":
+      if(SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
+        AddCurrentTurnEffect($toCardID, $player);
+      break;
+    case "EVO027":
+      if(SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
+        GainResources($player, 3);
+      break;
+    case "EVO029":
+      if(SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
+        GainActionPoints(1, $player);
+      break;
+    default: break;
+  }
+  switch($fromCardID)
+  {
+    case "EVO426":
+      if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
+        AddCurrentTurnEffect($fromCardID, $player);
+      if(SubtypeContains($toCardID, "Demi-Hero", $player)) {
+        AddCurrentTurnEffect($fromCardID, $player);
+        AddCurrentTurnEffect($fromCardID, $player);
+      }
+      break;
+    case "EVO427":
+      if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
+        GainResources($player, 3);
+      if(SubtypeContains($toCardID, "Demi-Hero", $player))
+        GainResources($player, 6);
+      break;
+    case "EVO429":
+      if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
+        GainActionPoints(1, $player);
+      if(SubtypeContains($toCardID, "Demi-Hero", $player))
+        GainActionPoints(2, $player);
+      break;
+    default: break;
+  }
 }
 
 function EvoUpgradeAmount($player)
