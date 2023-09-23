@@ -53,6 +53,9 @@
       case "TCC079":
         Draw($currentPlayer);
         return "";
+      case "TCC080":
+        GainResources($currentPlayer, 1);
+        return "";
       case "TCC082":
         BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
         return "";
