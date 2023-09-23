@@ -9,6 +9,22 @@
       case "TCC035":
         AddCurrentTurnEffect($cardID, $defPlayer);
         return "";
+      case "TCC051":
+        Draw(1);
+        Draw(2);
+        return "";
+      case "TCC052":
+        PlayAura("TCC107", 1);
+        PlayAura("TCC107", 2);
+        return "";
+      case "TCC053":
+        PlayAura("TCC105", 1);
+        PlayAura("TCC105", 2);
+        return "";
+      case "TCC054":
+        PlayAura("WTR225", 1);
+        PlayAura("WTR225", 2);
+        return "";
       case "TCC057":
         $numPitch = SearchCount(SearchPitch($currentPlayer));
         AddCurrentTurnEffect($cardID . "," . ($numPitch*2), $currentPlayer);
