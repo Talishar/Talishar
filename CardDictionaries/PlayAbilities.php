@@ -155,6 +155,10 @@
         return "";
       case "EVO228": case "EVO229": case "EVO230":
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Hyper Driver to get a steam counter", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:sameName=ARC036");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
         return "";
       case "EVO235":
         $options = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "AA");
