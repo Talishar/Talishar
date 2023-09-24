@@ -348,6 +348,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $mzArr = explode("-", $lastResult);
           TurnBanishFaceDown(substr($mzArr[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1), $mzArr[1]);
           break;
+        case "ADDITIONALUSE":
+          $mzArr = explode("-", $lastResult);
+          $character = &GetPlayerCharacter($player);
+          ++$character[$mzArr[1] + 5];
+          if($character[$mzArr[1] + 1] == 1) $character[$mzArr[1] + 1] = 2;
+          break;
         default: break;
       }
       return $lastResult;

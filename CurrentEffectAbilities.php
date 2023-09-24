@@ -511,6 +511,9 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "TCC038": case "TCC043":
           if(ClassContains($cardID, "GUARDIAN", $currentPlayer) && CardType($cardID) == "AA") $costModifier -= 1;
           break;
+        case "EVO435":
+          if(CardType($cardID) == "W") { $costModifier -= 1; $remove = true; }
+          break;
         case "ROGUE803":
           if(IsStaticType(CardType($cardID), $from, $cardID)) { $costModifier -= 1; }
           break;

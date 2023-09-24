@@ -166,6 +166,18 @@
       case "EVO434":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "EVO435":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "EVO436":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "EVO437":
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=W");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon to attack an additional time");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "ADDITIONALUSE", 1);
+        return "";
       default: return "";
     }
   }
