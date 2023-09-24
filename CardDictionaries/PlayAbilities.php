@@ -146,7 +146,13 @@
         if(GetClassState($currentPlayer, $CS_NumBoosted) >= 2) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "EVO222": case "EVO223": case "EVO224":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        MZMoveCard($currentPlayer, "MYBANISH:sameName=ARC036", "", may:true);
+        AddDecisionQueue("PUTPLAY", $currentPlayer, "0", 1);
+        return "";
       case "EVO225": case "EVO226": case "EVO227":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "EVO228": case "EVO229": case "EVO230":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";

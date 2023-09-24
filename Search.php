@@ -212,6 +212,19 @@ function SearchItemsByName($player, $name)
   return $cardList;
 }
 
+function SearchBanishByName($player, $name)
+{
+  $banish = &GetBanish($player);
+  $cardList = "";
+  for($i = 0; $i < count($banish); $i += ItemPieces()) {
+    if(CardName($banish[$i]) == $name) {
+      if($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
+    }
+  }
+  return $cardList;
+}
+
 function SearchDiscardForCard($player, $card1, $card2 = "", $card3 = "")
 {
   $discard = &GetDiscard($player);
@@ -943,6 +956,7 @@ function SearchMultizone($player, $searches)
               case "MYDECK": $searchResult = SearchDeckByName($player, $name); break;
               case "MYDISCARD": $searchResult = SearchDiscardByName($player, $name); break;
               case "MYITEMS": $searchResult = SearchItemsByName($player, $name); break;
+              case "MYBANISH": $searchResult = SearchBanishByName($player, $name); break;
               case "THEIRDISCARD": $searchResult = SearchDiscardByName($otherPlayer, $name); break;
               default: break;
             }

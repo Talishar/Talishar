@@ -249,7 +249,7 @@ function MZMoveCard($player, $search, $where, $may=false, $isReveal=false, $sile
   AddDecisionQueue("MULTIZONEINDICES", $player, $search, ($isSubsequent ? 1 : 0));
   if($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  AddDecisionQueue("MZADDZONE", $player, $where, 1);
+  if($where != "") AddDecisionQueue("MZADDZONE", $player, $where, 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
   AddDecisionQueue("SETDQVAR", $player, "0", 1);
   if($silent);
