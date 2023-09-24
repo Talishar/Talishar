@@ -47,9 +47,9 @@
       case "EVO155": case "EVO156": case "EVO157": return 2;
       case "EVO192": case "EVO193": case "EVO194":
       case "EVO195": case "EVO196": case "EVO197": return 1;
-      case "EVO225": return 4;
-      case "EVO226": return 3;
-      case "EVO227": return 2;
+      case "EVO222": case "EVO225": case "EVO228": return 4;
+      case "EVO223": case "EVO226": case "EVO229": return 3;
+      case "EVO224": case "EVO227": case "EVO230": return 2;
       case "EVO436": return 1;
       default: return 0;
     }
@@ -67,7 +67,9 @@
       case "EVO155": case "EVO156": case "EVO157": return true;
       case "EVO192": case "EVO193": case "EVO194":
       case "EVO195": case "EVO196": case "EVO197": return true;
-      case "EVO225": case "EVO226": case "EVO227": return $combatChainState[$CCS_IsBoosted];
+      case "EVO222": case "EVO223": case "EVO224":
+      case "EVO225": case "EVO226": case "EVO227":
+      case "EVO228": case "EVO229": case "EVO230": return $combatChainState[$CCS_IsBoosted];
       case "EVO434": return CardType($attackID) == "W";
       case "EVO436": return CardType($attackID) == "W";
       default: return false;
