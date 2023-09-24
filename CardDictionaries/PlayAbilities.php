@@ -88,6 +88,28 @@
         if($evoAmt >= 3) GiveAttackGoAgain();
         if($evoAmt >= 4) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "EVO058":
+        if(IsHeroAttackTarget())
+        {
+          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+          AddDecisionQueue("PASSPARAMETER", $otherPlayer, EvoUpgradeAmount($currentPlayer), 1);
+          AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+          AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-{0}", 1);
+          AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "{0}-", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . EvoUpgradeAmount($currentPlayer) . " card(s)", 1);
+          AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
+          AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
+          AddDecisionQueue("SETDQVAR", $currentPlayer, "1");
+          AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "<-", 1);
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card", 1);
+          AddDecisionQueue("SPECIFICCARD", $otherPlayer, "PULSEWAVEHARPOONFILTER", 1);
+          AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+          AddDecisionQueue("ADDCARDTOCHAIN", $otherPlayer, "HAND", 1);
+        }
+        return "";
       case "EVO059":
         WriteLog("This is a partially manual card. Must block with " . EvoUpgradeAmount($currentPlayer) . " equipment with -1 def counters if able");
         return "";
