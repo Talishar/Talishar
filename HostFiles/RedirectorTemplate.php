@@ -15,5 +15,6 @@
 
   $roguelikePath = $redirectPath . "/Roguelike/CreateGame.php";
   $gameUIPath = $redirectPath . "/NextTurn4.php";
+  $roguelikeUIPath = $redirectPath . "/NextTurn4.php";
 
 ?>
