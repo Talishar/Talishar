@@ -45,7 +45,8 @@ $theirName = ($playerID == 1 ? $p2uid : $p1uid);
 
 if ($gameStatus == $MGS_GameStarted) {
   $authKey = ($playerID == 1 ? $p1Key : $p2Key);
-  if (isset($gameUIPath)) header("Location: " . $gameUIPath . "?gameName=$gameName&playerID=$playerID");
+  if($roguelikeGameID >= 0 && isset($roguelikeUIPath)) header("Location: " . $roguelikeUIPath . "?gameName=$gameName&playerID=$playerID");
+  else if(isset($gameUIPath)) header("Location: " . $gameUIPath . "?gameName=$gameName&playerID=$playerID");
   else header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=$playerID");
   exit;
 }
