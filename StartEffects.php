@@ -119,6 +119,12 @@ for($i=0; $i<count($p2Inventory); $i+=InventoryPieces())
   }
 }
 
+//Cogwerx equipments
+EquipWithSteamCounter("EVO014");
+EquipWithSteamCounter("EVO015");
+EquipWithSteamCounter("EVO016");
+EquipWithSteamCounter("EVO017");
+
   //Quickshot Apprentice
   if ($p2Char[0] == "ROGUE016") {
     $p2Hand = &GetHand(2);
@@ -149,6 +155,17 @@ include "WriteGamestate.php";
 
 if($MakeStartTurnBackup) MakeStartTurnBackup();
 if($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
+
+function EquipWithSteamCounter($cardID) {
+  if(SearchCharacterForCard(1, $cardID)) {
+    AddDecisionQueue("PASSPARAMETER", 1, $cardID);
+    AddDecisionQueue("PUTEQUIPMENTSTEAMCOUNTER", 1, "-");
+  }
+  if(SearchCharacterForCard(2, $cardID)) {
+    AddDecisionQueue("PASSPARAMETER", 2, $cardID);
+    AddDecisionQueue("PUTEQUIPMENTSTEAMCOUNTER", 2, "-");
+  }
+}
 
 ?>
 

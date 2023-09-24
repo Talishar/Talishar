@@ -82,7 +82,15 @@ function CardSubType($cardID)
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
-    if($number < 400) return GeneratedCardSubtype($cardID);
+    if($number < 400) {
+      $subtypes = GeneratedCardSubtype($cardID);
+      if (!str_contains($subtypes, ",")) return $subtypes;
+      $equipmentTypes = ["Head","Chest","Arms","Legs","Off-Hand","Quiver"];
+      $subtypes = explode(",", $subtypes);
+      foreach ($subtypes as $subtype) {
+        if (in_array($subtype, $equipmentTypes)) return $subtype;
+      }
+    }
     else if($set != "MON" && $set != "DYN" && $cardID != "UPR551") return GeneratedCardSubtype($cardID);
   }
   if($set == "ROG") return ROGUECardSubtype($cardID);
@@ -816,6 +824,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DTD208": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
     case "TCC011": return EvoUpgradeAmount($player) == 0;//Restricted if no EVOs
     case "TCC079": return HitsInCombatChain() < 3;
+    case "EVO014": case "EVO015": case "EVO016": case "EVO017": return $character[$index+2] == 0 || GetClassState($player, $CS_NumBoosted) == 0; 
     case "EVO235": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "EVO434": case "EVO435": case "EVO436": case "EVO437": return !EvoHasUnderCard($currentPlayer, $index);
     default: return false;

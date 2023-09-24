@@ -47,6 +47,7 @@
         if($evoAmt == 1) return 3;
         else if($evoAmt >= 2) return 1;
         else return 0;
+      case "EVO014": case "EVO015": case "EVO016": case "EVO017": return 1;
       case "EVO235": return 2;
       case "EVO247": return 2;
       default: return 0;
@@ -62,6 +63,7 @@
       case "EVO006": return GetClassState($currentPlayer, $CS_NumCranked) > 0 ? "AA" : "";
       case "EVO007": case "EVO008": return "I";
       case "EVO009": return EvoUpgradeAmount($currentPlayer) >= 1 ? "AA" : "";
+      case "EVO014": case "EVO015": case "EVO016": case "EVO017": return "I";
       case "EVO235": return "AR";
       case "EVO247": return "A";
       case "EVO434": case "EVO435": case "EVO436": case "EVO437": return "I";
