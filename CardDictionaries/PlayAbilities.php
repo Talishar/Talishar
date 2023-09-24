@@ -78,7 +78,7 @@
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID) {
       case "EVO004": case "EVO005":
-        PutItemIntoPlayForPlayer("EVO234", $currentPlayer);
+        PutItemIntoPlayForPlayer("EVO234", $currentPlayer, 2);
         return "";
       case "EVO007": case "EVO008":
         AddCurrentTurnEffect($cardID, $currentPlayer);

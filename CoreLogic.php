@@ -1530,7 +1530,7 @@ function SelfCostModifier($cardID, $from)
     case "MON084": case "MON085": case "MON086":
       return TalentContains($combatChain[$layers[3]], "SHADOW") ? -1 : 0;
     case "DYN104": case "DYN105": case "DYN106":
-      return CountItem("ARC036", $currentPlayer) > 0 || CountItem("DYN111", $currentPlayer) > 0 || CountItem("DYN112", $currentPlayer) > 0 ? -1 : 0;
+      return SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036") != "" ? -1 : 0;
     case "OUT056": case "OUT057": case "OUT058":
       return (ComboActive($cardID) ? -2 : 0);
     case "OUT074": case "OUT075": case "OUT076":

@@ -278,7 +278,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
       return "";
     case "DYN092":
-      $hasHead = false; $hasChest = false; $hasArms = false; $hasLegs = false; $hasWeapon = false; $numHypers = 0;
+      $hasHead = false; $hasChest = false; $hasArms = false; $hasLegs = false; $hasWeapon = false;
       $char = &GetPlayerCharacter($currentPlayer);
       for($i=0; $i<count($char); $i+=CharacterPieces())
       {
@@ -297,10 +297,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         }
       }
       if(!$hasHead || !$hasChest || !$hasArms || !$hasLegs || !$hasWeapon) return "You do not meet the equipment requirement";
-      $numHypers = CountItem("ARC036", $currentPlayer);
-      $numHypers += CountItem("DYN111", $currentPlayer);
-      $numHypers += CountItem("DYN112", $currentPlayer);
-      if($numHypers < 3) return "You do not meet the Hyper Driver requirement";
+      if(SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) < 3) return "You do not meet the Hyper Driver requirement";
       //Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
       $mechMaterial = "";
       for($i = count($char)-1; $i >= CharacterPieces(); --$i) {
@@ -315,7 +312,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       for($i = count($items)-ItemPieces(); $i >= 0 && $hyperToDestroy > 0; $i -= ItemPieces()) {
         if($mechMaterial != "") $mechMaterial .= ",";
         $mechMaterial .= $items[$i];
-        if($items[$i] == "ARC036" || $items[$i] == "DYN111" || $items[$i] == "DYN112") DestroyItemForPlayer($currentPlayer, $i);
+        if(CardNameContains($items[$i], "Hyper Driver", $currentPlayer)) DestroyItemForPlayer($currentPlayer, $i);
         --$hyperToDestroy;
       }
       //Now add the new stuff
