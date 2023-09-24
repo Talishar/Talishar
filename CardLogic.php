@@ -1035,6 +1035,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         if($banish[$i+1] == "DTD564") { TurnBanishFaceDown($player, $i); break; }
       }
       break;
+    case "TCC019": case "TCC022": case "TCC026":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $deck = new Deck($player);
+      if($deck->Reveal()) {
+        if(!SubtypeContains($deck->Top(), "Evo", $player)) {
+          WriteLog("The card was put on the bottom of your deck");
+          $deck->AddBottom($deck->Top(remove:true), "DECK");
+        }
+      }
+      break;
     case "TCC030": Draw($mainPlayer); break;
     case "TCC031":
       PlayAura("TCC107", $otherPlayer);

@@ -3,11 +3,14 @@
 
   function TCCHitEffect($cardID)
   {
-    global $mainPlayer, $defPlayer;
+    global $mainPlayer, $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     switch($cardID)
     {
       case "TCC088":
         if(ComboActive()) DamageTrigger($defPlayer, damage:1, type:"DAMAGE", source:$cardID);
+        break;
+      case "TCC016":
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
       default: break;
     }

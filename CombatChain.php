@@ -348,7 +348,7 @@ function OnBlockResolveEffects()
       case "OUT099"://Wayfinder's Crest
       case "OUT174"://Vambrace of Determination
       case "DTD047"://Soulbond Resolve
-      case "TCC030": case "TCC031": case "TCC032": case "TCC033": case "TCC098": case "TCC102":
+      case "TCC019": case "TCC022": case "TCC026": case "TCC030": case "TCC031": case "TCC032": case "TCC033": case "TCC098": case "TCC102":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "DTD094": case "DTD095": case "DTD096":
