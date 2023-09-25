@@ -300,11 +300,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if(SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) < 3) return "You do not meet the Hyper Driver requirement";
       //Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
       $mechMaterial = "";
-      for($i = count($char)-1; $i >= CharacterPieces(); --$i) {
-        if($char[$i] == "DYN089") AddCurrentTurnEffect($char[$i] . "-UNDER", $currentPlayer);
-        if($mechMaterial != "") $mechMaterial .= ",";
-        $mechMaterial .= $char[$i];
-        unset($char[$i]);
+      for($i = count($char)-CharacterPieces(); $i >= 0; $i-=CharacterPieces()) {
+        if(CardType($char[$i]) != "C") {
+          if($char[$i] == "DYN089") AddCurrentTurnEffect($char[$i] . "-UNDER", $currentPlayer);
+          if($mechMaterial != "") $mechMaterial .= ",";
+          $mechMaterial .= $char[$i];
+          $char[$i+1] = 0;
+          for($j=$i; $j<$i+CharacterPieces(); ++$j) unset($char[$j]);
+        }
       }
       $char = array_values($char);
       $items = &GetItems($currentPlayer);
