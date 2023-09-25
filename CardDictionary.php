@@ -816,7 +816,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DTD208": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
     case "TCC011": return EvoUpgradeAmount($player) == 0;//Restricted if no EVOs
     case "TCC079": return HitsInCombatChain() < 3;
-    case "EVO014": case "EVO015": case "EVO016": case "EVO017": return $character[$index+2] == 0 || GetClassState($player, $CS_NumBoosted) == 0; 
+    case "EVO014": case "EVO015": case "EVO016": case "EVO017": return $character[$index+2] == 0 || GetClassState($player, $CS_NumBoosted) == 0;
     case "EVO235": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "EVO434": case "EVO435": case "EVO436": case "EVO437": return !EvoHasUnderCard($currentPlayer, $index);
     default: return false;
@@ -905,6 +905,7 @@ function HasBattleworn($cardID)
     case "OUT011": return true;
     case "TCC080": case "TCC082": case "TCC407": case "TCC408": case "TCC409": case "TCC410": return true;
     case "EVO235": return true;
+    case "EVO442": case "EVO443": case "EVO444": case "EVO445": return true;
     default: return false;
   }
 }
