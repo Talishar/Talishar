@@ -263,6 +263,26 @@ default: return "AA";
 }
 case "4":
 switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "1":
+return "I";
+case "0":
+return "I";
+case "4":
+return "E";
+case "5":
+return "E";
+case "2":
+return "I";
+case "3":
+return "I";
+case "6":
+return "E";
+case "7":
+return "E";
+default: return "AA";
+}
 case "4":
 switch($cardID[5]) {
 case "7":
@@ -280,18 +300,6 @@ return "E";
 case "2":
 return "E";
 case "5":
-return "E";
-default: return "AA";
-}
-case "3":
-switch($cardID[5]) {
-case "4":
-return "E";
-case "5":
-return "E";
-case "6":
-return "E";
-case "7":
 return "E";
 default: return "AA";
 }
@@ -8675,6 +8683,18 @@ default: return 3;
 }
 case "4":
 switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "1":
+return 0;
+case "0":
+return 0;
+case "2":
+return 0;
+case "3":
+return 0;
+default: return 3;
+}
 case "4":
 switch($cardID[5]) {
 case "7":
@@ -13323,6 +13343,26 @@ default: return "";
 }
 case "4":
 switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "1":
+return "Evo Atom Breaker";
+case "0":
+return "Evo Circut Breaker";
+case "4":
+return "Evo Command Center";
+case "5":
+return "Evo Engine Room";
+case "2":
+return "Evo Face Breaker";
+case "3":
+return "Evo Mach Breaker";
+case "6":
+return "Evo Smoothbore";
+case "7":
+return "Evo Thruster";
+default: return "";
+}
 case "4":
 switch($cardID[5]) {
 case "7":
@@ -13341,18 +13381,6 @@ case "2":
 return "Evo Sentry Base Head";
 case "5":
 return "Evo Sentry Base Legs";
-default: return "";
-}
-case "3":
-switch($cardID[5]) {
-case "4":
-return "Evo Command Center";
-case "5":
-return "Evo Engine Room";
-case "6":
-return "Evo Smoothbore";
-case "7":
-return "Evo Thruster";
 default: return "";
 }
 case "2":
@@ -31169,6 +31197,26 @@ default: return "";
 }
 case "4":
 switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "1":
+return "Evo,Chest";
+case "0":
+return "Evo,Head";
+case "4":
+return "Evo,Head";
+case "5":
+return "Evo,Chest";
+case "2":
+return "Evo,Arms";
+case "3":
+return "Evo,Legs";
+case "6":
+return "Evo,Arms";
+case "7":
+return "Evo,Legs";
+default: return "";
+}
 case "4":
 switch($cardID[5]) {
 case "7":
@@ -31187,18 +31235,6 @@ case "2":
 return "Evo,Base,Head";
 case "5":
 return "Evo,Base,Legs";
-default: return "";
-}
-case "3":
-switch($cardID[5]) {
-case "4":
-return "Evo,Head";
-case "5":
-return "Evo,Chest";
-case "6":
-return "Evo,Arms";
-case "7":
-return "Evo,Legs";
 default: return "";
 }
 case "2":
@@ -34188,10 +34224,18 @@ case "4":
 switch($cardID[4]) {
 case "3":
 switch($cardID[5]) {
+case "1":
+return "M";
+case "0":
+return "M";
 case "4":
 return "R";
 case "5":
 return "R";
+case "2":
+return "M";
+case "3":
+return "M";
 case "6":
 return "R";
 case "7":
@@ -38553,6 +38597,26 @@ default: return "NONE";
 }
 case "4":
 switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "1":
+return "MECHANOLOGIST";
+case "0":
+return "MECHANOLOGIST";
+case "4":
+return "MECHANOLOGIST";
+case "5":
+return "MECHANOLOGIST";
+case "2":
+return "MECHANOLOGIST";
+case "3":
+return "MECHANOLOGIST";
+case "6":
+return "MECHANOLOGIST";
+case "7":
+return "MECHANOLOGIST";
+default: return "NONE";
+}
 case "4":
 switch($cardID[5]) {
 case "7":
@@ -38570,18 +38634,6 @@ return "MECHANOLOGIST";
 case "2":
 return "MECHANOLOGIST";
 case "5":
-return "MECHANOLOGIST";
-default: return "NONE";
-}
-case "3":
-switch($cardID[5]) {
-case "4":
-return "MECHANOLOGIST";
-case "5":
-return "MECHANOLOGIST";
-case "6":
-return "MECHANOLOGIST";
-case "7":
 return "MECHANOLOGIST";
 default: return "NONE";
 }

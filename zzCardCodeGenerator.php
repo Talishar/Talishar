@@ -261,13 +261,14 @@
 
   function ShouldDuplicate($card)
   {
-    $hasAction = false; $hasEquipment = false;
+    $hasAction = false; $hasEquipment = false; $hasInstant = false;
     for($i=0; $i<count($card->types); ++$i)
     {
       if($card->types[$i] == "Action") $hasAction = true;
       else if($card->types[$i] == "Equipment") $hasEquipment = true;
+      else if($card->types[$i] == "Instant") $hasInstant = true;
     }
-    return $hasAction && $hasEquipment;
+    return ($hasAction && $hasEquipment) || ($hasInstant && $hasEquipment);
   }
 
 ?>
