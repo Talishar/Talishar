@@ -611,7 +611,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       BanishCardForPlayer("DTD136", $currentPlayer, "EQUIP", "NA");
       DestroyCharacter($currentPlayer, $cardIndex, true);
       break;
-    case "EVO014": case "EVO015": case "EVO016": case "EVO017"::
+    case "EVO014": case "EVO015": case "EVO016": case "EVO017":
       $character[$cardIndex+2] = 0;
     case "EVO434": case "EVO435": case "EVO436": case "EVO437":
       EvoDiscardUnderCard($currentPlayer, $cardIndex);
