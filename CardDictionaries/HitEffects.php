@@ -49,6 +49,11 @@
       case "EVO189": case "EVO190": case "EVO191":
         PlayerOpt($mainPlayer, 1);
         break;
+      case "EVO198": case "EVO199": case "EVO200":
+      case "EVO201": case "EVO202": case "EVO203":
+        MZMoveCard($mainPlayer, "MYHAND:subtype=Item;maxCost=1", "", may:true);
+        AddDecisionQueue("PUTPLAY", $mainPlayer, "0", 1);
+        break;
       case "EVO236":
         if(IsHeroAttackTarget()) {
           $deck = new Deck($defPlayer);
