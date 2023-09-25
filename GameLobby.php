@@ -169,29 +169,16 @@ $isMobile = IsMobile();
     $offhand = "";
     $quiver = "";
     for ($i = 1; $i < count($character); ++$i) {
-      switch (CardSubtype($character[$i])) {
-        case "Head":
-          $head = $character[$i];
-          break;
-        case "Chest":
-          $chest = $character[$i];
-          break;
-        case "Arms":
-          $arms = $character[$i];
-          break;
-        case "Legs":
-          $legs = $character[$i];
-          break;
-        case "Off-Hand":
-          $offhand = $character[$i];
-          break;
-        case "Quiver":
-          $quiver = $character[$i];
-          break;
-        default:
-          if ($weapons != "") $weapons .= ",";
-          $weapons .= $character[$i];
-          break;
+      $cardId = $character[$i];
+      if (SubtypeContains($cardId, "Head")) $head = $cardId;
+      else if (SubtypeContains($cardId, "Chest")) $chest = $cardId;
+      else if (SubtypeContains($cardId, "Arms")) $arms = $cardId;
+      else if (SubtypeContains($cardId, "Legs")) $legs = $cardId;
+      else if (SubtypeContains($cardId, "Off-Hand")) $offhand = $cardId;
+      else if (SubtypeContains($cardId, "Quiver")) $quiver = $cardId;
+      else {
+        if ($weapons != "") $weapons .= ",";
+        $weapons .= $cardId;
       }
     }
 

@@ -72,7 +72,7 @@
 
   function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $mainPlayer, $currentPlayer, $defPlayer;
+    global $mainPlayer, $currentPlayer, $defPlayer, $layers;
     global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_PlayIndex;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -87,6 +87,19 @@
         $evoAmt = EvoUpgradeAmount($currentPlayer);
         if($evoAmt >= 3) GiveAttackGoAgain();
         if($evoAmt >= 4) AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "EVO014":
+        MZMoveCard($mainPlayer, "MYBANISH", "MYTOPDECK");
+        AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
+        return "";
+      case "EVO015":
+        AddDecisionQueue("GAINRESOURCES", $mainPlayer, "2");
+        return "";
+      case "EVO016":
+        AddCurrentTurnEffectNextAttack($cardID, $mainPlayer);
+        return "";
+      case "EVO017":
+        AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1");
         return "";
       case "EVO058":
         if(IsHeroAttackTarget())

@@ -7,6 +7,27 @@ include_once "../APIKeys/APIKeys.php";
 include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
 
+if (!function_exists("DelimStringContains")) {
+  function DelimStringContains($str, $find, $partial=false)
+  {
+    $arr = explode(",", $str);
+    for($i=0; $i<count($arr); ++$i)
+    {
+      if($partial && str_contains($arr[$i], $find)) return true;
+      else if($arr[$i] == $find) return true;
+    }
+    return false;
+  }
+}
+
+if (!function_exists("SubtypeContains")) {
+  function SubtypeContains($cardID, $subtype, $player="")
+  {
+    $cardSubtype = CardSubtype($cardID);
+    return DelimStringContains($cardSubtype, $subtype);
+  }
+}
+
 SetHeaders();
 
 $response = new stdClass();
@@ -222,83 +243,63 @@ if ($decklink != "") {
           $weaponSideboard .= $id;
         }
       } else if ($cardType == "E") {
-        $subtype = CardSubType($id);
         if ($numSideboard == 0) {
-          switch ($subtype) {
-            case "Head":
-              if ($head == "") $head = $id;
-              else {
-                if ($headSideboard != "") $headSideboard .= " ";
-                $headSideboard .= $id;
-              }
-              break;
-            case "Chest":
-              if ($chest == "") $chest = $id;
-              else {
-                if ($chestSideboard != "") $chestSideboard .= " ";
-                $chestSideboard .= $id;
-              }
-              break;
-            case "Arms":
-              if ($arms == "") $arms = $id;
-              else {
-                $armsSideboard .= " ";
-                $armsSideboard .= $id;
-              }
-              break;
-            case "Legs":
-              if ($legs == "") $legs = $id;
-              else {
-                if ($legsSideboard != "") $legsSideboard .= " ";
-                $legsSideboard .= $id;
-              }
-              break;
-            case "Off-Hand":
-              if ($offhand == "") $offhand = $id;
-              else {
-                if ($offhandSideboard != "") $offhandSideboard .= " ";
-                $offhandSideboard .= $id;
-              }
-              break;
-            case "Quiver":
-              if ($quiver == "") $quiver = $id;
-              else {
-                if ($quiverSideboard != "") $quiverSideboard .= " ";
-                $quiverSideboard .= $id;
-              }
-              break;
-            default:
-              break;
-          }
-        } else {
-          switch ($subtype) {
-            case "Head":
+          if (SubtypeContains($id, "Head")) {
+            if ($head == "") $head = $id;
+            else {
               if ($headSideboard != "") $headSideboard .= " ";
               $headSideboard .= $id;
-              break;
-            case "Chest":
+            }
+          } else if (SubtypeContains($id, "Chest")) {
+            if ($chest == "") $chest = $id;
+            else {
               if ($chestSideboard != "") $chestSideboard .= " ";
               $chestSideboard .= $id;
-
-              break;
-            case "Arms":
-              if ($armsSideboard != "") $armsSideboard .= " ";
+            }
+          } else if (SubtypeContains($id, "Arms")) {
+            if ($arms == "") $arms = $id;
+            else {
+              $armsSideboard .= " ";
               $armsSideboard .= $id;
-              break;
-            case "Legs":
+            }
+          } else if (SubtypeContains($id, "Legs")) {
+            if ($legs == "") $legs = $id;
+            else {
               if ($legsSideboard != "") $legsSideboard .= " ";
               $legsSideboard .= $id;
-              break;
-            case "Off-Hand":
+            }
+          } else if (SubtypeContains($id, "Off-Hand")) {
+            if ($offhand == "") $offhand = $id;
+            else {
               if ($offhandSideboard != "") $offhandSideboard .= " ";
               $offhandSideboard .= $id;
-              break;
-            case "Quiver":
+            }
+          } else if (SubtypeContains($id, "Quiver")) {
+            if ($quiver == "") $quiver = $id;
+            else {
               if ($quiverSideboard != "") $quiverSideboard .= " ";
               $quiverSideboard .= $id;
-              break;
-            default:
-              break;
+            }
+          }
+        } else {
+          if (SubtypeContains($id, "Head")) {
+            if ($headSideboard != "") $headSideboard .= " ";
+            $headSideboard .= $id;
+          } else if (SubtypeContains($id, "Chest")) {
+            if ($chestSideboard != "") $chestSideboard .= " ";
+            $chestSideboard .= $id;
+          } else if (SubtypeContains($id, "Arms")) {
+            if ($armsSideboard != "") $armsSideboard .= " ";
+            $armsSideboard .= $id;
+          } else if (SubtypeContains($id, "Legs")) {
+            if ($legsSideboard != "") $legsSideboard .= " ";
+            $legsSideboard .= $id;
+          } else if (SubtypeContains($id, "Off-Hand")) {
+            if ($offhandSideboard != "") $offhandSideboard .= " ";
+            $offhandSideboard .= $id;
+          } else if (SubtypeContains($id, "Quiver")) {
+            if ($quiverSideboard != "") $quiverSideboard .= " ";
+            $quiverSideboard .= $id;
           }
         }
       } else {
@@ -497,30 +498,24 @@ function ParseDraftFab($deck, $filename)
         $weaponSideboard .= $cardID;
         break;
       case "E":
-        $subType = CardSubType($cardID);
-        switch ($subType) {
-          case "Head":
-            if ($headSideboard != "") $headSideboard .= " ";
-            $headSideboard .= $cardID;
-            break;
-          case "Chest":
-            if ($chestSideboard != "") $chestSideboard .= " ";
-            $chestSideboard .= $cardID;
-            break;
-          case "Arms":
-            if ($armsSideboard != "") $armsSideboard .= " ";
-            $armsSideboard .= $cardID;
-            break;
-          case "Legs":
-            if ($legsSideboard != "") $legsSideboard .= " ";
-            $legsSideboard .= $cardID;
-            break;
-          case "Off-Hand":
-            if ($offhandSideboard != "") $offhandSideboard .= " ";
-            $offhandSideboard .= $cardID;
-            break;
-          default:
-            break;
+        if (SubtypeContains($cardID, "Head")) {
+          if ($headSideboard != "") $headSideboard .= " ";
+          $headSideboard .= $cardID;
+        } else if (SubtypeContains($cardID, "Chest")) {
+          if ($chestSideboard != "") $chestSideboard .= " ";
+          $chestSideboard .= $cardID;
+        } else if (SubtypeContains($cardID, "Arms")) {
+          if ($armsSideboard != "") $armsSideboard .= " ";
+          $armsSideboard .= $cardID;
+        } else if (SubtypeContains($cardID, "Legs")) {
+          if ($legsSideboard != "") $legsSideboard .= " ";
+          $legsSideboard .= $cardID;
+        } else if (SubtypeContains($cardID, "Off-Hand")) {
+          if ($offhandSideboard != "") $offhandSideboard .= " ";
+          $offhandSideboard .= $cardID;
+        } else if (SubtypeContains($cardID, "Quiver")) {
+          if ($quiverSideboard != "") $quiverSideboard .= " ";
+          $quiverSideboard .= $cardID;
         }
         break;
       default:
