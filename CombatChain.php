@@ -657,6 +657,7 @@ function IsOverpowerActive()
     case "DTD115": case "DTD116": case "DTD117": return GetClassState($mainPlayer, $CS_Num6PowBan) > 0;
     case "EVO054": case "EVO055": case "EVO056": return EvoUpgradeAmount($mainPlayer) >= 3;
     case "EVO140": return CachedTotalAttack() >= 10;
+    case "EVO147": case "EVO148": case "EVO149": return SearchItemsByName($mainPlayer, "Hyper Driver") != "";
     default: break;
   }
   return false;
