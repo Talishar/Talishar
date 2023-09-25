@@ -45,6 +45,10 @@
           AddDecisionQueue("PUTPLAY", $mainPlayer, "0", 1);
         }
         break;
+      case "EVO186": case "EVO187": case "EVO188":
+      case "EVO189": case "EVO190": case "EVO191":
+        PlayerOpt($mainPlayer, 1);
+        break;
       case "EVO236":
         if(IsHeroAttackTarget()) {
           $deck = new Deck($defPlayer);
