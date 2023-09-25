@@ -96,12 +96,6 @@
         AddDecisionQueue("GAINRESOURCES", $mainPlayer, "2");
         return "";
       case "EVO016":
-        if (count($layers) > 0) {
-          if (CardType($layers[0]) == "AA") {
-            AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
-            return "";
-          }
-        }
         AddCurrentTurnEffectNextAttack($cardID, $mainPlayer);
         return "";
       case "EVO017":

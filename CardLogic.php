@@ -57,8 +57,12 @@ function BottomDeckMultizone($player, $zone1, $zone2, $isMandatory = false, $con
 
 function AddCurrentTurnEffectNextAttack($cardID, $player, $from = "", $uniqueID = -1)
 {
-  global $combatChain;
-  if(count($combatChain) > 0) AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
+  global $combatChain, $layers;
+  if (count($layers) > 0) {
+    if (CardType($layers[0]) == "AA") {
+      AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
+    }
+  } else if(count($combatChain) > 0) AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
   else AddCurrentTurnEffect($cardID, $player, $from, $uniqueID);
 }
 
