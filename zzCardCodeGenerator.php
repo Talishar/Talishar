@@ -188,7 +188,7 @@
 
   function MapType($card, $cardID)
   {
-    $hasAction = false; $hasAttack = false;
+    $hasAction = false; $hasAttack = false; $hasInstant = false;
     $cardNumber = substr($cardID, 3, 3);
     for($i=0; $i<count($card->types); ++$i)
     {
@@ -197,10 +197,10 @@
       else if($card->types[$i] == "Defense") $hasDefense = true;
       else if($card->types[$i] == "Defense Reaction") return "DR";
       else if($card->types[$i] == "Attack Reaction") return "AR";
-      else if($card->types[$i] == "Instant") return "I";
+      else if($card->types[$i] == "Instant") $hasInstant = true;
       else if($card->types[$i] == "Weapon") return "W";
       else if($card->types[$i] == "Hero") return "C";
-      else if($card->types[$i] == "Equipment" && ($cardNumber >= 400 || !$hasAction)) return "E";
+      else if($card->types[$i] == "Equipment" && ($cardNumber >= 400 || (!$hasAction && !$hasInstant))) return "E";
       else if($card->types[$i] == "Token") return "T";
       else if($card->types[$i] == "Resource") return "R";
       else if($card->types[$i] == "Mentor") return "M";
@@ -210,6 +210,7 @@
     }
     if($hasAction && $hasAttack) return "AA";
     else if($hasAction) return "A";
+    else if($hasInstant) return "I";
     else
     {
       echo("No type found for " . $card->name);
