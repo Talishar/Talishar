@@ -151,6 +151,13 @@
         --$items[$index+1];
         if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
         return "";
+      case "EVO093": case "EVO094": case "EVO095":
+        if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        $items = &GetItems($currentPlayer);
+        --$items[$index+1];
+        if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
+        return "";
       case "EVO101":
         $numScrap = 0;
         $costAry = explode(",", $additionalCosts);

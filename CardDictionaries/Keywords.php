@@ -5,7 +5,8 @@
     if(CardNameContains($cardID, "Hyper Driver", $player) && (SearchCharacterForCard($player, "EVO004") || SearchCharacterForCard($player, "EVO005"))) return true;
     switch($cardID) {
       case "EVO084": case "EVO085": case "EVO086":
-      case "EVO087": case "EVO088": case "EVO089": return true;
+      case "EVO087": case "EVO088": case "EVO089":
+      case "EVO093": case "EVO094": case "EVO095": return true;
       default: return false;
     }
   }

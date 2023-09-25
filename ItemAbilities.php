@@ -184,17 +184,25 @@ function ItemHitEffects($attackID)
   }
 }
 
-function ItemTakeDamageAbilities($player, $damage, $type)
+function ItemTakeDamageAbilities($player, $damage, $type="", $preventable=true, $isWard=false)
 {
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  if ($type != "") {
+    $otherPlayer = ($player == 1 ? 2 : 1);
+    $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
+  }
   $items = &GetItems($player);
-  $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
   for($i=count($items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces()) {
     switch($items[$i]) {
       case "CRU104":
         if($damage > $items[$i+1]) { if($preventable) $damage -= $items[$i+1]; $items[$i+1] = 0; }
         else { $items[$i+1] -= $damage; if($preventable) $damage = 0; }
         if($items[$i+1] <= 0) DestroyItemForPlayer($player, $i);
+        break;
+      default:
+        if($isWard && $preventable) {
+          $damage -= ItemDamagePeventionAmount($player, $i);
+          DestroyItemForPlayer($player, $i);
+        }
     }
   }
   return $damage;
@@ -211,6 +219,12 @@ function ItemStartTurnAbility($index)
     case "EVO084": case "EVO085": case "EVO086":
     case "EVO087": case "EVO088": case "EVO089":
       if($mainItems[$index+1] > 0) --$mainItems[$index+1];
+      else DestroyItemForPlayer($mainPlayer, $index);
+      break;
+    case "EVO093": case "EVO094": case "EVO095":
+      if($mainItems[$index+1] > 0) {
+        --$mainItems[$index+1];
+      }
       else DestroyItemForPlayer($mainPlayer, $index);
       break;
     default: break;
@@ -275,5 +289,14 @@ function SteamCounterLogic($item, $playerID, $uniqueID)
   return $counters;
 }
 
+function ItemDamagePeventionAmount($player, $index) {
+  $items = &GetItems($player);
+  switch ($items[$index]) {
+    case "EVO093": case "EVO094": case "EVO095":
+      return $items[$index+1];
+    default:
+      return 0;
+  }
+}
 
 ?>
