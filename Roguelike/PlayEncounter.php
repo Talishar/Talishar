@@ -58,55 +58,52 @@
       default:
         break;
     }
-    $subtype = CardSubType($charZone[$i]);
-    switch ($subtype) {
-      case "Head":
-        if ($head == "")
-          $head = $charZone[$i];
-        else {
-          if ($headSideboard != "")
-            $headSideboard .= " ";
-          $headSideboard .= $charZone[$i];
-        }
-        break;
-      case "Chest":
-        if ($chest == "")
-          $chest = $charZone[$i];
-        else {
-          if ($chestSideboard != "")
-            $chestSideboard .= " ";
-          $chestSideboard .= $charZone[$i];
-        }
-        break;
-      case "Arms":
-        if ($arms == "")
-          $arms = $charZone[$i];
-        else {
-          if ($armsSideboard != "")
-            $armsSideboard .= " ";
-          $armsSideboard .= $charZone[$i];
-        }
-        break;
-      case "Legs":
-       if ($legs == "")
-         $legs = $charZone[$i];
-       else {
-         if ($legsSideboard != "")
-           $legsSideboard .= " ";
-         $legsSideboard .= $charZone[$i];
-       }
-       break;
-     case "Off-Hand":
-       if ($offhand == "")
-         $offhand = $charZone[$i];
-         else {
-         if ($offhandSideboard != "")
-           $offhandSideboard .= " ";
-         $offhandSideboard .= $charZone[$i];
-         }
-     default:
-       break;
-   }
+    $cardID = $charZone[$i];
+    if (SubtypeContains($id, "Head")) {
+      if ($head == "")
+        $head = $cardID;
+      else {
+        if ($headSideboard != "")
+          $headSideboard .= " ";
+        $headSideboard .= $cardID;
+      }
+    } else if (SubtypeContains($cardID, "Chest")) {
+      if ($chest == "")
+        $chest = $cardID;
+      else {
+        if ($chestSideboard != "")
+          $chestSideboard .= " ";
+        $chestSideboard .= $cardID;
+      }
+    } else if (SubtypeContains($cardID, "Arms")) {
+      if ($arms == "")
+        $arms = $cardID;
+      else {
+        if ($armsSideboard != "")
+          $armsSideboard .= " ";
+        $armsSideboard .= $cardID;
+      }
+    } else if (SubtypeContains($cardID, "Legs")) {
+      if ($legs == "")
+        $legs = $cardID;
+      else {
+        if ($legsSideboard != "")
+          $legsSideboard .= " ";
+        $legsSideboard .= $cardID;
+      }
+    } else if (SubtypeContains($cardID, "Off-Hand")) {
+      if ($offhand == "")
+        $offhand = $cardID;
+      else {
+      if ($offhandSideboard != "")
+        $offhandSideboard .= " ";
+      $offhandSideboard .= $cardID;
+      }
+    } 
+    // Uncomment the following line if you want to add Quivers to Roguelike
+    // else if (SubtypeContains($cardID, "Quiver")) {
+
+    // }
   }
 
     $filename = "./Games/" . $gameName . "/LimitedDeck.txt";

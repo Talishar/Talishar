@@ -10,6 +10,28 @@ include "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
 ob_end_clean();
 
+if (!function_exists("DelimStringContains")) {
+  function DelimStringContains($str, $find, $partial=false)
+  {
+    $arr = explode(",", $str);
+    for($i=0; $i<count($arr); ++$i)
+    {
+      if($partial && str_contains($arr[$i], $find)) return true;
+      else if($arr[$i] == $find) return true;
+    }
+    return false;
+  }
+}
+
+if (!function_exists("SubtypeContains")) {
+  function SubtypeContains($cardID, $subtype, $player="")
+  {
+    $cardSubtype = CardSubtype($cardID);
+    return DelimStringContains($cardSubtype, $subtype);
+  }
+}
+
+
 SetHeaders();
 
 
@@ -74,32 +96,22 @@ if($handler) {
   $response->deck->hands = [];
   $response->deck->demiHero = [];//TODO: Move from cards to here
   for($i = 1; $i < count($character); ++$i) {
-    $subtype = CardSubtype($character[$i]);
-    switch($subtype) {
-      case "Head":
-        array_push($response->deck->head, $character[$i]);
-        break;
-      case "Chest":
-        array_push($response->deck->chest, $character[$i]);
-        break;
-      case "Arms":
-        array_push($response->deck->arms, $character[$i]);
-        break;
-      case "Legs":
-        array_push($response->deck->legs, $character[$i]);
-        break;
-      default:
-        $handItem = new stdClass();
-        $handItem->id = $character[$i];
-        $handItem->is1H = Is1H($handItem->id);
-        $numHands = 2;
-        if($subtype == "Quiver") $numHands = 0;
-        else if($subtype == "Off-Hand") $numHands = 1;
-        else if(Is1H($handItem->id)) $numHands = 1;
-        $handItem->numHands = $numHands;
-        array_push($response->deck->weapons, $handItem);
-        array_push($response->deck->hands, $handItem);
-        break;
+    $cardID = $character[$i];
+    if (SubtypeContains($cardID, "Head")) array_push($response->deck->head, $cardID);
+    else if (SubtypeContains($cardID, "Chest")) array_push($response->deck->chest, $cardID);
+    else if (SubtypeContains($cardID, "Arms")) array_push($response->deck->arms, $cardID);
+    else if (SubtypeContains($cardID, "Legs")) array_push($response->deck->legs, $cardID);
+    else {
+      $handItem = new stdClass();
+      $handItem->id = $cardID;
+      $handItem->is1H = Is1H($handItem->id);
+      $numHands = 2;
+      if(SubtypeContains($cardID, "Quiver")) $numHands = 0;
+      else if(SubtypeContains($cardID, "Off-Hand")) $numHands = 1;
+      else if(Is1H($handItem->id)) $numHands = 1;
+      $handItem->numHands = $numHands;
+      array_push($response->deck->weapons, $handItem);
+      array_push($response->deck->hands, $handItem);
     }
   }
 

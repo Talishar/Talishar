@@ -82,15 +82,7 @@ function CardSubType($cardID)
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
-    if($number < 400) {
-      $subtypes = GeneratedCardSubtype($cardID);
-      if (!str_contains($subtypes, ",")) return $subtypes;
-      $equipmentTypes = ["Head","Chest","Arms","Legs","Off-Hand","Quiver"];
-      $subtypes = explode(",", $subtypes);
-      foreach ($subtypes as $subtype) {
-        if (in_array($subtype, $equipmentTypes)) return $subtype;
-      }
-    }
+    if($number < 400) return GeneratedCardSubtype($cardID);
     else if($set != "MON" && $set != "DYN" && $cardID != "UPR551") return GeneratedCardSubtype($cardID);
   }
   if($set == "ROG") return ROGUECardSubtype($cardID);
