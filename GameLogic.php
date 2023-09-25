@@ -154,15 +154,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PlayAbility($lastResult, "-", 0);
       }
       return $lastResult;
-    case "PUTEQUIPMENTSTEAMCOUNTER":
-      $character = &GetPlayerCharacter($player);
-      for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-        if ($character[$i] == $lastResult) {
-          $character[$i+2] += 1; 
-          break;
-        }
-      }
-      return $lastResult;
     case "PLAYABILITY":
       PlayAbility($lastResult, "-", 0);
       return $lastResult;

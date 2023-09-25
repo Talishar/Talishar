@@ -92,12 +92,10 @@ if(SearchCharacterForCard(2, "DYN234")) {
 }
 
 //Seasoned Saviour
-if(SearchCharacterForCard(1, "DYN026")) {
-  $index = FindCharacterIndex(1, "DYN026");
+if(($index = FindCharacterIndex(1, "DYN026")) > 0) {
   $p1Char[$index + 4] = -2;
 }
-if(SearchCharacterForCard(2, "DYN026")) {
-  $index = FindCharacterIndex(2, "DYN026");
+if(($index = FindCharacterIndex(2, "DYN026")) > 0) {
   $p2Char[$index + 4] = -2;
 }
 
@@ -120,10 +118,10 @@ for($i=0; $i<count($p2Inventory); $i+=InventoryPieces())
 }
 
 //Cogwerx equipments
-EquipWithSteamCounter("EVO014");
-EquipWithSteamCounter("EVO015");
-EquipWithSteamCounter("EVO016");
-EquipWithSteamCounter("EVO017");
+EquipWithSteamCounter("EVO014", $p1Char, $p2Char);
+EquipWithSteamCounter("EVO015", $p1Char, $p2Char);
+EquipWithSteamCounter("EVO016", $p1Char, $p2Char);
+EquipWithSteamCounter("EVO017", $p1Char, $p2Char);
 
   //Quickshot Apprentice
   if ($p2Char[0] == "ROGUE016") {
@@ -156,15 +154,9 @@ include "WriteGamestate.php";
 if($MakeStartTurnBackup) MakeStartTurnBackup();
 if($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
-function EquipWithSteamCounter($cardID) {
-  if(SearchCharacterForCard(1, $cardID)) {
-    AddDecisionQueue("PASSPARAMETER", 1, $cardID);
-    AddDecisionQueue("PUTEQUIPMENTSTEAMCOUNTER", 1, "-");
-  }
-  if(SearchCharacterForCard(2, $cardID)) {
-    AddDecisionQueue("PASSPARAMETER", 2, $cardID);
-    AddDecisionQueue("PUTEQUIPMENTSTEAMCOUNTER", 2, "-");
-  }
+function EquipWithSteamCounter($cardID, &$p1Char, &$p2Char) {
+  if(($index = FindCharacterIndex(1, $cardID)) > 0) $p1Char[$index+2] += 1;
+  if(($index = FindCharacterIndex(2, $cardID)) > 0) $p2Char[$index+2] += 1;
 }
 
 ?>
