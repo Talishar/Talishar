@@ -615,6 +615,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       $character[$cardIndex+2] = 0;
       break;
     case "EVO434": case "EVO435": case "EVO436": case "EVO437":
+    case "EVO446": case "EVO447": case "EVO448": case "EVO449":
       EvoDiscardUnderCard($currentPlayer, $cardIndex);
       --$character[$cardIndex+5];
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1; //By default, if it's used, set it to used

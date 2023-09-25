@@ -250,6 +250,23 @@
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "ADDITIONALUSE", 1);
         return "";
+      case "EVO446":
+        Draw($currentPlayer);
+        MZMoveCard($currentPlayer, "MYHAND", "MYTOPDECK", silent:true);
+        return "";
+      case "EVO447":
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to get a steam counter", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:hasCrank=true");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
+        return "";
+      case "EVO448":
+        MZMoveCard($mainPlayer, "MYHAND:subtype=Item;maxCost=1", "", may:true);
+        AddDecisionQueue("PUTPLAY", $mainPlayer, "0", 1);
+        return "";
+      case "EVO449":
+        PlayAura("WTR225", $currentPlayer);
+        return "";
       default: return "";
     }
   }

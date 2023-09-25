@@ -888,6 +888,7 @@ function HasBladeBreak($cardID)
     case $CID_TekloHead: case $CID_TekloChest: case $CID_TekloArms: case $CID_TekloLegs: return true;
     case "EVO034": case "EVO035": case "EVO036": case "EVO037":
     case "EVO018": case "EVO019": case "EVO020": case "EVO021": return true;
+    case "EVO446": case "EVO447": case "EVO448": case "EVO449": return true;
     default: return false;
   }
 }

@@ -71,6 +71,7 @@
       case "EVO235": return "AR";
       case "EVO247": return "A";
       case "EVO434": case "EVO435": case "EVO436": case "EVO437": return "I";
+      case "EVO446": case "EVO447": case "EVO448": case "EVO449": return "I";
       default: return "";
     }
   }
