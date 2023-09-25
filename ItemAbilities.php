@@ -72,6 +72,11 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
         AddAdditionalCost($currentPlayer, "PAID");
       }
       break;
+    case "EVO075": case "EVO076": case "EVO077":
+      RemoveItem($currentPlayer, $index);
+      $deck = new Deck($currentPlayer);
+      $deck->AddBottom($cardID, from:"PLAY");
+      break;
     default: break;
   }
 }
@@ -101,6 +106,11 @@ function ItemPlayAbilities($cardID, $from)
     }
     if($remove) DestroyItemForPlayer($currentPlayer, $i);
   }
+}
+
+function RemoveItem($player, $index)
+{
+  return DestroyItemForPlayer($player, $index, true);
 }
 
 function DestroyItemForPlayer($player, $index, $skipDestroy=false)
@@ -148,18 +158,29 @@ function GetItemGemState($player, $cardID)
 
 function ItemHitEffects($attackID)
 {
-  global $mainPlayer;
+  global $mainPlayer, $defPlayer;
   $attackSubType = CardSubType($attackID);
   $items = &GetItems($mainPlayer);
   for($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+    $remove = false;
     switch($items[$i]) {
       case "DYN094":
         if($attackSubType == "Gun" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
           AddLayer("TRIGGER", $mainPlayer, $items[$i], "-", "-", $items[$i+4]);
         }
         break;
+      case "EVO084": case "EVO085": case "EVO086":
+        if($items[$i] == "EVO084") $amount = 4;
+        else if($items[$i] == "EVO085") $amount = 3;
+        else $amount = 2;
+        if(IsHeroAttackTarget() && CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
+          DamageTrigger($defPlayer, $amount, "DAMAGE", $items[$i]);
+          $remove = true;
+        }
+        break;
       default: break;
     }
+    if($remove) DestroyItemForPlayer($mainPlayer, $i);
   }
 }
 
@@ -186,6 +207,11 @@ function ItemStartTurnAbility($index)
   switch($mainItems[$index]) {
     case "ARC007": case "ARC035": case "EVR069": case "EVR071":
       AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]);
+      break;
+    case "EVO084": case "EVO085": case "EVO086":
+    case "EVO087": case "EVO088": case "EVO089":
+      if($mainItems[$index+1] > 0) --$mainItems[$index+1];
+      else DestroyItemForPlayer($mainPlayer, $index);
       break;
     default: break;
   }

@@ -73,7 +73,7 @@
   function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $mainPlayer, $currentPlayer, $defPlayer, $layers;
-    global $CS_NamesOfCardsPlayed, $CS_NumBoosted;
+    global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_PlayIndex;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID) {
@@ -128,6 +128,28 @@
         return "";
       case "EVO061": case "EVO062": case "EVO063":
         WriteLog("This is a partially manual card. Do not block with attack action cards with cost less than " . EvoUpgradeAmount($currentPlayer));
+        return "";
+      case "EVO075":
+        if($from == "PLAY") GainResources($currentPlayer, 1);
+        return "";
+      case "EVO076":
+        if($from == "PLAY") GainHealth(2, $currentPlayer);
+        return "";
+      case "EVO077":
+        if($from == "PLAY")
+        {
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to get a steam counter", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:hasCrank=true");
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
+        }
+        return "";
+      case "EVO087": case "EVO088": case "EVO089":
+        if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        $items = &GetItems($currentPlayer);
+        --$items[$index+1];
+        if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
         return "";
       case "EVO101":
         $numScrap = 0;

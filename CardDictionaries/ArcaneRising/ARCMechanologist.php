@@ -139,6 +139,7 @@ function HasBoost($cardID)
 		case "DYN104": case "DYN105": case "DYN106":
     case "TCC016":
     case "EVO138":
+    case "EVO177": case "EVO178": case "EVO179":
     case "EVO183": case "EVO184": case "EVO185":
     case "EVO192": case "EVO193": case "EVO194":
     case "EVO195": case "EVO196": case "EVO197":
@@ -218,7 +219,7 @@ function ItemBoostEffects()
   for($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
     switch($items[$i]) {
       case "ARC036":
-      case "DYN110": case "DYN111": case "DYN112":
+      case "DYN110": case "DYN111": case "DYN112": case "EVO234":
         if($items[$i+2] == 2) AddLayer("TRIGGER", $currentPlayer, $items[$i], $i, "-", $items[$i + 4]);
         break;
       case "EVR072":

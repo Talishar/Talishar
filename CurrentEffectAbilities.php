@@ -663,6 +663,10 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if($preventable) { $damage -= 1; }
           $remove = true;
           break;
+        case "EVO087": case "EVO088": case "EVO089":
+          if($preventable) { $damage -= 1; }
+          $remove = true;
+          break;
         default:
           break;
       }

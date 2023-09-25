@@ -216,7 +216,7 @@ function SearchBanishByName($player, $name)
 {
   $banish = &GetBanish($player);
   $cardList = "";
-  for($i = 0; $i < count($banish); $i += ItemPieces()) {
+  for($i = 0; $i < count($banish); $i += BanishPieces()) {
     if(CardName($banish[$i]) == $name) {
       if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
