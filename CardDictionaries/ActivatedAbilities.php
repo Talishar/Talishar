@@ -62,6 +62,9 @@
       case "EVO006": return GetClassState($currentPlayer, $CS_NumCranked) > 0 ? "AA" : "";
       case "EVO007": case "EVO008": return "I";
       case "EVO009": return EvoUpgradeAmount($currentPlayer) >= 1 ? "AA" : "";
+      case "EVO075": return "I";
+      case "EVO076": return "A";
+      case "EVO077": return "I";
       case "EVO235": return "AR";
       case "EVO247": return "A";
       case "EVO434": case "EVO435": case "EVO436": case "EVO437": return "I";

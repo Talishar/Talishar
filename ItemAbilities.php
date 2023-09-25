@@ -72,6 +72,11 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
         AddAdditionalCost($currentPlayer, "PAID");
       }
       break;
+    case "EVO075": case "EVO076": case "EVO077":
+      RemoveItem($currentPlayer, $index);
+      $deck = new Deck($currentPlayer);
+      $deck->AddBottom($cardID, from:"PLAY");
+      break;
     default: break;
   }
 }
@@ -101,6 +106,11 @@ function ItemPlayAbilities($cardID, $from)
     }
     if($remove) DestroyItemForPlayer($currentPlayer, $i);
   }
+}
+
+function RemoveItem($player, $index)
+{
+  return DestroyItemForPlayer($player, $index, true);
 }
 
 function DestroyItemForPlayer($player, $index, $skipDestroy=false)
