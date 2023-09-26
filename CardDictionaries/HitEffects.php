@@ -12,6 +12,9 @@
       case "TCC016":
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
+      case "TCC083":
+        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        break;
       default: break;
     }
   }
