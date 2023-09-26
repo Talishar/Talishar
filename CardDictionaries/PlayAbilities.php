@@ -126,6 +126,9 @@
       case "EVO061": case "EVO062": case "EVO063":
         WriteLog("This is a partially manual card. Do not block with attack action cards with cost less than " . EvoUpgradeAmount($currentPlayer));
         return "";
+      case "EVO070":
+        if($from == "PLAY") DestroyTopCard($currentPlayer);
+        break;
       case "EVO075":
         if($from == "PLAY") GainResources($currentPlayer, 1);
         return "";

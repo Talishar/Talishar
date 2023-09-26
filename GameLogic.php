@@ -479,6 +479,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $rv .= $deck[$i];
       }
       return ($rv == "" ? "PASS" : $rv);
+    case "DESTROYTOPCARD":
+      $deck = new Deck($player);
+      AddGraveyard($deck->Top(remove:true), $player, "TOP");
+      return $lastResult;
     case "SHOWMODES":
       if(is_array($lastResult)) $modes = $lastResult;
       else {
