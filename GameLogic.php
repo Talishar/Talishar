@@ -362,7 +362,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         case "DESTROYFROZENARSENAL": DestroyFrozenArsenal($player); return "";
         case "GIVEATTACKGOAGAIN": GiveAttackGoAgain(); return $lastResult;
-        case "BOOST": return DoBoost($player);
+        case "BOOST": 
+          if (is_numeric($lastResult)) return DoBoost($player, intval($lastResult));
+          return DoBoost($player);
         case "REMOVECARD":
           if($lastResult == "") return $dqVars[0];
           $cards = explode(",", $dqVars[0]);

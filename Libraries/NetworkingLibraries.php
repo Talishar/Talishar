@@ -1940,7 +1940,9 @@ function PayAdditionalCosts($cardID, $from)
       for($i=0; $i < $xVal; ++$i) MZChooseAndDestroy($currentPlayer, "MYITEMS:sameName=ARC036");
       break;
     case "EVO142":
-      Boost($currentPlayer);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how much time you want to activate boost on " . CardLink($cardID, $cardID));
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0,1,2");
+      AddDecisionQueue("OP", $currentPlayer, "BOOST", 1);
       break;
     default:
       break;

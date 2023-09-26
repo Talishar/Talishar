@@ -138,7 +138,7 @@ function HasBoost($cardID)
 		case "DYN101": case "DYN102": case "DYN103":
 		case "DYN104": case "DYN105": case "DYN106":
     case "TCC016":
-    case "EVO138": case "EVO142":
+    case "EVO138":
     case "EVO147": case "EVO148": case "EVO149":
     case "EVO177": case "EVO178": case "EVO179":
     case "EVO183": case "EVO184": case "EVO185":
@@ -169,25 +169,31 @@ function Boost()
   }
 }
 
-function DoBoost($player)
+function DoBoost($player, $boostCount = 1)
 {
   global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
   $deck = new Deck($player);
-  if($deck->Empty()) { WriteLog("Could not boost"); return; }
-  ItemBoostEffects();
-  GainActionPoints(CountCurrentTurnEffects("ARC006", $player), $player);
-  $cardID = $deck->Top(remove:true);
-  SelfBoostEffects($player, $cardID);
-  OnBoostedEffects($player, $cardID);
-  if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) PutItemIntoPlay($cardID);
-  else BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
-  $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $player);
-  WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again");
-  IncrementClassState($player, $CS_NumBoosted);
-  ++$combatChainState[$CCS_NumBoosted];
-  $combatChainState[$CCS_IsBoosted] = 1;
-  if($grantsGA) GiveAttackGoAgain();
-  return $grantsGA;
+  $isGoAgainGranted = false;
+  for ($i = 0; $i < $boostCount; $i++) {
+    if($deck->Empty()) { WriteLog("Could not boost"); return; }
+    ItemBoostEffects();
+    GainActionPoints(CountCurrentTurnEffects("ARC006", $player), $player);
+    $cardID = $deck->Top(remove:true);
+    SelfBoostEffects($player, $cardID);
+    OnBoostedEffects($player, $cardID);
+    if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) PutItemIntoPlay($cardID);
+    else BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
+    $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $player);
+    WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again");
+    IncrementClassState($player, $CS_NumBoosted);
+    ++$combatChainState[$CCS_NumBoosted];
+    $combatChainState[$CCS_IsBoosted] = 1;
+    if($grantsGA) {
+      GiveAttackGoAgain();
+      $isGoAgainGranted = true;
+    }
+  }
+  return $isGoAgainGranted;
 }
 
 function OnBoostedEffects($player, $boosted)
