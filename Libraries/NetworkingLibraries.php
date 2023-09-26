@@ -2017,7 +2017,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if(DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer);
     else if(DelimStringContains($cardSubtype, "Item")) PutItemIntoArena($cardID);
     else if($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer);
-    else if(DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID);
+    else if(DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoArena($currentPlayer, $cardID);
     else if(DelimStringContains($cardSubtype, "Evo")) EvoHandling($cardID, $currentPlayer);
     else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W") {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer);

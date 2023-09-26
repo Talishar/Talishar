@@ -20,10 +20,10 @@
       case "UPR017": Transform($currentPlayer, "Ash", "UPR417"); return "";
       case "UPR018": case "UPR019": case "UPR020": Transform($currentPlayer, "Ash", "UPR042", true); return "";
       case "UPR030": case "UPR031": case "UPR032":
-        PutPermanentIntoPlay($currentPlayer, "UPR043");
+        PutPermanentIntoArena($currentPlayer, "UPR043");
         return "";
       case "UPR033": case "UPR034": case "UPR035":
-        PutPermanentIntoPlay($currentPlayer, "UPR043");
+        PutPermanentIntoArena($currentPlayer, "UPR043");
         if($cardID == "UPR033") $maxTransform = 3;
         else if($cardID == "UPR034") $maxTransform = 2;
         else $maxTransform = 1;
@@ -61,7 +61,7 @@
     switch($cardID)
     {
       case "UPR024": case "UPR025": case "UPR026":
-        PutPermanentIntoPlay($mainPlayer, "UPR043");
+        PutPermanentIntoArena($mainPlayer, "UPR043");
         Transform($mainPlayer, "Ash", "UPR042", true);
         break;
       case "UPR411":
@@ -79,7 +79,7 @@
         $allies = &GetAllies($mainPlayer);
         $allies[$index+2] -= 1;
         $allies[$index+7] -= 1;
-        PutPermanentIntoPlay($mainPlayer, "UPR043");
+        PutPermanentIntoArena($mainPlayer, "UPR043");
         break;
       case "UPR416": if(IsHeroAttackTarget()) { DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); } break;
       default: break;
@@ -95,7 +95,7 @@ function UPRIllusionistDealDamageEffect($cardID)
       $allies = &GetAllies($mainPlayer);
       $allies[$index + 2] -= 1;
       $allies[$index + 7] -= 1;
-      PutPermanentIntoPlay($mainPlayer, "UPR043");
+      PutPermanentIntoArena($mainPlayer, "UPR043");
       break;
     default:
       break;
@@ -138,7 +138,7 @@ function UPRIllusionistDealDamageEffect($cardID)
   function ResolveTransformPermanent($player, $materialIndex, $into)
   {
     RemovePermanent($player, $materialIndex);
-    return PutPermanentIntoPlay($player, $into);
+    return PutPermanentIntoArena($player, $into);
   }
 
   function ResolveTransformAura($player, $materialIndex, $into)

@@ -536,7 +536,7 @@ function ROGUEPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCo
         array_unshift($hand, "ELE191");
         return "";
       case "ROGUE501":
-        PutPermanentIntoPlay($currentPlayer, $cardID);
+        PutPermanentIntoArena($currentPlayer, $cardID);
         return "";
       default:
         return "";

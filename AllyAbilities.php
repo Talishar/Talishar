@@ -280,7 +280,7 @@ function AllyDamageTakenAbilities($player, $i)
     case "UPR413":
       $allies[$i+2] -= 1;
       $allies[$i+7] -= 1;
-      PutPermanentIntoPlay($player, "UPR043");
+      PutPermanentIntoArena($player, "UPR043");
       WriteLog(CardLink($allies[$i], $allies[$i]) . " got a -1 health counter and created an ash token");
       break;
     default: break;

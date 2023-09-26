@@ -1,6 +1,6 @@
 <?php
 
-function PutPermanentIntoPlay($player, $cardID)
+function PutPermanentIntoArena($player, $cardID)
 {
   $permanents = &GetPermanents($player);
   array_push($permanents, $cardID);
@@ -70,7 +70,7 @@ function PermanentBeginEndPhaseEffects()
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
-        PutPermanentIntoPlay($mainPlayer, "UPR043");
+        PutPermanentIntoArena($mainPlayer, "UPR043");
         $remove = 1;
         break;
       case "ROGUE501":
@@ -139,7 +139,7 @@ function PermanentBeginEndPhaseEffects()
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
-        PutPermanentIntoPlay($defPlayer, "UPR043");
+        PutPermanentIntoArena($defPlayer, "UPR043");
         $remove = 1;
         break;
       default:
@@ -353,7 +353,7 @@ function PermanentStartTurnAbilities()
       case "ROGUE804":
         $options = array("ROGUE601", "ROGUE602", "ROGUE603", "ROGUE605", "ROGUE606", "ROGUE607", "ROGUE608", "ROGUE610");
         $choice = $options[rand(0, count($options)-1)];
-        PutPermanentIntoPlay(1, $choice);
+        PutPermanentIntoArena(1, $choice);
         switch($choice)
         {
           case "ROGUE603":

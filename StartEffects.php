@@ -34,7 +34,7 @@ if(CardSet($p2Char[0]) == "ROG") {
     $powersArray = explode(",", $powers);
     for($i = count($powersArray)-1; $i >= 0; --$i)
     {
-      PutPermanentIntoPlay(1, $deck[$powersArray[$i]]);
+      PutPermanentIntoArena(1, $deck[$powersArray[$i]]);
       array_splice($deck, $powersArray[$i], 1);
     }
   }
@@ -104,7 +104,7 @@ for($i=0; $i<count($p1Inventory); $i+=InventoryPieces())
 {
   if($p1Inventory[$i] == "DTD164")
   {
-    PutPermanentIntoPlay(1, "DTD164");
+    PutPermanentIntoArena(1, "DTD164");
     array_push($p1Inventory, "DTD564");
   }
 }
@@ -112,7 +112,7 @@ for($i=0; $i<count($p2Inventory); $i+=InventoryPieces())
 {
   if($p2Inventory[$i] == "DTD164")
   {
-    PutPermanentIntoPlay(2, "DTD164");
+    PutPermanentIntoArena(2, "DTD164");
     array_push($p2Inventory, "DTD564");
   }
 }
@@ -130,13 +130,13 @@ EquipWithSteamCounter("EVO017", $p1Char, $p2Char);
   }
 if ($p2Char[0] == "ROGUE025") {
   $options = array("ROGUE801", "ROGUE803", "ROGUE805");
-  PutPermanentIntoPlay(0, $options[rand(0, count($options)-1)]);
+  PutPermanentIntoArena(0, $options[rand(0, count($options)-1)]);
 }
 
 if ($p2Char[0] == "ROGUE008") {
-  PutPermanentIntoPlay(0, "ROGUE601");
-  PutPermanentIntoPlay(0, "ROGUE603");
-  PutPermanentIntoPlay(0, "ROGUE803");
+  PutPermanentIntoArena(0, "ROGUE601");
+  PutPermanentIntoArena(0, "ROGUE603");
+  PutPermanentIntoArena(0, "ROGUE803");
 }
 
 AddDecisionQueue("SHUFFLEDECK", 1, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck

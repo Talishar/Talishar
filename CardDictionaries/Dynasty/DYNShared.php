@@ -175,9 +175,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if(AttackValue($additionalCosts) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN009": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
-    case "DYN002": PutPermanentIntoPlay($currentPlayer, $cardID); return "";
-    case "DYN003": PutPermanentIntoPlay($currentPlayer, $cardID); return "";
-    case "DYN004": PutPermanentIntoPlay($currentPlayer, $cardID); return "";
+    case "DYN002": PutPermanentIntoArena($currentPlayer, $cardID); return "";
+    case "DYN003": PutPermanentIntoArena($currentPlayer, $cardID); return "";
+    case "DYN004": PutPermanentIntoArena($currentPlayer, $cardID); return "";
     case "DYN016": case "DYN017": case "DYN018": if(AttackValue($additionalCosts) >= 6) GiveAttackGoAgain(); return "";
     case "DYN019": case "DYN020": case "DYN021": if(AttackValue($additionalCosts) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "DYN022": case "DYN023": case "DYN024": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
