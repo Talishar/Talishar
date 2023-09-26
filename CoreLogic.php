@@ -1987,6 +1987,7 @@ function EvoHandling($cardID, $player)
         EvoTransformAbility($cardID, $char[$i], $player);
         ++$char[$i+2];//EVO TODO: Make this actually put the card underneath
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
+        $char[$i+4] = 0; // Reset Defense Counters to 0
       }
       else WriteLog("*ERR0R*//No base of that type equipped//");
       break;
