@@ -948,7 +948,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return 1;
     case "DRAWTOINTELLECT":
       $char = &GetPlayerCharacter($player);
-      for($i = 0; $i < CharacterIntellect($char[0]); ++$i) Draw($player, mainPhase:false, fromCardEffect:false);
+      for($i = 0; $i < CharacterIntellect($char[0]); ++$i) Draw($player, ActionPhase:false, fromCardEffect:false);
       return 1;
     case "ROLLDIE":
       $roll = RollDie($player, true, $parameter == "1");

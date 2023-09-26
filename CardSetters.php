@@ -239,7 +239,7 @@ function DestroyArsenal($player, $index=-1)
   return $cardIDs;
 }
 
-function AddSoul($cardID, $player, $from, $isMainPhase=true)
+function AddSoul($cardID, $player, $from, $isActionPhase=true)
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
@@ -261,7 +261,7 @@ function AddSoul($cardID, $player, $from, $isMainPhase=true)
     }
     IncrementClassState($player, $CS_NumAddedToSoul);
     if(PitchValue($cardID) == 2) IncrementClassState($player, $CS_NumYellowPutSoul); // counts yellow cards put into soul
-    if($isMainPhase && str_contains(NameOverride($cardID, $player), "Herald"))
+    if($isActionPhase && str_contains(NameOverride($cardID, $player), "Herald")) 
     {
       if(SearchCharacterActive($player, "DTD001") || SearchCharacterActive($player, "DTD002")) 
       {

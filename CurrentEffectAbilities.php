@@ -906,13 +906,13 @@ function CurrentEffectPreventsDefenseReaction($from)
   return $reactionPrevented;
 }
 
-function CurrentEffectPreventsDraw($player, $isMainPhase)
+function CurrentEffectPreventsDraw($player, $isActionPhase)
 {
   global $currentTurnEffects;
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
-        case "WTR045": return $isMainPhase;
+        case "WTR045": return $isActionPhase;
         default: break;
       }
     }

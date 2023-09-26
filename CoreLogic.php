@@ -1886,11 +1886,11 @@ function UnityEffect($cardID)
   }
 }
 
-function Draw($player, $mainPhase = true, $fromCardEffect = true)
+function Draw($player, $ActionPhase = true, $fromCardEffect = true)
 {
   global $EffectContext, $mainPlayer, $CS_NumCardsDrawn;
   $otherPlayer = ($player == 1 ? 2 : 1);
-  if($mainPhase && $player != $mainPlayer) {
+  if($ActionPhase && $player != $mainPlayer) {
     $talismanOfTithes = SearchItemsForCard("EVR192", $otherPlayer);
     if($talismanOfTithes != "") {
       $indices = explode(",", $talismanOfTithes);
@@ -1906,19 +1906,19 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true)
   $deck = new Deck($player);
   $hand = &GetHand($player);
   if($deck->Empty()) return -1;
-  if(CurrentEffectPreventsDraw($player, $mainPhase)) return -1;
+  if(CurrentEffectPreventsDraw($player, $ActionPhase)) return -1;
   $cardID = $deck->Top(remove:true);
-  if($mainPhase && (SearchAurasForCard("DTD170", 1) != "" || SearchAurasForCard("DTD170", 2) != "")) BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
+  if($ActionPhase && (SearchAurasForCard("DTD170", 1) != "" || SearchAurasForCard("DTD170", 2) != "")) BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
   else array_push($hand, $cardID);
   IncrementClassState($player, $CS_NumCardsDrawn, 1);
-  if($mainPhase && (SearchCharacterActive($otherPlayer, "EVR019") || (SearchCurrentTurnEffects("EVR019-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "CRU097")))) PlayAura("WTR075", $otherPlayer);
+  if($ActionPhase && (SearchCharacterActive($otherPlayer, "EVR019") || (SearchCurrentTurnEffects("EVR019-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "CRU097")))) PlayAura("WTR075", $otherPlayer);
   if(SearchCharacterActive($player, "EVR020")) {
     if($EffectContext != "-") {
       $cardType = CardType($EffectContext);
       if($cardType == "A" || $cardType == "AA") PlayAura("WTR075", $player);
     }
   }
-  if($mainPhase && SearchCharacterActive($otherPlayer, "ROGUE026")) {
+  if($ActionPhase && SearchCharacterActive($otherPlayer, "ROGUE026")) {
     $health = &GetHealth($otherPlayer);
     $health += -10;
     if($health < 1)
@@ -1927,7 +1927,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true)
       WriteLog("NO! You will not banish me! I refuse!");
     }
   }
-  if($mainPhase)
+  if($ActionPhase)
   {
     $numBrainstorm = CountCurrentTurnEffects("DYN196", $player);
     if($numBrainstorm > 0)
