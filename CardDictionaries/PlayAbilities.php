@@ -157,6 +157,9 @@
         for($i=0; $i<count($costAry); ++$i) if($costAry[$i] == "SCRAP") ++$numScrap;
         if($numScrap > 0) GainResources($currentPlayer, $numScrap * 2);
         return "";
+      case "EVO102": case "EVO103": case "EVO104":
+        if($additionalCosts == "SCRAP") AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "EVO108": case "EVO109": case "EVO110":
         if($additionalCosts == "SCRAP") PlayAura("WTR225", $currentPlayer);
         return "";
