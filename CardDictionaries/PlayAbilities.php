@@ -73,7 +73,7 @@
   function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $mainPlayer, $currentPlayer, $defPlayer, $layers;
-    global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_PlayIndex;
+    global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_PlayIndex, $CS_NumItemsDestroyed;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID) {
@@ -159,6 +159,9 @@
         return "";
       case "EVO108": case "EVO109": case "EVO110":
         if($additionalCosts == "SCRAP") PlayAura("WTR225", $currentPlayer);
+        return "";
+      case "EVO111": case "EVO112": case "EVO113":
+        if(GetClassState($currentPlayer, $CS_NumItemsDestroyed) > 0) GiveAttackGoAgain();
         return "";
       case "EVO126": case "EVO127": case "EVO128":
         if($additionalCosts == "SCRAP") AddCurrentTurnEffect($cardID, $currentPlayer);

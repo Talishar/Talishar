@@ -115,9 +115,12 @@ function RemoveItem($player, $index)
 
 function DestroyItemForPlayer($player, $index, $skipDestroy=false)
 {
+  global $CS_NumItemsDestroyed;
   $items = &GetItems($player);
-  if(!$skipDestroy && CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY") {
-    AddGraveyard($items[$index], $player, "PLAY");
+  if(!$skipDestroy) {
+    if(CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY")
+      AddGraveyard($items[$index], $player, "PLAY");
+    IncrementClassState($player, $CS_NumItemsDestroyed);
   }
   $cardID = $items[$index];
   for($i = $index + ItemPieces() - 1; $i >= $index; --$i) {
