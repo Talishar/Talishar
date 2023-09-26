@@ -99,7 +99,7 @@ function AuraDestroyed($player, $cardID, $isToken = false)
   }
 }
 
-function AuraLeavesPlay($player, $index)
+function AuraLeavesArena($player, $index)
 {
   $auras = &GetAuras($player);
   $cardID = $auras[$index];
@@ -165,7 +165,7 @@ function AuraDestroyAbility($player, $index, $isToken)
 
 function RemoveAura($player, $index)
 {
-  AuraLeavesPlay($player, $index);
+  AuraLeavesArena($player, $index);
   $auras = &GetAuras($player);
   $cardID = $auras[$index];
   for($i = $index + AuraPieces() - 1; $i >= $index; --$i) {
