@@ -21,7 +21,7 @@
 
   function EVOHitEffect($cardID)
   {
-    global $mainPlayer, $defPlayer;
+    global $mainPlayer, $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     switch($cardID)
     {
       case "EVO006":
@@ -62,6 +62,9 @@
       case "EVO201": case "EVO202": case "EVO203":
         MZMoveCard($mainPlayer, "MYHAND:subtype=Item;maxCost=1", "", may:true);
         AddDecisionQueue("PUTPLAY", $mainPlayer, "0", 1);
+        break;
+      case "EVO216": case "EVO217": case "EVO218":
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
       case "EVO236":
         if(IsHeroAttackTarget()) {
