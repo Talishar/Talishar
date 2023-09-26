@@ -86,6 +86,12 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
     array_push($attackModifiers, $attack);
     AddAttack($totalAttack, $attack);
   }
+  $attack = ItemAttackModifiers();
+  if($canGainAttack || $attack < 0) {
+    array_push($attackModifiers, "Arsenal Ability");
+    array_push($attackModifiers, $attack);
+    AddAttack($totalAttack, $attack);
+  }
 }
 
 function AddAttack(&$totalAttack, $amount)
@@ -1495,7 +1501,7 @@ function GetDamagePreventionIndices($player)
   }
   $indices = SearchMultizoneFormat($indices, "MYITEMS");
   $mzIndices = CombineSearches($mzIndices, $indices);
-  
+
   $ally = &GetAllies($player);
   $indices = "";
   for($i=0; $i<count($ally); $i+=AllyPieces()) {

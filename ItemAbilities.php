@@ -324,4 +324,20 @@ function ItemBlockModifier($cardID)
   return $blockModifier;
 }
 
+function ItemAttackModifiers()
+{
+  global $mainPlayer, $CombatChain;
+  $items = &GetItems($mainPlayer);
+  $attackModifier = 0;
+  for($i=0; $i<count($items); $i+=ItemPieces()) {
+    switch($items[$i]) {
+      case "EVO079":
+        $attackID = $CombatChain->AttackCard()->ID();
+        if(CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) ++$attackModifier;
+      default: break;
+    }
+  }
+  return $attackModifier;
+}
+
 ?>
