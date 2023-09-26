@@ -248,6 +248,10 @@ function ItemBoostEffects()
           if($items[$i+1] <= 0) DestroyItemForPlayer($currentPlayer, $i);
         }
         break;
+      case "EVO090": case "EVO091": case "EVO092":
+        AddCurrentTurnEffect($items[$i] . "," . $items[$i+1], $currentPlayer, "PLAY");
+        DestroyItemForPlayer($currentPlayer, $i);
+        break;
       default: break;
     }
   }

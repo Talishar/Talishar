@@ -42,6 +42,7 @@
     switch($cardID) {
       case "EVO009": return 1;
       case "EVO016": return 1;
+      case "EVO090": case "EVO091": case "EVO092": return $idArr[1];
       case "EVO126": case "EVO127": case "EVO128": return 1;
       case "EVO140": return 3;
       case "EVO155": return 2;
@@ -66,6 +67,7 @@
     switch($cardID) {
       case "EVO009": return true;
       case "EVO016": return CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
+      case "EVO090": case "EVO091": case "EVO092": return true;
       case "EVO102": case "EVO103": case "EVO104": return true;
       case "EVO126": case "EVO127": case "EVO128": return true;
       case "EVO140": return true;
