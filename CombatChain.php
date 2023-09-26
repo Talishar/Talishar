@@ -647,7 +647,7 @@ function IsDominateActive()
 
 function IsOverpowerActive()
 {
-  global $combatChain, $mainPlayer, $CS_Num6PowBan;
+  global $combatChain, $mainPlayer, $CS_Num6PowBan, $CS_NumItemsDestroyed;
   if(count($combatChain) == 0) return false;
   switch($combatChain[0]) {
     case "DYN068": return SearchCurrentTurnEffects("DYN068", $mainPlayer);
@@ -658,6 +658,7 @@ function IsOverpowerActive()
     case "DTD115": case "DTD116": case "DTD117": return GetClassState($mainPlayer, $CS_Num6PowBan) > 0;
     case "EVO054": case "EVO055": case "EVO056": return EvoUpgradeAmount($mainPlayer) >= 3;
     case "EVO140": return CachedTotalAttack() >= 10;
+    case "EVO114": case "EVO115": case "EVO116": return GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0;
     case "EVO147": case "EVO148": case "EVO149": return SearchItemsByName($mainPlayer, "Hyper Driver") != "";
     default: break;
   }
