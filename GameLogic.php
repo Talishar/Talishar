@@ -479,6 +479,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $rv .= $deck[$i];
       }
       return ($rv == "" ? "PASS" : $rv);
+    case "DESTROYTOPCARD":
+      $deck = new Deck($player);
+      AddGraveyard($deck->Top(remove:true), $player, "TOP");
+      return $lastResult;
     case "SHOWMODES":
       if(is_array($lastResult)) $modes = $lastResult;
       else {
@@ -1242,6 +1246,43 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "MZREMOVESTEAMCOUNTER":
+      $lastResultArr = explode(",", $lastResult);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $params = explode(",", $parameter);
+      $removedSteamCounterCount = 0;
+      for($i = 0; $i < count($lastResultArr); ++$i) {
+        $mzIndex = explode("-", $lastResultArr[$i]);
+        switch($mzIndex[0]) {
+          case "THEIRITEMS": case "MYITEMS":
+            $controller = str_starts_with($mzIndex[0], "MY") ? $player : $otherPlayer;
+            $items = &GetItems($controller);
+            $removedSteamCounterCount = $items[$mzIndex[1]+1];
+            $items[$mzIndex[1]+1] = 0;
+            WriteLog(CardLink($items[$mzIndex[1]], $items[$mzIndex[1]]) . " lost all their steam counters");
+            if (DestroyItemWithoutSteamCounter($items[$mzIndex[1]], $controller)) {
+              DestroyItemForPlayer($controller, $mzIndex[1]);
+            }
+            break;
+          case "THEIRCHAR": case "MYCHAR":
+            $controller = str_starts_with($mzIndex[0], "MY") ? $player : $otherPlayer;
+            $characters = &GetPlayerCharacter($controller);
+            $removedSteamCounterCount = $characters[$mzIndex[1]+2];
+            $characters[$mzIndex[1]+2] = 0;
+            WriteLog(CardLink($characters[$mzIndex[1]], $characters[$mzIndex[1]]) . " lost all their steam counters");
+            break;
+          default: break;
+        }
+      }
+      return $controller . "-" . $removedSteamCounterCount;
+    case "SYSTEMFAILURE":
+      $lastResultArr = explode("-", $lastResult);
+      if (count($lastResultArr) < 2) return "";
+      $removedSteamCounterCount = $lastResultArr[1];
+      if ($removedSteamCounterCount >= 2) {
+        return DealDamageAsync($lastResultArr[0], 2);
+      }
+      return "";
     case "HITEFFECT":
       ProcessHitEffect($parameter);
       return $parameter;

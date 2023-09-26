@@ -1296,3 +1296,12 @@ function HasEnergyCounters($array, $index)
     default: return false;
   }
 }
+
+function HasSteamCounter($array, $index, $player)
+{
+  if (ClassContains($array[$index], "MECHANOLOGIST", $player)) {
+    if (CardType($array[$index]) == 'E' || CardType($array[$index]) == 'W') return $array[$index+2] > 0;
+    if (SubtypeContains($array[$index], "Item", $player)) return $array[$index+1] > 0;
+  }
+  return false;
+}

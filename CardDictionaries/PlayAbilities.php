@@ -126,6 +126,9 @@
       case "EVO061": case "EVO062": case "EVO063":
         WriteLog("This is a partially manual card. Do not block with attack action cards with cost less than " . EvoUpgradeAmount($currentPlayer));
         return "";
+      case "EVO070":
+        if($from == "PLAY") DestroyTopCard($currentPlayer);
+        break;
       case "EVO075":
         if($from == "PLAY") GainResources($currentPlayer, 1);
         return "";
@@ -176,6 +179,13 @@
         return "";
       case "EVO140":
         for($i=0; $i<$resourcesPaid; $i+=2) AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "EVO144":
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true&MYITEMS:hasSteamCounter=true&MYCHAR:hasSteamCounter=true");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment, item, or weapon. Remove all steam counters from it.");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZREMOVESTEAMCOUNTER", $currentPlayer, "-", 1);
+        AddDecisionQueue("SYSTEMFAILURE", $currentPlayer, "<-", 1);
         return "";
       case "EVO155": case "EVO156": case "EVO157":
         if(GetClassState($currentPlayer, $CS_NumBoosted) >= 2) AddCurrentTurnEffect($cardID, $currentPlayer);
