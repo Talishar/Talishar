@@ -179,6 +179,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     if($defAuras[$i] == "WTR046" && $cardType == "E") $blockModifier += 1;
     if($defAuras[$i] == "ELE109" && $cardType == "A") $blockModifier += 1;
   }
+  $blockModifier += ItemBlockModifier($cardID);
   switch($cardID) {
     case "WTR212": case "WTR213": case "WTR214":
       $blockModifier += $from == "ARS" ? 1 : 0;

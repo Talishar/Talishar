@@ -306,4 +306,21 @@ function ItemDamagePeventionAmount($player, $index) {
   }
 }
 
+function ItemBlockModifier($cardID)
+{
+  global $mainPlayer, $CombatChain;
+  $items = &GetItems($mainPlayer);
+  $blockModifier = 0;
+  for($i=0; $i<count($items); $i+=ItemPieces()) {
+    switch($items[$i]) {
+      case "EVO078":
+        $type = CardType($cardID);
+        $attackID = $CombatChain->AttackCard()->ID();
+        if(($type == "A" || $type == "AA") && CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) --$blockModifier;
+      default: break;
+    }
+  }
+  return $blockModifier;
+}
+
 ?>

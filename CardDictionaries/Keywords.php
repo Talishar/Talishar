@@ -4,9 +4,15 @@
   {
     if(CardNameContains($cardID, "Hyper Driver", $player) && (SearchCharacterForCard($player, "EVO004") || SearchCharacterForCard($player, "EVO005"))) return true;
     switch($cardID) {
+      case "EVO070": case "EVO071": case "EVO072":
+      case "EVO074":
+      case "EVO078": case "EVO079": case "EVO080":
+      case "EVO081": case "EVO082": case "EVO083":
       case "EVO084": case "EVO085": case "EVO086":
       case "EVO087": case "EVO088": case "EVO089":
-      case "EVO093": case "EVO094": case "EVO095": return true;
+      case "EVO090": case "EVO091": case "EVO092":
+      case "EVO093": case "EVO094": case "EVO095":
+      case "EVO096": case "EVO097": case "EVO098": return true;
       default: return false;
     }
   }
