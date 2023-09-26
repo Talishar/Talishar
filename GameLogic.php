@@ -1242,6 +1242,27 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "MZREMOVESTEAMCOUNTER":
+      $lastResultArr = explode(",", $lastResult);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $params = explode(",", $parameter);
+      for($i = 0; $i < count($lastResultArr); ++$i) {
+        $mzIndex = explode("-", $lastResultArr[$i]);
+        switch($mzIndex[0]) {
+          case "THEIRITEMS": case "MYITEMS":
+            $items = &GetItems($mzIndex[0] == "THEIRITEMS" ? $otherPlayer : $player);
+            $items[$mzIndex[1]+1] = 0;
+            WriteLog(CardLink($items[$mzIndex[1]], $items[$mzIndex[1]]) . " lost all their steam counters");
+            break;
+          case "THEIRCHAR": case "MYCHAR":
+            $characters = &GetPlayerCharacter($mzIndex[0] == "THEIRCHAR" ? $otherPlayer : $player);
+            $characters[$mzIndex[1]+2] = 0;
+            WriteLog(CardLink($characters[$mzIndex[1]], $characters[$mzIndex[1]]) . " lost all their steam counters");
+            break;
+          default: break;
+        }
+      }
+      return $lastResult;
     case "HITEFFECT":
       ProcessHitEffect($parameter);
       return $parameter;
