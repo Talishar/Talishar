@@ -2015,7 +2015,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   } else if($from != "PLAY" && $from != "EQUIP") {
     $cardSubtype = CardSubType($cardID);
     if(DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer);
-    else if(DelimStringContains($cardSubtype, "Item")) PutItemIntoPlay($cardID);
+    else if(DelimStringContains($cardSubtype, "Item")) PutItemIntoArena($cardID);
     else if($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer);
     else if(DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID);
     else if(DelimStringContains($cardSubtype, "Evo")) EvoHandling($cardID, $currentPlayer);

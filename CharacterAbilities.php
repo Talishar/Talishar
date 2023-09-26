@@ -761,7 +761,7 @@ function CharacterPlayCardAbilities($cardID, $from) {
         ++$resources[0];
         break;
       case "TCC049"://Melody, Sing-Along
-        if(SubtypeContains($cardID, "Song", $currentPlayer)) PutItemIntoPlayForPlayer("CRU197", $currentPlayer);
+        if(SubtypeContains($cardID, "Song", $currentPlayer)) PutItemIntoArenaForPlayer("CRU197", $currentPlayer);
         break;
       default: break;
     }
@@ -777,7 +777,7 @@ function CharacterPlayCardAbilities($cardID, $from) {
           if($generatedAmount < 1) $generatedAmount = 1;
           for($j = 0; $j < $generatedAmount; ++$j)
           {
-            PutItemIntoPlayForPlayer("DYN243", $currentPlayer);
+            PutItemIntoArenaForPlayer("DYN243", $currentPlayer);
           }
         }
         break;

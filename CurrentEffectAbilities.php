@@ -32,7 +32,7 @@ function EffectHitEffect($cardID)
       }
       break;
     case "CRU084-2":
-      PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2);
+      PutItemIntoArenaForPlayer("CRU197", $mainPlayer, 0, 2);
       break;
     case "MON034":
       $deck = new Deck($mainPlayer);
@@ -155,7 +155,7 @@ function EffectHitEffect($cardID)
       AddCurrentTurnEffectFromCombat($idArr[0] . "-2", $mainPlayer);
       break;
     case "EVR066-1": case "EVR067-1": case "EVR068-1":
-      PutItemIntoPlayForPlayer("CRU197", $mainPlayer);
+      PutItemIntoArenaForPlayer("CRU197", $mainPlayer);
       return 1;
     case "EVR161-1":
       GainHealth(2, $mainPlayer);
@@ -164,7 +164,7 @@ function EffectHitEffect($cardID)
       if($cardID == "EVR164") $amount = 6;
       else if($cardID == "EVR165") $amount = 4;
       else $amount = 2;
-      PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, $amount);
+      PutItemIntoArenaForPlayer("CRU197", $mainPlayer, 0, $amount);
       return 1;
     case "EVR170-1": case "EVR171-1": case "EVR172-1":
       if(IsHeroAttackTarget()) {

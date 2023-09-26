@@ -148,7 +148,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "PUTPLAY":
       $subtype = CardSubType($lastResult);
       if($subtype == "Item") {
-        PutItemIntoPlayForPlayer($lastResult, $player, ($parameter != "-" ? $parameter : 0));
+        PutItemIntoArenaForPlayer($lastResult, $player, ($parameter != "-" ? $parameter : 0));
       } else if(DelimStringContains($subtype, "Aura")) {
         PlayAura($lastResult, $player);
         PlayAbility($lastResult, "-", 0);

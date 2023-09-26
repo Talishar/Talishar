@@ -397,7 +397,7 @@ function SpecificCardLogic($player, $card, $lastResult)
       $rand = GetRandom(0, count($hand) - 1);
       if(RevealCards($hand[$rand], $player) && $chosenName == CardName($hand[$rand])) {
         WriteLog("Bingo! Your opponent tossed you a silver.");
-        PutItemIntoPlayForPlayer("EVR195", $player);
+        PutItemIntoArenaForPlayer("EVR195", $player);
       }
       return $lastResult;
     case "GENESIS":

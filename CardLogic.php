@@ -637,7 +637,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $player, "<-", 1);
       break;
     case "CRU099":
-      PutItemIntoPlay($target);
+      PutItemIntoArena($target);
       break;
     case "CRU142":
       if(GetClassState($player, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $player);

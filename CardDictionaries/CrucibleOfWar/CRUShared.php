@@ -315,14 +315,14 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "CRU118":
       if(PlayerHasLessHealth(1)) {
         LoseHealth(1, 2);
-        PutItemIntoPlayForPlayer("CRU197", 2);
+        PutItemIntoArenaForPlayer("CRU197", 2);
         WriteLog("Player 2 lost a health and gained a copper from Kavdaen");
         if(PlayerHasLessHealth(1)) {
           GainHealth(1, 1);
         }
       } else if(PlayerHasLessHealth(2)) {
         LoseHealth(1, 1);
-        PutItemIntoPlayForPlayer("CRU197", 1);
+        PutItemIntoArenaForPlayer("CRU197", 1);
         WriteLog("Player 1 lost a health and gained a copper from Kavdaen");
         if(PlayerHasLessHealth(2)) {
           GainHealth(1, 2);
@@ -572,7 +572,7 @@ function KassaiEndTurnAbility()
   global $mainPlayer, $CS_AtksWWeapon, $CS_HitsWithWeapon;
   if(GetClassState($mainPlayer, $CS_AtksWWeapon) >= 2) {
     for($i = 0; $i < GetClassState($mainPlayer, $CS_HitsWithWeapon); ++$i) {
-      PutItemIntoPlayForPlayer("CRU197", $mainPlayer);
+      PutItemIntoArenaForPlayer("CRU197", $mainPlayer);
     }
   }
 }

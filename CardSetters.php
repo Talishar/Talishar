@@ -249,7 +249,7 @@ function AddSoul($cardID, $player, $from, $isMainPhase=true)
   if($cardID == "DYN066")
   {
     WriteLog("The spirit of Eirina is inside you, always.");
-    PutItemIntoPlayForPlayer($cardID, $player);
+    PutItemIntoArenaForPlayer($cardID, $player);
   }
   else {
     if($mainPlayerGamestateStillBuilt) {
@@ -260,15 +260,15 @@ function AddSoul($cardID, $player, $from, $isMainPhase=true)
       else AddSpecificSoul($cardID, $theirSoul, $from);
     }
     IncrementClassState($player, $CS_NumAddedToSoul);
-    if(PitchValue($cardID) == 2) IncrementClassState($player, $CS_NumYellowPutSoul);
+    if(PitchValue($cardID) == 2) IncrementClassState($player, $CS_NumYellowPutSoul); // counts yellow cards put into soul
     if($isMainPhase && str_contains(NameOverride($cardID, $player), "Herald"))
     {
-      if(SearchCharacterActive($player, "DTD001") || SearchCharacterActive($player, "DTD002"))
+      if(SearchCharacterActive($player, "DTD001") || SearchCharacterActive($player, "DTD002")) 
       {
         MZMoveCard($player, "MYDECK:subtype=Figment", "MYPERMANENTS", may:true);
         AddDecisionQueue("PLAYABILITY", $player, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
-      }
+      } 
     }
     if($player == $mainPlayer && SearchCharacterForCard($player, "DTD004") && !SearchCurrentTurnEffects("DTD004", $player)) AddCurrentTurnEffect("DTD004", $player);
   }

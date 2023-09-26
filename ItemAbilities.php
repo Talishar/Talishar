@@ -1,12 +1,12 @@
 <?php
 
-function PutItemIntoPlay($item, $steamCounterModifier = 0)
+function PutItemIntoArena($item, $steamCounterModifier = 0)
 {
   global $currentPlayer;
-  PutItemIntoPlayForPlayer($item, $currentPlayer, $steamCounterModifier);
+  PutItemIntoArenaForPlayer($item, $currentPlayer, $steamCounterModifier);
 }
 
-function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1)
+function PutItemIntoArenaForPlayer($item, $player, $steamCounterModifier = 0, $number = 1)
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
   if(!DelimStringContains(CardSubType($item), "Item") && $item != "DTD164") return;

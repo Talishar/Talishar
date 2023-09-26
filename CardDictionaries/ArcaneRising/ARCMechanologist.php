@@ -181,7 +181,7 @@ function DoBoost($player, $boostCount = 1)
     $cardID = $deck->Top(remove:true);
     SelfBoostEffects($player, $cardID);
     OnBoostedEffects($player, $cardID);
-    if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) PutItemIntoPlay($cardID);
+    if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) PutItemIntoArena($cardID);
     else BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
     $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $player);
     WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again");

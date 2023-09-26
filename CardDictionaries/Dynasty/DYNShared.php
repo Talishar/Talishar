@@ -318,12 +318,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       //Now add the new stuff
       PutCharacterIntoPlayForPlayer("DYN492a", $currentPlayer);//Weapon
       PutCharacterIntoPlayForPlayer("DYN492b", $currentPlayer);//Armor
-      PutItemIntoPlayForPlayer("DYN492c", $currentPlayer);//Item
+      PutItemIntoArenaForPlayer("DYN492c", $currentPlayer);//Item
       return "";
     case "DYN095": case "DYN096": case "DYN097": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "DYN123":
       if(GetClassState($currentPlayer, $CS_NumContractsCompleted) > 0) {
-        PutItemIntoPlayForPlayer("EVR195", $currentPlayer, 0, 4);
+        PutItemIntoArenaForPlayer("EVR195", $currentPlayer, 0, 4);
       }
       return "";
     case "DYN130": case "DYN131": case "DYN132":
@@ -487,7 +487,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN241":
       if($from == "PLAY") {
         DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex), true);
-        PutItemIntoPlayForPlayer((IsRoyal($currentPlayer) ? "DYN243": "CRU197"), $currentPlayer);
+        PutItemIntoArenaForPlayer((IsRoyal($currentPlayer) ? "DYN243": "CRU197"), $currentPlayer);
         $deck = new Deck($currentPlayer);
         $deck->AddBottom("DYN241", "PLAY");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
@@ -657,7 +657,7 @@ function ContractCompleted($player, $cardID)
     case "DYN142": case "DYN143": case "DYN144":
     case "DYN145": case "DYN146": case "DYN147":
     case "EVO236":
-      PutItemIntoPlayForPlayer("EVR195", $player);
+      PutItemIntoArenaForPlayer("EVR195", $player);
       break;
     default: break;
   }
