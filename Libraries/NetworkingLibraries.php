@@ -673,7 +673,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       WriteLog("Player " . $playerID . " allowed undoing the last action");
       break;
     case 100017://Decline Undo
-      WriteLog("Player " . $playerID . " declined the Undo request");
+      WriteLog("Player " . $playerID . " declined the undo request");
       break;
     case 100018://Confirm this turn undo
       RevertGamestate("beginTurnGamestate.txt");
