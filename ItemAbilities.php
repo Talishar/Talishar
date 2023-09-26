@@ -199,8 +199,8 @@ function ItemTakeDamageAbilities($player, $damage, $type="", $preventable=true, 
         if($items[$i+1] <= 0) DestroyItemForPlayer($player, $i);
         break;
       default:
-        if($isWard && $preventable) {
-          $damage -= ItemDamagePeventionAmount($player, $i);
+        if($isWard) {
+          if($preventable) $damage -= ItemDamagePeventionAmount($player, $i);
           DestroyItemForPlayer($player, $i);
         }
     }
