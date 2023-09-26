@@ -59,6 +59,7 @@
     global $currentPlayer, $CS_NumCranked, $CS_NumBoosted;
     switch($cardID)
     {
+      case "EVO003": return "AA";
       case "EVO004": case "EVO005": return GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? "A" : "";
       case "EVO006": return GetClassState($currentPlayer, $CS_NumCranked) > 0 ? "AA" : "";
       case "EVO007": case "EVO008": return "I";
