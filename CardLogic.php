@@ -430,6 +430,11 @@ function ContinueDecisionQueue($lastResult = "")
         BuildMyGamestate($currentPlayer);
       }
       PlayCard($params[0], $params[1], $lastResult, $params[2]);
+      $character = &GetPlayerCharacter($currentPlayer);
+      if ($character[0] == 'EVO001' || $character[0] == 'EVO002') {
+        $deck = GetDeck($currentPlayer);
+        if ($deck[0] != $params[0]) $character[1] = 1;
+      }
     } else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECHAINLINK") {
       CloseDecisionQueue();
       ResolveChainLink();
