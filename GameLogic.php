@@ -1178,7 +1178,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else array_push($params, false);
       if ($paramsCount > 4) $params[4] == "true" ? $params[4] = true : $params[4] = false;
       else array_push($params, false);
-      if ($paramsCount >= 5) $params[5] == "true" ? $params[5] = true : $params[5] = false;
+      if ($paramsCount > 5) $params[5] == "true" ? $params[5] = true : $params[5] = false;
       else array_push($params, false);
       
       return MZMoveCard($player, $params[0], $params[1], $params[2], $params[3], $params[4], $params[5]);
