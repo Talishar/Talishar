@@ -223,6 +223,7 @@ function ItemStartTurnAbility($index)
     case "ARC007": case "ARC035": case "EVR069": case "EVR071":
       AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]);
       break;
+    case "EVO078": case "EVO079": case "EVO080":
     case "EVO084": case "EVO085": case "EVO086":
     case "EVO087": case "EVO088": case "EVO089":
       if($mainItems[$index+1] > 0) --$mainItems[$index+1];
