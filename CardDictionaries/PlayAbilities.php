@@ -177,6 +177,9 @@
           AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
         }
         return "";
+      case "EVO135": case "EVO136": case "EVO137":
+        if($additionalCosts == "SCRAP") GainResources($currentPlayer, 1);
+        return "";
       case "EVO140":
         for($i=0; $i<$resourcesPaid; $i+=2) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
