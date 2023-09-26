@@ -1061,6 +1061,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       BanishCardForPlayer("DYN065", $player, "-", "NT", $player);
       break;
     case "TCC033": PlayAura("WTR225", $mainPlayer); break;//Quicken
+    case "EVO111": case "EVO112": case "EVO113":
+    case "EVO114": case "EVO115": case "EVO116":
+    case "EVO120": case "EVO121": case "EVO122":
+    case "EVO123": case "EVO124": case "EVO125":
+    case "EVO141":
+      MZChooseAndDestroy($player, "MYITEMS", may:true);
+      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
+      break;
     default: break;
   }
 }

@@ -330,6 +330,7 @@ function OnBlockResolveEffects()
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) if($combatChain[$i+2] == "HAND") ++$blockedFromHand;
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if(($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i+2] != "HAND")) UnityEffect($combatChain[$i], $i);
+    if(HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
     switch($combatChain[$i]) {
       case "EVR018":
         if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
