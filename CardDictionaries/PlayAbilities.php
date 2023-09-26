@@ -89,8 +89,8 @@
         if($evoAmt >= 4) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "EVO014":
-        AddDecisionQueue("MZMOVECARD", $mainPlayer, "MYBANISH:class=MECHANOLOGIST;type=AA,MYTOPDECK,true");
-        AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
+        MZMoveCard($mainPlayer, "MYBANISH:class=MECHANOLOGIST;type=AA", "MYTOPDECK");
+        AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
         return "";
       case "EVO015":
         AddDecisionQueue("GAINRESOURCES", $mainPlayer, "2");
