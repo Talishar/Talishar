@@ -1484,6 +1484,18 @@ function GetDamagePreventionIndices($player)
   }
   $indices = SearchMultiZoneFormat($indices, "MYCHAR");
   $mzIndices = CombineSearches($mzIndices, $indices);
+
+  $items = &GetItems($player);
+  $itemCount = count($items);
+  for ($i=0; $i<$itemCount; $i+=ItemPieces()) {
+    if (ItemDamagePeventionAmount($player, $i) > 0) {
+      if($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  $indices = SearchMultizoneFormat($indices, "MYITEMS");
+  $mzIndices = CombineSearches($mzIndices, $indices);
+  
   $ally = &GetAllies($player);
   $indices = "";
   for($i=0; $i<count($ally); $i+=AllyPieces()) {
