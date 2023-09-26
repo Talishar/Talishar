@@ -913,6 +913,20 @@ case "V":
 switch($cardID[2]) {
 case "O":
 switch($cardID[3]) {
+case "1":
+switch($cardID[4]) {
+case "5":
+switch($cardID[5]) {
+case "6":
+return true;
+case "7":
+return true;
+case "8":
+return true;
+default: return false;
+}
+default: return false;
+}
 case "2":
 switch($cardID[4]) {
 case "2":
