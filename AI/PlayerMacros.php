@@ -98,6 +98,13 @@ function HasPlayableCard($player, $phase)
   for($i=0; $i<count($auras); $i+=AuraPieces()) {
     if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
+  $character = GetPlayerCharacter($player);
+  if ($character[0] == "EVO001" || $character[0] == "EVO002") {
+    $deck = &GetDeck($player);
+    if(count($deck) > 0 && $character[1] == 2) {
+      if(IsPlayable($deck[0], $phase, "DECK", 0)) return true;
+    }
+  }
   return false;
 }
 
