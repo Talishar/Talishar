@@ -1167,26 +1167,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MZREMOVE": return MZRemove($player, $lastResult);
     case "MZDISCARD": return MZDiscard($player, $parameter, $lastResult);
     case "MZADDZONE": return MZAddZone($player, $parameter, $lastResult);
-    case "MZMOVECARD":
-      // Add parameters divided by ',' required: "MULTIZONEINDICES" parameters, where to move
-      // Example: AddDecisionQueue("MZMOVECARD", $currentPlayer, "MYBANISH:maxAttack=3;type=AA,MYTOPDECK");
-      $params = explode(",", $parameter);
-      $paramsCount = count($params);
-      if ($paramsCount < 2) return $lastResult;
-      
-      if ($paramsCount > 2) $params[2] == "true" ? $params[2] = true : $params[2] = false;
-      else array_push($params, false);
-      if ($paramsCount > 3) $params[3] == "true" ? $params[3] = true : $params[3] = false;
-      else array_push($params, false);
-      if ($paramsCount > 4) $params[4] == "true" ? $params[4] = true : $params[4] = false;
-      else array_push($params, false);
-      if ($paramsCount > 5) $params[5] == "true" ? $params[5] = true : $params[5] = false;
-      else array_push($params, false);
-      
-      return MZMoveCard($player, $params[0], $params[1], $params[2], $params[3], $params[4], $params[5]);
-    case "GAINRESOURCES":
-      GainResources($player, $parameter);
-      return $lastResult;
     case "TRANSFORM":
       return "ALLY-" . ResolveTransform($player, $lastResult, $parameter);
     case "TRANSFORMPERMANENT":
