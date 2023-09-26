@@ -18,4 +18,6 @@ RUN docker-php-ext-install zip mysqli pdo pdo_mysql shmop bz2
 RUN pecl install ssh2-1.4 \
     && docker-php-ext-enable ssh2
 
+RUN docker-php-ext-enable opcache
+
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini

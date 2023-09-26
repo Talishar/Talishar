@@ -7,6 +7,7 @@ services:
     restart: always
     volumes:
       - "./:/var/www/html/game"
+      - "./conf/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini"
     command: bash "/var/www/html/game/docker-entrypoint.sh"
     ports:
       - "8080:80"
