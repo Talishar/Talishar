@@ -923,6 +923,7 @@ function HasTemper($cardID)
     case "DTD047": case "DTD206": case "DTD207": case "DTD211": return true;
     case "TCC029": case "TCC030": case "TCC031": case "TCC032": case "TCC033": return true;
     case "EVO247": return true;
+    case "EVO426": case "EVO427": case "EVO428": case "EVO429": return true;
     default: return false;
   }
 }
