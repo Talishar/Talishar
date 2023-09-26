@@ -164,7 +164,7 @@ if (!IsGameOver()) {
 
 //Now write out the game state
 if (!$skipWriteGamestate) {
-  //if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGamestate();
+  //if($mainPlayerGamestateStillBuilt) UpdateTurnPlayerGamestate();
   //else UpdateGameState(1);
   if(!IsModeAsync($mode))
   {

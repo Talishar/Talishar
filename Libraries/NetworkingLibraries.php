@@ -860,7 +860,7 @@ function ResolveChainLink()
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
   global $CCS_DamageDealt, $CCS_HitsWithWeapon;
   UpdateGameState($currentPlayer);
-  BuildMainPlayerGameState();
+  BuildTurnPlayerGameState();
 
   $totalAttack = 0;
   $totalDefense = 0;
@@ -944,7 +944,7 @@ function FinalizeChainLink($chainClosed = false)
   global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
   global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink;
   UpdateGameState($currentPlayer);
-  BuildMainPlayerGameState();
+  BuildTurnPlayerGameState();
   if(DoesAttackHaveGoAgain() && !$chainClosed) {
     ++$actionPoints;
     if($combatChain[0] == "DVR002" && SearchCharacterActive($mainPlayer, "DVR001")) DoriQuicksilverProdigyEffect();
@@ -1092,7 +1092,7 @@ function PassTurn()
   global $playerID, $currentPlayer, $turn, $mainPlayer, $mainPlayerGamestateStillBuilt;
   if(!$mainPlayerGamestateStillBuilt) {
     UpdateGameState($currentPlayer);
-    BuildMainPlayerGameState();
+    BuildTurnPlayerGameState();
   }
   $MyPitch = GetPitch($playerID);
   $TheirPitch = GetPitch(($playerID == 1 ? 2 : 1));
@@ -1191,7 +1191,7 @@ function FinalizeTurn()
   $defPlayer = $mainPlayer;
   $mainPlayer = ($mainPlayer == 1 ? 2 : 1);
   $currentPlayer = $mainPlayer;
-  BuildMainPlayerGameState();
+  BuildTurnPlayerGameState();
   ResetMainClassState();
   //Start of turn effects
   if($mainPlayer == 1) StatsStartTurn();

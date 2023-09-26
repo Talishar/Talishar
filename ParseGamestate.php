@@ -175,7 +175,7 @@ function ParseGamestate($useRedis = false)
 function DoGamestateUpdate()
 {
   global $mainPlayerGamestateStillBuilt, $myStateBuiltFor;
-  if ($mainPlayerGamestateStillBuilt == 1) UpdateMainPlayerGameStateInner();
+  if ($mainPlayerGamestateStillBuilt == 1) UpdateTurnPlayerGameStateInner();
   else if ($myStateBuiltFor != -1) UpdateGameStateInner();
 }
 
@@ -228,7 +228,7 @@ function BuildMyGamestate($playerID)
   $theirTurnStats = $playerID == 1 ? $p2TurnStats : $p1TurnStats;
 }
 
-function BuildMainPlayerGameState()
+function BuildTurnPlayerGameState()
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt, $playerHealths, $mpgBuiltFor, $defPlayer;
   global $mainHand, $mainDeck, $mainResources, $mainCharacter, $mainArsenal, $mainHealth, $mainAuras, $mainPitch, $mainBanish, $mainClassState, $mainItems;
@@ -364,11 +364,11 @@ function UpdateGameStateInner()
   }
 }
 
-function UpdateMainPlayerGameState()
+function UpdateTurnPlayerGameState()
 {
 }
 
-function UpdateMainPlayerGameStateInner()
+function UpdateTurnPlayerGameStateInner()
 {
   global $mainPlayerGamestateStillBuilt, $mpgBuiltFor;
   global $mainHand, $mainDeck, $mainResources, $mainCharacter, $mainArsenal, $mainHealth, $mainAuras, $mainPitch, $mainBanish, $mainClassState, $mainItems;

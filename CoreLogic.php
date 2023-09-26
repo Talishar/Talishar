@@ -8,7 +8,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
   global $CombatChain, $mainPlayer, $currentTurnEffects, $playerID, $combatChainState, $CCS_LinkBaseAttack;
   global $CCS_WeaponIndex;
   UpdateGameState($playerID);
-  BuildMainPlayerGameState();
+  BuildTurnPlayerGameState();
   $attackType = CardType($CombatChain->AttackCard()->ID());
   $canGainAttack = CanGainAttack();
   $snagActive = SearchCurrentTurnEffects("CRU182", $mainPlayer) && $attackType == "AA";

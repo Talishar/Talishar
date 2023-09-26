@@ -44,11 +44,11 @@ function &GetRelativeMZZone($player, $zone)
 
 function &GetPlayerCharacter($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $mainCharacter, $defCharacter, $myCharacter, $theirCharacter;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainCharacter;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainCharacter;
     else return $defCharacter;
   } else {
     if($player == $myStateBuiltFor) return $myCharacter;
@@ -58,11 +58,11 @@ function &GetPlayerCharacter($player)
 
 function &GetCharacterEffects($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $mainCharacterEffects, $defCharacterEffects, $myCharacterEffects, $theirCharacterEffects;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainCharacterEffects;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainCharacterEffects;
     else return $defCharacterEffects;
   } else {
     if($player == $myStateBuiltFor) return $myCharacterEffects;
@@ -72,11 +72,11 @@ function &GetCharacterEffects($player)
 
 function &GetPlayerClassState($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainClassState;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainClassState;
     else return $defClassState;
   } else {
     if($player == $myStateBuiltFor) return $myClassState;
@@ -86,11 +86,11 @@ function &GetPlayerClassState($player)
 
 function GetClassState($player, $piece)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainClassState[$piece];
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainClassState[$piece];
     else return $defClassState[$piece];
   } else {
     if($player == $myStateBuiltFor) return $myClassState[$piece];
@@ -100,11 +100,11 @@ function GetClassState($player, $piece)
 
 function &GetDeck($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myDeck, $theirDeck, $mainDeck, $defDeck;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainDeck;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainDeck;
     else return $defDeck;
   } else {
     if($player == $myStateBuiltFor) return $myDeck;
@@ -114,11 +114,11 @@ function &GetDeck($player)
 
 function &GetHand($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myHand, $theirHand, $mainHand, $defHand;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainHand;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainHand;
     else return $defHand;
   } else {
     if($player == $myStateBuiltFor) return $myHand;
@@ -128,11 +128,11 @@ function &GetHand($player)
 
 function &GetBanish($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myBanish, $theirBanish, $mainBanish, $defBanish;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainBanish;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainBanish;
     else return $defBanish;
   } else {
     if($player == $myStateBuiltFor) return $myBanish;
@@ -142,11 +142,11 @@ function &GetBanish($player)
 
 function &GetPitch($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myPitch, $theirPitch, $mainPitch, $defPitch;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainPitch;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainPitch;
     else return $defPitch;
   } else {
     if($player == $myStateBuiltFor) return $myPitch;
@@ -156,11 +156,11 @@ function &GetPitch($player)
 
 function &GetHealth($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myHealth, $theirHealth, $mainHealth, $defHealth;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainHealth;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainHealth;
     else return $defHealth;
   } else {
     if($player == $myStateBuiltFor) return $myHealth;
@@ -170,11 +170,11 @@ function &GetHealth($player)
 
 function &GetResources($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myResources, $theirResources, $mainResources, $defResources;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainResources;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainResources;
     else return $defResources;
   } else {
     if($player == $myStateBuiltFor) return $myResources;
@@ -184,11 +184,11 @@ function &GetResources($player)
 
 function &GetItems($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myItems, $theirItems, $mainItems, $defItems;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainItems;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainItems;
     else return $defItems;
   } else {
     if($player == $myStateBuiltFor) return $myItems;
@@ -198,11 +198,11 @@ function &GetItems($player)
 
 function &GetSoul($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainSoul;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainSoul;
     else return $defSoul;
   } else {
     if($player == $myStateBuiltFor) return $mySoul;
@@ -212,11 +212,11 @@ function &GetSoul($player)
 
 function &GetDiscard($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainDiscard;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainDiscard;
     else return $defDiscard;
   } else {
     if($player == $myStateBuiltFor) return $myDiscard;
@@ -226,11 +226,11 @@ function &GetDiscard($player)
 
 function &GetArsenal($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myArsenal, $theirArsenal, $mainArsenal, $defArsenal;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainArsenal;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainArsenal;
     else return $defArsenal;
   } else {
     if($player == $myStateBuiltFor) return $myArsenal;
@@ -240,11 +240,11 @@ function &GetArsenal($player)
 
 function &GetAuras($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myAuras, $theirAuras, $mainAuras, $defAuras;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainAuras;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainAuras;
     else return $defAuras;
   } else {
     if($player == $myStateBuiltFor) return $myAuras;
@@ -254,11 +254,11 @@ function &GetAuras($player)
 
 function &GetCardStats($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myCardStats, $theirCardStats, $mainCardStats, $defCardStats;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainCardStats;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainCardStats;
     else return $defCardStats;
   } else {
     if($player == $myStateBuiltFor) return $myCardStats;
@@ -268,11 +268,11 @@ function &GetCardStats($player)
 
 function &GetTurnStats($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myTurnStats, $theirTurnStats, $mainTurnStats, $defTurnStats;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainTurnStats;
+  if($turnPlayerGamestateStillBuilt) {
+    if($player == $turnPlayer) return $mainTurnStats;
     else return $defTurnStats;
   } else {
     if($player == $myStateBuiltFor) return $myTurnStats;
@@ -310,11 +310,11 @@ function &GetSettings($player)
 
 function &GetMainCharacterEffects($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turnPlayer, $turnPlayerGamestateStillBuilt;
   global $myCharacterEffects, $theirCharacterEffects, $mainCharacterEffects, $defCharacterEffects;
   global $myStateBuiltFor;
-  if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) return $mainCharacterEffects;
+  if ($turnPlayerGamestateStillBuilt) {
+    if ($player == $turnPlayer) return $mainCharacterEffects;
     else return $defCharacterEffects;
   } else {
     if ($player == $myStateBuiltFor) return $myCharacterEffects;

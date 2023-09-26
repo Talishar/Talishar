@@ -32,7 +32,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   switch($phase) {
     case "FINDINDICES":
       UpdateGameState($currentPlayer);
-      BuildMainPlayerGamestate();
+      BuildTurnPlayerGamestate();
       $parameters = explode(",", $parameter);
       $parameter = $parameters[0];
       if(count($parameters) > 1) $subparam = $parameters[1];

@@ -170,11 +170,11 @@ function AddNextTurnEffect($cardID, $player, $uniqueID = -1, $numTurns = 1)
 
 function IsCombatEffectLimited($index)
 {
-  global $currentTurnEffects, $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CCS_AttackUniqueID;
+  global $currentTurnEffects, $combatChain, $turnPlayer, $combatChainState, $CCS_WeaponIndex, $CCS_AttackUniqueID;
   if(count($combatChain) == 0 || $currentTurnEffects[$index + 2] == -1) return false;
   $attackSubType = CardSubType($combatChain[0]);
   if(DelimStringContains($attackSubType, "Ally")) {
-    $allies = &GetAllies($mainPlayer);
+    $allies = &GetAllies($turnPlayer);
     if(count($allies) < $combatChainState[$CCS_WeaponIndex] + 5) return false;
     if($allies[$combatChainState[$CCS_WeaponIndex] + 5] != $currentTurnEffects[$index + 2]) return true;
   } else {
@@ -274,7 +274,7 @@ function ProcessDecisionQueue()
 
 function CloseDecisionQueue()
 {
-  global $turn, $decisionQueue, $dqState, $combatChain, $currentPlayer, $mainPlayer;
+  global $turn, $decisionQueue, $dqState, $combatChain, $currentPlayer, $turnPlayer;
   $dqState[0] = "0";
   $turn[0] = $dqState[1];
   $turn[1] = $dqState[2];
@@ -286,7 +286,7 @@ function CloseDecisionQueue()
   $dqState[8] = "-1"; //Orderable index (what layer after which triggers can be reordered)
   $decisionQueue = [];
   if(($turn[0] == "D" || $turn[0] == "A") && count($combatChain) == 0) {
-    $currentPlayer = $mainPlayer;
+    $currentPlayer = $turnPlayer;
     $turn[0] = "M";
   }
 }
@@ -323,17 +323,17 @@ function IsGamePhase($phase)
 //Must be called with the my/their context
 function ContinueDecisionQueue($lastResult = "")
 {
-  global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
-  global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
+  global $decisionQueue, $turn, $currentPlayer, $turnPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
+  global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $turnPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID;
   if(count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
-    if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
+    if($turnPlayerGamestateStillBuilt) UpdateTurnPlayerGameState();
     else if(count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
       UpdateGameState($currentPlayer);
     }
     if(count($decisionQueue) == 0 && count($layers) > 0) {
       $priorityHeld = 0;
-      if($mainPlayer == 1) {
+      if($turnPlayer == 1) {
         if(ShouldHoldPriorityNow(1)) {
           AddDecisionQueue("INSTANT", 1, "-");
           $priorityHeld = 1;
@@ -375,7 +375,7 @@ function ContinueDecisionQueue($lastResult = "")
         SetClassState($player, $CS_ResolvingLayerUniqueID, $layerUniqueID);
         $params = explode("|", $parameter);
         if($currentPlayer != $player) {
-          if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
+          if($turnPlayerGamestateStillBuilt) UpdateTurnPlayerGameState();
           else UpdateGameState($currentPlayer);
           $currentPlayer = $player;
           $otherPlayer = $currentPlayer == 1 ? 2 : 1;
@@ -388,7 +388,7 @@ function ContinueDecisionQueue($lastResult = "")
         else if($cardID == "RESUMETURN") $turn[0] = "M";
         else if($cardID == "LAYER") ProcessLayer($player, $parameter);
         else if($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
-        else if($cardID == "DEFENDSTEP") { $turn[0] = "A"; $currentPlayer = $mainPlayer; }
+        else if($cardID == "DEFENDSTEP") { $turn[0] = "A"; $currentPlayer = $turnPlayer; }
         else if($cardID == "TRIGGER") {
           ProcessTrigger($player, $parameter, $uniqueID, $target);
           ProcessDecisionQueue();
@@ -476,7 +476,7 @@ function ContinueDecisionQueue($lastResult = "")
     if($phase != "SETDQCONTEXT") $dqState[4] = "-"; //Clear out context for static states -- context only persists for one choice
     ContinueDecisionQueue($return);
   } else {
-    if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
+    if($turnPlayerGamestateStillBuilt) UpdateTurnPlayerGameState();
   }
 }
 
@@ -1011,8 +1011,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       Charge();
       break;
     case "DTD200":
-      global $mainPlayer;
-      Intimidate($mainPlayer);
+      global $turnPlayer;
+      Intimidate($turnPlayer);
       break;
     case $CID_BloodRotPox:
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_3_to_avoid_taking_2_damage", 0, 1);
@@ -1055,7 +1055,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         }
       }
       break;
-    case "TCC030": Draw($mainPlayer); break;
+    case "TCC030": Draw($turnPlayer); break;
     case "TCC031":
       PlayAura("TCC107", $otherPlayer);
       break;
@@ -1065,7 +1065,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "TCC098": case "TCC102":
       BanishCardForPlayer("DYN065", $player, "-", "NT", $player);
       break;
-    case "TCC033": PlayAura("WTR225", $mainPlayer); break;//Quicken
+    case "TCC033": PlayAura("WTR225", $turnPlayer); break;//Quicken
     case "EVO111": case "EVO112": case "EVO113":
     case "EVO114": case "EVO115": case "EVO116":
     case "EVO120": case "EVO121": case "EVO122":
@@ -1088,9 +1088,9 @@ function GetDQHelpText()
 
 function FinalizeAction()
 {
-  global $currentPlayer, $mainPlayer, $actionPoints, $turn, $combatChain, $defPlayer, $makeBlockBackup, $mainPlayerGamestateStillBuilt;
-  if(!$mainPlayerGamestateStillBuilt) UpdateGameState(1);
-  BuildMainPlayerGamestate();
+  global $currentPlayer, $turnPlayer, $actionPoints, $turn, $combatChain, $defPlayer, $makeBlockBackup, $turnPlayerGamestateStillBuilt;
+  if(!$turnPlayerGamestateStillBuilt) UpdateGameState(1);
+  BuildTurnPlayerGamestate();
   if($turn[0] == "M") {
     if(count($combatChain) > 0) //Means we initiated a chain link
     {
@@ -1099,21 +1099,21 @@ function FinalizeAction()
       $turn[2] = "";
       $makeBlockBackup = 1;
     } else {
-      if($actionPoints > 0 || ShouldHoldPriority($mainPlayer)) {
+      if($actionPoints > 0 || ShouldHoldPriority($turnPlayer)) {
         $turn[0] = "M";
-        $currentPlayer = $mainPlayer;
+        $currentPlayer = $turnPlayer;
         $turn[2] = "";
       } else {
-        $currentPlayer = $mainPlayer;
+        $currentPlayer = $turnPlayer;
         BeginTurnPass();
       }
     }
   } else if($turn[0] == "A") {
-    $currentPlayer = $mainPlayer;
+    $currentPlayer = $turnPlayer;
     $turn[2] = "";
   } else if($turn[0] == "D") {
     $turn[0] = "A";
-    $currentPlayer = $mainPlayer;
+    $currentPlayer = $turnPlayer;
     $turn[2] = "";
   } else if($turn[0] == "B") {
     $turn[0] = "B";
@@ -1132,10 +1132,10 @@ function IsReactionPhase()
 //Return whether priority should be held for the player by default/settings
 function ShouldHoldPriority($player, $layerCard = "")
 {
-  global $mainPlayer;
+  global $turnPlayer;
   $prioritySetting = HoldPrioritySetting($player);
   if($prioritySetting == 0 || $prioritySetting == 1) return 1;
-  if(($prioritySetting == 2 || $prioritySetting == 3) && $player != $mainPlayer) return 1;
+  if(($prioritySetting == 2 || $prioritySetting == 3) && $player != $turnPlayer) return 1;
   return 0;
 }
 
@@ -1219,16 +1219,16 @@ function DiscardCard($player, $index, $source="")
 
 function CardDiscarded($player, $discarded, $source = "")
 {
-  global $CS_Num6PowDisc, $mainPlayer;
+  global $CS_Num6PowDisc, $turnPlayer;
   AddEvent("DISCARD", $discarded);
   if(AttackValue($discarded) >= 6) {
     $character = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($character[0]);
-    if(($characterID == "WTR001" || $characterID == "WTR002" || $characterID == "RVD001") && $character[1] == 2 && $player == $mainPlayer) { //Rhinar
-      AddLayer("TRIGGER", $mainPlayer, $character[0]);
+    if(($characterID == "WTR001" || $characterID == "WTR002" || $characterID == "RVD001") && $character[1] == 2 && $player == $turnPlayer) { //Rhinar
+      AddLayer("TRIGGER", $turnPlayer, $character[0]);
     }
     $index = FindCharacterIndex($player, "DYN006");
-    if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer) {
+    if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $turnPlayer) {
       AddLayer("TRIGGER", $player, $character[$index]);
     }
     if(SearchCurrentTurnEffects("DYN009", $player)) {
@@ -1239,9 +1239,9 @@ function CardDiscarded($player, $discarded, $source = "")
     }
     IncrementClassState($player, $CS_Num6PowDisc);
   }
-  if($discarded == "CRU008" && $source != "" && ClassContains($source, "BRUTE", $mainPlayer) && CardType($source) == "AA") {
+  if($discarded == "CRU008" && $source != "" && ClassContains($source, "BRUTE", $turnPlayer) && CardType($source) == "AA") {
     WriteLog(CardLink("CRU008", "CRU008") . " intimidated because it was discarded by a Brute attack action card.");
-    AddLayer("TRIGGER", $mainPlayer, $discarded);
+    AddLayer("TRIGGER", $turnPlayer, $discarded);
   }
 }
 
@@ -1273,19 +1273,19 @@ function DestroyFrozenArsenal($player)
 
 function CanGainAttack()
 {
-  global $combatChain, $mainPlayer;
-  if(SearchCurrentTurnEffects("OUT102", $mainPlayer)) return false;
-  return !SearchCurrentTurnEffects("CRU035", $mainPlayer) || CardType($combatChain[0]) != "AA";
+  global $combatChain, $turnPlayer;
+  if(SearchCurrentTurnEffects("OUT102", $turnPlayer)) return false;
+  return !SearchCurrentTurnEffects("CRU035", $turnPlayer) || CardType($combatChain[0]) != "AA";
 }
 
 function IsWeaponGreaterThanTwiceBasePower()
 {
-  global $combatChainState, $CCS_CachedTotalAttack, $combatChain, $mainPlayer, $CS_NumCharged, $CS_NumYellowPutSoul;
+  global $combatChainState, $CCS_CachedTotalAttack, $combatChain, $turnPlayer, $CS_NumCharged, $CS_NumYellowPutSoul;
   if(count($combatChain) == 0) return false;
   if(CardType($combatChain[0]) == "W" && CachedTotalAttack() > (AttackValue($combatChain[0]) * 2)) return true;
-  $char = &GetPlayerCharacter($mainPlayer);
-  if($char[CharacterPieces()] == "MON031" && GetClassState($mainPlayer, $CS_NumCharged) > 0) return true;
-  if($char[CharacterPieces()] == "DTD046" && GetClassState($mainPlayer, $CS_NumYellowPutSoul) > 0) return true;
+  $char = &GetPlayerCharacter($turnPlayer);
+  if($char[CharacterPieces()] == "MON031" && GetClassState($turnPlayer, $CS_NumCharged) > 0) return true;
+  if($char[CharacterPieces()] == "DTD046" && GetClassState($turnPlayer, $CS_NumYellowPutSoul) > 0) return true;
   return false;
 }
 

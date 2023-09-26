@@ -21,7 +21,7 @@ function PlayAlly($cardID, $player, $subCards = "-")
 
 function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false)
 {
-  global $mainPlayer;
+  global $turnPlayer;
   $allies = &GetAllies($player);
   if(!$skipDestroy) AllyDestroyedAbility($player, $index);
   if(IsSpecificAllyAttacking($player, $index) || (IsSpecificAllyAttackTarget($player, $index) && !$fromCombat)) {
@@ -84,12 +84,12 @@ function AllyHealth($cardID)
 
 function AllyDestroyedAbility($player, $index)
 {
-  global $mainPlayer;
+  global $turnPlayer;
   $allies = &GetAllies($player);
   $cardID = $allies[$index];
   switch($cardID) {
     case "UPR410":
-      if($player == $mainPlayer && $allies[$index+8] > 0) {
+      if($player == $turnPlayer && $allies[$index+8] > 0) {
         GainActionPoints(1, $player);
         --$allies[$index+8];
       }
@@ -144,13 +144,13 @@ function AllyDamagePrevention($player, $index, $damage)
 //NOTE: This is for ally abilities that trigger when any ally attacks (for example miragai GRANTS an ability)
 function AllyAttackAbilities($attackID)
 {
-  global $mainPlayer, $CS_NumDragonAttacks;
-  $allies = &GetAllies($mainPlayer);
+  global $turnPlayer, $CS_NumDragonAttacks;
+  $allies = &GetAllies($turnPlayer);
   for($i = 0; $i < count($allies); $i += AllyPieces()) {
     switch($allies[$i]) {
       case "UPR412":
-        if($allies[$i + 8] > 0 && DelimStringContains(CardSubType($attackID), "Dragon") && GetClassState($mainPlayer, $CS_NumDragonAttacks) <= 1) {
-          AddCurrentTurnEffect("UPR412", $mainPlayer);
+        if($allies[$i + 8] > 0 && DelimStringContains(CardSubType($attackID), "Dragon") && GetClassState($turnPlayer, $CS_NumDragonAttacks) <= 1) {
+          AddCurrentTurnEffect("UPR412", $turnPlayer);
           --$allies[$i + 8];
         }
         break;
@@ -162,46 +162,46 @@ function AllyAttackAbilities($attackID)
 //NOTE: This is for the actual attack abilities that allies have
 function SpecificAllyAttackAbilities($attackID)
 {
-  global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
-  $allies = &GetAllies($mainPlayer);
+  global $turnPlayer, $combatChainState, $CCS_WeaponIndex;
+  $allies = &GetAllies($turnPlayer);
   $i = $combatChainState[$CCS_WeaponIndex];
   switch($allies[$i]) {
     case "UPR406":
       if(IsHeroAttackTarget()) {
-        $deck = new Deck($mainPlayer);
+        $deck = new Deck($turnPlayer);
         if($deck->Reveal(3)) {
           $cards = explode(",", $deck->Top(amount:3));
           $numRed = 0;
           for($j = 0; $j < count($cards); ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
-          if($numRed > 0) DealArcane($numRed * 2, 2, "ABILITY", $allies[$i], false, $mainPlayer);
+          if($numRed > 0) DealArcane($numRed * 2, 2, "ABILITY", $allies[$i], false, $turnPlayer);
         }
       }
       return "";
     case "UPR407":
       if(IsHeroAttackTarget()) {
-        $deck = new Deck($mainPlayer);
+        $deck = new Deck($turnPlayer);
         if($deck->Reveal(2)) {
           $cards = explode(",", $deck->Top(amount:2));
           $numRed = 0;
           for($j = 0; $j < count($cards); ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
           if($numRed > 0) {
-            $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+            $otherPlayer = ($turnPlayer == 1 ? 2 : 1);
             AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-            AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+            AddDecisionQueue("CHOOSETHEIRCHARACTER", $turnPlayer, "<-", 1);
             AddDecisionQueue("MODDEFCOUNTER", $otherPlayer, (-1 * $numRed), 1);
-            AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
+            AddDecisionQueue("DESTROYEQUIPDEF0", $turnPlayer, "-", 1);
           }
         }
       }
       return "";
     case "UPR408":
       if(IsHeroAttackTarget()) {
-        $deck = new Deck($mainPlayer);
+        $deck = new Deck($turnPlayer);
         if($deck->Reveal(1)) {
           if(PitchValue($deck->Top()) == 1) {
-            $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+            $otherPlayer = ($turnPlayer == 1 ? 2 : 1);
             AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-            AddDecisionQueue("CHOOSETHEIRHAND", $mainPlayer, "<-", 1);
+            AddDecisionQueue("CHOOSETHEIRHAND", $turnPlayer, "<-", 1);
             AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
             AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,NA", 1);
           }
@@ -209,8 +209,8 @@ function SpecificAllyAttackAbilities($attackID)
       }
       return "";
     case "UPR409":
-      DealArcane(1, 2, "PLAYCARD", $allies[$i], false, $mainPlayer, true, true);
-      DealArcane(1, 2, "PLAYCARD", $allies[$i], false, $mainPlayer, true, false);
+      DealArcane(1, 2, "PLAYCARD", $allies[$i], false, $turnPlayer, true, true);
+      DealArcane(1, 2, "PLAYCARD", $allies[$i], false, $turnPlayer, true, false);
       return "";
     case "UPR410":
       if($attackID == $allies[$i] && $allies[$i + 8] > 0) {
@@ -220,54 +220,54 @@ function SpecificAllyAttackAbilities($attackID)
       }
       break;
     case "DTD405":
-      $soul = &GetSoul($mainPlayer);
+      $soul = &GetSoul($turnPlayer);
       if(count($soul) == 0) break;
-      AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
-      AddDecisionQueue("NOPASS", $mainPlayer, "-");
-      MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
-      AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
-      AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
+      AddDecisionQueue("YESNO", $turnPlayer, "if you want to banish a card from soul");
+      AddDecisionQueue("NOPASS", $turnPlayer, "-");
+      MZMoveCard($turnPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
+      AddDecisionQueue("DRAW", $turnPlayer, "-", 1);
+      AddDecisionQueue("DRAW", $turnPlayer, "-", 1);
       break;
     case "DTD406":
-      $soul = &GetSoul($mainPlayer);
+      $soul = &GetSoul($turnPlayer);
       if(count($soul) == 0) break;
-      AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
-      AddDecisionQueue("NOPASS", $mainPlayer, "-");
-      MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRBANISH", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZOP", $mainPlayer, "TURNBANISHFACEDOWN", 1);
+      AddDecisionQueue("YESNO", $turnPlayer, "if you want to banish a card from soul");
+      AddDecisionQueue("NOPASS", $turnPlayer, "-");
+      MZMoveCard($turnPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
+      AddDecisionQueue("MULTIZONEINDICES", $turnPlayer, "THEIRBANISH", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $turnPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $turnPlayer, "TURNBANISHFACEDOWN", 1);
       break;
     case "DTD407":
-      $soul = &GetSoul($mainPlayer);
+      $soul = &GetSoul($turnPlayer);
       if(count($soul) == 0) break;
-      AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
-      AddDecisionQueue("NOPASS", $mainPlayer, "-");
-      MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
-      AddDecisionQueue("PLAYAURA", $mainPlayer, "MON104", 1);
-      AddDecisionQueue("PLAYAURA", $mainPlayer, "MON104", 1);
+      AddDecisionQueue("YESNO", $turnPlayer, "if you want to banish a card from soul");
+      AddDecisionQueue("NOPASS", $turnPlayer, "-");
+      MZMoveCard($turnPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
+      AddDecisionQueue("PLAYAURA", $turnPlayer, "MON104", 1);
+      AddDecisionQueue("PLAYAURA", $turnPlayer, "MON104", 1);
       break;
     case "DTD408":
-      $soul = &GetSoul($mainPlayer);
+      $soul = &GetSoul($turnPlayer);
       if(count($soul) == 0) break;
-      AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
-      AddDecisionQueue("NOPASS", $mainPlayer, "-");
-      MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
-      DealArcane(2, 2, "PLAYCARD", $allies[$i], false, $mainPlayer, isPassable:1);
+      AddDecisionQueue("YESNO", $turnPlayer, "if you want to banish a card from soul");
+      AddDecisionQueue("NOPASS", $turnPlayer, "-");
+      MZMoveCard($turnPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
+      DealArcane(2, 2, "PLAYCARD", $allies[$i], false, $turnPlayer, isPassable:1);
       break;
     case "DTD409":
-      $soul = &GetSoul($mainPlayer);
+      $soul = &GetSoul($turnPlayer);
       if(count($soul) == 0) break;
-      AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
-      AddDecisionQueue("NOPASS", $mainPlayer, "-");
-      MZMoveCard($mainPlayer, "MYDISCARD:pitch=2", "MYTOPDECK", isSubsequent:true);
+      AddDecisionQueue("YESNO", $turnPlayer, "if you want to banish a card from soul");
+      AddDecisionQueue("NOPASS", $turnPlayer, "-");
+      MZMoveCard($turnPlayer, "MYDISCARD:pitch=2", "MYTOPDECK", isSubsequent:true);
       break;
     case "DTD410":
-      $soul = &GetSoul($mainPlayer);
+      $soul = &GetSoul($turnPlayer);
       if(count($soul) == 0) break;
-      AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
-      AddDecisionQueue("NOPASS", $mainPlayer, "-");
-      AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "DTD410", 1);
+      AddDecisionQueue("YESNO", $turnPlayer, "if you want to banish a card from soul");
+      AddDecisionQueue("NOPASS", $turnPlayer, "-");
+      AddDecisionQueue("ADDCURRENTEFFECT", $turnPlayer, "DTD410", 1);
       break;
     default: break;
   }
@@ -311,9 +311,9 @@ function AllyTakeDamageAbilities($player, $index, $damage, $preventable)
 
 function AllyBeginEndTurnEffects()
 {
-  global $mainPlayer, $defPlayer;
+  global $turnPlayer, $defPlayer;
   //CR 2.0 4.4.3a Reset health for all allies
-  $mainAllies = &GetAllies($mainPlayer);
+  $mainAllies = &GetAllies($turnPlayer);
   for($i = 0; $i < count($mainAllies); $i += AllyPieces()) {
     if($mainAllies[$i+1] != 0) {
       $mainAllies[$i+1] = 2;
@@ -333,12 +333,12 @@ function AllyBeginEndTurnEffects()
 
 function AllyEndTurnAbilities()
 {
-  global $mainPlayer;
-  $allies = &GetAllies($mainPlayer);
+  global $turnPlayer;
+  $allies = &GetAllies($turnPlayer);
   for($i = count($allies) - AllyPieces(); $i >= 0; $i -= AllyPieces()) {
     switch($allies[$i]) {
       case "UPR551":
-        DestroyAlly($mainPlayer, $i, true);
+        DestroyAlly($turnPlayer, $i, true);
         break;
       default: break;
     }
