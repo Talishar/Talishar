@@ -1939,6 +1939,9 @@ function PayAdditionalCosts($cardID, $from)
       }
       for($i=0; $i < $xVal; ++$i) MZChooseAndDestroy($currentPlayer, "MYITEMS:sameName=ARC036");
       break;
+    case "EVO142":
+      Boost($currentPlayer);
+      break;
     default:
       break;
   }
