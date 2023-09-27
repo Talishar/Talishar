@@ -94,15 +94,18 @@
     $otherPlayer = ($player == 1 ? 2 : 1);
     AddDecisionQueue("PASSPARAMETER", $player, "ELSE");
     AddDecisionQueue("SETDQVAR", $player, "1");
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose target hero");
-    AddDecisionQueue("BUTTONINPUT", $player, "Target_Opponent,Target_Yourself");
-
+    if(ShouldAutotargetOpponent($player)) {
+      AddDecisionQueue("PASSPARAMETER", $player, "Target_Opponent");
+    } else {
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose target hero");
+      AddDecisionQueue("BUTTONINPUT", $player, "Target_Opponent,Target_Yourself");
+    }
     AddDecisionQueue("EQUALPASS", $player, "Target_Opponent");
     AddDecisionQueue("WRITELOG", $player, "Destroys the top card of your deck", 1);
     AddDecisionQueue("DESTROYTOPCARD", $player, "0", 1);
     AddDecisionQueue("SETDQVAR", $player, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "{1}");
-    
+  
     AddDecisionQueue("NOTEQUALPASS", $player, "ELSE");
     AddDecisionQueue("WRITELOG", $otherPlayer, "Destroys the top card of opponent's deck", 1);
     AddDecisionQueue("DESTROYTOPCARD", $otherPlayer, "0", 1);
