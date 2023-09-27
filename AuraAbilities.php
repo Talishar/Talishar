@@ -351,6 +351,9 @@ function AuraStartTurnAbilities()
         GainResources($mainPlayer, 1);
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         break;
+      case "EVO243": 
+        DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
+        break;
       default: break;
     }
   }
@@ -565,7 +568,7 @@ function AuraDamageTakenAbilities($player, $damage)
       case "EVR023": $remove = 1; break;
       default: break;
     }
-    if($remove) DestroyAura($mainPlayer, $i);
+    if($remove) DestroyAura($player, $i);
   }
   return $damage;
 }

@@ -160,7 +160,7 @@ function DYNCombatEffectActive($cardID, $attackID)
 
 function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted;
+  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $CS_NumCrounchingTigerPlayedThisTurn;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
@@ -222,6 +222,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       else $amount = 1;
       for($i=0; $i < $amount; $i++) BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
       return "";
+    case "DYN065":
+      IncrementClassState($currentPlayer, $CS_NumCrounchingTigerPlayedThisTurn);
+      break;
     case "DYN068":
       CacheCombatResult();
       if(IsWeaponGreaterThanTwiceBasePower()) AddCurrentTurnEffect($cardID, $currentPlayer);

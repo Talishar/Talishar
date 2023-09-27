@@ -480,6 +480,7 @@ function ParseDraftFab($deck, $filename)
   $offhandSideboard = "";
   $weaponSideboard = "";
   $sideboardCards = "";
+  $quiverSideboard = "";
 
   $cards = explode(",", $deck);
   for ($i = 0; $i < count($cards); ++$i) {
@@ -596,6 +597,8 @@ function GetAltCardID($cardID)
     case "EVO039": return "TCC008";
     case "EVO040": return "TCC009";
     case "EVO041": return "TCC010";
+    case "EVO064"; return "TCC012";
+    case "EVO099": return "ARC036";
     case "EVO159": return "TCC019";
     case "EVO160": return "TCC022";
     case "EVO161": return "TCC026";

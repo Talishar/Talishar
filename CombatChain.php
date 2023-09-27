@@ -350,7 +350,10 @@ function OnBlockResolveEffects()
       case "OUT099"://Wayfinder's Crest
       case "OUT174"://Vambrace of Determination
       case "DTD047"://Soulbond Resolve
-      case "TCC019": case "TCC022": case "TCC026": case "TCC030": case "TCC031": case "TCC032": case "TCC033": case "TCC098": case "TCC102":
+      case "TCC019": case "TCC022": case "TCC026": 
+      case "TCC030": case "TCC031": case "TCC032": 
+      case "TCC033": case "TCC098": case "TCC102":
+      case "TCC060": case "TCC063": case "TCC067": // Crown Control
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "DTD094": case "DTD095": case "DTD096":
@@ -650,6 +653,9 @@ function IsOverpowerActive()
 {
   global $combatChain, $mainPlayer, $CS_Num6PowBan, $CS_NumItemsDestroyed;
   if(count($combatChain) == 0) return false;
+  if(SearchItemsForCard("EVO096", $mainPlayer) != "") {
+    return CardType($combatChain[0]) == "AA" && ClassContains($combatChain[0], "MECHANOLOGIST", $mainPlayer);
+  }
   switch($combatChain[0]) {
     case "DYN068": return SearchCurrentTurnEffects("DYN068", $mainPlayer);
     case "DYN088": return true;

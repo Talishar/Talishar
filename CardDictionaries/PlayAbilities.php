@@ -99,7 +99,7 @@
         AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1");
         return "";
       case "EVO058":
-        if(IsHeroAttackTarget())
+        if(IsHeroAttackTarget() && EvoUpgradeAmount($currentPlayer) > 0)
         {
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("PASSPARAMETER", $otherPlayer, EvoUpgradeAmount($currentPlayer), 1);
@@ -144,6 +144,11 @@
           AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
         }
         return "";
+      case "EVO081": case "EVO082": case "EVO083": 
+        if($from == "PLAY") {
+          MZMoveCard($currentPlayer, "MYDISCARD:pitch=". PitchValue($cardID) .";type=AA", "MYHAND", may:true, isReveal:true);
+        }
+        return "";
       case "EVO087": case "EVO088": case "EVO089":
         if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
@@ -185,6 +190,9 @@
         return "";
       case "EVO140":
         for($i=0; $i<$resourcesPaid; $i+=2) AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "EVO141":
+        if(GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "EVO144":
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true&MYITEMS:hasSteamCounter=true&MYCHAR:hasSteamCounter=true");
@@ -253,6 +261,8 @@
           PrependDecisionQueue("NOPASS", $currentPlayer, "-");
           PrependDecisionQueue("YESNO", $currentPlayer, "if you want to pitch 2 red cards");
         }
+        return "";
+      case "EVO246": PutPermanentIntoPlay($currentPlayer, $cardID); 
         return "";
       case "EVO247":
         AddCurrentTurnEffect($cardID, $currentPlayer);

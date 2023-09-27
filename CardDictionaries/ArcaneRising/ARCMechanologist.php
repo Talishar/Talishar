@@ -138,7 +138,7 @@ function HasBoost($cardID)
 		case "DYN101": case "DYN102": case "DYN103":
 		case "DYN104": case "DYN105": case "DYN106":
     case "TCC016":
-    case "EVO138":
+    case "EVO138": case "EVO141":
     case "EVO147": case "EVO148": case "EVO149":
     case "EVO150": case "EVO151": case "EVO152":
     case "EVO162": case "EVO163": case "EVO164":
@@ -204,6 +204,12 @@ function DoBoost($player, $boostCount = 1)
 
 function OnBoostedEffects($player, $boosted)
 {
+  if(SearchCharacterForCard($player, "EVO011") && CardName($boosted) == "Hyper Driver") {
+    $char = &GetPlayerCharacter($player);
+    $index = FindCharacterIndex($player, "EVO011");
+    ++$char[$index+2];//EVO TODO: Make this actually put the card underneath
+    if($char[$index+2] >= 3) Draw($player, fromCardEffect:false);
+  }
   switch($boosted)
   {
     case "EVO177": case "EVO178": case "EVO179":

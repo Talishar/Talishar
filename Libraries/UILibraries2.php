@@ -70,7 +70,8 @@ function JSONRenderedCard(
   $label = NULL,
   $facing = NULL,
   $numUses = NULL,
-  $subcard = NULL
+  $subcard = NULL,
+  $steamCounters = NULL
 ) {
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -83,6 +84,8 @@ function JSONRenderedCard(
     $countersMap->defence :  $defCounters;
   $countersMap->attack = property_exists($countersMap, 'attack') ?
     $atkCounters->attack :  $atkCounters;
+  $countersMap->steam = property_exists($countersMap, 'steam') ?
+    $steamCounters->steam :  $steamCounters;
   if ($countersMap->counters > 0) {
     $class = CardClass($cardNumber);
     $subtype = CardSubType($cardNumber);
@@ -117,6 +120,7 @@ function JSONRenderedCard(
     'lifeCounters' => $lifeCounters,
     'defCounters' => $defCounters,
     'atkCounters' => $atkCounters,
+    'steamCounters' => $steamCounters,
     'controller' => $controller,
     'type' => $type,
     'sType' => $sType,

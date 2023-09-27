@@ -55,6 +55,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "EVR182": case "EVR183": case "EVR184":
     case "EVR185": case "EVR186": case "EVR187":
     case "OUT054":
+    case "EVO081": case "EVO082": case "EVO083": 
       DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "ARC035":
@@ -168,7 +169,7 @@ function GetItemGemState($player, $cardID)
 
 function ItemHitEffects($attackID)
 {
-  global $mainPlayer, $defPlayer;
+  global $mainPlayer, $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   $attackSubType = CardSubType($attackID);
   $items = &GetItems($mainPlayer);
   for($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
@@ -187,6 +188,9 @@ function ItemHitEffects($attackID)
           DamageTrigger($defPlayer, $amount, "DAMAGE", $items[$i]);
           $remove = true;
         }
+        break;
+      case "EVO098":
+        if(CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
       default: break;
     }
@@ -226,11 +230,14 @@ function ItemStartTurnAbility($index)
     case "ARC007": case "ARC035": case "EVR069": case "EVR071":
       AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]);
       break;
+    case "EVO070": case "EVO071": case "EVO072":
     case "EVO078": case "EVO079": case "EVO080":
+    case "EVO081": case "EVO082": case "EVO083":
     case "EVO084": case "EVO085": case "EVO086":
     case "EVO087": case "EVO088": case "EVO089":
+    case "EVO090": case "EVO091": case "EVO092":
     case "EVO093": case "EVO094": case "EVO095":
-    case "EVO097":
+    case "EVO096": case "EVO097": case "EVO098":
       if($mainItems[$index+1] > 0) --$mainItems[$index+1];
       else DestroyItemForPlayer($mainPlayer, $index);
       break;
