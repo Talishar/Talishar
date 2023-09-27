@@ -86,9 +86,14 @@ function JSONRenderedCard(
   if ($countersMap->counters > 0) {
     $class = CardClass($cardNumber);
     $subtype = CardSubType($cardNumber);
-    if ($class == "MECHANOLOGIST" && ($subtype == "Item" || CardType($cardNumber) == "W" || CardType($cardNumber) == "E")) {
+    if ($class == "MECHANOLOGIST" && ($subtype == "Item" || CardType($cardNumber) == "W")) {
       $countersMap->steam = $countersMap->counters;
       $countersMap->counters = 0;
+    } else if (CardType($cardNumber) == "E") {
+      if (EquipmentsUsingSteamCounter($cardNumber)) {
+        $countersMap->steam = $countersMap->counters;
+        $countersMap->counters = 0;
+      }
     } else if ($subtype == "Arrow") {
       $countersMap->aim = $countersMap->counters;
       $countersMap->counters = 0;

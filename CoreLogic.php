@@ -1235,6 +1235,10 @@ function DestroyCharacter($player, $index, $skipDestroy=false)
   $cardID = $char[$index];
   if($char[$index+6] == 1) $CombatChain->Remove(GetCombatChainIndex($cardID, $player));
   $char[$index+6] = 0;
+  $subcards = explode(',', $char[$index+10]);
+  $char[$index+10] = "-";
+  $subcardsCount = count($subcards);
+  for ($i = 0; $i < $subcardsCount; $i++) AddGraveyard($subcards[$i], $player, "CHAR");
   if(!$skipDestroy) {
     AddGraveyard($cardID, $player, "CHAR");
     CharacterDestroyEffect($cardID, $player);
@@ -2070,4 +2074,14 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
 function EvoUpgradeAmount($player)
 {
   return SearchCount(SearchCharacter($player, subtype:"Evo"));
+}
+
+function EquipmentsUsingSteamCounter($charID) {
+  switch ($charID) {
+    case "EVO014": case "EVO015": case "EVO016":
+    case "EVO017": 
+      return true;
+    default:
+      return false;
+  }
 }

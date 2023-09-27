@@ -909,7 +909,7 @@ function HasBattleworn($cardID)
     case "OUT011": return true;
     case "TCC080": case "TCC082": case "TCC407": case "TCC408": case "TCC409": case "TCC410": return true;
     case "EVO410": case "EVO438": case "EVO439": case "EVO440": case "EVO441": case "EVO235": return true;
-    case "EVO442": case "EVO443": case "EVO444": case "EVO445": return true;
+    case "EVO442": case "EVO443": case "EVO444": case "EVO445": case "EVO011": return true;
     default: return false;
   }
 }
