@@ -476,10 +476,17 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($from == "ARS" && $phase != "B" && $myArsenal[$index + 4] == "1") { $restriction = "Frozen"; return false; }
   if($phase != "P" && $cardType == "DR" && IsAllyAttackTarget() && $currentPlayer != $mainPlayer) return false;
   if($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
-  if($CombatChain->HasCurrentLink() && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR")) && $from == "HAND") {
-    if(CachedDominateActive() && CachedNumDefendedFromHand() >= 1) return false;
-    if(CachedOverpowerActive() && CachedNumActionBlocked() >= 1 && ($cardType == "A" || $cardType == "AA")) return false;
-    if(CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "CRU047") || SearchCurrentTurnEffects("CRU047-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "CRU047") || SearchCharacterActive($mainPlayer, "CRU097")) && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
+  if($CombatChain->HasCurrentLink() && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR"))) {
+    if ($from == "HAND") {
+      if(CachedDominateActive() && CachedNumDefendedFromHand() >= 1) return false;
+      if(CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "CRU047") || SearchCurrentTurnEffects("CRU047-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "CRU047") || SearchCharacterActive($mainPlayer, "CRU097")) && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
+    }
+    if(CachedOverpowerActive() && CachedNumActionBlocked() >= 1) {
+      if ($cardType == "A" || $cardType == "AA") return false;
+      if (SubtypeContains($cardID, "Evo")) {
+        if (CardType(GetCardIDBeforeTransform($cardID)) == "A") return false;
+      }
+    }
   }
   if($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player)) || $cardID == "OUT184" || HasAmbush($cardID))) return false;
   if($phase == "B" || $phase == "D") {
@@ -890,6 +897,7 @@ function HasBladeBreak($cardID)
     case "DTD200": return true;
     case "DTD222": case "DTD223": case "DTD224": case "DTD225": return true;
     case $CID_TekloHead: case $CID_TekloChest: case $CID_TekloArms: case $CID_TekloLegs: return true;
+    case "EVO018": case "EVO019": case "EVO020": case "EVO021": return true;
     case "EVO434": case "EVO435": case "EVO436": case "EVO437": return true;
     case "EVO418": case "EVO419": case "EVO420": case "EVO421": return true;
     case "EVO446": case "EVO447": case "EVO448": case "EVO449": return true;
@@ -911,7 +919,7 @@ function HasBattleworn($cardID)
     case "TCC080": case "TCC082": case "TCC407": case "TCC408": case "TCC409": case "TCC410": return true;
     case "EVO011": return true;
     case "EVO410": case "EVO438": case "EVO439": case "EVO440": case "EVO441": case "EVO235": return true;
-    case "EVO442": case "EVO443": case "EVO444": case "EVO445": return true;
+    case "EVO442": case "EVO443": case "EVO444": case "EVO445": case "EVO011": return true;
     default: return false;
   }
 }

@@ -116,7 +116,7 @@
     if (CardNameContains($cardID, "Hyper Driver", $player)) return true;
     switch ($cardID) {
       case "ARC037": case "ARC007": case "ARC019":
-      case "DYN093": case "DYN093": case "EVR072":
+      case "DYN093": case "EVR072":
       case "CRU104": 
         return true;
       default:
