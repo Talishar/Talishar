@@ -286,7 +286,6 @@ function AddSubcardToChar(&$chars, $index, $cardID) {
   if (isSubcardEmpty($chars, $index)) $chars[$index+10] = $cardID;
   else $chars[$index+10] = $chars[$index+10] . "," . $cardID;
   $chars[$index+2]++;
-  WriteLog($cardID);
 }
 
 function isSubcardEmpty ($chars, $index)
