@@ -193,7 +193,7 @@
         AddDecisionQueue("MZREMOVESTEAMCOUNTER", $currentPlayer, "-", 1);
         AddDecisionQueue("SYSTEMFAILURE", $currentPlayer, "<-", 1);
         return "";
-      case "EVO155":
+      case "EVO153": case "EVO154": case "EVO155":
         if(GetClassState($currentPlayer, $CS_NumBoosted) >= 2) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "EVO156": case "EVO157": case "EVO158":
