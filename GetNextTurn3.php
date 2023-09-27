@@ -238,7 +238,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
     $borderColor = $action == 21 ? 1 : null;
     $countersMap = new stdClass();
-    if (HasAimCounter()) $countersMap->aim = 1;
+    if (HasAimCounter() && $i == 0) $countersMap->aim = 1;
 
     if ($i == 0) {
       $activeChainLink->attackingCard = JSONRenderedCard(
