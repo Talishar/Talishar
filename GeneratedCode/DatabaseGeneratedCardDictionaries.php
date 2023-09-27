@@ -953,6 +953,8 @@ case "3":
 switch($cardID[5]) {
 case "0":
 return true;
+case "8":
+return true;
 default: return false;
 }
 case "4":

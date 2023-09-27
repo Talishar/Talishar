@@ -221,6 +221,9 @@
           AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $currentPlayer, -1, 1);
         }
         return "";
+      case "EVO238":
+        PlayAura("WTR075", $currentPlayer, number:$resourcesPaid);
+        return "";
       case "EVO239":
         $cardsPlayed = explode(",", GetClassState($currentPlayer, $CS_NamesOfCardsPlayed));
         for($i=0; $i<count($cardsPlayed); ++$i) {
