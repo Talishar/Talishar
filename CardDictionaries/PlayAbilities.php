@@ -191,6 +191,9 @@
       case "EVO140":
         for($i=0; $i<$resourcesPaid; $i+=2) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "EVO141":
+        if(GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0) AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "EVO144":
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true&MYITEMS:hasSteamCounter=true&MYCHAR:hasSteamCounter=true");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment, item, or weapon. Remove all steam counters from it.");
