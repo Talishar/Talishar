@@ -265,10 +265,11 @@ function MZChooseAndDestroy($player, $search, $may=false)
   AddDecisionQueue("MZDESTROY", $player, "-", 1);
 }
 
-function MZChooseAndBanish($player, $search, $fromMod)
+function MZChooseAndBanish($player, $search, $fromMod, $may=false)
 {
   AddDecisionQueue("MULTIZONEINDICES", $player, $search);
-  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-");
+  if($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+  else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
 }

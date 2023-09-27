@@ -289,6 +289,7 @@ function DynamicCost($cardID)
     case "EVR124": return GetIndices(SearchCount(SearchAura(($currentPlayer == 1 ? 2 : 1), "", "", 0)) + 1);
     case "UPR109": return "0,2,4,6,8,10,12,14,16,18,20";
     case "EVO140": return "0,2,4,6,8,10,12,14,16,18,20";
+    case "EVO238": return "0,1,2,3,4,5,6,7,8,9,10,11,12";
     case "EVO242": return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40";
     default: return "";
   }
@@ -537,9 +538,10 @@ function IsBlockRestricted($cardID, $phase, $from, $index = -1, &$restriction = 
 
 function CanBlockWithEquipment()
 {
-  global $CombatChain;
+  global $CombatChain, $mainPlayer;
   switch($CombatChain->AttackCard()->ID())
   {
+    case "EVO154": return SearchCurrentTurnEffects("EVO154", $mainPlayer);
     case "EVO204": case "EVO205": case "EVO206":
     case "EVO207": case "EVO208": case "EVO209": return false;
     default: return true;
@@ -971,12 +973,17 @@ function ETASteamCounters($cardID)
     case "DYN110": return 3;
     case "DYN111": return 2;
     case "DYN112": return 1;
-    case "EVO084": case "EVO085": case "EVO086": return 1;
     case "EVO078": case "EVO079": case "EVO080": return 1;
+    case "EVO084": case "EVO085": case "EVO086": return 1;
     case "EVO093": return 4;
     case "EVO087": case "EVO094": return 3;
     case "EVO088": case "EVO095": return 2;
     case "EVO089": return 1;
+    case "EVO070": return 1;
+    case "EVO090": return 4;
+    case "EVO091": return 3;
+    case "EVO092": return 2;
+    case "EVO097": return 1;
     default: return 0;
   }
 }
@@ -1551,10 +1558,12 @@ function HasScrap($cardID)
   switch($cardID)
   {
     case "EVO101":
+    case "EVO102": case "EVO103": case "EVO104":
     case "EVO108": case "EVO109": case "EVO110":
     case "EVO126": case "EVO127": case "EVO128":
     case "EVO129": case "EVO130": case "EVO131":
-    case "EVO132": case "EVO133": case "EVO134": return true;
+    case "EVO132": case "EVO133": case "EVO134":
+    case "EVO135": case "EVO136": case "EVO137": return true;
     default: return false;
   }
 }
@@ -1565,6 +1574,7 @@ function HasGalvanize($cardID)
   {
     case "EVO111": case "EVO112": case "EVO113":
     case "EVO114": case "EVO115": case "EVO116":
+    case "EVO117": case "EVO118": case "EVO119":
     case "EVO120": case "EVO121": case "EVO122":
     case "EVO123": case "EVO124": case "EVO125":
     case "EVO141": return true;

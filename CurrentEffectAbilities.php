@@ -277,7 +277,7 @@ function EffectHitEffect($cardID)
         return 1;
       }
       break;
-    case "EVO155": case "EVO156": case "EVO157":
+    case "EVO155":
       if(IsHeroAttackTarget()) {
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take");

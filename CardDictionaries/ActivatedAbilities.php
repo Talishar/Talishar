@@ -65,6 +65,7 @@
       case "EVO007": case "EVO008": return "I";
       case "EVO009": return EvoUpgradeAmount($currentPlayer) >= 1 ? "AA" : "";
       case "EVO014": case "EVO015": case "EVO016": case "EVO017": return "I";
+      case "EVO070": return "A";
       case "EVO075": return "I";
       case "EVO076": return "A";
       case "EVO077": return "I";
@@ -86,4 +87,35 @@
     }
   }
 
+  function DestroyTopCard($player)
+  {
+    $otherPlayer = ($player == 1 ? 2 : 1);
+    AddDecisionQueue("PASSPARAMETER", $player, "ELSE");
+    AddDecisionQueue("SETDQVAR", $player, "1");
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose target hero");
+    AddDecisionQueue("BUTTONINPUT", $player, "Target_Opponent,Target_Yourself");
+
+    AddDecisionQueue("EQUALPASS", $player, "Target_Opponent");
+    AddDecisionQueue("WRITELOG", $player, "Destroys the top card of your deck", 1);
+    AddDecisionQueue("DESTROYTOPCARD", $player, "0", 1);
+    AddDecisionQueue("SETDQVAR", $player, "1", 1);
+    AddDecisionQueue("PASSPARAMETER", $player, "{1}");
+    
+    AddDecisionQueue("NOTEQUALPASS", $player, "ELSE");
+    AddDecisionQueue("WRITELOG", $otherPlayer, "Destroys the top card of opponent's deck", 1);
+    AddDecisionQueue("DESTROYTOPCARD", $otherPlayer, "0", 1);
+    AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
+  }
+
+  function DestroyItemWithoutSteamCounter($cardID, $player) {
+    if (CardNameContains($cardID, "Hyper Driver", $player)) return true;
+    switch ($cardID) {
+      case "ARC037": case "ARC007": case "ARC019":
+      case "DYN093": case "DYN093": case "EVR072":
+      case "CRU104": 
+        return true;
+      default:
+        return false;
+    }
+  }
 ?>

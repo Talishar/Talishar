@@ -106,6 +106,9 @@ function ItemPlayAbilities($cardID, $from)
           $remove = true;
         }
         break;
+      case "EVO097":
+        if(CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $currentPlayer)) GiveAttackGoAgain();
+        break;
       default: break;
     }
     if($remove) DestroyItemForPlayer($currentPlayer, $i);
@@ -226,13 +229,9 @@ function ItemStartTurnAbility($index)
     case "EVO078": case "EVO079": case "EVO080":
     case "EVO084": case "EVO085": case "EVO086":
     case "EVO087": case "EVO088": case "EVO089":
-      if($mainItems[$index+1] > 0) --$mainItems[$index+1];
-      else DestroyItemForPlayer($mainPlayer, $index);
-      break;
     case "EVO093": case "EVO094": case "EVO095":
-      if($mainItems[$index+1] > 0) {
-        --$mainItems[$index+1];
-      }
+    case "EVO097":
+      if($mainItems[$index+1] > 0) --$mainItems[$index+1];
       else DestroyItemForPlayer($mainPlayer, $index);
       break;
     default: break;
@@ -309,7 +308,7 @@ function ItemDamagePeventionAmount($player, $index) {
 
 function ItemBlockModifier($cardID)
 {
-  global $mainPlayer, $CombatChain;
+  global $mainPlayer, $defPlayer, $CombatChain;
   $items = &GetItems($mainPlayer);
   $blockModifier = 0;
   for($i=0; $i<count($items); $i+=ItemPieces()) {
@@ -318,6 +317,16 @@ function ItemBlockModifier($cardID)
         $type = CardType($cardID);
         $attackID = $CombatChain->AttackCard()->ID();
         if(($type == "A" || $type == "AA") && CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) --$blockModifier;
+        break;
+      default: break;
+    }
+  }
+  $items = &GetItems($defPlayer);
+  for($i=0; $i<count($items); $i+=ItemPieces()) {
+    switch($items[$i]) {
+      case "EVO080":
+        if(CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $defPlayer)) ++$blockModifier;
+        break;
       default: break;
     }
   }

@@ -140,6 +140,11 @@ function HasBoost($cardID)
     case "TCC016":
     case "EVO138":
     case "EVO147": case "EVO148": case "EVO149":
+    case "EVO150": case "EVO151": case "EVO152":
+    case "EVO162": case "EVO163": case "EVO164":
+    case "EVO165": case "EVO166": case "EVO167":
+    case "EVO168": case "EVO169": case "EVO170":
+    case "EVO171": case "EVO172": case "EVO173":
     case "EVO177": case "EVO178": case "EVO179":
     case "EVO183": case "EVO184": case "EVO185":
     case "EVO186": case "EVO187": case "EVO188":
@@ -152,6 +157,7 @@ function HasBoost($cardID)
     case "EVO207": case "EVO208": case "EVO209":
     case "EVO210": case "EVO211": case "EVO212":
     case "EVO213": case "EVO214": case "EVO215":
+    case "EVO216": case "EVO217": case "EVO218":
       return true;
     default: return false;
   }
@@ -241,6 +247,10 @@ function ItemBoostEffects()
           AddCurrentTurnEffect("EVR072", $currentPlayer, "PLAY");
           if($items[$i+1] <= 0) DestroyItemForPlayer($currentPlayer, $i);
         }
+        break;
+      case "EVO090": case "EVO091": case "EVO092":
+        AddCurrentTurnEffect($items[$i] . "," . $items[$i+1], $currentPlayer, "PLAY");
+        DestroyItemForPlayer($currentPlayer, $i);
         break;
       default: break;
     }

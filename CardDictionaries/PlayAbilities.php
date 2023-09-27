@@ -126,6 +126,9 @@
       case "EVO061": case "EVO062": case "EVO063":
         WriteLog("This is a partially manual card. Do not block with attack action cards with cost less than " . EvoUpgradeAmount($currentPlayer));
         return "";
+      case "EVO070":
+        if($from == "PLAY") DestroyTopCard($currentPlayer);
+        break;
       case "EVO075":
         if($from == "PLAY") GainResources($currentPlayer, 1);
         return "";
@@ -154,6 +157,9 @@
         for($i=0; $i<count($costAry); ++$i) if($costAry[$i] == "SCRAP") ++$numScrap;
         if($numScrap > 0) GainResources($currentPlayer, $numScrap * 2);
         return "";
+      case "EVO102": case "EVO103": case "EVO104":
+        if($additionalCosts == "SCRAP") AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "EVO108": case "EVO109": case "EVO110":
         if($additionalCosts == "SCRAP") PlayAura("WTR225", $currentPlayer);
         return "";
@@ -168,17 +174,30 @@
         return "";
       case "EVO132": case "EVO133": case "EVO134":
         if($additionalCosts == "SCRAP") {
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to get a steam counter", 1);
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:hasCrank=true");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to get a steam counter", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
         }
         return "";
+      case "EVO135": case "EVO136": case "EVO137":
+        if($additionalCosts == "SCRAP") GainResources($currentPlayer, 1);
+        return "";
       case "EVO140":
         for($i=0; $i<$resourcesPaid; $i+=2) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "EVO155": case "EVO156": case "EVO157":
+      case "EVO144":
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true&MYITEMS:hasSteamCounter=true&MYCHAR:hasSteamCounter=true");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment, item, or weapon. Remove all steam counters from it.");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZREMOVESTEAMCOUNTER", $currentPlayer, "-", 1);
+        AddDecisionQueue("SYSTEMFAILURE", $currentPlayer, "<-", 1);
+        return "";
+      case "EVO153": case "EVO154": case "EVO155":
         if(GetClassState($currentPlayer, $CS_NumBoosted) >= 2) AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "EVO156": case "EVO157": case "EVO158":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "EVO222": case "EVO223": case "EVO224":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -201,6 +220,9 @@
           AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, $options);
           AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $currentPlayer, -1, 1);
         }
+        return "";
+      case "EVO238":
+        PlayAura("WTR075", $currentPlayer, number:$resourcesPaid);
         return "";
       case "EVO239":
         $cardsPlayed = explode(",", GetClassState($currentPlayer, $CS_NamesOfCardsPlayed));

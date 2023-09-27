@@ -430,11 +430,6 @@ function ContinueDecisionQueue($lastResult = "")
         BuildMyGamestate($currentPlayer);
       }
       PlayCard($params[0], $params[1], $lastResult, $params[2]);
-      $character = &GetPlayerCharacter($currentPlayer);
-      if ($character[0] == 'EVO001' || $character[0] == 'EVO002') {
-        $deck = GetDeck($currentPlayer);
-        if ($deck[0] != $params[0]) $character[1] = 1;
-      }
     } else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECHAINLINK") {
       CloseDecisionQueue();
       ResolveChainLink();
@@ -1066,8 +1061,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       BanishCardForPlayer("DYN065", $player, "-", "NT", $player);
       break;
     case "TCC033": PlayAura("WTR225", $mainPlayer); break;//Quicken
+    case "EVO000":
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:hasCrank=true");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card with Crank to get a steam counter", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZADDSTEAMCOUNTER", $player, "-", 1);
+      break;
     case "EVO111": case "EVO112": case "EVO113":
     case "EVO114": case "EVO115": case "EVO116":
+    case "EVO117": case "EVO118": case "EVO119":
     case "EVO120": case "EVO121": case "EVO122":
     case "EVO123": case "EVO124": case "EVO125":
     case "EVO141":
@@ -1295,4 +1297,13 @@ function HasEnergyCounters($array, $index)
     case "WTR150": case "UPR166": return $array[$index+2] > 0;
     default: return false;
   }
+}
+
+function HasSteamCounter($array, $index, $player)
+{
+  if (ClassContains($array[$index], "MECHANOLOGIST", $player)) {
+    if (CardType($array[$index]) == 'E' || CardType($array[$index]) == 'W') return $array[$index+2] > 0;
+    if (SubtypeContains($array[$index], "Item", $player)) return $array[$index+1] > 0;
+  }
+  return false;
 }

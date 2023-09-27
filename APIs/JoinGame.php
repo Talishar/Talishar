@@ -586,13 +586,19 @@ function GetAltCardID($cardID)
     case "LGS159": return "DTD157";
     case "HER085": return "DTD134";
     case "DTD013": return "MON007";
-
     case "DTD048": return "FAB161";
     case "DTD049": return "FAB162";
     case "DTD050": return "FAB163";
     case "DTD054": return "LGS179";
     case "DTD055": return "LGS180";
     case "DTD056": return "LGS181";
+    case "EVO038": return "TCC007";
+    case "EVO039": return "TCC008";
+    case "EVO040": return "TCC009";
+    case "EVO041": return "TCC010";
+    case "EVO159": return "TCC019";
+    case "EVO160": return "TCC022";
+    case "EVO161": return "TCC026";
   }
   return $cardID;
 }

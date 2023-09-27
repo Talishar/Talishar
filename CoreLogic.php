@@ -1564,6 +1564,7 @@ function SelfCostModifier($cardID, $from)
     case "DTD175": case "DTD176": case "DTD177": return ($from == "BANISH" ? -2 : 0);
     case "DTD178": case "DTD179": case "DTD180": return ($from == "BANISH" ? -2 : 0);
     case "DTD213": return (-1 * NumRunechants($currentPlayer));
+    case "EVO064": case "EVO065": case "EVO066":
     case "TCC012": case "TCC023": return EvoUpgradeAmount($currentPlayer) * -1;
     case "EVO054": case "EVO055": case "EVO056": return EvoUpgradeAmount($currentPlayer) >= 2? -3 : 0;
     case "EVO183": case "EVO184": case "EVO185": return SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036") != "" ? -1 : 0;
@@ -1830,7 +1831,7 @@ function PitchAbility($cardID)
     }
   }
   switch($cardID) {
-    case "WTR000": case "ARC000": case "CRU000": case "OUT000": case "DTD000":
+    case "WTR000": case "ARC000": case "CRU000": case "OUT000": case "DTD000": case "EVO000":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "EVR000":
@@ -1984,10 +1985,11 @@ function EvoHandling($cardID, $player)
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
     if(SubtypeContains($char[$i], $slot)) {
       if(SubtypeContains($char[$i], "Base")) {
-        EvoTransformAbility($cardID, $char[$i], $player);
+        if(!SubtypeContains($char[$i], "Evo")) $char[$i+2] = 0;//Reset steam counters if applicable //EVO TODO: Make this unconditional once EVOs are fixed
         ++$char[$i+2];//EVO TODO: Make this actually put the card underneath
+        $char[$i+4] = 0;//Reset defense counters
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
-        $char[$i+4] = 0; // Reset Defense Counters to 0
+        EvoTransformAbility($cardID, $char[$i], $player);
       }
       else WriteLog("*ERR0R*//No base of that type equipped//");
       break;
@@ -2023,6 +2025,19 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
     case "EVO029":
       if(SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
         GainActionPoints(1, $player);
+      break;
+    case "EVO050":
+      MZChooseAndBanish($player, "MYHAND", "HAND,-");
+      AddDecisionQueue("DRAW", $player, "-", 1);
+      break;
+    case "EVO051":
+      GainResources($player, 1);
+      break;
+    case "EVO052":
+      AddCurrentTurnEffect("EVO052", $player);
+      break;
+    case "EVO053":
+      GiveAttackGoAgain();
       break;
     default: break;
   }

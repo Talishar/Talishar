@@ -847,6 +847,11 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $characterID, 1);
         }
         break;
+      case "EVO001": case "EVO002":
+        if($from == "DECK") {
+          $character[$i+1] = 1;
+        }
+        break;
       case "ROGUE017":
         if(CardType($cardID) == "AA") {
           $deck = &GetDeck($currentPlayer);
