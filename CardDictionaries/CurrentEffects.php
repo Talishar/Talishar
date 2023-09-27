@@ -67,7 +67,7 @@
     $cardID = $idArr[0];
     switch($cardID) {
       case "EVO009": return true;
-      case "EVO016": return CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
+      case "EVO016": return ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
       case "EVO052": return true;
       case "EVO090": case "EVO091": case "EVO092": return true;
       case "EVO102": case "EVO103": case "EVO104": return true;
