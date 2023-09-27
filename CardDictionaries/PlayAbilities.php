@@ -174,8 +174,8 @@
         return "";
       case "EVO132": case "EVO133": case "EVO134":
         if($additionalCosts == "SCRAP") {
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to get a steam counter", 1);
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:hasCrank=true");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to get a steam counter", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
         }

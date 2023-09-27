@@ -1061,6 +1061,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       BanishCardForPlayer("DYN065", $player, "-", "NT", $player);
       break;
     case "TCC033": PlayAura("WTR225", $mainPlayer); break;//Quicken
+    case "EVO000":
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:hasCrank=true");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card with Crank to get a steam counter", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZADDSTEAMCOUNTER", $player, "-", 1);
+      break;
     case "EVO111": case "EVO112": case "EVO113":
     case "EVO114": case "EVO115": case "EVO116":
     case "EVO117": case "EVO118": case "EVO119":
