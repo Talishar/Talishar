@@ -169,7 +169,7 @@ function GetItemGemState($player, $cardID)
 
 function ItemHitEffects($attackID)
 {
-  global $mainPlayer, $defPlayer;
+  global $mainPlayer, $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   $attackSubType = CardSubType($attackID);
   $items = &GetItems($mainPlayer);
   for($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
@@ -188,6 +188,9 @@ function ItemHitEffects($attackID)
           DamageTrigger($defPlayer, $amount, "DAMAGE", $items[$i]);
           $remove = true;
         }
+        break;
+      case "EVO098":
+        if(CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
       default: break;
     }
@@ -232,7 +235,7 @@ function ItemStartTurnAbility($index)
     case "EVO084": case "EVO085": case "EVO086":
     case "EVO087": case "EVO088": case "EVO089":
     case "EVO093": case "EVO094": case "EVO095":
-    case "EVO097":
+    case "EVO096": case "EVO097": case "EVO098":
       if($mainItems[$index+1] > 0) --$mainItems[$index+1];
       else DestroyItemForPlayer($mainPlayer, $index);
       break;

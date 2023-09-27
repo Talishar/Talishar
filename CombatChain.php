@@ -650,6 +650,9 @@ function IsOverpowerActive()
 {
   global $combatChain, $mainPlayer, $CS_Num6PowBan, $CS_NumItemsDestroyed;
   if(count($combatChain) == 0) return false;
+  if(SearchItemsForCard("EVO096", $mainPlayer) != "") {
+    return CardType($combatChain[0]) == "AA" && ClassContains($combatChain[0], "MECHANOLOGIST", $mainPlayer);
+  }
   switch($combatChain[0]) {
     case "DYN068": return SearchCurrentTurnEffects("DYN068", $mainPlayer);
     case "DYN088": return true;
