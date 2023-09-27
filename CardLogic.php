@@ -1062,7 +1062,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "TCC098": case "TCC102":
       BanishCardForPlayer("DYN065", $player, "-", "NT", $player);
       break;
-    case "TCC033": PlayAura("WTR225", $mainPlayer); break;//Quicken
+    case "TCC033": PlayAura("WTR225", $mainPlayer); 
+      break;//Quicken
+    case "TCC060": case "TCC063": case "TCC076":
+      ChooseToPay($player, $parameter, "0,3");
+      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "1", 1); // Technically wrong, it should be +1 for each opposing heroes
+      break;
     case "EVO000":
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:hasCrank=true");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card with Crank to get a steam counter", 1);
