@@ -1992,7 +1992,8 @@ function EvoHandling($cardID, $player)
     if(SubtypeContains($char[$i], $slot)) {
       if(SubtypeContains($char[$i], "Base")) {
         if(!SubtypeContains($char[$i], "Evo")) $char[$i+2] = 0;//Reset steam counters if applicable //EVO TODO: Make this unconditional once EVOs are fixed
-        ++$char[$i+2];//EVO TODO: Make this actually put the card underneath
+        if (isSubcardEmpty($char, $i)) $char[$i+10] = $char[$i];
+        else $char[$i+10] = $char[$i+10] . "," . $char[$i];
         $char[$i+4] = 0;//Reset defense counters
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
         EvoTransformAbility($cardID, $char[$i], $player);
