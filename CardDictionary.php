@@ -982,7 +982,6 @@ function ETASteamCounters($cardID)
     case "DYN111": return 2;
     case "DYN112": return 1;
     case "EVO078": case "EVO079": case "EVO080": return 1;
-    case "EVO081": case "EVO082": case "EVO083": return 1;
     case "EVO084": case "EVO085": case "EVO086": return 1;
     case "EVO093": return 4;
     case "EVO087": case "EVO094": return 3;

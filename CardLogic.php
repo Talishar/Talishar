@@ -1308,10 +1308,3 @@ function HasSteamCounter($array, $index, $player)
   }
   return false;
 }
-
-function isInstantItemToBeDestroyed($cardID) {
-  switch ($cardID) {
-    case "EVO081": case "EVO082": case "EVO083": return true;
-    default: return false;
-  }
-}

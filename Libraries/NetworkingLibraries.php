@@ -1373,10 +1373,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     AuraPlayAbilities($cardID, $from);
     PermanentPlayAbilities($cardID, $from);
   }
-  if ($from == "PLAY" && isInstantItemToBeDestroyed($cardID)) {
-    $index = GetClassState($currentPlayer, $CS_PlayIndex);
-    DestroyItemForPlayer($currentPlayer, $index);
-  }
   AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID));
   ProcessDecisionQueue();
 }

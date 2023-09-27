@@ -48,7 +48,6 @@
         else if($evoAmt >= 2) return 1;
         else return 0;
       case "EVO014": case "EVO015": case "EVO016": case "EVO017": return 1;
-      case "EVO081": case "EVO082": case "EVO083": return 2;
       case "EVO235": return 2;
       case "EVO247": return 2;
       default: return 0;
@@ -70,7 +69,6 @@
       case "EVO075": return "I";
       case "EVO076": return "A";
       case "EVO077": return "I";
-      case "EVO081": case "EVO082": case "EVO083": return "I";
       case "EVO087": case "EVO088": case "EVO089": return "I";
       case "EVO235": return "AR";
       case "EVO247": return "A";
