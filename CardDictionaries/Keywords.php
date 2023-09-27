@@ -34,7 +34,7 @@
     GainActionPoints(1, $player);
     WriteLog("Player $player cranked");
     IncrementClassState($player, $CS_NumCranked);
-    if (strcmp(CardName($items[$index]), "Hyper Driver") == 0 && ($items[$index+1] <= 0)) DestroyItemForPlayer($player, $index);
+    if(CardName($items[$index]) == "Hyper Driver" && ($items[$index+1] <= 0)) DestroyItemForPlayer($player, $index);
   }
 
   function ProcessTowerEffect($cardID)
