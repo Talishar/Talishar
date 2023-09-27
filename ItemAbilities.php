@@ -106,6 +106,9 @@ function ItemPlayAbilities($cardID, $from)
           $remove = true;
         }
         break;
+      case "EVO097":
+        if(CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $currentPlayer)) GiveAttackGoAgain();
+        break;
       default: break;
     }
     if($remove) DestroyItemForPlayer($currentPlayer, $i);
@@ -226,13 +229,9 @@ function ItemStartTurnAbility($index)
     case "EVO078": case "EVO079": case "EVO080":
     case "EVO084": case "EVO085": case "EVO086":
     case "EVO087": case "EVO088": case "EVO089":
-      if($mainItems[$index+1] > 0) --$mainItems[$index+1];
-      else DestroyItemForPlayer($mainPlayer, $index);
-      break;
     case "EVO093": case "EVO094": case "EVO095":
-      if($mainItems[$index+1] > 0) {
-        --$mainItems[$index+1];
-      }
+    case "EVO097":
+      if($mainItems[$index+1] > 0) --$mainItems[$index+1];
       else DestroyItemForPlayer($mainPlayer, $index);
       break;
     default: break;
