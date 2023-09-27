@@ -55,6 +55,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "EVR182": case "EVR183": case "EVR184":
     case "EVR185": case "EVR186": case "EVR187":
     case "OUT054":
+    case "EVO081": case "EVO082": case "EVO083": 
       DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "ARC035":
@@ -227,6 +228,7 @@ function ItemStartTurnAbility($index)
       AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]);
       break;
     case "EVO078": case "EVO079": case "EVO080":
+    case "EVO081": case "EVO082": case "EVO083":
     case "EVO084": case "EVO085": case "EVO086":
     case "EVO087": case "EVO088": case "EVO089":
     case "EVO093": case "EVO094": case "EVO095":
