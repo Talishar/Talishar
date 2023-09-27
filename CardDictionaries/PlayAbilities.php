@@ -99,7 +99,7 @@
         AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1");
         return "";
       case "EVO058":
-        if(IsHeroAttackTarget())
+        if(IsHeroAttackTarget() && EvoUpgradeAmount($currentPlayer) > 0)
         {
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("PASSPARAMETER", $otherPlayer, EvoUpgradeAmount($currentPlayer), 1);
