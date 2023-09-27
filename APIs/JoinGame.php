@@ -480,6 +480,7 @@ function ParseDraftFab($deck, $filename)
   $offhandSideboard = "";
   $weaponSideboard = "";
   $sideboardCards = "";
+  $quiverSideboard = "";
 
   $cards = explode(",", $deck);
   for ($i = 0; $i < count($cards); ++$i) {

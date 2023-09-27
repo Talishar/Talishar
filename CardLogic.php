@@ -811,15 +811,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       PlayAura("ELE111", $target, $numFrostbite);
       break;
     case "UPR176": case "UPR177": case "UPR178":
-      $index = SearchAurasForUniqueID($uniqueID, $player);
-      if($index == -1) break;
+      $i = SearchAurasForUniqueID($uniqueID, $player);
+      if($i == -1) break;
       $auras = &GetAuras($player);
       if($auras[$i] == "UPR176") $numOpt = 3;
       else if($auras[$i] == "UPR177") $numOpt = 2;
       else $numOpt = 1;
       for($j = 0; $j < $numOpt; ++$j) PlayerOpt($player, 1);
       AddDecisionQueue("DRAW", $player, "-", 1);
-      DestroyAura($player, $index);
+      DestroyAura($player, $i);
       break;
     case "UPR182":
       BottomDeckMultizone($player, "MYHAND", "MYARS");
@@ -1052,9 +1052,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "TCC030": Draw($mainPlayer); break;
     case "TCC031":
+      $otherPlayer = ($player == 1 ? 2 : 1);
       PlayAura("TCC107", $otherPlayer);
       break;
     case "TCC032":
+      $otherPlayer = ($player == 1 ? 2 : 1);
       PlayAura("TCC105", $otherPlayer);
       break;
     case "TCC098": case "TCC102":

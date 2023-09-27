@@ -565,7 +565,7 @@ function AuraDamageTakenAbilities($player, $damage)
       case "EVR023": $remove = 1; break;
       default: break;
     }
-    if($remove) DestroyAura($mainPlayer, $i);
+    if($remove) DestroyAura($player, $i);
   }
   return $damage;
 }
