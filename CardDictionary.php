@@ -476,10 +476,17 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($from == "ARS" && $phase != "B" && $myArsenal[$index + 4] == "1") { $restriction = "Frozen"; return false; }
   if($phase != "P" && $cardType == "DR" && IsAllyAttackTarget() && $currentPlayer != $mainPlayer) return false;
   if($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
-  if($CombatChain->HasCurrentLink() && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR")) && $from == "HAND") {
-    if(CachedDominateActive() && CachedNumDefendedFromHand() >= 1) return false;
-    if(CachedOverpowerActive() && CachedNumActionBlocked() >= 1 && ($cardType == "A" || $cardType == "AA")) return false;
-    if(CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "CRU047") || SearchCurrentTurnEffects("CRU047-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "CRU047") || SearchCharacterActive($mainPlayer, "CRU097")) && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
+  if($CombatChain->HasCurrentLink() && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR"))) {
+    if ($from == "HAND") {
+      if(CachedDominateActive() && CachedNumDefendedFromHand() >= 1) return false;
+      if(CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "CRU047") || SearchCurrentTurnEffects("CRU047-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "CRU047") || SearchCharacterActive($mainPlayer, "CRU097")) && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
+    }
+    if(CachedOverpowerActive() && CachedNumActionBlocked() >= 1) {
+      if ($cardType == "A" || $cardType == "AA") return false;
+      if (SubtypeContains($cardID, "Evo")) {
+        if (CardType(GetCardIDBeforeTransform($cardID)) == "A") return false;
+      }
+    }
   }
   if($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player)) || $cardID == "OUT184" || HasAmbush($cardID))) return false;
   if($phase == "B" || $phase == "D") {

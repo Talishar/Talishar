@@ -835,9 +835,21 @@ function NumActionsBlocking()
     if($chainCard->PlayerID() == $defPlayer) {
       $type = CardType($chainCard->ID());
       if($type == "A" || $type == "AA") ++$num;
+      if($type == "E") {
+        if (SubtypeContains($chainCard->ID(), "Evo")) {
+          if (CardType(GetCardIDBeforeTransform($chainCard->ID())) == "A") ++$num;
+        }
+      }
     }
   }
   return $num;
+}
+
+function GetCardIDBeforeTransform($cardID) {
+  $cardSet = substr($cardID, 0, 3);
+  $originalCardIDNum = (intval(substr($cardID, 3, 3)) - 400);
+  if ($originalCardIDNum < 100) return $cardSet . "0" . $originalCardIDNum;
+  return $cardSet . $originalCardIDNum;
 }
 
 function PlayerHasLessHealth($player)
