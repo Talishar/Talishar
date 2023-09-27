@@ -223,7 +223,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       for($i=0; $i < $amount; $i++) BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
       return "";
     case "DYN065":
-      WriteLog("here");
       IncrementClassState($currentPlayer, $CS_NumCrounchingTigerPlayedThisTurn);
       break;
     case "DYN068":
