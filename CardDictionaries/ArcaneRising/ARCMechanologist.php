@@ -177,7 +177,7 @@ function Boost()
 
 function DoBoost($player, $boostCount = 1)
 {
-  global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
+  global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $charSubCards;
   $deck = new Deck($player);
   $isGoAgainGranted = false;
   for ($i = 0; $i < $boostCount; $i++) {
@@ -187,7 +187,11 @@ function DoBoost($player, $boostCount = 1)
     $cardID = $deck->Top(remove:true);
     SelfBoostEffects($player, $cardID);
     OnBoostedEffects($player, $cardID);
-    if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) PutItemIntoPlay($cardID);
+    if (CardNameContains($cardID, "Hyper Driver", $player)) {
+      if (SearchCharacterForCard($player, "EVO011")) {
+        AddSubcardToChar($player, "EVO011", $cardID);
+      }
+    } else if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) PutItemIntoPlay($cardID);
     else BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
     $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $player);
     WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again");
@@ -255,4 +259,22 @@ function ItemBoostEffects()
       default: break;
     }
   }
+}
+
+function AddSubcardToChar($player, $charID, $cardID) {
+  $chars = &GetPlayerCharacter($player);
+  $charCount = count($chars);
+  for ($i = 0; $i < $charCount; $i+=CharacterPieces()) {
+    if ($chars[$i] == $charID) {
+      if (isSubcardEmpty($chars, $i)) $chars[$i+10] = $cardID;
+      else $chars[$i+10] = $chars[$i+10] . "," . $cardID;
+      $chars[$i+2]++;
+      return; 
+    }
+  }
+}
+
+function isSubcardEmpty ($chars, $index)
+{
+  return $chars[$index+10] == '-';
 }

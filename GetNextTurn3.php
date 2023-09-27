@@ -393,7 +393,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if (CardType($theirCharacter[$i]) == "W") $atkCounters = $theirCharacter[$i + 3];
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
-    array_push($characterContents, JSONRenderedCard(cardNumber: $theirCharacter[$i], overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0), counters: $counters, defCounters: $theirCharacter[$i + 4], atkCounters: $atkCounters, controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirCharacter[$i + 8] == 1), onChain: ($theirCharacter[$i + 6] == 1), isBroken: ($theirCharacter[$i + 1] == 0), numUses: $theirCharacter[$i + 5]));
+    array_push($characterContents, JSONRenderedCard(cardNumber: $theirCharacter[$i], overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0), counters: $counters, defCounters: $theirCharacter[$i + 4], atkCounters: $atkCounters, controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirCharacter[$i + 8] == 1), onChain: ($theirCharacter[$i + 6] == 1), isBroken: ($theirCharacter[$i + 1] == 0), numUses: $theirCharacter[$i + 5], subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]));
   }
   $response->opponentEquipment = $characterContents;
 
@@ -506,7 +506,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $gem = ($myCharacter[$i + 9] == 1 ? 1 : 2);
     }
     $restriction = implode("_", explode(" ", $restriction));
-    array_push($myCharData, JSONRenderedCard($myCharacter[$i], $currentPlayer == $playerID && $playable ? 3 : 0, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), 0, $myCharacter[$i + 4], $atkCounters, $playerID, $type, $sType, $restriction, $myCharacter[$i + 1] == 0, $myCharacter[$i + 6] == 1, $myCharacter[$i + 8] == 1, $gem, numUses: $myCharacter[$i + 5]));
+    array_push($myCharData, JSONRenderedCard($myCharacter[$i], $currentPlayer == $playerID && $playable ? 3 : 0, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), 0, $myCharacter[$i + 4], $atkCounters, $playerID, $type, $sType, $restriction, $myCharacter[$i + 1] == 0, $myCharacter[$i + 6] == 1, $myCharacter[$i + 8] == 1, $gem, numUses: $myCharacter[$i + 5], subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
   }
   $response->playerEquipment = $myCharData;
 

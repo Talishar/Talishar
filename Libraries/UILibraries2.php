@@ -86,7 +86,7 @@ function JSONRenderedCard(
   if ($countersMap->counters > 0) {
     $class = CardClass($cardNumber);
     $subtype = CardSubType($cardNumber);
-    if ($class == "MECHANOLOGIST" && ($subtype == "Item" || CardType($cardNumber) == "W")) {
+    if ($class == "MECHANOLOGIST" && ($subtype == "Item" || CardType($cardNumber) == "W" || CardType($cardNumber) == "E")) {
       $countersMap->steam = $countersMap->counters;
       $countersMap->counters = 0;
     } else if ($subtype == "Arrow") {
@@ -106,6 +106,9 @@ function JSONRenderedCard(
   });
 
   if ($isSpectator) $gem = NULL;
+  if ($subcard != NULL) {
+    $subcard = explode(',', $subcard);
+  }
 
   $card = (object) [
     'cardNumber' => $cardNumber,
