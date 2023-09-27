@@ -1985,10 +1985,11 @@ function EvoHandling($cardID, $player)
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
     if(SubtypeContains($char[$i], $slot)) {
       if(SubtypeContains($char[$i], "Base")) {
-        EvoTransformAbility($cardID, $char[$i], $player);
+        if(!SubtypeContains($char[$i], "Evo")) $char[$i+2] = 0;//Reset steam counters if applicable //EVO TODO: Make this unconditional once EVOs are fixed
         ++$char[$i+2];//EVO TODO: Make this actually put the card underneath
         $char[$i+4] = 0;//Reset defense counters
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
+        EvoTransformAbility($cardID, $char[$i], $player);
       }
       else WriteLog("*ERR0R*//No base of that type equipped//");
       break;
@@ -2024,6 +2025,19 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
     case "EVO029":
       if(SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
         GainActionPoints(1, $player);
+      break;
+    case "EVO050":
+      MZChooseAndBanish($player, "MYHAND", "HAND,-");
+      AddDecisionQueue("DRAW", $player, "-", 1);
+      break;
+    case "EVO051":
+      GainResources($player, 1);
+      break;
+    case "EVO052":
+      AddCurrentTurnEffect("EVO052", $player);
+      break;
+    case "EVO053":
+      GiveAttackGoAgain();
       break;
     default: break;
   }
