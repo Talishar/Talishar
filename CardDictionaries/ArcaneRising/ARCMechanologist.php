@@ -188,9 +188,7 @@ function DoBoost($player, $boostCount = 1)
     SelfBoostEffects($player, $cardID);
     OnBoostedEffects($player, $cardID);
     if (CardNameContains($cardID, "Hyper Driver", $player)) {
-      if (SearchCharacterForCard($player, "EVO011")) {
-        AddSubcardToChar($player, "EVO011", $cardID);
-      }
+      EquipmentBoostEffect($player, "EVO011", $cardID);
     } else if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) PutItemIntoPlay($cardID);
     else BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
     $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $player);
@@ -261,17 +259,34 @@ function ItemBoostEffects()
   }
 }
 
-function AddSubcardToChar($player, $charID, $cardID) {
-  $chars = &GetPlayerCharacter($player);
-  $charCount = count($chars);
-  for ($i = 0; $i < $charCount; $i+=CharacterPieces()) {
-    if ($chars[$i] == $charID) {
-      if (isSubcardEmpty($chars, $i)) $chars[$i+10] = $cardID;
-      else $chars[$i+10] = $chars[$i+10] . "," . $cardID;
-      $chars[$i+2]++;
-      return; 
+function EquipmentBoostEffect($player, $charID, $cardID) {
+  if (SearchCharacterForCard($player, $charID)) {
+    $chars = &GetPlayerCharacter($player);
+    $charCount = count($chars);
+    for ($i = 0; $i < $charCount; $i+=CharacterPieces()) {
+      if ($chars[$i] == $charID) {
+        AddSubcardToChar($chars, $i, $cardID);
+        OnBoostCardPutUnderCharacter($chars, $i, $charID, $player);
+      }
     }
   }
+}
+
+function OnBoostCardPutUnderCharacter($chars, $index, $charID, $player) {
+  switch ($charID) {
+    case "EVO011":
+      if ($chars[$index+2] >= 3) Draw($player, true, true);
+      break;
+    default:
+      break;
+  }
+}
+
+function AddSubcardToChar(&$chars, $index, $cardID) {
+  if (isSubcardEmpty($chars, $index)) $chars[$index+10] = $cardID;
+  else $chars[$index+10] = $chars[$index+10] . "," . $cardID;
+  $chars[$index+2]++;
+  WriteLog($cardID);
 }
 
 function isSubcardEmpty ($chars, $index)

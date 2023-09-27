@@ -131,7 +131,7 @@ function JSONRenderedCard(
     'label' => $label,
     'facing' => $facing,
     'numUses' => $numUses,
-    'subcards' => $subcard == NULL ? null : [$subcard]
+    'subcards' => $subcard == NULL ? null : $subcard
   ];
 
   if ($gem != NULL) {
