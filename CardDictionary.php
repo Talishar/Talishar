@@ -908,6 +908,7 @@ function HasBattleworn($cardID)
     case "DYN006": case "DYN026": case "DYN046": case "DYN089": case "DYN117": case "DYN118": return true;
     case "OUT011": return true;
     case "TCC080": case "TCC082": case "TCC407": case "TCC408": case "TCC409": case "TCC410": return true;
+    case "EVO011": return true;
     case "EVO410": case "EVO438": case "EVO439": case "EVO440": case "EVO441": case "EVO235": return true;
     case "EVO442": case "EVO443": case "EVO444": case "EVO445": return true;
     default: return false;
