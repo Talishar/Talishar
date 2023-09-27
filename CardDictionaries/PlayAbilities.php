@@ -144,6 +144,14 @@
           AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
         }
         return "";
+      case "EVO081": case "EVO082": case "EVO083": 
+        if ($from == "PLAY") {
+          if ($cardID == "EVO081") $pitch = 1;
+          else if ($cardID == "EVO082") $pitch = 2;
+          else $pitch = 3;
+          MZMoveCard($mainPlayer, "MYDISCARD:type=AA;class=MECHANOLOGIST;pitch=" . $pitch, "MYHAND");
+        }
+        return "";
       case "EVO087": case "EVO088": case "EVO089":
         if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
