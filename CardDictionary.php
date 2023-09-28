@@ -525,6 +525,13 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if(($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
   if($from == "CC" && AbilityPlayableFromCombatChain($cardID)) return true;
   if(($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
+  if($cardID == "DYN492a") {
+    if (($phase == "M" && $mainPlayer == $currentPlayer)) {
+      $charIndex = FindCharacterIndex($currentPlayer, "DYN492a");
+      return $character[$charIndex + 2] > 0;
+    }
+    return  false;
+  }
   switch($cardType) {
     case "A": return $phase == "M";
     case "AA": return $phase == "M";
@@ -781,7 +788,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if(!$arsenalHasFaceUp) $restriction = "There must be a face up arrow in your arsenal.";
       return !$arsenalHasFaceUp;
     case "DYN212": return CountAura("MON104", $currentPlayer) < 1;
-    case "DYN492a": return $character[$index + 2] <= 0;
     case "OUT001": case "OUT002": return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID());
     case "OUT021": case "OUT022": case "OUT023":
     case "OUT042": case "OUT043": case "OUT044":
