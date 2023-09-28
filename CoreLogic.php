@@ -2045,9 +2045,10 @@ function EvoHandling($cardID, $player)
         if(!SubtypeContains($char[$i], "Evo")) $char[$i+2] = 0;//Reset steam counters if applicable //EVO TODO: Make this unconditional once EVOs are fixed
         if (isSubcardEmpty($char, $i)) $char[$i+10] = $char[$i];
         else $char[$i+10] = $char[$i+10] . "," . $char[$i];
+        $fromCardID = $char[$i];
         $char[$i+4] = 0;//Reset defense counters
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
-        EvoTransformAbility($cardID, $char[$i], $player);
+        EvoTransformAbility($char[$i], $fromCardID, $player);
       }
       else WriteLog("*ERR0R*//No base of that type equipped//");
       break;
