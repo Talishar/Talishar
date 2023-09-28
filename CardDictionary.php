@@ -1104,8 +1104,8 @@ function ItemDefaultHoldTriggerState($cardID)
     case "ARC007": case "ARC035":
     case "MON302":
     case "EVR069": case "EVR071":
-      return 0;
-    default: return 2;
+      return 1;
+    default: return 0;
   }
 }
 

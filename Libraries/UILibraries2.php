@@ -108,8 +108,6 @@ function JSONRenderedCard(
     return !is_null($val);
   });
 
-  if ($isSpectator) $gem = NULL;
-
   $card = (object) [
     'cardNumber' => $cardNumber,
     'action' => $action,
@@ -135,7 +133,7 @@ function JSONRenderedCard(
     'subcards' => $subcard == NULL ? null : [$subcard]
   ];
 
-  if ($gem != NULL) {
+  if (ItemDefaultHoldTriggerState($cardNumber) != 0 && !($isSpectator)) {
     $card->gem = $gem;
   }
 
