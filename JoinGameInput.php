@@ -7,6 +7,27 @@ include "APIKeys/APIKeys.php";
 include_once 'includes/functions.inc.php';
 include_once 'includes/dbh.inc.php';
 
+if (!function_exists("DelimStringContains")) {
+  function DelimStringContains($str, $find, $partial=false)
+  {
+    $arr = explode(",", $str);
+    for($i=0; $i<count($arr); ++$i)
+    {
+      if($partial && str_contains($arr[$i], $find)) return true;
+      else if($arr[$i] == $find) return true;
+    }
+    return false;
+  }
+}
+
+if (!function_exists("SubtypeContains")) {
+  function SubtypeContains($cardID, $subtype, $player="")
+  {
+    $cardSubtype = CardSubtype($cardID);
+    return DelimStringContains($cardSubtype, $subtype);
+  }
+}
+
 session_start();
 $gameName = $_GET["gameName"];
 if (!IsGameNameValid($gameName)) {
