@@ -502,8 +502,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $nitroMechaCharIndex = 0;
         for ($i = 0; $i < $characterCount; $i += $characterPieces) {
           if ($character[$i] == "DYN492a") {
-            WriteLog($character[$i]);
             $nitroMechaCharIndex = $i;
+            break;
           }
         }
         $subcards = explode(",", $character[$nitroMechaCharIndex+10]);
