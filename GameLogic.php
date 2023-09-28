@@ -362,7 +362,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         case "DESTROYFROZENARSENAL": DestroyFrozenArsenal($player); return "";
         case "GIVEATTACKGOAGAIN": GiveAttackGoAgain(); return $lastResult;
-        case "BOOST": 
+        case "BOOST":
           if (is_numeric($lastResult)) return DoBoost($player, intval($lastResult));
           return DoBoost($player);
         case "REMOVECARD":
@@ -1374,19 +1374,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       RemoveHand($player, $index);
       WriteLog("Player {$player} banishes a card face down");
       return $player;
-    case "BANISHFROMSUBCARDZONE":
+    case "REMOVESUBCARD":
       $char = &GetPlayerCharacter($player);
       $subcards = explode(",", $char[$parameter+10]);
       $subcardsCount = count($subcards);
+      $cardID = "";
       for ($i = 0; $i < $subcardsCount; $i++) {
         if ($subcards[$i] == $lastResult) {
+          $cardID = $subcards[$i];
           array_splice($subcards, $i, 1);
           break;
         }
       }
       $char[$parameter+10] = implode(",", $subcards);
-      BanishCardForPlayer($lastResult, $player, $char[$parameter]);
-      return $lastResult;
+      return $cardID;
     default:
       return "NOTSTATIC";
   }

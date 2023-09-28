@@ -203,7 +203,7 @@ function SpecificAllyAttackAbilities($attackID)
             AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
             AddDecisionQueue("CHOOSETHEIRHAND", $mainPlayer, "<-", 1);
             AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-            AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,NA", 1);
+            AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,-", 1);
           }
         }
       }

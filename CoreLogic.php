@@ -2056,16 +2056,29 @@ function EvoHandling($cardID, $player)
   if(SearchCurrentTurnEffects("EVO007", $player, true) || SearchCurrentTurnEffects("EVO008", $player, true)) Draw($player);
 }
 
-function EvoDiscardUnderCard($player, $index)
+//function EvoDiscardUnderCard($player, $index)
+function CharacterChooseSubcard($player, $index, $fromDQ=false)
 {
-  $char = &GetPlayerCharacter($player);
-  --$char[$index+2];
+  $character = &GetPlayerCharacter($player);
+  $subcards = explode(",", $character[$index+10]);
+  $subcardsCount = count($subcards);
+  $chooseMultizoneData = "";
+  for($i = 0; $i < $subcardsCount; $i++) {
+    if($chooseMultizoneData == "") $chooseMultizoneData = "CARDID-" . $subcards[$i];
+    else $chooseMultizoneData = $chooseMultizoneData . ",CARDID-" . $subcards[$i];
+  }
+  if($chooseMultizoneData != "") {
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a subcard to banish from Nitro Mechanoid.");
+    AddDecisionQueue("CHOOSEMULTIZONE", $player, $chooseMultizoneData);
+    AddDecisionQueue("MZOP", $player, "GETCARDINDEX");
+    AddDecisionQueue("REMOVESUBCARD", $player, $index);
+  }
 }
 
 function EvoHasUnderCard($player, $index)
 {
   $char = &GetPlayerCharacter($player);
-  return $char[$index+2] > 0;
+  return $char[$index+10] != "-";
 }
 
 function EvoTransformAbility($toCardID, $fromCardID, $player="")
@@ -2133,7 +2146,7 @@ function EvoUpgradeAmount($player)
 function EquipmentsUsingSteamCounter($charID) {
   switch ($charID) {
     case "EVO014": case "EVO015": case "EVO016":
-    case "EVO017": 
+    case "EVO017":
       return true;
     default:
       return false;

@@ -1597,6 +1597,15 @@ function PayAdditionalCosts($cardID, $from)
   } else if($from == "PLAY" && DelimStringContains($cardSubtype, "Aura")) {
     PayAuraAbilityAdditionalCosts($cardID, $from);
     return;
+  } else if($from == "EQUIP") {
+    switch($cardID) {
+      case "EVO434": case "EVO435": case "EVO436": case "EVO437":
+      case "EVO446": case "EVO447": case "EVO448": case "EVO449":
+        CharacterChooseSubcard($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex), fromDQ:true);
+        AddDecisionQueue("ADDDISCARD", $currentPlayer, "-", 1);
+        break;
+      default: break;
+    }
   }
   $fuseType = HasFusion($cardID);
   if($fuseType != "") Fuse($cardID, $currentPlayer, $fuseType);
