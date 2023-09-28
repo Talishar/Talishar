@@ -3,7 +3,7 @@
 
   function TCCHitEffect($cardID)
   {
-    global $mainPlayer, $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    global $currentPlayer, $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     switch($cardID)
     {
       case "TCC088":

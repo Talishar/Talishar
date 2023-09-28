@@ -86,7 +86,7 @@
         if($evoAmt >= 4) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "EVO014":
-        MZMoveCard($mainPlayer, "MYBANISH:class=MECHANOLOGIST;type=AA", "MYTOPDECK");
+        MZMoveCard($mainPlayer, "MYBANISH:class=MECHANOLOGIST;type=AA", "MYTOPDECK", isReveal:true);
         AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
         return "";
       case "EVO015":
@@ -128,6 +128,22 @@
         return "";
       case "EVO070":
         if($from == "PLAY") DestroyTopCard($currentPlayer);
+        break;
+      case "EVO071":
+        if($from == "PLAY") {
+          $deck = new Deck($currentPlayer);
+          $deck->Reveal();
+          $pitchValue = PitchValue($deck->Top());
+          if(SearchBanish($currentPlayer, pitch:$pitchValue, subtype:"Item") != "") {
+            MZMoveCard($currentPlayer, "MYBANISH:class=MECHANOLOGIST;subtype=Item;pitch=2", "MYTOPDECK", may:true, isReveal:true);
+          }
+        }
+        break;
+      case "EVO072":
+        if($from == "PLAY") {
+          MZMoveCard($currentPlayer, "MYHAND:class=MECHANOLOGIST;subtype=Item;maxCost=1", "", may:true);
+          AddDecisionQueue("PUTPLAY", $currentPlayer, "0", 1);
+        }
         break;
       case "EVO075":
         if($from == "PLAY") GainResources($currentPlayer, 1);

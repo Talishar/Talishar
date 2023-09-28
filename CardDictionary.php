@@ -606,9 +606,9 @@ function IsPitchRestricted($cardID, &$restriction, $from = "", $index = -1)
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "")
 {
   global $CS_NumBoosted, $combatChain, $CombatChain, $currentPlayer, $mainPlayer, $CS_Num6PowBan;
-  global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $CS_NumAttacks, $defPlayer, $CS_NumCardsPlayed;
+  global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_NamesOfCardsPlayed, $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrounchingTigerPlayedThisTurn;
+  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrounchingTigerPlayedThisTurn;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -821,6 +821,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "TCC080": return GetClassState($player, $CS_NumCrounchingTigerPlayedThisTurn) == 0;
     case "EVO003": return $character[$index+2] <= 0;
     case "EVO014": case "EVO015": case "EVO016": case "EVO017": return $character[$index+2] == 0 || GetClassState($player, $CS_NumBoosted) == 0;
+    case "EVO071": case "EVO072": if ($from == "PLAY") return $myItems[$index+2] != 2; else return false;
     case "EVO235": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "EVO434": case "EVO435": case "EVO436": case "EVO437": return !EvoHasUnderCard($currentPlayer, $index);
     default: return false;
@@ -975,6 +976,10 @@ function ETASteamCounters($cardID)
     case "DYN110": return 3;
     case "DYN111": return 2;
     case "DYN112": return 1;
+    case "EVO071": return 1;
+    case "EVO072": return 1;
+    case "EVO073": return 1;
+    case "EVO074": return 1;
     case "EVO078": case "EVO079": case "EVO080": return 1;
     case "EVO081": case "EVO082": case "EVO083": return 1;
     case "EVO084": case "EVO085": case "EVO086": return 1;
@@ -1053,6 +1058,7 @@ function CharacterNumUsesPerTurn($cardID)
     case "DYN001": case "DYN193": return 999;
     case "DYN492a": return 999;
     case "OUT093": return 2;
+    case "EVO073": return 999;
     default: return 1;
   }
 }

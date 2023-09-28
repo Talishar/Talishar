@@ -77,6 +77,12 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
         AddAdditionalCost($currentPlayer, "PAID");
       }
       break;
+    case "EVO071": case "EVO072":
+      $items = &GetItems($currentPlayer);
+      if($from == "PLAY") {
+        $items[$index+2] = 1;
+      }
+      break;
     case "EVO075": case "EVO076": case "EVO077":
       RemoveItem($currentPlayer, $index);
       $deck = new Deck($currentPlayer);
