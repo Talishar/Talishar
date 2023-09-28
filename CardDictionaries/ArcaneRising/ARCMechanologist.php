@@ -206,12 +206,6 @@ function DoBoost($player, $boostCount = 1)
 
 function OnBoostedEffects($player, $boosted)
 {
-  if(SearchCharacterForCard($player, "EVO011") && CardName($boosted) == "Hyper Driver") {
-    $char = &GetPlayerCharacter($player);
-    $index = FindCharacterIndex($player, "EVO011");
-    ++$char[$index+2];//EVO TODO: Make this actually put the card underneath
-    if($char[$index+2] >= 3) Draw($player, fromCardEffect:false);
-  }
   switch($boosted)
   {
     case "EVO177": case "EVO178": case "EVO179":
