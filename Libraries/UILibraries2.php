@@ -92,6 +92,11 @@ function JSONRenderedCard(
     if ($class == "MECHANOLOGIST" && ($subtype == "Item" || CardType($cardNumber) == "W")) {
       $countersMap->steam = $countersMap->counters;
       $countersMap->counters = 0;
+    } else if (CardType($cardNumber) == "E") {
+      if (EquipmentsUsingSteamCounter($cardNumber)) {
+        $countersMap->steam = $countersMap->counters;
+        $countersMap->counters = 0;
+      }
     } else if ($subtype == "Arrow") {
       $countersMap->aim = $countersMap->counters;
       $countersMap->counters = 0;
@@ -107,6 +112,8 @@ function JSONRenderedCard(
   $countersMap = (object) array_filter((array) $countersMap, function ($val) {
     return !is_null($val);
   });
+
+  if ($isSpectator) $gem = NULL;
 
   $card = (object) [
     'cardNumber' => $cardNumber,
@@ -130,7 +137,7 @@ function JSONRenderedCard(
     'label' => $label,
     'facing' => $facing,
     'numUses' => $numUses,
-    'subcards' => $subcard == NULL ? null : [$subcard]
+    'subcards' => $subcard == NULL ? null : $subcard
   ];
 
   if (ItemDefaultHoldTriggerState($cardNumber) != 0 && !($isSpectator)) {

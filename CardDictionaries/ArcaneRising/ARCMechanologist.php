@@ -177,7 +177,7 @@ function Boost()
 
 function DoBoost($player, $boostCount = 1)
 {
-  global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
+  global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $charSubCards;
   $deck = new Deck($player);
   $isGoAgainGranted = false;
   for ($i = 0; $i < $boostCount; $i++) {
@@ -187,7 +187,9 @@ function DoBoost($player, $boostCount = 1)
     $cardID = $deck->Top(remove:true);
     SelfBoostEffects($player, $cardID);
     OnBoostedEffects($player, $cardID);
-    if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) PutItemIntoPlay($cardID);
+    if (CardNameContains($cardID, "Hyper Driver", $player)) {
+      EquipmentBoostEffect($player, "EVO011", $cardID);
+    } else if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) PutItemIntoPlay($cardID);
     else BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
     $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $player);
     WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again");
@@ -261,4 +263,38 @@ function ItemBoostEffects()
       default: break;
     }
   }
+}
+
+function EquipmentBoostEffect($player, $charID, $cardID) {
+  if (SearchCharacterForCard($player, $charID)) {
+    $chars = &GetPlayerCharacter($player);
+    $charCount = count($chars);
+    for ($i = 0; $i < $charCount; $i+=CharacterPieces()) {
+      if ($chars[$i] == $charID) {
+        AddSubcardToChar($chars, $i, $cardID);
+        OnBoostCardPutUnderCharacter($chars, $i, $charID, $player);
+      }
+    }
+  }
+}
+
+function OnBoostCardPutUnderCharacter($chars, $index, $charID, $player) {
+  switch ($charID) {
+    case "EVO011":
+      if ($chars[$index+2] >= 3) Draw($player, true, true);
+      break;
+    default:
+      break;
+  }
+}
+
+function AddSubcardToChar(&$chars, $index, $cardID) {
+  if (isSubcardEmpty($chars, $index)) $chars[$index+10] = $cardID;
+  else $chars[$index+10] = $chars[$index+10] . "," . $cardID;
+  $chars[$index+2]++;
+}
+
+function isSubcardEmpty ($chars, $index)
+{
+  return $chars[$index+10] == '-';
 }

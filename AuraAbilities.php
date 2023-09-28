@@ -232,10 +232,10 @@ function AuraStartTurnAbilities()
         break;
       //These are all start phase events
       case "MON006":
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "HAND");
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to put in your hero's soul for Genesis");
-        AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
         AddDecisionQueue("SPECIFICCARD", $mainPlayer, "GENESIS", 1);
         break;
       case "DYN013": case "DYN014": case "DYN015":

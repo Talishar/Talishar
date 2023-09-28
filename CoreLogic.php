@@ -835,9 +835,21 @@ function NumActionsBlocking()
     if($chainCard->PlayerID() == $defPlayer) {
       $type = CardType($chainCard->ID());
       if($type == "A" || $type == "AA") ++$num;
+      if($type == "E") {
+        if (SubtypeContains($chainCard->ID(), "Evo")) {
+          if (CardType(GetCardIDBeforeTransform($chainCard->ID())) == "A") ++$num;
+        }
+      }
     }
   }
   return $num;
+}
+
+function GetCardIDBeforeTransform($cardID) {
+  $cardSet = substr($cardID, 0, 3);
+  $originalCardIDNum = (intval(substr($cardID, 3, 3)) - 400);
+  if ($originalCardIDNum < 100) return $cardSet . "0" . $originalCardIDNum;
+  return $cardSet . $originalCardIDNum;
 }
 
 function PlayerHasLessHealth($player)
@@ -1235,6 +1247,12 @@ function DestroyCharacter($player, $index, $skipDestroy=false)
   $cardID = $char[$index];
   if($char[$index+6] == 1) $CombatChain->Remove(GetCombatChainIndex($cardID, $player));
   $char[$index+6] = 0;
+  if (!isSubcardEmpty($char, $index)) {
+    $subcards = explode(',', $char[$index+10]);
+    $subcardsCount = count($subcards);
+    for ($i = 0; $i < $subcardsCount; $i++) AddGraveyard($subcards[$i], $player, "CHAR");
+  }
+  $char[$index+10] = "-";
   if(!$skipDestroy) {
     AddGraveyard($cardID, $player, "CHAR");
     CharacterDestroyEffect($cardID, $player);
@@ -1986,7 +2004,8 @@ function EvoHandling($cardID, $player)
     if(SubtypeContains($char[$i], $slot)) {
       if(SubtypeContains($char[$i], "Base")) {
         if(!SubtypeContains($char[$i], "Evo")) $char[$i+2] = 0;//Reset steam counters if applicable //EVO TODO: Make this unconditional once EVOs are fixed
-        ++$char[$i+2];//EVO TODO: Make this actually put the card underneath
+        if (isSubcardEmpty($char, $i)) $char[$i+10] = $char[$i];
+        else $char[$i+10] = $char[$i+10] . "," . $char[$i];
         $char[$i+4] = 0;//Reset defense counters
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
         EvoTransformAbility($cardID, $char[$i], $player);
@@ -2070,4 +2089,14 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
 function EvoUpgradeAmount($player)
 {
   return SearchCount(SearchCharacter($player, subtype:"Evo"));
+}
+
+function EquipmentsUsingSteamCounter($charID) {
+  switch ($charID) {
+    case "EVO014": case "EVO015": case "EVO016":
+    case "EVO017": 
+      return true;
+    default:
+      return false;
+  }
 }
