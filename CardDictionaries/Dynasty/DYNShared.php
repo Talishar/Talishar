@@ -494,6 +494,31 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         Draw($currentPlayer);
       }
       return $rv;
+    case "DYN492a":
+      if ($from == "EQUIP") {
+        $character = &GetPlayerCharacter($currentPlayer);
+        $characterCount = count($character);
+        $characterPieces = CharacterPieces();
+        $nitroMechaCharIndex = 0;
+        for ($i = 0; $i < $characterCount; $i += $characterPieces) {
+          if ($character[$i] == "DYN492a") {
+            WriteLog($character[$i]);
+            $nitroMechaCharIndex = $i;
+          }
+        }
+        $subcards = explode(",", $character[$nitroMechaCharIndex+10]);
+        $subcardsCount = count($subcards);
+        $chooseMultizoneData = "";
+        for ($i = 0; $i < $subcardsCount; $i++) {
+          if ($chooseMultizoneData == "") $chooseMultizoneData = "CARDID-" . $subcards[$i];
+          else $chooseMultizoneData = $chooseMultizoneData . ",CARDID-" . $subcards[$i];
+        }
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a subcard to banish from Nitro Mechanoid.");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $chooseMultizoneData, 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "GETCARDINDEX");
+        AddDecisionQueue("BANISHFROMSUBCARDZONE", $currentPlayer, $nitroMechaCharIndex);
+      }
+      return "";
     case "DYN612":
       $soul = &GetSoul($currentPlayer);
       if(count($soul) > 0){

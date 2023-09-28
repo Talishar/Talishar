@@ -1374,6 +1374,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       RemoveHand($player, $index);
       WriteLog("Player {$player} banishes a card face down");
       return $player;
+    case "BANISHFROMSUBCARDZONE":
+      $char = &GetPlayerCharacter($player);
+      $subcards = explode(",", $char[$parameter+10]);
+      $subcardsCount = count($subcards);
+      for ($i = 0; $i < $subcardsCount; $i++) {
+        if ($subcards[$i] == $lastResult) {
+          array_splice($subcards, $i, 1);
+          break;
+        }
+      }
+      $char[$parameter+10] = implode(",", $subcards);
+      BanishCardForPlayer($lastResult, $player, $char[$parameter]);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

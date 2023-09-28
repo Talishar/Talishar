@@ -580,7 +580,6 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       break;
     case "DYN492a":
       --$character[$cardIndex+ 2];
-      BanishCardForPlayer("DYN492a", $currentPlayer, "-");
       break;
     case "WTR005": case "WTR042": case "WTR080": case "WTR151": case "WTR152": case "WTR153": case "WTR154":
     case "ARC005": case "ARC042": case "ARC079": case "ARC116": case "ARC117": case "ARC151": case "ARC153": case "ARC154":

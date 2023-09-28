@@ -1239,6 +1239,7 @@ function UndestroyCharacter($player, $index)
 
 function DestroyCharacter($player, $index, $skipDestroy=false)
 {
+  if ($index == -1) return "";
   global $CombatChain;
   $char = &GetPlayerCharacter($player);
   $char[$index+1] = 0;
