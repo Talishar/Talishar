@@ -915,6 +915,12 @@ case "O":
 switch($cardID[3]) {
 case "1":
 switch($cardID[4]) {
+case "4":
+switch($cardID[5]) {
+case "3":
+return true;
+default: return false;
+}
 case "5":
 switch($cardID[5]) {
 case "6":
@@ -959,6 +965,8 @@ default: return false;
 }
 case "4":
 switch($cardID[5]) {
+case "0":
+return true;
 case "5":
 return true;
 default: return false;
