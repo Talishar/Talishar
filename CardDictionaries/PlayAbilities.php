@@ -134,9 +134,7 @@
           $deck = new Deck($currentPlayer);
           $deck->Reveal();
           $pitchValue = PitchValue($deck->Top());
-          if(SearchBanish($currentPlayer, pitch:$pitchValue, subtype:"Item") != "") {
-            MZMoveCard($currentPlayer, "MYBANISH:class=MECHANOLOGIST;subtype=Item;pitch=2", "MYTOPDECK", may:true, isReveal:true);
-          }
+          MZMoveCard($currentPlayer, ("MYBANISH:class=MECHANOLOGIST;subtype=Item;pitch=" . $pitchValue),"MYTOPDECK", may:true, isReveal:true);
         }
         break;
       case "EVO072":
@@ -160,7 +158,7 @@
           AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
         }
         return "";
-      case "EVO081": case "EVO082": case "EVO083": 
+      case "EVO081": case "EVO082": case "EVO083":
         if($from == "PLAY") {
           MZMoveCard($currentPlayer, "MYDISCARD:pitch=". PitchValue($cardID) .";type=AA", "MYHAND", may:true, isReveal:true);
         }
@@ -283,7 +281,7 @@
           PrependDecisionQueue("YESNO", $currentPlayer, "if you want to pitch 2 red cards");
         }
         return "";
-      case "EVO246": PutPermanentIntoPlay($currentPlayer, $cardID); 
+      case "EVO246": PutPermanentIntoPlay($currentPlayer, $cardID);
         return "";
       case "EVO247":
         AddCurrentTurnEffect($cardID, $currentPlayer);
