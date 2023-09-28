@@ -123,6 +123,9 @@ EquipWithSteamCounter("EVO015", $p1Char, $p2Char);
 EquipWithSteamCounter("EVO016", $p1Char, $p2Char);
 EquipWithSteamCounter("EVO017", $p1Char, $p2Char);
 
+EquipAdaptivePlating($p1Char, $p1Inventory, 1);
+EquipAdaptivePlating($p2Char, $p2Inventory, 2);
+
   //Quickshot Apprentice
   if ($p2Char[0] == "ROGUE016") {
     $p2Hand = &GetHand(2);
@@ -157,6 +160,36 @@ if($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 function EquipWithSteamCounter($cardID, &$p1Char, &$p2Char) {
   if(($index = FindCharacterIndex(1, $cardID)) > 0) $p1Char[$index+2] += 1;
   if(($index = FindCharacterIndex(2, $cardID)) > 0) $p2Char[$index+2] += 1;
+}
+
+function EquipAdaptivePlating($chars, $inv, $player) {
+  if (!ClassContains($chars[0], "MECHANOLOGIST")) return;
+  
+  $invCount = count($inv);
+  $invPieces = InventoryPieces();
+  $hasAP = false;
+  for ($i = 0; $i < $invCount; $i += $invPieces) {
+    if ($inv[$i] == "EVO013") {
+      $hasAP = true;
+      break;
+    }
+  }
+  if (!$hasAP) return;
+
+  $hasHead = false; $hasChest = false; $hasArms = false; $hasLegs = false;
+  $charCount = count($chars);
+  $charPieces = CharacterPieces();
+  for ($i = 0; $i < $charCount; $i += $charPieces) {
+    if (SubtypeContains($chars[$i], "Head")) $hasHead = true;
+    if (SubtypeContains($chars[$i], "Chest")) $hasChest = true;
+    if (SubtypeContains($chars[$i], "Arms")) $hasArms = true;
+    if (SubtypeContains($chars[$i], "Legs")) $hasLegs = true;
+  }
+  if ($hasHead && $hasChest && $hasArms && $hasLegs) {
+    $items = SearchDeck($player, "", "Item", 2, -1, "MECHANOLOGIST");//Player 1, max cost 2
+    AddDecisionQueue("CHOOSEDECK", $player, $items);
+    AddDecisionQueue("SETDQVAR", $player, "0");
+  }
 }
 
 ?>

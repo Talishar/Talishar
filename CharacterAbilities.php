@@ -84,7 +84,7 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   array_push($char, 0);
   array_push($char, 0);
   array_push($char, 2);
-  array_push($char, "");
+  array_push($char, "-");
   array_push($char, GetUniqueId());
   return $index;
 }
@@ -263,7 +263,25 @@ function CharacterDestroyEffect($cardID, $player)
       break;
     case "DYN492b":
       $weaponIndex = FindCharacterIndex($player, "DYN492a");
-      if(intval($weaponIndex) != -1) DestroyCharacter($player, $weaponIndex);
+      if(intval($weaponIndex) != -1) DestroyCharacter($player, $weaponIndex, true);
+      break;
+    default:
+      break;
+  }
+}
+
+function CharacterBanishEffect($cardID, $player) {
+  switch ($cardID) {
+    case "DYN089":
+      global $currentTurnEffects;
+      $effectsCount = count($currentTurnEffects);
+      $effectPieces = CurrentTurnPieces();
+      for ($i = 0; $i < $effectsCount; $i += $effectPieces) {
+        if ($currentTurnEffects[$i] == "DYN089-UNDER") {
+          RemoveCurrentTurnEffect($i);
+          break;
+        }
+      }
       break;
     default:
       break;
@@ -580,7 +598,6 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       break;
     case "DYN492a":
       --$character[$cardIndex+ 2];
-      BanishCardForPlayer("DYN492a", $currentPlayer, "-");
       break;
     case "WTR005": case "WTR042": case "WTR080": case "WTR151": case "WTR152": case "WTR153": case "WTR154":
     case "ARC005": case "ARC042": case "ARC079": case "ARC116": case "ARC117": case "ARC151": case "ARC153": case "ARC154":

@@ -642,8 +642,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
       if ($option[0] == "MYARS") $counters = "Arsenal";
 
-      $index = intval($option[1]);
-      $card = $source[$index];
+      if ($option[0] != "CARDID") {
+        $index = intval($option[1]);
+        $card = $source[$index];
+      } else $card = $option[1];
+      
       if ($option[0] == "LAYER" && $card == "TRIGGER") $card = $source[$index + 2];
       $playerBorderColor = 0;
 
@@ -740,7 +743,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo CreatePopup("PITCH", [], 0, 1, "Choose a card from your Pitch Zone to add to the bottom of your deck", 1, $content);
   }
 
-  if (($turn[0] == "MULTICHOOSETHEIRDISCARD" || $turn[0] == "MULTICHOOSEDISCARD" || $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MULTICHOOSEDECK" || $turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MULTICHOOSETHEIRDECK" || $turn[0] == "MULTICHOOSEBANISH") && $currentPlayer == $playerID) {
+  if (($turn[0] == "MULTICHOOSETHEIRDISCARD" || $turn[0] == "MULTICHOOSEDISCARD" || $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MULTICHOOSEDECK" || $turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MULTICHOOSETHEIRDECK" || $turn[0] == "MULTICHOOSEBANISH" || $turn[0] == "MULTICHOOSEITEMS") && $currentPlayer == $playerID) {
     $content = "";
     echo ("<div 'display:inline; width: 100%;'>");
     $params = explode("-", $turn[2]);

@@ -1237,8 +1237,9 @@ function UndestroyCharacter($player, $index)
   $char[$index+4] = 0;
 }
 
-function DestroyCharacter($player, $index, $skipDestroy=false)
+function DestroyCharacter($player, $index, $skipDestroy=false, $wasBanished = false)
 {
+  if ($index == -1) return "";
   global $CombatChain;
   $char = &GetPlayerCharacter($player);
   $char[$index+1] = 0;
@@ -1254,10 +1255,48 @@ function DestroyCharacter($player, $index, $skipDestroy=false)
   }
   $char[$index+10] = "-";
   if(!$skipDestroy) {
-    AddGraveyard($cardID, $player, "CHAR");
+    if (!$wasBanished) AddGraveyard($cardID, $player, "CHAR");
     CharacterDestroyEffect($cardID, $player);
   }
   return $cardID;
+}
+
+function RemoveCharacterAndAddAsSubcardToCharacter($player, $index, &$newCharactersSubcardIndex) {
+  global $CombatChain;
+  $char = &GetPlayerCharacter($player);
+  $cardID = $char[$index];
+  if($char[$index+6] == 1) $CombatChain->Remove(GetCombatChainIndex($cardID, $player));
+  if (!isSubcardEmpty($char, $index)) {
+    $subcards = explode(',', $char[$index+10]);
+    $subcardsCount = count($subcards);
+    for ($i = 0; $i < $subcardsCount; $i++) {
+      if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex+10] = $subcards[$i];
+      else $char[$newCharactersSubcardIndex+10] = $char[$newCharactersSubcardIndex+10] . "," . $subcards[$i];
+    }
+  }
+  CharacterDestroyEffect($cardID, $player);
+  if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex+10] = $cardID;
+  else $char[$newCharactersSubcardIndex+10] = $char[$newCharactersSubcardIndex+10] . "," . $cardID;
+  $characterPieces = CharacterPieces();
+  if ($newCharactersSubcardIndex > $index) $newCharactersSubcardIndex -= $characterPieces;
+  for ($i = 0; $i < $characterPieces; $i++) array_splice($char, $index, 1);
+  if ($char[$newCharactersSubcardIndex] == "DYN492a") UpdateNitroMechanoidCounterCount($player, $newCharactersSubcardIndex);
+}
+
+function RemoveItemAndAddAsSubcardToCharacter($player, $itemIndex, $newCharactersSubcardIndex) {
+  $items = &GetItems($player);
+  $char = &GetPlayerCharacter($player);
+  $itemPieces = ItemPieces();
+  $cardID = $items[$itemIndex];
+  if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex+10] = $cardID;
+  else $char[$newCharactersSubcardIndex+10] = $char[$newCharactersSubcardIndex+10] . "," . $cardID;
+  for ($i = 0; $i < $itemPieces; $i++) array_splice($items, $itemIndex, 1);
+  if ($char[$newCharactersSubcardIndex] == "DYN492a") UpdateNitroMechanoidCounterCount($player, $newCharactersSubcardIndex);
+}
+
+function UpdateNitroMechanoidCounterCount($player, $nitroMechaCharacterIndex) {
+  $char = &GetPlayerCharacter($player);
+  $char[$nitroMechaCharacterIndex + 2] = count(explode(",", $char[$nitroMechaCharacterIndex + 10]));
 }
 
 function RemoveArsenalEffects($player, $cardToReturn){
@@ -2099,4 +2138,25 @@ function EquipmentsUsingSteamCounter($charID) {
     default:
       return false;
   }
+}
+
+function CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer) {
+  $hasHead = false; $hasChest = false; $hasArms = false; $hasLegs = false; $hasWeapon = false;
+      $char = &GetPlayerCharacter($currentPlayer);
+      for($i=0; $i<count($char); $i+=CharacterPieces())
+      {
+        $characterCardID = $char[$i];
+        if($char[$i+1] == 0) continue;
+        if(!ClassContains($characterCardID, "MECHANOLOGIST", $currentPlayer)) continue;
+        if(CardType($characterCardID) == "W") $hasWeapon = true;
+        else {
+          if (SubtypeContains($characterCardID, "Head")) $hasHead = true;
+          if (SubtypeContains($characterCardID, "Chest")) $hasChest = true;
+          if (SubtypeContains($characterCardID, "Arms")) $hasArms = true;
+          if (SubtypeContains($characterCardID, "Legs")) $hasLegs = true;
+        }
+      }
+      if(!$hasHead || !$hasChest || !$hasArms || !$hasLegs || !$hasWeapon) return "You do not meet the equipment requirement";
+      if(SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) < 3) return "You do not meet the Hyper Driver requirement";
+      return "";
 }

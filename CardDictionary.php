@@ -525,6 +525,13 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if(($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
   if($from == "CC" && AbilityPlayableFromCombatChain($cardID)) return true;
   if(($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
+  if($cardID == "DYN492a") {
+    if (($phase == "M" && $mainPlayer == $currentPlayer)) {
+      $charIndex = FindCharacterIndex($currentPlayer, "DYN492a");
+      return $character[$charIndex + 2] > 0;
+    }
+    return  false;
+  }
   switch($cardType) {
     case "A": return $phase == "M";
     case "AA": return $phase == "M";
@@ -563,6 +570,9 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
   $subtype = CardSubType($cardID);
   if(DelimStringContains($subtype, "Invocation") || DelimStringContains($subtype, "Ash") || $cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441") return "-";
+  if (DelimStringContains($subtype, "Construct")) {
+    if (CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer) == "") return "-";
+  }
   switch($cardID) {
     case "WTR163": return "BANISH";
     case "CRU163": return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
@@ -778,7 +788,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if(!$arsenalHasFaceUp) $restriction = "There must be a face up arrow in your arsenal.";
       return !$arsenalHasFaceUp;
     case "DYN212": return CountAura("MON104", $currentPlayer) < 1;
-    case "DYN492a": return $character[$index + 2] <= 0;
     case "OUT001": case "OUT002": return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID());
     case "OUT021": case "OUT022": case "OUT023":
     case "OUT042": case "OUT043": case "OUT044":

@@ -1229,7 +1229,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PayOrDiscard($player, $parameter);
       return "";
     case "SPECIFICCARD":
-      return SpecificCardLogic($player, $parameter, $lastResult);
+      $parameterArr = explode(",", $parameter);
+      $parameter = $parameterArr[0];
+      if (count($parameterArr) > 0) $initiator = $parameterArr[1];
+      else $initiator = "";
+      return SpecificCardLogic($player, $parameter, $lastResult, $initiator);
     case "MZADDSTEAMCOUNTER":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);
@@ -1370,6 +1374,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       RemoveHand($player, $index);
       WriteLog("Player {$player} banishes a card face down");
       return $player;
+    case "BANISHFROMSUBCARDZONE":
+      $char = &GetPlayerCharacter($player);
+      $subcards = explode(",", $char[$parameter+10]);
+      $subcardsCount = count($subcards);
+      for ($i = 0; $i < $subcardsCount; $i++) {
+        if ($subcards[$i] == $lastResult) {
+          array_splice($subcards, $i, 1);
+          break;
+        }
+      }
+      $char[$parameter+10] = implode(",", $subcards);
+      BanishCardForPlayer($lastResult, $player, $char[$parameter]);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

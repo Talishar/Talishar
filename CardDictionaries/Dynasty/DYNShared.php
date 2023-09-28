@@ -281,45 +281,28 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
       return "";
     case "DYN092":
-      $hasHead = false; $hasChest = false; $hasArms = false; $hasLegs = false; $hasWeapon = false;
+      $conditionsMet = CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer);
+      if ($conditionsMet != "") return $conditionsMet;
       $char = &GetPlayerCharacter($currentPlayer);
-      for($i=0; $i<count($char); $i+=CharacterPieces())
-      {
-        $characterCardID = $char[$i];
-        if($char[$i+1] == 0) continue;
-        if(!ClassContains($characterCardID, "MECHANOLOGIST", $currentPlayer)) continue;
-        if(CardType($characterCardID) == "W") $hasWeapon = true;
-        else {
-          if (SubtypeContains($characterCardID, "Head")) $hasHead = true;
-          if (SubtypeContains($characterCardID, "Chest")) $hasChest = true;
-          if (SubtypeContains($characterCardID, "Arms")) $hasArms = true;
-          if (SubtypeContains($characterCardID, "Legs")) $hasLegs = true;
-        }
-      }
-      if(!$hasHead || !$hasChest || !$hasArms || !$hasLegs || !$hasWeapon) return "You do not meet the equipment requirement";
-      if(SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) < 3) return "You do not meet the Hyper Driver requirement";
+      // Add the new weapon stuff so we can put cards under it
+      PutCharacterIntoPlayForPlayer("DYN492a", $currentPlayer);
+      // We don't want function calls in every iteration check
+      $charCount = count($char);
+      $charPieces = CharacterPieces();
+      $mechanoidIndex = $charCount - $charPieces; // we pushed it, so should be the last element
       //Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
-      $mechMaterial = "";
-      for($i = count($char)-CharacterPieces(); $i >= 0; $i-=CharacterPieces()) {
-        if(CardType($char[$i]) != "C") {
+      for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
+        if(CardType($char[$i]) != "C" && $char[$i] != "DYN492a") {
           if($char[$i] == "DYN089") AddCurrentTurnEffect($char[$i] . "-UNDER", $currentPlayer);
-          if($mechMaterial != "") $mechMaterial .= ",";
-          $mechMaterial .= $char[$i];
-          $char[$i+1] = 0;
-          for($j=$i; $j<$i+CharacterPieces(); ++$j) unset($char[$j]);
+          RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $mechanoidIndex);
         }
       }
-      $char = array_values($char);
-      $items = &GetItems($currentPlayer);
-      $hyperToDestroy = 3;
-      for($i = count($items)-ItemPieces(); $i >= 0 && $hyperToDestroy > 0; $i -= ItemPieces()) {
-        if($mechMaterial != "") $mechMaterial .= ",";
-        $mechMaterial .= $items[$i];
-        if(CardNameContains($items[$i], "Hyper Driver", $currentPlayer)) DestroyItemForPlayer($currentPlayer, $i);
-        --$hyperToDestroy;
-      }
-      //Now add the new stuff
-      PutCharacterIntoPlayForPlayer("DYN492a", $currentPlayer);//Weapon
+
+      $hyperDrivers = SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036");
+      $hyperDrivers = str_replace("MYITEMS-", "", $hyperDrivers); // MULTICHOOSEITEMS expects indexes only but SearchItems does not have a sameName parameter
+      AddDecisionQueue("MULTICHOOSEITEMS", $currentPlayer, "3-" . $hyperDrivers. "-3");
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CONSTRUCTNITROMECHANOID," . $mechanoidIndex, 1);
+      //Now add the remaining new stuff
       PutCharacterIntoPlayForPlayer("DYN492b", $currentPlayer);//Armor
       PutItemIntoPlayForPlayer("DYN492c", $currentPlayer);//Item
       return "";
@@ -511,6 +494,31 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         Draw($currentPlayer);
       }
       return $rv;
+    case "DYN492a":
+      if ($from == "EQUIP") {
+        $character = &GetPlayerCharacter($currentPlayer);
+        $characterCount = count($character);
+        $characterPieces = CharacterPieces();
+        $nitroMechaCharIndex = 0;
+        for ($i = 0; $i < $characterCount; $i += $characterPieces) {
+          if ($character[$i] == "DYN492a") {
+            $nitroMechaCharIndex = $i;
+            break;
+          }
+        }
+        $subcards = explode(",", $character[$nitroMechaCharIndex+10]);
+        $subcardsCount = count($subcards);
+        $chooseMultizoneData = "";
+        for ($i = 0; $i < $subcardsCount; $i++) {
+          if ($chooseMultizoneData == "") $chooseMultizoneData = "CARDID-" . $subcards[$i];
+          else $chooseMultizoneData = $chooseMultizoneData . ",CARDID-" . $subcards[$i];
+        }
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a subcard to banish from Nitro Mechanoid.");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $chooseMultizoneData, 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "GETCARDINDEX");
+        AddDecisionQueue("BANISHFROMSUBCARDZONE", $currentPlayer, $nitroMechaCharIndex);
+      }
+      return "";
     case "DYN612":
       $soul = &GetSoul($currentPlayer);
       if(count($soul) > 0){

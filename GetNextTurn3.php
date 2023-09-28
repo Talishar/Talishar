@@ -1003,8 +1003,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
       if ($option[0] == "MYARS") $label = "Arsenal";
 
-      $index = intval($option[1]);
-      $card = $source[$index];
+      if ($option[0] != "CARDID") {
+        $index = intval($option[1]);
+        $card = $source[$index];
+      } else $card = $option[1];
+      
       if ($option[0] == "LAYER" && $card == "TRIGGER") $card = $source[$index + 2];
       $playerBorderColor = 0;
 
@@ -1108,7 +1111,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->popup = ChoosePopup($theirCharacter, $turn[2], 16, "Choose a card from your opponent character/equipment", CharacterPieces());
   }
 
-  if (($turn[0] == "MULTICHOOSETHEIRDISCARD" || $turn[0] == "MULTICHOOSEDISCARD" || $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MULTICHOOSEDECK" || $turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MULTICHOOSETHEIRDECK" || $turn[0] == "MULTICHOOSEBANISH") && $currentPlayer == $playerID) {
+  if (($turn[0] == "MULTICHOOSETHEIRDISCARD" || $turn[0] == "MULTICHOOSEDISCARD" || $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MULTICHOOSEDECK" || $turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MULTICHOOSETHEIRDECK" || $turn[0] == "MULTICHOOSEBANISH" || $turn[0] == "MULTICHOOSEITEMS") && $currentPlayer == $playerID) {
     $playerInputPopup->active = true;
     $formOptions = new stdClass();
     $cardsArray = array();
@@ -1146,6 +1149,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         else if ($turn[0] == "MULTICHOOSEDECK") array_push($cardsArray, JSONRenderedCard($myDeck[$options[$i]], actionDataOverride: $i));
         else if ($turn[0] == "MULTICHOOSETHEIRDECK") array_push($cardsArray, JSONRenderedCard($theirDeck[$options[$i]], actionDataOverride: $i));
         else if ($turn[0] == "MULTICHOOSEBANISH") array_push($cardsArray, JSONRenderedCard($myBanish[$options[$i]], actionDataOverride: $i));
+        else if ($turn[0] == "MULTICHOOSEITEMS") array_push($cardsArray, JSONRenderedCard($myItems[$options[$i]], actionDataOverride: $i));
       }
       $caption = "Choose up to $params[0] card" . ($params[0] > 1 ? "s." : ".");
       $playerInputPopup->popup = CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, cardsArray: $cardsArray);
