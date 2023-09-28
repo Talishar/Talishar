@@ -270,6 +270,24 @@ function CharacterDestroyEffect($cardID, $player)
   }
 }
 
+function CharacterBanishEffect($cardID, $player) {
+  switch ($cardID) {
+    case "DYN089":
+      global $currentTurnEffects;
+      $effectsCount = count($currentTurnEffects);
+      $effectPieces = CurrentTurnPieces();
+      for ($i = 0; $i < $effectsCount; $i += $effectPieces) {
+        if ($currentTurnEffects[$i] == "DYN089-UNDER") {
+          RemoveCurrentTurnEffect($i);
+          break;
+        }
+      }
+      break;
+    default:
+      break;
+  }
+}
+
 function MainCharacterEndTurnAbilities()
 {
   global $mainClassState, $CS_HitsWDawnblade, $CS_AtksWWeapon, $mainPlayer, $CS_NumNonAttackCards;
