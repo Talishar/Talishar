@@ -67,6 +67,9 @@
       case "EVO009": return EvoUpgradeAmount($currentPlayer) >= 1 ? "AA" : "";
       case "EVO014": case "EVO015": case "EVO016": case "EVO017": return "I";
       case "EVO070": return "A";
+      case "EVO071": return "I";
+      case "EVO072": return "I";
+      case "EVO073": return "A";
       case "EVO075": return "I";
       case "EVO076": return "A";
       case "EVO077": return "I";
@@ -84,6 +87,7 @@
   {
     switch($cardID)
     {
+      case "EVO073": return true;
       case "EVO247": return true;
       default: return false;
     }

@@ -77,10 +77,22 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
         AddAdditionalCost($currentPlayer, "PAID");
       }
       break;
+    case "EVO071": case "EVO072":
+      $items = &GetItems($currentPlayer);
+      if($from == "PLAY") {
+        $items[$index+2] = 1;
+      }
+      break;
     case "EVO075": case "EVO076": case "EVO077":
       RemoveItem($currentPlayer, $index);
       $deck = new Deck($currentPlayer);
       $deck->AddBottom($cardID, from:"PLAY");
+      break;
+    case "EVO087": case "EVO088": case "EVO089":
+      $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      $items = &GetItems($currentPlayer);
+      --$items[$index+1];
+      if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
       break;
     default: break;
   }
@@ -292,7 +304,7 @@ function SteamCounterLogic($item, $playerID, $uniqueID)
       break;
     default: break;
   }
-  if(ClassContains($item, "MECHANOLOGIST", $playerID)) {
+  if(ClassContains($item, "MECHANOLOGIST", $playerID) && CardCost($item) >= 0 && CardCost($item) <= 2) {
     $items = &GetItems($playerID);
     for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces()) {
       if($items[$i] == "DYN093") {
