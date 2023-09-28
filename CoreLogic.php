@@ -2138,3 +2138,24 @@ function EquipmentsUsingSteamCounter($charID) {
       return false;
   }
 }
+
+function CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer) {
+  $hasHead = false; $hasChest = false; $hasArms = false; $hasLegs = false; $hasWeapon = false;
+      $char = &GetPlayerCharacter($currentPlayer);
+      for($i=0; $i<count($char); $i+=CharacterPieces())
+      {
+        $characterCardID = $char[$i];
+        if($char[$i+1] == 0) continue;
+        if(!ClassContains($characterCardID, "MECHANOLOGIST", $currentPlayer)) continue;
+        if(CardType($characterCardID) == "W") $hasWeapon = true;
+        else {
+          if (SubtypeContains($characterCardID, "Head")) $hasHead = true;
+          if (SubtypeContains($characterCardID, "Chest")) $hasChest = true;
+          if (SubtypeContains($characterCardID, "Arms")) $hasArms = true;
+          if (SubtypeContains($characterCardID, "Legs")) $hasLegs = true;
+        }
+      }
+      if(!$hasHead || !$hasChest || !$hasArms || !$hasLegs || !$hasWeapon) return "You do not meet the equipment requirement";
+      if(SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) < 3) return "You do not meet the Hyper Driver requirement";
+      return "";
+}
