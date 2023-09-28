@@ -55,7 +55,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "EVR182": case "EVR183": case "EVR184":
     case "EVR185": case "EVR186": case "EVR187":
     case "OUT054":
-    case "EVO081": case "EVO082": case "EVO083": 
+    case "EVO081": case "EVO082": case "EVO083":
       DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "ARC035":
@@ -210,6 +210,19 @@ function ItemHitEffects($attackID)
   }
 }
 
+function ChosenItemTakeDamageAbilities($player, $index, $damage, $preventable)
+{
+  $items = &GetItems($player);
+  switch($items[$index]) {
+    case "EVO093": case "EVO094": case "EVO095":
+      if($preventable) $damage -= ItemDamagePeventionAmount($player, $index);
+      DestroyItemForPlayer($player, $index);
+      break;
+    default: break;
+  }
+  return $damage;
+}
+
 function ItemTakeDamageAbilities($player, $damage, $type="", $preventable=true, $isWard=false)
 {
   if ($type != "") {
@@ -224,11 +237,7 @@ function ItemTakeDamageAbilities($player, $damage, $type="", $preventable=true, 
         else { $items[$i+1] -= $damage; if($preventable) $damage = 0; }
         if($items[$i+1] <= 0) DestroyItemForPlayer($player, $i);
         break;
-      default:
-        if($isWard) {
-          if($preventable) $damage -= ItemDamagePeventionAmount($player, $i);
-          DestroyItemForPlayer($player, $i);
-        }
+      default: break;
     }
   }
   return $damage;

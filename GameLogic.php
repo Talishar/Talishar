@@ -1309,7 +1309,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MYAURAS": $damage = AuraTakeDamageAbility($player, intval($mzIndex[1]), $params[0], $params[1]); break;
         case "MYCHAR": $damage = CharacterTakeDamageAbility($player, intval($mzIndex[1]), $params[0], $params[1]); break;
         case "MYALLY": $damage = AllyTakeDamageAbilities($player, intval($mzIndex[1]), $params[0], $params[1]); break;
-        case "MYITEMS": $damage = ItemTakeDamageAbilities($player, $params[0], "", $params[1], true); break;
+        case "MYITEMS": $damage = ChosenItemTakeDamageAbilities($player, intval($mzIndex[1]), $params[0], $params[1]); break;
         default: break;
       }
       if($damage < 0) $damage = 0;
