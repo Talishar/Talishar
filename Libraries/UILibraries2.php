@@ -114,6 +114,9 @@ function JSONRenderedCard(
   });
 
   if ($isSpectator) $gem = NULL;
+  if ($subcard != NULL) {
+    $subcard = explode(',', $subcard);
+  }
 
   $card = (object) [
     'cardNumber' => $cardNumber,
