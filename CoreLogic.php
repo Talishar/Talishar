@@ -1260,6 +1260,34 @@ function DestroyCharacter($player, $index, $skipDestroy=false)
   return $cardID;
 }
 
+function RemoveCharacterAndAddAsSubcardToCharacter($player, $index, &$newCharactersSubcardIndex) {
+  global $CombatChain;
+  $char = &GetPlayerCharacter($player);
+  $cardID = $char[$index];
+  if($char[$index+6] == 1) $CombatChain->Remove(GetCombatChainIndex($cardID, $player));
+  if (!isSubcardEmpty($char, $index)) {
+    $subcards = explode(',', $char[$index+10]);
+    $subcardsCount = count($subcards);
+    for ($i = 0; $i < $subcardsCount; $i++) AddGraveyard($subcards[$i], $player, "CHAR");
+  }
+  CharacterDestroyEffect($cardID, $player);
+  if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex+10] = $cardID;
+  else $char[$newCharactersSubcardIndex+10] = $char[$newCharactersSubcardIndex+10] . "," . $cardID;
+  $characterPieces = CharacterPieces();
+  if ($newCharactersSubcardIndex > $index) $newCharactersSubcardIndex -= $characterPieces;
+  for ($i = 0; $i < $characterPieces; $i++) array_splice($char, $index, 1);
+}
+
+function RemoveItemAndAddAsSubcardToCharacter($player, $itemIndex, $newCharactersSubcardIndex) {
+  $items = &GetItems($player);
+  $char = &GetPlayerCharacter($player);
+  $itemPieces = ItemPieces();
+  $cardID = $items[$itemIndex];
+  if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex+10] = $cardID;
+  else $char[$newCharactersSubcardIndex+10] = $char[$newCharactersSubcardIndex+10] . "," . $cardID;
+  for ($i = 0; $i < $itemPieces; $i++) array_splice($items, $itemIndex, 1);
+}
+
 function RemoveArsenalEffects($player, $cardToReturn){
   SearchCurrentTurnEffects("EVR087", $player, true);
   SearchCurrentTurnEffects("ARC042", $player, true);

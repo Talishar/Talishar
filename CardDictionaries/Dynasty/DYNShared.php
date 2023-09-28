@@ -298,28 +298,25 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       if(!$hasHead || !$hasChest || !$hasArms || !$hasLegs || !$hasWeapon) return "You do not meet the equipment requirement";
       if(SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) < 3) return "You do not meet the Hyper Driver requirement";
+      // Add the new weapon stuff so we can put cards under it
+      PutCharacterIntoPlayForPlayer("DYN492a", $currentPlayer);
+      // We don't want function calls in every iteration check
+      $charCount = count($char);
+      $charPieces = CharacterPieces();
+      $mechanoidIndex = $charCount - $charPieces; // we pushed it, so should be the last element
       //Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
-      $mechMaterial = "";
-      for($i = count($char)-CharacterPieces(); $i >= 0; $i-=CharacterPieces()) {
-        if(CardType($char[$i]) != "C") {
+      for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
+        if(CardType($char[$i]) != "C" && $char[$i] != "DYN492a") {
           if($char[$i] == "DYN089") AddCurrentTurnEffect($char[$i] . "-UNDER", $currentPlayer);
-          if($mechMaterial != "") $mechMaterial .= ",";
-          $mechMaterial .= $char[$i];
-          $char[$i+1] = 0;
-          for($j=$i; $j<$i+CharacterPieces(); ++$j) unset($char[$j]);
+          RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $mechanoidIndex);
         }
       }
-      $char = array_values($char);
-      $items = &GetItems($currentPlayer);
-      $hyperToDestroy = 3;
-      for($i = count($items)-ItemPieces(); $i >= 0 && $hyperToDestroy > 0; $i -= ItemPieces()) {
-        if($mechMaterial != "") $mechMaterial .= ",";
-        $mechMaterial .= $items[$i];
-        if(CardNameContains($items[$i], "Hyper Driver", $currentPlayer)) DestroyItemForPlayer($currentPlayer, $i);
-        --$hyperToDestroy;
-      }
-      //Now add the new stuff
-      PutCharacterIntoPlayForPlayer("DYN492a", $currentPlayer);//Weapon
+
+      $hyperDrivers = SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036");
+      $hyperDrivers = str_replace("MYITEMS-", "", $hyperDrivers); // MULTICHOOSEITEMS expects indexes only but SearchItems does not have a sameName parameter
+      AddDecisionQueue("MULTICHOOSEITEMS", $currentPlayer, "3-" . $hyperDrivers);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CONSTRUCTNITROMECHANOID," . $mechanoidIndex, 1);
+      //Now add the remaining new stuff
       PutCharacterIntoPlayForPlayer("DYN492b", $currentPlayer);//Armor
       PutItemIntoPlayForPlayer("DYN492c", $currentPlayer);//Item
       return "";

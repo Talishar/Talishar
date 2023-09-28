@@ -84,7 +84,7 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   array_push($char, 0);
   array_push($char, 0);
   array_push($char, 2);
-  array_push($char, "");
+  array_push($char, "-");
   array_push($char, GetUniqueId());
   return $index;
 }

@@ -1229,7 +1229,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PayOrDiscard($player, $parameter);
       return "";
     case "SPECIFICCARD":
-      return SpecificCardLogic($player, $parameter, $lastResult);
+      $parameterArr = explode(",", $parameter);
+      $parameter = $parameterArr[0];
+      if (count($parameterArr) > 0) $initiator = $parameterArr[1];
+      else $initiator = "";
+      return SpecificCardLogic($player, $parameter, $lastResult, $initiator);
     case "MZADDSTEAMCOUNTER":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);

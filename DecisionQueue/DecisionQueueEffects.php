@@ -200,7 +200,7 @@ function PlayerTargetedAbility($player, $card, $lastResult)
   }
 }
 
-function SpecificCardLogic($player, $card, $lastResult)
+function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
   global $dqVars, $CS_DamageDealt;
   switch($card)
@@ -416,6 +416,12 @@ function SpecificCardLogic($player, $card, $lastResult)
       global $combatChain, $combatChainState, $CCS_LinkBaseAttack;
       $combatChain[0] = $lastResult;
       $combatChainState[$CCS_LinkBaseAttack] = AttackValue($combatChain[0]);
+      return $lastResult;
+    case "CONSTRUCTNITROMECHANOID":
+      sort($lastResult);
+      for($i = count($lastResult)-1; $i >= 0; --$i) {
+        RemoveItemAndAddAsSubcardToCharacter($player, $lastResult[$i], $initiator);
+      }
       return $lastResult;
     default: return "";
   }
