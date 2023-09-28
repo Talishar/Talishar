@@ -1597,6 +1597,7 @@ function HasGalvanize($cardID)
 {
   switch($cardID)
   {
+    case "EVO105": case "EVO106": case "EVO107":
     case "EVO111": case "EVO112": case "EVO113":
     case "EVO114": case "EVO115": case "EVO116":
     case "EVO117": case "EVO118": case "EVO119":

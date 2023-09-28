@@ -175,6 +175,9 @@
       case "EVO102": case "EVO103": case "EVO104":
         if($additionalCosts == "SCRAP") AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "EVO105": case "EVO106": case "EVO107":
+        if(GetClassState($currentPlayer, $CS_NumItemsDestroyed) > 0) AddCurrentTurnEffect($cardID, $defPlayer);
+        return "";
       case "EVO108": case "EVO109": case "EVO110":
         if($additionalCosts == "SCRAP") PlayAura("WTR225", $currentPlayer);
         return "";

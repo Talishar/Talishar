@@ -358,6 +358,8 @@ function EffectBlockModifier($cardID, $index)
       return (CardType($CombatChain->Card($index)->ID()) != "E" && TalentContains($CombatChain->Card($index)->ID(), "LIGHT", $defPlayer) && TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $mainPlayer) ? 1 : 0);
     case "TCC035":
       return CachedTotalAttack() >= 13 && CardType($CombatChain->Card($index)->ID()) != "E" ? -1 : 0;
+    case "EVO105": case "EVO106": case "EVO107":
+      return IsAction($cardID) ? -1 : 0;
     default: return 0;
   }
 }

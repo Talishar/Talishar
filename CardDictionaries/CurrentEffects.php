@@ -73,6 +73,7 @@
       case "EVO052": return true;
       case "EVO090": case "EVO091": case "EVO092": return true;
       case "EVO102": case "EVO103": case "EVO104": return true;
+      case "EVO105": case "EVO106": case "EVO107": return true;
       case "EVO126": case "EVO127": case "EVO128": return true;
       case "EVO140": return true;
       case "EVO141": return true;
