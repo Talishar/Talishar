@@ -66,7 +66,8 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   }
   if (CardType($cardID) == "E") {
     $charIndex = FindCharacterIndex($player, $cardID);
-    DestroyCharacter($player, $charIndex, true);
+    if ($charIndex == -1) DestroyCharacter($player, $charIndex, skipDestroy: true);
+    else DestroyCharacter($player, $charIndex, wasBanished: true);
   }
   if($banishedBy != "") CheckContracts($banishedBy, $cardID);
   return $rv;

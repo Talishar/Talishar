@@ -1237,7 +1237,7 @@ function UndestroyCharacter($player, $index)
   $char[$index+4] = 0;
 }
 
-function DestroyCharacter($player, $index, $skipDestroy=false)
+function DestroyCharacter($player, $index, $skipDestroy=false, $wasBanished = false)
 {
   if ($index == -1) return "";
   global $CombatChain;
@@ -1255,7 +1255,7 @@ function DestroyCharacter($player, $index, $skipDestroy=false)
   }
   $char[$index+10] = "-";
   if(!$skipDestroy) {
-    AddGraveyard($cardID, $player, "CHAR");
+    if (!$wasBanished) AddGraveyard($cardID, $player, "CHAR");
     CharacterDestroyEffect($cardID, $player);
   }
   return $cardID;
