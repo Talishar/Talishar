@@ -1268,7 +1268,10 @@ function RemoveCharacterAndAddAsSubcardToCharacter($player, $index, &$newCharact
   if (!isSubcardEmpty($char, $index)) {
     $subcards = explode(',', $char[$index+10]);
     $subcardsCount = count($subcards);
-    for ($i = 0; $i < $subcardsCount; $i++) AddGraveyard($subcards[$i], $player, "CHAR");
+    for ($i = 0; $i < $subcardsCount; $i++) {
+      if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex+10] = $subcards[$i];
+      else $char[$newCharactersSubcardIndex+10] = $char[$newCharactersSubcardIndex+10] . "," . $subcards[$i];
+    }
   }
   CharacterDestroyEffect($cardID, $player);
   if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex+10] = $cardID;
@@ -1276,6 +1279,7 @@ function RemoveCharacterAndAddAsSubcardToCharacter($player, $index, &$newCharact
   $characterPieces = CharacterPieces();
   if ($newCharactersSubcardIndex > $index) $newCharactersSubcardIndex -= $characterPieces;
   for ($i = 0; $i < $characterPieces; $i++) array_splice($char, $index, 1);
+  if ($char[$newCharactersSubcardIndex] == "DYN492a") UpdateNitroMechanoidCounterCount($player, $newCharactersSubcardIndex);
 }
 
 function RemoveItemAndAddAsSubcardToCharacter($player, $itemIndex, $newCharactersSubcardIndex) {
@@ -1286,6 +1290,12 @@ function RemoveItemAndAddAsSubcardToCharacter($player, $itemIndex, $newCharacter
   if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex+10] = $cardID;
   else $char[$newCharactersSubcardIndex+10] = $char[$newCharactersSubcardIndex+10] . "," . $cardID;
   for ($i = 0; $i < $itemPieces; $i++) array_splice($items, $itemIndex, 1);
+  if ($char[$newCharactersSubcardIndex] == "DYN492a") UpdateNitroMechanoidCounterCount($player, $newCharactersSubcardIndex);
+}
+
+function UpdateNitroMechanoidCounterCount($player, $nitroMechaCharacterIndex) {
+  $char = &GetPlayerCharacter($player);
+  $char[$nitroMechaCharacterIndex + 2] = count(explode(",", $char[$nitroMechaCharacterIndex + 10]));
 }
 
 function RemoveArsenalEffects($player, $cardToReturn){
