@@ -263,7 +263,7 @@ function CharacterDestroyEffect($cardID, $player)
       break;
     case "DYN492b":
       $weaponIndex = FindCharacterIndex($player, "DYN492a");
-      if(intval($weaponIndex) != -1) DestroyCharacter($player, $weaponIndex);
+      if(intval($weaponIndex) != -1) DestroyCharacter($player, $weaponIndex, true);
       break;
     default:
       break;

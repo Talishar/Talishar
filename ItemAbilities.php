@@ -136,7 +136,7 @@ function DestroyItemForPlayer($player, $index, $skipDestroy=false)
       $indexWeapon = FindCharacterIndex($player, "DYN492a");
       DestroyCharacter($player, $indexWeapon);
       $indexEquipment = FindCharacterIndex($player, "DYN492b");
-      DestroyCharacter($player, $indexEquipment);
+      DestroyCharacter($player, $indexEquipment, true);
     }
     unset($items[$i]);
   }
