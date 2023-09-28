@@ -36,9 +36,10 @@ function DiscardPieces()
 //8 - Frozen (1 = yes, 0 = no)
 //9 - Is Active (2 = always active, 1 = yes, 0 = no)
 //10 - Subcards , delimited
+//11 - Unique ID
 function CharacterPieces()
 {
-  return 11;
+  return 12;
 }
 
 //0 - Card ID
