@@ -253,6 +253,15 @@
           }
         }
         return "";
+      case "EVO240":
+        if(ArsenalHasFaceDownCard($otherPlayer)) {
+          SetArsenalFacing("UP", $otherPlayer);
+          if (SearchArsenal($otherPlayer, type:"DR") != "") {
+            DestroyArsenal($otherPlayer);
+            AddCurrentTurnEffect($cardID, $currentPlayer);
+          }
+        }
+        return "";
       case "EVO242":
         $xVal = $resourcesPaid/2;
         PlayAura("ARC112", $currentPlayer, $xVal);
