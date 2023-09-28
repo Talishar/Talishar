@@ -143,8 +143,8 @@ function JSONRenderedCard(
     'subcards' => $subcard == NULL ? null : $subcard
   ];
 
-  if (ItemDefaultHoldTriggerState($cardNumber) != 0 && !($isSpectator)) {
-    $card->gem = $gem;
+  if($gem != NULL) {
+      $card->gem = $gem;
   }
 
   // To reduce space/size strip out all values that are null.
