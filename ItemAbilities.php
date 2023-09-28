@@ -88,6 +88,12 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       $deck = new Deck($currentPlayer);
       $deck->AddBottom($cardID, from:"PLAY");
       break;
+    case "EVO087": case "EVO088": case "EVO089":
+      $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      $items = &GetItems($currentPlayer);
+      --$items[$index+1];
+      if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
+      break;
     default: break;
   }
 }
