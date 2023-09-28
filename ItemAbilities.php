@@ -298,7 +298,7 @@ function SteamCounterLogic($item, $playerID, $uniqueID)
       break;
     default: break;
   }
-  if(ClassContains($item, "MECHANOLOGIST", $playerID)) {
+  if(ClassContains($item, "MECHANOLOGIST", $playerID) && CardCost($item) >= 0 && CardCost($item) <= 2) {
     $items = &GetItems($playerID);
     for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces()) {
       if($items[$i] == "DYN093") {
