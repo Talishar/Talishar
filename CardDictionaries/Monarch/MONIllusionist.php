@@ -85,6 +85,7 @@
       case "EVR139": case "EVR144": case "EVR145": case "EVR146": case "EVR147": case "EVR148": case "EVR149": return true;
       case "UPR021": case "UPR022": case "UPR023": case "UPR027": case "UPR028": case "UPR029": case "UPR153": case "UPR551": return true;
       case "DYN215": case "DYN216": case "DYN224": case "DYN225": case "DYN226": case "DYN227": case "DYN228": case "DYN229":
+      case "EVO244":
         return true;
       default: return false;
     }
@@ -154,7 +155,10 @@
     {
       $attackID = $CombatChain->AttackCard()->ID();
       if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($attackID), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
-      if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) GhostlyTouchPhantasmDestroy();
+      if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
+        GhostlyTouchPhantasmDestroy();
+        PhantomTidemawDestroy();
+      }
       AttackDestroyed($attackID);
       if(CardType($attackID) == "AA")
       {

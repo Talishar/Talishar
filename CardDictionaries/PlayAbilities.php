@@ -355,4 +355,14 @@
     }
   }
 
+  function PhantomTidemawDestroy()
+  {
+    global $mainPlayer;
+    $phantomTidemawIndex = GetAuraIndex("EVO244", $mainPlayer);
+    if($phantomTidemawIndex > -1) {
+      $auras = &GetAuras($mainPlayer);
+      ++$auras[$phantomTidemawIndex+3];
+    }
+  }
+
 ?>

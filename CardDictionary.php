@@ -1521,6 +1521,7 @@ function WardAmount($cardID, $player)
     case "DTD217": return 2;
     case "DTD405": case "DTD406": case "DTD407": case "DTD408"://Angels
     case "DTD409": case "DTD410": case "DTD411": case "DTD412": return 4;
+    case "EVO244": return 1;
     default: return 0;
   }
 }
@@ -1542,8 +1543,8 @@ function HasWard($cardID, $player)
     case "DTD405": case "DTD406": case "DTD407": case "DTD408"://Angels
     case "DTD409": case "DTD410": case "DTD411": case "DTD412":
       return true;
-    case "EVO093": case "EVO094": case "EVO095":
-        return true;
+    case "EVO093": case "EVO094": case "EVO095": case "EVO244":
+      return true;
     default: return false;
   }
 }
