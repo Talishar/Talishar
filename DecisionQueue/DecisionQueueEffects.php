@@ -109,6 +109,32 @@ function ModalAbilities($player, $card, $lastResult)
         }
       }
       return $lastResult;
+    case "FABRICATE":
+      $params = explode(",", $lastResult);
+      for($i = 0; $i < count($params); ++$i) {
+        switch($params[$i]) {
+          case "Equip_a_Proto":
+            $protos = "EVO022,EVO023,EVO024,EVO025";
+            AddDecisionQueue("SETDQCONTEXT", $player, "Choose a proto to equip (make sure you choose one in your inventory)");
+            AddDecisionQueue("CHOOSECARD", $player, $protos);
+            AddDecisionQueue("EQUIPCARD", $player, "<-");
+            break;
+          case "Buff_Evos":
+            WriteLog("buff");
+
+            break;
+          case "Put_this_under_Evo":
+            WriteLog("put under");
+
+            break;
+          case "Banish_Evo_and_draw":
+            WriteLog("banish and draw");
+
+            break;
+          default: break;
+        }
+      }
+      return $lastResult;
     case "COAXCOMMOTION":
       if(!is_array($lastResult)) return $lastResult;
       for($i = 0; $i < count($lastResult); ++$i) {

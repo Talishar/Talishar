@@ -222,6 +222,10 @@
         AddDecisionQueue("MULTICHOOSEITEMS", $currentPlayer, $num . "-" . $indices . "-" . $num);
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SYSTEMRESET");
         return "";
+      case "EVO146":
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
+        AddDecisionQueue("MODAL", $currentPlayer, "FABRICATE", 1);
+        return "";
       case "EVO153": case "EVO154": case "EVO155":
         if(GetClassState($currentPlayer, $CS_NumBoosted) >= 2) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";

@@ -1953,6 +1953,12 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0,1,2");
       AddDecisionQueue("OP", $currentPlayer, "BOOST", 1);
       break;
+    case "EVO146":
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes");
+      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Equip_a_Proto,Buff_Evos,Put_this_under_Evo,Banish_Evo_and_draw-2");
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
     default:
       break;
   }
