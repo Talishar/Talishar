@@ -214,6 +214,14 @@
         AddDecisionQueue("MZREMOVESTEAMCOUNTER", $currentPlayer, "-", 1);
         AddDecisionQueue("SYSTEMFAILURE", $currentPlayer, "<-", 1);
         return "";
+      case "EVO145":
+        $indices = SearchMultizone($currentPlayer, "MYITEMS:class=MECHANOLOGIST;maxCost=1");
+        $indices = str_replace("MYITEMS-", "", $indices);
+        $num = SearchCount($indices);
+        $num = $resourcesPaid < $num ? $resourcesPaid : $num;
+        AddDecisionQueue("MULTICHOOSEITEMS", $currentPlayer, $num . "-" . $indices . "-" . $num);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SYSTEMRESET");
+        return "";
       case "EVO153": case "EVO154": case "EVO155":
         if(GetClassState($currentPlayer, $CS_NumBoosted) >= 2) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";

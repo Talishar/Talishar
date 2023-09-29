@@ -423,6 +423,14 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         RemoveItemAndAddAsSubcardToCharacter($player, $lastResult[$i], $initiator);
       }
       return $lastResult;
+    case "SYSTEMRESET":
+      for($i=count($lastResult)-1; $i>=0; --$i) {
+        $cardID = DestroyItemForPlayer($player, $lastResult[$i], skipDestroy:true);
+        $banishIndex = BanishCardForPlayer($cardID, $player, "PLAY", "-", banishedBy:$player);
+        $cardID = RemoveBanish($player, $banishIndex);
+        PutItemIntoPlayForPlayer($cardID, $player);
+      }
+      return $lastResult;
     default: return "";
   }
 }
