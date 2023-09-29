@@ -1954,8 +1954,8 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("OP", $currentPlayer, "BOOST", 1);
       break;
     case "EVO146":
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes");
-      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Equip_a_Proto,Buff_Evos,Put_this_under_Evo,Banish_Evo_and_draw-2");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2;");
+      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Equip_a_base_equipment_with_Proto_in_its_name_from_your_inventory,Evo_permanents_you_control_get_+1_block_this_turn,Put_this_under_an_Evo_permanent_you_control,Banish_an_Evo_from_your_hand_and_draw_a_card-2");
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
