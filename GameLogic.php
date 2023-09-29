@@ -354,6 +354,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           ++$character[$mzArr[1] + 5];
           if($character[$mzArr[1] + 1] == 1) $character[$mzArr[1] + 1] = 2;
           break;
+        case "ADDSUBCARD":
+          $mzArr = explode("-", $lastResult);
+          $character = &GetPlayerCharacter($player);
+          if($character[$mzArr[1]+10] != "-") {
+            $character[$mzArr[1]+10] .= "," . $paramArr[1];
+          }
+          else $character[$mzArr[1]+10] = $paramArr[1];
+          break;
         default: break;
       }
       return $lastResult;
@@ -1318,7 +1326,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($damage > 0) AddDamagePreventionSelection($player, $damage, $params[1]);
       return $damage;
     case "EQUIPCARD":
-      EquipCard($player, $parameter);
+      if(CardType($parameter) == "W") EquipWeapon($player, $parameter);
+      else EquipEquipment($player, $parameter);
       return "";
     case "ROGUEMIRRORGAMESTART":
       $deck = &GetDeck($player);

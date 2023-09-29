@@ -330,6 +330,7 @@ function EffectHasBlockModifier($cardID)
     case "OUT109": case "OUT110": case "OUT111":
     case "DTD094": case "DTD095": case "DTD096":
     case "TCC035":
+    case "EVO146":
     return true;
     default: return false;
   }
@@ -360,6 +361,8 @@ function EffectBlockModifier($cardID, $index)
       return CachedTotalAttack() >= 13 && CardType($CombatChain->Card($index)->ID()) != "E" ? -1 : 0;
     case "EVO105": case "EVO106": case "EVO107":
       return IsAction($cardID) ? -1 : 0;
+    case "EVO146":
+      return SubtypeContains($CombatChain->Card($index)->ID(), "Evo", $defPlayer) ? 1 : 0;
     default: return 0;
   }
 }
@@ -1040,6 +1043,7 @@ function IsCombatEffectPersistent($cardID)
     case "DTD410": return true;
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
+    case "EVO146": return true;
     case "ROGUE018": case "ROGUE601": case "ROGUE702": case "ROGUE704": case "ROGUE707": return true;
     case "ROGUE603": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
     case "ROGUE710-GA": case "ROGUE710-DO": case "ROGUE711": case "ROGUE802": case "ROGUE805": case "ROGUE806": return true;

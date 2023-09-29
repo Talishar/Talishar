@@ -77,6 +77,7 @@
       case "EVO126": case "EVO127": case "EVO128": return true;
       case "EVO140": return true;
       case "EVO141": return true;
+      case "EVO146": return true;
       case "EVO153": case "EVO154": case "EVO155": return true;
       case "EVO156": case "EVO157": case "EVO158": return ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
       case "EVO192": case "EVO193": case "EVO194":

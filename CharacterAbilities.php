@@ -496,7 +496,54 @@ function CharacterCostModifier($cardID, $from)
   return CanCostBeModified($cardID) ? $modifier : 0;
 }
 
-function EquipCard($player, $card)
+function EquipEquipment($player, $card)
+{
+  $slot = "";
+  if(SubtypeContains($card, "Head")) $slot = "Head";
+  else if(SubtypeContains($card, "Chest")) $slot = "Chest";
+  else if(SubtypeContains($card, "Arms")) $slot = "Arms";
+  else if(SubtypeContains($card, "Legs")) $slot = "Legs";
+  $char = &GetPlayerCharacter($player);
+  $replaced = 0;
+  //Replace the first destroyed weapon; if none you can't re-equip
+  for($i=CharacterPieces(); $i<count($char) && !$replaced; $i+=CharacterPieces())
+  {
+    if(SubtypeContains($char[$i], $slot, $player))
+    {
+      $char[$i] = $card;
+      $char[$i+1] = 2;
+      $char[$i+2] = 0;
+      $char[$i+3] = 0;
+      $char[$i+4] = 0;
+      $char[$i+5] = 1;
+      $char[$i+6] = 0;
+      $char[$i+7] = 0;
+      $char[$i+8] = 0;
+      $char[$i+9] = 2;
+      $char[$i+10] = "";
+      $char[$i+11] = GetUniqueId();
+      $replaced = 1;
+    }
+  }
+  if(!$replaced)
+  {
+    $insertIndex = count($char);
+    array_splice($char, $insertIndex, 0, $card);
+    array_splice($char, $insertIndex+1, 0, 2);
+    array_splice($char, $insertIndex+2, 0, 0);
+    array_splice($char, $insertIndex+3, 0, 0);
+    array_splice($char, $insertIndex+4, 0, 0);
+    array_splice($char, $insertIndex+5, 0, 1);
+    array_splice($char, $insertIndex+6, 0, 0);
+    array_splice($char, $insertIndex+7, 0, 0);
+    array_splice($char, $insertIndex+8, 0, 0);
+    array_splice($char, $insertIndex+9, 0, 2);
+    array_splice($char, $insertIndex+10, 0, "");
+    array_splice($char, $insertIndex+11, 0, GetUniqueId());
+  }
+}
+
+function EquipWeapon($player, $card)
 {
   $char = &GetPlayerCharacter($player);
   $lastWeapon = 0;

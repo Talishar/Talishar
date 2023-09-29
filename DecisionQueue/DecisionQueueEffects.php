@@ -120,16 +120,16 @@ function ModalAbilities($player, $card, $lastResult)
             AddDecisionQueue("EQUIPCARD", $player, "<-");
             break;
           case "Buff_Evos":
-            WriteLog("buff");
-
+            AddCurrentTurnEffect("EVO146", $player);
             break;
           case "Put_this_under_Evo":
-            WriteLog("put under");
-
+            AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:subtype=Evo");
+            AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+            AddDecisionQueue("MZOP", $player, "ADDSUBCARD,EVO146", 1);
             break;
           case "Banish_Evo_and_draw":
-            WriteLog("banish and draw");
-
+            MZChooseAndBanish($player, "MYHAND:subtype=Evo", "HAND,-", may:true);
+            AddDecisionQueue("DRAW", $player, "-", 1);
             break;
           default: break;
         }
