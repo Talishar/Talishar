@@ -142,6 +142,7 @@ function DestroyItemForPlayer($player, $index, $skipDestroy=false)
       AddGraveyard($items[$index], $player, "PLAY");
     IncrementClassState($player, $CS_NumItemsDestroyed);
   }
+  ItemDestroyedAbility($player, $index);
   $cardID = $items[$index];
   for($i = $index + ItemPieces() - 1; $i >= $index; --$i) {
     if($items[$i] == "DYN492c") {
@@ -182,6 +183,7 @@ function GetItemGemState($player, $cardID)
 function ItemHitEffects($attackID)
 {
   global $mainPlayer, $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+  $attackType = CardType($attackID);
   $attackSubType = CardSubType($attackID);
   $items = &GetItems($mainPlayer);
   for($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
@@ -192,17 +194,22 @@ function ItemHitEffects($attackID)
           AddLayer("TRIGGER", $mainPlayer, $items[$i], "-", "-", $items[$i+4]);
         }
         break;
+      case "EVO074":
+        if(IsHeroAttackTarget() && $attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
+          AddLayer("TRIGGER", $mainPlayer, $items[$i], "-", "-", $items[$i+4]);
+        }
+        break;
       case "EVO084": case "EVO085": case "EVO086":
         if($items[$i] == "EVO084") $amount = 4;
         else if($items[$i] == "EVO085") $amount = 3;
         else $amount = 2;
-        if(IsHeroAttackTarget() && CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
+        if(IsHeroAttackTarget() && $attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
           DamageTrigger($defPlayer, $amount, "DAMAGE", $items[$i]);
           $remove = true;
         }
         break;
       case "EVO098":
-        if(CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+        if($attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
       default: break;
     }
@@ -261,6 +268,14 @@ function ItemStartTurnAbility($index)
     case "EVO096": case "EVO097": case "EVO098":
       if($mainItems[$index+1] > 0) --$mainItems[$index+1];
       else DestroyItemForPlayer($mainPlayer, $index);
+      break;
+    case "EVO074":
+      if($mainItems[$index+1] > 0) --$mainItems[$index+1];
+      else {
+        DestroyItemForPlayer($mainPlayer, $index);
+        DealDamageAsync($mainPlayer, 1);
+        WriteLog(CardLink("EVO074","EVO074") . " deals 1 damage to Player " . $mainPlayer . ".");
+      }
       break;
     default: break;
   }
@@ -375,6 +390,23 @@ function ItemAttackModifiers()
     }
   }
   return $attackModifier;
+}
+
+function ItemDestroyedAbility($player, $index)
+{
+  global $mainPlayer;
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  $items = &GetItems($player);
+  $cardID = $items[$index];
+  switch($cardID) {
+    case "EVO073":
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment it cannot be activated until the end of its controller next turn");
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+      AddDecisionQueue("ADDSTASISTURNEFFECT", $otherPlayer, "EVO073-", 1);
+      break;
+    default: break;
+  }
 }
 
 ?>

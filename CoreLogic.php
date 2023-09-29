@@ -122,7 +122,7 @@ function BlockingCardDefense($index)
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       if ($currentTurnEffects[$i + 1] == $defPlayer) {
-        $defense += EffectBlockModifier($currentTurnEffects[$i], index:$index);
+        $defense += EffectBlockModifier($currentTurnEffects[$i], $index, $from);
       }
     }
   }

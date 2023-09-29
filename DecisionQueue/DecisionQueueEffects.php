@@ -113,21 +113,21 @@ function ModalAbilities($player, $card, $lastResult)
       $params = explode(",", $lastResult);
       for($i = 0; $i < count($params); ++$i) {
         switch($params[$i]) {
-          case "Equip_a_Proto":
+          case "Equip_a_base_equipment_with_Proto_in_its_name_from_your_inventory":
             $protos = "EVO022,EVO023,EVO024,EVO025";
             AddDecisionQueue("SETDQCONTEXT", $player, "Choose a proto to equip (make sure you choose one in your inventory)");
             AddDecisionQueue("CHOOSECARD", $player, $protos);
             AddDecisionQueue("EQUIPCARD", $player, "<-");
             break;
-          case "Buff_Evos":
+          case "Evo_permanents_you_control_get_+1_block_this_turn":
             AddCurrentTurnEffect("EVO146", $player);
             break;
-          case "Put_this_under_Evo":
+          case "Put_this_under_an_Evo_permanent_you_control":
             AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:subtype=Evo");
             AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
             AddDecisionQueue("MZOP", $player, "ADDSUBCARD,EVO146", 1);
             break;
-          case "Banish_Evo_and_draw":
+          case "Banish_an_Evo_from_your_hand_and_draw_a_card":
             MZChooseAndBanish($player, "MYHAND:subtype=Evo", "HAND,-", may:true);
             AddDecisionQueue("DRAW", $player, "-", 1);
             break;
@@ -456,6 +456,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         $cardID = RemoveBanish($player, $banishIndex);
         PutItemIntoPlayForPlayer($cardID, $player);
       }
+      return $lastResult;
+    case "TICKTOCKCLOCK":
+      DamageTrigger($player, $dqVars[0], "DAMAGE", "EVO074");
       return $lastResult;
     default: return "";
   }
