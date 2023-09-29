@@ -1959,6 +1959,15 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
+    case "EVO410a":
+      if($from == "EQUIP") {
+        $character = &GetPlayerCharacter($currentPlayer);
+        $index = GetClassState($currentPlayer, $CS_CharacterIndex);
+        CharacterChooseSubcard($currentPlayer, $index, count: 2);
+        AddDecisionQueue("MULTIBANISH", $currentPlayer, "EQUIP,-", 1);
+        
+      }
+      break;
     default:
       break;
   }
@@ -1975,6 +1984,13 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   if($layerIndex > -1) SetClassState($currentPlayer, $CS_PlayIndex, $layerIndex);
   $index = SearchForUniqueID($uniqueID, $currentPlayer);
   if($cardID == "ARC003" || $cardID == "CRU101") $index = FindCharacterIndex($currentPlayer, $cardID); //TODO: Fix this. This is an issue with the entire "multiple abilities" framework
+  if(CardClass($cardID) == "MECHANOLOGIST" && CardType($cardID) == "AA") {
+    $index = FindCharacterIndex($currentPlayer, "EVO410a");
+    if ($index != -1) {
+      GiveAttackGoAgain();
+      WriteLog(CardLink("EVO410a", "EVO410a") . " grants the attack go again.");
+    }
+  }
   if($index > -1) SetClassState($currentPlayer, $CS_PlayIndex, $index);
 
   $definedCardType = CardType($cardID);

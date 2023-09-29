@@ -1280,7 +1280,7 @@ function RemoveCharacterAndAddAsSubcardToCharacter($player, $index, &$newCharact
   $characterPieces = CharacterPieces();
   if ($newCharactersSubcardIndex > $index) $newCharactersSubcardIndex -= $characterPieces;
   for ($i = 0; $i < $characterPieces; $i++) array_splice($char, $index, 1);
-  if ($char[$newCharactersSubcardIndex] == "DYN492a") UpdateNitroMechanoidCounterCount($player, $newCharactersSubcardIndex);
+  UpdateSubcardCounterCount($player, $newCharactersSubcardIndex);
 }
 
 function RemoveItemAndAddAsSubcardToCharacter($player, $itemIndex, $newCharactersSubcardIndex) {
@@ -1291,12 +1291,12 @@ function RemoveItemAndAddAsSubcardToCharacter($player, $itemIndex, $newCharacter
   if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex+10] = $cardID;
   else $char[$newCharactersSubcardIndex+10] = $char[$newCharactersSubcardIndex+10] . "," . $cardID;
   for ($i = 0; $i < $itemPieces; $i++) array_splice($items, $itemIndex, 1);
-  if ($char[$newCharactersSubcardIndex] == "DYN492a") UpdateNitroMechanoidCounterCount($player, $newCharactersSubcardIndex);
+  if ($char[$newCharactersSubcardIndex] == "DYN492a") UpdateSubcardCounterCount($player, $newCharactersSubcardIndex);
 }
 
-function UpdateNitroMechanoidCounterCount($player, $nitroMechaCharacterIndex) {
+function UpdateSubcardCounterCount($player, $index) {
   $char = &GetPlayerCharacter($player);
-  $char[$nitroMechaCharacterIndex + 2] = count(explode(",", $char[$nitroMechaCharacterIndex + 10]));
+  $char[$index + 2] = count(explode(",", $char[$index + 10]));
 }
 
 function RemoveArsenalEffects($player, $cardToReturn){
@@ -2057,8 +2057,7 @@ function EvoHandling($cardID, $player)
   if(SearchCurrentTurnEffects("EVO007", $player, true) || SearchCurrentTurnEffects("EVO008", $player, true)) Draw($player);
 }
 
-//function EvoDiscardUnderCard($player, $index)
-function CharacterChooseSubcard($player, $index, $fromDQ=false)
+function CharacterChooseSubcard($player, $index, $fromDQ=false, $count=1)
 {
   $character = &GetPlayerCharacter($player);
   $subcards = explode(",", $character[$index+10]);
@@ -2069,10 +2068,17 @@ function CharacterChooseSubcard($player, $index, $fromDQ=false)
     else $chooseMultizoneData = $chooseMultizoneData . ",CARDID-" . $subcards[$i];
   }
   if($chooseMultizoneData != "") {
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a subcard to banish from Nitro Mechanoid.");
-    AddDecisionQueue("CHOOSEMULTIZONE", $player, $chooseMultizoneData);
-    AddDecisionQueue("MZOP", $player, "GETCARDINDEX");
-    AddDecisionQueue("REMOVESUBCARD", $player, $index);
+    if ($count==1) {
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a subcard to banish from " . CardName($character[$index]));
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, $chooseMultizoneData);
+      AddDecisionQueue("MZOP", $player, "GETCARDINDEX");
+      AddDecisionQueue("REMOVESUBCARD", $player, $index);
+    }
+    else {
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $count . " subcards to banish from " . CardName($character[$index]));
+      AddDecisionQueue("MULTICHOOSESUBCARDS", $player, $count . "-" . str_replace("CARDID-", "", $chooseMultizoneData) . "-" . $count);
+      AddDecisionQueue("REMOVESUBCARD", $player, $index);
+    }
   }
 }
 
@@ -2141,6 +2147,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
 
 function EvoUpgradeAmount($player)
 {
+  if (FindCharacterIndex($player, "EVO412a") != -1) return 4;
   return SearchCount(SearchCharacter($player, subtype:"Evo"));
 }
 
@@ -2173,4 +2180,18 @@ function CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer) {
       if(!$hasHead || !$hasChest || !$hasArms || !$hasLegs || !$hasWeapon) return "You do not meet the equipment requirement";
       if(SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) < 3) return "You do not meet the Hyper Driver requirement";
       return "";
+}
+
+function CheckIfSingularityConditionsAreMet($currentPlayer) {
+  $hasWeapon = false; $evoCount = 0;
+  $char = &GetPlayerCharacter($currentPlayer);
+  $charCount = count($char);
+  $charPieces = CharacterPieces();
+  for($i=0; $i<$charCount; $i+=$charPieces) {
+    if(CardType($char[$i]) == "W") $hasWeapon = true;
+    if(SubtypeContains($char[$i], "Evo")) $evoCount++;
+  }
+  if (!$hasWeapon) return "You do not meet the weapon requirement";
+  if ($evoCount < 4) return "You do not meet the Evo requirement";
+  return "";
 }
