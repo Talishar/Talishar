@@ -162,7 +162,6 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "CRU009":
       $roll = GetDieRoll($currentPlayer);
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       for($i = 1; $i < $roll; $i += 2) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);

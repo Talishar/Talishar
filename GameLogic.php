@@ -1100,6 +1100,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DECDQVAR":
       $dqVars[$parameter] = intval($dqVars[$parameter]) - 1;
       return $lastResult;
+    case "INCDQVARIFNOTPASS":
+      if ($lastResult != "PASS") $dqVars[$parameter] = intval($dqVars[$parameter]) + 1;
+      return $lastResult;
     case "DIVIDE":
       return floor($lastResult / $parameter);
     case "DQVARPASSIFSET":

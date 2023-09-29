@@ -765,8 +765,8 @@ function PassInput($autopass = true)
   if($turn[0] == "END" || $turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MAYCHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "MAYCHOOSEMYSOUL" || $turn[0] == "INSTANT" || $turn[0] == "OK") {
     ContinueDecisionQueue("PASS");
   } else {
-    if($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed.");
-    else WriteLog("Player " . $currentPlayer . " passed.");
+    if($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed");
+    else WriteLog("Player " . $currentPlayer . " passed");
     if(Pass($turn, $currentPlayer, $currentPlayer)) {
       if($turn[0] == "M") {
         SkipHoldingPriorityNow($currentPlayer);

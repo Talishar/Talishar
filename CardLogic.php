@@ -1075,6 +1075,20 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZADDSTEAMCOUNTER", $player, "-", 1);
       break;
+    case "EVO074":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $index = SearchItemsForUniqueID($uniqueID, $player);
+      DestroyItemForPlayer($player, $index);
+      AddDecisionQueue("PASSPARAMETER", $player, "0");
+      AddDecisionQueue("SETDQVAR", $player, "0");  
+      for($i = 0; $i < 2; ++$i) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS&MYITEMS", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $player, "-");
+        AddDecisionQueue("INCDQVARIFNOTPASS", $player, "0");
+      }
+      AddDecisionQueue("SPECIFICCARD", $otherPlayer, "TICKTOCKCLOCK");
+      break;
     case "EVO105": case "EVO106": case "EVO107":
     case "EVO111": case "EVO112": case "EVO113":
     case "EVO114": case "EVO115": case "EVO116":

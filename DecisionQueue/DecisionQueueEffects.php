@@ -457,6 +457,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         PutItemIntoPlayForPlayer($cardID, $player);
       }
       return $lastResult;
+    case "TICKTOCKCLOCK":
+      DamageTrigger($player, $dqVars[0], "DAMAGE", "EVO074");
+      return $lastResult;
     default: return "";
   }
 }
