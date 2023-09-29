@@ -143,6 +143,24 @@
           AddDecisionQueue("PUTPLAY", $currentPlayer, "0", 1);
         }
         break;
+      case "EVO073":
+        if($from != "PLAY") {
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target equipment it cannot be activated until the end of its controller next turn");
+          AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
+          AddDecisionQueue("ADDSTASISTURNEFFECT", $otherPlayer, "EVO073-", 1);
+        }
+        else {
+          $index = GetClassState($currentPlayer, $CS_PlayIndex);
+          RemoveItem($currentPlayer, $index);
+          $deck = new Deck($currentPlayer);
+          $deck->AddBottom($cardID, from:"PLAY");
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target equipment it cannot defend this turn");
+          AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
+          AddDecisionQueue("EQUIPCANTDEFEND", $otherPlayer, "EVO073-B-", 1);
+        }
+        break;
       case "EVO075":
         if($from == "PLAY") GainResources($currentPlayer, 1);
         return "";

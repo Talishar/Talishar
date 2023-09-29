@@ -526,6 +526,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("!", $parameter);
       AddCurrentTurnEffect($params[0], $player, (count($params) > 1 ? $params[1] : ""));
       return "1";
+    case "ADDSTASISTURNEFFECT":
+      $character = &GetPlayerCharacter($player);
+      $effect = $parameter . $character[$lastResult];
+      AddCurrentTurnEffect($effect, $player);
+      AddNextTurnEffect($effect, $player);
+      if($player == $mainPlayer) AddNextTurnEffect($effect, $player, numTurns:2); //If played at instant speed from Dash
+      return $lastResult;
+    case "EQUIPCANTDEFEND":
+      $character = &GetPlayerCharacter($player);
+      $effect = $parameter . $character[$lastResult];
+      AddCurrentTurnEffect($effect, $player);
+      return $lastResult;
     case "ADDCURRENTANDNEXTTURNEFFECT":
       AddCurrentTurnEffect($parameter, $player);
       AddNextTurnEffect($parameter, $player);

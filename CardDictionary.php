@@ -548,6 +548,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
 function IsBlockRestricted($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "")
 {
   if(IsEquipment($cardID, $player) && !CanBlockWithEquipment()) { $restriction = "This attack disallows blocking with equipment"; return true; }
+  if(SearchCurrentTurnEffects("EVO073-B-" . $cardID, $player)) { $restriction = "EVO073"; return true; }
   return false;
 }
 
@@ -639,6 +640,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   if(SearchCurrentTurnEffects("MON007", $player) && $from == "BANISH") { $restriction = "MON007"; return true; }
   if(SearchCurrentTurnEffects("ELE036", $player) && CardType($cardID) == "E") { $restriction = "ELE036"; return true; }
   if(SearchCurrentTurnEffects("ELE035-3", $player) && CardCost($cardID) == 0 && !IsStaticType(CardType($cardID), $from, $cardID)) { $restriction = "ELE035"; return true; }
+  if(SearchCurrentTurnEffects("EVO073-" . $cardID, $player)) { $restriction = "EVO073"; return true; } //Can't be activated
   if(CardType($cardID) == "A" && $from != "PLAY" && GetClassState($player, $CS_NumNonAttackCards) >= 1 && (SearchItemsForCard("EVR071", 1) != "" || SearchItemsForCard("EVR071", 2) != "")) { $restriction = "EVR071"; return true; }
   if($turn[0] != "B" && $turn[0] != "P" && $player != $mainPlayer && SearchAlliesActive($mainPlayer, "UPR415")) { $restriction = "UPR415"; return true; }
   switch($cardID) {

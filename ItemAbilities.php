@@ -142,6 +142,7 @@ function DestroyItemForPlayer($player, $index, $skipDestroy=false)
       AddGraveyard($items[$index], $player, "PLAY");
     IncrementClassState($player, $CS_NumItemsDestroyed);
   }
+  ItemDestroyedAbility($player, $index);
   $cardID = $items[$index];
   for($i = $index + ItemPieces() - 1; $i >= $index; --$i) {
     if($items[$i] == "DYN492c") {
@@ -375,6 +376,23 @@ function ItemAttackModifiers()
     }
   }
   return $attackModifier;
+}
+
+function ItemDestroyedAbility($player, $index)
+{
+  global $mainPlayer;
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  $items = &GetItems($player);
+  $cardID = $items[$index];
+  switch($cardID) {
+    case "EVO073":
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment it cannot be activated until the end of its controller next turn");
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+      AddDecisionQueue("ADDSTASISTURNEFFECT", $otherPlayer, "EVO073-", 1);
+      break;
+    default: break;
+  }
 }
 
 ?>
