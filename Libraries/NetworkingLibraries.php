@@ -1959,13 +1959,12 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
-    case "EVO410a":
+    case "EVO410a": case "DYN492a":
       if($from == "EQUIP") {
         $character = &GetPlayerCharacter($currentPlayer);
         $index = GetClassState($currentPlayer, $CS_CharacterIndex);
-        CharacterChooseSubcard($currentPlayer, $index, count: 2);
+        CharacterChooseSubcard($currentPlayer, $index, count: $cardID == "EVO410a" ? 2 : 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "EQUIP,-", 1);
-        
       }
       break;
     default:
