@@ -494,14 +494,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         Draw($currentPlayer);
       }
       return $rv;
-    case "DYN492a":
-      if($from == "EQUIP") {
-        $character = &GetPlayerCharacter($currentPlayer);
-        $nitroMechaCharIndex = GetClassState($currentPlayer, $CS_PlayIndex);
-        CharacterChooseSubcard($currentPlayer, $nitroMechaCharIndex);
-        AddDecisionQueue("MULTIBANISH", $currentPlayer, "EQUIP,-", 1);
-      }
-      return "";
     case "DYN612":
       $soul = &GetSoul($currentPlayer);
       if(count($soul) > 0){

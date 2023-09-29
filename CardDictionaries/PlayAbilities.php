@@ -85,6 +85,24 @@
         if($evoAmt >= 3) GiveAttackGoAgain();
         if($evoAmt >= 4) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "EVO010":
+        $conditionsMet = CheckIfSingularityConditionsAreMet($currentPlayer);
+        if ($conditionsMet != "") return $conditionsMet;
+        $char = &GetPlayerCharacter($currentPlayer);
+        // We don't want function calls in every iteration check
+        $charCount = count($char);
+        $charPieces = CharacterPieces();
+        if (isSubcardEmpty($char, 0)) $char[10] = $char[0];
+        else $char[10] = $char[10] . "," . $char[0];
+        $char[0] = "EVO410a";
+        $mechropotentIndex = 0; // we pushed it, so should be the last element
+        for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
+          if($char[$i] != "EVO410a") {
+            RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $mechropotentIndex);
+          } 
+        }
+        PutCharacterIntoPlayForPlayer("EVO410b", $currentPlayer);
+        return "";
       case "EVO014":
         MZMoveCard($mainPlayer, "MYBANISH:class=MECHANOLOGIST;type=AA", "MYTOPDECK", isReveal:true);
         AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
@@ -180,9 +198,6 @@
         return "";
       case "EVO108": case "EVO109": case "EVO110":
         if($additionalCosts == "SCRAP") PlayAura("WTR225", $currentPlayer);
-        return "";
-      case "EVO111": case "EVO112": case "EVO113":
-        if(GetClassState($currentPlayer, $CS_NumItemsDestroyed) > 0) GiveAttackGoAgain();
         return "";
       case "EVO126": case "EVO127": case "EVO128":
         if($additionalCosts == "SCRAP") AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -300,6 +315,9 @@
         return "";
       case "EVO247":
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "EVO410a":
+        if (IsHeroAttackTarget()) PummelHit($otherPlayer);
         return "";
       case "EVO434":
         AddCurrentTurnEffect($cardID, $currentPlayer);

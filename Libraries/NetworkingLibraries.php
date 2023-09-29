@@ -1368,7 +1368,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   }
 
   if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
-    if(HasBoost($cardID)) Boost();
+    if(HasBoost($cardID) && $cardID != "EVO142") Boost();
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
     PermanentPlayAbilities($cardID, $from);
@@ -1383,7 +1383,7 @@ function PlayCardSkipCosts($cardID, $from)
   $cardType = CardType($cardID);
   if (($turn[0] == "M" || $turn[0] == "ATTACKWITHIT") && $cardType == "AA") GetTargetOfAttack();
   if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
-    if (HasBoost($cardID)) Boost();
+    if (HasBoost($cardID) && $cardID != "EVO142") Boost();
     GetLayerTarget($cardID);
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
@@ -1959,6 +1959,14 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
+    case "EVO410a": case "DYN492a":
+      if($from == "EQUIP") {
+        $character = &GetPlayerCharacter($currentPlayer);
+        $index = GetClassState($currentPlayer, $CS_CharacterIndex);
+        CharacterChooseSubcard($currentPlayer, $index, count: $cardID == "EVO410a" ? 2 : 1);
+        AddDecisionQueue("MULTIBANISH", $currentPlayer, "EQUIP,-", 1);
+      }
+      break;
     default:
       break;
   }
@@ -1975,6 +1983,13 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   if($layerIndex > -1) SetClassState($currentPlayer, $CS_PlayIndex, $layerIndex);
   $index = SearchForUniqueID($uniqueID, $currentPlayer);
   if($cardID == "ARC003" || $cardID == "CRU101") $index = FindCharacterIndex($currentPlayer, $cardID); //TODO: Fix this. This is an issue with the entire "multiple abilities" framework
+  if(CardClass($cardID) == "MECHANOLOGIST" && CardType($cardID) == "AA") {
+    $index = FindCharacterIndex($currentPlayer, "EVO410a");
+    if ($index != -1) {
+      GiveAttackGoAgain();
+      WriteLog(CardLink("EVO410a", "EVO410a") . " grants the attack go again.");
+    }
+  }
   if($index > -1) SetClassState($currentPlayer, $CS_PlayIndex, $index);
 
   $definedCardType = CardType($cardID);

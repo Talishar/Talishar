@@ -1062,7 +1062,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "TCC098": case "TCC102":
       BanishCardForPlayer("DYN065", $player, "-", "NT", $player);
       break;
-    case "TCC033": PlayAura("WTR225", $mainPlayer);
+    case "TCC033":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      PlayAura("WTR225", $otherPlayer);
       break;//Quicken
     case "TCC060": case "TCC063": case "TCC076":
       ChooseToPay($player, $parameter, "0,3");

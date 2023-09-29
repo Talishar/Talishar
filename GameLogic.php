@@ -1389,13 +1389,25 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $subcardsCount = count($subcards);
       $cardID = "";
       for ($i = 0; $i < $subcardsCount; $i++) {
-        if ($subcards[$i] == $lastResult) {
-          $cardID = $subcards[$i];
-          array_splice($subcards, $i, 1);
-          break;
-        }
+        if (is_array($lastResult)) {
+          if (in_array($subcards[$i], $lastResult)) {
+            if ($cardID == "") $cardID = $subcards[$i];
+            else $cardID = $cardID . "," . $subcards[$i];
+            array_splice($lastResult, array_search($subcards[$i], $lastResult), 1);
+            array_splice($subcards, $i, 1);
+            $i--; $subcardsCount--;
+            if (count($lastResult) == 0) break;
+          }
+        } else {
+            if ($subcards[$i] == $lastResult) {
+              $cardID = $subcards[$i];
+              array_splice($subcards, $i, 1);
+              break;
+            }
+          }
       }
       $char[$parameter+10] = implode(",", $subcards);
+      UpdateSubcardCounterCount($currentPlayer, $parameter);
       return $cardID;
     default:
       return "NOTSTATIC";

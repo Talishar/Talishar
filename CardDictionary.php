@@ -55,7 +55,7 @@ function CardType($cardID)
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardType($cardID);
-    else if($set != "MON" && $set != "DYN" && $cardID != "UPR551") return GeneratedCardType($cardID);
+    else if($set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "EVO410a" && $cardID != "EVO410b") return GeneratedCardType($cardID);
   }
   if($set == "ROG") return ROGUECardType($cardID);
   switch ($cardID) {
@@ -66,7 +66,8 @@ function CardType($cardID)
     case "MON406": case "MON407": return "M";
     case "UPR551": return "-";
     case "DYN492a": return "W";
-    case "DYN492b": return "E";
+    case "DYN492b": case "EVO410b": return "E";
+    case "EVO410a": return "C";
     case "DYN612": return "-";
     case "DUMMY":
     case "DUMMYDISHONORED":
@@ -83,7 +84,7 @@ function CardSubType($cardID)
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardSubtype($cardID);
-    else if($set != "MON" && $set != "DYN" && $cardID != "UPR551") return GeneratedCardSubtype($cardID);
+    else if($set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "EVO410a" && $cardID != "EVO410b") return GeneratedCardSubtype($cardID);
   }
   if($set == "ROG") return ROGUECardSubtype($cardID);
   switch($cardID) {
@@ -93,6 +94,8 @@ function CardSubType($cardID)
       case "MON402": return "Legs";
       case "UPR551": return "Ally";
       case "DYN612": return "Angel,Ally";
+      case "EVO410a": return "Evo";
+      case "EVO410b": return "Chest,Evo";
       return "";
   }
 }
@@ -199,6 +202,10 @@ function CardClass($cardID)
         else return "NONE";
     }
   }
+  switch ($cardID) {
+    case "EVO410a": case "EVO410b": return "MECHANOLOGIST";
+    default: break;
+  }
   return GeneratedCardClass($cardID);
 }
 
@@ -222,6 +229,10 @@ function CardTalent($cardID)
         if($number == 612) return "LIGHT";
         else return "NONE";
     }
+  }
+  switch ($cardID) {
+    case "EVO410a": case "EVO410b": return "SHADOW";
+    default: break;
   }
   return GeneratedCardTalent($cardID);
 }
@@ -316,7 +327,7 @@ function BlockValue($cardID)
   else if($cardID == "DTD107") return GetClassState($defPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
-    if($number < 400 || ($set != "MON" && $set != "DYN")) return GeneratedBlockValue($cardID);
+    if($number < 400 || ($set != "MON" && $set != "DYN" && $cardID != "EVO410a" && $cardID != "EVO410b")) return GeneratedBlockValue($cardID);
   }
   $class = CardClass($cardID);
   if($set == "ROG") return ROGUEBlockValue($cardID);
@@ -324,6 +335,8 @@ function BlockValue($cardID)
     case "MON400": case "MON401": case "MON402": return 0;
     case "DYN492a": return -1;
     case "DYN492b": return 5;
+    case "EVO410a": return -1;
+    case "EVO410b": return 6;
     case "DUMMYDISHONORED": return -1;
     default: return 3;
   }
@@ -354,6 +367,7 @@ function AttackValue($cardID)
   switch ($cardID) {
     case "DYN492a": return 5;
     case "DYN612": return 4;
+    case "EVO410a": return 6;
     default: return 0;
   }
 }
@@ -526,10 +540,13 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if(($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
   if($from == "CC" && AbilityPlayableFromCombatChain($cardID)) return true;
   if(($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
-  if($cardID == "DYN492a") {
+  if($cardID == "DYN492a" || $cardID == "EVO410a") {
     if (($phase == "M" && $mainPlayer == $currentPlayer)) {
-      $charIndex = FindCharacterIndex($currentPlayer, "DYN492a");
-      return $character[$charIndex + 2] > 0;
+      $charIndex = FindCharacterIndex($currentPlayer, $cardID);
+      switch ($cardID) {
+        case "DYN492a": return $character[$charIndex + 2] > 0;
+        case "EVO410a": return $character[$charIndex + 2] > 1;
+      }
     }
     return  false;
   }
@@ -572,7 +589,17 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   $subtype = CardSubType($cardID);
   if(DelimStringContains($subtype, "Invocation") || DelimStringContains($subtype, "Ash") || $cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441") return "-";
   if (DelimStringContains($subtype, "Construct")) {
-    if (CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer) == "") return "-";
+    switch ($cardID) {
+      case "DYN092":
+        if (CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer) == "") return "-";
+        break;
+      case "EVO010":
+        if (CheckIfSingularityConditionsAreMet($currentPlayer) == "") return "-";
+        break;
+      default:
+        break;
+    }
+    
   }
   switch($cardID) {
     case "WTR163": return "BANISH";
@@ -929,7 +956,7 @@ function HasBattleworn($cardID)
     case "OUT011": return true;
     case "TCC080": case "TCC082": case "TCC407": case "TCC408": case "TCC409": case "TCC410": return true;
     case "EVO011": return true;
-    case "EVO410": case "EVO438": case "EVO439": case "EVO440": case "EVO441": case "EVO235": return true;
+    case "EVO410b": case "EVO438": case "EVO439": case "EVO440": case "EVO441": case "EVO235": return true;
     case "EVO442": case "EVO443": case "EVO444": case "EVO445": case "EVO011": return true;
     default: return false;
   }
@@ -1076,6 +1103,7 @@ function CharacterNumUsesPerTurn($cardID)
     case "DYN492a": return 999;
     case "OUT093": return 2;
     case "EVO073": return 999;
+    case "EVO410a": return 999;
     default: return 1;
   }
 }
