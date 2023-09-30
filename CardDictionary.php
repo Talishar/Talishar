@@ -565,8 +565,12 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
 
 function IsBlockRestricted($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "")
 {
+  global $CombatChain, $mainPlayer;
   if(IsEquipment($cardID, $player) && !CanBlockWithEquipment()) { $restriction = "This attack disallows blocking with equipment"; return true; }
   if(SearchCurrentTurnEffects("EVO073-B-" . $cardID, $player)) { $restriction = "EVO073"; return true; }
+  if($CombatChain->AttackCard()->ID() == "EVO061" || $CombatChain->AttackCard()->ID() == "EVO062" || $CombatChain->AttackCard()->ID() == "EVO063") { 
+    if(CardCost($cardID) < EvoUpgradeAmount($mainPlayer) && CardType($cardID) == "AA") { $restriction = $CombatChain->AttackCard()->ID(); return true; }
+  };
   return false;
 }
 
