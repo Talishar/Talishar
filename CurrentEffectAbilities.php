@@ -362,7 +362,7 @@ function EffectBlockModifier($cardID, $index, $from)
     case "EVO105": case "EVO106": case "EVO107":
       return IsAction($cardID) ? -1 : 0;
     case "EVO146":
-      return (SubtypeContains($CombatChain->Card($index)->ID(), "Evo", $defPlayer) && $from != "EQUIP") ? 1 : 0;
+      return (SubtypeContains($CombatChain->Card($index)->ID(), "Evo", $defPlayer) && $from == "EQUIP") ? 1 : 0;
     default: return 0;
   }
 }

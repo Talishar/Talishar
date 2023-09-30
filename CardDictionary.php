@@ -141,7 +141,7 @@ function CharacterIntellect($cardID)
   $cardID = ShiyanaCharacter($cardID);
   switch($cardID) {
     case "CRU099": return 3;
-    case "EVO410": return 3;
+    case "EVO410a": return 3;
     case "ROGUE001": return 3;
     case "ROGUE003": return 3;
     case "ROGUE004": return 3;
