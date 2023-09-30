@@ -22,42 +22,27 @@ if (!$source || !$target) {
   exit();
 }
 
-$ssh_conn = ssh2_connect($prodServerIP, 22);
-if (!ssh2_auth_password($ssh_conn, $prodServerUsername, $prodServerPassword)) {
-  http_response_code(500);
-  echo json_encode(array('error' => 'Failed to authenticate with remote server'));
-  exit();
-}
-
-$sftp = ssh2_sftp($ssh_conn);
-$source_path = "/opt/lampp/htdocs/game/BugReports/{$source}-0/gamestate.txt";
+$source_path = "https://legacy.talishar.net/game/BugReports/{$source}-0/gamestate.txt";
 $target_path = "./Games/{$target}/gamestate.txt";
-
-$source_realpath = ssh2_sftp_realpath($sftp, $source_path);
 $target_realpath = "./$target_path";
-
-if (!$source_realpath || !$target_realpath) {
-  http_response_code(500);
-  echo json_encode(array('error' => 'Failed to get file paths on remote server'));
-  exit();
-}
-
-$source_file = fopen("ssh2.sftp://{$sftp}{$source_realpath}", 'r');
-if (!$source_file) {
-  http_response_code(500);
-  echo json_encode(array('error' => 'Failed to open source file on remote server'));
-  exit();
-}
 
 $target_file = fopen("{$target_realpath}", 'r+');
 if (!$target_file) {
   http_response_code(500);
   echo json_encode(array('error' => 'Failed to open target file on local'));
-  fclose($source_file);
   exit();
 }
 
-$source_file_contents = stream_get_contents($source_file);
+//Try using cURL instead of ssh
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $source_path); // Set the URL
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); // Return the response as a string
+$source_file_contents = curl_exec($ch);
+if (curl_errno($ch)) {
+    echo 'cURL error: ' . curl_error($ch);
+}
+curl_close($ch);
+
 $target_file_contents = stream_get_contents($target_file);
 
 $source_file_contents = preg_replace("/[a-zA-Z0-9]{64}[\s\S]*$/", '', $source_file_contents);
@@ -66,7 +51,6 @@ $target_file_contents = preg_replace("/^[\s\S]*?([a-zA-Z0-9]{64})/", $source_fil
 fclose($target_file);
 
 file_put_contents("{$target_realpath}", $target_file_contents);
-fclose($source_file);
 
 
 echo json_encode(array('success' => true));
