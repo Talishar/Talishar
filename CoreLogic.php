@@ -2154,7 +2154,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
 
 function EvoUpgradeAmount($player)
 {
-  if (FindCharacterIndex($player, "EVO412a") != -1) return 4;
+  if (FindCharacterIndex($player, "EVO410a") != -1) return 4;
   return SearchCount(SearchCharacter($player, subtype:"Evo"));
 }
 
