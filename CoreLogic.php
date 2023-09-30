@@ -2124,24 +2124,29 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
   switch($fromCardID)
   {
     case "EVO426":
-      if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
-        AddCurrentTurnEffect($fromCardID, $player);
       if(SubtypeContains($toCardID, "Demi-Hero", $player)) {
         AddCurrentTurnEffect($fromCardID, $player);
+        AddCurrentTurnEffect($fromCardID, $player);
+      } 
+      else if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
         AddCurrentTurnEffect($fromCardID, $player);
       }
       break;
     case "EVO427":
-      if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
-        GainResources($player, 3);
-      if(SubtypeContains($toCardID, "Demi-Hero", $player))
+      if(SubtypeContains($toCardID, "Demi-Hero", $player)) {
         GainResources($player, 6);
+      }
+      else if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
+        GainResources($player, 3);
+      }
       break;
     case "EVO429":
-      if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
-        GainActionPoints(1, $player);
-      if(SubtypeContains($toCardID, "Demi-Hero", $player))
+      if(SubtypeContains($toCardID, "Demi-Hero", $player)) {
         GainActionPoints(2, $player);
+      } 
+      else if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
+        GainActionPoints(1, $player);
+      }
       break;
     default: break;
   }

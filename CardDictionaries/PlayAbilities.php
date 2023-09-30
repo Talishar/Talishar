@@ -98,6 +98,7 @@
         $mechropotentIndex = 0; // we pushed it, so should be the last element
         for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
           if($char[$i] != "EVO410a") {
+            EvoTransformAbility("EVO410a", $char[$i], $currentPlayer);
             RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $mechropotentIndex);
           } 
         }

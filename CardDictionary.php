@@ -94,7 +94,7 @@ function CardSubType($cardID)
       case "MON402": return "Legs";
       case "UPR551": return "Ally";
       case "DYN612": return "Angel,Ally";
-      case "EVO410a": return "Evo";
+      case "EVO410a": return "Demi-Hero,Evo";
       case "EVO410b": return "Chest,Evo";
       return "";
   }
