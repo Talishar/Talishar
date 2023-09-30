@@ -2102,6 +2102,12 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       if(SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
         GainResources($player, 3);
       break;
+    case "EVO028": case "EVO428":
+      if(SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
+        
+        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
+      }
+      break;
     case "EVO029": case "EVO429":
       if(SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
         GainActionPoints(1, $player);
