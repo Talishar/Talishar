@@ -1040,6 +1040,12 @@ function ClassContains($cardID, $class, $player="")
   return DelimStringContains($cardClass, $class);
 }
 
+function TypeContains($cardID, $type, $player="")
+{
+  $cardType = CardType($cardID);
+  return DelimStringContains($cardType, $type);
+}
+
 function SubtypeContains($cardID, $subtype, $player="")
 {
   $cardSubtype = CardSubtype($cardID);
@@ -2131,7 +2137,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       if(SubtypeContains($toCardID, "Demi-Hero", $player)) {
         AddCurrentTurnEffect($fromCardID, $player);
         AddCurrentTurnEffect($fromCardID, $player);
-      } 
+      }
       else if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
         AddCurrentTurnEffect($fromCardID, $player);
       }
@@ -2147,7 +2153,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
     case "EVO429":
       if(SubtypeContains($toCardID, "Demi-Hero", $player)) {
         GainActionPoints(2, $player);
-      } 
+      }
       else if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
         GainActionPoints(1, $player);
       }
