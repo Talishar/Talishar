@@ -1119,9 +1119,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $content = "";
     $params = explode("-", $turn[2]);
     $options = explode(",", $params[1]);
-
-    $title = "Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".");
+    $maxNumber = intval($params[0]);
+    if (count($params) > 2) $minNumber = intval($params[2]);
+    else $minNumber = 0;
+    if ($minNumber > 0) $title = "Choose " . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".");
+    else $title = "Choose up to " . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".");
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText())); //TODO: What does this line do?
+    else $caption = $title;
 
     $formOptions->playerID = $playerID;
     $formOptions->caption = "Submit";
@@ -1138,7 +1142,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       for ($i = 0; $i < count($options); ++$i) {
         array_push($multiChooseText, CreateCheckboxAPI($i, $i, -1, false, implode(" ", explode("_", strval($options[$i])))));
       }
-      $caption = "Choose up to $params[0] card" . ($params[0] > 1 ? "s." : ".");
       $playerInputPopup->popup =  CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
       $playerInputPopup->multiChooseText = $multiChooseText;
     } else {
@@ -1152,7 +1155,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         else if ($turn[0] == "MULTICHOOSEITEMS") array_push($cardsArray, JSONRenderedCard($myItems[$options[$i]], actionDataOverride: $i));
         else if ($turn[0] == "MULTICHOOSESUBCARDS") array_push($cardsArray, JSONRenderedCard($options[$i], actionDataOverride: $i));
       }
-      $caption = "Choose up to $params[0] card" . ($params[0] > 1 ? "s." : ".");
       $playerInputPopup->popup = CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, cardsArray: $cardsArray);
     }
   }

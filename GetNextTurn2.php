@@ -748,8 +748,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo ("<div 'display:inline; width: 100%;'>");
     $params = explode("-", $turn[2]);
     $options = explode(",", $params[1]);
-    $caption = "<div>Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".") . "</div>";
+    $maxNumber = intval($params[0]);
+    if (count($params) > 2) $minNumber = intval($params[2]);
+    else $minNumber = 0;
+    if ($minNumber > 0) $title = "<div>Choose " . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".") . "</div>";
+    else $title = "<div>Choose up to " . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".") . "</div>";
     if (GetDQHelpText() != "-") $caption = "<div>" . implode(" ", explode("_", GetDQHelpText())) . "</div>";
+    else $caption = $title;
     $content .= CreateForm($playerID, "Submit", 19, count($options));
     $content .= "<table style='border-spacing:0; border-collapse: collapse;'><tr>";
     for ($i = 0; $i < count($options); ++$i) {
