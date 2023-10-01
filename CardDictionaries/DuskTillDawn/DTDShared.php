@@ -495,7 +495,7 @@ function DTDHitEffect($cardID)
     case "DTD226":
       AddDecisionQueue("INPUTCARDNAME", $mainPlayer, "-");
       AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
-      AddDecisionQueue("WRITELOG", $mainPlayer, "{0} was chosen");
+      AddDecisionQueue("WRITELOG", $mainPlayer, "<b>{0}</b> was chosen");
       AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $defPlayer, "DTD226,{0}");
       break;
     case "DTD227":
