@@ -131,7 +131,7 @@
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "-");
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVOBREAKER");
-        return "";
+        return "Light up the gem when you want the conditional boost effect to trigger";
       case "EVO058":
         if(IsHeroAttackTarget() && EvoUpgradeAmount($currentPlayer) > 0)
         {

@@ -570,7 +570,7 @@ function IsBlockRestricted($cardID, $phase, $from, $index = -1, &$restriction = 
   global $CombatChain, $mainPlayer;
   if(IsEquipment($cardID, $player) && !CanBlockWithEquipment()) { $restriction = "This attack disallows blocking with equipment"; return true; }
   if(SearchCurrentTurnEffects("EVO073-B-" . $cardID, $player)) { $restriction = "EVO073"; return true; }
-  if($CombatChain->AttackCard()->ID() == "EVO061" || $CombatChain->AttackCard()->ID() == "EVO062" || $CombatChain->AttackCard()->ID() == "EVO063") { 
+  if($CombatChain->AttackCard()->ID() == "EVO061" || $CombatChain->AttackCard()->ID() == "EVO062" || $CombatChain->AttackCard()->ID() == "EVO063") {
     if(CardCost($cardID) < EvoUpgradeAmount($mainPlayer) && CardType($cardID) == "AA") { $restriction = $CombatChain->AttackCard()->ID(); return true; }
   };
   return false;
@@ -1133,6 +1133,7 @@ function CharacterDefaultActiveState($cardID)
     case "DYN006": return 1;
     case "DTD165": case "DTD166": case "DTD167": case "DTD168": return 0;
     case "DTD564": return 0;
+    case "EVO430": case "EVO431": case "EVO432": case "EVO433": return 0;
     default: return 2;
   }
 }

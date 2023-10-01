@@ -186,11 +186,12 @@ function DoBoost($player, $boostCount = 1)
     GainActionPoints(CountCurrentTurnEffects("ARC006", $player), $player);
     $cardID = $deck->Top(remove:true);
     SelfBoostEffects($player, $cardID);
+    CharacterBoostAbilities($player);
     OnBoostedEffects($player, $cardID);
     $skipBanish = false;
     if (CardNameContains($cardID, "Hyper Driver", $player)) {
       $skipBanish = EquipmentBoostEffect($player, "EVO011", $cardID);
-    } 
+    }
     if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) {
       $skipBanish = true;
       PutItemIntoPlay($cardID);

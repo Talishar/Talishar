@@ -2057,6 +2057,7 @@ function EvoHandling($cardID, $player)
         $char[$i+2] = 0;//Reset counters
         $char[$i+4] = 0;//Reset defense counters
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
+        $char[$i+9] = CharacterDefaultActiveState($char[$i]);
         $dqVars[1] = $i;
         EvoTransformAbility($char[$i], $fromCardID, $player);
       }
