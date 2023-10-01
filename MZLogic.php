@@ -51,6 +51,8 @@ function MZRemove($player, $lastResult)
         $deck = new Deck($player);
         return $deck->Remove($mzIndex[1]);
         break;
+      case "MYITEMS": $lastResult = RemoveItem($player, $mzIndex[1]); break;
+      case "THEIRITEMS": $lastResult = RemoveItem($otherPlayer, $mzIndex[1]); break;
       default: break;
     }
   }
@@ -80,6 +82,12 @@ function MZAddZone($player, $parameter, $lastResult)
   $lastResultArr = explode(",", $lastResult);
   $otherPlayer = ($player == 1 ? 2 : 1);
   $params = explode(",", $parameter);
+  $deckIndexModifier = 0;
+  if (str_contains($params[0], "-")) {
+    $explodeArray = explode("-", $params[0]);
+    $deckIndexModifier = $explodeArray[1];
+    $params[0] = $explodeArray[0];
+  }
   $cardIDs = [];
   for($i = 0; $i < count($lastResultArr); ++$i) {
     $mzIndex = explode("-", $lastResultArr[$i]);
@@ -100,7 +108,7 @@ function MZAddZone($player, $parameter, $lastResult)
         BanishCardForPlayer($cardIDs[$i], $otherPlayer, $params[1], $params[2], $params[3]);
         break;
       case "MYHAND": AddPlayerHand($cardIDs[$i], $player, "-"); break;
-      case "MYTOPDECK": AddTopDeck($cardIDs[$i], $player, "-"); break;
+      case "MYTOPDECK": AddTopDeck($cardIDs[$i], $player, "-", $deckIndexModifier); break;
       case "MYBOTDECK": AddBottomDeck($cardIDs[$i], $player, "-"); break;
       case "THEIRBOTDECK": AddBottomDeck($cardIDs[$i], $otherPlayer, "-"); break;
       case "MYARSENAL": AddArsenal($cardIDs[$i], $player, $params[1], $params[2]); break;

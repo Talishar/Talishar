@@ -1040,6 +1040,12 @@ function ClassContains($cardID, $class, $player="")
   return DelimStringContains($cardClass, $class);
 }
 
+function TypeContains($cardID, $type, $player="")
+{
+  $cardType = CardType($cardID);
+  return DelimStringContains($cardType, $type);
+}
+
 function SubtypeContains($cardID, $subtype, $player="")
 {
   $cardSubtype = CardSubtype($cardID);
@@ -2036,6 +2042,7 @@ function BanishHand($player)
 
 function EvoHandling($cardID, $player)
 {
+  global $dqVars;
   $char = &GetPlayerCharacter($player);
   $slot = "";
   if(SubtypeContains($cardID, "Head")) $slot = "Head";
@@ -2045,12 +2052,12 @@ function EvoHandling($cardID, $player)
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
     if(SubtypeContains($char[$i], $slot)) {
       if(SubtypeContains($char[$i], "Base")) {
-        if(!SubtypeContains($char[$i], "Evo")) $char[$i+2] = 0;//Reset steam counters if applicable //EVO TODO: Make this unconditional once EVOs are fixed
-        if (isSubcardEmpty($char, $i)) $char[$i+10] = $char[$i];
-        else $char[$i+10] = $char[$i+10] . "," . $char[$i];
+        CharacterAddSubcard($player, $i, $char[$i]);
         $fromCardID = $char[$i];
+        $char[$i+2] = 0;//Reset counters
         $char[$i+4] = 0;//Reset defense counters
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
+        $dqVars[1] = $i;
         EvoTransformAbility($char[$i], $fromCardID, $player);
       }
       else {
@@ -2061,6 +2068,12 @@ function EvoHandling($cardID, $player)
     }
   }
   if(SearchCurrentTurnEffects("EVO007", $player, true) || SearchCurrentTurnEffects("EVO008", $player, true)) Draw($player);
+}
+
+function CharacterAddSubcard($player, $index, $card) {
+  $char = &GetPlayerCharacter($player);
+  if(isSubcardEmpty($char, $index)) $char[$index+10] = $card;
+  else $char[$index+10] = $char[$index+10] . "," . $card;
 }
 
 function CharacterChooseSubcard($player, $index, $fromDQ=false, $count=1)
@@ -2106,14 +2119,11 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       if(SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
         GainResources($player, 3);
       break;
-<<<<<<< Updated upstream
-=======
     case "EVO028": case "EVO428":
       if(SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
         MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
       }
       break;
->>>>>>> Stashed changes
     case "EVO029": case "EVO429":
       if(SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
         GainActionPoints(1, $player);
@@ -2139,7 +2149,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       if(SubtypeContains($toCardID, "Demi-Hero", $player)) {
         AddCurrentTurnEffect($fromCardID, $player);
         AddCurrentTurnEffect($fromCardID, $player);
-      } 
+      }
       else if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
         AddCurrentTurnEffect($fromCardID, $player);
       }
@@ -2164,7 +2174,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
     case "EVO429":
       if(SubtypeContains($toCardID, "Demi-Hero", $player)) {
         GainActionPoints(2, $player);
-      } 
+      }
       else if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
         GainActionPoints(1, $player);
       }
