@@ -2053,7 +2053,10 @@ function EvoHandling($cardID, $player)
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
         EvoTransformAbility($char[$i], $fromCardID, $player);
       }
-      else WriteLog("*ERR0R*//No base of that type equipped//");
+      else {
+        AddGraveyard($cardID, $player, "HAND");
+        WriteLog("<b>*ERR0R* // No base of that type equipped //</b>");
+      }
       break;
     }
   }
