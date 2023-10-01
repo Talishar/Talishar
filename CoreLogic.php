@@ -2121,7 +2121,6 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       break;
     case "EVO028": case "EVO428":
       if(SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
-
         MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
       }
       break;
@@ -2161,6 +2160,15 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       }
       else if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
         GainResources($player, 3);
+      }
+      break;
+    case "EVO428":
+      if(SubtypeContains($toCardID, "Demi-Hero", $player)) {
+        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
+        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
+      }
+      else if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
+        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
       }
       break;
     case "EVO429":
