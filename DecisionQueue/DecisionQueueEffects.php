@@ -469,6 +469,27 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "TICKTOCKCLOCK":
       DamageTrigger($player, $dqVars[0], "DAMAGE", "EVO074");
       return $lastResult;
+    case "EVOBREAKER":
+      if($lastResult == "PASS") {
+        if($dqVars[0] != "-") {
+          $char = &GetPlayerCharacter($player);
+          $index = $dqVars[1];
+          $hyperdriverArr = explode(",", $dqVars[0]);
+          for($i=0; $i<count($hyperdriverArr); ++$i) CharacterAddSubcard($player, $index, $hyperdriverArr[$i]);
+          AddCurrentTurnEffect($char[$index] . "-" . (count($hyperdriverArr)*2), $player);
+        }
+        return $lastResult;
+      }
+      else if($lastResult != "-") {
+        if($dqVars[0] == "-") $dqVars[0] = $lastResult;
+        else $dqVars[0] .= "," . $lastResult;
+      }
+      PrependDecisionQueue("SPECIFICCARD", $player, "EVOBREAKER");
+      PrependDecisionQueue("MZREMOVE", $player, "-", 1);
+      PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to transform (or pass)", 1);
+      PrependDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:sameName=ARC036", 1);
+      return $lastResult;
     default: return "";
   }
 }

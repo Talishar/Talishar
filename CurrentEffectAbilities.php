@@ -669,8 +669,11 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if($preventable) { $damage -= 1; }
           $remove = true;
           break;
-        default:
+        case "EVO030": case "EVO031": case "EVO032": case "EVO033":
+          if($preventable) $damage -= intval($effects[1]);
+          $remove = true;
           break;
+        default: break;
       }
       if($remove) RemoveCurrentTurnEffect($i);
     }
