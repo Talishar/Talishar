@@ -1348,11 +1348,12 @@ function HaveUnblockedEquip($player)
 
 function NumEquipBlock()
 {
-  global $combatChain, $defPlayer;
+  global $combatChain, $defPlayer, $combatChainState, $CCS_RequiredEquipmentBlock;
   $numEquipBlock = 0;
   for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
   {
     if(CardType($combatChain[$i]) == "E" && $combatChain[$i+1] == $defPlayer) ++$numEquipBlock;
+    if(SubtypeContains($combatChain[$i], "Evo", $defPlayer) && $combatChain[$i+1] == $defPlayer && $combatChainState[$CCS_RequiredEquipmentBlock] == 0) ++$numEquipBlock; // Working, but technically wrong until we get CardTypeContains
   }
   return $numEquipBlock;
 }
