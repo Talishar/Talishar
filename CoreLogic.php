@@ -2042,6 +2042,7 @@ function BanishHand($player)
 
 function EvoHandling($cardID, $player)
 {
+  global $dqVars;
   $char = &GetPlayerCharacter($player);
   $slot = "";
   if(SubtypeContains($cardID, "Head")) $slot = "Head";
@@ -2051,12 +2052,12 @@ function EvoHandling($cardID, $player)
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
     if(SubtypeContains($char[$i], $slot)) {
       if(SubtypeContains($char[$i], "Base")) {
-        if(!SubtypeContains($char[$i], "Evo")) $char[$i+2] = 0;//Reset steam counters if applicable //EVO TODO: Make this unconditional once EVOs are fixed
-        if (isSubcardEmpty($char, $i)) $char[$i+10] = $char[$i];
-        else $char[$i+10] = $char[$i+10] . "," . $char[$i];
+        CharacterAddSubcard($player, $i, $char[$i]);
         $fromCardID = $char[$i];
+        $char[$i+2] = 0;//Reset counters
         $char[$i+4] = 0;//Reset defense counters
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
+        $dqVars[1] = $i;
         EvoTransformAbility($char[$i], $fromCardID, $player);
       }
       else {
@@ -2067,6 +2068,12 @@ function EvoHandling($cardID, $player)
     }
   }
   if(SearchCurrentTurnEffects("EVO007", $player, true) || SearchCurrentTurnEffects("EVO008", $player, true)) Draw($player);
+}
+
+function CharacterAddSubcard($player, $index, $card) {
+  $char = &GetPlayerCharacter($player);
+  if(isSubcardEmpty($char, $index)) $char[$index+10] = $card;
+  else $char[$index+10] = $char[$index+10] . "," . $card;
 }
 
 function CharacterChooseSubcard($player, $index, $fromDQ=false, $count=1)
@@ -2114,7 +2121,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       break;
     case "EVO028": case "EVO428":
       if(SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
-        
+
         MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
       }
       break;

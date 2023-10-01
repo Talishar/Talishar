@@ -470,11 +470,20 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       DamageTrigger($player, $dqVars[0], "DAMAGE", "EVO074");
       return $lastResult;
     case "EVOBREAKER":
-      if($lastResult != "-") {
+      if($lastResult == "PASS") {
+        if($dqVars[0] != "-") {
+          global $CS_CharacterIndex;
+          $index = $dqVars[1];
+          $hyperdriverArr = explode(",", $dqVars[0]);
+          for($i=0; $i<count($hyperdriverArr); ++$i) CharacterAddSubcard($player, $index, $hyperdriverArr[$i]);
+        }
+        return $lastResult;
+      }
+      else if($lastResult != "-") {
         if($dqVars[0] == "-") $dqVars[0] = $lastResult;
         else $dqVars[0] .= "," . $lastResult;
       }
-      PrependDecisionQueue("SPECIFICCARD", $player, "EVOBREAKER", 1);
+      PrependDecisionQueue("SPECIFICCARD", $player, "EVOBREAKER");
       PrependDecisionQueue("MZREMOVE", $player, "-", 1);
       PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to transform (or pass)", 1);
