@@ -472,10 +472,11 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "EVOBREAKER":
       if($lastResult == "PASS") {
         if($dqVars[0] != "-") {
-          global $CS_CharacterIndex;
+          $char = &GetPlayerCharacter($player);
           $index = $dqVars[1];
           $hyperdriverArr = explode(",", $dqVars[0]);
           for($i=0; $i<count($hyperdriverArr); ++$i) CharacterAddSubcard($player, $index, $hyperdriverArr[$i]);
+          AddCurrentTurnEffect($char[$index] . "-" . (count($hyperdriverArr)*2), $player);
         }
         return $lastResult;
       }
