@@ -149,7 +149,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "DTD181": case "DTD182": case "DTD183":
       $theirSoul = &GetSoul($defPlayer);
       return (count($theirSoul) > 0 ? 2 : 0);
-    case "TCC013": return EvoUpgradeAmount($mainPlayer);
+    case "TCC013": case "TCC024": return EvoUpgradeAmount($mainPlayer);
     case "TCC028": return SearchPitchForCard($mainPlayer, "TCC048") > -1 ? 1 : 0;
     case "EVO054": case "EVO055": case "EVO056": return EvoUpgradeAmount($mainPlayer) >= 4? 3 : 0;
     case "EVO067": case "EVO068": case "EVO069": return EvoUpgradeAmount($mainPlayer);
