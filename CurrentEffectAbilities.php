@@ -330,7 +330,6 @@ function EffectHasBlockModifier($cardID)
     case "OUT109": case "OUT110": case "OUT111":
     case "DTD094": case "DTD095": case "DTD096":
     case "TCC035":
-    case "EVO146":
     return true;
     default: return false;
   }
@@ -361,8 +360,6 @@ function EffectBlockModifier($cardID, $index, $from)
       return CachedTotalAttack() >= 13 && CardType($CombatChain->Card($index)->ID()) != "E" ? -1 : 0;
     case "EVO105": case "EVO106": case "EVO107":
       return IsAction($cardID) ? -1 : 0;
-    case "EVO146":
-      return (SubtypeContains($CombatChain->Card($index)->ID(), "Evo", $defPlayer) && $from == "EQUIP") ? 1 : 0;
     default: return 0;
   }
 }
