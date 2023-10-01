@@ -110,7 +110,7 @@
           if($char[$i] != "EVO410a") {
             EvoTransformAbility("EVO410a", $char[$i], $currentPlayer);
             RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $mechropotentIndex);
-          } 
+          }
         }
         PutCharacterIntoPlayForPlayer("EVO410b", $currentPlayer);
         return "";
@@ -341,6 +341,9 @@
         return "";
       case "EVO247":
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "EVO248":
+        MZChooseAndDestroy($currentPlayer, "THEIRALLY:subtype=Angel");
         return "";
       case "EVO410a":
         if (IsHeroAttackTarget()) PummelHit($otherPlayer);
