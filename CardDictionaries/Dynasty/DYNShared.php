@@ -423,7 +423,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN215":
       AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      AddDecisionQueue("WRITELOG", $currentPlayer, "{0} was chosen");
+      AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
       AddDecisionQueue("ADDCURRENTEFFECT", $otherPlayer, "DYN215");
       return CardLink($cardID, $cardID) . " is a partially manual card. Enforce play restriction.";
     case "DYN221": case "DYN222": case "DYN223":
@@ -466,7 +466,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         }
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-        AddDecisionQueue("WRITELOG", $currentPlayer, "{0} was chosen");
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
         AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $otherPlayer, "DYN240");
       }
       return $rv;

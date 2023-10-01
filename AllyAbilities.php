@@ -100,6 +100,7 @@ function AllyDestroyedAbility($player, $index)
       break;
     default: break;
   }
+  if (HasWard($cardID, $player)) WardPoppedAbility($player, $cardID);
 }
 
 function AllyStartTurnAbilities($player)

@@ -358,8 +358,12 @@ function ItemBlockModifier($cardID)
     switch($items[$i]) {
       case "EVO078":
         $type = CardType($cardID);
+        if (SubtypeContains($cardID, "Evo", $defPlayer)) { 
+          $number = intval(substr($cardID, 3)); $number = $number - 400; 
+          $typeEvo = CardType("EVO0" . $number);
+        }
         $attackID = $CombatChain->AttackCard()->ID();
-        if(($type == "A" || $type == "AA") && CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) --$blockModifier;
+        if(($type == "A" || $type == "AA" || $typeEvo == "A") && CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) --$blockModifier;
         break;
       default: break;
     }

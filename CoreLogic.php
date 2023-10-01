@@ -1348,11 +1348,12 @@ function HaveUnblockedEquip($player)
 
 function NumEquipBlock()
 {
-  global $combatChain, $defPlayer;
+  global $combatChain, $defPlayer, $combatChainState, $CCS_RequiredEquipmentBlock;
   $numEquipBlock = 0;
   for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
   {
     if(CardType($combatChain[$i]) == "E" && $combatChain[$i+1] == $defPlayer) ++$numEquipBlock;
+    if(SubtypeContains($combatChain[$i], "Evo", $defPlayer) && $combatChain[$i+1] == $defPlayer && $combatChainState[$CCS_RequiredEquipmentBlock] == 0) ++$numEquipBlock; // Working, but technically wrong until we get CardTypeContains
   }
   return $numEquipBlock;
 }
@@ -2052,7 +2053,10 @@ function EvoHandling($cardID, $player)
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
         EvoTransformAbility($char[$i], $fromCardID, $player);
       }
-      else WriteLog("*ERR0R*//No base of that type equipped//");
+      else {
+        AddGraveyard($cardID, $player, "HAND");
+        WriteLog("<b>*ERR0R* // No base of that type equipped //</b>");
+      }
       break;
     }
   }

@@ -12,6 +12,10 @@
       case "TCC016":
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
+      case "TCC050": 
+        $charIndex = FindCharacterIndex($mainPlayer, $cardID);
+        DestroyCharacter($mainPlayer, $charIndex);
+        break;
       case "TCC083":
         AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
         break;

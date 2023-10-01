@@ -215,7 +215,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT052,");
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
-        AddDecisionQueue("WRITELOG", $currentPlayer, "{0} was chosen");
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
         return "";
       case "OUT055":
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:sameName=WTR107");
@@ -657,7 +657,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
         AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Head_Jab,Surging_Strike,Twin_Twisters", 1);
         AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $mainPlayer, "Attack renamed to {0}", 1);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "Attack renamed to <b>{0}</b>", 1);
         AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . "-", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-", 1);
         break;

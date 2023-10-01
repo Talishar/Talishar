@@ -6,7 +6,9 @@
     {
       case "TCC002": return 3;
       case "TCC028": return 3;
-      case "TCC051": case "TCC052": case "TCC053": case "TCC054": case "TCC080": return 0;
+      case "TCC050":
+        $abilityType = GetResolvedAbilityType($cardID);
+        return ($abilityType == "A" ? 3 : 0);
       default: return 0;
     }
   }
@@ -17,6 +19,7 @@
     {
       case "TCC002": return "AA";
       case "TCC028": return "AA";
+      case "TCC050": return "A";
       case "TCC051": case "TCC052": case "TCC053": case "TCC054": return "A";
       case "TCC079": return "I";
       case "TCC080": return "I";
