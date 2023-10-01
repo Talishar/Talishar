@@ -9,6 +9,16 @@
       case "TCC035":
         AddCurrentTurnEffect($cardID, $defPlayer);
         return "";
+      case "TCC050":
+        $abilityType = GetResolvedAbilityType($cardID);
+        if ($abilityType == "A") {
+          AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a token to create");
+          AddDecisionQueue("MULTICHOOSETEXT", $otherPlayer, "1-Might,Vigor,Quicken");
+          AddDecisionQueue("SHOWMODES", $otherPlayer, $cardID, 1);
+          AddDecisionQueue("MODAL", $otherPlayer, "JINGLEWOOD", 1);
+          PutItemIntoPlayForPlayer("CRU197", $currentPlayer);
+          }
+        return "";
       case "TCC051":
         Draw(1);
         Draw(2);
