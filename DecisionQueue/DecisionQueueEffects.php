@@ -469,6 +469,17 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "TICKTOCKCLOCK":
       DamageTrigger($player, $dqVars[0], "DAMAGE", "EVO074");
       return $lastResult;
+    case "EVOBREAKER":
+      if($lastResult != "-") {
+        if($dqVars[0] == "-") $dqVars[0] = $lastResult;
+        else $dqVars[0] .= "," . $lastResult;
+      }
+      PrependDecisionQueue("SPECIFICCARD", $player, "EVOBREAKER", 1);
+      PrependDecisionQueue("MZREMOVE", $player, "-", 1);
+      PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to transform (or pass)", 1);
+      PrependDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:sameName=ARC036", 1);
+      return $lastResult;
     default: return "";
   }
 }

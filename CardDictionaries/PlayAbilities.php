@@ -127,6 +127,11 @@
       case "EVO017":
         AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1");
         return "";
+      case "EVO030": case "EVO031": case "EVO032": case "EVO033":
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "-");
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVOBREAKER");
+        return "";
       case "EVO058":
         if(IsHeroAttackTarget() && EvoUpgradeAmount($currentPlayer) > 0)
         {
