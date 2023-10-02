@@ -183,8 +183,56 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         ContinueDecisionQueue($buttonInput);
       }
       break;
-    case 19: //MULTICHOOSE X
-      if (substr($turn[0], 0, 11) != "MULTICHOOSE" && substr($turn[0], 0, 14) != "MAYMULTICHOOSE") break;
+    case 19: //MULTICHOOSE X - multi choice CHOOSEMULTIZONE
+      if (substr($turn[0], 0, 15) == "CHOOSEMULTIZONE") {
+        $options = explode(",", $turn[2]);
+        $limit1 = explode("-", $options[0]);
+        $limit2 = explode("-", $options[1]);
+        
+        // either or both limit options exists this is just a safe-guard way to handle it 
+        $maxSelect = 0;
+        $minSelect = 0;
+        $limitOffset = 0;
+        switch ($limit1[0]) {
+          case "MAXCOUNT": $maxSelect = intval($limit1[1]); $limitOffset++; break;
+          case "MINCOUNT": $minSelect = intval($limit1[1]); $limitOffset++; break;
+          default: break;
+        }
+        switch ($limit2[0]) {
+          case "MAXCOUNT": $maxSelect = intval($limit2[1]); $limitOffset++; break;
+          case "MINCOUNT": $minSelect = intval($limit2[1]); $limitOffset++; break;
+          default: break;
+        }
+
+        $selectionCount = count($chkInput);
+        if ($maxSelect < $selectionCount) { // we won't revert the gamestate as may the opponent is requested to choose (EVO143)
+          WriteLog("Player " . $playerID . " selected " . $selectionCount . " items, but a maximum of " . $maxSelect . " is allowed.");
+          $skipWriteGamestate = true;
+          break;
+        } else if ($selectionCount < $minSelect) {
+          WriteLog("Player " . $playerID . " selected " . $selectionCount . " items, but a minimum of " . $maxSelect . " is requested.");
+          $skipWriteGamestate = true;
+          break;
+        }
+
+        $input = "";
+        for ($i = 0; $i < count($chkInput); ++$i) {
+          $index = intval($chkInput[$i]);
+          if ($index < 0 || $index >= count($options)) {
+            WriteLog($selectionCount);
+            WriteLog("An unvalid option was selected. Please try selecting the items again, if you feel experienced a bug please report it.");
+            $skipWriteGamestate = true;
+            break;
+          }
+          if ($input != "") $input .= ",";
+          $input .= $options[$index + $limitOffset]; 
+        }
+        if (!$skipWriteGamestate) {
+          ContinueDecisionQueue($input);
+        }
+        break;
+      }
+      else if (substr($turn[0], 0, 11) != "MULTICHOOSE" && substr($turn[0], 0, 14) != "MAYMULTICHOOSE") break;
       $params = explode("-", $turn[2]);
       $maxSelect = intval($params[0]);
       $options = explode(",", $params[1]);

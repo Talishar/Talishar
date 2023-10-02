@@ -290,3 +290,16 @@ function MZLastIndex($player, $zone)
     default: return "";
   }
 }
+
+function MZSwitchPlayer($zoneStr) {
+  $zoneArr = explode(",", $zoneStr);
+  $zoneStr = "";
+  foreach ($zoneArr as $zone) {
+    if (str_contains($zone, "MY")) $zone = str_replace("MY", "THEIR", $zone);
+    else if (str_contains($zone, "THEIR")) $zone = str_replace("THEIR", "MY", $zone);
+
+    if ($zoneStr != "") $zoneStr .= ",";
+    $zoneStr .= $zone;
+  }
+  return $zoneStr;
+}
