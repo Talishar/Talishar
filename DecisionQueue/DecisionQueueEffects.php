@@ -265,7 +265,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $filteredIndices = "";
       for($i = 0; $i < count($indices); ++$i) {
         $block = BlockValue($hand[$indices[$i]]);
-        if($block > -1 && $block <= $dqVars[0]) {
+        if($block > -1 && $block < $dqVars[0]) {
           $type = CardType($hand[$indices[$i]]);
           if($type == "A" || $type == "AA") {
             if ($filteredIndices != "") $filteredIndices .= ",";
