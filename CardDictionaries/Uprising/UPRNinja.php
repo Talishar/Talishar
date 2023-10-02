@@ -6,6 +6,7 @@
     switch($cardID)
     {
       case "UPR044": case "UPR045":
+        if(SearchCurrentTurnEffects("OUT183", $currentPlayer)) return "";
         MZMoveCard($currentPlayer, "MYDISCARD:cardID=UPR101", "MYHAND");
         return "";
       case "UPR047":
