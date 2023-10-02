@@ -12,6 +12,28 @@ ob_end_clean();
 
 session_start();
 
+// This is required to be able to create games on legacy client
+if (!function_exists("DelimStringContains")) {
+  function DelimStringContains($str, $find, $partial=false)
+  {
+    $arr = explode(",", $str);
+    for($i=0; $i<count($arr); ++$i)
+    {
+      if($partial && str_contains($arr[$i], $find)) return true;
+      else if($arr[$i] == $find) return true;
+    }
+    return false;
+  }
+}
+
+if (!function_exists("SubtypeContains")) {
+  function SubtypeContains($cardID, $subtype, $player="")
+  {
+    $cardSubtype = CardSubtype($cardID);
+    return DelimStringContains($cardSubtype, $subtype);
+  }
+}
+
 $authKey = "";
 $gameName = $_GET["gameName"];
 $playerID = $_GET["playerID"];
