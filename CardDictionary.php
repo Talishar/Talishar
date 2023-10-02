@@ -1389,7 +1389,7 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false)
   if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
   if(HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer, false)) >= CardCost($cardID)) return true;
   $char = &GetPlayerCharacter($currentPlayer);
-  if(SubtypeContains($cardID, "Evo") && ($char[0] == "TCC001" || $char[0] == "EVO007" || $char[0] == "EVO008")) return true;
+  if(SubtypeContains($cardID, "Evo") && ($char[0] == "TCC001" || $char[0] == "EVO007" || $char[0] == "EVO008") && $char[1] == 2) return true;
   switch($cardID) {
     case "MON123": return GetClassState($currentPlayer, $CS_Num6PowBan) > 0;
     case "MON156": case "MON158": return true;
