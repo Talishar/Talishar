@@ -284,7 +284,7 @@ function OnDefenseReactionResolveEffects($from)
     }
     if($remove) RemoveCurrentTurnEffect($i);
   }
-  ProcessMirageOnBlock(count($combatChain)-CombatChainPieces());
+  ProcessMirageOnBlock(count($combatChain)-CombatChainPieces()); AddLayer("LAYER", $mainPlayer, "MIRAGE");
 }
 
 function OnBlockResolveEffects()
