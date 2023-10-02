@@ -1104,3 +1104,13 @@ function SearchGetFirstIndex($search)
   $arr = explode("-", $firstMZ);
   return $arr[1];
 }
+
+function SearchLayersForCardID($cardID)
+{
+  global $layers;
+  for($i=0; $i<count($layers); $i+=LayerPieces())
+  {
+    if($layers[$i+2] == $cardID) return $i;
+  }
+  return -1;
+}
