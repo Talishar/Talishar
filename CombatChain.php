@@ -472,6 +472,7 @@ function OnBlockEffects($index, $from)
   global $Card_BlockBanner;
   $chainCard = $CombatChain->Card($index);
   $cardType = CardType($chainCard->ID());
+  $cardSubtype = CardSubType($chainCard->ID());
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = false;
@@ -504,7 +505,7 @@ function OnBlockEffects($index, $from)
           if($cardType == "A") $chainCard->ModifyDefense(-1);
           break;
         case "OUT009": case "OUT010":
-          if($cardType == "E") $chainCard->ModifyDefense(-1);
+          if($cardType == "E" || DelimStringContains($cardSubtype, "Evo")) $chainCard->ModifyDefense(-1);
           break;
         case $Card_BlockBanner:
           if($cardType == "A" || $cardType == "AA") {

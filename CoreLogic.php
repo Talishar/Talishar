@@ -1358,8 +1358,8 @@ function NumEquipBlock()
   $numEquipBlock = 0;
   for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
   {
-    if(CardType($combatChain[$i]) == "E" && $combatChain[$i+1] == $defPlayer) ++$numEquipBlock;
-    if(SubtypeContains($combatChain[$i], "Evo", $defPlayer) && $combatChain[$i+1] == $defPlayer && $combatChainState[$CCS_RequiredEquipmentBlock] == 0) ++$numEquipBlock; // Working, but technically wrong until we get CardTypeContains
+    if(DelimStringContains(CardSubType($combatChain[$i]), "Evo") && $combatChain[$i+1] == $defPlayer && $combatChainState[$CCS_RequiredEquipmentBlock] < 1) ++$numEquipBlock; // Working, but technically wrong until we get CardTypeContains
+    else if(CardType($combatChain[$i]) == "E" && $combatChain[$i+1] == $defPlayer) ++$numEquipBlock;
   }
   return $numEquipBlock;
 }
