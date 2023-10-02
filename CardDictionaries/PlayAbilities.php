@@ -131,7 +131,7 @@
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "-");
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVOBREAKER");
-        return "";
+        return "Light up the gem when you want the conditional boost effect to trigger";
       case "EVO058":
         if(IsHeroAttackTarget() && EvoUpgradeAmount($currentPlayer) > 0)
         {
@@ -214,6 +214,16 @@
         return "";
       case "EVO087": case "EVO088": case "EVO089":
         if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "EVO100":
+        $items = SearchDiscard($currentPlayer, subtype: "Item");
+        $itemsCount = count(explode(",", $items));
+        if ($itemsCount < $resourcesPaid) {
+          WriteLog("Player " . $currentPlayer . " would need to banish " . $resourcesPaid . " items from their graveyard but they only have " . $itemsCount . " items in their graveyard.");
+          RevertGamestate();
+        }
+        AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, $resourcesPaid . "-" . $items . "-" . $resourcesPaid, 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "HYPERSCRAPPER");
         return "";
       case "EVO101":
         $numScrap = 0;

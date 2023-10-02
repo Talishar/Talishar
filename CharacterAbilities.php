@@ -266,7 +266,7 @@ function CharacterDestroyEffect($cardID, $player)
       if(intval($weaponIndex) != -1) DestroyCharacter($player, $weaponIndex, true);
       break;
     case "EVO410b":
-      # Add easter egg here when Teklovessen lore drops 
+      # Add easter egg here when Teklovessen lore drops
       #WriteLog("Teklovessen lost his humanity for the greater good however as the machine shuts down he can no longer breathe.");
       include_once "./includes/dbh.inc.php";
       include_once "./includes/functions.inc.php";
@@ -1036,5 +1036,45 @@ function GetCharacterGemState($player, $cardID)
     if($char[$i] == $cardID) return $char[$i+9];
   }
   return 0;
+}
+
+function CharacterBoostAbilities($player) {
+  $char = &GetPlayerCharacter($player);
+  for($i=0; $i<count($char); $i+=CharacterPieces()) {
+    if(intval($char[$i+1]) < 2) continue;
+    switch($char[$i]) {
+      case "EVO430":
+        if($char[$i+9] == 1 && EvoHasUnderCard($player, $i)) {
+          MZMoveCard($player, "MYBANISH:type=AA", "MYTOPDECK", may:false);
+          MZMoveCard($player, "MYBANISH:type=AA", "MYTOPDECK", may:false);
+          AddDecisionQueue("SHUFFLEDECK", $player, "-");
+          CharacterChooseSubcard($player, $i, fromDQ:false);
+          AddDecisionQueue("ADDDISCARD", $player, "-", 1);
+        }
+        break;
+      case "EVO431":
+        if($char[$i+9] == 1 && EvoHasUnderCard($player, $i)) {
+          GainResources($player, 2);
+          CharacterChooseSubcard($player, $i, fromDQ:false);
+          AddDecisionQueue("ADDDISCARD", $player, "-", 1);
+        }
+        break;
+      case "EVO432":
+        if($char[$i+9] == 1 && EvoHasUnderCard($player, $i)) {
+          AddCurrentTurnEffect($char[$i], $player);
+          CharacterChooseSubcard($player, $i, fromDQ:false);
+          AddDecisionQueue("ADDDISCARD", $player, "-", 1);
+        }
+        break;
+      case "EVO433":
+        if($char[$i+9] == 1 && EvoHasUnderCard($player, $i)) {
+          PlayAura("WTR225", $player);
+          CharacterChooseSubcard($player, $i, fromDQ:false);
+          AddDecisionQueue("ADDDISCARD", $player, "-", 1);
+        }
+        break;
+      default: break;
+    }
+  }
 }
 ?>

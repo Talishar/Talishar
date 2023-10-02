@@ -490,6 +490,23 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to transform (or pass)", 1);
       PrependDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:sameName=ARC036", 1);
       return $lastResult;
+    case "HYPERSCRAPPER":
+      global $CombatChain;
+      $scrappedAmount = count($lastResult);
+      $scrappedHyperDriverAmount = 0;
+      sort($lastResult);
+      $discard = new Discard($player);
+      for ($i = $scrappedAmount - 1; $i >= 0; $i--) {
+        $cardID = $discard->Remove($lastResult[$i]);
+        BanishCardForPlayer($cardID, $player, "DISCARD", banishedBy: "EVO100");
+        if (CardName($cardID) == "Hyper Driver") $scrappedHyperDriverAmount++;
+      }
+      if ($scrappedHyperDriverAmount >= 3) {
+        GainResources($player, 6);
+        GiveAttackGoAgain();
+      }
+      $CombatChain->AttackCard()->ModifyPower(+$scrappedAmount);
+      return $scrappedAmount;
     default: return "";
   }
 }
