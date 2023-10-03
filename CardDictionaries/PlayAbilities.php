@@ -263,6 +263,16 @@
       case "EVO141":
         if(GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "EVO143":
+        if ($resourcesPaid == 0) return;
+        AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYCHAR:type=E");
+        AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "MAXCOUNT-" . $resourcesPaid/3 . ",MINCOUNT-" . $resourcesPaid/3 . ",");
+        AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose " . $resourcesPaid/3 . " equipment for the effect of " . CardLink("EVO143", "EVO143") . ".");
+        AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
+        AddDecisionQueue("MZSWITCHPLAYER", $currentPlayer, "<-", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "MEGANETICLOCKWAVE");
+        return "";
       case "EVO144":
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true&MYITEMS:hasSteamCounter=true&MYCHAR:hasSteamCounter=true");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment, item, or weapon. Remove all steam counters from it.");

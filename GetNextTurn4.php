@@ -842,6 +842,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $theirAllies = &GetAllies($otherPlayer);
     $myAllies = &GetAllies($playerID);
     $cardsMultiZone = array();
+    $maxCount = 0;
+    $minCount = 0;
+    $countOffset = 0;
     for ($i = 0; $i < count($options); ++$i) {
       $option = explode("-", $options[$i]);
       if ($option[0] == "MYAURAS") $source = $myAuras;
@@ -872,6 +875,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "LANDMARK") $source = $landmarks;
       else if ($option[0] == "CC") $source = $combatChain;
       else if ($option[0] == "COMBATCHAINLINK") $source = $combatChain;
+      else if ($option[0] == "MAXCOUNT") {$maxCount = intval($option[1]); $countOffset++; continue;}
+      else if ($option[0] == "MINCOUNT") {$minCount = intval($option[1]); $countOffset++; continue;}
 
       $counters = 0;
       $lifeCounters = 0;
@@ -939,8 +944,30 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       } elseif ($option[0] == "MYAURAS") {
         $atkCounters = $myAuras[$index + 3];
       }
-      array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $playerBorderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, atkCounters: $atkCounters, controller: $playerBorderColor, label: $label));
+
+      //Show Steam Counters on items
+      if ($option[0] == "THEIRITEMS") {
+        $steamCounters = $theirItems[$index + 1];
+      } elseif ($option[0] == "MYITEMS") {
+        $steamCounters = $myItems[$index + 1];
+      }
+
+      if ($maxCount < 2)
+        array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $playerBorderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, atkCounters: $atkCounters, controller: $playerBorderColor, label: $label, steamCounters: $steamCounters));
+      else
+        array_push($cardsMultiZone, JSONRenderedCard($card, actionDataOverride: $i - $countOffset));
     }
+    if ($maxCount >= 2) {
+      $formOptions = new stdClass();
+      $formOptions->playerID = $playerID;
+      $formOptions->caption = "Submit";
+      $formOptions->mode = 19;
+      $formOptions->maxNo = count($options);
+      $playerInputPopup->formOptions = $formOptions;
+      $choiceOptions = "checkbox";
+      $playerInputPopup->choiceOptions = $choiceOptions;
+    }
+
     $playerInputPopup->popup = CreatePopupAPI("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, cardsArray: $cardsMultiZone);
   }
 

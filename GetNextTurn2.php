@@ -574,14 +574,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   if(($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "CHOOSEMULTIZONE") && $turn[1] == $playerID) {
-    $content = "";
-    $content .= "<div display:inline;'>";
+    $content = "<div display:inline;'>";
     $options = explode(",", $turn[2]);
     $otherPlayer = $playerID == 2 ? 1 : 2;
     $theirAllies = &GetAllies($otherPlayer);
     $myAllies = &GetAllies($playerID);
     $theirPermanents = &GetPermanents($otherPlayer);
     $myPermanents = &GetPermanents($playerID);
+    $maxCount = 0;
+    $minCount = 0;
+    $countOffset = 0;
+    $wasFormAdded = false;
     for ($i = 0; $i < count($options); ++$i) {
       $option = explode("-", $options[$i]);
       if ($option[0] == "MYAURAS") $source = $myAuras;
@@ -612,6 +615,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "LANDMARK") $source = $landmarks;
       else if ($option[0] == "CC") $source = $combatChain;
       else if ($option[0] == "COMBATCHAINLINK") $source = $combatChain;
+      else if ($option[0] == "MAXCOUNT") {$maxCount = intval($option[1]); $countOffset++; continue;}
+      else if ($option[0] == "MINCOUNT") {$minCount = intval($option[1]); $countOffset++; continue;}
 
       $counters = 0;
       $lifeCounters = 0;
@@ -678,9 +683,39 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       } elseif ($option[0] == "MYAURAS") {
         $atkCounters = $myAuras[$index + 3];
       }
-      $content .= Card($card, "concat", $cardSize, 16, 1, 0, $playerBorderColor, $counters, $options[$i], "", false, $lifeCounters, $enduranceCounters, $atkCounters, controller: $playerBorderColor);
+
+      //Show Steam Counters on items
+      if ($option[0] == "THEIRITEMS") {
+        $steamCounters = $theirItems[$index + 1];
+      } elseif ($option[0] == "MYITEMS") {
+        $steamCounters = $myItems[$index + 1];
+      }
+
+      if ($maxCount < 2) {
+        $content .= Card($card, "concat", $cardSize, 16, 1, 0, $playerBorderColor, $counters, $options[$i], "", false, $lifeCounters, $enduranceCounters, $atkCounters, controller: $playerBorderColor);
+      } else {
+        if (!$wasFormAdded) {
+          $content = CreateForm($playerID, "Submit", 19, count($options) - $countOffset);
+          $content .= "<table style='border-spacing:0; border-collapse: collapse;'><tr>";
+          for ($j = 0; $j < count($options) - $countOffset; ++$j) {
+            $content .= "<td>";
+            $content .= CreateCheckbox($j, strval($j));
+            $content .= "</td>";
+          }
+          $content .= "</tr><tr>";
+          $wasFormAdded = true;
+        }
+        $content .= "<td>";
+        $content .= "<div class='container'>";
+        $content .= "<label class='multichoose' for=chk" . $i - $countOffset . ">" . Card($card, "concat", $cardSize, 0, 1) . "</label>";
+        $content .= "<div class='overlay'><div class='text'>Select</div></div></div>";
+        $content .= "</td>";
+      }
     }
-    $content .= "</div>";
+
+    if ($maxCount >= 2) $content .= "</tr></table></form></div>";
+    else $content .= "</div>";
+
     echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, $content);
   }
 

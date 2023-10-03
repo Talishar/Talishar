@@ -366,16 +366,16 @@ function SearchMultizoneFormat($search, $zone)
   return implode(",", $searchArr);
 }
 
-function SearchCurrentTurnEffects($cardID, $player, $remove = false)
+function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniqueID = false)
 {
   global $currentTurnEffects;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $player) {
       if ($remove) RemoveCurrentTurnEffect($i);
-      return true;
+      return $returnUniqueID ? $currentTurnEffects[$i+2] : true;
     }
   }
-  return false;
+  return $returnUniqueID ? -1 : false;
 }
 
 function SearchCurrentTurnEffectsForCycle($card1, $card2, $card3, $player)

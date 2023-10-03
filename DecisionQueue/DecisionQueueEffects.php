@@ -507,6 +507,11 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       $CombatChain->AttackCard()->ModifyPower(+$scrappedAmount);
       return $scrappedAmount;
+    case "MEGANETICLOCKWAVE":
+      $cardID = GetMZCard($player, $lastResult);
+      WriteLog(CardLink($cardID, $cardID) . " was targeted.");
+      AddCurrentTurnEffect("EVO143", $player, uniqueID: $cardID);
+      return $lastResult;
     default: return "";
   }
 }
