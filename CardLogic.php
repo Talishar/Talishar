@@ -1333,3 +1333,11 @@ function HasSteamCounter($array, $index, $player)
   }
   return false;
 }
+
+function IsHeroActive($player) {
+  $char = &GetPlayerCharacter($player);
+  if ($char[1] == 2) return true;
+  return false;
+}
+    
+

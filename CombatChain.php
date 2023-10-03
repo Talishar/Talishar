@@ -171,7 +171,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   if($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ROGUE802", $defPlayer);
   if($cardType == "E" && (SearchCurrentTurnEffects("DYN095", $mainPlayer) || SearchCurrentTurnEffects("DYN096", $mainPlayer) || SearchCurrentTurnEffects("DYN097", $mainPlayer))) $blockModifier -= 1;
   if(SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
-  if(SearchCurrentTurnEffects("EVO146", $defPlayer) && SubtypeContains($cardID, "Evo", $defPlayer) && ($from == "EQUIP" || $from == "CC")) $blockModifier += 1;
+  if(SearchCurrentTurnEffects("EVO146", $defPlayer) && SubtypeContains($cardID, "Evo", $defPlayer) && ($from == "EQUIP" || $from == "CC")) $blockModifier += CountCurrentTurnEffects("EVO146", $defPlayer);
   $defAuras = &GetAuras($defPlayer);
   $attackID = $CombatChain->AttackCard()->ID();
   for($i = 0; $i < count($defAuras); $i += AuraPieces()) {
@@ -284,7 +284,7 @@ function OnDefenseReactionResolveEffects($from)
     }
     if($remove) RemoveCurrentTurnEffect($i);
   }
-  ProcessMirageOnBlock(count($combatChain)-CombatChainPieces());
+  ProcessMirageOnBlock(count($combatChain)-CombatChainPieces()); AddLayer("LAYER", $mainPlayer, "MIRAGE");
 }
 
 function OnBlockResolveEffects()
@@ -472,6 +472,7 @@ function OnBlockEffects($index, $from)
   global $Card_BlockBanner;
   $chainCard = $CombatChain->Card($index);
   $cardType = CardType($chainCard->ID());
+  $cardSubtype = CardSubType($chainCard->ID());
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = false;
@@ -504,7 +505,7 @@ function OnBlockEffects($index, $from)
           if($cardType == "A") $chainCard->ModifyDefense(-1);
           break;
         case "OUT009": case "OUT010":
-          if($cardType == "E") $chainCard->ModifyDefense(-1);
+          if($cardType == "E" || DelimStringContains($cardSubtype, "Evo")) $chainCard->ModifyDefense(-1);
           break;
         case $Card_BlockBanner:
           if($cardType == "A" || $cardType == "AA") {

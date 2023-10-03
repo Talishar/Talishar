@@ -33,6 +33,11 @@
     switch($cardID)
     {
       case "TCC051": case "TCC052": case "TCC053": case "TCC054": return true;
+      case "TCC050":
+        $abilityType = GetResolvedAbilityType($cardID); 
+        if ($abilityType == "A") return true;
+        else return false;
+
       default: return false;
     }
   }

@@ -370,7 +370,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "EVO436":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
         return "";
       case "EVO437":
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=W");

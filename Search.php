@@ -141,7 +141,7 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
 function isPriorityStep($cardID)
 {
   switch($cardID) {
-    case "ENDTURN": case "RESUMETURN": case "PHANTASM": case "FINALIZECHAINLINK": case "DEFENDSTEP": case "ENDSTEP":
+    case "ENDTURN": case "RESUMETURN": case "PHANTASM": case "MIRAGE": case "FINALIZECHAINLINK": case "DEFENDSTEP": case "ENDSTEP":
       return true;
     default: return false;
   }
@@ -1103,4 +1103,14 @@ function SearchGetFirstIndex($search)
   if($search == "") return "";
   $arr = explode("-", $firstMZ);
   return $arr[1];
+}
+
+function SearchLayersForCardID($cardID)
+{
+  global $layers;
+  for($i=0; $i<count($layers); $i+=LayerPieces())
+  {
+    if($layers[$i+2] == $cardID) return $i;
+  }
+  return -1;
 }
