@@ -809,7 +809,18 @@ function Passed(&$turn, $playerID)
 
 function PassInput($autopass = true)
 {
-  global $turn, $currentPlayer;
+  global $turn, $currentPlayer, $mainPlayer;
+  if($turn[0] == "B") {
+    $uniqueID = SearchCurrentTurnEffects("EVO143", $mainPlayer, returnUniqueID: true);
+    if ($uniqueID != -1) {
+      $playerChar = &GetPlayerCharacter($currentPlayer);
+      $charID = FindCharacterIndex($currentPlayer, $uniqueID);
+      if ($playerChar[$charID+6] != 1) {
+        WriteLog("Player " . $currentPlayer . " must block with " . CardLink($uniqueID, $uniqueID) . " due to the effect of " . CardLink("EVO143", "EVO143") . ".");
+        return;
+      }
+    }
+  }
   if($turn[0] == "END" || $turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MAYCHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "MAYCHOOSEMYSOUL" || $turn[0] == "INSTANT" || $turn[0] == "OK") {
     ContinueDecisionQueue("PASS");
   } else {

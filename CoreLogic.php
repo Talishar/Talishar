@@ -39,15 +39,6 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
   //Now check current turn effects
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
   {
-    if ($currentTurnEffects[$i] == "EVO143") {
-      $uniqueID = $currentTurnEffects[$i+2];
-      $playerChar = &GetPlayerCharacter($otherPlayer);
-      $charID = FindCharacterIndex($otherPlayer, $uniqueID);
-      if ($playerChar[$charID+6] == 1) continue;
-
-      AddCombatChain($uniqueID, $otherPlayer, "CHAR", 0);
-      $playerChar[$charID+6] = 1;
-    }
     if(IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i))
     {
       if($currentTurnEffects[$i+1] == $mainPlayer)
