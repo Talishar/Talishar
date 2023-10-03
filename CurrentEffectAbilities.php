@@ -669,7 +669,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if($preventable) { $damage -= 1; }
           $remove = true;
           break;
-        case "EVO030": case "EVO031": case "EVO032": case "EVO033": //Card   
+        case "EVO030": case "EVO031": case "EVO032": case "EVO033": //Card
         case "EVO430": case "EVO431": case "EVO432": case "EVO433": //Equipment
           if($preventable) $damage -= intval($effects[1]);
           $remove = true;
@@ -1146,7 +1146,9 @@ function EffectDefenderAttackModifiers()
 
 function EffectAttackRestricted()
 {
-  global $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBaseAttack;
+  global $mainPlayer, $defPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBaseAttack;
+  $defChar = &GetPlayerCharacter($defPlayer);
+  if($defChar[0] == "DUMMY") return false;
   $restrictedBy = "";
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     if($currentTurnEffects[$i+1] == $mainPlayer) {

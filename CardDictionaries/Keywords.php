@@ -2,7 +2,7 @@
 
   function HasCrank($cardID, $player)
   {
-    if(CardNameContains($cardID, "Hyper Driver", $player) && (SearchCharacterForCard($player, "EVO004") || SearchCharacterForCard($player, "EVO005")) && IsHeroActive($player)) return true;
+    if(CardNameContains($cardID, "Hyper Driver", $player) && (SearchCharacterForCard($player, "EVO004") || SearchCharacterForCard($player, "EVO005"))) return true;
     switch($cardID) {
       case "EVO070": case "EVO071": case "EVO072":
       case "EVO074":
