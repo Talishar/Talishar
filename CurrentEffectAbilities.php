@@ -1146,9 +1146,9 @@ function EffectDefenderAttackModifiers()
 
 function EffectAttackRestricted()
 {
-  global $mainPlayer, $defPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBaseAttack;
-  $defChar = &GetPlayerCharacter($defPlayer);
-  if($defChar[0] == "DUMMY") return false;
+  global $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBaseAttack;
+  $mainChar = &GetPlayerCharacter($mainPlayer);
+  if($mainChar[0] == "DUMMY") return false;
   $restrictedBy = "";
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     if($currentTurnEffects[$i+1] == $mainPlayer) {
