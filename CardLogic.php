@@ -1050,7 +1050,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         }
       }
       break;
-    case "TCC030": Draw($mainPlayer); break;
+    case "TCC030": 
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      Draw($otherPlayer); 
+      break;
     case "TCC031":
       $otherPlayer = ($player == 1 ? 2 : 1);
       PlayAura("TCC107", $otherPlayer);
