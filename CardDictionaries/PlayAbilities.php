@@ -149,7 +149,7 @@
           AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "<-", 1);
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card", 1);
-          AddDecisionQueue("SPECIFICCARD", $otherPlayer, "PULSEWAVEHARPOONFILTER", 1);
+          AddDecisionQueue("SPECIFICCARD", $otherPlayer, "PULSEWAVEPROTOCOLFILTER", 1);
           AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
           AddDecisionQueue("ADDCARDTOCHAIN", $otherPlayer, "HAND", 1);
