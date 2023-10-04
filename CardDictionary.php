@@ -947,6 +947,7 @@ function HasBladeBreak($cardID)
     case "DTD200": return true;
     case "DTD222": case "DTD223": case "DTD224": case "DTD225": return true;
     case $CID_TekloHead: case $CID_TekloChest: case $CID_TekloArms: case $CID_TekloLegs: return true;
+    case "EVO013": return true;
     case "EVO018": case "EVO019": case "EVO020": case "EVO021": return true;
     case "EVO434": case "EVO435": case "EVO436": case "EVO437": return true;
     case "EVO418": case "EVO419": case "EVO420": case "EVO421": return true;
@@ -1640,6 +1641,7 @@ function HasGalvanize($cardID)
 {
   switch($cardID)
   {
+    case "EVO013":
     case "EVO105": case "EVO106": case "EVO107":
     case "EVO111": case "EVO112": case "EVO113":
     case "EVO114": case "EVO115": case "EVO116":
