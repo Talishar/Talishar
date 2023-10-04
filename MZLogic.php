@@ -4,7 +4,7 @@ function MZDestroy($player, $lastResult)
 {
   $lastResultArr = explode(",", $lastResult);
   $otherPlayer = ($player == 1 ? 2 : 1);
-  for ($i = 0; $i < count($lastResultArr); ++$i) {
+  for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     switch ($mzIndex[0]) {
       case "MYHAND": $lastResult = DiscardCard($player, $mzIndex[1]); break;
@@ -65,7 +65,7 @@ function MZDiscard($player, $parameter, $lastResult)
   $otherPlayer = ($player == 1 ? 2 : 1);
   $params = explode(",", $parameter);
   $cardIDs = [];
-  for($i = 0; $i < count($lastResultArr); ++$i) {
+  for($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
@@ -89,7 +89,7 @@ function MZAddZone($player, $parameter, $lastResult)
     $params[0] = $explodeArray[0];
   }
   $cardIDs = [];
-  for($i = 0; $i < count($lastResultArr); ++$i) {
+  for($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
@@ -127,7 +127,7 @@ function MZUndestroy($player, $parameter, $lastResult)
   $lastResultArr = explode(",", $lastResult);
   $params = explode(",", $parameter);
   $otherPlayer = ($player == 1 ? 2 : 1);
-  for($i = 0; $i < count($lastResultArr); ++$i) {
+  for($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     switch ($mzIndex[0]) {
       case "MYCHAR":
@@ -144,7 +144,7 @@ function MZBanish($player, $parameter, $lastResult)
   $lastResultArr = explode(",", $lastResult);
   $params = explode(",", $parameter);
   $otherPlayer = ($player == 1 ? 2 : 1);
-  for($i = 0; $i < count($lastResultArr); ++$i) {
+  for($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
