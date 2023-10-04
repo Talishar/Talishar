@@ -36,6 +36,26 @@
           AddDecisionQueue("MZADDSTEAMCOUNTER", $mainPlayer, "-", 1);
         }
         break;
+      case "EVO054":
+        if(IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) >= 1) {
+          global $combatChain, $CombatChain;
+          $defendingCardsArr = explode(",", GetChainLinkCards($defPlayer, exclCardTypes: "C"));
+          rsort($defendingCardsArr);
+          foreach ($defendingCardsArr as $defendingCard) {
+            if (CardType($combatChain[$defendingCard]) == "E") {
+              WriteLog(CardLink("EVO054", "EVO054") . " destroyed " . CardLink($combatChain[$defendingCard], $combatChain[$defendingCard]) . ".");
+              $charID = FindCharacterIndex($defPlayer, $combatChain[$defendingCard]);
+              DestroyCharacter($defPlayer, $charID);
+              $CombatChain->Remove($defendingCard);
+            }
+            else {
+              WriteLog(CardLink("EVO054", "EVO054") . " destroyed " . CardLink($combatChain[$defendingCard], $combatChain[$defendingCard]) . ".");
+              AddGraveyard($combatChain[$defendingCard], $defPlayer, "CC");
+              $CombatChain->Remove($defendingCard);
+            }
+          }
+        }
+        break;
       case "EVO055":
         if(IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) >= 1) PummelHit();
         break;
