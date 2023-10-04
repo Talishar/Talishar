@@ -781,7 +781,7 @@ function CurrentEffectPlayOrActivateAbility($cardID, $from)
   return false;
 }
 
-function CurrentEffectGrantsNonAttackActionGoAgain($cardID)
+function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer;
   $hasGoAgain = false;
@@ -819,6 +819,24 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID)
           break;
         case "ARC185-GA":
           $hasGoAgain = ($cardID == "ARC212" || $cardID == "ARC213" || $cardID == "ARC214");
+          break;
+        case "DTD190": 
+          if ($from == "BANISH" && PitchValue($cardID) == 1) {
+            $hasGoAgain = true;
+            $remove = true;  
+          }
+          break;
+        case "DTD191": 
+          if ($from == "BANISH" && PitchValue($cardID) == 2) {
+            $hasGoAgain = true;
+            $remove = true;  
+          }          
+          break;
+        case "DTD192": 
+          if ($from == "BANISH" && PitchValue($cardID) == 3) {
+            $hasGoAgain = true;
+            $remove = true;  
+          }          
           break;
         default:
           break;

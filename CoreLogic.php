@@ -1426,7 +1426,7 @@ function ResolveGoAgain($cardID, $player, $from)
   if(IsStaticType($cardType, $from, $cardID))
   {
     $hasGoAgain = AbilityHasGoAgain($cardID);
-    if(!$hasGoAgain && GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID);
+    if(!$hasGoAgain && GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from);
   }
   else
   {
@@ -1437,7 +1437,7 @@ function ResolveGoAgain($cardID, $player, $from)
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
     }
     if($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
-    if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
+    if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
   }
   if($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) ++$actionPoints;
