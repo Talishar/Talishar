@@ -609,7 +609,7 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT013":
-        if(NumAttackReactionsPlayed() > 0)
+        if(NumAttackReactionsPlayed() > 0 && IsHeroAttackTarget())
         {
           AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a pitch value", 1);
           AddDecisionQueue("BUTTONINPUT", $mainPlayer, "1,2,3", 1);
