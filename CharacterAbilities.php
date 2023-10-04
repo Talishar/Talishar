@@ -325,9 +325,9 @@ function MainCharacterEndTurnAbilities()
       case "ROGUE018":
         PlayAura("ELE109", $mainPlayer);
         break;
-      case "ROGUE019":
+/*       case "ROGUE019":
         DiscardRandom($mainPlayer, $cardID); // BUG - cardID not defined
-        break;
+        break; */
       default: break;
     }
   }

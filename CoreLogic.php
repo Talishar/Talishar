@@ -1305,7 +1305,9 @@ function RemoveItemAndAddAsSubcardToCharacter($player, $itemIndex, $newCharacter
 
 function UpdateSubcardCounterCount($player, $index) {
   $char = &GetPlayerCharacter($player);
-  $char[$index + 2] = count(explode(",", $char[$index + 10]));
+
+  if(empty($char[$index + 10])) $char[$index + 2] = 0;
+  else $char[$index + 2] = count(explode(",", $char[$index + 10]));
 }
 
 function RemoveArsenalEffects($player, $cardToReturn){
@@ -2106,7 +2108,7 @@ function CharacterChooseSubcard($player, $index, $fromDQ=false, $count=1)
 function EvoHasUnderCard($player, $index)
 {
   $char = &GetPlayerCharacter($player);
-  return $char[$index+10] != "-";
+  return $char[$index+10] != "";
 }
 
 function EvoTransformAbility($toCardID, $fromCardID, $player="")
