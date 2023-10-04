@@ -329,6 +329,19 @@
           AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $currentPlayer, -1, 1);
         }
         return "";
+      case "EVO237":
+        Draw($currentPlayer);
+        $card = DiscardRandom();
+        if(AttackValue($card) >= 6) {
+          $items = explode(",", SearchMultizone($currentPlayer, "THEIRITEMS&MYITEMS"));
+          if (count($items) > 0) {
+            $destroyedItem = $items[GetRandom(0, count($items) - 1)];
+            $destroyedItemID = GetMZCard($currentPlayer, $destroyedItem);
+            WriteLog(CardLink("EVO237", "EVO237") . " destroys " . CardLink($destroyedItemID, $destroyedItemID) . ".");
+            MZDestroy($currentPlayer, $destroyedItem);
+          }
+        }
+        return "";
       case "EVO238":
         PlayAura("WTR075", $currentPlayer, number:$resourcesPaid);
         return "";
