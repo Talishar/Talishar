@@ -133,6 +133,14 @@
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVOBREAKER");
         return "Light up the gem when you want the conditional boost effect to trigger";
+      case "EVO057":
+        if(IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) > 0) {
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true");
+          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MAXCOUNT-" . EvoUpgradeAmount($mainPlayer) . ",MINCOUNT-" . 0 . ",");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to " . EvoUpgradeAmount($currentPlayer) . " card" . (EvoUpgradeAmount($mainPlayer) > 1 ? "s" : "") . " to remove a steam couter from." , 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZREMOVESTEAMCOUNTER", $currentPlayer, "<-");
+        }
       case "EVO058":
         if(IsHeroAttackTarget() && EvoUpgradeAmount($currentPlayer) > 0)
         {
