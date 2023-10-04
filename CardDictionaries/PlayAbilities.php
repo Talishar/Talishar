@@ -83,12 +83,15 @@
     global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_PlayIndex, $CS_NumItemsDestroyed;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $character = &GetPlayerCharacter($currentPlayer);
     switch($cardID) {
       case "EVO004": case "EVO005":
         PutItemIntoPlayForPlayer("EVO234", $currentPlayer, 2);
+        --$character[5];
         return "";
       case "EVO007": case "EVO008":
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        --$character[5];
         return "";
       case "EVO009":
         $evoAmt = EvoUpgradeAmount($currentPlayer);

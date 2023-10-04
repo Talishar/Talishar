@@ -485,7 +485,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $banishCard = $banish->Card($index);
     if(!(PlayableFromBanish($banishCard->ID(), $banishCard->Modifier()) || AbilityPlayableFromBanish($banishCard->ID()))) return false;
   }
-  if($from == "DECK" && ($character[1] < 2 || $character[0] != "EVO001" && $character[0] != "EVO002" || CardCost($cardID) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
+  if($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "EVO001" && $character[0] != "EVO002" || CardCost($cardID) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if($phase == "B") {
     if($cardType == "E" && $character[$index+6] == 1) { $restriction = "On combat chain"; return false; }
     if(IsBlockRestricted($cardID, $phase, $from, $index, $restriction, $player)) return false;
@@ -853,7 +853,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "OUT180": return count($myHand) > 0;
     case "OUT181": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "OUT182": return !$CombatChain->HasCurrentLink() || (CardType($CombatChain->AttackCard()->ID()) != "AA" && CardType($CombatChain->AttackCard()->ID()) != "W") || AttackValue($CombatChain->AttackCard()->ID()) > 1;
-    case "DTD001": case "DTD002": return count($mySoul) == 0;
+    case "DTD001": case "DTD002": return (count($mySoul) == 0 || $character[5] == 0);
     case "DTD003": return !$CombatChain->HasCurrentLink() || (!str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald") && !SubtypeContains($CombatChain->AttackCard()->ID(), "Angel", $mainPlayer));
     case "DTD032": case "DTD033": case "DTD034": return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
     case "DTD035": case "DTD036": case "DTD037": return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
@@ -876,6 +876,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "TCC079": return HitsInCombatChain() < 3;
     case "TCC080": return GetClassState($player, $CS_NumCrounchingTigerPlayedThisTurn) == 0;
     case "EVO003": return $character[$index+2] <= 0;
+    case "EVO004": case "EVO005": //Maxx Nitro
+    case "EVO007": case "EVO008": //Teklovossen
+      return $character[5] == 0;
     case "EVO014": case "EVO015": case "EVO016": case "EVO017": return $character[$index+2] == 0 || GetClassState($player, $CS_NumBoosted) == 0;
     case "EVO071": case "EVO072": if ($from == "PLAY") return $myItems[$index+2] != 2; else return false;
     case "EVO140": return GetClassState($player, $CS_NumBoosted) < 0;
@@ -1392,7 +1395,7 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false)
   if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
   if(HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer, false)) >= CardCost($cardID)) return true;
   $char = &GetPlayerCharacter($currentPlayer);
-  if(SubtypeContains($cardID, "Evo") && ($char[0] == "TCC001" || $char[0] == "EVO007" || $char[0] == "EVO008")) return true;
+  if(SubtypeContains($cardID, "Evo") && ($char[0] == "TCC001" || $char[0] == "EVO007" || $char[0] == "EVO008") && $char[1] < 3) return true;
   switch($cardID) {
     case "MON123": return GetClassState($currentPlayer, $CS_Num6PowBan) > 0;
     case "MON156": case "MON158": return true;

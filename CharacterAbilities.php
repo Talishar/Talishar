@@ -934,7 +934,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         break;
       case "EVO001": case "EVO002":
         if($from == "DECK") {
-          $character[$i+1] = 1;
+          --$character[$i+5];
         }
         break;
       case "ROGUE017":
