@@ -51,8 +51,8 @@
       case "TCC065":
         GainHealth(1, $otherPlayer);
         return "";
-      case "TCC066": case "TCC067"://TODO: Add right Aura
-        PlayAura("DTD232", $otherPlayer);
+      case "TCC066": case "TCC067":
+        PlayAura("TCC105", $otherPlayer);
         return "";
       case "TCC068":
         Draw($otherPlayer);
