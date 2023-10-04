@@ -910,8 +910,8 @@ function GoesOnCombatChain($phase, $cardID, $from)
   if($phase != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetResolvedAbilityType($cardID, $from);
   else if($phase == "M" && $cardID == "MON192" && $from == "BANISH") $cardType = GetResolvedAbilityType($cardID, $from);
   else $cardType = CardType($cardID);
-  if($cardType == "I") return false; //Instants as yet never go on the combat chain
   if($phase == "B" && count($layers) == 0) return true; //Anything you play during these combat phases would go on the chain
+  if($cardType == "I") return false; //Instants as yet never go on the combat chain
   if(($phase == "A" || $phase == "D") && $cardType == "A") return false; //Non-attacks played as instants never go on combat chain
   if($cardType == "AR") return true;
   if($cardType == "DR") return true;
