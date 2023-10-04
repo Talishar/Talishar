@@ -2,7 +2,7 @@
 
   function MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts = "")
   {
-    global $currentPlayer, $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAddedToSoul, $CombatChain, $CS_PlayIndex;
+    global $currentPlayer, $mainPlayer, $CS_NumAddedToSoul, $CombatChain, $CS_PlayIndex;
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     switch($cardID)
     {
