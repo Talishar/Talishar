@@ -674,7 +674,6 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "DTD001": case "DTD002":
       BanishFromSoul($currentPlayer);
       --$character[$cardIndex+5];
-      $character[$cardIndex+1] = 1;
       break;
     case "DTD075": case "DTD076": case "DTD077": case "DTD078":
       $char = new Character($currentPlayer, $cardIndex);
