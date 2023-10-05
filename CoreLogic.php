@@ -838,7 +838,7 @@ function NumActionsBlocking()
       if($type == "A" || $type == "AA") ++$num;
       if($type == "E") {
         if (SubtypeContains($chainCard->ID(), "Evo")) {
-          if (CardType(GetCardIDBeforeTransform($chainCard->ID())) == "A") ++$num;
+          if (CardType(GetCardIDBeforeTransform($chainCard->ID())) == "A" && $chainCard->ID() != "EVO410b" && $$chainCard->ID() != "DYN492b") ++$num;
         }
       }
     }
