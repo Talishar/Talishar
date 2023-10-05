@@ -79,7 +79,7 @@
         $options = GetChainLinkCards($defPlayer, "", "C");
         AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $mainPlayer, $options);
         AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-", 1);
-        AddDecisionQueue("MULTIBANISH", $defPlayer, "CC,-,EVO236", 1);
+        AddDecisionQueue("MULTIBANISH", $defPlayer, "CC,-," . $mainPlayer, 1);
         break;
       case "EVO241":
         PlayAura("DTD232", $defPlayer);
