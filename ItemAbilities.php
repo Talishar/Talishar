@@ -28,7 +28,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     array_push($items, $theirHoldState);
     if(HasCrank($item, $player)) Crank($player, $index);
   }
-  if(($symbiosisIndex = FindCharacterIndex($player, "EVO003")) > 0 && ClassContains($item, "Mechanologist", $player)) {
+  if(($symbiosisIndex = FindCharacterIndex($player, "EVO003")) > 0 && ClassContains($item, "MECHANOLOGIST", $player)) {
     $char = &GetPlayerCharacter($player);
     if($char[$symbiosisIndex+2] < 6) ++$char[$symbiosisIndex+2];
   }
@@ -358,8 +358,8 @@ function ItemBlockModifier($cardID)
     switch($items[$i]) {
       case "EVO078":
         $type = CardType($cardID);
-        if (SubtypeContains($cardID, "Evo", $defPlayer)) { 
-          $number = intval(substr($cardID, 3)); $number = $number - 400; 
+        if (SubtypeContains($cardID, "Evo", $defPlayer)) {
+          $number = intval(substr($cardID, 3)); $number = $number - 400;
           $typeEvo = CardType("EVO0" . $number);
         }
         $attackID = $CombatChain->AttackCard()->ID();

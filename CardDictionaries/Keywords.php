@@ -47,6 +47,8 @@
       case "TCC034":
         MZChooseAndDestroy($mainPlayer, "THEIRCHAR:type=E;maxDef=1");
         break;
+      case "TCC036":
+        MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS:type=T"));
       default: break;
     }
   }
