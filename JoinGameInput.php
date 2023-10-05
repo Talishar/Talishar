@@ -646,6 +646,7 @@ function IsBanned($cardID, $format)
     case "compcc":
       switch ($cardID) {
         case "WTR164": case "WTR165": case "WTR166": //Drone of Brutality
+        case "ARC042": //Bull's Eye Bracers
         case "ARC170": case "ARC171": case "ARC172": //Plunder Run
         case "CRU141":
         case "MON001": //Prism

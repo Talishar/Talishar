@@ -838,7 +838,7 @@ function NumActionsBlocking()
       if($type == "A" || $type == "AA") ++$num;
       if($type == "E") {
         if (SubtypeContains($chainCard->ID(), "Evo")) {
-          if (CardType(GetCardIDBeforeTransform($chainCard->ID())) == "A") ++$num;
+          if (CardType(GetCardIDBeforeTransform($chainCard->ID())) == "A" && $chainCard->ID() != "EVO410b" && $$chainCard->ID() != "DYN492b") ++$num;
         }
       }
     }
@@ -985,7 +985,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   else if($cardID == "DTD141") return GetClassState($currentPlayer, $CS_LifeLost) > 0 || GetClassState($otherPlayer, $CS_LifeLost) > 0;
   if(SubtypeContains($cardID, "Evo")) {
     $char = &GetPlayerCharacter($currentPlayer);
-    if(SearchCurrentTurnEffects("EVO007", $currentPlayer) || SearchCurrentTurnEffects("EVO008", $currentPlayer) && SearchCharacterActive($currentPlayer, $char[0])) return true;
+    if(SearchCurrentTurnEffects("EVO007", $currentPlayer) || SearchCurrentTurnEffects("EVO008", $currentPlayer)) return true;
     if(SearchCurrentTurnEffects("EVO129", $currentPlayer) || SearchCurrentTurnEffects("EVO130", $currentPlayer) || SearchCurrentTurnEffects("EVO131", $currentPlayer)) return true;
   }
   if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0])))) return true;

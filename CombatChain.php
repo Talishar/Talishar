@@ -295,6 +295,7 @@ function OnBlockResolveEffects()
     if(SearchCurrentTurnEffects("ARC160-1", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
     if(SearchCurrentTurnEffects("ROGUE802", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
     if(SearchAurasForCard("ELE117", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 3);
+    if(SearchItemsForCard("EVO079", $defPlayer) && CardType($combatChain[$i]) == "AA" && ClassContains($combatChain[$i], "MECHANOLOGIST", $defPlayer)) CombatChainPowerModifier($i, 1);
     ProcessPhantasmOnBlock($i);
     ProcessMirageOnBlock($i);
   }
