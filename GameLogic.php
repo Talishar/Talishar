@@ -362,6 +362,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $character[$mzArr[1]+10] .= "," . $paramArr[1];
           }
           else $character[$mzArr[1]+10] = $paramArr[1];
+          ++$character[$mzArr[1]+2]; // Update the counter
           break;
         default: break;
       }

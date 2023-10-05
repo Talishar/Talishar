@@ -984,7 +984,8 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   else if($cardID == "DTD140") return GetClassState($currentPlayer, $CS_LifeLost) > 0 || GetClassState($otherPlayer, $CS_LifeLost) > 0;
   else if($cardID == "DTD141") return GetClassState($currentPlayer, $CS_LifeLost) > 0 || GetClassState($otherPlayer, $CS_LifeLost) > 0;
   if(SubtypeContains($cardID, "Evo")) {
-    if(SearchCurrentTurnEffects("EVO007", $currentPlayer) || SearchCurrentTurnEffects("EVO008", $currentPlayer)) return true;
+    $char = &GetPlayerCharacter($currentPlayer);
+    if(SearchCurrentTurnEffects("EVO007", $currentPlayer) || SearchCurrentTurnEffects("EVO008", $currentPlayer) && SearchCharacterActive($currentPlayer, $char[0])) return true;
     if(SearchCurrentTurnEffects("EVO129", $currentPlayer) || SearchCurrentTurnEffects("EVO130", $currentPlayer) || SearchCurrentTurnEffects("EVO131", $currentPlayer)) return true;
   }
   if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0])))) return true;
@@ -1305,7 +1306,9 @@ function RemoveItemAndAddAsSubcardToCharacter($player, $itemIndex, $newCharacter
 
 function UpdateSubcardCounterCount($player, $index) {
   $char = &GetPlayerCharacter($player);
-  $char[$index + 2] = count(explode(",", $char[$index + 10]));
+
+  if(empty($char[$index + 10])) $char[$index + 2] = 0;
+  else $char[$index + 2] = count(explode(",", $char[$index + 10]));
 }
 
 function RemoveArsenalEffects($player, $cardToReturn){
@@ -1424,7 +1427,7 @@ function ResolveGoAgain($cardID, $player, $from)
   if(IsStaticType($cardType, $from, $cardID))
   {
     $hasGoAgain = AbilityHasGoAgain($cardID);
-    if(!$hasGoAgain && GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID);
+    if(!$hasGoAgain && GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from);
   }
   else
   {
@@ -1435,7 +1438,7 @@ function ResolveGoAgain($cardID, $player, $from)
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
     }
     if($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
-    if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
+    if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
   }
   if($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) ++$actionPoints;
@@ -2106,7 +2109,7 @@ function CharacterChooseSubcard($player, $index, $fromDQ=false, $count=1)
 function EvoHasUnderCard($player, $index)
 {
   $char = &GetPlayerCharacter($player);
-  return $char[$index+10] != "-";
+  return $char[$index+10] != "";
 }
 
 function EvoTransformAbility($toCardID, $fromCardID, $player="")

@@ -111,6 +111,7 @@ function ModalAbilities($player, $card, $lastResult)
       return $lastResult;
     case "FABRICATE":
       $params = explode(",", $lastResult);
+      $GoesToGraveyard = true;
       for($i = 0; $i < count($params); ++$i) {
         switch($params[$i]) {
           case "Equip_a_base_equipment_with_Proto_in_its_name_from_your_inventory":
@@ -126,6 +127,7 @@ function ModalAbilities($player, $card, $lastResult)
             AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:subtype=Evo");
             AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
             AddDecisionQueue("MZOP", $player, "ADDSUBCARD,EVO146", 1);
+            $GoesToGraveyard = false;
             break;
           case "Banish_an_Evo_from_your_hand_and_draw_a_card":
             MZChooseAndBanish($player, "MYHAND:subtype=Evo", "HAND,-", may:true);
@@ -134,6 +136,7 @@ function ModalAbilities($player, $card, $lastResult)
           default: break;
         }
       }
+      if ($GoesToGraveyard) AddGraveyard("EVO146", $player, "HAND");
       return $lastResult;
     case "COAXCOMMOTION":
       if(!is_array($lastResult)) return $lastResult;
@@ -260,6 +263,21 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return "";
     case "PULSEWAVEHARPOONFILTER":
+      $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
+      $hand = &GetHand($player);
+      $filteredIndices = "";
+      for($i = 0; $i < count($indices); ++$i) {
+        $block = BlockValue($hand[$indices[$i]]);
+        if($block > -1 && $block <= $dqVars[0]) {
+          $type = CardType($hand[$indices[$i]]);
+          if($type == "A" || $type == "AA") {
+            if ($filteredIndices != "") $filteredIndices .= ",";
+            $filteredIndices .= $indices[$i];
+          }
+        }
+      }
+      return ($filteredIndices != "" ? $filteredIndices : "PASS");
+    case "PULSEWAVEPROTOCOLFILTER":
       $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
       $hand = &GetHand($player);
       $filteredIndices = "";

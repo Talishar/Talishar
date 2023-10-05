@@ -325,9 +325,9 @@ function MainCharacterEndTurnAbilities()
       case "ROGUE018":
         PlayAura("ELE109", $mainPlayer);
         break;
-      case "ROGUE019":
+/*       case "ROGUE019":
         DiscardRandom($mainPlayer, $cardID); // BUG - cardID not defined
-        break;
+        break; */
       default: break;
     }
   }
@@ -674,7 +674,6 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "DTD001": case "DTD002":
       BanishFromSoul($currentPlayer);
       --$character[$cardIndex+5];
-      $character[$cardIndex+1] = 1;
       break;
     case "DTD075": case "DTD076": case "DTD077": case "DTD078":
       $char = new Character($currentPlayer, $cardIndex);
@@ -935,7 +934,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         break;
       case "EVO001": case "EVO002":
         if($from == "DECK") {
-          $character[$i+1] = 1;
+          --$character[$i+5];
         }
         break;
       case "ROGUE017":
