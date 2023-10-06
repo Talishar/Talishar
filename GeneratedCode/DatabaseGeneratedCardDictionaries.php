@@ -1643,6 +1643,12 @@ case "6":
 return true;
 default: return false;
 }
+case "9":
+switch($cardID[5]) {
+case "4":
+return true;
+default: return false;
+}
 default: return false;
 }
 default: return false;
