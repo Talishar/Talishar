@@ -12,6 +12,7 @@ function PlayAlly($cardID, $player, $subCards = "-")
   array_push($allies, AllyEnduranceCounters($cardID)); //Endurance Counters
   array_push($allies, 0); //Life Counters
   array_push($allies, 1); //Ability/effect uses
+  array_push($allies, 0); //Attack Counters
   if($cardID == "UPR414") {
     WriteLog(CardLink($cardID, $cardID) . " lets you transform up to 1 ash into an Ashwing.");
     Transform($player, "Ash", "UPR042", true);
@@ -276,6 +277,14 @@ function SpecificAllyAttackAbilities($attackID)
       AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
       AddDecisionQueue("NOPASS", $mainPlayer, "-");
       AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $defPlayer, "DTD411", 1);
+      break;
+    case "DTD412":
+      $soul = &GetSoul($mainPlayer);
+      if(count($soul) == 0) break;
+      AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
+      AddDecisionQueue("NOPASS", $mainPlayer, "-");
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYALLY:subtype=Angel");
+      AddDecisionQueue("ADDALLATTACKCOUNTERS", $mainPlayer, "1", 1);
       break;
     default: break;
   }

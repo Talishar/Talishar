@@ -114,7 +114,7 @@ function DTDEffectAttackModifier($cardID)
 
 function DTDCombatEffectActive($cardID, $attackID)
 {
-  global $combatChainState, $CCS_IsBoosted, $mainPlayer, $combatChainState, $CCS_AttackNumCharged, $CombatChain;
+  global $combatChainState, $mainPlayer, $combatChainState, $CCS_AttackNumCharged, $CombatChain;
   global $Card_LifeBanner, $Card_ResourceBanner, $CCS_WasRuneGate;
   $params = explode(",", $cardID);
   $cardID = $params[0];

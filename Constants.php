@@ -139,9 +139,10 @@ function ArsenalPieces()
 //6 - Endurance Counters
 //7 - Health Counters
 //8 - Ability/effect Uses
+//9 - Attack Counters
 function AllyPieces()
 {
-  return 9;
+  return 10;
 }
 
 //Card ID

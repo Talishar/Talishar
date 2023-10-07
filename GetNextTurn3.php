@@ -583,7 +583,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i + AllyPieces() - 1 < count($theirAllies); $i += AllyPieces()) {
     $type = CardType($theirAllies[$i]);
     $sType = CardSubType($theirAllies[$i]);
-    array_push($theirAlliesOutput, JSONRenderedCard(cardNumber: $theirAllies[$i], overlay: ($theirAllies[$i + 1] != 2 ? 1 : 0), counters: $theirAllies[$i + 6], lifeCounters: $theirAllies[$i + 2], controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirAllies[$i + 3] == 1), subcard: $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL));
+    array_push($theirAlliesOutput, JSONRenderedCard(cardNumber: $theirAllies[$i], overlay: ($theirAllies[$i + 1] != 2 ? 1 : 0), counters: $theirAllies[$i + 6], lifeCounters: $theirAllies[$i + 2], controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirAllies[$i + 3] == 1), subcard: $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL, atkCounters:$theirAllies[$i+9]));
   }
   $response->opponentAllies = $theirAlliesOutput;
 
@@ -639,7 +639,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       type: $type,
       sType: $sType,
       isFrozen: ($myAllies[$i+3] == 1),
-      subcard: $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL
+      subcard: $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL,
+      atkCounters: $myAllies[$i+9]
     ));
   }
   $response->playerAllies = $myAlliesOutput;
