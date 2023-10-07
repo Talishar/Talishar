@@ -198,12 +198,11 @@ function CardClass($cardID)
         else if($number >= 439 && $number <= 441) return "ILLUSIONIST";
         else if($number == 551) return "ILLUSIONIST";
         else return "NONE";
-      case "DYN":
-        if($number == 612) return "ILLUSIONIST";
-        else return "NONE";
     }
   }
   switch ($cardID) {
+    case "DYN612": return "ILLUSIONIST";
+    case "DYN492a": case "DYN492b": case "DYN492c": return "MECHANOLOGIST";
     case "EVO410a": case "EVO410b": return "MECHANOLOGIST";
     default: break;
   }
