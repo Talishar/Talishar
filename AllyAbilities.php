@@ -163,7 +163,7 @@ function AllyAttackAbilities($attackID)
 //NOTE: This is for the actual attack abilities that allies have
 function SpecificAllyAttackAbilities($attackID)
 {
-  global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+  global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
   $allies = &GetAllies($mainPlayer);
   $i = $combatChainState[$CCS_WeaponIndex];
   switch($allies[$i]) {
@@ -269,6 +269,13 @@ function SpecificAllyAttackAbilities($attackID)
       AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
       AddDecisionQueue("NOPASS", $mainPlayer, "-");
       AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "DTD410", 1);
+      break;
+    case "DTD411":
+      $soul = &GetSoul($mainPlayer);
+      if(count($soul) == 0) break;
+      AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
+      AddDecisionQueue("NOPASS", $mainPlayer, "-");
+      AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $defPlayer, "DTD411", 1);
       break;
     default: break;
   }
