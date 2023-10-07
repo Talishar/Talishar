@@ -473,9 +473,24 @@ function AddCharacterEffect($player, $index, $effect)
 
 function AddGraveyard($cardID, $player, $from)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
   global $myStateBuiltFor, $CS_CardsEnteredGY;
+
+    //Code for EVO400+ going to GY, then Scrapped and it makes them unplayable.
+  if ($from == "CHAR") {
+  $set = substr($cardID, 0, 3);
+  $number = intval(substr($cardID, 3, 3));
+  if($number >= 400) {
+    $number -= 400;
+    if($number < 0) return;
+    $id = $number;
+    if($number < 100) $id = "0" . $id;
+    if($number < 10) $id = "0" . $id;
+    $cardID = $set . $id;
+    }
+  }
+
   if ($cardID == "MON124") {
     BanishCardForPlayer($cardID, $player, $from, "NA");
     return;
