@@ -378,7 +378,7 @@ function ResetCombatChainState()
       $cardType = CardType($chainLinks[$i][$j]);
       if ($cardType != "AA" && $cardType != "DR" && $cardType != "AR" && $cardType != "A") {
         if (!SubtypeContains($chainLinks[$i][$j], "Evo")) continue;
-        if ($chainLinks[$i][$j+3] != "HAND" && !(BlockValue($chainLinks[$i][$j]) >= 0)) continue;
+        if ($chainLinks[$i][$j+3] != "HAND" && BlockValue($chainLinks[$i][$j]) >= 0) continue;
       }
       $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3]);
       switch ($goesWhere) {
