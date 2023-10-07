@@ -11,12 +11,15 @@
         return "";
       case "TCC050":
         $abilityType = GetResolvedAbilityType($cardID);
+        $character = &GetPlayerCharacter($currentPlayer);
+        $charIndex = FindCharacterIndex($mainPlayer, $cardID);
         if ($abilityType == "A") {
           AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a token to create");
           AddDecisionQueue("MULTICHOOSETEXT", $otherPlayer, "1-Might,Vigor,Quicken");
           AddDecisionQueue("SHOWMODES", $otherPlayer, $cardID, 1);
           AddDecisionQueue("MODAL", $otherPlayer, "JINGLEWOOD", 1);
           PutItemIntoPlayForPlayer("CRU197", $currentPlayer);
+          --$character[$charIndex+5];
           }
         return "";
       case "TCC051":
