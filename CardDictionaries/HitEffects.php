@@ -91,15 +91,7 @@
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
       case "EVO236":
-        if(IsHeroAttackTarget()) {
-          $deck = new Deck($defPlayer);
-          if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-          $deck->BanishTop(banishedBy:$mainPlayer);
-        }
-        $options = GetChainLinkCards($defPlayer, "", "C");
-        AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $mainPlayer, $options);
-        AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-", 1);
-        AddDecisionQueue("MULTIBANISH", $defPlayer, "CC,-," . $mainPlayer, 1);
+        AddLayer("TRIGGER", $mainPlayer, $cardID);
         break;
       case "EVO241":
         PlayAura("DTD232", $defPlayer);
