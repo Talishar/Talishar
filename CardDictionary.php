@@ -84,7 +84,8 @@ function CardSubType($cardID)
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardSubtype($cardID);
-    else if($set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "EVO410a" && $cardID != "EVO410b") return GeneratedCardSubtype($cardID);
+    else if(
+      $set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "DYN492c" && $cardID != "EVO410a" && $cardID != "EVO410b") return GeneratedCardSubtype($cardID);
   }
   if($set == "ROG") return ROGUECardSubtype($cardID);
   switch($cardID) {
@@ -93,6 +94,7 @@ function CardSubType($cardID)
       case "MON401": return "Arms";
       case "MON402": return "Legs";
       case "UPR551": return "Ally";
+      case "DYN492c": return "Item";
       case "DYN612": return "Angel,Ally";
       case "EVO410a": return "Demi-Hero,Evo";
       case "EVO410b": return "Chest,Evo";
