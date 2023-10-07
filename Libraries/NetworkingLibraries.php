@@ -184,7 +184,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 19: //MULTICHOOSE X - multi choice CHOOSEMULTIZONE
-      if (substr($turn[0], 0, 15) == "CHOOSEMULTIZONE") {
+      if ($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") {
         $options = explode(",", $turn[2]);
         $limit1 = explode("-", $options[0]);
         $limit2 = explode("-", $options[1]);

@@ -144,6 +144,7 @@
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZREMOVESTEAMCOUNTER", $currentPlayer, "<-");
         }
+        return "";
       case "EVO058":
         if(IsHeroAttackTarget() && EvoUpgradeAmount($currentPlayer) > 0)
         {
