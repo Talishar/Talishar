@@ -271,7 +271,7 @@ function CharacterDestroyEffect($cardID, $player)
       include_once "./includes/dbh.inc.php";
       include_once "./includes/functions.inc.php";
       $conceded = true;
-      if(!IsGameOver()) PlayerLoseHealth($playerID, GetHealth($playerID));
+      if(!IsGameOver()) PlayerLoseHealth($player, GetHealth($player));
       break;
     default:
       break;
