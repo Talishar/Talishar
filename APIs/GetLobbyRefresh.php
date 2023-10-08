@@ -5,6 +5,9 @@ include "../CardDictionary.php";
 include '../Libraries/HTTPLibraries.php';
 include_once "../Libraries/PlayerSettings.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
+include_once "../AccountFiles/AccountSessionAPI.php";
+include_once "../includes/dbh.inc.php";
+include_once "../includes/functions.inc.php";
 
 SetHeaders();
 
@@ -111,6 +114,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
 } else if ($gameStatus == $MGS_GameStarted) {
   $response->lastUpdate = "1";
   $response->isMainGameReady = true;
+  if(IsUserLoggedIn()) StoreLastGameInfo(LoggedInUser(), $gameName, $playerID, $authKey);
   echo json_encode($response);
   exit;
 } else {

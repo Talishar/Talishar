@@ -173,6 +173,18 @@ function storeFabDBId($uid, $fabdbId)
 	}
 }
 
+function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
+{
+	$conn = GetDBConnection();
+	$sql = "UPDATE users SET lastGameName=?, lastPlayerId=?, lastAuthKey=? WHERE usersId=?";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "ssss", $gameName, $playerID, $authKey, $uid);
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+}
+
 function GetDeckBuilderId($uid, $decklink)
 {
 	$conn = GetDBConnection();
