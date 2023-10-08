@@ -63,6 +63,10 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       $auras = &GetAuras($mainPlayer);
       $attack = $auras[$combatChainState[$CCS_WeaponIndex]+3];
     }
+    else if(DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Ally")) {
+      $allies = &GetAllies($mainPlayer);
+      $attack = $allies[$combatChainState[$CCS_WeaponIndex]+9];
+    }
     if($canGainAttack || $attack < 0) {
       array_push($attackModifiers, "+1 Attack Counters");
       array_push($attackModifiers, $attack);

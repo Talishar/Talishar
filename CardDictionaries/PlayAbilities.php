@@ -11,12 +11,15 @@
         return "";
       case "TCC050":
         $abilityType = GetResolvedAbilityType($cardID);
+        $character = &GetPlayerCharacter($currentPlayer);
+        $charIndex = FindCharacterIndex($mainPlayer, $cardID);
         if ($abilityType == "A") {
           AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a token to create");
           AddDecisionQueue("MULTICHOOSETEXT", $otherPlayer, "1-Might,Vigor,Quicken");
           AddDecisionQueue("SHOWMODES", $otherPlayer, $cardID, 1);
           AddDecisionQueue("MODAL", $otherPlayer, "JINGLEWOOD", 1);
           PutItemIntoPlayForPlayer("CRU197", $currentPlayer);
+          --$character[$charIndex+5];
           }
         return "";
       case "TCC051":
@@ -36,7 +39,7 @@
         PlayAura("WTR225", 2);
         return "";
       case "TCC057":
-        $numPitch = SearchCount(SearchPitch($currentPlayer));
+        $numPitch = SearchCount(SearchPitch($currentPlayer) + SearchCount(SearchPitch($otherPlayer)));
         AddCurrentTurnEffect($cardID . "," . ($numPitch*2), $currentPlayer);
         return "";
       case "TCC058": case "TCC062": case "TCC075":
@@ -144,6 +147,7 @@
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZREMOVESTEAMCOUNTER", $currentPlayer, "<-");
         }
+        return "";
       case "EVO058":
         if(IsHeroAttackTarget() && EvoUpgradeAmount($currentPlayer) > 0)
         {

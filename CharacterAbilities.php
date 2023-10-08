@@ -633,6 +633,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "MON029": case "MON030":
     case "ELE173":
     case "OUT096":
+    case "TCC050":
       break; //Unlimited uses
     case "ELE224": //Spellbound Creepers - Bind counters
       ++$character[$cardIndex + 2];//Add a counter

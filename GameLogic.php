@@ -286,7 +286,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "DESTROYEQUIPDEF0":
       $character = &GetPlayerCharacter($defPlayer);
-      if(BlockValue($character[$lastResult]) + $character[$lastResult+4] <= 0) {
+      if(BlockValue($character[$lastResult]) + $character[$lastResult+4] <= 0 && BlockValue($character[$lastResult]) != -1) {
         WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " was destroyed");
         DestroyCharacter($defPlayer, $lastResult);
       }
@@ -1070,6 +1070,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $index = $lastResultArr[1];
       if($zone == "MYCHAR" || $zone == "THEIRCHAR") $zoneDS[$index+3] += $parameter;
       else if($zone == "MYAURAS" || $zone == "THEIRAURAS") $zoneDS[$index+3] += $parameter;
+      else if($zone == "MYALLY" || $zone == "THEIRALLY") $zoneDS[$index+9] += $parameter;
+      return $lastResult;
+      case "ADDALLATTACKCOUNTERS":
+      $lastResult = str_replace(",", "-", $lastResult);
+      $lastResultArr = explode("-", $lastResult);
+      $zone = $lastResultArr[0];
+      $zoneDS = &GetMZZone($player, $zone);
+      for ($i=1; $i < count($lastResultArr); $i += 2) { 
+        if($zone == "MYALLY" || $zone == "THEIRALLY") $zoneDS[$lastResultArr[$i]+9] += $parameter;
+      }
       return $lastResult;
     case "MODDEFCOUNTER":
       if($lastResult == "") return $lastResult;

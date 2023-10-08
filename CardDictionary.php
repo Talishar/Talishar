@@ -84,7 +84,8 @@ function CardSubType($cardID)
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardSubtype($cardID);
-    else if($set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "EVO410a" && $cardID != "EVO410b") return GeneratedCardSubtype($cardID);
+    else if(
+      $set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "DYN492c" && $cardID != "EVO410a" && $cardID != "EVO410b") return GeneratedCardSubtype($cardID);
   }
   if($set == "ROG") return ROGUECardSubtype($cardID);
   switch($cardID) {
@@ -93,6 +94,7 @@ function CardSubType($cardID)
       case "MON401": return "Arms";
       case "MON402": return "Legs";
       case "UPR551": return "Ally";
+      case "DYN492c": return "Item";
       case "DYN612": return "Angel,Ally";
       case "EVO410a": return "Demi-Hero,Evo";
       case "EVO410b": return "Chest,Evo";
@@ -198,12 +200,11 @@ function CardClass($cardID)
         else if($number >= 439 && $number <= 441) return "ILLUSIONIST";
         else if($number == 551) return "ILLUSIONIST";
         else return "NONE";
-      case "DYN":
-        if($number == 612) return "ILLUSIONIST";
-        else return "NONE";
     }
   }
   switch ($cardID) {
+    case "DYN612": return "ILLUSIONIST";
+    case "DYN492a": case "DYN492b": case "DYN492c": return "MECHANOLOGIST";
     case "EVO410a": case "EVO410b": return "MECHANOLOGIST";
     default: break;
   }
@@ -411,10 +412,15 @@ function GetAbilityType($cardID, $index = -1, $from="-")
 
 function GetAbilityTypes($cardID)
 {
+  global $currentPlayer;
   switch($cardID) {
     case "ARC003": case "CRU101": return "A,AA";
     case "OUT093": return "I,I";
-    case "TCC050": return "A,AA";
+    case "TCC050": 
+      $character = &GetPlayerCharacter($currentPlayer);
+      $index = FindCharacterIndex($currentPlayer, $cardID);
+      if ($character[$index+5] > 0) return "A,AA";
+      return "AA";
     default: return "";
   }
 }
@@ -422,15 +428,18 @@ function GetAbilityTypes($cardID)
 function GetAbilityNames($cardID, $index = -1)
 {
   global $currentPlayer;
+  $character = &GetPlayerCharacter($currentPlayer);
   switch ($cardID) {
     case "ARC003": case "CRU101":
-      $character = &GetPlayerCharacter($currentPlayer);
       if($index == -1) return "";
       $rv = "Add_a_steam_counter";
       if($character[$index + 2] > 0) $rv .= ",Attack";
       return $rv;
     case "OUT093": return "Load,Aim";
-    case "TCC050": return "Create_tokens,Smash_Jinglewood";
+    case "TCC050": 
+      if($index == -1) return "";
+      if ($character[$index+5] > 0) return "Create_tokens,Smash_Jinglewood";
+      return "Smash_Jinglewood";
     default: return "";
   }
 }
@@ -881,7 +890,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $character[5] == 0;
     case "EVO014": case "EVO015": case "EVO016": case "EVO017": return $character[$index+2] == 0 || GetClassState($player, $CS_NumBoosted) == 0;
     case "EVO071": case "EVO072": if ($from == "PLAY") return $myItems[$index+2] != 2; else return false;
-    case "EVO140": return GetClassState($player, $CS_NumBoosted) < 0;
+    case "EVO140": return GetClassState($player, $CS_NumBoosted) <= 0;
     case "EVO235": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "EVO434": case "EVO435": case "EVO436": case "EVO437": return !EvoHasUnderCard($currentPlayer, $index);
     default: return false;

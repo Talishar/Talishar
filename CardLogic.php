@@ -1105,6 +1105,18 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
       break;
+    case "EVO236":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      if(IsHeroAttackTarget()) {
+        $deck = new Deck($otherPlayer);
+        if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
+        $deck->BanishTop(banishedBy:$player);
+      }
+      $options = GetChainLinkCards($otherPlayer, "", "C");
+      AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $player, $options);
+      AddDecisionQueue("REMOVECOMBATCHAIN", $player, "-", 1);
+      AddDecisionQueue("MULTIBANISH", $otherPlayer, "CC,-," . $player, 1);
+      break;
     default: break;
   }
 }
