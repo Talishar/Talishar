@@ -203,7 +203,7 @@ enum PatreonCampaign : string
       case "3": return ($userName == "DeadSummer");
       case "4": return ($userName == "LeoLeo");
       case "5": return ($userName == "XIR");
-      case "6": return ($userName == "wackzitt" || $userName == "RainyDays" || $userName == "HelpMeJace2");
+      case "6": return ($userName == "wackzitt" || $userName == "RainyDays" || $userName == "HelpMeJace2" || $userName == "S1lverback55" || $userName == "VexingTie" || $userName == "Ragnell");
       case "7": return IsTeamSecondCycle($userName);
       case "8": return IsTeamSonicDoom($userName);
       case "7198186": return ($userName == "OotTheMonk");
