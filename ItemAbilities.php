@@ -358,7 +358,8 @@ function ItemBlockModifier($cardID)
     switch($items[$i]) {
       case "EVO078":
         $type = CardType($cardID);
-        if (SubtypeContains($cardID, "Evo", $defPlayer)) {
+        $typeEvo = "";
+        if(SubtypeContains($cardID, "Evo", $defPlayer)) {
           $number = intval(substr($cardID, 3)); $number = $number - 400;
           $typeEvo = CardType("EVO0" . $number);
         }
