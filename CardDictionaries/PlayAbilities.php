@@ -39,7 +39,7 @@
         PlayAura("WTR225", 2);
         return "";
       case "TCC057":
-        $numPitch = SearchCount(SearchPitch($currentPlayer) + SearchCount(SearchPitch($otherPlayer)));
+        $numPitch = SearchCount(SearchPitch($currentPlayer)) + SearchCount(SearchPitch($otherPlayer));
         AddCurrentTurnEffect($cardID . "," . ($numPitch*2), $currentPlayer);
         return "";
       case "TCC058": case "TCC062": case "TCC075":
