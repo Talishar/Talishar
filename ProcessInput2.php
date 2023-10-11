@@ -105,6 +105,7 @@ if(!IsReplay()) {
     $currentTime = round(microtime(true) * 1000);
     SetCachePiece($gameName, 2, $currentTime);
     SetCachePiece($gameName, 3, $currentTime);
+    GamestateUpdated($gameName);
     ExitProcessInput();
   }
 }
