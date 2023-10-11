@@ -416,11 +416,7 @@ function GetAbilityTypes($cardID)
   switch($cardID) {
     case "ARC003": case "CRU101": return "A,AA";
     case "OUT093": return "I,I";
-    case "TCC050": 
-      $character = &GetPlayerCharacter($currentPlayer);
-      $index = FindCharacterIndex($currentPlayer, $cardID);
-      if ($character[$index+5] > 0) return "A,AA";
-      return "AA";
+    case "TCC050": return "A,AA";
     default: return "";
   }
 }
@@ -436,10 +432,9 @@ function GetAbilityNames($cardID, $index = -1)
       if($character[$index + 2] > 0) $rv .= ",Attack";
       return $rv;
     case "OUT093": return "Load,Aim";
-    case "TCC050": 
+    case "TCC050":
       if($index == -1) return "";
-      if ($character[$index+5] > 0) return "Create_tokens,Smash_Jinglewood";
-      return "Smash_Jinglewood";
+      return "Create_tokens,Smash_Jinglewood";
     default: return "";
   }
 }

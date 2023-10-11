@@ -30,14 +30,11 @@
 
   function TCCAbilityHasGoAgain($cardID)
   {
+    global $CombatChain;
     switch($cardID)
     {
       case "TCC051": case "TCC052": case "TCC053": case "TCC054": return true;
-      case "TCC050":
-        $abilityType = GetResolvedAbilityType($cardID); 
-        if ($abilityType == "A") return true;
-        else return false;
-
+      case "TCC050": return !$CombatChain->HasCurrentLink();
       default: return false;
     }
   }
@@ -119,7 +116,7 @@
     AddDecisionQueue("DESTROYTOPCARD", $player, "0", 1);
     AddDecisionQueue("SETDQVAR", $player, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "{1}");
-  
+
     AddDecisionQueue("NOTEQUALPASS", $player, "ELSE");
     AddDecisionQueue("WRITELOG", $otherPlayer, "Destroys the top card of opponent's deck", 1);
     AddDecisionQueue("DESTROYTOPCARD", $otherPlayer, "0", 1);
@@ -131,7 +128,7 @@
     switch ($cardID) {
       case "ARC037": case "ARC007": case "ARC019":
       case "DYN093": case "EVR072":
-      case "CRU104": 
+      case "CRU104":
         return true;
       default:
         return false;

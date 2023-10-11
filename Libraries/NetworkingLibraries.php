@@ -188,8 +188,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $options = explode(",", $turn[2]);
         $limit1 = explode("-", $options[0]);
         $limit2 = explode("-", $options[1]);
-        
-        // either or both limit options exists this is just a safe-guard way to handle it 
+
+        // either or both limit options exists this is just a safe-guard way to handle it
         $maxSelect = 0;
         $minSelect = 0;
         $limitOffset = 0;
@@ -225,7 +225,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
             break;
           }
           if ($input != "") $input .= ",";
-          $input .= $options[$index + $limitOffset]; 
+          $input .= $options[$index + $limitOffset];
         }
         if (!$skipWriteGamestate) {
           ContinueDecisionQueue($input);
