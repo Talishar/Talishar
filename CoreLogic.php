@@ -2235,6 +2235,7 @@ function CheckIfSingularityConditionsAreMet($currentPlayer) {
   $charCount = count($char);
   $charPieces = CharacterPieces();
   for($i=0; $i<$charCount; $i+=$charPieces) {
+    if($char[$i+1] == 0) continue;
     if(CardType($char[$i]) == "W") $hasWeapon = true;
     if(SubtypeContains($char[$i], "Evo")) $evoCount++;
   }
