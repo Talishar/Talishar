@@ -118,7 +118,7 @@ function loginFromCookie()
 {
 	$token = $_COOKIE["rememberMeToken"];
 	$conn = GetDBConnection();
-	$sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned FROM users WHERE rememberMeToken=?";
+	$sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey FROM users WHERE rememberMeToken=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_bind_param($stmt, "s", $token);
@@ -135,6 +135,9 @@ function loginFromCookie()
 			$patreonRefreshToken = $row[4];
 			$_SESSION["patreonEnum"] = $row[5];
 			$_SESSION["isBanned"] = $row[6];
+			$_SESSION["lastGameName"] = $row[7];
+			$_SESSION["lastPlayerId"] = $row[8];
+			$_SESSION["lastAuthKey"] = $row[9];
 			try {
 				PatreonLogin($patreonAccessToken);
 			} catch (\Exception $e) {
@@ -143,6 +146,11 @@ function loginFromCookie()
 			unset($_SESSION["userid"]);
 			unset($_SESSION["useruid"]);
 			unset($_SESSION["useremail"]);
+			unset($_SESSION["patreonEnum"]);
+			unset($_SESSION["isBanned"]);
+			unset($_SESSION["lastGameName"]);
+			unset($_SESSION["lastPlayerId"]);
+			unset($_SESSION["lastAuthKey"]);
 		}
 		session_write_close();
 	}
@@ -183,6 +191,13 @@ function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
 	}
+	mysqli_close($conn);
+
+	session_start();
+	$_SESSION["lastGameName"] = $gameName;
+	$_SESSION["lastPlayerId"] = $playerID;
+	$_SESSION["lastAuthKey"] = $authKey;
+	session_write_close();
 }
 
 function GetDeckBuilderId($uid, $decklink)
