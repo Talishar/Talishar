@@ -238,10 +238,20 @@ function EffectHitEffect($cardID)
       break;
     case "OUT143":
       $char = &GetPlayerCharacter($mainPlayer);
-      $charClass = CardClass($char[0]);
-      $weapons = ($charClass == "NINJA" ? "WTR078,CRU051" : "DYN115,OUT005,OUT007,OUT009");
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a weapon to equip (make sure you choose one in your inventory)");
+      $inventory = &GetInventory($mainPlayer);
+      foreach ($inventory as $cardID) {
+        if (CardType($cardID) == "W" && SubtypeContains($cardID, "Dagger")) {
+          if ($weapons != "") $weapons .= ",";
+          $weapons .= $cardID;
+        };
+      }
+      if ($weapons == "") {
+        WriteLog("Player " . $mainPlayer . " doesn't have any dagger in their inventory");
+        return;
+      }
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a weapon to equip");
       AddDecisionQueue("CHOOSECARD", $mainPlayer, $weapons);
+      AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-INVENTORY");
       AddDecisionQueue("EQUIPCARD", $mainPlayer, "<-");
       break;
     case "OUT158":
