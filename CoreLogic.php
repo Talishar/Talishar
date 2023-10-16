@@ -2138,7 +2138,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
         GainActionPoints(1, $player);
       break;
     case "EVO050": case "EVO450":
-      MZChooseAndBanish($player, "MYHAND", "HAND,-");
+      MZChooseAndBanish($player, "MYHAND", "HAND,-", may: true);
       AddDecisionQueue("DRAW", $player, "-", 1);
       break;
     case "EVO051": case "EVO451":
