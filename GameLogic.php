@@ -1354,6 +1354,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($damage > 0) AddDamagePreventionSelection($player, $damage, $params[1]);
       return $damage;
     case "EQUIPCARD":
+      if (str_contains($parameter, "-")) {
+        $from = explode('-', $parameter)[1];
+        $parameter = explode('-', $parameter)[0];
+        if ($from == "INVENTORY") {
+          $inventory = &GetInventory($player);
+          $indexToRemove = array_search($parameter, $inventory);
+          if ($indexToRemove !== false) unset($inventory[$indexToRemove]);
+        }
+      }
       if(CardType($parameter) == "W") EquipWeapon($player, $parameter);
       else EquipEquipment($player, $parameter);
       return "";
