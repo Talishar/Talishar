@@ -85,6 +85,7 @@ function SetHeaders()
       }
     }
   }
+  header('X-Accel-Buffering: no');
 }
 
 function isMobile()

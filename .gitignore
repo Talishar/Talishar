@@ -26,5 +26,6 @@ Roguelike/HostFiles
 RogueLike/Games
 /mysql-data/
 /ApiKeys/ApiKeys.php
+/ApiKeys/APIKeys.php
 BugReports/CreateGameFailsafe.txt
 .idea

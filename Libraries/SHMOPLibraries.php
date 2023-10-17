@@ -23,29 +23,29 @@
 $useRedis = false;
 $redisHost = (!empty(getenv("REDIS_HOST")) ? getenv("REDIS_HOST") : "127.0.0.1");
 $redisPort = (!empty(getenv("REDIS_PORT")) ? getenv("REDIS_PORT") : "6379");
+$redisPassword = (!empty(getenv("REDIS_PASSWORD")) ? getenv("REDIS_PASSWORD") : "");
 
 if ($useRedis) {
   $redis = new Redis();
   $redis->connect($redisHost, $redisPort);
+  $redis->auth($redisPassword);
 }
 
 function WriteCache($name, $data)
 {
   global $useRedis, $redis;
   //DeleteCache($name);
-  if($name == 0) return;
+  if ($name == 0) return;
   $serData = serialize($data);
 
-  if($useRedis)
-  {
+  if ($useRedis) {
     $redis->set($name, $serData);
-  }
-  else {
+  } else {
     $id = shmop_open($name, "c", 0644, 128);
-    if($id == false) {
+    if ($id == false) {
       exit;
-     } else {
-        $rv = shmop_write($id, $serData, 0);
+    } else {
+      $rv = shmop_write($id, $serData, 0);
     }
   }
 }
@@ -53,21 +53,17 @@ function WriteCache($name, $data)
 function ReadCache($name)
 {
   global $useRedis, $redis;
-  if($name == 0) return "";
+  if ($name == 0) return "";
 
   $data = "";
-  if($useRedis)
-  {
+  if ($useRedis) {
     $data = RedisReadCache($name);
-    if($data == "" && is_numeric($name))
-    {
+    if ($data == "" && is_numeric($name)) {
       $data = ShmopReadCache($name);
     }
-  }
-  else {
+  } else {
     $data = ShmopReadCache($name);
-    if($data == "")
-    {
+    if ($data == "") {
       $data = RedisReadCache($name);
     }
   }
@@ -78,44 +74,42 @@ function ReadCache($name)
 function ShmopReadCache($name)
 {
   @$id = shmop_open($name, "a", 0, 0);
-  if(empty($id) || $id == false)
-  {
+  if (empty($id) || $id == false) {
     return "";
   }
   $data = shmop_read($id, 0, shmop_size($id));
-  $data = preg_replace_callback( '!s:(\d+):"(.*?)";!', function($match) {
+  $data = preg_replace_callback('!s:(\d+):"(.*?)";!', function ($match) {
     return ($match[1] == strlen($match[2])) ? $match[0] : 's:' . strlen($match[2]) . ':"' . $match[2] . '";';
-    }, $data);
+  }, $data);
   return $data;
 }
 
 function RedisReadCache($name)
 {
   global $redis;
-  if(!isset($redis)) $redis = RedisConnect();
+  if (!isset($redis)) $redis = RedisConnect();
   return $data = $redis->get($name);
 }
 
 function RedisConnect()
 {
-  global $redis, $redisHost, $redisPort;
+  global $redis, $redisHost, $redisPort, $redisPassword;
   $redis = new Redis();
   $redis->connect($redisHost, $redisPort);
+  $redis->auth($redisPassword);
   return $redis;
 }
 
 function DeleteCache($name)
 {
   global $useRedis, $redis;
-  if($useRedis)
-  {
+  if ($useRedis) {
     $redis->del($name);
     $redis->del($name . "GS");
   }
   //Always try to delete shmop
-  $id=shmop_open($name, "w", 0644, 128);
-  if($id)
-  {
+  $id = shmop_open($name, "w", 0644, 128);
+  if ($id) {
     shmop_delete($id);
     shmop_close($id); //shmop_close is deprecated
   }
@@ -130,7 +124,7 @@ function SetCachePiece($name, $piece, $value)
 {
   $piece -= 1;
   $cacheVal = ReadCache($name);
-  if($cacheVal == "") return;
+  if ($cacheVal == "") return;
   $cacheArray = explode("!", $cacheVal);
   $cacheArray[$piece] = $value;
   WriteCache($name, implode("!", $cacheArray));
@@ -141,15 +135,15 @@ function GetCachePiece($name, $piece)
   $piece -= 1;
   $cacheVal = ReadCache($name);
   $cacheArray = explode("!", $cacheVal);
-  if($piece >= count($cacheArray)) return "";
+  if ($piece >= count($cacheArray)) return "";
   return $cacheArray[$piece];
 }
 
 function IncrementCachePiece($gameName, $piece)
 {
   $oldVal = GetCachePiece($gameName, $piece);
-  SetCachePiece($gameName, $piece, $oldVal+1);
-  return $oldVal+1;
+  SetCachePiece($gameName, $piece, $oldVal + 1);
+  return $oldVal + 1;
 }
 
 function GamestateUpdated($gameName)
@@ -162,5 +156,3 @@ function GamestateUpdated($gameName)
   $cacheArr[5] = $currentTime;
   WriteCache($gameName, implode(SHMOPDelimiter(), $cacheArr));
 }
-
-?>
