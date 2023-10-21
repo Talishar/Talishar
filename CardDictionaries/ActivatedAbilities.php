@@ -56,7 +56,7 @@
       case "EVO081": case "EVO082": case "EVO083": return 2;
       case "EVO235": return 2;
       case "EVO247": return 2;
-      case "EVO410a": return 3;
+      case "EVO410": return 3;
       default: return 0;
     }
   }
@@ -83,7 +83,7 @@
       case "EVO087": case "EVO088": case "EVO089": return "I";
       case "EVO235": return "AR";
       case "EVO247": return "A";
-      case "EVO410a": return "AA";
+      case "EVO410": return "AA";
       case "EVO434": case "EVO435": case "EVO436": case "EVO437": return "I";
       case "EVO446": case "EVO447": case "EVO448": case "EVO449": return "I";
       default: return "";

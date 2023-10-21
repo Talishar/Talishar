@@ -110,12 +110,12 @@
         $charPieces = CharacterPieces();
         if (isSubcardEmpty($char, 0)) $char[10] = $char[0];
         else $char[10] = $char[10] . "," . $char[0];
-        $char[0] = "EVO410a";
+        $char[0] = "EVO410";
         $char[5] = 999; // Remove the 'Once per Turn' limitation from Teklovossen
         $mechropotentIndex = 0; // we pushed it, so should be the last element
         for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
-          if($char[$i] != "EVO410a") {
-            EvoTransformAbility("EVO410a", $char[$i], $currentPlayer);
+          if($char[$i] != "EVO410") {
+            EvoTransformAbility("EVO410", $char[$i], $currentPlayer);
             RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $mechropotentIndex);
           }
         }
@@ -399,7 +399,7 @@
       case "EVO248":
         MZChooseAndDestroy($currentPlayer, "THEIRALLY:subtype=Angel");
         return "";
-      case "EVO410a":
+      case "EVO410":
         if (IsHeroAttackTarget()) PummelHit($otherPlayer);
         return "";
       case "EVO434":
