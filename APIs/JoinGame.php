@@ -634,7 +634,7 @@ function IsCardBanned($cardID, $format)
         case "ELE187": case "ELE188": case "WTR164": case "WTR165": case "WTR166": case "ELE223": case "ARC170":
         case "ARC171": case "ARC172": case "MON239": case "CRU141": case "ELE114": case "ELE172":
         case "UPR139":
-        case "ELE062": case "ELE222":
+        case "ELE062": case "ELE222": case "ELE001": case "ELE003":
           return true;
         default: return false;
       }
