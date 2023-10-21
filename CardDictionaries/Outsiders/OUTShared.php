@@ -133,7 +133,7 @@ function OUTAbilityCost($cardID)
       case "OUT033": case "OUT034": case "OUT035": return HasStealth($attackID);
       case "OUT042": case "OUT043": case "OUT044": return true;
       case "OUT049": return CardType($attackID) == "AA";
-      case "OUT052": return count($commaArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($commaArr[1]));
+      case "OUT052": return CardType($attackID) == "AA" && count($commaArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($commaArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
       case "OUT071": case "OUT072": case "OUT073": return CardType($attackID) == "AA" && AttackValue($attackID) <= 2;
       case "OUT102": return true;

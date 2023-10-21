@@ -481,7 +481,7 @@ function AddGraveyard($cardID, $player, $from)
   if ($from == "CHAR") {
   $set = substr($cardID, 0, 3);
   $number = intval(substr($cardID, 3, 3));
-  if($number >= 400) {
+  if($number >= 400 && !IsAltCard($cardID)) {
     $number -= 400;
     if($number < 0) return;
     $id = $number;
@@ -617,4 +617,13 @@ function RemoveInventory($player, $index)
   }
   $inventory = array_values($inventory);
   return $cardID;
+}
+
+function IsAltCard($cardID) {
+  switch ($cardID) {
+    case "MON400": case "MON401": case "MON402": case "MON404":
+    case "MON405": case "MON406": case "MON407":
+      return true;
+  }
+  return false;
 }
