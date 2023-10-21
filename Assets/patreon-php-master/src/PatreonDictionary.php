@@ -109,6 +109,7 @@ enum PatreonCampaign : string
   case OnHitEffect = "10811477";
   case DaganWhite = "9851977";
   case BrandaoTCG = "279086";
+  case OffTheRailsTCG = "11184392";
 
   public function SessionID(): string
   {
@@ -143,6 +144,7 @@ enum PatreonCampaign : string
       case "10811477": return "isOnHitEffectPatron";
       case "9851977": return "isDaganWhitePatron";
       case "279086": return "isBrandaoTCGPatron";
+      case "11184392": return "isOffTheRailsTCGPatron";
       default: return "";
     }
   }
@@ -189,6 +191,7 @@ enum PatreonCampaign : string
       case "10811477": return "On Hit Effect";
       case "9851977": return "Dagan White";
       case "279086": return "BrandaoTCG";
+      case "11184392": return "Off the Rails TCG";
       default: return "";
     }
   }
@@ -235,6 +238,7 @@ enum PatreonCampaign : string
       case "10811477": return ($userName == "Mezzo");
       case "9851977": return ($userName == "DaganTheZookeeper" || $userName == "OotTheMonk");
       case "279086": return ($userName == "brandaotcg" || $userName == "OotTheMonk");
+      case "11184392": return ($userName == "PatSmashGood" || $userName == "OotTheMonk");
       default: return "";
     }
   }
@@ -293,6 +297,7 @@ enum PatreonCampaign : string
       case "10811477": return "53";
       case "9851977": return "54";
       case "279086": return "56";
+      case "11184392": return "63";
       default: return "";
     }
   }
