@@ -1880,6 +1880,14 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   else if($set == "DTD") return DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "TCC") return TCCPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "EVO") return EVOPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if($set == "LGS") {
+    switch ($cardID) {
+      case "LGS176": case "LGS177": case "LGS178":
+        $deck = new Deck($currentPlayer);
+        if (!$deck->Empty()) if (PitchValue($deck->BanishTop()) == PitchValue($cardID)) PlayAura("ARC112", $currentPlayer, 1, true);
+        return "";
+    }
+  }
   else return ROGUEPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
 }
 
