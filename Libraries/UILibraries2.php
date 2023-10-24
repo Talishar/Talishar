@@ -76,17 +76,17 @@ function JSONRenderedCard(
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
 
-  $countersMap->counters = property_exists($countersMap, 'counters') ?
-    $countersMap->counters : $counters;
-  $countersMap->life = property_exists($countersMap, 'life') ?
-    $countersMap->life : $lifeCounters;
-  $countersMap->defence = property_exists($countersMap, 'defence') ?
-    $countersMap->defence :  $defCounters;
-  $countersMap->attack = property_exists($countersMap, 'attack') ?
-    $atkCounters->attack :  $atkCounters;
-  $countersMap->steam = property_exists($countersMap, 'steam') ?
-    $steamCounters->steam :  $steamCounters;
-  if ($countersMap->counters > 0) {
+  $counters = property_exists($countersMap, 'counters') ? $countersMap->counters : $counters;
+  if($counters != NULL) $countersMap->counters = $counters;
+  $lifeCounters = property_exists($countersMap, 'life') ? $countersMap->life : $lifeCounters;
+  if($lifeCounters != NULL) $countersMap->life = $lifeCounters;
+  $defCounters = property_exists($countersMap, 'defence') ? $countersMap->defence :  $defCounters;
+  if($defCounters != NULL) $countersMap->defence = $defCounters;
+  $atkCounters = property_exists($countersMap, 'attack') ? $atkCounters->attack :  $atkCounters;
+  if($atkCounters != NULL) $countersMap->attack = $atkCounters;
+  $steamCounters = property_exists($countersMap, 'steam') ? $steamCounters->steam :  $steamCounters;
+  if($steamCounters != NULL) $countersMap->steam = $steamCounters;
+  if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
     $class = CardClass($cardNumber);
     $subtype = CardSubType($cardNumber);
     if ($class == "MECHANOLOGIST" && ($subtype == "Item" || CardType($cardNumber) == "W")) {
@@ -109,49 +109,36 @@ function JSONRenderedCard(
     }
   }
 
-  $countersMap = (object) array_filter((array) $countersMap, function ($val) {
-    return !is_null($val);
-  });
-
-  if ($isSpectator) $gem = NULL;
-  if ($subcard != NULL) {
+  if($isSpectator) $gem = NULL;
+  if($subcard != NULL) {
     $subcard = explode(',', $subcard);
   }
 
-  $card = (object) [
-    'cardNumber' => $cardNumber,
-    'action' => $action,
-    'overlay' => $overlay,
-    'borderColor' => $borderColor,
-    'counters' => $counters,
-    'actionDataOverride' => $actionDataOverride,
-    'lifeCounters' => $lifeCounters,
-    'defCounters' => $defCounters,
-    'atkCounters' => $atkCounters,
-    'steamCounters' => $steamCounters,
-    'controller' => $controller,
-    'type' => $type,
-    'sType' => $sType,
-    'restriction' => $restriction,
-    'isBroken' => $isBroken,
-    'onChain' => $onChain,
-    'isFrozen' => $isFrozen,
-    'countersMap' => $countersMap == json_decode('{}') ? null : $countersMap,
-    'label' => $label,
-    'facing' => $facing,
-    'numUses' => $numUses,
-    'subcards' => $subcard == NULL ? null : $subcard
-  ];
+  $card = new stdClass();
 
-  if($gem != NULL) {
-      $card->gem = $gem;
-  }
-
-  // To reduce space/size strip out all values that are null.
-  // On the FE repopulate the null values with the defaults like the binary blob.
-  $card = (object) array_filter((array) $card, function ($val) {
-    return !is_null($val);
-  });
+  if($gem != NULL) $card->gem = $gem;
+  if($cardNumber != NULL) $card->cardNumber = $cardNumber;
+  if($action != NULL) $card->action = $action;
+  if($overlay != NULL) $card->overlay = $overlay;
+  if($borderColor != NULL) $card->borderColor = $borderColor;
+  if($counters != NULL) $card->counters = $counters;
+  if($actionDataOverride != NULL) $card->actionDataOverride = $actionDataOverride;
+  if($lifeCounters != NULL) $card->lifeCounters = $lifeCounters;
+  if($defCounters != NULL) $card->defCounters = $defCounters;
+  if($atkCounters != NULL) $card->atkCounters = $atkCounters;
+  if($steamCounters != NULL) $card->steamCounters = $steamCounters;
+  if($controller != NULL) $card->controller = $controller;
+  if($type != NULL) $card->type = $type;
+  if($sType != NULL) $card->sType = $sType;
+  if($restriction != NULL) $card->restriction = $restriction;
+  if($isBroken != NULL) $card->isBroken = $isBroken;
+  if($onChain != NULL) $card->onChain = $onChain;
+  if($isFrozen != NULL) $card->isFrozen = $isFrozen;
+  if($countersMap != json_decode('{}')) $card->countersMap = $countersMap;
+  if($label != NULL) $card->label = $label;
+  if($facing != NULL) $card->facing = $facing;
+  if($numUses != NULL) $card->numUses = $numUses;
+  if($subcard != NULL) $card->subcards = $subcard;
 
   return $card;
 }
