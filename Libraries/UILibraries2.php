@@ -116,29 +116,29 @@ function JSONRenderedCard(
 
   $card = new stdClass();
 
-  if($gem != NULL) $card->gem = $gem;
-  if($cardNumber != NULL) $card->cardNumber = $cardNumber;
-  if($action != NULL) $card->action = $action;
-  if($overlay != NULL) $card->overlay = $overlay;
-  if($borderColor != NULL) $card->borderColor = $borderColor;
-  if($counters != NULL) $card->counters = $counters;
-  if($actionDataOverride != NULL) $card->actionDataOverride = $actionDataOverride;
-  if($lifeCounters != NULL) $card->lifeCounters = $lifeCounters;
-  if($defCounters != NULL) $card->defCounters = $defCounters;
-  if($atkCounters != NULL) $card->atkCounters = $atkCounters;
-  if($steamCounters != NULL) $card->steamCounters = $steamCounters;
-  if($controller != NULL) $card->controller = $controller;
-  if($type != NULL) $card->type = $type;
-  if($sType != NULL) $card->sType = $sType;
-  if($restriction != NULL) $card->restriction = $restriction;
-  if($isBroken != NULL) $card->isBroken = $isBroken;
-  if($onChain != NULL) $card->onChain = $onChain;
-  if($isFrozen != NULL) $card->isFrozen = $isFrozen;
+  if($gem !== NULL) $card->gem = $gem;
+  if($cardNumber !== NULL) $card->cardNumber = $cardNumber;
+  if($action !== NULL) $card->action = $action;
+  if($overlay !== NULL) $card->overlay = $overlay;
+  if($borderColor !== NULL) $card->borderColor = $borderColor;
+  if($counters !== NULL) $card->counters = $counters;
+  if($actionDataOverride !== NULL) $card->actionDataOverride = $actionDataOverride;
+  if($lifeCounters !== NULL) $card->lifeCounters = $lifeCounters;
+  if($defCounters !== NULL) $card->defCounters = $defCounters;
+  if($atkCounters !== NULL) $card->atkCounters = $atkCounters;
+  if($steamCounters !== NULL) $card->steamCounters = $steamCounters;
+  if($controller !== NULL) $card->controller = $controller;
+  if($type !== NULL) $card->type = $type;
+  if($sType !== NULL) $card->sType = $sType;
+  if($restriction !== NULL) $card->restriction = $restriction;
+  if($isBroken !== NULL) $card->isBroken = $isBroken;
+  if($onChain !== NULL) $card->onChain = $onChain;
+  if($isFrozen !== NULL) $card->isFrozen = $isFrozen;
   if($countersMap != json_decode('{}')) $card->countersMap = $countersMap;
-  if($label != NULL) $card->label = $label;
-  if($facing != NULL) $card->facing = $facing;
-  if($numUses != NULL) $card->numUses = $numUses;
-  if($subcard != NULL) $card->subcards = $subcard;
+  if($label !== NULL) $card->label = $label;
+  if($facing !== NULL) $card->facing = $facing;
+  if($numUses !== NULL) $card->numUses = $numUses;
+  if($subcard !== NULL) $card->subcards = $subcard;
 
   return $card;
 }
