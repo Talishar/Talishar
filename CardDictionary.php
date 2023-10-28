@@ -587,7 +587,7 @@ function CanBlockWithEquipment()
   global $CombatChain, $mainPlayer;
   switch($CombatChain->AttackCard()->ID())
   {
-    case "EVO154": return SearchCurrentTurnEffects("EVO154", $mainPlayer);
+    case "EVO154": return !SearchCurrentTurnEffects("EVO154", $mainPlayer);
     case "EVO204": case "EVO205": case "EVO206":
     case "EVO207": case "EVO208": case "EVO209": return false;
     default: return true;
