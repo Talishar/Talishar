@@ -12,7 +12,7 @@
       case "TCC016":
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
-      case "TCC050": 
+      case "TCC050":
         $charIndex = FindCharacterIndex($mainPlayer, $cardID);
         DestroyCharacter($mainPlayer, $charIndex);
         break;
@@ -94,8 +94,10 @@
         AddLayer("TRIGGER", $mainPlayer, $cardID);
         break;
       case "EVO241":
-        PlayAura("DTD232", $defPlayer);
-        PlayAura("WTR225", $defPlayer);
+        if(!IsAllyAttackTarget()) {
+          PlayAura("DTD232", $defPlayer);
+          PlayAura("WTR225", $defPlayer);
+        }
         break;
       default: break;
     }
