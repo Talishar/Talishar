@@ -77,6 +77,12 @@ if($deckCount < 40 && ($format == "blitz" || $format == "compblitz" || $format =
   echo json_encode($response);
   exit;
 }
+if($deckCount > 40 && ($format == "blitz" || $format == "compblitz")) {
+  $response->status = "FAIL";
+  $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is above the maximum.";
+  echo json_encode($response);
+  exit;
+}
 
 $filename = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
 $deckFile = fopen($filename, "w");
