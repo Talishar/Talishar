@@ -126,7 +126,7 @@ if ($decklink != "") {
     $decklinkArr = explode("/", $decklink);
     $decklinkArr = explode("?", $decklinkArr[count($decklinkArr) - 1]);
     $slug = $decklinkArr[0];
-    $apiLink = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/decks/" . $slug;
+    $apiLink = "https://atofkpq0x8.execute-api.us-east-2.amazonaws.com/prod/v1/decks/" . $slug;
     if ($matchup != "") $apiLink .= "?matchupId=" . $matchup;
   } else {
     $decklinkArr = explode("/", $decklink);
