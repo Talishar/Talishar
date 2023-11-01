@@ -369,7 +369,7 @@ function EffectBlockModifier($cardID, $index, $from)
     case "TCC035":
       return CachedTotalAttack() >= 13 && CardType($CombatChain->Card($index)->ID()) != "E" ? -1 : 0;
     case "EVO105": case "EVO106": case "EVO107":
-      return IsAction($cardID) ? -1 : 0;
+      return IsAction($CombatChain->Card($index)->ID()) ? -1 : 0;
     default: return 0;
   }
 }
@@ -830,23 +830,23 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
         case "ARC185-GA":
           $hasGoAgain = ($cardID == "ARC212" || $cardID == "ARC213" || $cardID == "ARC214");
           break;
-        case "DTD190": 
+        case "DTD190":
           if ($from == "BANISH" && PitchValue($cardID) == 1) {
             $hasGoAgain = true;
-            $remove = true;  
+            $remove = true;
           }
           break;
-        case "DTD191": 
+        case "DTD191":
           if ($from == "BANISH" && PitchValue($cardID) == 2) {
             $hasGoAgain = true;
-            $remove = true;  
-          }          
+            $remove = true;
+          }
           break;
-        case "DTD192": 
+        case "DTD192":
           if ($from == "BANISH" && PitchValue($cardID) == 3) {
             $hasGoAgain = true;
-            $remove = true;  
-          }          
+            $remove = true;
+          }
           break;
         default:
           break;
