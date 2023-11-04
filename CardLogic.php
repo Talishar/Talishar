@@ -1094,6 +1094,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       AddDecisionQueue("SPECIFICCARD", $otherPlayer, "TICKTOCKCLOCK");
       break;
+    case "EVO013":
     case "EVO105": case "EVO106": case "EVO107":
     case "EVO111": case "EVO112": case "EVO113":
     case "EVO114": case "EVO115": case "EVO116":
