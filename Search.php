@@ -323,11 +323,14 @@ function SearchCharacterAliveSubtype($player, $subtype)
   return false;
 }
 
-function FindCharacterIndex($player, $cardID)
+function FindCharacterIndex($player, $cardID, $checkIfAlive = false)
 {
   $character = &GetPlayerCharacter($player);
   for($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if($character[$i] == $cardID) return $i;
+    if($character[$i] == $cardID) {
+      if ($checkIfAlive) return $character[$i + 1] > 0;
+      return $i;
+    }
   }
   return -1;
 }
