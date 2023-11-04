@@ -266,6 +266,7 @@ function ItemBoostEffects()
 }
 
 function EquipmentBoostEffect($player, $charID, $cardID) {
+  if (!FindCharacterIndex($player, "DTD004", true)) return false;
   if (SearchCharacterForCard($player, $charID)) {
     $chars = &GetPlayerCharacter($player);
     $index = FindCharacterIndex($player, $charID);
