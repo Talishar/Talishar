@@ -231,8 +231,14 @@ function PlayerTargetedAbility($player, $card, $lastResult)
       if(PitchValue($banished) == $pitchTarget) LoseHealth(1, $target);
       return "";
     case "BURDENSOFTHEPAST":
-      if(SearchCount(SearchDiscard($target, "DR")) >= 10) Draw($player);
-      AddCurrentTurnEffect("OUT187", $target);
+      $defenseReactionsInDiscard = SearchDiscard($target, "DR", getDistinctCardNames: true);
+      WriteLog("Player {$target} was targeted. Burdens of the Past prevents the play of the folowing defense reactions: <b>" . (str_replace("_", " ", $defenseReactionsInDiscard)) . "</b>");
+      AddCurrentTurnEffect("OUT187," . $defenseReactionsInDiscard, $target);
+      if(SearchCount(SearchDiscard($target, "DR")) >= 10) {
+        WriteLog("Player {$player} draws a card as target hero has at least 10 defense reactions in their graveyard.");
+        Draw($player);
+      }
+
       return "";
     default: return $lastResult;
   }
