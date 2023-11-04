@@ -315,6 +315,7 @@ function PitchValue($cardID)
 {
   if(!$cardID) return "";
   $set = CardSet($cardID);
+  if (CardType($cardID) == "M") return 0;
   if($set != "ROG" && $set != "DUM") {
     return GeneratedPitchValue($cardID);
   }
