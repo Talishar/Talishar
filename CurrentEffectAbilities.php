@@ -989,7 +989,7 @@ function CurrentEffectEndTurnAbilities()
     if(SearchCurrentTurnEffects($cardID . "-UNDER", $currentTurnEffects[$i + 1])) {
       AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i + 1]);
     }
-    switch($currentTurnEffects[$i]) {
+    switch($cardID) {
       case "MON069": case "MON070": case "MON071":
       case "EVR056":
         if($mainPlayer == $currentTurnEffects[$i + 1]) {
@@ -999,6 +999,9 @@ function CurrentEffectEndTurnAbilities()
           }
           $remove = true;
         }
+        break;
+      case "EVO013":
+        AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
         break;
       default: break;
     }
