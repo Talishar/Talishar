@@ -93,7 +93,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
   }
   $attack = ItemAttackModifiers();
   if($canGainAttack || $attack < 0) {
-    array_push($attackModifiers, "Arsenal Ability");
+    array_push($attackModifiers, "Item Ability");
     array_push($attackModifiers, $attack);
     AddAttack($totalAttack, $attack);
   }
