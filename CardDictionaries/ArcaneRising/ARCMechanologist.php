@@ -266,7 +266,7 @@ function ItemBoostEffects()
 }
 
 function EquipmentBoostEffect($player, $charID, $cardID) {
-  if (!FindCharacterIndex($player, "DTD004", true)) return false;
+  if (!FindCharacterIndex($player, "EVO011", true)) return false;
   if (SearchCharacterForCard($player, $charID)) {
     $chars = &GetPlayerCharacter($player);
     $index = FindCharacterIndex($player, $charID);
@@ -277,10 +277,13 @@ function EquipmentBoostEffect($player, $charID, $cardID) {
   return false;
 }
 
-function OnBoostCardPutUnderCharacter($chars, $index, $charID, $player) {
+function OnBoostCardPutUnderCharacter(&$chars, $index, $charID, $player) {
   switch ($charID) {
     case "EVO011":
-      if ($chars[$index+2] >= 3) Draw($player, true, true);
+      if ($chars[$index+1] != 1 && $chars[$index+2] >= 3) {
+        Draw($player, true, true);
+        $chars[$index+1] = 1;
+      }
       break;
     default:
       break;
