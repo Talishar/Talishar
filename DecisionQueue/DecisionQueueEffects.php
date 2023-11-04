@@ -183,6 +183,10 @@ function ModalAbilities($player, $card, $lastResult)
         default: break;
       }
       return $lastResult;
+    case "ADAPTIVEPLATING":
+      if(is_array($lastResult) && count($lastResult) > 0) $lastResult = $lastResult[0];
+      EquipEquipment($player, "EVO013", $lastResult);
+      return $lastResult;
     default: return "";
   }
 }

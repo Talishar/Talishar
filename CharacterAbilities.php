@@ -504,14 +504,16 @@ function CharacterCostModifier($cardID, $from)
   return CanCostBeModified($cardID) ? $modifier : 0;
 }
 
-function EquipEquipment($player, $card)
+function EquipEquipment($player, $card, $slot="")
 {
-  $slot = "";
-  if(SubtypeContains($card, "Head")) $slot = "Head";
-  else if(SubtypeContains($card, "Chest")) $slot = "Chest";
-  else if(SubtypeContains($card, "Arms")) $slot = "Arms";
-  else if(SubtypeContains($card, "Legs")) $slot = "Legs";
+  if($slot == "") {
+    if(SubtypeContains($card, "Head")) $slot = "Head";
+    else if(SubtypeContains($card, "Chest")) $slot = "Chest";
+    else if(SubtypeContains($card, "Arms")) $slot = "Arms";
+    else if(SubtypeContains($card, "Legs")) $slot = "Legs";
+  }
   $char = &GetPlayerCharacter($player);
+  $uniqueID = GetUniqueId();
   $replaced = 0;
   //Replace the first destroyed weapon; if none you can't re-equip
   for($i=CharacterPieces(); $i<count($char) && !$replaced; $i+=CharacterPieces())
@@ -529,7 +531,7 @@ function EquipEquipment($player, $card)
       $char[$i+8] = 0;
       $char[$i+9] = 2;
       $char[$i+10] = "";
-      $char[$i+11] = GetUniqueId();
+      $char[$i+11] = $uniqueID;
       $replaced = 1;
     }
   }
@@ -547,8 +549,9 @@ function EquipEquipment($player, $card)
     array_splice($char, $insertIndex+8, 0, 0);
     array_splice($char, $insertIndex+9, 0, 2);
     array_splice($char, $insertIndex+10, 0, "");
-    array_splice($char, $insertIndex+11, 0, GetUniqueId());
+    array_splice($char, $insertIndex+11, 0, $uniqueID);
   }
+  if($card == "EVO013") AddCurrentTurnEffect("EVO013-" . $uniqueID . "," . $slot, $player);
 }
 
 function EquipWeapon($player, $card)

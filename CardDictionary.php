@@ -76,10 +76,21 @@ function CardType($cardID)
   }
 }
 
-function CardSubType($cardID)
+function CardSubType($cardID, $uniqueID=-1)
 {
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
   if(!$cardID) return "";
+  if($uniqueID > -1 && $cardID == "EVO013") { //Adaptive Plating
+    global $currentTurnEffects;
+    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces()) {
+      $effectArr = explode("-", $currentTurnEffects[$i]);
+      if($effectArr[0] != "EVO013") continue;
+      $effectArr = explode(",", $effectArr[1]);
+      if($effectArr[0] != $uniqueID) continue;
+      return $effectArr[1];
+    }
+    return "";
+  }
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));

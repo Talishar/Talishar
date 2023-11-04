@@ -1050,9 +1050,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         }
       }
       break;
-    case "TCC030": 
+    case "TCC030":
       $otherPlayer = ($player == 1 ? 2 : 1);
-      Draw($otherPlayer); 
+      Draw($otherPlayer);
       break;
     case "TCC031":
       $otherPlayer = ($player == 1 ? 2 : 1);
@@ -1085,7 +1085,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       $index = SearchItemsForUniqueID($uniqueID, $player);
       DestroyItemForPlayer($player, $index);
       AddDecisionQueue("PASSPARAMETER", $player, "0");
-      AddDecisionQueue("SETDQVAR", $player, "0");  
+      AddDecisionQueue("SETDQVAR", $player, "0");
       for($i = 0; $i < 2; ++$i) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS&MYITEMS", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
@@ -1354,5 +1354,3 @@ function IsHeroActive($player) {
   if ($char[1] == 2) return true;
   return false;
 }
-    
-

@@ -99,32 +99,14 @@ if(($index = FindCharacterIndex(2, "DYN026")) > 0) {
   $p2Char[$index + 4] = -2;
 }
 
-//Levia Redeemed
-for($i=0; $i<count($p1Inventory); $i+=InventoryPieces())
-{
-  if($p1Inventory[$i] == "DTD164")
-  {
-    PutPermanentIntoPlay(1, "DTD164");
-    array_push($p1Inventory, "DTD564");
-  }
-}
-for($i=0; $i<count($p2Inventory); $i+=InventoryPieces())
-{
-  if($p2Inventory[$i] == "DTD164")
-  {
-    PutPermanentIntoPlay(2, "DTD164");
-    array_push($p2Inventory, "DTD564");
-  }
-}
+InventoryStartGameAbilities(1);
+InventoryStartGameAbilities(2);
 
 //Cogwerx equipments
 EquipWithSteamCounter("EVO014", $p1Char, $p2Char);
 EquipWithSteamCounter("EVO015", $p1Char, $p2Char);
 EquipWithSteamCounter("EVO016", $p1Char, $p2Char);
 EquipWithSteamCounter("EVO017", $p1Char, $p2Char);
-
-EquipAdaptivePlating($p1Char, $p1Inventory, 1);
-EquipAdaptivePlating($p2Char, $p2Inventory, 2);
 
   //Quickshot Apprentice
   if ($p2Char[0] == "ROGUE016") {
@@ -162,33 +144,24 @@ function EquipWithSteamCounter($cardID, &$p1Char, &$p2Char) {
   if(($index = FindCharacterIndex(2, $cardID)) > 0) $p2Char[$index+2] += 1;
 }
 
-function EquipAdaptivePlating($chars, $inv, $player) {
-  if (!ClassContains($chars[0], "MECHANOLOGIST")) return;
-  
-  $invCount = count($inv);
-  $invPieces = InventoryPieces();
-  $hasAP = false;
-  for ($i = 0; $i < $invCount; $i += $invPieces) {
-    if ($inv[$i] == "EVO013") {
-      $hasAP = true;
-      break;
+function InventoryStartGameAbilities($player) {
+  global $p1Inventory, $p2Inventory;
+  $inventory = $player == 1 ? $p1Inventory : $p2Inventory;
+  for($i=0; $i<count($inventory); $i+=InventoryPieces())
+  {
+    switch($inventory[$i]) {
+      case "DTD164":
+        PutPermanentIntoPlay($player, "DTD164");
+        array_push($inventory, "DTD564");
+        break;
+      case "EVO013":
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to equip your adaptive plating");
+        AddDecisionQueue("MULTICHOOSETEXT", $player, "1-Head,Chest,Arms,Legs,None-1");
+        AddDecisionQueue("MODAL", $player, "ADAPTIVEPLATING", 1);
+        AddDecisionQueue("SHOWMODES", $player, "EVO013", 1);
+        break;
+      default: break;
     }
-  }
-  if (!$hasAP) return;
-
-  $hasHead = false; $hasChest = false; $hasArms = false; $hasLegs = false;
-  $charCount = count($chars);
-  $charPieces = CharacterPieces();
-  for ($i = 0; $i < $charCount; $i += $charPieces) {
-    if (SubtypeContains($chars[$i], "Head")) $hasHead = true;
-    if (SubtypeContains($chars[$i], "Chest")) $hasChest = true;
-    if (SubtypeContains($chars[$i], "Arms")) $hasArms = true;
-    if (SubtypeContains($chars[$i], "Legs")) $hasLegs = true;
-  }
-  if ($hasHead && $hasChest && $hasArms && $hasLegs) {
-    $items = SearchDeck($player, "", "Item", 2, -1, "MECHANOLOGIST");//Player 1, max cost 2
-    AddDecisionQueue("CHOOSEDECK", $player, $items);
-    AddDecisionQueue("SETDQVAR", $player, "0");
   }
 }
 

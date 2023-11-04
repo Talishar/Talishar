@@ -262,8 +262,8 @@ if ($decklink != "") {
               $armsSideboard .= " ";
               $armsSideboard .= $id;
             }
-          } else if (SubtypeContains($id, "Legs")) {
-            if ($legs == "") $legs = $id;
+          } else if (SubtypeContains($id, "Legs") || $id == "EVO013") {
+            if ($legs == "" && $id != "EVO013") $legs = $id;
             else {
               if ($legsSideboard != "") $legsSideboard .= " ";
               $legsSideboard .= $id;
