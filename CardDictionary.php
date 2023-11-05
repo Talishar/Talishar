@@ -326,6 +326,7 @@ function PitchValue($cardID)
 {
   if(!$cardID) return "";
   $set = CardSet($cardID);
+  if (CardType($cardID) == "M") return 0;
   if($set != "ROG" && $set != "DUM") {
     return GeneratedPitchValue($cardID);
   }
@@ -494,6 +495,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
   $abilityType = GetAbilityType($cardID, $index, $from);
+  if(($phase == "DR" || $phase == "AR" || $phase == "M" || $phase == "INSTANT") && EffectPlayCardRestricted($cardID, CardType($cardID), false, $restriction)) return false;
   if($phase == "P" && $from != "HAND") return false;
   if($phase == "B" && $from == "BANISH") return false;
   if($from == "BANISH") {

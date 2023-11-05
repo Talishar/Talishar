@@ -278,7 +278,8 @@ function AddSoul($cardID, $player, $from, $isMainPhase=true)
         AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
       }
     }
-    if($player == $mainPlayer && SearchCharacterForCard($player, "DTD004") && !SearchCurrentTurnEffects("DTD004", $player)) AddCurrentTurnEffect("DTD004", $player);
+    if($player == $mainPlayer)
+      if (FindCharacterIndex($player, "DTD004", true) == true && !SearchCurrentTurnEffects("DTD004", $player)) AddCurrentTurnEffect("DTD004", $player);
   }
 }
 

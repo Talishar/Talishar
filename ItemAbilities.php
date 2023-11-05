@@ -397,6 +397,19 @@ function ItemAttackModifiers()
   return $attackModifier;
 }
 
+function ItemAttackModifiersOnDefend($cardID) {
+  global $defPlayer, $combatChain;
+  $items = &GetItems($defPlayer);
+  for($i=0; $i<count($items); $i+=ItemPieces()) {
+    switch($items[$i]) {
+      case "EVO079":
+        if(CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $defPlayer)) return 1;
+      default: break;
+    }
+  }
+  return 0;
+}
+
 function ItemDestroyedAbility($player, $index)
 {
   global $mainPlayer;

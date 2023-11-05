@@ -82,7 +82,7 @@
 
   function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $mainPlayer, $currentPlayer, $defPlayer, $layers;
+    global $mainPlayer, $currentPlayer, $defPlayer, $layers, $combatChain;
     global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_PlayIndex, $CS_NumItemsDestroyed;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -223,6 +223,14 @@
           AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
         }
         return "";
+      case "EVO079":
+        if($currentPlayer == $defPlayer) {
+          for($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
+            if($combatChain[$j+1] != $currentPlayer) continue;
+            if(CardType($combatChain[$j]) == "AA" && ClassContains($combatChain[$j], "MECHANOLOGIST", $currentPlayer)) CombatChainPowerModifier($j, 1);
+          }
+        }
+        break;
       case "EVO081": case "EVO082": case "EVO083":
         if($from == "PLAY") {
           MZMoveCard($currentPlayer, "MYDISCARD:pitch=". PitchValue($cardID) .";type=AA", "MYHAND", may:true, isReveal:true);
