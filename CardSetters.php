@@ -279,7 +279,7 @@ function AddSoul($cardID, $player, $from, $isMainPhase=true)
       }
     }
     if($player == $mainPlayer)
-      if (FindCharacterIndex($player, "DTD004", true) == true && !SearchCurrentTurnEffects("DTD004", $player)) AddCurrentTurnEffect("DTD004", $player);
+      if (SearchCharacterAlive($player, "DTD004") && !SearchCurrentTurnEffects("DTD004", $player)) AddCurrentTurnEffect("DTD004", $player);
   }
 }
 

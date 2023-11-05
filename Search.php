@@ -294,6 +294,14 @@ function SearchEquipNegCounter(&$character)
   return $equipList;
 }
 
+function SearchCharacterAlive($player, $cardID)
+{
+  $index = FindCharacterIndex($player, $cardID);
+  if($index == -1) return false;
+  $char = &GetPlayerCharacter($player);
+  return $char[$index+1] > 0;
+}
+
 function SearchCharacterActive($player, $cardID, $checkGem=false, $setInactive=false)
 {
   $index = FindCharacterIndex($player, $cardID);
@@ -324,12 +332,11 @@ function SearchCharacterAliveSubtype($player, $subtype)
   return false;
 }
 
-function FindCharacterIndex($player, $cardID, $checkIfAlive = false)
+function FindCharacterIndex($player, $cardID)
 {
   $character = &GetPlayerCharacter($player);
   for($i = 0; $i < count($character); $i += CharacterPieces()) {
     if($character[$i] == $cardID) {
-      if ($checkIfAlive) return $character[$i + 1] > 0;
       return $i;
     }
   }
