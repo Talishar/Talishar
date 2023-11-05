@@ -740,6 +740,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
     $cardID = explode("_", $cardID)[0];
+    if($cardID == "EVO013") continue;//Don't show useless administrative effect
     if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) array_push($playerEffects, JSONRenderedCard($cardID));
     else array_push($opponentEffects, JSONRenderedCard($cardID));
   }
