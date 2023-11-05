@@ -265,8 +265,12 @@ if ($decklink != "") {
           } else if (SubtypeContains($id, "Legs") || $id == "EVO013") {
             if ($legs == "" && $id != "EVO013") $legs = $id;
             else {
-              if ($legsSideboard != "") $legsSideboard .= " ";
-              $legsSideboard .= $id;
+              $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
+              $count = $id == "EVO013" ? $numMainBoard + $numSideboard : 1;
+              for($j=0; $j<$count; ++$j) {
+                if ($legsSideboard != "") $legsSideboard .= " ";
+                $legsSideboard .= $id;
+              }
             }
           } else if (SubtypeContains($id, "Off-Hand")) {
             if ($offhand == "") $offhand = $id;
