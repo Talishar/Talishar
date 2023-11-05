@@ -163,6 +163,8 @@ function InventoryStartGameAbilities($player) {
       default: break;
     }
   }
+  if($player == 1) $p1Inventory = $inventory;
+  else $p2Inventory = $inventory;
 }
 
 ?>
