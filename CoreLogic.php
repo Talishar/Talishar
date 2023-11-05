@@ -2251,3 +2251,25 @@ function CheckIfSingularityConditionsAreMet($currentPlayer) {
   if ($evoCount < 4) return "You do not meet the Evo requirement";
   return "";
 }
+
+function ForceEquipmentBlock($count) {
+  global $defPlayer;
+  $actionEquipmentCountWithBlockValue = 0;
+  $equipmentCountWithBlockValue = 0;
+  $characters = &GetPlayerCharacter($defPlayer);
+  $charactersCount = count($characters);
+  for ($i = 0; $i < $charactersCount; $i += CharacterPieces()) {
+    if (CardType($characters[$i]) == "E") {
+      if (BlockValue($characters[$i]) > 0) $equipmentCountWithBlockValue++;
+      if (SubtypeContains($characters[$i], "Evo")) {
+        if (CardType(GetCardIDBeforeTransform($characters[$i])) == "A" && BlockValue(GetCardIDBeforeTransform($characters[$i])) > 0) 
+          $actionEquipmentCountWithBlockValue++;
+      }
+    }
+  }
+
+  if (IsOverpowerActive()) $count = $equipmentCountWithBlockValue - $actionEquipmentCountWithBlockValue + 1;
+  if ($count > $equipmentCountWithBlockValue) $count = $equipmentCountWithBlockValue;
+
+  return $count;
+}
