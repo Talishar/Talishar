@@ -634,6 +634,7 @@ function IsBanned($cardID, $format)
         case "CRU174": case "CRU175": case "CRU176":
         case "MON239":
         case "MON183": case "MON184": case "MON185":
+        case "MON199": // Soul Reaping
         case "EVR037":
         case "EVR123": // Aether Wildfire
         case "UPR103": case "EVR120": case "ELE002": case "ELE003": case "EVR121":
@@ -646,7 +647,6 @@ function IsBanned($cardID, $format)
     case "compcc":
       switch ($cardID) {
         case "WTR164": case "WTR165": case "WTR166": //Drone of Brutality
-        case "ARC042": //Bull's Eye Bracers
         case "ARC170": case "ARC171": case "ARC172": //Plunder Run
         case "CRU141":
         case "MON001": //Prism
@@ -657,6 +657,8 @@ function IsBanned($cardID, $format)
         case "MON266": case "MON267": case "MON268": //Belittle
         case "ELE003":
         case "ELE006":
+        case "ELE031": // Lexi, Livewire
+        case "ELE034": // Voltaire, Strike Twice
         case "ELE114":
         case "ELE172":
         case "ELE186": case "ELE187": case "ELE188":
