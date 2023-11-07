@@ -224,7 +224,16 @@ if ($decklink != "") {
       {
         if ($unsupportedCards != "") $unsupportedCards .= " ";
         $unsupportedCards .= $id;
-      } else if ($cardType == "C") {
+      }
+      else if($id == "EVO013") {
+        $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
+        $count = $numMainBoard + $numSideboard;
+        for($j=0; $j<$count; ++$j) {
+          if ($legsSideboard != "") $legsSideboard .= " ";
+          $legsSideboard .= $id;
+        }
+      }
+      else if ($cardType == "C") {
         $character = $id;
       } else if ($cardType == "W") {
         $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
@@ -262,15 +271,12 @@ if ($decklink != "") {
               $armsSideboard .= " ";
               $armsSideboard .= $id;
             }
-          } else if (SubtypeContains($id, "Legs") || $id == "EVO013") {
-            if ($legs == "" && $id != "EVO013") $legs = $id;
-            else {
-              $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
-              $count = $id == "EVO013" ? $numMainBoard + $numSideboard : 1;
-              for($j=0; $j<$count; ++$j) {
-                if ($legsSideboard != "") $legsSideboard .= " ";
-                $legsSideboard .= $id;
-              }
+          } else if (SubtypeContains($id, "Legs")) {
+            if ($legs == "") $legs = $id;
+            else
+            {
+              $legsSideboard .= " ";
+              $legsSideboard .= $id;
             }
           } else if (SubtypeContains($id, "Off-Hand")) {
             if ($offhand == "") $offhand = $id;
