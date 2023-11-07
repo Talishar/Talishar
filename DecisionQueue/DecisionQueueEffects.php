@@ -487,11 +487,15 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "SYSTEMRESET":
+      $destroyedItems = [];
       for($i=count($lastResult)-1; $i>=0; --$i) {
         $cardID = DestroyItemForPlayer($player, $lastResult[$i], skipDestroy:true);
         $banishIndex = BanishCardForPlayer($cardID, $player, "PLAY", "-", banishedBy:$player);
         $cardID = RemoveBanish($player, $banishIndex);
-        PutItemIntoPlayForPlayer($cardID, $player);
+        array_push($destroyedItems, $cardID);
+      }
+      for($i=0; $i<count($destroyedItems); ++$i) {
+        PutItemIntoPlayForPlayer($destroyedItems[$i], $player);
       }
       return $lastResult;
     case "TICKTOCKCLOCK":
