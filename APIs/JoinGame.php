@@ -626,7 +626,7 @@ function IsCardBanned($cardID, $format)
         case "ARC076": case "ARC077": case "ELE006": case "ELE186": case "ELE187": case "ELE188":
         case "ELE223": case "WTR152": case "CRU174": case "CRU175": case "CRU176":
         case "ARC129": case "ARC130": case "ARC131": case "MON239": case "MON183": case "MON184":
-        case "MON185": case "CRU141": case "EVR037": case "EVR123":
+        case "MON185": case "MON199": case "CRU141": case "EVR037": case "EVR123":
         case "UPR103": case "EVR120": case "ELE002": case "ELE003": case "EVR121":
           return true;
         default: return false;
@@ -638,6 +638,8 @@ function IsCardBanned($cardID, $format)
         case "ELE187": case "ELE188": case "WTR164": case "WTR165": case "WTR166": case "ELE223": case "ARC170":
         case "ARC171": case "ARC172": case "MON239": case "CRU141": case "ELE114": case "ELE172":
         case "UPR139":
+        case "ELE031": // Lexi, Livewire
+        case "ELE034": // Voltaire, Strike Twice
         case "ELE062": case "ELE222": case "ELE001": case "ELE003":
           return true;
         default: return false;
