@@ -495,10 +495,12 @@ function DTDHitEffect($cardID)
       if(IsHeroAttackTarget()) MZMoveCard($mainPlayer, "THEIRSOUL", "THEIRBANISH,SOUL,-");
       break;
     case "DTD226":
-      AddDecisionQueue("INPUTCARDNAME", $mainPlayer, "-");
-      AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
-      AddDecisionQueue("WRITELOG", $mainPlayer, "<b>{0}</b> was chosen");
-      AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $defPlayer, "DTD226,{0}");
+      if(IsHeroAttackTarget()) {
+        AddDecisionQueue("INPUTCARDNAME", $mainPlayer, "-");
+        AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
+        AddDecisionQueue("WRITELOG", $mainPlayer, "<b>{0}</b> was chosen");
+        AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $defPlayer, "DTD226,{0}");
+      }
       break;
     case "DTD227":
       if(IsHeroAttackTarget()) {
