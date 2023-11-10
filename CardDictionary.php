@@ -495,7 +495,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
   $abilityType = GetAbilityType($cardID, $index, $from);
-  if(($phase == "DR" || $phase == "AR" || $phase == "M" || $phase == "INSTANT") && EffectPlayCardRestricted($cardID, CardType($cardID), false, $restriction)) return false;
   if($phase == "P" && $from != "HAND") return false;
   if($phase == "B" && $from == "BANISH") return false;
   if($from == "BANISH") {
@@ -548,6 +547,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if($from == "HAND" && count($myHand) < 2) return false;
     else if(count($myHand) < 1) return false;
   }
+  if(EffectPlayCardConstantRestriction($cardID, CardType($cardID), $restriction)) return false;
   if($phase != "B" && $phase != "P" && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
   if($phase == "M" && $subtype == "Arrow") {
     if($from != "ARS") return false;

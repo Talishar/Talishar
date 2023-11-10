@@ -1202,7 +1202,23 @@ function EffectAttackRestricted()
   return false;
 }
 
-function EffectPlayCardRestricted($cardID, $type, $revertGamestate = true, &$restriction = "")
+function EffectPlayCardConstantRestriction($cardID, $type, &$restriction = "") {
+  global $currentTurnEffects, $currentPlayer;
+  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    if($currentTurnEffects[$i+1] == $currentPlayer) {
+      $effectArr = explode(",", $currentTurnEffects[$i]);
+      $effectID = $effectArr[0];
+      switch($effectID) {
+        case "OUT187": if(in_array(GamestateSanitize(CardName($cardID)), $effectArr)) $restriction = "OUT187"; break;
+        default:
+          break;
+      }
+    }
+  }
+  return $restriction != "";
+}
+
+function EffectPlayCardRestricted($cardID, $type)
 {
   global $currentTurnEffects, $currentPlayer;
   $restrictedBy = "";
@@ -1213,7 +1229,6 @@ function EffectPlayCardRestricted($cardID, $type, $revertGamestate = true, &$res
       switch($effectID) {
         case "ARC162": if(GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "ARC162"; break;
         case "DTD226": if(CardType($cardID) != "W" && GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "DTD226"; break;
-        case "OUT187": if(in_array(GamestateSanitize(CardName($cardID)), $effectArr)) $restriction = "OUT187"; break;
         case "DTD230-War": if($type == "A" && CardType($cardID) != "W") $restrictedBy = "DTD230"; break;
         case "DTD230-Peace": if($type == "AA" || (CardType($cardID) == "W" && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230"; break;
         default:
@@ -1221,11 +1236,9 @@ function EffectPlayCardRestricted($cardID, $type, $revertGamestate = true, &$res
       }
     }
   }
-  if($restriction != "") {
-    if ($revertGamestate) {
-      WriteLog("The card play is restricted by " . CardLink($restriction, $restriction) . ". Reverting the gamestate.");
-      RevertGamestate();
-    }
+  if($restrictedBy != "") {
+    WriteLog("The card play is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.");
+    RevertGamestate();
     return true;
   }
   return false;
