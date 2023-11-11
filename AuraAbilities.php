@@ -62,6 +62,9 @@ function AuraDestroyed($player, $cardID, $isToken = false)
           PlayAura("MON104", $player);
         }
         break;
+      case "EVO244":
+        PhantomTidemawDestroy($player, $i);
+        break;
       default: break;
     }
   }
@@ -351,7 +354,7 @@ function AuraStartTurnAbilities()
         GainResources($mainPlayer, 1);
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         break;
-      case "EVO243": 
+      case "EVO243":
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         break;
       default: break;
