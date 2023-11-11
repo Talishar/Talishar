@@ -515,6 +515,8 @@ function AuraDamagePreventionAmount($player, $index, $damage=0, $active=false, &
         $auras[$index+5] = 1;
         return 0;
       }
+      break;
+    case "EVO244": return 1;
     default: break;
   }
 }
