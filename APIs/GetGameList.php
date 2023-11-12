@@ -34,6 +34,8 @@ else if(IsUserLoggedIn()) $isShadowBanned = IsBanned(LoggedInUserName());
 
 if(IsUserLoggedIn()) {
   $response->LastGameName = SessionLastGameName();
+  $response->LastPlayerID = SessionLastGamePlayerID();
+  $response->LastAuthKey = SessionLastAuthKey();
 }
 
 $gameInProgressCount = 0;

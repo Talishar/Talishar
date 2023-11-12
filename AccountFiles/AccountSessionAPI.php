@@ -29,6 +29,12 @@
     return $_SESSION["lastPlayerId"];
   }
 
+  function SessionLastAuthKey()
+  {
+    CheckSession();
+    return $_SESSION["lastAuthKey"];
+  }
+
   function ClearLoginSession()
   {
     //First clear the session
