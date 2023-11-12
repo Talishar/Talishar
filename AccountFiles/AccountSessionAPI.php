@@ -17,6 +17,18 @@
     return $_SESSION["useruid"];
   }
 
+  function SessionLastGameName()
+  {
+    CheckSession();
+    return $_SESSION["lastGameName"];
+  }
+
+  function SessionLastGamePlayerID()
+  {
+    CheckSession();
+    return $_SESSION["lastPlayerId"];
+  }
+
   function ClearLoginSession()
   {
     //First clear the session

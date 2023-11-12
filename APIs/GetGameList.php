@@ -32,6 +32,10 @@ $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
 else if(IsUserLoggedIn()) $isShadowBanned = IsBanned(LoggedInUserName());
 
+if(IsUserLoggedIn()) {
+  $response->LastGameName = SessionLastGameName();
+}
+
 $gameInProgressCount = 0;
 if ($handle = opendir($path)) {
   while (false !== ($folder = readdir($handle))) {
