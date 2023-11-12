@@ -161,11 +161,12 @@
         if(!SubtypeContains($attackID, "Aura", $mainPlayer)) PhantomTidemawDestroy();//Aura destroy is handled elsewhere
       }
       AttackDestroyed($attackID);
-      if(CardType($attackID) == "AA")
-      {
+      if(CardType($attackID) == "AA") {
         IncrementClassState($mainPlayer, $CS_NumPhantasmAADestroyed);
-        CloseCombatChain();
+      } else if(SubtypeContains($attackID, "Aura", $mainPlayer)) {
+        DestroyAura($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
       }
+      CloseCombatChain();
       ProcessDecisionQueue();
     }
     else {
