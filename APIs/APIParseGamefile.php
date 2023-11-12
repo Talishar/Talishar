@@ -65,6 +65,7 @@ $MGS_ChooseFirstPlayer = 2;
 $MGS_P2Sideboard = 3;
 $MGS_ReadyToStart = 4;
 $MGS_GameStarted = 5;
+$MGS_GameOver = 99;
 
 $FORMAT_CompCC = 1;
 $FORMAT_CompBlitz = 3;

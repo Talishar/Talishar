@@ -14,7 +14,7 @@
 11 - Number P2 disconnects
 12 - Current player status (0 = active, 1 = inactive)
 13 - Format (see function FormatCode)
-14 - Game status (see $GS_ constants)
+14 - Game status (see $MGS_ constants)
 15 - Player 1 is chat enabled
 16 - Player 2 is chat enabled
 */

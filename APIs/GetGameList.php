@@ -33,9 +33,12 @@ if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]
 else if(IsUserLoggedIn()) $isShadowBanned = IsBanned(LoggedInUserName());
 
 if(IsUserLoggedIn()) {
-  $response->LastGameName = SessionLastGameName();
-  $response->LastPlayerID = SessionLastGamePlayerID();
-  $response->LastAuthKey = SessionLastAuthKey();
+  $lastGameName = SessionLastGameName();
+  if(GetCachePiece($lastGameName, 14) != 99) {
+    $response->LastGameName = $lastGameName;
+    $response->LastPlayerID = SessionLastGamePlayerID();
+    $response->LastAuthKey = SessionLastAuthKey();
+  }
 }
 
 $gameInProgressCount = 0;

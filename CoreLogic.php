@@ -604,6 +604,7 @@ function PlayerWon($playerID)
   else WriteLog("Player " . $winner . " won!");
   $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
+  SetCachePiece($gameName, 14, 99);//$MGS_GameOver
   try {
     logCompletedGameStats();
   } catch (Exception $e) { }
