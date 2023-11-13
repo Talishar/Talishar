@@ -20,6 +20,7 @@
   function SessionLastGameName()
   {
     CheckSession();
+    if(!isset($_SESSION["lastGameName"])) return "";
     return $_SESSION["lastGameName"];
   }
 

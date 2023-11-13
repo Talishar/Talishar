@@ -34,11 +34,13 @@ else if(IsUserLoggedIn()) $isShadowBanned = IsBanned(LoggedInUserName());
 
 if(IsUserLoggedIn()) {
   $lastGameName = SessionLastGameName();
-  $gameStatus = GetCachePiece($lastGameName, 14);
-  if($gameStatus != "" && $gameStatus != 99) {
-    $response->LastGameName = $lastGameName;
-    $response->LastPlayerID = SessionLastGamePlayerID();
-    $response->LastAuthKey = SessionLastAuthKey();
+  if($lastGameName != "") {
+    $gameStatus = GetCachePiece($lastGameName, 14);
+    if($gameStatus != "" && $gameStatus != 99) {
+      $response->LastGameName = $lastGameName;
+      $response->LastPlayerID = SessionLastGamePlayerID();
+      $response->LastAuthKey = SessionLastAuthKey();
+    }
   }
 }
 
