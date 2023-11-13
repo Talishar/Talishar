@@ -100,7 +100,7 @@ if ($handle = opendir($path)) {
         else if($format == "livinglegendscc") $formatName = "Open Format";
         else if($format == "clash") $formatName = "Clash";
         else if($format == "llcc") $formatName = "Living Legend CC";
-        else if($fornat == "llblitz") $formatName = "Living Legend Blitz";
+        else if($format == "llblitz") $formatName = "Living Legend Blitz";
         $description = ($gameDescription == "" ? "Game #" . $gameName : $gameDescription);
         $openGame->format = $format;
         $openGame->formatName = $formatName;
