@@ -92,13 +92,15 @@ if ($handle = opendir($path)) {
         deleteDirectory($folder);
         DeleteCache($gameToken);
       }
-      if ($status == 0 && $visibility == "public" && intval(GetCachePiece($gameName, 11)) < 3) {
+      if($status == 0 && $visibility == "public" && intval(GetCachePiece($gameName, 11)) < 3) {
         $openGame = new stdClass();
         if($format != "compcc" && $format != "compblitz") $openGame->p1Hero = GetCachePiece($gameName, 7);
         $formatName = "";
-        if ($format == "commoner") $formatName = "Commoner ";
-        else if ($format == "livinglegendscc") $formatName = "Open Format";
-        else if ($format == "clash") $formatName = "Clash";
+        if($format == "commoner") $formatName = "Commoner ";
+        else if($format == "livinglegendscc") $formatName = "Open Format";
+        else if($format == "clash") $formatName = "Clash";
+        else if($format == "llcc") $formatName = "Living Legend CC";
+        else if($fornat == "llblitz") $formatName = "Living Legend Blitz";
         $description = ($gameDescription == "" ? "Game #" . $gameName : $gameDescription);
         $openGame->format = $format;
         $openGame->formatName = $formatName;

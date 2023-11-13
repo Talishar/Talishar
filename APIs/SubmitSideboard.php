@@ -65,19 +65,19 @@ $deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
 
 $playerDeck = $submission->deck;
 $deckCount = count($playerDeck);
-if($deckCount < 60 && ($format == "cc" || $format == "compcc")) {
+if($deckCount < 60 && ($format == "cc" || $format == "compcc" || $format == "llcc")) {
   $response->status = "FAIL";
   $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is below the minimum.";
   echo json_encode($response);
   exit;
 }
-if($deckCount < 40 && ($format == "blitz" || $format == "compblitz" || $format == "commoner")) {
+if($deckCount < 40 && ($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz")) {
   $response->status = "FAIL";
   $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is below the minimum.";
   echo json_encode($response);
   exit;
 }
-if($deckCount > 40 && ($format == "blitz" || $format == "compblitz")) {
+if($deckCount > 40 && ($format == "blitz" || $format == "compblitz" || $format == "llblitz")) {
   $response->status = "FAIL";
   $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is above the maximum.";
   echo json_encode($response);

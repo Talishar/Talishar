@@ -117,6 +117,8 @@ if ($canSeeQueue) {
   echo ("<option value='compcc'" . ($defaultFormat == 1 ? " selected" : "") . ">Competitive CC</option>");
   echo ("<option value='commoner'" . ($defaultFormat == 5 ? " selected" : "") . ">Commoner</option>");
   echo ("<option value='clash'" . ($defaultFormat == 6 ? " selected" : "") . ">Clash</option>");
+  echo ("<option value='llcc'" . ($defaultFormat == 8 ? " selected" : "") . ">Living Legend CC</option>");
+  echo ("<option value='llblitz'" . ($defaultFormat == 9 ? " selected" : "") . ">Living Legend Blitz</option>");
 }
 echo ("<option value='livinglegendscc'" . ($defaultFormat == 4 ? " selected" : "") . ">Open Format</option>");
 echo ("</select>");

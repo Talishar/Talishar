@@ -75,9 +75,9 @@ if(isset($_SESSION["userid"]))
 
 session_write_close();
 if($isShadowBanned) {
-  if($format == "cc" || $format == "livinglegendscc") $format = "shadowcc";
+  if($format == "cc" || $format == "livinglegendscc" || $format == "llcc") $format = "shadowcc";
   else if($format == "compcc") $format = "shadowcompcc";
-  else if($format == "blitz" || $format == "compblitz" || $format == "commoner") $format = "shadowblitz";
+  else if($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz") $format = "shadowblitz";
 }
 
 $gameName = GetGameCounter();

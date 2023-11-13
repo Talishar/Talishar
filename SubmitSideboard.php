@@ -52,12 +52,12 @@ if ($playerCharacter != "" && $playerDeck != "") //If they submitted before load
 
   $playerDeck = explode(",", $playerDeck);
   $deckCount = count($playerDeck);
-  if ($deckCount < 60 && ($format == "cc" || $format == "compcc")) {
+  if ($deckCount < 60 && ($format == "cc" || $format == "compcc" || $format == "llcc")) {
     WriteLog("Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is under the legal minimum.");
     header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
     exit;
   }
-  if ($deckCount < 40 && ($format == "blitz" || $format == "compblitz" || $format == "commoner")) {
+  if ($deckCount < 40 && ($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz")) {
     WriteLog("Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is under the legal minimum.");
     header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
     exit;

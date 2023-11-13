@@ -314,9 +314,9 @@ if ($decklink != "") {
   }
 
   if ($bannedCard != "" && !$starterDeck) {
-    if ($format == "blitz" || $format == "compblitz") {
+    if ($format == "blitz" || $format == "compblitz" || $format == "llblitz") {
       $_SESSION['error'] = '⚠️ The following cards are not legal in the Blitz format: \n\n' . $bannedCard;
-    } elseif ($format == "cc" || $format == "compcc" || $format == "livinglegendscc") {
+    } elseif ($format == "cc" || $format == "compcc" || $format == "livinglegendscc" || $format == "llcc") {
       $_SESSION['error'] = '⚠️ The following cards are not legal in the Classic Constructed format: \n\n' . $bannedCard;
     } elseif ($format == "commoner") {
       $_SESSION['error'] = '⚠️ The following cards are not legal the Commoner format: \n\n' . $bannedCard;

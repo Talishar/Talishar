@@ -444,6 +444,8 @@ function FormatCode($format)
     case "commoner": return 5;
     case "sealed": return 6;
     case "draft": return 7;
+    case "llcc": return 8;
+    case "llblitz": return 9;
     default: return -1;
   }
 }
@@ -460,6 +462,8 @@ function FormatName($formatCode)
     case 5: return "commoner";
     case 6: return "sealed";
     case 7: return "draft";
+    case 8: return "llcc";
+    case 9: return "llblitz";
     default: return "-";
   }
 }
