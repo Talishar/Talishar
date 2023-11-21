@@ -623,21 +623,21 @@ function IsBanned($cardID, $format)
     case "blitz":
     case "compblitz":
       switch ($cardID) {
-        case "WTR164": case "WTR165": case "WTR166": //Drone of Brutality
-        case "WTR152":
-        case "ARC076": case "ARC077": //Viserai
-        case "ARC129": case "ARC130": case "ARC131":
-        case "ELE006":
-        case "ELE186": case "ELE187": case "ELE188":
-        case "ELE223":
-        case "CRU141":
-        case "CRU174": case "CRU175": case "CRU176":
-        case "MON239":
-        case "MON183": case "MON184": case "MON185":
-        case "MON199": // Soul Reaping
-        case "EVR037":
+        case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
+        case "WTR152": // Heartened Cross Strap
+        case "ARC076": case "ARC077": // Viserai
+        case "ARC129": case "ARC130": case "ARC131": // Stir The Aetherwinds
+        case "ELE006": // Awakening
+        case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
+        case "ELE223": // Duskblade
+        case "CRU141": // Bloodsheath Skeleta
+        case "CRU174": case "CRU175": case "CRU176": // Snapback
+        case "MON154": case "MON155": // Chane | Galaxxi Black
+        case "MON239": // Stubby Hammers
+        case "EVR037": // Mask of Pouncing Lynx
         case "EVR123": // Aether Wildfire
-        case "UPR103": case "EVR120": case "ELE002": case "ELE003": case "EVR121":
+        case "UPR103": case "EVR120": case "EVR121": // Iyslander | Kraken's Aethervein
+        case "ELE002": case "ELE003": // Oldhim | Winter's Wail
           return true;
         default:
           return false;
@@ -646,25 +646,23 @@ function IsBanned($cardID, $format)
     case "cc":
     case "compcc":
       switch ($cardID) {
-        case "WTR164": case "WTR165": case "WTR166": //Drone of Brutality
-        case "ARC170": case "ARC171": case "ARC172": //Plunder Run
-        case "CRU141":
-        case "MON001": //Prism
-        case "MON003": //Luminaris
-        case "MON153":
-        case "MON155":
-        case "MON239":
-        case "MON266": case "MON267": case "MON268": //Belittle
-        case "ELE003":
-        case "ELE006":
-        case "ELE031": // Lexi, Livewire
-        case "ELE034": // Voltaire, Strike Twice
-        case "ELE114":
-        case "ELE172":
-        case "ELE186": case "ELE187": case "ELE188":
-        case "ELE223":
-        case "EVR017":
-        case "UPR139":
+        case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
+        case "ARC170": case "ARC171": case "ARC172": // Plunder Run
+        case "CRU141": // Bloodsheath Skeleta
+        case "MON001": case "MON003": // Prism Sculptor of Arc Light | Luminaris
+        case "MON153": case "MON155": // Chane, Bound by Shadow | Galaxxi Black
+        case "MON239": // Stubby Hammers
+        case "MON266": case "MON267": case "MON268": // Belittle
+        case "ELE001": case "ELE003": // Oldhim, Grandfather of Eternity | Winter's Wail
+        case "ELE006": // Awakening
+        case "ELE031": case "ELE034":// Lexi, Livewire | Voltaire, Strike Twice
+        case "ELE062": case "ELE222": // Briar, Warden of Thorns | Rosetta Thorn
+        case "ELE114": // Pulse of Isenloft
+        case "ELE172": // Amulet of Ice
+        case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
+        case "ELE223": // Duskblade
+        case "EVR017": // Bravo, Star of the Show
+        case "UPR139": // Hypothermia
           return true;
         default:
           return false;
@@ -672,12 +670,8 @@ function IsBanned($cardID, $format)
       break;
     case "commoner":
       switch ($cardID) {
-        case "ELE186": //Ball Lightning
-        case "ELE187":
-        case "ELE188":
-        case "MON266": //Belittle
-        case "MON267":
-        case "MON268":
+        case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
+        case "MON266": case "MON267": case "MON268": // Belittle
           return true;
         default:
           return false;
