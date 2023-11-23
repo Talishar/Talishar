@@ -1,2 +1,5 @@
 <?php
-phpinfo();
+
+  include 'Libraries/SHMOPLibraries.php';
+  phpinfo();
+?>
