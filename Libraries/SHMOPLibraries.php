@@ -117,7 +117,7 @@ function DeleteCache($name)
   global $useRedis, $redis;
   if ($useRedis) {
     $redis->del($name);
-    $redis->del($name . "-GS");
+    $redis->del(GamestateID($name));
   }
   //Always try to delete shmop
   $id = shmop_open($name, "w", 0644, 128);
