@@ -50,6 +50,18 @@ function WriteCache($name, $data)
   }
 }
 
+function WriteGamestateCache($name, $data)
+{
+  if ($name == 0) return;
+  $serData = serialize($data);
+  $gsID = shmop_open(GamestateID($name), "c", 0644, 8192);
+  if ($gsID == false) {
+    exit;
+  } else {
+    $rv = shmop_write($gsID, $serData, 0);
+  }
+}
+
 function ReadCache($name)
 {
   global $useRedis, $redis;
@@ -105,19 +117,29 @@ function DeleteCache($name)
   global $useRedis, $redis;
   if ($useRedis) {
     $redis->del($name);
-    $redis->del($name . "GS");
+    $redis->del($name . "-GS");
   }
   //Always try to delete shmop
   $id = shmop_open($name, "w", 0644, 128);
-  if ($id) {
+  if($id) {
     shmop_delete($id);
     shmop_close($id); //shmop_close is deprecated
+  }
+  $gsID = shmop_open(GamestateID($name), "c", 0644, 8192);
+  if($gsID) {
+    shmop_delete($gsID);
+    shmop_close($gsID); //shmop_close is deprecated
   }
 }
 
 function SHMOPDelimiter()
 {
   return "!";
+}
+
+function GamestateID($gameName)
+{
+  return $gameName + 1000000;
 }
 
 function SetCachePiece($name, $piece, $value)
