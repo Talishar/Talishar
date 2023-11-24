@@ -973,8 +973,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       StartTurnAbilities();
       return 1;
     case "DRAWTOINTELLECT":
+      global $CS_NumCardsDrawn;
       $char = &GetPlayerCharacter($player);
       for($i = 0; $i < CharacterIntellect($char[0]); ++$i) Draw($player, mainPhase:false, fromCardEffect:false);
+      SetClassState($player, $CS_NumCardsDrawn, 0);//Don't make initial draw count for Hold the Line
       return 1;
     case "ROLLDIE":
       $roll = RollDie($player, true, $parameter == "1");
@@ -1077,7 +1079,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $lastResultArr = explode("-", $lastResult);
       $zone = $lastResultArr[0];
       $zoneDS = &GetMZZone($player, $zone);
-      for ($i=1; $i < count($lastResultArr); $i += 2) { 
+      for ($i=1; $i < count($lastResultArr); $i += 2) {
         if($zone == "MYALLY" || $zone == "THEIRALLY") $zoneDS[$lastResultArr[$i]+9] += $parameter;
       }
       return $lastResult;
