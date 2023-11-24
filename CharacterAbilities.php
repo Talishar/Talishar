@@ -302,6 +302,7 @@ function MainCharacterEndTurnAbilities()
   global $CS_NumAttackCards, $defCharacter, $CS_ArcaneDamageDealt;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
+    if($character[$i + 1] == 0 || $character[$i + 1] == 1) continue; //Do not process ability if it is destroyed
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
     switch($characterID) {
       case "WTR115":
