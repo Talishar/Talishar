@@ -120,7 +120,7 @@ function DTDCombatEffectActive($cardID, $attackID)
   $cardID = $params[0];
   switch($cardID) {
     case "DTD010": return true;
-    case "DTD011": return CardType($attackID) == "AA";;
+    case "DTD011": return CardType($attackID) == "AA";
     case "DTD032": case "DTD033": case "DTD034": return SubtypeContains($attackID, "Angel", $mainPlayer);
     case "DTD035": case "DTD036": case "DTD037": return str_contains(NameOverride($attackID, $mainPlayer), "Herald");
     case "DTD051": return CardType($attackID) == "AA";//Beckoning Light
@@ -156,7 +156,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
     case "DTD410": return true;
-    case "DTD411": return true;
+    case "DTD411": return CardType($attackID) == "AA";;
     default:
       return false;
   }

@@ -1163,7 +1163,7 @@ function EffectDefenderAttackModifiers()
   global $defPlayer, $currentTurnEffects;
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = false;
-    if($currentTurnEffects[$i + 1] == $defPlayer) {
+    if($currentTurnEffects[$i + 1] == $defPlayer && IsCombatEffectActive($currentTurnEffects[$i])) {
       switch($currentTurnEffects[$i]) {
         case "DTD011": $mod -= 1; break;
         default:
