@@ -83,7 +83,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
     //Handle server timeout
     $lastUpdateTime = $cacheArr[5];
-    if ($currentTime - $lastUpdateTime > 90000 && $cacheArr[11] != "1")//90 seconds
+    if ($currentTime - $lastUpdateTime > 15000 && $cacheArr[11] != "1")//15 seconds
     {
       SetCachePiece($gameName, 12, "1");
       $opponentInactive = true;
@@ -651,7 +651,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $index = intval($option[1]);
         $card = $source[$index];
       } else $card = $option[1];
-      
+
       if ($option[0] == "LAYER" && $card == "TRIGGER") $card = $source[$index + 2];
       $playerBorderColor = 0;
 

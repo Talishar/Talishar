@@ -90,7 +90,7 @@ while (true) {
     //Handle server timeout
     $lastUpdateTime = GetCachePiece($gameName, 6);
     if($lastUpdateTime == "") { echo("The game no longer exists on the server."); exit; }
-    if($currentTime - $lastUpdateTime > 90000 && GetCachePiece($gameName, 12) != "1") //90 seconds
+    if($currentTime - $lastUpdateTime > 15000 && GetCachePiece($gameName, 12) != "1") //15 seconds
     {
       SetCachePiece($gameName, 12, "1");
       $opponentInactive = true;
