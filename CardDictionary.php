@@ -926,6 +926,13 @@ function IsAction($cardID)
   return false;
 }
 
+function IsActionCard($cardID)
+{
+  $cardType = CardType($cardID);
+  if($cardType == "A" || $cardType == "AA") return true;
+  return false;
+}
+
 function GoesOnCombatChain($phase, $cardID, $from)
 {
   global $layers;

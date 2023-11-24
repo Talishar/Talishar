@@ -369,7 +369,7 @@ function EffectBlockModifier($cardID, $index, $from)
     case "TCC035":
       return CachedTotalAttack() >= 13 && CardType($CombatChain->Card($index)->ID()) != "E" ? -1 : 0;
     case "EVO105": case "EVO106": case "EVO107":
-      return IsAction($CombatChain->Card($index)->ID()) ? -1 : 0;
+      return IsActionCard($CombatChain->Card($index)->ID()) ? -1 : 0;
     default: return 0;
   }
 }
