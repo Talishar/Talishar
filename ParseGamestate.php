@@ -46,39 +46,7 @@ function ParseGamestate($useRedis = false)
   $mpgBuiltFor = -1;
   $myStateBuiltFor = -1;
 
-  $fileTries = 0;
-  $targetTries = ($playerID == 1 ? 10 : 100);
-  $waitTime = 1000000;
-  while (!file_exists($filename) && $fileTries < $targetTries) {
-    usleep($waitTime); //1 second
-    ++$fileTries;
-  }
-  if ($fileTries == $targetTries) {
-    $response = new stdClass();
-    $response->error = "Unable to create the game after 10 seconds. Please try again.";
-    echo(json_encode($response));
-    exit;
-  }
-
-  if (!file_exists($filename)) exit;
-  $handler = fopen($filename, "r");
-
-  if (!$handler) {
-    exit;
-  } //Game does not exist
-
-  $lockTries = 0;
-  $lockType = isset($isProcessInput) && $isProcessInput ? LOCK_EX : LOCK_SH;
-  while (!flock($handler, $lockType) && $lockTries < 10) {
-    usleep(100000); //100ms
-    ++$lockTries;
-  }
-
-  if ($lockTries == 10) exit;
-
-  $gamestateContent = "";
-  if($useRedis) $gamestateContent = ReadCache($gameName . "GS");
-  if($gamestateContent == "") $gamestateContent = fread($handler, filesize($filename));
+  $gamestateContent = ReadCache(GamestateID($gameName));
   $gamestateContent = explode("\r\n", $gamestateContent);
   if(count($gamestateContent) < 60) exit;
 
@@ -168,7 +136,6 @@ function ParseGamestate($useRedis = false)
   $p1Inventory = GetStringArray($gamestateContent[72+$numChainLinks]);
   $p2Inventory = GetStringArray($gamestateContent[73+$numChainLinks]);
 
-  fclose($handler);
   BuildMyGamestate($playerID);
 }
 
@@ -427,14 +394,11 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
 
 function RevertGamestate($filename = "gamestateBackup.txt")
 {
-  global $gameName, $skipWriteGamestate, $useRedis, $filepath;
-  if($useRedis)
-  {
-    $gamestate = file_get_contents($filepath . $filename);
-    WriteCache($gameName . "GS", $gamestate);
-  }
+  global $gameName, $skipWriteGamestate, $filepath;
   copy($filepath . $filename, $filepath . "gamestate.txt");
   $skipWriteGamestate = true;
+  $gamestate = file_get_contents($filepath . $filename);
+  WriteCache(GamestateID($gameName), $gamestate);
 }
 
 function MakeStartTurnBackup()
