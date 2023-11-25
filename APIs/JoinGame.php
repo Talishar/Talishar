@@ -617,6 +617,7 @@ function GetAltCardID($cardID)
     case "TCC004": return "EVO023";
     case "TCC005": return "EVO024";
     case "TCC006": return "EVO025";
+    case "DRO026": return "WTR173";
   }
   return $cardID;
 }
