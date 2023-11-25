@@ -302,13 +302,13 @@ function MainCharacterEndTurnAbilities()
   global $CS_NumAttackCards, $defCharacter, $CS_ArcaneDamageDealt;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
-    if($character[$i + 1] == 0 || $character[$i + 1] == 1) continue; //Do not process ability if it is destroyed
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
     switch($characterID) {
       case "WTR115":
         if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 0) $mainCharacter[$i+3] = 0;
         break;
       case "CRU077":
+        if($character[$i+1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
         KassaiEndTurnAbility();
         break;
       case "MON107":
