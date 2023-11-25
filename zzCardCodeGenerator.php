@@ -5,7 +5,7 @@
 
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/v6.1.1/json/english/card.json";
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/bright-lights/json/english/card.json";
-  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/develop/json/english/card.json";
+  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/heavy-hitters/json/english/card.json";
   $curl = curl_init();
   $headers = array(
     "Content-Type: application/json",
@@ -48,7 +48,7 @@
   {
     echo("<BR>" . $functionName . "<BR>");
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
-    $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "LGS", "HER", "FAB", "TCC", "EVO"];
+    $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "LGS", "HER", "FAB", "TCC", "EVO", "HVY"];
     $isString = true;
     $isBool = false;
     if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "1H") $isString = false;
