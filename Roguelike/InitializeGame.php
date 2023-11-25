@@ -1,6 +1,7 @@
 <?php
 
   include '../Libraries/HTTPLibraries.php';
+  include '../Libraries/SHMOPLibraries.php';
   $gameName=TryGet("gameName");
 
   include 'ParseGamestate.php';

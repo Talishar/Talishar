@@ -3,6 +3,7 @@
 <?php
 
   include '../Libraries/HTTPLibraries.php';
+  include '../Libraries/SHMOPLibraries.php';
 
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];

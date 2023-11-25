@@ -19,6 +19,7 @@
   }
 
   //First we need to parse the game state from the file
+  include '../Libraries/SHMOPLibraries.php';
   include "ZoneGetters.php";
   include "ParseGamestate.php";
   include "../HostFiles/Redirector.php";

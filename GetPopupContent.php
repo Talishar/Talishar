@@ -13,9 +13,9 @@ $popupType = $_GET["popupType"];
 $chainLinkIndex = TryGet("chainLinkIndex", "");
 
 ob_start();
+include "./Libraries/SHMOPLibraries.php";
 include "./ParseGamestate.php";
 include "./GameLogic.php";
-include "./Libraries/SHMOPLibraries.php";
 include "./Libraries/UILibraries2.php";
 include "./Libraries/StatFunctions.php";
 include "./Libraries/PlayerSettings.php";
