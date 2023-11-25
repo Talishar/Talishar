@@ -152,6 +152,10 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   fwrite($handler, implode(" ", $p2Inventory) . "\r\n"); //p2 Inventory
   fclose($handler);
 
+  //Write initial gamestate to memory
+  $gamestate = file_get_contents("../Games/" . $gameName . "/gamestate.txt");
+  WriteGamestateCache($gameName, $gamestate);
+
   //Set up log file
   $filename = "../Games/" . $gameName . "/gamelog.txt";
   $filepath = "../Games/" . $gameName . "/";
