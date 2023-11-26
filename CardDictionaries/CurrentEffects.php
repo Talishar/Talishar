@@ -93,4 +93,14 @@
       default: return false;
     }
   }
+  function HVYCombatEffectActive($cardID, $attackID)
+  {
+    global $mainPlayer, $combatChainState;
+    $idArr = explode(",", $cardID);
+    $cardID = $idArr[0];
+    switch($cardID) {
+      case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
+      default: return false;
+    }
+  }
 ?>

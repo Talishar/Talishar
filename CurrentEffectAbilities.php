@@ -340,6 +340,7 @@ function EffectHasBlockModifier($cardID)
     case "OUT109": case "OUT110": case "OUT111":
     case "DTD094": case "DTD095": case "DTD096":
     case "TCC035":
+    case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206":
     return true;
     default: return false;
   }
@@ -370,6 +371,8 @@ function EffectBlockModifier($cardID, $index, $from)
       return CachedTotalAttack() >= 13 && CardType($CombatChain->Card($index)->ID()) != "E" ? -1 : 0;
     case "EVO105": case "EVO106": case "EVO107":
       return IsActionCard($CombatChain->Card($index)->ID()) ? -1 : 0;
+    case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206":
+      return $CombatChain->Card($index)->ID() == $cardID && PlayerHasLessHealth($defPlayer) ? 1 : 0;
     default: return 0;
   }
 }
@@ -1030,6 +1033,7 @@ function IsCombatEffectActive($cardID)
   else if($set == "DTD") return DTDCombatEffectActive($cardID, $attackID);
   else if($set == "TCC") return TCCCombatEffectActive($cardID, $attackID);
   else if($set == "EVO") return EVOCombatEffectActive($cardID, $attackID);
+  else if($set == "HVY") return HVYCombatEffectActive($cardID, $attackID);
   else if($set == "ROG") return ROGUECombatEffectActive($cardID, $attackID);
   switch($cardID)
   {

@@ -470,7 +470,7 @@ function ModifyBlockForType($type, $amount)
 
 function OnBlockEffects($index, $from)
 {
-  global $currentTurnEffects, $CombatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  global $currentTurnEffects, $CombatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $defPlayer;
   global $Card_BlockBanner;
   $chainCard = $CombatChain->Card($index);
   $cardType = CardType($chainCard->ID());
@@ -538,8 +538,13 @@ function OnBlockEffects($index, $from)
         WriteLog(CardLink($CombatChain->AttackCard()->ID(), $CombatChain->AttackCard()->ID()) . " got +1 for the rest of the turn.");
       }
       break;
-    default:
+    default: break;
+  }
+  switch($CombatChain->Card($index)->ID()) {
+    case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206":
+      AddCurrentTurnEffect($CombatChain->Card($index)->ID(), $defPlayer);
       break;
+    default: break;
   }
 }
 
