@@ -663,6 +663,7 @@ function IsBanned($cardID, $format)
         case "ELE223": // Duskblade
         case "EVR017": // Bravo, Star of the Show
         case "UPR139": // Hypothermia
+        case "UPR102": case "EVR121": // Iyslander, Stormbind | Kraken's Aethervein
           return true;
         default:
           return false;
