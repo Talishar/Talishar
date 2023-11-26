@@ -104,6 +104,7 @@
     {
       $data = $cardArray[$i]->defense;
       if($data == "") $data = -1;
+      if($data == "*") $data = 0;
     }
     else if($propertyName == "name") $data = $cardArray[$i]->name;
     else if($propertyName == "pitch")
