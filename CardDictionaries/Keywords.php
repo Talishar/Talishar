@@ -60,4 +60,32 @@
     AddDecisionQueue("APPENDCLASSSTATE", $player, $CS_AdditionalCosts . "-SCRAP", 1);
   }
 
+  function Clash($cardID)
+  {
+    $p1Power = -1; $p2Power = -1;
+    for($i=1; $i<=2; ++$i) {
+      $deck = new Deck($i);
+      if($deck->Reveal()) {
+        if($i == 1) $p1Power = AttackValue($deck->Top());
+        else $p2Power = AttackValue($deck->Top());
+      }
+    }
+    if($p1Power > 0 && $p1Power > $p2Power) WonClashAbility(1, $cardID);
+    else if($p2Power > 0 && $p2Power > $p1Power) WonClashAbility(2, $cardID);
+  }
+
+  function WonClashAbility($playerID, $cardID) {
+    WriteLog("Player " . $playerID . " won the Clash");
+    switch($cardID)
+    {
+      case "HVY162":
+        PlayAura("HVY240", $playerID);
+        break;
+      case "HVY239":
+        PutItemIntoPlayForPlayer("DYN243", $playerID);
+        break;
+      default: break;
+    }
+  }
+
 ?>

@@ -1118,6 +1118,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("REMOVECOMBATCHAIN", $player, "-", 1);
       AddDecisionQueue("MULTIBANISH", $otherPlayer, "CC,-," . $player, 1);
       break;
+    case "HVY162": case "HVY239":
+      Clash($parameter);
+      break;
     default: break;
   }
 }
