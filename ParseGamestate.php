@@ -395,6 +395,7 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
 function RevertGamestate($filename = "gamestateBackup.txt")
 {
   global $gameName, $skipWriteGamestate, $filepath;
+  if(!file_exists($filepath . $filename)) return;
   copy($filepath . $filename, $filepath . "gamestate.txt");
   $skipWriteGamestate = true;
   $gamestate = file_get_contents($filepath . $filename);
