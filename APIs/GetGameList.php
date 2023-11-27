@@ -37,9 +37,14 @@ if(IsUserLoggedIn()) {
   if($lastGameName != "") {
     $gameStatus = GetCachePiece($lastGameName, 14);
     if($gameStatus != "" && $gameStatus != 99) {
-      $response->LastGameName = $lastGameName;
-      $response->LastPlayerID = SessionLastGamePlayerID();
-      $response->LastAuthKey = SessionLastAuthKey();
+      $playerID = SessionLastGamePlayerID();
+      $otherP = ($playerID == 1 ? 2 : 1);
+      $oppStatus = strval(GetCachePiece($lastGameName, $otherP + 3));
+      if($oppStatus != "-1") {
+        $response->LastGameName = $lastGameName;
+        $response->LastPlayerID = $playerID;
+        $response->LastAuthKey = SessionLastAuthKey();
+      }
     }
   }
 }
