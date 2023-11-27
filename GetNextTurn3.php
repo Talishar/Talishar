@@ -81,7 +81,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
     //Handle server timeout
     $lastUpdateTime = GetCachePiece($gameName, 6);
-    if ($currentTime - $lastUpdateTime > 45000 && GetCachePiece($gameName, 12) != "1") //45 seconds
+    if ($currentTime - $lastUpdateTime > 60000 && GetCachePiece($gameName, 12) != "1") //60 seconds
     {
       SetCachePiece($gameName, 12, "1");
       $opponentInactive = true;
@@ -97,7 +97,7 @@ if($count == 100) $lastUpdate = 0;//If we waited the full 10 seconds with nothin
 if($lastUpdate == 0) {
   $lastUpdateTime = GetCachePiece($gameName, 6);
   if($lastUpdateTime == "") { echo("The game no longer exists on the server."); exit; }
-  if($currentTime - $lastUpdateTime > 45000 && GetCachePiece($gameName, 12) == "1") //45 seconds
+  if($currentTime - $lastUpdateTime > 60000 && GetCachePiece($gameName, 12) == "1") //60 seconds
   {
     $opponentInactive = true;
   }
