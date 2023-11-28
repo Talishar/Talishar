@@ -638,6 +638,8 @@ function IsBanned($cardID, $format)
         case "EVR123": // Aether Wildfire
         case "UPR103": case "EVR120": case "EVR121": // Iyslander | Kraken's Aethervein
         case "ELE002": case "ELE003": // Oldhim | Winter's Wail
+        case "ARC114": case: "ARC115": case "CRU159": // Kano | Crucible of Aetherweave
+        case "CRU077": case "CRU079": case "CRU080": // Kassai, Cintari Sellsword | Cintari Saber
           return true;
         default:
           return false;
@@ -658,11 +660,9 @@ function IsBanned($cardID, $format)
         case "ELE031": case "ELE034":// Lexi, Livewire | Voltaire, Strike Twice
         case "ELE062": case "ELE222": // Briar, Warden of Thorns | Rosetta Thorn
         case "ELE114": // Pulse of Isenloft
-        case "ELE172": // Amulet of Ice
         case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
         case "ELE223": // Duskblade
         case "EVR017": // Bravo, Star of the Show
-        case "UPR139": // Hypothermia
         case "UPR102": case "EVR121": // Iyslander, Stormbind | Kraken's Aethervein
           return true;
         default:
