@@ -153,6 +153,7 @@ function GetCardBack($player)
     case 61: return "CBFabrary7";
     case 62: return "CBFabrary8";
     case 63: return "CBOffTheRailsTCG";
+    case 64: return "CBPummel";
     default: return "CardBack";
   }
 }
@@ -497,6 +498,17 @@ function IsTeamSonicDoom($userID)
     case "KanoSux": case "BestBoy": case "CRGrey": case "jujubeans": case "tog": case "YodasUncle":
     case "ravenklath": case "Blazing For Lethal?": case "DimGuy": case "JoeyReads": case "OompaLoompaTron": case "OceansForce":
     case "radiotoast": case "ThePitchStack": case "KanosWaterBottle": case "yamsandwic": case "ThatOneKano": case "YuutoSJ":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
+function IsTeamPummel($userID)
+{
+  switch($userID) {
+    case "MkDk": case "Kutter": case "Smeoz": case "Fabio": case "JustFonta": case "M3X":
+    case "OotTheMonk":
       return true;
     default: break;
   }
