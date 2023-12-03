@@ -103,4 +103,22 @@
     }
   }
 
+  function HVYHitEffect($cardID)
+{
+  global $mainPlayer, $defPlayer;
+  switch ($cardID) {
+    case "HVY249":
+      if (HasAimCounter() && IsHeroAttackTarget()) {
+        $defPlayerHand = &GetHand($defPlayer);
+        $defPlayerDiscardNum = count($defPlayerHand) - 1;
+        for ($i = 0; $i < $defPlayerDiscardNum; ++$i) {
+          PummelHit();
+        }
+        break;
+      }
+    default:
+      break;
+  }
+}
+
 ?>
