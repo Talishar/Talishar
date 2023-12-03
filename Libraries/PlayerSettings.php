@@ -497,7 +497,7 @@ function IsTeamSonicDoom($userID)
   switch($userID) {
     case "KanoSux": case "BestBoy": case "CRGrey": case "jujubeans": case "tog": case "YodasUncle":
     case "ravenklath": case "Blazing For Lethal?": case "DimGuy": case "JoeyReads": case "OompaLoompaTron": case "OceansForce":
-    case "radiotoast": case "ThePitchStack": case "KanosWaterBottle": case "yamsandwic": case "ThatOneKano": case "YuutoSJ":
+    case "radiotoast": case "ThePitchStack": case "KanosWaterBottle": case "yamsandwic": case "ThatOneKano": case "YuutoSJ": case "ZorbyX":
       return true;
     default: break;
   }
@@ -507,7 +507,7 @@ function IsTeamSonicDoom($userID)
 function IsTeamPummel($userID)
 {
   switch($userID) {
-    case "MkDk": case "Kutter": case "Smeoz": case "Fabio": case "JustFonta": case "M3X":
+    case "MkDk": case "Kutter": case "Smeoz": case "Fabio": case "JustFonta": case "M3X": case "Tommaso":
     case "OotTheMonk":
       return true;
     default: break;
