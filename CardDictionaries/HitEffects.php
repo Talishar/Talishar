@@ -103,7 +103,7 @@
     }
   }
 
-  function HVYHitEffect($cardID)
+function HVYHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer;
   switch ($cardID) {
