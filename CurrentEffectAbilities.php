@@ -896,6 +896,7 @@ function CurrentEffectGrantsGoAgain()
         case "UPR094": return true;
         case "DYN076": case "DYN077": case "DYN078": return true;
         case "DTD190": case "DTD191": case "DTD192": return true;
+        case "HVY246": return true;
         case "ROGUE710-GA": return true;
         default:
           break;
@@ -1081,6 +1082,7 @@ function IsCombatEffectPersistent($cardID)
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
     case "EVO146": return true;
+    case "HVY246": return true;
     case "ROGUE018": case "ROGUE601": case "ROGUE702": case "ROGUE704": case "ROGUE707": return true;
     case "ROGUE603": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
     case "ROGUE710-GA": case "ROGUE710-DO": case "ROGUE711": case "ROGUE802": case "ROGUE805": case "ROGUE806": return true;

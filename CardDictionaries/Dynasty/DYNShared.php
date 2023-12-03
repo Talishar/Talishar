@@ -629,9 +629,10 @@ function ContractType($cardID)
 
 function ContractCompleted($player, $cardID)
 {
-  global $CS_NumContractsCompleted;
+  global $CS_NumContractsCompleted, $EffectContext;
   WriteLog("Player " . $player . " completed the contract for " . CardLink($cardID, $cardID));
   IncrementClassState($player, $CS_NumContractsCompleted);
+  if($EffectContext == "HVY246") AddCurrentTurnEffect("HVY246", $player);
   switch($cardID)
   {
     case "DYN119": case "DYN120": case "DYN122":

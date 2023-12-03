@@ -1,5 +1,24 @@
 <?php
 
+  function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
+  {
+    global $currentPlayer;
+    $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+    $rv = "";
+    switch($cardID) {
+      case "HVY246":
+        $deck = new Deck($otherPlayer);
+        if($deck->RemainingCards() > 0) {
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to put on top of their deck");
+          AddDecisionQueue("CHOOSETOPOPPONENT", $currentPlayer, $deck->Top(true, 3));
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRDECK-0");
+          AddDecisionQueue("MZBANISH", $currentPlayer, "DECK,TCC," . $currentPlayer);
+        }
+        return "";
+      default: return "";
+    }
+  }
+
   function TCCPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $mainPlayer, $currentPlayer, $defPlayer;

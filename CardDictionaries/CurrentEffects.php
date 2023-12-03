@@ -95,11 +95,12 @@
   }
   function HVYCombatEffectActive($cardID, $attackID)
   {
-    global $mainPlayer, $combatChainState;
+    global $mainPlayer, $combatChainState, $CombatChain;
     $idArr = explode(",", $cardID);
     $cardID = $idArr[0];
     switch($cardID) {
       case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
+      case "HVY246": return ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer);
       default: return false;
     }
   }
