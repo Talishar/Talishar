@@ -638,7 +638,7 @@ function IsBanned($cardID, $format)
         case "EVR123": // Aether Wildfire
         case "UPR103": case "EVR120": case "EVR121": // Iyslander | Kraken's Aethervein
         case "ELE002": case "ELE003": // Oldhim | Winter's Wail
-        case "ARC114": case: "ARC115": case "CRU159": // Kano | Crucible of Aetherweave
+        case "ARC114": case "ARC115": case "CRU159": // Kano | Crucible of Aetherweave
         case "CRU077": case "CRU079": case "CRU080": // Kassai, Cintari Sellsword | Cintari Saber
           return true;
         default:
