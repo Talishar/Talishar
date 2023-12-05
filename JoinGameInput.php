@@ -640,6 +640,7 @@ function IsBanned($cardID, $format)
         case "ELE002": case "ELE003": // Oldhim | Winter's Wail
         case "ARC114": case "ARC115": case "CRU159": // Kano | Crucible of Aetherweave
         case "CRU077": case "CRU079": case "CRU080": // Kassai, Cintari Sellsword | Cintari Saber
+        case "CRU046": case "CRU050": // Ira, Crimson Haze | Edge of Autumn
           return true;
         default:
           return false;

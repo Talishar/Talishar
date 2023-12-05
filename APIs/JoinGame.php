@@ -646,6 +646,7 @@ function IsCardBanned($cardID, $format)
         case "MON154": case "MON155": // Chane | Galaxxi Black
         case "ARC114": case "ARC115": case "CRU159": // Kano | Crucible of Aetherweave
         case "CRU077": case "CRU079": case "CRU080": // Kassai, Cintari Sellsword | Cintari Saber
+        case "CRU046": case "CRU050": // Ira, Crimson Haze | Edge of Autumn
           return true;
         default: return false;
       }
