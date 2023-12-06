@@ -559,11 +559,11 @@ function CRUHitEffect($cardID)
   }
 }
 
-function KayoStaticAbility()
+function KayoStaticAbility($cardId)
 {
   global $combatChainState, $CCS_LinkBaseAttack, $mainPlayer;
   $roll = GetDieRoll($mainPlayer);
-  if($roll >= 5 && CanGainAttack()) $combatChainState[$CCS_LinkBaseAttack] *= 2;
+  if($roll >= 5 && CanGainAttack($cardId)) $combatChainState[$CCS_LinkBaseAttack] *= 2;
   else $combatChainState[$CCS_LinkBaseAttack] = floor($combatChainState[$CCS_LinkBaseAttack] / 2);
 }
 

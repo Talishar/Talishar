@@ -1317,7 +1317,7 @@ function DestroyFrozenArsenal($player)
   }
 }
 
-function CanGainAttack()
+function CanGainAttack($cardID)
 {
   global $combatChain, $mainPlayer;
   if(SearchCurrentTurnEffects("OUT102", $mainPlayer)) return false;
