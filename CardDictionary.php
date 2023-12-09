@@ -298,6 +298,7 @@ function AbilityCost($cardID)
   else if($set == "DTD") return DTDAbilityCost($cardID);
   else if($set == "TCC") return TCCAbilityCost($cardID);
   else if($set == "EVO") return EVOAbilityCost($cardID);
+  else if($set == "HVY") return HVYAbilityCost($cardID);
   else if($set == "ROG") return ROGUEAbilityCost($cardID);
   return CardCost($cardID);
 }
@@ -419,6 +420,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "DTD") return DTDAbilityType($cardID, $index);
   else if($set == "TCC") return TCCAbilityType($cardID, $index);
   else if($set == "EVO") return EVOAbilityType($cardID, $index);
+  else if($set == "HVY") return HVYAbilityType($cardID, $index);
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
 }
 
@@ -902,6 +904,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVO140": return GetClassState($player, $CS_NumBoosted) <= 0;
     case "EVO235": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "EVO434": case "EVO435": case "EVO436": case "EVO437": return !EvoHasUnderCard($currentPlayer, $index);
+    case "HVY090": case "HVY091": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 2 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 2;
     default: return false;
   }
 }
@@ -1103,6 +1106,7 @@ function AbilityHasGoAgain($cardID)
   else if($set == "DTD") return DTDAbilityHasGoAgain($cardID);
   else if($set == "TCC") return TCCAbilityHasGoAgain($cardID);
   else if($set == "EVO") return EVOAbilityHasGoAgain($cardID);
+  else if($set == "HVY") return HVYAbilityHasGoAgain($cardID);
   else if($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   switch($cardID) {
     case "RVD004": return true;

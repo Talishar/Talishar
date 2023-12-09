@@ -2026,6 +2026,14 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "EQUIP,-", 1);
       }
       break;
+    case "HVY090": case "HVY091":
+      if($from == "EQUIP") {
+        MZMoveCard($currentPlayer, "MYDISCARD:pitch=1", "MYBANISH,GY,-");
+        MZMoveCard($currentPlayer, "MYDISCARD:pitch=1", "MYBANISH,GY,-");
+        MZMoveCard($currentPlayer, "MYDISCARD:pitch=2", "MYBANISH,GY,-");
+        MZMoveCard($currentPlayer, "MYDISCARD:pitch=2", "MYBANISH,GY,-");
+      }
+      break;
     default:
       break;
   }

@@ -6,6 +6,9 @@
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     $rv = "";
     switch($cardID) {
+      case "HVY090": case "HVY091":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "HVY246":
         $deck = new Deck($otherPlayer);
         if($deck->RemainingCards() > 0) {

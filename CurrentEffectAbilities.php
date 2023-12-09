@@ -298,6 +298,9 @@ function EffectHitEffect($cardID)
     case "EVO434":
       Draw($mainPlayer);
       break;
+    case "HVY090": case "HVY091":
+      PutItemIntoPlayForPlayer("DYN243", $mainPlayer);
+      return 1;
     default:
       break;
   }
@@ -1086,6 +1089,7 @@ function IsCombatEffectPersistent($cardID)
     case "ROGUE018": case "ROGUE601": case "ROGUE702": case "ROGUE704": case "ROGUE707": return true;
     case "ROGUE603": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
     case "ROGUE710-GA": case "ROGUE710-DO": case "ROGUE711": case "ROGUE802": case "ROGUE805": case "ROGUE806": return true;
+    case "HVY090": case "HVY091": return true;
     default:
       return false;
   }

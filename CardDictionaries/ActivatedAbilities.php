@@ -1,5 +1,33 @@
 <?php
 
+  function HVYAbilityCost($cardID)
+  {
+    switch($cardID)
+    {
+      case "HVY090": case "HVY091": return 0;
+      default: return 0;
+    }
+  }
+
+  function HVYAbilityType($cardID, $index=-1)
+  {
+    switch($cardID)
+    {
+      case "HVY090": case "HVY091": return "A";
+      default: return "";
+    }
+  }
+
+  function HVYAbilityHasGoAgain($cardID)
+  {
+    global $CombatChain;
+    switch($cardID)
+    {
+      case "HVY090": case "HVY091": return true;
+      default: return false;
+    }
+  }
+
   function TCCAbilityCost($cardID)
   {
     switch($cardID)

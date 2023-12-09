@@ -99,6 +99,7 @@
     $idArr = explode(",", $cardID);
     $cardID = $idArr[0];
     switch($cardID) {
+      case "HVY090": case "HVY091": return CardType($attackID) == "W";
       case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
       case "HVY246": return ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer);
       default: return false;
