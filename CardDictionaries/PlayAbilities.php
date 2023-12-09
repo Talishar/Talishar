@@ -34,7 +34,7 @@
         $charIndex = FindCharacterIndex($mainPlayer, $cardID);
         if ($abilityType == "A") {
           AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a token to create");
-          AddDecisionQueue("MULTICHOOSETEXT", $otherPlayer, "1-Might,Vigor,Quicken");
+          AddDecisionQueue("MULTICHOOSETEXT", $otherPlayer, "1-Might (+1),Vigor (Resource),Quicken (Go Again)");
           AddDecisionQueue("SHOWMODES", $otherPlayer, $cardID, 1);
           AddDecisionQueue("MODAL", $otherPlayer, "JINGLEWOOD", 1);
           PutItemIntoPlayForPlayer("CRU197", $currentPlayer);
