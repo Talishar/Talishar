@@ -1191,6 +1191,28 @@ default: return false;
 }
 default: return false;
 }
+case "H":
+switch($cardID[1]) {
+case "V":
+switch($cardID[2]) {
+case "Y":
+switch($cardID[3]) {
+case "1":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "5":
+return true;
+default: return false;
+}
+default: return false;
+}
+default: return false;
+}
+default: return false;
+}
+default: return false;
+}
 case "L":
 switch($cardID[1]) {
 case "G":
