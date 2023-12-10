@@ -5,6 +5,7 @@
     switch($cardID)
     {
       case "HVY090": case "HVY091": return 0;
+      case "HVY134": return 1;
       default: return 0;
     }
   }
@@ -14,6 +15,7 @@
     switch($cardID)
     {
       case "HVY090": case "HVY091": return "A";
+      case "HVY134": return "AA";
       default: return "";
     }
   }
