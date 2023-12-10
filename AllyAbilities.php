@@ -262,6 +262,7 @@ function SpecificAllyAttackAbilities($attackID)
       if(count($soul) == 0) break;
       AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
       AddDecisionQueue("NOPASS", $mainPlayer, "-");
+      MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
       MZMoveCard($mainPlayer, "MYDISCARD:pitch=2", "MYTOPDECK", isSubsequent:true);
       break;
     case "DTD410":
@@ -269,6 +270,7 @@ function SpecificAllyAttackAbilities($attackID)
       if(count($soul) == 0) break;
       AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
       AddDecisionQueue("NOPASS", $mainPlayer, "-");
+      MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
       AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "DTD410", 1);
       break;
     case "DTD411":
@@ -276,6 +278,7 @@ function SpecificAllyAttackAbilities($attackID)
       if(count($soul) == 0) break;
       AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
       AddDecisionQueue("NOPASS", $mainPlayer, "-");
+      MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
       AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $defPlayer, "DTD411", 1);
       break;
     case "DTD412":
@@ -283,6 +286,7 @@ function SpecificAllyAttackAbilities($attackID)
       if(count($soul) == 0) break;
       AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
       AddDecisionQueue("NOPASS", $mainPlayer, "-");
+      MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYALLY:subtype=Angel");
       AddDecisionQueue("ADDALLATTACKCOUNTERS", $mainPlayer, "1", 1);
       break;
