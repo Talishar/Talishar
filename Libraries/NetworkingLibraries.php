@@ -2034,6 +2034,15 @@ function PayAdditionalCosts($cardID, $from)
         MZMoveCard($currentPlayer, "MYDISCARD:pitch=2", "MYBANISH,GY,-");
       }
       break;
+    case "HVY105":
+      $numGold = CountItem("DYN243", $currentPlayer);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numGold+1));
+      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "DYN243-");
+      AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-");
+      AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      break;
     default:
       break;
   }

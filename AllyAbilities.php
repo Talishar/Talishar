@@ -79,6 +79,7 @@ function AllyHealth($cardID)
     case "DTD410": return 4;
     case "DTD411": return 4;
     case "DTD412": return 4;
+    case "HVY134": return 2;
     default: return 1;
   }
 }
