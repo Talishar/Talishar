@@ -357,6 +357,10 @@ function AuraStartTurnAbilities()
       case "EVO243":
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         break;
+      case "HVY240":
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
+        break;
       default: break;
     }
   }
