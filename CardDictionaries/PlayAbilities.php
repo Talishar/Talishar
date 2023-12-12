@@ -23,6 +23,18 @@
           AddDecisionQueue("MZBANISH", $currentPlayer, "DECK,TCC," . $currentPlayer);
         }
         return "";
+      case "HVY253":
+        for($i = 1; $i < 3; $i += 1) {
+          $arsenal = &GetArsenal($i);
+          for($j = 0; $j < count($arsenal); $j += ArsenalPieces()) {
+            AddDecisionQueue("FINDINDICES", $i, "ARSENAL");
+            AddDecisionQueue("CHOOSEARSENAL", $i, "<-", 1);
+            AddDecisionQueue("REMOVEARSENAL", $i, "-", 1);
+            AddDecisionQueue("ADDBOTDECK", $i, "-", 1);
+          }
+          PlayAura("DYN244", $i);
+        }
+        return "";
       default: return "";
     }
   }
