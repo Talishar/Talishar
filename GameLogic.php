@@ -140,6 +140,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "UPR086": $rv = ThawIndices($player); break;
         case "QUELL": $rv = QuellIndices($player); break;
         case "SOUL": $rv = SearchSoul($player, talent:"LIGHT"); break;
+        case "MON104": $rv = SearchAurasForCard("MON104",$player); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "PASS" : $rv);
