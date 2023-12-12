@@ -11,6 +11,12 @@
 
 Visit [Talishar.net](https://talishar.net/) to get playing Flesh & Blood in your browser right now!
 
+## Getting started with Talishar
+
+This is the back end client for Talishar.net - completely separate from the front end. In order to test Talishar locally, you will need to install the front end project.
+
+Learn more here: [Talishar-FE](https://github.com/Talishar/Talishar-FE)
+
 ## New docker way to run Talishar.
 
 ### Prerequisites:
