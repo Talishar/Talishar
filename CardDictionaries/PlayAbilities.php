@@ -29,8 +29,7 @@
         AddDecisionQueue("REELIN", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTICHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIADDHAND", $currentPlayer, "1", 1);
-        AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         Reload();
         return "";
