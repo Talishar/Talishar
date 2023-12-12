@@ -204,3 +204,21 @@ CREATE TABLE `savedsettings` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 ALTER TABLE `savedsettings`
 ADD PRIMARY KEY (`playerId`, `settingNumber`);
+
+
+--
+-- Table structure for table `carddefinition`
+--
+
+CREATE TABLE `carddefinition` (
+  `cardID` varchar(16) NOT NULL,
+  `hasGoAgain` int(11) NOT NULL DEFAULT 0,
+  `playAbility` varchar(512) NOT NULL,
+  `hitEffect` varchar(512) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Indexes for table `carddefinition`
+--
+ALTER TABLE `carddefinition`
+  ADD PRIMARY KEY (`cardID`);
