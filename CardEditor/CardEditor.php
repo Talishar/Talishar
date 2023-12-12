@@ -11,13 +11,14 @@ if (!isset($_SESSION["useruid"])) {
   exit;
 }
 $useruid = $_SESSION["useruid"];
-if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "LaustinSpayce" && $useruid != "Star_Seraph" && $useruid != "Tower") {
+if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "LaustinSpayce" && $useruid != "Star_Seraph" && $useruid != "Tower" && $useruid != "thatzachary") {
   echo ("You must log in to use this page.");
   exit;
 }
 $setToEdit = TryGET("setToEdit", "");
 
 echo("<h1>Editing Set $setToEdit</h1>");
+echo("<a href='./RecoverDatabase.php' target='_blank'>Initial Database Setup</a>&nbsp;");
 echo("<a href='./DatabaseCardCodeGenerator.php' target='_blank'>Generate Code</a>");
 echo("<br><br>");
 echo("<table style='width:100%;'><tr>");
