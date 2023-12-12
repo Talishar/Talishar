@@ -23,6 +23,17 @@
           AddDecisionQueue("MZBANISH", $currentPlayer, "DECK,TCC," . $currentPlayer);
         }
         return "";
+      case "HVY250":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));
+        AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REELIN", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTICHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIADDHAND", $currentPlayer, "1", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        Reload();
+        return "";
       default: return "";
     }
   }
