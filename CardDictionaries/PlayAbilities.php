@@ -19,8 +19,9 @@
         if($deck->RemainingCards() > 0) {
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to put on top of their deck");
           AddDecisionQueue("CHOOSETOPOPPONENT", $currentPlayer, $deck->Top(true, 3));
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRDECK-0");
-          AddDecisionQueue("MZBANISH", $currentPlayer, "DECK,TCC," . $currentPlayer);
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
+          AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
+          AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK,TCC," . $currentPlayer);
         }
         return "";
       case "HVY253":
