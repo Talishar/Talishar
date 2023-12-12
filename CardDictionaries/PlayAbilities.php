@@ -36,6 +36,17 @@
           PlayAura("DYN244", $i);
         }
         return "";
+      case "HVY250":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));
+        AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REELIN", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTICHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("REVEALCARDS", $mainPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        Reload();
+        return "";
       default: return "";
     }
   }

@@ -699,6 +699,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $numMatch = ($numAA > $numNAA ? $numNAA : $numAA);
       if($numMatch == 0) return "PASS";
       return $numMatch . "-" . $AAIndices . "-" . $numMatch;
+      case "REELIN":
+        $cards = explode(",", $lastResult);
+        $TrapIndices = "";
+        $numMatch = 0;
+        for($i = 0; $i < count($cards); ++$i) {
+          if(DelimStringContains(CardSubType($cards[$i]), "Trap")) {
+            if($TrapIndices != "") $TrapIndices .= ",";
+            $TrapIndices .= $i;
+            ++$numMatch;
+          }
+        }
+        if($numMatch == 0) return "PASS";
+        return "4" . "-" . $TrapIndices . "-" . "0";
     case "SONATAARCANIXSTEP2":
       $numArcane = count(explode(",", $lastResult));
       DealArcane($numArcane, 0, "PLAYCARD", "MON231", true);
