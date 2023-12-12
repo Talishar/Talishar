@@ -900,6 +900,7 @@ function CurrentEffectGrantsGoAgain()
         case "DYN076": case "DYN077": case "DYN078": return true;
         case "DTD190": case "DTD191": case "DTD192": return true;
         case "HVY240": return true;
+        case "HVY254-1": case "HVY254-2": return SearchPitchForColor($mainPlayer, 2) > 0;
         case "HVY246": return true;
         case "ROGUE710-GA": return true;
         default:

@@ -1146,16 +1146,6 @@ function DoesAttackHaveGoAgain()
     if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if($isAura && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
-  if(str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald")) {
-    if (SearchCurrentTurnEffects("HVY254-1", $mainPlayer, true) && SearchPitchForColor($mainPlayer, 2) > 0) {
-      return true;
-    }
-  }
-  if (DelimStringContains($attackSubtype, "Angel")) {
-    if (SearchCurrentTurnEffects("HVY254-2", $mainPlayer, true) && SearchPitchForColor($mainPlayer, 2) > 0) {
-      return true;
-    }
-  }
   if(SearchAuras("UPR139", $mainPlayer)) return false;
   if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
   if($attackType == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchAuras("MON013", $mainPlayer)) return true;
