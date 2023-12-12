@@ -213,8 +213,8 @@ ADD PRIMARY KEY (`playerId`, `settingNumber`);
 CREATE TABLE `carddefinition` (
   `cardID` varchar(16) NOT NULL,
   `hasGoAgain` int(11) NOT NULL DEFAULT 0,
-  `playAbility` varchar(512) NOT NULL,
-  `hitEffect` varchar(512) NOT NULL
+  `playAbility` varchar(512) DEFAULT NULL,
+  `hitEffect` varchar(512) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
