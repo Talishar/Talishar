@@ -45,8 +45,8 @@
         AddDecisionQueue("MULTICHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARDS", $mainPlayer, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         Reload();
         return "";
       default: return "";
