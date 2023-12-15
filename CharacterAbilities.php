@@ -502,7 +502,7 @@ function CharacterCostModifier($cardID, $from)
       case "TCC001": if(SubtypeContains($cardID, "Evo")) --$modifier; break;
       case "TCC408": if($cardID == "TCC002") --$modifier; break;
       case "EVO001": case "EVO002": if($from == "DECK" && SubtypeContains($cardID, "Item", $currentPlayer) && CardCost($cardID) < 2) ++$modifier; break;
-      case "HVY090": case "HVY091": if(CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumCardsDrawn) == 1) --$modifier; break;
+      case "HVY090": case "HVY091": if(CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumCardsDrawn) >= 1) --$modifier; break;
       default: break;
     }
   }
