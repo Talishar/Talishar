@@ -378,6 +378,18 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
 	$result = curl_exec($ch);
+
+	/*
+	//Uncomment to log fabrary stats reporting
+	$logfile = "./BugReports/FabraryStatsLogging.txt";
+	$logHandler = fopen($logfile, "a");
+	date_default_timezone_set('America/Chicago');
+	$logDate = date('m/d/Y h:i:s a');
+	$logText = "Game log sent to fabrary for game $gameName at $logDate. $p1deckbuilderID as $p1Hero with $p1Decklink vs $p2deckbuilderID as $p2Hero with $p2Decklink. API Response: $result";
+	fwrite($logHandler, $logText . "\r\n");
+	fclose($logHandler);
+	*/
+
 	curl_close($ch);
 }
 
