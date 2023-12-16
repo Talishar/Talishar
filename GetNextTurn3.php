@@ -431,8 +431,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->playerSoulCount = count($mySoul);
 
   $playerDiscardArr = array();
-  for ($i = 0; $i < count($myDiscard); $i += DiscardPieces()) {
-    $action = $currentPlayer == $playerID && IsPlayable($myDiscard[$i], $turn[0], "GY", $i) ? 36 : 0;
+  for($i = 0; $i < count($myDiscard); $i += DiscardPieces()) {
+    $action = $currentPlayer == $playerID && PlayableFromGraveyard($myDiscard[$i]) && IsPlayable($myDiscard[$i], $turn[0], "GY", $i) ? 36 : 0;
     $border = CardBorderColor($myDiscard[$i], "GY", ($action == 36));
     array_push($playerDiscardArr, JSONRenderedCard($myDiscard[$i], action: $action, borderColor: $border, actionDataOverride: strval($i)));
   }
@@ -440,7 +440,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $response->playerPitchCount = $myResources[0];
   $playerPitchArr = array();
-  for ($i = count($myPitch) - PitchPieces(); $i >= 0; $i -= PitchPieces()) {
+  for($i = count($myPitch) - PitchPieces(); $i >= 0; $i -= PitchPieces()) {
     array_push($playerPitchArr, JSONRenderedCard($myPitch[$i]));
   }
   $response->playerPitch = $playerPitchArr;

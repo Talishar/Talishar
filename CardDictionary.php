@@ -505,12 +505,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $banishCard = $banish->Card($index);
     if(!(PlayableFromBanish($banishCard->ID(), $banishCard->Modifier()) || AbilityPlayableFromBanish($banishCard->ID()))) return false;
   }
-  if($from == "GY") {
-    $graveyardCard = $grave[$index];
-    if(!PlayableFromGraveyard($graveyardCard)) {
-      return false;
-    }
-  }
+  else if($from == "GY" && !PlayableFromGraveyard($cardID)) return false;
   if($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "EVO001" && $character[0] != "EVO002" || CardCost($cardID) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if($phase == "B") {
     if($cardType == "E" && $character[$index+6] == 1) { $restriction = "On combat chain"; return false; }
