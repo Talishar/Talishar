@@ -426,7 +426,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $deck = array_values($deck);
       PlayCard($cardID, "DECK");
       break;
-    case 36: //Play card from deck
+    case 36: //Play card from graveyard
       $index = $cardID;
       $grave = &GetDiscard($playerID);
       $theirChar = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
