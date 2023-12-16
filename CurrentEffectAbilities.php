@@ -344,6 +344,7 @@ function EffectHasBlockModifier($cardID)
     case "DTD094": case "DTD095": case "DTD096":
     case "TCC035":
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206":
+    case "HVY245":
     return true;
     default: return false;
   }

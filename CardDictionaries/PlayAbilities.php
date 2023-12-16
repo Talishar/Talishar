@@ -49,6 +49,20 @@
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         Reload();
         return "";
+      case "HVY245":
+        if($from == "GY") {
+          $character = &GetPlayerCharacter($currentPlayer);
+          EquipWeapon($currentPlayer,"HVY245");
+          $index = FindCharacterIndex($currentPlayer, "HVY245");
+          if ($character[$index + 3] == 0) {
+            ++$character[$index + 3];
+          } else {
+            ++$character[$index + 15];
+          }
+          $index = SearchGetFirstIndex(SearchMultizone($currentPlayer, "MYDISCARD:cardID=HVY245"));
+          RemoveGraveyard($currentPlayer, $index);
+        }
+        return "";
       default: return "";
     }
   }
