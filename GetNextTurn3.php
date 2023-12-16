@@ -433,7 +433,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $playerDiscardArr = array();
   for ($i = 0; $i < count($myDiscard); $i += DiscardPieces()) {
     $action = $currentPlayer == $playerID && IsPlayable($myDiscard[$i], $turn[0], "GY", $i) ? 36 : 0;
-    $border = CardBorderColor($myDiscard[$i], "GY", $playable);
+    $border = CardBorderColor($myDiscard[$i], "GY", ($action == 36));
     array_push($playerDiscardArr, JSONRenderedCard($myDiscard[$i], action: $action, borderColor: $border, actionDataOverride: strval($i)));
   }
   $response->playerDiscard = $playerDiscardArr;
