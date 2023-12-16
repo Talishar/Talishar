@@ -134,6 +134,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "OUT005": case "OUT006": return NumEquipBlock() > 0 ? 1 : 0;
     case "OUT007": case "OUT008": return NumEquipBlock() > 0 ? 1 : 0;
     case "OUT009": case "OUT010": return NumEquipBlock() > 0 ? 1 : 0;
+    case "HVT245": return NumEquipBlock() > 0 ? 1 : 0;
     case "OUT018": case "OUT019": case "OUT020": return (NumAttackReactionsPlayed() > 0 ? 4 : 0);
     case "OUT051": return (ComboActive() ? 2 : 0);
     case "OUT054": return 1;

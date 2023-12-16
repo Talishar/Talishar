@@ -755,6 +755,10 @@ function CardBorderColor($cardID, $from, $isPlayable, $mod = "-")
     if ($isPlayable && HasRupture($cardID) && RuptureActive(true)) return 5;
     return 0;
   }
+  if ($from == "GY") {
+    if ($isPlayable || PlayableFromGraveyard($cardID, $mod)) return 7;
+    return 0;
+  }
   if ($isPlayable && ComboActive($cardID)) return 3;
   if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
   if ($isPlayable && HasRupture($cardID) && RuptureActive(true, (CardType($cardID) != "AA"))) return 3;

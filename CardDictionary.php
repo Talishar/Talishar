@@ -421,7 +421,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "DTD") return DTDAbilityType($cardID, $index);
   else if($set == "TCC") return TCCAbilityType($cardID, $index);
   else if($set == "EVO") return EVOAbilityType($cardID, $index);
-  else if($set == "HVY") return HVYAbilityType($cardID, $index);
+  else if($set == "HVY") return HVYAbilityType($cardID, $index, $from);
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
 }
 
@@ -494,6 +494,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $character = &GetPlayerCharacter($player);
   $myHand = &GetHand($player);
   $banish = new Banish($player);
+  $grave = &GetDiscard($currentPlayer);
   $restriction = "";
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
@@ -503,6 +504,12 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($from == "BANISH") {
     $banishCard = $banish->Card($index);
     if(!(PlayableFromBanish($banishCard->ID(), $banishCard->Modifier()) || AbilityPlayableFromBanish($banishCard->ID()))) return false;
+  }
+  if($from == "GY") {
+    $graveyardCard = $grave[$index];
+    if(!PlayableFromGraveyard($graveyardCard)) {
+      return false;
+    }
   }
   if($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "EVO001" && $character[0] != "EVO002" || CardCost($cardID) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if($phase == "B") {
@@ -907,6 +914,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVO434": case "EVO435": case "EVO436": case "EVO437": return !EvoHasUnderCard($currentPlayer, $index);
     case "HVY090": case "HVY091": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 2 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 2;
     case "HVY134": return GetClassState($player, $CS_AtksWWeapon) <= 0;
+    case "HVY245": if ($from == "GY") return CountItem("EVR195", $currentPlayer) < 2; else return false;
     default: return false;
   }
 }
@@ -1461,6 +1469,14 @@ function AbilityPlayableFromBanish($cardID)
   global $currentPlayer, $mainPlayer;
   switch($cardID) {
     case "MON192": return $currentPlayer == $mainPlayer;
+    default: return false;
+  }
+}
+
+function PlayableFromGraveyard($cardID)
+{
+  switch($cardID) {
+    case "HVY245": return true;
     default: return false;
   }
 }

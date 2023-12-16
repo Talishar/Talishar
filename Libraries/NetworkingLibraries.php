@@ -426,6 +426,21 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $deck = array_values($deck);
       PlayCard($cardID, "DECK");
       break;
+    case 36: //Play card from deck
+      $index = $cardID;
+      $grave = &GetDiscard($playerID);
+      $theirChar = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
+      if($index < 0 || $index >= count($grave)) {
+        echo("Graveyard Index " . $index . " Invalid Input<BR>");
+        return false;
+      }
+      $cardID = $grave[$index];
+      if(!IsPlayable($cardID, $turn[0], "GY", $index)) break;
+      if($grave[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
+      SetClassState($currentPlayer, $CS_PlayIndex, $index);
+      if(CanPlayAsInstant($cardID, $index, "GY")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
+      PlayCard($cardID, "GY", -1, $index, $grave[$index + 2]);
+      break;
     case 99: //Pass
       if(CanPassPhase($turn[0])) {
         PassInput(false);
@@ -2042,6 +2057,12 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-");
       AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      break;
+    case "HVY245":
+      if($from == "GY") {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195-2", 1);
+        AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
+      }
       break;
     default:
       break;

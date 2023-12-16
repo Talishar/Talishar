@@ -6,14 +6,18 @@
     {
       case "HVY090": case "HVY091": return 0;
       case "HVY134": return 1;
+      case "HVY245": return 2;
       default: return 0;
     }
   }
 
-  function HVYAbilityType($cardID, $index=-1)
+  function HVYAbilityType($cardID, $index=-1, $from="-")
   {
     switch($cardID)
     {
+      case "HVY245":
+        if ($from == "GY") return "I";
+        else return "AA";
       case "HVY090": case "HVY091": return "A";
       case "HVY134": return "AA";
       default: return "";
