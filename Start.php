@@ -34,7 +34,11 @@ if($playerID == 1 && isset($_SESSION["p1AuthKey"])) { $targetKey = $p1Key; $auth
 else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) { $targetKey = $p2Key; $authKey = $_SESSION["p2AuthKey"]; }
 if ($authKey != $targetKey) { echo("Invalid auth key"); exit; }
 
-//First initialize the initial state of the game
+//Initialize global variables
+$p1Inventory = "";
+$p2Inventory = "";
+
+//Initialize the initial state of the game
 $filename = "./Games/" . $gameName . "/gamestate.txt";
 $handler = fopen($filename, "w");
 fwrite($handler, "20 20\r\n"); //Player health totals
@@ -84,8 +88,8 @@ fwrite($handler, time() . "\r\n"); //Last update time
 fwrite($handler, $roguelikeGameID . "\r\n"); //Roguelike game id
 fwrite($handler, "\r\n");//Events
 fwrite($handler, "-\r\n");//Effect Context
-fwrite($handler, "\r\n"); //p1 Inventory
-fwrite($handler, "\r\n"); //p2 Inventory
+fwrite($handler, implode(" ", $p1Inventory) . "\r\n"); //p1 Inventory
+fwrite($handler, implode(" ", $p2Inventory) . "\r\n"); //p2 Inventory
 fclose($handler);
 
 //Write initial gamestate to memory
