@@ -483,6 +483,9 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "CRU081":
           if(CardType($cardID) == "W" && CardSubType($cardID) == "Sword") { $costModifier -= 1; }
           break;
+        case "HVY090-1": case "HVY091-1":
+          if(CardType($cardID) == "W" && CardSubType($cardID) == "Sword") { $costModifier -= 1; }
+          break;
         case "CRU085-2": case "CRU086-2": case "CRU087-2":
           if(CardType($cardID) == "DR") { $costModifier += 1; $remove = true; }
           break;

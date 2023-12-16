@@ -2023,6 +2023,8 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true)
     }
   }
   PermanentDrawCardAbilities($player);
+  if (SearchCharacterActive($mainPlayer, "HVY090") && !SearchCurrentTurnEffects("HVY090-1", $mainPlayer)) AddCurrentTurnEffect("HVY090-1", $mainPlayer);
+  if (SearchCharacterActive($mainPlayer, "HVY091") && !SearchCurrentTurnEffects("HVY091-1", $mainPlayer)) AddCurrentTurnEffect("HVY091-1", $mainPlayer);
   $hand = array_values($hand);
   return $hand[count($hand) - 1];
 }
