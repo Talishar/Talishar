@@ -1053,9 +1053,16 @@ function TypeContains($cardID, $type, $player="")
   return DelimStringContains($cardType, $type);
 }
 
-function SubtypeContains($cardID, $subtype, $player="")
+function SubtypeContains($cardID, $subtype, $player="", $uniqueID="")
 {
+  global $currentTurnEffects;
   $cardSubtype = CardSubtype($cardID);
+  if($cardID == "EVO013") {
+    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces()) {
+      $effect = explode(",", $currentTurnEffects[$i]);
+      if($effect[0] == "EVO013-" . $uniqueID) return $effect[1];
+    }
+  }
   return DelimStringContains($cardSubtype, $subtype);
 }
 
@@ -2229,10 +2236,10 @@ function CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer) {
         if(!ClassContains($characterCardID, "MECHANOLOGIST", $currentPlayer)) continue;
         if(CardType($characterCardID) == "W") $hasWeapon = true;
         else {
-          if (SubtypeContains($characterCardID, "Head")) $hasHead = true;
-          if (SubtypeContains($characterCardID, "Chest")) $hasChest = true;
-          if (SubtypeContains($characterCardID, "Arms")) $hasArms = true;
-          if (SubtypeContains($characterCardID, "Legs")) $hasLegs = true;
+          if (SubtypeContains($characterCardID, "Head", $currentPlayer, $char[$i+11])) $hasHead = true;
+          if (SubtypeContains($characterCardID, "Chest", $currentPlayer, $char[$i+11])) $hasChest = true;
+          if (SubtypeContains($characterCardID, "Arms", $currentPlayer, $char[$i+11])) $hasArms = true;
+          if (SubtypeContains($characterCardID, "Legs", $currentPlayer, $char[$i+11])) $hasLegs = true;
         }
       }
       if(!$hasHead || !$hasChest || !$hasArms || !$hasLegs || !$hasWeapon) return "You do not meet the equipment requirement";
