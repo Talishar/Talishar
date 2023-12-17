@@ -1114,9 +1114,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         $deck->BanishTop(banishedBy:$player);
       }
       $options = GetChainLinkCards($otherPlayer, "", "C");
-      AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $player, $options);
-      AddDecisionQueue("REMOVECOMBATCHAIN", $player, "-", 1);
-      AddDecisionQueue("MULTIBANISH", $otherPlayer, "CC,-," . $player, 1);
+      if($options != "") {
+        AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $player, $options);
+        AddDecisionQueue("REMOVECOMBATCHAIN", $player, "-", 1);
+        AddDecisionQueue("MULTIBANISH", $otherPlayer, "CC,-," . $player, 1);
+      }
       break;
     case "HVY162": case "HVY239":
       Clash($parameter);
