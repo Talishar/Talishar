@@ -496,7 +496,7 @@ function CharacterCostModifier($cardID, $from)
   $modifier = 0;
   $char = &GetPlayerCharacter($currentPlayer);
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
-    if($char[$i+1] < 2 || $char[$i+1] == 3) continue;
+    if($char[$i+1] == 3 || (!CharacterAbilityIsMultiUse($char[$i]) && $char[$i+1] < 2)) continue;
     switch($char[$i]) {
       case "CRU077": if(CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumSwordAttacks) == 1) --$modifier; break;
       case "TCC001": if(SubtypeContains($cardID, "Evo")) --$modifier; break;
@@ -507,6 +507,13 @@ function CharacterCostModifier($cardID, $from)
     }
   }
   return CanCostBeModified($cardID) ? $modifier : 0;
+}
+
+function CharacterAbilityIsMultiUse($cardID) {
+  switch($cardID) {
+    case "HVY090": case "HVY091": return true;
+    default: return false;
+  }
 }
 
 function EquipEquipment($player, $card, $slot="")
