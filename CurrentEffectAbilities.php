@@ -969,14 +969,6 @@ function CurrentEffectIntellectModifier()
   global $currentTurnEffects, $mainPlayer;
   $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
   $intellectModifier = 0;
-
-  for($i=0; $i<SearchCount(SearchAurasForCard("EVO243", $mainPlayer)); ++$i) {
-    $intellectModifier -= 1;
-  }
-  for($i=0; $i<SearchCount(SearchAurasForCard("EVO243", $otherPlayer)); ++$i) {
-    $intellectModifier -= 1;
-  }
-
   for($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i + 1] == $mainPlayer) {
       switch($currentTurnEffects[$i]) {

@@ -791,6 +791,27 @@ function GetAuraGemState($player, $cardID)
   return $state;
 }
 
+function AuraIntellectModifier() {
+  global $currentTurnEffects, $mainPlayer;
+  $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+  $intellectModifier = 0;
+  $auras = &GetAuras($mainPlayer);
+  for($i=0; $i<count($auras); $i+=AuraPieces()) {
+    switch($auras[$i]) {
+      case "EVO243": $intellectModifier -= 1; break;
+      default: break;
+    }
+  }
+  $auras = &GetAuras($otherPlayer);
+  for($i=0; $i<count($auras); $i+=AuraPieces()) {
+    switch($auras[$i]) {
+      case "EVO243": $intellectModifier -= 1; break;
+      default: break;
+    }
+  }
+  return $intellectModifier;
+}
+
 function PayAuraAbilityAdditionalCosts($cardID, $from)
 {
   global $currentPlayer, $CS_PlayIndex;

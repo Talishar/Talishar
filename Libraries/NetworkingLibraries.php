@@ -1235,7 +1235,7 @@ function FinalizeTurn()
       Draw($defPlayer, false, false);
     }
   }
-  $toDraw = CharacterIntellect($mainCharacter[0]) - count($mainHand) + CurrentEffectIntellectModifier();
+  $toDraw = CharacterIntellect($mainCharacter[0]) - count($mainHand) + CurrentEffectIntellectModifier() + AuraIntellectModifier();
   for($i = 0; $i < $toDraw; ++$i) {
     Draw($mainPlayer, false, false);
   }
