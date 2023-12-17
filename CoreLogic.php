@@ -2066,6 +2066,10 @@ function BanishHand($player)
   return $banishedCards;
 }
 
+function EvoOnPlayHandling($player) {
+  if(SearchCurrentTurnEffects("EVO007", $player, true) || SearchCurrentTurnEffects("EVO008", $player, true)) Draw($player);
+}
+
 function EvoHandling($cardID, $player)
 {
   global $dqVars;
@@ -2082,7 +2086,10 @@ function EvoHandling($cardID, $player)
         $fromCardID = $char[$i];
         $char[$i+2] = 0;//Reset counters
         $char[$i+4] = 0;//Reset defense counters
+        $char[$i+6] = 0;//Not on chain anymore
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
+        $char[$i+7] = 0;//Should not be flagged for destruction
+        $char[$i+8] = 0;//Should not be frozen
         $char[$i+9] = CharacterDefaultActiveState($char[$i]);
         $dqVars[1] = $i;
         EvoTransformAbility($char[$i], $fromCardID, $player);
@@ -2094,7 +2101,6 @@ function EvoHandling($cardID, $player)
       break;
     }
   }
-  if(SearchCurrentTurnEffects("EVO007", $player, true) || SearchCurrentTurnEffects("EVO008", $player, true)) Draw($player);
 }
 
 function CharacterAddSubcard($player, $index, $card) {
