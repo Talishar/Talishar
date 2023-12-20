@@ -508,7 +508,7 @@ function IsTeamPummel($userID)
 {
   switch($userID) {
     case "MkDk": case "Kutter": case "Smeoz": case "Fabio": case "JustFonta": case "M3X": case "Tommaso":
-    case "OotTheMonk":
+    case "PDMPLB":
       return true;
     default: break;
   }
