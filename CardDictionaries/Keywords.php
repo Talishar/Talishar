@@ -106,6 +106,15 @@
         case "HVY149":
           PlayAura("TCC105", $wonWager);//Might
           break;
+        case "HVY169":
+          PlayAura("HVY240", $wonWager);//Agility
+          break;;
+        case "HVY189":
+          PlayAura("TCC107", $wonWager);//Vigor
+          break;
+        case "HVY216":
+          PutItemIntoPlayForPlayer("DYN243", $wonWager);//Gold
+          break;
         default: break;
       }
     }

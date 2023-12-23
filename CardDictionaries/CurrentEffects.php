@@ -101,7 +101,10 @@
     switch($cardID) {
       case "HVY090": case "HVY091": return CardType($attackID) == "W" && !IsAllyAttackTarget();
       case "HVY149": return true;
+      case "HVY169": return true;
+      case "HVY189": return true;
       case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
+      case "HVY216": return true;
       case "HVY240": return true;
       case "HVY254-1": return str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
       case "HVY254-2": return DelimStringContains(CardSubType($CombatChain->AttackCard()->ID()), "Angel");

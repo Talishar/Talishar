@@ -15,7 +15,16 @@
         }
         return "";
       case "HVY149":
-        AskWager("HVY149");
+        AskWager($cardID);
+        return "";
+      case "HVY169":
+        AskWager($cardID);
+        return "";
+      case "HVY189":
+        AskWager($cardID);
+        return "";
+      case "HVY216":
+        AskWager($cardID);
         return "";
       case "HVY246":
         if(IsHeroAttackTarget()) {
