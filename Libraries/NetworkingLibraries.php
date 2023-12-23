@@ -1069,6 +1069,8 @@ function FinalizeChainLink($chainClosed = false)
   $numHitsOnLink += intval($combatChainState[$CCS_HitThisLink]);
   array_push($chainLinkSummary, $numHitsOnLink);
 
+  ResolveWagers();
+
   //Clean up combat effects that were used and are one-time
   CleanUpCombatEffects();
   CopyCurrentTurnEffectsFromCombat();

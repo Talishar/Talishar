@@ -88,4 +88,27 @@
     }
   }
 
+  function AskWager($cardID) {
+    global $currentPlayer;
+    AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID);
+    AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to wager for <0>?");
+    AddDecisionQueue("YESNO", $currentPlayer, "-");
+    AddDecisionQueue("NOPASS", $currentPlayer, "-");
+    AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+  }
+
+  function ResolveWagers() {
+    global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $currentTurnEffects;
+    $wonWager = $combatChainState[$CCS_DamageDealt] > 0 ? $mainPlayer : $defPlayer;
+    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces()) {
+      switch($currentTurnEffects[$i]) {
+        case "HVY149":
+          PlayAura("TCC105", $wonWager);//Might
+          break;
+        default: break;
+      }
+    }
+  }
+
 ?>

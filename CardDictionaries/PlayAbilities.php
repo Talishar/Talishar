@@ -14,6 +14,9 @@
           PlayAlly("HVY134", $currentPlayer);
         }
         return "";
+      case "HVY149":
+        AskWager("HVY149");
+        return "";
       case "HVY246":
         if(IsHeroAttackTarget()) {
           $deck = new Deck($otherPlayer);
