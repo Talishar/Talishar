@@ -664,10 +664,13 @@ function IsDominateActive()
 
 function IsOverpowerActive()
 {
-  global $combatChain, $mainPlayer, $CS_Num6PowBan, $CS_NumItemsDestroyed;
+  global $combatChain, $mainPlayer, $currentTurnEffects, $CS_Num6PowBan, $CS_NumItemsDestroyed;
   if(count($combatChain) == 0) return false;
-  if(SearchItemsForCard("EVO096", $mainPlayer) != "") {
-    return CardType($combatChain[0]) == "AA" && ClassContains($combatChain[0], "MECHANOLOGIST", $mainPlayer);
+  if(SearchItemsForCard("EVO096", $mainPlayer) != "" && CardType($combatChain[0]) == "AA" && ClassContains($combatChain[0], "MECHANOLOGIST", $mainPlayer)) {
+    return true;
+  }
+  for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    if($currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantOverpower($currentTurnEffects[$i])) return true;
   }
   switch($combatChain[0]) {
     case "DYN068": return SearchCurrentTurnEffects("DYN068", $mainPlayer);

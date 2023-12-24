@@ -324,6 +324,7 @@ function EffectAttackModifier($cardID)
   else if($set == "DTD") return DTDEffectAttackModifier($cardID);
   else if($set == "TCC") return TCCEffectAttackModifier($cardID);
   else if($set == "EVO") return EVOEffectAttackModifier($cardID);
+  else if($set == "HVY") return HVYEffectAttackModifier($cardID);
   else if($set == "ROG") return ROGUEEffectAttackModifier($cardID);
   return 0;
 }

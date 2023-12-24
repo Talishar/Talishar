@@ -96,6 +96,20 @@
     AddDecisionQueue("YESNO", $currentPlayer, "-");
     AddDecisionQueue("NOPASS", $currentPlayer, "-");
     AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+
+    //Add on wager effects
+    $char = &GetPlayerCharacter($currentPlayer);
+    if($char[1] == 2 && ($char[0] == "HVY045" || $char[0] == "HVY046")) {
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $char[0], 1);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to pay 2 for <0> to give overpower and +1?", 1);
+      AddDecisionQueue("YESNO", $currentPlayer, "-", 1, 1);
+      AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, 2, 1);
+      AddDecisionQueue("PAYRESOURCES", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $char[0], 1);
+
+    }
   }
 
   function ResolveWagers() {

@@ -1120,6 +1120,14 @@ function AbilityHasGoAgain($cardID)
   }
 }
 
+function DoesEffectGrantOverpower($cardID) {
+  $cardID = ShiyanaCharacter($cardID);
+  switch($cardID) {
+    case "HVY045": case "HVY046": return true;
+    default: return false;
+  }
+}
+
 function DoesEffectGrantDominate($cardID)
 {
   global $combatChainState, $CCS_AttackFused;

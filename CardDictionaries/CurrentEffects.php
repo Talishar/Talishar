@@ -93,12 +93,24 @@
       default: return false;
     }
   }
+
+  function HVYEffectAttackModifier($cardID)
+  {
+    $idArr = explode(",", $cardID);
+    $cardID = $idArr[0];
+    switch($cardID) {
+      case "HVY045": case "HVY046": return 1;
+      default: return 0;
+    }
+  }
+
   function HVYCombatEffectActive($cardID, $attackID)
   {
     global $mainPlayer, $combatChainState, $CombatChain;
     $idArr = explode(",", $cardID);
     $cardID = $idArr[0];
     switch($cardID) {
+      case "HVY045": case "HVY046": return true;
       case "HVY090": case "HVY091": return CardType($attackID) == "W" && !IsAllyAttackTarget();
       case "HVY149": return true;
       case "HVY169": return true;
