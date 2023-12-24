@@ -103,6 +103,11 @@
     $wonWager = $combatChainState[$CCS_DamageDealt] > 0 ? $mainPlayer : $defPlayer;
     for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces()) {
       switch($currentTurnEffects[$i]) {
+        case "HVY057":
+          PutItemIntoPlayForPlayer("DYN243", $wonWager);//Gold
+          PlayAura("TCC105", $wonWager);//Might
+          PlayAura("TCC107", $wonWager);//Vigor
+          break;
         case "HVY149":
           PlayAura("TCC105", $wonWager);//Might
           break;

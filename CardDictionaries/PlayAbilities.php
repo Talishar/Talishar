@@ -10,6 +10,9 @@
         PlayAura("HVY240", $currentPlayer);//Agility
         PlayAura("TCC105", $currentPlayer);//Might
         return "";
+      case "HVY057":
+        AskWager($cardID);
+        return "";
       case "HVY069":
         PlayAura("TCC105", $currentPlayer);//Might
         PlayAura("TCC107", $currentPlayer);//Vigor
