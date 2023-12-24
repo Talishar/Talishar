@@ -6,6 +6,18 @@
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     $rv = "";
     switch($cardID) {
+      case "HVY044":
+        PlayAura("HVY240", $currentPlayer);//Agility
+        PlayAura("TCC105", $currentPlayer);//Might
+        return "";
+      case "HVY069":
+        PlayAura("TCC105", $currentPlayer);//Might
+        PlayAura("TCC107", $currentPlayer);//Vigor
+        return "";
+      case "HVY133":
+        PlayAura("HVY240", $currentPlayer);//Agility
+        PlayAura("TCC107", $currentPlayer);//Vigor
+        return "";
       case "HVY090": case "HVY091":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";

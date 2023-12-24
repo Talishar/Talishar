@@ -1197,11 +1197,33 @@ case "V":
 switch($cardID[2]) {
 case "Y":
 switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "4":
+switch($cardID[5]) {
+case "4":
+return true;
+default: return false;
+}
+case "6":
+switch($cardID[5]) {
+case "9":
+return true;
+default: return false;
+}
+default: return false;
+}
 case "1":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
 case "5":
+return true;
+default: return false;
+}
+case "3":
+switch($cardID[5]) {
+case "3":
 return true;
 default: return false;
 }
