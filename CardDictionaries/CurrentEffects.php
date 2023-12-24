@@ -100,6 +100,9 @@
     $cardID = $idArr[0];
     switch($cardID) {
       case "HVY045": case "HVY046": return 1;
+      case "HVY086-BUFF": return 5;
+      case "HVY087-BUFF": return 4;
+      case "HVY088-BUFF": return 3;
       default: return 0;
     }
   }
@@ -111,6 +114,8 @@
     $cardID = $idArr[0];
     switch($cardID) {
       case "HVY045": case "HVY046": return true;
+      case "HVY086": case "HVY087": case "HVY088": return true;
+      case "HVY086-BUFF": case "HVY087-BUFF": case "HVY088-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer);
       case "HVY090": case "HVY091": return CardType($attackID) == "W" && !IsAllyAttackTarget();
       case "HVY149": return true;
       case "HVY169": return true;

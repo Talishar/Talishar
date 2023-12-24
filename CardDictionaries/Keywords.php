@@ -95,7 +95,7 @@
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to wager for <0>?");
     AddDecisionQueue("YESNO", $currentPlayer, "-");
     AddDecisionQueue("NOPASS", $currentPlayer, "-");
-    AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+    AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID . "!PLAY", 1);
 
     //Add on wager effects
     $char = &GetPlayerCharacter($currentPlayer);
@@ -121,6 +121,9 @@
           PutItemIntoPlayForPlayer("DYN243", $wonWager);//Gold
           PlayAura("TCC105", $wonWager);//Might
           PlayAura("TCC107", $wonWager);//Vigor
+          break;
+        case "HVY086": case "HVY087": case "HVY088":
+          PlayAura("TCC105", $wonWager);//Might
           break;
         case "HVY149":
           PlayAura("TCC105", $wonWager);//Might
