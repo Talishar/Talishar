@@ -1223,6 +1223,8 @@ default: return false;
 }
 case "3":
 switch($cardID[5]) {
+case "0":
+return true;
 case "3":
 return true;
 default: return false;
@@ -1231,6 +1233,12 @@ default: return false;
 }
 case "2":
 switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "5":
+return true;
+default: return false;
+}
 case "4":
 switch($cardID[5]) {
 case "5":

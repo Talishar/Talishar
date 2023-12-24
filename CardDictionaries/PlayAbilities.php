@@ -29,6 +29,9 @@
           PlayAlly("HVY134", $currentPlayer);
         }
         return "";
+      case "HVY130":
+        AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
+        return "";
       case "HVY149":
         AskWager($cardID);
         return "";
@@ -40,6 +43,9 @@
         return "";
       case "HVY216":
         AskWager($cardID);
+        return "";
+      case "HVY235":
+        AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
       case "HVY246":
         if(IsHeroAttackTarget()) {

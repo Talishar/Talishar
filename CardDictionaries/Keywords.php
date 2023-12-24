@@ -125,6 +125,9 @@
         case "HVY086": case "HVY087": case "HVY088":
           PlayAura("TCC105", $wonWager);//Might
           break;
+        case "HVY130":
+          PlayAura("TCC107", $wonWager);//Vigor
+          break;
         case "HVY149":
           PlayAura("TCC105", $wonWager);//Might
           break;
@@ -135,6 +138,9 @@
           PlayAura("TCC107", $wonWager);//Vigor
           break;
         case "HVY216":
+          PutItemIntoPlayForPlayer("DYN243", $wonWager);//Gold
+          break;
+        case "HVY235":
           PutItemIntoPlayForPlayer("DYN243", $wonWager);//Gold
           break;
         default: break;
