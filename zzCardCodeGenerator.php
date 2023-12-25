@@ -39,6 +39,7 @@
   GenerateFunction($cardArray, $handler, "Is1H", "1H", "false", true);
   GenerateFunction($cardArray, $handler, "CardClass", "cardClass", "NONE");
   GenerateFunction($cardArray, $handler, "CardTalent", "cardTalent", "NONE");
+  GenerateFunction($cardArray, $handler, "IsSpecialization", "specialization", "false", true);
 
   fwrite($handler, "?>");
 
@@ -52,7 +53,7 @@
     $isString = true;
     $isBool = false;
     if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "1H") $isString = false;
-    if($propertyName == "1H") $isBool = true;
+    if($propertyName == "1H" || $propertyName == "specialization") $isBool = true;
     fwrite($handler, "if(strlen(\$cardID) < 6) return " . ($isString ? "\"\"" : "0") . ";\r\n");
     fwrite($handler, "if(is_int(\$cardID)) return " . ($isString ? "\"\"" : "0") . ";\r\n");
     if($sparse) fwrite($handler, "switch(\$cardID) {\r\n");
@@ -151,6 +152,17 @@
       {
         $type = $cardArray[$i]->types[$k];
         if($type == "1H") $data = "true";
+      }
+    }
+    else if($propertyName == "specialization")
+    {
+      $data = "false";
+      for($k=0; $k<count($cardArray[$i]->card_keywords); ++$k)
+      {
+        $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
+        for($l=0; $l<count($keywordArray); ++$l) {
+          if($keywordArray[$l] == "Specialization") $data = "true";
+        }
       }
     }
     else if($propertyName == "cardClass")

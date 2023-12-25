@@ -1521,20 +1521,7 @@ function SpellVoidAmount($cardID, $player)
 
 function IsSpecialization($cardID)
 {
-  switch($cardID) {
-    case "WTR006": case "WTR009": case "WTR043": case "WTR047": case "WTR081": case "WTR083": case "WTR119": case "WTR121":
-    case "ARC007": case "ARC009": case "ARC043": case "ARC046": case "ARC080": case "ARC083": case "ARC118": case "ARC121":
-    case "CRU000": case "CRU074":
-    case "MON005": case "MON007": case "MON035": case "MON189": case "MON190": case "MON198": case "MON199":
-    case "ELE004": case "ELE036": case "ELE066":
-    case "EVR003": case "EVR039": case "EVR055": case "EVR070":
-    case "DVR008": case "RVD008": return true;
-    case "UPR090": case "UPR091": case "UPR109": case "UPR126":
-    case "DYN121":
-    case "OUT013": case "OUT053": case "OUT055": case "OUT097": case "OUT098": case "OUT102": case "OUT103": case "OUT104": return true;
-    default:
-      return false;
-  }
+  return GeneratedIsSpecialization($cardID);
 }
 
 function Is1H($cardID)
