@@ -636,16 +636,14 @@ function IsCardBanned($cardID, $format)
         case "ELE223": // Duskblade
         case "WTR152": // Heartened Cross Strap
         case "CRU174": case "CRU175": case "CRU176": // Snapback
-        case "ARC129": case "ARC130": case "ARC131": // Stir the Aetherwinds
         case "MON239": // Stubby Hammers
         case "CRU141": // Bloodsheath Skeleta
         case "EVR037": // Mask of the Pouncing Lynx
-        case "EVR123": // Aether Wildfire
         case "UPR103": case "EVR120": case "EVR121": // Iyslander | Kraken's Aethervein
         case "ELE002": case "ELE003": // Oldhim | Winter's Wail
         case "MON154": case "MON155": // Chane | Galaxxi Black
         case "ARC114": case "ARC115": case "CRU159": // Kano | Crucible of Aetherweave
-        case "CRU077": case "CRU079": case "CRU080": // Kassai, Cintari Sellsword | Cintari Saber
+        case "CRU077":// Kassai, Cintari Sellsword
         case "CRU046": case "CRU050": // Ira, Crimson Haze | Edge of Autumn
           return true;
         default: return false;
