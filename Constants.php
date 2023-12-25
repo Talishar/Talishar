@@ -300,7 +300,7 @@ $CCS_WasRuneGate = 5;
 $CCS_HitsWithWeapon = 6;
 $CCS_GoesWhereAfterLinkResolves = 7;
 $CCS_AttackPlayedFrom = 8;
-$CCS_ChainAttackBuff = 9;//Deprecated -- Use persistent combat effect with RemoveEffectsOnChainClose instead
+$CCS_WagersThisLink = 9;
 $CCS_ChainLinkHitEffectsPrevented = 10;
 $CCS_NumBoosted = 11;
 $CCS_NextBoostBuff = 12;//Deprecated -- use $CCS_IsBoosted now.
@@ -326,11 +326,13 @@ $CCS_CachedOverpowerActive = 31;
 $CSS_CachedNumActionBlocked = 32;
 $CCS_CachedNumDefendedFromHand = 33;
 $CCS_HitThisLink = 34;
+//Deprecated
+//$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsOnChainClose instead
 
 function ResetCombatChainState()
 {
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt;
-  global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented;
+  global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_WagersThisLink, $CCS_ChainLinkHitEffectsPrevented;
   global $CCS_NumBoosted, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget, $CCS_WasRuneGate;
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
@@ -346,6 +348,7 @@ function ResetCombatChainState()
   $combatChainState[$CCS_HitsWithWeapon] = 0;
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
   $combatChainState[$CCS_AttackPlayedFrom] = "NA";
+  $combatChainState[$CCS_WagersThisLink] = 0;
   $combatChainState[$CCS_ChainLinkHitEffectsPrevented] = 0;
   $combatChainState[$CCS_NumBoosted] = 0;
   $combatChainState[$CCS_AttackFused] = 0;
@@ -437,6 +440,7 @@ function ResetChainLinkState()
   $combatChainState[$CCS_WasRuneGate] = 0;
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
   $combatChainState[$CCS_AttackPlayedFrom] = "NA";
+  $combatChainState[$CCS_WagersThisLink] = 0;
   $combatChainState[$CCS_ChainLinkHitEffectsPrevented] = 0;
   $combatChainState[$CCS_AttackFused] = 0;
   $combatChainState[$CCS_AttackTotalDamage] = 0;

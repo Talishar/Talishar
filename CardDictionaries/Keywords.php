@@ -89,13 +89,14 @@
   }
 
   function AskWager($cardID) {
-    global $currentPlayer;
+    global $currentPlayer, $CCS_WagersThisLink;
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID);
     AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to wager for <0>?");
     AddDecisionQueue("YESNO", $currentPlayer, "-");
     AddDecisionQueue("NOPASS", $currentPlayer, "-");
     AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID . "!PLAY", 1);
+    AddDecisionQueue("INCREMENTCOMBATCHAINSTATE", $currentPlayer, $CCS_WagersThisLink, 1);
 
     //Add on wager effects
     $char = &GetPlayerCharacter($currentPlayer);
@@ -115,7 +116,9 @@
   function ResolveWagers() {
     global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $currentTurnEffects;
     $wonWager = $combatChainState[$CCS_DamageDealt] > 0 ? $mainPlayer : $defPlayer;
+    $numWagersWon = 0;
     for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces()) {
+      $hasWager = true;
       switch($currentTurnEffects[$i]) {
         case "HVY057":
           PutItemIntoPlayForPlayer("DYN243", $wonWager);//Gold
@@ -143,7 +146,18 @@
         case "HVY235":
           PutItemIntoPlayForPlayer("DYN243", $wonWager);//Gold
           break;
-        default: break;
+        default:
+          $hasWager = false;
+          break;
+      }
+      if($hasWager) ++$numWagersWon;
+    }
+    if($wonWager == $mainPlayer) {
+      $char = &GetPlayerCharacter($mainPlayer);
+      $hero = ShiyanaCharacter($char[0]);
+      if($char[1] == 2 && ($hero == "HVY092" || $hero == "HVY093")) {
+        PutItemIntoPlayForPlayer("DYN243", $mainPlayer);//Gold
+        WriteLog(CardLink($hero, $hero) . " wins the favor of the crowd!");
       }
     }
   }

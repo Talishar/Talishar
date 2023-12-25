@@ -158,6 +158,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "EVO210": case "EVO211": case "EVO212":
     case "EVO213": case "EVO214": case "EVO215":
       return NumEquipBlock();
+    case "HVY112": return 3;
     default: return 0;
   }
 }
