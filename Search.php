@@ -335,12 +335,14 @@ function SearchCharacterAliveSubtype($player, $subtype)
 function FindCharacterIndex($player, $cardID)
 {
   $character = &GetPlayerCharacter($player);
+  $index = -1;
   for($i = 0; $i < count($character); $i += CharacterPieces()) {
     if($character[$i] == $cardID) {
-      return $i;
+      if($character[$i+1] != 0) return $i;
+      else $index = $i;
     }
   }
-  return -1;
+  return $index;
 }
 
 function CombineSearches($search1, $search2)
