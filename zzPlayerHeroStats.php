@@ -64,6 +64,7 @@ FROM completedgame
 WHERE WinningHero=? and LosingHero<>\"DUMMY\" and WinningPID=?
 GROUP by LosingHero
 ORDER BY Count";
+$conn = GetDBConnection();
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");
