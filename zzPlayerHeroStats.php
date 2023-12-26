@@ -179,7 +179,7 @@ while ($row = mysqli_fetch_array($loseCardData, MYSQLI_NUM)) {
     ++$cardData[$card][1];
   }
 }
-echo ("<div id='wrapper' style='text-align: center;'>");
+echo ("<div id='wrapper' style='padding-top:40px; height:80%; text-align: center; overflow-y:scroll;'>");
 
 echo ("<section class='game-stats' style='overflow-y:hidden;'>");
 echo ("<h3>Stats for " . CardLink($detailHeroID, $detailHeroID, true) . "</h3>");
