@@ -89,19 +89,23 @@
   }
 
   function AskWager($cardID) {
-    global $currentPlayer, $CCS_WagersThisLink;
+    global $currentPlayer;
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID);
     AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to wager for <0>?");
     AddDecisionQueue("YESNO", $currentPlayer, "-");
     AddDecisionQueue("NOPASS", $currentPlayer, "-");
     AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID . "!PLAY", 1);
-    AddDecisionQueue("INCREMENTCOMBATCHAINSTATE", $currentPlayer, $CCS_WagersThisLink, 1);
 
-    //Add on wager effects
+    AddOnWagerEffects();
+  }
+
+  function AddOnWagerEffects($canPass = true) {
+    global $currentPlayer, $CCS_WagersThisLink;
+    AddDecisionQueue("INCREMENTCOMBATCHAINSTATE", $currentPlayer, $CCS_WagersThisLink, $canPass);
     $char = &GetPlayerCharacter($currentPlayer);
     if($char[1] == 2 && ($char[0] == "HVY045" || $char[0] == "HVY046")) {
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $char[0], 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $char[0], $canPass ? 1 : 0);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to pay 2 for <0> to give overpower and +1?", 1);
       AddDecisionQueue("YESNO", $currentPlayer, "-", 1, 1);
@@ -109,7 +113,6 @@
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, 2, 1);
       AddDecisionQueue("PAYRESOURCES", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $char[0], 1);
-
     }
   }
 
@@ -127,6 +130,15 @@
           break;
         case "HVY086": case "HVY087": case "HVY088":
           PlayAura("TCC105", $wonWager);//Might
+          break;
+        case "HVY103-1":
+          PlayAura("HVY240", $wonWager);//Agility
+          break;
+        case "HVY103-2":
+          PutItemIntoPlayForPlayer("DYN243", $wonWager);//Gold
+          break;
+        case "HVY103-3":
+          PlayAura("TCC107", $wonWager);//Vigor
           break;
         case "HVY130":
           PlayAura("TCC107", $wonWager);//Vigor

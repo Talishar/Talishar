@@ -2,7 +2,7 @@
 
 function ModalAbilities($player, $card, $lastResult)
 {
-  global $combatChain, $defPlayer;
+  global $combatChain, $defPlayer, $CombatChain;
   switch($card)
   {
     case "ESTRIKE":
@@ -186,6 +186,34 @@ function ModalAbilities($player, $card, $lastResult)
     case "ADAPTIVEPLATING":
       if(is_array($lastResult) && count($lastResult) > 0) $lastResult = $lastResult[0];
       if($lastResult != "None") EquipEquipment($player, "EVO013", $lastResult);
+      return $lastResult;
+    case "UPTHEANTE":
+      $numNewWagers = 0;
+      $params = explode(",", $lastResult);
+      for($i = 0; $i < count($params); ++$i) {
+        switch($params[$i]) {
+          case "Wager_Agility":
+            AddCurrentTurnEffect("HVY103-1", $player);
+            AddOnWagerEffects(canPass:false);
+            ++$numNewWagers;
+            break;
+          case "Wager_Gold":
+            AddCurrentTurnEffect("HVY103-2", $player);
+            AddOnWagerEffects(canPass:false);
+            ++$numNewWagers;
+            break;
+          case "Wager_Vigor":
+            AddCurrentTurnEffect("HVY103-3", $player);
+            AddOnWagerEffects(canPass:false);
+            ++$numNewWagers;
+            break;
+          case "Buff_Attack":
+            global $CCS_WagersThisLink;
+            $CombatChain->AttackCard()->ModifyPower(GetClassState($player, $CCS_WagersThisLink) + $numNewWagers);
+            break;
+          default: break;
+        }
+      }
       return $lastResult;
     default: return "";
   }

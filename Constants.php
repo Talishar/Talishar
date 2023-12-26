@@ -300,7 +300,7 @@ $CCS_WasRuneGate = 5;
 $CCS_HitsWithWeapon = 6;
 $CCS_GoesWhereAfterLinkResolves = 7;
 $CCS_AttackPlayedFrom = 8;
-$CCS_WagersThisLink = 9;
+//9 does not exist
 $CCS_ChainLinkHitEffectsPrevented = 10;
 $CCS_NumBoosted = 11;
 $CCS_NextBoostBuff = 12;//Deprecated -- use $CCS_IsBoosted now.
@@ -326,6 +326,7 @@ $CCS_CachedOverpowerActive = 31;
 $CSS_CachedNumActionBlocked = 32;
 $CCS_CachedNumDefendedFromHand = 33;
 $CCS_HitThisLink = 34;
+$CCS_WagersThisLink = 35;
 //Deprecated
 //$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsOnChainClose instead
 
@@ -430,7 +431,7 @@ function ResetChainLinkState()
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
   global $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
-  global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate;
+  global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate, $CCS_WagersThisLink;
   WriteLog("The chain link was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;

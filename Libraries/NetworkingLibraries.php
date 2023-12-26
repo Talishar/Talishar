@@ -2052,6 +2052,17 @@ function PayAdditionalCosts($cardID, $from)
         MZMoveCard($currentPlayer, "MYDISCARD:pitch=2", "MYBANISH,GY,-");
       }
       break;
+    case "HVY103":
+      global $CS_LastDynCost;
+      $dynCost = GetClassState($currentPlayer, $CS_LastDynCost);
+      if($dynCost > 0) {
+        $max = $dynCost > 4 ? 4 : $dynCost+1;
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $max == 1 ? "Choose 1 mode" : "Choose " . $max . " modes");
+        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, $max . "-Wager_Agility,Wager_Gold,Wager_Vigor,Buff_Attack-0");
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      }
+      break;
     case "HVY105":
       $numGold = CountItem("DYN243", $currentPlayer);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
