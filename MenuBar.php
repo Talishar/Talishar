@@ -152,7 +152,7 @@ $isMobile = IsMobile();
         <li><a href="MainMenu.php">Home Page</a></li>
         <?php if (!$isMobile) echo '<li><a href="https://fabtcg.com/events" target="_blank">Find Local Events</a></li>'; ?>
         <?php if (!$isMobile) echo '<li><a href="https://github.com/Talishar/Talishar/labels/bug" target="_blank">Known Bugs</a></li>'; ?>
-        <?php //if($isPatron) echo "<li><a href='Replays.php'>Replays[BETA]</a></li>";
+        <?php if($isPatron || (isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk")) echo "<li><a href='Replays.php'>Replays[BETA]</a></li>";
         ?>
         <li><a href="https://www.draftfab.com/">DraftFaB</a></li>
         <?php
