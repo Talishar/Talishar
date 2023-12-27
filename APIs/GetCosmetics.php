@@ -13,6 +13,13 @@ SetHeaders();
 
 $response = new stdClass();
 $response->cardBacks = [];
+
+//Add default card back
+$cardBack = new stdClass();
+$cardBack->name = "Default";
+$cardBack->id = 0;
+array_push($response->cardBacks, $cardBack);
+
 $response->playmats = [];
 if(IsUserLoggedIn()) {
   foreach(PatreonCampaign::cases() as $campaign) {
