@@ -164,7 +164,7 @@
       }
       if($hasWager) ++$numWagersWon;
     }
-    if($wonWager == $mainPlayer) {
+    if($numWagersWon > 0 && $wonWager == $mainPlayer) {
       $char = &GetPlayerCharacter($mainPlayer);
       $hero = ShiyanaCharacter($char[0]);
       if($char[1] == 2 && ($hero == "HVY092" || $hero == "HVY093")) {
