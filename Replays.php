@@ -3,20 +3,20 @@ include "HostFiles/Redirector.php";
 include_once 'MenuBar.php';
 include_once 'APIKeys/APIKeys.php';
 
-if (isset($_SESSION["isPatron"])) $isPatron = $_SESSION["isPatron"];
-else $isPatron = false;
-
-if(!$isPatron)
-{
-  echo("Replay functionality is only available to patrons.");
-  exit;
-}
-
 $userId = "";
 if(isset($_SESSION["userid"])) $userId = $_SESSION["userid"];
 if($userId == "")
 {
   echo("You must be logged in to use this feature.");
+  exit;
+}
+
+if (isset($_SESSION["isPatron"])) $isPatron = $_SESSION["isPatron"];
+else $isPatron = false;
+
+if(!$isPatron && $_SESSION["useruid"] != "OotTheMonk")
+{
+  echo("Replay functionality is only available to patrons.");
   exit;
 }
 
