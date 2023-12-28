@@ -417,10 +417,11 @@ function CountCurrentTurnEffects($cardID, $player, $remove = false)
 
 function SearchPitchHighestAttack(&$pitch)
 {
+  global $mainPlayer;
   $highest = 0;
-  for ($i = 0; $i < count($pitch); ++$i) {
-    $av = AttackValue($pitch[$i]);
-    if ($av > $highest) $highest = $av;
+  for($i = 0; $i < count($pitch); ++$i) {
+    $av = ModifiedAttackValue($pitch[$i], $mainPlayer, "PITCH", source:"");
+    if($av > $highest) $highest = $av;
   }
   return $highest;
 }

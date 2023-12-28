@@ -352,7 +352,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return $lastResult;
     case "EVENBIGGERTHANTHAT":
       $deck = new Deck($player);
-      if($deck->Reveal() && AttackValue($deck->Top()) > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt)) {
+      $modifiedAttack = ModifiedAttackValue($deck->Top(), $player, "DECK", source:"");
+      if($deck->Reveal() && $modifiedAttack > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt)) {
         WriteLog("Even Bigger Than That! drew a card and created a Quicken token");
         Draw($player);
         PlayAura("WTR225", $player);
@@ -398,7 +399,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       PrependDecisionQueue("FINDINDICES", $player, "CASHOUT");
       return "";
     case "SANDSKETCH":
-      if(AttackValue(DiscardRandom($player, "WTR009")) >= 6) GainActionPoints(2, $player);
+      $discarded = DiscardRandom($player, "WTR009");
+      if(ModifiedAttackValue($discarded, $player, "HAND", source:"WTR009") >= 6) GainActionPoints(2, $player);
       return "1";
     case "REMEMBRANCE":
       $cards = "";
@@ -470,7 +472,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       $card = $deck->BanishTop("-", $player);
       LoseHealth(1, $player);
-      if(AttackValue($card) >= 6) {
+      if(ModifiedAttackValue($card, $player, "DECK", source:"CRU007") >= 6) {
         $banish = new Banish($player);
         RemoveBanish($player, ($banish->NumCards()-1)*BanishPieces());
         AddPlayerHand($card, $player, "BANISH");

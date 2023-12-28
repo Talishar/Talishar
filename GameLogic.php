@@ -958,7 +958,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cards = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
       $totalAV = 0;
       for($i = 0; $i < count($cards); ++$i) {
-        $totalAV += intval(AttackValue($cards[$i]));
+        $totalAV += intval(ModifiedAttackValue($cards[$i], $player, "HAND", source:"MON247"));
       }
       if($totalAV >= 13) {
         AddCurrentTurnEffect("MON247", $player);

@@ -252,7 +252,7 @@ function ArsenalAttackAbilities()
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces()) {
     switch($arsenal[$i]) {
       case "MON406": if(CardType($attackID) == "AA" && $arsenal[$i+1] == "UP") LadyBarthimontAbility($mainPlayer, $i); break;
-      case "RVD007": if(CardType($attackID) == "AA" && AttackValue($attackID) >= 6 && $arsenal[$i+1] == "UP") ChiefRukutanAbility($mainPlayer, $i); break;
+      case "RVD007": if(CardType($attackID) == "AA" && ModifiedAttackValue($attackID, $mainPlayer, "CC", source:$arsenal[$i]) >= 6 && $arsenal[$i+1] == "UP") ChiefRukutanAbility($mainPlayer, $i); break;
       default: break;
     }
   }
@@ -769,7 +769,7 @@ function CombatChainClosedCharacterEffects()
           break;
         case "RVD003":
           $deck = new Deck($defPlayer);
-          if($deck->Reveal() && AttackValue($deck->Top()) < 6) {
+          if($deck->Reveal() && ModifiedAttackValue($deck->Top(), $defPlayer, "DECK", source:"RVD003") < 6) {
             $card = $deck->AddBottom($deck->Top(remove:true), "DECK");
             WriteLog(CardLink("RVD015", "RVD015") . " put " . CardLink($card, $card) . " on the bottom of your deck");
           }
