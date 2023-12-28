@@ -130,7 +130,7 @@
     if($attackID == "MON008" || $attackID == "MON009" || $attackID == "MON010") --$av;
     if(CardType($attackID) == "AA" && SearchCurrentTurnEffects("DTD411", $defPlayer)) --$av;
     $av += AuraAttackModifiers($index);
-    $av += $card->AttackValue();
+    $av += $card->AttackValue();//Combat chain attack modifier
     $av += EffectDefenderAttackModifiers();
     return $av >= 6;
   }

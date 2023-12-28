@@ -117,7 +117,7 @@
       case "MON202": return 1;
       case "MON212": return 2;
       case "MON221": return 2;
-      case "MON222": return AttackValue($CombatChain->AttackCard()->ID());
+      case "MON222": return ModifiedAttackValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC", source:"");
       case "MON239": return 1;
       case "MON247": return 7;
       case "MON260-1": case "MON261-1": case "MON262-1": return 2;
@@ -172,7 +172,7 @@
       case "MON221": return true;
       case "MON222": return CardType($attackID) == "AA" && ClassContains($attackID, "BRUTE", $mainPlayer);
       case "MON223": case "MON224": case "MON225": return true;
-      case "MON239": return CardType($attackID) == "AA" && AttackValue($attackID) <= 3;
+      case "MON239": return CardType($attackID) == "AA" && AttackValue($attackID) <= 3;//Base power
       case "MON247": return true;
       case "MON260-1": case "MON260-2": return CardType($attackID) == "AA" && CardCost($attackID) <= 2;
       case "MON261-1": case "MON261-2": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
@@ -180,7 +180,7 @@
       case "MON263": case "MON264": case "MON265": return true;
       case "MON269": case "MON270": case "MON271": return IsWeaponAttack();
       case "MON278": case "MON279": case "MON280": return true;
-      case "MON296": case "MON297": case "MON298": return CardType($attackID) == "AA" && AttackValue($attackID) <= 3;
+      case "MON296": case "MON297": case "MON298": return CardType($attackID) == "AA" && AttackValue($attackID) <= 3;//Base power
       case "MON299": case "MON300": case "MON301": return CardType($attackID) == "AA";
       case "MON406": return true;
       default: return false;
