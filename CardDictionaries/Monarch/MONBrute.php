@@ -14,15 +14,15 @@
       case "MON125":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(AttackValue($card) >= 6) {
-          MZMoveCard($currentPlayer, "MYDECK:hasBloodDebt=true", "MYBANISH,DECK,-", may:true);
+        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) {
+          MZMoveCard($currentPlayer, "MYDECK:bloodDebtOnly=true", "MYBANISH,DECK,-", may:true);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         }
         return "";
       case "MON138": case "MON139": case "MON140":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(AttackValue($card) >= 6) {
+        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD&THEIRDISCARD");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Deadwood Rumbler");
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -36,17 +36,17 @@
       case "MON221":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(AttackValue($card) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
+        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "MON222":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(AttackValue($card) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
+        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "MON223": case "MON224": case "MON225":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(AttackValue($card) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
+        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       default: return "";
     }
@@ -69,7 +69,7 @@
     $BanishedIncludes6 = false;
     for($i = 0; $i < 3; $i++) {
       $index = GetRandom() % count($discard);
-      if(AttackValue($discard[$index]) >= 6) $BanishedIncludes6 = true;
+      if(ModifiedAttackValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) $BanishedIncludes6 = true;
       BanishCardForPlayer($discard[$index], $currentPlayer, "DISCARD", "NA");
       unset($discard[$index]);
       $discard = array_values($discard);
@@ -82,7 +82,7 @@
     $deck = new Deck($player);
     if($deck->Empty()) return;
     $topDeck = $deck->BanishTop("-", $player);
-    if(AttackValue($topDeck) >= 6) {
+    if(ModifiedAttackValue($topDeck, $player, "DECK", source:"MON406") >= 6) {
       $arsenal = &GetArsenal($player);
       ++$arsenal[$index+3];
       AddCurrentTurnEffect("MON406", $player);
