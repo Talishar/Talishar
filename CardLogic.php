@@ -1279,6 +1279,7 @@ function CardDiscarded($player, $discarded, $source = "")
     }
     else if(($characterID == "HVY001" || $characterID == "HVY002") && $character[1] == 2 && $player == $mainPlayer) { //Kayo, Armed and Dangerous
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
+      $character[1] = 1;
     }
     $index = FindCharacterIndex($player, "DYN006");
     if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer) {
