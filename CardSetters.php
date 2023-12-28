@@ -52,7 +52,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     WriteLog(CardLink($cardID, $cardID) . " was banished to pay a boost cost. Put a counter on a Hyper Drive you control.");
     AddLayer("TRIGGER", $player, $cardID);
   }
-  if(AttackValue($cardID) >= 6) {
+  if(ModifiedAttackValue($cardID, $player, $from, source:$banishedBy) >= 6) {
     if($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer) {
       if(($characterID == "MON119" || $characterID == "MON120") && $character[1] == 2) { // Levia
         WriteLog(CardLink($characterID, $characterID) . " banished a card with 6+ power, and won't lose health from Blood Debt this turn");

@@ -777,7 +777,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "RVD015":
       $deck = new Deck($player);
-      if($deck->Reveal() && AttackValue($deck->Top()) < 6) {
+      if($deck->Reveal() && ModifiedAttackValue($deck->Top(), $player, "DECK", source:"RVD015") < 6) {
         $card = $deck->AddBottom($deck->Top(remove:true), "DECK");
         WriteLog(CardLink("RVD015", "RVD015") . " put " . CardLink($card, $card) . " on the bottom of your deck");
       }
@@ -857,7 +857,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "DYN009":
       $deck = new Deck($player);
-      if($deck->Reveal() && AttackValue($deck->Top()) >= 6) {
+      if($deck->Reveal() && ModifiedAttackValue($deck->Top(), $player, "DECK", source:"DYN009") >= 6) {
         Draw($player);
         WriteLog(CardLink($parameter, $parameter) . " drew a card");
       }
