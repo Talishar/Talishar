@@ -66,8 +66,8 @@
     for($i=1; $i<=2; ++$i) {
       $deck = new Deck($i);
       if($deck->Reveal()) {
-        if($i == 1) $p1Power = AttackValue($deck->Top());
-        else $p2Power = AttackValue($deck->Top());
+        if($i == 1) $p1Power = ModifiedAttackValue($deck->Top(), 1, "DECK", source:$cardID);
+        else $p2Power = ModifiedAttackValue($deck->Top(), 2, "DECK", source:$cardID);
       }
     }
     if($p1Power > 0 && $p1Power > $p2Power) WonClashAbility(1, $cardID);
