@@ -76,7 +76,8 @@
     $found = false;
     for($i=1; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
       $card = $CombatChain->Card($i, cardNumber:true);
-      if(!IsAllyAttackTarget() && $card->PlayerID() == $defPlayer && AttackValue($card->ID()) >= CachedTotalAttack()) $found = true;
+      $attackValue = ModifiedAttackValue($card->ID(), $defPlayer, "CC", source:"MON245");
+      if(!IsAllyAttackTarget() && $card->PlayerID() == $defPlayer && $attackValue >= CachedTotalAttack()) $found = true;
     }
     return $found;
   }
