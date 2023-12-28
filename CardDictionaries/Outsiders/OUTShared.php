@@ -135,7 +135,7 @@ function OUTAbilityCost($cardID)
       case "OUT049": return CardType($attackID) == "AA";
       case "OUT052": return CardType($attackID) == "AA" && count($commaArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($commaArr[1]));
       case "OUT068": case "OUT069": case "OUT070": return true;
-      case "OUT071": case "OUT072": case "OUT073": return CardType($attackID) == "AA" && AttackValue($attackID) <= 2;
+      case "OUT071": case "OUT072": case "OUT073": return CardType($attackID) == "AA" && AttackValue($attackID) <= 2;//Base power
       case "OUT102": return true;
       case "OUT105": return CardSubType($attackID) == "Arrow";
       case "OUT109": case "OUT110": case "OUT111": return CardSubType($attackID) == "Arrow";
@@ -184,7 +184,7 @@ function OUTAbilityCost($cardID)
         $deck->AddBottom($combatChain[0], "CC");
         AttackReplaced();
         $combatChain[0] = $card->ID();
-        $combatChainState[$CCS_LinkBaseAttack] = AttackValue($combatChain[0]);
+        $combatChainState[$CCS_LinkBaseAttack] = ModifiedAttackValue($combatChain[0], $currentPlayer, "CC", source:"");
         $card->Remove();
         return "";
       case "OUT011":
@@ -525,7 +525,7 @@ function OUTAbilityCost($cardID)
         if($cardRemoved == "") { AddCurrentTurnEffect("OUT186-7", $currentPlayer); return "You cannot reveal cards so Gore Belching gets -7."; }
         else {
           BanishCardForPlayer($cardRemoved, $currentPlayer, "DECK", "-", "OUT186");
-          AddCurrentTurnEffect("OUT186-" . AttackValue($cardRemoved), $currentPlayer);
+          AddCurrentTurnEffect("OUT186-" . ModifiedAttackValue($cardRemoved, $currentPlayer, "DECK", source:"OUT186"), $currentPlayer);
         }
         return "";
       case "OUT187":
