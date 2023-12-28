@@ -301,23 +301,23 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       for($i=0; $i<count($cards); ++$i)
       {
         if(HasBloodDebt($cards[$i])) Draw($currentPlayer);
-        if(AttackValue($cards[$i]) >= 6) ++$num6Pow;
+        if(ModifiedAttackValue($cards[$i], $currentPlayer, "HAND", source:$cardID) >= 6) ++$num6Pow;
       }
       if($num6Pow > 0) AddCurrentTurnEffect("DTD111," . $num6Pow, $currentPlayer);
       return "";
     case "DTD112": case "DTD113": case "DTD114":
-      if(AttackValue($additionalCosts) >= 6) GiveAttackGoAgain();
+      if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) GiveAttackGoAgain();
       return "";
     case "DTD118": case "DTD119": case "DTD120":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD127": case "DTD128": case "DTD129":
-      if(AttackValue($additionalCosts) >= 6) {
+      if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       return "";
     case "DTD130": case "DTD131": case "DTD132":
-      if(AttackValue($additionalCosts) >= 6) {
+      if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       return "";
@@ -396,7 +396,8 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $num6plus = 0;
       for($i=0; $i<count($cards); ++$i)
       {
-        if(AttackValue($cards[$i]) >= 6) {
+        WriteLog(CardLink($cards[$i], $cards[$i]) . " chosen randomly");
+        if(ModifiedAttackValue($cards[$i], $currentPlayer, "GY", source:$cardID) >= 6) {
           ++$num6plus;
           $deck->AddBottom($cards[$i], "GY");
         }

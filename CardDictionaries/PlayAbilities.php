@@ -451,9 +451,10 @@
       case "EVO237":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(AttackValue($card) >= 6) {
-          $items = explode(",", SearchMultizone($currentPlayer, "THEIRITEMS&MYITEMS"));
-          if (count($items) > 0) {
+        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:"EVO237") >= 6) {
+          $items = SearchMultizone($currentPlayer, "THEIRITEMS&MYITEMS");
+          if($items != "") {
+            $items = explode(",", $items);
             $destroyedItem = $items[GetRandom(0, count($items) - 1)];
             $destroyedItemID = GetMZCard($currentPlayer, $destroyedItem);
             WriteLog(CardLink("EVO237", "EVO237") . " destroys " . CardLink($destroyedItemID, $destroyedItemID) . ".");

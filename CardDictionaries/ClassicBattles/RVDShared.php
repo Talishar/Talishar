@@ -35,11 +35,10 @@ function RVDPlayAbility($cardID)
       Draw($currentPlayer);
       $card = DiscardRandom();
       $rv = "Discarded " . CardLink($card, $card);
-      if(AttackValue($card) >= 6) {
+      if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:"RVD013") >= 6) {
         Intimidate();
-        $rv .= " and intimidated from discarding a card with 6 or more power";
       }
-      return $rv;
+      return "";
     case "RVD025":
       Intimidate();
       return "";

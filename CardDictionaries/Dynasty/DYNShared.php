@@ -124,7 +124,7 @@ function DYNCombatEffectActive($cardID, $attackID)
   $cardID = $params[0];
   switch($cardID) {
     case "DYN007": return true;
-    case "DYN013": case "DYN014": case "DYN015": return AttackValue($attackID) >= 6;
+    case "DYN013": case "DYN014": case "DYN015": return AttackValue($attackID) >= 6;//Specifies base attack
     case "DYN019": case "DYN020": case "DYN021": return true;
     case "DYN022": case "DYN023": case "DYN024": return ClassContains($attackID, "BRUTE", $mainPlayer);
     case "DYN028": return ClassContains($attackID, "GUARDIAN", $mainPlayer);
@@ -172,7 +172,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       return "";
     case "DYN007":
-      if(AttackValue($additionalCosts) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN009": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "DYN002": PutPermanentIntoPlay($currentPlayer, $cardID); return "";
