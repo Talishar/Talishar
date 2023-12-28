@@ -1118,6 +1118,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         AddDecisionQueue("MULTIBANISH", $otherPlayer, "CC,-," . $player, 1);
       }
       break;
+    case "HVY001": case "HVY002":
+      PlayAura("TCC105", $player);//Might
+      break;
     case "HVY162": case "HVY239":
       Clash($parameter);
       break;
@@ -1267,10 +1270,14 @@ function CardDiscarded($player, $discarded, $source = "")
 {
   global $CS_Num6PowDisc, $mainPlayer;
   AddEvent("DISCARD", $discarded);
-  if(AttackValue($discarded) >= 6) {
+  $modifiedAttack = ModifiedAttackValue($discarded, $player, "HAND", $source);
+  if($modifiedAttack >= 6) {
     $character = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($character[0]);
     if(($characterID == "WTR001" || $characterID == "WTR002" || $characterID == "RVD001") && $character[1] == 2 && $player == $mainPlayer) { //Rhinar
+      AddLayer("TRIGGER", $mainPlayer, $character[0]);
+    }
+    else if(($characterID == "HVY001" || $characterID == "HVY002") && $character[1] == 2 && $player == $mainPlayer) { //Kayo, Armed and Dangerous
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
     }
     $index = FindCharacterIndex($player, "DYN006");
@@ -1289,6 +1296,17 @@ function CardDiscarded($player, $discarded, $source = "")
     WriteLog(CardLink("CRU008", "CRU008") . " intimidated because it was discarded by a Brute attack action card.");
     AddLayer("TRIGGER", $mainPlayer, $discarded);
   }
+}
+
+function ModifiedAttackValue($cardID, $player, $from, $source)
+{
+  $attack = AttackValue($cardID);
+  if($from != "CC") {
+    $char = &GetPlayerCharacter($player);
+    $characterID = ShiyanaCharacter($char[0]);
+    if($characterID == "HVY001" || $characterID == "HVY002") ++$attack;
+  }
+  return $attack;
 }
 
 function Intimidate($player="")
