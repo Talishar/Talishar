@@ -133,7 +133,7 @@
       case "EVR017": return CardCost($attackID) >= 3;
       case "EVR019": return HasCrush($attackID);
       case "EVR021": return true;
-      case "EVR044": case "EVR045": case "EVR046": return CardType($attackID) == "AA" && AttackValue($attackID) <= 2;
+      case "EVR044": case "EVR045": case "EVR046": return CardType($attackID) == "AA" && AttackValue($attackID) <= 2;//Base attack
       case "EVR047-1": case "EVR048-1": case "EVR049-1": return true;
       case "EVR047-2": case "EVR048-2": case "EVR049-2": return true;
       case "EVR057-1": case "EVR058-1": case "EVR059-1":
@@ -193,12 +193,12 @@
       case "EVR008": case "EVR009": case "EVR010":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(AttackValue($card) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
+        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "EVR011": case "EVR012": case "EVR013":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(AttackValue($card) >= 6) GiveAttackGoAgain();
+        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) GiveAttackGoAgain();
         return "";
       case "EVR014": case "EVR015": case "EVR016":
         if($cardID == "EVR014") $target = 4;
@@ -760,7 +760,7 @@
           if($stat == "Hit") ProcessHitEffect($chainLinks[$i][$j]);
           elseif ($stat == "Ability") PlayAbility($chainLinks[$i][$j], "HAND", 0);
           else {
-            $attack = AttackValue($chainLinks[$i][$j]);
+            $attack = ModifiedAttackValue($chainLinks[$i][$j], $currentPlayer, "CC", source:"EVR138");
             if($attack > $highestAttack) $highestAttack = $attack;
             $block = BlockValue($chainLinks[$i][$j]);
             if($block > $highestBlock) $highestBlock = $block;
@@ -777,7 +777,7 @@
         if($stat == "Hit") ProcessHitEffect($cardID);
         elseif ($stat == "Ability") PlayAbility($cardID, "HAND", 0);
         else {
-          $attack = AttackValue($cardID);
+          $attack = ModifiedAttackValue($cardID, $currentPlayer, "CC", source:"EVR138");
           if($attack > $highestAttack) $highestAttack = $attack;
           $block = BlockValue($cardID);
           if($block > $highestBlock) $highestBlock = $block;
