@@ -169,10 +169,10 @@
         Intimidate();
         return "";
       case "WTR007":
-        if(AttackValue($additionalCosts) >= 6) {
+        if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
           Draw($currentPlayer);
           Draw($currentPlayer);
-          if(!CurrentEffectPreventsGoAgain()) GainActionPoints(1, $currentPlayer);;
+          if(!CurrentEffectPreventsGoAgain()) GainActionPoints(1, $currentPlayer);
           $rv = "Draws 2 cards and gains go again";
         }
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -182,7 +182,9 @@
         if(IsAllyAttacking()) {
           return "<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>";
         }
-        else if(AttackValue($additionalCosts) >= 6) { WriteLog("Deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
+        else if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
+          WriteLog("Deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID);
+        }
         return "";
       case "WTR009":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");
@@ -196,13 +198,13 @@
         IncrementClassState($currentPlayer, $CS_DamagePrevention, $roll);
         return "Prevents the next $roll damage that will be dealt to you this turn";
       case "WTR011": case "WTR012": case "WTR013":
-        if(AttackValue($additionalCosts) >= 6) {
+        if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
           GiveAttackGoAgain();
           $rv = "Discarded a 6 power card and gains go again.";
         }
         return $rv;
       case "WTR014": case "WTR015": case "WTR016":
-        if(AttackValue($additionalCosts) >= 6) Draw($currentPlayer);
+        if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) Draw($currentPlayer);
         return "";
       case "WTR017": case "WTR018": case "WTR019":
         AddCurrentTurnEffect($cardID, $mainPlayer);
