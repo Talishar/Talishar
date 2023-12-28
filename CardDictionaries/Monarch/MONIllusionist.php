@@ -125,7 +125,7 @@
     if(CardType($card->ID()) != "AA") return false;
     if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
     $attackID = $CombatChain->AttackCard()->ID();
-    $av = AttackValue($card->ID());
+    $av = ModifiedAttackValue($card->ID(), $defPlayer, "CC", source:$card->ID());
     $origAV = $av;
     if($attackID == "MON008" || $attackID == "MON009" || $attackID == "MON010") --$av;
     if(CardType($attackID) == "AA" && SearchCurrentTurnEffects("DTD411", $defPlayer)) --$av;
