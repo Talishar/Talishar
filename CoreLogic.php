@@ -1000,6 +1000,11 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   if(($cardType == "AR" || ($abilityType == "AR" && $isStaticType)) && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
   if(($cardType == "DR" || ($abilityType == "DR" && $isStaticType)) && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   if($from == "DECK" && (SearchCharacterActive($currentPlayer, "EVO001") || SearchCharacterActive($currentPlayer, "EVO002"))) return true;
+  switch($cardID) {
+    case "HVY143": case "HVY144": case "HVY145":
+    case "HVY163": case "HVY164": case "HVY165": return true;
+    default: break;
+  }
   return false;
 }
 

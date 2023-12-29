@@ -1545,13 +1545,13 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   global $currentPlayer;
   if (IsStaticType(CardType($cardID), $from, $cardID)) {
     $names = GetAbilityNames($cardID, $index);
-    if ($names != "") {
+    if($names != "") {
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which ability to activate");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
       AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
     }
   }
-  switch ($cardID) {
+  switch($cardID) {
     case "WTR081":
       if (ComboActive($cardID)) {
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
@@ -1562,9 +1562,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       }
       break;
-    case "ARC185":
-    case "ARC186":
-    case "ARC187":
+    case "ARC185": case "ARC186": case "ARC187":
       HandToTopDeck($currentPlayer);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "ARC185", 1);
       break;
@@ -1598,19 +1596,25 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SOULREAPING", 1);
       break;
-    case "MON257":
-    case "MON258":
-    case "MON259":
+    case "MON257": case "MON258": case "MON259":
       HandToTopDeck($currentPlayer);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "MON257", 1);
       break;
-    case "EVR161":
-    case "EVR162":
-    case "EVR163":
+    case "EVR161": case "EVR162": case "EVR163":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "LIFEOFPARTY");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "EVR161", 1);
+      break;
+    //Windups
+    case "HVY143": case "HVY144": case "HVY145":
+    case "HVY163": case "HVY164": case "HVY165":
+      $names = GetAbilityNames($cardID, $index);
+      if($names != "") {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or attack");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
+        AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
+      }
       break;
     default:
       break;

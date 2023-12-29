@@ -433,13 +433,16 @@ function GetAbilityTypes($cardID)
     case "ARC003": case "CRU101": return "A,AA";
     case "OUT093": return "I,I";
     case "TCC050": return "A,AA";
+    case "HVY143": case "HVY144": case "HVY145":
+    case "HVY163": case "HVY164": case "HVY165":
+      return "I,AA";
     default: return "";
   }
 }
 
 function GetAbilityNames($cardID, $index = -1)
 {
-  global $currentPlayer;
+  global $currentPlayer, $mainPlayer, $combatChain;
   $character = &GetPlayerCharacter($currentPlayer);
   switch ($cardID) {
     case "ARC003": case "CRU101":
@@ -451,6 +454,11 @@ function GetAbilityNames($cardID, $index = -1)
     case "TCC050":
       if($index == -1) return "";
       return "Create_tokens,Smash_Jinglewood";
+    case "HVY143": case "HVY144": case "HVY145":
+    case "HVY163": case "HVY164": case "HVY165":
+      $names = "Ability";
+      if($currentPlayer == $mainPlayer && count($combatChain) == 0) $names .= ",Attack";
+      return $names;
     default: return "";
   }
 }
@@ -946,6 +954,12 @@ function IsActionCard($cardID)
 function GoesOnCombatChain($phase, $cardID, $from)
 {
   global $layers;
+  switch($cardID) {
+    case "HVY143": case "HVY144": case "HVY145":
+    case "HVY163": case "HVY164": case "HVY165":
+      return GetResolvedAbilityType($cardID, $from) == "AA";
+    default: break;
+  }
   if($phase != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetResolvedAbilityType($cardID, $from);
   else if($phase == "M" && $cardID == "MON192" && $from == "BANISH") $cardType = GetResolvedAbilityType($cardID, $from);
   else $cardType = CardType($cardID);
