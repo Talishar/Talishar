@@ -263,6 +263,9 @@ function CardCost($cardID)
     case "EVR022": return 3;
     case "EVR124": return 0;
     case "UPR109": return 0;
+    case "HVY143": case "HVY144": case "HVY145":
+    case "HVY163": case "HVY164": case "HVY165":
+      return GetResolvedAbilityType($cardID, "HAND") == "AA" ? 3 : 0;
     default: break;
   }
   if($set != "ROG" && $set != "DUM") {
