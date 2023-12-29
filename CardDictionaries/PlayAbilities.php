@@ -39,8 +39,20 @@
       case "HVY130":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
+      case "HVY143": case "HVY144": case "HVY145":
+        if(GetResolvedAbilityType($cardID, "HAND") == "I") {
+          PlayAura("TCC105", $currentPlayer);//Might
+          CardDiscarded($currentPlayer, $cardID, source:$cardID);
+        }
+        return "";
       case "HVY149":
         AskWager($cardID);
+        return "";
+      case "HVY163": case "HVY164": case "HVY165":
+        if(GetResolvedAbilityType($cardID, "HAND") == "I") {
+          PlayAura("HVY240", $currentPlayer);//Agility
+          CardDiscarded($currentPlayer, $cardID, source:$cardID);
+        }
         return "";
       case "HVY169":
         AskWager($cardID);
