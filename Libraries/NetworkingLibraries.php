@@ -1136,7 +1136,7 @@ function UndoIntimidate($player)
   $banish = &GetBanish($player);
   $hand = &GetHand($player);
   for($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
-    if($banish[$i + 1] == "INT") {
+    if($banish[$i+1] == "INT" || $banish[$i+1] == "RETURN") {
       array_push($hand, $banish[$i]);
       RemoveBanish($player, $i);
     }
@@ -2043,6 +2043,13 @@ function PayAdditionalCosts($cardID, $from)
         CharacterChooseSubcard($currentPlayer, $index, count: $cardID == "EVO410" ? 2 : 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "EQUIP,-", 1);
       }
+      break;
+    case "HVY016":
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "HVY016");
+      AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to banish", 1);
+      AddDecisionQueue("MAYMULTICHOOSEHAND", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "NOFEAR", 1);
       break;
     case "HVY090": case "HVY091":
       if($from == "EQUIP") {

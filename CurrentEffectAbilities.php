@@ -707,6 +707,10 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if($preventable) $damage -= intval($effects[1]);
           $remove = true;
           break;
+        case "HVY016":
+          if($preventable) $damage -= 2 + intval($effects[1]);
+          $remove = true;
+          break;
         default: break;
       }
       if($remove) RemoveCurrentTurnEffect($i);

@@ -270,7 +270,6 @@ function PlayerTargetedAbility($player, $card, $lastResult)
         WriteLog("Player {$player} draws a card as target hero has at least 10 defense reactions in their graveyard.");
         Draw($player);
       }
-
       return "";
     default: return $lastResult;
   }
@@ -278,7 +277,7 @@ function PlayerTargetedAbility($player, $card, $lastResult)
 
 function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
-  global $dqVars, $CS_DamageDealt;
+  global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts;
   switch($card)
   {
     case "BLOODONHERHANDS":
@@ -574,6 +573,13 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       WriteLog(CardLink($cardID, $cardID) . " was targeted.");
       AddCurrentTurnEffect("EVO143", $player, uniqueID: $cardID);
       return $lastResult;
+    case "NOFEAR":
+      for($i=count($lastResult)-1; $i>=0; --$i) {
+        $cardID = RemoveHand($player, $lastResult[$i]);
+        BanishCardForPlayer($cardID, $player, "HAND", "RETURN", banishedBy:$player);
+      }
+      SetClassState($player, $CS_AdditionalCosts, count($lastResult));
+      return "";
     default: return "";
   }
 }

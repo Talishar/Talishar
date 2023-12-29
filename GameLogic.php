@@ -141,6 +141,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "QUELL": $rv = QuellIndices($player); break;
         case "SOUL": $rv = SearchSoul($player, talent:"LIGHT"); break;
         case "MON104": $rv = SearchAurasForCard("MON104",$player); break;
+        case "HVY016":
+          $hand = &GetHand($player);
+          $rv = [];
+          for($i=0; $i<count($hand); $i+=HandPieces()) {
+            if(CardType($hand[$i]) == "AA" && ModifiedAttackValue($hand[$i], $player, "HAND", "HVY016") >= 6) array_push($rv, $i);
+          }
+          $rv = implode(",", $rv);
+          $rv = SearchCount($rv) . "-" . $rv;
+          break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "PASS" : $rv);
