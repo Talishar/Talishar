@@ -1709,6 +1709,11 @@ function PayAdditionalCosts($cardID, $from)
     }
     SetClassState($currentPlayer, $CS_AdditionalCosts, $banished);
   }
+  if(HasBeatChest($cardID)) {
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to beat chest");
+    PummelHit($currentPlayer, passable:true);
+    AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "BEATCHEST", 1);
+  }
   switch($cardID) {
     case "WTR159":
       $hand = &GetHand($currentPlayer);

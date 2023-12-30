@@ -9,6 +9,9 @@
       case "HVY016":
         AddCurrentTurnEffect($cardID . "-" . $additionalCosts, $currentPlayer);
         return "";
+      case "HVY023": case "HVY024": case "HVY025":
+        if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) Intimidate();
+        return "";
       case "HVY044":
         PlayAura("HVY240", $currentPlayer);//Agility
         PlayAura("TCC105", $currentPlayer);//Might

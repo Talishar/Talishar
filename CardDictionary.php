@@ -1074,6 +1074,16 @@ function RequiresBanish($cardID)
   }
 }
 
+function HasBeatChest($cardID)
+{
+  switch($cardID) {
+    case "HVY023": case "HVY024": case "HVY025":
+    case "HVY041": case "HVY042": case "HVY043":
+      return true;
+    default: return false;
+  }
+}
+
 function ETASteamCounters($cardID)
 {
   switch ($cardID) {
