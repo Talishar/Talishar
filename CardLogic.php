@@ -11,14 +11,16 @@ function PummelHit($player = -1, $passable = false, $fromDQ = false)
   {
     PrependDecisionQueue("ADDDISCARD", $player, "HAND", 1);
     PrependDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
-    PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+    if($passable) PrependDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+    else PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
     PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard", 1);
     PrependDecisionQueue("FINDINDICES", $player, "HAND", ($passable ? 1 : 0));
   }
   else {
     AddDecisionQueue("FINDINDICES", $player, "HAND", ($passable ? 1 : 0));
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard", 1);
-    AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+    if($passable) AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+    else AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
     AddDecisionQueue("ADDDISCARD", $player, "HAND", 1);
   }
