@@ -99,6 +99,7 @@
     $idArr = explode(",", $cardID);
     $cardID = $idArr[0];
     switch($cardID) {
+      case "HVY041": case "HVY042": case "HVY043": return $idArr[1];
       case "HVY045": case "HVY046": return 1;
       case "HVY086-BUFF": return 5;
       case "HVY087-BUFF": return 4;
@@ -115,6 +116,7 @@
     $idArr = explode(",", $cardID);
     $cardID = $idArr[0];
     switch($cardID) {
+      case "HVY041": case "HVY042": case "HVY043": return ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer);
       case "HVY045": case "HVY046": return true;
       case "HVY086": case "HVY087": case "HVY088": return true;
       case "HVY086-BUFF": case "HVY087-BUFF": case "HVY088-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer);

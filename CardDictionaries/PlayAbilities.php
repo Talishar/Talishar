@@ -15,6 +15,13 @@
       case "HVY023": case "HVY024": case "HVY025":
         if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) Intimidate();
         return "";
+      case "HVY041": case "HVY042": case "HVY043":
+        if($cardID == "HVY041") $amount = 3;
+        else if($cardID == "HVY042") $amount = 2;
+        else if($cardID == "HVY043") $amount = 1;
+        if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) $amount += 2;
+        AddCurrentTurnEffect($cardID . "," . $amount, $currentPlayer);
+        return "";
       case "HVY044":
         PlayAura("HVY240", $currentPlayer);//Agility
         PlayAura("TCC105", $currentPlayer);//Might
