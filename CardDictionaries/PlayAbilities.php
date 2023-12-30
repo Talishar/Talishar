@@ -6,6 +6,9 @@
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     $rv = "";
     switch($cardID) {
+      case "HVY013":
+        Intimidate();
+        return "";
       case "HVY016":
         AddCurrentTurnEffect($cardID . "-" . $additionalCosts, $currentPlayer);
         return "";
