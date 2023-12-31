@@ -1252,6 +1252,12 @@ function DiscardRandom($player = "", $source = "")
 }
 
 function DiscardedAtRandomEffects($player, $discarded, $source) {
+  if(SearchCurrentTurnEffects("DYN009", $player)) {
+    $index = SearchGetFirstIndex(SearchMultizone($player, "MYDISCARD:cardID=" . $discarded));
+    RemoveGraveyard($player, $index);
+    BanishCardForPlayer($discarded, $player, "GY", "-", $player);
+    AddLayer("TRIGGER", $player, "DYN009");
+  }
   switch($discarded) {
     case "DYN008": AddLayer("TRIGGER", $player, $discarded); break;
     case "DYN010": case "DYN011": case "DYN012": AddLayer("TRIGGER", $player, $discarded); break;
@@ -1286,12 +1292,6 @@ function CardDiscarded($player, $discarded, $source = "")
     $index = FindCharacterIndex($player, "DYN006");
     if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer) {
       AddLayer("TRIGGER", $player, $character[$index]);
-    }
-    if(SearchCurrentTurnEffects("DYN009", $player)) {
-      $index = SearchGetFirstIndex(SearchMultizone($player, "MYDISCARD:cardID=" . $discarded));
-      RemoveGraveyard($player, $index);
-      BanishCardForPlayer($discarded, $player, "GY", "-", $player);
-      AddLayer("TRIGGER", $player, "DYN009");
     }
     IncrementClassState($player, $CS_Num6PowDisc);
   }
