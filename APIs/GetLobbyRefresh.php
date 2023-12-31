@@ -68,13 +68,17 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $oppLastTime = GetCachePiece($gameName, $otherP + 1);
   $oppStatus = strval(GetCachePiece($gameName, $otherP + 3));
 
-  if ($oppStatus != "-1" && $oppLastTime != "") {
-    if (($currentTime - $oppLastTime) > 8000 && $oppStatus == "0") {
+  if($oppStatus != "-1" && $oppLastTime != "") {
+    if(($currentTime - $oppLastTime) > 8000 && $oppStatus == "0") {
       WriteLog("Player $otherP has disconnected.", path: "../");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "-1");
       if ($otherP == 2) SetCachePiece($gameName, $otherP + 6, "");
       $kickPlayerTwo = true;
+      include "./APIParseGamefile.php";
+      include "../MenuFiles/WriteGamefile.php";
+      $p1SideboardSubmitted = "0";
+      WriteGameFile();
     }
   }
 }
