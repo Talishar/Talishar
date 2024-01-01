@@ -1670,7 +1670,7 @@ function PayAbilityAdditionalCosts($cardID)
 
 function PayAdditionalCosts($cardID, $from)
 {
-  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex;
+  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain;
   $cardSubtype = CardSubType($cardID);
   if($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
@@ -2006,6 +2006,7 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "DTD080":
       $soul = &GetSoul($currentPlayer);
+      if (!TalentContains($CombatChain->AttackCard()->ID(), "LIGHT", $currentPlayer)) break;
       $numModes = count($soul)/SoulPieces() < 3 ? count($soul)/SoulPieces() : 3;
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
       AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-+2_Attack,Draw_on_hit,Go_again_on_hit");
