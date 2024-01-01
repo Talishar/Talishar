@@ -1828,7 +1828,7 @@ function PayAdditionalCosts($cardID, $from)
       RandomBanish3GY();
       break;
     case "MON156":
-      MZMoveCard($currentPlayer, "MYHAND:hasBloodDebt=true", "MYBANISH,HAND,-", may: true);
+      MZMoveCard($currentPlayer, "MYHAND:bloodDebtOnly=true", "MYBANISH,HAND,-", may: true);
       AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
     case "MON195": case "MON196": case "MON197":
