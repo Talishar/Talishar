@@ -493,7 +493,7 @@ function DTDHitEffect($cardID)
       if(IsHeroAttackTarget()) MZMoveCard($mainPlayer, "THEIRSOUL", "THEIRBANISH,SOUL,-");
       break;
     case "DTD193":
-      if(IsHeroAttackTarget()) MZMoveCard($mainPlayer, "THEIRSOUL", "THEIRBANISH,SOUL,-");
+      if(IsHeroAttackTarget()) MZMoveCard($mainPlayer, "THEIRSOUL", "THEIRBANISH,SOUL,-," . $cardID);
       break;
     case "DTD226":
       if(IsHeroAttackTarget()) {
