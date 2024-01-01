@@ -91,6 +91,15 @@
           }
         }
         return "";
+      case "HVY251":
+        $xVal = $resourcesPaid/2;
+        MZMoveCard($currentPlayer, "MYDECK:maxCost=" . $xVal . ";subtype=Aura", "MYAURAS", may:true);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        if($xVal >= 2) {
+          global $CS_NextNAACardGoAgain;
+          SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);
+        }
+        return "";
       case "HVY253":
         for($i = 1; $i < 3; $i += 1) {
           $arsenal = &GetArsenal($i);

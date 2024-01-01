@@ -116,6 +116,10 @@ function MZAddZone($player, $parameter, $lastResult)
       case "MYPERMANENTS": PutPermanentIntoPlay($player, $cardIDs[$i]); break;
       case "MYSOUL": AddSoul($cardIDs[$i], $player, $params[1]); break;
       case "MYITEMS": PutItemIntoPlayForPlayer($cardIDs[$i], $player); break;
+      case "MYAURAS":
+        PlayAura($cardIDs[$i], $player);
+        PlayAbility($cardIDs[$i], "-", 0);
+        break;
       default: break;
     }
   }
