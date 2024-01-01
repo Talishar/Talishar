@@ -672,7 +672,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddCurrentTurnEffect("WTR081-" . $number, $player);
       return $number;
     case "VOFTHEVANGUARD":
-      if($parameter == "1" && TalentContains($lastResult, "LIGHT")) {
+      if($parameter == "1" && TalentContains($lastResult, "LIGHT", $player)) {
         WriteLog("V of the Vanguard gives all attacks on this combat chain +1");
         AddCurrentTurnEffect("MON035", $player);
       }
