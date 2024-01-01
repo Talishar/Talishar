@@ -374,7 +374,7 @@
         break;
       case "EVO081": case "EVO082": case "EVO083":
         if($from == "PLAY") {
-          MZMoveCard($currentPlayer, "MYDISCARD:pitch=". PitchValue($cardID) .";type=AA", "MYHAND", may:true, isReveal:true);
+          MZMoveCard($currentPlayer, "MYDISCARD:pitch=". PitchValue($cardID) .";type=AA;class=MECHANOLOGIST", "MYHAND", may:true, isReveal:true);
         }
         return "";
       case "EVO087": case "EVO088": case "EVO089":
