@@ -73,7 +73,7 @@
       case "HVY189":
         AskWager($cardID);
         return "";
-      case "HVY216":
+      case "HVY216": case "HVY217": case "HVY218":
         AskWager($cardID);
         return "";
       case "HVY235":

@@ -152,7 +152,7 @@
         case "HVY189":
           PlayAura("TCC107", $wonWager);//Vigor
           break;
-        case "HVY216":
+        case "HVY216": case "HVY217": case "HVY218":
           PutItemIntoPlayForPlayer("DYN243", $wonWager);//Gold
           break;
         case "HVY235":
@@ -172,6 +172,15 @@
         WriteLog(CardLink($hero, $hero) . " wins the favor of the crowd!");
       }
     }
+  }
+
+  function HasUniversal($cardID)
+  {
+    switch($cardID) {
+      case "HVY216": case "HVY217": case "HVY218": return true;
+      default: break;
+    }
+    return false;
   }
 
 ?>
