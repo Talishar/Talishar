@@ -957,7 +957,7 @@ function GoesOnCombatChain($phase, $cardID, $from)
   switch($cardID) {
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
-      return $phase == "B" || GetResolvedAbilityType($cardID, $from) == "AA";
+      return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     default: break;
   }
   if($phase != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetResolvedAbilityType($cardID, $from);
