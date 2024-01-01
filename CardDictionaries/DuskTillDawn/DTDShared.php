@@ -250,16 +250,18 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
     case "DTD080":
-      $modes = explode(",", $additionalCosts);
-      for($i=0; $i<count($modes); ++$i)
-      {
-        BanishFromSoul($currentPlayer);
-        switch($modes[$i])
+      if($additionalCosts != "-"){
+        $modes = explode(",", $additionalCosts);
+        for($i=0; $i<count($modes); ++$i)
         {
-          case "+2_Attack": AddCurrentTurnEffect("DTD080-1", $currentPlayer); break;
-          case "Draw_on_hit": AddCurrentTurnEffect("DTD080-2", $currentPlayer); break;
-          case "Go_again_on_hit": AddCurrentTurnEffect("DTD080-3", $currentPlayer); break;
-          default: break;
+          BanishFromSoul($currentPlayer);
+          switch($modes[$i])
+          {
+            case "+2_Attack": AddCurrentTurnEffect("DTD080-1", $currentPlayer); break;
+            case "Draw_on_hit": AddCurrentTurnEffect("DTD080-2", $currentPlayer); break;
+            case "Go_again_on_hit": AddCurrentTurnEffect("DTD080-3", $currentPlayer); break;
+            default: break;
+          }
         }
       }
       return "";
