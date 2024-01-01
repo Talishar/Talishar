@@ -938,7 +938,9 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
           AddDecisionQueue("OP", $currentPlayer, "LOSEHEALTH", 1);
-          AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $characterID, 1);
+          if(!SearchCurrentTurnEffects($characterID, $currentPlayer)) { //The effect only apply to one event of damage. Anti-duplicate.
+            AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $characterID, 1);
+          }
         }
         break;
       case "EVO001": case "EVO002":
