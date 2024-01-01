@@ -233,7 +233,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       {
         $card = $deck->Top(remove:true);
         AddPlayerHand($card, $currentPlayer, "DECK");
-        Charge();
+        Charge(false);
       }
       return "";
     case "DTD060": case "DTD061": case "DTD062"://V for Valor
