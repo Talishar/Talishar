@@ -545,7 +545,7 @@ function DYNHitEffect($cardID)
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
         else $deck->BanishTop(banishedBy:$mainPlayer);
-        MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer);
+        MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, true);
       }
       break;
     case "DYN122":
