@@ -126,7 +126,7 @@
       case "HVY169": return true;
       case "HVY189": return true;
       case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
-      case "HVY216": return true;
+      case "HVY216": case "HVY217": case "HVY218": return true;
       case "HVY235-BUFF": return true;
       case "HVY240": return true;
       case "HVY254-1": return str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");

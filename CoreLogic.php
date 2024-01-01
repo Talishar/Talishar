@@ -1015,6 +1015,9 @@ function ClassOverride($cardID, $player="")
   if($cardClass == "NONE") $cardClass = "";
   $otherPlayer = ($player == 1 ? 2 : 1);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
+  $mainCharacter = &GetPlayerCharacter($player);
+  // With the rules as of today it's correct. HVY Release Notes Disclaimer. CR2.6 - 6.3.6. Continuous effects that remove a property, or part of a property, from an object do not removeproperties, or parts of properties, that were added by another effect.
+  if(HasUniversal($cardID)) return CardClass($mainCharacter[0]); 
   if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";
   if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) {
     if($cardClass != "") $cardClass .= ",";
