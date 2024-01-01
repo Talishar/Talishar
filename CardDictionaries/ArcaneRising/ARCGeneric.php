@@ -103,7 +103,7 @@ function ARCGenericHitEffect($cardID)
   global $mainPlayer, $CS_NextNAAInstant, $defPlayer;
   switch($cardID) {
     case "ARC159":
-      if(IsHeroAttackTarget()) DestroyArsenal($defPlayer);
+      if(IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, "ARC159", $defPlayer);
       break;
     case "ARC164": case "ARC165": case "ARC166":
       GainHealth(1, $mainPlayer);
