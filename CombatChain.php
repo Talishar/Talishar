@@ -693,6 +693,15 @@ function IsOverpowerActive()
   return false;
 }
 
+function IsWagerActive ()
+{
+  global $mainPlayer, $CCS_WagersThisLink;
+  if (GetClassState($mainPlayer, $CCS_WagersThisLink) > 0) {
+    return true;
+  }
+  return false;
+}
+
 function CombatChainClosedEffects()
 {
   global $chainLinks, $mainPlayer, $defPlayer, $CS_LifeLost;
@@ -744,7 +753,7 @@ function CombatChainClosedEffects()
 function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
-  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand;
+  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_WagersThisLink;
   if(count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalAttack] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
@@ -753,6 +762,7 @@ function CacheCombatResult()
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();
   $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand();
+  $combatChainState[$CCS_WagersThisLink] = (IsWagerActive() ? "1" : "0");
 }
 
 function CachedTotalAttack()
@@ -777,6 +787,12 @@ function CachedOverpowerActive()
 {
   global $combatChainState, $CCS_CachedOverpowerActive;
   return ($combatChainState[$CCS_CachedOverpowerActive] == "1" ? true : false);
+}
+
+function CachedWagerActive()
+{
+  global $combatChainState, $CCS_WagersThisLink;
+  return ($combatChainState[$CCS_WagersThisLink] == "1" ? true : false);
 }
 
 function CachedNumDefendedFromHand() //Reprise
