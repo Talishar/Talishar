@@ -754,7 +754,7 @@ function CombatChainClosedEffects()
 function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
-  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_WagersThisLink;
+  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_WagersThisLink, $CCS_PhantasmThisLink;
   if(count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalAttack] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
@@ -764,6 +764,7 @@ function CacheCombatResult()
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();
   $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand();
   $combatChainState[$CCS_WagersThisLink] = (IsWagerActive() ? "1" : "0");
+  $combatChainState[$CCS_PhantasmThisLink] = (IsPhantasmActive() ? "1" : "0");
 }
 
 function CachedTotalAttack()
@@ -794,6 +795,12 @@ function CachedWagerActive()
 {
   global $combatChainState, $CCS_WagersThisLink;
   return ($combatChainState[$CCS_WagersThisLink] == "1" ? true : false);
+}
+
+function CachedPhantasmActive()
+{
+  global $combatChainState, $CCS_PhantasmThisLink;
+  return ($combatChainState[$CCS_PhantasmThisLink] == "1" ? true : false);
 }
 
 function CachedNumDefendedFromHand() //Reprise
