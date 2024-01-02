@@ -424,8 +424,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
-      AddDecisionQueue("ADDCURRENTEFFECT", $otherPlayer, "DYN215");
-      return CardLink($cardID, $cardID) . " is a partially manual card. Enforce play restriction.";
+      AddDecisionQueue("ADDCURRENTEFFECT", $otherPlayer, "DYN215-{0}");
+      return "";
     case "DYN221": case "DYN222": case "DYN223":
       if($from == "PLAY") return "";
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
