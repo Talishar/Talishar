@@ -1585,13 +1585,18 @@ function CardCaresAboutPitch($cardID)
 function CardHasAltArt($cardID)
 {
   switch($cardID) {
-    case "WTR002": case "WTR150": case "WTR162":
+    case "WTR001": case "WTR002": 
+    case "WTR150": case "WTR162": case "WTR173": 
     case "WTR224":
+      return true;
+    case "ARC159": case "ARC191":
       return true;
     case "MON155": case "MON215": case "MON216":
     case "MON217": case "MON219": case "MON220":
       return true;
     case "ELE146":
+      return true;
+    case "EVR020":
       return true;
     case "UPR006": case "UPR007": case "UPR008":
     case "UPR009": case "UPR010": case "UPR011":
@@ -1605,8 +1610,26 @@ function CardHasAltArt($cardID)
     case "UPR412": case "UPR413": case "UPR414":
     case "UPR415": case "UPR416": case "UPR417":
       return true;
-    case "DYN234":
+    case "DYN001": case "DYN005": case "DYN026": 
+    case "DYN045": case "DYN065": case "DYN068":
+    case "DYN088": case "DYN092": case "DYN121": 
+    case "DYN151": case "DYN171": case "DYN192":
+    case "DYN212": case "DYN213": case "DYN234":
+    case "DYN492a": case "DYN492b": case "DYN492c":
+    case "DYN612":
       return true;
+    case "DTD005": case "DTD006": case "DTD007":
+    case "DTD008": case "DTD009": case "DTD010":
+    case "DTD011": case "DTD012":
+    case "DTD164": case "DTD564": 
+    case "DTD405": case "DTD406": case "DTD407":
+    case "DTD408": case "DTD409": case "DTD410":
+    case "DTD411": case "DTD412":
+      return true;
+    case "EVO010": case "EVO026": case "EVO027":
+    case "EVO028": case "EVO029": case "EVO030": 
+    case "EVO031": case "EVO032": case "EVO033":
+    case "EVO410": case "EVO410a": case "EVO410b":
   default:
       return false;
   }
