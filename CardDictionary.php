@@ -495,7 +495,7 @@ function GetResolvedAbilityName($cardID, $from="-")
   return $abilityNames[$abilityIndex];
 }
 
-function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "")
+function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "", $actionType = "")
 {
   global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
   global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer;
@@ -589,7 +589,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     }
     return  false;
   }
-  switch($cardType) {
+  if($subtype == "Arrow" && $from == "ARS" && $actionType == 16) return true;
+    switch($cardType) {
     case "A": return $phase == "M";
     case "AA": return $phase == "M";
     case "AR": return $phase == "A";
