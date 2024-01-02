@@ -218,7 +218,7 @@ enum PatreonCampaign : string
       case "7": return IsTeamSecondCycle($userName);
       case "8": return IsTeamSonicDoom($userName);
       case "9": return IsTeamPummel($userName);
-      case "7198186": return ($userName == "OotTheMonk");
+      case "7198186": return ($userName == "OotTheMonk" || $userName == "PvtVoid");
       case "7285727": return ($userName == "PvtVoid");
       case "7579026": return ($userName == "Hamsack" || $userName == "BigMedSi" || $userName == "Tripp");
       case "7329070": return ($userName == "GoAgainGamingAz");
