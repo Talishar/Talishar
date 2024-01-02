@@ -456,7 +456,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $rv = "";
       if($from == "PLAY") {
         DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
-        $rv = CardLink($cardID, $cardID) . " is a partially manual card. Enforce play restriction.";
         if(IsRoyal($currentPlayer))
         {
           $rv .= CardLink($cardID, $cardID) . " revealed the opponent's hand";
@@ -467,7 +466,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
-        AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $otherPlayer, "DYN240");
+        AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $otherPlayer, "DYN240-{0}");
       }
       return $rv;
     case "DYN241":
