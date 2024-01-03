@@ -2,7 +2,7 @@
 
 function ModalAbilities($player, $card, $lastResult)
 {
-  global $combatChain, $defPlayer, $CombatChain;
+  global $combatChain, $defPlayer, $CombatChain, $combatChainState;
   switch($card)
   {
     case "ESTRIKE":
@@ -209,7 +209,7 @@ function ModalAbilities($player, $card, $lastResult)
             break;
           case "Buff_Attack":
             global $CCS_WagersThisLink;
-            $CombatChain->AttackCard()->ModifyPower(GetClassState($player, $CCS_WagersThisLink) + $numNewWagers);
+            $CombatChain->AttackCard()->ModifyPower(intval($combatChainState[$CCS_WagersThisLink]) + $numNewWagers);
             break;
           default: break;
         }
