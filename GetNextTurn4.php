@@ -224,6 +224,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $activeChainLink->dominate = CachedDominateActive();
   $activeChainLink->overpower = CachedOverpowerActive();
   if ($combatChainState[$CCS_RequiredEquipmentBlock] > NumEquipBlock()) $activeChainLink->numRequiredEquipBlock = $combatChainState[$CCS_RequiredEquipmentBlock];
+  $activeChainLink->wager = CachedWagerActive();
+  $activeChainLink->phantasm = CachedPhantasmActive();
+
   // TODO: How to find out if a card has been fused?
   $activeChainLink->fused = false;
 

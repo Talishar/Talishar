@@ -111,6 +111,8 @@ enum PatreonCampaign : string
   case DaganWhite = "9851977";
   case BrandaoTCG = "279086";
   case OffTheRailsTCG = "11184392";
+  case Nxi = "11481720";
+  case PvtVoid = "9408649";
 
   public function SessionID(): string
   {
@@ -146,6 +148,8 @@ enum PatreonCampaign : string
       case "9851977": return "isDaganWhitePatron";
       case "279086": return "isBrandaoTCGPatron";
       case "11184392": return "isOffTheRailsTCGPatron";
+      case "11481720": return "isNxiPatron";
+      case "9408649": return "isPvtVoidPatron";
       default: return "";
     }
   }
@@ -194,6 +198,8 @@ enum PatreonCampaign : string
       case "9851977": return "Dagan White";
       case "279086": return "BrandaoTCG";
       case "11184392": return "Off the Rails TCG";
+      case "11481720": return "Nxi";
+      case "9408649": return "PvtVoid";
       default: return "";
     }
   }
@@ -212,7 +218,8 @@ enum PatreonCampaign : string
       case "7": return IsTeamSecondCycle($userName);
       case "8": return IsTeamSonicDoom($userName);
       case "9": return IsTeamPummel($userName);
-      case "7198186": return ($userName == "OotTheMonk");
+      case "7198186": return ($userName == "OotTheMonk" || $userName == "PvtVoid");
+      case "7285727": return ($userName == "PvtVoid");
       case "7579026": return ($userName == "Hamsack" || $userName == "BigMedSi" || $userName == "Tripp");
       case "7329070": return ($userName == "GoAgainGamingAz");
       case "1787491": return ($userName == "RedZoneRogue");
@@ -242,6 +249,8 @@ enum PatreonCampaign : string
       case "9851977": return ($userName == "DaganTheZookeeper" || $userName == "OotTheMonk");
       case "279086": return ($userName == "brandaotcg" || $userName == "OotTheMonk");
       case "11184392": return ($userName == "PatSmashGood" || $userName == "OotTheMonk");
+      case "11481720": return ($userName == "nxi" || $userName == "PvtVoid");
+      case "9408649": return ($userName == "PvtVoid");
       default: return "";
     }
   }
@@ -302,6 +311,9 @@ enum PatreonCampaign : string
       case "9851977": return "54";
       case "279086": return "56";
       case "11184392": return "63";
+      case "11481720": return "65";
+      case "9408649": return "1,2,3,4,5,6,7,8";
+      
       default: return "";
     }
   }

@@ -154,6 +154,8 @@ function GetCardBack($player)
     case 62: return "CBFabrary8";
     case 63: return "CBOffTheRailsTCG";
     case 64: return "CBPummel";
+    case 65: return "CBNxi";
+    case 66: return "CBPvtVoid";
     default: return "CardBack";
   }
 }
