@@ -174,4 +174,13 @@
     }
   }
 
+  function HasUniversal($cardID)
+  {
+    switch($cardID) {
+      case "HVY216": case "HVY217": case "HVY218": return true;
+      default: break;
+    }
+    return false;
+  }
+
 ?>
