@@ -1018,13 +1018,13 @@ function ClassOverride($cardID, $player="")
 
   // With the rules as of today it's correct. HVY Release Notes Disclaimer. CR2.6 - 6.3.6. Continuous effects that remove a property, or part of a property, from an object do not removeproperties, or parts of properties, that were added by another effect.
   if(HasUniversal($cardID)) { //Universal
-    $cardClass = CardClass($mainCharacter[0]); 
+    $cardClass = CardClass($mainCharacter[0]);
   }
   if(SearchCurrentTurnEffects("DYN215-" . str_replace(' ', '_', CardName($cardID)), $player)) { //Phantasmal Symbiosis
     if($cardClass != "") $cardClass .= ",";
-    $cardClass .= "ILLUSIONIST"; 
+    $cardClass .= "ILLUSIONIST";
   }
-  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces()) { 
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i+1] != $player) { continue; }
     $classToAdd = "";
     switch($currentTurnEffects[$i])
@@ -1045,7 +1045,7 @@ function ClassOverride($cardID, $player="")
   }
   if(!SearchCurrentTurnEffects("UPR187", $player)) { //Erase Face
     if($cardClass != "") $cardClass .= ",";
-    $cardClass .= CardClass($cardID); 
+    $cardClass .= CardClass($cardID);
   }
   if($cardClass == "") return "NONE";
   return $cardClass;
@@ -1111,7 +1111,7 @@ function TalentOverride($cardID, $player="")
   }
   if(!SearchCurrentTurnEffects("UPR187", $player)) { //Erase Face
     if($cardTalent != "") $cardTalent .= ",";
-    $cardTalent .= CardTalent($cardID); 
+    $cardTalent .= CardTalent($cardID);
   }
   if($cardTalent == "") return "NONE";
   return $cardTalent;
@@ -1674,6 +1674,7 @@ function SelfCostModifier($cardID, $from)
     case "EVO054": case "EVO055": case "EVO056": return EvoUpgradeAmount($currentPlayer) >= 2? -3 : 0;
     case "EVO183": case "EVO184": case "EVO185": return SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036") != "" ? -1 : 0;
     case "EVO225": case "EVO226": case "EVO227": return SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) * -1;
+    case "HVY251": return (-1 * NumRunechants($currentPlayer));
     default: return 0;
   }
 }
