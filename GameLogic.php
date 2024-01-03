@@ -80,6 +80,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         //This one requires CHOOSEMULTIZONECANCEL
         case "HANDPITCH": $rv = SearchHand($player, "", "", -1, -1, "", "", false, false, $subparam); break;
+        case "HANDMINPOWER": $rv = SearchHand($player, minAttack:$subparam); break;
         case "HANDACTIONMAXCOST": $rv = CombineSearches(SearchHand($player, "A", "", $subparam), SearchHand($player, "AA", "", $subparam)); break;
         case "MULTIHAND":
           $hand = &GetHand($player);
@@ -515,6 +516,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if($i > 0 && $i == count($modes)-1) $text .= " and ";
         $text .= implode(" ", explode("_", $modes[$i]));
       }
+      if($text == "") $text = "None";
       WriteLog("Selected mode" . (count($modes) > 1 ? "s" : "") . " for " . CardLink($parameter, $parameter) . (count($modes) > 1 ? " are" : " is") . ": " . $text);
       return $lastResult;
     case "REVEALCARDS":
@@ -672,7 +674,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddCurrentTurnEffect("WTR081-" . $number, $player);
       return $number;
     case "VOFTHEVANGUARD":
-      if($parameter == "1" && TalentContains($lastResult, "LIGHT")) {
+      if($parameter == "1" && TalentContains($lastResult, "LIGHT", $player)) {
         WriteLog("V of the Vanguard gives all attacks on this combat chain +1");
         AddCurrentTurnEffect("MON035", $player);
       }

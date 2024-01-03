@@ -73,7 +73,7 @@
       case "HVY189":
         AskWager($cardID);
         return "";
-      case "HVY216":
+      case "HVY216": case "HVY217": case "HVY218":
         AskWager($cardID);
         return "";
       case "HVY235":
@@ -156,7 +156,7 @@
         $charIndex = FindCharacterIndex($mainPlayer, $cardID);
         if ($abilityType == "A") {
           AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a token to create");
-          AddDecisionQueue("MULTICHOOSETEXT", $otherPlayer, "1-Might (+1),Vigor (Resource),Quicken (Go Again)");
+          AddDecisionQueue("MULTICHOOSETEXT", $otherPlayer, "1-Might (+1),Vigor (Resource),Quicken (Go Again)-1");
           AddDecisionQueue("SHOWMODES", $otherPlayer, $cardID, 1);
           AddDecisionQueue("MODAL", $otherPlayer, "JINGLEWOOD", 1);
           PutItemIntoPlayForPlayer("CRU197", $currentPlayer);
@@ -374,7 +374,7 @@
         break;
       case "EVO081": case "EVO082": case "EVO083":
         if($from == "PLAY") {
-          MZMoveCard($currentPlayer, "MYDISCARD:pitch=". PitchValue($cardID) .";type=AA", "MYHAND", may:true, isReveal:true);
+          MZMoveCard($currentPlayer, "MYDISCARD:pitch=". PitchValue($cardID) .";type=AA;class=MECHANOLOGIST", "MYHAND", may:true, isReveal:true);
         }
         return "";
       case "EVO087": case "EVO088": case "EVO089":

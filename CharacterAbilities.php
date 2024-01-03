@@ -311,7 +311,7 @@ function MainCharacterEndTurnAbilities()
         if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 0) $mainCharacter[$i+3] = 0;
         break;
       case "CRU077":
-        if($character[$i+1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
+        if($mainCharacter[$i+1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
         KassaiEndTurnAbility();
         break;
       case "MON107":
@@ -932,13 +932,15 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         }
         break;
       case "DTD133": case "DTD134":
-        if(CardType($cardID) == "A" && CardTalent($cardID) == "SHADOW")
+        if(CardType($cardID) == "A" && TalentContains($cardID, "SHADOW", $currentPlayer))
         {
           AddDecisionQueue("YESNO", $currentPlayer, "if you want to pay 1 life for Vynnset");
           AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
           AddDecisionQueue("OP", $currentPlayer, "LOSEHEALTH", 1);
-          AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $characterID, 1);
+          if(!SearchCurrentTurnEffects($characterID, $currentPlayer)) { //The effect only apply to one event of damage. Anti-duplicate.
+            AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $characterID, 1);
+          }
         }
         break;
       case "EVO001": case "EVO002":

@@ -1670,7 +1670,7 @@ function PayAbilityAdditionalCosts($cardID)
 
 function PayAdditionalCosts($cardID, $from)
 {
-  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex;
+  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain;
   $cardSubtype = CardSubType($cardID);
   if($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
@@ -1711,7 +1711,10 @@ function PayAdditionalCosts($cardID, $from)
   }
   if(HasBeatChest($cardID)) {
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to beat chest");
-    PummelHit($currentPlayer, passable:true);
+    AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDMINPOWER,6");
+    AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+    AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+    AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND", 1);
     AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "BEATCHEST", 1);
   }
   switch($cardID) {
@@ -1828,7 +1831,7 @@ function PayAdditionalCosts($cardID, $from)
       RandomBanish3GY();
       break;
     case "MON156":
-      MZMoveCard($currentPlayer, "MYHAND:hasBloodDebt=true", "MYBANISH,HAND,-", may: true);
+      MZMoveCard($currentPlayer, "MYHAND:bloodDebtOnly=true", "MYBANISH,HAND,-", may: true);
       AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
     case "MON195": case "MON196": case "MON197":
@@ -2006,6 +2009,7 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "DTD080":
       $soul = &GetSoul($currentPlayer);
+      if (!TalentContains($CombatChain->AttackCard()->ID(), "LIGHT", $currentPlayer)) break;
       $numModes = count($soul)/SoulPieces() < 3 ? count($soul)/SoulPieces() : 3;
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
       AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-+2_Attack,Draw_on_hit,Go_again_on_hit");

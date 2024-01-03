@@ -586,7 +586,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     }
     return  false;
   }
-  switch($cardType) {
+    switch($cardType) {
     case "A": return $phase == "M";
     case "AA": return $phase == "M";
     case "AR": return $phase == "A";
