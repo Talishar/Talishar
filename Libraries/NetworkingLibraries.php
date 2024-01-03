@@ -1711,8 +1711,13 @@ function PayAdditionalCosts($cardID, $from)
   }
   if(HasBeatChest($cardID)) {
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to beat chest");
-    PummelHit($currentPlayer, passable:true);
-    AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "BEATCHEST", 1);
+    AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDMINPOWER,6");
+    AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+    AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+    AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND", 1);
+    if(!SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) { //Don't duplicate the effect icon
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "BEATCHEST", 1);
+    }
   }
   switch($cardID) {
     case "WTR159":
