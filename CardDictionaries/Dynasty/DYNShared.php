@@ -424,8 +424,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
-      AddDecisionQueue("ADDCURRENTEFFECT", $otherPlayer, "DYN215");
-      return CardLink($cardID, $cardID) . " is a partially manual card. Enforce play restriction.";
+      AddDecisionQueue("ADDCURRENTEFFECT", $otherPlayer, "DYN215-{0}");
+      return "";
     case "DYN221": case "DYN222": case "DYN223":
       if($from == "PLAY") return "";
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -456,7 +456,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $rv = "";
       if($from == "PLAY") {
         DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
-        $rv = CardLink($cardID, $cardID) . " is a partially manual card. Enforce play restriction.";
         if(IsRoyal($currentPlayer))
         {
           $rv .= CardLink($cardID, $cardID) . " revealed the opponent's hand";
@@ -467,7 +466,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
-        AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $otherPlayer, "DYN240");
+        AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $otherPlayer, "DYN240-{0}");
       }
       return $rv;
     case "DYN241":
@@ -545,7 +544,7 @@ function DYNHitEffect($cardID)
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
         else $deck->BanishTop(banishedBy:$mainPlayer);
-        MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer);
+        MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, true);
       }
       break;
     case "DYN122":

@@ -233,7 +233,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       {
         $card = $deck->Top(remove:true);
         AddPlayerHand($card, $currentPlayer, "DECK");
-        Charge();
+        Charge(false);
       }
       return "";
     case "DTD060": case "DTD061": case "DTD062"://V for Valor
@@ -493,7 +493,7 @@ function DTDHitEffect($cardID)
       if(IsHeroAttackTarget()) MZMoveCard($mainPlayer, "THEIRSOUL", "THEIRBANISH,SOUL,-");
       break;
     case "DTD193":
-      if(IsHeroAttackTarget()) MZMoveCard($mainPlayer, "THEIRSOUL", "THEIRBANISH,SOUL,-");
+      if(IsHeroAttackTarget()) MZMoveCard($mainPlayer, "THEIRSOUL", "THEIRBANISH,SOUL,-," . $cardID);
       break;
     case "DTD226":
       if(IsHeroAttackTarget()) {
