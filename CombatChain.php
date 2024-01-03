@@ -694,13 +694,10 @@ function IsOverpowerActive()
   return false;
 }
 
-function IsWagerActive ()
+function IsWagerActive()
 {
-  global $mainPlayer, $CCS_WagersThisLink;
-  if (GetClassState($mainPlayer, $CCS_WagersThisLink) > 0) {
-    return true;
-  }
-  return false;
+  global $combatChainState, $CCS_WagersThisLink;
+  return intval($combatChainState[$CCS_WagersThisLink]) > 0;
 }
 
 function CombatChainClosedEffects()
