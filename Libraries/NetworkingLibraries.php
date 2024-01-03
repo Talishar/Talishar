@@ -1711,7 +1711,10 @@ function PayAdditionalCosts($cardID, $from)
   }
   if(HasBeatChest($cardID)) {
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to beat chest");
-    PummelHit($currentPlayer, passable:true);
+    AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDMINPOWER,6");
+    AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+    AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+    AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND", 1);
     AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "BEATCHEST", 1);
   }
   switch($cardID) {

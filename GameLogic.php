@@ -80,6 +80,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         //This one requires CHOOSEMULTIZONECANCEL
         case "HANDPITCH": $rv = SearchHand($player, "", "", -1, -1, "", "", false, false, $subparam); break;
+        case "HANDMINPOWER": $rv = SearchHand($player, minAttack:$subparam); break;
         case "HANDACTIONMAXCOST": $rv = CombineSearches(SearchHand($player, "A", "", $subparam), SearchHand($player, "AA", "", $subparam)); break;
         case "MULTIHAND":
           $hand = &GetHand($player);
