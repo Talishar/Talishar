@@ -311,7 +311,7 @@ function MainCharacterEndTurnAbilities()
         if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 0) $mainCharacter[$i+3] = 0;
         break;
       case "CRU077":
-        if($character[$i+1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
+        if($mainCharacter[$i+1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
         KassaiEndTurnAbility();
         break;
       case "MON107":
