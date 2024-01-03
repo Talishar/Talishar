@@ -551,8 +551,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           isFrozen: $myArsenal[$i + 4] == 1
         ));
       } else {
-        if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myArsenal[$i], $turn[0], "ARS", $i, $restriction, $currentPlayer, $actionType) && ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
-        else $playable = false;
+        if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myArsenal[$i], $turn[0], "ARS", $i, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);        else $playable = false;
         $border = CardBorderColor($myArsenal[$i], "ARS", $playable);
         $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? 5 : 0);
         if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));

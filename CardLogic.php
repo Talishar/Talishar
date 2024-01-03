@@ -561,9 +561,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       --$items[$index + 1];
       if($items[$index + 1] <= 0) DestroyItemForPlayer($player, $index);
       break;
-    case "ARC159":
-      DestroyArsenal($target);
-      break;
     case "ARC075": case "ARC076":
       ViseraiPlayCard($target);
       break;
