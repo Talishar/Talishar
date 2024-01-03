@@ -1213,7 +1213,7 @@ function EffectAttackRestricted()
       $effectID = $effectArr[0];
       switch($effectID) {
         case "DTD203": if($combatChainState[$CCS_LinkBaseAttack] <= $effectArr[1]) $restrictedBy = "DTD203"; break;
-        case "DTD230-Peace": $restrictedBy = "DTD230"; break;
+        case "WarmongersPeace": $restrictedBy = "DTD230"; break;
         default:
           break;
       }
@@ -1254,8 +1254,8 @@ function EffectPlayCardRestricted($cardID, $type)
       switch($effectID) {
         case "ARC162": if(GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "ARC162"; break;
         case "DTD226": if(CardType($cardID) != "W" && GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "DTD226"; break;
-        case "DTD230-War": if($type == "A" && CardType($cardID) != "W") $restrictedBy = "DTD230"; break;
-        case "DTD230-Peace": if($type == "AA" || (CardType($cardID) == "W" && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230"; break;
+        case "WarmongersWar": if($type == "A" && CardType($cardID) != "W") $restrictedBy = "DTD230"; break;
+        case "WarmongersPeace": if($type == "AA" || (CardType($cardID) == "W" && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230"; break;
         default:
           break;
       }
