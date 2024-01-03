@@ -1011,41 +1011,29 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
 function ClassOverride($cardID, $player="")
 {
   global $currentTurnEffects;
-  $cardClass = "";
+  $cardClass = CardClass($cardID);
+  if($cardClass == "NONE") $cardClass = "";
   $otherPlayer = ($player == 1 ? 2 : 1);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
-  $mainCharacter = &GetPlayerCharacter($player);
-
-  // With the rules as of today it's correct. HVY Release Notes Disclaimer. CR2.6 - 6.3.6. Continuous effects that remove a property, or part of a property, from an object do not removeproperties, or parts of properties, that were added by another effect.
-  if(HasUniversal($cardID)) { //Universal
-    $cardClass = CardClass($mainCharacter[0]);
-  }
-  if(SearchCurrentTurnEffects("DYN215-" . str_replace(' ', '_', CardName($cardID)), $player)) { //Phantasmal Symbiosis
+  if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";
+  if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) {
     if($cardClass != "") $cardClass .= ",";
-    $cardClass .= "ILLUSIONIST";
+    $cardClass .= CardClass($otherCharacter[0]) . ",SHAPESHIFTER";
   }
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i+1] != $player) { continue; }
     $classToAdd = "";
     switch($currentTurnEffects[$i])
     {
-      case "MON095": case "MON096": case "MON097": $classToAdd = "ILLUSIONIST"; break; //Phantasmify
-      case "EVR150": case "EVR151": case "EVR152": $classToAdd = "ILLUSIONIST"; break; //Veiled Intentions
-      case "UPR155": case "UPR156": case "UPR157": $classToAdd = "ILLUSIONIST"; break; //Transmogrify
+      case "MON095": case "MON096": case "MON097": $classToAdd = "ILLUSIONIST"; break;
+      case "EVR150": case "EVR151": case "EVR152": $classToAdd = "ILLUSIONIST"; break;
+      case "UPR155": case "UPR156": case "UPR157": $classToAdd = "ILLUSIONIST"; break;
       default: break;
     }
     if($classToAdd != "") {
       if($cardClass != "") $cardClass .= ",";
       $cardClass .= $classToAdd;
     }
-  }
-  if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) { //Shiyana
-    if($cardClass != "") $cardClass .= ",";
-    $cardClass .= CardClass($otherCharacter[0]) . ",SHAPESHIFTER";
-  }
-  if(!SearchCurrentTurnEffects("UPR187", $player)) { //Erase Face
-    if($cardClass != "") $cardClass .= ",";
-    $cardClass .= CardClass($cardID);
   }
   if($cardClass == "") return "NONE";
   return $cardClass;
@@ -1092,14 +1080,16 @@ function CardNameContains($cardID, $name, $player="", $partial=false)
 function TalentOverride($cardID, $player="")
 {
   global $currentTurnEffects;
-  $cardTalent = "";
+  $cardTalent = CardTalent($cardID);
+  //CR 2.2.1 - 6.3.6. Continuous effects that remove a property, or part of a property, from an object do not remove properties, or parts of properties, that were added by another effect.
+  if(SearchCurrentTurnEffects("UPR187", $player)) $cardTalent = "NONE";
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     $talentToAdd = "";
     if($currentTurnEffects[$i+1] != $player) { continue; }
     switch($currentTurnEffects[$i])
     {
-      case "UPR060": case "UPR061": case "UPR062": $talentToAdd = "DRACONIC"; //Brand of Cinderclaw
+      case "UPR060": case "UPR061": case "UPR062": $talentToAdd = "DRACONIC";
       default: break;
     }
     if($talentToAdd != "")
@@ -1109,11 +1099,6 @@ function TalentOverride($cardID, $player="")
       $cardTalent .= $talentToAdd;
     }
   }
-  if(!SearchCurrentTurnEffects("UPR187", $player)) { //Erase Face
-    if($cardTalent != "") $cardTalent .= ",";
-    $cardTalent .= CardTalent($cardID);
-  }
-  if($cardTalent == "") return "NONE";
   return $cardTalent;
 }
 
@@ -1630,8 +1615,6 @@ function GetDamagePreventionTargetIndices() {
   }
   $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAllies($otherPlayer), "THEIRALLY"));
   $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAura($otherPlayer), "THEIRAURAS"));
-  $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAura($currentPlayer), "MYAURAS"));
-  $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchItems($otherPlayer), "THEIRITEMS"));
   if(ArsenalHasFaceUpCard($otherPlayer)) $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($otherPlayer), "THEIRARS"));
   $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "C"), "THEIRCHAR"));
   return $rv;

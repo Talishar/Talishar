@@ -578,7 +578,7 @@
         AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
         return "";
       case "EVO448":
-        MZMoveCard($currentPlayer, "MYHAND:subtype=Item;maxCost=1", "MYITEMS", may:true);
+        MZMoveCard($mainPlayer, "MYHAND:subtype=Item;maxCost=1", "MYITEMS", may:true);
         return "";
       case "EVO449":
         PlayAura("WTR225", $currentPlayer);

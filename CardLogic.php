@@ -1252,7 +1252,7 @@ function DiscardRandom($player = "", $source = "")
 }
 
 function DiscardedAtRandomEffects($player, $discarded, $source) {
-  if(SearchCurrentTurnEffects("DYN009", $player && ModifiedAttackValue($discarded, $player, "GY", "HAND") >= 6)) {
+  if(SearchCurrentTurnEffects("DYN009", $player)) {
     $index = SearchGetFirstIndex(SearchMultizone($player, "MYDISCARD:cardID=" . $discarded));
     RemoveGraveyard($player, $index);
     BanishCardForPlayer($discarded, $player, "GY", "-", $player);

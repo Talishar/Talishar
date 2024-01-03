@@ -52,25 +52,25 @@ function GetPlaymatName($id)
 {
   switch ($id) {
     case 0:
-      return "Plain";
+      return "plain";
     case 1:
-      return "Demonastery";
+      return "demonastery";
     case 2:
-      return "Metrix";
+      return "metrix";
     case 3:
-      return "Misteria";
+      return "misteria";
     case 4:
-      return "Pits";
+      return "pits";
     case 5:
-      return "Savage";
+      return "savage";
     case 6:
-      return "Solana";
+      return "solana";
     case 7:
-      return "Volcor";
+      return "volcor";
     case 8:
-      return "Data-Doll";
+      return "training-dummy";
     case 9:
-      return "Aria";
+      return "aria";
     case 10:
       return "Bare-Fangs-AHS";
     case 11:
