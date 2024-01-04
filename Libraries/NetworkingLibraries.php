@@ -1292,6 +1292,13 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $layerPriority[0] = ShouldHoldPriority(1);
   $layerPriority[1] = ShouldHoldPriority(2);
   $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
+
+  if($playingCard) { //Closes the chain, CR 2.5, 7.7.3 link step only allows for attack actions to continue the next chain, else close the combat chain before playing a new card.
+    if(IsStaticType(CardType($cardID), $from, $cardID)) {
+      if(GetAbilityType($cardID, $index, $from) == "A" && !CanPlayAsInstant($cardID, $index, $from)) ResetCombatChainState(); 
+    }
+  }
+
   if($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
     if($playingCard) {
@@ -1402,15 +1409,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if(IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
-      if($abilityType == "A" && !$canPlayAsInstant) ResetCombatChainState();
       PayAbilityAdditionalCosts($cardID);
       ActivateAbilityEffects();
     } else {
       if(GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
       else SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) . "," . $cardID);
-      if($cardType == "A" && !$canPlayAsInstant) {
-        ResetCombatChainState();
-      }
       $remorselessCount = CountCurrentTurnEffects("CRU123-DMG", $playerID);
       if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0) {
         WriteLog("Lost 1 health to Remorseless");
@@ -2110,7 +2113,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CCS_WeaponIndex, $EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
   global $CS_NumDragonAttacks, $CS_NumAttackCards, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks, $CCS_IsBoosted;
   global $SET_PassDRStep;
-
   if($layerIndex > -1) SetClassState($currentPlayer, $CS_PlayIndex, $layerIndex);
   $index = SearchForUniqueID($uniqueID, $currentPlayer);
   if($cardID == "ARC003" || $cardID == "CRU101") $index = FindCharacterIndex($currentPlayer, $cardID); //TODO: Fix this. This is an issue with the entire "multiple abilities" framework

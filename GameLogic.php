@@ -1165,7 +1165,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         Draw($player);
       } else WriteLog(CardLink("EVR156","EVR156") . "... did not hit the mark");
       return $lastResult;
-    case "ADDCARDTOCHAIN":
+    case "ADDCARDTOCHAINASDEFENDINGCARD":
       AddCombatChain($lastResult, $player, $parameter, 0);
       return $lastResult;
     case "ATTACKWITHIT":
@@ -1479,8 +1479,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       case "REMOVECOUNTERAURAORDESTROY":
         $auras = &GetAuras($player);
         if($lastResult == "YES") --$auras[$parameter+2];
-        else DestroyAuraUniqueID($mainPlayer, $auras[$parameter+6]);
+        else {
+          DestroyAuraUniqueID($player, $auras[$parameter+6]);
+          WriteLog(CardLink($auras[$parameter], $auras[$parameter]) . " was destroyed");
+        }
       return "";
+      case "REMOVECOUNTERITEMORDESTROY":
+        $items = &GetItems($player);
+        if($lastResult == "YES") --$items[$parameter+1];
+        else {
+          DestroyItemForPlayer($player, $parameter); 
+          WriteLog(CardLink($items[$parameter], $items[$parameter]) . " was destroyed");
+        }
+      return"";
     default:
       return "NOTSTATIC";
   }

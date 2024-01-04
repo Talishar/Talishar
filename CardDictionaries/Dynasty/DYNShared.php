@@ -273,7 +273,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("SPECIFICCARD", $otherPlayer, "PULSEWAVEHARPOONFILTER", 1);
         AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-        AddDecisionQueue("ADDCARDTOCHAIN", $otherPlayer, "HAND", 1);
+        AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "HAND", 1);
       }
       return "";
     case "DYN091":

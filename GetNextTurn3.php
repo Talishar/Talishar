@@ -409,7 +409,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($playerID == 3) {
       array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
     } else {
-      if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+      if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "");
       else $playable = false;
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
       $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);

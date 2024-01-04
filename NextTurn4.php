@@ -451,7 +451,7 @@
 
     <script src="./jsInclude.js"></script>
 
-    <?php // TODO: find a way to move those styles to a stylesheet. Not sure why it's not working.
+    <?php
     ?>
     <style>
       :root {

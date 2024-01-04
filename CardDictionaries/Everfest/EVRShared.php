@@ -457,7 +457,7 @@
         if($from == "PLAY") {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "EVR178");
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
-          AddDecisionQueue("ADDCARDTOCHAIN", $currentPlayer, "DECK", 1);
+          AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $currentPlayer, "DECK", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         }
         return "";

@@ -479,7 +479,10 @@ function GetResolvedAbilityType($cardID, $from="-")
   $abilityTypes = GetAbilityTypes($cardID);
   if($abilityTypes == "" || $abilityIndex == "-") return GetAbilityType($cardID, -1, $from);
   $abilityTypes = explode(",", $abilityTypes);
-  return $abilityTypes[$abilityIndex];
+  if(isset($abilityTypes[$abilityIndex])) {
+    return $abilityTypes[$abilityIndex];
+  }
+  else return "";
 }
 
 function GetResolvedAbilityName($cardID, $from="-")

@@ -262,7 +262,7 @@ function OnDefenseReactionResolveEffects($from)
     case "DTD205":
       if(!SearchCurrentTurnEffects("DTD205", $mainPlayer))
       {
-        $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", "E");
+        $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", "E", exclCardSubTypes:"Evo");
         if($nonEquipBlockingCards != "") {
           $options = GetChainLinkCards($defPlayer);
           AddCurrentTurnEffect("DTD205", $mainPlayer);
@@ -325,9 +325,10 @@ function OnBlockResolveEffects()
       for($i=0; $i<CachedNumActionBlocked(); ++$i) MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack(), "MYTOPDECK", may:true);
       break;
     case "DTD205":
+      $nonEquipBlockingCards = "";
       if(!SearchCurrentTurnEffects("DTD205", $mainPlayer))
       {
-        $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", "E");
+        $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", exclCardTypes:"E", exclCardSubTypes:"Evo");
         if($nonEquipBlockingCards != "") {
           $options = GetChainLinkCards($defPlayer);
           AddCurrentTurnEffect("DTD205", $mainPlayer);
@@ -354,7 +355,7 @@ function OnBlockResolveEffects()
       case "MON089"://Phantasmal Footsteps
       case "UPR095"://Flameborn Retribution
       case "UPR182"://Crown of Providence
-      case "UPR191": case "UPR192": case "UPR193":// Flex
+      case "UPR191": case "UPR192": case "UPR193"://Flex
       case "UPR194": case "UPR195": case "UPR196"://Fyendal's Fighting Spirit
       case "UPR203": case "UPR204": case "UPR205"://Brothers in Arms
       case "DYN152"://Hornet's Sting
@@ -513,6 +514,15 @@ function OnBlockEffects($index, $from)
           break;
         case "OUT007": case "OUT008":
           if($cardType == "A") $chainCard->ModifyDefense(-1);
+          if(intval(substr($chainCard->ID(), 3, 3)) > 400) {
+            $set = substr($chainCard->ID(), 0, 3);
+            $number = intval(substr($chainCard->ID(), 3, 3)) - 400;
+            $id = $number;
+            if($number < 100) $id = "0" . $id;
+            if($number < 10) $id = "0" . $id;
+            $id = $set . $id;
+            if(CardType($id) != $type) $chainCard->ModifyDefense(-1);
+          }
           break;
         case "OUT009": case "OUT010":
           if($cardType == "E" || DelimStringContains($cardSubtype, "Evo")) $chainCard->ModifyDefense(-1);
@@ -586,6 +596,7 @@ function NumNonEquipmentDefended()
   for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     $cardType = CardType($combatChain[$i]);
     if($combatChain[$i + 1] == $defPlayer && $cardType != "E" && $cardType != "C") ++$number;
+    if(DelimStringContains(CardSubType($combatChain[$i]), "Evo")) --$number;
   }
   return $number;
 }
@@ -791,13 +802,17 @@ function CachedOverpowerActive()
 function CachedWagerActive()
 {
   global $combatChainState, $CCS_WagersThisLink;
-  return ($combatChainState[$CCS_WagersThisLink] == "1" ? true : false);
+  if (isset($combatChainState[$CCS_WagersThisLink])) {
+    return ($combatChainState[$CCS_WagersThisLink] == "1" ? true : false);
+  } else return false;
 }
 
 function CachedPhantasmActive()
 {
   global $combatChainState, $CCS_PhantasmThisLink;
+  if (isset($combatChainState[$CCS_PhantasmThisLink])) {
   return ($combatChainState[$CCS_PhantasmThisLink] == "1" ? true : false);
+  } else return false;
 }
 
 function CachedNumDefendedFromHand() //Reprise
