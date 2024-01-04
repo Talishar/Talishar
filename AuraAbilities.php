@@ -344,7 +344,10 @@ function AuraStartTurnAbilities()
           AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_Doom_Counter_and_keep_" . CardLink($auras[$i], $auras[$i]), 1);
           AddDecisionQueue("REMOVECOUNTERAURAORDESTROY", $mainPlayer, $i, 1);
         }
-        else DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
+        else {
+          DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " was destroyed");
+        }
         break;
       case "TCC037": case "TCC038": case "TCC042": case "TCC043":
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");

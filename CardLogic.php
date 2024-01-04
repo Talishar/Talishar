@@ -757,9 +757,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "EVR071":
       $index = SearchItemsForUniqueID($uniqueID, $player);
-      --$items[$index+1];
-      if($items[$index+1] < 0) DestroyItemForPlayer($player, $index);
-      break;
+      if($items[$index+1] > 0) {
+        AddDecisionQueue("SETDQCONTEXT", $player, "Do you want to remove a Steam Counter from " . CardLink($items[$index], $items[$index]) . "?", 1);
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($items[$index], $items[$index]), 1);
+        AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $player, $index, 1);
+      }
+      else {
+        DestroyItemForPlayer($player, $index); 
+        WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
+      }      break;
     case "EVR107": case "EVR108": case "EVR109":
       $index = SearchAurasForUniqueID($uniqueID, $player);
       if($index == -1) break;
