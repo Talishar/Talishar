@@ -832,6 +832,7 @@ function NumCardsNonEquipBlocking()
     if($chainCard->PlayerID() == $defPlayer) {
       $type = CardType($chainCard->ID());
       if($type != "E" && $type != "I" && $type != "C") ++$num;
+      if(DelimStringContains(CardSubType($chainCard->ID()), "Evo")) --$num;
     }
   }
   return $num;
