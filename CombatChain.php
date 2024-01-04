@@ -802,13 +802,17 @@ function CachedOverpowerActive()
 function CachedWagerActive()
 {
   global $combatChainState, $CCS_WagersThisLink;
-  return ($combatChainState[$CCS_WagersThisLink] == "1" ? true : false);
+  if (isset($combatChainState[$CCS_WagersThisLink])) {
+    return ($combatChainState[$CCS_WagersThisLink] == "1" ? true : false);
+  } else return false;
 }
 
 function CachedPhantasmActive()
 {
   global $combatChainState, $CCS_PhantasmThisLink;
+  if (isset($combatChainState[$CCS_PhantasmThisLink])) {
   return ($combatChainState[$CCS_PhantasmThisLink] == "1" ? true : false);
+  } else return false;
 }
 
 function CachedNumDefendedFromHand() //Reprise
