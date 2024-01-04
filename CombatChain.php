@@ -515,6 +515,15 @@ function OnBlockEffects($index, $from)
           break;
         case "OUT007": case "OUT008":
           if($cardType == "A") $chainCard->ModifyDefense(-1);
+          if(intval(substr($chainCard->ID(), 3, 3)) > 400) {
+            $set = substr($chainCard->ID(), 0, 3);
+            $number = intval(substr($chainCard->ID(), 3, 3)) - 400;
+            $id = $number;
+            if($number < 100) $id = "0" . $id;
+            if($number < 10) $id = "0" . $id;
+            $id = $set . $id;
+            if(CardType($id) != $type) $chainCard->ModifyDefense(-1);
+          }
           break;
         case "OUT009": case "OUT010":
           if($cardType == "E" || DelimStringContains($cardSubtype, "Evo")) $chainCard->ModifyDefense(-1);
