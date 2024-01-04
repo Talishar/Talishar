@@ -329,7 +329,6 @@ function OnBlockResolveEffects()
       if(!SearchCurrentTurnEffects("DTD205", $mainPlayer))
       {
         $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", exclCardTypes:"E", exclCardSubTypes:"Evo");
-        WriteLog($nonEquipBlockingCards);
         if($nonEquipBlockingCards != "") {
           $options = GetChainLinkCards($defPlayer);
           AddCurrentTurnEffect("DTD205", $mainPlayer);

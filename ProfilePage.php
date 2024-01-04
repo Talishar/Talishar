@@ -19,7 +19,6 @@ if (isset($_SESSION['userid'])) {
     $fullText = $badges[$i + 3] . "<br><br>" . $bottomText;
     if ($badges[$i + 6] != "") echo ("<a href='" . $badges[$i + 6] . "'>");
     echo ("<img style='margin:3px; width:120px; height:120px; object-fit: cover;' src='" . $badges[$i + 5] . "'></img>");
-    //TODO: Show badge text
     if ($badges[$i + 6] != "") echo ("</a>");
   }
   echo ("</div>");
