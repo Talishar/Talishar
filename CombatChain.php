@@ -262,7 +262,7 @@ function OnDefenseReactionResolveEffects($from)
     case "DTD205":
       if(!SearchCurrentTurnEffects("DTD205", $mainPlayer))
       {
-        $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", "E");
+        $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", "E", exclCardSubTypes:"Evo");
         if($nonEquipBlockingCards != "") {
           $options = GetChainLinkCards($defPlayer);
           AddCurrentTurnEffect("DTD205", $mainPlayer);
@@ -325,9 +325,11 @@ function OnBlockResolveEffects()
       for($i=0; $i<CachedNumActionBlocked(); ++$i) MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack(), "MYTOPDECK", may:true);
       break;
     case "DTD205":
+      $nonEquipBlockingCards = "";
       if(!SearchCurrentTurnEffects("DTD205", $mainPlayer))
       {
-        $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", "E");
+        $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", exclCardTypes:"E", exclCardSubTypes:"Evo");
+        WriteLog($nonEquipBlockingCards);
         if($nonEquipBlockingCards != "") {
           $options = GetChainLinkCards($defPlayer);
           AddCurrentTurnEffect("DTD205", $mainPlayer);
@@ -586,6 +588,7 @@ function NumNonEquipmentDefended()
   for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     $cardType = CardType($combatChain[$i]);
     if($combatChain[$i + 1] == $defPlayer && $cardType != "E" && $cardType != "C") ++$number;
+    if(DelimStringContains(CardSubType($combatChain[$i]), "Evo")) --$number;
   }
   return $number;
 }
