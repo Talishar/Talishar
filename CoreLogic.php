@@ -146,9 +146,18 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid)
   array_push($combatChain, RepriseActive());
   array_push($combatChain, 0);//Attack modifier
   array_push($combatChain, 0);//Defense modifier
-  if($turn[0] == "B" || CardType($cardID) == "DR") OnBlockEffects($index, $from);
+  if($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility();
   return $index;
+}
+
+function DefendingTerm($term)
+{
+  switch ($term) {
+    case "ADDCARDTOCHAINASDEFENDINGCARD": // Pulsewave Harpoon, Pulsewave Protocol, etc.
+      return true;
+    default: return false;
+  }
 }
 
 function CombatChainPowerModifier($index, $amount)

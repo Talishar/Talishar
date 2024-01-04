@@ -1165,7 +1165,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         Draw($player);
       } else WriteLog(CardLink("EVR156","EVR156") . "... did not hit the mark");
       return $lastResult;
-    case "ADDCARDTOCHAIN":
+    case "ADDCARDTOCHAINASDEFENDINGCARD":
       AddCombatChain($lastResult, $player, $parameter, 0);
       return $lastResult;
     case "ATTACKWITHIT":

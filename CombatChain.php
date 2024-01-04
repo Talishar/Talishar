@@ -354,7 +354,7 @@ function OnBlockResolveEffects()
       case "MON089"://Phantasmal Footsteps
       case "UPR095"://Flameborn Retribution
       case "UPR182"://Crown of Providence
-      case "UPR191": case "UPR192": case "UPR193":// Flex
+      case "UPR191": case "UPR192": case "UPR193"://Flex
       case "UPR194": case "UPR195": case "UPR196"://Fyendal's Fighting Spirit
       case "UPR203": case "UPR204": case "UPR205"://Brothers in Arms
       case "DYN152"://Hornet's Sting

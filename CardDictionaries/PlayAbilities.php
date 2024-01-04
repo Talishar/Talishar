@@ -308,7 +308,7 @@
           AddDecisionQueue("SPECIFICCARD", $otherPlayer, "PULSEWAVEPROTOCOLFILTER", 1);
           AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-          AddDecisionQueue("ADDCARDTOCHAIN", $otherPlayer, "HAND", 1);
+          AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "HAND", 1);
         }
         return "";
       case "EVO059":
