@@ -18,7 +18,8 @@
       case "UPR050":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CCDEFLESSX," . NumDraconicChainLinks()-1);
         AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-exclude-type-E", 1);
-        AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-include-player-" . ($player == 1 ? 2 : 1), 1);
+        AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-exclude-subtype-evo", 1);
+        AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-include-player-" . ($currentPlayer == 1 ? 2 : 1), 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
         AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVECOMBATCHAIN", $currentPlayer, "-", 1);
