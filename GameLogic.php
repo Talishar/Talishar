@@ -1476,6 +1476,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $char[$parameter+10] = implode(",", $subcards);
       UpdateSubcardCounterCount($currentPlayer, $parameter);
       return $cardID;
+      case "REMOVECOUNTERAURAORDESTROY":
+        $auras = &GetAuras($player);
+        if($lastResult == "YES") --$auras[$parameter+2];
+        else DestroyAuraUniqueID($mainPlayer, $auras[$parameter+6]);
+      return "";
     default:
       return "NOTSTATIC";
   }
