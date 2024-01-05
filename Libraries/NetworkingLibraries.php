@@ -1613,10 +1613,13 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
       $names = GetAbilityNames($cardID, $index);
-      if($names != "") {
+      if($names != "" && $from == "HAND") {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or attack");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
         AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
+      }
+      else {
+        AddDecisionQueue("SETABILITYTYPEATTACK", $currentPlayer, $cardID);
       }
       break;
     default:
