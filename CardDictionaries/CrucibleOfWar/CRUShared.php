@@ -144,12 +144,6 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   global $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $CCS_RequiredEquipmentBlock, $CCS_NumBoosted;
   $rv = "";
   switch($cardID) {
-    case "CRU004": case "CRU005":
-      if(GetClassState($currentPlayer, $CS_Num6PowDisc) > 0) {
-        GiveAttackGoAgain();
-        $rv = "Gains go again";
-      }
-      return $rv;
     case "CRU006":
       Draw($currentPlayer);
       $discarded = DiscardRandom($currentPlayer, $cardID);
