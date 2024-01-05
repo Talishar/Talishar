@@ -3,7 +3,7 @@
 function CombatDummyAI()
 {
   global $currentPlayer, $p2CharEquip, $decisionQueue, $turn, $mainPlayer;
-  $currentPlayerIsAI = ($currentPlayer == 2 && $p2CharEquip[0] == "DUMMY") ? true : false;
+  $currentPlayerIsAI = IsPlayerAI($currentPlayer) ? true : false;
   $canceled = false;
   if(!IsGameOver() && $currentPlayerIsAI)
   {
@@ -41,7 +41,7 @@ function CombatDummyAI()
         PassInput();
       }
       ProcessMacros();
-      $currentPlayerIsAI = ($currentPlayer == 2 && $p2CharEquip[0] == "DUMMY") ? true : false;
+      $currentPlayerIsAI = IsPlayerAI($currentPlayer) ? true : false;
     }
   }
 }
