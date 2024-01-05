@@ -1414,6 +1414,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     } else {
       if(GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
       else SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) . "," . $cardID);
+      if($cardType == "A" && !$canPlayAsInstant) {
+        ResetCombatChainState();
+      }
       $remorselessCount = CountCurrentTurnEffects("CRU123-DMG", $playerID);
       if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0) {
         WriteLog("Lost 1 health to Remorseless");
