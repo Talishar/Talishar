@@ -2307,3 +2307,14 @@ function CheckIfSingularityConditionsAreMet($currentPlayer) {
   if ($evoCount < 4) return "You do not meet the Evo requirement";
   return "";
 }
+
+function CanOnlyTargetHeroes($cardID)
+{
+  switch($cardID)
+    {
+      case "TCC011":
+        return true;
+      default:
+        return false;
+    }
+}

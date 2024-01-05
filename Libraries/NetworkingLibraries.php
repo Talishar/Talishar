@@ -1464,7 +1464,7 @@ function PlayCardSkipCosts($cardID, $from)
 {
   global $currentPlayer, $layers, $turn;
   $cardType = CardType($cardID);
-  if (($turn[0] == "M" || $turn[0] == "ATTACKWITHIT") && $cardType == "AA") GetTargetOfAttack();
+  if (($turn[0] == "M" || $turn[0] == "ATTACKWITHIT") && $cardType == "AA") GetTargetOfAttack($cardID);
   if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
     if (HasBoost($cardID) && $cardID != "EVO142") Boost();
     GetLayerTarget($cardID);
@@ -1630,33 +1630,38 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   }
 }
 
-function GetTargetOfAttack()
+function GetTargetOfAttack($cardID="")
 {
   global $mainPlayer, $combatChainState, $CCS_AttackTarget;
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   $numTargets = 1;
   $targets = "THEIRCHAR-0";
-  $auras = &GetAuras($defPlayer);
-  $arcLightIndex = -1;
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if (HasSpectra($auras[$i])) {
-      $targets .= ",THEIRAURAS-" . $i;
-      ++$numTargets;
-      if ($auras[$i] == "MON005") $arcLightIndex = $i;
+  if(CanOnlyTargetHeroes($cardID)) {
+    $combatChainState[$CCS_AttackTarget] = $targets;
+  }
+  else {
+    $auras = &GetAuras($defPlayer);
+    $arcLightIndex = -1;
+    for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+      if (HasSpectra($auras[$i])) {
+        $targets .= ",THEIRAURAS-" . $i;
+        ++$numTargets;
+        if ($auras[$i] == "MON005") $arcLightIndex = $i;
+      }
     }
-  }
-  $allies = &GetAllies($defPlayer);
-  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
-    $targets .= ",THEIRALLY-" . $i;
-    ++$numTargets;
-  }
-  if ($arcLightIndex > -1) $targets = "THEIRAURAS-" . $arcLightIndex;
-  if ($numTargets > 1) {
-    PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
-    PrependDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $targets);
-    PrependDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target for the attack");
-  } else {
-    $combatChainState[$CCS_AttackTarget] = "THEIRCHAR-0";
+    $allies = &GetAllies($defPlayer);
+    for ($i = 0; $i < count($allies); $i += AllyPieces()) {
+      $targets .= ",THEIRALLY-" . $i;
+      ++$numTargets;
+    }
+    if ($arcLightIndex > -1) $targets = "THEIRAURAS-" . $arcLightIndex;
+    if ($numTargets > 1) {
+      PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
+      PrependDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $targets);
+      PrependDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target for the attack");
+    } else {
+      $combatChainState[$CCS_AttackTarget] = "THEIRCHAR-0";
+    }
   }
 }
 
