@@ -1295,7 +1295,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
 
   if($playingCard) { //Closes the chain, CR 2.5, 7.7.3 link step only allows for attack actions to continue the next chain, else close the combat chain before playing a new card.
     if(IsStaticType(CardType($cardID), $from, $cardID)) {
-      if(GetAbilityType($cardID, $index, $from) == "A" && !CanPlayAsInstant($cardID, $index, $from)) ResetCombatChainState(); 
+      if(GetResolvedAbilityType($cardID, $from) == "A" && !CanPlayAsInstant($cardID, $index, $from)) ResetCombatChainState(); 
     }
   }
 
@@ -1613,10 +1613,13 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
       $names = GetAbilityNames($cardID, $index);
-      if($names != "") {
+      if($names != "" && $from == "HAND") {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or attack");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
         AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
+      }
+      else {
+        AddDecisionQueue("SETABILITYTYPEATTACK", $currentPlayer, $cardID);
       }
       break;
     default:
