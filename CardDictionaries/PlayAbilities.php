@@ -29,7 +29,7 @@
       case "HVY057":
         AskWager($cardID);
         return "";
-      case "HVY069":
+      case "HVY089":
         PlayAura("TCC105", $currentPlayer);//Might
         PlayAura("TCC107", $currentPlayer);//Vigor
         return "";
