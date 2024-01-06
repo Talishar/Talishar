@@ -89,8 +89,8 @@ function EncounterAI()
         $health = &GetHealth($currentPlayer);
         //If something was found, that thing is able to block (not prio 0), and either the attack is lethal or the AI wants to block with it efficiently, it attempts to block. Otherwise it passes.
         //WriteLog("found->".$found.",prio->".$storedPriorityNode[3].",cachedattack->".CachedTotalAttack().",cachedblock->".CachedTotalBlock().",health->".$health.",attackvalue->".AttackValue("UPR061"));
-        if($found == true && $storedPriorityNode[3] != 0 &&
-((CachedTotalAttack() - CachedTotalBlock() >= $health && $storedPriorityNode[3] != 0) || (CachedTotalAttack() - CachedTotalBlock() >= BlockValue($storedPriorityNode[0]) && 2.1 <= $storedPriorityNode[3] && $storedPriorityNode[3] <= 2.9)))
+
+        if(ShouldBlock($found, $storedPriorityNode))
         {
           BlockCardAttempt($storedPriorityNode); //attempts to play the card. Found in EncounterPlayLogic.php;
         }
@@ -237,6 +237,30 @@ function EncounterAI()
 function IsEncounterAI($enemyHero)
 {
   return str_contains($enemyHero, "ROGUE");
+}
+
+function ShouldBlock($found, $storedPriorityNode)
+{
+  global $currentPlayer;
+  $health = &GetHealth($currentPlayer);
+  if(IsFirstTurn() && CachedTotalAttack() - CachedTotalBlock() > 1) return true;//Make AI more likely to block on turn 0
+  //If something was found, that thing is able to block (not prio 0), and either the attack is lethal or the AI wants to block with it efficiently, it attempts to block. Otherwise it passes.
+  //WriteLog("found->".$found.",prio->".$storedPriorityNode[3].",cachedattack->".CachedTotalAttack().",cachedblock->".CachedTotalBlock().",health->".$health.",attackvalue->".AttackValue("UPR061"));
+  if($found == true && $storedPriorityNode[3] != 0 &&
+((CachedTotalAttack() - CachedTotalBlock() >= $health && $storedPriorityNode[3] != 0) || (CachedTotalAttack() - CachedTotalBlock() >= BlockValue($storedPriorityNode[0]) && 2.1 <= $storedPriorityNode[3] && $storedPriorityNode[3] <= 2.9)))
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+function IsFirstTurn()
+{
+  global $mainPlayer, $firstPlayer, $currentTurn;
+  return $mainPlayer == $firstPlayer && $currentTurn == 1;
 }
 
 function LogPriorityArray($priorityArray)
