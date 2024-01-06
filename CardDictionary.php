@@ -547,12 +547,12 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       $baseAttackMax = $combatChainState[$CCS_BaseAttackDefenseMax];
       if($baseAttackMax > -1 && AttackValue($cardID) > $baseAttackMax) return false;
     }
-    if($CombatChain->AttackCard()->ID() == "DYN121" && $phase == "B") return SearchBanishForCard($player, $cardID) == -1;
+    if($CombatChain->AttackCard()->ID() == "DYN121" && $phase == "B" && $from == "HAND") return SearchBanishForCardName($player, $cardID) == -1;
     $resourceMin = $combatChainState[$CCS_ResourceCostDefenseMin];
     if($resourceMin > -1 && CardCost($cardID) < $resourceMin && $cardType != "E") return false;
     if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Attack_Action" && $cardType != "AA") return false;
     if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Non-attack_Action" && $cardType != "A") return false;
-    if($CombatChain->AttackCard()->ID() == "DYN121" && $cardType == "DR") return SearchBanishForCard($player, $cardID) == -1;
+    if($CombatChain->AttackCard()->ID() == "DYN121" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
   }
   if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
   if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index)) return false;
