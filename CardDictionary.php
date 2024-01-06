@@ -547,7 +547,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       $baseAttackMax = $combatChainState[$CCS_BaseAttackDefenseMax];
       if($baseAttackMax > -1 && AttackValue($cardID) > $baseAttackMax) return false;
     }
-    if($CombatChain->AttackCard()->ID() == "DYN121" && $phase == "B" && ($from == "HAND" || $cardID == "OUT184" || HasAmbush($cardID))) return SearchBanishForCardName($player, $cardID) == -1;
+    if($CombatChain->AttackCard()->ID() == "DYN121" && $phase == "B" && SearchBanishForCardName($player, $cardID) > -1) return false;
     $resourceMin = $combatChainState[$CCS_ResourceCostDefenseMin];
     if($resourceMin > -1 && CardCost($cardID) < $resourceMin && $cardType != "E") return false;
     if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Attack_Action" && $cardType != "AA") return false;
@@ -1588,8 +1588,8 @@ function CardCaresAboutPitch($cardID)
 function CardHasAltArt($cardID)
 {
   switch($cardID) {
-    case "WTR001": case "WTR002": 
-    case "WTR150": case "WTR162": case "WTR173": 
+    case "WTR001": case "WTR002":
+    case "WTR150": case "WTR162": case "WTR173":
     case "WTR224":
       return true;
     case "ARC159": case "ARC191":
@@ -1613,9 +1613,9 @@ function CardHasAltArt($cardID)
     case "UPR412": case "UPR413": case "UPR414":
     case "UPR415": case "UPR416": case "UPR417":
       return true;
-    case "DYN001": case "DYN005": case "DYN026": 
+    case "DYN001": case "DYN005": case "DYN026":
     case "DYN045": case "DYN065": case "DYN068":
-    case "DYN088": case "DYN092": case "DYN121": 
+    case "DYN088": case "DYN092": case "DYN121":
     case "DYN151": case "DYN171": case "DYN192":
     case "DYN212": case "DYN213": case "DYN234":
     case "DYN492a": case "DYN492b": case "DYN492c":
@@ -1624,13 +1624,13 @@ function CardHasAltArt($cardID)
     case "DTD005": case "DTD006": case "DTD007":
     case "DTD008": case "DTD009": case "DTD010":
     case "DTD011": case "DTD012":
-    case "DTD164": case "DTD564": 
+    case "DTD164": case "DTD564":
     case "DTD405": case "DTD406": case "DTD407":
     case "DTD408": case "DTD409": case "DTD410":
     case "DTD411": case "DTD412":
       return true;
     case "EVO010": case "EVO026": case "EVO027":
-    case "EVO028": case "EVO029": case "EVO030": 
+    case "EVO028": case "EVO029": case "EVO030":
     case "EVO031": case "EVO032": case "EVO033":
     case "EVO410": case "EVO410a": case "EVO410b":
   default:
