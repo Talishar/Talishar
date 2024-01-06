@@ -1175,7 +1175,7 @@ function RevealCards($cards, $player="")
 
 function DoesAttackHaveGoAgain()
 {
-  global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer;
+  global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_Num6PowDisc;
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
   global $CS_NumItemsDestroyed;
   if(!$CombatChain->HasCurrentLink()) return false;
@@ -1204,6 +1204,7 @@ function DoesAttackHaveGoAgain()
       $deck = new Deck($mainPlayer);
       return $deck->Empty();
     case "ARC197": case "ARC198": case "ARC199": return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0;
+    case "CRU004": case "CRU005": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0;
     case "CRU010": case "CRU011": case "CRU012": if(NumCardsNonEquipBlocking() < 2) return true;
     case "CRU057": case "CRU058": case "CRU059": return ComboActive($attackID);
     case "CRU060": case "CRU061": case "CRU062": return ComboActive($attackID);
@@ -2306,4 +2307,15 @@ function CheckIfSingularityConditionsAreMet($currentPlayer) {
   if (!$hasWeapon) return "You do not meet the weapon requirement";
   if ($evoCount < 4) return "You do not meet the Evo requirement";
   return "";
+}
+
+function CanOnlyTargetHeroes($cardID)
+{
+  switch($cardID)
+    {
+      case "TCC011":
+        return true;
+      default:
+        return false;
+    }
 }
