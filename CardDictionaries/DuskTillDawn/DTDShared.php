@@ -148,10 +148,8 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD196": return CardType($attackID) == "AA";//Anthem of Spring
     case "DTD198": return true;//Call Down the Lightning
     case "DTD187": case "DTD188": case "DTD189": 
+    case "DTD190": case "DTD191": case "DTD192": 
       return SearchCurrentTurnEffects($cardID . "-" . $attackID, $mainPlayer) && $CombatChain->AttackCard()->From() == "BANISH";
-    case "DTD190": return $CombatChain->AttackCard()->From() == "BANISH" && PitchValue($attackID) == 1;
-    case "DTD191": return $CombatChain->AttackCard()->From() == "BANISH" && PitchValue($attackID) == 2;
-    case "DTD192": return $CombatChain->AttackCard()->From() == "BANISH" && PitchValue($attackID) == 3;
     case "DTD207": return SubtypeContains($attackID, "Sword", $mainPlayer);//Ironsong Versus
     case "DTD208": return true;
     case "DTD213": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
@@ -393,7 +391,14 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID."-{0}", 1);
       return "";
     case "DTD190": case "DTD191": case "DTD192":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      $pitch = "";
+      if (PitchValue($cardID) == 1) $pitch = "1";
+      elseif (PitchValue($cardID) == 2) $pitch = "2";
+      else $pitch = "3";
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYBANISH:type=A;pitch=". $pitch . "&MYBANISH:type=AA;pitch=". $pitch);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
+      AddDecisionQueue("ADDCURRENTEFFECTLASTRESULT", $currentPlayer, $cardID."-", 1);
       return "";
     case "DTD196"://Anthem of Spring
       AddCurrentTurnEffect($cardID, $currentPlayer);
