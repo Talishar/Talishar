@@ -6,8 +6,9 @@
 
 function CardIsBlockable($storedPriorityNode)
 {
-  global $combatChain, $combatChainState, $CCS_NumChainLinks, $currentPlayer;
+  global $combatChain, $combatChainState, $CCS_NumChainLinks, $currentPlayer, $turn;
   if($storedPriorityNode[3] == 0) return false;
+  if($turn[0] == "B" && CardType($storedPriorityNode[0]) == "DR") return false;
   if($storedPriorityNode[1] == "Character")
   {
     $character = &GetPlayerCharacter($currentPlayer);
@@ -322,7 +323,7 @@ function ReactionRequirementsMet($storedPriorityNode)
     case "ELE172": return GetClassState($player, $CS_NumFusedIce) > 0;
     case "ELE183": case "ELE184": case "ELE185": return CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) <= 1;
     case "ELE201": return GetClassState($player, $CS_NumFusedLightning) > 0;
-    default: return false;
+    default: return true;
   }
 }
 

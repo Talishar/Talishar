@@ -41,7 +41,7 @@ function GetPriority($cardID, $heroID, $type)
   switch($heroID)
   {
     case "ROGUEIRA":
-      $redBlockChance = SearchCount(SearchHand(2, pitch:1)) > 1 ? 0.7 : 0;
+      $redBlockChance = SearchCount(SearchHand(2, pitch:1)) > 1 ? 0.8 : 0.5;
       $resources = &GetResources(2);
       switch($cardID)
       {
@@ -51,7 +51,7 @@ function GetPriority($cardID, $heroID, $type)
           $priority = array(0, $blueCount > 0 ? 0.95 : 0.1, 0, 0, 0, 0, 0, $blueCount > 0 ? 0.95 : 0.1); return $priority[$type];
         //Blue combo cards
         case "WTR088": case "OUT067": case "CRU059": case "CRU054": case "WTR106": case "CRU062": case "WTR112": case "EVR040":
-          $blockChance = (IsFirstTurn() || SearchCount(SearchHand(2, pitch:3)) > 1 ? .9 : .01);
+          $blockChance = (IsFirstTurn() || SearchCount(SearchHand(2, pitch:3)) > 1 ? .9 : .1);
           $priority = array($blockChance, 0.1, 0.1, 0, 0, 2.5, 0.1, 0);
           return $priority[$type];
         //Red attacks
@@ -61,11 +61,11 @@ function GetPriority($cardID, $heroID, $type)
         case "CRU069": $priority = array($redBlockChance - 0.2, 0.9, 0.9, 0, 0, 1.2, 0.7, 0); return $priority[$type];
         case "TCC088": case "WTR085": $priority = array($redBlockChance, 0.5, 0.5, 0, 0, 1.2, 0.7, 0); return $priority[$type];
         //Defense Reactions
-        case "WTR092": case "ARC200": case "WTR215": $priority = array(0.0, 0.0, 0.0, 0.9, 0.9, 1.5, 0.9, 0); return $priority[$type];
-        case "UPR189": case "WTR093": $priority = array(0.0, 0.0, 0.0, 0.9, 0.9, 2.5, 0.8, 0); return $priority[$type];
+        case "WTR092": case "ARC200": case "WTR215": $priority = array(0.9, 0.0, 0.0, 0.9, 0.9, 1.5, 0.9, 0); return $priority[$type];
+        case "UPR189": case "WTR093": $priority = array(0.9, 0.0, 0.0, 0.9, 0.9, 2.5, 0.8, 0); return $priority[$type];
         case "WTR094":
           $blueCount = SearchCount(SearchHand(2, pitch:3));
-          $priority = array(0.0, 0.0, 0.0, $blueCount > 1 ? 0.9 : 0, $blueCount > 1 ? 0.9 : 0, 2.9, 0.8, 0); return $priority[$type];
+          $priority = array(0.6, 0.0, 0.0, $blueCount > 1 ? 0.9 : 0.1, $blueCount > 1 ? 0.9 : 0, 2.9, 0.8, 0); return $priority[$type];
         //Equipment
         case "UPR159": $priority = array(0, 0, 0, 0, 0, 0, 0, 0); return $priority[$type];
         case "OUT139": case "WTR150": case "WTR079":

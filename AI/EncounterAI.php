@@ -152,6 +152,30 @@ function EncounterAI()
           PassInput();
         }
       }
+      else if($turn[0] == "D" && $mainPlayer != $currentPlayer)//attack reaction phase
+      {
+        if($AIDebug) WriteLog("AI Branch - Defense Reactions");
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Reaction");
+        //LogPriorityArray($priortyArray);
+        $found = false;
+        while (count($priortyArray) > 0 && !$found) {
+          $storedPriorityNode = $priortyArray[count($priortyArray)-1];
+          array_pop($priortyArray);
+          if(ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)) $found = true;
+          WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3] . ", Found=" . $found);
+        }
+        $threatened = CachedTotalAttack() - CachedTotalBlock();
+        //if($found == true && $threatened > 0 && $storedPriorityNode[3] != 0)
+        if($found == true && ShouldBlock($found, $storedPriorityNode) && $storedPriorityNode[3] != 0)
+        {
+          PlayCardAttempt($storedPriorityNode);
+          CacheCombatResult();
+        }
+        else
+        {
+          PassInput();
+        }
+      }
       else if($turn[0] == "P" && $mainPlayer == $currentPlayer)//pitch phase
       {
         if($AIDebug) WriteLog("AI Branch - Pitch");
