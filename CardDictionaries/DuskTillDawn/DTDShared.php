@@ -63,8 +63,10 @@ function DTDEffectAttackModifier($cardID)
 {
   global $mainPlayer;
   $params = explode(",", $cardID);
+  $dashArr = explode("-", $cardID);
   $cardID = $params[0];
   if(count($params) > 1) $parameter = $params[1];
+  if(strlen($cardID) > 6) $cardID = $dashArr[0];
   switch($cardID) {
     case "DTD011": return -1;
     case "DTD032": return 3;
@@ -115,9 +117,11 @@ function DTDEffectAttackModifier($cardID)
 function DTDCombatEffectActive($cardID, $attackID)
 {
   global $combatChainState, $mainPlayer, $combatChainState, $CCS_AttackNumCharged, $CombatChain;
-  global $Card_LifeBanner, $Card_ResourceBanner, $CCS_WasRuneGate;
+  global $Card_LifeBanner, $Card_ResourceBanner, $CCS_WasRuneGate, $CS_CharacterIndex;
   $params = explode(",", $cardID);
+  $dashArr = explode("-", $cardID);
   $cardID = $params[0];
+  if(strlen($cardID) > 6) $cardID = $dashArr[0];
   switch($cardID) {
     case "DTD010": return true;
     case "DTD011": return CardType($attackID) == "AA";
@@ -143,7 +147,8 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD161": case "DTD162": case "DTD163": return $combatChainState[$CCS_WasRuneGate] == 1;
     case "DTD196": return CardType($attackID) == "AA";//Anthem of Spring
     case "DTD198": return true;//Call Down the Lightning
-    case "DTD187": case "DTD188": case "DTD189": return $CombatChain->AttackCard()->From() == "BANISH";
+    case "DTD187": case "DTD188": case "DTD189": 
+      return SearchCurrentTurnEffects($cardID . "-" . $attackID, $mainPlayer) && $CombatChain->AttackCard()->From() == "BANISH";
     case "DTD190": return $CombatChain->AttackCard()->From() == "BANISH" && PitchValue($attackID) == 1;
     case "DTD191": return $CombatChain->AttackCard()->From() == "BANISH" && PitchValue($attackID) == 2;
     case "DTD192": return $CombatChain->AttackCard()->From() == "BANISH" && PitchValue($attackID) == 3;
@@ -382,6 +387,11 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if(count($theirSoul) > 0) GiveAttackGoAgain();
       return "";
     case "DTD187": case "DTD188": case "DTD189":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYBANISH:type=AA");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID."-{0}", 1);
+      return "";
     case "DTD190": case "DTD191": case "DTD192":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
