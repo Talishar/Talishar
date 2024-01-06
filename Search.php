@@ -469,6 +469,15 @@ function SearchBanishForCard($playerID, $cardID)
   return -1;
 }
 
+function SearchBanishForCardName($playerID, $cardID)
+{
+  $banish = GetBanish($playerID);
+  for ($i = 0; $i < count($banish); $i+=BanishPieces()) {
+    if (CardName($banish[$i]) == CardName($cardID)) return $i;
+  }
+  return -1;
+}
+
 function SearchBanishForCardMulti($playerID, $card1, $card2="", $card3="")
 {
   $cardList = "";
