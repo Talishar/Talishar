@@ -565,7 +565,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     else if(count($myHand) < 1) return false;
   }
   if(EffectPlayCardConstantRestriction($cardID, CardType($cardID), $restriction)) return false;
-  if($phase != "B" && $phase != "P" && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
+  if($phase != "B" && $phase != "P" && $phase != "CHOOSEHANDCANCEL" && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
   if($phase == "M" && $subtype == "Arrow") {
     if($from != "ARS") return false;
     if(!SubtypeContains($character[CharacterPieces()], "Bow") && !SubtypeContains($character[CharacterPieces()*2], "Bow")) return false;
@@ -714,7 +714,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   if(SearchCurrentTurnEffects("DYN240-" . str_replace(' ', '_', CardName($cardID)), $player)) { $restriction = "DYN240"; return true; } //Can't be played
   if(SearchCurrentTurnEffects("EVO073-" . $cardID, $player)) { $restriction = "EVO073"; return true; } //Can't be activated
   if(CardType($cardID) == "A" && $from != "PLAY" && GetClassState($player, $CS_NumNonAttackCards) >= 1 && (SearchItemsForCard("EVR071", 1) != "" || SearchItemsForCard("EVR071", 2) != "")) { $restriction = "EVR071"; return true; }
-  if($turn[0] != "B" && $turn[0] != "P" && $player != $mainPlayer && SearchAlliesActive($mainPlayer, "UPR415")) { $restriction = "UPR415"; return true; }
+  if($player != $mainPlayer && SearchAlliesActive($mainPlayer, "UPR415")) { $restriction = "UPR415"; return true; }
   switch($cardID) {
     case "WTR080": return !$CombatChain->HasCurrentLink() || !HasCombo($CombatChain->AttackCard()->ID());
     case "WTR082": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player) || CardType($CombatChain->AttackCard()->ID()) != "AA";
