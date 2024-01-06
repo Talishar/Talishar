@@ -89,7 +89,6 @@ function EncounterAI()
         $health = &GetHealth($currentPlayer);
         //If something was found, that thing is able to block (not prio 0), and either the attack is lethal or the AI wants to block with it efficiently, it attempts to block. Otherwise it passes.
         //WriteLog("found->".$found.",prio->".$storedPriorityNode[3].",cachedattack->".CachedTotalAttack().",cachedblock->".CachedTotalBlock().",health->".$health.",attackvalue->".AttackValue("UPR061"));
-
         if(ShouldBlock($found, $storedPriorityNode))
         {
           BlockCardAttempt($storedPriorityNode); //attempts to play the card. Found in EncounterPlayLogic.php;
@@ -162,7 +161,7 @@ function EncounterAI()
           $storedPriorityNode = $priortyArray[count($priortyArray)-1];
           array_pop($priortyArray);
           if(ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)) $found = true;
-          WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3] . ", Found=" . $found);
+          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3] . ", Found=" . $found);
         }
         $threatened = CachedTotalAttack() - CachedTotalBlock();
         //if($found == true && $threatened > 0 && $storedPriorityNode[3] != 0)
