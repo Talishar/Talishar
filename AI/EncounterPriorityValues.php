@@ -40,6 +40,35 @@ function GetPriority($cardID, $heroID, $type)
 {
   switch($heroID)
   {
+    case "IRABOT":
+      $redBlockChance = SearchCount(SearchHand(2, pitch:1)) > 1 ? 0.7 : 0;
+      $resources = &GetResources(2);
+      switch($cardID)
+      {
+        //Kodachis, activate if possible
+        case "WTR078": case "CRU049":
+          $blueCount = SearchCount(SearchHand(2, pitch:3)) || $resources[0] > 1;
+          $priority = array(0, $blueCount > 0 ? 0.95 : 0.1, 0, 0, 0, 0, 0, $blueCount > 0 ? 0.95 : 0.1); return $priority[$type];
+        //Blue combo cards
+        case "WTR088": case "OUT067": case "CRU059": case "CRU054": case "WTR106": case "CRU062": case "WTR112": case "EVR040":
+          $blueCount = SearchCount(SearchHand(2, pitch:3));
+          $blockChance = ($blueCount > 1 ? .9 : 0);
+          $priority = array($blockChance, 0.1, 0.1, 0, 0, 2.5, 0.1, 0);
+          return $priority[$type];
+        //Red attacks
+        case "DTD226": $priority = array($redBlockChance - 0.2, 0.7, 0.7, 0, 0, 1.1, 0.8, 0); return $priority[$type];
+        case "WTR086": $priority = array($redBlockChance + 0.1, 0.4, 0.4, 0, 0, 1.2, 0.7, 0); return $priority[$type];
+        case "CRU066": $priority = array($redBlockChance - 0.1, 0.8, 0.8, 0, 0, 1.2, 0.7, 0); return $priority[$type];
+        case "CRU069": $priority = array($redBlockChance - 0.2, 0.9, 0.9, 0, 0, 1.2, 0.7, 0); return $priority[$type];
+        case "TCC088": case "WTR085": $priority = array($redBlockChance, 0.5, 0.5, 0, 0, 1.2, 0.7, 0); return $priority[$type];
+        //Defense Reactions
+        case "WTR092": case "ARC200": case "WTR215": $priority = array(0.0, 0.0, 0.0, 0.9, 0.9, 1.5, 0.9, 0); return $priority[$type];
+        case "UPR189": case "WTR093": $priority = array(0.0, 0.0, 0.0, 0.9, 0.9, 2.5, 0.8, 0); return $priority[$type];
+        case "WTR094":
+          $blueCount = SearchCount(SearchHand(2, pitch:3));
+          $priority = array(0.0, 0.0, 0.0, $blueCount > 1 ? 0.9 : 0, $blueCount > 1 ? 0.9 : 0, 2.9, 0.8, 0); return $priority[$type];
+        default: return 0;
+      }
       case "ROGUE001":
         switch($cardID)
         {
