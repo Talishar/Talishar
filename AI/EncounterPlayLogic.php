@@ -7,6 +7,7 @@
 function CardIsBlockable($storedPriorityNode)
 {
   global $combatChain, $combatChainState, $CCS_NumChainLinks, $currentPlayer;
+  if($storedPriorityNode[3] == 0) return false;
   if($storedPriorityNode[1] == "Character")
   {
     $character = &GetPlayerCharacter($currentPlayer);

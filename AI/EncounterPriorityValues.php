@@ -51,8 +51,7 @@ function GetPriority($cardID, $heroID, $type)
           $priority = array(0, $blueCount > 0 ? 0.95 : 0.1, 0, 0, 0, 0, 0, $blueCount > 0 ? 0.95 : 0.1); return $priority[$type];
         //Blue combo cards
         case "WTR088": case "OUT067": case "CRU059": case "CRU054": case "WTR106": case "CRU062": case "WTR112": case "EVR040":
-          $blueCount = SearchCount(SearchHand(2, pitch:3));
-          $blockChance = ($blueCount > 1 ? .9 : 0);
+          $blockChance = (IsFirstTurn() || SearchCount(SearchHand(2, pitch:3)) > 1 ? .9 : .01);
           $priority = array($blockChance, 0.1, 0.1, 0, 0, 2.5, 0.1, 0);
           return $priority[$type];
         //Red attacks
@@ -67,6 +66,12 @@ function GetPriority($cardID, $heroID, $type)
         case "WTR094":
           $blueCount = SearchCount(SearchHand(2, pitch:3));
           $priority = array(0.0, 0.0, 0.0, $blueCount > 1 ? 0.9 : 0, $blueCount > 1 ? 0.9 : 0, 2.9, 0.8, 0); return $priority[$type];
+        //Equipment
+        case "UPR159": $priority = array(0, 0, 0, 0, 0, 0, 0, 0); return $priority[$type];
+        case "OUT139": case "WTR150": case "WTR079":
+          //TODO: Allowing blocking if threatened by lethal damage
+          $priority = array(0, 0, 0, 0, 0, 0, 0, 0);
+          return $priority[$type];
         default: return 0;
       }
       case "ROGUE001":
