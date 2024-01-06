@@ -880,9 +880,9 @@ function CurrentEffectGrantsGoAgain()
   global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused;
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
-      if(strlen($currentTurnEffects[$i]) > 6) $turnEffects = explode("-", $currentTurnEffects[$i]);
-      else $turnEffects[0] = $currentTurnEffects[$i];
-      switch($turnEffects[0]) {
+      //if(strlen($currentTurnEffects[$i]) > 6) $turnEffects = explode("-", $currentTurnEffects[$i]);
+      //else $turnEffects[0] = $currentTurnEffects[$i];
+      switch($currentTurnEffects[$i]) {
         case "WTR144": case "WTR145": case "WTR146": return true;
         case "WTR154": return true;
         case "ARC047": return true;
