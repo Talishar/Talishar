@@ -217,7 +217,7 @@ function EffectHitEffect($cardID)
       break;
     case "OUT105":
       if(IsHeroAttackTarget() && HasAimCounter()) {
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:minAttack=1;maxAttack=1;type=W");//TODO: Limit to 1H
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:minAttack=1;maxAttack=1;type=W;is1h=true");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a weapon to destroy");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
@@ -237,6 +237,7 @@ function EffectHitEffect($cardID)
       BottomDeck($mainPlayer, true, shouldDraw:true);
       break;
     case "OUT143":
+      $weapons = "";
       $char = &GetPlayerCharacter($mainPlayer);
       $inventory = &GetInventory($mainPlayer);
       foreach ($inventory as $cardID) {
@@ -825,7 +826,9 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = false;
     if($currentTurnEffects[$i + 1] == $currentPlayer) {
-      switch($currentTurnEffects[$i]) {
+      if(strlen($currentTurnEffects[$i]) > 6) $turnEffects = explode("-", $currentTurnEffects[$i]);
+      else $turnEffects[0] = $currentTurnEffects[$i];
+      switch($turnEffects[0]) {
         case "MON153": case "MON154":
           if(ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer)) {
             $hasGoAgain = true;
@@ -857,20 +860,8 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
         case "ARC185-GA":
           $hasGoAgain = ($cardID == "ARC212" || $cardID == "ARC213" || $cardID == "ARC214");
           break;
-        case "DTD190":
-          if ($from == "BANISH" && PitchValue($cardID) == 1) {
-            $hasGoAgain = true;
-            $remove = true;
-          }
-          break;
-        case "DTD191":
-          if ($from == "BANISH" && PitchValue($cardID) == 2) {
-            $hasGoAgain = true;
-            $remove = true;
-          }
-          break;
-        case "DTD192":
-          if ($from == "BANISH" && PitchValue($cardID) == 3) {
+        case "DTD190": case "DTD191": case "DTD192":
+          if (SearchCurrentTurnEffects($turnEffects[0] . "-" . $cardID, $currentPlayer) && $from == "BANISH") {
             $hasGoAgain = true;
             $remove = true;
           }
@@ -889,7 +880,9 @@ function CurrentEffectGrantsGoAgain()
   global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused;
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
-      switch ($currentTurnEffects[$i]) {
+      if(strlen($currentTurnEffects[$i]) > 6) $turnEffects = explode("-", $currentTurnEffects[$i]);
+      else $turnEffects[0] = $currentTurnEffects[$i];
+      switch($turnEffects[0]) {
         case "WTR144": case "WTR145": case "WTR146": return true;
         case "WTR154": return true;
         case "ARC047": return true;
