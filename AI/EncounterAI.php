@@ -151,7 +151,7 @@ function EncounterAI()
           PassInput();
         }
       }
-      else if($turn[0] == "D" && $mainPlayer != $currentPlayer)//attack reaction phase
+      else if($turn[0] == "D" && $mainPlayer != $currentPlayer)//Defense reaction phase
       {
         if($AIDebug) WriteLog("AI Branch - Defense Reactions");
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Reaction");
