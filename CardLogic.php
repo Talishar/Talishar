@@ -1313,7 +1313,7 @@ function ModifiedAttackValue($cardID, $player, $from, $source)
   if($from != "CC") {
     $char = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($char[0]);
-    if($characterID == "HVY001" || $characterID == "HVY002") ++$attack;
+    if(($characterID == "HVY001" || $characterID == "HVY002") && $char[1] == 2) ++$attack;
   }
   return $attack;
 }

@@ -63,7 +63,7 @@ function DTDEffectAttackModifier($cardID)
 {
   global $mainPlayer;
   $params = explode(",", $cardID);
-  $dashArr = explode("-", $cardID);
+  $dashArr = explode(",", $cardID);
   $cardID = $params[0];
   if(count($params) > 1) $parameter = $params[1];
   if(strlen($cardID) > 6) $cardID = $dashArr[0];
@@ -119,7 +119,7 @@ function DTDCombatEffectActive($cardID, $attackID)
   global $combatChainState, $mainPlayer, $combatChainState, $CCS_AttackNumCharged, $CombatChain;
   global $Card_LifeBanner, $Card_ResourceBanner, $CCS_WasRuneGate, $CS_CharacterIndex;
   $params = explode(",", $cardID);
-  $dashArr = explode("-", $cardID);
+  $dashArr = explode(",", $cardID);
   $cardID = $params[0];
   if(strlen($cardID) > 6) $cardID = $dashArr[0];
   switch($cardID) {
@@ -148,7 +148,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "DTD196": return CardType($attackID) == "AA";//Anthem of Spring
     case "DTD198": return true;//Call Down the Lightning
     case "DTD187": case "DTD188": case "DTD189":
-      return SearchCurrentTurnEffects($cardID . "-" . $attackID, $mainPlayer) && $CombatChain->AttackCard()->From() == "BANISH";
+      return SearchCurrentTurnEffects($cardID . "," . $attackID, $mainPlayer) && $CombatChain->AttackCard()->From() == "BANISH";
     case "DTD190": case "DTD191": case "DTD192":
       return SearchCurrentTurnEffects($cardID . "," . $attackID, $mainPlayer) && $CombatChain->AttackCard()->From() == "BANISH";
     case "DTD207": return SubtypeContains($attackID, "Sword", $mainPlayer);//Ironsong Versus
@@ -389,7 +389,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYBANISH:type=AA");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID."-{0}", 1);
+      AddDecisionQueue("ADDCURRENTEFFECTLASTRESULT", $currentPlayer, $cardID . ",", 1);
       return "";
     case "DTD190": case "DTD191": case "DTD192":
       $pitch = "";
