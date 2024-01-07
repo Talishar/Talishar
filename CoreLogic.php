@@ -1019,7 +1019,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   if($from == "DECK" && (SearchCharacterActive($currentPlayer, "EVO001") || SearchCharacterActive($currentPlayer, "EVO002"))) return true;
   switch($cardID) {
     case "HVY143": case "HVY144": case "HVY145":
-    case "HVY163": case "HVY164": case "HVY165": return true;
+    case "HVY163": case "HVY164": case "HVY165": return $from == "HAND";;
     default: break;
   }
   return false;
