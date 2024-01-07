@@ -93,7 +93,7 @@
         return "";
       case "HVY251":
         $xVal = $resourcesPaid/2;
-        MZMoveCard($currentPlayer, "MYDECK:maxCost=" . $xVal . ";subtype=Aura", "MYAURAS", may:true);
+        MZMoveCard($currentPlayer, "MYDECK:maxCost=" . $xVal . ";subtype=Aura;class=RUNEBLADE", "MYAURAS", may:true);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         if($xVal >= 2) {
           global $CS_NextNAACardGoAgain;
