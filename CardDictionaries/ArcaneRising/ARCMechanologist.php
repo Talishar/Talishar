@@ -194,7 +194,7 @@ function DoBoost($player, $boostCount = 1)
     }
     if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) {
       $skipBanish = true;
-      PutItemIntoPlay($cardID);
+      PutItemIntoPlayForPlayer($cardID, $player);
     }
     if (!$skipBanish) BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
     $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $player);

@@ -1295,7 +1295,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
 
   if($playingCard) { //Closes the chain, CR 2.5, 7.7.3 link step only allows for attack actions to continue the next chain, else close the combat chain before playing a new card.
     if(IsStaticType(CardType($cardID), $from, $cardID)) {
-      if(GetResolvedAbilityType($cardID, $from) == "A" && !CanPlayAsInstant($cardID, $index, $from)) ResetCombatChainState(); 
+      if(GetResolvedAbilityType($cardID, $from) == "A" && !CanPlayAsInstant($cardID, $index, $from)) ResetCombatChainState();
     }
   }
 
@@ -2189,7 +2189,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   } else if($from != "PLAY" && $from != "EQUIP") {
     $cardSubtype = CardSubType($cardID);
     if(DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer);
-    else if(DelimStringContains($cardSubtype, "Item")) PutItemIntoPlay($cardID);
+    else if(DelimStringContains($cardSubtype, "Item")) PutItemIntoPlayForPlayer($cardID, $currentPlayer);
     else if($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer);
     else if(DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID);
     else if(DelimStringContains($cardSubtype, "Evo")) EvoHandling($cardID, $currentPlayer);
