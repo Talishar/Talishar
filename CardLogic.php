@@ -1305,6 +1305,7 @@ function CardDiscarded($player, $discarded, $source = "")
     WriteLog(CardLink("CRU008", "CRU008") . " intimidated because it was discarded by a Brute attack action card.");
     AddLayer("TRIGGER", $mainPlayer, $discarded);
   }
+  WriteLog(CardLink($discarded, $discarded). " was discarded");
 }
 
 function ModifiedAttackValue($cardID, $player, $from, $source)

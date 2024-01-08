@@ -74,6 +74,7 @@ class Deck {
       $cardType = CardType($cardID);
       if($modifier == "TCC" && $cardType != "AR" && $cardType != "I" && $cardType != "AA" && !CanPlayAsInstant($cardID)) $modifier = "-";
       BanishCardForPlayer($cardID, $this->playerID, "DECK", $modifier, $banishedBy);
+      WriteLog(CardLink($cardID, $cardID). " was banished");
     }
     return $cardID;
   }
