@@ -427,7 +427,7 @@ if ($matchup == "") {
     while ($p1roll == $p2roll && $tries > 0) {
       $p1roll = rand(1, 6) + rand(1, 6);
       $p2roll = rand(1, 6) + rand(1, 6);
-      WriteLog("Player 1 rolled $p1roll and Player 2 rolled $p2roll.", path: "../");
+      WriteLog("🎲Player 1 rolled $p1roll and Player 2 rolled $p2roll.", path: "../");
       --$tries;
     }
     $firstPlayerChooser = ($p1roll > $p2roll ? 1 : 2);

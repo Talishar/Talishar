@@ -45,11 +45,11 @@ $opponentInactive = false;
 $currentTime = round(microtime(true) * 1000);
 if ($isGamePlayer) {
   $playerStatus = intval(GetCachePiece($gameName, $playerID + 3));
-  if ($playerStatus == "-1") WriteLog("Player $playerID has connected.");
+  if ($playerStatus == "-1") WriteLog("🔌Player $playerID has connected.");
   SetCachePiece($gameName, $playerID + 1, $currentTime);
   SetCachePiece($gameName, $playerID + 3, "0");
   if ($playerStatus > 0) {
-    WriteLog("Player $playerID has reconnected.");
+    WriteLog("🔌Player $playerID has reconnected.");
     SetCachePiece($gameName, $playerID + 3, "0");
   }
 }
@@ -67,7 +67,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $oppLastTime = intval(GetCachePiece($gameName, $otherP + 1));
     $oppStatus = GetCachePiece($gameName, $otherP + 3);
     if (($currentTime - $oppLastTime) > 3000 && (intval($oppStatus) == 0)) {
-      WriteLog("Opponent has disconnected. Waiting 60 seconds to reconnect.");
+      WriteLog("🔌Opponent has disconnected. Waiting 60 seconds to reconnect.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "1");
     } else if (($currentTime - $oppLastTime) > 60000 && $oppStatus == "1") {
@@ -119,7 +119,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     include "WriteGamestate.php";
   } else if ($opponentInactive && !IsGameOver()) {
     $currentPlayerActivity = 2;
-    WriteLog("The current player is inactive.");
+    WriteLog("⌛The current player is inactive.");
     include "WriteGamestate.php";
     GamestateUpdated($gameName);
   }

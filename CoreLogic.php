@@ -608,9 +608,9 @@ function PlayerWon($playerID)
   if($turn[0] == "OVER") return;
   include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
-  if($playerID == 1 && $p1uid != "") WriteLog($p1uid . " won!", $playerID);
-  else if($playerID == 2 && $p2uid != "") WriteLog($p2uid . " won!", $playerID);
-  else WriteLog("Player " . $winner . " won!");
+  if($playerID == 1 && $p1uid != "") WriteLog($p1uid . " won! 🎉", $playerID);
+  else if($playerID == 2 && $p2uid != "") WriteLog($p2uid . " won! 🎉", $playerID);
+  else WriteLog("Player " . $winner . " won! 🎉");
   $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
   SetCachePiece($gameName, 14, 99);//$MGS_GameOver
