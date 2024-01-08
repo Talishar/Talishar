@@ -72,6 +72,7 @@ function parseQuickChat($inputEnum)
     case "15": return "Are you there?";
     case "16": return "Whoops!";
     case "17": return "No problem!";
+    case "18": return "Okay!";
     default: return "";
   };
 }
