@@ -1194,23 +1194,30 @@ function EffectDefenderAttackModifiers()
   return $mod;
 }
 
-function AttackRestrictedEffects($cardID, $player)
+function EffectAttackRestricted()
 {
-  global $currentTurnEffects;
+  global $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBaseAttack;
+  $mainChar = &GetPlayerCharacter($mainPlayer);
+  if($mainChar[0] == "DUMMY") return false;
   $restrictedBy = "";
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    if($currentTurnEffects[$i+1] == $player) {
+    if($currentTurnEffects[$i+1] == $mainPlayer) {
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
       switch($effectID) {
-        case "DTD203": if(AttackValue($cardID) <= $effectArr[1] && AttackValue($cardID) != 0) $restrictedBy = "DTD203"; return $restrictedBy;
-        case "WarmongersPeace": if(CardType($cardID) == "AA" || (CardType($cardID) == "W" && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230"; return $restrictedBy;
+        case "DTD203": if($combatChainState[$CCS_LinkBaseAttack] <= $effectArr[1]) $restrictedBy = "DTD203"; break;
+        case "WarmongersPeace": $restrictedBy = "DTD230"; break;
         default:
           break;
       }
     }
   }
-  return $restrictedBy;
+  if($restrictedBy != "") {
+    WriteLog("The attack is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.");
+    RevertGamestate();
+    return true;
+  }
+  return false;
 }
 
 function EffectPlayCardConstantRestriction($cardID, $type, &$restriction = "") {
