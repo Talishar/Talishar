@@ -753,9 +753,13 @@ function OUTAbilityCost($cardID)
   {
     if(!ArsenalFull($player))
     {
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your graveyard.");
       MZMoveCard($player, "MYDISCARD:type=AA", "MYARSENAL,GY,DOWN");
-      PummelHit($player, true);
-    }
+      AddDecisionQueue("FINDINDICES", $player, "HAND");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your hand to discard.");
+      AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);  
+      AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
+      AddDecisionQueue("DISCARDCARD", $player, "HAND", 1);    }
   }
 
   function HasStealth($cardID)
