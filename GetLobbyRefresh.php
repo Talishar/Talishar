@@ -50,7 +50,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   if ($oppStatus != "-1" && $oppLastTime != "") {
     if (($currentTime - $oppLastTime) > 8000 && $oppStatus == "0") {
-      WriteLog("Player $otherP has disconnected.");
+      WriteLog("🔌Player $otherP has disconnected.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "-1");
       if($otherP == 2) SetCachePiece($gameName, $otherP + 6, "");

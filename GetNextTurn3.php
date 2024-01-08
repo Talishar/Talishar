@@ -47,11 +47,11 @@ $opponentInactive = false;
 $currentTime = round(microtime(true) * 1000);
 if ($isGamePlayer) {
   $playerStatus = intval(GetCachePiece($gameName, $playerID + 3));
-  if ($playerStatus == "-1") WriteLog("Player $playerID has connected.");
+  if ($playerStatus == "-1") WriteLog("🔌Player $playerID has connected.");
   SetCachePiece($gameName, $playerID + 1, $currentTime);
   SetCachePiece($gameName, $playerID + 3, "0");
   if ($playerStatus > 0) {
-    WriteLog("Player $playerID has reconnected.");
+    WriteLog("🔌Player $playerID has reconnected.");
     SetCachePiece($gameName, $playerID + 3, "0");
   }
 }
@@ -69,7 +69,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $oppLastTime = intval(GetCachePiece($gameName, $otherP + 1));
     $oppStatus = GetCachePiece($gameName, $otherP + 3);
     if (($currentTime - $oppLastTime) > 3000 && (intval($oppStatus) == 0)) {
-      WriteLog("Opponent has disconnected. Waiting 60 seconds to reconnect.");
+      WriteLog("🔌Opponent has disconnected. Waiting 60 seconds to reconnect.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "1");
     } else if (($currentTime - $oppLastTime) > 60000 && $oppStatus == "1") {
@@ -124,7 +124,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     include "WriteGamestate.php";
   } else if ($opponentInactive && !IsGameOver()) {
     $currentPlayerActivity = 2;
-    WriteLog("The current player is inactive.");
+    WriteLog("⌛The current player is inactive.");
     include "WriteGamestate.php";
     GamestateUpdated($gameName);
   }
@@ -403,7 +403,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // my hand contents
   $restriction = "";
   $actionType = $turn[0] == "ARS" ? 4 : 27;
-  if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" || $turn[0] != "MAYMULTICHOOSEHAND")) $actionType = 16;
+if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" || $turn[0] != "MAYMULTICHOOSEHAND")) $actionType = 16;
   $myHandContents = array();
   for ($i = 0; $i < count($myHand); ++$i) {
     if ($playerID == 3) {
@@ -551,7 +551,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           isFrozen: $myArsenal[$i + 4] == 1
         ));
       } else {
-        if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myArsenal[$i], $turn[0], "ARS", $i, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);        else $playable = false;
+        $playable = $playerID == $currentPlayer && $turn[0] != "P" && IsPlayable($myArsenal[$i], $turn[0], "ARS", $i, $restriction);
         $border = CardBorderColor($myArsenal[$i], "ARS", $playable);
         $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? 5 : 0);
         if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
@@ -715,9 +715,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Landmarks
   $landmarksOutput = array();
   for ($i = 0; $i + LandmarkPieces() - 1 < count($landmarks); $i += LandmarkPieces()) {
-    $isPlayable = $playerID == $currentPlayer && IsPlayable($landmarks[$i], $turn[0], "PLAY", $i, $restriction);
-    $action = ($isPlayable && $currentPlayer == $playerID ? 25 : 0);
-    $border = CardBorderColor($landmarks[$i], "PLAY", $isPlayable);
+    $playable = ($currentPlayer == $playerID ? IsPlayable($landmarks[$i], $turn[0], "PLAY", $i, $restriction) : false);
+    $action = ($playable && $currentPlayer == $playerID ? 25 : 0);
+    $border = CardBorderColor($landmarks[$i], "PLAY", $playable);
     $counters = 0;
     $type = CardType($landmarks[$i]);
     $sType = CardSubType($landmarks[$i]);
@@ -801,7 +801,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // Reminder text box highlight thing
   if ($turn[0] != "OVER") {
     $helpText .= ($currentPlayer != $playerID ? "Waiting for other player to choose " . TypeToPlay($turn[0]) : GetPhaseHelptext());
-
     if ($currentPlayer == $playerID) {
       if ($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") {
         $helpText .=  (" ( " . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . ")");
@@ -815,14 +814,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         }
       }
     } else {
-      if (
-        $currentPlayerActivity == 2 && $playerID != 3
-      ) {
-        $helpText .= "— Opponent is inactive ";
+      if ($currentPlayerActivity == 2 && $playerID != 3) {
+        $helpText .= " — Opponent is inactive";
         array_push($promptButtons, CreateButtonAPI($playerID, "Claim Victory", 100007, 0, "16px"));
       }
     }
   }
+
   $playerPrompt->helpText = $helpText;
   $playerPrompt->buttons = $promptButtons;
   $response->playerPrompt = $playerPrompt;
@@ -1147,8 +1145,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     else $minNumber = 0;
     if ($minNumber > 0) $title = "Choose " . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".");
     else $title = "Choose up to " . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".");
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText())); //TODO: What does this line do?
-    else $caption = $title;
 
     $formOptions->playerID = $playerID;
     $formOptions->caption = "Submit";

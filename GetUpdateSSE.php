@@ -74,7 +74,7 @@ while (true) {
     $oppLastTime = intval(GetCachePiece($gameName, $otherP + 1));
     $oppStatus = intval(GetCachePiece($gameName, $otherP + 3));
     if (($currentTime - $oppLastTime) > 3000 && $oppStatus == 0 && $oppStatus != $lastOppStatus) {
-      WriteLog("Opponent has disconnected. Waiting 60 seconds to reconnect.");
+      WriteLog("🔌Opponent has disconnected. Waiting 60 seconds to reconnect.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "1");
     } else if (($currentTime - $oppLastTime) > 60000 && $oppStatus == 1 && $oppStatus != $lastOppStatus) {
