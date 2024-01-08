@@ -739,7 +739,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "EVR037":
       $index = FindCharacterIndex($player, $parameter);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Mask_of_the_Pouncing_Lynx_to_tutor_a_card");
+      AddDecisionQueue("YESNO", $player, "to_destroy_Mask_of_the_Pouncing_Lynx");
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
