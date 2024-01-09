@@ -869,7 +869,7 @@ function CharacterPlayCardAbilities($cardID, $from) {
           if($generatedAmount < 1) $generatedAmount = 1;
           for($j = 0; $j < $generatedAmount; ++$j)
           {
-            PutItemIntoPlayForPlayer("DYN243", $currentPlayer);
+            PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
           }
         }
         break;

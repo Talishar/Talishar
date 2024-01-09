@@ -269,7 +269,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($combatChainState[$CCS_RequiredEquipmentBlock] > NumEquipBlock()) $activeChainLink->numRequiredEquipBlock = $combatChainState[$CCS_RequiredEquipmentBlock];
   $activeChainLink->wager = CachedWagerActive();
   $activeChainLink->phantasm = CachedPhantasmActive();
-  
+
   // TODO: How to find out if a card has been fused?
   $activeChainLink->fused = false;
 
@@ -1145,6 +1145,9 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     else $minNumber = 0;
     if ($minNumber > 0) $title = "Choose " . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".");
     else $title = "Choose up to " . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".");
+
+    if(GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
+    else $caption = $title;
 
     $formOptions->playerID = $playerID;
     $formOptions->caption = "Submit";

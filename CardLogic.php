@@ -632,7 +632,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $player, "<-", 1);
       break;
     case "CRU099":
-      PutItemIntoPlay($target);
+      PutItemIntoPlayForPlayer($target, $player);
       break;
     case "CRU142":
       if(GetClassState($player, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $player);
@@ -763,7 +763,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $player, $index, 1);
       }
       else {
-        DestroyItemForPlayer($player, $index); 
+        DestroyItemForPlayer($player, $index);
         WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
       }      break;
     case "EVR107": case "EVR108": case "EVR109":
@@ -1130,7 +1130,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       PlayAura("TCC105", $player);//Might
       break;
     case "HVY162": case "HVY239":
-      Clash($parameter);
+      Clash($parameter, effectController:$player);
       break;
     default: break;
   }

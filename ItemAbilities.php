@@ -1,12 +1,7 @@
 <?php
 
-function PutItemIntoPlay($item, $steamCounterModifier = 0)
-{
-  global $currentPlayer;
-  PutItemIntoPlayForPlayer($item, $currentPlayer, $steamCounterModifier);
-}
 
-function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1)
+function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1, $effectController="")
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
   if(!DelimStringContains(CardSubType($item), "Item") && $item != "DTD164") return;
@@ -31,6 +26,14 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
   if(($symbiosisIndex = FindCharacterIndex($player, "EVO003")) > 0 && ClassContains($item, "MECHANOLOGIST", $player)) {
     $char = &GetPlayerCharacter($player);
     if($char[$symbiosisIndex+2] < 6) ++$char[$symbiosisIndex+2];
+  }
+  if($item == "DYN243") {
+    $char = &GetPlayerCharacter($player);
+    $hero = ShiyanaCharacter($char[0], $player);
+    if($hero == "HVY047" || $hero == "HVY048") {
+      WriteLog("Player $player drew a card from Victor");
+      Draw($player);
+    }
   }
 }
 
