@@ -751,7 +751,7 @@ function OUTAbilityCost($cardID)
 
   function CodexOfFrailty($player)
   {
-    if(!ArsenalFull($player))
+    if(!ArsenalFull($player) && SearchDiscard($player, "AA") != "")
     {
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your graveyard.");
       MZMoveCard($player, "MYDISCARD:type=AA", "MYARSENAL,GY,DOWN");
