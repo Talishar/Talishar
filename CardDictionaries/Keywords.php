@@ -60,7 +60,7 @@
     AddDecisionQueue("APPENDCLASSSTATE", $player, $CS_AdditionalCosts . "-SCRAP", 1);
   }
 
-  function Clash($cardID)
+  function Clash($cardID, $effectController="")
   {
     $p1Power = -1; $p2Power = -1;
     for($i=1; $i<=2; ++$i) {
@@ -70,11 +70,11 @@
         else $p2Power = ModifiedAttackValue($deck->Top(), 2, "DECK", source:$cardID);
       }
     }
-    if($p1Power > 0 && $p1Power > $p2Power) WonClashAbility(1, $cardID);
-    else if($p2Power > 0 && $p2Power > $p1Power) WonClashAbility(2, $cardID);
+    if($p1Power > 0 && $p1Power > $p2Power) WonClashAbility(1, $cardID, $effectController);
+    else if($p2Power > 0 && $p2Power > $p1Power) WonClashAbility(2, $cardID, $effectController);
   }
 
-  function WonClashAbility($playerID, $cardID) {
+  function WonClashAbility($playerID, $cardID, $effectController="") {
     WriteLog("Player " . $playerID . " won the Clash");
     switch($cardID)
     {
@@ -82,7 +82,7 @@
         PlayAura("HVY240", $playerID);
         break;
       case "HVY239":
-        PutItemIntoPlayForPlayer("DYN243", $playerID);
+        PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$effectController);
         break;
       default: break;
     }
@@ -124,7 +124,7 @@
       $hasWager = true;
       switch($currentTurnEffects[$i]) {
         case "HVY057":
-          PutItemIntoPlayForPlayer("DYN243", $wonWager);//Gold
+          PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
           PlayAura("TCC105", $wonWager);//Might
           PlayAura("TCC107", $wonWager);//Vigor
           break;
@@ -135,7 +135,7 @@
           PlayAura("HVY240", $wonWager);//Agility
           break;
         case "HVY103-2":
-          PutItemIntoPlayForPlayer("DYN243", $wonWager);//Gold
+          PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
           break;
         case "HVY103-3":
           PlayAura("TCC107", $wonWager);//Vigor
@@ -153,10 +153,10 @@
           PlayAura("TCC107", $wonWager);//Vigor
           break;
         case "HVY216": case "HVY217": case "HVY218":
-          PutItemIntoPlayForPlayer("DYN243", $wonWager);//Gold
+          PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
           break;
         case "HVY235":
-          PutItemIntoPlayForPlayer("DYN243", $wonWager);//Gold
+          PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
           break;
         default:
           $hasWager = false;
@@ -168,7 +168,7 @@
       $char = &GetPlayerCharacter($mainPlayer);
       $hero = ShiyanaCharacter($char[0]);
       if($char[1] == 2 && ($hero == "HVY092" || $hero == "HVY093")) {
-        PutItemIntoPlayForPlayer("DYN243", $mainPlayer);//Gold
+        PutItemIntoPlayForPlayer("DYN243", $mainPlayer, effectController:$mainPlayer);//Gold
         WriteLog(CardLink($hero, $hero) . " wins the favor of the crowd!");
       }
     }

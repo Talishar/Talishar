@@ -1130,7 +1130,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       PlayAura("TCC105", $player);//Might
       break;
     case "HVY162": case "HVY239":
-      Clash($parameter);
+      Clash($parameter, effectController:$player);
       break;
     default: break;
   }
