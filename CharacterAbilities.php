@@ -302,7 +302,7 @@ function CharacterBanishEffect($cardID, $player) {
 function MainCharacterEndTurnAbilities()
 {
   global $mainClassState, $CS_HitsWDawnblade, $CS_AtksWWeapon, $mainPlayer, $CS_NumNonAttackCards;
-  global $CS_NumAttackCards, $defCharacter, $CS_ArcaneDamageDealt;
+  global $CS_NumAttackCards, $CS_ArcaneDamageDealt;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
@@ -421,7 +421,7 @@ function MainCharacterHitAbilities()
 
 function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
 {
-  global $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CS_NumAttacks;
+  global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $modifier = 0;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
@@ -738,7 +738,6 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
 {
   global $CS_NumCharged;
   $char = &GetPlayerCharacter($player);
-  $otherPlayer = $player == 1 ? 1 : 2;
   for($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces())
   {
     if($char[$i+1] == 0) continue;
@@ -775,7 +774,6 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
 function CharacterDamageTakenAbilities($player, $damage)
 {
   $char = &GetPlayerCharacter($player);
-  $otherPlayer = $player == 1 ? 1 : 2;
   for($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces())
   {
     if($char[$i + 1] != 2) continue;
@@ -987,7 +985,6 @@ function MainCharacterPlayCardAbilities($cardID, $from)
 function CharacterDealDamageAbilities($player, $damage)
 {
   $char = &GetPlayerCharacter($player);
-  $otherPlayer = $player == 1 ? 1 : 2;
   for ($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces())
   {
     if($char[$i + 1] != 2) continue;

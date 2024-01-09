@@ -108,61 +108,13 @@
     }
   }
 
-  function UPRCardCost($cardID)
-  {
-    $class = CardClass($cardID);
-    switch($class)
-    {
-      case "ILLUSIONIST": return UPRIllusionistCardCost($cardID);
-      case "NINJA": return UPRNinjaCardCost($cardID);
-      case "WIZARD": return UPRWizardCardCost($cardID);
-      default: return UPRTalentCardCost($cardID);
-    }
-  }
-
-  function UPRPitchValue($cardID)
-  {
-    $class = CardClass($cardID);
-    switch($class)
-    {
-      case "ILLUSIONIST": return UPRIllusionistPitchValue($cardID);
-      case "NINJA": return UPRNinjaPitchValue($cardID);
-      case "WIZARD": return UPRWizardPitchValue($cardID);
-      default: return UPRTalentPitchValue($cardID);
-    }
-  }
-
-  function UPRBlockValue($cardID)
-  {
-    $class = CardClass($cardID);
-    switch($class)
-    {
-      case "ILLUSIONIST": return UPRIllusionistBlockValue($cardID);
-      case "NINJA": return UPRNinjaBlockValue($cardID);
-      case "WIZARD": return UPRWizardBlockValue($cardID);
-      default: return UPRTalentBlockValue($cardID);
-    }
-  }
-
-  function UPRAttackValue($cardID)
-  {
-    $class = CardClass($cardID);
-    switch($class)
-    {
-      case "ILLUSIONIST": return UPRIllusionistAttackValue($cardID);
-      case "NINJA": return UPRNinjaAttackValue($cardID);
-      case "WIZARD": return UPRWizardAttackValue($cardID);
-      default: return UPRTalentAttackValue($cardID);
-    }
-  }
-
   function UPRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     $class = CardClass($cardID);
     switch($class)
     {
-      case "ILLUSIONIST": return UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "NINJA": return UPRNinjaPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "ILLUSIONIST": return UPRIllusionistPlayAbility($cardID);
+      case "NINJA": return UPRNinjaPlayAbility($cardID);
       case "WIZARD": return UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       default: return UPRTalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
     }

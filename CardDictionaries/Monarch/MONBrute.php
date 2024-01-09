@@ -60,7 +60,7 @@
     }
   }
 
-  function RandomBanish3GY()
+  function RandomBanish3GY($cardID)
   {
     global $currentPlayer;
     $hand = &GetHand($currentPlayer);

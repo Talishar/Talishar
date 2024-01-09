@@ -1841,10 +1841,10 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "MON126": case "MON127": case "MON128": case "MON129": case "MON130": case "MON131": case "MON132":
     case "MON133": case "MON134": case "MON141": case "MON142": case "MON143":
-      if(RandomBanish3GY()) AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(RandomBanish3GY($cardID)) AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "MON135": case "MON136": case "MON137": case "MON147": case "MON148": case "MON149": case "MON150": case "MON151": case "MON152":
-      RandomBanish3GY();
+      RandomBanish3GY($cardID);
       break;
     case "MON156":
       MZMoveCard($currentPlayer, "MYHAND:bloodDebtOnly=true", "MYBANISH,HAND,-", may: true);

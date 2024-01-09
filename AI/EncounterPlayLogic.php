@@ -243,7 +243,6 @@ function RogEffectCostMod($cardID)
         default:
           break;
       }
-      if ($remove == 1) RemoveCurrentTurnEffect($i);
     }
   }
   return $costModifier;
@@ -285,7 +284,7 @@ function ArsenalIsFrozen($storedPriorityNode)
 
 function ReactionRequirementsMet($storedPriorityNode)
 {
-  global $combatChain, $combatChainState, $CCS_NumChainLinks, $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_AtksWWeapon, $CS_NumFusedIce, $CS_NumFusedEarth, $CS_NumFusedLightning;
+  global $combatChain, $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_AtksWWeapon, $CS_NumFusedIce, $CS_NumFusedEarth, $CS_NumFusedLightning;
   switch($storedPriorityNode[0])
   {
     case "WTR080": return HasCombo($combatChain[0]);
@@ -297,7 +296,7 @@ function ReactionRequirementsMet($storedPriorityNode)
     case "WTR132": case "WTR133": case "WTR134":
     case "WTR135": case "WTR136": case "WTR137":
     case "WTR138": case "WTR139": case "WTR140": return CardType($combatChain[0]) == "W";
-    case "WTR154": return CardType($combatChain[0]) == "AA" && CardCost($CombatChain[0]) <= 1;
+    case "WTR154": return CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) <= 1;
     case "WTR206": case "WTR207": case "WTR208": return CardSubtype($combatChain[0]) == "Club" || CardSubtype($combatChain[0]) == "Hammer" || (CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) >= 2);
     case "WTR209": case "WTR210": case "WTR211": return CardSubtype($combatChain[0]) == "Sword" || CardSubtype($combatChain[0]) == "Dagger" || (CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) <= 1);
     case "CRU082": return CardSubtype($combatChain[0]) == "Sword";
@@ -319,10 +318,10 @@ function ReactionRequirementsMet($storedPriorityNode)
     case "DYN079": case "DYN080": case "DYN081": return CardSubtype($combatChain[0]) == "Sword" || CardSubtype($combatChain[0]) == "Dagger";
     case "DYN117": case "DYN118": return ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) && CardType($combatChain[0]) == "AA";
     case "DYN148": case "DYN149": case "DYN150": return ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) && CardType($combatChain[0]) == "AA" && ContractType($combatChain[0]) != "";
-    case "ELE143": return GetClassState($player, $CS_NumFusedEarth) > 0;
-    case "ELE172": return GetClassState($player, $CS_NumFusedIce) > 0;
+    case "ELE143": return GetClassState($currentPlayer, $CS_NumFusedEarth) > 0;
+    case "ELE172": return GetClassState($currentPlayer, $CS_NumFusedIce) > 0;
     case "ELE183": case "ELE184": case "ELE185": return CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) <= 1;
-    case "ELE201": return GetClassState($player, $CS_NumFusedLightning) > 0;
+    case "ELE201": return GetClassState($currentPlayer, $CS_NumFusedLightning) > 0;
     default: return true;
   }
 }

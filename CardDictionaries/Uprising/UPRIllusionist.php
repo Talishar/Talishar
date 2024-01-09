@@ -1,6 +1,6 @@
 <?php
 
-  function UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid)
+  function UPRIllusionistPlayAbility($cardID)
   {
     global $currentPlayer;
     switch($cardID)

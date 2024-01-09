@@ -26,9 +26,6 @@
       case "ARC115": return 1;
       case "ARC116": return 1;
       case "ARC117": return 0;
-      case "ARC113": case "ARC114": return 3;
-      case "ARC115": return 1;
-      case "ARC116": return 1;
       case "ARC154": return 1;
       default: return 0;
     }

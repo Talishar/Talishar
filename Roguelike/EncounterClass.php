@@ -21,7 +21,7 @@ class Encounter { //There are a few things in this file that I will be using to 
   function __construct() {
     $this->encounterID = 1;
     $this->subphase = "PickMode";
-    $this->postion = 0;
+    $this->position = 0;
     $this->hero = "Dorinthea";
     $this->adventure = "Ira";
     $this->visited = array();

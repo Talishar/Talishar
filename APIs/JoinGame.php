@@ -648,7 +648,6 @@ function IsCardBanned($cardID, $format)
           return true;
         default: return false;
       }
-      break;
     case "cc": case "compcc":
       switch($cardID) {
         case "MON001": case "MON003": // Prism Sculptor of Arc Light | Luminaris
@@ -669,7 +668,6 @@ function IsCardBanned($cardID, $format)
           return true;
         default: return false;
       }
-      break;
     case "commoner":
       switch($cardID) {
         case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
@@ -677,7 +675,6 @@ function IsCardBanned($cardID, $format)
           return true;
         default: return false;
       }
-      break;
     default: return false;
   }
 }

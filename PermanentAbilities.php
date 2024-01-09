@@ -237,7 +237,7 @@ function PermanentStartTurnAbilities()
         array_unshift($hand, "DYN065");
         break;
       case "ROGUE511":
-        MayBottomDeckDraw();
+        MayBottomDeckDraw(); // !Undefined Function
         break;
       case "ROGUE512": case "ROGUE513":
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
@@ -302,7 +302,7 @@ function PermanentStartTurnAbilities()
         AddCurrentTurnEffect("ROGUE605-second", $mainPlayer);
         break;
       case "ROGUE606":
-        BottomDeck($currentPlayer, true, shouldDraw:true);
+        BottomDeck($mainPlayer, true, shouldDraw:true);
         break;
       case "ROGUE608":
         $items = &GetItems($mainPlayer);
@@ -369,8 +369,8 @@ function PermanentStartTurnAbilities()
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
       case "ROGUE806":
-        $deck = new Deck($player);
-        $deck->BanishTop(banishedBy:$player, amount:4);
+        $deck = new Deck($mainPlayer);
+        $deck->BanishTop(banishedBy:$mainPlayer, amount:4);
         $deck = &GetDeck($mainPlayer);
         if(count($deck) < 1) AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
@@ -382,7 +382,6 @@ function PermanentStartTurnAbilities()
     }
   }
   for ($i = count($defPermanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
-    $remove = 0;
     switch ($defPermanents[$i]) {
       case "ROGUE506":
         AddCurrentTurnEffect($defPermanents[$i], $defPlayer);
@@ -408,10 +407,8 @@ function PermanentPlayAbilities($attackID, $from="")
   global $mainPlayer, $actionPoints;
   $permanents = &GetPermanents($mainPlayer);
   $cardType = CardType($attackID);
-  $cardSubType = CardSubType($attackID);
   $cardPitch = PitchValue($attackID);
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
-    $remove = 0;
     switch($permanents[$i]) {
       case "ROGUE521":
         if($cardPitch == 2 && $cardType != "AA")
@@ -469,7 +466,7 @@ function PermanentAddAttackAbilities()
 
 function PermanentDrawCardAbilities($player)
 {
-  global $mainPlayer, $defPlayer, $currentPlayer;
+  global $mainPlayer;
   $permanents = &GetPermanents($mainPlayer);
   for($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     switch($permanents[$i]) {

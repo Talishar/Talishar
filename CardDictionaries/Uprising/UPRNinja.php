@@ -1,6 +1,6 @@
 <?php
 
-  function UPRNinjaPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
+  function UPRNinjaPlayAbility($cardID)
   {
     global $currentPlayer;
     switch($cardID)

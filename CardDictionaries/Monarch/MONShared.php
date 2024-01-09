@@ -28,7 +28,7 @@
     }
   }
 
-  function MONAbilityType($cardID)
+  function MONAbilityType($cardID, $index=-1)
   {
     global $currentPlayer, $mainPlayer, $defPlayer;
     switch($cardID)

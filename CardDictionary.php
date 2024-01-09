@@ -59,7 +59,6 @@ function CardType($cardID)
   }
   if($set == "ROG") return ROGUECardType($cardID);
   switch ($cardID) {
-    case "MON406": return "M";
     case "MON400": case "MON401": case "MON402": return "E";
     case "MON404": return "M";
     case "MON405": return "M";
@@ -78,7 +77,6 @@ function CardType($cardID)
 
 function CardSubType($cardID, $uniqueID=-1)
 {
-  global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
   if(!$cardID) return "";
   if($uniqueID > -1 && $cardID == "EVO013") { //Adaptive Plating
     global $currentTurnEffects;
@@ -100,7 +98,6 @@ function CardSubType($cardID, $uniqueID=-1)
   }
   if($set == "ROG") return ROGUECardSubtype($cardID);
   switch($cardID) {
-    default:
       case "MON400": return "Chest";
       case "MON401": return "Arms";
       case "MON402": return "Legs";
@@ -109,7 +106,7 @@ function CardSubType($cardID, $uniqueID=-1)
       case "DYN612": return "Angel,Ally";
       case "EVO410": return "Demi-Hero,Evo";
       case "EVO410b": return "Chest,Evo";
-      return "";
+      default: return "";
   }
 }
 
@@ -415,8 +412,8 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "ELE") return ELEAbilityType($cardID, $index);
   else if($set == "EVR") return EVRAbilityType($cardID, $index);
   else if($set == "UPR") return UPRAbilityType($cardID, $index);
-  else if($set == "DVR") return DVRAbilityType($cardID, $index);
-  else if($set == "RVD") return RVDAbilityType($cardID, $index);
+  else if($set == "DVR") return DVRAbilityType($cardID);
+  else if($set == "RVD") return RVDAbilityType($cardID);
   else if($set == "DYN") return DYNAbilityType($cardID, $index);
   else if($set == "OUT") return OUTAbilityType($cardID, $index);
   else if($set == "DTD") return DTDAbilityType($cardID, $index);
@@ -428,7 +425,6 @@ function GetAbilityType($cardID, $index = -1, $from="-")
 
 function GetAbilityTypes($cardID)
 {
-  global $currentPlayer;
   switch($cardID) {
     case "ARC003": case "CRU101": return "A,AA";
     case "OUT093": return "I,I";
@@ -697,7 +693,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
 {
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed;
-  global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
+  global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrounchingTigerPlayedThisTurn, $CCS_WagersThisLink;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -1028,7 +1024,7 @@ function HasBattleworn($cardID)
     case "TCC080": case "TCC082": case "TCC407": case "TCC408": case "TCC409": case "TCC410": return true;
     case "EVO011": return true;
     case "EVO410b": case "EVO438": case "EVO439": case "EVO440": case "EVO441": case "EVO235": return true;
-    case "EVO442": case "EVO443": case "EVO444": case "EVO445": case "EVO011": return true;
+    case "EVO442": case "EVO443": case "EVO444": case "EVO445": return true;
     default: return false;
   }
 }
@@ -1308,7 +1304,7 @@ function HasCombo($cardID)
 
 function ComboActive($cardID = "")
 {
-  global $combatChainState, $CombatChain, $chainLinkSummary, $mainPlayer;
+  global $CombatChain, $chainLinkSummary, $mainPlayer;
   if(SearchCurrentTurnEffects("OUT183", $mainPlayer)) return false;
   if($cardID == "" && $CombatChain->HasCurrentLink()) $cardID = $CombatChain->AttackCard()->ID();
   if($cardID == "") return false;
@@ -1582,59 +1578,6 @@ function CardCaresAboutPitch($cardID)
 		case "DYN185": case "DYN186": case "DYN187":
       return true;
     default: return false;
-  }
-}
-
-function CardHasAltArt($cardID)
-{
-  switch($cardID) {
-    case "WTR001": case "WTR002":
-    case "WTR150": case "WTR162": case "WTR173":
-    case "WTR224":
-      return true;
-    case "ARC159": case "ARC191":
-      return true;
-    case "MON155": case "MON215": case "MON216":
-    case "MON217": case "MON219": case "MON220":
-      return true;
-    case "ELE146":
-      return true;
-    case "EVR020":
-      return true;
-    case "UPR006": case "UPR007": case "UPR008":
-    case "UPR009": case "UPR010": case "UPR011":
-    case "UPR012": case "UPR013": case "UPR014":
-    case "UPR015": case "UPR016": case "UPR017":
-      return true;
-    case "UPR042": case "UPR043": case "UPR169":
-      return true;
-    case "UPR406": case "UPR407": case "UPR408":
-    case "UPR409": case "UPR410": case "UPR411":
-    case "UPR412": case "UPR413": case "UPR414":
-    case "UPR415": case "UPR416": case "UPR417":
-      return true;
-    case "DYN001": case "DYN005": case "DYN026":
-    case "DYN045": case "DYN065": case "DYN068":
-    case "DYN088": case "DYN092": case "DYN121":
-    case "DYN151": case "DYN171": case "DYN192":
-    case "DYN212": case "DYN213": case "DYN234":
-    case "DYN492a": case "DYN492b": case "DYN492c":
-    case "DYN612":
-      return true;
-    case "DTD005": case "DTD006": case "DTD007":
-    case "DTD008": case "DTD009": case "DTD010":
-    case "DTD011": case "DTD012":
-    case "DTD164": case "DTD564":
-    case "DTD405": case "DTD406": case "DTD407":
-    case "DTD408": case "DTD409": case "DTD410":
-    case "DTD411": case "DTD412":
-      return true;
-    case "EVO010": case "EVO026": case "EVO027":
-    case "EVO028": case "EVO029": case "EVO030":
-    case "EVO031": case "EVO032": case "EVO033":
-    case "EVO410": case "EVO410a": case "EVO410b":
-  default:
-      return false;
   }
 }
 
