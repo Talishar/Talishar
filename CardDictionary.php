@@ -561,7 +561,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     else if(count($myHand) < 1) return false;
   }
   if(EffectPlayCardConstantRestriction($cardID, CardType($cardID), $restriction)) return false;
-  if($phase != "B" && $phase != "P" && $phase != "CHOOSEHANDCANCEL" && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
+  if($phase != "B" && $phase != "P" && !str_contains($phase, "CHOOSE") && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
   if($phase == "M" && $subtype == "Arrow") {
     if($from != "ARS") return false;
     if(!SubtypeContains($character[CharacterPieces()], "Bow") && !SubtypeContains($character[CharacterPieces()*2], "Bow")) return false;
