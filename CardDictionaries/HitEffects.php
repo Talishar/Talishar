@@ -107,6 +107,9 @@ function HVYHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer;
   switch ($cardID) {
+    case "HVY050": 
+      Clash($cardID, $mainPlayer);
+      break;
     case "HVY249":
       if (HasAimCounter() && IsHeroAttackTarget()) {
         $defPlayerHand = &GetHand($defPlayer);

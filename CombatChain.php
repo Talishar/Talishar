@@ -169,7 +169,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 
 function BlockModifier($cardID, $from, $resourcesPaid)
 {
-  global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks;
+  global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks, $CS_NumClashesWon;
   $blockModifier = 0;
   $cardType = CardType($cardID);
   if($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
@@ -186,6 +186,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     if($defAuras[$i] == "WTR074" && CardCost($cardID) >= 3) $blockModifier += 2;
     if($defAuras[$i] == "WTR046" && $cardType == "E") $blockModifier += 1;
     if($defAuras[$i] == "ELE109" && $cardType == "A") $blockModifier += 1;
+    if($defAuras[$i] == "HVY068" && $cardType == "AA") $blockModifier += 3;
+    if($defAuras[$i] == "HVY069" && $cardType == "AA") $blockModifier += 2;
+    if($defAuras[$i] == "HVY070" && $cardType == "AA") $blockModifier += 1;
   }
   $blockModifier += ItemBlockModifier($cardID);
   switch($cardID) {
@@ -223,6 +226,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       break;
     case "EVO231": case "EVO232": case "EVO233":
       if(CachedOverpowerActive()) $blockModifier += 2;
+      break;
+    case "HVY060":
+      $blockModifier += (2*GetClassState($defPlayer, $CS_NumClashesWon));
       break;
     default: break;
   }

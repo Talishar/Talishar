@@ -536,6 +536,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("!", $parameter);
       AddCurrentTurnEffect($params[0], $player, (count($params) > 1 ? $params[1] : ""));
       return "1";
+    case "REMOVECURRENTTURNEFFECT":
+      SearchCurrentTurnEffects($parameter, $player, true);
+      return $lastResult;
     case "ADDCURRENTEFFECTLASTRESULT":
       $params = explode("!", $parameter);
       AddCurrentTurnEffect($params[0].$lastResult, $player, (count($params) > 1 ? $params[1] : ""));
@@ -770,6 +773,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       } else {
         PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, $parameter);
         DoQuell($targetPlayer, $damage);
+        if (SearchCurrentTurnEffects("DTD209", $targetPlayer, true) && $damage >= GetHealth($targetPlayer)) PreventLethal($targetPlayer, $damage);
       }
       return $damage;
     case "TAKEDAMAGE":
@@ -1495,7 +1499,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           DestroyItemForPlayer($player, $parameter); 
           WriteLog(CardLink($items[$parameter], $items[$parameter]) . " was destroyed");
         }
-      return"";
+      return "";
+      case "ADDBOTTOMREMOVETOP":
+        $deck = new Deck($player);  
+        $card = $deck->AddBottom($deck->Top(remove:true), "DECK");
+        WriteLog("Player " . $player . " put " . CardLink($card, $card) . " on the bottom of the deck and Clash again!");
+        return "";
+      case "CLASH":
+        Clash($parameter, $player);
+        return "";
     default:
       return "NOTSTATIC";
   }

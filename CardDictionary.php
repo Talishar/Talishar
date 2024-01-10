@@ -102,6 +102,7 @@ function CardSubType($cardID, $uniqueID=-1)
       case "MON401": return "Arms";
       case "MON402": return "Legs";
       case "UPR551": return "Ally";
+      case "DYN492b": return "Chest"; // Technically not true, but needed to work.
       case "DYN492c": return "Item";
       case "DYN612": return "Angel,Ally";
       case "EVO410": return "Demi-Hero,Evo";
@@ -345,7 +346,6 @@ function BlockValue($cardID)
     $number = intval(substr($cardID, 3));
     if($number < 400 || ($set != "MON" && $set != "DYN" && $cardID != "EVO410" && $cardID != "EVO410b")) return GeneratedBlockValue($cardID);
   }
-  $class = CardClass($cardID);
   if($set == "ROG") return ROGUEBlockValue($cardID);
   switch($cardID) {
     case "MON400": case "MON401": case "MON402": return 0;
@@ -561,7 +561,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     else if(count($myHand) < 1) return false;
   }
   if(EffectPlayCardConstantRestriction($cardID, CardType($cardID), $restriction)) return false;
-  if($phase != "B" && $phase != "P" && $phase != "CHOOSEHANDCANCEL" && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
+  if($phase != "B" && $phase != "P" && !str_contains($phase, "CHOOSE") && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
   if($phase == "M" && $subtype == "Arrow") {
     if($from != "ARS") return false;
     if(!SubtypeContains($character[CharacterPieces()], "Bow") && !SubtypeContains($character[CharacterPieces()*2], "Bow")) return false;
@@ -1150,6 +1150,7 @@ function DoesEffectGrantOverpower($cardID) {
   $cardID = ShiyanaCharacter($cardID);
   switch($cardID) {
     case "HVY045": case "HVY046": return true;
+    case "HVY059": return true;
     default: return false;
   }
 }

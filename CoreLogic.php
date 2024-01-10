@@ -452,6 +452,20 @@ function DoQuell($targetPlayer, $damage)
     PrependDecisionQueue("PASSPARAMETER", $targetPlayer, "0"); //If no quell, we need to discard the previous last result
   }
 }
+function PreventLethal($targetPlayer, $damage)
+{
+  global $CS_NextDamagePrevented;
+  if(SearchHandForCard($targetPlayer, "MON405") != "")
+  {
+    MZMoveCard($targetPlayer, "MYHAND", "MYBANISH,HAND'-");
+    SetClassState($targetPlayer, $CS_NextDamagePrevented, $damage);
+  }
+  if(SearchArsenalForCard($targetPlayer, "MON405") != "")
+  {
+    MZMoveCard($targetPlayer, "MYARS", "MYBANISH,ARS,-");
+    SetClassState($targetPlayer, $CS_NextDamagePrevented, $damage);
+  }
+}
 
 function ProcessDealDamageEffect($cardID)
 {

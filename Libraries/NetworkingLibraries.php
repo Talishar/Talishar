@@ -2080,6 +2080,15 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MAYMULTICHOOSEHAND", $currentPlayer, "<-", 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "NOFEAR", 1);
       break;
+    case "HVY059":
+      if (CountItem("DYN243", $currentPlayer) > 0) {
+        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_the_additional_cost_of_1_" . CardLink("DYN243", "DYN243"), 1);
+        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+        AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243-1", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);  
+      }
+      break;
     case "HVY090": case "HVY091":
       if($from == "EQUIP") {
         MZMoveCard($currentPlayer, "MYDISCARD:pitch=1", "MYBANISH,GY,-");
