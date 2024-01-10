@@ -218,9 +218,14 @@ function CharacterStartTurnAbility($index)
     case "ROGUE028":
       PlayAura("MON104", $mainPlayer);
       break;
+    case "HVY047": case "HVY048":
+      AddCurrentTurnEffect($cardID."-1", $mainPlayer);
+      AddCurrentTurnEffect($cardID."-2", $mainPlayer);
+      break;
     case "HVY254":
       AddCurrentTurnEffect("HVY254-1", $mainPlayer);
       AddCurrentTurnEffect("HVY254-2", $mainPlayer);
+      break;
     default: break;
   }
 }

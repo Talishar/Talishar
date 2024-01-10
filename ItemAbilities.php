@@ -30,7 +30,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
   if($item == "DYN243") {
     $char = &GetPlayerCharacter($player);
     $hero = ShiyanaCharacter($char[0], $player);
-    if($hero == "HVY047" || $hero == "HVY048") {
+    if(($hero == "HVY047" || $hero == "HVY048") && SearchCurrentTurnEffects($player, $hero."-1", true)) {
       WriteLog("Player $player drew a card from Victor");
       Draw($player);
     }

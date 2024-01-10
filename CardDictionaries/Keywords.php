@@ -109,11 +109,12 @@
     }
     $char = &GetPlayerCharacter($losingPlayer);
     $hero = ShiyanaCharacter($char[0], $losingPlayer);
-    if($hero == "HVY047" || $hero == "HVY048" && CountItem("DYN243", $losingPlayer) > 0) {
+    if($hero == "HVY047" || $hero == "HVY048" && CountItem("DYN243", $losingPlayer) > 0 && SearchCurrentTurnEffects($losingPlayer, $hero."-2")) {
         AddDecisionQueue("PASSPARAMETER", $losingPlayer, "ELSE");
         AddDecisionQueue("SETDQVAR", $losingPlayer, "1");  
         AddDecisionQueue("YESNO", $losingPlayer, "if_you_want_to_destroy_1_" . CardLink("DYN243", "DYN243") ."_to_clash_again", 1);
         AddDecisionQueue("NOPASS", $losingPlayer, "-", 1);
+        AddDecisionQueue("REMOVECURRENTTURNEFFECT", $losingPlayer, $hero."-2", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $losingPlayer, "DYN243-1", 1);
         AddDecisionQueue("SETDQCONTEXT", $losingPlayer, "Choose target hero", 1);
         AddDecisionQueue("BUTTONINPUT", $losingPlayer, "Target_Opponent,Target_Yourself", 1);
