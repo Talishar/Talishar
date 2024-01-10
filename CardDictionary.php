@@ -102,6 +102,7 @@ function CardSubType($cardID, $uniqueID=-1)
       case "MON401": return "Arms";
       case "MON402": return "Legs";
       case "UPR551": return "Ally";
+      case "DYN492b": return "Chest"; // Technically not true, but needed to work.
       case "DYN492c": return "Item";
       case "DYN612": return "Angel,Ally";
       case "EVO410": return "Demi-Hero,Evo";
@@ -345,7 +346,6 @@ function BlockValue($cardID)
     $number = intval(substr($cardID, 3));
     if($number < 400 || ($set != "MON" && $set != "DYN" && $cardID != "EVO410" && $cardID != "EVO410b")) return GeneratedBlockValue($cardID);
   }
-  $class = CardClass($cardID);
   if($set == "ROG") return ROGUEBlockValue($cardID);
   switch($cardID) {
     case "MON400": case "MON401": case "MON402": return 0;
