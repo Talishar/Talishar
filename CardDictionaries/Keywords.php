@@ -75,9 +75,18 @@
   }
 
   function WonClashAbility($playerID, $cardID, $effectController="") {
+    global $mainPlayer, $defPlayer, $CS_PlayIndex;
     WriteLog("Player " . $playerID . " won the Clash");
     switch($cardID)
     {
+      case "HVY050":
+        if ($playerID == $mainPlayer) DestroyTopCard($playerID);
+        else {
+          $character = &GetPlayerCharacter($mainPlayer);
+          $index = FindCharacterIndex($mainPlayer, $cardID);
+          --$character[$index + 3];
+        }
+        break;
       case "HVY162":
         PlayAura("HVY240", $playerID);
         break;
