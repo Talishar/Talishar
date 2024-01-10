@@ -70,13 +70,22 @@
         else $p2Power = ModifiedAttackValue($deck->Top(), 2, "DECK", source:$cardID);
       }
     }
-    if($p1Power > 0 && $p1Power > $p2Power) WonClashAbility(1, $cardID, $effectController);
-    else if($p2Power > 0 && $p2Power > $p1Power) WonClashAbility(2, $cardID, $effectController);
+    if($p1Power > 0 && $p1Power > $p2Power) {
+      WonClashAbility(1, $cardID, $effectController);
+    }
+    else if($p2Power > 0 && $p2Power > $p1Power) {
+      WonClashAbility(2, $cardID, $effectController);
+    }
   }
 
   function WonClashAbility($playerID, $cardID, $effectController="") {
     global $mainPlayer, $defPlayer, $CS_PlayIndex;
     WriteLog("Player " . $playerID . " won the Clash");
+    $deck = new Deck($playerID);
+    if($deck->Top() === "HVY059") {
+      PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$playerID);
+      WriteLog(CardLink("HVY059", "HVY059") . " created a Gold Token for Player ". $playerID);
+    }
     switch($cardID)
     {
       case "HVY050":

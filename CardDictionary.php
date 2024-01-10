@@ -1150,6 +1150,7 @@ function DoesEffectGrantOverpower($cardID) {
   $cardID = ShiyanaCharacter($cardID);
   switch($cardID) {
     case "HVY045": case "HVY046": return true;
+    case "HVY059": return true;
     default: return false;
   }
 }
