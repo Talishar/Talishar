@@ -79,8 +79,10 @@
   }
 
   function WonClashAbility($playerID, $cardID, $effectController="") {
-    global $mainPlayer, $defPlayer, $CS_PlayIndex;
+    global $mainPlayer, $defPlayer, $CS_NumClashesWon;
     WriteLog("Player " . $playerID . " won the Clash");
+    $numClashesWon = GetClassState($playerID, $CS_NumClashesWon) + 1;
+    SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
     $deck = new Deck($playerID);
     if($deck->Top() === "HVY059") {
       PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$playerID);
