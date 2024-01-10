@@ -33,5 +33,4 @@ function CardName($cardID)
       case "EVO410b": return "Teklovossen, the Mechropotent";
       default: return "";
     }
-    return "";
 	}

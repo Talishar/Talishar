@@ -111,9 +111,3 @@ $currentDate = date('U');
       }
     }
   }
-
-
-echo (json_encode($response));
-mysqli_close($conn);
-
-exit;

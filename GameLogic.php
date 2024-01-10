@@ -21,14 +21,10 @@ include "CombatChain.php";
 
 function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {
-  global $redirectPath, $playerID, $gameName;
-  global $currentPlayer, $combatChain, $CombatChain, $defPlayer;
-  global $combatChainState, $EffectContext;
-  global $defCharacter, $CS_NumCharged, $otherPlayer;
-  global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
-  global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
-  global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $inGameStatus;
-  global $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $chainLinkSummary, $chainLinks, $MakeStartGameBackup;
+  global $redirectPath, $playerID, $gameName, $currentPlayer, $combatChain, $CombatChain, $defPlayer, $combatChainState, $EffectContext;
+  global $CS_NumCharged, $otherPlayer, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
+  global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
+  global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
   $rv = "";
   switch($phase) {
     case "FINDINDICES":
@@ -1008,8 +1004,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       SetClassState($player, $CS_NumCardsDrawn, 0);//Don't make initial draw count for Hold the Line
       return 1;
     case "ROLLDIE":
-      $roll = RollDie($player, true, $parameter == "1");
-      return $roll;
+      RollDie($player, true, $parameter == "1");
+      return "";
     case "SETCOMBATCHAINSTATE":
       $combatChainState[$parameter] = $lastResult;
       return $lastResult;

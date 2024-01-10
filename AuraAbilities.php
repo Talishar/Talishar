@@ -398,7 +398,6 @@ function AuraBeginEndPhaseTriggers()
 function AuraBeginEndPhaseAbilities()
 {
   global $mainPlayer;
-  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty;
   $auras = &GetAuras($mainPlayer);
   for($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
@@ -454,7 +453,6 @@ function ChannelTalent($index, $talent)
   $toBottom = ++$auras[$index + 2];
   $numTalent = SearchCount(SearchPitch($mainPlayer, talent:$talent));
   if($toBottom <= $numTalent) {
-    $cardName = CardName($auras[$index]);
     for($j = $toBottom; $j > 0; --$j) {
       MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", may:true, isSubsequent:$j < $toBottom);
     }
@@ -715,7 +713,6 @@ function AuraHitEffects($attackID)
 {
   global $mainPlayer;
   $attackType = CardType($attackID);
-  $attackSubType = CardSubType($attackID);
   $auras = &GetAuras($mainPlayer);
   for($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
@@ -803,7 +800,7 @@ function GetAuraGemState($player, $cardID)
 }
 
 function AuraIntellectModifier() {
-  global $currentTurnEffects, $mainPlayer;
+  global $mainPlayer;
   $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
   $intellectModifier = 0;
   $auras = &GetAuras($mainPlayer);

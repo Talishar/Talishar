@@ -145,7 +145,7 @@
       if(DoesBlockTriggerPhantasm($i)) $blockGreaterThan6 = true;
     }
     if(!$blockGreaterThan6) return false;
-    if((SearchCurrentTurnEffects("MON090", $mainPlayer) && CardType($CombatChain->AttackCard->ID()) == "AA") || SearchCurrentTurnEffects("EVR142", $mainPlayer) || SearchCurrentTurnEffects("UPR154", $mainPlayer) || SearchCurrentTurnEffects("UPR412", $mainPlayer)) { return false; }
+    if((SearchCurrentTurnEffects("MON090", $mainPlayer) && CardType($CombatChain->AttackCard()->ID()) == "AA") || SearchCurrentTurnEffects("EVR142", $mainPlayer) || SearchCurrentTurnEffects("UPR154", $mainPlayer) || SearchCurrentTurnEffects("UPR412", $mainPlayer)) { return false; }
     return true;
   }
 

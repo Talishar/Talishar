@@ -617,7 +617,6 @@ $isMobile = IsMobile();
           return true;
         default:
           return false;
-          break;
       }
     }
 

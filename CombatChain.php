@@ -3,7 +3,7 @@
 function ProcessHitEffect($cardID)
 {
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
-  global $currentPlayer, $CombatChain;
+  global $CombatChain;
   if(CardType($CombatChain->AttackCard()->ID()) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   if(HitEffectsArePrevented()) return;
   $cardID = ShiyanaCharacter($cardID);
@@ -51,7 +51,7 @@ function ProcessHitEffect($cardID)
 
 function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)
 {
-  global $mainPlayer, $defPlayer, $mainPitch, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
+  global $mainPlayer, $defPlayer, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul;
   global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan;
   global $combatChain;
@@ -172,7 +172,6 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks;
   $blockModifier = 0;
   $cardType = CardType($cardID);
-  $cardSubtype = CardSubType($cardID);
   if($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
   if($cardType == "AA") $blockModifier += CountCurrentTurnEffects("EVR186", $defPlayer);
   if($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ROGUE802", $defPlayer);
@@ -296,7 +295,7 @@ function OnDefenseReactionResolveEffects($from)
 
 function OnBlockResolveEffects()
 {
-  global $combatChain, $CS_DamageTaken, $defPlayer, $mainPlayer, $currentTurnEffects;
+  global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects;
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if(SearchCurrentTurnEffects("ARC160-1", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
@@ -342,7 +341,7 @@ function OnBlockResolveEffects()
   $blockedFromHand = 0;
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) if($combatChain[$i+2] == "HAND") ++$blockedFromHand;
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-    if(($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i+2] != "HAND")) UnityEffect($combatChain[$i], $i);
+    if(($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i+2] != "HAND")) UnityEffect($combatChain[$i]);
     if(HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
     switch($combatChain[$i]) {
       case "EVR018":
@@ -427,7 +426,7 @@ function GetDefendingEquipmentsFromCombatChainLink($chainLink, $defPlayer) {
 
 function BeginningReactionStepEffects()
 {
-  global $combatChain, $mainPlayer, $defPlayer, $chainLinks;
+  global $combatChain, $defPlayer, $chainLinks;
   switch($combatChain[0])
   {
     case "OUT050":
@@ -479,7 +478,7 @@ function ModifyBlockForType($type, $amount)
 
 function OnBlockEffects($index, $from)
 {
-  global $currentTurnEffects, $CombatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $defPlayer;
+  global $currentTurnEffects, $CombatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
   global $Card_BlockBanner;
   $chainCard = $CombatChain->Card($index);
   $cardType = CardType($chainCard->ID());
@@ -521,7 +520,7 @@ function OnBlockEffects($index, $from)
             if($number < 100) $id = "0" . $id;
             if($number < 10) $id = "0" . $id;
             $id = $set . $id;
-            if(CardType($id) != $type) $chainCard->ModifyDefense(-1);
+            if(CardType($id) != $cardType) $chainCard->ModifyDefense(-1);
           }
           break;
         case "OUT009": case "OUT010":

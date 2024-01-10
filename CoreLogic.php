@@ -12,7 +12,6 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
   $attackType = CardType($CombatChain->AttackCard()->ID());
   $canGainAttack = CanGainAttack($CombatChain->AttackCard()->ID());
   $snagActive = SearchCurrentTurnEffects("CRU182", $mainPlayer) && $attackType == "AA";
-  $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
   for($i=0; $i<$CombatChain->NumCardsActiveLink(); ++$i)
   {
     $chainCard = $CombatChain->Card($i, true);
@@ -112,7 +111,7 @@ function AddAttack(&$totalAttack, $amount)
 
 function BlockingCardDefense($index)
 {
-  global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects;
+  global $combatChain, $defPlayer, $currentTurnEffects;
   $from = $combatChain[$index+2];
   $cardID = $combatChain[$index];
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
@@ -344,10 +343,8 @@ function CanDamageBePrevented($player, $damage, $type, $source="-")
 
 function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
 {
-  global $CS_DamagePrevention, $combatChainState, $combatChain, $mainPlayer;
-  global $CCS_AttackFused, $CS_ArcaneDamagePrevention, $currentPlayer, $dqVars, $dqState;
+  global $CS_DamagePrevention, $combatChain, $CS_ArcaneDamagePrevention, $dqVars, $dqState;
   $classState = &GetPlayerClassState($player);
-  $Items = &GetItems($player);
   if($type == "COMBAT" && $damage > 0 && EffectPreventsHit()) HitEffectsPreventedThisLink();
   if($type == "COMBAT" || $type == "ATTACKHIT") $source = $combatChain[0];
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -401,7 +398,6 @@ function AddDamagePreventionSelection($player, $damage, $preventable)
 function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
 {
   global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer, $mainPlayer;
-  global $CCS_AttackFused;
   $classState = &GetPlayerClassState($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   if($damage > 0)
@@ -440,7 +436,6 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
 
 function DamageDealtAbilities($player, $damage, $type, $source) {
   global $mainPlayer, $combatChainState, $CCS_AttackFused;
-  $otherPlayer = $player == 1 ? 2 : 1;
   if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused]) AddCurrentTurnEffect($source, $mainPlayer);
   if($source == "DYN612") GainHealth($damage, $mainPlayer);
 }
@@ -603,8 +598,7 @@ function IsGameOver()
 
 function PlayerWon($playerID)
 {
-  global $winner, $turn, $gameName, $p1id, $p2id, $p1uid, $p2uid, $p1IsChallengeActive, $p2IsChallengeActive, $conceded, $currentTurn;
-  global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID;
+  global $winner, $turn, $gameName, $p1uid, $p2uid, $inGameStatus, $GameStatus_Over;
   if($turn[0] == "OVER") return;
   include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
@@ -726,7 +720,7 @@ function ChainLinkResolvedEffects()
 
 function CombatChainClosedMainCharacterEffects()
 {
-  global $chainLinks, $chainLinkSummary, $combatChain, $mainPlayer;
+  global $chainLinks, $mainPlayer;
   $character = &GetPlayerCharacter($mainPlayer);
   for($i=0; $i<count($chainLinks); ++$i)
   {
@@ -748,7 +742,7 @@ function CombatChainClosedMainCharacterEffects()
 
 function CombatChainClosedCharacterEffects()
 {
-  global $chainLinks, $defPlayer, $chainLinkSummary, $combatChain;
+  global $chainLinks, $defPlayer, $chainLinkSummary;
   $character = &GetPlayerCharacter($defPlayer);
   for($i=0; $i<count($chainLinks); ++$i)
   {
@@ -1006,7 +1000,6 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   else if($cardID == "DTD140") return GetClassState($currentPlayer, $CS_LifeLost) > 0 || GetClassState($otherPlayer, $CS_LifeLost) > 0;
   else if($cardID == "DTD141") return GetClassState($currentPlayer, $CS_LifeLost) > 0 || GetClassState($otherPlayer, $CS_LifeLost) > 0;
   if(SubtypeContains($cardID, "Evo")) {
-    $char = &GetPlayerCharacter($currentPlayer);
     if(SearchCurrentTurnEffects("EVO007", $currentPlayer) || SearchCurrentTurnEffects("EVO008", $currentPlayer)) return true;
     if(SearchCurrentTurnEffects("EVO129", $currentPlayer) || SearchCurrentTurnEffects("EVO130", $currentPlayer) || SearchCurrentTurnEffects("EVO131", $currentPlayer)) return true;
   }
@@ -1215,7 +1208,6 @@ function DoesAttackHaveGoAgain()
     case "MON248": case "MON249": case "MON250": return SearchHighestAttackDefended() < CachedTotalAttack();
     case "MON293": case "MON294": case "MON295": return SearchPitchHighestAttack($mainPitch) > AttackValue($attackID);
     case "ELE216": case "ELE217": case "ELE218": return CachedTotalAttack() > AttackValue($attackID);
-    case "ELE216": case "ELE217": case "ELE218": return HasIncreasedAttack();
     case "EVR105": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "EVR138": return FractalReplicationStats("GoAgain");
     case "UPR046": return NumDraconicChainLinks() >= 2;
@@ -1230,7 +1222,6 @@ function DoesAttackHaveGoAgain()
     case "HVY134": return true;
     default: return false;
   }
-  return false;
 }
 
 function UndestroyCurrentWeapon()
@@ -1252,7 +1243,6 @@ function DestroyCurrentWeapon()
 function AttackDestroyed($attackID)
 {
   global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
-  $type = CardType($attackID);
   switch($attackID)
   {
     case "EVR139": MirragingMetamorphDestroyed(); break;
@@ -1575,7 +1565,7 @@ function CanRevealCards($player)
 
 function BaseAttackModifiers($attackValue)
 {
-  global $combatChainState, $CCS_LinkBaseAttack, $currentTurnEffects, $mainPlayer;
+  global $currentTurnEffects, $mainPlayer;
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] != $mainPlayer) continue;
@@ -1923,8 +1913,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   }
   else if($set == "EVR") return EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "UPR") return UPRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-  else if($set == "DVR") return DVRPlayAbility($cardID, $from, $resourcesPaid);
-  else if($set == "RVD") return RVDPlayAbility($cardID, $from, $resourcesPaid);
+  else if($set == "DVR") return DVRPlayAbility($cardID);
+  else if($set == "RVD") return RVDPlayAbility($cardID);
   else if($set == "DYN") return DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "OUT") return OUTPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "DTD") return DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
@@ -2309,8 +2299,7 @@ function CheckIfSingularityConditionsAreMet($currentPlayer) {
   return "";
 }
 
-function CanOnlyTargetHeroes($cardID)
-{
+function CanOnlyTargetHeroes($cardID) {
   switch($cardID)
     {
       case "TCC011":

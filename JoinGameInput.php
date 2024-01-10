@@ -645,7 +645,6 @@ function IsBanned($cardID, $format)
         default:
           return false;
       }
-      break;
     case "cc":
     case "compcc":
       switch ($cardID) {
@@ -669,7 +668,6 @@ function IsBanned($cardID, $format)
         default:
           return false;
       }
-      break;
     case "commoner":
       switch ($cardID) {
         case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
@@ -678,7 +676,6 @@ function IsBanned($cardID, $format)
         default:
           return false;
       }
-      break;
     default:
       return false;
   }

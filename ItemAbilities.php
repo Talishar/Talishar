@@ -233,7 +233,7 @@ function ChosenItemTakeDamageAbilities($player, $index, $damage, $preventable)
   return $damage;
 }
 
-function ItemTakeDamageAbilities($player, $damage, $type="", $preventable=true, $isWard=false)
+function ItemTakeDamageAbilities($player, $damage, $type="", $preventable=true)
 {
   if ($type != "") {
     $otherPlayer = ($player == 1 ? 2 : 1);
@@ -415,7 +415,6 @@ function ItemAttackModifiersOnDefend($cardID) {
 
 function ItemDestroyedAbility($player, $index)
 {
-  global $mainPlayer;
   $otherPlayer = ($player == 1 ? 2 : 1);
   $items = &GetItems($player);
   $cardID = $items[$index];

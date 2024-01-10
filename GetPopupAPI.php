@@ -77,7 +77,6 @@ switch ($popupType) {
     if($turn[0] == "OVER") SetCachePiece($gameName, 14, 99);//$MGS_GameOver
     echo(SerializeGameResult($playerID, "", file_get_contents("./Games/" . $gameName . "/p" . $playerID . "Deck.txt"), $gameName));
     exit;
-    break;
   case "menuPopup":
     /*
     if (IsGameOver()) {

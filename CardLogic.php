@@ -1354,7 +1354,7 @@ function CanGainAttack($cardID)
 
 function IsWeaponGreaterThanTwiceBasePower()
 {
-  global $combatChainState, $CCS_CachedTotalAttack, $combatChain, $mainPlayer, $CS_NumCharged, $CS_NumYellowPutSoul;
+  global $combatChain, $mainPlayer, $CS_NumCharged, $CS_NumYellowPutSoul;
   if(count($combatChain) == 0) return false;
   if(CardType($combatChain[0]) == "W" && CachedTotalAttack() > (AttackValue($combatChain[0]) * 2)) return true;
   $char = &GetPlayerCharacter($mainPlayer);

@@ -240,7 +240,6 @@ function ROGUECardSubtype($cardID)
       case "ROGUE007": return "Chest";
       case "ROGUE008": return "Ninja";
       case "ROGUE009": return "Ranger";
-      case "ROGUE009": return "Guardian";
       case "ROGUE013": return "Ninja";
       case "ROGUE014": return "Assassin";
       case "ROGUE015": return "Ninja";
@@ -404,7 +403,7 @@ function ROGUERarity($cardID)
     switch ($cardID) {
       case "ROGUE507": case "ROGUE508": case "ROGUE509": case "ROGUE510": case "ROGUE511": case "ROGUE512": case "ROGUE513": case "ROGUE516": case "ROGUE517": return "C";
       case "ROGUE501": case "ROGUE504": case "ROGUE518": case "ROGUE519": case "ROGUE521": case "ROGUE522": case "ROGUE523": case "ROGUE524": case "ROGUE525": return "R";
-      case "ROGUE502": case "ROGUE503": case "ROGUE505": case "ROGUE506": case "ROGUE516": case "ROGUE526": case "ROGUE527": case "ROGUE528": return "M";
+      case "ROGUE502": case "ROGUE503": case "ROGUE505": case "ROGUE506": case "ROGUE526": case "ROGUE527": case "ROGUE528": return "M";
 
       case "ROGUE601": case "ROGUE602": case "ROGUE603": case "ROGUE604": case "ROGUE605":
       case "ROGUE606": case "ROGUE607": case "ROGUE608": case "ROGUE609": case "ROGUE610":
@@ -446,7 +445,6 @@ function ROGUEPitchValue($cardID)
       case "ROGUE013": return -1;
       case "ROGUE014": return -1;
       case "ROGUE032": return -1;
-      case "ROGUE501": return 3;
       case "ROGUE501": return -1; //Broken Hourglass
       case "ROGUE502": return -1; //Perfect Mirror
       case "ROGUE503": return -1; //Scroll of Mastery

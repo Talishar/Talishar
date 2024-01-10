@@ -27,7 +27,7 @@ $password = $_POST["password"];
 $rememberMe = isset($_POST["rememberMe"]);
 
 try {
-  PasswordLogin($username, $password, $rememberMe, true);
+  PasswordLogin($username, $password, $rememberMe);
 } catch (\Exception $e) {
 }
 
