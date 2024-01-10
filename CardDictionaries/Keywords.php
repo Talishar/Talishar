@@ -70,8 +70,21 @@
         else $p2Power = ModifiedAttackValue($deck->Top(), 2, "DECK", source:$cardID);
       }
     }
-    if($p1Power > 0 && $p1Power > $p2Power) WonClashAbility(1, $cardID, $effectController);
-    else if($p2Power > 0 && $p2Power > $p1Power) WonClashAbility(2, $cardID, $effectController);
+    if($p1Power > 0 && $p1Power > $p2Power) { $winner = 1; $loser = 2; }
+    else if($p2Power > 0 && $p2Power > $p1Power) { $winner = 2; $loser = 1; }
+    $loserChar = &GetPlayerCharacter($loser);
+    $loserHero = ShiyanaCharacter($loserChar[0], $loser);
+    if($loserHero == "HVY047" || $loserHero == "HVY048") {
+      AddDecisionQueue("SETDQCONTEXT", $loser, "Choose if you want to pay a gold to re-do Clash");
+      AddDecisionQueue("YESNO", $loser, "-");
+      AddDecisionQueue("NOPASS", $loser, "-");
+      AddDecisionQueue("WRITELOG", $loser, "YES", 1);
+      AddDecisionQueue("ELSE", $loser, "-");
+      AddDecisionQueue("MECHANIC", $winner, "WONCLASH", 1);
+    }
+    else {
+      WonClashAbility($winner, $cardID, $effectController);
+    }
   }
 
   function WonClashAbility($playerID, $cardID, $effectController="") {

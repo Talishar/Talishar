@@ -97,6 +97,7 @@ $p1SideboardSubmitted = "0";
 if ($deckTestMode != "") {
   $gameStatus = 4; //Ready to start
   $opponentDeck = "../Assets/Dummy.txt";
+  $opponentDeck = "../Assets/Ira.txt";
   copy($opponentDeck, "../Games/" . $gameName . "/p2Deck.txt");
   $p2SideboardSubmitted = "1";
 } else {
