@@ -26,7 +26,7 @@ function DiscardPieces()
 }
 
 //0 - Card ID
-//1 - Status (2=ready, 1=unavailable, 0=destroyed)
+//1 - Status (2=ready, 1=unavailable, 0=destroyed, 3=Sleeping (Sleep Dart, Crush Confidance, etc))
 //2 - Num counters
 //3 - Num attack counters
 //4 - Num defense counters

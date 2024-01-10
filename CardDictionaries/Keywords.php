@@ -79,10 +79,11 @@
   }
 
   function WonClashAbility($playerID, $cardID, $effectController="") {
-    global $mainPlayer, $defPlayer, $CS_NumClashesWon;
+    global $mainPlayer, $CS_NumClashesWon;
     WriteLog("Player " . $playerID . " won the Clash");
     $numClashesWon = GetClassState($playerID, $CS_NumClashesWon) + 1;
     SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
+    $losingPlayer = ($playerID == 1 ? 2 : 1);
     $deck = new Deck($playerID);
     if($deck->Top() === "HVY059") {
       PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$playerID);
@@ -106,7 +107,26 @@
         break;
       default: break;
     }
-  }
+    $char = &GetPlayerCharacter($losingPlayer);
+    $hero = ShiyanaCharacter($char[0], $losingPlayer);
+    if($hero == "HVY047" || $hero == "HVY048" && CountItem("DYN243", $losingPlayer) > 0) {
+        AddDecisionQueue("PASSPARAMETER", $losingPlayer, "ELSE");
+        AddDecisionQueue("SETDQVAR", $losingPlayer, "1");  
+        AddDecisionQueue("YESNO", $losingPlayer, "if_you_want_to_destroy_1_" . CardLink("DYN243", "DYN243") ."_to_clash_again", 1);
+        AddDecisionQueue("NOPASS", $losingPlayer, "-", 1);
+        AddDecisionQueue("FINDANDDESTROYITEM", $losingPlayer, "DYN243-1", 1);
+        AddDecisionQueue("SETDQCONTEXT", $losingPlayer, "Choose target hero", 1);
+        AddDecisionQueue("BUTTONINPUT", $losingPlayer, "Target_Opponent,Target_Yourself", 1);
+        AddDecisionQueue("EQUALPASS", $losingPlayer, "Target_Opponent", 1);
+        AddDecisionQueue("SETDQVAR", $losingPlayer, "1", 1);
+        AddDecisionQueue("ADDBOTTOMREMOVETOP", $losingPlayer, $hero, 1);
+        AddDecisionQueue("CLASH", $effectController, $cardID, 1);
+        AddDecisionQueue("PASSPARAMETER", $losingPlayer, "{1}");
+        AddDecisionQueue("NOTEQUALPASS", $losingPlayer, "ELSE");
+        AddDecisionQueue("ADDBOTTOMREMOVETOP", $playerID, $hero, 1);
+        AddDecisionQueue("CLASH", $effectController, $cardID, 1);
+      }
+    }
 
   function AskWager($cardID) {
     global $currentPlayer;
