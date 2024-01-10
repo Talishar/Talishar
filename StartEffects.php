@@ -155,10 +155,10 @@ function InventoryStartGameAbilities($player) {
         array_push($inventory, "DTD564");
         break;
       case "EVO013":
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to put Adaptive Plating (one per prompt)", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to put . " . CardLink($inventory[$i], $inventory[$i]) . " (one per prompt)", 1);
         AddDecisionQueue("OK", $player, "-", 1);
         AddDecisionQueue("MODAL", $player, "ADAPTIVEPLATING", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to equip your adaptive plating");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to equip your " . CardLink($inventory[$i], $inventory[$i]) );
         AddDecisionQueue("MULTICHOOSETEXT", $player, "1-Head,Chest,Arms,Legs,None-1");
         AddDecisionQueue("MODAL", $player, "ADAPTIVEPLATING", 1);
         AddDecisionQueue("SHOWMODES", $player, "EVO013", 1);
@@ -171,5 +171,3 @@ function InventoryStartGameAbilities($player) {
 }
 
 ?>
-
-Something is wrong with the XAMPP installation :-(
