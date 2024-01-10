@@ -327,7 +327,7 @@ function LogChallengeResult($conn, $gameResultID, $playerID, $result)
 function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
 {
 	global $fabDBToken, $fabDBSecret, $gameName, $p1deckbuilderID, $p2deckbuilderID;
-	if (!str_contains($decklink, "fabdb.net")) return;
+	if($decklink == null || !str_contains($decklink, "fabdb.net")) return;
 
 	$linkArr = explode("/", $decklink);
 	$slug = array_pop($linkArr);
