@@ -221,7 +221,7 @@ function AuraStartTurnAbilities()
   for($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $EffectContext = $auras[$i];
     switch ($auras[$i]) {
-      //These are all "beginning of the action phase" events
+      //These are all "beginning of the action phase" events with priority holding
       case "WTR046": case "WTR047": case "WTR054": case "WTR055": case "WTR056": case "WTR069": case "WTR070": case "WTR071":
       case "WTR072": case "WTR073": case "WTR074": case "WTR075":
       case "ARC162":
@@ -233,7 +233,7 @@ function AuraStartTurnAbilities()
       case "DYN217":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
-      //These are all start phase events
+      //These are all start of turn events without priority
       case "MON006":
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to put in your hero's soul for Genesis");
@@ -363,6 +363,12 @@ function AuraStartTurnAbilities()
         break;
       case "EVO243":
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
+        break;
+      case "HVY068": case "HVY069": case "HVY070":
+        WriteLog("Resolving ". CardLink($auras[$i], $auras[$i]). " ability");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        Draw($mainPlayer);
+        MZMoveCard($mainPlayer, "MYHAND", "MYTOPDECK", silent:true);
         break;
       case "HVY086": case "HVY087": case "HVY088":
         AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
