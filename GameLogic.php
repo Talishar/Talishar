@@ -770,6 +770,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       } else {
         PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, $parameter);
         DoQuell($targetPlayer, $damage);
+        if (SearchCurrentTurnEffects("DTD209", $targetPlayer, true) && $damage >= GetHealth($targetPlayer)) PreventLethal($targetPlayer, $damage);
       }
       return $damage;
     case "TAKEDAMAGE":

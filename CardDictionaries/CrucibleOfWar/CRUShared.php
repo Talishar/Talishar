@@ -146,7 +146,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   switch($cardID) {
     case "CRU006":
       Draw($currentPlayer);
-      $discarded = DiscardRandom($currentPlayer, $cardID);
+      DiscardRandom($currentPlayer, $cardID);
       return "";
     case "CRU008":
       if(GetClassState($currentPlayer, $CS_Num6PowDisc) > 0) {

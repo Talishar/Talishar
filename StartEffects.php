@@ -155,7 +155,7 @@ function InventoryStartGameAbilities($player) {
         array_push($inventory, "DTD564");
         break;
       case "EVO013":
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to put . " . CardLink($inventory[$i], $inventory[$i]) . " (one per prompt)", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to put " . CardLink($inventory[$i], $inventory[$i]) . " (one per prompt)", 1);
         AddDecisionQueue("OK", $player, "-", 1);
         AddDecisionQueue("MODAL", $player, "ADAPTIVEPLATING", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to equip your " . CardLink($inventory[$i], $inventory[$i]) );
