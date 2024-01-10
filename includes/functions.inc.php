@@ -193,7 +193,7 @@ function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 	}
 	mysqli_close($conn);
 
-	session_start();
+	if(session_status() !== PHP_SESSION_ACTIVE) session_start();
 	$_SESSION["lastGameName"] = $gameName;
 	$_SESSION["lastPlayerId"] = $playerID;
 	$_SESSION["lastAuthKey"] = $authKey;
