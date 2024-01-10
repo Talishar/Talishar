@@ -1159,7 +1159,7 @@ function DoesEffectGrantDominate($cardID)
   global $combatChainState, $CCS_AttackFused;
   $cardID = ShiyanaCharacter($cardID);
   switch ($cardID) {
-    case "WTR038": case "WTR039": case "WTR197":
+    case "WTR038": case "WTR039": case "WTR197": case "WTR198": case "WTR199":
     case "ARC011": case "ARC012": case "ARC013": case "ARC019": case "ARC038": case "ARC039":
     case "CRU013": case "CRU014": case "CRU015":
     case "CRU038": case "CRU039": case "CRU040": case "CRU094-2": case "CRU095-2": case "CRU096-2":
