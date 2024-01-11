@@ -24,7 +24,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   $characterID = ShiyanaCharacter($character[0]);
   AddEvent("BANISH", ($modifier == "INT" || $modifier == "UZURI" ? "CardBack" : $cardID));
   //Effects that change the modifier
-  if($characterID == "DTD564") {
+  if($characterID == "DTD564" && $character[1] != 3) {
     AddLayer("TRIGGER", $player, $characterID, uniqueID:-1);
     if($modifier != "INT") $modifier = "DTD564";
   }
@@ -32,13 +32,12 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   if($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
     $character = &GetPlayerCharacter($player);
     AddLayer("TRIGGER", $player, $character[0], $cardID);
-  } else {
-    if(CardType($cardID) != "T") { //If you banish a token, the token ceases to exist.
-      $rv = count($banish);
-      array_push($banish, $cardID);
-      array_push($banish, $modifier);
-      array_push($banish, GetUniqueId());
-    }
+  } 
+  elseif(CardType($cardID) != "T") { //If you banish a token, the token ceases to exist.
+    $rv = count($banish);
+    array_push($banish, $cardID);
+    array_push($banish, $modifier);
+    array_push($banish, GetUniqueId());
   }
   ++$classState[$CS_CardsBanished];
   if($modifier == "INT") return $rv;
@@ -53,10 +52,8 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     AddLayer("TRIGGER", $player, $cardID);
   }
   if(ModifiedAttackValue($cardID, $player, $from, source:$banishedBy) >= 6) {
-    if($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer) {
-      if(($characterID == "MON119" || $characterID == "MON120") && $character[1] == 2) { // Levia
-        WriteLog(CardLink($characterID, $characterID) . " banished a card with 6+ power, and won't lose health from Blood Debt this turn");
-      }
+    if($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer && ($characterID == "MON119" || $characterID == "MON120") && $character[1] == 2){ // Levia
+      WriteLog(CardLink($characterID, $characterID) . " banished a card with 6+ power, and won't lose health from Blood Debt this turn");
     }
     ++$classState[$CS_Num6PowBan];
     $index = FindCharacterIndex($player, "MON122");

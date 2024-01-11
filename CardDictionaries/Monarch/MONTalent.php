@@ -171,7 +171,7 @@
     if(IsImmuneToBloodDebt($mainPlayer)) return;
     $numBloodDebt = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
     $char = &GetPlayerCharacter($mainPlayer);
-    if($char[0] == "DTD564" && +$char[1] != 1) { $deck = new Deck($mainPlayer); for($i=0; $i<$numBloodDebt; ++$i) $deck->BanishTop(); return; }
+    if($char[0] == "DTD564" && +$char[1] == 2) { $deck = new Deck($mainPlayer); for($i=0; $i<$numBloodDebt; ++$i) $deck->BanishTop(); return; }
     $health = &GetHealth($mainPlayer);
     if($numBloodDebt > 0) {
       if($health > 13 && $health - $numBloodDebt <= 13)
