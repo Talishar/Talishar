@@ -438,7 +438,7 @@ function GetAbilityTypes($cardID)
 
 function GetAbilityNames($cardID, $index = -1)
 {
-  global $currentPlayer, $mainPlayer, $combatChain;
+  global $currentPlayer, $mainPlayer, $combatChain, $layers;
   $character = &GetPlayerCharacter($currentPlayer);
   switch ($cardID) {
     case "ARC003": case "CRU101":
@@ -453,7 +453,7 @@ function GetAbilityNames($cardID, $index = -1)
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
       $names = "Ability";
-      if($currentPlayer == $mainPlayer && count($combatChain) == 0) $names .= ",Attack";
+      if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) == 0 ) $names .= ",Attack";
       return $names;
     default: return "";
   }
@@ -507,6 +507,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
   $abilityType = GetAbilityType($cardID, $index, $from);
+  $abilityTypes = GetAbilityTypes($cardID);
   if($phase == "P" && $from != "HAND") return false;
   if($phase == "B" && $from == "BANISH") return false;
   if($from == "BANISH") {
@@ -567,7 +568,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if(!SubtypeContains($character[CharacterPieces()], "Bow") && !SubtypeContains($character[CharacterPieces()*2], "Bow")) return false;
   }
   if(SearchCurrentTurnEffects("ARC044", $player) && !$isStaticType && $from != "ARS") return false;
-  if(SearchCurrentTurnEffects("ARC043", $player) && ($cardType == "A" || $cardType == "AA") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
+  if(SearchCurrentTurnEffects("ARC043", $player) && ($cardType == "A" || $cardType == "AA") && !str_contains($abilityTypes, "I") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
   if(SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "A" && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
   if(SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
   if($CombatChain->HasCurrentLink()) if ($CombatChain->AttackCard()->ID() == "MON245" && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
