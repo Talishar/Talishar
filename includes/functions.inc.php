@@ -193,7 +193,7 @@ function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 	}
 	mysqli_close($conn);
 
-	session_start();
+	if(session_status() !== PHP_SESSION_ACTIVE) session_start();
 	$_SESSION["lastGameName"] = $gameName;
 	$_SESSION["lastPlayerId"] = $playerID;
 	$_SESSION["lastAuthKey"] = $authKey;
@@ -272,7 +272,6 @@ function logCompletedGameStats()
 	$loserDeck = file_get_contents("./Games/" . $gameName . "/p" . $loser . "Deck.txt");
 	$winHero = &GetPlayerCharacter($winner);
 	$loseHero = &GetPlayerCharacter($loser);
-	if (substr($winHero[0], 0, 3) == "HER" || substr($loseHero[0], 0, 3) == "HER") return; //Don't report results for unreleased heroes
 
 	$conn = GetDBConnection();
 
@@ -327,7 +326,7 @@ function LogChallengeResult($conn, $gameResultID, $playerID, $result)
 function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
 {
 	global $fabDBToken, $fabDBSecret, $gameName, $p1deckbuilderID, $p2deckbuilderID;
-	if (!str_contains($decklink, "fabdb.net")) return;
+	if($decklink == null || !str_contains($decklink, "fabdb.net")) return;
 
 	$linkArr = explode("/", $decklink);
 	$slug = array_pop($linkArr);
