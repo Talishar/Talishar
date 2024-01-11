@@ -377,7 +377,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($i > 0 && $inGameStatus == "0") continue;
     $atkCounters = 0;
     $counters = 0;
-    $type = CardType($theirCharacter[$i]); //NOTE: This is not reliable type
+    $type = CardType($theirCharacter[$i]); 
+    if ($type == "D") $type = "C";
     $sTypeArr = explode(",", CardSubType($theirCharacter[$i], $theirCharacter[$i+11]));
     $sType = $sTypeArr[0];
     for($j=0; $j<count($sTypeArr); ++$j) {

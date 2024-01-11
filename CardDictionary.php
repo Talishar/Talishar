@@ -66,7 +66,8 @@ function CardType($cardID)
     case "UPR551": return "-";
     case "DYN492a": return "W";
     case "DYN492b": case "EVO410b": return "E";
-    case "EVO410": return "C";
+    case "DTD564": return "D";
+    case "EVO410": return "D";
     case "DYN612": return "-";
     case "DUMMY":
     case "DUMMYDISHONORED":
@@ -105,7 +106,8 @@ function CardSubType($cardID, $uniqueID=-1)
       case "DYN492b": return "Chest"; // Technically not true, but needed to work.
       case "DYN492c": return "Item";
       case "DYN612": return "Angel,Ally";
-      case "EVO410": return "Demi-Hero,Evo";
+      case "DTD564": return "Demon";
+      case "EVO410": return "Evo";
       case "EVO410b": return "Chest,Evo";
       default: return "";
   }
@@ -243,6 +245,7 @@ function CardTalent($cardID)
   }
   switch ($cardID) {
     case "EVO410": case "EVO410b": return "SHADOW";
+    case "DTD564": return "SHADOW";
     default: break;
   }
   return GeneratedCardTalent($cardID);
