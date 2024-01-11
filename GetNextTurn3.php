@@ -844,8 +844,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       $vars = explode("-", $dqVars[0]);
       $caption .= "Source: " . CardLink($vars[1], $vars[1]) . " Total Damage: " . $vars[0] . " ";
       if(!CanDamageBePrevented($playerID, $vars[0], "ARCANE", $vars[1])) {
-        $caption .= " <span style='color:red;'>**WARNING: THIS DAMAGE IS UNPREVENTABLE**</span><br>";
-        $caption .= " <span style='font-style:italic;'>When arcane damage is unpreventable, you still have the opportunity to pitch into Arcane Barrier</span><br>";
+        $caption .= " <br><span style='font-size: 0.8em; color:red;'>**WARNING: THIS DAMAGE IS UNPREVENTABLE**</span><br>";
       }
     }
     for ($i = 0; $i < count($options); ++$i) {
