@@ -169,7 +169,10 @@ function CharacterStartTurnAbility($index)
       }
       break;
     case "DTD564":
-      AddCurrentTurnEffect("DTD564", $mainPlayer);
+      $character = GetPlayerCharacter($mainPlayer);
+      if($character[1] != 3) {
+        AddCurrentTurnEffect("DTD564", $mainPlayer);
+      }
       break;
     case "DTD133": case "DTD134":
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to banish for Vynnset");
@@ -248,7 +251,10 @@ function DefCharacterStartTurnAbilities()
         }
         break;
       case "DTD564":
-        AddCurrentTurnEffect("DTD564", $defPlayer);
+        $character = GetPlayerCharacter($defPlayer);
+        if($character[1] != 3) {  
+          AddCurrentTurnEffect("DTD564", $defPlayer);
+        }
         break;
       case "ROGUE018":
         AddCurrentTurnEffect("ROGUE018", $mainPlayer);

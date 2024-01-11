@@ -66,7 +66,8 @@ function CardType($cardID)
     case "UPR551": return "-";
     case "DYN492a": return "W";
     case "DYN492b": case "EVO410b": return "E";
-    case "EVO410": return "C";
+    case "DTD564": return "D";
+    case "EVO410": return "D";
     case "DYN612": return "-";
     case "DUMMY":
     case "DUMMYDISHONORED":
@@ -105,7 +106,8 @@ function CardSubType($cardID, $uniqueID=-1)
       case "DYN492b": return "Chest"; // Technically not true, but needed to work.
       case "DYN492c": return "Item";
       case "DYN612": return "Angel,Ally";
-      case "EVO410": return "Demi-Hero,Evo";
+      case "DTD564": return "Demon";
+      case "EVO410": return "Evo";
       case "EVO410b": return "Chest,Evo";
       default: return "";
   }
@@ -243,6 +245,7 @@ function CardTalent($cardID)
   }
   switch ($cardID) {
     case "EVO410": case "EVO410b": return "SHADOW";
+    case "DTD564": return "SHADOW";
     default: break;
   }
   return GeneratedCardTalent($cardID);
@@ -438,7 +441,7 @@ function GetAbilityTypes($cardID)
 
 function GetAbilityNames($cardID, $index = -1)
 {
-  global $currentPlayer, $mainPlayer, $combatChain;
+  global $currentPlayer, $mainPlayer, $combatChain, $layers;
   $character = &GetPlayerCharacter($currentPlayer);
   switch ($cardID) {
     case "ARC003": case "CRU101":
@@ -453,7 +456,7 @@ function GetAbilityNames($cardID, $index = -1)
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
       $names = "Ability";
-      if($currentPlayer == $mainPlayer && count($combatChain) == 0) $names .= ",Attack";
+      if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) == 0 ) $names .= ",Attack";
       return $names;
     default: return "";
   }
@@ -507,6 +510,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
   $abilityType = GetAbilityType($cardID, $index, $from);
+  $abilityTypes = GetAbilityTypes($cardID);
   if($phase == "P" && $from != "HAND") return false;
   if($phase == "B" && $from == "BANISH") return false;
   if($from == "BANISH") {
@@ -567,7 +571,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if(!SubtypeContains($character[CharacterPieces()], "Bow") && !SubtypeContains($character[CharacterPieces()*2], "Bow")) return false;
   }
   if(SearchCurrentTurnEffects("ARC044", $player) && !$isStaticType && $from != "ARS") return false;
-  if(SearchCurrentTurnEffects("ARC043", $player) && ($cardType == "A" || $cardType == "AA") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
+  if(SearchCurrentTurnEffects("ARC043", $player) && ($cardType == "A" || $cardType == "AA") && !str_contains($abilityTypes, "I") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
   if(SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "A" && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
   if(SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
   if($CombatChain->HasCurrentLink()) if ($CombatChain->AttackCard()->ID() == "MON245" && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
@@ -1490,7 +1494,7 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false)
     default: break;
   }
   if($nonLimitedOnly) return false;
-  if($char[0] == "DTD564" && SearchCurrentTurnEffects("DTD564", $currentPlayer) && HasBloodDebt($cardID)) return true;
+  if($char[0] == "DTD564" && SearchCurrentTurnEffects("DTD564", $currentPlayer) && HasBloodDebt($cardID) && $char[1] != 3) return true;
   return false;
 }
 
