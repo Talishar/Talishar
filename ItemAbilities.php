@@ -110,7 +110,6 @@ function ItemPlayAbilities($cardID, $from)
     switch($items[$i]) {
       case "EVR189":
         if($from == "BANISH") {
-          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card name to banish with Talisman of Cremation");
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD");
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -121,9 +120,6 @@ function ItemPlayAbilities($cardID, $from)
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
           $remove = true;
         }
-        break;
-      case "EVO097":
-        if(CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $currentPlayer)) GiveAttackGoAgain();
         break;
       default: break;
     }
