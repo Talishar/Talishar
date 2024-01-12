@@ -1062,11 +1062,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "TCC031":
       $otherPlayer = ($player == 1 ? 2 : 1);
-      PlayAura("TCC107", $otherPlayer);
+      PlayAura("HVY242", $otherPlayer);
       break;
     case "TCC032":
       $otherPlayer = ($player == 1 ? 2 : 1);
-      PlayAura("TCC105", $otherPlayer);
+      PlayAura("HVY241", $otherPlayer);
       break;
     case "TCC098": case "TCC102":
       BanishCardForPlayer("DYN065", $player, "-", "NT", $player);
@@ -1127,7 +1127,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       break;
     case "HVY001": case "HVY002":
-      PlayAura("TCC105", $player);//Might
+      PlayAura("HVY241", $player);//Might
       break;
     case "HVY162": case "HVY239":
       Clash($parameter, effectController:$player);

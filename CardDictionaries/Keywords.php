@@ -178,11 +178,11 @@
       switch($currentTurnEffects[$i]) {
         case "HVY057":
           PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
-          PlayAura("TCC105", $wonWager);//Might
-          PlayAura("TCC107", $wonWager);//Vigor
+          PlayAura("HVY241", $wonWager);//Might
+          PlayAura("HVY242", $wonWager);//Vigor
           break;
         case "HVY086": case "HVY087": case "HVY088":
-          PlayAura("TCC105", $wonWager);//Might
+          PlayAura("HVY241", $wonWager);//Might
           break;
         case "HVY103-1":
           PlayAura("HVY240", $wonWager);//Agility
@@ -191,19 +191,19 @@
           PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
           break;
         case "HVY103-3":
-          PlayAura("TCC107", $wonWager);//Vigor
+          PlayAura("HVY242", $wonWager);//Vigor
           break;
         case "HVY130":
-          PlayAura("TCC107", $wonWager);//Vigor
+          PlayAura("HVY242", $wonWager);//Vigor
           break;
         case "HVY149":
-          PlayAura("TCC105", $wonWager);//Might
+          PlayAura("HVY241", $wonWager);//Might
           break;
         case "HVY169":
           PlayAura("HVY240", $wonWager);//Agility
           break;;
         case "HVY189":
-          PlayAura("TCC107", $wonWager);//Vigor
+          PlayAura("HVY242", $wonWager);//Vigor
           break;
         case "HVY216": case "HVY217": case "HVY218":
           PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
