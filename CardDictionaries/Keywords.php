@@ -193,7 +193,7 @@
         case "HVY103-3":
           PlayAura("HVY242", $wonWager);//Vigor
           break;
-        case "HVY130":
+        case "HVY130": case "HVY131": case "HVY132":
           PlayAura("HVY242", $wonWager);//Vigor
           break;
         case "HVY149":

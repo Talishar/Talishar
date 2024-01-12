@@ -49,7 +49,7 @@
           PlayAlly("HVY134", $currentPlayer);
         }
         return "";
-      case "HVY130":
+      case "HVY130": case "HVY131": case "HVY132":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
       case "HVY143": case "HVY144": case "HVY145":
