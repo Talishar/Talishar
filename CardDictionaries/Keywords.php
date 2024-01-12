@@ -79,7 +79,7 @@
   }
 
   function WonClashAbility($playerID, $cardID, $effectController="") {
-    global $mainPlayer, $CS_NumClashesWon;
+    global $mainPlayer, $CS_NumClashesWon, $combatChainState, $CCS_WeaponIndex;
     WriteLog("Player " . $playerID . " won the Clash");
     $numClashesWon = GetClassState($playerID, $CS_NumClashesWon) + 1;
     SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
@@ -95,7 +95,7 @@
         if ($playerID == $mainPlayer) DestroyTopCard($playerID);
         else {
           $character = &GetPlayerCharacter($mainPlayer);
-          $index = FindCharacterIndex($mainPlayer, $cardID);
+          $index = $combatChainState[$CCS_WeaponIndex];
           --$character[$index + 3];
         }
         break;
