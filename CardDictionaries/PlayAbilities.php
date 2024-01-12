@@ -6,6 +6,10 @@
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     $rv = "";
     switch($cardID) {
+      case "HVY007":
+        Draw($currentPlayer);
+        DiscardRandom();
+        return "";
       case "HVY013":
         Intimidate();
         return "";
