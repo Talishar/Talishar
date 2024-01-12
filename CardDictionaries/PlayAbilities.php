@@ -79,6 +79,26 @@
       case "HVY235": case "HVY236-BUFF": case "HVY237-BUFF":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
+      case "HVY238":
+        if(CountItem("DYN243", $currentPlayer) == 0){
+          PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
+          WriteLog(CardLink($cardID, $cardID) . " created a Gold token");
+        }
+        return;
+      case "HVY245":
+        if($from == "GY") {
+          $character = &GetPlayerCharacter($currentPlayer);
+          EquipWeapon($currentPlayer,"HVY245");
+          $index = FindCharacterIndex($currentPlayer, "HVY245");
+          if ($character[$index + 3] == 0) {
+            ++$character[$index + 3];
+          } else {
+            ++$character[$index + 15];
+          }
+          $index = SearchGetFirstIndex(SearchMultizone($currentPlayer, "MYDISCARD:cardID=HVY245"));
+          RemoveGraveyard($currentPlayer, $index);
+        }
+        return "";
       case "HVY246":
         if(IsHeroAttackTarget()) {
           $deck = new Deck($otherPlayer);
@@ -122,20 +142,6 @@
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         Reload();
-        return "";
-      case "HVY245":
-        if($from == "GY") {
-          $character = &GetPlayerCharacter($currentPlayer);
-          EquipWeapon($currentPlayer,"HVY245");
-          $index = FindCharacterIndex($currentPlayer, "HVY245");
-          if ($character[$index + 3] == 0) {
-            ++$character[$index + 3];
-          } else {
-            ++$character[$index + 15];
-          }
-          $index = SearchGetFirstIndex(SearchMultizone($currentPlayer, "MYDISCARD:cardID=HVY245"));
-          RemoveGraveyard($currentPlayer, $index);
-        }
         return "";
       default: return "";
     }
