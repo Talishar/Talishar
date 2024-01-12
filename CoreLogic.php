@@ -2224,10 +2224,11 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       break;
     default: break;
   }
+  WriteLog(TypeContains($toCardID, "D", $player));
   switch($fromCardID)
   {
     case "EVO426":
-      if(SubtypeContains($toCardID, "Demi-Hero", $player)) {
+      if(TypeContains($toCardID, "D", $player)) {
         AddCurrentTurnEffect($fromCardID, $player);
         AddCurrentTurnEffect($fromCardID, $player);
       }
@@ -2236,7 +2237,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       }
       break;
     case "EVO427":
-      if(SubtypeContains($toCardID, "Demi-Hero", $player)) {
+      if(TypeContains($toCardID, "D", $player)) {
         GainResources($player, 6);
       }
       else if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
@@ -2244,7 +2245,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       }
       break;
     case "EVO428":
-      if(SubtypeContains($toCardID, "Demi-Hero", $player)) {
+      if(TypeContains($toCardID, "D", $player)) {
         MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
         MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
       }
@@ -2253,7 +2254,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       }
       break;
     case "EVO429":
-      if(SubtypeContains($toCardID, "Demi-Hero", $player)) {
+      if(TypeContains($toCardID, "D", $player)) {
         GainActionPoints(2, $player);
       }
       else if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
