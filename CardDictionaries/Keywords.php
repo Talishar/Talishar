@@ -202,7 +202,7 @@
         case "HVY169": case "HVY170": case "HVY171":
           PlayAura("HVY240", $wonWager);//Agility
           break;;
-        case "HVY189":
+        case "HVY189": case "HVY190": case "HVY191":          
           PlayAura("HVY242", $wonWager);//Vigor
           break;
         case "HVY216": case "HVY217": case "HVY218":
