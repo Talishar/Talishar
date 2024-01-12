@@ -256,6 +256,10 @@ function DefCharacterStartTurnAbilities()
           AddCurrentTurnEffect("DTD564", $defPlayer);
         }
         break;
+      case "HVY047": case "HVY048":
+        AddCurrentTurnEffect($character[$i]."-1", $defPlayer);
+        AddCurrentTurnEffect($character[$i]."-2", $defPlayer);
+        break;    
       case "ROGUE018":
         AddCurrentTurnEffect("ROGUE018", $mainPlayer);
         break;

@@ -62,6 +62,7 @@
 
   function Clash($cardID, $effectController="")
   {
+    global $mainPlayer, $defPlayer;
     $p1Power = -1; $p2Power = -1;
     for($i=1; $i<=2; ++$i) {
       $deck = new Deck($i);
@@ -71,10 +72,17 @@
       }
     }
     if($p1Power > 0 && $p1Power > $p2Power) {
+      VictorAbility(2, $cardID, $effectController);
       WonClashAbility(1, $cardID, $effectController);
+
     }
     else if($p2Power > 0 && $p2Power > $p1Power) {
+      VictorAbility(1, $cardID, $effectController);
       WonClashAbility(2, $cardID, $effectController);
+    }
+    if ($p1Power == $p2Power){
+      VictorAbility($mainPlayer, $cardID, $effectController);
+      VictorAbility($defPlayer, $cardID, $effectController);
     }
   }
 
@@ -107,27 +115,31 @@
         break;
       default: break;
     }
-    $char = &GetPlayerCharacter($losingPlayer);
-    $hero = ShiyanaCharacter($char[0], $losingPlayer);
-    if($hero == "HVY047" || $hero == "HVY048" && CountItem("DYN243", $losingPlayer) > 0 && SearchCurrentTurnEffects($losingPlayer, $hero."-2")) {
-        AddDecisionQueue("PASSPARAMETER", $losingPlayer, "ELSE");
-        AddDecisionQueue("SETDQVAR", $losingPlayer, "1");  
-        AddDecisionQueue("YESNO", $losingPlayer, "if_you_want_to_destroy_1_" . CardLink("DYN243", "DYN243") ."_to_clash_again", 1);
-        AddDecisionQueue("NOPASS", $losingPlayer, "-", 1);
-        AddDecisionQueue("REMOVECURRENTTURNEFFECT", $losingPlayer, $hero."-2", 1);
-        AddDecisionQueue("FINDANDDESTROYITEM", $losingPlayer, "DYN243-1", 1);
-        AddDecisionQueue("SETDQCONTEXT", $losingPlayer, "Choose target hero", 1);
-        AddDecisionQueue("BUTTONINPUT", $losingPlayer, "Target_Opponent,Target_Yourself", 1);
-        AddDecisionQueue("EQUALPASS", $losingPlayer, "Target_Opponent", 1);
-        AddDecisionQueue("SETDQVAR", $losingPlayer, "1", 1);
-        AddDecisionQueue("ADDBOTTOMREMOVETOP", $losingPlayer, $hero, 1);
-        AddDecisionQueue("CLASH", $effectController, $cardID, 1);
-        AddDecisionQueue("PASSPARAMETER", $losingPlayer, "{1}");
-        AddDecisionQueue("NOTEQUALPASS", $losingPlayer, "ELSE");
+    }
+
+  function VictorAbility($playerID, $cardID, $effectController="") {
+    $otherPlayer = ($playerID == 1 ? 2 : 1);
+    $char = &GetPlayerCharacter($playerID);
+    $hero = ShiyanaCharacter($char[0], $playerID);
+    if(($hero == "HVY047" || $hero == "HVY048") && CountItem("DYN243", $playerID) > 0 && SearchCurrentTurnEffects($hero."-2", $playerID)) {
+        AddDecisionQueue("PASSPARAMETER", $playerID, "NO");
+        AddDecisionQueue("SETDQVAR", $playerID, "1");
+        AddDecisionQueue("YESNO", $playerID, "if_you_want_to_destroy_1_" . CardLink("DYN243", "DYN243") ."_to_clash_again", 1);
+        AddDecisionQueue("NOPASS", $playerID, "-", 1);
+        AddDecisionQueue("REMOVECURRENTTURNEFFECT", $playerID, $hero."-2", 1);
+        AddDecisionQueue("FINDANDDESTROYITEM", $playerID, "DYN243-1", 1);
+        AddDecisionQueue("SETDQCONTEXT", $playerID, "Choose target hero", 1);
+        AddDecisionQueue("BUTTONINPUT", $playerID, "Target_Opponent,Target_Yourself", 1);
+        AddDecisionQueue("SETDQVAR", $playerID, "1");
+        AddDecisionQueue("EQUALPASS", $playerID, "Target_Opponent", 1);
         AddDecisionQueue("ADDBOTTOMREMOVETOP", $playerID, $hero, 1);
         AddDecisionQueue("CLASH", $effectController, $cardID, 1);
+        AddDecisionQueue("PASSPARAMETER", $playerID, "{1}");
+        AddDecisionQueue("NOTEQUALPASS", $playerID, "Target_Opponent");
+        AddDecisionQueue("ADDBOTTOMREMOVETOP", $otherPlayer, $hero, 1);
+        AddDecisionQueue("CLASH", $effectController, $cardID, 1);
       }
-    }
+  }
 
   function AskWager($cardID) {
     global $currentPlayer;
