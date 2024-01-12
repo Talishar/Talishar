@@ -58,7 +58,7 @@
           CardDiscarded($currentPlayer, $cardID, source:$cardID);
         }
         return "";
-      case "HVY149":
+      case "HVY149": case "HVY150": case "HVY151":
         AskWager($cardID);
         return "";
       case "HVY163": case "HVY164": case "HVY165":
