@@ -1308,7 +1308,7 @@ function CardDiscarded($player, $discarded, $source = "")
   WriteLog(CardLink($discarded, $discarded). " was discarded");
 }
 
-function ModifiedAttackValue($cardID, $player, $from, $source)
+function ModifiedAttackValue($cardID, $player, $from, $source="")
 {
   $attack = AttackValue($cardID);
   if($from != "CC") {
