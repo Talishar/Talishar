@@ -456,7 +456,7 @@ function GetAbilityNames($cardID, $index = -1)
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
       $names = "Ability";
-      if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) == 0 ) $names .= ",Attack";
+      if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces()) $names .= ",Attack";
       return $names;
     default: return "";
   }
