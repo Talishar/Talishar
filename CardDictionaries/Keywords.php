@@ -208,7 +208,7 @@
         case "HVY216": case "HVY217": case "HVY218":
           PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
           break;
-        case "HVY235":
+        case "HVY235": case "HVY236-BUFF": case "HVY237-BUFF":
           PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
           break;
         default:
