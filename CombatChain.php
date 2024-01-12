@@ -163,6 +163,8 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       $hand = &GetHand($defPlayer);
       return $combatChain[0] == "HVY013" && count($hand) == 0 ? 3 : 0;
     case "HVY112": return 3;
+    case "HVY113": return 2;
+    case "HVY114": return 1;
     default: return 0;
   }
 }
