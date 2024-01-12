@@ -6,6 +6,7 @@
     {
       case "HVY006": return 2;
       case "HVY007": return 2;
+      case "HVY049": return 3;
       case "HVY050": return 3;
       case "HVY090": case "HVY091": return 0;
       case "HVY134": return 1;
@@ -20,6 +21,7 @@
     {
       case "HVY006": return "AA";
       case "HVY007": return "AA";
+      case "HVY049": return "AA";
       case "HVY050": return "AA";
       case "HVY090": case "HVY091": return "A";
       case "HVY134": return "AA";

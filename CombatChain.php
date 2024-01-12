@@ -52,7 +52,7 @@ function ProcessHitEffect($cardID)
 function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)
 {
   global $mainPlayer, $defPlayer, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
-  global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul;
+  global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
   global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan;
   global $combatChain;
   if($repriseActive == -1) $repriseActive = RepriseActive();
@@ -163,6 +163,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HVY013":
       $hand = &GetHand($defPlayer);
       return $combatChain[0] == "HVY013" && count($hand) == 0 ? 3 : 0;
+    case "HVY049": return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 1 : 0;
     case "HVY112": return 3;
     case "HVY113": return 2;
     case "HVY114": return 1;
