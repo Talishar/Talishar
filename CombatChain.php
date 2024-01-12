@@ -159,6 +159,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "EVO210": case "EVO211": case "EVO212":
     case "EVO213": case "EVO214": case "EVO215":
       return NumEquipBlock();
+    case "HVY006": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0; 
     case "HVY013":
       $hand = &GetHand($defPlayer);
       return $combatChain[0] == "HVY013" && count($hand) == 0 ? 3 : 0;
