@@ -106,7 +106,12 @@
       case "HVY087-BUFF": return 4;
       case "HVY088-BUFF": return 3;
       case "HVY130-BUFF": return 3;
+      case "HVY131-BUFF": return 2;
+      case "HVY132-BUFF": return 1;
       case "HVY235-BUFF": return 3;
+      case "HVY236-BUFF": return 2;
+      case "HVY237-BUFF": return 1;
+      case "HVY241": return 1;
       default: return 0;
     }
   }
@@ -123,16 +128,17 @@
       case "HVY086": case "HVY087": case "HVY088": return true;
       case "HVY086-BUFF": case "HVY087-BUFF": case "HVY088-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer);
       case "HVY090": case "HVY091": return CardType($attackID) == "W" && !IsAllyAttackTarget();
-      case "HVY130-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
-      case "HVY149": return true;
-      case "HVY169": return true;
-      case "HVY189": return true;
+      case "HVY130-BUFF": case "HVY131-BUFF": case "HVY132-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
+      case "HVY149": case "HVY150": case "HVY151": return true;
+      case "HVY169": case "HVY170": case "HVY171": return true;
+      case "HVY189": case "HVY190": case "HVY191": return true;
       case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
       case "HVY216": case "HVY217": case "HVY218": return true;
-      case "HVY235-BUFF": return true;
+      case "HVY235-BUFF": case "HVY236-BUFF": case "HVY237-BUFF": return true;
       case "HVY240": return true;
       case "HVY254-1": return str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
       case "HVY254-2": return DelimStringContains(CardSubType($CombatChain->AttackCard()->ID()), "Angel");
+      case "HVY241": return true;
       case "HVY246": return ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer);
       default: return false;
     }

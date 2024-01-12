@@ -41518,6 +41518,9 @@ case "ELE202": return true;
 case "ELE003": return true;
 case "CRU051": return true;
 case "CRU052": return true;
+case "HVY006": return true;
+case "HVY007": return true;
+case "HVY049": return true;
 default: return false;}
 }
 

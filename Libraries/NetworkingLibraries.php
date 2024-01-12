@@ -830,7 +830,7 @@ function PassInput($autopass = true)
     if ($uniqueID != -1) {
       $playerChar = &GetPlayerCharacter($currentPlayer);
       $charID = FindCharacterIndex($currentPlayer, $uniqueID);
-      if ($playerChar[$charID+6] != 1) {
+      if ($playerChar[$charID+6] != 1 && BlockValue($playerChar[$charID]) >= 0) {
         WriteLog("Player " . $currentPlayer . " must block with " . CardLink($uniqueID, $uniqueID) . " due to the effect of " . CardLink("EVO143", "EVO143") . ".");
         return;
       }

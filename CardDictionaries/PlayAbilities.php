@@ -6,6 +6,10 @@
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     $rv = "";
     switch($cardID) {
+      case "HVY007":
+        Draw($currentPlayer);
+        DiscardRandom();
+        return "";
       case "HVY013":
         Intimidate();
         return "";
@@ -24,18 +28,18 @@
         return "";
       case "HVY044":
         PlayAura("HVY240", $currentPlayer);//Agility
-        PlayAura("TCC105", $currentPlayer);//Might
+        PlayAura("HVY241", $currentPlayer);//Might
         return "";
       case "HVY057":
         AskWager($cardID);
         return "";
       case "HVY089":
-        PlayAura("TCC105", $currentPlayer);//Might
-        PlayAura("TCC107", $currentPlayer);//Vigor
+        PlayAura("HVY241", $currentPlayer);//Might
+        PlayAura("HVY242", $currentPlayer);//Vigor
         return "";
       case "HVY133":
         PlayAura("HVY240", $currentPlayer);//Agility
-        PlayAura("TCC107", $currentPlayer);//Vigor
+        PlayAura("HVY242", $currentPlayer);//Vigor
         return "";
       case "HVY090": case "HVY091":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -49,16 +53,16 @@
           PlayAlly("HVY134", $currentPlayer);
         }
         return "";
-      case "HVY130":
+      case "HVY130": case "HVY131": case "HVY132":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
       case "HVY143": case "HVY144": case "HVY145":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
-          PlayAura("TCC105", $currentPlayer);//Might
+          PlayAura("HVY241", $currentPlayer);//Might
           CardDiscarded($currentPlayer, $cardID, source:$cardID);
         }
         return "";
-      case "HVY149":
+      case "HVY149": case "HVY150": case "HVY151":
         AskWager($cardID);
         return "";
       case "HVY163": case "HVY164": case "HVY165":
@@ -67,17 +71,37 @@
           CardDiscarded($currentPlayer, $cardID, source:$cardID);
         }
         return "";
-      case "HVY169":
+      case "HVY169": case "HVY170": case "HVY171":
         AskWager($cardID);
         return "";
-      case "HVY189":
+      case "HVY189": case "HVY190": case "HVY191":
         AskWager($cardID);
         return "";
       case "HVY216": case "HVY217": case "HVY218":
         AskWager($cardID);
         return "";
-      case "HVY235":
+      case "HVY235": case "HVY236-BUFF": case "HVY237-BUFF":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
+        return "";
+      case "HVY238":
+        if(CountItem("DYN243", $currentPlayer) == 0){
+          PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
+          WriteLog(CardLink($cardID, $cardID) . " created a Gold token");
+        }
+        return;
+      case "HVY245":
+        if($from == "GY") {
+          $character = &GetPlayerCharacter($currentPlayer);
+          EquipWeapon($currentPlayer,"HVY245");
+          $index = FindCharacterIndex($currentPlayer, "HVY245");
+          if ($character[$index + 3] == 0) {
+            ++$character[$index + 3];
+          } else {
+            ++$character[$index + 15];
+          }
+          $index = SearchGetFirstIndex(SearchMultizone($currentPlayer, "MYDISCARD:cardID=HVY245"));
+          RemoveGraveyard($currentPlayer, $index);
+        }
         return "";
       case "HVY246":
         if(IsHeroAttackTarget()) {
@@ -122,20 +146,6 @@
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         Reload();
-        return "";
-      case "HVY245":
-        if($from == "GY") {
-          $character = &GetPlayerCharacter($currentPlayer);
-          EquipWeapon($currentPlayer,"HVY245");
-          $index = FindCharacterIndex($currentPlayer, "HVY245");
-          if ($character[$index + 3] == 0) {
-            ++$character[$index + 3];
-          } else {
-            ++$character[$index + 15];
-          }
-          $index = SearchGetFirstIndex(SearchMultizone($currentPlayer, "MYDISCARD:cardID=HVY245"));
-          RemoveGraveyard($currentPlayer, $index);
-        }
         return "";
       default: return "";
     }

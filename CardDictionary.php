@@ -456,7 +456,7 @@ function GetAbilityNames($cardID, $index = -1)
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
       $names = "Ability";
-      if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) == 0 ) $names .= ",Attack";
+      if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces()) $names .= ",Attack";
       return $names;
     default: return "";
   }
@@ -921,7 +921,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVO235": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "EVO434": case "EVO435": case "EVO436": case "EVO437": return !EvoHasUnderCard($currentPlayer, $index);
     case "HVY090": case "HVY091": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 2 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 2;
-    case "HVY112": return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
+    case "HVY112": case "HVY113": case "HVY114": return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
     case "HVY134": return GetClassState($player, $CS_AtksWWeapon) <= 0;
     case "HVY245": if ($from == "GY") return CountItem("EVR195", $currentPlayer) < 2; else return false;
     default: return false;
