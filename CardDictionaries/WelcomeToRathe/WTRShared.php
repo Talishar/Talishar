@@ -140,7 +140,7 @@
       case "WTR162": return true;
       case "WTR171": return true;
       case "WTR185": return true;
-      case "WTR197": return true;
+      case "WTR197": case "WTR198": case "WTR199": return true;
       case "WTR200": case "WTR201": case "WTR202": return true;
       case "WTR206": case "WTR207": case "WTR208": return true;
       case "WTR209": case "WTR210": case "WTR211": return true;
