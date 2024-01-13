@@ -62,6 +62,13 @@
 
   function Clash($cardID, $effectController="")
   {
+    WriteLog("CLASH!!");
+    ClashLogic($cardID, $effectController);
+    AddDecisionQueue("WONCLASH", 1, $cardID . "," . $effectController);
+  }
+
+  function ClashLogic($cardID, $effectController="")
+  {
     global $mainPlayer, $defPlayer;
     $p1Power = -1; $p2Power = -1;
     for($i=1; $i<=2; ++$i) {
@@ -71,16 +78,20 @@
         else $p2Power = ModifiedAttackValue($deck->Top(), 2, "DECK", source:$cardID);
       }
     }
+    //DQVAR 0 = Winner
     if($p1Power > 0 && $p1Power > $p2Power) {
+      AddDecisionQueue("PASSPARAMETER", 1, 1);
+      AddDecisionQueue("SETDQVAR", 1, 0);
       VictorAbility(2, $cardID, $effectController);
-      WonClashAbility(1, $cardID, $effectController);
-
     }
     else if($p2Power > 0 && $p2Power > $p1Power) {
+      AddDecisionQueue("PASSPARAMETER", 1, 2);
+      AddDecisionQueue("SETDQVAR", 1, 0);
       VictorAbility(1, $cardID, $effectController);
-      WonClashAbility(2, $cardID, $effectController);
     }
-    if ($p1Power == $p2Power){
+    if($p1Power == $p2Power){
+      AddDecisionQueue("PASSPARAMETER", 1, 0);
+      AddDecisionQueue("SETDQVAR", 1, 0);
       VictorAbility($mainPlayer, $cardID, $effectController);
       VictorAbility($defPlayer, $cardID, $effectController);
     }
@@ -122,23 +133,24 @@
     $char = &GetPlayerCharacter($playerID);
     $hero = ShiyanaCharacter($char[0], $playerID);
     if(($hero == "HVY047" || $hero == "HVY048") && CountItem("DYN243", $playerID) > 0 && SearchCurrentTurnEffects($hero."-2", $playerID)) {
-        AddDecisionQueue("PASSPARAMETER", $playerID, "NO");
-        AddDecisionQueue("SETDQVAR", $playerID, "1");
-        AddDecisionQueue("YESNO", $playerID, "if_you_want_to_destroy_1_" . CardLink("DYN243", "DYN243") ."_to_clash_again", 1);
-        AddDecisionQueue("NOPASS", $playerID, "-", 1);
-        AddDecisionQueue("REMOVECURRENTTURNEFFECT", $playerID, $hero."-2", 1);
-        AddDecisionQueue("FINDANDDESTROYITEM", $playerID, "DYN243-1", 1);
-        AddDecisionQueue("SETDQCONTEXT", $playerID, "Choose target hero", 1);
-        AddDecisionQueue("BUTTONINPUT", $playerID, "Target_Opponent,Target_Yourself", 1);
-        AddDecisionQueue("SETDQVAR", $playerID, "1");
-        AddDecisionQueue("EQUALPASS", $playerID, "Target_Opponent", 1);
-        AddDecisionQueue("ADDBOTTOMREMOVETOP", $playerID, $hero, 1);
-        AddDecisionQueue("CLASH", $effectController, $cardID, 1);
-        AddDecisionQueue("PASSPARAMETER", $playerID, "{1}");
-        AddDecisionQueue("NOTEQUALPASS", $playerID, "Target_Opponent");
-        AddDecisionQueue("ADDBOTTOMREMOVETOP", $otherPlayer, $hero, 1);
-        AddDecisionQueue("CLASH", $effectController, $cardID, 1);
-      }
+      //This all has to be prepend for the case where it's a Victor mirror, one player wins, then the re-do causes that player to win
+      PrependDecisionQueue("CLASH", $effectController, $cardID, 1);
+      PrependDecisionQueue("ADDBOTTOMREMOVETOP", $otherPlayer, $hero, 1);
+      PrependDecisionQueue("NOTEQUALPASS", $playerID, "Target_Opponent");
+      PrependDecisionQueue("PASSPARAMETER", $playerID, "{1}");
+      PrependDecisionQueue("CLASH", $effectController, $cardID, 1);
+      PrependDecisionQueue("ADDBOTTOMREMOVETOP", $playerID, $hero, 1);
+      PrependDecisionQueue("EQUALPASS", $playerID, "Target_Opponent", 1);
+      PrependDecisionQueue("SETDQVAR", $playerID, "1");
+      PrependDecisionQueue("BUTTONINPUT", $playerID, "Target_Opponent,Target_Yourself", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $playerID, "Choose target hero", 1);
+      PrependDecisionQueue("FINDANDDESTROYITEM", $playerID, "DYN243-1", 1);
+      PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $playerID, $hero."-2", 1);
+      PrependDecisionQueue("NOPASS", $playerID, "-", 1);
+      PrependDecisionQueue("YESNO", $playerID, "if_you_want_to_destroy_1_" . CardLink("DYN243", "DYN243") ."_to_clash_again", 1);
+      PrependDecisionQueue("SETDQVAR", $playerID, "1");
+      PrependDecisionQueue("PASSPARAMETER", $playerID, "NO");
+    }
   }
 
   function AskWager($cardID) {
@@ -202,7 +214,7 @@
         case "HVY169": case "HVY170": case "HVY171":
           PlayAura("HVY240", $wonWager);//Agility
           break;;
-        case "HVY189": case "HVY190": case "HVY191":          
+        case "HVY189": case "HVY190": case "HVY191":
           PlayAura("HVY242", $wonWager);//Vigor
           break;
         case "HVY216": case "HVY217": case "HVY218":
