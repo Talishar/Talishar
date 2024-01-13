@@ -32,9 +32,10 @@ try {
 }
 
 $response->isUserLoggedIn = IsUserLoggedIn();
-if ($response->isUserLoggedIn) {
+if($response->isUserLoggedIn) {
   $response->loggedInUserID = LoggedInUser();
   $response->loggedInUserName = LoggedInUserName();
+  $response->isPatron = IsLoggedInUserPatron();
 }
 
 echo (json_encode($response));

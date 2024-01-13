@@ -17,6 +17,11 @@
     return $_SESSION["useruid"];
   }
 
+  function IsLoggedInUserPatron()
+  {
+    return (isset($_SESSION["isPatron"]) ? "1" : "0");
+  }
+
   function SessionLastGameName()
   {
     CheckSession();
