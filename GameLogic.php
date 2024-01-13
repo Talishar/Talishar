@@ -1496,17 +1496,24 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $items = &GetItems($player);
         if($lastResult == "YES") --$items[$parameter+1];
         else {
-          DestroyItemForPlayer($player, $parameter); 
+          DestroyItemForPlayer($player, $parameter);
           WriteLog(CardLink($items[$parameter], $items[$parameter]) . " was destroyed");
         }
       return "";
       case "ADDBOTTOMREMOVETOP":
-        $deck = new Deck($player);  
+        $deck = new Deck($player);
         $card = $deck->AddBottom($deck->Top(remove:true), "DECK");
         WriteLog("Player " . $player . " put " . CardLink($card, $card) . " on the bottom of the deck and Clash again!");
         return "";
       case "CLASH":
-        Clash($parameter, $player);
+        ClashLogic($parameter, $player);
+        return "";
+      case "WONCLASH":
+        $winner = $dqVars[0];
+        if($winner > 0) {
+          $params = explode(",", $parameter);
+          WonClashAbility($winner, $params[0], $params[1]);
+        }
         return "";
     default:
       return "NOTSTATIC";
