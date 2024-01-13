@@ -28,6 +28,7 @@ $favoriteDeck = TryPOST("favoriteDeck", false); //Set this to true to save the p
 $favoriteDeckLink = TryPOST("favoriteDecks", "0"); //This one is kind of weird. It's the favorite deck index, then the string "<fav>" then the favorite deck link
 $gameDescription = htmlentities(TryPOST("gameDescription", "Game #"), ENT_QUOTES); //Just a string with the game name
 $deckbuilderID = TryPOST("user", "");
+$deckTestDeck = TryPOST("deckTestDeck", "");
 
 if ($favoriteDeckLink != 0) {
   $favDeckArr = explode("<fav>", $favoriteDeckLink);
@@ -96,7 +97,8 @@ $p2Data = [2];
 $p1SideboardSubmitted = "0";
 if ($deckTestMode != "") {
   $gameStatus = 4; //Ready to start
-  $opponentDeck = "../Assets/Dummy.txt";
+  if($deckTestDeck != "") $opponentDeck = "../Assets/" . $deckTestDeck . ".txt";
+  else $opponentDeck = "../Assets/Dummy.txt";
   copy($opponentDeck, "../Games/" . $gameName . "/p2Deck.txt");
   $p2SideboardSubmitted = "1";
 } else {
