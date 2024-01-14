@@ -62,7 +62,7 @@
 
   function Clash($cardID, $effectController="")
   {
-    WriteLog("CLASH!!");
+    WriteLog("⚔️CLASH!!⚔️");
     ClashLogic($cardID, $effectController);
     AddDecisionQueue("WONCLASH", 1, $cardID . "," . $effectController);
   }
