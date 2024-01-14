@@ -97,6 +97,8 @@ $gamestateContent .= implode(" ", $events) . "\r\n";//Events
 $gamestateContent .= $EffectContext . "\r\n";//Update number the gamestate is for
 $gamestateContent .= implode(" ", $p1Inventory) . "\r\n";
 $gamestateContent .= implode(" ", $p2Inventory) . "\r\n";
+$gamestateContent .= $p1IsAI . "\r\n";
+$gamestateContent .= $p2IsAI . "\r\n";
 
 fwrite($handler, $gamestateContent);
 

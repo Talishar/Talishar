@@ -95,15 +95,18 @@ if($isShadowBanned) {
 $p1Data = [1];
 $p2Data = [2];
 $p1SideboardSubmitted = "0";
+$p1IsAI = "0";
 if ($deckTestMode != "") {
   $gameStatus = 4; //Ready to start
   if($deckTestDeck != "") $opponentDeck = "../Assets/" . $deckTestDeck . ".txt";
   else $opponentDeck = "../Assets/Dummy.txt";
   copy($opponentDeck, "../Games/" . $gameName . "/p2Deck.txt");
   $p2SideboardSubmitted = "1";
+  $p2IsAI = "1";
 } else {
   $gameStatus = 0; //Initial
   $p2SideboardSubmitted = "0";
+  $p2IsAI = "0";
 }
 $firstPlayerChooser = "";
 $firstPlayer = 1;
