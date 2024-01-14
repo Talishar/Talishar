@@ -328,7 +328,7 @@ if ($decklink != "") {
         }
         $totalCards += $numMainBoard + $numSideboard;
       }
-    }
+    } 
     $deckLoaded = true;
   }
   if(!$deckLoaded) {
