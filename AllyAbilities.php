@@ -203,6 +203,7 @@ function SpecificAllyAttackAbilities($attackID)
         if($deck->Reveal(1)) {
           if(PitchValue($deck->Top()) == 1) {
             $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+            AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "<-", 1);
             AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
             AddDecisionQueue("CHOOSETHEIRHAND", $mainPlayer, "<-", 1);
             AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);

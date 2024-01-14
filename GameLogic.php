@@ -528,6 +528,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $revealed = RevealCards($cards, $player);
       return ($revealed ? $cards : "PASS");
+    case "SHOWHANDWRITELOG":
+      $hand = &GetHand($player);
+      $cards = "";
+      for($i=0; $i<count($hand); ++$i) {
+        if($cards != "") $cards .= ", ";
+        $cards .= CardLink($hand[$i], $hand[$i]);
+      }
+      WriteLog($cards . " are shown");
+      return $lastResult;
     case "WRITELOG":
       WriteLog(implode(" ", explode("_", $parameter)));
       return $lastResult;
