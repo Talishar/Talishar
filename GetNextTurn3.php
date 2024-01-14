@@ -804,7 +804,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $helpText .= ($currentPlayer != $playerID ? "Waiting for other player to choose " . TypeToPlay($turn[0]) : GetPhaseHelptext());
     if ($currentPlayer == $playerID) {
       if ($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") {
-        $helpText .=  (" ( " . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . ")");
+        $helpText .= $turn[0] == "P" ? " ( " . $myResources[0] . " of " . $myResources[1]. ")" : "";
         array_push($promptButtons, CreateButtonAPI($playerID, "Cancel", 10000, 0, "16px"));
       }
       if (CanPassPhase($turn[0])) {

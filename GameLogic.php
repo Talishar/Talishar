@@ -894,7 +894,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($lastResult > 0) {
         $hand = &GetHand($player);
         if(count($hand) == 0) {
-          WriteLog("You have resources to pay for a declared effect, but have no cards to pitch. Reverting gamestate prior to that declaration.");
+          WriteLog("You have resources to pay for, but have no cards to pitch. Reverting gamestate prior to that declaration.");
           RevertGamestate();
         }
         PrependDecisionQueue("PAYRESOURCES", $player, $parameter, 1);
