@@ -321,7 +321,7 @@ function OnBlockResolveEffects()
     if(SearchAurasForCard("ELE117", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 3);
     $itemAttackModifier = ItemAttackModifiersOnDefend($combatChain[$i]);
     if($itemAttackModifier != 0) CombatChainPowerModifier($i, $itemAttackModifier);
-    ProcessPhantasmOnBlock($i);
+    else ProcessPhantasmOnBlock($i);
     ProcessMirageOnBlock($i);
   }
   switch($combatChain[0]) {

@@ -399,14 +399,15 @@ function ItemAttackModifiers()
 function ItemAttackModifiersOnDefend($cardID) {
   global $defPlayer, $combatChain;
   $items = &GetItems($defPlayer);
+  $attackModifier = 0;
   for($i=0; $i<count($items); $i+=ItemPieces()) {
     switch($items[$i]) {
       case "EVO079":
-        if(CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $defPlayer)) return 1;
+        if(CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $defPlayer)) ++$attackModifier;
       default: break;
     }
   }
-  return 0;
+  return $attackModifier;
 }
 
 function ItemDestroyedAbility($player, $index)
