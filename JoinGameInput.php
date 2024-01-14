@@ -283,66 +283,7 @@ if ($decklink != "") {
         $totalCards += $numMainBoard + $numSideboard;
       }
     }
-  } else {
-    $_SESSION['error'] = '⚠️ Error retrieving deck from API: ' . $apiDeck . " Slug: " . $slug . " Deck: " . $deck . " Decklink: " . $decklink . " Decks to try: " . $decksToTry;
-    header("Location: MainMenu.php");
-    die();
-  }
-
-  if ($unsupportedCards != "") {
-    $_SESSION['error'] = '⚠️ The following cards are not yet supported: ' . $unsupportedCards;
-    header("Location: MainMenu.php");
-    die();
-  }
-
-  if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc")) {
-    $_SESSION['error'] = '⚠️ Young heroes are not legal in Classic Constructed: \n\nYoung - ' . CardName($character);
-    header("Location: MainMenu.php");
-    die();
-  }
-
-  if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz")) {
-    $_SESSION['error'] = '⚠️ Adult heroes are not legal in Blitz: \n\nAdult - ' . CardName($character);
-    header("Location: MainMenu.php");
-    die();
-  }
-
-  if ($starterDeck && ($format == "compblitz" || $format == "compcc")) {
-    $_SESSION['error'] = 'ℹ️ You have enter a competitive game with a starter deck. \n\nTo play the competitive queue please provide a constructed deck or try the starter decks in the normal queue. \n\nThank you!';
-    header("Location: MainMenu.php");
-    die();
-  }
-
-  if ($bannedCard != "" && !$starterDeck) {
-    if ($format == "blitz" || $format == "compblitz" || $format == "llblitz") {
-      $_SESSION['error'] = '⚠️ The following cards are not legal in the Blitz format: \n\n' . $bannedCard;
-    } elseif ($format == "cc" || $format == "compcc" || $format == "livinglegendscc" || $format == "llcc") {
-      $_SESSION['error'] = '⚠️ The following cards are not legal in the Classic Constructed format: \n\n' . $bannedCard;
-    } elseif ($format == "commoner") {
-      $_SESSION['error'] = '⚠️ The following cards are not legal the Commoner format: \n\n' . $bannedCard;
-    }
-    header("Location: MainMenu.php");
-    die();
-  }
-
-  //if($totalCards < 60  && ($format == "cc" || $format == "compcc" || $format == "livinglegendscc"))
-  if ($totalCards < 60  && ($format == "cc" || $format == "compcc")) {
-    $_SESSION['error'] = $format . '⚠️ The deck link you have entered has too few cards (' . $totalCards . ') and is likely for blitz.\n\nPlease double-check your decklist link and try again.';
-    header("Location: MainMenu.php");
-    die();
-  }
-
-  if (($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "compblitz" || $format == "commoner")) {
-    $_SESSION['error'] = '⚠️ The deck link you have entered does not have 40 cards (' . $totalCards . ') and is likely for CC.\n\nPlease double-check your decklist link and try again.';
-    header("Location: MainMenu.php");
-    die();
-  }
-
-  if ($totalCards > 80  && $format == "compcc") {
-    $_SESSION['error'] = $format . '⚠️ The deck link you have entered has too many cards (' . $totalCards . ').\n\nPlease double-check your decklist link and try again.';
-    header("Location: MainMenu.php");
-    die();
-  }
+  } 
 
   //We have the decklist, now write to file
   $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
