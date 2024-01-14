@@ -226,6 +226,7 @@ if ($decklink != "") {
         $unsupportedCards .= $id;
       }
       else if($id == "EVO013") {
+        ++$totalCards;
         $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
         $count = $numMainBoard + $numSideboard;
         for($j=0; $j<$count; ++$j) {
@@ -236,6 +237,7 @@ if ($decklink != "") {
       else if ($cardType == "C") {
         $character = $id;
       } else if ($cardType == "W") {
+        ++$totalCards;
         $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
         for ($j = 0; $j < $numMainBoard; ++$j) {
           if($j > 0) $id = ReverseArt($id);
@@ -253,6 +255,7 @@ if ($decklink != "") {
         }
       } else if ($cardType == "E") {
         if ($numSideboard == 0) {
+          ++$totalCards;
           if (SubtypeContains($id, "Head")) {
             if ($head == "") $head = $id;
             else {
@@ -292,6 +295,7 @@ if ($decklink != "") {
             }
           }
         } else {
+          ++$totalCards;
           if (SubtypeContains($id, "Head")) {
             if ($headSideboard != "") $headSideboard .= " ";
             $headSideboard .= $id;
@@ -324,17 +328,17 @@ if ($decklink != "") {
         }
         $totalCards += $numMainBoard + $numSideboard;
       }
-    }
+    } 
     $deckLoaded = true;
   }
   if(!$deckLoaded) {
-    $response->error = "Decklist link invalid.";
+    $response->error = "⚠️ Error retrieving deck. Decklist link invalid.";
     echo(json_encode($response));
     exit;
   }
 
   if($unsupportedCards != "") {
-    $response->error = "The following cards are not yet supported: " . $unsupportedCards;
+    $response->error = "⚠️ The following cards are not yet supported: " . $unsupportedCards;
     echo (json_encode($response));
     exit;
   }
@@ -348,19 +352,37 @@ if ($decklink != "") {
   }
 
   if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc")) {
-    $response->error = "Young heroes are not legal in Classic Constructed";
+    $response->error = "⚠️ Young heroes are not legal in Classic Constructed: Young - " . CardName($character);
     echo (json_encode($response));
     exit;
   }
 
   if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz")) {
-    $response->error = "Adult heroes are not legal in Blitz";
+    $response->error = "⚠️ Adult heroes are not legal in Blitz: Adult - " . CardName($character);
     echo (json_encode($response));
     exit;
   }
 
   if ($bannedCard != "") {
-    $response->error = "The following cards are banned: " . $bannedCard;
+    $response->error = "⚠️ The following cards are not legal in the " . $format . " format: " . $bannedCard;
+    echo (json_encode($response));
+    exit;
+  }
+
+  if ($totalCards < 60  && ($format == "cc" || $format == "compcc")) {
+    $response->error = "⚠️ The deck link you have entered has too few cards (" . $totalCards . ") and is likely for the blitz/commoner format. Please double-check your decklist link and try again.";
+    echo (json_encode($response));
+    exit;
+  }
+
+  if (($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "compblitz" || $format == "commoner")) {
+    $response->error = "⚠️ The deck link you have entered does not have 40 cards (" . $totalCards . ") and is likely for CC. Please double-check your decklist link and try again.";
+    echo (json_encode($response));
+    exit;
+  }
+
+  if ($totalCards > 80  && ($format == "cc" || $format == "compcc")) {
+    $response->error = "⚠️ The deck link you have entered has too many cards (" . $totalCards . "). Please double-check your decklist link and try again.";
     echo (json_encode($response));
     exit;
   }

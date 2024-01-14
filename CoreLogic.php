@@ -1236,6 +1236,7 @@ function DoesAttackHaveGoAgain()
     case "DYN056": case "DYN057": case "DYN058": return (ComboActive($attackID));
     case "DYN069": case "DYN070": return GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) != "-";
     case "EVO111": case "EVO112": case "EVO113": return GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0;
+    case "HVY095": return NumAttacksBlocking() > 0 ? 1 : 0;
     case "HVY134": return true;
     default: return false;
   }
@@ -1607,6 +1608,7 @@ function GetDamagePreventionIndices($player)
       $indices .= $i;
     }
   }
+
   $mzIndices = SearchMultiZoneFormat($indices, "MYAURAS");
   $char = &GetPlayerCharacter($player);
   $indices = "";
@@ -1616,11 +1618,13 @@ function GetDamagePreventionIndices($player)
       $indices .= $i;
     }
   }
+
   $indices = SearchMultiZoneFormat($indices, "MYCHAR");
   $mzIndices = CombineSearches($mzIndices, $indices);
 
   $items = &GetItems($player);
   $itemCount = count($items);
+  $indices = "";
   for ($i=0; $i<$itemCount; $i+=ItemPieces()) {
     if (ItemDamagePeventionAmount($player, $i) > 0) {
       if($indices != "") $indices .= ",";
@@ -1641,6 +1645,7 @@ function GetDamagePreventionIndices($player)
   $indices = SearchMultiZoneFormat($indices, "MYALLY");
   $mzIndices = CombineSearches($mzIndices, $indices);
   $rv = $mzIndices;
+
   return $rv;
 }
 

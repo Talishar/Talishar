@@ -56,23 +56,24 @@ function parseQuickChat($inputEnum)
 {
   switch($inputEnum) {
     case "1": return "Hello";
-    case "2": return "Want to Chat?";
-    case "3": return "Can I undo?";
-    case "4": return "Do you want to undo?";
-    case "5": return "Yes";
-    case "6": return "No";
-    case "7": return "Thanks!";
-    case "8": return "Thinking... Please bear with me!";
-    case "9": return "Good game!";
-    case "10": return "Good luck, have fun";
-    case "11": return "Sorry!";
-    case "12": return "I think there's a bug";
-    case "13": return "Got to go";
-    case "14": return "Be right back";
-    case "15": return "Are you there?";
-    case "16": return "Whoops!";
-    case "17": return "No problem!";
-    case "18": return "Okay!";
+    case "2": return "Good luck, have fun";
+    case "3": return "Are you there?";
+    case "4": return "Be right back";
+    case "5": return "Can I undo?";
+    case "6": return "Do you want to undo?";
+    case "7": return "Good game!";
+    case "8": return "Got to go";
+    case "9": return "I think there is a bug";
+    case "10": return "No";
+    case "11": return "No problem!";
+    case "12": return "Okay!";
+    case "13": return "Sorry!";
+    case "14": return "Thanks!";
+    case "15": return "Thinking... Please bear with me!";
+    case "16": return "Want to Chat?";
+    case "17": return "Whoops!";
+    case "18": return "Yes";
     default: return "";
   };
 }
+
