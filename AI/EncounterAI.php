@@ -259,7 +259,8 @@ function EncounterAI()
 
 function IsEncounterAI($enemyHero)
 {
-  return str_contains($enemyHero, "ROGUE");
+  global $p2IsAI;
+  return str_contains($enemyHero, "ROGUE") || $p2IsAI == "1";
 }
 
 function ShouldBlock($found, $storedPriorityNode)

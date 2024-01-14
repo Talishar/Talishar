@@ -90,6 +90,8 @@ fwrite($handler, "\r\n");//Events
 fwrite($handler, "-\r\n");//Effect Context
 fwrite($handler, implode(" ", $p1Inventory) . "\r\n"); //p1 Inventory
 fwrite($handler, implode(" ", $p2Inventory) . "\r\n"); //p2 Inventory
+fwrite($handler, $p1IsAI . "\r\n");//Is player 1 AI (1 = yes, 0 = no)
+fwrite($handler, $p2IsAI . "\r\n");//Is player 2 AI (1 = yes, 0 = no)
 fclose($handler);
 
 //Write initial gamestate to memory

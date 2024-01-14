@@ -5,7 +5,7 @@ function CombatDummyAI()
   global $currentPlayer, $p2CharEquip, $decisionQueue, $turn, $mainPlayer;
   $currentPlayerIsAI = IsPlayerAI($currentPlayer) ? true : false;
   $canceled = false;
-  if($p2CharEquip[0] == "ROGUEIRA") {
+  if($p2CharEquip[0] != "DUMMY") {
     EncounterAI();
     return;
   }
@@ -52,8 +52,9 @@ function CombatDummyAI()
 
 function IsPlayerAI($playerID)
 {
+  global $p2IsAI;
   $char = &GetPlayerCharacter($playerID);
-  if($char[0] == "DUMMY" || $char[0] == "ROGUEIRA") return true;
+  if($playerID == 2 && ($char[0] == "DUMMY" || $p2IsAI == "1")) return true;
   return false;
 }
 
