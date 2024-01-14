@@ -1608,6 +1608,7 @@ function GetDamagePreventionIndices($player)
       $indices .= $i;
     }
   }
+
   $mzIndices = SearchMultiZoneFormat($indices, "MYAURAS");
   $char = &GetPlayerCharacter($player);
   $indices = "";
@@ -1617,11 +1618,13 @@ function GetDamagePreventionIndices($player)
       $indices .= $i;
     }
   }
+
   $indices = SearchMultiZoneFormat($indices, "MYCHAR");
   $mzIndices = CombineSearches($mzIndices, $indices);
 
   $items = &GetItems($player);
   $itemCount = count($items);
+  $indices = "";
   for ($i=0; $i<$itemCount; $i+=ItemPieces()) {
     if (ItemDamagePeventionAmount($player, $i) > 0) {
       if($indices != "") $indices .= ",";
@@ -1642,6 +1645,7 @@ function GetDamagePreventionIndices($player)
   $indices = SearchMultiZoneFormat($indices, "MYALLY");
   $mzIndices = CombineSearches($mzIndices, $indices);
   $rv = $mzIndices;
+
   return $rv;
 }
 
