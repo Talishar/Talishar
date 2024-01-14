@@ -239,6 +239,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "HVY060":
       $blockModifier += (2*GetClassState($defPlayer, $CS_NumClashesWon));
       break;
+    case "HVY096":
+      if(CardType($attackID) == "W") $blockModifier += 2;
+      break;
     default: break;
   }
   return $blockModifier;
