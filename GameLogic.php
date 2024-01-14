@@ -433,7 +433,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DISCARDCARD":
       AddGraveyard($lastResult, $player, $parameter);
       CardDiscarded($player, $lastResult);
-      WriteLog(CardLink($lastResult, $lastResult) . " was discarded");
       return $lastResult;
     case "ADDDISCARD":
       AddGraveyard($lastResult, $player, $parameter);

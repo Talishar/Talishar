@@ -9,7 +9,7 @@ function PummelHit($player = -1, $passable = false, $fromDQ = false)
   if($player == -1) $player = $defPlayer;
   if($fromDQ)
   {
-    PrependDecisionQueue("ADDDISCARD", $player, "HAND", 1);
+    PrependDecisionQueue("DISCARDCARD", $player, "HAND", 1);
     PrependDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
     if($passable) PrependDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
     else PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
@@ -22,7 +22,7 @@ function PummelHit($player = -1, $passable = false, $fromDQ = false)
     if($passable) AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
     else AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
-    AddDecisionQueue("ADDDISCARD", $player, "HAND", 1);
+    AddDecisionQueue("DISCARDCARD", $player, "HAND", 1);
   }
 }
 
