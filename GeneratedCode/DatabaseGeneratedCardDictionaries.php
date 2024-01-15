@@ -1395,6 +1395,8 @@ function GeneratedGoAgain($cardID)
                                                     return true;
                                                 case "3":
                                                     return true;
+                                                case "5":
+                                                    return true;
                                                 default:
                                                     return false;
                                             }

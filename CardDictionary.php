@@ -1010,6 +1010,7 @@ function HasBladeBreak($cardID)
     case "EVO418": case "EVO419": case "EVO420": case "EVO421": return true;
     case "EVO446": case "EVO447": case "EVO448": case "EVO449": return true;
     case "HVY096": return true;
+    case "HVY135": return true;
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
     default: return false;
   }
