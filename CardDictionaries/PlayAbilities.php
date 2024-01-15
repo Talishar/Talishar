@@ -57,11 +57,11 @@
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
       case "HVY135":
-        PlayAura("HVY241", $currentPlayer);
+        PlayAura("HVY241", $currentPlayer); //Might
         return "";
       case "HVY143": case "HVY144": case "HVY145":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
-          PlayAura("HVY241", $currentPlayer);//Might
+          PlayAura("HVY241", $currentPlayer); //Might
           CardDiscarded($currentPlayer, $cardID, source:$cardID);
         }
         return "";
@@ -70,12 +70,15 @@
         return "";
       case "HVY163": case "HVY164": case "HVY165":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
-          PlayAura("HVY240", $currentPlayer);//Agility
+          PlayAura("HVY240", $currentPlayer); //Agility
           CardDiscarded($currentPlayer, $cardID, source:$cardID);
         }
         return "";
       case "HVY169": case "HVY170": case "HVY171":
         AskWager($cardID);
+        return "";
+      case "HVY175":
+        PlayAura("HVY242", $currentPlayer); //Vigor
         return "";
       case "HVY189": case "HVY190": case "HVY191":
         AskWager($cardID);

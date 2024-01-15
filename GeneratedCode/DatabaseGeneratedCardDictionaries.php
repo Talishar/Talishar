@@ -1400,6 +1400,13 @@ function GeneratedGoAgain($cardID)
                                                 default:
                                                     return false;
                                             }
+                                        case "7":
+                                            switch ($cardID[5]) {
+                                                case "5":
+                                                    return true;
+                                                default:
+                                                    return false;
+                                            }
                                         default:
                                             return false;
                                     }

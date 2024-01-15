@@ -26,6 +26,7 @@
       case "HVY095": case "HVY096": return "AA";
       case "HVY134": return "AA";
       case "HVY135": return "A";
+      case "HVY175": return "A";
       case "HVY195": case "HVY196": return "I";
       case "HVY245":
         if ($from == "GY")
