@@ -1129,6 +1129,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "HVY001": case "HVY002":
       PlayAura("HVY241", $player);//Might
       break;
+    case "HVY052":
+      Clash($parameter, effectController:$player);
+      break;
     case "HVY162": case "HVY239":
       Clash($parameter, effectController:$player);
       break;

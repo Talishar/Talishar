@@ -398,6 +398,10 @@ function OnBlockResolveEffects()
         if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
         break;
       case "DTD200": AddLayer("TRIGGER", $defPlayer, $combatChain[$i]); break;
+      case "HVY052":
+        if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
+        else WriteLog("<span style='color:red;'>No clash is done because there is no attacking hero when allies attack.</span>");
+        break;
       default: break;
     }
   }
