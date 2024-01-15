@@ -289,6 +289,9 @@ $CS_NumCranked = 67;
 $CS_NumItemsDestroyed = 68;
 $CS_NumCrounchingTigerPlayedThisTurn = 69;
 $CS_NumClashesWon = 70;
+$CS_NumVigorDestroyed = 71;
+$CS_NumMightDestroyed = 72;
+$CS_NumAgilityDestroyed = 73;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -482,6 +485,7 @@ function ResetMainClassState()
   global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks, $CS_ArcaneDamageDealt, $CS_LayerPlayIndex, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumBoostPlayed;
   global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain, $CS_NumContractsCompleted, $CS_HitsWithSword, $CS_NumCardsDrawn;
   global $CS_LifeLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrounchingTigerPlayedThisTurn, $CS_NumClashesWon;
+  global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -553,6 +557,9 @@ function ResetMainClassState()
   $mainClassState[$CS_NumItemsDestroyed] = 0;
   $mainClassState[$CS_NumCrounchingTigerPlayedThisTurn] = 0;
   $mainClassState[$CS_NumClashesWon] = 0;
+  $mainClassState[$CS_NumVigorDestroyed] = 0;
+  $mainClassState[$CS_NumMightDestroyed] = 0;
+  $mainClassState[$CS_NumAgilityDestroyed] = 0;
 }
 
 function ResetCardPlayed($cardID)

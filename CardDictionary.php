@@ -695,10 +695,10 @@ function IsPitchRestricted($cardID, &$restriction, $from = "", $index = -1)
 
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "")
 {
-  global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan;
+  global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrounchingTigerPlayedThisTurn, $CCS_WagersThisLink;
+  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrounchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -923,6 +923,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HVY090": case "HVY091": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 2 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 2;
     case "HVY112": case "HVY113": case "HVY114": return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
     case "HVY134": return GetClassState($player, $CS_AtksWWeapon) <= 0;
+    case "HVY198": return GetClassState($otherPlayer, $CS_NumCardsDrawn) > 0;
+    case "HVY199": return GetClassState($otherPlayer, $CS_NumVigorDestroyed) > 0;
+    case "HVY200": return GetClassState($otherPlayer, $CS_NumMightDestroyed) > 0;
+    case "HVY201": return GetClassState($otherPlayer, $CS_NumAgilityDestroyed) > 0;
     case "HVY245": if ($from == "GY") return CountItem("EVR195", $currentPlayer) < 2; else return false;
     default: return false;
   }
@@ -1011,6 +1015,7 @@ function HasBladeBreak($cardID)
     case "EVO446": case "EVO447": case "EVO448": case "EVO449": return true;
     case "HVY096": return true;
     case "HVY135": return true;
+    case "HVY198": case "HVY199": case "HVY200": case "HVY201": return true;
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
     default: return false;
   }
