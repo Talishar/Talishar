@@ -19,7 +19,9 @@
   {
     switch($cardID)
     {
-      case "HVY006": return "AA"; case "HVY007": return "AA";
+      case "HVY006": return "AA"; 
+      case "HVY007": return "AA";
+      case "HVY010": return "A";
       case "HVY049": return "AA";
       case "HVY050": return "AA";
       case "HVY090": case "HVY091": return "A";

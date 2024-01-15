@@ -10,6 +10,10 @@
         Draw($currentPlayer);
         DiscardRandom();
         return "";
+      case "HVY010":
+        Draw($currentPlayer);
+        DiscardRandom($currentPlayer, $cardID);
+        return "";
       case "HVY013":
         Intimidate();
         return "";
