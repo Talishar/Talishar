@@ -80,6 +80,9 @@
       case "HVY189": case "HVY190": case "HVY191":
         AskWager($cardID);
         return "";
+      case "HVY195":
+        Draw($currentPlayer);
+        return "";
       case "HVY196": 
         Draw($currentPlayer);
         return "";

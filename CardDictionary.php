@@ -923,6 +923,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HVY090": case "HVY091": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 2 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 2;
     case "HVY112": case "HVY113": case "HVY114": return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
     case "HVY134": return GetClassState($player, $CS_AtksWWeapon) <= 0;
+    case "HVY195": return GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2;
     case "HVY198": return GetClassState($otherPlayer, $CS_NumCardsDrawn) > 0;
     case "HVY199": return GetClassState($otherPlayer, $CS_NumVigorDestroyed) > 0;
     case "HVY200": return GetClassState($otherPlayer, $CS_NumMightDestroyed) > 0;
@@ -1052,6 +1053,14 @@ function HasTemper($cardID)
     case "TCC029": case "TCC030": case "TCC031": case "TCC032": case "TCC033": return true;
     case "EVO247": case "EVO426": case "EVO427": case "EVO428": case "EVO429":return true;
     case "HVY056": case "HVY100": return true;
+    default: return false;
+  }
+}
+
+function HasGuardwell($cardID)
+{
+  switch($cardID) {
+    case "HVY195": return true;
     default: return false;
   }
 }
