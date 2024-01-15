@@ -28129,6 +28129,7 @@ function GeneratedPitchValue($cardID)
                                                     return 2;
                                                 default:
                                                     return 1;
+                                                }
                                         case "4":
                                             switch ($cardID[5]) {
                                                 case "0":

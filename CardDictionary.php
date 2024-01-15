@@ -982,7 +982,7 @@ function GoesOnCombatChain($phase, $cardID, $from)
 
 function IsStaticType($cardType, $from = "", $cardID = "")
 {
-  if($cardType == "C" || $cardType == "E" || $cardType == "W") return true;
+  if($cardType == "C" || $cardType == "E" || $cardType == "W" || $cardType == "D") return true;
   if($from == "PLAY") return true;
   if($cardID != "" && $from == "BANISH" && AbilityPlayableFromBanish($cardID)) return true;
   return false;
