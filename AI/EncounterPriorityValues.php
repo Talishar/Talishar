@@ -40,7 +40,7 @@ function GetPriority($cardID, $heroID, $type)
 {
   switch($heroID)
   {
-    case "ROGUEIRA":
+    case "CRU046"://Ira
       $redBlockChance = SearchCount(SearchHand(2, pitch:1)) > 1 ? 0.8 : 0.5;
       $resources = &GetResources(2);
       switch($cardID)
