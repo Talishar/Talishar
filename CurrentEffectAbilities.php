@@ -345,6 +345,7 @@ function EffectHasBlockModifier($cardID)
     case "OUT109": case "OUT110": case "OUT111":
     case "DTD094": case "DTD095": case "DTD096":
     case "TCC035":
+    case "HVY052":
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206":
     case "HVY245":
     return true;
@@ -364,7 +365,7 @@ function EffectBlockModifier($cardID, $index, $from)
     case "ELE143":
       return 1;
     case "ELE203":
-      return ($CombatChain->Card($index)->ID() == "ELE203" ? 1 : 0);
+      return ($CombatChain->Card($index)->ID() == $cardID ? 1 : 0);
     case "OUT109":
       return (PitchValue($CombatChain->Card($index)->ID()) == 1 && HasAimCounter() ? -1 : 0);
     case "OUT110":
@@ -377,6 +378,8 @@ function EffectBlockModifier($cardID, $index, $from)
       return CachedTotalAttack() >= 13 && (CardType($CombatChain->Card($index)->ID()) || (DelimStringContains(CardSubType($CombatChain->Card($index)->ID()), "Evo"))) != "E" ? -1 : 0;
     case "EVO105": case "EVO106": case "EVO107":
       return IsActionCard($CombatChain->Card($index)->ID()) ? -1 : 0;
+    case "HVY052":    
+      return ($CombatChain->Card($index)->ID() == $cardID ? 1 : 0);
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206":
       return $CombatChain->Card($index)->ID() == $cardID && PlayerHasLessHealth($defPlayer) ? 1 : 0;
     default: return 0;
@@ -1097,7 +1100,7 @@ function IsCombatEffectPersistent($cardID)
     case "ROGUE018": case "ROGUE601": case "ROGUE702": case "ROGUE704": case "ROGUE707": return true;
     case "ROGUE603": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
     case "ROGUE710-GA": case "ROGUE710-DO": case "ROGUE711": case "ROGUE802": case "ROGUE805": case "ROGUE806": return true;
-    case "HVY090": case "HVY091": return true;
+    case "HVY052": case "HVY090": case "HVY091": return true;
     default:
       return false;
   }

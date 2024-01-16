@@ -216,7 +216,7 @@ function AuraCostModifier($cardID="")
 // CR 2.1 - 4.3.1. The “beginning of the action phase” event occurs and abilities that trigger at the beginning of the action phase are triggered.
 function AuraStartTurnAbilities()
 {
-  global $mainPlayer, $EffectContext, $defPlayer;
+  global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
   $auras = &GetAuras($mainPlayer);
   for($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $EffectContext = $auras[$i];
@@ -353,13 +353,15 @@ function AuraStartTurnAbilities()
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         break;
-      case "TCC105": case "HVY241":
+      case "TCC105": case "HVY241": //Might
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
+        IncrementClassState($mainPlayer, $CS_NumMightDestroyed, 1);
         break;
-      case "TCC107": case "HVY242":
+      case "TCC107": case "HVY242": //Vigor
         GainResources($mainPlayer, 1);
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
+        IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
         break;
       case "EVO243":
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
@@ -374,9 +376,10 @@ function AuraStartTurnAbilities()
         AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         break;
-      case "HVY240":
+      case "HVY240": //Agility
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
+        IncrementClassState($mainPlayer, $CS_NumAgilityDestroyed, 1);
         break;
       default: break;
     }

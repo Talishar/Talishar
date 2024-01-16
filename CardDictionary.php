@@ -695,10 +695,10 @@ function IsPitchRestricted($cardID, &$restriction, $from = "", $index = -1)
 
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "")
 {
-  global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan;
+  global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrounchingTigerPlayedThisTurn, $CCS_WagersThisLink;
+  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrounchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -923,6 +923,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HVY090": case "HVY091": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 2 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 2;
     case "HVY112": case "HVY113": case "HVY114": return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
     case "HVY134": return GetClassState($player, $CS_AtksWWeapon) <= 0;
+    case "HVY195": return GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2;
+    case "HVY198": return GetClassState($otherPlayer, $CS_NumCardsDrawn) > 0;
+    case "HVY199": return GetClassState($otherPlayer, $CS_NumVigorDestroyed) > 0;
+    case "HVY200": return GetClassState($otherPlayer, $CS_NumMightDestroyed) > 0;
+    case "HVY201": return GetClassState($otherPlayer, $CS_NumAgilityDestroyed) > 0;
     case "HVY245": if ($from == "GY") return CountItem("EVR195", $currentPlayer) < 2; else return false;
     default: return false;
   }
@@ -978,7 +983,7 @@ function GoesOnCombatChain($phase, $cardID, $from)
 
 function IsStaticType($cardType, $from = "", $cardID = "")
 {
-  if($cardType == "C" || $cardType == "E" || $cardType == "W") return true;
+  if($cardType == "C" || $cardType == "E" || $cardType == "W" || $cardType == "D") return true;
   if($from == "PLAY") return true;
   if($cardID != "" && $from == "BANISH" && AbilityPlayableFromBanish($cardID)) return true;
   return false;
@@ -1010,6 +1015,8 @@ function HasBladeBreak($cardID)
     case "EVO418": case "EVO419": case "EVO420": case "EVO421": return true;
     case "EVO446": case "EVO447": case "EVO448": case "EVO449": return true;
     case "HVY096": return true;
+    case "HVY135": case "HVY175": return true;
+    case "HVY198": case "HVY199": case "HVY200": case "HVY201": return true;
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
     default: return false;
   }
@@ -1030,6 +1037,7 @@ function HasBattleworn($cardID)
     case "EVO011": return true;
     case "EVO410b": case "EVO438": case "EVO439": case "EVO440": case "EVO441": case "EVO235": return true;
     case "EVO442": case "EVO443": case "EVO444": case "EVO445": return true;
+    case "HVY010": return true;
     default: return false;
   }
 }
@@ -1045,6 +1053,15 @@ function HasTemper($cardID)
     case "DTD047": case "DTD206": case "DTD207": case "DTD211": return true;
     case "TCC029": case "TCC030": case "TCC031": case "TCC032": case "TCC033": return true;
     case "EVO247": case "EVO426": case "EVO427": case "EVO428": case "EVO429":return true;
+    case "HVY052": case "HVY056": case "HVY100": return true;
+    default: return false;
+  }
+}
+
+function HasGuardwell($cardID)
+{
+  switch($cardID) {
+    case "HVY195": return true;
     default: return false;
   }
 }

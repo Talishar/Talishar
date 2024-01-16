@@ -9,6 +9,7 @@
       case "HVY090": case "HVY091": return 0;
       case "HVY095": case "HVY096": return 1;
       case "HVY134": return 1;
+      case "HVY196": return 3;
       case "HVY245": return 2;
       default: return 0;
     }
@@ -18,12 +19,17 @@
   {
     switch($cardID)
     {
-      case "HVY006": return "AA"; case "HVY007": return "AA";
+      case "HVY006": return "AA"; 
+      case "HVY007": return "AA";
+      case "HVY010": return "A";
       case "HVY049": return "AA";
       case "HVY050": return "AA";
       case "HVY090": case "HVY091": return "A";
       case "HVY095": case "HVY096": return "AA";
       case "HVY134": return "AA";
+      case "HVY135": return "A";
+      case "HVY175": return "A";
+      case "HVY195": case "HVY196": return "I";
       case "HVY245":
         if ($from == "GY")
           return "I";

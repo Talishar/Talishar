@@ -1337,6 +1337,13 @@ function GeneratedGoAgain($cardID)
                             switch ($cardID[3]) {
                                 case "0":
                                     switch ($cardID[4]) {
+                                        case "1":
+                                            switch ($cardID[5]) {
+                                                case "0":
+                                                    return true;
+                                                default:
+                                                    return false;
+                                                }
                                         case "4":
                                             switch ($cardID[5]) {
                                                 case "1":
@@ -1389,7 +1396,20 @@ function GeneratedGoAgain($cardID)
                                             switch ($cardID[5]) {
                                                 case "0":
                                                     return true;
+                                                case "1":
+                                                    return true;
+                                                case "2":
+                                                    return true;
                                                 case "3":
+                                                    return true;
+                                                case "5":
+                                                    return true;
+                                                default:
+                                                    return false;
+                                            }
+                                        case "7":
+                                            switch ($cardID[5]) {
+                                                case "5":
                                                     return true;
                                                 default:
                                                     return false;
@@ -1402,6 +1422,10 @@ function GeneratedGoAgain($cardID)
                                         case "3":
                                             switch ($cardID[5]) {
                                                 case "5":
+                                                    return true;
+                                                case "6":
+                                                    return true;
+                                                case "7":
                                                     return true;
                                                 default:
                                                     return false;

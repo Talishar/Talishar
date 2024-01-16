@@ -118,6 +118,9 @@
           --$character[$index + 3];
         }
         break;
+      case "HVY052":
+        if ($playerID == $effectController) AddCurrentTurnEffect($cardID, $playerID, "CC");
+        break;
       case "HVY162":
         PlayAura("HVY240", $playerID);
         break;

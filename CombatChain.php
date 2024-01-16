@@ -236,11 +236,19 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "EVO231": case "EVO232": case "EVO233":
       if(CachedOverpowerActive()) $blockModifier += 2;
       break;
+    case "HVY056":
+      CountAura("HVY241", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Might
+      CountAura("HVY242", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
+      break;
     case "HVY060":
       $blockModifier += (2*GetClassState($defPlayer, $CS_NumClashesWon));
       break;
     case "HVY096":
       if(CardType($attackID) == "W") $blockModifier += 2;
+      break;
+    case "HVY100": 
+      CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
+      CountAura("HVY242", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
       break;
     default: break;
   }
@@ -321,7 +329,7 @@ function OnBlockResolveEffects()
     if(SearchAurasForCard("ELE117", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 3);
     $itemAttackModifier = ItemAttackModifiersOnDefend($combatChain[$i]);
     if($itemAttackModifier != 0) CombatChainPowerModifier($i, $itemAttackModifier);
-    ProcessPhantasmOnBlock($i);
+    else ProcessPhantasmOnBlock($i);
     ProcessMirageOnBlock($i);
   }
   switch($combatChain[0]) {
@@ -390,6 +398,10 @@ function OnBlockResolveEffects()
         if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
         break;
       case "DTD200": AddLayer("TRIGGER", $defPlayer, $combatChain[$i]); break;
+      case "HVY052":
+        if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
+        else WriteLog("<span style='color:red;'>No clash is done because there is no attacking hero when allies attack.</span>");
+        break;
       default: break;
     }
   }
