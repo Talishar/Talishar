@@ -409,7 +409,7 @@ function OnBlockResolveEffects()
         }
         if($num6Block) {
           PlayAura("HVY241", $defPlayer);//Might
-          WriteLog("🦴 " . CardLink("HVY008", "HVY008") . " created a might token");
+          WriteLog("🦴 " . CardLink("HVY008", "HVY008") . " created a " . CardLink("HVY241", "HVY241") . " token");
         }
         break;
       case "HVY052":

@@ -412,13 +412,16 @@ function MainCharacterHitAbilities()
         }
         break;
       case "HVY097":
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to create a Vigor", 0, 1);
-        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
-        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-        AddDecisionQueue("WRITELOG", $mainPlayer, "🩸 " . CardLink($characterID, $characterID) . " created a vigor token ", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "TCC107", 1);
-        AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+        if(CardType($attackID) == "W")
+        {
+          AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to create a " . CardLink("HVY242", "HVY242"), 0, 1);
+          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
+          AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+          AddDecisionQueue("WRITELOG", $mainPlayer, "🩸 " . CardLink($characterID, $characterID) . " created a " . CardLink("HVY242", "HVY242") . " token ", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "TCC107", 1);
+          AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+        }
         break;
       case "ROGUE016":
         if(CardType($attackID) == "AA") {
