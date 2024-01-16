@@ -47,7 +47,10 @@
     global $CombatChain;
     switch($cardID)
     {
-      case "HVY090": case "HVY091": return true;
+      case "HVY010": case "HVY090": case "HVY091":
+      case "HVY135": case "HVY155": case "HVY175": 
+      case "HVY243": 
+        return true;
       default: return false;
     }
   }
