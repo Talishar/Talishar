@@ -236,6 +236,10 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "EVO231": case "EVO232": case "EVO233":
       if(CachedOverpowerActive()) $blockModifier += 2;
       break;
+    case "HVY011":
+      CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
+      CountAura("HVY241", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Might
+      break;
     case "HVY056":
       CountAura("HVY241", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Might
       CountAura("HVY242", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
