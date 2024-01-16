@@ -118,7 +118,7 @@
       case "HVY216": case "HVY217": case "HVY218":
         AskWager($cardID);
         return "";
-      case "HVY235": case "HVY236-BUFF": case "HVY237-BUFF":
+      case "HVY235": case "HVY236": case "HVY237":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
       case "HVY238":
