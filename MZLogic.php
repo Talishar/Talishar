@@ -7,8 +7,8 @@ function MZDestroy($player, $lastResult, $effectController="")
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     switch ($mzIndex[0]) {
-      case "MYHAND": $lastResult = DiscardCard($player, $mzIndex[1], effectController:$effectController); break;
-      case "THEIRHAND": $lastResult = DiscardCard($otherPlayer, $mzIndex[1], effectController:$effectController); break;
+      case "MYHAND": $lastResult = DiscardCard($player, $mzIndex[1]); break;
+      case "THEIRHAND": $lastResult = DiscardCard($otherPlayer, $mzIndex[1]); break;
       case "MYCHAR": $lastResult = DestroyCharacter($player, $mzIndex[1]); break;
       case "THEIRCHAR": $lastResult = DestroyCharacter($otherPlayer, $mzIndex[1]); break;
       case "MYALLY": $lastResult = DestroyAlly($player, $mzIndex[1]); break;
