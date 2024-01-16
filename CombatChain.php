@@ -416,6 +416,16 @@ function OnBlockResolveEffects()
         if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
         else WriteLog("<span style='color:red;'>No clash is done because there is no attacking hero when allies attack.</span>");
         break;
+      case "HVY054":
+        $yellowPitchCards = 0;
+        for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+          if(PitchValue($combatChain[$i]) == 2) ++$yellowPitchCards;
+        }
+        if($yellowPitchCards >= 2) {
+          PutItemIntoPlayForPlayer("DYN243", $defPlayer, effectController:$defPlayer);
+          WriteLog(CardLink("HVY054", "HVY054") . " created a Gold token");
+        }
+        break;
       default: break;
     }
   }
