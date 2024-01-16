@@ -400,10 +400,12 @@ function OnBlockResolveEffects()
       case "DTD200": AddLayer("TRIGGER", $defPlayer, $combatChain[$i]); break;
       case "HVY008":
         $num6Block = 0;
-        for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) if(ModifiedAttackValue($combatChain[$i], $defPlayer, "CC", source:"HVY008")) ++$num6Block;
+        for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+          if(ModifiedAttackValue($combatChain[$i], $defPlayer, "CC", "HVY008") >= 6) ++$num6Block;
+        }
         if($num6Block) {
           PlayAura("HVY241", $defPlayer);//Might
-          WriteLog("🦴 " . CardLink($combatChain[$i], $combatChain[$i]) . " created a might token");
+          WriteLog("🦴 " . CardLink("HVY008", "HVY008") . " created a might token");
         }
         break;
       case "HVY052":
