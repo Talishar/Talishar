@@ -77,6 +77,9 @@
       case "HVY115": case "HVY116": case "HVY117": 
         if(NumAttacksBlocking() > 0)  PlayAura("HVY240", $currentPlayer); //Agility
         return "";
+      case "HVY118": case "HVY119": case "HVY120":
+        if(NumAttacksBlocking() > 0)  PlayAura("HVY242", $currentPlayer); //Vigor
+        return "";
       case "HVY130": case "HVY131": case "HVY132":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
