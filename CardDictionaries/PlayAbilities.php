@@ -27,6 +27,9 @@
       case "HVY023": case "HVY024": case "HVY025":
         if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) Intimidate();
         return "";
+      case "HVY026": case "HVY027": case "HVY028":
+        if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) PlayAura("HVY240", $currentPlayer);//Agility
+        return "";
       case "HVY035": case "HVY036": case "HVY037":
         if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) PlayAura("HVY241", $currentPlayer);//Might
         return "";

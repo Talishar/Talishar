@@ -1098,6 +1098,7 @@ function HasBeatChest($cardID)
 {
   switch($cardID) {
     case "HVY023": case "HVY024": case "HVY025":
+    case "HVY026": case "HVY027": case "HVY028":
     case "HVY035": case "HVY036": case "HVY037":
     case "HVY041": case "HVY042": case "HVY043":
       return true;
