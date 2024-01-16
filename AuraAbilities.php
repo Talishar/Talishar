@@ -372,6 +372,10 @@ function AuraStartTurnAbilities()
         Draw($mainPlayer);
         MZMoveCard($mainPlayer, "MYHAND", "MYTOPDECK", silent:true);
         break;
+      case "HVY083": case "HVY084": case "HVY085":
+        AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
+        break;  
       case "HVY086": case "HVY087": case "HVY088":
         AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
