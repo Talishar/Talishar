@@ -252,14 +252,14 @@ function DefCharacterStartTurnAbilities()
         break;
       case "DTD564":
         $character = GetPlayerCharacter($defPlayer);
-        if($character[1] != 3) {  
+        if($character[1] != 3) {
           AddCurrentTurnEffect("DTD564", $defPlayer);
         }
         break;
       case "HVY047": case "HVY048":
         AddCurrentTurnEffect($character[$i]."-1", $defPlayer);
         AddCurrentTurnEffect($character[$i]."-2", $defPlayer);
-        break;    
+        break;
       case "ROGUE018":
         AddCurrentTurnEffect("ROGUE018", $mainPlayer);
         break;
@@ -410,6 +410,15 @@ function MainCharacterHitAbilities()
         if(CardType($attackID) == "AA" && IsCharacterActive($mainPlayer, $i)) {
           AddLayer("TRIGGER", $mainPlayer, $characterID);
         }
+        break;
+      case "HVY097":
+        AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to create a Vigor", 0, 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
+        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "🩸Vigor created by Grains of Bloodspill", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "TCC107", 1);
+        AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
         break;
       case "ROGUE016":
         if(CardType($attackID) == "AA") {
@@ -693,7 +702,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "TCC079": case "TCC082":
     case "EVO235": case "EVO247":
     case "TCC051": case "TCC052": case "TCC053": case "TCC054": case "TCC080":
-    case "HVY010": case "HVY135": case "HVY175": case "HVY195": case "HVY196": 
+    case "HVY010": case "HVY135": case "HVY175": case "HVY195": case "HVY196":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "DTD001": case "DTD002":

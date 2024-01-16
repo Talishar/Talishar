@@ -2087,7 +2087,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243-1", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
-        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);  
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       }
       break;
     case "HVY090": case "HVY091":
