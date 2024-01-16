@@ -52,6 +52,9 @@
       case "HVY090": case "HVY091":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "HVY099":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "HVY103":
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
         AddDecisionQueue("MODAL", $currentPlayer, "UPTHEANTE", 1);

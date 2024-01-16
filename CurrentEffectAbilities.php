@@ -302,6 +302,9 @@ function EffectHitEffect($cardID)
     case "HVY090": case "HVY091":
       PutItemIntoPlayForPlayer("DYN243", $mainPlayer, effectController:$mainPlayer);
       return 1;
+    case "HVY099":
+      Draw($mainPlayer);
+      break;
     default:
       break;
   }
