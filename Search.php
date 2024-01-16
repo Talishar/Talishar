@@ -1156,3 +1156,35 @@ function SearchLayersForCardID($cardID)
   }
   return -1;
 }
+
+function GetPlayerNumEquipment($player) 
+{
+  $characters = &GetPlayerCharacter($player);
+  $count = 0;
+  for($i = 0; $i < count($characters); $i += CharacterPieces()) {
+    if(TypeContains($characters[$i], "E", $player)) ++$count;
+  }
+  return $count;
+}
+
+function GetPlayerNumTokens($player) 
+{
+  $auras = &GetAuras($player);
+  $items = &GetItems($player);
+  $ally = &GetAllies($player);
+  $permanents = &GetPermanents($player);
+  $count = 0;
+  for($i = 0; $i < count($auras); $i += AuraPieces()) {
+    if(TypeContains($auras[$i], "T", $player)) ++$count;
+  }
+  for($i = 0; $i < count($items); $i += ItemPieces()) {
+    if(TypeContains($items[$i], "T", $player)) ++$count;
+  }
+  for($i = 0; $i < count($ally); $i += AllyPieces()) {
+    if(TypeContains($auras[$i], "T", $player)) ++$count;
+  }
+  for($i = 0; $i < count($permanents); $i += PermanentPieces()) {
+    if(TypeContains($auras[$i], "T", $player)) ++$count;
+  }
+  return $count;
+}

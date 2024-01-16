@@ -1178,6 +1178,7 @@ function DoesEffectGrantOverpower($cardID) {
   switch($cardID) {
     case "HVY045": case "HVY046": return true;
     case "HVY059": return true;
+    case "HVY213": case "HVY214": case "HVY215": return true;
     default: return false;
   }
 }

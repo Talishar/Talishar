@@ -112,6 +112,13 @@ function HVYHitEffect($cardID)
         Clash($cardID, $mainPlayer);
       }
       break;
+    case "HVY213": case "HVY214": case "HVY215":
+      if(SearchCurrentTurnEffects($cardID, $mainPlayer, true)) {
+        PlayAura("HVY240", $mainPlayer); //Agility
+        PlayAura("HVY241", $mainPlayer); //Might
+        PlayAura("HVY242", $mainPlayer); //Vigor
+      }
+      break;
     case "HVY249":
       if (HasAimCounter() && IsHeroAttackTarget()) {
         $defPlayerHand = &GetHand($defPlayer);

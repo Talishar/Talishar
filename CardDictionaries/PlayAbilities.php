@@ -122,6 +122,15 @@
       case "HVY197": 
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "HVY213": case "HVY214": case "HVY215": 
+        $mainPlayerNum = 0;
+        $defPlayerNum = 0;
+        if(IsHeroAttackTarget() && PlayerHasLessHealth($currentPlayer)) {
+          $mainPlayerNum = GetPlayerNumEquipment($currentPlayer) + GetPlayerNumTokens($currentPlayer);
+          $defPlayerNum = GetPlayerNumEquipment($otherPlayer) + GetPlayerNumTokens($otherPlayer);
+          if($mainPlayerNum < $defPlayerNum) AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
+        return "";
       case "HVY216": case "HVY217": case "HVY218":
         AskWager($cardID);
         return "";

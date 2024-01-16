@@ -106,6 +106,7 @@
       case "HVY087-BUFF": return 4;
       case "HVY088-BUFF": return 3;
       case "HVY104-BUFF": return 3;
+    
       case "HVY115": return 3;
       case "HVY116": return 2;
       case "HVY117": return 1;
@@ -115,6 +116,7 @@
       case "HVY130-BUFF": return 3;
       case "HVY131-BUFF": return 2;
       case "HVY132-BUFF": return 1;
+      case "HVY213": case "HVY214": case "HVY215": return 3;
       case "HVY235-BUFF": return 3;
       case "HVY236-BUFF": return 2;
       case "HVY237-BUFF": return 1;
@@ -146,6 +148,7 @@
       case "HVY169": case "HVY170": case "HVY171": return true;
       case "HVY189": case "HVY190": case "HVY191": return true;
       case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
+      case "HVY213": case "HVY214": case "HVY215": return true;
       case "HVY216": case "HVY217": case "HVY218": return true;
       case "HVY235-BUFF": case "HVY236-BUFF": case "HVY237-BUFF": return true;
       case "HVY240": return true;
