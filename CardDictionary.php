@@ -1546,6 +1546,7 @@ function RequiresDieRoll($cardID, $from, $player)
     case "CRU009": return true;
     case "EVR004": return true;
     case "EVR014": case "EVR015": case "EVR016": return true;
+    case "HVY009": return true;
   }
   return false;
 }

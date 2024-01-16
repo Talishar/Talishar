@@ -10,6 +10,10 @@
         Draw($currentPlayer);
         DiscardRandom();
         return "";
+      case "HVY009":
+        $roll = GetDieRoll($currentPlayer);
+        AddCurrentTurnEffect($cardID . "-" . $roll, $currentPlayer);
+        return "Rolled $roll and your intelligence is " . $roll . " until the end of turn.";
       case "HVY010":
         Draw($currentPlayer);
         DiscardRandom($currentPlayer, $cardID);

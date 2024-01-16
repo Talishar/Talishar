@@ -991,10 +991,14 @@ function CurrentEffectIntellectModifier()
   $intellectModifier = 0;
   for($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i + 1] == $mainPlayer) {
-      switch($currentTurnEffects[$i]) {
+      $cardID = substr($currentTurnEffects[$i], 0, 6);
+      switch($cardID) {
         case "WTR042": case "ARC161": case "CRU028": case "MON000": case "MON246": case "EVO026": case "EVO426":
           $intellectModifier += 1;
           break;
+        case "HVY009":
+          $characters = GetPlayerCharacter($mainPlayer);
+          $intellectModifier -= CharacterIntellect($characters[0]) - substr($currentTurnEffects[$i], -1);
         default: break;
       }
     }

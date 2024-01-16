@@ -21,6 +21,7 @@
     {
       case "HVY006": return "AA"; 
       case "HVY007": return "AA";
+      case "HVY009": return "A";
       case "HVY010": return "A";
       case "HVY049": return "AA";
       case "HVY050": return "AA";
