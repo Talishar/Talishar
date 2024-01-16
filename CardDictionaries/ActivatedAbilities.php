@@ -9,7 +9,7 @@
       case "HVY090": case "HVY091": return 0;
       case "HVY095": case "HVY096": return 1;
       case "HVY134": return 1;
-      case "HVY196": return 3;
+      case "HVY196": case "HVY197": return 3;
       case "HVY245": return 2;
       default: return 0;
     }
@@ -29,7 +29,7 @@
       case "HVY134": return "AA";
       case "HVY135": return "A";
       case "HVY175": return "A";
-      case "HVY195": case "HVY196": return "I";
+      case "HVY195": case "HVY196": case "HVY197": return "I";
       case "HVY245":
         if ($from == "GY")
           return "I";

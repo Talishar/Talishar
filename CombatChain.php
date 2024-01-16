@@ -159,7 +159,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "EVO210": case "EVO211": case "EVO212":
     case "EVO213": case "EVO214": case "EVO215":
       return NumEquipBlock();
-    case "HVY006": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0;
+    case "HVY006": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0; 
     case "HVY013":
       $hand = &GetHand($defPlayer);
       return $combatChain[0] == "HVY013" && count($hand) == 0 ? 3 : 0;
@@ -246,7 +246,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "HVY096":
       if(CardType($attackID) == "W") $blockModifier += 2;
       break;
-    case "HVY100":
+    case "HVY100": 
       CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
       CountAura("HVY242", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
       break;
@@ -403,7 +403,7 @@ function OnBlockResolveEffects()
         for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) if(ModifiedAttackValue($combatChain[$i], $defPlayer, "CC", source:"HVY008")) ++$num6Block;
         if($num6Block) {
           PlayAura("HVY241", $defPlayer);//Might
-          WriteLog("🦴Apex Bonebreaker created a might token");
+          WriteLog("🦴 " . CardLink($combatChain[$i], $combatChain[$i]) . " created a might token");
         }
         break;
       case "HVY052":

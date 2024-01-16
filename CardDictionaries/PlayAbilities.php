@@ -93,6 +93,9 @@
       case "HVY196": 
         Draw($currentPlayer);
         return "";
+      case "HVY197": 
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "HVY216": case "HVY217": case "HVY218":
         AskWager($cardID);
         return "";
