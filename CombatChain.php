@@ -391,6 +391,9 @@ function OnBlockResolveEffects()
       case "TCC030": case "TCC031": case "TCC032":
       case "TCC033": case "TCC098": case "TCC102":
       case "TCC060": case "TCC063": case "TCC067": // Crowd Control
+      case "HVY162": case "HVY239"://Clash blocks
+        AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
+        break;
       case "DTD094": case "DTD095": case "DTD096":
         if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
         break;
@@ -406,9 +409,6 @@ function OnBlockResolveEffects()
       case "HVY052":
         if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
         else WriteLog("<span style='color:red;'>No clash is done because there is no attacking hero when allies attack.</span>");
-        break;
-      case "HVY162": case "HVY239"://Clash blocks
-        AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       default: break;
     }
