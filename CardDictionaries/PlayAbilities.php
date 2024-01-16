@@ -65,6 +65,10 @@
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
         AddDecisionQueue("MODAL", $currentPlayer, "UPTHEANTE", 1);
         return "";
+      case "HVY104":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
+        return "";
       case "HVY105":
         for($i=0; $i<intval($additionalCosts); ++$i) {
           PlayAlly("HVY134", $currentPlayer);

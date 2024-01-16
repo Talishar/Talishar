@@ -453,6 +453,14 @@ function OnBlockResolveEffects()
           $count = ModifyBlockForType("E", 0);
           $remove = $count > 0;
           break;
+        case "HVY104":
+          if(NumAttacksBlocking() >= 0 && IsHeroAttackTarget()) {
+            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
+            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to destroy from their arsenal", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+            AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
+          }
+          break;
         default: break;
       }
     }
