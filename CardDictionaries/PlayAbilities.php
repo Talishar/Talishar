@@ -107,7 +107,7 @@
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
       case "HVY238":
-        if(CountItem("DYN243", $currentPlayer) == 0){
+        if(CountItem("DYN243", $currentPlayer, false) == 0){
           PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
           WriteLog(CardLink($cardID, $cardID) . " created a Gold token");
         }

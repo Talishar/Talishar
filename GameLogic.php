@@ -1060,7 +1060,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $number = $mzArr[1];
       for($i = 0; $i < $number; ++$i) {
         $index = GetItemIndex($cardID, $player);
-        if($index != -1) DestroyItemForPlayer($player, $index);
+        if($index != -1) {
+          DestroyItemForPlayer($player, $index);
+          --$number;
+        }
+      }
+      if($number > 0) {
+        $charIndex = FindCharacterIndex($player, "HVY051");
+        if($charIndex != -1) DestroyCharacter($player, $charIndex);
       }
       return $lastResult;
     case "COUNTPARAM":

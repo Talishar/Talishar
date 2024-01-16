@@ -771,13 +771,14 @@ function GetAllyIndex($cardID, $player)
   return -1;
 }
 
-function CountItem($cardID, $player)
+function CountItem($cardID, $player, $NotTokens=true)
 {
   $items = &GetItems($player);
   $count = 0;
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
     if ($items[$i] == $cardID) ++$count;
   }
+  if ($cardID == "DYN243" && SearchCharacterForCard($player, "HVY051") && $NotTokens) ++$count; // Aurum Aegis is considered a Gold object. Rules and effects that specify a “Gold” may refer to Aurum Aegis. Rules and effects that specify a “Gold token” cannot refer to Aurum Aegis.
   return $count;
 }
 
