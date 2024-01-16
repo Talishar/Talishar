@@ -522,6 +522,7 @@ function CurrentEffectDamageModifiers($player, $source, $type)
 function CurrentEffectDamageEffects($target, $source, $type, $damage)
 {
   global $currentTurnEffects;
+  $otherPlayer = ($target == 1 ? 2 : 1);
   if(CardType($source) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
@@ -541,7 +542,14 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
         break;
       case "UPR106": case "UPR107": case "UPR108":
         if((IsHeroAttackTarget() || (IsHeroAttackTarget() == "" && $source != "ELE111")) && $type == "ARCANE") {
-          PlayAura("ELE111", $target, $damage); $remove = 1;
+          PlayAura("ELE111", $target, $damage); 
+          $remove = 1;
+        }
+        break;
+      case "HVY102":
+        if (IsHeroAttackTarget()) {
+          PlayAura("HVY240", $otherPlayer); //Agility
+          $remove = 1;
         }
         break;
       default: break;

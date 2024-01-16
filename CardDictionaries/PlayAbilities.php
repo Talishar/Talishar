@@ -61,6 +61,10 @@
       case "HVY099":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "HVY102":
+          GiveAttackGoAgain();
+          AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        return "";
       case "HVY103":
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
         AddDecisionQueue("MODAL", $currentPlayer, "UPTHEANTE", 1);
@@ -75,9 +79,11 @@
         }
         return "";
       case "HVY115": case "HVY116": case "HVY117": 
+        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         if(NumAttacksBlocking() > 0)  PlayAura("HVY240", $currentPlayer); //Agility
         return "";
       case "HVY118": case "HVY119": case "HVY120":
+        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         if(NumAttacksBlocking() > 0)  PlayAura("HVY242", $currentPlayer); //Vigor
         return "";
       case "HVY130": case "HVY131": case "HVY132":
