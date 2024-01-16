@@ -30,6 +30,7 @@
       case "HVY099": return "AR";
       case "HVY134": return "AA";
       case "HVY135": return "A";
+      case "HVY155": return "A";
       case "HVY175": return "A";
       case "HVY195": case "HVY196": case "HVY197": return "I";
       case "HVY245":

@@ -79,6 +79,9 @@
       case "HVY149": case "HVY150": case "HVY151":
         AskWager($cardID);
         return "";
+      case "HVY155": 
+        PlayAura("HVY240", $currentPlayer); //Agility
+        return "";
       case "HVY163": case "HVY164": case "HVY165":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
           PlayAura("HVY240", $currentPlayer); //Agility
