@@ -29,7 +29,7 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false)
     CloseCombatChain();
   }
   $cardID = $allies[$index];
-  AllyAddGraveyard($player, $cardID);
+  AllyAddGraveyard($player, $cardID, );
   AllyAddGraveyard($player, $allies[$index+4]);
   for($j = $index + AllyPieces() - 1; $j >= $index; --$j) unset($allies[$j]);
   $allies = array_values($allies);
@@ -48,7 +48,7 @@ function AllyAddGraveyard($player, $cardID)
     if($number < 10) $id = "0" . $id;
     $id = $set . $id;
     if(!SubtypeContains($id, "Invocation", $player) && !SubtypeContains($id, "Figment", $player) && !SubtypeContains($id, "Ash", $player)) return;
-    AddGraveyard($id, $player, "PLAY");
+    AddGraveyard($id, $player, "PLAY", $player);
   }
 }
 

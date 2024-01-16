@@ -60,7 +60,7 @@
         if(IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) >= 1) PummelHit();
         break;
       case "EVO056":
-        if(IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) >= 1) DestroyArsenal($defPlayer);
+        if(IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) >= 1) DestroyArsenal($defPlayer, effectController:$mainPlayer);
         break;
       case "EVO138":
         if(IsHeroAttackTarget())

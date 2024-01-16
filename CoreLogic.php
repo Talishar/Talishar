@@ -2149,7 +2149,7 @@ function EvoHandling($cardID, $player)
         EvoTransformAbility($char[$i], $fromCardID, $player);
       }
       else {
-        AddGraveyard($cardID, $player, "HAND");
+        AddGraveyard($cardID, $player, "HAND", $player);
         WriteLog("<b>*ERR0R* // No base of that type equipped //</b>");
       }
       break;

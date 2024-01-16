@@ -233,7 +233,7 @@ function RemoveArsenal($player, $index)
   return $cardID;
 }
 
-function DestroyArsenal($player, $index=-1)
+function DestroyArsenal($player, $index=-1, $effectController="")
 {
   $arsenal = &GetArsenal($player);
   $cardIDs = "";
@@ -242,7 +242,7 @@ function DestroyArsenal($player, $index=-1)
     if($cardIDs != "") $cardIDs .= ",";
     $cardIDs .= $arsenal[$i];
     WriteLog(CardLink($arsenal[$i], $arsenal[$i]) . " was destroyed from the arsenal");
-    AddGraveyard($arsenal[$i], $player, "ARS");
+    AddGraveyard($arsenal[$i], $player, "ARS", $effectController);
   }
   $arsenal = [];
   return $cardIDs;
@@ -473,7 +473,7 @@ function AddCharacterEffect($player, $index, $effect)
   }
 }
 
-function AddGraveyard($cardID, $player, $from)
+function AddGraveyard($cardID, $player, $from, $effectController="")
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
@@ -492,19 +492,21 @@ function AddGraveyard($cardID, $player, $from)
     $cardID = $set . $id;
     }
   }
-
-  if ($cardID == "MON124") {
-    BanishCardForPlayer($cardID, $player, $from, "NA");
-    return;
-  } else if ($cardID == "CRU007" && $from != "CC") {
-    AddLayer("TRIGGER", $player, $cardID);
-  }
-  if ($cardID == "WTR164" || $cardID == "WTR165" || $cardID == "WTR166") {
-    AddBottomDeck($cardID, $player, $from);
-  } elseif (HasEphemeral($cardID)) {
-    return;
-  }
-  else {
+  if (HasEphemeral($cardID)) return;
+  switch ($cardID) {
+    case "MON124":
+      BanishCardForPlayer($cardID, $player, $from, "NA");
+      return;   
+    case "CRU007":
+      if($from != "CC") AddLayer("TRIGGER", $player, $cardID);
+      return;
+    case "WTR164": case "WTR165": case "WTR166":
+      AddBottomDeck($cardID, $player, $from);
+      return;
+    case "HVY207":
+      if($effectController != $player) AddLayer("TRIGGER", $player, $cardID);
+      break;
+    default:
     IncrementClassState($player, $CS_CardsEnteredGY);
     if ($mainPlayerGamestateStillBuilt) {
       if ($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from);
@@ -571,13 +573,14 @@ function NegateLayer($MZIndex, $goesWhere = "GY")
   $index = $params[1];
   $cardID = $layers[$index];
   $player = $layers[$index + 1];
+  $otherPlayer = $player == 1 ? 2 : 1;
   for ($i = $index + LayerPieces()-1; $i >= $index; --$i) {
     unset($layers[$i]);
   }
   $layers = array_values($layers);
   switch ($goesWhere) {
     case "GY":
-      AddGraveyard($cardID, $player, "LAYER");
+      AddGraveyard($cardID, $player, "LAYER", $otherPlayer);
       break;
     case "HAND":
       AddPlayerHand($cardID, $player, "LAYER");

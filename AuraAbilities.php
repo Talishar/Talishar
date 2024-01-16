@@ -90,7 +90,7 @@ function AuraDestroyed($player, $cardID, $isToken = false)
   switch($goesWhere) {
     case "GY":
       if(DelimStringContains(CardSubType($cardID), "Affliction")) $player = ($player == 1 ? 2 : 1);
-      AddGraveyard($cardID, $player, "PLAY");
+      AddGraveyard($cardID, $player, "PLAY", $player);
       break;
     case "SOUL":
       AddSoul($cardID, $player, "PLAY");

@@ -1,14 +1,14 @@
 <?php
 
-function MZDestroy($player, $lastResult)
+function MZDestroy($player, $lastResult, $effectController="")
 {
   $lastResultArr = explode(",", $lastResult);
   $otherPlayer = ($player == 1 ? 2 : 1);
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     switch ($mzIndex[0]) {
-      case "MYHAND": $lastResult = DiscardCard($player, $mzIndex[1]); break;
-      case "THEIRHAND": $lastResult = DiscardCard($otherPlayer, $mzIndex[1]); break;
+      case "MYHAND": $lastResult = DiscardCard($player, $mzIndex[1], effectController:$effectController); break;
+      case "THEIRHAND": $lastResult = DiscardCard($otherPlayer, $mzIndex[1], effectController:$effectController); break;
       case "MYCHAR": $lastResult = DestroyCharacter($player, $mzIndex[1]); break;
       case "THEIRCHAR": $lastResult = DestroyCharacter($otherPlayer, $mzIndex[1]); break;
       case "MYALLY": $lastResult = DestroyAlly($player, $mzIndex[1]); break;
@@ -17,8 +17,8 @@ function MZDestroy($player, $lastResult)
       case "THEIRAURAS": $lastResult = DestroyAura($otherPlayer, $mzIndex[1]); break;
       case "MYITEMS": $lastResult = DestroyItemForPlayer($player, $mzIndex[1]); break;
       case "THEIRITEMS": $lastResult = DestroyItemForPlayer($otherPlayer, $mzIndex[1]); break;
-      case "MYARS": $lastResult = DestroyArsenal($player, $mzIndex[1]); break;
-      case "THEIRARS": $lastResult = DestroyArsenal($otherPlayer, $mzIndex[1]); break;
+      case "MYARS": $lastResult = DestroyArsenal($player, $mzIndex[1], $effectController); break;
+      case "THEIRARS": $lastResult = DestroyArsenal($otherPlayer, $mzIndex[1], $effectController); break;
       case "LANDMARK": $lastResult = DestroyLandmark($mzIndex[1]); break;
       default: break;
     }

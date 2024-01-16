@@ -534,7 +534,7 @@
             $destroyedItem = $items[GetRandom(0, count($items) - 1)];
             $destroyedItemID = GetMZCard($currentPlayer, $destroyedItem);
             WriteLog(CardLink("EVO237", "EVO237") . " destroys " . CardLink($destroyedItemID, $destroyedItemID) . ".");
-            MZDestroy($currentPlayer, $destroyedItem);
+            MZDestroy($currentPlayer, $destroyedItem, $currentPlayer);
           }
         }
         return "";
@@ -554,7 +554,7 @@
         if(ArsenalHasFaceDownCard($otherPlayer)) {
           SetArsenalFacing("UP", $otherPlayer);
           if (SearchArsenal($otherPlayer, type:"DR") != "") {
-            DestroyArsenal($otherPlayer);
+            DestroyArsenal($otherPlayer, effectController:$currentPlayer);
             AddCurrentTurnEffect($cardID, $currentPlayer);
           }
         }
@@ -589,7 +589,7 @@
         MZChooseAndDestroy($currentPlayer, "THEIRALLY:subtype=Angel");
         return "";
       case "EVO410":
-        if (IsHeroAttackTarget()) PummelHit($otherPlayer);
+        if (IsHeroAttackTarget()) PummelHit();
         return "";
       case "EVO434":
         AddCurrentTurnEffect($cardID, $currentPlayer);

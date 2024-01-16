@@ -185,7 +185,7 @@
         }
         break;
       case "UPR093":
-        if(IsHeroAttackTarget() && RuptureActive()) DestroyArsenal($defPlayer);
+        if(IsHeroAttackTarget() && RuptureActive()) DestroyArsenal($defPlayer, effectController:$mainPlayer);
         break;
       case "UPR100":
         MZMoveCard($mainPlayer, "MYDISCARD:cardID=UPR101", "MYHAND");

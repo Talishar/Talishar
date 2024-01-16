@@ -306,8 +306,8 @@ function ItemDamageTakenAbilities($player, $damage)
       case "EVR193":
         if(IsHeroAttackTarget() && $damage == 2) {
           WriteLog("Talisman of Warfare destroyed both player's arsenal");
-          DestroyArsenal(1);
-          DestroyArsenal(2);
+          DestroyArsenal($player, effectController:$otherPlayer);
+          DestroyArsenal($otherPlayer, effectController:$otherPlayer);
           $remove = true;
         }
         break;

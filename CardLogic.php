@@ -731,7 +731,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ELE215":
-      DestroyArsenal($target);
+      DestroyArsenal($target, effectController:$player);
       DiscardHand($target);
       break;
     case "EVR018":
@@ -1135,6 +1135,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "HVY162": case "HVY239":
       Clash($parameter, effectController:$player);
       break;
+    case "HVY207":
+      PlayAura("HVY240", $player);//Agility
+      PlayAura("HVY241", $player);//Might
+      PlayAura("HVY242", $player);//Vigor
+      break;
     default: break;
   }
 }
@@ -1274,11 +1279,11 @@ function DiscardedAtRandomEffects($player, $discarded, $source) {
   }
 }
 
-function DiscardCard($player, $index, $source="")
+function DiscardCard($player, $index, $source="", $effectController="")
 {
   $hand = &GetHand($player);
   $discarded = RemoveHand($player, $index);
-  AddGraveyard($discarded, $player, "HAND");
+  AddGraveyard($discarded, $player, "HAND", $effectController);
   CardDiscarded($player, $discarded, $source);
   return $discarded;
 }
@@ -1341,9 +1346,10 @@ function Intimidate($player="")
 function DestroyFrozenArsenal($player)
 {
   $arsenal = &GetArsenal($player);
+  $otherPlayer = $player == 1 ? 2 : 1;
   for($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
     if($arsenal[$i + 4] == "1") {
-      DestroyArsenal($player);
+      DestroyArsenal($player, effectController:$otherPlayer);
     }
   }
 }
