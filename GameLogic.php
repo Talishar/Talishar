@@ -1058,14 +1058,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $mzArr = explode("-", $parameter);
       $cardID = $mzArr[0];
       $number = $mzArr[1];
+      $itemsLeftToDestroy = $mzArr[1];
       for($i = 0; $i < $number; ++$i) {
         $index = GetItemIndex($cardID, $player);
         if($index != -1) {
           DestroyItemForPlayer($player, $index);
-          --$number;
+          --$itemsLeftToDestroy;
         }
       }
-      if($number > 0) {
+      if($itemsLeftToDestroy > 0) {
         $charIndex = FindCharacterIndex($player, "HVY051");
         if($charIndex != -1) DestroyCharacter($player, $charIndex);
       }
