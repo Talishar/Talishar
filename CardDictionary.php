@@ -980,7 +980,7 @@ function GoesOnCombatChain($phase, $cardID, $from)
   if($phase == "B" && count($layers) == 0) return true; //Anything you play during these combat phases would go on the chain
   if($cardType == "I") return false; //Instants as yet never go on the combat chain
   if(($phase == "A" || $phase == "D") && $cardType == "A") return false; //Non-attacks played as instants never go on combat chain
-  if($cardType == "AR") return true;
+  if($cardType == "AR") return false; //Attack Reactions never go on the combat chain
   if($cardType == "DR") return true;
   if(($phase == "M" || $phase == "ATTACKWITHIT") && $cardType == "AA") return true; //If it's an attack action, it goes on the chain
   return false;
