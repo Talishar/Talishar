@@ -499,15 +499,17 @@ function AddGraveyard($cardID, $player, $from, $effectController="")
       return;   
     case "CRU007":
       if($from != "CC") AddLayer("TRIGGER", $player, $cardID);
-      return;
+      break;
     case "WTR164": case "WTR165": case "WTR166":
       AddBottomDeck($cardID, $player, $from);
       return;
     case "HVY207":
-      if($effectController != $player) AddLayer("TRIGGER", $player, $cardID);
+      if($effectController != $player && $from != "CC") AddLayer("TRIGGER", $player, $cardID);
       break;
     default:
-    IncrementClassState($player, $CS_CardsEnteredGY);
+      break;
+  }
+  IncrementClassState($player, $CS_CardsEnteredGY);
     if ($mainPlayerGamestateStillBuilt) {
       if ($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from);
       else AddSpecificGraveyard($cardID, $defDiscard, $from);
@@ -515,7 +517,6 @@ function AddGraveyard($cardID, $player, $from, $effectController="")
       if ($player == $myStateBuiltFor) AddSpecificGraveyard($cardID, $myDiscard, $from);
       else AddSpecificGraveyard($cardID, $theirDiscard, $from);
     }
-  }
 }
 
 function RemoveGraveyard($player, $index)

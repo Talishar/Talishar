@@ -96,12 +96,13 @@
 
   function HVYEffectAttackModifier($cardID)
   {
-    global $chainLinks, $defPlayer;
     $idArr = explode(",", $cardID);
     $cardID = $idArr[0];
     switch($cardID) {
+      case "HVY017": case "HVY018": case "HVY019": return 2;
       case "HVY041": case "HVY042": case "HVY043": return $idArr[1];
       case "HVY045": case "HVY046": return 1;
+      case "HVY058": return 1;
       case "HVY059": return 3;
       case "HVY083-BUFF": return 5;
       case "HVY084-BUFF": return 4;
@@ -117,18 +118,19 @@
       case "HVY119": return 2;
       case "HVY120": return 1;
       case "HVY121": return 3;
+      case "HVY122": return 2;
+      case "HVY123": return 1;
       case "HVY130-BUFF": return 3;
       case "HVY131-BUFF": return 2;
       case "HVY132-BUFF": return 1;
+      case "HVY152": return 3;
+      case "HVY153": return 2;
+      case "HVY154": return 1;
+      case "HVY172": return 3;
+      case "HVY173": return 2;
+      case "HVY174": return 1;
       case "HVY213": case "HVY214": case "HVY215": return 3;
-      case "HVY211":
-        $buff = NumAttacksBlocking();
-        for($i=0; $i<count($chainLinks); ++$i) {
-          for($j=0; $j<count($chainLinks[$i]); $j+=ChainLinksPieces()) {
-            if($chainLinks[$i][$j+1] == $defPlayer) ++$buff;
-          }
-        }
-        return $buff;
+      case "HVY211": return $idArr[1];
       case "HVY235-BUFF": return 3;
       case "HVY236-BUFF": return 2;
       case "HVY237-BUFF": return 1;
@@ -139,13 +141,15 @@
 
   function HVYCombatEffectActive($cardID, $attackID)
   {
-    global $mainPlayer, $combatChainState, $CombatChain;
+    global $mainPlayer, $combatChainState, $CombatChain, $CS_NumMightDestroyed;
     $idArr = explode(",", $cardID);
     $cardID = $idArr[0];
     switch($cardID) {
       case "HVY041": case "HVY042": case "HVY043": return ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer);
       case "HVY045": case "HVY046": return true;
+      case "HVY058": return (GetClassState($mainPlayer, $CS_NumMightDestroyed) > 0 || SearchAurasForCard("HVY241", $mainPlayer));
       case "HVY052": return true;
+      case "HVY055": return true;
       case "HVY059": return true;
       case "HVY083": case "HVY084": case "HVY085": return true;
       case "HVY083-BUFF": case "HVY084-BUFF": case "HVY085-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer);
@@ -157,10 +161,12 @@
       case "HVY115": case "HVY116": case "HVY117":
       case "HVY118": case "HVY119": case "HVY120":
           return true;
-      case "HVY121": return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
+      case "HVY121": case "HVY122": case "HVY123": return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
       case "HVY130-BUFF": case "HVY131-BUFF": case "HVY132-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
       case "HVY149": case "HVY150": case "HVY151": return true;
+      case "HVY152": case "HVY153": case "HVY154": return ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer) || ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer);
       case "HVY169": case "HVY170": case "HVY171": return true;
+      case "HVY172": case "HVY173": case "HVY174": return ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer) || ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
       case "HVY189": case "HVY190": case "HVY191": return true;
       case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
       case "HVY211": return true;

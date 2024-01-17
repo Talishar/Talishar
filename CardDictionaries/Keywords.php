@@ -62,7 +62,7 @@
 
   function Clash($cardID, $effectController="")
   {
-    WriteLog("⚔️CLASH!!⚔️");
+    WriteLog("⚔️CLASH⚔️");
     ClashLogic($cardID, $effectController);
     AddDecisionQueue("WONCLASH", 1, $cardID . "," . $effectController);
   }
@@ -106,10 +106,24 @@
     SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
     $losingPlayer = ($playerID == 1 ? 2 : 1);
     $deck = new Deck($playerID);
-    if($deck->Top() === "HVY059") {
-      PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$playerID);
-      WriteLog(CardLink("HVY059", "HVY059") . " created a Gold Token for Player ". $playerID);
+
+    switch ($deck->Top()) {
+      case "HVY059":
+        PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$playerID);
+        WriteLog(CardLink("HVY059", "HVY059") . " created a Gold Token for Player ". $playerID);  
+        break;
+      case "HVY080": case "HVY081": case "HVY082":
+        PlayAura("HVY242", $playerID); //Vigor
+        WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Vigor Token for Player ". $playerID);  
+        break;
+      case "HVY077": case "HVY078": case "HVY079":
+        PlayAura("HVY241", $playerID); //Vigor
+        WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Might Token for Player ". $playerID);    
+        break;
+      default:
+        break;
     }
+
     switch($cardID)
     {
       case "HVY050":
@@ -126,6 +140,9 @@
       case "HVY137": case "HVY138": case "HVY139":
         PlayAura("HVY241", $playerID);//Might
         break;
+      case "HVY141": case "HVY142": case "HVY143":
+        PlayAura("HVY241", $playerID);//Might
+        break;
       case "HVY157": case "HVY158": case "HVY159":
         PlayAura("HVY240", $playerID);//Agility
         break;
@@ -133,6 +150,9 @@
         PlayAura("HVY240", $playerID);
         break;
       case "HVY177": case "HVY178": case "HVY179":
+        PlayAura("HVY242", $playerID);//Vigor
+        break;
+      case "HVY182": case "HVY183": case "HVY184":
         PlayAura("HVY242", $playerID);//Vigor
         break;
       case "HVY239":
@@ -202,6 +222,11 @@
     for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces()) {
       $hasWager = true;
       switch($currentTurnEffects[$i]) {
+        case "HVY055":
+          PlayAura("HVY241", $wonWager);//Might
+          PlayAura("HVY242", $wonWager);//Vigor
+          RemoveCurrentTurnEffect($i);
+          break;
         case "HVY057":
           PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
           PlayAura("HVY241", $wonWager);//Might

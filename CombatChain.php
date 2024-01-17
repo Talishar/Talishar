@@ -163,10 +163,12 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HVY013":
       $hand = &GetHand($defPlayer);
       return $combatChain[0] == "HVY013" && count($hand) == 0 ? 3 : 0;
+    case "HVY017": case "HVY018": case "HVY019": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
     case "HVY049": return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 1 : 0;
     case "HVY112": return 3;
     case "HVY113": return 2;
     case "HVY114": return 1;
+    case "HVY146": case "HVY147": case "HVY148": return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 1 : 0;
     default: return 0;
   }
 }
@@ -373,6 +375,7 @@ function OnBlockResolveEffects()
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if(($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i+2] != "HAND")) UnityEffect($combatChain[$i]);
     if(HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
+    if(SearchCurrentTurnEffects("HVY104", $mainPlayer && TypeContains($combatChain[$i], "AA", $defPlayer) && IsHeroAttackTarget())) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);
     switch($combatChain[$i]) {
       case "EVR018":
         if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
@@ -395,10 +398,13 @@ function OnBlockResolveEffects()
       case "TCC030": case "TCC031": case "TCC032":
       case "TCC033": case "TCC098": case "TCC102":
       case "TCC060": case "TCC063": case "TCC067": // Crowd Control
+      case "HVY020": case "HVY021": case "HVY022":
       case "HVY162":
       case "HVY137": case "HVY138": case "HVY139":
+      case "HVY141": case "HVY142": case "HVY143":
       case "HVY157": case "HVY158": case "HVY159":
       case "HVY177": case "HVY178": case "HVY179":
+      case "HVY182": case "HVY183": case "HVY184":
       case "HVY239"://Clash blocks
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
@@ -456,14 +462,6 @@ function OnBlockResolveEffects()
         case "OUT009": case "OUT010":
           $count = ModifyBlockForType("E", 0);
           $remove = $count > 0;
-          break;
-        case "HVY104":
-          if(NumAttacksBlocking() >= 0 && IsHeroAttackTarget()) {
-            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
-            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to destroy from their arsenal", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-            AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
-          }
           break;
         default: break;
       }
@@ -745,7 +743,7 @@ function IsDominateActive()
 
 function IsOverpowerActive()
 {
-  global $combatChain, $mainPlayer, $currentTurnEffects, $CS_Num6PowBan, $CS_NumItemsDestroyed;
+  global $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $CS_Num6PowBan, $CS_NumItemsDestroyed;
   if(count($combatChain) == 0) return false;
   if(SearchItemsForCard("EVO096", $mainPlayer) != "" && CardType($combatChain[0]) == "AA" && ClassContains($combatChain[0], "MECHANOLOGIST", $mainPlayer)) {
     return true;
@@ -766,7 +764,7 @@ function IsOverpowerActive()
     case "EVO114": case "EVO115": case "EVO116": return GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0;
     case "EVO147": case "EVO148": case "EVO149": return SearchItemsByName($mainPlayer, "Hyper Driver") != "";
     case "HVY065": case "HVY066": case "HVY067": return HasIncreasedAttack();
-    default: break;
+    case "HVY208": return CountItem("DYN243", $defPlayer) > 0;
   }
   return false;
 }

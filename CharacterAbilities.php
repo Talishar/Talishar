@@ -705,7 +705,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "TCC079": case "TCC082":
     case "EVO235": case "EVO247":
     case "TCC051": case "TCC052": case "TCC053": case "TCC054": case "TCC080":
-    case "HVY009": case "HVY098": case "HVY135": case "HVY155": case "HVY175": case "HVY195": case "HVY196": case "HVY197":
+    case "HVY009": case "HVY010": case "HVY098": case "HVY135": case "HVY155": case "HVY175": case "HVY195": case "HVY196": case "HVY197":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "DTD001": case "DTD002":
@@ -744,6 +744,10 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "EVO446": case "EVO447": case "EVO448": case "EVO449":
       --$character[$cardIndex+5];
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1; //By default, if it's used, set it to used
+      break;
+    case "HVY055": 
+      $index = GetItemIndex("DYN243", $currentPlayer);
+      if($index != -1) DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "HVY099":
       DestroyCharacter($currentPlayer, $cardIndex, true);

@@ -552,8 +552,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if($resourceMin > -1 && CardCost($cardID) < $resourceMin && $cardType != "E") return false;
     if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Attack_Action" && $cardType != "AA") return false;
     if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Non-attack_Action" && $cardType != "A") return false;
-    if($CombatChain->AttackCard()->ID() == "DYN121" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
   }
+  if($CombatChain->AttackCard()->ID() == "DYN121" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
   if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
   if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index)) return false;
   if($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
@@ -920,18 +920,19 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVO140": return GetClassState($player, $CS_NumBoosted) <= 0;
     case "EVO235": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "EVO434": case "EVO435": case "EVO436": case "EVO437": return !EvoHasUnderCard($currentPlayer, $index);
+    case "HVY055": return CountItem("DYN243", $currentPlayer) <= 0;
     case "HVY090": case "HVY091": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 2 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 2;
     case "HVY099": return CardSubtype($cardID) == "Sword";
-    case "HVY102": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalAttack() > AttackValue($CombatChain->AttackCard()->ID());;
+    case "HVY102": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalAttack() < AttackValue($CombatChain->AttackCard()->ID());;
     case "HVY112": case "HVY113": case "HVY114": return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
     case "HVY115": case "HVY116": case "HVY117": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
     case "HVY118": case "HVY119": case "HVY120": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
     case "HVY134": return GetClassState($player, $CS_AtksWWeapon) <= 0;
-    case "HVY195": return GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2;
-    case "HVY198": return GetClassState($otherPlayer, $CS_NumCardsDrawn) > 0;
-    case "HVY199": return GetClassState($otherPlayer, $CS_NumVigorDestroyed) > 0;
-    case "HVY200": return GetClassState($otherPlayer, $CS_NumMightDestroyed) > 0;
-    case "HVY201": return GetClassState($otherPlayer, $CS_NumAgilityDestroyed) > 0;
+    case "HVY195": return GetClassState($otherPlayer, $CS_NumCardsDrawn) < 2;
+    case "HVY198": return GetClassState($otherPlayer, $CS_NumCardsDrawn) < 0;
+    case "HVY199": return GetClassState($otherPlayer, $CS_NumVigorDestroyed) < 0;
+    case "HVY200": return GetClassState($otherPlayer, $CS_NumMightDestroyed) < 0;
+    case "HVY201": return GetClassState($otherPlayer, $CS_NumAgilityDestroyed) < 0;
     case "HVY245": if ($from == "GY") return CountItem("EVR195", $currentPlayer) < 2; else return false;
     default: return false;
   }
@@ -979,7 +980,7 @@ function GoesOnCombatChain($phase, $cardID, $from)
   if($phase == "B" && count($layers) == 0) return true; //Anything you play during these combat phases would go on the chain
   if($cardType == "I") return false; //Instants as yet never go on the combat chain
   if(($phase == "A" || $phase == "D") && $cardType == "A") return false; //Non-attacks played as instants never go on combat chain
-  if($cardType == "AR") return true;
+  if($cardType == "AR") return false; //Attack Reactions never go on the combat chain
   if($cardType == "DR") return true;
   if(($phase == "M" || $phase == "ATTACKWITHIT") && $cardType == "AA") return true; //If it's an attack action, it goes on the chain
   return false;
@@ -1056,8 +1057,10 @@ function HasTemper($cardID)
     case "DYN027": case "DYN492b": return true;
     case "DTD047": case "DTD206": case "DTD207": case "DTD211": return true;
     case "TCC029": case "TCC030": case "TCC031": case "TCC032": case "TCC033": return true;
-    case "EVO247": case "EVO426": case "EVO427": case "EVO428": case "EVO429":return true;
-    case "HVY008": case "HVY009": case "HVY011": case "HVY051": case "HVY052": case "HVY056": case "HVY097": case "HVY098": case "HVY100": return true;
+    case "EVO247": case "EVO426": case "EVO427": case "EVO428": case "EVO429": return true;
+    case "HVY008": case "HVY009": case "HVY011": case "HVY051": case "HVY052": case "HVY055": case "HVY056": 
+    case "HVY097": case "HVY098": case "HVY100": 
+      return true;
     default: return false;
   }
 }

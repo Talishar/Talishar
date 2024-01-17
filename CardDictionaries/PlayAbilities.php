@@ -2,7 +2,7 @@
 
   function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer;
+    global $currentPlayer, $chainLinks, $defPlayer;
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     $rv = "";
     switch($cardID) {
@@ -20,6 +20,21 @@
         return "";
       case "HVY013":
         Intimidate();
+        return "";
+      case "HVY014":
+        $deck = new Deck($currentPlayer);
+        if($deck->Reveal(6)) {
+          $cards = explode(",", $deck->Top(amount:6));
+          $numSixes = 0;
+          for($i = 0; $i <= count($cards); ++$i) {
+            if(ModifiedAttackValue($cards[$i], $currentPlayer, "DECK") >= 6) ++$numSixes;
+          }
+          PlayAura("HVY241", $currentPlayer, $numSixes); //Might
+          if(CountAura("HVY241", $currentPlayer) >= 6) PlayAura("HVY240", $currentPlayer); //Agility
+          $zone = &GetDeck($currentPlayer);
+          shuffle($zone);
+          $zone = array_slice($zone, 0, 6);
+        }
         return "";
       case "HVY016":
         AddCurrentTurnEffect($cardID . "-" . $additionalCosts, $currentPlayer);
@@ -44,6 +59,9 @@
         PlayAura("HVY240", $currentPlayer);//Agility
         PlayAura("HVY241", $currentPlayer);//Might
         return "";
+      case "HVY055": 
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "HVY057":
         AskWager($cardID);
         return "";
@@ -66,8 +84,8 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY102":
-          GiveAttackGoAgain();
-          AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        GiveAttackGoAgain();
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY103":
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
@@ -90,7 +108,7 @@
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         if(NumAttacksBlocking() > 0)  PlayAura("HVY242", $currentPlayer); //Vigor
         return "";
-      case "HVY121":
+      case "HVY121": case "HVY122": case "HVY123": 
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Draw($currentPlayer);
         return "";
@@ -109,8 +127,14 @@
       case "HVY149": case "HVY150": case "HVY151":
         AskWager($cardID);
         return "";
+      case "HVY152": case "HVY153": case "HVY154":
+        PlayAura("HVY241", $currentPlayer); //Might
+        return "";
       case "HVY155":
         PlayAura("HVY240", $currentPlayer); //Agility
+        return "";
+      case "HVY160":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY163": case "HVY164": case "HVY165":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
@@ -120,6 +144,9 @@
         return "";
       case "HVY169": case "HVY170": case "HVY171":
         AskWager($cardID);
+        return "";
+      case "HVY172": case "HVY173": case "HVY174": 
+        PlayAura("HVY240", $currentPlayer); //Agility
         return "";
       case "HVY175":
         PlayAura("HVY242", $currentPlayer); //Vigor
@@ -137,7 +164,13 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY211":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        $buff = NumCardsBlocking(); 
+        for($i=0; $i<count($chainLinks); ++$i) {
+          for($j=0; $j<count($chainLinks[$i]); $j+=ChainLinksPieces()) {
+            if($chainLinks[$i][$j+1] == $defPlayer) ++$buff;
+          }
+        }
+        AddCurrentTurnEffect($cardID . "," . $buff, $currentPlayer);
         return "";
       case "HVY212":
         LookAtTopCard($currentPlayer, $cardID, showHand:true);
@@ -155,7 +188,7 @@
       case "HVY216": case "HVY217": case "HVY218":
         AskWager($cardID);
         return "";
-      case "HVY226":
+      case "HVY225": case "HVY226": case "HVY227":
         if($from == "ARS") GiveAttackGoAgain();
         return "";
       case "HVY235": case "HVY236": case "HVY237":

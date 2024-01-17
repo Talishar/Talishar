@@ -1129,13 +1129,28 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "HVY001": case "HVY002":
       PlayAura("HVY241", $player);//Might
       break;
+    case "HVY020": case "HVY021": case "HVY022":
+      $deck = new Deck($player);
+      if($deck->Reveal() && ModifiedAttackValue($deck->Top(), $player, "DECK", source:$parameter) < 6) {
+        $card = $deck->AddBottom($deck->Top(remove:true), "DECK");
+        WriteLog(CardLink($parameter, $parameter) . " put " . CardLink($card, $card) . " on the bottom of your deck");
+      }
+      break;
     case "HVY052":
       Clash($parameter, effectController:$player);
       break;
+    case "HVY104":
+      AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose which card you want to destroy from their arsenal", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+      break;
     case "HVY162":
     case "HVY137": case "HVY138": case "HVY139":
+    case "HVY141": case "HVY142": case "HVY143":
     case "HVY157": case "HVY158": case "HVY159":
     case "HVY177": case "HVY178": case "HVY179":
+    case "HVY182": case "HVY183": case "HVY184":
     case "HVY239":
       Clash($parameter, effectController:$player);
       break;

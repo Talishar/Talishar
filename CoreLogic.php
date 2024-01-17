@@ -791,7 +791,7 @@ function CombatChainClosedCharacterEffects()
           }
         }
         if(HasBattleworn($chainLinks[$i][$j])) $character[$charIndex+4] -= 1;//Add -1 block counter
-        if(HasGuardwell($chainLinks[$i][$j])) $character[$charIndex+4] -= (BlockValue($character[$charIndex]) + $character[$charIndex+4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j+6]);//Add -block value counter
+        if(HasGuardwell($chainLinks[$i][$j])) $character[$charIndex+4] -= (BlockValue($character[$charIndex]) + $character[$charIndex+4] + BlockModifier($character[$charIndex], "CC", 0));//Add -block value counter
         else if(HasBladeBreak($chainLinks[$i][$j])) DestroyCharacter($defPlayer, $charIndex);
       }
       switch($chainLinks[$i][$j])
@@ -806,7 +806,7 @@ function CombatChainClosedCharacterEffects()
           $deck = new Deck($defPlayer);
           if($deck->Reveal() && ModifiedAttackValue($deck->Top(), $defPlayer, "DECK", source:"RVD003") < 6) {
             $card = $deck->AddBottom($deck->Top(remove:true), "DECK");
-            WriteLog(CardLink("RVD015", "RVD015") . " put " . CardLink($card, $card) . " on the bottom of your deck");
+            WriteLog(CardLink("RVD003", "RVD003") . " put " . CardLink($card, $card) . " on the bottom of your deck");
           }
           break;
         default: break;
@@ -1678,7 +1678,7 @@ function GetDamagePreventionTargetIndices() {
 
 function SelfCostModifier($cardID, $from)
 {
-  global $CS_NumCharged, $currentPlayer, $combatChain, $layers;
+  global $CS_NumCharged, $currentPlayer, $combatChain, $layers, $CS_NumVigorDestroyed;
   switch($cardID) {
     case "ARC080":
     case "ARC082":
@@ -1713,6 +1713,9 @@ function SelfCostModifier($cardID, $from)
     case "EVO054": case "EVO055": case "EVO056": return EvoUpgradeAmount($currentPlayer) >= 2? -3 : 0;
     case "EVO183": case "EVO184": case "EVO185": return SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036") != "" ? -1 : 0;
     case "EVO225": case "EVO226": case "EVO227": return SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) * -1;
+    case "HVY058": 
+      if(GetClassState($currentPlayer, $CS_NumVigorDestroyed) > 0 || SearchAurasForCard("HVY242", $currentPlayer)) return -1;
+      else return 0;
     case "HVY251": return (-1 * NumRunechants($currentPlayer));
     default: return 0;
   }
