@@ -70,12 +70,14 @@
   function ClashLogic($cardID, $effectController="")
   {
     global $mainPlayer, $defPlayer;
-    $p1Power = -1; $p2Power = -1;
+    $p1Power = 0; $p2Power = 0;
     for($i=1; $i<=2; ++$i) {
       $deck = new Deck($i);
       if($deck->Reveal()) {
-        if($i == 1) $p1Power = ModifiedAttackValue($deck->Top(), 1, "DECK", source:$cardID);
-        else $p2Power = ModifiedAttackValue($deck->Top(), 2, "DECK", source:$cardID);
+        $power = $deck->Empty() ? 0 : ModifiedAttackValue($deck->Top(), $i, "DECK", source:$cardID);
+        if($power < 0) $power = 0;
+        if($i == 1) $p1Power = $power;
+        else $p2Power = $power;
       }
     }
     //DQVAR 0 = Winner
@@ -89,7 +91,7 @@
       AddDecisionQueue("SETDQVAR", 1, 0);
       VictorAbility(1, $cardID, $effectController);
     }
-    if($p1Power == $p2Power){
+    else {
       AddDecisionQueue("PASSPARAMETER", 1, 0);
       AddDecisionQueue("SETDQVAR", 1, 0);
       VictorAbility($mainPlayer, $cardID, $effectController);
@@ -121,8 +123,17 @@
       case "HVY052":
         if ($playerID == $effectController) AddCurrentTurnEffect($cardID, $playerID, "CC");
         break;
+      case "HVY137": case "HVY138": case "HVY139":
+        PlayAura("HVY241", $playerID);//Might
+        break;
+      case "HVY157": case "HVY158": case "HVY159":
+        PlayAura("HVY240", $playerID);//Agility
+        break;
       case "HVY162":
         PlayAura("HVY240", $playerID);
+        break;
+      case "HVY177": case "HVY178": case "HVY179":
+        PlayAura("HVY242", $playerID);//Vigor
         break;
       case "HVY239":
         PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$effectController);

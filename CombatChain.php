@@ -159,7 +159,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "EVO210": case "EVO211": case "EVO212":
     case "EVO213": case "EVO214": case "EVO215":
       return NumEquipBlock();
-    case "HVY006": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0; 
+    case "HVY006": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0;
     case "HVY013":
       $hand = &GetHand($defPlayer);
       return $combatChain[0] == "HVY013" && count($hand) == 0 ? 3 : 0;
@@ -250,7 +250,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "HVY096":
       if(CardType($attackID) == "W") $blockModifier += 2;
       break;
-    case "HVY100": 
+    case "HVY100":
       CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
       CountAura("HVY242", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
       break;
@@ -395,7 +395,11 @@ function OnBlockResolveEffects()
       case "TCC030": case "TCC031": case "TCC032":
       case "TCC033": case "TCC098": case "TCC102":
       case "TCC060": case "TCC063": case "TCC067": // Crowd Control
-      case "HVY162": case "HVY239"://Clash blocks
+      case "HVY162":
+      case "HVY137": case "HVY138": case "HVY139":
+      case "HVY157": case "HVY158": case "HVY159":
+      case "HVY177": case "HVY178": case "HVY179":
+      case "HVY239"://Clash blocks
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "DTD094": case "DTD095": case "DTD096":
