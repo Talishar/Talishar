@@ -102,6 +102,7 @@
     switch($cardID) {
       case "HVY041": case "HVY042": case "HVY043": return $idArr[1];
       case "HVY045": case "HVY046": return 1;
+      case "HVY058": return 1;
       case "HVY059": return 3;
       case "HVY083-BUFF": return 5;
       case "HVY084-BUFF": return 4;
@@ -147,12 +148,13 @@
 
   function HVYCombatEffectActive($cardID, $attackID)
   {
-    global $mainPlayer, $combatChainState, $CombatChain;
+    global $mainPlayer, $combatChainState, $CombatChain, $CS_NumMightDestroyed;
     $idArr = explode(",", $cardID);
     $cardID = $idArr[0];
     switch($cardID) {
       case "HVY041": case "HVY042": case "HVY043": return ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer);
       case "HVY045": case "HVY046": return true;
+      case "HVY058": return (GetClassState($mainPlayer, $CS_NumMightDestroyed) > 0 || SearchAurasForCard("HVY241", $mainPlayer));
       case "HVY052": return true;
       case "HVY059": return true;
       case "HVY083": case "HVY084": case "HVY085": return true;
