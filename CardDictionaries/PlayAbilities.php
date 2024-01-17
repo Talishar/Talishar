@@ -90,7 +90,7 @@
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         if(NumAttacksBlocking() > 0)  PlayAura("HVY242", $currentPlayer); //Vigor
         return "";
-      case "HVY121":
+      case "HVY121": case "HVY122": case "HVY123": 
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Draw($currentPlayer);
         return "";
@@ -155,7 +155,7 @@
       case "HVY216": case "HVY217": case "HVY218":
         AskWager($cardID);
         return "";
-      case "HVY226":
+      case "HVY225": case "HVY226": case "HVY227":
         if($from == "ARS") GiveAttackGoAgain();
         return "";
       case "HVY235": case "HVY236": case "HVY237":
