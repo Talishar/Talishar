@@ -96,7 +96,6 @@
 
   function HVYEffectAttackModifier($cardID)
   {
-    global $chainLinks, $defPlayer;
     $idArr = explode(",", $cardID);
     $cardID = $idArr[0];
     switch($cardID) {
@@ -130,14 +129,7 @@
       case "HVY173": return 2;
       case "HVY174": return 1;
       case "HVY213": case "HVY214": case "HVY215": return 3;
-      case "HVY211":
-        $buff = NumCardsBlocking(); 
-        for($i=0; $i<count($chainLinks); ++$i) {
-          for($j=0; $j<count($chainLinks[$i]); $j+=ChainLinksPieces()) {
-            if($chainLinks[$i][$j+1] == $defPlayer) ++$buff;
-          }
-        }
-        return $buff;
+      case "HVY211": return $idArr[1];
       case "HVY235-BUFF": return 3;
       case "HVY236-BUFF": return 2;
       case "HVY237-BUFF": return 1;

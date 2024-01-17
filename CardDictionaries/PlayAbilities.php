@@ -2,7 +2,7 @@
 
   function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer;
+    global $currentPlayer, $chainLinks, $defPlayer;
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     $rv = "";
     switch($cardID) {
@@ -149,7 +149,13 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY211":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        $buff = NumCardsBlocking(); 
+        for($i=0; $i<count($chainLinks); ++$i) {
+          for($j=0; $j<count($chainLinks[$i]); $j+=ChainLinksPieces()) {
+            if($chainLinks[$i][$j+1] == $defPlayer) ++$buff;
+          }
+        }
+        AddCurrentTurnEffect($cardID . "," . $buff, $currentPlayer);
         return "";
       case "HVY212":
         LookAtTopCard($currentPlayer, $cardID, showHand:true);
