@@ -156,6 +156,7 @@ function GetCardBack($player)
     case 64: return "CBPummel";
     case 65: return "CBNxi";
     case 66: return "CBPvtVoid";
+    case 67: return "CBEmperorsRome";
     default: return "CardBack";
   }
 }
@@ -511,6 +512,17 @@ function IsTeamPummel($userID)
   switch($userID) {
     case "MkDk": case "Kutter": case "Smeoz": case "Fabio": case "JustFonta": case "M3X": case "Tommaso":
     case "PDMPLB":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
+function IsTeamEmperorsRome($userID)
+{
+  switch($userID) {
+    case "Daniele90rm": case "Excelsa": case "kano90": case "Maalox10": case "TriangoloRotondo": case "Piervillo": case "Rean":
+    case "Jekpack": case "playboikrame": case "Danyr99": case "ZiFrank": case "Fevic":
       return true;
     default: break;
   }
