@@ -216,6 +216,10 @@
           PlayAura("HVY241", $wonWager);//Might
           RemoveCurrentTurnEffect($i);
           break;
+        case "HVY098":
+          PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
+          RemoveCurrentTurnEffect($i);
+          break;
         case "HVY103-1":
           PlayAura("HVY240", $wonWager);//Agility
           RemoveCurrentTurnEffect($i);

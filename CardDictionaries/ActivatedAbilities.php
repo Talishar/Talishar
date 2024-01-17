@@ -7,7 +7,7 @@
       case "HVY006": case "HVY007": return 2;
       case "HVY049": case "HVY050": return 3;
       case "HVY090": case "HVY091": return 0;
-      case "HVY095": case "HVY096": case "HVY099": return 1;
+      case "HVY095": case "HVY096": case "HVY098": case "HVY099": return 1;
       case "HVY134": return 1;
       case "HVY196": case "HVY197": return 3;
       case "HVY245": return 2;
@@ -19,7 +19,7 @@
   {
     switch($cardID)
     {
-      case "HVY006": return "AA"; 
+      case "HVY006": return "AA";
       case "HVY007": return "AA";
       case "HVY009": return "A";
       case "HVY010": return "A";
@@ -27,6 +27,7 @@
       case "HVY050": return "AA";
       case "HVY090": case "HVY091": return "A";
       case "HVY095": case "HVY096": return "AA";
+      case "HVY098": return "AR";
       case "HVY099": return "AR";
       case "HVY134": return "AA";
       case "HVY135": return "A";
@@ -48,8 +49,8 @@
     switch($cardID)
     {
       case "HVY010": case "HVY090": case "HVY091":
-      case "HVY135": case "HVY155": case "HVY175": 
-      case "HVY243": 
+      case "HVY135": case "HVY155": case "HVY175":
+      case "HVY243":
         return true;
       default: return false;
     }

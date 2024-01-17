@@ -58,6 +58,10 @@
       case "HVY090": case "HVY091":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "HVY098":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddOnWagerEffects();
+        return "";
       case "HVY099":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
