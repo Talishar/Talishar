@@ -113,8 +113,13 @@
         WriteLog(CardLink("HVY059", "HVY059") . " created a Gold Token for Player ". $playerID);  
         break;
       case "HVY080": case "HVY081": case "HVY082":
-        PlayAura("HVY242", $playerID);
+        PlayAura("HVY242", $playerID); //Vigor
         WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Vigor Token for Player ". $playerID);  
+        break;
+      case "HVY077": case "HVY078": case "HVY079":
+        PlayAura("HVY241", $playerID); //Vigor
+        WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Might Token for Player ". $playerID);    
+        break;
       default:
         break;
     }
