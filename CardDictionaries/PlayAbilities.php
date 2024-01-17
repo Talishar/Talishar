@@ -135,6 +135,10 @@
       case "HVY211":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "HVY212":
+        LookAtTopCard($currentPlayer, $cardID, showHand:true);
+        if($from == "ARS") Draw($currentPlayer);
+        return "";
       case "HVY213": case "HVY214": case "HVY215":
         $mainPlayerNum = 0;
         $defPlayerNum = 0;

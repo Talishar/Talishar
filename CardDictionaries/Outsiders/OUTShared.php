@@ -757,7 +757,7 @@ function OUTAbilityCost($cardID)
       MZMoveCard($player, "MYDISCARD:type=AA", "MYARSENAL,GY,DOWN");
       AddDecisionQueue("FINDINDICES", $player, "HAND");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your hand to discard.");
-      AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);  
+      AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
       AddDecisionQueue("DISCARDCARD", $player, "HAND", 1);    }
   }
@@ -837,7 +837,7 @@ function OUTAbilityCost($cardID)
     }
   }
 
-  function LookAtTopCard($player, $source)
+  function LookAtTopCard($player, $source, $showHand=false)
   {
     $otherPlayer = ($player == 1 ? 2 : 1);
     AddDecisionQueue("PASSPARAMETER", $player, "ELSE");
@@ -855,8 +855,9 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's deck", 1);
     AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
     AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
-    AddDecisionQueue("SETDQCONTEXT", $otherPlayer, CardName($source) . " shows the top of your deck is <1>", 1);
+    AddDecisionQueue("SETDQCONTEXT", $otherPlayer, CardName($source) . " shows the top of their deck is <1>", 1);
     AddDecisionQueue("OK", $player, "-", 1);
+    if($showHand) AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "-", 1);
   }
 
   function SpireSnipingAbility($player)
