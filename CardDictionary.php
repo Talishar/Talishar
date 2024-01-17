@@ -552,8 +552,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if($resourceMin > -1 && CardCost($cardID) < $resourceMin && $cardType != "E") return false;
     if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Attack_Action" && $cardType != "AA") return false;
     if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Non-attack_Action" && $cardType != "A") return false;
-    if($CombatChain->AttackCard()->ID() == "DYN121" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
   }
+  if($CombatChain->AttackCard()->ID() == "DYN121" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
   if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
   if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index)) return false;
   if($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
