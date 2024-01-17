@@ -149,6 +149,9 @@
       case "HVY177": case "HVY178": case "HVY179":
         PlayAura("HVY242", $playerID);//Vigor
         break;
+      case "HVY182": case "HVY183": case "HVY184":
+        PlayAura("HVY242", $playerID);//Vigor
+        break;
       case "HVY239":
         PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$effectController);
         break;
