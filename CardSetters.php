@@ -504,7 +504,7 @@ function AddGraveyard($cardID, $player, $from, $effectController="")
       AddBottomDeck($cardID, $player, $from);
       return;
     case "HVY207":
-      if($effectController != $player) AddLayer("TRIGGER", $player, $cardID);
+      if($effectController != $player && $from != "CC") AddLayer("TRIGGER", $player, $cardID);
       break;
     default:
     IncrementClassState($player, $CS_CardsEnteredGY);
