@@ -132,6 +132,9 @@
       case "HVY197":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "HVY211":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "HVY213": case "HVY214": case "HVY215":
         $mainPlayerNum = 0;
         $defPlayerNum = 0;
