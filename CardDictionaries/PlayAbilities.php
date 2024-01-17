@@ -78,13 +78,17 @@
           PlayAlly("HVY134", $currentPlayer);
         }
         return "";
-      case "HVY115": case "HVY116": case "HVY117": 
+      case "HVY115": case "HVY116": case "HVY117":
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         if(NumAttacksBlocking() > 0)  PlayAura("HVY240", $currentPlayer); //Agility
         return "";
       case "HVY118": case "HVY119": case "HVY120":
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         if(NumAttacksBlocking() > 0)  PlayAura("HVY242", $currentPlayer); //Vigor
+        return "";
+      case "HVY121":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        Draw($currentPlayer);
         return "";
       case "HVY130": case "HVY131": case "HVY132":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
@@ -101,7 +105,7 @@
       case "HVY149": case "HVY150": case "HVY151":
         AskWager($cardID);
         return "";
-      case "HVY155": 
+      case "HVY155":
         PlayAura("HVY240", $currentPlayer); //Agility
         return "";
       case "HVY163": case "HVY164": case "HVY165":
@@ -122,13 +126,13 @@
       case "HVY195":
         Draw($currentPlayer);
         return "";
-      case "HVY196": 
+      case "HVY196":
         Draw($currentPlayer);
         return "";
-      case "HVY197": 
+      case "HVY197":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "HVY213": case "HVY214": case "HVY215": 
+      case "HVY213": case "HVY214": case "HVY215":
         $mainPlayerNum = 0;
         $defPlayerNum = 0;
         if(IsHeroAttackTarget() && PlayerHasLessHealth($currentPlayer)) {
