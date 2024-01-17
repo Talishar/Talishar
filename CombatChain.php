@@ -163,6 +163,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HVY013":
       $hand = &GetHand($defPlayer);
       return $combatChain[0] == "HVY013" && count($hand) == 0 ? 3 : 0;
+    case "HVY017": case "HVY018": case "HVY019": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
     case "HVY049": return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 1 : 0;
     case "HVY112": return 3;
     case "HVY113": return 2;

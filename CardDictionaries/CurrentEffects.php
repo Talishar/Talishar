@@ -99,6 +99,7 @@
     $idArr = explode(",", $cardID);
     $cardID = $idArr[0];
     switch($cardID) {
+      case "HVY017": case "HVY018": case "HVY019": return 2;
       case "HVY041": case "HVY042": case "HVY043": return $idArr[1];
       case "HVY045": case "HVY046": return 1;
       case "HVY058": return 1;
