@@ -118,6 +118,9 @@
       case "HVY155":
         PlayAura("HVY240", $currentPlayer); //Agility
         return "";
+      case "HVY160":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "HVY163": case "HVY164": case "HVY165":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
           PlayAura("HVY240", $currentPlayer); //Agility
