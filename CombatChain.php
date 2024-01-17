@@ -374,6 +374,7 @@ function OnBlockResolveEffects()
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if(($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i+2] != "HAND")) UnityEffect($combatChain[$i]);
     if(HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
+    if(SearchCurrentTurnEffects("HVY104", $mainPlayer && TypeContains($combatChain[$i], "AA", $defPlayer) && IsHeroAttackTarget())) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);
     switch($combatChain[$i]) {
       case "EVR018":
         if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
@@ -458,14 +459,6 @@ function OnBlockResolveEffects()
         case "OUT009": case "OUT010":
           $count = ModifyBlockForType("E", 0);
           $remove = $count > 0;
-          break;
-        case "HVY104":
-          if(NumAttacksBlocking() >= 0 && IsHeroAttackTarget()) {
-            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
-            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to destroy from their arsenal", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-            AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
-          }
           break;
         default: break;
       }

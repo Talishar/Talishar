@@ -1139,6 +1139,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "HVY052":
       Clash($parameter, effectController:$player);
       break;
+    case "HVY104":
+      AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose which card you want to destroy from their arsenal", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+      break;
     case "HVY162":
     case "HVY137": case "HVY138": case "HVY139":
     case "HVY157": case "HVY158": case "HVY159":
