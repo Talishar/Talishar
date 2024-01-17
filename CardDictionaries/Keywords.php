@@ -106,10 +106,19 @@
     SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
     $losingPlayer = ($playerID == 1 ? 2 : 1);
     $deck = new Deck($playerID);
-    if($deck->Top() === "HVY059") {
-      PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$playerID);
-      WriteLog(CardLink("HVY059", "HVY059") . " created a Gold Token for Player ". $playerID);
+
+    switch ($deck->Top()) {
+      case "HVY059":
+        PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$playerID);
+        WriteLog(CardLink("HVY059", "HVY059") . " created a Gold Token for Player ". $playerID);  
+        break;
+      case "HVY080": case "HVY081": case "HVY082":
+        PlayAura("HVY242", $playerID);
+        WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Vigor Token for Player ". $playerID);  
+      default:
+        break;
     }
+
     switch($cardID)
     {
       case "HVY050":
