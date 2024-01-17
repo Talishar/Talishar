@@ -112,6 +112,9 @@ function HVYHitEffect($cardID)
         Clash($cardID, $mainPlayer);
       }
       break;
+    case "HVY074": case "HVY075": case "HVY076":
+      if(IsHeroAttackTarget() && HasIncreasedAttack()) PummelHit();
+      break;
     case "HVY213": case "HVY214": case "HVY215":
       if(SearchCurrentTurnEffects($cardID, $mainPlayer, true)) {
         PlayAura("HVY240", $mainPlayer); //Agility
