@@ -140,6 +140,9 @@
       case "HVY137": case "HVY138": case "HVY139":
         PlayAura("HVY241", $playerID);//Might
         break;
+      case "HVY141": case "HVY142": case "HVY143":
+        PlayAura("HVY241", $playerID);//Might
+        break;
       case "HVY157": case "HVY158": case "HVY159":
         PlayAura("HVY240", $playerID);//Agility
         break;
