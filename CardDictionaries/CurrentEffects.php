@@ -131,7 +131,7 @@
       case "HVY174": return 1;
       case "HVY213": case "HVY214": case "HVY215": return 3;
       case "HVY211":
-        $buff = NumAttacksBlocking();
+        $buff = NumCardsBlocking(); 
         for($i=0; $i<count($chainLinks); ++$i) {
           for($j=0; $j<count($chainLinks[$i]); $j+=ChainLinksPieces()) {
             if($chainLinks[$i][$j+1] == $defPlayer) ++$buff;
