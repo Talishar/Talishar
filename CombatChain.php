@@ -167,6 +167,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HVY112": return 3;
     case "HVY113": return 2;
     case "HVY114": return 1;
+    case "HVY146": case "HVY147": case "HVY148": return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 1 : 0;
     default: return 0;
   }
 }
