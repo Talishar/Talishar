@@ -29,7 +29,7 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false)
     CloseCombatChain();
   }
   $cardID = $allies[$index];
-  AllyAddGraveyard($player, $cardID, );
+  AllyAddGraveyard($player, $cardID);
   AllyAddGraveyard($player, $allies[$index+4]);
   for($j = $index + AllyPieces() - 1; $j >= $index; --$j) unset($allies[$j]);
   $allies = array_values($allies);
