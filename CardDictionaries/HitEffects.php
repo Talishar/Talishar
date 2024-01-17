@@ -112,6 +112,9 @@ function HVYHitEffect($cardID)
         Clash($cardID, $mainPlayer);
       }
       break;
+    case "HVY071": case "HVY072": case "HVY073":
+      if(IsHeroAttackTarget() && HasIncreasedAttack()) DestroyArsenal($defPlayer, effectController:$mainPlayer);
+      break;
     case "HVY074": case "HVY075": case "HVY076":
       if(IsHeroAttackTarget() && HasIncreasedAttack()) PummelHit();
       break;
