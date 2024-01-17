@@ -921,7 +921,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVO235": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "EVO434": case "EVO435": case "EVO436": case "EVO437": return !EvoHasUnderCard($currentPlayer, $index);
     case "HVY090": case "HVY091": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 2 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 2;
+    case "HVY099": return CardSubtype($cardID) == "Sword";
+    case "HVY102": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalAttack() > AttackValue($CombatChain->AttackCard()->ID());;
     case "HVY112": case "HVY113": case "HVY114": return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
+    case "HVY115": case "HVY116": case "HVY117": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
+    case "HVY118": case "HVY119": case "HVY120": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
     case "HVY134": return GetClassState($player, $CS_AtksWWeapon) <= 0;
     case "HVY195": return GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2;
     case "HVY198": return GetClassState($otherPlayer, $CS_NumCardsDrawn) > 0;
@@ -1014,8 +1018,8 @@ function HasBladeBreak($cardID)
     case "EVO434": case "EVO435": case "EVO436": case "EVO437": return true;
     case "EVO418": case "EVO419": case "EVO420": case "EVO421": return true;
     case "EVO446": case "EVO447": case "EVO448": case "EVO449": return true;
-    case "HVY096": return true;
-    case "HVY135": case "HVY175": return true;
+    case "HVY054": case "HVY096": return true;
+    case "HVY135": case "HVY155": case "HVY175": return true;
     case "HVY198": case "HVY199": case "HVY200": case "HVY201": return true;
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
     default: return false;
@@ -1037,7 +1041,7 @@ function HasBattleworn($cardID)
     case "EVO011": return true;
     case "EVO410b": case "EVO438": case "EVO439": case "EVO440": case "EVO441": case "EVO235": return true;
     case "EVO442": case "EVO443": case "EVO444": case "EVO445": return true;
-    case "HVY010": return true;
+    case "HVY010": case "HVY099": return true;
     default: return false;
   }
 }
@@ -1053,7 +1057,7 @@ function HasTemper($cardID)
     case "DTD047": case "DTD206": case "DTD207": case "DTD211": return true;
     case "TCC029": case "TCC030": case "TCC031": case "TCC032": case "TCC033": return true;
     case "EVO247": case "EVO426": case "EVO427": case "EVO428": case "EVO429":return true;
-    case "HVY008": case "HVY009": case "HVY051": case "HVY052": case "HVY056": case "HVY097": case "HVY100": return true;
+    case "HVY008": case "HVY009": case "HVY011": case "HVY051": case "HVY052": case "HVY056": case "HVY097": case "HVY100": return true;
     default: return false;
   }
 }
@@ -1097,6 +1101,8 @@ function HasBeatChest($cardID)
 {
   switch($cardID) {
     case "HVY023": case "HVY024": case "HVY025":
+    case "HVY026": case "HVY027": case "HVY028":
+    case "HVY035": case "HVY036": case "HVY037":
     case "HVY041": case "HVY042": case "HVY043":
       return true;
     default: return false;
@@ -1173,6 +1179,7 @@ function DoesEffectGrantOverpower($cardID) {
   switch($cardID) {
     case "HVY045": case "HVY046": return true;
     case "HVY059": return true;
+    case "HVY213": case "HVY214": case "HVY215": return true;
     default: return false;
   }
 }
@@ -1546,6 +1553,7 @@ function RequiresDieRoll($cardID, $from, $player)
     case "CRU009": return true;
     case "EVR004": return true;
     case "EVR014": case "EVR015": case "EVR016": return true;
+    case "HVY009": return true;
   }
   return false;
 }

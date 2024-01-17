@@ -48,7 +48,7 @@
         MZChooseAndDestroy($mainPlayer, "THEIRCHAR:type=E;maxDef=1");
         break;
       case "TCC036":
-        MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS:type=T"));
+        MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS:type=T"), $mainPlayer);
       default: break;
     }
   }
@@ -195,36 +195,51 @@
           PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
           PlayAura("HVY241", $wonWager);//Might
           PlayAura("HVY242", $wonWager);//Vigor
+          RemoveCurrentTurnEffect($i);
+          break;
+        case "HVY083": case "HVY084": case "HVY085":
+          PlayAura("HVY242", $wonWager);//Vigor
+          RemoveCurrentTurnEffect($i);
           break;
         case "HVY086": case "HVY087": case "HVY088":
           PlayAura("HVY241", $wonWager);//Might
+          RemoveCurrentTurnEffect($i);
           break;
         case "HVY103-1":
           PlayAura("HVY240", $wonWager);//Agility
+          RemoveCurrentTurnEffect($i);
           break;
         case "HVY103-2":
           PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
+          RemoveCurrentTurnEffect($i);
           break;
         case "HVY103-3":
           PlayAura("HVY242", $wonWager);//Vigor
+          RemoveCurrentTurnEffect($i);
           break;
         case "HVY130": case "HVY131": case "HVY132":
           PlayAura("HVY242", $wonWager);//Vigor
+          RemoveCurrentTurnEffect($i);
           break;
         case "HVY149": case "HVY150": case "HVY151":
           PlayAura("HVY241", $wonWager);//Might
+          RemoveCurrentTurnEffect($i);
           break;
         case "HVY169": case "HVY170": case "HVY171":
           PlayAura("HVY240", $wonWager);//Agility
+          RemoveCurrentTurnEffect($i);
           break;;
         case "HVY189": case "HVY190": case "HVY191":
           PlayAura("HVY242", $wonWager);//Vigor
+          RemoveCurrentTurnEffect($i);
           break;
         case "HVY216": case "HVY217": case "HVY218":
           PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
+          RemoveCurrentTurnEffect($i);
           break;
-        case "HVY235": case "HVY236-BUFF": case "HVY237-BUFF":
+        case "HVY235": case "HVY236": case "HVY237":
           PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
+          RemoveCurrentTurnEffect($i);
           break;
         default:
           $hasWager = false;

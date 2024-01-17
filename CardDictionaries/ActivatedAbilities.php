@@ -4,12 +4,12 @@
   {
     switch($cardID)
     {
-      case "HVY006": return 2; case "HVY007": return 2;
-      case "HVY049": return 3; case "HVY050": return 3;
+      case "HVY006": case "HVY007": return 2;
+      case "HVY049": case "HVY050": return 3;
       case "HVY090": case "HVY091": return 0;
-      case "HVY095": case "HVY096": return 1;
+      case "HVY095": case "HVY096": case "HVY099": return 1;
       case "HVY134": return 1;
-      case "HVY196": return 3;
+      case "HVY196": case "HVY197": return 3;
       case "HVY245": return 2;
       default: return 0;
     }
@@ -21,15 +21,18 @@
     {
       case "HVY006": return "AA"; 
       case "HVY007": return "AA";
+      case "HVY009": return "A";
       case "HVY010": return "A";
       case "HVY049": return "AA";
       case "HVY050": return "AA";
       case "HVY090": case "HVY091": return "A";
       case "HVY095": case "HVY096": return "AA";
+      case "HVY099": return "AR";
       case "HVY134": return "AA";
       case "HVY135": return "A";
+      case "HVY155": return "A";
       case "HVY175": return "A";
-      case "HVY195": case "HVY196": return "I";
+      case "HVY195": case "HVY196": case "HVY197": return "I";
       case "HVY245":
         if ($from == "GY")
           return "I";
@@ -44,7 +47,10 @@
     global $CombatChain;
     switch($cardID)
     {
-      case "HVY090": case "HVY091": return true;
+      case "HVY010": case "HVY090": case "HVY091":
+      case "HVY135": case "HVY155": case "HVY175": 
+      case "HVY243": 
+        return true;
       default: return false;
     }
   }

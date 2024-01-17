@@ -159,7 +159,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "EVO210": case "EVO211": case "EVO212":
     case "EVO213": case "EVO214": case "EVO215":
       return NumEquipBlock();
-    case "HVY006": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0;
+    case "HVY006": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0; 
     case "HVY013":
       $hand = &GetHand($defPlayer);
       return $combatChain[0] == "HVY013" && count($hand) == 0 ? 3 : 0;
@@ -236,6 +236,10 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "EVO231": case "EVO232": case "EVO233":
       if(CachedOverpowerActive()) $blockModifier += 2;
       break;
+    case "HVY011":
+      CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
+      CountAura("HVY241", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Might
+      break;
     case "HVY056":
       CountAura("HVY241", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Might
       CountAura("HVY242", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
@@ -246,7 +250,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "HVY096":
       if(CardType($attackID) == "W") $blockModifier += 2;
       break;
-    case "HVY100":
+    case "HVY100": 
       CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
       CountAura("HVY242", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
       break;
@@ -400,15 +404,27 @@ function OnBlockResolveEffects()
       case "DTD200": AddLayer("TRIGGER", $defPlayer, $combatChain[$i]); break;
       case "HVY008":
         $num6Block = 0;
-        for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) if(ModifiedAttackValue($combatChain[$i], $defPlayer, "CC", source:"HVY008")) ++$num6Block;
+        for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+          if(ModifiedAttackValue($combatChain[$i], $defPlayer, "CC", "HVY008") >= 6) ++$num6Block;
+        }
         if($num6Block) {
           PlayAura("HVY241", $defPlayer);//Might
-          WriteLog("🦴Apex Bonebreaker created a might token");
+          WriteLog("🦴 " . CardLink("HVY008", "HVY008") . " created a " . CardLink("HVY241", "HVY241") . " token");
         }
         break;
       case "HVY052":
         if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
         else WriteLog("<span style='color:red;'>No clash is done because there is no attacking hero when allies attack.</span>");
+        break;
+      case "HVY054":
+        $yellowPitchCards = 0;
+        for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+          if(PitchValue($combatChain[$i]) == 2) ++$yellowPitchCards;
+        }
+        if($yellowPitchCards >= 2) {
+          PutItemIntoPlayForPlayer("DYN243", $defPlayer, effectController:$defPlayer);
+          WriteLog(CardLink("HVY054", "HVY054") . " created a Gold token");
+        }
         break;
       default: break;
     }
@@ -436,6 +452,14 @@ function OnBlockResolveEffects()
         case "OUT009": case "OUT010":
           $count = ModifyBlockForType("E", 0);
           $remove = $count > 0;
+          break;
+        case "HVY104":
+          if(NumAttacksBlocking() >= 0 && IsHeroAttackTarget()) {
+            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
+            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to destroy from their arsenal", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+            AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
+          }
           break;
         default: break;
       }
@@ -737,6 +761,7 @@ function IsOverpowerActive()
     case "EVO140": return CachedTotalAttack() >= 10;
     case "EVO114": case "EVO115": case "EVO116": return GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0;
     case "EVO147": case "EVO148": case "EVO149": return SearchItemsByName($mainPlayer, "Hyper Driver") != "";
+    case "HVY065": case "HVY066": case "HVY067": return HasIncreasedAttack();
     default: break;
   }
   return false;

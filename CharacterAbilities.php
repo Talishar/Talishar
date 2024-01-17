@@ -252,14 +252,14 @@ function DefCharacterStartTurnAbilities()
         break;
       case "DTD564":
         $character = GetPlayerCharacter($defPlayer);
-        if($character[1] != 3) {
+        if($character[1] != 3) {  
           AddCurrentTurnEffect("DTD564", $defPlayer);
         }
         break;
       case "HVY047": case "HVY048":
         AddCurrentTurnEffect($character[$i]."-1", $defPlayer);
         AddCurrentTurnEffect($character[$i]."-2", $defPlayer);
-        break;
+        break;    
       case "ROGUE018":
         AddCurrentTurnEffect("ROGUE018", $mainPlayer);
         break;
@@ -274,7 +274,7 @@ function CharacterDestroyEffect($cardID, $player)
   switch($cardID) {
     case "ELE213":
       WriteLog("New Horizon destroys your arsenal");
-      DestroyArsenal($player);
+      DestroyArsenal($player, effectController:$player);
       break;
     case "DYN214":
       AddLayer("TRIGGER", $player, "DYN214", "-", "-");
@@ -412,13 +412,16 @@ function MainCharacterHitAbilities()
         }
         break;
       case "HVY097":
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to create a Vigor", 0, 1);
-        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
-        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-        AddDecisionQueue("WRITELOG", $mainPlayer, "🩸Vigor created by Grains of Bloodspill", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "TCC107", 1);
-        AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+        if(CardType($attackID) == "W")
+        {
+          AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to create a " . CardLink("HVY242", "HVY242"), 0, 1);
+          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
+          AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+          AddDecisionQueue("WRITELOG", $mainPlayer, "🩸 " . CardLink($characterID, $characterID) . " created a " . CardLink("HVY242", "HVY242") . " token ", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "TCC107", 1);
+          AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+        }
         break;
       case "ROGUE016":
         if(CardType($attackID) == "AA") {
@@ -702,7 +705,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "TCC079": case "TCC082":
     case "EVO235": case "EVO247":
     case "TCC051": case "TCC052": case "TCC053": case "TCC054": case "TCC080":
-    case "HVY010": case "HVY135": case "HVY175": case "HVY195": case "HVY196":
+    case "HVY009": case "HVY135": case "HVY155": case "HVY175": case "HVY195": case "HVY196": case "HVY197":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "DTD001": case "DTD002":
@@ -741,6 +744,11 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "EVO446": case "EVO447": case "EVO448": case "EVO449":
       --$character[$cardIndex+5];
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1; //By default, if it's used, set it to used
+      break;
+    case "HVY099":
+      DestroyCharacter($currentPlayer, $cardIndex, true);
+      MZMoveCard($currentPlayer, "MYDISCARD:pitch=1", "MYBANISH,GY,-");
+      MZMoveCard($currentPlayer, "MYDISCARD:pitch=2", "MYBANISH,GY,-");
       break;
     default:
       --$character[$cardIndex+5];

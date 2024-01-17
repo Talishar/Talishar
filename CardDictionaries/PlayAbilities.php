@@ -10,6 +10,10 @@
         Draw($currentPlayer);
         DiscardRandom();
         return "";
+      case "HVY009":
+        $roll = GetDieRoll($currentPlayer);
+        AddCurrentTurnEffect($cardID . "-" . $roll, $currentPlayer);
+        return "Rolled $roll and your intelligence is " . $roll . " until the end of turn.";
       case "HVY010":
         Draw($currentPlayer);
         DiscardRandom($currentPlayer, $cardID);
@@ -22,6 +26,12 @@
         return "";
       case "HVY023": case "HVY024": case "HVY025":
         if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) Intimidate();
+        return "";
+      case "HVY026": case "HVY027": case "HVY028":
+        if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) PlayAura("HVY240", $currentPlayer);//Agility
+        return "";
+      case "HVY035": case "HVY036": case "HVY037":
+        if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) PlayAura("HVY241", $currentPlayer);//Might
         return "";
       case "HVY041": case "HVY042": case "HVY043":
         if($cardID == "HVY041") $amount = 3;
@@ -48,14 +58,33 @@
       case "HVY090": case "HVY091":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "HVY099":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "HVY102":
+          GiveAttackGoAgain();
+          AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        return "";
       case "HVY103":
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
         AddDecisionQueue("MODAL", $currentPlayer, "UPTHEANTE", 1);
+        return "";
+      case "HVY104":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
       case "HVY105":
         for($i=0; $i<intval($additionalCosts); ++$i) {
           PlayAlly("HVY134", $currentPlayer);
         }
+        return "";
+      case "HVY115": case "HVY116": case "HVY117": 
+        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        if(NumAttacksBlocking() > 0)  PlayAura("HVY240", $currentPlayer); //Agility
+        return "";
+      case "HVY118": case "HVY119": case "HVY120":
+        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        if(NumAttacksBlocking() > 0)  PlayAura("HVY242", $currentPlayer); //Vigor
         return "";
       case "HVY130": case "HVY131": case "HVY132":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
@@ -71,6 +100,9 @@
         return "";
       case "HVY149": case "HVY150": case "HVY151":
         AskWager($cardID);
+        return "";
+      case "HVY155": 
+        PlayAura("HVY240", $currentPlayer); //Agility
         return "";
       case "HVY163": case "HVY164": case "HVY165":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
@@ -93,14 +125,26 @@
       case "HVY196": 
         Draw($currentPlayer);
         return "";
+      case "HVY197": 
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "HVY213": case "HVY214": case "HVY215": 
+        $mainPlayerNum = 0;
+        $defPlayerNum = 0;
+        if(IsHeroAttackTarget() && PlayerHasLessHealth($currentPlayer)) {
+          $mainPlayerNum = GetPlayerNumEquipment($currentPlayer) + GetPlayerNumTokens($currentPlayer);
+          $defPlayerNum = GetPlayerNumEquipment($otherPlayer) + GetPlayerNumTokens($otherPlayer);
+          if($mainPlayerNum < $defPlayerNum) AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
+        return "";
       case "HVY216": case "HVY217": case "HVY218":
         AskWager($cardID);
         return "";
-      case "HVY235": case "HVY236-BUFF": case "HVY237-BUFF":
+      case "HVY235": case "HVY236": case "HVY237":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
       case "HVY238":
-        if(CountItem("DYN243", $currentPlayer) == 0){
+        if(CountItem("DYN243", $currentPlayer, false) == 0){
           PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
           WriteLog(CardLink($cardID, $cardID) . " created a Gold token");
         }
@@ -521,7 +565,7 @@
             $destroyedItem = $items[GetRandom(0, count($items) - 1)];
             $destroyedItemID = GetMZCard($currentPlayer, $destroyedItem);
             WriteLog(CardLink("EVO237", "EVO237") . " destroys " . CardLink($destroyedItemID, $destroyedItemID) . ".");
-            MZDestroy($currentPlayer, $destroyedItem);
+            MZDestroy($currentPlayer, $destroyedItem, $currentPlayer);
           }
         }
         return "";
@@ -541,7 +585,7 @@
         if(ArsenalHasFaceDownCard($otherPlayer)) {
           SetArsenalFacing("UP", $otherPlayer);
           if (SearchArsenal($otherPlayer, type:"DR") != "") {
-            DestroyArsenal($otherPlayer);
+            DestroyArsenal($otherPlayer, effectController:$currentPlayer);
             AddCurrentTurnEffect($cardID, $currentPlayer);
           }
         }
@@ -576,7 +620,7 @@
         MZChooseAndDestroy($currentPlayer, "THEIRALLY:subtype=Angel");
         return "";
       case "EVO410":
-        if (IsHeroAttackTarget()) PummelHit($otherPlayer);
+        if (IsHeroAttackTarget()) PummelHit();
         return "";
       case "EVO434":
         AddCurrentTurnEffect($cardID, $currentPlayer);

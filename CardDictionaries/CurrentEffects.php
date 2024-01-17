@@ -102,12 +102,23 @@
       case "HVY041": case "HVY042": case "HVY043": return $idArr[1];
       case "HVY045": case "HVY046": return 1;
       case "HVY059": return 3;
+      case "HVY083-BUFF": return 5;
+      case "HVY084-BUFF": return 4;
+      case "HVY085-BUFF": return 3;
       case "HVY086-BUFF": return 5;
       case "HVY087-BUFF": return 4;
       case "HVY088-BUFF": return 3;
+      case "HVY104-BUFF": return 3;
+      case "HVY115": return 3;
+      case "HVY116": return 2;
+      case "HVY117": return 1;
+      case "HVY118": return 3;
+      case "HVY119": return 2;
+      case "HVY120": return 1;
       case "HVY130-BUFF": return 3;
       case "HVY131-BUFF": return 2;
       case "HVY132-BUFF": return 1;
+      case "HVY213": case "HVY214": case "HVY215": return 3;
       case "HVY235-BUFF": return 3;
       case "HVY236-BUFF": return 2;
       case "HVY237-BUFF": return 1;
@@ -126,14 +137,22 @@
       case "HVY045": case "HVY046": return true;
       case "HVY052": return true;
       case "HVY059": return true;
+      case "HVY083": case "HVY084": case "HVY085": return true;
+      case "HVY083-BUFF": case "HVY084-BUFF": case "HVY085-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer);
       case "HVY086": case "HVY087": case "HVY088": return true;
       case "HVY086-BUFF": case "HVY087-BUFF": case "HVY088-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer);
       case "HVY090": case "HVY091": return CardType($attackID) == "W" && !IsAllyAttackTarget();
+      case "HVY099": return true;
+      case "HVY104": case "HVY104-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
+      case "HVY115": case "HVY116": case "HVY117": 
+      case "HVY118": case "HVY119": case "HVY120":
+          return true;
       case "HVY130-BUFF": case "HVY131-BUFF": case "HVY132-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
       case "HVY149": case "HVY150": case "HVY151": return true;
       case "HVY169": case "HVY170": case "HVY171": return true;
       case "HVY189": case "HVY190": case "HVY191": return true;
       case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
+      case "HVY213": case "HVY214": case "HVY215": return true;
       case "HVY216": case "HVY217": case "HVY218": return true;
       case "HVY235-BUFF": case "HVY236-BUFF": case "HVY237-BUFF": return true;
       case "HVY240": return true;

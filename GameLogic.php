@@ -1060,7 +1060,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $number = $mzArr[1];
       for($i = 0; $i < $number; ++$i) {
         $index = GetItemIndex($cardID, $player);
-        if($index != -1) DestroyItemForPlayer($player, $index);
+        if($index != -1) {
+          DestroyItemForPlayer($player, $index);
+          --$number;
+        }
+      }
+      if($number > 0) {
+        $charIndex = FindCharacterIndex($player, "HVY051");
+        if($charIndex != -1) DestroyCharacter($player, $charIndex);
       }
       return $lastResult;
     case "COUNTPARAM":
@@ -1246,7 +1253,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         DamageTrigger($target, $params[0], $params[1], GetMZCard($target, $lastResultArr[$i]));
       }
       return $lastResult;
-    case "MZDESTROY": return MZDestroy($player, $lastResult);
+    case "MZDESTROY": return MZDestroy($player, $lastResult, $parameter);
     case "MZUNDESTROY": return MZUndestroy($player, $parameter, $lastResult);
     case "MZBANISH": return MZBanish($player, $parameter, $lastResult);
     case "MZREMOVE": return MZRemove($player, $lastResult);

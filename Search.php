@@ -771,13 +771,14 @@ function GetAllyIndex($cardID, $player)
   return -1;
 }
 
-function CountItem($cardID, $player)
+function CountItem($cardID, $player, $NotTokens=true)
 {
   $items = &GetItems($player);
   $count = 0;
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
     if ($items[$i] == $cardID) ++$count;
   }
+  if ($cardID == "DYN243" && SearchCharacterForCard($player, "HVY051") && $NotTokens) ++$count; // Aurum Aegis is considered a Gold object. Rules and effects that specify a “Gold” may refer to Aurum Aegis. Rules and effects that specify a “Gold token” cannot refer to Aurum Aegis.
   return $count;
 }
 
@@ -1154,4 +1155,36 @@ function SearchLayersForCardID($cardID)
     if($layers[$i+2] == $cardID) return $i;
   }
   return -1;
+}
+
+function GetPlayerNumEquipment($player) 
+{
+  $characters = &GetPlayerCharacter($player);
+  $count = 0;
+  for($i = 0; $i < count($characters); $i += CharacterPieces()) {
+    if(TypeContains($characters[$i], "E", $player)) ++$count;
+  }
+  return $count;
+}
+
+function GetPlayerNumTokens($player) 
+{
+  $auras = &GetAuras($player);
+  $items = &GetItems($player);
+  $ally = &GetAllies($player);
+  $permanents = &GetPermanents($player);
+  $count = 0;
+  for($i = 0; $i < count($auras); $i += AuraPieces()) {
+    if(TypeContains($auras[$i], "T", $player)) ++$count;
+  }
+  for($i = 0; $i < count($items); $i += ItemPieces()) {
+    if(TypeContains($items[$i], "T", $player)) ++$count;
+  }
+  for($i = 0; $i < count($ally); $i += AllyPieces()) {
+    if(TypeContains($auras[$i], "T", $player)) ++$count;
+  }
+  for($i = 0; $i < count($permanents); $i += PermanentPieces()) {
+    if(TypeContains($auras[$i], "T", $player)) ++$count;
+  }
+  return $count;
 }

@@ -60,7 +60,7 @@
         if(IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) >= 1) PummelHit();
         break;
       case "EVO056":
-        if(IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) >= 1) DestroyArsenal($defPlayer);
+        if(IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) >= 1) DestroyArsenal($defPlayer, effectController:$mainPlayer);
         break;
       case "EVO138":
         if(IsHeroAttackTarget())
@@ -110,6 +110,13 @@ function HVYHitEffect($cardID)
     case "HVY050": 
       if(IsHeroAttackTarget()) {
         Clash($cardID, $mainPlayer);
+      }
+      break;
+    case "HVY213": case "HVY214": case "HVY215":
+      if(SearchCurrentTurnEffects($cardID, $mainPlayer, true)) {
+        PlayAura("HVY240", $mainPlayer); //Agility
+        PlayAura("HVY241", $mainPlayer); //Might
+        PlayAura("HVY242", $mainPlayer); //Vigor
       }
       break;
     case "HVY249":

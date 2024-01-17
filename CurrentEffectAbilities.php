@@ -302,6 +302,9 @@ function EffectHitEffect($cardID)
     case "HVY090": case "HVY091":
       PutItemIntoPlayForPlayer("DYN243", $mainPlayer, effectController:$mainPlayer);
       return 1;
+    case "HVY099":
+      Draw($mainPlayer);
+      break;
     default:
       break;
   }
@@ -443,6 +446,11 @@ function OnAttackEffects($attack)
           AddDecisionQueue("ALLCARDPITCHORPASS", $mainPlayer, "2", 1);
           AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
           $remove = true;
+          break;
+        case "HVY083-BUFF": case "HVY084-BUFF": case "HVY085-BUFF":
+          if(IsCombatEffectActive($currentTurnEffects[$i])) {
+            AskWager(substr($currentTurnEffects[$i], 0, 6));
+          }
           break;
         case "HVY086-BUFF": case "HVY087-BUFF": case "HVY088-BUFF":
           if(IsCombatEffectActive($currentTurnEffects[$i])) {
@@ -691,19 +699,19 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           }
           break;
         case "TCC058":
-          if($preventable) { $damage -= 3; }
+          if($preventable) $damage -= 3;
           $remove = true;
           break;
         case "TCC062":
-          if($preventable) { $damage -= 2; }
+          if($preventable) $damage -= 2;
           $remove = true;
           break;
         case "TCC075":
-          if($preventable) { $damage -= 1; }
+          if($preventable) $damage -= 1;
           $remove = true;
           break;
         case "EVO087": case "EVO088": case "EVO089":
-          if($preventable) { $damage -= 1; }
+          if($preventable) $damage -= 1;
           $remove = true;
           break;
         case "EVO030": case "EVO031": case "EVO032": case "EVO033": //Card
@@ -713,6 +721,10 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           break;
         case "HVY016":
           if($preventable) $damage -= 2 + intval($effects[1]);
+          $remove = true;
+          break;
+        case "HVY197":
+          if($preventable) $damage -= 2;
           $remove = true;
           break;
         default: break;
@@ -987,10 +999,14 @@ function CurrentEffectIntellectModifier()
   $intellectModifier = 0;
   for($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i + 1] == $mainPlayer) {
-      switch($currentTurnEffects[$i]) {
+      $cardID = substr($currentTurnEffects[$i], 0, 6);
+      switch($cardID) {
         case "WTR042": case "ARC161": case "CRU028": case "MON000": case "MON246": case "EVO026": case "EVO426":
           $intellectModifier += 1;
           break;
+        case "HVY009":
+          $characters = GetPlayerCharacter($mainPlayer);
+          $intellectModifier -= CharacterIntellect($characters[0]) - substr($currentTurnEffects[$i], -1);
         default: break;
       }
     }
@@ -1096,6 +1112,7 @@ function IsCombatEffectPersistent($cardID)
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
     case "EVO146": return true;
+    case "HVY104": return true;
     case "HVY246": return true;
     case "ROGUE018": case "ROGUE601": case "ROGUE702": case "ROGUE704": case "ROGUE707": return true;
     case "ROGUE603": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
