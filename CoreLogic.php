@@ -806,7 +806,7 @@ function CombatChainClosedCharacterEffects()
           $deck = new Deck($defPlayer);
           if($deck->Reveal() && ModifiedAttackValue($deck->Top(), $defPlayer, "DECK", source:"RVD003") < 6) {
             $card = $deck->AddBottom($deck->Top(remove:true), "DECK");
-            WriteLog(CardLink("RVD015", "RVD015") . " put " . CardLink($card, $card) . " on the bottom of your deck");
+            WriteLog(CardLink("RVD003", "RVD003") . " put " . CardLink($card, $card) . " on the bottom of your deck");
           }
           break;
         default: break;

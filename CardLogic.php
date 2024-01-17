@@ -1129,6 +1129,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "HVY001": case "HVY002":
       PlayAura("HVY241", $player);//Might
       break;
+    case "HVY020": case "HVY021": case "HVY022":
+      $deck = new Deck($player);
+      if($deck->Reveal() && ModifiedAttackValue($deck->Top(), $player, "DECK", source:$parameter) < 6) {
+        $card = $deck->AddBottom($deck->Top(remove:true), "DECK");
+        WriteLog(CardLink($parameter, $parameter) . " put " . CardLink($card, $card) . " on the bottom of your deck");
+      }
+      break;
     case "HVY052":
       Clash($parameter, effectController:$player);
       break;
