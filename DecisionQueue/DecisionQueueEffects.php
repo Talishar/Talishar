@@ -466,7 +466,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $deck = new Deck($player);
       if($deck->Empty()) {
         LoseHealth(9999, $player);
-        WriteLog("Your deck has no cards, so " . CardLink("CRU007", "CRU007") . " continues damaging you until you die");
+        WriteLog("💀 Your deck has no cards, so " . CardLink("CRU007", "CRU007") . " continues damaging you until you die.");
         return 1;
       }
       $card = $deck->BanishTop("-", $player);
