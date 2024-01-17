@@ -69,8 +69,8 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY102":
-          GiveAttackGoAgain();
-          AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        GiveAttackGoAgain();
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY103":
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
