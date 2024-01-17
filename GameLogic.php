@@ -1530,6 +1530,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           WonClashAbility($winner, $params[0], $params[1]);
         }
         return "";
+      case "DEAL1DAMAGE":
+        DamageTrigger($player, damage:1, type:"DAMAGE", source:$parameter);
+        return""
     default:
       return "NOTSTATIC";
   }
