@@ -118,6 +118,15 @@ function HVYHitEffect($cardID)
     case "HVY074": case "HVY075": case "HVY076":
       if(IsHeroAttackTarget() && HasIncreasedAttack()) PummelHit();
       break;
+    case "HVY208":
+      if(IsHeroAttackTarget()) {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:type=T;cardID=DYN243");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
+        AddDecisionQueue("ELSE", $mainPlayer, "-");
+        AddDecisionQueue("DEAL1DAMAGE", $defPlayer, $cardID, 1);
+      }    
+      break;
     case "HVY213": case "HVY214": case "HVY215":
       if(SearchCurrentTurnEffects($cardID, $mainPlayer, true)) {
         PlayAura("HVY240", $mainPlayer); //Agility

@@ -747,7 +747,7 @@ function IsDominateActive()
 
 function IsOverpowerActive()
 {
-  global $combatChain, $mainPlayer, $currentTurnEffects, $CS_Num6PowBan, $CS_NumItemsDestroyed;
+  global $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $CS_Num6PowBan, $CS_NumItemsDestroyed;
   if(count($combatChain) == 0) return false;
   if(SearchItemsForCard("EVO096", $mainPlayer) != "" && CardType($combatChain[0]) == "AA" && ClassContains($combatChain[0], "MECHANOLOGIST", $mainPlayer)) {
     return true;
@@ -768,7 +768,7 @@ function IsOverpowerActive()
     case "EVO114": case "EVO115": case "EVO116": return GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0;
     case "EVO147": case "EVO148": case "EVO149": return SearchItemsByName($mainPlayer, "Hyper Driver") != "";
     case "HVY065": case "HVY066": case "HVY067": return HasIncreasedAttack();
-    default: break;
+    case "HVY208": return CountItem("DYN243", $defPlayer) > 0;
   }
   return false;
 }
