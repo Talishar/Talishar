@@ -44,6 +44,9 @@
         PlayAura("HVY240", $currentPlayer);//Agility
         PlayAura("HVY241", $currentPlayer);//Might
         return "";
+      case "HVY055": 
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "HVY057":
         AskWager($cardID);
         return "";

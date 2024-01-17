@@ -745,6 +745,10 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       --$character[$cardIndex+5];
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1; //By default, if it's used, set it to used
       break;
+    case "HVY055": 
+      $index = GetItemIndex("DYN243", $currentPlayer);
+      if($index != -1) DestroyItemForPlayer($currentPlayer, $index);
+      break;
     case "HVY099":
       DestroyCharacter($currentPlayer, $cardIndex, true);
       MZMoveCard($currentPlayer, "MYDISCARD:pitch=1", "MYBANISH,GY,-");

@@ -447,6 +447,10 @@ function OnAttackEffects($attack)
           AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
           $remove = true;
           break;
+        case "HVY055":
+          if(IsCombatEffectActive($currentTurnEffects[$i])) {
+            AskWager($currentTurnEffects[$i]);
+          }
         case "HVY083-BUFF": case "HVY084-BUFF": case "HVY085-BUFF":
           if(IsCombatEffectActive($currentTurnEffects[$i])) {
             AskWager(substr($currentTurnEffects[$i], 0, 6));

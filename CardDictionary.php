@@ -920,6 +920,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVO140": return GetClassState($player, $CS_NumBoosted) <= 0;
     case "EVO235": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "EVO434": case "EVO435": case "EVO436": case "EVO437": return !EvoHasUnderCard($currentPlayer, $index);
+    case "HVY055": return CountItem("DYN243", $currentPlayer) <= 0;
     case "HVY090": case "HVY091": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 2 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 2;
     case "HVY099": return CardSubtype($cardID) == "Sword";
     case "HVY102": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalAttack() > AttackValue($CombatChain->AttackCard()->ID());;
@@ -1056,8 +1057,10 @@ function HasTemper($cardID)
     case "DYN027": case "DYN492b": return true;
     case "DTD047": case "DTD206": case "DTD207": case "DTD211": return true;
     case "TCC029": case "TCC030": case "TCC031": case "TCC032": case "TCC033": return true;
-    case "EVO247": case "EVO426": case "EVO427": case "EVO428": case "EVO429":return true;
-    case "HVY008": case "HVY009": case "HVY011": case "HVY051": case "HVY052": case "HVY056": case "HVY097": case "HVY098": case "HVY100": return true;
+    case "EVO247": case "EVO426": case "EVO427": case "EVO428": case "EVO429": return true;
+    case "HVY008": case "HVY009": case "HVY011": case "HVY051": case "HVY052": case "HVY055": case "HVY056": 
+    case "HVY097": case "HVY098": case "HVY100": 
+      return true;
     default: return false;
   }
 }

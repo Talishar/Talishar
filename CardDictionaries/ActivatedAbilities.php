@@ -25,6 +25,7 @@
       case "HVY010": return "A";
       case "HVY049": return "AA";
       case "HVY050": return "AA";
+      case "HVY055": return "A";
       case "HVY090": case "HVY091": return "A";
       case "HVY095": case "HVY096": return "AA";
       case "HVY098": return "AR";
@@ -48,7 +49,7 @@
     global $CombatChain;
     switch($cardID)
     {
-      case "HVY010": case "HVY090": case "HVY091":
+      case "HVY010": case "HVY055": case "HVY090": case "HVY091":
       case "HVY135": case "HVY155": case "HVY175":
       case "HVY243":
         return true;

@@ -216,6 +216,11 @@
     for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces()) {
       $hasWager = true;
       switch($currentTurnEffects[$i]) {
+        case "HVY055":
+          PlayAura("HVY241", $wonWager);//Might
+          PlayAura("HVY242", $wonWager);//Vigor
+          RemoveCurrentTurnEffect($i);
+          break;
         case "HVY057":
           PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
           PlayAura("HVY241", $wonWager);//Might

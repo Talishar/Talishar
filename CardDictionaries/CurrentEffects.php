@@ -156,6 +156,7 @@
       case "HVY045": case "HVY046": return true;
       case "HVY058": return (GetClassState($mainPlayer, $CS_NumMightDestroyed) > 0 || SearchAurasForCard("HVY241", $mainPlayer));
       case "HVY052": return true;
+      case "HVY055": return true;
       case "HVY059": return true;
       case "HVY083": case "HVY084": case "HVY085": return true;
       case "HVY083-BUFF": case "HVY084-BUFF": case "HVY085-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer);
