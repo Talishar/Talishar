@@ -109,6 +109,9 @@
       case "HVY149": case "HVY150": case "HVY151":
         AskWager($cardID);
         return "";
+      case "HVY152": case "HVY153": case "HVY154":
+        PlayAura("HVY241", $currentPlayer); //Might
+        return "";
       case "HVY155":
         PlayAura("HVY240", $currentPlayer); //Agility
         return "";
