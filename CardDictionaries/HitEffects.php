@@ -107,7 +107,7 @@ function HVYHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer;
   switch ($cardID) {
-    case "HVY050": 
+    case "HVY050":
       if(IsHeroAttackTarget()) {
         Clash($cardID, $mainPlayer);
       }
@@ -118,6 +118,9 @@ function HVYHitEffect($cardID)
         PlayAura("HVY241", $mainPlayer); //Might
         PlayAura("HVY242", $mainPlayer); //Vigor
       }
+      break;
+    case "HVY226":
+      PutItemIntoPlayForPlayer("DYN243", $mainPlayer, effectController:$mainPlayer);//Gold
       break;
     case "HVY249":
       if (HasAimCounter() && IsHeroAttackTarget()) {

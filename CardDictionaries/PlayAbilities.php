@@ -155,6 +155,9 @@
       case "HVY216": case "HVY217": case "HVY218":
         AskWager($cardID);
         return "";
+      case "HVY226":
+        if($from == "ARS") GiveAttackGoAgain();
+        return "";
       case "HVY235": case "HVY236": case "HVY237":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
