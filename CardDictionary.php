@@ -928,11 +928,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HVY115": case "HVY116": case "HVY117": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
     case "HVY118": case "HVY119": case "HVY120": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
     case "HVY134": return GetClassState($player, $CS_AtksWWeapon) <= 0;
-    case "HVY195": return GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2;
-    case "HVY198": return GetClassState($otherPlayer, $CS_NumCardsDrawn) > 0;
-    case "HVY199": return GetClassState($otherPlayer, $CS_NumVigorDestroyed) > 0;
-    case "HVY200": return GetClassState($otherPlayer, $CS_NumMightDestroyed) > 0;
-    case "HVY201": return GetClassState($otherPlayer, $CS_NumAgilityDestroyed) > 0;
+    case "HVY195": return GetClassState($otherPlayer, $CS_NumCardsDrawn) < 2;
+    case "HVY198": return GetClassState($otherPlayer, $CS_NumCardsDrawn) < 0;
+    case "HVY199": return GetClassState($otherPlayer, $CS_NumVigorDestroyed) < 0;
+    case "HVY200": return GetClassState($otherPlayer, $CS_NumMightDestroyed) < 0;
+    case "HVY201": return GetClassState($otherPlayer, $CS_NumAgilityDestroyed) < 0;
     case "HVY245": if ($from == "GY") return CountItem("EVR195", $currentPlayer) < 2; else return false;
     default: return false;
   }
