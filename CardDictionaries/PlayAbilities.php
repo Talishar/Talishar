@@ -21,6 +21,21 @@
       case "HVY013":
         Intimidate();
         return "";
+      case "HVY014":
+        $deck = new Deck($currentPlayer);
+        if($deck->Reveal(6)) {
+          $cards = explode(",", $deck->Top(amount:6));
+          $numSixes = 0;
+          for($i = 0; $i <= count($cards); ++$i) {
+            if(ModifiedAttackValue($cards[$i], $currentPlayer, "DECK") >= 6) ++$numSixes;
+          }
+          PlayAura("HVY241", $currentPlayer, $numSixes); //Might
+          if(CountAura("HVY241", $currentPlayer) >= 6) PlayAura("HVY240", $currentPlayer); //Agility
+          $zone = &GetDeck($currentPlayer);
+          shuffle($zone);
+          $zone = array_slice($zone, 0, 6);
+        }
+        return "";
       case "HVY016":
         AddCurrentTurnEffect($cardID . "-" . $additionalCosts, $currentPlayer);
         return "";
