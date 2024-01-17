@@ -125,6 +125,9 @@
       case "HVY152": return 3;
       case "HVY153": return 2;
       case "HVY154": return 1;
+      case "HVY172": return 3;
+      case "HVY173": return 2;
+      case "HVY174": return 1;
       case "HVY213": case "HVY214": case "HVY215": return 3;
       case "HVY211":
         $buff = NumAttacksBlocking();
@@ -167,6 +170,7 @@
       case "HVY149": case "HVY150": case "HVY151": return true;
       case "HVY152": case "HVY153": case "HVY154": return ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer) || ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer);
       case "HVY169": case "HVY170": case "HVY171": return true;
+      case "HVY172": case "HVY173": case "HVY174": return ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer) || ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
       case "HVY189": case "HVY190": case "HVY191": return true;
       case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
       case "HVY211": return true;
