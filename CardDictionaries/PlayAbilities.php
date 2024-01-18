@@ -279,6 +279,10 @@
           SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);
         }
         return "";
+      case "HVY252":
+        DealArcane(1, 1, "PLAYCARD", $cardID);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "AERTHERARC");
+        return "";    
       case "HVY253":
         for($i = 1; $i < 3; $i += 1) {
           $arsenal = &GetArsenal($i);

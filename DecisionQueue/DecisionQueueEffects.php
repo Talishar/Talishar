@@ -369,6 +369,12 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         PlayAura("ARC112", $player, number:intval($dqVars[0]));
       }
       return $lastResult;
+    case "AERTHERARC":
+      global $dqVars;
+      if(intval($dqVars[0]) > 0) {
+        PlayAura("OUT237", $player);
+      }
+      return $lastResult;
     case "KNICKKNACK":
       for($i = 0; $i < ($dqVars[0] + 1); ++$i) {
         PrependDecisionQueue("PUTPLAY", $player, "-", 1);

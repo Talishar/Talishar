@@ -231,6 +231,7 @@
       case "DYN197": case "DYN198": case "DYN199": return 0;//Aether Quickening
       case "DYN203": case "DYN204": case "DYN205": return 0;//Prognosticate
       case "DYN206": case "DYN207": case "DYN208": return 0;//Sap
+      case "HVY252": return 1;
       default: return -1;
     }
   }
@@ -332,6 +333,7 @@
       case "DYN198": case "DYN203": case "DYN206": return 3;
       case "DYN199": case "DYN204": case "DYN207": return 2;
       case "DYN205": case "DYN208": return 1;
+      case "HVY252": return 1;
       default: return 0;
     }
   }
@@ -373,6 +375,8 @@
       case "DYN197": case "DYN198": case "DYN199":
       case "DYN203": case "DYN204": case "DYN205":
       case "DYN206": case "DYN207": case "DYN208":
+        return true;
+      case "HVY252": 
         return true;
       default: return false;
     }
