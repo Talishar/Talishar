@@ -1107,10 +1107,24 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "EVO117": case "EVO118": case "EVO119":
     case "EVO120": case "EVO121": case "EVO122":
     case "EVO123": case "EVO124": case "EVO125":
-    case "EVO141":
+    case "EVO141": //Galvanize
       MZChooseAndDestroy($player, "MYITEMS", may:true);
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
+      break;
+    case "HVY648":
+      if(IsAllyAttacking()){
+        WriteLog("<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>");
+      }
+      else {
+        $index = FindCharacterIndex($player, "HVY648");
+        CharacterChooseSubcard($player, $index, isMandatory:false);
+        AddDecisionQueue("ADDDISCARD", $player, "-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS:minCost=0;maxCost=1", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to gain control.", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
+      }
       break;
     case "EVO236":
       $otherPlayer = ($player == 1 ? 2 : 1);
@@ -1145,6 +1159,18 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZDESTROY", $player, "-", 1);
       break;
+    case "HVY142": 
+      if(CountAura("HVY241", $player) > 0) MZMoveCard($player, "MYDISCARD:type=AA", "MYTOPDECK", may:true);
+      break;
+    case "HVY161":
+      if(IsAllyAttacking()) {
+        WriteLog("<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>");
+      }
+      else if(CountAura("HVY240", $player) > 0) WriteLog("Deals 1 damage"); DamageTrigger($mainPlayer, 1, "DAMAGE", $parameter);
+      break;
+    case "HVY181":
+      if(CountAura("HVY242", $player) > 0) GainHealth(1, $player);
+      break;
     case "HVY162":
     case "HVY137": case "HVY138": case "HVY139":
     case "HVY141":
@@ -1158,6 +1184,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       PlayAura("HVY240", $player);//Agility
       PlayAura("HVY241", $player);//Might
       PlayAura("HVY242", $player);//Vigor
+      break;
+    case "HVY210":
+      MZMoveCard($player, "MYARS", "MYBOTDECK", may:true, silent:true);
+      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $player, "2", 1);
+      AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
       break;
     default: break;
   }
@@ -1348,10 +1380,10 @@ function ModifiedAttackValue($cardID, $player, $from, $source="")
 
 function Intimidate($player="")
 {
-  global $currentPlayer, $defPlayer;
-
+  global $currentPlayer, $defPlayer, $CS_HaveIntimidated;
+  IncrementClassState($currentPlayer, $CS_HaveIntimidated);
   if (!ShouldAutotargetOpponent($currentPlayer) && $player == "") {
-    AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=C&THEIRCHAR:type=C", 1);
+    AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C", 1);
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose hero to intimidate.", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
     AddDecisionQueue("INTIMIDATE", $currentPlayer, "-" , 1);

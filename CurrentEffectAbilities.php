@@ -300,7 +300,7 @@ function EffectHitEffect($cardID)
       Draw($mainPlayer);
       break;
     case "HVY090": case "HVY091":
-      PutItemIntoPlayForPlayer("DYN243", $mainPlayer, effectController:$mainPlayer);
+      if(IsHeroAttackTarget()) PutItemIntoPlayForPlayer("DYN243", $mainPlayer, effectController:$mainPlayer);
       return 1;
     case "HVY099":
       Draw($mainPlayer);
@@ -448,26 +448,31 @@ function OnAttackEffects($attack)
           $remove = true;
           break;
         case "HVY055":
-          if(IsCombatEffectActive($currentTurnEffects[$i])) {
+          if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager($currentTurnEffects[$i]);
           }
         case "HVY083-BUFF": case "HVY084-BUFF": case "HVY085-BUFF":
-          if(IsCombatEffectActive($currentTurnEffects[$i])) {
+          if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager(substr($currentTurnEffects[$i], 0, 6));
           }
           break;
         case "HVY086-BUFF": case "HVY087-BUFF": case "HVY088-BUFF":
-          if(IsCombatEffectActive($currentTurnEffects[$i])) {
+          if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
+            AskWager(substr($currentTurnEffects[$i], 0, 6));
+          }
+          break;
+        case "HVY124-BUFF": case "HVY125-BUFF": case "HVY126-BUFF":
+          if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager(substr($currentTurnEffects[$i], 0, 6));
           }
           break;
         case "HVY130-BUFF": case "HVY131-BUFF": case "HVY132-BUFF":
-          if(IsCombatEffectActive($currentTurnEffects[$i])) {
+          if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager(substr($currentTurnEffects[$i], 0, 6));
           }
           break;
         case "HVY235-BUFF": case "HVY236-BUFF": case "HVY237-BUFF":
-          if(IsCombatEffectActive($currentTurnEffects[$i])) {
+          if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager(substr($currentTurnEffects[$i], 0, 6));
           }
           break;
@@ -727,10 +732,24 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if($preventable) $damage -= 2 + intval($effects[1]);
           $remove = true;
           break;
+        case "HVY140":
+          if($preventable) {
+            $damage -= 2;
+            PlayAura("HVY241", $player); //Might
+          }
+          $remove = true;
+          break;
         case "HVY160":
           if($preventable) {
             $damage -= 2;
-            PlayAura("HVY240", $player);
+            PlayAura("HVY240", $player); //Agility
+          }
+          $remove = true;
+          break;
+        case "HVY180":
+          if($preventable) {
+            $damage -= 2;
+            PlayAura("HVY242", $player); //Vigor
           }
           $remove = true;
           break;
@@ -1122,13 +1141,18 @@ function IsCombatEffectPersistent($cardID)
     case "DTD411": return true;
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
-    case "EVO146": return true;
+    case "HVY052": case "HVY090": case "HVY091": return true;
     case "HVY104": return true;
+    case "EVO146": return true;
+    case "HVY176": return true;
     case "HVY246": return true;
+    case "HVY247": return true;
+
+    
+    //Roguelike
     case "ROGUE018": case "ROGUE601": case "ROGUE702": case "ROGUE704": case "ROGUE707": return true;
     case "ROGUE603": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
     case "ROGUE710-GA": case "ROGUE710-DO": case "ROGUE711": case "ROGUE802": case "ROGUE805": case "ROGUE806": return true;
-    case "HVY052": case "HVY090": case "HVY091": return true;
     default:
       return false;
   }

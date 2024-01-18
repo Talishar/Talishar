@@ -53,7 +53,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 {
   global $mainPlayer, $defPlayer, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
-  global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan;
+  global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated;
   global $combatChain;
   if($repriseActive == -1) $repriseActive = RepriseActive();
   switch($cardID) {
@@ -117,7 +117,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "EVR105": return (GetClassState($mainPlayer, $CS_NumAuras) >= 2 ? 1 : 0);
     case "EVR116": case "EVR117": case "EVR118": return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 3 : 0);
     case "DVR002": return GetClassState($mainPlayer, $CS_AtksWWeapon) >= 1 ? 1 : 0;
-    case "RVD009": case "HVY018": case "HVY019": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
+    case "RVD009": return GetClassState($mainPlayer, $CS_HaveIntimidated) > 0 ? 2 : 0;
     case "UPR048": return (NumChainLinksWithName("Phoenix Flame") >= 2 ? 2 : 0);
     case "UPR050": return 1;
     case "UPR098": return (RuptureActive() ? 3 : 0);
@@ -163,7 +163,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HVY013":
       $hand = &GetHand($defPlayer);
       return $combatChain[0] == "HVY013" && count($hand) == 0 ? 3 : 0;
-    case "HVY017": case "HVY018": case "HVY019": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
+    case "HVY017": case "HVY018": case "HVY019": return GetClassState($mainPlayer, $CS_HaveIntimidated) > 0 ? 2 : 0;
     case "HVY049": return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 1 : 0;
     case "HVY112": return 3;
     case "HVY113": return 2;
@@ -255,6 +255,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "HVY100":
       CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
       CountAura("HVY242", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
+      break;
+    case "HVY210":
+      if(SearchCurrentTurnEffects($cardID, $defPlayer, true)) $blockModifier += 2;
       break;
     default: break;
   }
@@ -401,11 +404,13 @@ function OnBlockResolveEffects()
       case "HVY020": case "HVY021": case "HVY022":
       case "HVY162":
       case "HVY137": case "HVY138": case "HVY139":
-      case "HVY141":
+      case "HVY141": case "HVY142": 
       case "HVY157": case "HVY158": case "HVY159":
-      case "HVY177": case "HVY178": case "HVY179":
-      case "HVY182": case "HVY183": case "HVY184":
+      case "HVY161": case "HVY177": case "HVY178": case "HVY179":
+      case "HVY181": case "HVY182": case "HVY183": case "HVY184":
+      case "HVY210":
       case "HVY239"://Clash blocks
+      case "HVY648":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "DTD094": case "DTD095": case "DTD096":
@@ -423,8 +428,7 @@ function OnBlockResolveEffects()
         }
         break;
       case "HVY052":
-        if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
-        else WriteLog("<span style='color:red;'>No clash is done because there is no attacking hero when allies attack.</span>");
+        AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
         break;
       case "HVY054":
         $yellowPitchCards = 0;
@@ -435,12 +439,6 @@ function OnBlockResolveEffects()
           PutItemIntoPlayForPlayer("DYN243", $defPlayer, effectController:$defPlayer);
           WriteLog(CardLink("HVY054", "HVY054") . " created a Gold token");
         }
-        break;
-      case "HVY142":
-        if(CountAura("HVY241", $defPlayer) > 0) MZMoveCard($defPlayer, "MYDISCARD:type=AA", "MYTOPDECK", may:true);
-        break;
-      case "HVY181":
-        if(CountAura("HVY242", $defPlayer) > 0) GainHealth(1, $defPlayer);
         break;
       default: break;
     }
@@ -756,6 +754,7 @@ function IsOverpowerActive()
   }
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantOverpower($currentTurnEffects[$i])) return true;
+    if($currentTurnEffects[$i+1] == $mainPlayer && $currentTurnEffects[$i] == "HVY176" && CachedWagerActive()) return true;
   }
   switch($combatChain[0]) {
     case "DYN068": return SearchCurrentTurnEffects("DYN068", $mainPlayer);

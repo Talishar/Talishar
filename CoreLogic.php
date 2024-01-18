@@ -1214,6 +1214,7 @@ function DoesAttackHaveGoAgain()
   if($attackType == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchAuras("MON013", $mainPlayer)) return true;
   if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $mainPlayer))) return true;
   if(SearchItemsForCard("EVO097", $mainPlayer) != "" && $attackType == "AA" && ClassContains($CombatChain->AttackCard()->ID(), "MECHANOLOGIST", $mainPlayer)) return true;
+  if(SearchCurrentTurnEffectsForCycle("HVY127", "HVY128", "HVY129", $mainPlayer) && ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) && NumAttacksBlocking() > 0) return true;
   $mainPitch = &GetPitch($mainPlayer);
   switch($attackID) {
     case "WTR083": case "WTR084": return ComboActive($attackID);
@@ -1732,7 +1733,7 @@ function IsAlternativeCostPaid($cardID, $from)
     $remove = false;
     if($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch($currentTurnEffects[$i]) {
-        case "ARC185": case "CRU188": case "MON199": case "MON257": case "EVR161":
+        case "ARC185": case "CRU188": case "MON199": case "MON257": case "EVR161": case "HVY176-PAID":
           $isAlternativeCostPaid = true;
           $remove = true;
           break;
@@ -2177,7 +2178,7 @@ function CharacterAddSubcard($player, $index, $card) {
   else $char[$index+10] = $char[$index+10] . "," . $card;
 }
 
-function CharacterChooseSubcard($player, $index, $fromDQ=false, $count=1)
+function CharacterChooseSubcard($player, $index, $fromDQ=false, $count=1, $isMandatory=true)
 {
   $character = &GetPlayerCharacter($player);
   $subcards = explode(",", $character[$index+10]);
@@ -2190,9 +2191,10 @@ function CharacterChooseSubcard($player, $index, $fromDQ=false, $count=1)
   if($chooseMultizoneData != "") {
     if ($count==1) {
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a subcard to banish from " . CardName($character[$index]));
-      AddDecisionQueue("CHOOSEMULTIZONE", $player, $chooseMultizoneData);
-      AddDecisionQueue("MZOP", $player, "GETCARDINDEX");
-      AddDecisionQueue("REMOVESUBCARD", $player, $index);
+      if ($isMandatory) AddDecisionQueue("CHOOSEMULTIZONE", $player, $chooseMultizoneData);
+      else AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, $chooseMultizoneData);
+      AddDecisionQueue("MZOP", $player, "GETCARDINDEX", 1);
+      AddDecisionQueue("REMOVESUBCARD", $player, $index, 1);
     }
     else {
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $count . " subcards to banish from " . CardName($character[$index]));
@@ -2344,4 +2346,24 @@ function CanOnlyTargetHeroes($cardID) {
       default:
         return false;
     }
+}
+
+function NonHitEffects($cardID) {
+  global $mainPlayer, $defPlayer, $currentTurnEffects;
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+    if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $mainPlayer) {
+      switch ($currentTurnEffects[$i]) {
+        case "HVY012":
+          RemoveCurrentTurnEffect($i);
+          $banish = new Banish($defPlayer);
+          $banishedCard = $banish->FirstCardWithModifier($cardID);
+          if($banishedCard == null) break;
+          $banishIndex = $banishedCard->Index();
+          if($banishIndex > -1) AddPlayerHand($banish->Remove($banishIndex), $defPlayer, "BANISH");
+          break;
+        default:
+          break;
+        }
+    }
+  }
 }

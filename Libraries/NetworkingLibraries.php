@@ -1008,6 +1008,9 @@ function ResolveCombatDamage($damageDone)
       AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
     }
   }
+  else {
+    NonHitEffects($combatChain[0]);
+  }
   $currentPlayer = $mainPlayer;
   ProcessDecisionQueue(); //Any combat related decision queue logic should be main player gamestate
 }
@@ -1128,6 +1131,8 @@ function EndStep()
   AddLayer("ENDSTEP", $mainPlayer, "-");
   AuraBeginEndPhaseTriggers();
   BeginEndPhaseEffectTriggers();
+  UndoIntimidate(1);
+  UndoIntimidate(2);
   if(HeaveIndices() != "") AddLayer("TRIGGER", $mainPlayer, "HEAVE");
 }
 
@@ -1152,8 +1157,6 @@ function FinishTurnPass()
   ResetCombatChainState();
   QuellEndPhase(1);
   QuellEndPhase(2);
-  UndoIntimidate(1);
-  UndoIntimidate(2);
   ItemEndTurnAbilities();
   AuraBeginEndPhaseAbilities();
   LandmarkBeginEndPhaseAbilities();
@@ -1626,6 +1629,14 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       else {
         AddDecisionQueue("SETABILITYTYPEATTACK", $currentPlayer, $cardID);
       }
+      break;
+    case "HVY176":
+      AddDecisionQueue("COUNTITEM", $currentPlayer, "DYN243"); //Gold
+      AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
+      AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_1_" . CardLink("DYN243", "DYN243"), 1);
+      AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+      AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243-1", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "HVY176-PAID", 1);
       break;
     default:
       break;
@@ -2160,9 +2171,15 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if($definedCardType == "DR" && $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1) {
       $discard = new Discard($currentPlayer);
       $discard->Add($cardID, "LAYER");
-      WriteLog(CardLink($cardID, $cardID) . " does not resolve because dominate is active and there is already a card defending from hand");
+      WriteLog(CardLink($cardID, $cardID) . " does not resolve because dominate is active and there is already a card defending from hand.");
       return;
     }
+    if(CardType($cardID) == "AR" && IsPlayRestricted($cardID, $restriction, $from)) {
+      AddGraveyard($cardID, $currentPlayer, "LAYER", $currentPlayer);
+      WriteLog(CardLink($cardID, $cardID) . " does not resolve because fail to resolve because the target is no longer a legal target.");
+      return;  
+    } 
+    if(CardType($cardID) == "AR") AddGraveyard($cardID, $currentPlayer, "LAYER", $currentPlayer);
     $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
     if($index == 0) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);

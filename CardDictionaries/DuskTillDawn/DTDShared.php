@@ -527,7 +527,7 @@ function DTDHitEffect($cardID)
     case "DTD227":
       if(IsHeroAttackTarget()) {
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:minCost=0;maxCost=2");
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to gain control");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
         AddDecisionQueue("ELSE", $mainPlayer, "-");

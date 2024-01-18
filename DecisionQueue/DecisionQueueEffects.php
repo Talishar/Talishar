@@ -193,19 +193,25 @@ function ModalAbilities($player, $card, $lastResult)
       for($i = 0; $i < count($params); ++$i) {
         switch($params[$i]) {
           case "Wager_Agility":
-            AddCurrentTurnEffect("HVY103-1", $player);
-            AddOnWagerEffects(canPass:false);
-            ++$numNewWagers;
+            if(IsHeroAttackTarget()) {
+              AddCurrentTurnEffect("HVY103-1", $player);
+              AddOnWagerEffects(canPass:false);
+              ++$numNewWagers;
+            }
             break;
           case "Wager_Gold":
-            AddCurrentTurnEffect("HVY103-2", $player);
-            AddOnWagerEffects(canPass:false);
-            ++$numNewWagers;
+              if(IsHeroAttackTarget()) {
+              AddCurrentTurnEffect("HVY103-2", $player);
+              AddOnWagerEffects(canPass:false);
+              ++$numNewWagers;
+            }
             break;
           case "Wager_Vigor":
-            AddCurrentTurnEffect("HVY103-3", $player);
-            AddOnWagerEffects(canPass:false);
-            ++$numNewWagers;
+            if(IsHeroAttackTarget()) {
+              AddCurrentTurnEffect("HVY103-3", $player);
+              AddOnWagerEffects(canPass:false);
+              ++$numNewWagers;
+            }
             break;
           case "Buff_Attack":
             global $CCS_WagersThisLink;
@@ -367,6 +373,12 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       global $dqVars;
       if(intval($dqVars[0]) > 0) {
         PlayAura("ARC112", $player, number:intval($dqVars[0]));
+      }
+      return $lastResult;
+    case "AERTHERARC":
+      global $dqVars;
+      if(intval($dqVars[0]) > 0) {
+        PlayAura("OUT237", $player);
       }
       return $lastResult;
     case "KNICKKNACK":

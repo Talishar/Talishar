@@ -726,6 +726,7 @@ function SearchLandmark($cardID)
 
 function CountAura($cardID, $player)
 {
+  if(SearchCurrentTurnEffects("OUT183", $player)) return 0;
   $auras = &GetAuras($player);
   $count = 0;
   for($i = 0; $i < count($auras); $i += AuraPieces()) {
@@ -1087,17 +1088,6 @@ function MZToIndices($mzSearch)
     $output .= $mzArr[1];
   }
   return $output;
-}
-
-function IntimidateCount($player)
-{
-  $otherPlayer = ($player == 1 ? 2 : 1);
-  $banish = &GetBanish($otherPlayer);
-  $count = 0;
-  for($i = 0; $i < count($banish); $i += BanishPieces()) {
-    if($banish[$i + 1] == "INT") ++$count;
-  }
-  return $count;
 }
 
 function FrozenCount($player)

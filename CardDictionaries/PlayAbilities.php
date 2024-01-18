@@ -2,7 +2,7 @@
 
   function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer, $chainLinks, $defPlayer, $CS_NumCardsDrawn;
+    global $currentPlayer, $chainLinks, $defPlayer, $CS_NumCardsDrawn, $CS_HighestRoll, $CombatChain, $CS_NumMightDestroyed;
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     $rv = "";
     switch($cardID) {
@@ -18,8 +18,19 @@
         Draw($currentPlayer);
         DiscardRandom($currentPlayer, $cardID);
         return "";
+      case "HVY012":
+        if (IsHeroAttackTarget()) {
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRARS");
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZBANISH", $currentPlayer, "CC," . $cardID, 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+          AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+        } else {
+          WriteLog("<span style='color:red;'>No arsenal is banished because it does not attack a hero.</span>");
+        }
+        return "";
       case "HVY013":
-        Intimidate();
+        if (IsHeroAttackTarget()) Intimidate();
         return "";
       case "HVY014":
         $deck = new Deck($currentPlayer);
@@ -31,16 +42,25 @@
           }
           PlayAura("HVY241", $currentPlayer, $numSixes); //Might
           if(CountAura("HVY241", $currentPlayer) >= 6) PlayAura("HVY240", $currentPlayer); //Agility
+
           $zone = &GetDeck($currentPlayer);
-          shuffle($zone);
-          $zone = array_slice($zone, 0, 6);
+          $topDeck = array_slice($zone, 0, 6);
+          shuffle($topDeck);
+          for($i = 0; $i <= count($topDeck); ++$i) {
+            $zone[$i] = $topDeck[$i];
+          }
         }
         return "";
+      case "HVY015":
+        $roll = GetDieRoll($currentPlayer);
+        GainActionPoints(intval($roll/2), $currentPlayer);
+        if(GetClassState($currentPlayer, $CS_HighestRoll) == 6) Draw($currentPlayer);
+        return "Rolled $roll and gained " . intval($roll/2) . " action points";
       case "HVY016":
         AddCurrentTurnEffect($cardID . "-" . $additionalCosts, $currentPlayer);
         return "";
       case "HVY023": case "HVY024": case "HVY025":
-        if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) Intimidate();
+        if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer) && IsHeroAttackTarget()) Intimidate();
         return "";
       case "HVY026": case "HVY027": case "HVY028":
         if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) PlayAura("HVY240", $currentPlayer);//Agility
@@ -63,8 +83,11 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY057":
-        AskWager($cardID);
+        if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
+      case "HVY058":
+        if(GetClassState($currentPlayer, $CS_NumMightDestroyed) > 0 || SearchAurasForCard("HVY241", $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
+
       case "HVY089":
         PlayAura("HVY241", $currentPlayer);//Might
         PlayAura("HVY242", $currentPlayer);//Vigor
@@ -77,15 +100,23 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY098":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        AddOnWagerEffects();
+        if(IsHeroAttackTarget()) {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          AddOnWagerEffects();
+        }
         return "";
       case "HVY099":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "HVY102":
-        GiveAttackGoAgain();
+      case "HVY101":
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        return "";
+      case "HVY102":
+        if(CachedTotalAttack() > AttackValue($CombatChain->AttackCard()->ID())) {
+          GiveAttackGoAgain();
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
         return "";
       case "HVY103":
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
@@ -100,6 +131,17 @@
           PlayAlly("HVY134", $currentPlayer);
         }
         return "";
+      case "HVY106": case "HVY107": case "HVY108": 
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        if (NumAttacksBlocking() > 0) {
+          Draw($currentPlayer);
+          $hand = &GetHand($currentPlayer);
+          if(count($hand) > 0) MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK", silent:true);
+        }
+        return "";
+      case "HVY109": case "HVY110": case "HVY111":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "HVY115": case "HVY116": case "HVY117":
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         if(NumAttacksBlocking() > 0)  PlayAura("HVY240", $currentPlayer); //Agility
@@ -112,11 +154,17 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Draw($currentPlayer);
         return "";
+      case "HVY124": case "HVY125": case "HVY126":
+        AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
+        return "";
       case "HVY130": case "HVY131": case "HVY132":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
       case "HVY135":
         PlayAura("HVY241", $currentPlayer); //Might
+        return "";
+      case "HVY140":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY143": case "HVY144": case "HVY145":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
@@ -125,7 +173,7 @@
         }
         return "";
       case "HVY149": case "HVY150": case "HVY151":
-        AskWager($cardID);
+        if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
       case "HVY152": case "HVY153": case "HVY154":
         PlayAura("HVY241", $currentPlayer); //Might
@@ -149,13 +197,20 @@
         if(GetClassState($currentPlayer, $CS_NumCardsDrawn) > 0) GiveAttackGoAgain();
         return "";
       case "HVY169": case "HVY170": case "HVY171":
-        AskWager($cardID);
+        if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
       case "HVY172": case "HVY173": case "HVY174":
         PlayAura("HVY240", $currentPlayer); //Agility
         return "";
       case "HVY175":
         PlayAura("HVY242", $currentPlayer); //Vigor
+        return "";
+      case "HVY176":
+        AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "HVY180":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY186": case "HVY187": case "HVY188":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
@@ -164,7 +219,10 @@
         }
         return "";
       case "HVY189": case "HVY190": case "HVY191":
-        AskWager($cardID);
+        if(IsHeroAttackTarget()) AskWager($cardID);
+        return "";
+      case "HVY192": case "HVY193": case "HVY194":
+        PlayAura("HVY242", $currentPlayer); //Vigor
         return "";
       case "HVY195":
         Draw($currentPlayer);
@@ -174,6 +232,10 @@
         return "";
       case "HVY197":
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "HVY210":
+        MZMoveCard($currentPlayer, "MYARS", "MYBOTDECK", may:true, silent:true);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
         return "";
       case "HVY211":
         $buff = NumCardsBlocking();
@@ -198,7 +260,7 @@
         }
         return "";
       case "HVY216": case "HVY217": case "HVY218":
-        AskWager($cardID);
+        if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
       case "HVY225": case "HVY226": case "HVY227":
         if($from == "ARS") GiveAttackGoAgain();
@@ -238,6 +300,12 @@
           }
         }
         return "";
+      case "HVY247":
+        $deck = new Deck($currentPlayer);
+        $banishMod = "-";
+        if(HasCombo($deck->top())) $banishMod == "TT";
+        $deck->BanishTop($banishMod, $currentPlayer);
+        return "";
       case "HVY251":
         $xVal = $resourcesPaid/2;
         MZMoveCard($currentPlayer, "MYDECK:maxCost=" . $xVal . ";subtype=Aura;class=RUNEBLADE", "MYAURAS", may:true);
@@ -247,6 +315,10 @@
           SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);
         }
         return "";
+      case "HVY252":
+        DealArcane(1, 1, "PLAYCARD", $cardID);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "AERTHERARC");
+        return "";    
       case "HVY253":
         for($i = 1; $i < 3; $i += 1) {
           $arsenal = &GetArsenal($i);

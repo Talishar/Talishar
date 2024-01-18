@@ -926,7 +926,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HVY055": return CountItem("DYN243", $currentPlayer) <= 0;
     case "HVY090": case "HVY091": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 2 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 2;
     case "HVY099": return CardSubtype($cardID) == "Sword";
-    case "HVY102": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalAttack() < AttackValue($CombatChain->AttackCard()->ID());;
+    case "HVY101": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
+    case "HVY102": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalAttack() <= AttackValue($CombatChain->AttackCard()->ID());
+    case "HVY106": case "HVY107": case "HVY108": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
+    case "HVY109": case "HVY110": case "HVY111": return !$CombatChain->HasCurrentLink() || NumAttacksBlocking() == 0;
     case "HVY112": case "HVY113": case "HVY114": return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
     case "HVY115": case "HVY116": case "HVY117": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
     case "HVY118": case "HVY119": case "HVY120": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
@@ -984,7 +987,7 @@ function GoesOnCombatChain($phase, $cardID, $from)
   if($phase == "B" && count($layers) == 0) return true; //Anything you play during these combat phases would go on the chain
   if($cardType == "I") return false; //Instants as yet never go on the combat chain
   if(($phase == "A" || $phase == "D") && $cardType == "A") return false; //Non-attacks played as instants never go on combat chain
-  if($cardType == "AR") return true;
+  if($cardType == "AR") return true; // Technically wrong, AR goes to the graveyard instead of remaining on the active chain link. CR 2.4.0 - 8.1.2b
   if($cardType == "DR") return true;
   if(($phase == "M" || $phase == "ATTACKWITHIT") && $cardType == "AA") return true; //If it's an attack action, it goes on the chain
   return false;
@@ -1063,7 +1066,8 @@ function HasTemper($cardID)
     case "TCC029": case "TCC030": case "TCC031": case "TCC032": case "TCC033": return true;
     case "EVO247": case "EVO426": case "EVO427": case "EVO428": case "EVO429": return true;
     case "HVY008": case "HVY009": case "HVY011": case "HVY051": case "HVY052": case "HVY055": case "HVY056":
-    case "HVY097": case "HVY098": case "HVY100":
+    case "HVY097": case "HVY098": case "HVY100": 
+    case "HVY648":
       return true;
     default: return false;
   }
@@ -1729,6 +1733,13 @@ function HasGalvanize($cardID)
   }
 }
 
+function CanPowerBeModified($cardID)
+{
+  switch($cardID) {
+    case "DTD201": return false;
+    default: return true;
+  }
+}
 function CanCostBeModified($cardID)
 {
   switch($cardID) {

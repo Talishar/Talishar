@@ -105,8 +105,16 @@
 
 function HVYHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer;
+  global $mainPlayer, $defPlayer, $currentTurnEffects;;
   switch ($cardID) {
+    case "HVY012":
+      for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+        if ($currentTurnEffects[$i] == $cardID) {
+          RemoveCurrentTurnEffect($i);
+          break;
+        }
+      }
+      break;
     case "HVY050":
       if(IsHeroAttackTarget()) {
         Clash($cardID, $mainPlayer);
@@ -134,9 +142,9 @@ function HVYHitEffect($cardID)
         PlayAura("HVY242", $mainPlayer); //Vigor
       }
       break;
-    case "HVY226":
+    case "HVY225": case "HVY226": case "HVY227":
       PutItemIntoPlayForPlayer("DYN243", $mainPlayer, effectController:$mainPlayer);//Gold
-      break;
+      return "";
     case "HVY249":
       if (HasAimCounter() && IsHeroAttackTarget()) {
         $defPlayerHand = &GetHand($defPlayer);

@@ -125,14 +125,14 @@
     if(CardType($card->ID()) != "AA") return false;
     if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
     $attackID = $CombatChain->AttackCard()->ID();
-    $av = ModifiedAttackValue($card->ID(), $defPlayer, "CC", source:$card->ID());
-    $origAV = $av;
-    if($attackID == "MON008" || $attackID == "MON009" || $attackID == "MON010") --$av;
-    if(CardType($attackID) == "AA" && SearchCurrentTurnEffects("DTD411", $defPlayer)) --$av;
-    $av += AuraAttackModifiers($index);
-    $av += $card->AttackValue();//Combat chain attack modifier
-    $av += EffectDefenderAttackModifiers();
-    return $av >= 6;
+    $attackValue = ModifiedAttackValue($card->ID(), $defPlayer, "CC", source:$card->ID());
+    if(!CanPowerBeModified($card->ID())) return $attackValue >= 6;
+    if($attackID == "MON008" || $attackID == "MON009" || $attackID == "MON010") --$attackValue;
+    if(CardType($attackID) == "AA" && SearchCurrentTurnEffects("DTD411", $defPlayer)) --$attackValue;
+    $attackValue += AuraAttackModifiers($index);
+    $attackValue += $card->AttackValue();//Combat chain attack modifier
+    $attackValue += EffectDefenderAttackModifiers();
+    return $attackValue >= 6;
   }
 
   function IsPhantasmStillActive()
