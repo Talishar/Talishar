@@ -926,6 +926,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HVY055": return CountItem("DYN243", $currentPlayer) <= 0;
     case "HVY090": case "HVY091": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 2 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 2;
     case "HVY099": return CardSubtype($cardID) == "Sword";
+    case "HVY101": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
     case "HVY102": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalAttack() < AttackValue($CombatChain->AttackCard()->ID());;
     case "HVY112": case "HVY113": case "HVY114": return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
     case "HVY115": case "HVY116": case "HVY117": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);

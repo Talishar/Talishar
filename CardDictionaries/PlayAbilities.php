@@ -83,6 +83,10 @@
       case "HVY099":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "HVY101":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        return "";
       case "HVY102":
         GiveAttackGoAgain();
         AddCurrentTurnEffect($cardID, $currentPlayer);

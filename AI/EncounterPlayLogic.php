@@ -322,6 +322,7 @@ function ReactionRequirementsMet($storedPriorityNode)
     case "ELE172": return GetClassState($currentPlayer, $CS_NumFusedIce) > 0;
     case "ELE183": case "ELE184": case "ELE185": return CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) <= 1;
     case "ELE201": return GetClassState($currentPlayer, $CS_NumFusedLightning) > 0;
+    case "HVY101": return CardType($combatChain[0]) == "W";
     default: return true;
   }
 }
