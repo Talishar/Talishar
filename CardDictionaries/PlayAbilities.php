@@ -19,11 +19,15 @@
         DiscardRandom($currentPlayer, $cardID);
         return "";
       case "HVY012":
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRARS");
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZBANISH", $currentPlayer, "CC," . $cardID, 1);
-        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+        if (IsHeroAttackTarget()) {
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRARS");
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZBANISH", $currentPlayer, "CC," . $cardID, 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+          AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+        } else {
+          WriteLog("<span style='color:red;'>No arsenal is banished because it does not attack a hero.</span>");
+        }
         return "";
       case "HVY013":
         Intimidate();

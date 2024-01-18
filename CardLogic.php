@@ -1117,9 +1117,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         WriteLog("<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>");
       }
       else {
-        
         $index = FindCharacterIndex($player, "HVY648");
-
         CharacterChooseSubcard($player, $index, isMandatory:false);
         AddDecisionQueue("ADDDISCARD", $player, "-", 1);
         AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS:minCost=0;maxCost=1", 1);
