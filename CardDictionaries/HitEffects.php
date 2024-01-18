@@ -142,9 +142,9 @@ function HVYHitEffect($cardID)
         PlayAura("HVY242", $mainPlayer); //Vigor
       }
       break;
-    case "HVY226":
+    case "HVY225": case "HVY226": case "HVY227":
       PutItemIntoPlayForPlayer("DYN243", $mainPlayer, effectController:$mainPlayer);//Gold
-      break;
+      return "";
     case "HVY249":
       if (HasAimCounter() && IsHeroAttackTarget()) {
         $defPlayerHand = &GetHand($defPlayer);
