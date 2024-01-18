@@ -436,6 +436,9 @@ function OnBlockResolveEffects()
           WriteLog(CardLink("HVY054", "HVY054") . " created a Gold token");
         }
         break;
+      case "HVY142":
+        if(CountAura("HVY241", $defPlayer) > 0) MZMoveCard($defPlayer, "MYDISCARD:type=AA", "MYTOPDECK", may:true);
+        break;
       default: break;
     }
   }
