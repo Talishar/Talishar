@@ -410,6 +410,7 @@ function OnBlockResolveEffects()
       case "HVY181": case "HVY182": case "HVY183": case "HVY184":
       case "HVY210":
       case "HVY239"://Clash blocks
+      case "HVY648":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "DTD094": case "DTD095": case "DTD096":

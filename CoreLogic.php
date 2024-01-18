@@ -2178,7 +2178,7 @@ function CharacterAddSubcard($player, $index, $card) {
   else $char[$index+10] = $char[$index+10] . "," . $card;
 }
 
-function CharacterChooseSubcard($player, $index, $fromDQ=false, $count=1)
+function CharacterChooseSubcard($player, $index, $fromDQ=false, $count=1, $isMandatory=true)
 {
   $character = &GetPlayerCharacter($player);
   $subcards = explode(",", $character[$index+10]);
@@ -2191,9 +2191,10 @@ function CharacterChooseSubcard($player, $index, $fromDQ=false, $count=1)
   if($chooseMultizoneData != "") {
     if ($count==1) {
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a subcard to banish from " . CardName($character[$index]));
-      AddDecisionQueue("CHOOSEMULTIZONE", $player, $chooseMultizoneData);
-      AddDecisionQueue("MZOP", $player, "GETCARDINDEX");
-      AddDecisionQueue("REMOVESUBCARD", $player, $index);
+      if ($isMandatory) AddDecisionQueue("CHOOSEMULTIZONE", $player, $chooseMultizoneData);
+      else AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, $chooseMultizoneData);
+      AddDecisionQueue("MZOP", $player, "GETCARDINDEX", 1);
+      AddDecisionQueue("REMOVESUBCARD", $player, $index, 1);
     }
     else {
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $count . " subcards to banish from " . CardName($character[$index]));

@@ -1107,10 +1107,26 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "EVO117": case "EVO118": case "EVO119":
     case "EVO120": case "EVO121": case "EVO122":
     case "EVO123": case "EVO124": case "EVO125":
-    case "EVO141":
+    case "EVO141": //Galvanize
       MZChooseAndDestroy($player, "MYITEMS", may:true);
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
+      break;
+    case "HVY648":
+      if(IsAllyAttacking()){
+        WriteLog("<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>");
+      }
+      else {
+        
+        $index = FindCharacterIndex($player, "HVY648");
+
+        CharacterChooseSubcard($player, $index, isMandatory:false);
+        AddDecisionQueue("ADDDISCARD", $player, "-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS:minCost=0;maxCost=1", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to gain control.", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
+      }
       break;
     case "EVO236":
       $otherPlayer = ($player == 1 ? 2 : 1);
