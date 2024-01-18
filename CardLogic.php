@@ -1171,6 +1171,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       PlayAura("HVY241", $player);//Might
       PlayAura("HVY242", $player);//Vigor
       break;
+    case "HVY210":
+      MZMoveCard($player, "MYARS", "MYBOTDECK", may:true, silent:true);
+      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $player, "2", 1);
+      AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
+      break;
     default: break;
   }
 }

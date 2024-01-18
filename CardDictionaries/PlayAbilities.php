@@ -207,6 +207,10 @@
       case "HVY197":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "HVY210":
+        MZMoveCard($currentPlayer, "MYARS", "MYBOTDECK", may:true, silent:true);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+        return "";
       case "HVY211":
         $buff = NumCardsBlocking();
         for($i=0; $i<count($chainLinks); ++$i) {

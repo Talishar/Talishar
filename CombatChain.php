@@ -256,6 +256,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
       CountAura("HVY242", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
       break;
+    case "HVY210":
+      if(SearchCurrentTurnEffects($cardID, $defPlayer, true)) $blockModifier += 2;
+      break;
     default: break;
   }
   return $blockModifier;
@@ -405,6 +408,7 @@ function OnBlockResolveEffects()
       case "HVY157": case "HVY158": case "HVY159":
       case "HVY161": case "HVY177": case "HVY178": case "HVY179":
       case "HVY181": case "HVY182": case "HVY183": case "HVY184":
+      case "HVY210":
       case "HVY239"://Clash blocks
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
