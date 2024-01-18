@@ -2163,9 +2163,14 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if($definedCardType == "DR" && $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1) {
       $discard = new Discard($currentPlayer);
       $discard->Add($cardID, "LAYER");
-      WriteLog(CardLink($cardID, $cardID) . " does not resolve because dominate is active and there is already a card defending from hand");
+      WriteLog(CardLink($cardID, $cardID) . " does not resolve because dominate is active and there is already a card defending from hand.");
       return;
     }
+    if(CardType($cardID) == "AR" && IsPlayRestricted($cardID, $restriction, $from)) {
+      AddGraveyard($cardID, $currentPlayer, "LAYER", $currentPlayer);
+      WriteLog(CardLink($cardID, $cardID) . " does not resolve because fail to resolve because the target is no longer a legal target.");
+      return;  
+    } 
     $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
     if($index == 0) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);

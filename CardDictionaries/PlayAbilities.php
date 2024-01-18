@@ -2,7 +2,7 @@
 
   function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer, $chainLinks, $defPlayer, $CS_NumCardsDrawn, $CS_HighestRoll;
+    global $currentPlayer, $chainLinks, $defPlayer, $CS_NumCardsDrawn, $CS_HighestRoll, $CombatChain;
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     $rv = "";
     switch($cardID) {
@@ -104,8 +104,10 @@
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         return "";
       case "HVY102":
-        GiveAttackGoAgain();
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        if(CachedTotalAttack() > AttackValue($CombatChain->AttackCard()->ID())) {
+          GiveAttackGoAgain();
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
         return "";
       case "HVY103":
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
