@@ -390,7 +390,7 @@ function ResetCombatChainState()
         if(!SubtypeContains($chainLinks[$i][$j], "Evo")) continue;
         if($chainLinks[$i][$j+3] != "HAND" && BlockValue($chainLinks[$i][$j]) >= 0) continue;
       }
-      $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3]);
+      if(CardType($chainLinks[$i][$j]) != "AR") $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3]);
       switch($goesWhere) {
         case "GY":
           AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CC");

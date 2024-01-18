@@ -2171,6 +2171,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because fail to resolve because the target is no longer a legal target.");
       return;  
     } 
+    if(CardType($cardID) == "AR") AddGraveyard($cardID, $currentPlayer, "LAYER", $currentPlayer);
     $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
     if($index == 0) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
