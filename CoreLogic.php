@@ -1679,7 +1679,7 @@ function GetDamagePreventionTargetIndices() {
 
 function SelfCostModifier($cardID, $from)
 {
-  global $CS_NumCharged, $currentPlayer, $combatChain, $layers, $CS_NumVigorDestroyed;
+  global $CS_NumCharged, $currentPlayer, $combatChain, $layers, $CS_NumVigorDestroyed, $CS_NumCardsDrawn;
   switch($cardID) {
     case "ARC080":
     case "ARC082":
@@ -1717,6 +1717,8 @@ function SelfCostModifier($cardID, $from)
     case "HVY058":
       if(GetClassState($currentPlayer, $CS_NumVigorDestroyed) > 0 || SearchAurasForCard("HVY242", $currentPlayer)) return -1;
       else return 0;
+    case "HVY183": case "HVY184": case "HVY185":
+      return (GetClassState($currentPlayer, $CS_NumCardsDrawn) > 0 ? -1 : 0);
     case "HVY251": return (-1 * NumRunechants($currentPlayer));
     default: return 0;
   }
