@@ -461,6 +461,11 @@ function OnAttackEffects($attack)
             AskWager(substr($currentTurnEffects[$i], 0, 6));
           }
           break;
+        case "HVY124-BUFF": case "HVY125-BUFF": case "HVY126-BUFF":
+          if(IsCombatEffectActive($currentTurnEffects[$i])) {
+            AskWager(substr($currentTurnEffects[$i], 0, 6));
+          }
+          break;
         case "HVY130-BUFF": case "HVY131-BUFF": case "HVY132-BUFF":
           if(IsCombatEffectActive($currentTurnEffects[$i])) {
             AskWager(substr($currentTurnEffects[$i], 0, 6));

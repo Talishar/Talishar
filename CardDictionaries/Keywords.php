@@ -257,6 +257,10 @@
           PlayAura("HVY242", $wonWager);//Vigor
           RemoveCurrentTurnEffect($i);
           break;
+        case "HVY124": case "HVY125": case "HVY126":
+          PlayAura("HVY240", $wonWager);//Agility
+          RemoveCurrentTurnEffect($i);
+          break;
         case "HVY130": case "HVY131": case "HVY132":
           PlayAura("HVY242", $wonWager);//Vigor
           RemoveCurrentTurnEffect($i);
