@@ -427,8 +427,7 @@ function OnBlockResolveEffects()
         }
         break;
       case "HVY052":
-        if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
-        else WriteLog("<span style='color:red;'>No clash is done because there is no attacking hero when allies attack.</span>");
+        AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
         break;
       case "HVY054":
         $yellowPitchCards = 0;
