@@ -732,17 +732,24 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if($preventable) $damage -= 2 + intval($effects[1]);
           $remove = true;
           break;
-          case "HVY140":
-            if($preventable) {
-              $damage -= 2;
-              PlayAura("HVY241", $player);
-            }
-            $remove = true;
-            break;
+        case "HVY140":
+          if($preventable) {
+            $damage -= 2;
+            PlayAura("HVY241", $player); //Might
+          }
+          $remove = true;
+          break;
         case "HVY160":
           if($preventable) {
             $damage -= 2;
-            PlayAura("HVY240", $player);
+            PlayAura("HVY240", $player); //Agility
+          }
+          $remove = true;
+          break;
+        case "HVY180":
+          if($preventable) {
+            $damage -= 2;
+            PlayAura("HVY242", $player); //Vigor
           }
           $remove = true;
           break;

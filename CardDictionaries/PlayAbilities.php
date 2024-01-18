@@ -183,6 +183,9 @@
       case "HVY175":
         PlayAura("HVY242", $currentPlayer); //Vigor
         return "";
+      case "HVY180":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "HVY186": case "HVY187": case "HVY188":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
           PlayAura("HVY242", $currentPlayer); //Vigor
