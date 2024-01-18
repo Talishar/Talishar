@@ -133,6 +133,9 @@
       case "HVY155":
         PlayAura("HVY240", $currentPlayer); //Agility
         return "";
+      case "HVY156":
+        if(DoesAttackHaveGoAgain()) PlayAura("HVY240", $currentPlayer); //Agility
+        return "";
       case "HVY160":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
