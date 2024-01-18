@@ -30,7 +30,9 @@
         }
         return "";
       case "HVY013":
-        Intimidate();
+        if (IsHeroAttackTarget()) {
+          Intimidate();
+        }
         return "";
       case "HVY014":
         $deck = new Deck($currentPlayer);
