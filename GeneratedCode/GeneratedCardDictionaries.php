@@ -1887,8 +1887,6 @@ case "4":
 return "A";
 case "2":
 return "A";
-case "3":
-return "A";
 case "5":
 return "A";
 case "9":
@@ -3759,6 +3757,8 @@ case "0":
 switch($cardID[5]) {
 case "0":
 return "E";
+case "1":
+return "AR";
 case "4":
 return "A";
 case "6":
@@ -3842,8 +3842,6 @@ return "A";
 case "3":
 return "A";
 case "4":
-return "A";
-case "6":
 return "A";
 default: return "AA";
 }
@@ -20459,6 +20457,8 @@ case "0":
 switch($cardID[5]) {
 case "0":
 return "Beckon Applause";
+case "1":
+return "Blade Flurry";
 case "4":
 return "Commanding Performance";
 case "6":
@@ -42020,6 +42020,28 @@ case "2":
 return "R";
 default: return "C";
 }
+case "0":
+switch($cardID[5]) {
+case "1":
+return "M";
+case "4":
+return "M";
+case "6":
+return "R";
+case "7":
+return "R";
+case "8":
+return "R";
+case "9":
+return "R";
+case "5":
+return "M";
+case "2":
+return "M";
+case "3":
+return "M";
+default: return "C";
+}
 case "3":
 switch($cardID[5]) {
 case "4":
@@ -42055,26 +42077,6 @@ return "R";
 case "9":
 return "R";
 case "6":
-return "M";
-default: return "C";
-}
-case "0":
-switch($cardID[5]) {
-case "4":
-return "M";
-case "6":
-return "R";
-case "7":
-return "R";
-case "8":
-return "R";
-case "9":
-return "R";
-case "5":
-return "M";
-case "2":
-return "M";
-case "3":
 return "M";
 default: return "C";
 }
@@ -48783,6 +48785,8 @@ default: return "NONE";
 case "0":
 switch($cardID[5]) {
 case "0":
+return "WARRIOR";
+case "1":
 return "WARRIOR";
 case "4":
 return "WARRIOR";
