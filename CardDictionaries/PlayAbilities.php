@@ -2,7 +2,7 @@
 
   function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer, $chainLinks, $defPlayer;
+    global $currentPlayer, $chainLinks, $defPlayer, $CS_NumCardsDrawn;
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     $rv = "";
     switch($cardID) {
@@ -141,6 +141,9 @@
           PlayAura("HVY240", $currentPlayer); //Agility
           CardDiscarded($currentPlayer, $cardID, source:$cardID);
         }
+        return "";
+      case "HVY166": case "HVY167": case "HVY168":
+        if(GetClassState($currentPlayer, $CS_NumCardsDrawn) > 0) GiveAttackGoAgain();
         return "";
       case "HVY169": case "HVY170": case "HVY171":
         AskWager($cardID);
