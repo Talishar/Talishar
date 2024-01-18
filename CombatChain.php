@@ -53,7 +53,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 {
   global $mainPlayer, $defPlayer, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
-  global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan;
+  global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated;
   global $combatChain;
   if($repriseActive == -1) $repriseActive = RepriseActive();
   switch($cardID) {
@@ -117,7 +117,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "EVR105": return (GetClassState($mainPlayer, $CS_NumAuras) >= 2 ? 1 : 0);
     case "EVR116": case "EVR117": case "EVR118": return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 3 : 0);
     case "DVR002": return GetClassState($mainPlayer, $CS_AtksWWeapon) >= 1 ? 1 : 0;
-    case "RVD009": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
+    case "RVD009": return GetClassState($mainPlayer, $CS_HaveIntimidated) > 0 ? 2 : 0;
     case "UPR048": return (NumChainLinksWithName("Phoenix Flame") >= 2 ? 2 : 0);
     case "UPR050": return 1;
     case "UPR098": return (RuptureActive() ? 3 : 0);
@@ -163,7 +163,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HVY013":
       $hand = &GetHand($defPlayer);
       return $combatChain[0] == "HVY013" && count($hand) == 0 ? 3 : 0;
-    case "HVY017": case "HVY018": case "HVY019": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
+    case "HVY017": case "HVY018": case "HVY019": return GetClassState($mainPlayer, $CS_HaveIntimidated) > 0 ? 2 : 0;
     case "HVY049": return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 1 : 0;
     case "HVY112": return 3;
     case "HVY113": return 2;

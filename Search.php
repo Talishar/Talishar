@@ -1090,17 +1090,6 @@ function MZToIndices($mzSearch)
   return $output;
 }
 
-function IntimidateCount($player)
-{
-  $otherPlayer = ($player == 1 ? 2 : 1);
-  $banish = &GetBanish($otherPlayer);
-  $count = 0;
-  for($i = 0; $i < count($banish); $i += BanishPieces()) {
-    if($banish[$i + 1] == "INT") ++$count;
-  }
-  return $count;
-}
-
 function FrozenCount($player)
 {
   $numFrozen = 0;
