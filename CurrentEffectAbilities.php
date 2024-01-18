@@ -1141,14 +1141,18 @@ function IsCombatEffectPersistent($cardID)
     case "DTD411": return true;
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
-    case "EVO146": return true;
+    case "HVY052": case "HVY090": case "HVY091": return true;
     case "HVY104": return true;
+    case "EVO146": return true;
+    case "HVY176": return true;
     case "HVY246": return true;
+    case "HVY247": return true;
+
+    
+    //Roguelike
     case "ROGUE018": case "ROGUE601": case "ROGUE702": case "ROGUE704": case "ROGUE707": return true;
     case "ROGUE603": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
     case "ROGUE710-GA": case "ROGUE710-DO": case "ROGUE711": case "ROGUE802": case "ROGUE805": case "ROGUE806": return true;
-    case "HVY052": case "HVY090": case "HVY091": return true;
-    case "HVY247": return true;
     default:
       return false;
   }

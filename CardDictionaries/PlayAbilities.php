@@ -196,6 +196,10 @@
       case "HVY175":
         PlayAura("HVY242", $currentPlayer); //Vigor
         return "";
+      case "HVY176":
+        AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "HVY180":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";

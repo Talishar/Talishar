@@ -753,6 +753,7 @@ function IsOverpowerActive()
   }
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantOverpower($currentTurnEffects[$i])) return true;
+    if($currentTurnEffects[$i+1] == $mainPlayer && $currentTurnEffects[$i] == "HVY176" && CachedWagerActive()) return true;
   }
   switch($combatChain[0]) {
     case "DYN068": return SearchCurrentTurnEffects("DYN068", $mainPlayer);

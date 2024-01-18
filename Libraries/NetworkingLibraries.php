@@ -1630,6 +1630,14 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         AddDecisionQueue("SETABILITYTYPEATTACK", $currentPlayer, $cardID);
       }
       break;
+    case "HVY176":
+      AddDecisionQueue("COUNTITEM", $currentPlayer, "DYN243"); //Gold
+      AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
+      AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_1_" . CardLink("DYN243", "DYN243"), 1);
+      AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+      AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243-1", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "HVY176-PAID", 1);
+      break;
     default:
       break;
   }

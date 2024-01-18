@@ -223,70 +223,72 @@
     global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $currentTurnEffects;
     $wonWager = $combatChainState[$CCS_DamageDealt] > 0 ? $mainPlayer : $defPlayer;
     $numWagersWon = 0;
+    $amount = 1;
+    if(SearchCurrentTurnEffects("HVY176", $wonWager)) ++$amount;
     for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces()) {
       $hasWager = true;
       switch($currentTurnEffects[$i]) {
         case "HVY055":
-          PlayAura("HVY241", $wonWager);//Might
-          PlayAura("HVY242", $wonWager);//Vigor
+          PlayAura("HVY241", $wonWager, $amount);//Might
+          PlayAura("HVY242", $wonWager, $amount);//Vigor
           RemoveCurrentTurnEffect($i);
           break;
         case "HVY057":
-          PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
-          PlayAura("HVY241", $wonWager);//Might
-          PlayAura("HVY242", $wonWager);//Vigor
+          PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
+          PlayAura("HVY241", $wonWager, $amount);//Might
+          PlayAura("HVY242", $wonWager, $amount);//Vigor
           RemoveCurrentTurnEffect($i);
           break;
         case "HVY083": case "HVY084": case "HVY085":
-          PlayAura("HVY242", $wonWager);//Vigor
+          PlayAura("HVY242", $wonWager, $amount);//Vigor
           RemoveCurrentTurnEffect($i);
           break;
         case "HVY086": case "HVY087": case "HVY088":
-          PlayAura("HVY241", $wonWager);//Might
+          PlayAura("HVY241", $wonWager, $amount);//Might
           RemoveCurrentTurnEffect($i);
           break;
         case "HVY098":
-          PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
+          PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
           RemoveCurrentTurnEffect($i);
           break;
         case "HVY103-1":
-          PlayAura("HVY240", $wonWager);//Agility
+          PlayAura("HVY240", $wonWager, $amount);//Agility
           RemoveCurrentTurnEffect($i);
           break;
         case "HVY103-2":
-          PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
+          PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
           RemoveCurrentTurnEffect($i);
           break;
         case "HVY103-3":
-          PlayAura("HVY242", $wonWager);//Vigor
+          PlayAura("HVY242", $wonWager, $amount);//Vigor
           RemoveCurrentTurnEffect($i);
           break;
         case "HVY124": case "HVY125": case "HVY126":
-          PlayAura("HVY240", $wonWager);//Agility
+          PlayAura("HVY240", $wonWager, $amount);//Agility
           RemoveCurrentTurnEffect($i);
           break;
         case "HVY130": case "HVY131": case "HVY132":
-          PlayAura("HVY242", $wonWager);//Vigor
+          PlayAura("HVY242", $wonWager, $amount);//Vigor
           RemoveCurrentTurnEffect($i);
           break;
         case "HVY149": case "HVY150": case "HVY151":
-          PlayAura("HVY241", $wonWager);//Might
+          PlayAura("HVY241", $wonWager, $amount);//Might
           RemoveCurrentTurnEffect($i);
           break;
         case "HVY169": case "HVY170": case "HVY171":
-          PlayAura("HVY240", $wonWager);//Agility
+          PlayAura("HVY240", $wonWager, $amount);//Agility
           RemoveCurrentTurnEffect($i);
           break;;
         case "HVY189": case "HVY190": case "HVY191":
-          PlayAura("HVY242", $wonWager);//Vigor
+          PlayAura("HVY242", $wonWager, $amount);//Vigor
           RemoveCurrentTurnEffect($i);
           break;
         case "HVY216": case "HVY217": case "HVY218":
-          PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
+          PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
           RemoveCurrentTurnEffect($i);
           break;
         case "HVY235": case "HVY236": case "HVY237":
-          PutItemIntoPlayForPlayer("DYN243", $wonWager, effectController:$mainPlayer);//Gold
+          PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
           RemoveCurrentTurnEffect($i);
           break;
         default:
@@ -299,7 +301,7 @@
       $char = &GetPlayerCharacter($mainPlayer);
       $hero = ShiyanaCharacter($char[0]);
       if($char[1] == 2 && ($hero == "HVY092" || $hero == "HVY093")) {
-        PutItemIntoPlayForPlayer("DYN243", $mainPlayer, effectController:$mainPlayer);//Gold
+        PutItemIntoPlayForPlayer("DYN243", $mainPlayer, number:$amount, effectController:$mainPlayer);//Gold
         WriteLog(CardLink($hero, $hero) . " wins the favor of the crowd!");
       }
     }

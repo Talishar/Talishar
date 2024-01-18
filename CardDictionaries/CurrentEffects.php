@@ -142,6 +142,7 @@
       case "HVY172": return 3;
       case "HVY173": return 2;
       case "HVY174": return 1;
+      case "HVY176-BUFF": return 3;
       case "HVY192": return 3;
       case "HVY193": return 2;
       case "HVY194": return 1;
@@ -190,6 +191,7 @@
       case "HVY152": case "HVY153": case "HVY154": return ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer) || ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer);
       case "HVY169": case "HVY170": case "HVY171": return true;
       case "HVY172": case "HVY173": case "HVY174": return ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer) || ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
+      case "HVY176-BUFF": return CachedWagerActive();
       case "HVY189": case "HVY190": case "HVY191": return true;
       case "HVY192": case "HVY193": case "HVY194": return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer);
       case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
