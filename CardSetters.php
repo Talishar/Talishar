@@ -42,7 +42,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   ++$classState[$CS_CardsBanished];
   if($modifier == "INT") return $rv;
   //Do additional effects
-  if($cardID == "DTD109" && $from == "HAND" && $modifier != "DTD564") $banish[count($banish)-2] = "TT";
+  if($cardID == "DTD109" && $from == "HAND" && $modifier != "DTD564" && ($modifier != "RETURN" || $player == $mainPlayer)) $banish[count($banish)-2] = "TT";
   if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
     WriteLog("Gained 1 action point from banishing " . CardLink($cardID, $cardID));
     ++$actionPoints;
