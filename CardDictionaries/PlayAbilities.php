@@ -195,6 +195,9 @@
       case "HVY189": case "HVY190": case "HVY191":
         AskWager($cardID);
         return "";
+      case "HVY192": case "HVY193": case "HVY194":
+        PlayAura("HVY242", $currentPlayer); //Vigor
+        return "";
       case "HVY195":
         Draw($currentPlayer);
         return "";
