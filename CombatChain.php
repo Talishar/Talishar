@@ -117,7 +117,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "EVR105": return (GetClassState($mainPlayer, $CS_NumAuras) >= 2 ? 1 : 0);
     case "EVR116": case "EVR117": case "EVR118": return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 3 : 0);
     case "DVR002": return GetClassState($mainPlayer, $CS_AtksWWeapon) >= 1 ? 1 : 0;
-    case "RVD009": case "HVY018": case "HVY019": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
+    case "RVD009": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
     case "UPR048": return (NumChainLinksWithName("Phoenix Flame") >= 2 ? 2 : 0);
     case "UPR050": return 1;
     case "UPR098": return (RuptureActive() ? 3 : 0);
@@ -401,10 +401,10 @@ function OnBlockResolveEffects()
       case "HVY020": case "HVY021": case "HVY022":
       case "HVY162":
       case "HVY137": case "HVY138": case "HVY139":
-      case "HVY141":
+      case "HVY141": case "HVY142": 
       case "HVY157": case "HVY158": case "HVY159":
-      case "HVY177": case "HVY178": case "HVY179":
-      case "HVY182": case "HVY183": case "HVY184":
+      case "HVY161": case "HVY177": case "HVY178": case "HVY179":
+      case "HVY181": case "HVY182": case "HVY183": case "HVY184":
       case "HVY239"://Clash blocks
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
@@ -435,12 +435,6 @@ function OnBlockResolveEffects()
           PutItemIntoPlayForPlayer("DYN243", $defPlayer, effectController:$defPlayer);
           WriteLog(CardLink("HVY054", "HVY054") . " created a Gold token");
         }
-        break;
-      case "HVY142":
-        if(CountAura("HVY241", $defPlayer) > 0) MZMoveCard($defPlayer, "MYDISCARD:type=AA", "MYTOPDECK", may:true);
-        break;
-      case "HVY181":
-        if(CountAura("HVY242", $defPlayer) > 0) GainHealth(1, $defPlayer);
         break;
       default: break;
     }

@@ -1145,6 +1145,18 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZDESTROY", $player, "-", 1);
       break;
+    case "HVY142": 
+      if(CountAura("HVY241", $player) > 0) MZMoveCard($player, "MYDISCARD:type=AA", "MYTOPDECK", may:true);
+      break;
+    case "HVY161":
+      if(IsAllyAttacking()) {
+        WriteLog("<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>");
+      }
+      else if(CountAura("HVY240", $player) > 0) WriteLog("Deals 1 damage"); DamageTrigger($mainPlayer, 1, "DAMAGE", $parameter);
+      break;
+    case "HVY181":
+      if(CountAura("HVY242", $player) > 0) GainHealth(1, $player);
+      break;
     case "HVY162":
     case "HVY137": case "HVY138": case "HVY139":
     case "HVY141":
