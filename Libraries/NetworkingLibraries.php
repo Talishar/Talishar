@@ -1128,6 +1128,8 @@ function EndStep()
   AddLayer("ENDSTEP", $mainPlayer, "-");
   AuraBeginEndPhaseTriggers();
   BeginEndPhaseEffectTriggers();
+  UndoIntimidate(1);
+  UndoIntimidate(2);
   if(HeaveIndices() != "") AddLayer("TRIGGER", $mainPlayer, "HEAVE");
 }
 
@@ -1152,8 +1154,6 @@ function FinishTurnPass()
   ResetCombatChainState();
   QuellEndPhase(1);
   QuellEndPhase(2);
-  UndoIntimidate(1);
-  UndoIntimidate(2);
   ItemEndTurnAbilities();
   AuraBeginEndPhaseAbilities();
   LandmarkBeginEndPhaseAbilities();
