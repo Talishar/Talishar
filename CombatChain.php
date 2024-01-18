@@ -439,6 +439,9 @@ function OnBlockResolveEffects()
       case "HVY142":
         if(CountAura("HVY241", $defPlayer) > 0) MZMoveCard($defPlayer, "MYDISCARD:type=AA", "MYTOPDECK", may:true);
         break;
+      case "HVY181":
+        if(CountAura("HVY242", $defPlayer) > 0) GainHealth(1, $defPlayer);
+        break;
       default: break;
     }
   }
