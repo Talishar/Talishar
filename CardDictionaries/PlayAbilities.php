@@ -39,7 +39,7 @@
       case "HVY015":
         $roll = GetDieRoll($currentPlayer);
         GainActionPoints(intval($roll/2), $currentPlayer);
-        if(GetClassState($currentPlayer, $CS_HighestRoll) = 6) Draw($currentPlayer);
+        if(GetClassState($currentPlayer, $CS_HighestRoll) == 6) Draw($currentPlayer);
         return "Rolled $roll and gained " . intval($roll/2) . " action points";
       case "HVY016":
         AddCurrentTurnEffect($cardID . "-" . $additionalCosts, $currentPlayer);
@@ -108,6 +108,9 @@
         for($i=0; $i<intval($additionalCosts); ++$i) {
           PlayAlly("HVY134", $currentPlayer);
         }
+        return "";
+      case "HVY109": case "HVY110": case "HVY111":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY115": case "HVY116": case "HVY117":
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
