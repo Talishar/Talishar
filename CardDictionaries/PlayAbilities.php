@@ -30,9 +30,7 @@
         }
         return "";
       case "HVY013":
-        if (IsHeroAttackTarget()) {
-          Intimidate();
-        }
+        if (IsHeroAttackTarget()) Intimidate();
         return "";
       case "HVY014":
         $deck = new Deck($currentPlayer);
@@ -85,7 +83,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY057":
-        AskWager($cardID);
+        if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
       case "HVY089":
         PlayAura("HVY241", $currentPlayer);//Might
@@ -170,7 +168,7 @@
         }
         return "";
       case "HVY149": case "HVY150": case "HVY151":
-        AskWager($cardID);
+        if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
       case "HVY152": case "HVY153": case "HVY154":
         PlayAura("HVY241", $currentPlayer); //Might
@@ -194,7 +192,7 @@
         if(GetClassState($currentPlayer, $CS_NumCardsDrawn) > 0) GiveAttackGoAgain();
         return "";
       case "HVY169": case "HVY170": case "HVY171":
-        AskWager($cardID);
+        if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
       case "HVY172": case "HVY173": case "HVY174":
         PlayAura("HVY240", $currentPlayer); //Agility
@@ -216,7 +214,7 @@
         }
         return "";
       case "HVY189": case "HVY190": case "HVY191":
-        AskWager($cardID);
+        if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
       case "HVY192": case "HVY193": case "HVY194":
         PlayAura("HVY242", $currentPlayer); //Vigor
@@ -257,7 +255,7 @@
         }
         return "";
       case "HVY216": case "HVY217": case "HVY218":
-        AskWager($cardID);
+        if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
       case "HVY225": case "HVY226": case "HVY227":
         if($from == "ARS") GiveAttackGoAgain();

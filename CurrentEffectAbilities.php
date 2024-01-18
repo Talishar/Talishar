@@ -448,31 +448,31 @@ function OnAttackEffects($attack)
           $remove = true;
           break;
         case "HVY055":
-          if(IsCombatEffectActive($currentTurnEffects[$i])) {
+          if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager($currentTurnEffects[$i]);
           }
         case "HVY083-BUFF": case "HVY084-BUFF": case "HVY085-BUFF":
-          if(IsCombatEffectActive($currentTurnEffects[$i])) {
+          if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager(substr($currentTurnEffects[$i], 0, 6));
           }
           break;
         case "HVY086-BUFF": case "HVY087-BUFF": case "HVY088-BUFF":
-          if(IsCombatEffectActive($currentTurnEffects[$i])) {
+          if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager(substr($currentTurnEffects[$i], 0, 6));
           }
           break;
         case "HVY124-BUFF": case "HVY125-BUFF": case "HVY126-BUFF":
-          if(IsCombatEffectActive($currentTurnEffects[$i])) {
+          if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager(substr($currentTurnEffects[$i], 0, 6));
           }
           break;
         case "HVY130-BUFF": case "HVY131-BUFF": case "HVY132-BUFF":
-          if(IsCombatEffectActive($currentTurnEffects[$i])) {
+          if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager(substr($currentTurnEffects[$i], 0, 6));
           }
           break;
         case "HVY235-BUFF": case "HVY236-BUFF": case "HVY237-BUFF":
-          if(IsCombatEffectActive($currentTurnEffects[$i])) {
+          if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager(substr($currentTurnEffects[$i], 0, 6));
           }
           break;
