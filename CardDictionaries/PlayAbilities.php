@@ -141,6 +141,9 @@
       case "HVY135":
         PlayAura("HVY241", $currentPlayer); //Might
         return "";
+      case "HVY140":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "HVY143": case "HVY144": case "HVY145":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
           PlayAura("HVY241", $currentPlayer); //Might
