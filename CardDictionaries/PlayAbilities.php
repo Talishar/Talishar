@@ -60,7 +60,7 @@
         AddCurrentTurnEffect($cardID . "-" . $additionalCosts, $currentPlayer);
         return "";
       case "HVY023": case "HVY024": case "HVY025":
-        if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) Intimidate();
+        if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer) && IsHeroAttackTarget()) Intimidate();
         return "";
       case "HVY026": case "HVY027": case "HVY028":
         if(SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) PlayAura("HVY240", $currentPlayer);//Agility
@@ -97,8 +97,10 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY098":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        AddOnWagerEffects();
+        if(IsHeroAttackTarget()) {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          AddOnWagerEffects();
+        }
         return "";
       case "HVY099":
         AddCurrentTurnEffect($cardID, $currentPlayer);
