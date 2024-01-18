@@ -31,9 +31,13 @@
           }
           PlayAura("HVY241", $currentPlayer, $numSixes); //Might
           if(CountAura("HVY241", $currentPlayer) >= 6) PlayAura("HVY240", $currentPlayer); //Agility
+
           $zone = &GetDeck($currentPlayer);
-          shuffle($zone);
-          $zone = array_slice($zone, 0, 6);
+          $topDeck = array_slice($zone, 0, 6);
+          shuffle($topDeck);
+          for($i = 0; $i <= count($topDeck); ++$i) {
+            $zone[$i] = $topDeck[$i];
+          }
         }
         return "";
       case "HVY015":
