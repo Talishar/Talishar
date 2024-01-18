@@ -1732,6 +1732,13 @@ function HasGalvanize($cardID)
   }
 }
 
+function CanPowerBeModified($cardID)
+{
+  switch($cardID) {
+    case "DTD201": return false;
+    default: return true;
+  }
+}
 function CanCostBeModified($cardID)
 {
   switch($cardID) {
