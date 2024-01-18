@@ -110,15 +110,15 @@
     switch ($deck->Top()) {
       case "HVY059":
         PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$playerID);
-        WriteLog(CardLink("HVY059", "HVY059") . " created a Gold Token for Player ". $playerID);  
+        WriteLog(CardLink("HVY059", "HVY059") . " created a Gold Token for Player ". $playerID);
         break;
       case "HVY080": case "HVY081": case "HVY082":
         PlayAura("HVY242", $playerID); //Vigor
-        WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Vigor Token for Player ". $playerID);  
+        WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Vigor Token for Player ". $playerID);
         break;
       case "HVY077": case "HVY078": case "HVY079":
         PlayAura("HVY241", $playerID); //Vigor
-        WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Might Token for Player ". $playerID);    
+        WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Might Token for Player ". $playerID);
         break;
       default:
         break;
@@ -140,7 +140,7 @@
       case "HVY137": case "HVY138": case "HVY139":
         PlayAura("HVY241", $playerID);//Might
         break;
-      case "HVY141": case "HVY142": case "HVY143":
+      case "HVY141":
         PlayAura("HVY241", $playerID);//Might
         break;
       case "HVY157": case "HVY158": case "HVY159":

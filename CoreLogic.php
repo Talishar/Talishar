@@ -542,7 +542,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
         break;
       case "UPR106": case "UPR107": case "UPR108":
         if((IsHeroAttackTarget() || (IsHeroAttackTarget() == "" && $source != "ELE111")) && $type == "ARCANE") {
-          PlayAura("ELE111", $target, $damage); 
+          PlayAura("ELE111", $target, $damage);
           $remove = 1;
         }
         break;
@@ -1037,7 +1037,8 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   if($from == "DECK" && (SearchCharacterActive($currentPlayer, "EVO001") || SearchCharacterActive($currentPlayer, "EVO002"))) return true;
   switch($cardID) {
     case "HVY143": case "HVY144": case "HVY145":
-    case "HVY163": case "HVY164": case "HVY165": return $from == "HAND";;
+    case "HVY163": case "HVY164": case "HVY165":
+    case "HVY186": case "HVY187": case "HVY188": return $from == "HAND";
     default: break;
   }
   return false;
@@ -1713,7 +1714,7 @@ function SelfCostModifier($cardID, $from)
     case "EVO054": case "EVO055": case "EVO056": return EvoUpgradeAmount($currentPlayer) >= 2? -3 : 0;
     case "EVO183": case "EVO184": case "EVO185": return SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036") != "" ? -1 : 0;
     case "EVO225": case "EVO226": case "EVO227": return SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) * -1;
-    case "HVY058": 
+    case "HVY058":
       if(GetClassState($currentPlayer, $CS_NumVigorDestroyed) > 0 || SearchAurasForCard("HVY242", $currentPlayer)) return -1;
       else return 0;
     case "HVY251": return (-1 * NumRunechants($currentPlayer));

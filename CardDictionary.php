@@ -262,6 +262,7 @@ function CardCost($cardID)
     case "EVR022": return 3;
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
+    case "HVY186": case "HVY187": case "HVY188":
       return GetResolvedAbilityType($cardID, "HAND") == "AA" ? 3 : 0;
     default: break;
   }
@@ -434,6 +435,7 @@ function GetAbilityTypes($cardID)
     case "TCC050": return "A,AA";
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
+    case "HVY186": case "HVY187": case "HVY188":
       return "I,AA";
     default: return "";
   }
@@ -455,6 +457,7 @@ function GetAbilityNames($cardID, $index = -1)
       return "Create_tokens,Smash_Jinglewood";
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
+    case "HVY186": case "HVY187": case "HVY188":
       $names = "Ability";
       if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces()) $names .= ",Attack";
       return $names;
@@ -971,6 +974,7 @@ function GoesOnCombatChain($phase, $cardID, $from)
   switch($cardID) {
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
+    case "HVY186": case "HVY187": case "HVY188":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     default: break;
   }
@@ -1058,8 +1062,8 @@ function HasTemper($cardID)
     case "DTD047": case "DTD206": case "DTD207": case "DTD211": return true;
     case "TCC029": case "TCC030": case "TCC031": case "TCC032": case "TCC033": return true;
     case "EVO247": case "EVO426": case "EVO427": case "EVO428": case "EVO429": return true;
-    case "HVY008": case "HVY009": case "HVY011": case "HVY051": case "HVY052": case "HVY055": case "HVY056": 
-    case "HVY097": case "HVY098": case "HVY100": 
+    case "HVY008": case "HVY009": case "HVY011": case "HVY051": case "HVY052": case "HVY055": case "HVY056":
+    case "HVY097": case "HVY098": case "HVY100":
       return true;
     default: return false;
   }
