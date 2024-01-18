@@ -1008,6 +1008,9 @@ function ResolveCombatDamage($damageDone)
       AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
     }
   }
+  else {
+    NonHitEffects($combatChain[0]);
+  }
   $currentPlayer = $mainPlayer;
   ProcessDecisionQueue(); //Any combat related decision queue logic should be main player gamestate
 }

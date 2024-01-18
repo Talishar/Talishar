@@ -2346,3 +2346,23 @@ function CanOnlyTargetHeroes($cardID) {
         return false;
     }
 }
+
+function NonHitEffects($cardID) {
+  global $mainPlayer, $defPlayer, $currentTurnEffects;
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+    if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $mainPlayer) {
+      switch ($currentTurnEffects[$i]) {
+        case "HVY012":
+          RemoveCurrentTurnEffect($i);
+          $banish = new Banish($defPlayer);
+          $banishedCard = $banish->FirstCardWithModifier($cardID);
+          if($banishedCard == null) break;
+          $banishIndex = $banishedCard->Index();
+          if($banishIndex > -1) AddPlayerHand($banish->Remove($banishIndex), $defPlayer, "BANISH");
+          break;
+        default:
+          break;
+        }
+    }
+  }
+}

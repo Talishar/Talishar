@@ -18,6 +18,13 @@
         Draw($currentPlayer);
         DiscardRandom($currentPlayer, $cardID);
         return "";
+      case "HVY012":
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRARS");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZBANISH", $currentPlayer, "CC," . $cardID, 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+        return "";
       case "HVY013":
         Intimidate();
         return "";
