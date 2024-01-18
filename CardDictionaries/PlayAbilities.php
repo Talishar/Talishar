@@ -109,6 +109,14 @@
           PlayAlly("HVY134", $currentPlayer);
         }
         return "";
+      case "HVY106": case "HVY107": case "HVY108": 
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        if (NumAttacksBlocking() > 0) {
+          Draw($currentPlayer);
+          $hand = &GetHand($currentPlayer);
+          if(count($hand) > 0) MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK", silent:true);
+        }
+        return "";
       case "HVY109": case "HVY110": case "HVY111":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
