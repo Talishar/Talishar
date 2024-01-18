@@ -2,7 +2,7 @@
 
   function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer, $chainLinks, $defPlayer, $CS_NumCardsDrawn;
+    global $currentPlayer, $chainLinks, $defPlayer, $CS_NumCardsDrawn, $CS_HighestRoll;
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     $rv = "";
     switch($cardID) {
@@ -36,6 +36,11 @@
           $zone = array_slice($zone, 0, 6);
         }
         return "";
+      case "HVY015":
+        $roll = GetDieRoll($currentPlayer);
+        GainActionPoints(intval($roll/2), $currentPlayer);
+        if(GetClassState($currentPlayer, $CS_HighestRoll) = 6) Draw($currentPlayer);
+        return "Rolled $roll and gained " . intval($roll/2) . " action points";
       case "HVY016":
         AddCurrentTurnEffect($cardID . "-" . $additionalCosts, $currentPlayer);
         return "";
