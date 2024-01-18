@@ -270,6 +270,12 @@
           }
         }
         return "";
+      case "HVY247":
+        $deck = new Deck($currentPlayer);
+        $banishMod = "-";
+        if(HasCombo($deck->top())) $banishMod == "TT";
+        $deck->BanishTop($banishMod, $currentPlayer);
+        return "";
       case "HVY251":
         $xVal = $resourcesPaid/2;
         MZMoveCard($currentPlayer, "MYDECK:maxCost=" . $xVal . ";subtype=Aura;class=RUNEBLADE", "MYAURAS", may:true);

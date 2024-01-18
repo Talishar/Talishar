@@ -151,6 +151,7 @@
       case "HVY236-BUFF": return 2;
       case "HVY237-BUFF": return 1;
       case "HVY241": return 1;
+      case "HVY247": return 1;
       default: return 0;
     }
   }
@@ -196,6 +197,7 @@
       case "HVY216": case "HVY217": case "HVY218": return true;
       case "HVY235-BUFF": case "HVY236-BUFF": case "HVY237-BUFF": return true;
       case "HVY240": return true;
+      case "HVY247": return HasCombo($attackID);
       case "HVY254-1": return str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
       case "HVY254-2": return DelimStringContains(CardSubType($CombatChain->AttackCard()->ID()), "Angel");
       case "HVY241": return true;
