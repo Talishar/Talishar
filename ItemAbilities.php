@@ -1,10 +1,12 @@
 <?php
 
 
-function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1, $effectController="")
+function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1, $effectController="", $isToken=false)
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
   if(!DelimStringContains(CardSubType($item), "Item") && $item != "DTD164") return;
+  if(TypeContains($item, "T", $player)) $isToken = true;
+  if(SearchCurrentTurnEffects("HVY209", $otherPlayer) && $isToken) $number -= 1;
   $items = &GetItems($player);
   $myHoldState = ItemDefaultHoldTriggerState($item);
   if($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;

@@ -10,6 +10,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     $player = ($player == 1 ? 2 : 1);
   }
   $auras = &GetAuras($player);
+  if(SearchCurrentTurnEffects("HVY209", $otherPlayer) && $isToken) $number -= 1;
   if($cardID == "ARC112") $number += CountCurrentTurnEffects("ARC081", $player);
   if($cardID == "MON104") {
     $index = SearchArsenalReadyCard($player, "MON404");

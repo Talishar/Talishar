@@ -247,6 +247,11 @@
       case "HVY197":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "HVY209": 
+        if(GetResolvedAbilityType($cardID, "HAND") == "I") {
+          AddCurrentTurnEffect($cardID, $currentPlayer, $from);
+        }
+        return "";
       case "HVY210":
         MZMoveCard($currentPlayer, "MYARS", "MYBOTDECK", may:true, silent:true);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);

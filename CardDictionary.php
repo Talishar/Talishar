@@ -265,6 +265,8 @@ function CardCost($cardID)
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
       return GetResolvedAbilityType($cardID, "HAND") == "AA" ? 3 : 0;
+    case "HVY209":
+      return GetResolvedAbilityType($cardID, "HAND") == "AA" ? 2 : 0;
     default: break;
   }
   if($set != "ROG" && $set != "DUM") {
@@ -437,6 +439,7 @@ function GetAbilityTypes($cardID)
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
+    case "HVY209":
       return "I,AA";
     default: return "";
   }
@@ -459,6 +462,7 @@ function GetAbilityNames($cardID, $index = -1)
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
+    case "HVY209":
       $names = "Ability";
       if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces()) $names .= ",Attack";
       return $names;
@@ -980,6 +984,7 @@ function GoesOnCombatChain($phase, $cardID, $from)
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
+    case "HVY209":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     default: break;
   }

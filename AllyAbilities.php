@@ -1,21 +1,26 @@
 <?php
 
-function PlayAlly($cardID, $player, $subCards = "-")
+function PlayAlly($cardID, $player, $subCards="-", $number=1, $isToken=false)
 {
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  if(TypeContains($cardID, "T", $player)) $isToken = true;
+  if(SearchCurrentTurnEffects("HVY209", $otherPlayer) && $isToken) $number -= 1;
   $allies = &GetAllies($player);
-  array_push($allies, $cardID);
-  array_push($allies, 2);
-  array_push($allies, AllyHealth($cardID));
-  array_push($allies, 0); //Frozen
-  array_push($allies, $subCards); //Subcards
-  array_push($allies, GetUniqueId()); //Unique ID
-  array_push($allies, AllyEnduranceCounters($cardID)); //Endurance Counters
-  array_push($allies, 0); //Life Counters
-  array_push($allies, 1); //Ability/effect uses
-  array_push($allies, 0); //Attack Counters
-  if($cardID == "UPR414") {
-    WriteLog(CardLink($cardID, $cardID) . " lets you transform up to 1 ash into an Ashwing.");
-    Transform($player, "Ash", "UPR042", true);
+  for($i = 0; $i < $number; ++$i) {
+    array_push($allies, $cardID);
+    array_push($allies, 2);
+    array_push($allies, AllyHealth($cardID));
+    array_push($allies, 0); //Frozen
+    array_push($allies, $subCards); //Subcards
+    array_push($allies, GetUniqueId()); //Unique ID
+    array_push($allies, AllyEnduranceCounters($cardID)); //Endurance Counters
+    array_push($allies, 0); //Life Counters
+    array_push($allies, 1); //Ability/effect uses
+    array_push($allies, 0); //Attack Counters
+    if($cardID == "UPR414") {
+      WriteLog(CardLink($cardID, $cardID) . " lets you transform up to 1 ash into an Ashwing.");
+      Transform($player, "Ash", "UPR042", true);
+    }
   }
   return count($allies) - AllyPieces();
 }
