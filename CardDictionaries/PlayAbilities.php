@@ -157,6 +157,9 @@
       case "HVY124": case "HVY125": case "HVY126":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
+      case "HVY127": case "HVY128": case "HVY129":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "HVY130": case "HVY131": case "HVY132":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
