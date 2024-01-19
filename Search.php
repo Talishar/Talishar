@@ -1171,10 +1171,11 @@ function GetPlayerNumTokens($player)
     if(TypeContains($items[$i], "T", $player)) ++$count;
   }
   for($i = 0; $i < count($ally); $i += AllyPieces()) {
-    if(TypeContains($auras[$i], "T", $player)) ++$count;
+    if(TypeContains($ally[$i], "T", $player)) ++$count;
+    else if(TypeContains($ally[$i+4], "T", $player)) ++$count; //Check for Allies Subcards
   }
   for($i = 0; $i < count($permanents); $i += PermanentPieces()) {
-    if(TypeContains($auras[$i], "T", $player)) ++$count;
+    if(TypeContains($permanents[$i], "T", $player)) ++$count;
   }
   return $count;
 }
