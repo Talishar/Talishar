@@ -320,6 +320,7 @@
         $banishMod = "-";
         if(HasCombo($deck->top())) $banishMod == "TT";
         $deck->BanishTop($banishMod, $currentPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY251":
         $xVal = $resourcesPaid/2;
