@@ -1466,10 +1466,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else $player = $lastResult == "MYCHAR-0" ? $currentPlayer : $defPlayer;
       WriteLog("Player {$player} was targeted to intimidate.");
       $hand = &GetHand($player);
-      if(count($hand) == 0) {
-        WriteLog("Intimidate did nothing because there are no cards in their hand");
-        return;
-      }
+      if(count($hand) == 0) return; //Intimidate did nothing because there are no cards in their hand
       $index = GetRandom() % count($hand);
       BanishCardForPlayer($hand[$index], $player, "HAND", "INT");
       RemoveHand($player, $index);
