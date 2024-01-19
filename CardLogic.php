@@ -1153,13 +1153,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "HVY052":
       Clash($parameter, effectController:$player);
       break;
+    case "HVY061":
+      Clash($parameter, effectController:$player);
+      //Clash($parameter, effectController:$player);
+      break;
     case "HVY104":
       AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose which card you want to destroy from their arsenal", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZDESTROY", $player, "-", 1);
       break;
-    case "HVY142": 
+    case "HVY142":
       if(CountAura("HVY241", $player) > 0) MZMoveCard($player, "MYDISCARD:type=AA", "MYTOPDECK", may:true);
       break;
     case "HVY161":

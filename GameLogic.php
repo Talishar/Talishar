@@ -1526,9 +1526,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return "";
       case "WONCLASH":
         $winner = $dqVars[0];
+        $params = explode(",", $parameter);
         if($winner > 0) {
-          $params = explode(",", $parameter);
           WonClashAbility($winner, $params[0], $params[1]);
+        }
+        if($params[0] == "HVY061") {
+          $p1Deck = new Deck(1);
+          $p1Deck->AddBottom($p1Deck->Top(remove:true));
+          $p2Deck = new Deck(2);
+          $p2Deck->AddBottom($p2Deck->Top(remove:true));
+          Clash("HVY061-2", effectController:$player);
         }
         return "";
       case "DEAL1DAMAGE":
