@@ -458,6 +458,7 @@ function OnAttackEffects($attack)
           if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager($currentTurnEffects[$i]);
           }
+          break;
         case "HVY083-BUFF": case "HVY084-BUFF": case "HVY085-BUFF":
           if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager(substr($currentTurnEffects[$i], 0, 6));
