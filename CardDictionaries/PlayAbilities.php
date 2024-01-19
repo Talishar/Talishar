@@ -87,7 +87,7 @@
         return "";
       case "HVY058":
         if(GetClassState($currentPlayer, $CS_NumMightDestroyed) > 0 || SearchAurasForCard("HVY241", $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
-
+        return "";
       case "HVY089":
         PlayAura("HVY241", $currentPlayer);//Might
         PlayAura("HVY242", $currentPlayer);//Vigor
