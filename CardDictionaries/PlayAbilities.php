@@ -143,11 +143,11 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY115": case "HVY116": case "HVY117":
-        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         if(NumAttacksBlocking() > 0)  PlayAura("HVY240", $currentPlayer); //Agility
         return "";
       case "HVY118": case "HVY119": case "HVY120":
-        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         if(NumAttacksBlocking() > 0)  PlayAura("HVY242", $currentPlayer); //Vigor
         return "";
       case "HVY121": case "HVY122": case "HVY123":
