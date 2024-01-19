@@ -46,7 +46,7 @@
           $zone = &GetDeck($currentPlayer);
           $topDeck = array_slice($zone, 0, 6);
           shuffle($topDeck);
-          for($i = 0; $i <= count($topDeck); ++$i) {
+          for($i = 0; $i < count($topDeck); ++$i) {
             $zone[$i] = $topDeck[$i];
           }
         }
