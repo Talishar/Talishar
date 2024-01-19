@@ -748,6 +748,10 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "HVY055": 
       $index = GetItemIndex("DYN243", $currentPlayer);
       if($index != -1) DestroyItemForPlayer($currentPlayer, $index);
+      else {
+        $charIndex = FindCharacterIndex($currentPlayer, "HVY051");
+        if($charIndex != -1) DestroyCharacter($currentPlayer, $charIndex);
+      }
       break;
     case "HVY099":
       DestroyCharacter($currentPlayer, $cardIndex, true);
