@@ -233,7 +233,7 @@ function RemoveArsenal($player, $index)
   return $cardID;
 }
 
-function DestroyArsenal($player, $index=-1, $effectController="")
+function DestroyArsenal($player, $index=-1, $effectController="", $allArsenal=true)
 {
   $arsenal = &GetArsenal($player);
   $cardIDs = "";
@@ -243,8 +243,11 @@ function DestroyArsenal($player, $index=-1, $effectController="")
     $cardIDs .= $arsenal[$i];
     WriteLog(CardLink($arsenal[$i], $arsenal[$i]) . " was destroyed from the arsenal");
     AddGraveyard($arsenal[$i], $player, "ARS", $effectController);
+    RemoveArsenal($player, $i);
   }
-  $arsenal = [];
+  if($allArsenal) $arsenal = [];
+  else $arsenal = array_values($arsenal);
+
   return $cardIDs;
 }
 

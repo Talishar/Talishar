@@ -1151,7 +1151,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose which card you want to destroy from their arsenal", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+      AddDecisionQueue("MZDESTROY", $player, false, 1);
       break;
     case "HVY142":
       if(CountAura("HVY241", $player) > 0) MZMoveCard($player, "MYDISCARD:type=AA", "MYTOPDECK", may:true);
