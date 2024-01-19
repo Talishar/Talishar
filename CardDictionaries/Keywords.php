@@ -312,7 +312,7 @@
       $char = &GetPlayerCharacter($mainPlayer);
       $hero = ShiyanaCharacter($char[0]);
       if($char[1] == 2 && ($hero == "HVY092" || $hero == "HVY093")) {
-        PutItemIntoPlayForPlayer("DYN243", $mainPlayer, number:$amount, effectController:$mainPlayer);//Gold
+        PutItemIntoPlayForPlayer("DYN243", $mainPlayer, effectController:$mainPlayer);//Gold
         WriteLog(CardLink($hero, $hero) . " wins the favor of the crowd!");
       }
     }
