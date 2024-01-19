@@ -2178,12 +2178,13 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because dominate is active and there is already a card defending from hand.");
       return;
     }
-    if(!$isBlock && CardType($cardID) == "AR" && IsPlayRestricted($cardID, $restriction, $from)) {
+    if(!$isBlock && CardType($cardID) == "AR") {
       AddGraveyard($cardID, $currentPlayer, "LAYER", $currentPlayer);
-      WriteLog(CardLink($cardID, $cardID) . " does not resolve because fail to resolve because the target is no longer a legal target.");
-      if($additionalCosts == "-")return;
+      if(IsPlayRestricted($cardID, $restriction, $from) && $additionalCosts == "-") {
+        WriteLog(CardLink($cardID, $cardID) . " does not resolve because fail to resolve because the target is no longer a legal target.");
+        return;
+      }
     }
-    if(CardType($cardID) == "AR") AddGraveyard($cardID, $currentPlayer, "LAYER", $currentPlayer);
     $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
     if($index == 0) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
