@@ -402,7 +402,7 @@ function OnBlockResolveEffects()
       case "TCC033": case "TCC098": case "TCC102":
       case "TCC060": case "TCC063": case "TCC067": // Crowd Control
       case "HVY020": case "HVY021": case "HVY022":
-      case "HVY061":
+      case "HVY053": case "HVY061":
       case "HVY162":
       case "HVY137": case "HVY138": case "HVY139":
       case "HVY141": case "HVY142":

@@ -497,6 +497,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
   $auras = &GetAuras($player);
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
+  $otherPlayer = ($player == 1 ? 2 : 1);
   switch($parameter) {
     case "HEAVE":
       Heave();
@@ -704,7 +705,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ELE174":
-      $otherPlayer = ($player == 1 ? 2 : 1);
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("YESNO", $player, "destroy_mark_of_lightning_to_have_the_attack_deal_1_damage");
       AddDecisionQueue("NOPASS", $player, "-", 1);
@@ -777,7 +777,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       break;
     case "EVR120": case "UPR102": case "UPR103":
-      $otherPlayer = ($player == 1 ? 2 : 1);
       PlayAura("ELE111", $otherPlayer);
       break;
     case "EVR131": case "EVR132": case "EVR133":
@@ -884,7 +883,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("SPECIFICCARD", $player, "PLASMAMAINLINE", 1);
       break;
     case "DYN094":
-      $otherPlayer = ($player == 1 ? 2 : 1);
       $index = GetItemIndex($parameter, $player);
       AddDecisionQueue("YESNO", $player, "Do_you_want_to_destroy_" . CardLink($parameter, $parameter) . "_and_a_defending_equipment?");
       AddDecisionQueue("NOPASS", $player, "-");
@@ -912,21 +910,19 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       break;
     case "DYN113": case "DYN114":
-        $otherPlayer = ($player == 1 ? 2 : 1);
-        AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
-        AddDecisionQueue("SETDQVAR", $player, "0", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to sink <0>" , 1);
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_sink_the_opponent's_card", 1);
-        AddDecisionQueue("NOPASS", $player, $parameter, 1);
-        AddDecisionQueue("WRITELOG", $player, "Arakni sunk the top card", 1);
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
-        AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
-        AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
-        AddDecisionQueue("ELSE", $player, "-");
-        AddDecisionQueue("WRITELOG", $player, "Arakni left the top card there", 1);
+      AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
+      AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to sink <0>" , 1);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_sink_the_opponent's_card", 1);
+      AddDecisionQueue("NOPASS", $player, $parameter, 1);
+      AddDecisionQueue("WRITELOG", $player, "Arakni sunk the top card", 1);
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
+      AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
+      AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+      AddDecisionQueue("ELSE", $player, "-");
+      AddDecisionQueue("WRITELOG", $player, "Arakni left the top card there", 1);
       break;
     case "DYN152":
-      $otherPlayer = ($player == 1 ? 2 : 1);
       $deck = new Deck($player);
       if($deck->Reveal()) {
         if(CardSubType($deck->Top()) == "Arrow") {
@@ -963,7 +959,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "OUT000":
       $rand = GetRandom(1, 3);
-      $otherPlayer = ($player == 1 ? 2 : 1);
       switch($rand) {
         case 1: $auraCreated = "OUT236"; break;
         case 2: $auraCreated = "OUT235"; break;
@@ -1047,7 +1042,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       break;
     case "TCC019": case "TCC022": case "TCC026":
-      $otherPlayer = ($player == 1 ? 2 : 1);
       $deck = new Deck($player);
       if($deck->Reveal()) {
         if(!SubtypeContains($deck->Top(), "Evo", $player)) {
@@ -1057,22 +1051,18 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       break;
     case "TCC030":
-      $otherPlayer = ($player == 1 ? 2 : 1);
       Draw($otherPlayer);
       break;
     case "TCC031":
-      $otherPlayer = ($player == 1 ? 2 : 1);
       PlayAura("HVY242", $otherPlayer);
       break;
     case "TCC032":
-      $otherPlayer = ($player == 1 ? 2 : 1);
       PlayAura("HVY241", $otherPlayer);
       break;
     case "TCC098": case "TCC102":
       BanishCardForPlayer("DYN065", $player, "-", "NT", $player);
       break;
     case "TCC033":
-      $otherPlayer = ($player == 1 ? 2 : 1);
       PlayAura("WTR225", $otherPlayer);
       break;//Quicken
     case "TCC060": case "TCC063": case "TCC076":
@@ -1087,7 +1077,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("MZADDSTEAMCOUNTER", $player, "-", 1);
       break;
     case "EVO074":
-      $otherPlayer = ($player == 1 ? 2 : 1);
       $index = SearchItemsForUniqueID($uniqueID, $player);
       DestroyItemForPlayer($player, $index);
       AddDecisionQueue("PASSPARAMETER", $player, "0");
@@ -1127,7 +1116,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       break;
     case "EVO236":
-      $otherPlayer = ($player == 1 ? 2 : 1);
       if(IsHeroAttackTarget()) {
         $deck = new Deck($otherPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
@@ -1141,7 +1129,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       break;
     case "HVY001": case "HVY002":
-      PlayAura("HVY241", $player);//Might
+      PlayAura("HVY241", $player); //Might
       break;
     case "HVY020": case "HVY021": case "HVY022":
       $deck = new Deck($player);
@@ -1153,9 +1141,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "HVY052":
       Clash($parameter, effectController:$player);
       break;
+    case "HVY053":
+      AddDecisionQueue("ADDCURRENTEFFECT", $player, $parameter);
+      break;
     case "HVY061":
       Clash($parameter, effectController:$player);
-      //Clash($parameter, effectController:$player);
       break;
     case "HVY104":
       AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);

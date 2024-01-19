@@ -911,6 +911,9 @@ function ChainLinkBeginResolutionEffects()
             AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
             AddDecisionQueue("DESTROYCHARACTER", $defPlayer, "-", 1);
             break;
+          case "HVY053":
+            RemoveCurrentTurnEffect($i);
+            break;
           default: break;
         }
       }
