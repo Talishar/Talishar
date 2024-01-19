@@ -8,6 +8,8 @@ function EffectHitEffect($cardID)
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner;
   $attackID = $CombatChain->AttackCard()->ID();
   if(CardType($attackID) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
+  $effectArr = explode(",", $cardID);
+  $cardID = $effectArr[0];
   switch($cardID) {
     case "WTR129": case "WTR130": case "WTR131":
       GiveAttackGoAgain();
@@ -305,8 +307,13 @@ function EffectHitEffect($cardID)
     case "HVY099":
       Draw($mainPlayer);
       break;
-    default:
+    case "HVY136":
+      if($combatChainState[$CCS_DamageDealt] >= $effectArr[1]) {
+        PlayAura("HVY241", $mainPlayer, $effectArr[1]);
+        return 1;
+      }
       break;
+    default: break;
   }
   return 0;
 }
@@ -381,7 +388,7 @@ function EffectBlockModifier($cardID, $index, $from)
       return CachedTotalAttack() >= 13 && (CardType($CombatChain->Card($index)->ID()) || (DelimStringContains(CardSubType($CombatChain->Card($index)->ID()), "Evo"))) != "E" ? -1 : 0;
     case "EVO105": case "EVO106": case "EVO107":
       return IsActionCard($CombatChain->Card($index)->ID()) ? -1 : 0;
-    case "HVY052":    
+    case "HVY052":
       return ($CombatChain->Card($index)->ID() == $cardID ? 1 : 0);
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206":
       return $CombatChain->Card($index)->ID() == $cardID && PlayerHasLessHealth($defPlayer) ? 1 : 0;
@@ -1143,12 +1150,13 @@ function IsCombatEffectPersistent($cardID)
     case $Card_ResourceBanner: return true;
     case "HVY052": case "HVY090": case "HVY091": return true;
     case "HVY104": return true;
+    case "HVY136": return true;
     case "EVO146": return true;
     case "HVY176": return true;
     case "HVY246": return true;
     case "HVY247": return true;
 
-    
+
     //Roguelike
     case "ROGUE018": case "ROGUE601": case "ROGUE702": case "ROGUE704": case "ROGUE707": return true;
     case "ROGUE603": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
