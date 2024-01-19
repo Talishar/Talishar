@@ -1314,8 +1314,8 @@ function DiscardRandom($player = "", $source = "")
   $discarded = $hand[$index];
   unset($hand[$index]);
   $hand = array_values($hand);
-  AddGraveyard($discarded, $player, "HAND");
   CardDiscarded($player, $discarded, $source);
+  AddGraveyard($discarded, $player, "HAND");
   DiscardedAtRandomEffects($player, $discarded, $source);
   return $discarded;
 }
@@ -1338,8 +1338,8 @@ function DiscardCard($player, $index, $source="", $effectController="")
 {
   $hand = &GetHand($player);
   $discarded = RemoveHand($player, $index);
-  AddGraveyard($discarded, $player, "HAND", $effectController);
   CardDiscarded($player, $discarded, $source);
+  AddGraveyard($discarded, $player, "HAND", $effectController);
   return $discarded;
 }
 
