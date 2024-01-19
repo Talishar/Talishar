@@ -250,7 +250,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       $blockModifier += (2*GetClassState($defPlayer, $CS_NumClashesWon));
       break;
     case "HVY096":
-      if(CardType($attackID) == "W") $blockModifier += 2;
+      if(TypeContains($attackID, "W", $mainPlayer)) $blockModifier += 2;
       break;
     case "HVY100":
       CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility

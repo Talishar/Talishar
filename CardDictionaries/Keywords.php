@@ -148,7 +148,7 @@
       case "HVY061-2":
         if($dqVars[2] = $playerID) {
           PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$effectController);
-          PlayAura("HVY241", $playerID);//Might
+          PlayAura("HVY241", $playerID); //Might
           PlayAura("HVY242", $playerID); //Vigor
         }
         break;
