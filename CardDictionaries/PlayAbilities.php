@@ -185,6 +185,7 @@
         if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
       case "HVY152": case "HVY153": case "HVY154":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         PlayAura("HVY241", $currentPlayer); //Might
         return "";
       case "HVY155":
@@ -209,6 +210,7 @@
         if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
       case "HVY172": case "HVY173": case "HVY174":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         PlayAura("HVY240", $currentPlayer); //Agility
         return "";
       case "HVY175":
@@ -231,8 +233,8 @@
         if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
       case "HVY192": case "HVY193": case "HVY194":
-        PlayAura("HVY242", $currentPlayer); //Vigor
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        PlayAura("HVY242", $currentPlayer); //Vigor
         return "";
       case "HVY195":
         Draw($currentPlayer);
