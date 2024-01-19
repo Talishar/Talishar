@@ -131,7 +131,7 @@
           PlayAlly("HVY134", $currentPlayer);
         }
         return "";
-      case "HVY106": case "HVY107": case "HVY108": 
+      case "HVY106": case "HVY107": case "HVY108":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         if (NumAttacksBlocking() > 0) {
           Draw($currentPlayer);
@@ -162,6 +162,12 @@
         return "";
       case "HVY135":
         PlayAura("HVY241", $currentPlayer); //Might
+        return "";
+      case "HVY136":
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a number");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20");
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "HVY136,");
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
         return "";
       case "HVY140":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -223,6 +229,7 @@
         return "";
       case "HVY192": case "HVY193": case "HVY194":
         PlayAura("HVY242", $currentPlayer); //Vigor
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY195":
         Draw($currentPlayer);
@@ -318,7 +325,7 @@
       case "HVY252":
         DealArcane(1, 1, "PLAYCARD", $cardID);
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "AERTHERARC");
-        return "";    
+        return "";
       case "HVY253":
         for($i = 1; $i < 3; $i += 1) {
           $arsenal = &GetArsenal($i);

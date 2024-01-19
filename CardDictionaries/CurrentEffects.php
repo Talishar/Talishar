@@ -178,7 +178,7 @@
       case "HVY099": return true;
       case "HVY101": return CardType($attackID) == "W";
       case "HVY104": case "HVY104-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
-      case "HVY106": case "HVY107": case "HVY108": 
+      case "HVY106": case "HVY107": case "HVY108":
       case "HVY109": case "HVY110": case "HVY111":
       case "HVY115": case "HVY116": case "HVY117":
       case "HVY118": case "HVY119": case "HVY120":
@@ -187,6 +187,7 @@
       case "HVY124-BUFF": case "HVY125-BUFF": case "HVY126-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
       case "HVY127": case "HVY128": case "HVY129": return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
       case "HVY130-BUFF": case "HVY131-BUFF": case "HVY132-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
+      case "HVY136": return true;
       case "HVY149": case "HVY150": case "HVY151": return true;
       case "HVY152": case "HVY153": case "HVY154": return ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer) || ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer);
       case "HVY169": case "HVY170": case "HVY171": return true;
