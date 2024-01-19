@@ -236,7 +236,7 @@
     $numWagersWon = 0;
     $amount = 1;
     if(SearchCurrentTurnEffects("HVY176", $wonWager)) ++$amount;
-    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces()) {
+    for($i=0; $i<=count($currentTurnEffects); $i+=CurrentTurnPieces()) {
       $hasWager = true;
       switch($currentTurnEffects[$i]) {
         case "HVY055":
