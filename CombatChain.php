@@ -330,7 +330,7 @@ function OnDefenseReactionResolveEffects($from)
 
 function OnBlockResolveEffects()
 {
-  global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects;
+  global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex;
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if(SearchCurrentTurnEffects("ARC160-1", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
@@ -371,6 +371,12 @@ function OnBlockResolveEffects()
         }
       }
       break;
+    case "HVY095":
+      if(NumAttacksBlocking() > 0) {
+        $character = &GetPlayerCharacter($mainPlayer);
+        AddCurrentTurnEffect("HVY095", $mainPlayer, "CC", $character[$combatChainState[$CCS_WeaponIndex]+11]);
+      }
+      break;    
     default: break;
   }
   $blockedFromHand = 0;

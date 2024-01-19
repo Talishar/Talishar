@@ -419,7 +419,7 @@ function MainCharacterHitAbilities()
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
           AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
           AddDecisionQueue("WRITELOG", $mainPlayer, "🩸 " . CardLink($characterID, $characterID) . " created a " . CardLink("HVY242", "HVY242") . " token ", 1);
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "TCC107", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "HVY242", 1);
           AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
         }
         break;

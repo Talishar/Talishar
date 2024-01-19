@@ -382,12 +382,12 @@
         Draw(2);
         return "";
       case "TCC052":
-        PlayAura("TCC107", 1);
-        PlayAura("TCC107", 2);
+        PlayAura("HVY242", 1);
+        PlayAura("HVY242", 2);
         return "";
       case "TCC053":
-        PlayAura("TCC105", 1);
-        PlayAura("TCC105", 2);
+        PlayAura("HVY241", 1);
+        PlayAura("HVY241", 2);
         return "";
       case "TCC054":
         PlayAura("WTR225", 1);
@@ -410,7 +410,7 @@
         GainHealth(1, $otherPlayer);
         return "";
       case "TCC066": case "TCC067":
-        PlayAura("TCC105", $otherPlayer);
+        PlayAura("HVY241", $otherPlayer);
         return "";
       case "TCC068":
         Draw($otherPlayer);
