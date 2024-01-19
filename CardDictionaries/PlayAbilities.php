@@ -2,7 +2,7 @@
 
   function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer, $chainLinks, $defPlayer, $CS_NumCardsDrawn, $CS_HighestRoll, $CombatChain, $CS_NumMightDestroyed;
+    global $currentPlayer, $chainLinks, $defPlayer, $CS_NumCardsDrawn, $CS_HighestRoll, $CombatChain, $CS_NumMightDestroyed, $CS_DieRoll;
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     $rv = "";
     switch($cardID) {
@@ -52,7 +52,9 @@
         }
         return "";
       case "HVY015":
-        $roll = GetDieRoll($currentPlayer);
+        RollDie($currentPlayer);
+        $roll = GetClassState($currentPlayer, $CS_DieRoll);
+        WriteLog($roll);
         GainActionPoints(intval($roll/2), $currentPlayer);
         if(GetClassState($currentPlayer, $CS_HighestRoll) == 6) Draw($currentPlayer);
         return "Rolled $roll and gained " . intval($roll/2) . " action points";
