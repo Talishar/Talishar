@@ -137,7 +137,12 @@
         if (NumAttacksBlocking() > 0) {
           Draw($currentPlayer);
           $hand = &GetHand($currentPlayer);
-          if(count($hand) > 0) MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK", silent:true);
+          $arsenal = GetArsenal($currentPlayer);
+          if(count($hand) + count($arsenal) == 1) {
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the card that goes to the bottom of your deck.", 1);
+            AddDecisionQueue("OK", $currentPlayer, "-");
+          }
+          if(count($hand) + count($arsenal) > 0) MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK", silent:true);
         }
         return "";
       case "HVY109": case "HVY110": case "HVY111":
