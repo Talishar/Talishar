@@ -8,6 +8,7 @@ function EncounterAI()
 {
   global $currentPlayer, $p2CharEquip, $decisionQueue, $mainPlayer, $mainPlayerGamestateStillBuilt, $actionPoints;
   $AIDebug = false;
+  $AIDebug = true;
   $currentPlayerIsAI = ($currentPlayer == 2 && IsEncounterAI($p2CharEquip[0])) ? true : false;
   if(!IsGameOver() && $currentPlayerIsAI)
   {
@@ -26,6 +27,7 @@ function EncounterAI()
       CacheCombatResult();
       if(count($decisionQueue) > 0)
       {
+        if($AIDebug) WriteLog("AI Branch - Decision Queue");
         global $EffectContext;
         if($EffectContext == "OUT234")
         {
@@ -70,7 +72,13 @@ function EncounterAI()
         {
           if($AIDebug) WriteLog("AI Branch - DQ First Option");
           $options = explode(",", $turn[2]);
-          ContinueDecisionQueue($options[0]);//Just pick the first option
+          $choice = $options[0];
+          //Some things automatically adjust the data
+          if($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK") {
+            $deck = &GetDeck($currentPlayer);
+            $choice = $deck[$choice*DeckPieces()];
+          }
+          ContinueDecisionQueue($choice);//Just pick the first option
         }
       }
       else if($turn[0] == "B")//The player is attacking the AI

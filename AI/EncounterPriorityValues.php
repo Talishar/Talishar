@@ -74,6 +74,48 @@ function GetPriority($cardID, $heroID, $type)
           return $priority[$type];
         default: return 0;
       }
+      case "UPR044"://Fai
+        $resources = &GetResources(2);
+        switch($cardID)
+        {
+          //Kodachis, activate if possible
+          case "UPR044":
+            $priorityValue = SearchCount(SearchHand(2, pitch:3)) > 0 || $resources[0] >= NumDraconicChainLinks() ? 1.0 : 0.0;
+            $priority = array(0, $priorityValue, 0, 0, 0, 0, 0, $priorityValue); return $priority[$type];
+          case "WTR078": case "CRU049":
+            $blueCount = SearchCount(SearchHand(2, pitch:3)) > 0 || $resources[0] > 1;
+            $priority = array(0, $blueCount > 0 ? 0.95 : 0.1, 0, 0, 0, 0, 0, $blueCount > 0 ? 0.95 : 0.1); return $priority[$type];
+          //Art of War
+          case "ARC160":
+            $playPriority = (!ArsenalEmpty($currentPlayer) && SearchCount(SearchHand(2, pitch:3)) > 0 ? 1.0 : 0.0);//Arsenal if not full hand or don't have blue
+            $blueCount = SearchCount(SearchHand(2, pitch:3));
+            $priority = array(0, $playPriority, $playPriority, 0, 0, 2.5, 1.0, 0);
+            return $priority[$type];
+          //Ravenous Rabble - Play early
+          case "ARC191": $priority = array(0.1, 0.8, 0.8, 0, 0, 1.1, 0.5, 0); return $priority[$type];
+          case "TCC083": $priority = array(0.1, 0.85, 0.85, 0, 0, 1.5, 0.5, 0); return $priority[$type];
+          case "UPR054": $priority = array(0.1, 0.85, 0.85, 0, 0, 1.5, 0.5, 0); return $priority[$type];
+          case "UPR060": $priority = array(0.1, 0.99, 0.99, 0, 0, 1.1, 0.5, 0); return $priority[$type];
+          case "UPR061": $priority = array(0.1, 0.99, 0.99, 0, 0, 1.1, 0.5, 0); return $priority[$type];
+          case "UPR062": $priority = array(0.1, 0.99, 0.99, 0, 0, 1.1, 0.5, 0); return $priority[$type];
+          case "UPR075": $priority = array(0.1, 0.9, 0.9, 0, 0, 1.1, 0.5, 0); return $priority[$type];
+          case "UPR078": $priority = array(0.1, 0.8, 0.8, 0, 0, 1.1, 0.5, 0); return $priority[$type];
+          case "UPR092": $priority = array(0.1, 0.7, 0.7, 0, 0, 1.1, 0.6, 0); return $priority[$type];
+          case "UPR098": $priority = array(0.1, 0.1, 0.1, 0, 0, 1.1, 0.7, 0); return $priority[$type];
+          case "UPR101": $priority = array(0, 0.7, 0.7, 0, 0, 0, 0.2, 0); return $priority[$type];
+          case "UPR160": $priority = array(0.1, 0.8, 0.8, 0, 0, 1.1, 0.5, 0); return $priority[$type];
+          case "WTR082": $priority = array(0.1, 0.9, 0.9, 0, 0, 1.1, 0.5, 0); return $priority[$type];
+          case "WTR167": $priority = array(0.1, 0.1, 0.1, 0, 0, 1.1, 0.7, 0); return $priority[$type];
+          case "UPR049": $priority = array(0.1, 1.0, 1.0, 0, 0, 1.1, 0.5, 0); return $priority[$type];
+          //Salt the Wound - Play last, or pitch
+          case "CRU068": $priority = array(0.5, 0.1, 0.1, 0, 0, 2.5, 0.2, 0); return $priority[$type];
+          //Blues
+          case "CRU068": $priority = array(0.5, 0.3, 0.3, 0, 0, 3.5, 0.2, 0); return $priority[$type];
+          case "DTD230": $priority = array(0.8, 0.1, 0.1, 0, 0, 3.5, 0.1, 0); return $priority[$type];
+          case "OUT142": $priority = array(0.8, 0.4, 0.4, 0, 0, 3.5, 0.1, 0); return $priority[$type];
+          case "UPR071": $priority = array(0.8, 0.5, 0.5, 0, 0, 3.1, 0.1, 0); return $priority[$type];
+          default: return 0;
+        }
       case "ROGUE001":
         switch($cardID)
         {
