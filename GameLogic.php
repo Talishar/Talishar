@@ -1527,6 +1527,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $params = explode(",", $parameter);
         if($winner > 0) {
           WonClashAbility($winner, $params[0], $params[1]);
+          WriteLog("⚔️Player " . $winner . " won the clash!⚔️");
         }
         if($params[0] == "HVY061") {
           $p1Deck = new Deck(1);
