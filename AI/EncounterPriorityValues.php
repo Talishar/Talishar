@@ -108,7 +108,7 @@ function GetPriority($cardID, $heroID, $type)
           case "WTR167": $priority = array(0.1, 0.1, 0.1, 0, 0, 1.1, 0.7, 0); return $priority[$type];
           case "UPR049": $priority = array(0.1, 1.0, 1.0, 0, 0, 1.1, 0.5, 0); return $priority[$type];
           //Salt the Wound - Play last, or pitch
-          case "CRU068": $priority = array(0.5, 0.1, 0.1, 0, 0, 2.5, 0.2, 0); return $priority[$type];
+          case "CRU073": $priority = array(0.5, 0.1, 0.1, 0, 0, 2.5, 0.2, 0); return $priority[$type];
           //Blues
           case "CRU068": $priority = array(0.5, 0.3, 0.3, 0, 0, 3.5, 0.2, 0); return $priority[$type];
           case "DTD230": $priority = array(0.8, 0.1, 0.1, 0, 0, 3.5, 0.1, 0); return $priority[$type];

@@ -7,7 +7,7 @@
 //[3] -> Priority Value
 
 //This function is super complicated, let me run you through it.
-function GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $type) //TODO: add items, auras, allies, banish, and permanents
+function GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, $type) //TODO: add items, auras, allies, banish, and permanents
 {
   $priorityArray = []; //Creates an empty array to push things into, then checks what type of priority array is being created.
   switch($type)
@@ -20,6 +20,7 @@ function GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $t
     case "Action":
       $priorityArray = PushArray(PushArray(PushArray($priorityArray, "Hand", $hand, $character, 1), "Character", $character, $character, 1), "Arsenal", $arsenal, $character, 2);
       $priorityArray = PushArray(PushArray($priorityArray, "Items", $items, $character, 7), "Allies", $allies, $character, 7);
+      $priorityArray = PushArray($priorityArray, "Banish", $banish, $character, 5);
       $priorityArray = ResolvePriorityArray($priorityArray, 10, "Unplayed", 0);
       $priorityArray = SortPriorityArray($priorityArray);
       return $priorityArray; //The action case pushes in Hand values, then Character values, then Arsenal values, then resolves 10 values, and finally sorts the array
@@ -74,6 +75,12 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex) 
         array_push($priorityArray, array($zoneArr[$i], "Ally", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)));
       }
     return $priorityArray;
+    case "Banish":
+      for($i = 0; $i < count($zoneArr); ++$i) //for each item in the respective source location, it pushes in a storedPriorityNode array. See the top of this function for the definition of each index. The priority is stolen from EncounterPriorityValues.php, see that file for more details
+      {
+        array_push($priorityArray, array($zoneArr[$i], "Banish", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)));
+      }
+      return $priorityArray;
     default: return $priorityArray;
   }
 }

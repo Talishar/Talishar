@@ -23,6 +23,7 @@ function EncounterAI()
       $resources = &GetResources($currentPlayer);
       $items = &GetItems($currentPlayer);
       $allies = &GetAllies($currentPlayer);
+      $banish = &GetBanish($currentPlayer);
       //LogHandArray($hand);
       CacheCombatResult();
       if(count($decisionQueue) > 0)
@@ -84,7 +85,7 @@ function EncounterAI()
       else if($turn[0] == "B")//The player is attacking the AI
       {
         if($AIDebug) WriteLog("AI Branch - Block");
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Block"); //Generate the priority values array. Found in EncounterPriorityLogic.php
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Block"); //Generate the priority values array. Found in EncounterPriorityLogic.php
         //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) { //Grabs items from the array until it finds one it can play.
@@ -109,7 +110,7 @@ function EncounterAI()
       else if($turn[0] == "M" && $mainPlayer == $currentPlayer && $actionPoints > 0)//AIs turn
       {
         if($AIDebug) WriteLog("AI Branch - AI's Turn");
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Action");
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Action");
         //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) {
@@ -126,6 +127,7 @@ function EncounterAI()
             }
           }
         }
+        WriteLog($storedPriorityNode[0] . " " . $storedPriorityNode[1] . " " . $storedPriorityNode[2] . " " . $storedPriorityNode[3]);
         if($found == true && $storedPriorityNode[3] != 0)
         {
           if(CardSubtype($storedPriorityNode[0]) == "Bow" ) $isBowActive = true;
@@ -140,7 +142,7 @@ function EncounterAI()
       else if($turn[0] == "A" && $mainPlayer == $currentPlayer)//attack reaction phase
       {
         if($AIDebug) WriteLog("AI Branch - Attack Reactions");
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Reaction");
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Reaction");
         //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) {
@@ -162,7 +164,7 @@ function EncounterAI()
       else if($turn[0] == "D" && $mainPlayer != $currentPlayer)//Defense reaction phase
       {
         if($AIDebug) WriteLog("AI Branch - Defense Reactions");
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Reaction");
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Reaction");
         //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) {
@@ -186,7 +188,7 @@ function EncounterAI()
       else if($turn[0] == "P" && $mainPlayer == $currentPlayer)//pitch phase
       {
         if($AIDebug) WriteLog("AI Branch - Pitch");
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "Pitch");
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Pitch");
         //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) {
@@ -214,7 +216,7 @@ function EncounterAI()
       else if($turn[0] == "ARS" && $mainPlayer = $currentPlayer)//choose a card to arsenal
       {
         if($AIDebug) WriteLog("AI Branch - Choose Arsenal");
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, "ToArsenal");
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "ToArsenal");
         //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) {
