@@ -63,7 +63,7 @@
   function Clash($cardID, $effectController="")
   {
     global $dqVars;
-    $dqVars[2] = -1;
+    if($cardID != "HVY061-2") $dqVars[2] = -1;
     if(IsAllyAttacking()){
       WriteLog("<span style='color:red;'>No clash is done because there is no attacking hero when allies attack.</span>");
     } else {
@@ -146,7 +146,7 @@
         $dqVars[2] = $dqVars[0];
         break;
       case "HVY061-2":
-        if($dqVars[2] = $playerID) {
+        if($dqVars[2] == $playerID) {
           PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$defPlayer);
           PlayAura("HVY241", $playerID); //Might
           PlayAura("HVY242", $playerID); //Vigor
