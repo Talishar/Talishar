@@ -36,7 +36,7 @@ if(IsUserLoggedIn()) {
     }
   }
 
-  for ($i = 0; $i < 16; ++$i) {
+  for ($i = 0; $i < 17; ++$i) {
     if($i == 7) continue;
     $playmat = new stdClass();
     $playmat->id = $i;
@@ -83,6 +83,8 @@ function GetPlaymatName($id)
       return "Command-and-Conquer-AHS";
     case 15:
       return "Swarming-Gloomveil-AHS";
+    case 16:
+      return "FindCenter";
     default:
       return "N/A";
   }
