@@ -106,7 +106,7 @@
   }
 
   function WonClashAbility($playerID, $cardID, $effectController="") {
-    global $mainPlayer, $CS_NumClashesWon, $combatChainState, $CCS_WeaponIndex, $dqVars;
+    global $mainPlayer, $CS_NumClashesWon, $combatChainState, $CCS_WeaponIndex, $dqVars, $defPlayer;
     WriteLog("Player " . $playerID . " won the Clash");
     $numClashesWon = GetClassState($playerID, $CS_NumClashesWon) + 1;
     SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
@@ -147,7 +147,7 @@
         break;
       case "HVY061-2":
         if($dqVars[2] = $playerID) {
-          PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$effectController);
+          PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$defPlayer);
           PlayAura("HVY241", $playerID); //Might
           PlayAura("HVY242", $playerID); //Vigor
         }
