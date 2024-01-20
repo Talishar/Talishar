@@ -81,7 +81,7 @@
         PlayAura("HVY241", $currentPlayer);//Might
         return "";
       case "HVY055":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffect($cardID . "-PAID", $currentPlayer);
         return "";
       case "HVY057":
         if(IsHeroAttackTarget()) AskWager($cardID);
