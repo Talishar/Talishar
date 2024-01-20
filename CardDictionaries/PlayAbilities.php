@@ -247,7 +247,7 @@
       case "HVY197":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "HVY209": 
+      case "HVY209":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
           AddCurrentTurnEffect($cardID, $currentPlayer, $from);
         }
@@ -318,7 +318,7 @@
       case "HVY247":
         $deck = new Deck($currentPlayer);
         $banishMod = "-";
-        if(HasCombo($deck->top())) $banishMod == "TT";
+        if(HasCombo($deck->Top())) $banishMod = "TT";
         $deck->BanishTop($banishMod, $currentPlayer);
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
