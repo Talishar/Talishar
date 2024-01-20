@@ -75,7 +75,7 @@
 
   function ClashLogic($cardID, $effectController="")
   {
-    global $mainPlayer, $defPlayer;
+    global $mainPlayer, $defPlayer, $dqVars;
     $p1Power = 0; $p2Power = 0;
     for($i=1; $i<=2; ++$i) {
       $deck = new Deck($i);
@@ -88,18 +88,15 @@
     }
     //DQVAR 0 = Winner
     if($p1Power > 0 && $p1Power > $p2Power) {
-      AddDecisionQueue("PASSPARAMETER", 1, 1);
-      AddDecisionQueue("SETDQVAR", 1, 0);
+      $dqVars[0] = 1;
       VictorAbility(2, $cardID, $effectController);
     }
     else if($p2Power > 0 && $p2Power > $p1Power) {
-      AddDecisionQueue("PASSPARAMETER", 1, 2);
-      AddDecisionQueue("SETDQVAR", 1, 0);
+      $dqVars[0] = 2;
       VictorAbility(1, $cardID, $effectController);
     }
     else {
-      AddDecisionQueue("PASSPARAMETER", 1, 0);
-      AddDecisionQueue("SETDQVAR", 1, 0);
+      $dqVars[0] = 0;
       VictorAbility($mainPlayer, $cardID, $effectController);
       VictorAbility($defPlayer, $cardID, $effectController);
     }
