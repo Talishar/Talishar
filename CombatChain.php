@@ -250,7 +250,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       $blockModifier += (2*GetClassState($defPlayer, $CS_NumClashesWon));
       break;
     case "HVY096":
-      if(CardType($attackID) == "W") $blockModifier += 2;
+      if(TypeContains($attackID, "W", $mainPlayer)) $blockModifier += 2;
       break;
     case "HVY100":
       CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
@@ -330,7 +330,7 @@ function OnDefenseReactionResolveEffects($from)
 
 function OnBlockResolveEffects()
 {
-  global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects;
+  global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex;
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if(SearchCurrentTurnEffects("ARC160-1", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
@@ -371,6 +371,12 @@ function OnBlockResolveEffects()
         }
       }
       break;
+    case "HVY095":
+      if(NumAttacksBlocking() > 0) {
+        $character = &GetPlayerCharacter($mainPlayer);
+        AddCurrentTurnEffect("HVY095", $mainPlayer, "CC", $character[$combatChainState[$CCS_WeaponIndex]+11]);
+      }
+      break;    
     default: break;
   }
   $blockedFromHand = 0;
@@ -402,7 +408,7 @@ function OnBlockResolveEffects()
       case "TCC033": case "TCC098": case "TCC102":
       case "TCC060": case "TCC063": case "TCC067": // Crowd Control
       case "HVY020": case "HVY021": case "HVY022":
-      case "HVY061":
+      case "HVY053": case "HVY061":
       case "HVY162":
       case "HVY137": case "HVY138": case "HVY139":
       case "HVY141": case "HVY142":
@@ -639,7 +645,7 @@ function CombatChainCloseAbilities($player, $cardID, $chainLink)
   global $chainLinkSummary, $mainPlayer, $defPlayer, $chainLinks;
   switch($cardID) {
     case "EVR002":
-      if($chainLinkSummary[$chainLink*ChainLinkSummaryPieces()] == 0 && $chainLinks[$chainLink][0] == $cardID) {
+      if($chainLinkSummary[$chainLink*ChainLinkSummaryPieces()] == 0 && $chainLinks[$chainLink][0] == $cardID && $chainLinks[$chainLink][1] == $player) {
         PlayAura("WTR225", $defPlayer);
       }
       break;

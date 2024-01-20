@@ -431,8 +431,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "PASSPARAMETER":
       return $parameter;
     case "DISCARDCARD":
-      AddGraveyard($lastResult, $player, $parameter);
-      CardDiscarded($player, $lastResult);
+      $params = explode("-", $parameter);
+      CardDiscarded($player, $lastResult, $params[1]);
+      AddGraveyard($lastResult, $player, $params[0]);
       return $lastResult;
     case "ADDDISCARD":
       AddGraveyard($lastResult, $player, $parameter);
@@ -1236,7 +1237,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), $lastResult);
       SetClassState($player, $CS_AbilityIndex, $index);
       $names = explode(",", GetAbilityNames($parameter, GetClassState($player, $CS_CharacterIndex)));
-      WriteLog(implode(" ", explode("_", $names[$index])) . " ability was chosen.");
+      WriteLog(implode(" ", explode("_", $names[$index])) . " was chosen.");
       return $lastResult;
     case "SETABILITYTYPEATTACK":
       $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), "Attack");
@@ -1254,7 +1255,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         DamageTrigger($target, $params[0], $params[1], GetMZCard($target, $lastResultArr[$i]));
       }
       return $lastResult;
-    case "MZDESTROY": return MZDestroy($player, $lastResult, $parameter);
+    case "MZDESTROY": return MZDestroy($player, $lastResult, allArsenal:$parameter);
     case "MZUNDESTROY": return MZUndestroy($player, $parameter, $lastResult);
     case "MZBANISH": return MZBanish($player, $parameter, $lastResult);
     case "MZREMOVE": return MZRemove($player, $lastResult);
@@ -1465,10 +1466,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else $player = $lastResult == "MYCHAR-0" ? $currentPlayer : $defPlayer;
       WriteLog("Player {$player} was targeted to intimidate.");
       $hand = &GetHand($player);
-      if(count($hand) == 0) {
-        WriteLog("Intimidate did nothing because there are no cards in their hand");
-        return;
-      }
+      if(count($hand) == 0) return; //Intimidate did nothing because there are no cards in their hand
       $index = GetRandom() % count($hand);
       BanishCardForPlayer($hand[$index], $player, "HAND", "INT");
       RemoveHand($player, $index);

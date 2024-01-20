@@ -911,6 +911,9 @@ function ChainLinkBeginResolutionEffects()
             AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
             AddDecisionQueue("DESTROYCHARACTER", $defPlayer, "-", 1);
             break;
+          case "HVY053":
+            RemoveCurrentTurnEffect($i);
+            break;
           default: break;
         }
       }
@@ -1620,6 +1623,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
+    case "HVY209":
       $names = GetAbilityNames($cardID, $index);
       if($names != "" && $from == "HAND") {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or attack");
@@ -1741,7 +1745,7 @@ function PayAdditionalCosts($cardID, $from)
     AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDMINPOWER,6");
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
     AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-    AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND", 1);
+    AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-" . $cardID, 1);
     if(!SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) { //Don't duplicate the effect icon
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "BEATCHEST", 1);
     }
@@ -2174,12 +2178,13 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because dominate is active and there is already a card defending from hand.");
       return;
     }
-    if(!$isBlock && CardType($cardID) == "AR" && IsPlayRestricted($cardID, $restriction, $from)) {
+    if(!$isBlock && CardType($cardID) == "AR") {
       AddGraveyard($cardID, $currentPlayer, "LAYER", $currentPlayer);
-      WriteLog(CardLink($cardID, $cardID) . " does not resolve because fail to resolve because the target is no longer a legal target.");
-      return;
+      if(IsPlayRestricted($cardID, $restriction, $from) && $additionalCosts == "-") {
+        WriteLog(CardLink($cardID, $cardID) . " does not resolve because fail to resolve because the target is no longer a legal target.");
+        return;
+      }
     }
-    if(CardType($cardID) == "AR") AddGraveyard($cardID, $currentPlayer, "LAYER", $currentPlayer);
     $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
     if($index == 0) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);

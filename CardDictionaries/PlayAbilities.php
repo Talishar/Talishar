@@ -2,7 +2,7 @@
 
   function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer, $chainLinks, $defPlayer, $CS_NumCardsDrawn, $CS_HighestRoll, $CombatChain, $CS_NumMightDestroyed;
+    global $currentPlayer, $chainLinks, $defPlayer, $CS_NumCardsDrawn, $CS_HighestRoll, $CombatChain, $CS_NumMightDestroyed, $CS_DieRoll;
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     $rv = "";
     switch($cardID) {
@@ -46,13 +46,14 @@
           $zone = &GetDeck($currentPlayer);
           $topDeck = array_slice($zone, 0, 6);
           shuffle($topDeck);
-          for($i = 0; $i <= count($topDeck); ++$i) {
+          for($i = 0; $i < count($topDeck); ++$i) {
             $zone[$i] = $topDeck[$i];
           }
         }
         return "";
       case "HVY015":
-        $roll = GetDieRoll($currentPlayer);
+        RollDie($currentPlayer);
+        $roll = GetClassState($currentPlayer, $CS_DieRoll);
         GainActionPoints(intval($roll/2), $currentPlayer);
         if(GetClassState($currentPlayer, $CS_HighestRoll) == 6) Draw($currentPlayer);
         return "Rolled $roll and gained " . intval($roll/2) . " action points";
@@ -87,7 +88,7 @@
         return "";
       case "HVY058":
         if(GetClassState($currentPlayer, $CS_NumMightDestroyed) > 0 || SearchAurasForCard("HVY241", $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
-
+        return "";
       case "HVY089":
         PlayAura("HVY241", $currentPlayer);//Might
         PlayAura("HVY242", $currentPlayer);//Vigor
@@ -143,11 +144,11 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY115": case "HVY116": case "HVY117":
-        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         if(NumAttacksBlocking() > 0)  PlayAura("HVY240", $currentPlayer); //Agility
         return "";
       case "HVY118": case "HVY119": case "HVY120":
-        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         if(NumAttacksBlocking() > 0)  PlayAura("HVY242", $currentPlayer); //Vigor
         return "";
       case "HVY121": case "HVY122": case "HVY123":
@@ -156,6 +157,9 @@
         return "";
       case "HVY124": case "HVY125": case "HVY126":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
+        return "";
+      case "HVY127": case "HVY128": case "HVY129":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY130": case "HVY131": case "HVY132":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
@@ -182,6 +186,7 @@
         if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
       case "HVY152": case "HVY153": case "HVY154":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         PlayAura("HVY241", $currentPlayer); //Might
         return "";
       case "HVY155":
@@ -206,6 +211,7 @@
         if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
       case "HVY172": case "HVY173": case "HVY174":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         PlayAura("HVY240", $currentPlayer); //Agility
         return "";
       case "HVY175":
@@ -214,6 +220,7 @@
       case "HVY176":
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffect($cardID, $otherPlayer);
         return "";
       case "HVY180":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -228,8 +235,8 @@
         if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
       case "HVY192": case "HVY193": case "HVY194":
-        PlayAura("HVY242", $currentPlayer); //Vigor
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        PlayAura("HVY242", $currentPlayer); //Vigor
         return "";
       case "HVY195":
         Draw($currentPlayer);
@@ -239,6 +246,11 @@
         return "";
       case "HVY197":
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "HVY209": 
+        if(GetResolvedAbilityType($cardID, "HAND") == "I") {
+          AddCurrentTurnEffect($cardID, $currentPlayer, $from);
+        }
         return "";
       case "HVY210":
         MZMoveCard($currentPlayer, "MYARS", "MYBOTDECK", may:true, silent:true);
@@ -258,12 +270,8 @@
         if($from == "ARS") Draw($currentPlayer);
         return "";
       case "HVY213": case "HVY214": case "HVY215":
-        $mainPlayerNum = 0;
-        $defPlayerNum = 0;
-        if(IsHeroAttackTarget() && PlayerHasLessHealth($currentPlayer)) {
-          $mainPlayerNum = GetPlayerNumEquipment($currentPlayer) + GetPlayerNumTokens($currentPlayer);
-          $defPlayerNum = GetPlayerNumEquipment($otherPlayer) + GetPlayerNumTokens($otherPlayer);
-          if($mainPlayerNum < $defPlayerNum) AddCurrentTurnEffect($cardID, $currentPlayer);
+        if(IsHeroAttackTarget() && PlayerHasLessHealth($currentPlayer) && GetPlayerNumEquipment($currentPlayer) < GetPlayerNumEquipment($otherPlayer) && GetPlayerNumTokens($currentPlayer) < GetPlayerNumTokens($otherPlayer)) {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
         }
         return "";
       case "HVY216": case "HVY217": case "HVY218":
@@ -312,6 +320,7 @@
         $banishMod = "-";
         if(HasCombo($deck->top())) $banishMod == "TT";
         $deck->BanishTop($banishMod, $currentPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "HVY251":
         $xVal = $resourcesPaid/2;
@@ -380,12 +389,12 @@
         Draw(2);
         return "";
       case "TCC052":
-        PlayAura("TCC107", 1);
-        PlayAura("TCC107", 2);
+        PlayAura("HVY242", 1);
+        PlayAura("HVY242", 2);
         return "";
       case "TCC053":
-        PlayAura("TCC105", 1);
-        PlayAura("TCC105", 2);
+        PlayAura("HVY241", 1);
+        PlayAura("HVY241", 2);
         return "";
       case "TCC054":
         PlayAura("WTR225", 1);
@@ -408,7 +417,7 @@
         GainHealth(1, $otherPlayer);
         return "";
       case "TCC066": case "TCC067":
-        PlayAura("TCC105", $otherPlayer);
+        PlayAura("HVY241", $otherPlayer);
         return "";
       case "TCC068":
         Draw($otherPlayer);

@@ -54,6 +54,7 @@ function CardType($cardID)
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
+    if($cardID == "HVY096") return "W,E";
     if($number < 400) return GeneratedCardType($cardID);
     else if($set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "EVO410" && $cardID != "EVO410b") return GeneratedCardType($cardID);
   }
@@ -264,6 +265,8 @@ function CardCost($cardID)
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
       return GetResolvedAbilityType($cardID, "HAND") == "AA" ? 3 : 0;
+    case "HVY209":
+      return GetResolvedAbilityType($cardID, "HAND") == "AA" ? 2 : 0;
     default: break;
   }
   if($set != "ROG" && $set != "DUM") {
@@ -436,6 +439,7 @@ function GetAbilityTypes($cardID)
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
+    case "HVY209":
       return "I,AA";
     default: return "";
   }
@@ -458,6 +462,7 @@ function GetAbilityNames($cardID, $index = -1)
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
+    case "HVY209":
       $names = "Ability";
       if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces()) $names .= ",Attack";
       return $names;
@@ -925,7 +930,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVO434": case "EVO435": case "EVO436": case "EVO437": return !EvoHasUnderCard($currentPlayer, $index);
     case "HVY055": return CountItem("DYN243", $currentPlayer) <= 0;
     case "HVY090": case "HVY091": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 2 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 2;
-    case "HVY099": return CardSubtype($cardID) == "Sword";
+    case "HVY098": return !TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer);
+    case "HVY099": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 1 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 1 || !CardSubtype($CombatChain->AttackCard()->ID()) == "Sword";
     case "HVY101": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
     case "HVY102": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalAttack() <= AttackValue($CombatChain->AttackCard()->ID());
     case "HVY106": case "HVY107": case "HVY108": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
@@ -978,6 +984,7 @@ function GoesOnCombatChain($phase, $cardID, $from)
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
+    case "HVY209":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     default: break;
   }

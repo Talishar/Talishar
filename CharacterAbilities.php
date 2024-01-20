@@ -419,7 +419,7 @@ function MainCharacterHitAbilities()
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
           AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
           AddDecisionQueue("WRITELOG", $mainPlayer, "🩸 " . CardLink($characterID, $characterID) . " created a " . CardLink("HVY242", "HVY242") . " token ", 1);
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "TCC107", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "HVY242", 1);
           AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
         }
         break;
@@ -748,6 +748,10 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "HVY055": 
       $index = GetItemIndex("DYN243", $currentPlayer);
       if($index != -1) DestroyItemForPlayer($currentPlayer, $index);
+      else {
+        $charIndex = FindCharacterIndex($currentPlayer, "HVY051");
+        if($charIndex != -1) DestroyCharacter($currentPlayer, $charIndex);
+      }
       break;
     case "HVY099":
       DestroyCharacter($currentPlayer, $cardIndex, true);

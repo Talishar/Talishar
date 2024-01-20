@@ -148,7 +148,7 @@
       case "HVY061-2":
         if($dqVars[2] = $playerID) {
           PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$effectController);
-          PlayAura("HVY241", $playerID);//Might
+          PlayAura("HVY241", $playerID); //Might
           PlayAura("HVY242", $playerID); //Vigor
         }
         break;
@@ -236,7 +236,7 @@
     $numWagersWon = 0;
     $amount = 1;
     if(SearchCurrentTurnEffects("HVY176", $wonWager)) ++$amount;
-    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces()) {
+    for($i=0; $i<=count($currentTurnEffects); $i+=CurrentTurnPieces()) {
       $hasWager = true;
       switch($currentTurnEffects[$i]) {
         case "HVY055":
@@ -312,7 +312,7 @@
       $char = &GetPlayerCharacter($mainPlayer);
       $hero = ShiyanaCharacter($char[0]);
       if($char[1] == 2 && ($hero == "HVY092" || $hero == "HVY093")) {
-        PutItemIntoPlayForPlayer("DYN243", $mainPlayer, number:$amount, effectController:$mainPlayer);//Gold
+        PutItemIntoPlayForPlayer("DYN243", $mainPlayer, effectController:$mainPlayer);//Gold
         WriteLog(CardLink($hero, $hero) . " wins the favor of the crowd!");
       }
     }

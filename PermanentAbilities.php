@@ -1,9 +1,14 @@
 <?php
 
-function PutPermanentIntoPlay($player, $cardID)
+function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false)
 {
   $permanents = &GetPermanents($player);
-  array_push($permanents, $cardID);
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  if(TypeContains($cardID, "T", $player)) $isToken = true;
+  if(SearchCurrentTurnEffects("HVY209", $otherPlayer) && $isToken) $number -= 1;
+  for($i = 0; $i < $number; ++$i) {
+    array_push($permanents, $cardID);
+  }
   return count($permanents) - PermanentPieces();
 }
 
