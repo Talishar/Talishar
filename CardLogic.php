@@ -1170,7 +1170,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "HVY141":
     case "HVY157": case "HVY158": case "HVY159":
     case "HVY177": case "HVY178": case "HVY179":
-    case "HVY182": case "HVY183": case "HVY184":
+    case "HVY182":
     case "HVY239":
       Clash($parameter, effectController:$player);
       break;

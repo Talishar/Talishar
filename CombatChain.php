@@ -376,7 +376,7 @@ function OnBlockResolveEffects()
         $character = &GetPlayerCharacter($mainPlayer);
         AddCurrentTurnEffect("HVY095", $mainPlayer, "CC", $character[$combatChainState[$CCS_WeaponIndex]+11]);
       }
-      break;    
+      break;
     default: break;
   }
   $blockedFromHand = 0;
@@ -414,7 +414,7 @@ function OnBlockResolveEffects()
       case "HVY141": case "HVY142":
       case "HVY157": case "HVY158": case "HVY159":
       case "HVY161": case "HVY177": case "HVY178": case "HVY179":
-      case "HVY181": case "HVY182": case "HVY183": case "HVY184":
+      case "HVY181": case "HVY182":
       case "HVY210":
       case "HVY239"://Clash blocks
       case "HVY648":
