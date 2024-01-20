@@ -976,16 +976,34 @@ function SearchMultizone($player, $searches)
                 else if(count($cards) == 3) $searchResult = SearchDiscardForCard($player, $cards[0], $cards[1], $cards[2]);
                 else WriteLog("Discard multizone search only supports 3 cards -- report bug.");
                 break;
+              case "THEIRDISCARD":
+                if(count($cards) == 1) $searchResult = SearchDiscardForCard($otherPlayer, $cards[0]);
+                else if(count($cards) == 2) $searchResult = SearchDiscardForCard($otherPlayer, $cards[0], $cards[1]);
+                else if(count($cards) == 3) $searchResult = SearchDiscardForCard($otherPlayer, $cards[0], $cards[1], $cards[2]);
+                else WriteLog("Discard multizone search only supports 3 cards -- report bug.");
+                break;
               case "MYBANISH":
                 if(count($cards) == 1) $searchResult = SearchBanishForCardMulti($player, $cards[0]);
                 else if(count($cards) == 2) $searchResult = SearchBanishForCardMulti($player, $cards[0], $cards[1]);
                 else if(count($cards) == 3) $searchResult = SearchBanishForCardMulti($player, $cards[0], $cards[1], $cards[2]);
                 else WriteLog("Banish multizone search only supports 3 cards -- report bug.");
                 break;
+              case "THEIRBANISH":
+                if(count($cards) == 1) $searchResult = SearchBanishForCardMulti($otherPlayer, $cards[0]);
+                else if(count($cards) == 2) $searchResult = SearchBanishForCardMulti($otherPlayer, $cards[0], $cards[1]);
+                else if(count($cards) == 3) $searchResult = SearchBanishForCardMulti($otherPlayer, $cards[0], $cards[1], $cards[2]);
+                else WriteLog("Banish multizone search only supports 3 cards -- report bug.");
+                break;
               case "MYITEMS":
                 if (count($cards) == 1) $searchResult = SearchItemsForCardMulti($player, $cards[0]);
                 else if (count($cards) == 2) $searchResult = SearchItemsForCardMulti($player, $cards[0], $cards[1]);
                 else if (count($cards) == 3) $searchResult = SearchItemsForCardMulti($player, $cards[0], $cards[1], $cards[2]);
+                else WriteLog("Discard multizone search only supports 3 cards -- report bug.");
+                break;
+              case "THEIRITEMS":
+                if (count($cards) == 1) $searchResult = SearchItemsForCardMulti($otherPlayer, $cards[0]);
+                else if (count($cards) == 2) $searchResult = SearchItemsForCardMulti($otherPlayer, $cards[0], $cards[1]);
+                else if (count($cards) == 3) $searchResult = SearchItemsForCardMulti($otherPlayer, $cards[0], $cards[1], $cards[2]);
                 else WriteLog("Discard multizone search only supports 3 cards -- report bug.");
                 break;
               default: break;

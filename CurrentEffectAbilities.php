@@ -454,9 +454,9 @@ function OnAttackEffects($attack)
           AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
           $remove = true;
           break;
-        case "HVY055":
+        case "HVY055-PAID":
           if(IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
-            AskWager($currentTurnEffects[$i]);
+            AskWager(substr($currentTurnEffects[$i], 0, 6));
           }
           break;
         case "HVY083-BUFF": case "HVY084-BUFF": case "HVY085-BUFF":
