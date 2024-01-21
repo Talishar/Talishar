@@ -4,8 +4,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
 {
   global $CS_NumAuras;
   $otherPlayer = ($player == 1 ? 2 : 1);
-  if(CardType($cardID) == "T") $isToken = true;
-  WriteLog(CardType($cardID));
+  if(TypeContains($cardID, "T", $player)) $isToken = true;
   if(DelimStringContains(CardSubType($cardID), "Affliction")) {
     $otherPlayer = $player;
     $player = ($player == 1 ? 2 : 1);

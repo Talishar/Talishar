@@ -3155,6 +3155,8 @@ case "8":
 return "E";
 case "6":
 return "W";
+case "0":
+return "A";
 case "2":
 return "C";
 case "1":
@@ -11725,6 +11727,8 @@ case "8":
 return 2;
 case "6":
 return -1;
+case "0":
+return -1;
 case "2":
 return -1;
 case "1":
@@ -18089,6 +18093,8 @@ case "8":
 return "Apex Bonebreaker";
 case "6":
 return "Ball Breaker";
+case "0":
+return "Deathmatch Arena";
 case "2":
 return "Kayo";
 case "1":
@@ -25470,6 +25476,8 @@ switch($cardID[5]) {
 case "8":
 return 0;
 case "6":
+return 0;
+case "0":
 return 0;
 case "2":
 return 0;
@@ -37039,6 +37047,8 @@ case "8":
 return "Arms";
 case "6":
 return "Flail";
+case "0":
+return "Landmark";
 case "2":
 return "Young";
 case "9":
@@ -41686,6 +41696,8 @@ case "8":
 return "L";
 case "6":
 return "R";
+case "0":
+return "F";
 case "2":
 return "T";
 case "1":
@@ -46940,6 +46952,8 @@ case "8":
 return "BRUTE";
 case "6":
 return "BRUTE";
+case "0":
+return "GENERIC";
 case "2":
 return "BRUTE";
 case "1":
