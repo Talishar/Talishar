@@ -5,12 +5,15 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   global $CS_NumAuras;
   $otherPlayer = ($player == 1 ? 2 : 1);
   if(CardType($cardID) == "T") $isToken = true;
+  WriteLog(CardType($cardID));
   if(DelimStringContains(CardSubType($cardID), "Affliction")) {
     $otherPlayer = $player;
     $player = ($player == 1 ? 2 : 1);
   }
   $auras = &GetAuras($player);
-  if(SearchCurrentTurnEffects("HVY209", $otherPlayer) && $isToken) $number -= 1;
+  $numMinusTokens = 0;
+  $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
+  if($numMinusTokens > 0 && $isToken) $number -= $numMinusTokens;
   if($cardID == "ARC112") $number += CountCurrentTurnEffects("ARC081", $player);
   if($cardID == "MON104") {
     $index = SearchArsenalReadyCard($player, "MON404");
@@ -20,6 +23,8 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   if($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
   $theirHoldState = AuraDefaultHoldTriggerState($cardID);
   if($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
+
+  WriteLog($number);
   for($i = 0; $i < $number; ++$i) {
     array_push($auras, $cardID);
     array_push($auras, 2); //Status
@@ -639,7 +644,7 @@ function AuraPlayAbilities($attackID, $from="")
         }
         break;
       case "ARC112":
-        if($cardType == "AA"|| ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA")) {
+        if(($cardType == "AA" || ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA")) && GetResolvedAbilityType($attackID) != "I") {
           $numRunechants = CountAura("ARC112", $currentPlayer);
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
@@ -660,7 +665,7 @@ function AuraPlayAbilities($attackID, $from="")
         }
         break;
       case "DTD232":
-        if(($cardType == "AA" || ($cardSubType == "Aura" && $from == "PLAY") || $cardType == "W") && GetResolvedAbilityType($attackID) != "I" ) {
+        if(($cardType == "AA" || ($cardSubType == "Aura" && $from == "PLAY") || $cardType == "W") && GetResolvedAbilityType($attackID) != "I") {
           AddCurrentTurnEffect("DTD232", $currentPlayer);
           $remove = 1;
         }
