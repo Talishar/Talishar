@@ -28,6 +28,14 @@ if (!function_exists("SubtypeContains")) {
   }
 }
 
+if (!function_exists("TypeContains")) {
+  function TypeContains($cardID, $type, $player="")
+  {
+    $cardType = CardType($cardID);
+    return DelimStringContains($cardType, $type);
+  }
+}
+
 SetHeaders();
 
 $response = new stdClass();
@@ -234,9 +242,9 @@ if ($decklink != "") {
           $legsSideboard .= $id;
         }
       }
-      else if ($cardType == "C") {
+      else if (TypeContains($id, "C")) {
         $character = $id;
-      } else if ($cardType == "W") {
+      } else if (TypeContains($id, "W")) {
         ++$totalCards;
         $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
         for ($j = 0; $j < $numMainBoard; ++$j) {
@@ -253,7 +261,7 @@ if ($decklink != "") {
           if ($weaponSideboard != "") $weaponSideboard .= " ";
           $weaponSideboard .= $id;
         }
-      } else if ($cardType == "E") {
+      } else if (TypeContains($id, "E")) {
         if ($numSideboard == 0) {
           ++$totalCards;
           if (SubtypeContains($id, "Head")) {
@@ -521,16 +529,16 @@ function ParseDraftFab($deck, $filename)
     $quantity = $card[2];
     $type = CardType($cardID);
     switch ($type) {
-      case "T":
+      case TypeContains($cardID, "T"):
         break;
-      case "C":
+      case TypeContains($cardID, "C"):
         $character = $cardID;
         break;
-      case "W":
+      case TypeContains($cardID, "W"):
         if ($weaponSideboard != "") $weaponSideboard .= " ";
         $weaponSideboard .= $cardID;
         break;
-      case "E":
+      case TypeContains($cardID, "E"):
         if (SubtypeContains($cardID, "Head")) {
           if ($headSideboard != "") $headSideboard .= " ";
           $headSideboard .= $cardID;
