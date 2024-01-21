@@ -54,7 +54,6 @@ function CardType($cardID)
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
-    if($cardID == "HVY096") return "W,E";
     if($number < 400) return GeneratedCardType($cardID);
     else if($set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "EVO410" && $cardID != "EVO410b") return GeneratedCardType($cardID);
   }
