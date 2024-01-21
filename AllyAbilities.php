@@ -4,7 +4,9 @@ function PlayAlly($cardID, $player, $subCards="-", $number=1, $isToken=false)
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
   if(TypeContains($cardID, "T", $player)) $isToken = true;
-  if(SearchCurrentTurnEffects("HVY209", $otherPlayer) && $isToken) $number -= 1;
+  $numMinusTokens = 0;
+  $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
+  if($numMinusTokens > 0 && $isToken) $number -= $numMinusTokens;
   $allies = &GetAllies($player);
   for($i = 0; $i < $number; ++$i) {
     array_push($allies, $cardID);
