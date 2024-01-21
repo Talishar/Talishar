@@ -87,9 +87,6 @@
       }
     }
     //DQVAR 0 = Winner
-
-    WriteLog("P1-" . $p1Power . "P2-" . $p2Power);
-
     if($p1Power >= 0 && ($p1Power > $p2Power || $p2Power == "")) {
       $dqVars[0] = 1;
       VictorAbility(2, $cardID, $effectController);
