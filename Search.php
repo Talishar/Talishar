@@ -339,9 +339,10 @@ function SearchCharacterForCard($player, $cardID)
 
 function SearchCharacterAliveSubtype($player, $subtype)
 {
+  global $combatChain;
   $character = &GetPlayerCharacter($player);
   for($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if($character[$i+1] != 0 && CardSubType($character[$i]) == $subtype) return true;
+    if($character[$i+1] != 0 && subtypecontains($character[$i], $subtype, $player) && $character[$i] != $combatChain[0]) return true;
   }
   return false;
 }

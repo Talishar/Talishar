@@ -5,7 +5,9 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false)
   $permanents = &GetPermanents($player);
   $otherPlayer = ($player == 1 ? 2 : 1);
   if(TypeContains($cardID, "T", $player)) $isToken = true;
-  if(SearchCurrentTurnEffects("HVY209", $otherPlayer) && $isToken) $number -= 1;
+  $numMinusTokens = 0;
+  $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
+  if($numMinusTokens > 0 && $isToken) $number -= $numMinusTokens;
   for($i = 0; $i < $number; ++$i) {
     array_push($permanents, $cardID);
   }

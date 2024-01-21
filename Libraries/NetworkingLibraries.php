@@ -1442,7 +1442,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
           IncrementClassState($currentPlayer, $CS_NumWizardNonAttack);
         }
       }
-      IncrementClassState($currentPlayer, $CS_NumActionsPlayed);
+      if(GetResolvedAbilityType($cardID, $from) != "I") IncrementClassState($currentPlayer, $CS_NumActionsPlayed);
     }
     if($from == "BANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
     if(HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);

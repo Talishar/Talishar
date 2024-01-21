@@ -353,9 +353,15 @@
         }
         return "";
       case "HVY250":
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the card that on top of your deck.", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REELIN", $currentPlayer, "-", 1);
+        AddDecisionQueue("REELINLOOK", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top cards of your deck are:", 1);
+        AddDecisionQueue("MULTICHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));
+        AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REELINCHOOSE", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTICHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);

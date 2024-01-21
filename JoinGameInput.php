@@ -194,9 +194,9 @@ if ($decklink != "") {
       {
         if ($unsupportedCards != "") $unsupportedCards .= " ";
         $unsupportedCards .= $id;
-      } else if ($cardType == "C") {
+      } else if (TypeContains($cardID, "C")) {
         $character = $id;
-      } else if ($cardType == "W") {
+      } else if (TypeContains($cardID, "W")) {
         $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
         for ($j = 0; $j < $numMainBoard; ++$j) {
           if ($weapon1 == "") $weapon1 = $id;
@@ -210,7 +210,7 @@ if ($decklink != "") {
           if ($weaponSideboard != "") $weaponSideboard .= " ";
           $weaponSideboard .= $id;
         }
-      } else if ($cardType == "E") {
+      } else if (TypeContains($cardID, "E")) {
         if ($numSideboard == 0) {
           if (SubtypeContains($id, "Head")) {
             if ($head == "") $head = $id;
@@ -425,12 +425,12 @@ function ParseDraftFab($deck, $filename)
     $quantity = $card[2];
     $type = CardType($cardID);
     switch ($type) {
-      case "T":
+      case TypeContains($cardID, "T"):
         break;
-      case "C":
+      case TypeContains($cardID, "C"):
         $character = $cardID;
         break;
-      case "W":
+      case TypeContains($cardID, "W"):
         if ($weaponSideboard != "") $weaponSideboard .= " ";
         $weaponSideboard .= $cardID;
         break;

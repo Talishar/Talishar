@@ -723,7 +723,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $numMatch = ($numAA > $numNAA ? $numNAA : $numAA);
       if($numMatch == 0) return "PASS";
       return $numMatch . "-" . $AAIndices . "-" . $numMatch;
-      case "REELIN":
+      case "REELINLOOK":
+        $cards = explode(",", $lastResult);
+        $cardsIndices = "";
+        for($i = 0; $i < count($cards); ++$i) {
+            if($cardsIndices != "") $cardsIndices .= ",";
+            $cardsIndices .= $i;
+        }
+        return "0" . "-" . $cardsIndices . "-" . "0";
+      case "REELINCHOOSE":
         $cards = explode(",", $lastResult);
         $TrapIndices = "";
         $numMatch = 0;

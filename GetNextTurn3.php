@@ -378,7 +378,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $atkCounters = 0;
     $counters = 0;
     $type = CardType($theirCharacter[$i]); 
-    if ($type == "D") $type = "C";
+    if (TypeContains($theirCharacter[$i], "D")) $type = "C";
     $sTypeArr = explode(",", CardSubType($theirCharacter[$i], $theirCharacter[$i+11]));
     $sType = $sTypeArr[0];
     for($j=0; $j<count($sTypeArr); ++$j) {
@@ -387,14 +387,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         break;
       }
     }
-    if ($type == "W") {
+    if (TypeContains($theirCharacter[$i], "W")) {
       ++$numWeapons;
       if ($numWeapons > 1) {
         $type = "E";
         $sType = "Off-Hand";
       }
     }
-    if (CardType($theirCharacter[$i]) == "W") $atkCounters = $theirCharacter[$i + 3];
+    if (TypeContains($theirCharacter[$i], "W")) $atkCounters = $theirCharacter[$i + 3];
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
     array_push($characterContents, JSONRenderedCard(cardNumber: $theirCharacter[$i], overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0), counters: $counters, defCounters: $theirCharacter[$i + 4], atkCounters: $atkCounters, controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirCharacter[$i + 8] == 1), onChain: ($theirCharacter[$i + 6] == 1), isBroken: ($theirCharacter[$i + 1] == 0), numUses: $theirCharacter[$i + 5], subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]));
@@ -486,12 +486,12 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $restriction = "";
     $counters = 0;
     $atkCounters = 0;
-    if (CardType($myCharacter[$i]) == "W") $atkCounters = $myCharacter[$i + 3];
+    if (TypeContains($myCharacter[$i], "W")) $atkCounters = $myCharacter[$i + 3];
     if ($myCharacter[$i + 2] > 0) $counters = $myCharacter[$i + 2];
     $playable = $playerID == $currentPlayer && $myCharacter[$i + 1] > 0 && IsPlayable($myCharacter[$i], $turn[0], "CHAR", $i, $restriction);
     $border = CardBorderColor($myCharacter[$i], "CHAR", $playable);
     $type = CardType($myCharacter[$i]);
-    if ($type == "D") $type = "C";
+    if (TypeContains($myCharacter[$i], "D")) $type = "C";
     $sTypeArr = explode(",", CardSubType($myCharacter[$i], $myCharacter[$i+11]));
     $sType = $sTypeArr[0];
     for($j=0; $j<count($sTypeArr); ++$j) {
@@ -500,7 +500,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
         break;
       }
     }
-    if ($type == "W") {
+    if (TypeContains($myCharacter[$i], "W")) {
       ++$numWeapons;
       if ($numWeapons > 1) {
         $type = "E";
