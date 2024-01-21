@@ -23,7 +23,6 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $theirHoldState = AuraDefaultHoldTriggerState($cardID);
   if($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
 
-  WriteLog($number);
   for($i = 0; $i < $number; ++$i) {
     array_push($auras, $cardID);
     array_push($auras, 2); //Status
@@ -380,7 +379,7 @@ function AuraStartTurnAbilities()
       case "HVY083": case "HVY084": case "HVY085":
         AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
-        break;  
+        break;
       case "HVY086": case "HVY087": case "HVY088":
         AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
