@@ -76,22 +76,25 @@
   function ClashLogic($cardID, $effectController="")
   {
     global $mainPlayer, $defPlayer, $dqVars;
-    $p1Power = 0; $p2Power = 0;
+    $p1Power = ""; $p2Power = "";
     for($i=1; $i<=2; ++$i) {
       $deck = new Deck($i);
       if($deck->Reveal()) {
         $power = $deck->Empty() ? 0 : ModifiedAttackValue($deck->Top(), $i, "DECK", source:$cardID);
-        if($power < 0) $power = 0;
+        if(!TypeContains($deck->Top(), "AA")) $power = ""; //If you reveal a card with {p} and the opponent reveals a card without {p}, you win the clash.
         if($i == 1) $p1Power = $power;
         else $p2Power = $power;
       }
     }
     //DQVAR 0 = Winner
-    if($p1Power > 0 && $p1Power > $p2Power) {
+
+    WriteLog("P1-" . $p1Power . "P2-" . $p2Power);
+
+    if($p1Power >= 0 && ($p1Power > $p2Power || $p2Power == "")) {
       $dqVars[0] = 1;
       VictorAbility(2, $cardID, $effectController);
-    }
-    else if($p2Power > 0 && $p2Power > $p1Power) {
+    } 
+    else if($p2Power >= 0 && ($p2Power > $p1Power || $p1Power == "")) {
       $dqVars[0] = 2;
       VictorAbility(1, $cardID, $effectController);
     }
