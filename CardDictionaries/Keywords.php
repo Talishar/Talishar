@@ -233,8 +233,7 @@
     $numWagersWon = 0;
     $amount = 1;
     if(SearchCurrentTurnEffects("HVY176", $wonWager)) ++$amount;
-    $numEffects = count($currentTurnEffects);
-    for($i=0; $i<=$numEffects; $i+=CurrentTurnPieces()) {
+    for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
       $hasWager = true;
       switch($currentTurnEffects[$i]) {
         case "HVY055":
@@ -242,47 +241,61 @@
           PlayAura("HVY242", $wonWager, $amount);//Vigor
           break;
         case "HVY057":
+          RemoveCurrentTurnEffect($i);
           PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
           PlayAura("HVY241", $wonWager, $amount);//Might
           PlayAura("HVY242", $wonWager, $amount);//Vigor
           break;
         case "HVY083": case "HVY084": case "HVY085":
+          RemoveCurrentTurnEffect($i);
           PlayAura("HVY242", $wonWager, $amount);//Vigor
           break;
         case "HVY086": case "HVY087": case "HVY088":
+          RemoveCurrentTurnEffect($i);
           PlayAura("HVY241", $wonWager, $amount);//Might
           break;
         case "HVY098":
+          RemoveCurrentTurnEffect($i);
           PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
           break;
         case "HVY103-1":
+          RemoveCurrentTurnEffect($i);
           PlayAura("HVY240", $wonWager, $amount);//Agility
           break;
         case "HVY103-2":
+          RemoveCurrentTurnEffect($i);
           PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
           break;
         case "HVY103-3":
+          RemoveCurrentTurnEffect($i);
           PlayAura("HVY242", $wonWager, $amount);//Vigor
           break;
         case "HVY124": case "HVY125": case "HVY126":
+          RemoveCurrentTurnEffect($i);
           PlayAura("HVY240", $wonWager, $amount);//Agility
           break;
         case "HVY130": case "HVY131": case "HVY132":
+          RemoveCurrentTurnEffect($i);
           PlayAura("HVY242", $wonWager, $amount);//Vigor
           break;
         case "HVY149": case "HVY150": case "HVY151":
+          RemoveCurrentTurnEffect($i);
           PlayAura("HVY241", $wonWager, $amount);//Might
           break;
         case "HVY169": case "HVY170": case "HVY171":
+          RemoveCurrentTurnEffect($i);
           PlayAura("HVY240", $wonWager, $amount);//Agility
           break;;
         case "HVY189": case "HVY190": case "HVY191":
+          RemoveCurrentTurnEffect($i);
           PlayAura("HVY242", $wonWager, $amount);//Vigor
           break;
         case "HVY216": case "HVY217": case "HVY218":
+          RemoveCurrentTurnEffect($i);
           PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
           break;
         case "HVY235": case "HVY236": case "HVY237":
+          RemoveCurrentTurnEffect($i);
           PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
           break;
         default:
