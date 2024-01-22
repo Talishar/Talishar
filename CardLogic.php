@@ -1170,7 +1170,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       if(IsAllyAttacking()) {
         WriteLog("<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>");
       }
-      else if(CountAura("HVY240", $player) > 0) WriteLog("Deals 1 damage"); DamageTrigger($mainPlayer, 1, "DAMAGE", $parameter);
+      else if(CountAura("HVY240", $player) > 0) {
+        WriteLog(CardLink($parameter, $parameter) . " deals 1 damage"); 
+        DealDamageAsync($otherPlayer, 1, "DAMAGE", $parameter);
+      }
       break;
     case "HVY181":
       if(CountAura("HVY242", $player) > 0) GainHealth(1, $player);
