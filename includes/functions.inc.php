@@ -357,7 +357,8 @@ function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
 
 function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID)
 {
-	global $FaBraryKey, $gameName;
+	global $FaBraryKey, $gameName, $p2IsAI;
+	if($p2IsAI == "1") return;//Don't file results for AI games
 	$url = "https://atofkpq0x8.execute-api.us-east-2.amazonaws.com/prod/v1/results";
 	$ch = curl_init($url);
 	$payloadArr = [];
