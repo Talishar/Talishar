@@ -959,7 +959,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         }
         break;
       case "OUT091": case "OUT092": //Riptide
-        if($from == "HAND") {
+        if($from == "HAND" && GetResolvedAbilityName($cardID,"HAND") != "Ability") {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
