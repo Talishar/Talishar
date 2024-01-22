@@ -1131,6 +1131,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "HVY001": case "HVY002":
       PlayAura("HVY241", $player); //Might
       break;
+    case "HVY008":
+      $num6Block = 0;
+      for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        if(ModifiedAttackValue($combatChain[$i], $player, "CC", "HVY008") >= 6) ++$num6Block;
+      }
+      if($num6Block) {
+        PlayAura("HVY241", $player);//Might
+        WriteLog("🦴 " . CardLink("HVY008", "HVY008") . " created a " . CardLink("HVY241", "HVY241") . " token");
+      }
+      break;
     case "HVY020": case "HVY021": case "HVY022":
       $deck = new Deck($player);
       if($deck->Reveal() && ModifiedAttackValue($deck->Top(), $player, "DECK", source:$parameter) < 6) {
@@ -1160,7 +1170,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       if(IsAllyAttacking()) {
         WriteLog("<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>");
       }
-      else if(CountAura("HVY240", $player) > 0) WriteLog("Deals 1 damage"); DamageTrigger($mainPlayer, 1, "DAMAGE", $parameter);
+      else if(CountAura("HVY240", $player) > 0) {
+        WriteLog(CardLink($parameter, $parameter) . " deals 1 damage"); 
+        DealDamageAsync($otherPlayer, 1, "DAMAGE", $parameter);
+      }
       break;
     case "HVY181":
       if(CountAura("HVY242", $player) > 0) GainHealth(1, $player);

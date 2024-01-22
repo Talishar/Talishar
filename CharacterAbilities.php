@@ -783,13 +783,6 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
   {
     if($char[$i+1] == 0) continue;
     switch($char[$i]) {
-      case "DTD004":
-        if(SearchCurrentTurnEffects("DTD004-1", $player))
-        {
-          if($preventable) --$damage;
-          DestroyCharacter($player, $i);
-        }
-        break;
       case "DTD047":
         if($damage > 0 && $preventable && $char[$i+5] > 0 && GetClassState($player, $CS_NumCharged) > 0)
         {
@@ -966,7 +959,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         }
         break;
       case "OUT091": case "OUT092": //Riptide
-        if($from == "HAND") {
+        if($from == "HAND" && GetResolvedAbilityName($cardID,"HAND") != "Ability") {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
