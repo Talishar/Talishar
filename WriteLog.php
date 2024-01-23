@@ -10,6 +10,12 @@ function WriteLog($text, $playerColor = 0, $highlight=false, $path="./")
   else $output = ($playerColor != 0 ? "<span style='color:<PLAYER" . $playerColor . "COLOR>; '>" : "")  . $text . ($playerColor != 0 ? "</span>" : "");
   fwrite($handler, $output . "\r\n");
   fclose($handler);
+  if(IsPatron(1) || IsPatron(2)) {
+    $filename = $path . "Games/" . $gameName . "/fullGamelog.txt";
+    $handler = fopen($filename, "a");
+    fwrite($handler, $output . "\r\n");
+    fclose($handler);
+  }
 }
 
 function ClearLog($n=20)
