@@ -132,7 +132,7 @@ AddDecisionQueue("STARTGAME", $mainPlayer, "-"); //CR ?? Start Game
 AddDecisionQueue("STARTTURNABILITIES", $mainPlayer, "-"); //CR 2.0 4.2 Start Phase
 
 ProcessDecisionQueue();
-
+CombatDummyAI(); //Only does anything if applicable
 DoGamestateUpdate();
 include "WriteGamestate.php";
 

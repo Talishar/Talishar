@@ -1,5 +1,7 @@
 <?php
 
+include_once "EncounterAI.php";
+
 function CombatDummyAI()
 {
   global $currentPlayer, $p2CharEquip, $decisionQueue, $turn, $mainPlayer;

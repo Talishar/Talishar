@@ -3,6 +3,7 @@
 include "EncounterPriorityValues.php";
 include "EncounterPriorityLogic.php";
 include "EncounterPlayLogic.php";
+include_once "PlayerMacros.php";
 
 function EncounterAI()
 {
@@ -127,7 +128,6 @@ function EncounterAI()
             }
           }
         }
-        WriteLog($storedPriorityNode[0] . " " . $storedPriorityNode[1] . " " . $storedPriorityNode[2] . " " . $storedPriorityNode[3]);
         if($found == true && $storedPriorityNode[3] != 0)
         {
           if(CardSubtype($storedPriorityNode[0]) == "Bow" ) $isBowActive = true;

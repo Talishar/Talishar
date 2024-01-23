@@ -12,8 +12,6 @@ include "Libraries/UILibraries.php";
 include "Libraries/PlayerSettings.php";
 include "Libraries/NetworkingLibraries.php";
 include "AI/CombatDummy.php";
-include "AI/EncounterAI.php";
-include "AI/PlayerMacros.php";
 include "Libraries/HTTPLibraries.php";
 require_once("Libraries/CoreLibraries.php");
 include_once "./includes/dbh.inc.php";
