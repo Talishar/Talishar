@@ -378,7 +378,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "AERTHERARC":
       global $dqVars;
       if(intval($dqVars[0]) > 0) {
-        PlayAura("OUT237", $player);
+        PlayAura("DYN244", $player);
       }
       return $lastResult;
     case "KNICKKNACK":
