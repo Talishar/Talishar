@@ -795,9 +795,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $optCards = array();
     for ($i = 0; $i < count($options); ++$i) {
       array_push($optCards, JSONRenderedCard($options[$i], action: 0));
-      if (
-        $turn[0] == "CHOOSETOP" || $turn[0] == "OPT"
-      ) array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 8, $options[$i], "20px"));
+      if ($turn[0] == "CHOOSETOP" || $turn[0] == "OPT") array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 8, $options[$i], "20px"));
       if ($turn[0] == "CHOOSEBOTTOM" || $turn[0] == "OPT") array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 9, $options[$i], "20px"));
       if ($turn[0] == "CHOOSECARD") array_push($playerInputButtons, CreateButtonAPI($playerID, "Choose", 23, $options[$i], "20px"));
     }

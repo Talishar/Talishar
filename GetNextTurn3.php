@@ -895,26 +895,21 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $optCards = array();
     for ($i = 0; $i < count($options); ++$i) {
       array_push($optCards, JSONRenderedCard($options[$i], action: 0));
-      if (
-        $turn[0] == "CHOOSETOP" || $turn[0] == "OPT"
-      ) array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 8, $options[$i], "20px"));
+      if ($turn[0] == "CHOOSETOP" || $turn[0] == "OPT") array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 8, $options[$i], "20px"));
       if ($turn[0] == "CHOOSEBOTTOM" || $turn[0] == "OPT") array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 9, $options[$i], "20px"));
       if ($turn[0] == "CHOOSECARD") array_push($playerInputButtons, CreateButtonAPI($playerID, "Choose", 23, $options[$i], "20px"));
     }
     $playerInputPopup->popup = CreatePopupAPI("OPT", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "", cardsArray: $optCards);
   }
 
-  if (($turn[0] == "CHOOSETOPOPPONENT") && $turn[1] == $playerID
-  ) { //Use when you have to reorder the top of your opponent library e.g. Righteous Cleansing
+  if (($turn[0] == "CHOOSETOPOPPONENT") && $turn[1] == $playerID) { //Use when you have to reorder the top of your opponent library e.g. Righteous Cleansing
     $playerInputPopup->active = true;
     $otherPlayer = ($playerID == 1 ? 2 : 1);
     $options = explode(",", $turn[2]);
     $optCards = array();
     for ($i = 0; $i < count($options); ++$i) {
       array_push($optCards, JSONRenderedCard($options[$i], action: 0));
-      if (
-        $turn[0] == "CHOOSETOPOPPONENT"
-      ) array_push($playerInputButtons, CreateButtonAPI($otherPlayer, "Top", 29, $options[$i], "20px"));
+      if ($turn[0] == "CHOOSETOPOPPONENT") array_push($playerInputButtons, CreateButtonAPI($otherPlayer, "Top", 29, $options[$i], "20px"));
     }
     $playerInputPopup->popup = CreatePopupAPI("CHOOSETOPOPPONENT", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "", cardsArray: $optCards);
   }
