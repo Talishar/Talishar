@@ -732,7 +732,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "ELE215":
       DestroyArsenal($target, effectController:$player);
-      DiscardHand($target);
+      DiscardHand($target, false);
       break;
     case "EVR018":
       PlayAura("ELE111", $player);
@@ -1275,11 +1275,11 @@ function TopDeckToArsenal($player)
   AddArsenal($deck->Top(remove:true), $player, "DECK", "DOWN");
 }
 
-function DiscardHand($player)
+function DiscardHand($player, $mainPhase=true)
 {
   $hand = &GetHand($player);
   for($i = count($hand)-HandPieces(); $i>=0; $i-=HandPieces()) {
-    DiscardCard($player, $i);
+    DiscardCard($player, $i, mainPhase:$mainPhase);
   }
 }
 
@@ -1343,24 +1343,24 @@ function DiscardedAtRandomEffects($player, $discarded, $source) {
   }
 }
 
-function DiscardCard($player, $index, $source="", $effectController="")
+function DiscardCard($player, $index, $source="", $effectController="", $mainPhase=true)
 {
   $hand = &GetHand($player);
   $discarded = RemoveHand($player, $index);
-  CardDiscarded($player, $discarded, $source);
+  CardDiscarded($player, $discarded, $source, mainPhase:$mainPhase);
   AddGraveyard($discarded, $player, "HAND", $effectController);
   return $discarded;
 }
 
-function CardDiscarded($player, $discarded, $source = "")
+function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
 {
-  global $CS_Num6PowDisc, $mainPlayer;
+  global $CS_Num6PowDisc, $mainPlayer, $layers;
   AddEvent("DISCARD", $discarded);
   $modifiedAttack = ModifiedAttackValue($discarded, $player, "HAND", $source);
   if($modifiedAttack >= 6) {
     $character = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($character[0]);
-    if(($characterID == "WTR001" || $characterID == "WTR002" || $characterID == "RVD001") && $character[1] == 2 && $player == $mainPlayer) { //Rhinar
+    if(($characterID == "WTR001" || $characterID == "WTR002" || $characterID == "RVD001") && $character[1] == 2 && $player == $mainPlayer && $mainPhase) { //Rhinar
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
     }
     else if(($characterID == "HVY001" || $characterID == "HVY002") && $character[1] == 2 && $player == $mainPlayer) { //Kayo, Armed and Dangerous
