@@ -1109,6 +1109,13 @@ function CleanUpCombatEffects($weaponSwap = false)
       --$currentTurnEffects[$i+3];
       if ($currentTurnEffects[$i+3] == 0) array_push($effectsToRemove, $i);
     }
+    switch($currentTurnEffects[$i]) {
+      case "MON281": case "MON282": case "MON283":
+        array_push($effectsToRemove, $i);
+        break;
+      default:
+        break;
+    }
   }
   for($i = 0; $i < count($effectsToRemove); ++$i) RemoveCurrentTurnEffect($effectsToRemove[$i]);
 }
