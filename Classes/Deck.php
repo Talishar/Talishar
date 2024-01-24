@@ -40,7 +40,7 @@ class Deck {
     if(CanRevealCards($this->playerID)) {
       if($this->RemainingCards() > 0) {
         for($revealedCards = 0; $revealedCards < $revealCount && count($this->deck) > $revealedCards; $revealedCards++) {
-          WriteLog("Reveals " . CardLink($this->deck[$revealedCards], $this->deck[$revealedCards]));
+          WriteLog("Player " . $this->playerID . " reveals " . CardLink($this->deck[$revealedCards], $this->deck[$revealedCards]));
           AddEvent("REVEAL", $this->deck[$revealedCards]);
         }
         if(SearchLandmark("ELE000")) KorshemRevealAbility($this->playerID);
