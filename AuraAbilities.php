@@ -643,7 +643,6 @@ function AuraPlayAbilities($attackID, $from="")
         break;
       case "ARC112":
         if(($cardType == "AA" || ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA")) && GetResolvedAbilityType($attackID) != "I") {
-          $numRunechants = CountAura("ARC112", $currentPlayer);
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
         break;
