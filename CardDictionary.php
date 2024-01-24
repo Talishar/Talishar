@@ -431,6 +431,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
 
 function GetAbilityTypes($cardID)
 {
+  global $CS_NumActionsPlayed, $mainPlayer;
   switch($cardID) {
     case "ARC003": case "CRU101": return "A,AA";
     case "OUT093": return "I,I";

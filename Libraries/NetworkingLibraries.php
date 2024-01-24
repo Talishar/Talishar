@@ -1555,7 +1555,7 @@ function GetLayerTarget($cardID)
 
 function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
 {
-  global $currentPlayer;
+  global $currentPlayer, $CS_NumActionsPlayed;
   if (IsStaticType(CardType($cardID), $from, $cardID)) {
     $names = GetAbilityNames($cardID, $index);
     if($names != "") {
@@ -1625,7 +1625,11 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "HVY186": case "HVY187": case "HVY188":
     case "HVY209":
       $names = GetAbilityNames($cardID, $index);
-      if($names != "" && $from == "HAND") {
+      if(SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1){
+        AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
+      }
+      elseif($names != "" && $from == "HAND")
+      {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or attack");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
         AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
