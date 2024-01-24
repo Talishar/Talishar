@@ -1324,11 +1324,17 @@ function DiscardRandom($player = "", $source = "")
 }
 
 function DiscardedAtRandomEffects($player, $discarded, $source) {
+  global $mainPlayer;
   if(SearchCurrentTurnEffects("DYN009", $player) && ModifiedAttackValue($discarded, $player, "GY", "HAND") >= 6) {
     $index = SearchGetFirstIndex(SearchMultizone($player, "MYDISCARD:cardID=" . $discarded));
     RemoveGraveyard($player, $index);
     BanishCardForPlayer($discarded, $player, "GY", "-", $player);
     AddLayer("TRIGGER", $player, "DYN009");
+  }
+  $character = GetPlayerCharacter($player);
+  $index = FindCharacterIndex($player, "DYN006");
+  if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer) {
+    AddLayer("TRIGGER", $player, $character[$index]);
   }
   switch($discarded) {
     case "DYN008": AddLayer("TRIGGER", $player, $discarded); break;
@@ -1360,10 +1366,6 @@ function CardDiscarded($player, $discarded, $source = "")
     else if(($characterID == "HVY001" || $characterID == "HVY002") && $character[1] == 2 && $player == $mainPlayer) { //Kayo, Armed and Dangerous
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
       $character[1] = 1;
-    }
-    $index = FindCharacterIndex($player, "DYN006");
-    if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer) {
-      AddLayer("TRIGGER", $player, $character[$index]);
     }
     IncrementClassState($player, $CS_Num6PowDisc);
   }
