@@ -218,8 +218,17 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "CRU082":
       $character = &GetPlayerCharacter($currentPlayer);
-      ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
-      if($character[$combatChainState[$CCS_WeaponIndex] + 1] == 1) $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+      if(SubtypeContains($character[$combatChainState[$CCS_WeaponIndex]], "Sword", $currentPlayer)) {
+        ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+        if($character[$combatChainState[$CCS_WeaponIndex] + 1] == 1) $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+      }
+      else {
+        $weaponIndex = SearchCharacterIndexSubtype($currentPlayer, "Sword");
+        if($weaponIndex != -1) {
+          ++$character[$weaponIndex + 5];
+          if($character[$weaponIndex + 1] == 1) $character[$weaponIndex + 1] = 2;
+        }
+      }
       return "";
     case "CRU083":
       if(RepriseActive()) {
