@@ -137,7 +137,7 @@
         }
         break;
       case "HVY052":
-        if ($playerID == $effectController) AddCurrentTurnEffect($cardID, $playerID, "CC");
+        if($playerID == $defPlayer) AddCurrentTurnEffect($cardID, $defPlayer, "CC");
         break;
       case "HVY061":
         $dqVars[2] = $dqVars[0];
