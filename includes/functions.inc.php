@@ -393,7 +393,7 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
 	curl_close($ch);
 }
 
-function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "")
+function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $firstPlayer;
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked;
@@ -490,6 +490,8 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$deck["averageResourcesUsedPerTurn"] = round($totalResourcesUsed / $numTurns, 2);
 	$deck["averageCardsLeftOverPerTurn"] = round($totalCardsLeft / $numTurns, 2);
 	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2);
+
+	if($includeFullLog) $deck["fullLog"] = IsPatron($player) ? implode("<BR>", explode("\r\n", file_get_contents("./Games/" . $gameID . "/fullGamelog.txt"))) : "";
 
 	return json_encode($deck);
 }
