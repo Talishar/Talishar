@@ -347,6 +347,16 @@ function SearchCharacterAliveSubtype($player, $subtype)
   return false;
 }
 
+function SearchCharacterIndexSubtype($player, $subtype)
+{
+  global $combatChain;
+  $character = &GetPlayerCharacter($player);
+  for($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if(SubtypeContains($character[$i], $subtype, $player)) return $i;
+  }
+  return -1;
+}
+
 function FindCharacterIndex($player, $cardID)
 {
   $character = &GetPlayerCharacter($player);
