@@ -107,9 +107,7 @@
     WriteLog("Player " . $playerID . " won the Clash");
     $numClashesWon = GetClassState($playerID, $CS_NumClashesWon) + 1;
     SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
-    $losingPlayer = ($playerID == 1 ? 2 : 1);
     $deck = new Deck($playerID);
-
     switch ($deck->Top()) {
       case "HVY059":
         PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$playerID);
@@ -143,7 +141,7 @@
         $dqVars[2] = $dqVars[0];
         break;
       case "HVY061-2":
-        if($dqVars[2] == $playerID) {
+        if($dqVars[2] == $playerID || ($dqVars[2] == "NO" && $dqVars[0] == $playerID)) {
           PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$defPlayer);
           PlayAura("HVY241", $playerID); //Might
           PlayAura("HVY242", $playerID); //Vigor
