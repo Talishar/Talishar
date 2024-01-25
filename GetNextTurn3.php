@@ -185,12 +185,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $initialLoad = new stdClass();
     $initialLoad->playerName = $playerID == 1 ? $p1uid : $p2uid;
     $initialLoad->opponentName = $playerID == 1 ? $p2uid : $p1uid;
-    $contributors = array("sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "PvtVoid");
+    $contributors = array("sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming");
     $initialLoad->playerIsPatron = ($playerID == 1 ? $p1IsPatron : $p2IsPatron);
     $initialLoad->playerIsContributor = in_array($initialLoad->playerName, $contributors);
     $initialLoad->opponentIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron);
     $initialLoad->opponentIsContributor = in_array($initialLoad->opponentName, $contributors);
     $initialLoad->roguelikeGameID = $roguelikeGameID;
+    $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || ($playerID == 1 && isset($_SESSION["isPvtVoidPatron"]));
+    $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || ($playerID == 2 && isset($_SESSION["isPvtVoidPatron"]));
 
     $initialLoad->altArts = [];
 
@@ -377,7 +379,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($i > 0 && $inGameStatus == "0") continue;
     $atkCounters = 0;
     $counters = 0;
-    $type = CardType($theirCharacter[$i]); 
+    $type = CardType($theirCharacter[$i]);
     if (TypeContains($theirCharacter[$i], "D")) $type = "C";
     $sTypeArr = explode(",", CardSubType($theirCharacter[$i], $theirCharacter[$i+11]));
     $sType = $sTypeArr[0];
