@@ -252,7 +252,7 @@ function CardTalent($cardID)
 }
 
 //Minimum cost of the card
-function CardCost($cardID)
+function CardCost($cardID, $from="-")
 {
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
@@ -263,9 +263,11 @@ function CardCost($cardID)
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
-      return GetResolvedAbilityType($cardID, "HAND") == "AA" ? 3 : 0;
+      if(GetResolvedAbilityType($cardID, "HAND") == "AA" || $from == "CC") return 3;
+      else return 0;
     case "HVY209":
-      return GetResolvedAbilityType($cardID, "HAND") == "AA" ? 2 : 0;
+      if(GetResolvedAbilityType($cardID, "HAND") == "AA" || $from == "CC") return 2;
+      else return 0;
     default: break;
   }
   if($set != "ROG" && $set != "DUM") {
@@ -742,12 +744,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "WTR206": case "WTR207": case "WTR208":
       if(!$CombatChain->HasCurrentLink()) return true;
       $subtype = CardSubtype($CombatChain->AttackCard()->ID());
-      if($subtype == "Club" || $subtype == "Hammer" || (CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID()) >= 2)) return false;
+      if($subtype == "Club" || $subtype == "Hammer" || (CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID(), "CC") >= 2)) return false;
       return true;
     case "WTR209": case "WTR210": case "WTR211":
       if(!$CombatChain->HasCurrentLink()) return true;
       $subtype = CardSubtype($CombatChain->AttackCard()->ID());
-      if($subtype == "Sword" || $subtype == "Dagger" || (CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID()) <= 1)) return false;
+      if($subtype == "Sword" || $subtype == "Dagger" || (CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID(), "CC") <= 1)) return false;
       return true;
     case "ARC004": return GetClassState($player, $CS_NumBoosted) < 1;
     case "ARC005": return GetClassState($player, $CS_NumBoosted) < 1;
