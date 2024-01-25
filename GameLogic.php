@@ -24,7 +24,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $redirectPath, $playerID, $gameName, $currentPlayer, $combatChain, $CombatChain, $defPlayer, $combatChainState, $EffectContext;
   global $CS_NumCharged, $otherPlayer, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
-  global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup, $CS_LifeLost;
+  global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
   $rv = "";
   switch($phase) {
     case "FINDINDICES":
@@ -893,10 +893,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if(!CanDamageBePrevented($player, $damage, "ARCANE", $source)) $lastResult = 0;
       $damage = DealDamageAsync($player, $damage - $lastResult, "ARCANE", $source);
       if($damage < 0) $damage = 0;
-      if($damage > 0) {
-        IncrementClassState($playerSource, $CS_ArcaneDamageDealt, $damage);
-        IncrementClassState($player, $CS_LifeLost, $damage);
-      }
+      if($damage > 0) IncrementClassState($playerSource, $CS_ArcaneDamageDealt, $damage);
       WriteLog("Player " . $player . " took $damage arcane damage from " . CardLink($source, $source), $player);
       if(DelimStringContains(CardSubType($source), "Ally") && $damage > 0) ProcessDealDamageEffect($source); // Interaction with Burn Them All! + Nekria
       $dqVars[0] = $damage;

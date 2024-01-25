@@ -1333,7 +1333,7 @@ function DiscardedAtRandomEffects($player, $discarded, $source) {
   }
   $character = GetPlayerCharacter($player);
   $index = FindCharacterIndex($player, "DYN006");
-  if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer) {
+  if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer && ModifiedAttackValue($discarded, $player, "GY", "HAND") >= 6) {
     AddLayer("TRIGGER", $player, $character[$index]);
   }
   switch($discarded) {
