@@ -230,7 +230,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       $blockModifier += SearchCharacter($defPlayer, subtype: "Off-Hand", class: "GUARDIAN") != "" ? 4 : 0;
       break;
     case "DTD206":
-      $blockModifier += CountCurrentTurnEffects("DTD206", $defPlayer);
+      $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
       break;
     case "EVO060":
       $blockModifier += EvoUpgradeAmount($defPlayer);
@@ -241,6 +241,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "HVY011":
       CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
       CountAura("HVY241", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Might
+      break;
+    case "HVY052":
+      $blockModifier += SearchCurrentTurnEffects($cardID, $defPlayer);
       break;
     case "HVY056":
       CountAura("HVY241", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Might
@@ -408,7 +411,7 @@ function OnBlockResolveEffects()
       case "TCC033": case "TCC098": case "TCC102":
       case "TCC060": case "TCC063": case "TCC067": // Crowd Control
       case "HVY020": case "HVY021": case "HVY022":
-      case "HVY053": case "HVY061":
+      case "HVY052": case "HVY053": case "HVY061":
       case "HVY162":
       case "HVY137": case "HVY138": case "HVY139":
       case "HVY141": case "HVY142":
@@ -426,9 +429,6 @@ function OnBlockResolveEffects()
       case "DTD200": AddLayer("TRIGGER", $defPlayer, $combatChain[$i]); break;
       case "HVY008":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
-        break;
-      case "HVY052":
-        AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
         break;
       case "HVY054":
         $yellowPitchCards = 0;

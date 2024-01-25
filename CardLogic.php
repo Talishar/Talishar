@@ -491,7 +491,7 @@ function ProcessLayer($player, $parameter)
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext;
-  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack;
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
   $auras = &GetAuras($player);
