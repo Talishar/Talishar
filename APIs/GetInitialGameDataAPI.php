@@ -36,6 +36,8 @@ $response->p1IsPatron = $p1IsPatron == "" ? false : true;
 $response->p1IsContributor = in_array($response->p1Name, $contributors);
 $response->p2IsPatron = $p2IsPatron == "" ? false : true;
 $response->p2IsContributor = in_array($response->p2Name, $contributors);
+$response->p1IsPvtVoidPatron = $response->p1Name == "PvtVoid" || ($playerID == 1 && isset($_SESSION["isPvtVoidPatron"]));
+$response->p2IsPvtVoidPatron = $response->p2Name == "PvtVoid" || ($playerID == 2 && isset($_SESSION["isPvtVoidPatron"]));
 $response->roguelikeGameID = $roguelikeGameID;
 
 $response->altArts = [];
