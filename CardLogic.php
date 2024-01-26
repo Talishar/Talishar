@@ -1363,7 +1363,7 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
     if(($characterID == "WTR001" || $characterID == "WTR002" || $characterID == "RVD001") && $character[1] == 2 && $player == $mainPlayer && $mainPhase) { //Rhinar
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
     }
-    else if(($characterID == "HVY001" || $characterID == "HVY002") && $character[1] == 2 && $player == $mainPlayer) { //Kayo, Armed and Dangerous
+    else if(($characterID == "HVY001" || $characterID == "HVY002") && $character[1] == 2 && $player == $mainPlayer && $mainPhase) { //Kayo, Armed and Dangerous
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
       $character[1] = 1;
     }
