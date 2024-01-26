@@ -412,7 +412,9 @@ function MainCharacterHitAbilities()
         }
         break;
       case "HVY097":
-        if(CardType($attackID) == "W")
+        $hand = &GetHand($mainPlayer);
+        $resources = &GetResources($mainPlayer);
+        if(CardType($attackID) == "W" && (Count($hand) > 0 || $resources[0] > 0))
         {
           AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to create a " . CardLink("HVY242", "HVY242"), 0, 1);
           AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
