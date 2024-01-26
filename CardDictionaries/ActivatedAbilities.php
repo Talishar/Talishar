@@ -157,7 +157,7 @@
     }
   }
 
-  function DestroyTopCard($player)
+  function DestroyTopCardTarget($player)
   {
     $otherPlayer = ($player == 1 ? 2 : 1);
     AddDecisionQueue("PASSPARAMETER", $player, "ELSE");
@@ -178,6 +178,13 @@
     AddDecisionQueue("WRITELOG", $otherPlayer, "Destroys the top card of Player ". $otherPlayer ." deck", 1);
     AddDecisionQueue("DESTROYTOPCARD", $otherPlayer, "0", 1);
     AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
+  }
+
+  function DestroyTopCardOpponent($player)
+  {
+    $otherPlayer = ($player == 1 ? 2 : 1);
+    AddDecisionQueue("WRITELOG", $otherPlayer, "Destroys the top card of Player ". $otherPlayer ." deck", 1);
+    AddDecisionQueue("DESTROYTOPCARD", $otherPlayer, "0", 1);
   }
 
   function DestroyItemWithoutSteamCounter($cardID, $player) {
