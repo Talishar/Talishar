@@ -127,7 +127,7 @@
     switch($cardID)
     {
       case "HVY050":
-        if ($playerID == $mainPlayer) DestroyTopCard($playerID);
+        if ($playerID == $mainPlayer) DestroyTopCardOpponent($playerID);
         else {
           $character = &GetPlayerCharacter($mainPlayer);
           $index = $combatChainState[$CCS_WeaponIndex];

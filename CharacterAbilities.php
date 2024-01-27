@@ -222,8 +222,8 @@ function CharacterStartTurnAbility($index)
       PlayAura("MON104", $mainPlayer);
       break;
     case "HVY047": case "HVY048":
-      AddCurrentTurnEffect($cardID."-1", $mainPlayer);
-      AddCurrentTurnEffect($cardID."-2", $mainPlayer);
+      if(!SearchCurrentTurnEffects($cardID."-1", $mainPlayer)) AddCurrentTurnEffect($cardID."-1", $mainPlayer);
+      if(!SearchCurrentTurnEffects($cardID."-2", $mainPlayer)) AddCurrentTurnEffect($cardID."-2", $mainPlayer);
       break;
     case "HVY254":
       AddCurrentTurnEffect("HVY254-1", $mainPlayer);
@@ -257,8 +257,8 @@ function DefCharacterStartTurnAbilities()
         }
         break;
       case "HVY047": case "HVY048":
-        AddCurrentTurnEffect($character[$i]."-1", $defPlayer);
-        AddCurrentTurnEffect($character[$i]."-2", $defPlayer);
+        if(!SearchCurrentTurnEffects($character[$i]."-1", $mainPlayer)) AddCurrentTurnEffect($character[$i]."-1", $mainPlayer);
+        if(!SearchCurrentTurnEffects($character[$i]."-2", $mainPlayer)) AddCurrentTurnEffect($character[$i]."-2", $mainPlayer);
         break;
       case "ROGUE018":
         AddCurrentTurnEffect("ROGUE018", $mainPlayer);
@@ -412,7 +412,9 @@ function MainCharacterHitAbilities()
         }
         break;
       case "HVY097":
-        if(CardType($attackID) == "W")
+        $hand = &GetHand($mainPlayer);
+        $resources = &GetResources($mainPlayer);
+        if(CardType($attackID) == "W" && (Count($hand) > 0 || $resources[0] > 0))
         {
           AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to create a " . CardLink("HVY242", "HVY242"), 0, 1);
           AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);

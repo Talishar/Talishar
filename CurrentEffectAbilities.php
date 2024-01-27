@@ -388,8 +388,6 @@ function EffectBlockModifier($cardID, $index, $from)
       return CachedTotalAttack() >= 13 && (CardType($CombatChain->Card($index)->ID()) || (DelimStringContains(CardSubType($CombatChain->Card($index)->ID()), "Evo"))) != "E" ? -1 : 0;
     case "EVO105": case "EVO106": case "EVO107":
       return IsActionCard($CombatChain->Card($index)->ID()) ? -1 : 0;
-    case "HVY052":
-      return ($CombatChain->Card($index)->ID() == $cardID ? 1 : 0);
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206":
       return $CombatChain->Card($index)->ID() == $cardID && PlayerHasLessHealth($defPlayer) ? 1 : 0;
     default: return 0;

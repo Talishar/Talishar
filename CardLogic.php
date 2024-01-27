@@ -491,7 +491,7 @@ function ProcessLayer($player, $parameter)
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext;
-  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack;
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
   $auras = &GetAuras($player);
@@ -1333,7 +1333,7 @@ function DiscardedAtRandomEffects($player, $discarded, $source) {
   }
   $character = GetPlayerCharacter($player);
   $index = FindCharacterIndex($player, "DYN006");
-  if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer) {
+  if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer && ModifiedAttackValue($discarded, $player, "GY", "HAND") >= 6) {
     AddLayer("TRIGGER", $player, $character[$index]);
   }
   switch($discarded) {
@@ -1363,7 +1363,7 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
     if(($characterID == "WTR001" || $characterID == "WTR002" || $characterID == "RVD001") && $character[1] == 2 && $player == $mainPlayer && $mainPhase) { //Rhinar
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
     }
-    else if(($characterID == "HVY001" || $characterID == "HVY002") && $character[1] == 2 && $player == $mainPlayer) { //Kayo, Armed and Dangerous
+    else if(($characterID == "HVY001" || $characterID == "HVY002") && $character[1] == 2 && $player == $mainPlayer && $mainPhase) { //Kayo, Armed and Dangerous
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
       $character[1] = 1;
     }
