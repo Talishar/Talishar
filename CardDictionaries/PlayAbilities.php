@@ -316,7 +316,7 @@
             AddDecisionQueue("CHOOSETOPOPPONENT", $currentPlayer, $deck->Top(true, 3));
             AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
             AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
-            AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK,TCC," . $currentPlayer);
+            AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK,-" . $currentPlayer);
           }
         }
         return "";
