@@ -13,7 +13,7 @@ $forIndividual = TryGet("forIndividual", false);
 $forIndividual = ($forIndividual ? true : false);//If it evaluates to true, explicitly cast it to boolean
 $useruid = $_SESSION["useruid"];
 $userID = $_SESSION["userid"];
-if (!$forIndividual) exit;
+if (!$forIndividual && $useruid != "OotTheMonk") exit;
 
 if ($forIndividual && !isset($_SESSION["isPatron"])) {
   echo ("Please subscribe to our Patreon to access this page.");
@@ -62,6 +62,7 @@ FROM completedgame
 WHERE WinningHero=? and LosingHero<>\"DUMMY\" and numTurns > 1
 GROUP by LosingHero
 ORDER BY Count";
+$conn = GetDBConnection();
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");
@@ -177,7 +178,7 @@ while ($row = mysqli_fetch_array($loseCardData, MYSQLI_NUM)) {
   }
 }
 
-echo ("<div id='wrapper' style='text-align: center; position:relative;'>");
+echo ("<div id='wrapper' style='text-align: center; position:relative; height:90%; overflow-y:scroll;'>");
 
 echo ("<section class='game-stats' style='overflow-y:hidden;'>");
 echo ("<h3>Stats for " . CardLink($detailHeroID, $detailHeroID, true) . "</h3>");

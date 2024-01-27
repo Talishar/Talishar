@@ -14,7 +14,7 @@ if(!isset($forIndividual)) $forIndividual = TryGet("forIndividual", false);
 $forIndividual = ($forIndividual ? true : false);//If it evaluates to true, explicitly cast it to boolean
 $useruid = $_SESSION["useruid"];
 $userID = $_SESSION["userid"];
-if (!$forIndividual) exit;
+if (!$forIndividual && $useruid != "OotTheMonk") exit;
 
 if ($forIndividual && !isset($_SESSION["isPatron"])) {
   echo ("Please subscribe to our Patreon to access this page.");
