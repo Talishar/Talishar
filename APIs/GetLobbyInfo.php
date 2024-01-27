@@ -163,6 +163,18 @@ if($handler) {
     array_push($response->deck->handsSB, $handItem);
   }
 
+  $cardIndex = [];
+  $response->deck->cardDictionary = [];
+  foreach($response->deck->cards as $card) {
+    if(!array_key_exists($card, $cardIndex)) {
+      $cardIndex[$card] = "1";
+      $dictionaryCard = new stdClass();
+      $dictionaryCard->id = $card;
+      $dictionaryCard->pitch = PitchValue($card);
+      array_push($response->deck->cardDictionary, $dictionaryCard);
+    }
+  }
+
   fclose($handler);
 }
 
