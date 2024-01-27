@@ -1376,7 +1376,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       else AddDecisionQueue("GETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
       AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index);
-      $decisionQueue = array_merge($decisionQueue, $dqCopy);
+      $decisionQueue = array_merge($dqCopy, $decisionQueue);
       ProcessDecisionQueue();
       //MISSING CR 5.1.3d Decide if action that can be played as instant will be
       //MISSING CR 5.1.3e Decide order of costs to be paid
