@@ -99,18 +99,6 @@ if(($index = FindCharacterIndex(2, "DYN026")) > 0) {
   $p2Char[$index + 4] = -2;
 }
 
-//Victor
-if(SearchCharacterForCard(1, "HVY047") || SearchCharacterForCard(1, "HVY048"))
-{
-  AddDecisionQueue("ADDCURRENTEFFECT", 1, $p1Char[0]."-1", 1);
-  AddDecisionQueue("ADDCURRENTEFFECT", 1, $p1Char[0]."-2", 1);
-}
-if(SearchCharacterForCard(2, "HVY047") || SearchCharacterForCard(2, "HVY048"))
-{
-  AddDecisionQueue("ADDCURRENTEFFECT", 2, $p2Char[0]."-1", 1);
-  AddDecisionQueue("ADDCURRENTEFFECT", 2, $p2Char[0]."-2", 1);
-}
-
 InventoryStartGameAbilities(1);
 InventoryStartGameAbilities(2);
 
