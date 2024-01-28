@@ -293,9 +293,7 @@ function ReactionRequirementsMet($storedPriorityNode)
   {
     case "WTR080": return HasCombo($combatChain[0]);
     case "WTR082": return CardType($combatChain[0]) == "AA" && ClassContains($combatChain[0], "NINJA", $mainPlayer);
-    case "WTR118":
-    case "WTR120":
-    case "WTR121":
+    case "WTR118": case "WTR120": case "WTR121":
     case "WTR123": case "WTR124": case "WTR125":
     case "WTR132": case "WTR133": case "WTR134":
     case "WTR135": case "WTR136": case "WTR137":
