@@ -754,7 +754,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ARC004": return GetClassState($player, $CS_NumBoosted) < 1;
     case "ARC005": return GetClassState($player, $CS_NumBoosted) < 1;
     case "ARC008": return GetClassState($player, $CS_NumBoosted) < 3;
-    case "ARC010": return ($CombatChain->HasCurrentLink() && $from == "PLAY" && ClassContains($CombatChain->AttackCard()->ID(), "MECHANOLOGIST", $player) && ($myItems[$index + 1] == 0 || CardSubtype($CombatChain->AttackCard()->ID()) != "Pistol" || $myItems[$index + 2] != 2));
+    case "ARC010": 
+      return ($CombatChain->HasCurrentLink() && $from == "PLAY" && !ClassContains($CombatChain->AttackCard()->ID(), "MECHANOLOGIST", $player) && ($myItems[$index + 1] == 0 || CardSubtype($CombatChain->AttackCard()->ID()) != "Pistol" || $myItems[$index + 2] != 2));
     case "ARC018": return ($CombatChain->HasCurrentLink() && $from == "PLAY" && ($myItems[$index+1] == 0 || CardType($CombatChain->AttackCard()->ID()) != "AA" || $myItems[$index+2] != 2));
     case "ARC041": return !ArsenalHasFaceDownCard($player);
     case "CRU082": case "CRU083": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
