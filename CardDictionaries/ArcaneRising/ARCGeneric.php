@@ -112,7 +112,7 @@ function ARCGenericHitEffect($cardID)
       AddCurrentTurnEffect($cardID, $mainPlayer);
       break;
     case "ARC179": case "ARC180": case "ARC181":
-      MZMoveCard($mainPlayer, "MYDISCARD:type=A", "MYTOPDECK");
+      MZMoveCard($mainPlayer, "MYDISCARD:type=A", "MYTOPDECK", may:true);
       break;
     case "ARC182": case "ARC183":  case "ARC184":
       PlayerOpt($mainPlayer, 2);

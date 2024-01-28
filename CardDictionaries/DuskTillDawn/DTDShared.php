@@ -199,7 +199,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
       return "";
     case "DTD009":
-      MZMoveCard($currentPlayer, "MYDISCARD:type=A;pitch=2&MYDISCARD:type=AA;pitch=2", "MYTOPDECK");
+      MZMoveCard($currentPlayer, "MYDISCARD:type=A;pitch=2&MYDISCARD:type=AA;pitch=2", "MYTOPDECK", may:true);
       return;
     case "DTD010":
       AddCurrentTurnEffect($cardID, $currentPlayer);
