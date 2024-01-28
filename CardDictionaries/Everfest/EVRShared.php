@@ -689,9 +689,9 @@
   function LifeOfThePartyIndices()
   {
     global $currentPlayer;
-    $auras = SearchMultizoneFormat(SearchItemsForCard("WTR162", $currentPlayer), "MYITEMS");
+    $items = SearchMultizoneFormat(SearchItemsForCard("WTR162", $currentPlayer), "MYITEMS");
     $handCards = SearchMultizoneFormat(SearchHandForCard($currentPlayer, "WTR162"), "MYHAND");
-    return CombineSearches($auras, $handCards);
+    return CombineSearches($items, $handCards);
   }
 
   function CoalescentMirageDestroyed()

@@ -1093,6 +1093,8 @@ function NameOverride($cardID, $player="")
 {
   $name = CardName($cardID);
   if(SearchCurrentTurnEffects("OUT183", $player)) $name = "";
+
+
   return $name;
 }
 
@@ -1912,7 +1914,7 @@ function ClearGameFiles($gameName)
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
 {
-  global $currentPlayer, $layers;
+  global $currentPlayer, $layers, $CS_NumCrouchingTigerPlayedThisTurn;
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
@@ -1925,6 +1927,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   if(($set == "ELE" || $set == "UPR") && $additionalCosts != "-" && HasFusion($cardID)) {
     FuseAbility($cardID, $currentPlayer, $additionalCosts);
   }
+  if(IsCardNamed($currentPlayer, $cardID, "Crouching Tiger")) IncrementClassState($currentPlayer, $CS_NumCrouchingTigerPlayedThisTurn);
   if($set == "WTR") return WTRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "ARC") {
     switch($class) {

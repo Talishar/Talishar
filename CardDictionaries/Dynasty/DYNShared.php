@@ -128,9 +128,9 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN019": case "DYN020": case "DYN021": return true;
     case "DYN022": case "DYN023": case "DYN024": return ClassContains($attackID, "BRUTE", $mainPlayer);
     case "DYN028": return ClassContains($attackID, "GUARDIAN", $mainPlayer);
-    case "DYN046": return $attackID == "DYN065";
-    case "DYN049": return $attackID == "DYN065";
-    case "DYN053": case "DYN054": case "DYN055": return $attackID == "DYN065";
+    case "DYN046": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
+    case "DYN049": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
+    case "DYN053": case "DYN054": case "DYN055": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
     case "DYN068": return true;
     case "DYN071": return CardSubType($attackID) == "Axe";
     case "DYN073": case "DYN074": case "DYN075": return CardType($attackID) == "W";
@@ -160,7 +160,7 @@ function DYNCombatEffectActive($cardID, $attackID)
 
 function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $CS_NumCrounchingTigerPlayedThisTurn;
+  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $CS_NumCrouchingTigerPlayedThisTurn;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
@@ -222,9 +222,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       else $amount = 1;
       for($i=0; $i < $amount; $i++) BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
       return "";
-    case "DYN065":
-      IncrementClassState($currentPlayer, $CS_NumCrounchingTigerPlayedThisTurn);
-      break;
     case "DYN068":
       CacheCombatResult();
       if(IsWeaponGreaterThanTwiceBasePower()) AddCurrentTurnEffect($cardID, $currentPlayer);
