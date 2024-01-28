@@ -839,7 +839,7 @@ function CacheCombatResult()
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();
-  $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand();
+  if($combatChainState[$CCS_CachedNumDefendedFromHand] == 0) $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand();
   $combatChainState[$CCS_WagersThisLink] = (IsWagerActive() ? "1" : "0");
   $combatChainState[$CCS_PhantasmThisLink] = (IsPhantasmActive() ? "1" : "0");
 }
