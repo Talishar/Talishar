@@ -2063,7 +2063,7 @@ function PayAdditionalCosts($cardID, $from)
     case "DTD110":
       $banish = &GetBanish($currentPlayer);
       $index = count($banish) - BanishPieces();
-      $banish[$index + 1] = "NT";
+      if(ModifiedAttackValue($banish[$index], $currentPlayer, "BANISH") >= 6) $banish[$index + 1] = "NT";
       break;
     case "DTD111":
       $banishedCards = BanishHand($currentPlayer);
