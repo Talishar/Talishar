@@ -491,7 +491,7 @@ function ProcessLayer($player, $parameter)
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext;
-  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer;
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
   $auras = &GetAuras($player);
@@ -1152,7 +1152,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       Clash($parameter, effectController:$player);
       break;
     case "HVY053":
-      AddDecisionQueue("ADDCURRENTEFFECT", $player, $parameter);
+      AddCurrentTurnEffect("HVY053," . CachedTotalAttack(), $mainPlayer);
       break;
     case "HVY061":
       Clash($parameter, effectController:$player);
@@ -1171,7 +1171,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         WriteLog("<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>");
       }
       else if(CountAura("HVY240", $player) > 0) {
-        WriteLog(CardLink($parameter, $parameter) . " deals 1 damage"); 
+        WriteLog(CardLink($parameter, $parameter) . " deals 1 damage");
         DealDamageAsync($otherPlayer, 1, "DAMAGE", $parameter);
       }
       break;

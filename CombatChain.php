@@ -430,6 +430,9 @@ function OnBlockResolveEffects()
       case "HVY008":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
         break;
+      case "HVY053":
+        AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
+        break;
       case "HVY054":
         $yellowPitchCards = 0;
         for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {

@@ -848,11 +848,11 @@ function CurrentEffectPlayAbility($cardID, $from)
 function CurrentEffectPlayOrActivateAbility($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer;
-
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    $remove = false;
     if($currentTurnEffects[$i + 1] == $currentPlayer) {
-      switch($currentTurnEffects[$i]) {
+      $remove = false;
+      $effectArr = explode(",", $currentTurnEffects[$i]);
+      switch($effectArr[0]) {
         case "MON153": case "MON154":
           $cardType = CardType($cardID);
           if(($cardType == "AA" || $cardType == "W" || $cardType == "T") && (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer))) {
@@ -860,8 +860,28 @@ function CurrentEffectPlayOrActivateAbility($cardID, $from)
             $remove = true;
           }
           break;
-        default:
+        default: break;
+      }
+      if($remove) RemoveCurrentTurnEffect($i);
+    }
+  }
+  $currentTurnEffects = array_values($currentTurnEffects); //In case any were removed
+  return false;
+}
+
+function CurrentEffectAfterPlayOrActivateAbility($cardID, $from)
+{
+  global $currentTurnEffects, $currentPlayer;
+  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    if($currentTurnEffects[$i + 1] == $currentPlayer) {
+      $remove = false;
+      $effectArr = explode(",", $currentTurnEffects[$i]);
+      switch($effectArr[0]) {
+        case "HVY053":
+          CacheCombatResult();
+          if($effectArr[1] != "ACTIVE" && CachedTotalAttack() > intval($effectArr[1])) $currentTurnEffects[$i] = "HVY053,ACTIVE";
           break;
+        default: break;
       }
       if($remove) RemoveCurrentTurnEffect($i);
     }
