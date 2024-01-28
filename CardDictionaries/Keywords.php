@@ -44,10 +44,10 @@
     if(!IsHeroAttackTarget()) return;
     switch($cardID)
     {
-      case "TCC034":
+      case "TCC034": case "HVY062":
         MZChooseAndDestroy($mainPlayer, "THEIRCHAR:type=E;maxDef=1");
         break;
-      case "TCC036":
+      case "TCC036": case "HVY064":
         MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS:type=T"), $mainPlayer);
       default: break;
     }

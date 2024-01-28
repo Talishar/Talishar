@@ -354,7 +354,7 @@ function EffectHasBlockModifier($cardID)
     case "OUT009": case "OUT010":
     case "OUT109": case "OUT110": case "OUT111":
     case "DTD094": case "DTD095": case "DTD096":
-    case "TCC035":
+    case "TCC035": case "HVY063":
     case "HVY052":
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206":
     case "HVY245":
@@ -384,7 +384,7 @@ function EffectBlockModifier($cardID, $index, $from)
       return (PitchValue($CombatChain->Card($index)->ID()) == 3 && HasAimCounter() ? -1 : 0);
     case "DTD094": case "DTD095": case "DTD096":
       return (CardType($CombatChain->Card($index)->ID()) != "E" && TalentContains($CombatChain->Card($index)->ID(), "LIGHT", $defPlayer) && TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $mainPlayer) ? 1 : 0);
-    case "TCC035":
+    case "TCC035": case "HVY063":
       return CachedTotalAttack() >= 13 && (CardType($CombatChain->Card($index)->ID()) || (DelimStringContains(CardSubType($CombatChain->Card($index)->ID()), "Evo"))) != "E" ? -1 : 0;
     case "EVO105": case "EVO106": case "EVO107":
       return IsActionCard($CombatChain->Card($index)->ID()) ? -1 : 0;
