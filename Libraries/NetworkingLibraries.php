@@ -2174,6 +2174,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   if($index > -1) SetClassState($currentPlayer, $CS_PlayIndex, $index);
 
   $definedCardType = CardType($cardID);
+  $definedCardSubType = CardSubType($cardID);
   //Figure out where it goes
   $openedChain = false;
   $chainClosed = false;
@@ -2212,7 +2213,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
       if($additionalCosts != "-" && HasFusion($cardID)) $combatChainState[$CCS_AttackFused] = 1;
       // If you attacked an aura with Spectra
-      if(!$chainClosed && ($definedCardType == "AA" || $definedCardType == "W")) {
+      if(!$chainClosed && (DelimStringContains($definedCardType, "AA") || DelimStringContains($definedCardType, "W") || DelimStringContains($definedCardSubType, "Ally"))) {
         IncrementClassState($currentPlayer, $CS_NumAttacks);
         ArsenalAttackAbilities();
         OnAttackEffects($cardID);
