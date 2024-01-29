@@ -2013,7 +2013,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       break;
     case "UPR094":
-      MZMoveCard($currentPlayer, "MYDISCARD:cardID=UPR101", "MYBANISH,GY,-", may: true);
+      MZMoveCard($currentPlayer, "MYDISCARD:sameName=UPR101", "MYBANISH,GY,-", may: true);
       AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-PHOENIXBANISH", 1);
       break;
     case "OUT001": case "OUT002":

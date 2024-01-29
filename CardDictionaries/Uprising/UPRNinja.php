@@ -7,7 +7,7 @@
     {
       case "UPR044": case "UPR045":
         if(SearchCurrentTurnEffects("OUT183", $currentPlayer)) return "";
-        MZMoveCard($currentPlayer, "MYDISCARD:cardID=UPR101", "MYHAND");
+        MZMoveCard($currentPlayer, "MYDISCARD:sameName=UPR101", "MYHAND");
         return "";
       case "UPR047":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -27,7 +27,7 @@
         return "";
       case "UPR057": case "UPR058": case "UPR059":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        MZMoveCard($currentPlayer, "MYDISCARD:cardID=UPR101", "MYHAND", may:true);
+        MZMoveCard($currentPlayer, "MYDISCARD:sameName=UPR101", "MYHAND", may:true);
         return "";
       case "UPR060": case "UPR061": case "UPR062":
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
