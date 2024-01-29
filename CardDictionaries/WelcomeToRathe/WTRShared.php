@@ -115,7 +115,7 @@
 
   function WTRCombatEffectActive($cardID, $attackID)
   {
-    global $mainPlayer;
+    global $mainPlayer, $CS_LastDynCost;
     $idArr = explode("-", $cardID);
     $cardID = $idArr[0];
     switch($cardID)
@@ -133,7 +133,7 @@
       case "WTR141": case "WTR142": case "WTR143": return CardType($attackID) == "W";
       case "WTR144": case "WTR145": case "WTR146": return CardType($attackID) == "W";
       case "WTR147": case "WTR148": case "WTR149": return CardType($attackID) == "W";
-      case "WTR153": return CardType($attackID) == "AA" && CardCost($attackID) >= 2;
+      case "WTR153": return CardType($attackID) == "AA" && (CardCost($attackID) >= 2 || GetClassState($mainPlayer, $CS_LastDynCost) >= 2);
       case "WTR154": return true;
       case "WTR159": return true;
       case "WTR161": return true;
