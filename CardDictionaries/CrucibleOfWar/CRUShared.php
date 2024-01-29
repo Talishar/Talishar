@@ -370,15 +370,15 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "CRU128":
+      TrapTriggered($cardID);
       if(!IsAllyAttacking()) {
-        TrapTriggered($cardID);
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
         AddDecisionQueue("NOPASS", $otherPlayer, $cardID, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "1", 1);
         AddDecisionQueue("ELSE", $otherPlayer, "-");
-        AddDecisionQueue("ATTACKMODIFIER", $otherPlayer, "-2", 1);
       }
+      AddDecisionQueue("ATTACKMODIFIER", $otherPlayer, "-2", 1);
       return "";
     case "CRU135": case "CRU136": case "CRU137":
       AddCurrentTurnEffect($cardID, $currentPlayer);
