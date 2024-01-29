@@ -535,7 +535,7 @@ function CharacterCostModifier($cardID, $from)
       default: break;
     }
   }
-  return CanCostBeModified($cardID) ? $modifier : 0;
+  return CostCantBeModified($cardID) ? 0 : $modifier;
 }
 
 function EquipEquipment($player, $card, $slot="")

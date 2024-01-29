@@ -102,7 +102,7 @@ function AddAttack(&$totalAttack, $amount)
 {
   global $CombatChain;
   $attackID = $CombatChain->AttackCard()->ID();
-  if($attackID == "DTD201") return;
+  if(PowerCantBeModified($attackID)) return;
   if($amount > 0 && $attackID == "OUT100") $amount += 1;
   if($amount > 0 && ($attackID == "OUT065" || $attackID == "OUT066" || $attackID == "OUT067") && ComboActive()) $amount += 1;
   if($amount > 0) $amount += PermanentAddAttackAbilities();
@@ -116,7 +116,7 @@ function BlockingCardDefense($index)
   $cardID = $combatChain[$index];
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
   $resourcesPaid = intval($combatChain[$index+3]) + intval($baseCost);
-  $defense = intval(BlockValue($cardID)) + (CanBlockBeModified($cardID) ? intval(BlockModifier($cardID, $from, $resourcesPaid)) + intval($combatChain[$index + 6]) : 0);
+  $defense = intval(BlockValue($cardID)) + (BlockCantBeModified($cardID) ? 0 : intval(BlockModifier($cardID, $from, $resourcesPaid)) + intval($combatChain[$index + 6]));
   if(CardType($cardID) == "E")
   {
     $defCharacter = &GetPlayerCharacter($defPlayer);
@@ -378,7 +378,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   $damage = PermanentTakeDamageAbilities($player, $damage, $type);
   $damage = ItemTakeDamageAbilities($player, $damage, $type);
   $damage = CharacterTakeDamageAbilities($player, $damage, $type, $preventable);
-  if($damage == 1 && $preventable && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
+  if($damage == 1 && $preventable && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last  
   $dqVars[0] = $damage;
   if($type == "COMBAT") $dqState[6] = $damage;
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
@@ -1093,8 +1093,6 @@ function NameOverride($cardID, $player="")
 {
   $name = CardName($cardID);
   if(SearchCurrentTurnEffects("OUT183", $player)) $name = "";
-
-
   return $name;
 }
 
@@ -1250,6 +1248,7 @@ function DoesAttackHaveGoAgain()
     case "DYN047": return (ComboActive($attackID));
     case "DYN056": case "DYN057": case "DYN058": return (ComboActive($attackID));
     case "DYN069": case "DYN070": return GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) != "-";
+    case "EVO009": return EvoUpgradeAmount($mainPlayer) >= 3;
     case "EVO111": case "EVO112": case "EVO113": return GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0;
     case "HVY095": 
       $character = &GetPlayerCharacter($mainPlayer);

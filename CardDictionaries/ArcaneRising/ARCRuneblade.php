@@ -79,7 +79,7 @@
     $count = 0;
     for($i=0; $i<count($auras); $i+=AuraPieces())
     {
-      if($auras[$i] == "ARC112") ++$count;
+      if(CardNameContains($auras[$i], "Runechant", $player)) ++$count;
     }
     return $count;
   }

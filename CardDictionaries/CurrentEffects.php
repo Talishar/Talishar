@@ -40,7 +40,6 @@
     $idArr = explode(",", $cardID);
     $cardID = $idArr[0];
     switch($cardID) {
-      case "EVO009": return 1;
       case "EVO016": return 1;
       case "EVO052": return 1;
       case "EVO090": case "EVO091": case "EVO092": return $idArr[1];
@@ -69,7 +68,6 @@
     $idArr = explode(",", $cardID);
     $cardID = $idArr[0];
     switch($cardID) {
-      case "EVO009": return true;
       case "EVO016": return ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
       case "EVO052": return true;
       case "EVO090": case "EVO091": case "EVO092": return true;

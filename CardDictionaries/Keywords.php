@@ -18,21 +18,21 @@
     }
   }
 
-  function Crank($player, $index)
+  function Crank($player, $index, $mainPhase="True")
   {
     AddDecisionQueue("YESNO", $player, "if you want to Crank");
     AddDecisionQueue("NOPASS", $player, "-");
     AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
-    AddDecisionQueue("OP", $player, "DOCRANK", 1);
+    AddDecisionQueue("OP", $player, "DOCRANK-MainPhase". $mainPhase, 1);
   }
 
-  function DoCrank($player, $index)
+  function DoCrank($player, $index, $mainPhase=true)
   {
     global $CS_NumCranked;
     $items = &GetItems($player);
     if($items[$index+1] <= 0) return;
     --$items[$index+1];
-    GainActionPoints(1, $player);
+    if($mainPhase) GainActionPoints(1, $player);
     WriteLog("Player $player cranked");
     IncrementClassState($player, $CS_NumCranked);
     if(CardName($items[$index]) == "Hyper Driver" && ($items[$index+1] <= 0)) DestroyItemForPlayer($player, $index);

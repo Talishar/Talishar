@@ -51,7 +51,7 @@
         AddLayer("TRIGGER", $currentPlayer, $cardID);
         return "";
       case "UPR097":
-        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1) MZMoveCard($currentPlayer, "MYDISCARD:cardID=UPR101", "MYHAND");
+        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1) MZMoveCard($currentPlayer, "MYDISCARD:sameName=UPR101", "MYHAND");
         return "";
       case "UPR099":
         if(RuptureActive()) {
@@ -188,7 +188,7 @@
         if(IsHeroAttackTarget() && RuptureActive()) DestroyArsenal($defPlayer, effectController:$mainPlayer);
         break;
       case "UPR100":
-        MZMoveCard($mainPlayer, "MYDISCARD:cardID=UPR101", "MYHAND");
+        MZMoveCard($mainPlayer, "MYDISCARD:sameName=UPR101", "MYHAND");
         AddDecisionQueue("OP", $mainPlayer, "GIVEATTACKGOAGAIN", 1);
         break;
       case "UPR187":

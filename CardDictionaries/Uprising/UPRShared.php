@@ -89,7 +89,7 @@
     switch($cardID)
     {
       case "UPR036": case "UPR037": case "UPR038": return true;
-      case "UPR047": return $attackID == "UPR101";
+      case "UPR047": return IsCardNamed($mainPlayer, $attackID, "Phoenix Flame");
       case "UPR049": return TalentContains($attackID, "DRACONIC", $mainPlayer) && AttackValue($attackID) < NumDraconicChainLinks();
       case "UPR054": case "UPR055": case "UPR056": return true;
       case "UPR057": case "UPR058": case "UPR059": return CardType($attackID) == "AA" && (TalentContains($attackID, "DRACONIC", $mainPlayer) || ClassContains($attackID, "NINJA", $mainPlayer));

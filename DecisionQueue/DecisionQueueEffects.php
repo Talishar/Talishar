@@ -427,6 +427,20 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       WriteLog("Remembrance shuffled " . $cards);
       return "1";
+    case "QUIVEROFABYSSALDEPTH":
+      $cards = "";
+      $deck = new Deck($player);
+      $discard = new Discard($player);
+      sort($lastResult);
+      for($i = count($lastResult)-1; $i >= 0; --$i) {
+        $cardID = $discard->Remove($lastResult[$i]);
+        $deck->AddBottom($cardID, "GY");
+        if($cards != "") $cards .= ", ";
+        if($i == 0) $cards .= "and ";
+        $cards .= CardLink($cardID, $cardID);
+      }
+      WriteLog("Quiver of Abyssal Depths shuffled " . $cards);
+      return "1";
     case "PLASMAMAINLINE":
       $items = &GetItems($player);
       $lastResultArr = explode(",", $lastResult);

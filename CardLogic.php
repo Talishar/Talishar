@@ -491,7 +491,7 @@ function ProcessLayer($player, $parameter)
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext;
-  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
   $auras = &GetAuras($player);
@@ -927,7 +927,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       if($deck->Reveal()) {
         if(CardSubType($deck->Top()) == "Arrow") {
           if(IsAllyAttacking()) {
-            $allyIndex = "THEIRALLY-" . GetAllyIndex($combatChain[0], $otherPlayer);
+            $allyIndex = "THEIRALLY-" . $combatChainState[$CCS_WeaponIndex];
             AddDecisionQueue("PASSPARAMETER", $player, $allyIndex, 1);
           }
           else AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=C", 1);
