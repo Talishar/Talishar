@@ -359,8 +359,8 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("TRIPWIRETRAP", $otherPlayer, "-", 1);
       return "";
     case "CRU127":
+      TrapTriggered($cardID);
       if(!IsAllyAttacking()) {
-        TrapTriggered($cardID);
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 1, 1);
         AddDecisionQueue("NOPASS", $otherPlayer, $cardID, 1);
