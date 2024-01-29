@@ -348,15 +348,15 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "CRU126":
+      TrapTriggered($cardID);
       if(!IsAllyAttacking()) {
-        TrapTriggered($cardID);
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
         AddDecisionQueue("NOPASS", $otherPlayer, $cardID, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "1", 1);
         AddDecisionQueue("ELSE", $otherPlayer, "-");
-        AddDecisionQueue("TRIPWIRETRAP", $otherPlayer, "-", 1);
       }
+      AddDecisionQueue("TRIPWIRETRAP", $otherPlayer, "-", 1);
       return "";
     case "CRU127":
       if(!IsAllyAttacking()) {
