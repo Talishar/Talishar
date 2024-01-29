@@ -377,9 +377,9 @@ function OnBlockResolveEffects()
       }
       break;
     case "HVY095":
-      if(NumAttacksBlocking() > 0) {
+      if(NumAttacksBlocking() > 0 && !SearchCurrentTurnEffects($combatChain[0], $mainPlayer)) {
         $character = &GetPlayerCharacter($mainPlayer);
-        AddCurrentTurnEffect("HVY095", $mainPlayer, "CC", $character[$combatChainState[$CCS_WeaponIndex]+11]);
+        AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC", $character[$combatChainState[$CCS_WeaponIndex]+11]);
       }
       break;
     default: break;
