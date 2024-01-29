@@ -914,7 +914,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if($lastResult > 0) {
         $hand = &GetHand($player);
-        if(count($hand) == 0) {
+        $char = &GetPlayerCharacter($player);
+        if(count($hand) == 0 && $char[0] != "DUMMY") {
           WriteLog("You have resources to pay for, but have no cards to pitch. Reverting gamestate prior to that declaration.");
           RevertGamestate();
         }
