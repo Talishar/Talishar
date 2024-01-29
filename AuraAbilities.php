@@ -213,7 +213,7 @@ function AuraCostModifier($cardID="")
         break;
     }
   }
-  return CanCostBeModified($cardID) ? $modifier : 0;
+  return CostCantBeModified($cardID) ? 0 : $modifier;
 }
 
 // CR 2.1 - 4.2.1. Players do not get priority during the Start Phase.

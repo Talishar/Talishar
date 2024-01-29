@@ -1743,26 +1743,26 @@ function HasGalvanize($cardID)
   }
 }
 
-function CanPowerBeModified($cardID)
+function PowerCantBeModified($cardID)
 {
   switch($cardID) {
-    case "DTD201": return false;
-    default: return true;
+    case "DTD201": return true;
+    default: return false;
   }
 }
-function CanCostBeModified($cardID)
+function CostCantBeModified($cardID)
 {
   switch($cardID) {
-    case "DTD201": return false;
-    default: return true;
+    case "DTD201": return true;
+    default: return false;
   }
 }
 
-function CanBlockBeModified($cardID)
+function BlockCantBeModified($cardID)
 {
   switch($cardID) {
-    case "DTD201": return false;
-    default: return true;
+    case "DTD201": return true;
+    default: return false;
   }
 }
 

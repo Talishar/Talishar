@@ -566,6 +566,7 @@ function KayoStaticAbility($cardId)
 {
   global $combatChainState, $CCS_LinkBaseAttack, $mainPlayer;
   $roll = GetDieRoll($mainPlayer);
+  if(PowerCantBeModified($cardId)) return;
   if($roll >= 5 && CanGainAttack($cardId)) $combatChainState[$CCS_LinkBaseAttack] *= 2;
   else $combatChainState[$CCS_LinkBaseAttack] = floor($combatChainState[$CCS_LinkBaseAttack] / 2);
 }

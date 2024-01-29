@@ -102,7 +102,7 @@ function AddAttack(&$totalAttack, $amount)
 {
   global $CombatChain;
   $attackID = $CombatChain->AttackCard()->ID();
-  if($attackID == "DTD201") return;
+  if(PowerCantBeModified($attackID)) return;
   if($amount > 0 && $attackID == "OUT100") $amount += 1;
   if($amount > 0 && ($attackID == "OUT065" || $attackID == "OUT066" || $attackID == "OUT067") && ComboActive()) $amount += 1;
   if($amount > 0) $amount += PermanentAddAttackAbilities();
@@ -116,7 +116,7 @@ function BlockingCardDefense($index)
   $cardID = $combatChain[$index];
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
   $resourcesPaid = intval($combatChain[$index+3]) + intval($baseCost);
-  $defense = intval(BlockValue($cardID)) + (CanBlockBeModified($cardID) ? intval(BlockModifier($cardID, $from, $resourcesPaid)) + intval($combatChain[$index + 6]) : 0);
+  $defense = intval(BlockValue($cardID)) + (BlockCantBeModified($cardID) ? 0 : intval(BlockModifier($cardID, $from, $resourcesPaid)) + intval($combatChain[$index + 6]));
   if(CardType($cardID) == "E")
   {
     $defCharacter = &GetPlayerCharacter($defPlayer);

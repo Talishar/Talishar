@@ -126,7 +126,7 @@
     if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
     $attackID = $CombatChain->AttackCard()->ID();
     $attackValue = ModifiedAttackValue($card->ID(), $defPlayer, "CC", source:$card->ID());
-    if(!CanPowerBeModified($card->ID())) return $attackValue >= 6;
+    if(PowerCantBeModified($card->ID())) return $attackValue >= 6;
     if($attackID == "MON008" || $attackID == "MON009" || $attackID == "MON010") --$attackValue;
     if(CardType($attackID) == "AA" && SearchCurrentTurnEffects("DTD411", $defPlayer)) --$attackValue;
     $attackValue += AuraAttackModifiers($index);
