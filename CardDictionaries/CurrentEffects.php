@@ -24,11 +24,11 @@
     $idArr = explode(",", $cardID);
     $cardID = $idArr[0];
     switch($cardID) {
-      case "TCC035": return true;
+      case "TCC035": case "HVY063": return true;
       case "TCC037": case "TCC038": case "TCC042": case "TCC043": return ClassContains($attackID, "GUARDIAN", $mainPlayer) && CardType($attackID) == "AA";
       case "TCC057": return true;
       case "TCC083": return true;
-      case "TCC086": case "TCC094": return CardName($attackID) == "Crouching Tiger";
+      case "TCC086": case "TCC094": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
       case "TCC105": return true;
       case "TCC409": return true;
       default: return false;

@@ -708,7 +708,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrounchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
+  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -754,7 +754,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ARC004": return GetClassState($player, $CS_NumBoosted) < 1;
     case "ARC005": return GetClassState($player, $CS_NumBoosted) < 1;
     case "ARC008": return GetClassState($player, $CS_NumBoosted) < 3;
-    case "ARC010": return ($CombatChain->HasCurrentLink() && $from == "PLAY" && ClassContains($CombatChain->AttackCard()->ID(), "MECHANOLOGIST", $player) && ($myItems[$index + 1] == 0 || CardSubtype($CombatChain->AttackCard()->ID()) != "Pistol" || $myItems[$index + 2] != 2));
+    case "ARC010": 
+      return ($CombatChain->HasCurrentLink() && $from == "PLAY" && !ClassContains($CombatChain->AttackCard()->ID(), "MECHANOLOGIST", $player) && ($myItems[$index + 1] == 0 || CardSubtype($CombatChain->AttackCard()->ID()) != "Pistol" || $myItems[$index + 2] != 2));
     case "ARC018": return ($CombatChain->HasCurrentLink() && $from == "PLAY" && ($myItems[$index+1] == 0 || CardType($CombatChain->AttackCard()->ID()) != "AA" || $myItems[$index+2] != 2));
     case "ARC041": return !ArsenalHasFaceDownCard($player);
     case "CRU082": case "CRU083": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
@@ -919,7 +920,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DTD208": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
     case "TCC011": return EvoUpgradeAmount($player) == 0;//Restricted if no EVOs
     case "TCC079": return HitsInCombatChain() < 3;
-    case "TCC080": return GetClassState($player, $CS_NumCrounchingTigerPlayedThisTurn) == 0;
+    case "TCC080": return GetClassState($player, $CS_NumCrouchingTigerPlayedThisTurn) == 0;
     case "EVO003": return $character[$index+2] <= 0;
     case "EVO004": case "EVO005": //Maxx Nitro
     case "EVO007": case "EVO008": //Teklovossen

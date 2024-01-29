@@ -265,8 +265,8 @@
         AddDecisionQueue("ADDMZBUFF", $currentPlayer, $cardID, 1);
         return "";
       case "WTR120":
-        if(RepriseActive()) {
-          $options = GetChainLinkCards($defPlayer, "", "E,C", exclCardSubTypes:"Evo");
+        $options = GetChainLinkCards($defPlayer, "", "E,C", exclCardSubTypes:"Evo");
+        if(RepriseActive() && $options != "") {
           AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $mainPlayer, $options);
           AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-", 1);
           AddDecisionQueue("ADDHAND", $defPlayer, "-", 1);
@@ -491,7 +491,7 @@
     {
       AddDecisionQueue("YESNO", $mainPlayer, $context);
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND:maxCost=0", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND:maxCost=0;minCost=0", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZDISCARD", $mainPlayer, "-", 1);
       AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);

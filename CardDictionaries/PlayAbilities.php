@@ -89,6 +89,9 @@
       case "HVY058":
         if(GetClassState($currentPlayer, $CS_NumMightDestroyed) > 0 || SearchAurasForCard("HVY241", $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "HVY063":
+        AddCurrentTurnEffect($cardID, $defPlayer);
+        return "";
       case "HVY089":
         PlayAura("HVY241", $currentPlayer);//Might
         PlayAura("HVY242", $currentPlayer);//Vigor
@@ -316,7 +319,7 @@
             AddDecisionQueue("CHOOSETOPOPPONENT", $currentPlayer, $deck->Top(true, 3));
             AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
             AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
-            AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK,-" . $currentPlayer);
+            AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK,". $cardID. "," . $currentPlayer);
           }
         }
         return "";

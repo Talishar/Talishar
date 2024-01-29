@@ -207,8 +207,10 @@ function OUTAbilityCost($cardID)
         return "";
       case "OUT049":
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT049-");
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
         return "";
       case "OUT052":
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "OUT052");

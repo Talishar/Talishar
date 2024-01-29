@@ -256,7 +256,7 @@
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "CRU197-", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
         AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
-        AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-Buff_Weapon,Buff_Weapon,Go_Again,Go_Again,Another_Swing,Another_Swing", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-Buff_Weapon,Buff_Weapon,Go_Again,Go_Again,Attack_Twice,Attack_Twice", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose {0} modes");
         AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "BLOODONHERHANDS", 1);
@@ -689,9 +689,9 @@
   function LifeOfThePartyIndices()
   {
     global $currentPlayer;
-    $auras = SearchMultizoneFormat(SearchItemsForCard("WTR162", $currentPlayer), "MYITEMS");
+    $items = SearchMultizoneFormat(SearchItemsForCard("WTR162", $currentPlayer), "MYITEMS");
     $handCards = SearchMultizoneFormat(SearchHandForCard($currentPlayer, "WTR162"), "MYHAND");
-    return CombineSearches($auras, $handCards);
+    return CombineSearches($items, $handCards);
   }
 
   function CoalescentMirageDestroyed()
@@ -732,12 +732,12 @@
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR055-2", 1);
           break;
-        case "Another_Swing":
+        case "Attack_Twice":
           WriteLog("Blood on Her Hands gives a weapon a second attack this turn");
           AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon to give a second attack", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("ADDMZUSES", $currentPlayer, "1", 1);
+          AddDecisionQueue("ADDMZUSES", $currentPlayer, "1-TWICE", 1);
           break;
         default: break;
       }

@@ -169,6 +169,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HVY113": return 2;
     case "HVY114": return 1;
     case "HVY146": case "HVY147": case "HVY148": return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 1 : 0;
+    case "HVY245": return NumEquipBlock() > 0 ? 1 : 0;
     default: return 0;
   }
 }
@@ -387,7 +388,7 @@ function OnBlockResolveEffects()
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if(($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i+2] != "HAND")) UnityEffect($combatChain[$i]);
     if(HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
-    if(SearchCurrentTurnEffects("HVY104", $mainPlayer && TypeContains($combatChain[$i], "AA", $defPlayer) && IsHeroAttackTarget())) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);
+    if(SearchCurrentTurnEffects("HVY104", $mainPlayer && TypeContains($combatChain[$i], "AA", $defPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("HVY104") == -1)) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);
     switch($combatChain[$i]) {
       case "EVR018":
         if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
@@ -783,6 +784,12 @@ function IsWagerActive()
   return intval($combatChainState[$CCS_WagersThisLink]) > 0;
 }
 
+function IsFusionActive()
+{
+  global $combatChainState, $CCS_AttackFused;
+  return intval($combatChainState[$CCS_AttackFused]) > 0;
+}
+
 function CombatChainClosedEffects()
 {
   global $chainLinks, $mainPlayer, $defPlayer, $CS_LifeLost;
@@ -834,7 +841,7 @@ function CombatChainClosedEffects()
 function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
-  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_WagersThisLink, $CCS_PhantasmThisLink;
+  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_WagersThisLink, $CCS_PhantasmThisLink, $CCS_AttackFused;
   if(count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalAttack] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
@@ -842,9 +849,10 @@ function CacheCombatResult()
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();
-  $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand();
+  if($combatChainState[$CCS_CachedNumDefendedFromHand] == 0) $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand();
   $combatChainState[$CCS_WagersThisLink] = (IsWagerActive() ? "1" : "0");
   $combatChainState[$CCS_PhantasmThisLink] = (IsPhantasmActive() ? "1" : "0");
+  $combatChainState[$CCS_AttackFused] = (IsFusionActive() ? "1" : "0");
 }
 
 function CachedTotalAttack()
@@ -876,6 +884,14 @@ function CachedWagerActive()
   global $combatChainState, $CCS_WagersThisLink;
   if (isset($combatChainState[$CCS_WagersThisLink])) {
     return ($combatChainState[$CCS_WagersThisLink] == "1" ? true : false);
+  } else return false;
+}
+
+function CachedFusionActive()
+{
+  global $combatChainState, $CCS_AttackFused;
+  if (isset($combatChainState[$CCS_AttackFused])) {
+    return ($combatChainState[$CCS_AttackFused] == "1" ? true : false);
   } else return false;
 }
 

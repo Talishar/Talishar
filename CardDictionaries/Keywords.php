@@ -44,10 +44,10 @@
     if(!IsHeroAttackTarget()) return;
     switch($cardID)
     {
-      case "TCC034":
+      case "TCC034": case "HVY062":
         MZChooseAndDestroy($mainPlayer, "THEIRCHAR:type=E;maxDef=1");
         break;
-      case "TCC036":
+      case "TCC036": case "HVY064":
         MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS:type=T"), $mainPlayer);
       default: break;
     }
@@ -141,7 +141,7 @@
         $dqVars[2] = $dqVars[0];
         break;
       case "HVY061-2":
-        if($dqVars[2] == $playerID || ($dqVars[2] == "NO" && $dqVars[0] == $playerID)) {
+        if($dqVars[2] == $playerID) {
           PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$defPlayer);
           PlayAura("HVY241", $playerID); //Might
           PlayAura("HVY242", $playerID); //Vigor

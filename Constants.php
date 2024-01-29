@@ -287,7 +287,7 @@ $CS_HitsWithSword = 65;
 $CS_LifeLost = 66;
 $CS_NumCranked = 67;
 $CS_NumItemsDestroyed = 68;
-$CS_NumCrounchingTigerPlayedThisTurn = 69;
+$CS_NumCrouchingTigerPlayedThisTurn = 69;
 $CS_NumClashesWon = 70;
 $CS_NumVigorDestroyed = 71;
 $CS_NumMightDestroyed = 72;
@@ -488,7 +488,7 @@ function ResetMainClassState()
   global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
   global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks, $CS_ArcaneDamageDealt, $CS_LayerPlayIndex, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumBoostPlayed;
   global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain, $CS_NumContractsCompleted, $CS_HitsWithSword, $CS_NumCardsDrawn;
-  global $CS_LifeLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrounchingTigerPlayedThisTurn, $CS_NumClashesWon;
+  global $CS_LifeLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrouchingTigerPlayedThisTurn, $CS_NumClashesWon;
   global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
@@ -559,7 +559,7 @@ function ResetMainClassState()
   $mainClassState[$CS_LifeLost] = 0;
   $mainClassState[$CS_NumCranked] = 0;
   $mainClassState[$CS_NumItemsDestroyed] = 0;
-  $mainClassState[$CS_NumCrounchingTigerPlayedThisTurn] = 0;
+  $mainClassState[$CS_NumCrouchingTigerPlayedThisTurn] = 0;
   $mainClassState[$CS_NumClashesWon] = 0;
   $mainClassState[$CS_NumVigorDestroyed] = 0;
   $mainClassState[$CS_NumMightDestroyed] = 0;

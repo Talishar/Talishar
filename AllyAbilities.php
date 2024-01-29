@@ -46,6 +46,7 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false)
 function AllyAddGraveyard($player, $cardID)
 {
   if(CardType($cardID) != "T") {
+    if(SubtypeContains($cardID, "Ash", $player)) AddGraveyard($cardID, $player, "PLAY", $player);
     $set = substr($cardID, 0, 3);
     $number = intval(substr($cardID, 3, 3));
     $number -= 400;
@@ -54,7 +55,7 @@ function AllyAddGraveyard($player, $cardID)
     if($number < 100) $id = "0" . $id;
     if($number < 10) $id = "0" . $id;
     $id = $set . $id;
-    if(!SubtypeContains($id, "Invocation", $player) && !SubtypeContains($id, "Figment", $player) && !SubtypeContains($id, "Ash", $player)) return;
+    if(!SubtypeContains($id, "Invocation", $player) && !SubtypeContains($id, "Figment", $player)) return;
     AddGraveyard($id, $player, "PLAY", $player);
   }
 }

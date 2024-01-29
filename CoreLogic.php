@@ -1093,6 +1093,8 @@ function NameOverride($cardID, $player="")
 {
   $name = CardName($cardID);
   if(SearchCurrentTurnEffects("OUT183", $player)) $name = "";
+
+
   return $name;
 }
 
@@ -1410,11 +1412,14 @@ function GainActionPoints($amount=1, $player=0) {
   if($player == $mainPlayer) $actionPoints += $amount;
 }
 
-function AddCharacterUses($player, $index, $numToAdd) {
+function AddCharacterUses($player, $index, $numToAdd, $limit="-") {
   $character = &GetPlayerCharacter($player);
   if($character[$index+1] == 0) return;
   $character[$index+1] = 2;
-  $character[$index+5] += $numToAdd;
+  if($limit == "TWICE") $character[$index+5] = 2;
+  else {
+    $character[$index+5] += $numToAdd;
+  }
 }
 
 function HaveUnblockedEquip($player)
@@ -1909,7 +1914,7 @@ function ClearGameFiles($gameName)
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
 {
-  global $currentPlayer, $layers;
+  global $currentPlayer, $layers, $CS_NumCrouchingTigerPlayedThisTurn;
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
@@ -1922,6 +1927,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   if(($set == "ELE" || $set == "UPR") && $additionalCosts != "-" && HasFusion($cardID)) {
     FuseAbility($cardID, $currentPlayer, $additionalCosts);
   }
+  if(IsCardNamed($currentPlayer, $cardID, "Crouching Tiger")) IncrementClassState($currentPlayer, $CS_NumCrouchingTigerPlayedThisTurn);
   if($set == "WTR") return WTRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "ARC") {
     switch($class) {
