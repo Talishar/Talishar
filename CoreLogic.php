@@ -1248,6 +1248,7 @@ function DoesAttackHaveGoAgain()
     case "DYN047": return (ComboActive($attackID));
     case "DYN056": case "DYN057": case "DYN058": return (ComboActive($attackID));
     case "DYN069": case "DYN070": return GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) != "-";
+    case "EVO009": return EvoUpgradeAmount($mainPlayer) >= 3;
     case "EVO111": case "EVO112": case "EVO113": return GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0;
     case "HVY095": 
       $character = &GetPlayerCharacter($mainPlayer);

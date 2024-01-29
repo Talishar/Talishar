@@ -472,11 +472,6 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         --$character[5];
         return "";
-      case "EVO009":
-        $evoAmt = EvoUpgradeAmount($currentPlayer);
-        if($evoAmt >= 3) GiveAttackGoAgain();
-        if($evoAmt >= 4) AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
       case "EVO010":
         $conditionsMet = CheckIfSingularityConditionsAreMet($currentPlayer);
         if ($conditionsMet != "") return $conditionsMet;
