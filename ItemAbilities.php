@@ -1,8 +1,9 @@
 <?php
 
 
-function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1, $effectController="", $isToken=false)
+function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1, $effectController="", $isToken=false, $mainPhase="True")
 {
+  global $turn;
   $otherPlayer = ($player == 1 ? 2 : 1);
   if(!DelimStringContains(CardSubType($item), "Item") && $item != "DTD164") return;
   if(TypeContains($item, "T", $player)) $isToken = true;
@@ -25,7 +26,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     array_push($items, $uniqueID);
     array_push($items, $myHoldState);
     array_push($items, $theirHoldState);
-    if(HasCrank($item, $player)) Crank($player, $index);
+    if(HasCrank($item, $player)) Crank($player, $index, $mainPhase);
   }
   if(($symbiosisIndex = FindCharacterIndex($player, "EVO003")) > 0 && ClassContains($item, "MECHANOLOGIST", $player)) {
     $char = &GetPlayerCharacter($player);

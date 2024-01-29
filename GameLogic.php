@@ -156,7 +156,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "PUTPLAY":
       $subtype = CardSubType($lastResult);
       if($subtype == "Item") {
-        PutItemIntoPlayForPlayer($lastResult, $player, ($parameter != "-" ? $parameter : 0));
+        if($parameter == "False") PutItemIntoPlayForPlayer($lastResult, $player, mainPhase:$parameter);
+        else PutItemIntoPlayForPlayer($lastResult, $player, ($parameter != "-" ? $parameter : 0));
       } else if(DelimStringContains($subtype, "Aura")) {
         PlayAura($lastResult, $player);
         PlayAbility($lastResult, "-", 0);
@@ -397,7 +398,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           return implode(",", $cards);
         case "LOSEHEALTH": LoseHealth($lastResult, $player); return $lastResult;
         case "BANISHHAND": BanishHand($player); return $lastResult;
-        case "DOCRANK": DoCrank($player, $lastResult); return $lastResult;
+        case "DOCRANK-MainPhaseTrue": DoCrank($player, $lastResult, true); return $lastResult;
+        case "DOCRANK-MainPhaseFalse": DoCrank($player, $lastResult, false); return $lastResult;
         default: return $lastResult;
       }
     case "FILTER":
