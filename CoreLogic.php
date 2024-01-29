@@ -1093,8 +1093,6 @@ function NameOverride($cardID, $player="")
 {
   $name = CardName($cardID);
   if(SearchCurrentTurnEffects("OUT183", $player)) $name = "";
-
-
   return $name;
 }
 
