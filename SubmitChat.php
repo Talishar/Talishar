@@ -37,13 +37,13 @@ if (tryGet("quickChat")) {
 $contributors = array("sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming");
 
 //its sort of sloppy, but it this will fail if you're in the contributors array because we want to give you the contributor icon, not the patron icon.
-if (isset($_SESSION["isPatron"]) && isset($_SESSION['useruid']) && !in_array($_SESSION['useruid'], $contributors)) $displayName = "<img title='Patron' style='margin-bottom:2px; margin-right:-2px; height:18px;' src='./images/patronHeart.webp' /> " . $displayName;
+if(isset($_SESSION["isPatron"]) && isset($_SESSION['useruid']) && !in_array($_SESSION['useruid'], $contributors)) $displayName = "<img title='Patron' style='margin-bottom:2px; margin-right:-2px; height:18px;' src='./images/patronHeart.webp' /> " . $displayName;
 
 //This is the code for Contributor's icon.
-if (isset($_SESSION['useruid']) && in_array($_SESSION['useruid'], $contributors)) $displayName = "<img title='Contributor' style='margin-bottom:2px; margin-right:-2px; height:18px;' src='./images/copper.webp' /> " . $displayName;
+if(isset($_SESSION['useruid']) && in_array($_SESSION['useruid'], $contributors)) $displayName = "<img title='Contributor' style='margin-bottom:2px; margin-right:-2px; height:18px;' src='./images/copper.webp' /> " . $displayName;
 
 //This is the code for PvtVoid Patreon
-if (isset($_SESSION["isPvtVoidPatron"]) && isset($_SESSION['useruid']) || in_array($_SESSION['useruid'], array("PvtVoid"))) $displayName = "<img title='PvtVoid Supporter' style='margin-bottom:5px; margin-right:-2px; height:18px;' src='./images/patronEye.webp' /> " . $displayName;
+if(isset($_SESSION["isPvtVoidPatron"]) || isset($_SESSION['useruid']) && in_array($_SESSION['useruid'], array("PvtVoid"))) $displayName = "<img title='PvtVoid Supporter' style='margin-bottom:5px; margin-right:-2px; height:18px;' src='./images/patronEye.webp' /> " . $displayName;
 
 $filename = "./Games/" . $gameName . "/gamelog.txt";
 $handler = fopen($filename, "a");
@@ -79,4 +79,3 @@ function parseQuickChat($inputEnum)
     default: return "";
   };
 }
-
