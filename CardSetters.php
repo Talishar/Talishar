@@ -69,7 +69,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     }
     else DestroyCharacter($player, $charIndex, wasBanished: true);
   }
-  if($banishedBy != "") CheckContracts($banishedBy, $cardID);
+  if($banishedBy != "" && $player != $mainPlayer) CheckContracts($banishedBy, $cardID);
   if($banishedBy == "DTD193" && TalentContains($cardID, "LIGHT", $player)) {
     $otherPlayer = $player == 1 ? 2 : 1;
     GainHealth(1, $otherPlayer);
