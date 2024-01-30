@@ -714,6 +714,7 @@
   function BloodOnHerHandsResolvePlay($userInput)
   {
     global $currentPlayer;
+    $twiceChosen = false;
     for($i=0; $i<count($userInput); ++$i)
     {
       switch($userInput[$i])
@@ -733,15 +734,18 @@
           AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR055-2", 1);
           break;
         case "Another_Swing":
+          if(SearchCurrentTurnEffects("EVR055-TWICE", $currentPlayer)) break;
           WriteLog("Blood on Her Hands gives a weapon a second attack this turn");
           AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon to give a second attack", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDMZUSES", $currentPlayer, "1", 1);
+          $twiceChosen = true;
           break;
         default: break;
       }
     }
+    if($twiceChosen) AddCurrentTurnEffect("EVR055-TWICE", $currentPlayer);
   }
 
   function FractalReplicationStats($stat)
