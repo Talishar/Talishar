@@ -281,7 +281,13 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "CRU102":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(SearchCurrentTurnEffects($cardID, $currentPlayer)) {
+        AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+        MZMoveCard($currentPlayer, "MYHAND", "MYTOPDECK", silent:true);
+      }
+      else {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
       return "";
     case "CRU103":
       if($combatChainState[$CCS_NumBoosted] && !IsAllyAttackTarget()) {
