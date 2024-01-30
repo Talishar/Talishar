@@ -542,7 +542,7 @@
         }
         return "";
       case "EVO059":
-        WriteLog(CardLink("EVO059", "EVO059") . " is partially manual card. Must block with " . EvoUpgradeAmount($currentPlayer) . " equipment with -1 def counters if able.");
+        WriteLog("⚠️" . CardLink("EVO059", "EVO059") . "⚠️ is not coded. The block requirement is manual. You must block with " . EvoUpgradeAmount($currentPlayer) . " equipment with -1 def counters if able.");
         return "";
       case "EVO070":
         if($from == "PLAY") DestroyTopCardTarget($currentPlayer);
