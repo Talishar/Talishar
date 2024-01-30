@@ -911,13 +911,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "ARC036": case "DYN110":
     case "DYN111": case "DYN112":
     case "EVO234":
-      $index = SearchItemsForUniqueID($uniqueID, $player);
-      if($items[$index+2] == 2) {
-        --$items[$index+1];
-        $items[$index+2] = 1;
-        GainResources($player, 1);
-        if($items[$index+1] <= 0) DestroyItemForPlayer($player, $index);
-      }
+      AddDecisionQueue("HYPERDRIVER", $player, $uniqueID, 1);
       break;
     case "DYN113": case "DYN114":
       AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
