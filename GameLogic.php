@@ -321,6 +321,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default: break;
       }
       return $lastResult;
+    case "ADDMZUSESBLOODONHERHANDS":
+      $lrArr = explode("-", $lastResult);
+      $character = &GetPlayerCharacter($player);
+      switch($lrArr[0]) {
+        case "MYCHAR": case "THEIRCHAR": 
+          if($character[$lrArr[1]+5] < 2 && SearchCurrentTurnEffectsForUniqueID($character[$lrArr[1]+11]) == -1) {
+            AddCurrentTurnEffect("EVR055", $player, uniqueID:$character[$lrArr[1]+11]);
+            AddCharacterUses($player, $lrArr[1], $parameter); break;
+          }
+        default: break;
+      }
+      return $lastResult;
     case "MZOP":
       $paramArr = explode(",", $parameter);
       $parameter = $paramArr[0];
