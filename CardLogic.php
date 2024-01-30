@@ -919,12 +919,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to sink <0>" , 1);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_sink_the_opponent's_card", 1);
       AddDecisionQueue("NOPASS", $player, $parameter, 1);
-      AddDecisionQueue("WRITELOG", $player, "Arakni sunk the top card", 1);
+      AddDecisionQueue("WRITELOG", $player, "<b>Arakni</b> sunk the top card", 1);
       AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
       AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
       AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
       AddDecisionQueue("ELSE", $player, "-");
-      AddDecisionQueue("WRITELOG", $player, "Arakni left the top card there", 1);
+      AddDecisionQueue("WRITELOG", $player, "<b>Arakni</b> left the top card there", 1);
       break;
     case "DYN152":
       $deck = new Deck($player);
