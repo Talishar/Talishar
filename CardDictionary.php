@@ -1091,6 +1091,21 @@ function HasGuardwell($cardID)
   }
 }
 
+function HasPiercing($cardID, $from=""){
+  switch($cardID) {
+    case "OUT004": case "OUT005":case "OUT007":case "OUT009": //Weapons with Piercing
+    case "HVY245":
+      return true;
+    case "DYN076": case "DYN077": case "DYN078":
+    case "DYN079": case "DYN080": case "DYN081": //Warrior NAA + Reactions
+    case "DYN085": case "DYN086": case "DYN087": 
+      return (!IsPlayRestricted($cardID, $restriction, $from) || IsCombatEffectActive($cardID));
+    case "DYN156": case "DYN157": case "DYN158": // Arrows
+      return HasAimCounter();
+  default: return false;
+  }
+}
+
 function RequiresDiscard($cardID)
 {
   switch($cardID) {
