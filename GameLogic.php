@@ -316,10 +316,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDMZUSES":
       $lrArr = explode("-", $lastResult);
-      $params = explode("-", $parameter);
       switch($lrArr[0]) {
-        case "MYCHAR": case "THEIRCHAR": 
-          AddCharacterUses($player, $lrArr[1], $params[0], $params[1]); break;
+        case "MYCHAR": case "THEIRCHAR": AddCharacterUses($player, $lrArr[1], $parameter); break;
         default: break;
       }
       return $lastResult;

@@ -1411,14 +1411,11 @@ function GainActionPoints($amount=1, $player=0) {
   if($player == $mainPlayer) $actionPoints += $amount;
 }
 
-function AddCharacterUses($player, $index, $numToAdd, $limit="-") {
+function AddCharacterUses($player, $index, $numToAdd) {
   $character = &GetPlayerCharacter($player);
   if($character[$index+1] == 0) return;
   $character[$index+1] = 2;
-  if($limit == "TWICE") $character[$index+5] = 2;
-  else {
-    $character[$index+5] += $numToAdd;
-  }
+  $character[$index+5] += $numToAdd;
 }
 
 function HaveUnblockedEquip($player)
