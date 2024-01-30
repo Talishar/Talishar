@@ -1040,7 +1040,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188": 
     case "HVY209":
-      return $from == "HAND" && GetResolvedAbilityType($cardID, $from) != "AA";
+      return $from == "HAND";
     default: break;
   }
   return false;
