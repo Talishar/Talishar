@@ -57,12 +57,7 @@
       case "UPR054": case "UPR055": case "UPR056":
       case "UPR075": case "UPR076": case "UPR077":
       case "UPR081": case "UPR082": case "UPR083":
-        $numDraconicLinks = NumDraconicChainLinks();
-        MZMoveCard($mainPlayer, "MYHAND:type=AA;maxCost=" . ($numDraconicLinks > 0 ? $numDraconicLinks - 1 : -2), "MYBANISH,HAND,TT", may:true);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYBANISH", 1);
-        AddDecisionQueue("MZOP", $mainPlayer, "LASTMZINDEX", 1);
-        AddDecisionQueue("MZOP", $mainPlayer, "GETUNIQUEID", 1);
-        AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $cardID . ",HIT", 1);
+        AddLayer("TRIGGER", $mainPlayer, $cardID);
         break;
       case "UPR161":
         $deck = new Deck($mainPlayer);

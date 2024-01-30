@@ -789,6 +789,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         WriteLog(CardLink("RVD015", "RVD015") . " put " . CardLink($card, $card) . " on the bottom of your deck");
       }
       break;
+    case "UPR054": case "UPR055": case "UPR056":
+    case "UPR075": case "UPR076": case "UPR077":
+    case "UPR081": case "UPR082": case "UPR083":
+      $numDraconicLinks = NumDraconicChainLinks();
+      MZMoveCard($mainPlayer, "MYHAND:type=AA;maxCost=" . ($numDraconicLinks > 0 ? $numDraconicLinks - 1 : -2), "MYBANISH,HAND,TT", may:true);
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYBANISH", 1);
+      AddDecisionQueue("MZOP", $mainPlayer, "LASTMZINDEX", 1);
+      AddDecisionQueue("MZOP", $mainPlayer, "GETUNIQUEID", 1);
+      AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $parameter . ",HIT", 1);
+      break;
     case "UPR095":
       if(GetClassState($player, $CS_DamageTaken) > 0) MZMoveCard($player, "MYDISCARD:sameName=UPR101", "MYHAND", may:true);
       break;
