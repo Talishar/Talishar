@@ -840,7 +840,7 @@ function CombatChainClosedEffects()
 function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
-  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused;
+  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink;
   if(count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalAttack] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
@@ -849,6 +849,7 @@ function CacheCombatResult()
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();
   if($combatChainState[$CCS_CachedNumDefendedFromHand] == 0) $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand();
+  $combatChainState[$CCS_WagersThisLink] = (IsWagerActive() ? intval($combatChainState[$CCS_WagersThisLink]) : "0");
   $combatChainState[$CCS_PhantasmThisLink] = (IsPhantasmActive() ? "1" : "0");
   $combatChainState[$CCS_AttackFused] = (IsFusionActive() ? "1" : "0");
 }
