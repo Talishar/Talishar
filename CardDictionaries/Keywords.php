@@ -20,10 +20,11 @@
 
   function Crank($player, $index, $mainPhase="True")
   {
-    AddDecisionQueue("YESNO", $player, "if you want to Crank");
-    AddDecisionQueue("NOPASS", $player, "-");
-    AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
-    AddDecisionQueue("OP", $player, "DOCRANK-MainPhase". $mainPhase, 1);
+    PrependDecisionQueue("OP", $player, "DOCRANK-MainPhase". $mainPhase, 1);
+    PrependDecisionQueue("PASSPARAMETER", $player, $index, 1);
+    PrependDecisionQueue("NOPASS", $player, "-");
+    PrependDecisionQueue("DOCRANK", $player, "if you want to Crank");
+    PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to Crank", 1);
   }
 
   function DoCrank($player, $index, $mainPhase=true)

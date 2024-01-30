@@ -755,7 +755,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->popup = CreatePopupAPI("BUTTONINPUT", [], 0, 1, $caption . GetPhaseHelptext(), 1, "");
   }
 
-  if ($turn[0] == "YESNO" && $turn[1] == $playerID) {
+  if (($turn[0] == "YESNO" || $turn[0] == "DOCRANK") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     array_push($playerInputButtons, CreateButtonAPI($playerID, "Yes", 20, "YES", "20px"));
     array_push($playerInputButtons, CreateButtonAPI($playerID, "No", 20, "NO", "20px"));

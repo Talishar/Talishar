@@ -266,7 +266,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 20: //YESNO
-      if ($turn[0] == "YESNO" && ($buttonInput == "YES" || $buttonInput == "NO")) ContinueDecisionQueue($buttonInput);
+      if (($turn[0] == "YESNO" || $turn[0] == "DOCRANK") && ($buttonInput == "YES" || $buttonInput == "NO")) ContinueDecisionQueue($buttonInput);
       break;
     case 21: //Combat chain ability
       $index = $cardID; //Overridden to be index instead
