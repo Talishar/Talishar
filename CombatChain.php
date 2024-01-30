@@ -432,9 +432,6 @@ function OnBlockResolveEffects()
       case "HVY008":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
         break;
-      case "HVY053":
-        AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
-        break;
       case "HVY054":
         $yellowPitchCards = 0;
         for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
@@ -842,7 +839,7 @@ function CombatChainClosedEffects()
 function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
-  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_WagersThisLink, $CCS_PhantasmThisLink, $CCS_AttackFused;
+  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused;
   if(count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalAttack] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
@@ -851,7 +848,6 @@ function CacheCombatResult()
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();
   if($combatChainState[$CCS_CachedNumDefendedFromHand] == 0) $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand();
-  $combatChainState[$CCS_WagersThisLink] = (IsWagerActive() ? "1" : "0");
   $combatChainState[$CCS_PhantasmThisLink] = (IsPhantasmActive() ? "1" : "0");
   $combatChainState[$CCS_AttackFused] = (IsFusionActive() ? "1" : "0");
 }
@@ -884,7 +880,7 @@ function CachedWagerActive()
 {
   global $combatChainState, $CCS_WagersThisLink;
   if (isset($combatChainState[$CCS_WagersThisLink])) {
-    return ($combatChainState[$CCS_WagersThisLink] == "1" ? true : false);
+    return ($combatChainState[$CCS_WagersThisLink] >= "1" ? true : false);
   } else return false;
 }
 
