@@ -719,6 +719,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ATTACKMODIFIER":
       $amount = intval($parameter);
       $combatChain[5] += $amount;
+      CurrentEffectAfterPlayOrActivateAbility();
       return $parameter;
     case "SONATAARCANIX":
       $cards = explode(",", $lastResult);

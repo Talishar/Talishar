@@ -2264,7 +2264,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       if($definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
     }
-    CurrentEffectAfterPlayOrActivateAbility($cardID, $from);
+    CurrentEffectAfterPlayOrActivateAbility();
     if($from != "EQUIP" && $from != "PLAY") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
     else if($from == "EQUIP" || $from == "PLAY") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
     if(!$openedChain) ResolveGoAgain($cardID, $currentPlayer, $from);
