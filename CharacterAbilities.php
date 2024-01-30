@@ -239,6 +239,7 @@ function DefCharacterStartTurnAbilities()
   $character = &GetPlayerCharacter($defPlayer);
   for($i = 0; $i < count($character); $i += CharacterPieces()) {
     if($character[$i + 1] == 0 || $character[$i + 1] == 1) continue; //Do not process ability if it is destroyed
+    $character[$i] = ShiyanaCharacter($character[$i]);
     switch($character[$i]) {
       case "EVR086":
         if (PlayerHasLessHealth($mainPlayer)) {
