@@ -613,12 +613,20 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
 
 function IsBlockRestricted($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "")
 {
-  global $CombatChain, $mainPlayer;
+  global $CombatChain, $mainPlayer, $CS_NumCardsDrawn, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
   if(IsEquipment($cardID, $player) && !CanBlockWithEquipment()) { $restriction = "This attack disallows blocking with equipment"; return true; }
   if(SearchCurrentTurnEffects("EVO073-B-" . $cardID, $player)) { $restriction = "EVO073"; return true; }
   if($CombatChain->AttackCard()->ID() == "EVO061" || $CombatChain->AttackCard()->ID() == "EVO062" || $CombatChain->AttackCard()->ID() == "EVO063") {
     if(CardCost($cardID) < EvoUpgradeAmount($mainPlayer) && CardType($cardID) == "AA") { $restriction = $CombatChain->AttackCard()->ID(); return true; }
   };
+  switch ($cardID) {
+    case "HVY198": return GetClassState($mainPlayer, $CS_NumCardsDrawn) == 0;
+    case "HVY199": return GetClassState($mainPlayer, $CS_NumVigorDestroyed) == 0;
+    case "HVY200": return GetClassState($mainPlayer, $CS_NumMightDestroyed) == 0;
+    case "HVY201": return GetClassState($mainPlayer, $CS_NumAgilityDestroyed) == 0;
+    default:
+      break;
+  }
   return false;
 }
 
@@ -708,7 +716,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
+  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -944,10 +952,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HVY118": case "HVY119": case "HVY120": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
     case "HVY134": return GetClassState($player, $CS_AtksWWeapon) <= 0;
     case "HVY195": return GetClassState($otherPlayer, $CS_NumCardsDrawn) < 2;
-    case "HVY198": return GetClassState($otherPlayer, $CS_NumCardsDrawn) < 0;
-    case "HVY199": return GetClassState($otherPlayer, $CS_NumVigorDestroyed) < 0;
-    case "HVY200": return GetClassState($otherPlayer, $CS_NumMightDestroyed) < 0;
-    case "HVY201": return GetClassState($otherPlayer, $CS_NumAgilityDestroyed) < 0;
     case "HVY245": if ($from == "GY") return CountItem("EVR195", $currentPlayer) < 2; else return false;
     default: return false;
   }
