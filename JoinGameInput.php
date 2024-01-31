@@ -283,7 +283,7 @@ if ($decklink != "") {
         $totalCards += $numMainBoard + $numSideboard;
       }
     }
-  } 
+  }
 
   //We have the decklist, now write to file
   $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
@@ -544,13 +544,12 @@ function GetAltCardID($cardID)
     case "OUT224": return "ARC205";
     case "WIN022": return "OUT091";
     case "HER085": return "DTD134";
-
-    case "DTD048": return "FAB161";
-    case "DTD049": return "FAB162";
-    case "DTD050": return "FAB163";
-    case "DTD054": return "LGS179";
-    case "DTD055": return "LGS180";
-    case "DTD056": return "LGS181";
+    case "FAB161": return "DTD048";
+    case "FAB162": return "DTD049";
+    case "FAB163": return "DTD050";
+    case "LGS179": return "DTD054";
+    case "LGS180": return "DTD055";
+    case "LGS181": return "DTD056";
   }
   return $cardID;
 }

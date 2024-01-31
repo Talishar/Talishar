@@ -336,7 +336,7 @@ if ($decklink != "") {
         }
         $totalCards += $numMainBoard + $numSideboard;
       }
-    } 
+    }
     $deckLoaded = true;
   }
   if(!$deckLoaded) {
@@ -627,12 +627,12 @@ function GetAltCardID($cardID)
     case "LGS159": return "DTD157";
     case "HER085": return "DTD134";
     case "DTD013": return "MON007";
-    case "DTD048": return "FAB161";
-    case "DTD049": return "FAB162";
-    case "DTD050": return "FAB163";
-    case "DTD054": return "LGS179";
-    case "DTD055": return "LGS180";
-    case "DTD056": return "LGS181";
+    case "FAB161": return "DTD048";
+    case "FAB162": return "DTD049";
+    case "FAB163": return "DTD050";
+    case "LGS179": return "DTD054";
+    case "LGS180": return "DTD055";
+    case "LGS181": return "DTD056";
     case "EVO038": return "TCC007";
     case "EVO039": return "TCC008";
     case "EVO040": return "TCC009";
