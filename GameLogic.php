@@ -1362,6 +1362,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return SpecificCardLogic($player, $parameter, $lastResult, $initiator);
     case "HYPERDRIVER":
       $index = SearchItemsForUniqueID($parameter, $player);
+      $items = &GetItems($player);
       if($items[$index+2] == 2) {
         --$items[$index+1];
         $items[$index+2] = 1;
