@@ -385,7 +385,7 @@ function AuraStartTurnAbilities()
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         break;
       case "HVY240": //Agility
-        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+        if(!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         IncrementClassState($mainPlayer, $CS_NumAgilityDestroyed, 1);
         break;
