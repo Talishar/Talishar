@@ -1353,15 +1353,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (count($parameterArr) > 0) $initiator = $parameterArr[1];
       else $initiator = "";
       return SpecificCardLogic($player, $parameter, $lastResult, $initiator);
-    case "HYPERDRIVER":
-      $index = SearchItemsForUniqueID($parameter, $player);
-      if($items[$index+2] == 2) {
-        --$items[$index+1];
-        $items[$index+2] = 1;
-        GainResources($player, 1);
-        if($items[$index+1] <= 0) DestroyItemForPlayer($player, $index);
-      }
-      return $lastResult;
     case "MZADDSTEAMCOUNTER":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);
