@@ -302,7 +302,7 @@ function ParseSettingsStringValueToIdInt(string $value)
 
 function ChangeSetting($player, $setting, $value, $playerId = "")
 {
-  global $SET_MuteChat, $SET_AlwaysHoldPriority, $layerPriority;
+  global $SET_MuteChat, $SET_AlwaysHoldPriority, $SET_CasterMode, $layerPriority, $gameName;
   if($player != "") {
     $settings = &GetSettings($player);
     $settings[$setting] = $value;
@@ -315,6 +315,8 @@ function ChangeSetting($player, $setting, $value, $playerId = "")
       }
     } else if($setting == $SET_AlwaysHoldPriority) {
       $layerPriority[$player - 1] = "1";
+    } else if($setting == $SET_CasterMode) {
+      if(IsCasterMode()) SetCachePiece($gameName, 9, "1");
     }
   }
   if($playerId != "" && SaveSettingInDatabase($setting)) SaveSetting($playerId, $setting, $value);
