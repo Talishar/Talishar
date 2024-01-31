@@ -449,7 +449,7 @@ function GetAbilityTypes($cardID)
 
 function GetAbilityNames($cardID, $index = -1)
 {
-  global $currentPlayer, $mainPlayer, $combatChain, $layers;
+  global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints;
   $character = &GetPlayerCharacter($currentPlayer);
   switch ($cardID) {
     case "ARC003": case "CRU101":
@@ -466,7 +466,7 @@ function GetAbilityNames($cardID, $index = -1)
     case "HVY186": case "HVY187": case "HVY188":
     case "HVY209":
       $names = "Ability";
-      if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces()) $names .= ",Attack";
+      if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Attack";
       return $names;
     default: return "";
   }
