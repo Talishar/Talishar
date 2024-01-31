@@ -292,7 +292,8 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD106":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIBANISH,3");
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIACTIONSBANISH");
+      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "3-", 1);
       AddDecisionQueue("MULTICHOOSEBANISH", $currentPlayer, "<-", 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SPOILEDSKULL", 1);
       return "";

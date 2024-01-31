@@ -2,12 +2,13 @@
 
 function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false)
 {
+  global $EffectContext;
   $permanents = &GetPermanents($player);
   $otherPlayer = ($player == 1 ? 2 : 1);
   if(TypeContains($cardID, "T", $player)) $isToken = true;
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
-  if($numMinusTokens > 0 && $isToken) $number -= $numMinusTokens;
+  if($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
   for($i = 0; $i < $number; ++$i) {
     array_push($permanents, $cardID);
   }
@@ -243,9 +244,9 @@ function PermanentStartTurnAbilities()
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         array_unshift($hand, "DYN065");
         break;
-      case "ROGUE511":
+      /*case "ROGUE511":
         MayBottomDeckDraw(); // !Undefined Function
-        break;
+        break; */
       case "ROGUE512": case "ROGUE513":
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;

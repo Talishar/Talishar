@@ -3,13 +3,13 @@
 
 function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1, $effectController="", $isToken=false, $mainPhase="True")
 {
-  global $turn;
+  global $turn, $EffectContext;
   $otherPlayer = ($player == 1 ? 2 : 1);
   if(!DelimStringContains(CardSubType($item), "Item") && $item != "DTD164") return;
   if(TypeContains($item, "T", $player)) $isToken = true;
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
-  if($numMinusTokens > 0 && $isToken) $number -= $numMinusTokens;
+  if($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
   $items = &GetItems($player);
   $myHoldState = ItemDefaultHoldTriggerState($item);
   if($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;

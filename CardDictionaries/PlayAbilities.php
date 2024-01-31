@@ -178,6 +178,7 @@
       case "HVY136":
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a number");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20");
+        AddDecisionQueue("WRITELOGLASTRESULT", $currentPlayer, "-", 1);
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "HVY136,");
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
         return "";

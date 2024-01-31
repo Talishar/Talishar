@@ -109,6 +109,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "MYHANDARROW": $rv = SearchHand($player, "", "Arrow"); break;
         case "MYDISCARDARROW": $rv = SearchDiscard($player, "", "Arrow"); break;
+        case "MULTIACTIONSBANISH": 
+          $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A")); 
+          $rv = RemoveCardSameNames($player, $index);
+          break;
         case "GY":
           $discard = &GetDiscard($player);
           $rv = GetIndices(count($discard));
@@ -554,6 +558,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "WRITELOG":
       WriteLog(implode(" ", explode("_", $parameter)));
+      return $lastResult;
+    case "WRITELOGLASTRESULT":
+      WriteLog("<b>". $lastResult . "<b> was selected.");
       return $lastResult;
     case "ADDCURRENTEFFECT":
       $params = explode("!", $parameter);
@@ -1353,6 +1360,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (count($parameterArr) > 0) $initiator = $parameterArr[1];
       else $initiator = "";
       return SpecificCardLogic($player, $parameter, $lastResult, $initiator);
+    case "HYPERDRIVER":
+      $index = SearchItemsForUniqueID($parameter, $player);
+      $items = &GetItems($player);
+      if($items[$index+2] == 2) {
+        --$items[$index+1];
+        $items[$index+2] = 1;
+        GainResources($player, 1);
+        if($items[$index+1] <= 0) DestroyItemForPlayer($player, $index);
+      }
+      return $lastResult;
     case "MZADDSTEAMCOUNTER":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);

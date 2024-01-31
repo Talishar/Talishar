@@ -189,7 +189,11 @@
       PrependDecisionQueue("SETDQVAR", $playerID, "1");
       PrependDecisionQueue("BUTTONINPUT", $playerID, "Target_Opponent,Target_Yourself", 1);
       PrependDecisionQueue("SETDQCONTEXT", $playerID, "Choose target hero", 1);
-      PrependDecisionQueue("FINDANDDESTROYITEM", $playerID, "DYN243-1", 1);
+      if(SearchCharacterAlive($playerID, "HVY051")) {
+        PrependDecisionQueue("MZDESTROY", $playerID, "-", 1);
+        PrependDecisionQueue("MAYCHOOSEMULTIZONE", $playerID, "<-", 1);
+        PrependDecisionQueue("MULTIZONEINDICES", $playerID, "MYITEMS:isSameName=DYN243&MYCHAR:cardID=HVY051", 1);
+      } else PrependDecisionQueue("FINDANDDESTROYITEM", $playerID, "DYN243-1", 1);
       PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $playerID, $hero."-2", 1);
       PrependDecisionQueue("NOPASS", $playerID, "-", 1);
       PrependDecisionQueue("YESNO", $playerID, "if_you_want_to_destroy_1_" . CardLink("DYN243", "DYN243") ."_to_clash_again", 1);

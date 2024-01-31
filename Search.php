@@ -529,6 +529,18 @@ function SearchItemsForCardMulti($playerID, $card1, $card2 = "", $card3 = "")
   }
   return $cardList;
 }
+function SearchCharacterForCardMulti($playerID, $card1, $card2 = "", $card3 = "")
+{
+  $cardList = "";
+  $char = GetPlayerCharacter($playerID);
+  for ($i = 0; $i < count($char); ++$i) {
+    if (($char[$i] == $card1 || $char[$i] == $card2 || $char[$i] == $card3) && $char[$i+1] != 0) {
+      if ($cardList != "") $cardList .= ",";
+      $cardList .= $i;
+    }
+  }
+  return $cardList;
+}
 
 function SearchHighestAttackDefended()
 {
@@ -979,7 +991,7 @@ function SearchMultizone($player, $searches)
                 if(count($cards) == 1) $searchResult = SearchDeckForCard($player, $cards[0]);
                 else if(count($cards) == 2) $searchResult = SearchDeckForCard($player, $cards[0], $cards[1]);
                 else if(count($cards) == 3) $searchResult = SearchDeckForCard($player, $cards[0], $cards[1], $cards[2]);
-                else WriteLog("Discard multizone search only supports 3 cards -- report bug.");
+                else WriteLog("Deck multizone search only supports 3 cards -- report bug.");
                 break;
               case "MYDISCARD":
                 if(count($cards) == 1) $searchResult = SearchDiscardForCard($player, $cards[0]);
@@ -1009,13 +1021,25 @@ function SearchMultizone($player, $searches)
                 if (count($cards) == 1) $searchResult = SearchItemsForCardMulti($player, $cards[0]);
                 else if (count($cards) == 2) $searchResult = SearchItemsForCardMulti($player, $cards[0], $cards[1]);
                 else if (count($cards) == 3) $searchResult = SearchItemsForCardMulti($player, $cards[0], $cards[1], $cards[2]);
-                else WriteLog("Discard multizone search only supports 3 cards -- report bug.");
+                else WriteLog("Items multizone search only supports 3 cards -- report bug.");
                 break;
               case "THEIRITEMS":
                 if (count($cards) == 1) $searchResult = SearchItemsForCardMulti($otherPlayer, $cards[0]);
                 else if (count($cards) == 2) $searchResult = SearchItemsForCardMulti($otherPlayer, $cards[0], $cards[1]);
                 else if (count($cards) == 3) $searchResult = SearchItemsForCardMulti($otherPlayer, $cards[0], $cards[1], $cards[2]);
-                else WriteLog("Discard multizone search only supports 3 cards -- report bug.");
+                else WriteLog("Items multizone search only supports 3 cards -- report bug.");
+                break;
+              case "MYCHAR":
+                if (count($cards) == 1) $searchResult = SearchCharacterForCardMulti($player, $cards[0]);
+                else if (count($cards) == 2) $searchResult = SearchCharacterForCardMulti($player, $cards[0], $cards[1]);
+                else if (count($cards) == 3) $searchResult = SearchCharacterForCardMulti($player, $cards[0], $cards[1], $cards[2]);
+                else WriteLog("Character multizone search only supports 3 cards -- report bug.");
+                break;
+              case "THEIRCHAR":
+                if (count($cards) == 1) $searchResult = SearchCharacterForCardMulti($otherPlayer, $cards[0]);
+                else if (count($cards) == 2) $searchResult = SearchCharacterForCardMulti($otherPlayer, $cards[0], $cards[1]);
+                else if (count($cards) == 3) $searchResult = SearchCharacterForCardMulti($otherPlayer, $cards[0], $cards[1], $cards[2]);
+                else WriteLog("Character multizone search only supports 3 cards -- report bug.");
                 break;
               default: break;
             }
@@ -1207,4 +1231,21 @@ function GetPlayerNumTokens($player)
     if(TypeContains($permanents[$i], "T", $player)) ++$count;
   }
   return $count;
+}
+
+function RemoveCardSameNames($player, $stringCardsIndex) {
+  $banish = GetBanish($player);
+  $indexToCheck = explode(',', $stringCardsIndex);
+  $newString = "";
+  $uniqueNameIndex = "";
+  for ($i = 0; $i < count($indexToCheck); $i++)
+  {
+    if($newString != "") $newString .= ",";
+    if(!str_contains($newString, CardName($banish[$indexToCheck[$i]]))) {
+      $newString .= CardName($banish[$indexToCheck[$i]]);
+      if($uniqueNameIndex != "") $uniqueNameIndex .= ",";
+      $uniqueNameIndex .= $indexToCheck[$i];
+    }
+  }
+  return $uniqueNameIndex;
 }

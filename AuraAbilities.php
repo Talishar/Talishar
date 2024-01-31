@@ -2,7 +2,7 @@
 
 function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false)
 {
-  global $CS_NumAuras;
+  global $CS_NumAuras, $EffectContext;
   $otherPlayer = ($player == 1 ? 2 : 1);
   if(TypeContains($cardID, "T", $player)) $isToken = true;
   if(DelimStringContains(CardSubType($cardID), "Affliction")) {
@@ -12,7 +12,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $auras = &GetAuras($player);
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
-  if($numMinusTokens > 0 && $isToken) $number -= $numMinusTokens;
+  if($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
   if($cardID == "ARC112") $number += CountCurrentTurnEffects("ARC081", $player);
   if($cardID == "MON104") {
     $index = SearchArsenalReadyCard($player, "MON404");
@@ -385,7 +385,7 @@ function AuraStartTurnAbilities()
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         break;
       case "HVY240": //Agility
-        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+        if(!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         IncrementClassState($mainPlayer, $CS_NumAgilityDestroyed, 1);
         break;

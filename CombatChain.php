@@ -390,7 +390,7 @@ function OnBlockResolveEffects()
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if(($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i+2] != "HAND")) UnityEffect($combatChain[$i]);
     if(HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
-    if(SearchCurrentTurnEffects("HVY104", $mainPlayer && TypeContains($combatChain[$i], "AA", $defPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("HVY104") == -1)) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);
+    if(SearchCurrentTurnEffects("HVY104", $mainPlayer && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("HVY104") == -1)) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);
     switch($combatChain[$i]) {
       case "EVR018":
         if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
@@ -429,7 +429,9 @@ function OnBlockResolveEffects()
       case "DTD094": case "DTD095": case "DTD096":
         if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
         break;
-      case "DTD200": AddLayer("TRIGGER", $defPlayer, $combatChain[$i]); break;
+      case "DTD200": 
+        AddLayer("TRIGGER", $defPlayer, $combatChain[$i]); 
+        break;
       case "HVY008":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
         break;

@@ -449,7 +449,7 @@ function GetAbilityTypes($cardID)
 
 function GetAbilityNames($cardID, $index = -1)
 {
-  global $currentPlayer, $mainPlayer, $combatChain, $layers;
+  global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints;
   $character = &GetPlayerCharacter($currentPlayer);
   switch ($cardID) {
     case "ARC003": case "CRU101":
@@ -466,7 +466,7 @@ function GetAbilityNames($cardID, $index = -1)
     case "HVY186": case "HVY187": case "HVY188":
     case "HVY209":
       $names = "Ability";
-      if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces()) $names .= ",Attack";
+      if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Attack";
       return $names;
     default: return "";
   }
@@ -921,7 +921,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DTD069": case "DTD070": case "DTD071"://Resounding Courage
       return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || !TalentContains($CombatChain->AttackCard()->ID(), "LIGHT", $mainPlayer);
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return count($mySoul) == 0;
-    case "DTD106": return SearchCount(SearchBanish($currentPlayer)) < 3;
+    case "DTD106": 
+      $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A")); 
+      $cleanIndexes = RemoveCardSameNames($player, $index);
+      return SearchCount($cleanIndexes) < 3;
     case "DTD142": return CountAura("ARC112", $currentPlayer) != 6;
     case "DTD164": return $from != "PLAY" || SearchCount(SearchBanish($currentPlayer, bloodDebtOnly:true)) < 13;
     case "DTD199": return GetClassState($currentPlayer, $CS_HighestRoll) != 6;

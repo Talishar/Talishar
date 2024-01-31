@@ -191,9 +191,10 @@ function ChainLinksPieces()
 //3 - Class
 //4 - List of names
 //5 - Hit on link
+//6 - Modified Base Attack Stats e.g. Transmogrify
 function ChainLinkSummaryPieces()
 {
-  return 6;
+  return 7;
 }
 
 function DecisionQueuePieces()
