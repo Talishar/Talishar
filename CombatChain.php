@@ -56,7 +56,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
   global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated;
   global $combatChain;
   if($repriseActive == -1) $repriseActive = RepriseActive();
-  if(HasPiercing($cardID, $from)) return NumEquipBlock() > 0 ? 1 : 0;
   switch($cardID) {
     case "WTR003": return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
     case "WTR040": return SearchCount(SearchPitch($mainPlayer, minCost:3)) >= 2 ? 2 : 0;
@@ -132,6 +131,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "DYN079": return 3 + (NumEquipBlock() > 0 ? 1 : 0);
     case "DYN080": return 2 + (NumEquipBlock() > 0 ? 1 : 0);
     case "DYN081": return 1 + (NumEquipBlock() > 0 ? 1 : 0);
+    case "DYN156": case "DYN157": case "DYN158": return HasPiercing($cardID, $from) && NumEquipBlock() > 0 ? 1 : 0;
     case "DYN115": case "DYN116": return NumEquipBlock() > 0 ? 1 : 0;
     case "OUT005": case "OUT006": return NumEquipBlock() > 0 ? 1 : 0;
     case "OUT007": case "OUT008": return NumEquipBlock() > 0 ? 1 : 0;
@@ -883,7 +883,7 @@ function CachedWagerActive()
   global $combatChainState, $CCS_WagersThisLink;
   if (isset($combatChainState[$CCS_WagersThisLink])) {
     return ($combatChainState[$CCS_WagersThisLink] >= "1" ? true : false);
-  } 
+  }
   else return false;
 }
 
@@ -892,7 +892,7 @@ function CachedFusionActive()
   global $combatChainState, $CCS_AttackFused;
   if (isset($combatChainState[$CCS_AttackFused])) {
     return ($combatChainState[$CCS_AttackFused] == "1" ? true : false);
-  } 
+  }
   else return false;
 }
 
@@ -915,7 +915,7 @@ function CachedPhantasmActive()
   global $combatChainState, $CCS_PhantasmThisLink;
   if (isset($combatChainState[$CCS_PhantasmThisLink])) {
   return ($combatChainState[$CCS_PhantasmThisLink] == "1" ? true : false);
-  } 
+  }
   else return false;
 }
 
