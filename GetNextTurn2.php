@@ -501,7 +501,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo CreatePopup("BUTTONINPUT", [], 0, 1, GetPhaseHelptext(), 1, $content);
   }
 
-  if ($turn[0] == "YESNO" && $turn[1] == $playerID) {
+  if (($turn[0] == "YESNO" || $turn[0] == "DOCRANK") && $turn[1] == $playerID) {
     $content = CreateButton($playerID, "Yes", 20, "YES", "20px");
     $content .= CreateButton($playerID, "No", 20, "NO", "20px");
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));

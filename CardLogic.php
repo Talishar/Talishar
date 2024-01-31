@@ -789,6 +789,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         WriteLog(CardLink("RVD015", "RVD015") . " put " . CardLink($card, $card) . " on the bottom of your deck");
       }
       break;
+    case "UPR054": case "UPR055": case "UPR056":
+    case "UPR075": case "UPR076": case "UPR077":
+    case "UPR081": case "UPR082": case "UPR083":
+      $numDraconicLinks = NumDraconicChainLinks();
+      MZMoveCard($mainPlayer, "MYHAND:type=AA;maxCost=" . ($numDraconicLinks > 0 ? $numDraconicLinks - 1 : -2), "MYBANISH,HAND,TT", may:true);
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYBANISH", 1);
+      AddDecisionQueue("MZOP", $mainPlayer, "LASTMZINDEX", 1);
+      AddDecisionQueue("MZOP", $mainPlayer, "GETUNIQUEID", 1);
+      AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $parameter . ",HIT", 1);
+      break;
     case "UPR095":
       if(GetClassState($player, $CS_DamageTaken) > 0) MZMoveCard($player, "MYDISCARD:sameName=UPR101", "MYHAND", may:true);
       break;
@@ -901,13 +911,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "ARC036": case "DYN110":
     case "DYN111": case "DYN112":
     case "EVO234":
-      $index = SearchItemsForUniqueID($uniqueID, $player);
-      if($items[$index+2] == 2) {
-        --$items[$index+1];
-        $items[$index+2] = 1;
-        GainResources($player, 1);
-        if($items[$index+1] <= 0) DestroyItemForPlayer($player, $index);
-      }
+      AddDecisionQueue("HYPERDRIVER", $player, $uniqueID, 1);
       break;
     case "DYN113": case "DYN114":
       AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
@@ -915,12 +919,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to sink <0>" , 1);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_sink_the_opponent's_card", 1);
       AddDecisionQueue("NOPASS", $player, $parameter, 1);
-      AddDecisionQueue("WRITELOG", $player, "Arakni sunk the top card", 1);
+      AddDecisionQueue("WRITELOG", $player, "<b>Arakni</b> sunk the top card", 1);
       AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
       AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
       AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
       AddDecisionQueue("ELSE", $player, "-");
-      AddDecisionQueue("WRITELOG", $player, "Arakni left the top card there", 1);
+      AddDecisionQueue("WRITELOG", $player, "<b>Arakni</b> left the top card there", 1);
       break;
     case "DYN152":
       $deck = new Deck($player);

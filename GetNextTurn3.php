@@ -272,6 +272,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $activeChainLink->wager = CachedWagerActive();
   $activeChainLink->phantasm = CachedPhantasmActive();
   $activeChainLink->fusion = CachedFusionActive();
+  if($CombatChain->HasCurrentLink()) $activeChainLink->piercing = CachedPiercingActive($combatChain[0]); 
 
   // TODO: How to find out if a card has been fused?
   $activeChainLink->fused = false;
@@ -453,7 +454,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $response->playerPitch = $playerPitchArr;
 
   $response->playerDeckCount = count($myDeck);
-  if($playerID < 3 && count($myDeck) > 0 && $myCharacter[1] < 3 && ($myCharacter[0] == "EVO002" || $myCharacter[0] == "EVO001") && $turn[0] != "OPT") {
+  if($playerID < 3 && count($myDeck) > 0 && $myCharacter[1] < 3 && ($myCharacter[0] == "EVO002" || $myCharacter[0] == "EVO001") && $turn[0] != "OPT" && $turn[0] != "DOCRANK") {
     $playable = IsPlayable($myDeck[0], $turn[0], "DECK", 0);
     $response->playerDeckCard = JSONRenderedCard($myDeck[0], action:($playable ? 35 : 0), actionDataOverride:strval(0), borderColor: ($playable ? 6 : 0), controller:$playerID);
   }
@@ -857,7 +858,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $playerInputPopup->popup = CreatePopupAPI("BUTTONINPUT", [], 0, 1, $caption . GetPhaseHelptext(), 1, "");
   }
 
-  if ($turn[0] == "YESNO" && $turn[1] == $playerID) {
+  if (($turn[0] == "YESNO" || $turn[0] == "DOCRANK") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     array_push($playerInputButtons, CreateButtonAPI($playerID, "Yes", 20, "YES", "20px"));
     array_push($playerInputButtons, CreateButtonAPI($playerID, "No", 20, "NO", "20px"));

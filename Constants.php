@@ -1,11 +1,11 @@
 <?php
 
-$Card_CourageBanner = "FAB161";
-$Card_QuickenBanner = "FAB162";
-$Card_SpellbaneBanner = "FAB163";
-$Card_BlockBanner = "LGS179";
-$Card_LifeBanner = "LGS180";
-$Card_ResourceBanner = "LGS181";
+$Card_CourageBanner = "DTD048";
+$Card_QuickenBanner = "DTD049";
+$Card_SpellbaneBanner = "DTD050";
+$Card_BlockBanner = "DTD054";
+$Card_LifeBanner = "DTD055";
+$Card_ResourceBanner = "DTD056";
 
 $GameStatus_Over = 2;
 $GameStatus_Rematch = 3;

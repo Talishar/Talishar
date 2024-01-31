@@ -613,12 +613,20 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
 
 function IsBlockRestricted($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "")
 {
-  global $CombatChain, $mainPlayer;
+  global $CombatChain, $mainPlayer, $CS_NumCardsDrawn, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
   if(IsEquipment($cardID, $player) && !CanBlockWithEquipment()) { $restriction = "This attack disallows blocking with equipment"; return true; }
   if(SearchCurrentTurnEffects("EVO073-B-" . $cardID, $player)) { $restriction = "EVO073"; return true; }
   if($CombatChain->AttackCard()->ID() == "EVO061" || $CombatChain->AttackCard()->ID() == "EVO062" || $CombatChain->AttackCard()->ID() == "EVO063") {
     if(CardCost($cardID) < EvoUpgradeAmount($mainPlayer) && CardType($cardID) == "AA") { $restriction = $CombatChain->AttackCard()->ID(); return true; }
   };
+  switch ($cardID) {
+    case "HVY198": return GetClassState($mainPlayer, $CS_NumCardsDrawn) == 0;
+    case "HVY199": return GetClassState($mainPlayer, $CS_NumVigorDestroyed) == 0;
+    case "HVY200": return GetClassState($mainPlayer, $CS_NumMightDestroyed) == 0;
+    case "HVY201": return GetClassState($mainPlayer, $CS_NumAgilityDestroyed) == 0;
+    default:
+      break;
+  }
   return false;
 }
 
@@ -708,7 +716,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
+  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -944,10 +952,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HVY118": case "HVY119": case "HVY120": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
     case "HVY134": return GetClassState($player, $CS_AtksWWeapon) <= 0;
     case "HVY195": return GetClassState($otherPlayer, $CS_NumCardsDrawn) < 2;
-    case "HVY198": return GetClassState($otherPlayer, $CS_NumCardsDrawn) < 0;
-    case "HVY199": return GetClassState($otherPlayer, $CS_NumVigorDestroyed) < 0;
-    case "HVY200": return GetClassState($otherPlayer, $CS_NumMightDestroyed) < 0;
-    case "HVY201": return GetClassState($otherPlayer, $CS_NumAgilityDestroyed) < 0;
     case "HVY245": if ($from == "GY") return CountItem("EVR195", $currentPlayer) < 2; else return false;
     default: return false;
   }
@@ -1088,6 +1092,21 @@ function HasGuardwell($cardID)
   switch($cardID) {
     case "HVY195": return true;
     default: return false;
+  }
+}
+
+function HasPiercing($cardID, $from=""){
+  switch($cardID) {
+    case "OUT004": case "OUT005":case "OUT007":case "OUT009": //Weapons with Piercing
+    case "HVY245":
+      return true;
+    case "DYN076": case "DYN077": case "DYN078":
+    case "DYN079": case "DYN080": case "DYN081": //Warrior NAA + Reactions
+    case "DYN085": case "DYN086": case "DYN087": 
+      return (!IsPlayRestricted($cardID, $restriction, $from) || IsCombatEffectActive($cardID));
+    case "DYN156": case "DYN157": case "DYN158": // Arrows
+      return HasAimCounter();
+  default: return false;
   }
 }
 
@@ -1282,7 +1301,7 @@ function AuraDefaultHoldTriggerState($cardID)
     case "UPR190": case "UPR218": case "UPR219": case "UPR220": return 0;
     case "DYN217": return 0;
     case "DTD233": return 0;
-    case "DYN246": case "DTD235": return 0;
+    case "DYN246": case "DTD235": return 1;
     default: return 2;
   }
 }

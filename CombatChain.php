@@ -56,6 +56,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
   global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated;
   global $combatChain;
   if($repriseActive == -1) $repriseActive = RepriseActive();
+  if(HasPiercing($cardID, $from)) return NumEquipBlock() > 0 ? 1 : 0;
   switch($cardID) {
     case "WTR003": return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
     case "WTR040": return SearchCount(SearchPitch($mainPlayer, minCost:3)) >= 2 ? 2 : 0;
@@ -430,9 +431,6 @@ function OnBlockResolveEffects()
         break;
       case "DTD200": AddLayer("TRIGGER", $defPlayer, $combatChain[$i]); break;
       case "HVY008":
-        AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
-        break;
-      case "HVY053":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
         break;
       case "HVY054":
@@ -842,7 +840,7 @@ function CombatChainClosedEffects()
 function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
-  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_WagersThisLink, $CCS_PhantasmThisLink, $CCS_AttackFused;
+  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink;
   if(count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalAttack] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
@@ -851,7 +849,7 @@ function CacheCombatResult()
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();
   if($combatChainState[$CCS_CachedNumDefendedFromHand] == 0) $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand();
-  $combatChainState[$CCS_WagersThisLink] = (IsWagerActive() ? "1" : "0");
+  $combatChainState[$CCS_WagersThisLink] = (IsWagerActive() ? intval($combatChainState[$CCS_WagersThisLink]) : "0");
   $combatChainState[$CCS_PhantasmThisLink] = (IsPhantasmActive() ? "1" : "0");
   $combatChainState[$CCS_AttackFused] = (IsFusionActive() ? "1" : "0");
 }
@@ -884,8 +882,9 @@ function CachedWagerActive()
 {
   global $combatChainState, $CCS_WagersThisLink;
   if (isset($combatChainState[$CCS_WagersThisLink])) {
-    return ($combatChainState[$CCS_WagersThisLink] == "1" ? true : false);
-  } else return false;
+    return ($combatChainState[$CCS_WagersThisLink] >= "1" ? true : false);
+  } 
+  else return false;
 }
 
 function CachedFusionActive()
@@ -893,7 +892,22 @@ function CachedFusionActive()
   global $combatChainState, $CCS_AttackFused;
   if (isset($combatChainState[$CCS_AttackFused])) {
     return ($combatChainState[$CCS_AttackFused] == "1" ? true : false);
-  } else return false;
+  } 
+  else return false;
+}
+
+function CachedPiercingActive($cardID)
+{
+  global $combatChain, $CombatChain, $currentTurnEffects, $mainPlayer;
+  if ($CombatChain->HasCurrentLink()) {
+    if(HasPiercing($combatChain[0])) return true;
+    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+      if ($currentTurnEffects[$i + 1] == $mainPlayer) {
+        if(HasPiercing($currentTurnEffects[$i])) return true;
+      }
+    }
+  }
+  else return false;
 }
 
 function CachedPhantasmActive()
@@ -901,7 +915,8 @@ function CachedPhantasmActive()
   global $combatChainState, $CCS_PhantasmThisLink;
   if (isset($combatChainState[$CCS_PhantasmThisLink])) {
   return ($combatChainState[$CCS_PhantasmThisLink] == "1" ? true : false);
-  } else return false;
+  } 
+  else return false;
 }
 
 function CachedNumDefendedFromHand() //Reprise

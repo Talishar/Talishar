@@ -169,10 +169,6 @@ function Boost()
   AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_boost");
   AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
   AddDecisionQueue("OP", $currentPlayer, "BOOST", 1);
-  if(SearchCurrentTurnEffects("CRU102", $currentPlayer)) {
-    AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-    MZMoveCard($currentPlayer, "MYHAND", "MYTOPDECK", silent:true);
-  }
 }
 
 function DoBoost($player, $boostCount = 1)
@@ -195,6 +191,9 @@ function DoBoost($player, $boostCount = 1)
     if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) {
       $skipBanish = true;
       PutItemIntoPlayForPlayer($cardID, $player);
+    }
+    if(SearchCurrentTurnEffects("CRU102", $player)) {
+      AddLayer("CRU102", $player, "-");
     }
     if (!$skipBanish) BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
     $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $player);

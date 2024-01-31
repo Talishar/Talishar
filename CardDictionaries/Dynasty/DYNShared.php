@@ -105,7 +105,6 @@ function DYNEffectAttackModifier($cardID)
     case "DYN149": return 2;
     case "DYN150": return 1;
     case "DYN155": return 3;
-    case "DYN156": case "DYN157": case "DYN158": return (NumEquipBlock() > 0 ? 1 : 0);
     case "DYN165": case "DYN166": case "DYN167": return 2;
     case "DYN168": return 3;
     case "DYN169": return 2;
@@ -147,7 +146,6 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN148": case "DYN149": case "DYN150": return true;
     case "DYN154": return true;
     case "DYN155": return CardSubType($attackID) == "Arrow";
-    case "DYN156": case "DYN157": case "DYN158": return true;
     case "DYN165": case "DYN166": case "DYN167": return true;
     case "DYN168": case "DYN169": case "DYN170": return CardSubType($attackID) == "Arrow";
     case "DYN176": case "DYN177": case "DYN178": return true;
@@ -354,7 +352,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SANDSCOURGREATBOW");
       return "";
     case "DYN155": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
-    case "DYN156": case "DYN157": case "DYN158": if(HasAimCounter()) AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "DYN165": case "DYN166": case "DYN167": if(HasAimCounter()) AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "DYN168": case "DYN169": case "DYN170":
       $arsenal = &GetArsenal($currentPlayer);

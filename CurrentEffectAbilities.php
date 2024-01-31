@@ -869,7 +869,7 @@ function CurrentEffectPlayOrActivateAbility($cardID, $from)
   return false;
 }
 
-function CurrentEffectAfterPlayOrActivateAbility($cardID, $from)
+function CurrentEffectAfterPlayOrActivateAbility()
 {
   global $currentTurnEffects, $currentPlayer;
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {

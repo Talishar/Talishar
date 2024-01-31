@@ -321,6 +321,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default: break;
       }
       return $lastResult;
+    case "ADDMZUSESBLOODONHERHANDS":
+      $lrArr = explode("-", $lastResult);
+      $character = &GetPlayerCharacter($player);
+      switch($lrArr[0]) {
+        case "MYCHAR": case "THEIRCHAR": 
+          if($character[$lrArr[1]+5] < 2 && SearchCurrentTurnEffectsForUniqueID($character[$lrArr[1]+11]) == -1) {
+            AddCurrentTurnEffect("EVR055", $player, uniqueID:$character[$lrArr[1]+11]);
+            AddCharacterUses($player, $lrArr[1], $parameter); break;
+          }
+        default: break;
+      }
+      return $lastResult;
     case "MZOP":
       $paramArr = explode(",", $parameter);
       $parameter = $paramArr[0];
@@ -707,6 +719,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ATTACKMODIFIER":
       $amount = intval($parameter);
       $combatChain[5] += $amount;
+      CurrentEffectAfterPlayOrActivateAbility();
       return $parameter;
     case "SONATAARCANIX":
       $cards = explode(",", $lastResult);
@@ -1340,6 +1353,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (count($parameterArr) > 0) $initiator = $parameterArr[1];
       else $initiator = "";
       return SpecificCardLogic($player, $parameter, $lastResult, $initiator);
+    case "HYPERDRIVER":
+      $index = SearchItemsForUniqueID($parameter, $player);
+      if($items[$index+2] == 2) {
+        --$items[$index+1];
+        $items[$index+2] = 1;
+        GainResources($player, 1);
+        if($items[$index+1] <= 0) DestroyItemForPlayer($player, $index);
+      }
+      return $lastResult;
     case "MZADDSTEAMCOUNTER":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);
