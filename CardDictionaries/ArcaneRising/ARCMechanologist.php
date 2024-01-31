@@ -193,7 +193,7 @@ function DoBoost($player, $boostCount = 1)
       PutItemIntoPlayForPlayer($cardID, $player);
     }
     if(SearchCurrentTurnEffects("CRU102", $player)) {
-      AddLayer("CRU102", $player, "-");
+      AddLayer("TRIGGER", $player, "CRU102");
     }
     if (!$skipBanish) BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
     $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $player);

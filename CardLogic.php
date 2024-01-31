@@ -635,6 +635,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "CRU099":
       PutItemIntoPlayForPlayer($target, $player);
       break;
+    case "CRU102":
+      AddDecisionQueue("DRAW", $player, "-", 1);
+      MZMoveCard($player, "MYHAND", "MYTOPDECK", silent:true);
+      break;
     case "CRU142":
       if(GetClassState($player, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $player);
       if(GetClassState($player, $CS_ArcaneDamageDealt) > 0) PlayAura("ARC112", $player);
