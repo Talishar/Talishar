@@ -1208,3 +1208,20 @@ function GetPlayerNumTokens($player)
   }
   return $count;
 }
+
+function RemoveCardSameNames($player, $stringCardsIndex) {
+  $banish = GetBanish($player);
+  $indexToCheck = explode(',', $stringCardsIndex);
+  $newString = "";
+  $uniqueNameIndex = "";
+  for ($i = 0; $i < count($indexToCheck); $i++)
+  {
+    if($newString != "") $newString .= ",";
+    if(!str_contains($newString, CardName($banish[$indexToCheck[$i]]))) {
+      $newString .= CardName($banish[$indexToCheck[$i]]);
+      if($uniqueNameIndex != "") $uniqueNameIndex .= ",";
+      $uniqueNameIndex .= $indexToCheck[$i];
+    }
+  }
+  return $uniqueNameIndex;
+}
