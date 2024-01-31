@@ -236,6 +236,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN076": case "DYN077": case "DYN078":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "DYN079": case "DYN080": case "DYN081":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
 		case "DYN082": case "DYN083": case "DYN084":
       if($cardID == "DYN082") $amount = 3;
       else if($cardID == "DYN083") $amount = 2;

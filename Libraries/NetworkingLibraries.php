@@ -1112,6 +1112,7 @@ function CleanUpCombatEffects($weaponSwap = false)
     switch($currentTurnEffects[$i]) {
       case "MON008": case "MON009": case "MON010":
       case "MON281": case "MON282": case "MON283":
+      case "DYN079": case "DYN080": case "DYN081":
         array_push($effectsToRemove, $i);
         break;
       default:
