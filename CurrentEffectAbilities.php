@@ -490,7 +490,7 @@ function OnAttackEffects($attack)
   }
 }
 
-function CurrentEffectBaseAttackSet($cardID)
+function CurrentEffectBaseAttackSet()
 {
   global $currentPlayer, $currentTurnEffects;
   $mod = -1;

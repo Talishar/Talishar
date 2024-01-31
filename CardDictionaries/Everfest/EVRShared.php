@@ -762,6 +762,8 @@
           else {
             $attack = ModifiedAttackValue($chainLinks[$i][$j], $currentPlayer, "CC", source:"EVR138");
             if($attack > $highestAttack) $highestAttack = $attack;
+            $modifiedBaseAttack = $chainLinkSummary[$i*ChainLinkSummaryPieces()+6];
+            if($modifiedBaseAttack > $highestAttack) $highestAttack = $modifiedBaseAttack;
             $block = BlockValue($chainLinks[$i][$j]);
             if($block > $highestBlock) $highestBlock = $block;
             if(!$hasPhantasm) $hasPhantasm = HasPhantasm($chainLinks[$i][$j]);

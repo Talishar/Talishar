@@ -1074,6 +1074,7 @@ function FinalizeChainLink($chainClosed = false)
   $numHitsOnLink = ($combatChainState[$CCS_DamageDealt] > 0 ? 1 : 0);
   $numHitsOnLink += intval($combatChainState[$CCS_HitThisLink]);
   array_push($chainLinkSummary, $numHitsOnLink);
+  array_push($chainLinkSummary, CurrentEffectBaseAttackSet());
 
   ResolveWagers();
 
@@ -2228,7 +2229,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
       $combatChainState[$CCS_AttackPlayedFrom] = $from;
       $chainClosed = ProcessAttackTarget();
-      $baseAttackSet = CurrentEffectBaseAttackSet($cardID);
+      $baseAttackSet = CurrentEffectBaseAttackSet();
       $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
       $combatChainState[$CCS_LinkBaseAttack] = BaseAttackModifiers($attackValue);
       if(EffectAttackRestricted()) return;
