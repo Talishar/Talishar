@@ -847,19 +847,19 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose target hero");
     AddDecisionQueue("BUTTONINPUT", $player, "Target_Opponent,Target_Yourself");
     AddDecisionQueue("EQUALPASS", $player, "Target_Opponent");
-    AddDecisionQueue("WRITELOG", $player, "Shows your deck", 1);
+    AddDecisionQueue("WRITELOG", $player, "Shows your top deck", 1);
     AddDecisionQueue("DECKCARDS", $player, "0", 1);
     AddDecisionQueue("SETDQVAR", $player, "1", 1);
     AddDecisionQueue("SETDQCONTEXT", $player, CardName($source) . " shows the top of your deck is <1>", 1);
     AddDecisionQueue("OK", $player, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "{1}");
     AddDecisionQueue("NOTEQUALPASS", $player, "ELSE");
-    AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's deck", 1);
+    AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's top deck", 1);
+    if($showHand) AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "-", 1);
     AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
     AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
     AddDecisionQueue("SETDQCONTEXT", $otherPlayer, CardName($source) . " shows the top of their deck is <1>", 1);
     AddDecisionQueue("OK", $player, "-", 1);
-    if($showHand) AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "-", 1);
   }
 
   function SpireSnipingAbility($player)
