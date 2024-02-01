@@ -283,7 +283,7 @@ function AddSoul($cardID, $player, $from, $isMainPhase=true)
       }
     }
     if($player == $mainPlayer)
-      if (SearchCharacterAlive($player, "DTD004") && !SearchCurrentTurnEffects("DTD004", $player)) AddCurrentTurnEffect("DTD004", $player);
+      if (SearchCharacterAlive($player, "DTD004") && !SearchCurrentTurnEffects("DTD004", $player) && CardNameContains($cardID, "Herald", $player, true)) AddCurrentTurnEffect("DTD004", $player);
   }
 }
 
