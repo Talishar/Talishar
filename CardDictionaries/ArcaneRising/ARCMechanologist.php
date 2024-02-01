@@ -163,15 +163,15 @@ function HasBoost($cardID)
   }
 }
 
-function Boost()
+function Boost($cardID)
 {
   global $currentPlayer;
   AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_boost");
   AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-  AddDecisionQueue("OP", $currentPlayer, "BOOST", 1);
+  AddDecisionQueue("OP", $currentPlayer, "BOOST-".$cardID, 1);
 }
 
-function DoBoost($player, $boostCount = 1)
+function DoBoost($player, $cardID, $boostCount=1)
 {
   global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $charSubCards;
   $deck = new Deck($player);
@@ -180,24 +180,24 @@ function DoBoost($player, $boostCount = 1)
     if($deck->Empty()) { WriteLog("Could not boost"); return; }
     ItemBoostEffects();
     GainActionPoints(CountCurrentTurnEffects("ARC006", $player), $player);
-    $cardID = $deck->Top(remove:true);
-    SelfBoostEffects($player, $cardID);
+    $boostedCardID = $deck->Top(remove:true);
+    SelfBoostEffects($player, $boostedCardID, $cardID);
     CharacterBoostAbilities($player);
-    OnBoostedEffects($player, $cardID);
+    OnBoostedEffects($player, $boostedCardID);
     $skipBanish = false;
-    if (CardNameContains($cardID, "Hyper Driver", $player)) {
-      $skipBanish = EquipmentBoostEffect($player, "EVO011", $cardID);
+    if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
+      $skipBanish = EquipmentBoostEffect($player, "EVO011", $boostedCardID);
     }
-    if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) {
+    if(CardSubType($boostedCardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) {
       $skipBanish = true;
-      PutItemIntoPlayForPlayer($cardID, $player);
+      PutItemIntoPlayForPlayer($boostedCardID, $player);
     }
     if(SearchCurrentTurnEffects("CRU102", $player)) {
       AddLayer("TRIGGER", $player, "CRU102");
     }
-    if (!$skipBanish) BanishCardForPlayer($cardID, $player, "DECK", "BOOST");
-    $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $player);
-    WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again");
+    if (!$skipBanish) BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
+    $grantsGA = ClassContains($boostedCardID, "MECHANOLOGIST", $player);
+    WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again");
     IncrementClassState($player, $CS_NumBoosted);
     ++$combatChainState[$CCS_NumBoosted];
     $combatChainState[$CCS_IsBoosted] = 1;
@@ -223,10 +223,8 @@ function OnBoostedEffects($player, $boosted)
   }
 }
 
-function SelfBoostEffects($player, $boosted)
+function SelfBoostEffects($player, $boosted, $cardID)
 {
-  global $layers;
-  $cardID = $layers[0];
   switch($cardID) {
     case "EVO192": case "EVO193": case "EVO194":
     case "EVO195": case "EVO196": case "EVO197":

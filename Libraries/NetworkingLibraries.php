@@ -1467,7 +1467,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   }
 
   if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
-    if(HasBoost($cardID) && $cardID != "EVO142") Boost();
+    if(HasBoost($cardID) && $cardID != "EVO142") Boost($cardID);
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
     PermanentPlayAbilities($cardID, $from);
@@ -1484,7 +1484,7 @@ function PlayCardSkipCosts($cardID, $from)
   GetTargetOfAttack($cardID); // Not sure why this is needed (2x GetTargetOfAttack), but it works....
   if (($turn[0] == "M" || $turn[0] == "ATTACKWITHIT") && $cardType == "AA") GetTargetOfAttack($cardID);
   if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
-    if (HasBoost($cardID) && $cardID != "EVO142") Boost();
+    if (HasBoost($cardID) && $cardID != "EVO142") Boost($cardID);
     GetLayerTarget($cardID);
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
