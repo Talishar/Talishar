@@ -751,14 +751,17 @@
     $highestBlock = 0;
     $hasPhantasm = false;
     $hasGoAgain = false;
-    $hasDominate = false;
     for($i=0; $i<count($chainLinks); ++$i) {
       for($j=0; $j<count($chainLinks[$i]); $j+=ChainLinksPieces()) {
         $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $currentPlayer) || ($j == 0 && DelimStringContains($chainLinkSummary[$i*ChainLinkSummaryPieces()+3], "ILLUSIONIST"));
         if($chainLinks[$i][$j+2] == "1" && $chainLinks[$i][$j] != "EVR138" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA")
         {
           if($stat == "Hit") ProcessHitEffect($chainLinks[$i][$j]);
-          elseif ($stat == "Ability") PlayAbility($chainLinks[$i][$j], "HAND", 0);
+          elseif ($stat == "Ability") {
+            PlayAbility($chainLinks[$i][$j], "HAND", 0);
+            $modalAbilities = explode("-",  $chainLinkSummary[$i*ChainLinkSummaryPieces()+7]);
+            ModalAbilities($currentPlayer, $modalAbilities[0], $modalAbilities[1]);
+          }
           else {
             $attack = ModifiedAttackValue($chainLinks[$i][$j], $currentPlayer, "CC", source:"EVR138");
             if($attack > $highestAttack) $highestAttack = $attack;
@@ -777,7 +780,11 @@
       if($cardID != "EVR138" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && CardType($cardID) == "AA")
       {
         if($stat == "Hit") ProcessHitEffect($cardID);
-        elseif ($stat == "Ability") PlayAbility($cardID, "HAND", 0);
+        elseif ($stat == "Ability") {
+          PlayAbility($cardID, "HAND", 0);
+          $modalAbilities = explode("-",  $chainLinkSummary[$i*ChainLinkSummaryPieces()+7]);
+          ModalAbilities($currentPlayer, $modalAbilities[0], $modalAbilities[1]);
+        }
         else {
           $attack = ModifiedAttackValue($cardID, $currentPlayer, "CC", source:"EVR138");
           if($attack > $highestAttack) $highestAttack = $attack;

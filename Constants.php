@@ -191,10 +191,11 @@ function ChainLinksPieces()
 //3 - Class
 //4 - List of names
 //5 - Hit on link
-//6 - Modified Base Attack Stats e.g. Transmogrify
+//6 - Modified Base Attack Stats - e.g. Transmogrify
+//7 - Modal Play Ability - e.g. Enlightened Strike
 function ChainLinkSummaryPieces()
 {
-  return 7;
+  return 8;
 }
 
 function DecisionQueuePieces()
@@ -294,6 +295,7 @@ $CS_NumVigorDestroyed = 71;
 $CS_NumMightDestroyed = 72;
 $CS_NumAgilityDestroyed = 73;
 $CS_HaveIntimidated = 74;
+$CS_ModalAbilityChoosen = 75;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -490,7 +492,7 @@ function ResetMainClassState()
   global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks, $CS_ArcaneDamageDealt, $CS_LayerPlayIndex, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumBoostPlayed;
   global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain, $CS_NumContractsCompleted, $CS_HitsWithSword, $CS_NumCardsDrawn;
   global $CS_LifeLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrouchingTigerPlayedThisTurn, $CS_NumClashesWon;
-  global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated;
+  global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -566,6 +568,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumMightDestroyed] = 0;
   $mainClassState[$CS_NumAgilityDestroyed] = 0;
   $mainClassState[$CS_HaveIntimidated] = 0;
+  $mainClassState[$$CS_ModalAbilityChoosen] = "-";
 }
 
 function ResetCardPlayed($cardID)
