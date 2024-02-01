@@ -639,8 +639,8 @@ function OUTAbilityCost($cardID)
         if(IsHeroAttackTarget() && HasAttackName("Surging Strike") && HasAttackName("Descendent Gustwave") && HasAttackName("Bonds of Ancestry"))
         {
           if($char[0] == "DUMMY") WriteLog("Combat Dummies have no honor.");
-          else if($char[0] == "DUMMYDISHONORED") WriteLog("🥷 Those who have been dishonored have nothing left to lose.");
-          else $char[0] = "DUMMYDISHONORED";
+          else if($char[1] == 4) WriteLog("🥷 Those who have been dishonored have nothing left to lose.");
+          else $char[1] = 4;
         }
         break;
       case "OUT053":
