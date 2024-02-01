@@ -121,7 +121,7 @@ function CharacterStartTurnAbility($index)
   $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $char = new Character($mainPlayer, $index);
   if($char->status == 0 && !CharacterTriggerInGraveyard($char->cardID)) return;
-  if($char->status == 1 || $char->status == 3) return;
+  if($char->status == 1 || $char->status == 3 || $char->status == 4) return;
   $cardID = $char->cardID;
   if($index == 0) $cardID = ShiyanaCharacter($cardID);
   switch($cardID) {
@@ -238,7 +238,7 @@ function DefCharacterStartTurnAbilities()
   global $defPlayer, $mainPlayer;
   $character = &GetPlayerCharacter($defPlayer);
   for($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if($character[$i + 1] == 0 || $character[$i + 1] == 1) continue; //Do not process ability if it is destroyed
+    if($character[$i + 1] == 0 || $character[$i + 1] == 1 || $character[$i + 1] == 4) continue; //Do not process ability if it is destroyed
     $character[$i] = ShiyanaCharacter($character[$i]);
     switch($character[$i]) {
       case "EVR086":
