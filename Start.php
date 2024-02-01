@@ -128,5 +128,3 @@ else header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&pl
 
 exit;
 
-
-?>
