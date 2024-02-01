@@ -84,7 +84,7 @@
       case "MON021": case "MON022": case "MON023": case "MON024": case "MON025": case "MON026":
       case "MON027": case "MON028": case "MON091": case "MON098": case "MON099": case "MON100":
       case "MON101": case "MON102": case "MON103": return true;
-      case "EVR138": FractalReplicationStats("HasPhantasm");
+      case "EVR138": return FractalReplicationStats("HasPhantasm");
       case "EVR139": case "EVR144": case "EVR145": case "EVR146": case "EVR147": case "EVR148": case "EVR149": return true;
       case "UPR021": case "UPR022": case "UPR023": case "UPR027": case "UPR028": case "UPR029": case "UPR153": case "UPR551": return true;
       case "DYN215": case "DYN216": case "DYN224": case "DYN225": case "DYN226": case "DYN227": case "DYN228": case "DYN229":

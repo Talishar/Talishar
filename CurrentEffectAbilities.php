@@ -1352,4 +1352,3 @@ function EffectCardID($effect) {
   return $arr[0];
 }
 
-?>

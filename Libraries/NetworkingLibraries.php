@@ -1022,7 +1022,7 @@ function FinalizeChainLink($chainClosed = false)
 {
   global $turn, $actionPoints, $combatChain, $mainPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
-  global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink;
+  global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen;
   UpdateGameState($currentPlayer);
   BuildMainPlayerGameState();
   if(DoesAttackHaveGoAgain() && !$chainClosed) {
@@ -1075,6 +1075,7 @@ function FinalizeChainLink($chainClosed = false)
   $numHitsOnLink += intval($combatChainState[$CCS_HitThisLink]);
   array_push($chainLinkSummary, $numHitsOnLink);
   array_push($chainLinkSummary, CurrentEffectBaseAttackSet());
+  array_push($chainLinkSummary, GetClassState($mainPlayer, $CS_ModalAbilityChoosen));
 
   ResolveWagers();
 
@@ -1466,7 +1467,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   }
 
   if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
-    if(HasBoost($cardID) && $cardID != "EVO142") Boost();
+    if(HasBoost($cardID) && $cardID != "EVO142") Boost($cardID);
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
     PermanentPlayAbilities($cardID, $from);
@@ -1483,7 +1484,7 @@ function PlayCardSkipCosts($cardID, $from)
   GetTargetOfAttack($cardID); // Not sure why this is needed (2x GetTargetOfAttack), but it works....
   if (($turn[0] == "M" || $turn[0] == "ATTACKWITHIT") && $cardType == "AA") GetTargetOfAttack($cardID);
   if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
-    if (HasBoost($cardID) && $cardID != "EVO142") Boost();
+    if (HasBoost($cardID) && $cardID != "EVO142") Boost($cardID);
     GetLayerTarget($cardID);
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);

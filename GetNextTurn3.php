@@ -379,11 +379,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $characterContents = array();
   for ($i = 0; $i < count($theirCharacter); $i += CharacterPieces()) {
     if ($i > 0 && $inGameStatus == "0") continue;
+    $theirChar = $theirCharacter[$i];
+    if ($theirCharacter[$i + 1] == 4) $theirChar = "DUMMYDISHONORED";
     $atkCounters = 0;
     $counters = 0;
-    $type = CardType($theirCharacter[$i]);
-    if (TypeContains($theirCharacter[$i], "D")) $type = "C";
-    $sTypeArr = explode(",", CardSubType($theirCharacter[$i], $theirCharacter[$i+11]));
+    $type = CardType($theirChar);
+    if (TypeContains($theirChar, "D")) $type = "C";
+    $sTypeArr = explode(",", CardSubType($theirChar, $theirCharacter[$i+11]));
     $sType = $sTypeArr[0];
     for($j=0; $j<count($sTypeArr); ++$j) {
       if($sTypeArr[$j] == "Head" || $sTypeArr[$j] == "Chest" || $sTypeArr[$j] == "Arms" || $sTypeArr[$j] == "Legs") {
@@ -401,7 +403,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if (TypeContains($theirCharacter[$i], "W")) $atkCounters = $theirCharacter[$i + 3];
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
-    array_push($characterContents, JSONRenderedCard(cardNumber: $theirCharacter[$i], overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0), counters: $counters, defCounters: $theirCharacter[$i + 4], atkCounters: $atkCounters, controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirCharacter[$i + 8] == 1), onChain: ($theirCharacter[$i + 6] == 1), isBroken: ($theirCharacter[$i + 1] == 0), numUses: $theirCharacter[$i + 5], subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]));
+    array_push($characterContents, JSONRenderedCard(cardNumber: $theirChar, overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0), counters: $counters, defCounters: $theirCharacter[$i + 4], atkCounters: $atkCounters, controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirCharacter[$i + 8] == 1), onChain: ($theirCharacter[$i + 6] == 1), isBroken: ($theirCharacter[$i + 1] == 0), numUses: $theirCharacter[$i + 5], subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]));
   }
   $response->opponentEquipment = $characterContents;
 
@@ -490,13 +492,15 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $restriction = "";
     $counters = 0;
     $atkCounters = 0;
+    $myChar = $myCharacter[$i];
+    if ($myCharacter[$i + 1] == 4) $myChar = "DUMMYDISHONORED";
     if (TypeContains($myCharacter[$i], "W")) $atkCounters = $myCharacter[$i + 3];
     if ($myCharacter[$i + 2] > 0) $counters = $myCharacter[$i + 2];
-    $playable = $playerID == $currentPlayer && $myCharacter[$i + 1] > 0 && IsPlayable($myCharacter[$i], $turn[0], "CHAR", $i, $restriction);
-    $border = CardBorderColor($myCharacter[$i], "CHAR", $playable);
-    $type = CardType($myCharacter[$i]);
-    if (TypeContains($myCharacter[$i], "D")) $type = "C";
-    $sTypeArr = explode(",", CardSubType($myCharacter[$i], $myCharacter[$i+11]));
+    $playable = $playerID == $currentPlayer && $myCharacter[$i + 1] > 0 && IsPlayable($myChar, $turn[0], "CHAR", $i, $restriction);
+    $border = CardBorderColor($myChar, "CHAR", $playable);
+    $type = CardType($myChar);
+    if (TypeContains($myChar, "D")) $type = "C";
+    $sTypeArr = explode(",", CardSubType($myChar, $myCharacter[$i+11]));
     $sType = $sTypeArr[0];
     for($j=0; $j<count($sTypeArr); ++$j) {
       if($sTypeArr[$j] == "Head" || $sTypeArr[$j] == "Chest" || $sTypeArr[$j] == "Arms" || $sTypeArr[$j] == "Legs") {
@@ -516,7 +520,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       $gem = ($myCharacter[$i + 9] == 1 ? 1 : 2);
     }
     $restriction = implode("_", explode(" ", $restriction));
-    array_push($myCharData, JSONRenderedCard($myCharacter[$i], $currentPlayer == $playerID && $playable ? 3 : 0, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), 0, $myCharacter[$i + 4], $atkCounters, $playerID, $type, $sType, $restriction, $myCharacter[$i + 1] == 0, $myCharacter[$i + 6] == 1, $myCharacter[$i + 8] == 1, $gem, numUses: $myCharacter[$i + 5], subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
+    array_push($myCharData, JSONRenderedCard($myChar, $currentPlayer == $playerID && $playable ? 3 : 0, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), 0, $myCharacter[$i + 4], $atkCounters, $playerID, $type, $sType, $restriction, $myCharacter[$i + 1] == 0, $myCharacter[$i + 6] == 1, $myCharacter[$i + 8] == 1, $gem, numUses: $myCharacter[$i + 5], subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
   }
   $response->playerEquipment = $myCharData;
 
