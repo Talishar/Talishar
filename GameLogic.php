@@ -1589,6 +1589,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       case "DEAL1DAMAGE":
         DamageTrigger($player, damage:1, type:"DAMAGE", source:$parameter);
         return "";
+      case "REMOVEINDICESIFACTIVECHAINLINK":
+        $indices = explode(",", $lastResult);
+        $char = GetPlayerCharacter($player);
+        for ($i=0; $i < count($indices); $i++) { 
+          $option = explode("-", $indices[$i]);
+          if($char[$option[1]] == $combatChain[0]) {
+            $lastResult = str_replace($indices[$i], "", $lastResult);
+            $lastResult = rtrim($lastResult, ",");
+            $lastResult = ltrim($lastResult, ",");
+          }
+        }
+        return $lastResult;
     default:
       return "NOTSTATIC";
   }
