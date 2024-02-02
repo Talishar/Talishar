@@ -10,7 +10,7 @@ function WriteLog($text, $playerColor = 0, $highlight=false, $path="./")
   else $output = ($playerColor != 0 ? "<span style='color:<PLAYER" . $playerColor . "COLOR>; '>" : "")  . $text . ($playerColor != 0 ? "</span>" : "");
   fwrite($handler, $output . "\r\n");
   fclose($handler);
-  if(function_exists("IsPatron") && (IsPatron(1) || IsPatron(2))) {
+  if(function_exists("GetSettings") && (IsPatron(1) || IsPatron(2))) {
     $filename = $path . "Games/" . $gameName . "/fullGamelog.txt";
     $handler = fopen($filename, "a");
     fwrite($handler, $output . "\r\n");
