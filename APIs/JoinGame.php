@@ -656,7 +656,7 @@ function IsCardBanned($cardID, $format)
 {
   $set = substr($cardID, 0, 3);
   //Ban spoiler cards in non-open-format
-  if($format != "livinglegendscc" && ($set == "HVY")) return true;
+  if($format != "livinglegendscc") return true;
   switch($format) {
     case "blitz": case "compblitz":
       switch($cardID) {
