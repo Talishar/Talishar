@@ -29,7 +29,7 @@
         if(DelimStringContains($additionalCosts, "ICE") && DelimStringContains($additionalCosts, "EARTH")) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "ELE006":
-        $num = GetHealth($currentPlayer == 1 ? 2 : 1) - GetHealth($currentPlayer);
+        $num = GetLife($currentPlayer == 1 ? 2 : 1) - GetLife($currentPlayer);
         for($i = 0; $i < $num * (DelimStringContains($additionalCosts, "EARTH") ? 2 : 1); ++$i) PlayAura("WTR075", $currentPlayer);
         MZMoveCard($currentPlayer, "MYDECK:type=AA;class=GUARDIAN;maxCost=" . CountAura("WTR075", $currentPlayer), "MYHAND", may:true, isReveal:true);
         return "";

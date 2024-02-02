@@ -133,10 +133,10 @@ function CharacterStartTurnAbility($index)
       AddLayer("TRIGGER", $mainPlayer, $char->cardID);
       break;
     case "MON187":
-      if(GetHealth($mainPlayer) <= 13) {
+      if(GetLife($mainPlayer) <= 13) {
         $char->status = 0;
         BanishCardForPlayer($char->cardID, $mainPlayer, "EQUIP", "NA");
-        WriteLog(CardLink($char->cardID, $char->cardID) . " got banished for having 13 or less health");
+        WriteLog(CardLink($char->cardID, $char->cardID) . " got banished for having 13 or less life");
         $char->Finished();
       }
       break;
@@ -204,13 +204,13 @@ function CharacterStartTurnAbility($index)
       break;
     case "ROGUE022":
       $defBanish = &GetBanish($otherPlayer);
-      $health = &GetHealth($mainPlayer);
+      $life = &GetLife($mainPlayer);
       $totalBD = 0;
       for($i = 0; $i < count($defBanish); $i += BanishPieces())
       {
         if(HasBloodDebt($defBanish[$i])) ++$totalBD;
       }
-      $health += $totalBD;
+      $life += $totalBD;
       array_push($defBanish, "MON203");
       array_push($defBanish, "");
       array_push($defBanish, GetUniqueId());
@@ -242,7 +242,7 @@ function DefCharacterStartTurnAbilities()
     $character[$i] = ShiyanaCharacter($character[$i]);
     switch($character[$i]) {
       case "EVR086":
-        if (PlayerHasLessHealth($mainPlayer)) {
+        if (PlayerHasLessLife($mainPlayer)) {
           AddDecisionQueue("CHARREADYORPASS", $defPlayer, $i);
           AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_draw_a_card_and_give_your_opponent_a_silver.", 1);
           AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
@@ -290,7 +290,7 @@ function CharacterDestroyEffect($cardID, $player)
       include_once "./includes/dbh.inc.php";
       include_once "./includes/functions.inc.php";
       $conceded = true;
-      if(!IsGameOver()) PlayerLoseHealth($player, GetHealth($player));
+      if(!IsGameOver()) PlayerLoseLife($player, GetLife($player));
       break;
     default:
       break;
@@ -729,7 +729,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       $char->Finished();
       break;
     case "DTD135":
-      LoseHealth(1, $currentPlayer);
+      LoseLife(1, $currentPlayer);
       --$character[$cardIndex+5];
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1; //By default, if it's used, set it to used
       break;
@@ -972,7 +972,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddDecisionQueue("YESNO", $currentPlayer, "if you want to pay 1 life for Vynnset");
           AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
-          AddDecisionQueue("OP", $currentPlayer, "LOSEHEALTH", 1);
+          AddDecisionQueue("OP", $currentPlayer, "LOSELIFE", 1);
           if(!SearchCurrentTurnEffects($characterID, $currentPlayer)) { //The effect only apply to one event of damage. Anti-duplicate.
             AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $characterID, 1);
           }

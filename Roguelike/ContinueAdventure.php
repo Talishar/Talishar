@@ -5,7 +5,7 @@
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];
   $playerID=$_GET["playerID"];
-  $remainingHealth=$_GET["health"];
+  $remainingLife=$_GET["life"];
 
   //First we need to parse the game state from the file
   include_once '../Libraries/SHMOPLibraries.php';
@@ -18,8 +18,8 @@
 
   SetHeaders();
 
-  $health = &GetZone($playerID, "Health");
-  $health[0] = $remainingHealth;
+  $life = &GetZone($playerID, "Life");
+  $life[0] = $remainingLife;
   $encounter = &GetZone($playerID, "Encounter");
   $encounter->subphase = "AfterFight";
   if ($encounter->position < 9){
@@ -28,8 +28,8 @@
     $encounter->gold += 3;
   }
   //WriteLog($encounter->position);
-  if($encounter->position == 8 && $health[0] <= 20){
-    $health[0] = 20;
+  if($encounter->position == 8 && $life[0] <= 20){
+    $life[0] = 20;
   }
 
   $deck = &GetZone($playerID, "Deck");
@@ -38,35 +38,35 @@
     switch($deck[$i])
     {
       case "ROGUE611":
-        if($health[0] <= 5)
+        if($life[0] <= 5)
         {
           WriteLog("Your Bloodstone grows in strength.");
           $deck[$i] = "ROGUE612";
         }
         break;
       case "ROGUE612":
-        if($health[0] <= 5)
+        if($life[0] <= 5)
         {
           WriteLog("Your Bloodstone grows in strength.");
           $deck[$i] = "ROGUE613";
         }
         break;
       case "ROGUE613":
-        if($health[0] <= 5)
+        if($life[0] <= 5)
         {
           WriteLog("Your Bloodstone grows in strength.");
           $deck[$i] = "ROGUE614";
         }
         break;
       case "ROGUE614":
-        if($health[0] <= 5)
+        if($life[0] <= 5)
         {
           WriteLog("Your Bloodstone is perfect.");
           $deck[$i] = "ROGUE615";
         }
         break;
       case "ROGUE615":
-        if($health[0] <= 5)
+        if($life[0] <= 5)
         {
           WriteLog("Something Ancient awakens within your Bloodstone. Your name escapes you. Perhaps you shouldn't have disturbed it.");
           $deck[$i] = "ROGUE616";

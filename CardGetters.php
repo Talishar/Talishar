@@ -155,17 +155,17 @@ function &GetPitch($player)
   }
 }
 
-function &GetHealth($player)
+function &GetLife($player)
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
-  global $myHealth, $theirHealth, $mainHealth, $defHealth;
+  global $myLife, $theirLife, $mainLife, $defLife;
   global $myStateBuiltFor;
   if($mainPlayerGamestateStillBuilt) {
-    if($player == $mainPlayer) return $mainHealth;
-    else return $defHealth;
+    if($player == $mainPlayer) return $mainLife;
+    else return $defLife;
   } else {
-    if($player == $myStateBuiltFor) return $myHealth;
-    else return $theirHealth;
+    if($player == $myStateBuiltFor) return $myLife;
+    else return $theirLife;
   }
 }
 

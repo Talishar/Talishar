@@ -213,7 +213,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       $blockModifier += ($resourcesPaid >= 6 ? 3 : 0);
       break;
     case "ARC150":
-      $blockModifier += (PlayerHasLessHealth($defPlayer) ? 1 : 0);
+      $blockModifier += (PlayerHasLessLife($defPlayer) ? 1 : 0);
       break;
     case "CRU187":
       $blockModifier += ($from == "ARS" ? 2 : 0);
@@ -654,7 +654,7 @@ function CombatChainCloseAbilities($player, $cardID, $chainLink)
       }
       break;
     case "DYN121":
-      if($player == $mainPlayer) PlayerLoseHealth($mainPlayer, GetHealth($mainPlayer));
+      if($player == $mainPlayer) PlayerLoseLife($mainPlayer, GetLife($mainPlayer));
       break;
     default:
       break;
@@ -830,7 +830,7 @@ function CombatChainClosedEffects()
           $numLife = 0;
           if(GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numLife;
           if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numLife;
-          if($numLife > 0) GainHealth($numLife, $mainPlayer);
+          if($numLife > 0) GainLife($numLife, $mainPlayer);
           break;
         default: break;
       }

@@ -120,7 +120,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($opponentDisconnected && !IsGameOver()) {
     include_once "./includes/dbh.inc.php";
     include_once "./includes/functions.inc.php";
-    PlayerLoseHealth($otherP, GetHealth($otherP));
+    PlayerLoseLife($otherP, GetLife($otherP));
     include "WriteGamestate.php";
   } else if ($opponentInactive && !IsGameOver()) {
     $currentPlayerActivity = 2;
@@ -331,8 +331,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->opponentHand = $handContents;
 
-  //Their Health
-  $response->opponentHealth = $theirHealth;
+  //Their Life
+  $response->opponentLife = $theirLife;
   //Their soul count
   $response->opponentSoulCount = count($theirSoul);
 
@@ -435,8 +435,8 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   // }
   // echo ("<br>"); //End hand div
 
-  //My Health
-  $response->playerHealth = $myHealth;
+  //My Life
+  $response->playerLife = $myLife;
   //My soul count
   $response->playerSoulCount = count($mySoul);
 

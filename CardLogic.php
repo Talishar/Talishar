@@ -503,7 +503,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       Heave();
       break;
     case "WTR000":
-      if(PlayerHasLessHealth($player)) GainHealth(1, $player);
+      if(PlayerHasLessLife($player)) GainLife(1, $player);
       break;
     case "WTR001": case "WTR002": case "RVD001":
       Intimidate();
@@ -853,7 +853,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $player, "2", 1);
       break;
     case "UPR194": case "UPR195": case "UPR196":
-      if(PlayerHasLessHealth($player)) GainHealth(1, $player);
+      if(PlayerHasLessLife($player)) GainLife(1, $player);
       break;
     case "UPR203": case "UPR204": case "UPR205":
       ChooseToPay($player, $parameter, "0,1");
@@ -1184,7 +1184,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       break;
     case "HVY181":
-      if(CountAura("HVY242", $player) > 0) GainHealth(1, $player);
+      if(CountAura("HVY242", $player) > 0) GainLife(1, $player);
       break;
     case "HVY162":
     case "HVY137": case "HVY138": case "HVY139":

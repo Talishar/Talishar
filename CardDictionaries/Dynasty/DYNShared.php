@@ -536,7 +536,7 @@ function DYNHitEffect($cardID)
         $deck->BanishTop(banishedBy:$mainPlayer, amount:$combatChainState[$CCS_DamageDealt]);
       }
       break;
-    case "DYN121": if(IsHeroAttackTarget() && IsRoyal($defPlayer)) PlayerLoseHealth($defPlayer, GetHealth($defPlayer)); break;
+    case "DYN121": if(IsHeroAttackTarget() && IsRoyal($defPlayer)) PlayerLoseLife($defPlayer, GetLife($defPlayer)); break;
     case "DYN120":
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);

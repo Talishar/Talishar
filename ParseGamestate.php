@@ -29,7 +29,7 @@ function GamestateUnsanitize($input)
 function ParseGamestate($useRedis = false)
 {
   global $isProcessInput;
-  global $gameName, $playerHealths;
+  global $gameName, $playerLifes;
   global $p1Hand, $p1Deck, $p1CharEquip, $p1Resources, $p1Arsenal, $p1Items, $p1Auras, $p1Discard, $p1Pitch, $p1Banish;
   global $p1ClassState, $p1CharacterEffects, $p1Soul, $p1CardStats, $p1TurnStats, $p1Allies, $p1Permanents, $p1Settings;
   global $p2Hand, $p2Deck, $p2CharEquip, $p2Resources, $p2Arsenal, $p2Items, $p2Auras, $p2Discard, $p2Pitch, $p2Banish;
@@ -50,7 +50,7 @@ function ParseGamestate($useRedis = false)
   $gamestateContent = explode("\r\n", $gamestateContent);
   if(count($gamestateContent) < 60) exit;
 
-  $playerHealths = GetStringArray($gamestateContent[0]); // 1
+  $playerLifes = GetStringArray($gamestateContent[0]); // 1
 
   //Player 1
   $p1Hand = GetStringArray($gamestateContent[1]); // 2
@@ -150,13 +150,13 @@ function DoGamestateUpdate()
 
 function BuildMyGamestate($playerID)
 {
-  global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerHealths, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
+  global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerLifes, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
   global $p1CharacterEffects, $p1Discard, $p1CardStats, $p1TurnStats;
   global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items;
   global $p2CharacterEffects, $p2Discard, $p2CardStats, $p2TurnStats;
-  global $myDeck, $myHand, $myResources, $myCharacter, $myArsenal, $myHealth, $myAuras, $myPitch, $myBanish, $myClassState, $myItems;
+  global $myDeck, $myHand, $myResources, $myCharacter, $myArsenal, $myLife, $myAuras, $myPitch, $myBanish, $myClassState, $myItems;
   global $myCharacterEffects, $myDiscard, $myCardStats, $myTurnStats;
-  global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirHealth, $theirAuras, $theirPitch, $theirBanish, $theirClassState, $theirItems;
+  global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirLife, $theirAuras, $theirPitch, $theirBanish, $theirClassState, $theirItems;
   global $theirCharacterEffects, $theirDiscard, $theirCardStats, $theirTurnStats;
   global $p1Soul, $p2Soul, $mySoul, $theirSoul;
   global $myStateBuiltFor, $mainPlayerGamestateStillBuilt;
@@ -168,7 +168,7 @@ function BuildMyGamestate($playerID)
   $myResources = $playerID == 1 ? $p1Resources : $p2Resources;
   $myCharacter = $playerID == 1 ? $p1CharEquip : $p2CharEquip;
   $myArsenal = $playerID == 1 ? $p1Arsenal : $p2Arsenal;
-  $myHealth = $playerID == 1 ? $playerHealths[0] : $playerHealths[1];
+  $myLife = $playerID == 1 ? $playerLifes[0] : $playerLifes[1];
   $myItems = $playerID == 1 ? $p1Items : $p2Items;
   $myAuras = $playerID == 1 ? $p1Auras : $p2Auras;
   $myDiscard = $playerID == 1 ? $p1Discard : $p2Discard;
@@ -184,7 +184,7 @@ function BuildMyGamestate($playerID)
   $theirResources = $playerID == 1 ? $p2Resources : $p1Resources;
   $theirCharacter = $playerID == 1 ? $p2CharEquip : $p1CharEquip;
   $theirArsenal = $playerID == 1 ? $p2Arsenal : $p1Arsenal;
-  $theirHealth = $playerID == 1 ? $playerHealths[1] : $playerHealths[0];
+  $theirLife = $playerID == 1 ? $playerLifes[1] : $playerLifes[0];
   $theirItems = $playerID == 1 ? $p2Items : $p1Items;
   $theirAuras = $playerID == 1 ? $p2Auras : $p1Auras;
   $theirDiscard = $playerID == 1 ? $p2Discard : $p1Discard;
@@ -199,10 +199,10 @@ function BuildMyGamestate($playerID)
 
 function BuildMainPlayerGameState()
 {
-  global $mainPlayer, $mainPlayerGamestateStillBuilt, $playerHealths, $mpgBuiltFor, $defPlayer;
-  global $mainHand, $mainDeck, $mainResources, $mainCharacter, $mainArsenal, $mainHealth, $mainAuras, $mainPitch, $mainBanish, $mainClassState, $mainItems;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt, $playerLifes, $mpgBuiltFor, $defPlayer;
+  global $mainHand, $mainDeck, $mainResources, $mainCharacter, $mainArsenal, $mainLife, $mainAuras, $mainPitch, $mainBanish, $mainClassState, $mainItems;
   global $mainCharacterEffects, $mainDiscard;
-  global $defHand, $defDeck, $defResources, $defCharacter, $defArsenal, $defHealth, $defAuras, $defPitch, $defBanish, $defClassState, $defItems;
+  global $defHand, $defDeck, $defResources, $defCharacter, $defArsenal, $defLife, $defAuras, $defPitch, $defBanish, $defClassState, $defItems;
   global $defCharacterEffects, $defDiscard;
   global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items, $p1CharacterEffects, $p1Discard;
   global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items, $p2CharacterEffects, $p2Discard;
@@ -216,7 +216,7 @@ function BuildMainPlayerGameState()
   $mainResources = $mainPlayer == 1 ? $p1Resources : $p2Resources;
   $mainCharacter = $mainPlayer == 1 ? $p1CharEquip : $p2CharEquip;
   $mainArsenal = $mainPlayer == 1 ? $p1Arsenal : $p2Arsenal;
-  $mainHealth = $mainPlayer == 1 ? $playerHealths[0] : $playerHealths[1];
+  $mainLife = $mainPlayer == 1 ? $playerLifes[0] : $playerLifes[1];
   $mainItems = $mainPlayer == 1 ? $p1Items : $p2Items;
   $mainAuras = $mainPlayer == 1 ? $p1Auras : $p2Auras;
   $mainPitch = $mainPlayer == 1 ? $p1Pitch : $p2Pitch;
@@ -232,7 +232,7 @@ function BuildMainPlayerGameState()
   $defResources = $mainPlayer == 1 ? $p2Resources : $p1Resources;
   $defCharacter = $mainPlayer == 1 ? $p2CharEquip : $p1CharEquip;
   $defArsenal = $mainPlayer == 1 ? $p2Arsenal : $p1Arsenal;
-  $defHealth = $mainPlayer == 1 ? $playerHealths[1] : $playerHealths[0];
+  $defLife = $mainPlayer == 1 ? $playerLifes[1] : $playerLifes[0];
   $defItems = $mainPlayer == 1 ? $p2Items : $p1Items;
   $defAuras = $mainPlayer == 1 ? $p2Auras : $p1Auras;
   $defPitch = $mainPlayer == 1 ? $p2Pitch : $p1Pitch;
@@ -254,13 +254,13 @@ function UpdateGameState($activePlayer)
 function UpdateGameStateInner()
 {
   global $myStateBuiltFor;
-  global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerHealths, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
+  global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerLifes, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
   global $p1CharacterEffects, $p1Discard, $p1CardStats, $p1TurnStats;
   global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items;
   global $p2CharacterEffects, $p2Discard, $p2CardStats, $p2TurnStats;
-  global $myDeck, $myHand, $myResources, $myCharacter, $myArsenal, $myHealth, $myAuras, $myPitch, $myBanish, $myClassState, $myItems;
+  global $myDeck, $myHand, $myResources, $myCharacter, $myArsenal, $myLife, $myAuras, $myPitch, $myBanish, $myClassState, $myItems;
   global $myCharacterEffects, $myDiscard, $myCardStats, $myTurnStats;
-  global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirHealth, $theirAuras, $theirPitch, $theirBanish, $theirClassState, $theirItems;
+  global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirLife, $theirAuras, $theirPitch, $theirBanish, $theirClassState, $theirItems;
   global $theirCharacterEffects, $theirDiscard, $theirCardStats, $theirTurnStats;
   global $p1Soul, $p2Soul, $mySoul, $theirSoul;
   $activePlayer = $myStateBuiltFor;
@@ -270,7 +270,7 @@ function UpdateGameStateInner()
     $p1Resources = $myResources;
     $p1CharEquip = $myCharacter;
     $p1Arsenal = $myArsenal;
-    $playerHealths[0] = $myHealth;
+    $playerLifes[0] = $myLife;
     $p1Items = $myItems;
     $p1Auras = $myAuras;
     $p1Pitch = $myPitch;
@@ -286,7 +286,7 @@ function UpdateGameStateInner()
     $p2Resources = $theirResources;
     $p2CharEquip = $theirCharacter;
     $p2Arsenal = $theirArsenal;
-    $playerHealths[1] = $theirHealth;
+    $playerLifes[1] = $theirLife;
     $p2Items = $theirItems;
     $p2Auras = $theirAuras;
     $p2Pitch = $theirPitch;
@@ -303,7 +303,7 @@ function UpdateGameStateInner()
     $p2Resources = $myResources;
     $p2CharEquip = $myCharacter;
     $p2Arsenal = $myArsenal;
-    $playerHealths[1] = $myHealth;
+    $playerLifes[1] = $myLife;
     $p2Items = $myItems;
     $p2Auras = $myAuras;
     $p2Pitch = $myPitch;
@@ -319,7 +319,7 @@ function UpdateGameStateInner()
     $p1Resources = $theirResources;
     $p1CharEquip = $theirCharacter;
     $p1Arsenal = $theirArsenal;
-    $playerHealths[0] = $theirHealth;
+    $playerLifes[0] = $theirLife;
     $p1Items = $theirItems;
     $p1Auras = $theirAuras;
     $p1Pitch = $theirPitch;
@@ -340,11 +340,11 @@ function UpdateMainPlayerGameState()
 function UpdateMainPlayerGameStateInner()
 {
   global $mainPlayerGamestateStillBuilt, $mpgBuiltFor;
-  global $mainHand, $mainDeck, $mainResources, $mainCharacter, $mainArsenal, $mainHealth, $mainAuras, $mainPitch, $mainBanish, $mainClassState, $mainItems;
+  global $mainHand, $mainDeck, $mainResources, $mainCharacter, $mainArsenal, $mainLife, $mainAuras, $mainPitch, $mainBanish, $mainClassState, $mainItems;
   global $mainCharacterEffects, $mainDiscard;
-  global $defHand, $defDeck, $defResources, $defCharacter, $defArsenal, $defHealth, $defAuras, $defPitch, $defBanish, $defClassState, $defItems;
+  global $defHand, $defDeck, $defResources, $defCharacter, $defArsenal, $defLife, $defAuras, $defPitch, $defBanish, $defClassState, $defItems;
   global $defCharacterEffects, $defDiscard;
-  global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerHealths, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
+  global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerLifes, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
   global $p1CharacterEffects, $p1Discard;
   global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items;
   global $p2CharacterEffects, $p2Discard;
@@ -357,7 +357,7 @@ function UpdateMainPlayerGameStateInner()
   $p1Resources = $mpgBuiltFor == 1 ? $mainResources : $defResources;
   $p1CharEquip = $mpgBuiltFor == 1 ? $mainCharacter : $defCharacter;
   $p1Arsenal = $mpgBuiltFor == 1 ? $mainArsenal : $defArsenal;
-  $playerHealths[0] = $mpgBuiltFor == 1 ? $mainHealth : $defHealth;
+  $playerLifes[0] = $mpgBuiltFor == 1 ? $mainLife : $defLife;
   $p1Items = $mpgBuiltFor == 1 ? $mainItems : $defItems;
   $p1Auras = $mpgBuiltFor == 1 ? $mainAuras : $defAuras;
   $p1Pitch = $mpgBuiltFor == 1 ? $mainPitch : $defPitch;
@@ -373,7 +373,7 @@ function UpdateMainPlayerGameStateInner()
   $p2Resources = $mpgBuiltFor == 2 ? $mainResources : $defResources;
   $p2CharEquip = $mpgBuiltFor == 2 ? $mainCharacter : $defCharacter;
   $p2Arsenal = $mpgBuiltFor == 2 ? $mainArsenal : $defArsenal;
-  $playerHealths[1] = $mpgBuiltFor == 2 ? $mainHealth : $defHealth;
+  $playerLifes[1] = $mpgBuiltFor == 2 ? $mainLife : $defLife;
   $p2Items = $mpgBuiltFor == 2 ? $mainItems : $defItems;
   $p2Auras = $mpgBuiltFor == 2 ? $mainAuras : $defAuras;
   $p2Pitch = $mpgBuiltFor == 2 ? $mainPitch : $defPitch;

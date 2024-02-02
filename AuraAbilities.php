@@ -258,8 +258,8 @@ function AuraStartTurnAbilities()
         if(count($hand) == 0) {
           Draw($mainPlayer, false);
         }
-        if(PlayerHasLessHealth($mainPlayer)) {
-          GainHealth(2, $mainPlayer);
+        if(PlayerHasLessLife($mainPlayer)) {
+          GainLife(2, $mainPlayer);
         }
         if(SearchCount(SearchCharacter($mainPlayer, type:"E")) < SearchCount(SearchCharacter($defPlayer, type:"E"))) {
           AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=E;hasNegCounters=true");
@@ -273,7 +273,7 @@ function AuraStartTurnAbilities()
         if($auras[$i] == "DYN033") $amount = 3;
         else if($auras[$i] == "DYN034") $amount = 2;
         else $amount = 1;
-        GainHealth($amount, $mainPlayer);
+        GainLife($amount, $mainPlayer);
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         break;
       case "DYN048":
@@ -608,7 +608,7 @@ function AuraDamageTakenAbilities($player, $damage)
   return $damage;
 }
 
-function AuraLoseHealthAbilities($player, $amount)
+function AuraLoseLifeAbilities($player, $amount)
 {
   global $mainPlayer;
   $auras = &GetAuras($player);

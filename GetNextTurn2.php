@@ -109,7 +109,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     include_once "./includes/dbh.inc.php";
     include_once "./includes/functions.inc.php";
     include_once "./APIKeys/APIKeys.php";
-    PlayerLoseHealth($otherP, GetHealth($otherP));
+    PlayerLoseLife($otherP, GetLife($otherP));
     include "WriteGamestate.php";
   }
   else if($opponentInactive && !IsGameOver()) {
@@ -229,9 +229,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     <img style='object-fit: cover; height:100%; width:100%;' src='./Images/findCenterBackground.jpg'/></div>");
 
   echo ("<div style='position:absolute; right:" . intval($rightSideWidth * 1.05) . "px; top:calc(50% - 100px); height:200px; z-index:100;'>
-      <span style='position:absolute; text-align:center; width:100%; font-weight: 550; font-size: 140%; top:152px; user-select: none;'>$myHealth</span>"); //Master pass button div
+      <span style='position:absolute; text-align:center; width:100%; font-weight: 550; font-size: 140%; top:152px; user-select: none;'>$myLife</span>"); //Master pass button div
   echo (($manualMode ? "<span style='position:absolute; top:120px; left:65px;'>" . CreateButton($playerID, "+1", 10006, 0, "20px") . CreateButton($playerID, "-1", 10005, 0, "20px") . "</span>" : ""));
-  echo ("<span style='position:absolute; text-align:center; width:100%; font-size: 140%; font-weight: 550; top:31px; user-select: none;'>$theirHealth</span>");
+  echo ("<span style='position:absolute; text-align:center; width:100%; font-size: 140%; font-weight: 550; top:31px; user-select: none;'>$theirLife</span>");
   echo (($manualMode ? "<span style='position:absolute; top:0px; left:65px;'>" . CreateButton($playerID, "+1", 10008, 0, "20px") . CreateButton($playerID, "-1", 10007, 0, "20px") . "</span>" : ""));
   if (IsDarkMode($playerID)) echo ("<img style='height:200px;' src='./Images/DuoLifeDark.png' />");
   else echo ("<img style='height:200px;' src='./Images/DuoLife.png' />");
@@ -456,8 +456,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   if ($turn[0] == "OVER") {
     if ($roguelikeGameID != "") {
-      $caption = (GetHealth($playerID) > 0 ? "Continue Adventure" : "Game Over");
-      if(GetHealth($playerID) > 0) $content = CreateButton($playerID, "Continue Adventure", 100011, 0, "24px", "", "", false, true);
+      $caption = (GetLife($playerID) > 0 ? "Continue Adventure" : "Game Over");
+      if(GetLife($playerID) > 0) $content = CreateButton($playerID, "Continue Adventure", 100011, 0, "24px", "", "", false, true);
       else $content = CreateButton($playerID, "Game Over!", 100001, 0, "24px", "", "", false, true);
     } else {
       $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);

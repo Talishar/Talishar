@@ -26,7 +26,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   }
   */
 /*
-  $challengeThreshold = (CharacterHealth($charEquip[0]) > 25 ? 6 : 4);
+  $challengeThreshold = (CharacterLife($charEquip[0]) > 25 ? 6 : 4);
   $numChallengeCard = 0;
   for($i=0; $i<count($deckCards); ++$i)
   {

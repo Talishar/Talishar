@@ -400,7 +400,7 @@
         case "ARC079": ++$barrierArray[1]; $total += 1; break;
         case "ARC116": ++$barrierArray[2]; $total += 2; break;
         case "ARC117": ++$barrierArray[1]; $total += 1; break;
-        case "ARC150": if(PlayerHasLessHealth($playerID)) { ++$barrierArray[3]; $total += 3; } break;
+        case "ARC150": if(PlayerHasLessLife($playerID)) { ++$barrierArray[3]; $total += 3; } break;
         case "ARC155": case "ARC156": case "ARC157": case "ARC158": ++$barrierArray[1]; $total += 1; break;
         case "CRU006": ++$barrierArray[2]; $total += 2; break;
         case "CRU102": ++$barrierArray[2]; $total += 2; break;

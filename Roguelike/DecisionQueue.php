@@ -85,10 +85,10 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         switch($lastResult)
         {
           case "Rest":
-            $health = &GetZone($player, "Health");
-            $gain = (20 - $health[0] > 10 ? 10 : 20 - $health[0]);
+            $life = &GetZone($player, "Life");
+            $gain = (20 - $life[0] > 10 ? 10 : 20 - $life[0]);
             if($gain < 0) $gain = 0;
-            $health[0] += $gain;
+            $life[0] += $gain;
             WriteLog("You rested and gained " . $gain . " life.");
             break;
           case "Learn":
@@ -112,10 +112,10 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             $encounter->gold += 1;
             break;
           case "Pay_Respects":
-            WriteLog("You honor the fallen. While their mortal form is gone, their stories live on. You carry their spirit with you. You gain 2 health.");
+            WriteLog("You honor the fallen. While their mortal form is gone, their stories live on. You carry their spirit with you. You gain 2 life.");
             PrependDecisionQueue("CHOOSECARD", $player, "WTR163", "-", "NoReroll");
-            $health = &GetZone(1, "Health");
-            $health[0] += 2;
+            $life = &GetZone(1, "Life");
+            $life[0] += 2;
             break;
           default: break;
         }
@@ -155,8 +155,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         switch($lastResult)
         {
           case "Offer_her_1_life":
-            $health = &GetZone($player, "Health");
-            $health[0] += -1;
+            $life = &GetZone($player, "Life");
+            $life[0] += -1;
             if(rand(1,4) == 3)
             {
               WriteLog("You gave the old hag some of your blood. It was enough.");
@@ -165,7 +165,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             else
             {
               WriteLog("You gave the old hag some of your blood, but it wasn't enough.");
-              if($health[0] > 1) {
+              if($life[0] > 1) {
                 PrependDecisionQueue("OLDHAG", $player, "-");
                 PrependDecisionQueue("BUTTONINPUT", $player, "Offer_her_1_life,Leave");
               }
@@ -317,16 +317,16 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         switch($lastResult)
         {
           case "Enter_Stream":
-            $health = &GetZone($player, "Health");
+            $life = &GetZone($player, "Life");
             if(rand(0,9) < 3)
             {
-              $health[0] -= 3;
-              if($health[0] < 0) $health[0] = 1;
+              $life[0] -= 3;
+              if($life[0] < 0) $life[0] = 1;
               WriteLog("You mistimed your jump and got zapped by the energy.");
             }
             else {
-              $health[0] += 5;
-              if($health[0] > 20) $health[0] = 20;
+              $life[0] += 5;
+              if($life[0] > 20) $life[0] = 20;
               WriteLog("You timed your jump perfectly and feel reinvigorated by the stream of energy.");
             }
             break;
@@ -338,9 +338,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         switch($lastResult)
         {
           case "Quietly_Pray":
-            WriteLog("Your spirit is reinvigorated and your strength is renewed. You gain 7 health.");
-            $health = &GetZone($player, "Health");
-            $health[0] += 7;
+            WriteLog("Your spirit is reinvigorated and your strength is renewed. You gain 7 life.");
+            $life = &GetZone($player, "Life");
+            $life[0] += 7;
             break;
           case "Leave":
             break;
@@ -396,8 +396,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Attempt_to_retrieve_your_coins":
             $encounter = &GetZone($player, "Encounter");
             $encounter->gold += 4;
-            $health = &GetZone($player, "Health");
-            $health[0] -= 4;
+            $life = &GetZone($player, "Life");
+            $life[0] -= 4;
             WriteLog("You stumble down a cliff, losing some life but retrieving some gold. You even found some gold someone else had lost.");
             break;
         }
@@ -426,8 +426,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Deck,4"), "Deck,4");
             break;
           case "Spar_until_nightfall":
-            $health = &GetZone($player, "Health");
-            $health[0] -= 4;
+            $life = &GetZone($player, "Life");
+            $life[0] -= 4;
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Deck,4"), "Deck,4");
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards("Deck,4"), "Deck,4");
             break;
@@ -670,11 +670,11 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         switch($lastResult)
         {
           case "Take_a_bite":
-            $health = &GetZone($player, "Health");
-            $health[0] -= $parameter2;
+            $life = &GetZone($player, "Life");
+            $life[0] -= $parameter2;
             $nextCost = $parameter2 + 1;
             PrependDecisionQueue("COTTAGEWITCH", $player, "-", $nextCost);
-            if($health[0] > $nextCost) PrependDecisionQueue("BUTTONINPUT", $player, "Take_a_bite,Leave");
+            if($life[0] > $nextCost) PrependDecisionQueue("BUTTONINPUT", $player, "Take_a_bite,Leave");
             else PrependDecisionQueue("BUTTONINPUT", $player, "Leave");
             PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomCards("Deck,4"), "Deck,4");
             break;
@@ -909,8 +909,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
 function ResetHero($player, $hero="Dorinthea")
   {
   $heroFileArray = file("Heroes/" . $hero . ".txt", FILE_IGNORE_NEW_LINES);
-  $health = &GetZone($player, "Health");
-  array_push($health, 20); //TODO: Base on hero health
+  $life = &GetZone($player, "Life");
+  array_push($life, 20); //TODO: Base on hero life
   $character = &GetZone($player, "Character");
   $character = explode(" ", $heroFileArray[0]);
   $deck = &GetZone($player, "Deck");

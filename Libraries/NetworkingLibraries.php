@@ -553,23 +553,23 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 10005:
-      WriteLog("Player " . $playerID . " manually subtracted 1 health from themself", highlight: true);
-      LoseHealth(1, $playerID);
+      WriteLog("Player " . $playerID . " manually subtracted 1 life from themself", highlight: true);
+      LoseLife(1, $playerID);
       break;
     case 10006:
-      WriteLog("Player " . $playerID . " manually added 1 health to themself", highlight: true);
-      $health = &GetHealth($playerID);
-      $health += 1;
+      WriteLog("Player " . $playerID . " manually added 1 life to themself", highlight: true);
+      $life = &GetLife($playerID);
+      $life += 1;
       break;
     case 10007:
-      //WriteLog("Player " . $playerID ." manually added 1 health point to themselves.", highlight: true);
-      WriteLog("Subtracting health from your opponent is not allowed");
-      //LoseHealth(1, ($playerID == 1 ? 2 : 1));
+      //WriteLog("Player " . $playerID ." manually added 1 life point to themselves.", highlight: true);
+      WriteLog("Subtracting life from your opponent is not allowed");
+      //LoseLife(1, ($playerID == 1 ? 2 : 1));
       break;
     case 10008:
-      WriteLog("Player " . $playerID . " manually added 1 health to their opponent", highlight: true);
-      $health = &GetHealth($playerID == 1 ? 2 : 1);
-      $health += 1;
+      WriteLog("Player " . $playerID . " manually added 1 life to their opponent", highlight: true);
+      $life = &GetLife($playerID == 1 ? 2 : 1);
+      $life += 1;
       break;
     case 10009:
       WriteLog("Player " . $playerID . " manually drew a card for themself", highlight: true);
@@ -628,7 +628,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       include_once "./includes/dbh.inc.php";
       include_once "./includes/functions.inc.php";
       $conceded = true;
-      if(!IsGameOver()) PlayerLoseHealth($playerID, GetHealth($playerID));
+      if(!IsGameOver()) PlayerLoseLife($playerID, GetLife($playerID));
       break;
     case 100003: //Report Bug
       if($isSimulation) return;
@@ -648,7 +648,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         include_once "./includes/dbh.inc.php";
         include_once "./includes/functions.inc.php";
         $otherPlayer = ($playerID == 1 ? 2 : 1);
-        if (!IsGameOver()) PlayerLoseHealth($otherPlayer, GetHealth($otherPlayer));
+        if (!IsGameOver()) PlayerLoseLife($otherPlayer, GetLife($otherPlayer));
         WriteLog("The opponent forfeit due to inactivity.");
       }
       break;
@@ -668,7 +668,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100011: //Resume adventure (roguelike)
       if($roguelikeGameID == "") break;
-      header("Location: " . $redirectPath . "/Roguelike/ContinueAdventure.php?gameName=" . $roguelikeGameID . "&playerID=1&health=" . GetHealth(1));
+      header("Location: " . $redirectPath . "/Roguelike/ContinueAdventure.php?gameName=" . $roguelikeGameID . "&playerID=1&life=" . GetLife(1));
       break;
     case 100012: //Create Replay
       if(!file_exists("./Games/" . $gameName . "/origGamestate.txt")) {
@@ -1436,8 +1436,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
       $remorselessCount = CountCurrentTurnEffects("CRU123-DMG", $playerID);
       if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0) {
-        WriteLog("Lost 1 health to Remorseless");
-        LoseHealth($remorselessCount, $playerID);
+        WriteLog("Lost 1 life to Remorseless");
+        LoseLife($remorselessCount, $playerID);
       }
       if(IsCardNamed($currentPlayer, $cardID, "Moon Wish")) AddCurrentTurnEffect("ARC185-GA", $currentPlayer);
       CombatChainPlayAbility($cardID);
@@ -2324,7 +2324,7 @@ function ProcessAttackTarget()
 
 function WriteGamestate()
 {
-  global $gameName, $playerHealths;
+  global $gameName, $playerLifes;
   global $p1Hand, $p1Deck, $p1CharEquip, $p1Resources, $p1Arsenal, $p1Items, $p1Auras, $p1Discard, $p1Pitch, $p1Banish;
   global $p1ClassState, $p1CharacterEffects, $p1Soul, $p1CardStats, $p1TurnStats, $p1Allies, $p1Permanents, $p1Settings;
   global $p2Hand, $p2Deck, $p2CharEquip, $p2Resources, $p2Arsenal, $p2Items, $p2Auras, $p2Discard, $p2Pitch, $p2Banish;
@@ -2348,7 +2348,7 @@ function WriteGamestate()
     exit;
   }
 
-  fwrite($handler, implode(" ", $playerHealths) . "\r\n");
+  fwrite($handler, implode(" ", $playerLifes) . "\r\n");
 
   //Player 1
   fwrite($handler, implode(" ", $p1Hand) . "\r\n");

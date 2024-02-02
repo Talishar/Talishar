@@ -38927,7 +38927,7 @@ default: return "";
 }
 }
 
-function GeneratedCharacterHealth($cardID) {
+function GeneratedCharacterLife($cardID) {
 if(strlen($cardID) < 6) return 0;
 if(is_int($cardID)) return 0;
 switch($cardID) {

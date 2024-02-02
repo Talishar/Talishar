@@ -138,7 +138,7 @@ switch ($mode) {
       $isValid = false;
       break;
     }
-    $response->redirectLink = $redirectPath . "/Roguelike/ContinueAdventure.php?gameName=" . $roguelikeGameID . "&playerID=1&health=" . GetHealth(1);
+    $response->redirectLink = $redirectPath . "/Roguelike/ContinueAdventure.php?gameName=" . $roguelikeGameID . "&playerID=1&life=" . GetLife(1);
     break;
   default:
     break;

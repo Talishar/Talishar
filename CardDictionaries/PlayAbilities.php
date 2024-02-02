@@ -279,7 +279,7 @@
         if($from == "ARS") Draw($currentPlayer);
         return "";
       case "HVY213": case "HVY214": case "HVY215":
-        if(IsHeroAttackTarget() && PlayerHasLessHealth($currentPlayer) && GetPlayerNumEquipment($currentPlayer) < GetPlayerNumEquipment($otherPlayer) && GetPlayerNumTokens($currentPlayer) < GetPlayerNumTokens($otherPlayer)) {
+        if(IsHeroAttackTarget() && PlayerHasLessLife($currentPlayer) && GetPlayerNumEquipment($currentPlayer) < GetPlayerNumEquipment($otherPlayer) && GetPlayerNumTokens($currentPlayer) < GetPlayerNumTokens($otherPlayer)) {
           AddCurrentTurnEffect($cardID, $currentPlayer);
         }
         return "";
@@ -429,7 +429,7 @@
         PlayAura("WTR225", $otherPlayer);
         return "";
       case "TCC065":
-        GainHealth(1, $otherPlayer);
+        GainLife(1, $otherPlayer);
         return "";
       case "TCC066": case "TCC067":
         PlayAura("HVY241", $otherPlayer);
@@ -584,7 +584,7 @@
         if($from == "PLAY") GainResources($currentPlayer, 1);
         return "";
       case "EVO076":
-        if($from == "PLAY") GainHealth(2, $currentPlayer);
+        if($from == "PLAY") GainLife(2, $currentPlayer);
         return "";
       case "EVO077":
         if($from == "PLAY")

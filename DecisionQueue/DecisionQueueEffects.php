@@ -72,7 +72,7 @@ function ModalAbilities($player, $card, $lastResult)
     case "KORSHEM":
       switch($lastResult) {
           case "Gain_a_resource": GainResources($player, 1); return 1;
-          case "Gain_a_life": GainHealth(1, $player); return 2;
+          case "Gain_a_life": GainLife(1, $player); return 2;
           case "1_Attack": AddCurrentTurnEffect("ELE000-1", $player); return 3;
           case "1_Defense": AddCurrentTurnEffect("ELE000-2", $player); return 4;
           default: break;
@@ -152,8 +152,8 @@ function ModalAbilities($player, $card, $lastResult)
             Draw($player == 1 ? 2 : 1);
             break;
           case "Gain_life":
-            GainHealth(1, $player);
-            GainHealth(1, ($player == 1 ? 2 : 1));
+            GainLife(1, $player);
+            GainLife(1, ($player == 1 ? 2 : 1));
             break;
           default: break;
         }
@@ -267,7 +267,7 @@ function PlayerTargetedAbility($player, $card, $lastResult)
       else $pitchTarget = 3;
       $deck = new Deck($target);
       $banished = $deck->BanishTop();
-      if(PitchValue($banished) == $pitchTarget) LoseHealth(1, $target);
+      if(PitchValue($banished) == $pitchTarget) LoseLife(1, $target);
       return "";
     case "BURDENSOFTHEPAST":
       $defenseReactionsInDiscard = SearchDiscard($target, "DR", getDistinctCardNames: true);
@@ -492,12 +492,12 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "BEASTWITHIN":
       $deck = new Deck($player);
       if($deck->Empty()) {
-        LoseHealth(9999, $player);
+        LoseLife(9999, $player);
         WriteLog("💀 Your deck has no cards, so " . CardLink("CRU007", "CRU007") . " continues damaging you until you die.");
         return 1;
       }
       $card = $deck->BanishTop("-", $player);
-      LoseHealth(1, $player);
+      LoseLife(1, $player);
       if(ModifiedAttackValue($card, $player, "DECK", source:"CRU007") >= 6) {
         $banish = new Banish($player);
         RemoveBanish($player, ($banish->NumCards()-1)*BanishPieces());

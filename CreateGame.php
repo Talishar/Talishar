@@ -24,7 +24,7 @@ $favoriteDeckLink = TryGet("favoriteDecks", "0");
 $gameDescription = htmlentities(TryGet("gameDescription", "Game #"), ENT_QUOTES);
 $deckbuilderID = TryGet("user", "");
 $roguelikeGameID = TryGet("roguelikeGameID", "");
-$startingHealth = TryGet("startingHealth", "");
+$startingLife = TryGet("startingLife", "");
 
 if($favoriteDeckLink != 0)
 {
@@ -110,7 +110,7 @@ $p2uid = "-";
 $p1id = "-";
 $p2id = "-";
 $hostIP = $_SERVER['REMOTE_ADDR'];
-$p1StartingHealth = $startingHealth;
+$p1StartingLife = $startingLife;
 
 $filename = "./Games/" . $gameName . "/GameFile.txt";
 $gameFileHandler = fopen($filename, "w");

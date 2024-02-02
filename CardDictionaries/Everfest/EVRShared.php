@@ -474,7 +474,7 @@
         if($from == "PLAY") PlayerOpt($currentPlayer, 2);
         return "";
       case "EVR183":
-        if($from == "PLAY") GainHealth(2, $currentPlayer);
+        if($from == "PLAY") GainLife(2, $currentPlayer);
         return "";
       case "EVR184":
         if($from == "PLAY") LookAtHand($otherPlayer);
@@ -575,9 +575,9 @@
             if($cards != "") $cards .= ",";
             $cards .= $id;
           }
-          LoseHealth($numDiscarded, $defPlayer);
+          LoseLife($numDiscarded, $defPlayer);
           RevealCards($cards, $defPlayer);//CanReveal checked earlier
-          WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much health.");
+          WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much life.");
           $hand = array_values($hand);
         }
         break;

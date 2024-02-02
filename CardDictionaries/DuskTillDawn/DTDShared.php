@@ -273,9 +273,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $theirChar = &GetPlayerCharacter($otherPlayer);
       if(TalentContains($theirChar[0], "SHADOW", $otherPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "DTD085": GainHealth(3, $currentPlayer); break;//Blessing of Salvation
-    case "DTD086": GainHealth(2, $currentPlayer); break;
-    case "DTD087": GainHealth(1, $currentPlayer); break;
+    case "DTD085": GainLife(3, $currentPlayer); break;//Blessing of Salvation
+    case "DTD086": GainLife(2, $currentPlayer); break;
+    case "DTD087": GainLife(1, $currentPlayer); break;
     case "DTD088": case "DTD089": case "DTD090"://Cleansing Light
       if($cardID == "DTD088") $targetPitch = 1;
       else if($cardID == "DTD089") $targetPitch = 2;
@@ -369,9 +369,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       MZMoveCard($currentPlayer, "MYARS", "MYBANISH,ARS,-");
       MZMoveCard($otherPlayer, "MYARS", "MYBANISH,ARS,-");
       return "";
-    case "DTD175": GainHealth(3, $currentPlayer); return "";
-    case "DTD176": GainHealth(2, $currentPlayer); return "";
-    case "DTD177": GainHealth(1, $currentPlayer); return "";
+    case "DTD175": GainLife(3, $currentPlayer); return "";
+    case "DTD176": GainLife(2, $currentPlayer); return "";
+    case "DTD177": GainLife(1, $currentPlayer); return "";
     case "DTD178": case "DTD179": case "DTD180":
       if(ShouldAutotargetOpponent($currentPlayer)) {
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
@@ -423,7 +423,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         else $discard->Add($cards[$i]);
       }
       if($num6plus > 0) {
-        GainHealth($num6plus, $currentPlayer);
+        GainLife($num6plus, $currentPlayer);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       }
       return "";
@@ -619,8 +619,8 @@ function ResolveTransformHero($player, $cardID, $parameter)
   $char[0] = $cardID;
   $char[9] = CharacterDefaultActiveState($cardID);
   AddEvent("HERO_TRANSFORM", $cardID);
-  $health = &GetHealth($player);
-  $health = DemiHeroHealth($cardID);
+  $life = &GetLife($player);
+  $life = DemiHeroLife($cardID);
   $banish = new Banish($player);
   switch($cardID)
   {
@@ -636,7 +636,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
   }
 }
 
-function DemiHeroHealth($cardID)
+function DemiHeroLife($cardID)
 {
   switch($cardID)
   {

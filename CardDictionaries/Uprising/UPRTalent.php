@@ -118,7 +118,7 @@
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
         return "";
       case "UPR194": case "UPR195": case "UPR196":
-        if(PlayerHasLessHealth($currentPlayer)) { GainHealth(1, $currentPlayer); }
+        if(PlayerHasLessLife($currentPlayer)) { GainLife(1, $currentPlayer); }
         return "";
       case "UPR197": case "UPR198": case "UPR199":
         if($cardID == "UPR197") $numCards = 4;
@@ -160,11 +160,11 @@
         if($cardID == "UPR215") $amount = 3;
         else if($cardID == "UPR216") $amount = 2;
         else $amount = 1;
-        GainHealth($amount, $currentPlayer);
+        GainLife($amount, $currentPlayer);
         return "";
       case "UPR221": case "UPR222": case "UPR223":
         if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard($currentPlayer, $target));
-        if(PlayerHasLessHealth($currentPlayer)) GainHealth(1, $currentPlayer);
+        if(PlayerHasLessLife($currentPlayer)) GainLife(1, $currentPlayer);
         return "";
       default: return "";
     }
@@ -200,7 +200,7 @@
       case "UPR188":
         if(IsHeroAttackTarget()) {
           $hand = &GetHand($defPlayer);
-          LoseHealth(count($hand)/HandPieces(), $defPlayer);
+          LoseLife(count($hand)/HandPieces(), $defPlayer);
         }
         break;
       default: break;

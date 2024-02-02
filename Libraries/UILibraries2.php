@@ -277,7 +277,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
     <img style='position:absolute; top: -2px; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1; user-select: none;' src='./Images/Defense.png'></div>";
   }
 
-  //Health Counters style
+  //Life Counters style
   if ($lifeCounters != 0) {
     if ($defCounters == 0 && $atkCounters == 0) {
       $left = "0px";

@@ -316,19 +316,19 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
       return "";
     case "CRU118":
-      if(PlayerHasLessHealth(1)) {
-        LoseHealth(1, 2);
+      if(PlayerHasLessLife(1)) {
+        LoseLife(1, 2);
         PutItemIntoPlayForPlayer("CRU197", 2);
-        WriteLog("Player 2 lost a health and gained a copper from Kavdaen");
-        if(PlayerHasLessHealth(1)) {
-          GainHealth(1, 1);
+        WriteLog("Player 2 lost a life and gained a copper from Kavdaen");
+        if(PlayerHasLessLife(1)) {
+          GainLife(1, 1);
         }
-      } else if(PlayerHasLessHealth(2)) {
-        LoseHealth(1, 1);
+      } else if(PlayerHasLessLife(2)) {
+        LoseLife(1, 1);
         PutItemIntoPlayForPlayer("CRU197", 1);
-        WriteLog("Player 1 lost a health and gained a copper from Kavdaen");
-        if(PlayerHasLessHealth(2)) {
-          GainHealth(1, 2);
+        WriteLog("Player 1 lost a life and gained a copper from Kavdaen");
+        if(PlayerHasLessLife(2)) {
+          GainLife(1, 2);
         }
       }
       return "";

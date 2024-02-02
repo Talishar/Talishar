@@ -42,7 +42,7 @@ function EffectHitEffect($cardID)
       $top = $deck->Top(remove:true);
       if(TalentContains($top, "LIGHT", $mainPlayer)) {
         AddSoul($top, $mainPlayer, "DECK");
-        GainHealth(1, $mainPlayer);
+        GainLife(1, $mainPlayer);
       }
       else $deck->AddBottom($top, "DECK");
       break;
@@ -58,7 +58,7 @@ function EffectHitEffect($cardID)
     case "MON218":
       if(count(GetSoul($defPlayer)) > 0) {
         BanishFromSoul($defPlayer);
-        LoseHealth(1, $defPlayer);
+        LoseLife(1, $defPlayer);
       }
       break;
     case "MON299": case "MON300": case "MON301":
@@ -160,7 +160,7 @@ function EffectHitEffect($cardID)
       PutItemIntoPlayForPlayer("CRU197", $mainPlayer);
       return 1;
     case "EVR161-1":
-      GainHealth(2, $mainPlayer);
+      GainLife(2, $mainPlayer);
       break;
     case "EVR164": case "EVR165": case "EVR166":
       if($cardID == "EVR164") $amount = 6;
@@ -264,9 +264,9 @@ function EffectHitEffect($cardID)
         AddDecisionQueue("PUTPLAY", $defPlayer, "-", 1);
       }
       break;
-    case "OUT165": LoseHealth(5, $defPlayer); break;
-    case "OUT166": LoseHealth(4, $defPlayer); break;
-    case "OUT167": LoseHealth(3, $defPlayer); break;
+    case "OUT165": LoseLife(5, $defPlayer); break;
+    case "OUT166": LoseLife(4, $defPlayer); break;
+    case "OUT167": LoseLife(3, $defPlayer); break;
     case "OUT188_1": if(IsHeroAttackTarget()) { PlayAura("DYN244", $mainPlayer); return 1; } break;
     case "DTD051":
       MZMoveCard($mainPlayer, "MYDISCARD:type=AA", "MYTOPDECK", may:true);
@@ -279,7 +279,7 @@ function EffectHitEffect($cardID)
     case "DTD080-3": GiveAttackGoAgain(); break;
     case "DTD207": if(IsHeroAttackTarget()) PlayAura("DTD232", $mainPlayer); break;
     case $Card_LifeBanner:
-      GainHealth(1, $mainPlayer);
+      GainLife(1, $mainPlayer);
       return 1;
     case $Card_ResourceBanner:
       GainResources($mainPlayer, 1);
@@ -389,7 +389,7 @@ function EffectBlockModifier($cardID, $index, $from)
     case "EVO105": case "EVO106": case "EVO107":
       return IsActionCard($CombatChain->Card($index)->ID()) ? -1 : 0;
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206":
-      return $CombatChain->Card($index)->ID() == $cardID && PlayerHasLessHealth($defPlayer) ? 1 : 0;
+      return $CombatChain->Card($index)->ID() == $cardID && PlayerHasLessLife($defPlayer) ? 1 : 0;
     default: return 0;
   }
 }

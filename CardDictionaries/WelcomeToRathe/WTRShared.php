@@ -337,7 +337,7 @@
       case "WTR160":
         Draw($currentPlayer);
         Draw($currentPlayer);
-        if($from == "ARS") { $hand = &GetHand($currentPlayer); GainHealth(count($hand), $currentPlayer); }
+        if($from == "ARS") { $hand = &GetHand($currentPlayer); GainLife(count($hand), $currentPlayer); }
         return "";
       case "WTR161":
         if(count(GetDeck($currentPlayer)) == 0) {
@@ -351,12 +351,12 @@
           $roll = GetDieRoll($currentPlayer);
           $rv = "Crazy Brew rolled " . $roll;
           if($roll <= 2) {
-            LoseHealth(2, $currentPlayer);
+            LoseLife(2, $currentPlayer);
             GainActionPoints(1, $currentPlayer);
-            $rv .= " and lost you 2 health.";
+            $rv .= " and lost you 2 life.";
           }
           else if($roll <= 4) {
-            GainHealth(2, $currentPlayer);
+            GainLife(2, $currentPlayer);
             GainActionPoints(1, $currentPlayer);
           } else {
             $resources = &GetResources($currentPlayer);
@@ -386,21 +386,21 @@
       case "WTR172":
         if($from == "PLAY") GainActionPoints(2, $currentPlayer);
         return "";
-      case "WTR173": GainHealth(3, $currentPlayer); return "";
-      case "WTR174": GainHealth(2, $currentPlayer); return "";
-      case "WTR175": GainHealth(1, $currentPlayer); return "";
+      case "WTR173": GainLife(3, $currentPlayer); return "";
+      case "WTR174": GainLife(2, $currentPlayer); return "";
+      case "WTR175": GainLife(1, $currentPlayer); return "";
       case "WTR182": case "WTR183": case "WTR184":
         PlayAura("WTR225", $currentPlayer);
         return "";
       case "WTR191": case "WTR192": case "WTR193":
-        if(PlayerHasLessHealth($mainPlayer)) { GiveAttackGoAgain(); $rv = "Gains go again"; }
+        if(PlayerHasLessLife($mainPlayer)) { GiveAttackGoAgain(); $rv = "Gains go again"; }
         return $rv;
       case "WTR194": case "WTR195": case "WTR196":
         BottomDeck($currentPlayer, true, shouldDraw:true);
         if($from == "ARS") { GiveAttackGoAgain(); $rv = "Gains go again"; }
         return $rv;
       case "WTR200": case "WTR201": case "WTR202":
-        if(PlayerHasLessHealth($mainPlayer)) { AddCurrentTurnEffect($cardID, $mainPlayer); $rv = "Gains +1 attack"; }
+        if(PlayerHasLessLife($mainPlayer)) { AddCurrentTurnEffect($cardID, $mainPlayer); $rv = "Gains +1 attack"; }
         return $rv;
       case "WTR206": case "WTR207": case "WTR208":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -445,7 +445,7 @@
         break;
       case "WTR085":
         if(IsHeroAttackTarget() && ComboActive()) {
-          LoseHealth($combatChainState[$CCS_DamageDealt], $defPlayer);
+          LoseLife($combatChainState[$CCS_DamageDealt], $defPlayer);
         }
         break;
       case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) { Draw($mainPlayer); } break;
@@ -478,7 +478,7 @@
       }
     }
     RevealCards($cards, $mainPlayer);
-    GainHealth($lifegain, $mainPlayer);
+    GainLife($lifegain, $mainPlayer);
     return "";
   }
 

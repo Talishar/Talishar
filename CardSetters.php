@@ -53,7 +53,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   }
   if(ModifiedAttackValue($cardID, $player, $from, source:$banishedBy) >= 6) {
     if($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer && ($characterID == "MON119" || $characterID == "MON120") && $character[1] == 2){ // Levia
-      WriteLog(CardLink($characterID, $characterID) . " banished a card with 6+ power, and won't lose health from Blood Debt this turn");
+      WriteLog(CardLink($characterID, $characterID) . " banished a card with 6+ power, and won't lose life from Blood Debt this turn");
     }
     ++$classState[$CS_Num6PowBan];
     $index = FindCharacterIndex($player, "MON122");
@@ -72,7 +72,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   if($banishedBy != "" && $player != $mainPlayer) CheckContracts($banishedBy, $cardID);
   if($banishedBy == "DTD193" && TalentContains($cardID, "LIGHT", $player)) {
     $otherPlayer = $player == 1 ? 2 : 1;
-    GainHealth(1, $otherPlayer);
+    GainLife(1, $otherPlayer);
   }
   return $rv;
 }

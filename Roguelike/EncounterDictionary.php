@@ -123,8 +123,8 @@ function EncounterDescription()
     case 204: return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor. You can use this as an opportunity to practice some of the limited blacksmithing skills you have, or you can commission a piece from the Giant.";
     case 205: return "You enter a temple. There is an altar that reads, \"Offer of yourself and receive a bountiful blessing.\"";
     case 206:
-      $health = &GetZone(1, "Health");
-      if($health[0] > 1) return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game.'";
+      $life = &GetZone(1, "Life");
+      if($life[0] > 1) return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game.'";
       else return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game. But it seems you have nothing to offer me, so I must take my leave.'";
     case 208: return "You meet a migrating trader, who holds up a small stone, but doesn't let you get a close look at it. \"Greetings Bounty Hunter, I have an amazing deal for you. Two gold pieces and this powerful stone can be yours.\"";
     case 210: return "The view is breathtaking, but the journey is precarious. You lose your footing and stumble, dropping your bag of coins over the edge.";
@@ -238,8 +238,8 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 206:
-      $health = &GetZone($player, "Health");
-      if($health[0] > 1) AddDecisionQueue("BUTTONINPUT", $player, "Offer_her_1_life,Leave");
+      $life = &GetZone($player, "Life");
+      if($life[0] > 1) AddDecisionQueue("BUTTONINPUT", $player, "Offer_her_1_life,Leave");
       else AddDecisionQueue("BUTTONINPUT", $player, "Leave");
       AddDecisionQueue("OLDHAG", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
@@ -259,8 +259,8 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 210:
-      $health = &GetZone($player, "Health");
-      if($health[0] >= 5) AddDecisionQueue("BUTTONINPUT", $player, "Its_best_to_leave_the_gold_behind,Attempt_to_retrieve_your_coins");
+      $life = &GetZone($player, "Life");
+      if($life[0] >= 5) AddDecisionQueue("BUTTONINPUT", $player, "Its_best_to_leave_the_gold_behind,Attempt_to_retrieve_your_coins");
       else AddDecisionQueue("BUTTONINPUT", $player, "Its_best_to_leave_the_gold_behind");
       AddDecisionQueue("CLIFF", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
@@ -283,8 +283,8 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 215:
-      $health = &GetZone($player, "Health");
-      if($health[0] >= 5) AddDecisionQueue("BUTTONINPUT", $player, "Spar_for_a_short_while,Spar_until_nightfall,Politely_decline");
+      $life = &GetZone($player, "Life");
+      if($life[0] >= 5) AddDecisionQueue("BUTTONINPUT", $player, "Spar_for_a_short_while,Spar_until_nightfall,Politely_decline");
       else AddDecisionQueue("BUTTONINPUT", $player, "Spar_for_a_short_while,Politely_decline");
       AddDecisionQueue("SPARRINGKNIGHT", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
@@ -383,8 +383,8 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 235:
-      $health = &GetZone($player, "Health");
-      if($health[0] > 1) AddDecisionQueue("BUTTONINPUT", $player, "Take_a_bite,Save_some_for_later,Leave");
+      $life = &GetZone($player, "Life");
+      if($life[0] > 1) AddDecisionQueue("BUTTONINPUT", $player, "Take_a_bite,Save_some_for_later,Leave");
       else AddDecisionQueue("BUTTONINPUT", $player, "Save_some_for_later,Leave");
       AddDecisionQueue("COTTAGEWITCH", $player, "-", 1);
       break;

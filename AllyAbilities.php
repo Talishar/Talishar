@@ -12,7 +12,7 @@ function PlayAlly($cardID, $player, $subCards="-", $number=1, $isToken=false)
   for($i = 0; $i < $number; ++$i) {
     array_push($allies, $cardID);
     array_push($allies, 2);
-    array_push($allies, AllyHealth($cardID));
+    array_push($allies, AllyLife($cardID));
     array_push($allies, 0); //Frozen
     array_push($allies, $subCards); //Subcards
     array_push($allies, GetUniqueId()); //Unique ID
@@ -61,7 +61,7 @@ function AllyAddGraveyard($player, $cardID)
   }
 }
 
-function AllyHealth($cardID)
+function AllyLife($cardID)
 {
   switch($cardID) {
     case "MON219": return 6;
@@ -313,7 +313,7 @@ function AllyDamageTakenAbilities($player, $i)
       $allies[$i+2] -= 1;
       $allies[$i+7] -= 1;
       PutPermanentIntoPlay($player, "UPR043");
-      WriteLog(CardLink($allies[$i], $allies[$i]) . " got a -1 health counter and created an ash token");
+      WriteLog(CardLink($allies[$i], $allies[$i]) . " got a -1 life counter and created an ash token");
       break;
     default: break;
   }
@@ -340,12 +340,12 @@ function AllyTakeDamageAbilities($player, $index, $damage, $preventable)
 function AllyBeginEndTurnEffects()
 {
   global $mainPlayer, $defPlayer;
-  //CR 2.0 4.4.3a Reset health for all allies
+  //CR 2.0 4.4.3a Reset life for all allies
   $mainAllies = &GetAllies($mainPlayer);
   for($i = 0; $i < count($mainAllies); $i += AllyPieces()) {
     if($mainAllies[$i+1] != 0) {
       $mainAllies[$i+1] = 2;
-      $mainAllies[$i+2] = AllyHealth($mainAllies[$i]) + $mainAllies[$i+7];
+      $mainAllies[$i+2] = AllyLife($mainAllies[$i]) + $mainAllies[$i+7];
       $mainAllies[$i+8] = 1;
     }
   }
@@ -353,7 +353,7 @@ function AllyBeginEndTurnEffects()
   for($i = 0; $i < count($defAllies); $i += AllyPieces()) {
     if($defAllies[$i+1] != 0) {
       $defAllies[$i+1] = 2;
-      $defAllies[$i+2] = AllyHealth($defAllies[$i]) + $defAllies[$i + 7];
+      $defAllies[$i+2] = AllyLife($defAllies[$i]) + $defAllies[$i + 7];
       $defAllies[$i+8] = 1;
     }
   }

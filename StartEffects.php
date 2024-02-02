@@ -8,11 +8,11 @@ array_push($layerPriority, ShouldHoldPriority(2));
 
 $p1Char = &GetPlayerCharacter(1);
 $p2Char = &GetPlayerCharacter(2);
-$p1H = &GetHealth(1);
-$p2H = &GetHealth(2);
-$p1H = CharacterHealth($p1Char[0]);
-$p2H = CharacterHealth($p2Char[0]);
-if($p1StartingHealth != "") $p1H = $p1StartingHealth;
+$p1H = &GetLife(1);
+$p2H = &GetLife(2);
+$p1H = CharacterLife($p1Char[0]);
+$p2H = CharacterLife($p2Char[0]);
+if($p1StartingLife != "") $p1H = $p1StartingLife;
 
 $mainPlayer = $firstPlayer;
 $currentPlayer = $firstPlayer;

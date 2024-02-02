@@ -167,7 +167,7 @@
           rv += "font-size:" + (imgCounterHeight - 17) + "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" + defCounters + "<img style='position:absolute; top: -2px; width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; opacity: 0.9; z-index:-1;' src='./Images/Defense.png'></div>";
         }
 
-        //Health Counters style
+        //Life Counters style
         if (lifeCounters != 0) {
           var left = "45%";
           if (defCounters == 0 && atkCounters == 0) {

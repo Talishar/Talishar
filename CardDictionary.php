@@ -113,10 +113,10 @@ function CardSubType($cardID, $uniqueID=-1)
   }
 }
 
-function CharacterHealth($cardID)
+function CharacterLife($cardID)
 {
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM") return GeneratedCharacterHealth($cardID);
+  if($set != "ROG" && $set != "DUM") return GeneratedCharacterLife($cardID);
   switch($cardID) {
     case "DUMMY": return 1000;
     case "ROGUE001": return 6;
@@ -675,7 +675,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
     case "MON066": case "MON067": case "MON068": return ($from == "CHAINCLOSING" && SearchCurrentTurnEffects($cardID, $mainPlayer) ? "SOUL" : "GY");
     case "MON087":
       $theirChar = &GetPlayerCharacter($otherPlayer);
-      return (PlayerHasLessHealth($player) && TalentContains($theirChar[0], "SHADOW") ? "SOUL" : "GY");
+      return (PlayerHasLessLife($player) && TalentContains($theirChar[0], "SHADOW") ? "SOUL" : "GY");
     case "MON192": return ($from == "BANISH" ? "HAND" : "GY");
     case "EVR082": case "EVR083": case "EVR084": return (GetClassState($player, $CS_NumBoosted) > 0 ? "BOTDECK" : "GY");
     case "EVR134": case "EVR135": case "EVR136": return ($player != $mainPlayer ? "BOTDECK" : "GY");

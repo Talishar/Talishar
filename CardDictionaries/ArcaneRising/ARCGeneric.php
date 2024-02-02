@@ -30,7 +30,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", ($currentPlayer == 1 ? 2 : 1), "ARC162,{0}");
       return "";
     case "ARC164": case "ARC165": case "ARC166":
-      if(PlayerHasLessHealth($currentPlayer)) GiveAttackGoAgain();
+      if(PlayerHasLessLife($currentPlayer)) GiveAttackGoAgain();
       return "";
     case "ARC170": case "ARC171": case "ARC172":
       AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
@@ -82,10 +82,10 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       else $cost = 2;
       return "";
     case "ARC212": case "ARC213": case "ARC214":
-      if($cardID == "ARC212") $health = 3;
-      else if($cardID == "ARC213") $health = 2;
-      else $health = 1;
-      GainHealth($health, $currentPlayer);
+      if($cardID == "ARC212") $life = 3;
+      else if($cardID == "ARC213") $life = 2;
+      else $life = 1;
+      GainLife($life, $currentPlayer);
       if(SearchCurrentTurnEffects("ARC185-GA", $currentPlayer)) Draw($currentPlayer);
       return "";
     case "ARC215": case "ARC216": case "ARC217":
@@ -106,7 +106,7 @@ function ARCGenericHitEffect($cardID)
       if(IsHeroAttackTarget()) DestroyArsenal($defPlayer, effectController:$mainPlayer);      
       break;
     case "ARC164": case "ARC165": case "ARC166":
-      GainHealth(1, $mainPlayer);
+      GainLife(1, $mainPlayer);
       break;
     case "ARC161":
       AddCurrentTurnEffect($cardID, $mainPlayer);

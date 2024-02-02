@@ -97,7 +97,7 @@
       case "MON218":
         $theirCharacter = GetPlayerCharacter($otherPlayer);
         if(TalentContains($theirCharacter[0], "LIGHT", $otherPlayer)) {
-          if(GetHealth($currentPlayer) > GetHealth($otherPlayer)) {
+          if(GetLife($currentPlayer) > GetLife($otherPlayer)) {
             AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA");
             AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
             AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
@@ -132,7 +132,7 @@
         if(IsHeroAttackTarget()) {
           $numSoul = count(GetSoul($defPlayer));
           if($numSoul > 0) {
-            LoseHealth($numSoul, $defPlayer);
+            LoseLife($numSoul, $defPlayer);
             $char = &GetPlayerCharacter($defPlayer);
             if($char[0] == "DTD164") WriteLog("<span style='color:red;'>I find your lack of faith disturbing.</span>");
             else if($char[0] == "DTD564") WriteLog("<span style='color:red;'>When I left you, I was but the learner. Now I am the master.</span>");
@@ -172,12 +172,12 @@
     $numBloodDebt = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
     $char = &GetPlayerCharacter($mainPlayer);
     if($char[0] == "DTD564" && +$char[1] == 2) { $deck = new Deck($mainPlayer); for($i=0; $i<$numBloodDebt; ++$i) $deck->BanishTop(); return; }
-    $health = &GetHealth($mainPlayer);
+    $life = &GetLife($mainPlayer);
     if($numBloodDebt > 0) {
-      if($health > 13 && $health - $numBloodDebt <= 13)
+      if($life > 13 && $life - $numBloodDebt <= 13)
       {
-        $numBloodDebt -= ($health - 13);
-        $health = 13;
+        $numBloodDebt -= ($life - 13);
+        $life = 13;
         if(SearchInventoryForCard($mainPlayer, "DTD564") != "")
         {
           AddDecisionQueue("YESNO", $mainPlayer, "if you want to transform into Levia Consumed");
@@ -188,8 +188,8 @@
         }
       }
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numBloodDebt, 1);
-      AddDecisionQueue("OP", $mainPlayer, "LOSEHEALTH", 1);
-      AddDecisionQueue("WRITELOG", $mainPlayer, "Player $mainPlayer lost $numBloodDebt health from Blood Debt", 1);
+      AddDecisionQueue("OP", $mainPlayer, "LOSELIFE", 1);
+      AddDecisionQueue("WRITELOG", $mainPlayer, "Player $mainPlayer lost $numBloodDebt life from Blood Debt", 1);
     }
   }
 

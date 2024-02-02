@@ -411,7 +411,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             }
           }
           return implode(",", $cards);
-        case "LOSEHEALTH": LoseHealth($lastResult, $player); return $lastResult;
+        case "LOSELIFE": LoseLife($lastResult, $player); return $lastResult;
         case "BANISHHAND": BanishHand($player); return $lastResult;
         case "DOCRANK":
           switch($params[1]) {
@@ -817,7 +817,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       } else {
         PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, $parameter);
         DoQuell($targetPlayer, $damage);
-        if (SearchCurrentTurnEffects("DTD209", $targetPlayer, true) && $damage >= GetHealth($targetPlayer)) PreventLethal($targetPlayer, $damage);
+        if (SearchCurrentTurnEffects("DTD209", $targetPlayer, true) && $damage >= GetLife($targetPlayer)) PreventLethal($targetPlayer, $damage);
       }
       return $damage;
     case "TAKEDAMAGE":

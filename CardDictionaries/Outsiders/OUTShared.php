@@ -318,8 +318,8 @@ function OUTAbilityCost($cardID)
           $topDeck = $deck->Top(remove:true);
           AddGraveyard($topDeck, $mainPlayer, "DECK");
           $numName = SearchCount(SearchMultizone($mainPlayer, "MYDISCARD:sameName=" . $topDeck));
-          LoseHealth($numName, $mainPlayer);
-          $rv = Cardlink($topDeck, $topDeck) . " put into discard. Player $mainPlayer lost $numName health";
+          LoseLife($numName, $mainPlayer);
+          $rv = Cardlink($topDeck, $topDeck) . " put into discard. Player $mainPlayer lost $numName life";
           TrapTriggered($cardID);
         }
         return $rv;
@@ -702,7 +702,7 @@ function OUTAbilityCost($cardID)
           if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
         }
         if($numDaggerHits > 0) WriteLog("Player " . $defPlayer . " lost " . $numDaggerHits . " life from " . CardLink("OUT142", "OUT142"));
-        LoseHealth($numDaggerHits, $defPlayer);
+        LoseLife($numDaggerHits, $defPlayer);
         break;
       case "OUT151": case "OUT152": case "OUT153":
         AddCurrentTurnEffect($cardID, $mainPlayer);

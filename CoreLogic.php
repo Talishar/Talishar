@@ -422,7 +422,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     ItemDamageTakenAbilities($player, $damage);
     CharacterDamageTakenAbilities($player, $damage);
     CharacterDealDamageAbilities($otherPlayer, $damage);
-    if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(CountAura("MON013", $otherPlayer), $player); WriteLog("Lost health from Ode to Wrath"); }
+    if(SearchAuras("MON013", $otherPlayer)) { LoseLife(CountAura("MON013", $otherPlayer), $player); WriteLog("Lost life from Ode to Wrath"); }
     $classState[$CS_DamageTaken] += $damage;
     if($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
@@ -430,14 +430,14 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
   }
   if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer) && IsHeroAttackTarget()) { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $player); }
   LogDamageStats($player, $damageThreatened, $damage);
-  PlayerLoseHealth($player, $damage);
+  PlayerLoseLife($player, $damage);
   return $damage;
 }
 
 function DamageDealtAbilities($player, $damage, $type, $source) {
   global $mainPlayer, $combatChainState, $CCS_AttackFused;
   if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused]) AddCurrentTurnEffect($source, $mainPlayer);
-  if($source == "DYN612") GainHealth($damage, $mainPlayer);
+  if($source == "DYN612") GainLife($damage, $mainPlayer);
 }
 
 function DoQuell($targetPlayer, $damage)
@@ -574,40 +574,40 @@ function AttackDamageAbilities($damageDone)
   }
 }
 
-function LoseHealth($amount, $player)
+function LoseLife($amount, $player)
 {
-  PlayerLoseHealth($player, $amount);
+  PlayerLoseLife($player, $amount);
 }
 
-function GainHealth($amount, $player)
+function GainLife($amount, $player)
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
-  $health = &GetHealth($player);
-  $otherHealth = &GetHealth($otherPlayer);
+  $life = &GetLife($player);
+  $otherLife = &GetLife($otherPlayer);
   if(SearchCurrentTurnEffects("DTD231", 1, remove:true) || SearchCurrentTurnEffects("DTD231", 2, remove:true))
   {
     WriteLog("<span style='color:green;'>Somebody poisoned the water hole</span>");
-    LoseHealth($amount, $player);
+    LoseLife($amount, $player);
     return false;
   }
-  if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog(CardLink("MON229","MON229") . " prevented you from gaining health"); return; }
-  if((SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140")) && $health > $otherHealth) {
-    WriteLog("Reaping Blade prevented player " . $player . " from gaining " . $amount . " health");
+  if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog(CardLink("MON229","MON229") . " prevented you from gaining life"); return; }
+  if((SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140")) && $life > $otherLife) {
+    WriteLog("Reaping Blade prevented player " . $player . " from gaining " . $amount . " life");
     return false;
   }
-  WriteLog("Player " . $player . " gained " . $amount . " health");
-  $health += $amount;
+  WriteLog("Player " . $player . " gained " . $amount . " life");
+  $life += $amount;
   return true;
 }
 
-function PlayerLoseHealth($player, $amount)
+function PlayerLoseLife($player, $amount)
 {
   global $CS_LifeLost;
-  $health = &GetHealth($player);
-  $amount = AuraLoseHealthAbilities($player, $amount);
-  $health -= $amount;
+  $life = &GetLife($player);
+  $amount = AuraLoseLifeAbilities($player, $amount);
+  $life -= $amount;
   IncrementClassState($player, $CS_LifeLost, $amount);
-  if($health <= 0) {
+  if($life <= 0) {
     PlayerWon(($player == 1 ? 2 : 1));
   }
 }
@@ -894,10 +894,10 @@ function GetCardIDBeforeTransform($cardID) {
   return $cardSet . $originalCardIDNum;
 }
 
-function PlayerHasLessHealth($player)
+function PlayerHasLessLife($player)
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
-  return GetHealth($player) < GetHealth($otherPlayer);
+  return GetLife($player) < GetLife($otherPlayer);
 }
 
 function GetIndices($count, $add=0, $pieces=1)
@@ -2087,11 +2087,11 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true)
     }
   }
   if($mainPhase && SearchCharacterActive($otherPlayer, "ROGUE026")) {
-    $health = &GetHealth($otherPlayer);
-    $health += -10;
-    if($health < 1)
+    $life = &GetLife($otherPlayer);
+    $life += -10;
+    if($life < 1)
     {
-      $health = 1;
+      $life = 1;
       WriteLog("NO! You will not banish me! I refuse!");
     }
   }

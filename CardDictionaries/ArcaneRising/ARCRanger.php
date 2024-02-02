@@ -92,7 +92,7 @@
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
       case "ARC069": case "ARC070": case "ARC071":
-        if(IsHeroAttackTarget()) PlayerLoseHealth($defPlayer, 1);
+        if(IsHeroAttackTarget()) PlayerLoseLife($defPlayer, 1);
         break;
       default: break;
     }

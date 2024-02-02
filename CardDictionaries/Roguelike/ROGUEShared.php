@@ -53,9 +53,9 @@ function ROGUEEffectAttackModifier($cardID)
       case "ROGUE509": return 1;
       case "ROGUE517":
         global $currentPlayer;
-        $health = &GetHealth($currentPlayer);
-        if($health <=2) return 2;
-        else if($health <=5) return 1;
+        $life = &GetLife($currentPlayer);
+        if($life <=2) return 2;
+        else if($life <=5) return 1;
         else return 0;
       case "ROGUE521":
       case "ROGUE521-NA": return 1;
@@ -576,11 +576,11 @@ function ROGUEPowerStart()
         AddDecisionQueue("ROGUEMIRRORGAMESTART", $mainPlayer, "0");
         break;
       case "ROGUE510":
-        GainHealth(5, $mainPlayer);
+        GainLife(5, $mainPlayer);
         break;
       case "ROGUE516":
-        $health = &GetHealth($mainPlayer);
-        if($health <= 2) $health = 20;
+        $life = &GetLife($mainPlayer);
+        if($life <= 2) $life = 20;
         break;
       case "ROGUE524":
         $deck = &GetDeck($mainPlayer);
@@ -592,8 +592,8 @@ function ROGUEPowerStart()
         array_unshift($deck, "CRU181", "CRU181", "CRU181");
         break;
       case "ROGUE609":
-        $health = &GetHealth($mainPlayer);
-        if($health <= 10) $health += 5;
+        $life = &GetLife($mainPlayer);
+        if($life <= 10) $life += 5;
         break;
       case "ROGUE708":
         $options = [];

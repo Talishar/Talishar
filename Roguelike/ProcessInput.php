@@ -8,7 +8,7 @@
 
   //We should also have some information on the type of command
   $mode = $_GET["mode"];
-  $buttonInput = isset($_GET["buttonInput"]) ? $_GET["buttonInput"] : "";//The player that is the target of the command - e.g. for changing health total
+  $buttonInput = isset($_GET["buttonInput"]) ? $_GET["buttonInput"] : "";//The player that is the target of the command - e.g. for changing life total
   $cardID = isset($_GET["cardID"]) ? $_GET["cardID"] : "";
   $chkCount = isset($_GET["chkCount"]) ? $_GET["chkCount"] : 0;
   $chkInput = [];
@@ -234,19 +234,19 @@
         }
         else if($myDQ[0] == "SHOP"){
           $encounter = &GetZone($playerID, "Encounter");
-          $health = &GetZone($playerID, "Health");
+          $life = &GetZone($playerID, "Life");
           if($buttonInput == "shop_heal"){
-            $health = &GetZone($playerID, "Health");
+            $life = &GetZone($playerID, "Life");
             //WriteLog("\$encounter->costToHeal: ".$encounter->costToHeal);
 
-            $gain = (20 - $health[0] > 5 ? 5 : 20 - $health[0]);
+            $gain = (20 - $life[0] > 5 ? 5 : 20 - $life[0]);
             if($gain < 0) $gain = 0;
             if($gain == 0){
-              WriteLog("You are already very healthy. You and the healer enjoy a polite conversation, but there's no need to hire them.");
+              WriteLog("You are already very lifey. You and the healer enjoy a polite conversation, but there's no need to hire them.");
             }
             else if($encounter->gold >= $encounter->costToHeal){ //If the player's gold is less than or equal to the cost to heal
-              WriteLog("The local healer patches your wounds. You feel better prepared for your journey ahead! You heal $gain health.");
-              $health[0] += $gain;
+              WriteLog("The local healer patches your wounds. You feel better prepared for your journey ahead! You heal $gain life.");
+              $life[0] += $gain;
               $encounter->gold -= $encounter->costToHeal;
               $encounter->costToHeal += 1;
             }

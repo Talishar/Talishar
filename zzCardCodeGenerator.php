@@ -34,7 +34,7 @@
   GenerateFunction($cardArray, $handler, "PitchValue", "pitch", "1");
   GenerateFunction($cardArray, $handler, "CardCost", "cost", "0");
   GenerateFunction($cardArray, $handler, "CardSubtype", "subtype", "");
-  GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20", true);//Also images
+  GenerateFunction($cardArray, $handler, "CharacterLife", "life", "20", true);//Also images
   GenerateFunction($cardArray, $handler, "Rarity", "rarity", "C");
   GenerateFunction($cardArray, $handler, "Is1H", "1H", "false", true);
   GenerateFunction($cardArray, $handler, "CardClass", "cardClass", "NONE");
@@ -52,7 +52,7 @@
     $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "LGS", "HER", "FAB", "TCC", "EVO", "HVY"];
     $isString = true;
     $isBool = false;
-    if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "1H") $isString = false;
+    if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "life" || $propertyName == "1H") $isString = false;
     if($propertyName == "1H" || $propertyName == "specialization") $isBool = true;
     fwrite($handler, "if(strlen(\$cardID) < 6) return " . ($isString ? "\"\"" : "0") . ";\r\n");
     fwrite($handler, "if(is_int(\$cardID)) return " . ($isString ? "\"\"" : "0") . ";\r\n");
@@ -119,9 +119,9 @@
       if($data == "") $data = -1;
       $data = intval($data);
     }
-    else if($propertyName == "health")
+    else if($propertyName == "life")
     {
-      $data = $cardArray[$i]->health;
+      $data = $cardArray[$i]->life;
       CheckImage($cardID, $isDuplicate);
     }
     else if($propertyName == "rarity")
