@@ -1362,7 +1362,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SPECIFICCARD":
       $parameterArr = explode(",", $parameter);
       $parameter = $parameterArr[0];
-      if (count($parameterArr) > 0) $initiator = $parameterArr[1];
+      if(count($parameterArr) > 1) $initiator = $parameterArr[1];
       else $initiator = "";
       return SpecificCardLogic($player, $parameter, $lastResult, $initiator);
     case "HYPERDRIVER":
