@@ -1583,7 +1583,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $p1Deck->AddBottom($p1Deck->Top(remove:true));
           $p2Deck = new Deck(2);
           $p2Deck->AddBottom($p2Deck->Top(remove:true));
-          Clash("HVY061-2", effectController:$defPlayer);
+          Clash("HVY061-" . $winner, effectController:$defPlayer);
         }
         return "";
       case "DEAL1DAMAGE":

@@ -63,8 +63,6 @@
 
   function Clash($cardID, $effectController="")
   {
-    global $dqVars;
-    if($cardID != "HVY061-2") $dqVars[2] = -1;
     if(IsAllyAttacking()){
       WriteLog("<span style='color:red;'>No clash is done because there is no attacking hero when allies attack.</span>");
     } else {
@@ -91,7 +89,7 @@
     if($p1Power >= 0 && ($p1Power > $p2Power || $p2Power == "")) {
       $dqVars[0] = 1;
       VictorAbility(2, $cardID, $effectController);
-    } 
+    }
     else if($p2Power >= 0 && ($p2Power > $p1Power || $p1Power == "")) {
       $dqVars[0] = 2;
       VictorAbility(1, $cardID, $effectController);
@@ -138,11 +136,17 @@
       case "HVY052":
         if($playerID == $defPlayer) AddCurrentTurnEffect($cardID, $defPlayer, "CC");
         break;
-      case "HVY061":
-        $dqVars[2] = $dqVars[0];
+      case "HVY061": break;
+      case "HVY061-0": break;
+      case "HVY061-1":
+        if($playerID == 1) {
+          PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$defPlayer);
+          PlayAura("HVY241", $playerID); //Might
+          PlayAura("HVY242", $playerID); //Vigor
+        }
         break;
       case "HVY061-2":
-        if($dqVars[2] == $playerID) {
+        if($playerID == 2) {
           PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$defPlayer);
           PlayAura("HVY241", $playerID); //Might
           PlayAura("HVY242", $playerID); //Vigor
