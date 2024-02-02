@@ -568,7 +568,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumMightDestroyed] = 0;
   $mainClassState[$CS_NumAgilityDestroyed] = 0;
   $mainClassState[$CS_HaveIntimidated] = 0;
-  $mainClassState[$$CS_ModalAbilityChoosen] = "-";
+  $mainClassState[$CS_ModalAbilityChoosen] = "-";
 }
 
 function ResetCardPlayed($cardID)
