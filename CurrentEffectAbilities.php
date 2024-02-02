@@ -252,7 +252,7 @@ function EffectHitEffect($cardID)
         WriteLog("Player " . $mainPlayer . " doesn't have any dagger in their inventory");
         return;
       }
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a weapon to equip");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a dagger to equip");
       AddDecisionQueue("CHOOSECARD", $mainPlayer, $weapons);
       AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-INVENTORY");
       AddDecisionQueue("EQUIPCARD", $mainPlayer, "<-");
