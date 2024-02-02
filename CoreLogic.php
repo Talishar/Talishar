@@ -579,23 +579,23 @@ function LoseLife($amount, $player)
   PlayerLoseLife($player, $amount);
 }
 
-function GainLife($amount, $player)
+function GainLife($amount, $player, $silent=false, $preventable=true)
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
   $life = &GetLife($player);
   $otherLife = &GetLife($otherPlayer);
-  if(SearchCurrentTurnEffects("DTD231", 1, remove:true) || SearchCurrentTurnEffects("DTD231", 2, remove:true))
+  if((SearchCurrentTurnEffects("DTD231", 1, remove:true) || SearchCurrentTurnEffects("DTD231", 2, remove:true)) && $preventable)
   {
     WriteLog("<span style='color:green;'>Somebody poisoned the water hole</span>");
     LoseLife($amount, $player);
     return false;
   }
-  if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog(CardLink("MON229","MON229") . " prevented you from gaining life"); return; }
-  if((SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140")) && $life > $otherLife) {
+  if(SearchCurrentTurnEffects("MON229", $player) && $preventable) { WriteLog(CardLink("MON229","MON229") . " prevented you from gaining life"); return; }
+  if((SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140") && $preventable) && $life > $otherLife) {
     WriteLog("Reaping Blade prevented player " . $player . " from gaining " . $amount . " life");
     return false;
   }
-  WriteLog("Player " . $player . " gained " . $amount . " life");
+  if(!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
   $life += $amount;
   return true;
 }

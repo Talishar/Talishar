@@ -19,8 +19,7 @@ function PhaseName($phase)
 }
 
 function TypeToPlay($phase)
-{
-  WriteLog($phase);
+{  
   global $turn;
   switch ($phase) {
     case "M":
