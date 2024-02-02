@@ -1200,7 +1200,7 @@ function SearchLayersForCardID($cardID)
   return -1;
 }
 
-function GetPlayerNumEquipment($player) 
+function GetPlayerNumEquipment($player)
 {
   $characters = &GetPlayerCharacter($player);
   $count = 0;
@@ -1210,7 +1210,7 @@ function GetPlayerNumEquipment($player)
   return $count;
 }
 
-function GetPlayerNumTokens($player) 
+function GetPlayerNumTokens($player)
 {
   $auras = &GetAuras($player);
   $items = &GetItems($player);
@@ -1234,6 +1234,7 @@ function GetPlayerNumTokens($player)
 }
 
 function RemoveCardSameNames($player, $stringCardsIndex) {
+  if($stringCardsIndex == "") return "";
   $banish = GetBanish($player);
   $indexToCheck = explode(',', $stringCardsIndex);
   $newString = "";
