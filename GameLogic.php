@@ -330,7 +330,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character = &GetPlayerCharacter($player);
       switch($lrArr[0]) {
         case "MYCHAR": case "THEIRCHAR":
-          if($character[$lrArr[1]+5] < 2 && SearchCurrentTurnEffectsForUniqueID($character[$lrArr[1]+11]) == -1) {
+          if($character[$lrArr[1]+5] < 2 && SearchCurrentTurnEffects("EVR055", $player, returnUniqueID:true) != $character[$lrArr[1]+11]) {
             AddCurrentTurnEffect("EVR055", $player, uniqueID:$character[$lrArr[1]+11]);
             AddCharacterUses($player, $lrArr[1], $parameter); break;
           }
