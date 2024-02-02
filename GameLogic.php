@@ -109,8 +109,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "MYHANDARROW": $rv = SearchHand($player, "", "Arrow"); break;
         case "MYDISCARDARROW": $rv = SearchDiscard($player, "", "Arrow"); break;
-        case "MULTIACTIONSBANISH": 
-          $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A")); 
+        case "MULTIACTIONSBANISH":
+          $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A"));
           $rv = RemoveCardSameNames($player, $index);
           break;
         case "GY":
@@ -329,7 +329,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $lrArr = explode("-", $lastResult);
       $character = &GetPlayerCharacter($player);
       switch($lrArr[0]) {
-        case "MYCHAR": case "THEIRCHAR": 
+        case "MYCHAR": case "THEIRCHAR":
           if($character[$lrArr[1]+5] < 2 && SearchCurrentTurnEffectsForUniqueID($character[$lrArr[1]+11]) == -1) {
             AddCurrentTurnEffect("EVR055", $player, uniqueID:$character[$lrArr[1]+11]);
             AddCharacterUses($player, $lrArr[1], $parameter); break;
@@ -413,8 +413,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           return implode(",", $cards);
         case "LOSEHEALTH": LoseHealth($lastResult, $player); return $lastResult;
         case "BANISHHAND": BanishHand($player); return $lastResult;
-        case "DOCRANK-MainPhaseTrue": DoCrank($player, $lastResult, true); return $lastResult;
-        case "DOCRANK-MainPhaseFalse": DoCrank($player, $lastResult, false); return $lastResult;
+        case "DOCRANK":
+          switch($params[1]) {
+            case "MainPhaseTrue": DoCrank($player, $lastResult, true); return $lastResult;
+            case "MainPhaseFalse": DoCrank($player, $lastResult, false); return $lastResult;
+            default: return $lastResult;
+          }
         default: return $lastResult;
       }
     case "FILTER":
