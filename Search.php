@@ -644,6 +644,7 @@ function SearchForUniqueID($uniqueID, $player)
   if ($index == -1) $index = SearchItemsForUniqueID($uniqueID, $player);
   if ($index == -1) $index = SearchAlliesForUniqueID($uniqueID, $player);
   if ($index == -1) $index = SearchArsenalForUniqueID($uniqueID, $player);
+  if ($index == -1) $index = SearchCharacterForUniqueID($uniqueID, $player);
   if ($index == -1) $index = SearchLayersForUniqueID($uniqueID);
   return $index;
 }
@@ -672,6 +673,15 @@ function SearchArsenalForUniqueID($uniqueID, $player)
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
     if ($arsenal[$i + 5] == $uniqueID) return $i;
+  }
+  return -1;
+}
+
+function SearchCharacterForUniqueID($uniqueID, $player)
+{
+  $char = &GetPlayerCharacter($player);
+  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+    if ($char[$i + 11] == $uniqueID) return $i;
   }
   return -1;
 }
