@@ -835,11 +835,11 @@ function SearchArcaneReplacement($player, $zone)
       $count = AuraPieces();
       break;
   }
-  for ($i = 0; $i < count($array); $i += $count) {
-    if ($zone == "MYCHAR" && !IsCharacterAbilityActive($player, $i)) continue;
+  for($i = 0; $i < count($array); $i += $count) {
+    if($zone == "MYCHAR" && !IsCharacterAbilityActive($player, $i)) continue;
     $cardID = $array[$i];
-    if ((CardType($cardID) == "A" || CardType($cardID) == "T") && $array[$i+7] == 0) continue;
-    if (SpellVoidAmount($cardID, $player) > 0 && IsCharacterActive($player, $i)) {
+    if($zone == "MYAURAS" && $array[$i+7] == 0) continue;
+    if(SpellVoidAmount($cardID, $player) > 0 && IsCharacterActive($player, $i)) {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     } elseif (SpellVoidAmount($cardID, $player) > 0 && $zone != "MYCHAR") {
