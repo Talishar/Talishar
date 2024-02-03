@@ -601,6 +601,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       AddCurrentTurnEffect("EVO143", $player, uniqueID: $cardID);
       return $lastResult;
     case "NOFEAR":
+      if(!is_array($lastResult)) $lastResult = [];
       for($i=count($lastResult)-1; $i>=0; --$i) {
         $cardID = RemoveHand($player, $lastResult[$i]);
         BanishCardForPlayer($cardID, $player, "HAND", "RETURN", banishedBy:$player);
