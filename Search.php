@@ -110,7 +110,7 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
     if($zone == "CHAR" && $array[$i+1] == 0) continue;
     $cardID = $array[$i];
     if(!isPriorityStep($cardID)) {
-      if(($type == "" || CardType($cardID) == $type)
+      if(($type == "" || CardType($cardID) == $type || ($type == "C" && CardType($cardID) == "D"))
         && ($subtype == "" || DelimStringContains(CardSubType($cardID), $subtype))
         && ($maxCost == -1 || CardCost($cardID) <= $maxCost)
         && ($minCost == -1 || CardCost($cardID) >= $minCost)
