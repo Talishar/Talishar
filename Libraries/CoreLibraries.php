@@ -1,6 +1,7 @@
 <?php
 function DelimStringContains($str, $find, $partial=false)
 {
+  if($str == null) return false;
   $arr = explode(",", $str);
   for($i=0; $i<count($arr); ++$i)
   {
