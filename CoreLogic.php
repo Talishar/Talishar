@@ -1721,7 +1721,7 @@ function SelfCostModifier($cardID, $from)
     case "EVO183": case "EVO184": case "EVO185": return SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036") != "" ? -1 : 0;
     case "EVO225": case "EVO226": case "EVO227": return SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) * -1;
     case "HVY058":
-      if(GetClassState($currentPlayer, $CS_NumVigorDestroyed) > 0 || SearchAurasForCard("HVY242", $currentPlayer)) return -1;
+      if(GetClassState($currentPlayer, $CS_NumVigorDestroyed) > 0 || CountAura("HVY242", $currentPlayer) > 0) return -1;
       else return 0;
     case "HVY183": case "HVY184": case "HVY185":
       return (GetClassState($currentPlayer, $CS_NumCardsDrawn) > 0 ? -1 : 0);

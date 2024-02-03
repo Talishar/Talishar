@@ -252,7 +252,7 @@ function EffectHitEffect($cardID)
         WriteLog("Player " . $mainPlayer . " doesn't have any dagger in their inventory");
         return;
       }
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a weapon to equip");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a dagger to equip");
       AddDecisionQueue("CHOOSECARD", $mainPlayer, $weapons);
       AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-INVENTORY");
       AddDecisionQueue("EQUIPCARD", $mainPlayer, "<-");
@@ -973,7 +973,9 @@ function CurrentEffectGrantsGoAgain()
         case "ELE034-2": return true;
         case "ELE091-GA": return true;
         case "ELE177": case "ELE178": case "ELE179": return true;
-        case "ELE180": case "ELE181": case "ELE182": return $combatChainState[$CCS_AttackFused] == 1;
+        case "ELE180": case "ELE181": case "ELE182": 
+          if($combatChainState[$CCS_AttackFused] == 1) return true;
+          else break;
         case "ELE201": return true;
         case "EVR017": return true;
         case "EVR044": case "EVR045": case "EVR046": return true;
@@ -985,7 +987,9 @@ function CurrentEffectGrantsGoAgain()
         case "DYN076": case "DYN077": case "DYN078": return true;
         case "DTD190": case "DTD191": case "DTD192": return true;
         case "HVY240": return true;
-        case "HVY254-1": case "HVY254-2": return SearchPitchForColor($mainPlayer, 2) > 0;
+        case "HVY254-1": case "HVY254-2": 
+          if(SearchPitchForColor($mainPlayer, 2) > 0) return true;
+          else break;
         case "HVY246": return true;
         case "ROGUE710-GA": return true;
         default:
