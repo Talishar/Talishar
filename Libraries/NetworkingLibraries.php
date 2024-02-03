@@ -1148,6 +1148,18 @@ function EndStep()
   UndoIntimidate(1);
   UndoIntimidate(2);
   if(HeaveIndices() != "") AddLayer("TRIGGER", $mainPlayer, "HEAVE");
+  UndoShiyanaBaseLife();
+}
+function UndoShiyanaBaseLife() // Technically not a End Step Trigger but it's the last time she'll remember what she changed into
+{
+  global $mainPlayer, $defPlayer;
+  $mainChar = GetPlayerCharacter($mainPlayer);
+  $defChar = GetPlayerCharacter($defPlayer);
+  if ($defChar[0] == "CRU097" && SearchCurrentTurnEffects($mainChar[0] . "-SHIYANA", $defPlayer)) { 
+      $lifeDifference =  GeneratedCharacterHealth($mainChar[0]) - GeneratedCharacterHealth("CRU097");
+      if ($lifeDifference > 0) LoseHealth($lifeDifference, $defPlayer);
+      elseif ($lifeDifference < 0) GainHealth(abs($lifeDifference), $defPlayer, true, false);  
+  }  
 }
 
 function UndoIntimidate($player)
