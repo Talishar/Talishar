@@ -1148,6 +1148,18 @@ function EndStep()
   UndoIntimidate(1);
   UndoIntimidate(2);
   if(HeaveIndices() != "") AddLayer("TRIGGER", $mainPlayer, "HEAVE");
+  UndoShiyanaBaseLife();
+}
+function UndoShiyanaBaseLife() // Technically not a End Step Trigger but it's the last time she'll remember what she changed into
+{
+  global $mainPlayer, $defPlayer;
+  $mainChar = GetPlayerCharacter($mainPlayer);
+  $defChar = GetPlayerCharacter($defPlayer);
+  if ($defChar[0] == "CRU097" && SearchCurrentTurnEffects($mainChar[0] . "-SHIYANA", $defPlayer)) { 
+      $lifeDifference =  GeneratedCharacterHealth($mainChar[0]) - GeneratedCharacterHealth("CRU097");
+      if ($lifeDifference > 0) LoseHealth($lifeDifference, $defPlayer);
+      elseif ($lifeDifference < 0) GainHealth(abs($lifeDifference), $defPlayer, true, false);  
+  }  
 }
 
 function UndoIntimidate($player)
@@ -1225,14 +1237,14 @@ function FinalizeTurn()
     if($mainCharacter[$i-1] == "CRU177" && $mainCharacter[$i+1] >= 3) $mainCharacter[$i] = 0; //Destroy Talishar if >= 3 rust counters
     if($mainCharacter[$i+6] == 1) $mainCharacter[$i] = 0; //Destroy if it was flagged for destruction
     if($mainCharacter[$i] != 0) {
-      $mainCharacter[$i] = 2;
+    if($mainCharacter[$i] != 4) $mainCharacter[$i] = 2;
       $mainCharacter[$i+4] = CharacterNumUsesPerTurn($mainCharacter[$i-1]);
     }
   }
   for($i = 1; $i < count($defCharacter); $i += CharacterPieces()) {
     if($defCharacter[$i+6] == 1) $defCharacter[$i] = 0; //Destroy if it was flagged for destruction
     if($defCharacter[$i] == 1 || $defCharacter[$i] == 2) {
-      $defCharacter[$i] = 2;
+    if($defCharacter[$i] != 4) $defCharacter[$i] = 2;
       $defCharacter[$i+4] = CharacterNumUsesPerTurn($defCharacter[$i-1]);
     }
   }

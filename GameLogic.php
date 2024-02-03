@@ -1601,6 +1601,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
         }
         return $lastResult;
+      case "CHANGESHIYANABASELIFE":
+        $otherPlayer = ($player == 1 ? 2 : 1);
+        $otherChar = GetPlayerCharacter($otherPlayer);
+        if($lastResult != "CRU097") {
+          $lifeDifference = GeneratedCharacterHealth("CRU097") - GeneratedCharacterHealth($otherChar[0]);
+          if ($lifeDifference > 0) LoseHealth($lifeDifference, $player);
+          elseif ($lifeDifference < 0) GainHealth($lifeDifference, $player, true, false);
+        }
+        return $lastResult;
     default:
       return "NOTSTATIC";
   }

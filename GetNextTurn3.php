@@ -378,7 +378,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $numWeapons = 0;
   $characterContents = array();
   for ($i = 0; $i < count($theirCharacter); $i += CharacterPieces()) {
-    if ($i > 0 && $inGameStatus == "0") continue;
     $theirChar = $theirCharacter[$i];
     if ($theirCharacter[$i + 1] == 4) $theirChar = "DUMMYDISHONORED";
     $atkCounters = 0;
@@ -403,7 +402,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if (TypeContains($theirCharacter[$i], "W")) $atkCounters = $theirCharacter[$i + 3];
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
-    array_push($characterContents, JSONRenderedCard(cardNumber: $theirChar, overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0), counters: $counters, defCounters: $theirCharacter[$i + 4], atkCounters: $atkCounters, controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirCharacter[$i + 8] == 1), onChain: ($theirCharacter[$i + 6] == 1), isBroken: ($theirCharacter[$i + 1] == 0), numUses: $theirCharacter[$i + 5], subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]));
+    array_push($characterContents, JSONRenderedCard($theirChar, overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0), counters: $counters, defCounters: $theirCharacter[$i + 4], atkCounters: $atkCounters, controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirCharacter[$i + 8] == 1), onChain: ($theirCharacter[$i + 6] == 1), isBroken: ($theirCharacter[$i + 1] == 0), numUses: $theirCharacter[$i + 5], subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]));
   }
   $response->opponentEquipment = $characterContents;
 
