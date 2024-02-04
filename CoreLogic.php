@@ -1252,7 +1252,7 @@ function DoesAttackHaveGoAgain()
     case "EVO111": case "EVO112": case "EVO113": return GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0;
     case "HVY095": 
       $character = &GetPlayerCharacter($mainPlayer);
-      return SearchCurrentTurnEffects("HVY095", $mainPlayer, returnUniqueID:true) == $character[$combatChainState[$CCS_WeaponIndex]+11];
+      return SearchCurrentTurnEffectsForUniqueID($character[$combatChainState[$CCS_WeaponIndex]+11]) != -1;
     case "HVY134": return true;
     default: return false;
   }
@@ -1443,10 +1443,37 @@ function NumEquipBlock()
   return $numEquipBlock;
 }
 
+function HaveUnblockedNegCounterEquip($player)
+{
+  $char = &GetPlayerCharacter($player);
+  for($i=CharacterPieces(); $i<count($char); $i+=CharacterPieces()) {
+    if($char[$i+1] == 0) continue;//If broken
+    if($char[$i+4] == 0) continue;//No negative counters
+    if($char[$i+6] == 1) continue;//On combat chain
+    if(CardType($char[$i]) != "E") continue;
+    if(BlockValue($char[$i]) == -1) continue;
+    return true;
+  }
+  return false;
+}
+
+function NumNegCounterEquipBlock()
+{
+  global $combatChain, $defPlayer, $combatChainState, $CCS_RequiredNegCounterEquipmentBlock;
+  $numNegCounterEquipBlock = 0;
+  for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
+  {
+    if(DelimStringContains(CardSubType($combatChain[$i]), "Evo") && $combatChain[$i+1] == $defPlayer && $combatChain[$i+4] < 0 && $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] < 1) ++$numNegCounterEquipBlock;
+    else if(CardType($combatChain[$i]) == "E" && $combatChain[$i+1] == $defPlayer && $combatChain[$i+4] < 0) ++$numNegCounterEquipBlock;
+  }
+  return $numNegCounterEquipBlock;
+}
+
 function CanPassPhase($phase)
 {
-  global $combatChainState, $CCS_RequiredEquipmentBlock, $currentPlayer;
+  global $combatChainState, $CCS_RequiredEquipmentBlock, $currentPlayer, $CCS_RequiredNegCounterEquipmentBlock;
   if($phase == "B" && HaveUnblockedEquip($currentPlayer) && NumEquipBlock() < $combatChainState[$CCS_RequiredEquipmentBlock]) return false;
+  if($phase == "B" && HaveUnblockedNegCounterEquip($currentPlayer) && NumNegCounterEquipBlock() < $combatChainState[$CCS_RequiredNegCounterEquipmentBlock]) return false;
   switch($phase)
   {
     case "P": return 0;

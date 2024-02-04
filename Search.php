@@ -108,6 +108,7 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
   if (!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
   for ($i = 0; $i < count($array); $i += $count) {
     if($zone == "CHAR" && $array[$i+1] == 0) continue;
+    if($zone == "BANISH" && $array[$i+1] == "INT") continue;
     $cardID = $array[$i];
     if(!isPriorityStep($cardID)) {
       if(($type == "" || CardType($cardID) == $type || ($type == "C" && CardType($cardID) == "D"))
@@ -121,7 +122,7 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
         && ($minAttack == -1 || ModifiedAttackValue($cardID, $player, $from) >= $minAttack)
         && ($maxDef == -1 || BlockValue($cardID) <= $maxDef)
       ) {
-        if($bloodDebtOnly && (!HasBloodDebt($cardID) || $array[$i+1] == "INT")) continue;
+        if($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
         if($phantasmOnly && !HasPhantasm($cardID)) continue;
         if($specOnly && !IsSpecialization($cardID)) continue;
         if($frozenOnly && !IsFrozenMZ($array, $zone, $i)) continue;
