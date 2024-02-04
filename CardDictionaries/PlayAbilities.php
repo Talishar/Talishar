@@ -459,7 +459,7 @@
 
   function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $mainPlayer, $currentPlayer, $defPlayer, $layers, $combatChain;
+    global $mainPlayer, $currentPlayer, $defPlayer, $layers, $combatChain, $CCS_RequiredNegCounterEquipmentBlock, $combatChainState;
     global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_PlayIndex, $CS_NumItemsDestroyed;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -543,7 +543,15 @@
         }
         return "";
       case "EVO059":
-        WriteLog("⚠️" . CardLink("EVO059", "EVO059") . "⚠️ is not coded. The block requirement is manual. You must block with " . EvoUpgradeAmount($currentPlayer) . " equipment with -1 def counters if able.");
+        $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = EvoUpgradeAmount($currentPlayer);
+        $negCounterEquip = explode(",", SearchCharacter($otherPlayer, hasNegCounters:true));
+        $numNegCounterEquip = count($negCounterEquip);
+        if($numNegCounterEquip > 0 && !IsAllyAttackTarget()) {
+          $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = $numNegCounterEquip;
+          if($numNegCounterEquip > 1) $rv = CardLink($cardID, $cardID) . " requires you to block with " . $numNegCounterEquip . " equipments";
+          else $rv = CardLink($cardID, $cardID) . " requires you to block with " . $numNegCounterEquip . " equipment";
+          WriteLog($rv);
+        }
         return "";
       case "EVO070":
         if($from == "PLAY") DestroyTopCardTarget($currentPlayer);
