@@ -1079,12 +1079,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "1", 1); // Technically wrong, it should be +1 for each opposing heroes
       break;
-    case "EVO000":
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:hasCrank=true");
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card with Crank to get a steam counter", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZADDSTEAMCOUNTER", $player, "-", 1);
-      break;
     case "EVO074":
       $index = SearchItemsForUniqueID($uniqueID, $player);
       DestroyItemForPlayer($player, $index);

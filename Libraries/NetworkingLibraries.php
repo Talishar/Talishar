@@ -1477,9 +1477,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $banish = new Banish($currentPlayer);
     $banish->Remove(GetClassState($currentPlayer, $CS_PlayIndex));
   }
-
   if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
-    if(HasBoost($cardID) && $cardID != "EVO142") Boost($cardID);
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
     PermanentPlayAbilities($cardID, $from);
@@ -1754,6 +1752,7 @@ function PayAdditionalCosts($cardID, $from)
       default: break;
     }
   }
+  if(HasBoost($cardID) && $cardID != "EVO142") Boost($cardID);
   $fuseType = HasFusion($cardID);
   if($fuseType != "") Fuse($cardID, $currentPlayer, $fuseType);
   if(HasScrap($cardID)) Scrap($currentPlayer);

@@ -2021,8 +2021,14 @@ function PitchAbility($cardID)
     }
   }
   switch($cardID) {
-    case "WTR000": case "ARC000": case "CRU000": case "OUT000": case "DTD000": case "EVO000":
+    case "WTR000": case "ARC000": case "CRU000": case "OUT000": case "DTD000":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
+      break;
+    case "EVO000": // Technically wrong, it should be a trigger, but since we can't reorder those it works better gameplay-wise to not have that one as a trigger
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:hasCrank=true");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to get a steam counter", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
       break;
     case "EVR000":
       PlayAura("WTR075", $currentPlayer);
