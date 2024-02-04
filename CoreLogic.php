@@ -72,28 +72,20 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       AddAttack($totalAttack, $attack);
     }
   }
-  $attack = MainCharacterAttackModifiers();
+  $attack = MainCharacterAttackModifiers($attackModifiers);
   if($canGainAttack || $attack < 0) {
-    array_push($attackModifiers, "Character/Equipment");
-    array_push($attackModifiers, $attack);
     AddAttack($totalAttack, $attack);
   }
-  $attack = AuraAttackModifiers(0);
+  $attack = AuraAttackModifiers(0, $attackModifiers);
   if($canGainAttack || $attack < 0) {
-    array_push($attackModifiers, "Aura Ability");
-    array_push($attackModifiers, $attack);
     AddAttack($totalAttack, $attack);
   }
-  $attack = ArsenalAttackModifier();
+  $attack = ArsenalAttackModifier($attackModifiers);
   if($canGainAttack || $attack < 0) {
-    array_push($attackModifiers, "Arsenal Ability");
-    array_push($attackModifiers, $attack);
     AddAttack($totalAttack, $attack);
   }
-  $attack = ItemAttackModifiers();
+  $attack = ItemAttackModifiers($attackModifiers);
   if($canGainAttack || $attack < 0) {
-    array_push($attackModifiers, "Item Ability");
-    array_push($attackModifiers, $attack);
     AddAttack($totalAttack, $attack);
   }
 }
@@ -266,7 +258,7 @@ function ArsenalAttackAbilities()
   }
 }
 
-function ArsenalAttackModifier()
+function ArsenalAttackModifier(&$attackModifiers)
 {
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
@@ -275,7 +267,11 @@ function ArsenalAttackModifier()
   $modifier = 0;
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces()) {
     switch($arsenal[$i]) {
-      case "MON405": $modifier += ($arsenal[$i+1] == "UP" && $attackType == "W" && Is1H($attackID) ? 1 : 0); break;
+      case "MON405": 
+        $modifier += ($arsenal[$i+1] == "UP" && $attackType == "W" && Is1H($attackID) ? 1 : 0); 
+        array_push($attackModifiers, $arsenal[$i]);
+        array_push($attackModifiers, $modifier);
+        break;
       default: break;
     }
   }

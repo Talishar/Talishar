@@ -750,7 +750,7 @@ function AuraHitEffects($attackID)
   }
 }
 
-function AuraAttackModifiers($index)
+function AuraAttackModifiers($index, &$attackModifiers)
 {
   global $CombatChain, $combatChainState, $CCS_AttackPlayedFrom;
   global $CID_Frailty;
@@ -761,10 +761,19 @@ function AuraAttackModifiers($index)
   for($i = 0; $i < count($myAuras); $i += AuraPieces()) {
     switch($myAuras[$i]) {
       case "ELE117":
-        if(CardType($chainCard->ID()) == "AA") $modifier += 3;
+        if(CardType($chainCard->ID()) == "AA") {
+          $modifier += 3;
+          array_push($attackModifiers, $myAuras[$i]);
+          array_push($attackModifiers, 3);
+        }
         break;
       case $CID_Frailty:
-        if($index == 0 && (IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS")) $modifier -= 1;
+        if($index == 0 && (IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS")) 
+        {
+          $modifier -= 1;
+          array_push($attackModifiers, $myAuras[$i]);
+          array_push($attackModifiers, -1);
+        }
         break;
       default: break;
     }
@@ -773,7 +782,12 @@ function AuraAttackModifiers($index)
   for($i = 0; $i < count($theirAuras); $i += AuraPieces()) {
     switch($theirAuras[$i]) {
       case "MON011":
-        if(CardType($CombatChain->CurrentAttack()) == "AA") $modifier -= 1;
+        if(CardType($CombatChain->CurrentAttack()) == "AA") 
+        {
+          $modifier -= 1;
+          array_push($attackModifiers, $theirAuras[$i]);
+          array_push($attackModifiers, -1);
+        }
         break;
       default: break;
     }

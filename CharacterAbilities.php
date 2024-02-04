@@ -449,7 +449,7 @@ function MainCharacterHitAbilities()
   }
 }
 
-function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
+function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs = false)
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $modifier = 0;
@@ -459,13 +459,19 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
   for($i = 0; $i < count($mainCharacterEffects); $i += CharacterEffectPieces()) {
     if($mainCharacterEffects[$i] == $index) {
       switch($mainCharacterEffects[$i + 1]) {
-        case "WTR119": $modifier += 2; break;
-        case "WTR122": $modifier += 1; break;
-        case "WTR135": case "WTR136": case "WTR137": $modifier += 1; break;
-        case "CRU079": case "CRU080": $modifier += 1; break;
-        case "MON105": case "MON106": $modifier += 1; break;
-        case "MON113": case "MON114": case "MON115": $modifier += 1; break;
-        case "EVR055-1": $modifier += 1; break;
+        case "WTR119": 
+          $modifier += 2; 
+          array_push($attackModifiers, $mainCharacterEffects[$i + 1]);
+          array_push($attackModifiers, 2);
+          break;
+        case "WTR122": case "WTR135": case "WTR136": case "WTR137": 
+        case "CRU079": case "CRU080": 
+        case "MON105": case "MON106": case "MON113": case "MON114": case "MON115": 
+        case "EVR055-1": 
+          $modifier += 1; 
+          array_push($attackModifiers, $mainCharacterEffects[$i + 1]);
+          array_push($attackModifiers, 1);
+          break;
         default:
           break;
       }
@@ -478,7 +484,12 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
     switch($characterID) {
       case "MON029": case "MON030":
-        if(HaveCharged($mainPlayer) && NumAttacksBlocking() > 0) $modifier += 1;
+        if(HaveCharged($mainPlayer) && NumAttacksBlocking() > 0) 
+        {
+          $modifier += 1;
+          array_push($attackModifiers, $characterID);
+          array_push($attackModifiers, 1);
+        }
         break;
       default: break;
     }

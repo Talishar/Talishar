@@ -385,20 +385,24 @@ function ItemBlockModifier($cardID)
   return $blockModifier;
 }
 
-function ItemAttackModifiers()
+function ItemAttackModifiers(&$attackModifiers)
 {
   global $mainPlayer, $CombatChain;
   $items = &GetItems($mainPlayer);
-  $attackModifier = 0;
+  $modifier = 0;
   for($i=0; $i<count($items); $i+=ItemPieces()) {
     switch($items[$i]) {
       case "EVO079":
         $attackID = $CombatChain->AttackCard()->ID();
-        if(CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) ++$attackModifier;
+        if(CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
+          $modifier += 1; 
+          array_push($attackModifiers, "Item Ability");
+          array_push($attackModifiers, 1);
+        }
       default: break;
     }
   }
-  return $attackModifier;
+  return $modifier;
 }
 
 function ItemAttackModifiersOnDefend($cardID) {
