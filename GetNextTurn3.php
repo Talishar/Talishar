@@ -471,13 +471,15 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
 
   $response->playerCardBack = JSONRenderedCard($MyCardBack);
 
-  $banish = GetBanish($playerID);
+  $myBanish = GetBanish($playerID);
   $playerBanishArr = array();
-  for ($i = 0; $i < count($banish); $i += BanishPieces()) {
-    $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
-    $mod = explode("-", $banish[$i + 1])[0];
-    $border = CardBorderColor($banish[$i], "BANISH", $action > 0, $mod);
-    array_push($playerBanishArr, JSONRenderedCard($banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i)));
+  for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
+    $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
+    $mod = explode("-", $myBanish[$i + 1])[0];
+    $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0, $mod);
+    $cardID = $myBanish[$i];
+    if ($myBanish[$i + 1] == "INT" && $playerID == 3) $cardID = "CardBack";
+    array_push($playerBanishArr, JSONRenderedCard($cardID, action: $action, borderColor: $border, actionDataOverride: strval($i)));
   }
   $response->playerBanish = $playerBanishArr;
   if (TalentContains($myCharacter[0], "SHADOW")) {
