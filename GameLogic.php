@@ -757,7 +757,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             if($cardsIndices != "") $cardsIndices .= ",";
             $cardsIndices .= $i;
         }
-        return "0" . "-" . $cardsIndices . "-" . "0";
+        return $cardsIndices;
       case "REELINCHOOSE":
         $cards = explode(",", $lastResult);
         $TrapIndices = "";
@@ -770,7 +770,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
         }
         if($numMatch == 0) return "PASS";
-        return "4" . "-" . $TrapIndices . "-" . "0";
+        return $parameter . "-" . $TrapIndices . "-" . "0";
     case "SONATAARCANIXSTEP2":
       $numArcane = count(explode(",", $lastResult));
       DealArcane($numArcane, 0, "PLAYCARD", "MON231", true);

@@ -1192,6 +1192,19 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     }
   }
 
+  if ($turn[0] == "MULTISHOWCARDSDECK" && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $cardsToShow = array();
+    $options = explode(",", $turn[2]);
+    if(GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
+    else $caption = $title;
+    for ($i = 0; $i < count($options); ++$i) {
+      array_push($cardsToShow, JSONRenderedCard($myDeck[$i], actionDataOverride: $i));
+    }
+    $playerInputPopup->popup = CreatePopupAPI("OK", [], 0, 1, $caption, 1, cardsArray: $cardsToShow);
+    array_push($playerInputButtons, CreateButtonAPI($playerID, "Ok", 99, "OK", "20px"));
+  }
+
   if (($turn[0] == "CHOOSEMYSOUL" || $turn[0] == "MAYCHOOSEMYSOUL") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     $playerInputPopup->popup = ChoosePopup($mySoul, $turn[2], 16, "Choose one of your soul", SoulPieces());
