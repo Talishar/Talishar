@@ -693,7 +693,7 @@ function AddEffectHitTrigger($cardID)
     case $Card_ResourceBanner:
     case "DTD229-HIT": case "EVO155": case "EVO434":
     case "HVY090": case "HVY091": case "HVY099": case "HVY136":
-      AddLayer("TRIGGER", $mainPlayer, $cardID);
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID);
     default:
       break;
   }
@@ -709,11 +709,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
   $otherPlayer = ($player == 1 ? 2 : 1);
-  ProcessHitEffect($parameter);
-  ProcessCrushEffect($parameter);
-  ProcessTowerEffect($parameter);
-  $shouldRemove = EffectHitEffect($parameter);
-  if($shouldRemove == 1) RemoveCurrentTurnEffect(FindCurrentTurnEffectIndex($parameter, $player));
+  ProcessHitEffect($target);
+  ProcessCrushEffect($target);
+  ProcessTowerEffect($target);
+  $shouldRemove = EffectHitEffect($target);
+  if($shouldRemove == 1) RemoveCurrentTurnEffect(FindCurrentTurnEffectIndex($player, $target));
   switch($parameter) {
     case "HEAVE":
       Heave();
