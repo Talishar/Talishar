@@ -170,7 +170,7 @@ function CharacterStartTurnAbility($index)
       break;
     case "DTD564":
       $character = GetPlayerCharacter($mainPlayer);
-      if($character[1] != 3) {
+      if($character[1] < 3) {
         AddCurrentTurnEffect("DTD564", $mainPlayer);
       }
       break;
@@ -222,8 +222,9 @@ function CharacterStartTurnAbility($index)
       PlayAura("MON104", $mainPlayer);
       break;
     case "HVY047": case "HVY048":
-      if(!SearchCurrentTurnEffects($cardID."-1", $mainPlayer)) AddCurrentTurnEffect($cardID."-1", $mainPlayer);
-      if(!SearchCurrentTurnEffects($cardID."-2", $mainPlayer)) AddCurrentTurnEffect($cardID."-2", $mainPlayer);
+      $character = GetPlayerCharacter($mainPlayer);
+      if(!SearchCurrentTurnEffects($cardID."-1", $mainPlayer) && $character[1] < 3) AddCurrentTurnEffect($cardID."-1", $mainPlayer);
+      if(!SearchCurrentTurnEffects($cardID."-2", $mainPlayer) && $character[1] < 3) AddCurrentTurnEffect($cardID."-2", $mainPlayer);
       break;
     case "HVY254":
       AddCurrentTurnEffect("HVY254-1", $mainPlayer);
@@ -253,13 +254,14 @@ function DefCharacterStartTurnAbilities()
         break;
       case "DTD564":
         $character = GetPlayerCharacter($defPlayer);
-        if($character[1] != 3) {
+        if($character[1] < 3) {
           AddCurrentTurnEffect("DTD564", $defPlayer);
         }
         break;
       case "HVY047": case "HVY048":
-        if(!SearchCurrentTurnEffects($character[$i]."-1", $defPlayer)) AddCurrentTurnEffect($character[$i]."-1", $defPlayer);
-        if(!SearchCurrentTurnEffects($character[$i]."-2", $defPlayer)) AddCurrentTurnEffect($character[$i]."-2", $defPlayer);
+        $character = GetPlayerCharacter($defPlayer);
+        if(!SearchCurrentTurnEffects($character[$i]."-1", $defPlayer) && $character[1] < 3) AddCurrentTurnEffect($character[$i]."-1", $defPlayer);
+        if(!SearchCurrentTurnEffects($character[$i]."-2", $defPlayer) && $character[1] < 3) AddCurrentTurnEffect($character[$i]."-2", $defPlayer);
         break;
       case "ROGUE018":
         AddCurrentTurnEffect("ROGUE018", $mainPlayer);
