@@ -256,7 +256,6 @@ function CardCost($cardID, $from="-")
 {
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
-  $class = CardClass($cardID);
   switch($cardID)
   {
     case "EVR022": return 3;
