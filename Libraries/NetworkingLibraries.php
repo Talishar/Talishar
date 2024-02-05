@@ -988,17 +988,16 @@ function ResolveCombatDamage($damageDone)
       for($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
         if($combatChain[$i] == $mainPlayer) {
           $EffectContext = $combatChain[$i - 1];
-          ProcessHitEffect($combatChain[$i - 1]);
-          if($damageDone >= 4) ProcessCrushEffect($combatChain[$i - 1]);
-          if(CachedTotalAttack() >= 13) ProcessTowerEffect($combatChain[$i - 1]);
+          AddHitEffectTrigger($combatChain[$i - 1]);
+          if($damageDone >= 4) AddCrushEffectTrigger($combatChain[$i - 1]);
+          if(CachedTotalAttack() >= 13) AddTowerEffectTrigger($combatChain[$i - 1]);
         }
       }
       for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
         if($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
         if(IsCombatEffectActive($currentTurnEffects[$i])) {
           if($currentTurnEffects[$i + 1] == $mainPlayer) {
-            $shouldRemove = EffectHitEffect($currentTurnEffects[$i]);
-            if($shouldRemove == 1) RemoveCurrentTurnEffect($i);
+            AddEffectHitTrigger($currentTurnEffects[$i]);
           }
         }
       }
