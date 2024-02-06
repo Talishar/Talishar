@@ -1033,7 +1033,6 @@ function HasBladeBreak($cardID)
     case "UPR136": case "UPR158": case "UPR182": return true;
     case "DYN045": case "DYN152": case "DYN171": return true;
     case "OUT049": case "OUT094": case "OUT099": case "OUT139": case "OUT140": case "OUT141": case "OUT157": case "OUT158": return true;
-    case "MON241": case "MON242": case "MON243": case "MON244": return SearchCurrentTurnEffects($cardID, $defPlayer); //Ironhide
     case "OUT174": return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer); //Vambrace of determination
     case "DTD200": return true;
     case "DTD222": case "DTD223": case "DTD224": case "DTD225": return true;
