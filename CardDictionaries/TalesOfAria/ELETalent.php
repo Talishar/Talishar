@@ -109,9 +109,19 @@
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
         if($from == "ARS") Draw($currentPlayer);
         return "";
-      case "ELE169": PayOrDiscard($otherPlayer, 3); return "";
-      case "ELE170": PayOrDiscard($otherPlayer, 2); return "";
-      case "ELE171": PayOrDiscard($otherPlayer, 1); return "";
+      case "ELE169": case "ELE170": case "ELE171": 
+        if($cardID == "ELE169") $pay = 3;
+        else if($cardID == "ELE170") $pay = 2;
+        else $pay = 1;
+        if(ShouldAutotargetOpponent($currentPlayer)) {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
+          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "WINTERSBITE-" . $pay, 1);
+        } else {
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
+          AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
+          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "WINTERSBITE-" . $pay, 1);
+        }
+        return "";
       case "ELE172":
         if($from == "PLAY") PayOrDiscard($otherPlayer, 2);
         return "";
