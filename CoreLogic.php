@@ -1203,14 +1203,17 @@ function DoesAttackHaveGoAgain()
   $attackType = CardType($attackID);
   $attackSubtype = CardSubType($attackID);
   $isAura = DelimStringContains(CardSubtype($attackID), "Aura");
+  //Prevention First
   if(CurrentEffectPreventsGoAgain()) return false;
   if(SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false;
+  if(SearchAuras("UPR139", $mainPlayer)) return false;
+
+  //Grant go again
   if(!$isAura && HasGoAgain($attackID)) return true;
   if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
     if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if($isAura && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
-  if(SearchAuras("UPR139", $mainPlayer)) return false;
   if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
   if($attackType == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchAuras("MON013", $mainPlayer)) return true;
   if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $mainPlayer))) return true;
