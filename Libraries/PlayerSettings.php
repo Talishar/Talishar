@@ -157,6 +157,14 @@ function GetCardBack($player)
     case 65: return "CBNxi";
     case 66: return "CBPvtVoid";
     case 67: return "CBEmperorsRome";
+    case 68: return "CBSwarming";
+    case 69: return "CBErase";
+    case 70: return "CBPonder";
+    case 71: return "CBExude";
+    case 72: return "CBDTDLight";
+    case 73: return "CBDTDDark";
+    case 74: return "CBCnC";
+    case 75: return "CBBareFangs";
     default: return "CardBack";
   }
 }
