@@ -109,16 +109,9 @@
     $deck = new Deck($playerID);
     switch ($deck->Top()) {
       case "HVY059":
-        PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$playerID);
-        WriteLog(CardLink("HVY059", "HVY059") . " created a Gold Token for Player ". $playerID);
-        break;
-      case "HVY080": case "HVY081": case "HVY082":
-        PlayAura("HVY242", $playerID); //Vigor
-        WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Vigor Token for Player ". $playerID);
-        break;
       case "HVY077": case "HVY078": case "HVY079":
-        PlayAura("HVY241", $playerID); //Vigor
-        WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Might Token for Player ". $playerID);
+      case "HVY080": case "HVY081": case "HVY082":
+        AddLayer("TRIGGER", $playerID, $deck->Top());
         break;
       default:
         break;
