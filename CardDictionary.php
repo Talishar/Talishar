@@ -1100,8 +1100,7 @@ function HasGuardwell($cardID)
 
 function HasPiercing($cardID, $from=""){
   switch($cardID) {
-    case "DYN115": case "DYN116":
-    case "OUT004": case "OUT005": case "OUT006": case "OUT007": case "OUT008": case "OUT009": case "OUT010": //Weapons with Piercing
+    case "OUT004": case "OUT005":case "OUT007":case "OUT009": //Weapons with Piercing
     case "HVY245":
       return true;
     case "DYN076": case "DYN077": case "DYN078":
