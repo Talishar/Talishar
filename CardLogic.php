@@ -488,6 +488,217 @@ function ProcessLayer($player, $parameter)
   }
 }
 
+function AddHitEffectTrigger($cardID)
+{
+  global $mainPlayer;
+  switch ($cardID) {
+    case "WTR083": case "WTR084": case "WTR085":
+    case "WTR110": case "WTR111": case "WTR112": 
+    case "WTR115": case "WTR167": case "WTR168": case "WTR169": 
+    case "ARC011": case "ARC012": case "ARC013":
+    case "ARC018": case "ARC020": case "ARC021": case "ARC022":
+    case "ARC043": case "ARC045":
+    case "ARC060": case "ARC061": case "ARC062":
+    case "ARC066": case "ARC067": case "ARC068":
+    case "ARC069": case "ARC070": case "ARC071":
+    case "ARC077": case "ARC080": case "ARC159":
+    case "ARC164": case "ARC165": case "ARC166":
+    case "ARC161": case "ARC179": case "ARC180": case "ARC181":
+    case "ARC182": case "ARC183":  case "ARC184":
+    case "ARC185": case "ARC186": case "ARC187":
+    case "ARC194": case "ARC195": case "ARC196":
+    case "CRU054": case "CRU060": case "CRU061": case "CRU062":
+    case "CRU066": case "CRU067": case "CRU068":
+    case "CRU069": case "CRU070": case "CRU071":
+    case "CRU072": case "CRU074": case "CRU106": case "CRU107": case "CRU108":
+    case "CRU109": case "CRU110": case "CRU111": case "CRU123":
+    case "CRU129": case "CRU130": case "CRU131":
+    case "CRU132": case "CRU133": case "CRU134":
+    case "CRU142": case "CRU148": case "CRU149": case "CRU150":
+    case "CRU151": case "CRU152": case "CRU153":
+    case "CRU180": case "CRU183": case "CRU184": case "CRU185":
+    case "MON004":
+    case "MON007":
+    case "MON008": case "MON009": case "MON010":
+    case "MON014": case "MON015": case "MON016":
+    case "MON017": case "MON018": case "MON019":
+    case "MON020": case "MON021": case "MON022":
+    case "MON023": case "MON024": case "MON025": 
+    case "MON026": case "MON027": case "MON028": 
+    case "MON155":
+    case "MON042": case "MON043": case "MON044":
+    case "MON048": case "MON049": case "MON050":
+    case "MON246": 
+    case "MON269": case "MON270": case "MON271":
+    case "MON275": case "MON276": case "MON277": 
+    case "MON072": case "MON073": case "MON074": 
+    case "MON078": case "MON079": case "MON080": 
+    case "MON198":
+    case "MON206": case "MON207": case "MON208":    
+    case "ELE001": case "ELE002": case "ELE003":
+    case "ELE005": case "ELE006": case "ELE205":
+    case "ELE206": case "ELE207": case "ELE208":
+    case "ELE036":
+    case "ELE216": case "ELE217": case "ELE218":
+    case "ELE148": case "ELE149": case "ELE150":
+    case "ELE157": case "ELE158": case "ELE159":
+    case "EVR021": case "EVR038": case "EVR039": case "EVR040":
+    case "EVR044": case "EVR045": case "EVR046": case "EVR088":
+    case "EVR094": case "EVR095": case "EVR096":
+    case "EVR097": case "EVR098": case "EVR099":
+    case "EVR104": case "EVR105":
+    case "EVR110": case "EVR111": case "EVR112":
+    case "EVR113": case "EVR114": case "EVR115":case "EVR138":case "EVR156":
+    case "UPR024": case "UPR025": case "UPR026":
+    case "UPR411": case "UPR413": case "UPR416": 
+    case "UPR048": case "UPR051": case "UPR052": case "UPR053":
+    case "UPR054": case "UPR055": case "UPR056":
+    case "UPR075": case "UPR076": case "UPR077":
+    case "UPR081": case "UPR082": case "UPR083":
+    case "UPR161": case "UPR087": case "UPR093":
+    case "UPR100": case "UPR187": case "UPR188":
+    case "DYN047": case "DYN050": case "DYN051": case "DYN052": case "DYN067": 
+    case "DYN107": case "DYN108": case "DYN109": case "DYN115": case "DYN116": 
+    case "DYN117": case "DYN118": case "DYN119": case "DYN121":
+    case "DYN120": case "DYN122":
+    case "DYN124": case "DYN125": case "DYN126": case "DYN127": case "DYN128": case "DYN129":
+    case "DYN133": case "DYN134": case "DYN135": case "DYN136": case "DYN137": case "DYN138":
+    case "DYN139": case "DYN140": case "DYN141": case "DYN142": case "DYN143": case "DYN144":
+    case "DYN145": case "DYN146": case "DYN147":
+    case "DYN153": case "DYN154": case "DYN156": case "DYN157": case "DYN158": case "DYN162": case "DYN163": case "DYN164":
+    case "OUT005": case "OUT006":
+    case "OUT007": case "OUT008":
+    case "OUT009": case "OUT010":
+    case "OUT012": case "OUT013":
+    case "OUT024": case "OUT025": case "OUT026":
+    case "OUT036": case "OUT037": case "OUT038":
+    case "OUT039": case "OUT040": case "OUT041":
+    case "OUT051": case "OUT053":
+    case "OUT059": case "OUT060": case "OUT061":
+    case "OUT062": case "OUT063": case "OUT064":
+    case "OUT068": case "OUT069": case "OUT070":
+    case "OUT071": case "OUT072": case "OUT073":
+    case "OUT080": case "OUT081": case "OUT082":
+    case "OUT101": case "OUT118": case "OUT119": case "OUT120":
+    case "OUT124": case "OUT125": case "OUT126":
+    case "OUT136": case "OUT137": case "OUT138":
+    case "OUT142": case "OUT151": case "OUT152": case "OUT153":
+    case "OUT162": case "OUT163": case "OUT164": case "OUT183":
+    case "OUT189": case "OUT190": case "OUT191":
+    case "OUT198": case "OUT199": case "OUT200":
+    case "OUT201": case "OUT202": case "OUT203":
+    case "OUT204": case "OUT205": case "OUT206":
+    case "DTD082": case "DTD083": case "DTD084":
+    case "DTD135": case "DTD172": case "DTD173": case "DTD174":
+    case "DTD193": case "DTD226": case "DTD227":
+    case "TCC088": case "TCC016": case "TCC050": case "TCC083":
+    case "EVO006": case "EVO054":
+    case "EVO055": case "EVO056": case "EVO138":
+    case "EVO150": case "EVO151": case "EVO152":
+    case "EVO186": case "EVO187": case "EVO188":
+    case "EVO189": case "EVO190": case "EVO191":
+    case "EVO198": case "EVO199": case "EVO200":
+    case "EVO201": case "EVO202": case "EVO203":
+    case "EVO216": case "EVO217": case "EVO218":
+    case "EVO236": case "EVO241":
+    case "HVY012": case "HVY050": case "HVY071": case "HVY072": case "HVY073":
+    case "HVY074": case "HVY075": case "HVY076":
+    case "HVY208": case "HVY213": case "HVY214": case "HVY215":
+    case "HVY225": case "HVY226": case "HVY227":
+    case "HVY249":
+      AddLayer("TRIGGER", $mainPlayer, $cardID);
+      break;
+    default:
+      break;
+  }
+}
+
+function AddCrushEffectTrigger($cardID)
+{
+  global $mainPlayer;
+  switch ($cardID) {
+    case "WTR043":
+    case "WTR044":
+    case "WTR045":
+    case "WTR048": case "WTR049": case "WTR050":
+    case "WTR057": case "WTR058": case "WTR059":
+    case "WTR060": case "WTR061": case "WTR062":
+    case "WTR063": case "WTR064": case "WTR065":
+    case "WTR066": case "WTR067": case "WTR068":
+    case "CRU026":
+    case "CRU027":
+    case "CRU032": case "CRU033": case "CRU034":
+    case "CRU035": case "CRU036": case "CRU037":
+    case "DTD203":
+    case "TCC039": case "TCC044":
+      AddLayer("TRIGGER", $mainPlayer, $cardID);
+      break;
+    default:
+      break;
+  }
+}
+
+function AddTowerEffectTrigger($cardID)
+{
+  global $mainPlayer;
+  switch ($cardID) {
+    case "TCC034": case "HVY062":
+    case "TCC036": case "HVY064":
+      AddLayer("TRIGGER", $mainPlayer, $cardID);
+      break;
+  default:
+    break;
+  }
+}
+
+function AddEffectHitTrigger($cardID)
+{
+  global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner;
+  switch ($cardID) {
+    case "WTR129": case "WTR130": case "WTR131":
+    case "WTR147": case "WTR148": case "WTR149":
+    case "WTR206": case "WTR207": case "WTR208":
+    case "WTR209": case "WTR210": case "WTR211":
+    case "ARC170-1": case "ARC171-1": case "ARC172-1":
+    case "CRU124": case "CRU145": case "CRU146": case "CRU147":
+    case "CRU084-2":
+    case "MON034": case "MON081": case "MON082": case "MON083":
+    case "MON110": case "MON111": case "MON112":
+    case "MON193": case "MON218": case "MON299": case "MON300": case "MON301":
+    case "ELE005": case "ELE019": case "ELE020": case "ELE021":
+    case "ELE022": case "ELE023": case "ELE024":
+    case "ELE035-2": case "ELE037-2": case "ELE047": case "ELE048": case "ELE049":
+    case "ELE066-HIT": case "ELE092-BUFF":
+    case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT":
+    case "ELE163": case "ELE164": case "ELE165":
+    case "ELE173": case "ELE195": case "ELE196": case "ELE197":
+    case "ELE198": case "ELE199": case "ELE200":
+    case "ELE205": case "ELE215":
+    case "EVR047-1": case "EVR048-1": case "EVR049-1":
+    case "EVR066-1": case "EVR067-1": case "EVR068-1":
+    case "EVR161-1": case "EVR164": case "EVR165": case "EVR166":
+    case "EVR170-1": case "EVR171-1": case "EVR172-1":
+    case "DVR008-1": case "DYN028": case "DYN071": case "DYN155":
+    case "DYN185-HIT": case "DYN186-HIT": case "DYN187-HIT":
+    case "OUT021": case "OUT022": case "OUT023":
+    case "OUT105": case "OUT112": case "OUT113":
+    case "OUT114": case "OUT140": case "OUT143":
+    case "OUT158": case "OUT165":  case "OUT166": case "OUT167": case "OUT188_1":
+    case "DTD051": case "DTD052":
+    case "DTD066": case "DTD067": case "DTD068": 
+    case "DTD080-2":
+    case "DTD080-3": 
+    case "DTD207": 
+    case $Card_LifeBanner:
+    case $Card_ResourceBanner:
+    case "DTD229-HIT": case "EVO155": case "EVO434":
+    case "HVY090": case "HVY091": case "HVY099": case "HVY136":
+      AddLayer("TRIGGER", $mainPlayer, $cardID);
+    default:
+      break;
+  }
+}
+
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext;
@@ -498,6 +709,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
   $otherPlayer = ($player == 1 ? 2 : 1);
+  ProcessHitEffect($parameter);
+  ProcessCrushEffect($parameter);
+  ProcessTowerEffect($parameter);
+  $shouldRemove = EffectHitEffect($parameter);
+  if($shouldRemove == 1) RemoveCurrentTurnEffect(FindCurrentTurnEffectIndex($parameter, $player));
   switch($parameter) {
     case "HEAVE":
       Heave();
@@ -1078,12 +1294,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       ChooseToPay($player, $parameter, "0,3");
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "1", 1); // Technically wrong, it should be +1 for each opposing heroes
-      break;
-    case "EVO000":
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:hasCrank=true");
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card with Crank to get a steam counter", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZADDSTEAMCOUNTER", $player, "-", 1);
       break;
     case "EVO074":
       $index = SearchItemsForUniqueID($uniqueID, $player);

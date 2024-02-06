@@ -836,7 +836,7 @@ function PassInput($autopass = true)
       }
     }
   }
-  if($turn[0] == "END" || $turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MAYCHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "MAYCHOOSEMYSOUL" || $turn[0] == "INSTANT" || $turn[0] == "OK") {
+  if($turn[0] == "END" || $turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MAYCHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "MAYCHOOSEMYSOUL" || $turn[0] == "INSTANT" || $turn[0] == "OK" || $turn[0] == "MULTISHOWCARDSDECK") {
     ContinueDecisionQueue("PASS");
   } else {
     if($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed");
@@ -988,17 +988,16 @@ function ResolveCombatDamage($damageDone)
       for($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
         if($combatChain[$i] == $mainPlayer) {
           $EffectContext = $combatChain[$i - 1];
-          ProcessHitEffect($combatChain[$i - 1]);
-          if($damageDone >= 4) ProcessCrushEffect($combatChain[$i - 1]);
-          if(CachedTotalAttack() >= 13) ProcessTowerEffect($combatChain[$i - 1]);
+          AddHitEffectTrigger($combatChain[$i - 1]);
+          if($damageDone >= 4) AddCrushEffectTrigger($combatChain[$i - 1]);
+          if(CachedTotalAttack() >= 13) AddTowerEffectTrigger($combatChain[$i - 1]);
         }
       }
       for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
         if($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
         if(IsCombatEffectActive($currentTurnEffects[$i])) {
           if($currentTurnEffects[$i + 1] == $mainPlayer) {
-            $shouldRemove = EffectHitEffect($currentTurnEffects[$i]);
-            if($shouldRemove == 1) RemoveCurrentTurnEffect($i);
+            AddEffectHitTrigger($currentTurnEffects[$i]);
           }
         }
       }
@@ -1387,7 +1386,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       //CR 5.1.4a Declare targets for resolution abilities
       if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) GetLayerTarget($cardID);
       //CR 5.1.4b Declare target of attack
-      if($turn[0] == "M") AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from);
+      if($turn[0] == "M" && $actionPoints > 0) AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from);
 
       if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       else AddDecisionQueue("GETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
@@ -1477,9 +1476,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $banish = new Banish($currentPlayer);
     $banish->Remove(GetClassState($currentPlayer, $CS_PlayIndex));
   }
-
   if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
-    if(HasBoost($cardID) && $cardID != "EVO142") Boost($cardID);
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
     PermanentPlayAbilities($cardID, $from);
@@ -1754,6 +1751,7 @@ function PayAdditionalCosts($cardID, $from)
       default: break;
     }
   }
+  if(HasBoost($cardID) && $cardID != "EVO142") Boost($cardID);
   $fuseType = HasFusion($cardID);
   if($fuseType != "") Fuse($cardID, $currentPlayer, $fuseType);
   if(HasScrap($cardID)) Scrap($currentPlayer);

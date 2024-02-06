@@ -256,7 +256,6 @@ function CardCost($cardID, $from="-")
 {
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
-  $class = CardClass($cardID);
   switch($cardID)
   {
     case "EVR022": return 3;
@@ -1563,7 +1562,7 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false)
     default: break;
   }
   if($nonLimitedOnly) return false;
-  if($char[0] == "DTD564" && SearchCurrentTurnEffects("DTD564", $currentPlayer) && HasBloodDebt($cardID) && $char[1] != 3) return true;
+  if($char[0] == "DTD564" && SearchCurrentTurnEffects("DTD564", $currentPlayer) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E")) return true;
   return false;
 }
 

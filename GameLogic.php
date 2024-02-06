@@ -757,7 +757,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             if($cardsIndices != "") $cardsIndices .= ",";
             $cardsIndices .= $i;
         }
-        return "0" . "-" . $cardsIndices . "-" . "0";
+        return $cardsIndices;
       case "REELINCHOOSE":
         $cards = explode(",", $lastResult);
         $TrapIndices = "";
@@ -770,7 +770,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
         }
         if($numMatch == 0) return "PASS";
-        return "4" . "-" . $TrapIndices . "-" . "0";
+        return $parameter . "-" . $TrapIndices . "-" . "0";
     case "SONATAARCANIXSTEP2":
       $numArcane = count(explode(",", $lastResult));
       DealArcane($numArcane, 0, "PLAYCARD", "MON231", true);
@@ -1575,15 +1575,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       case "WONCLASH":
         $winner = $dqVars[0];
         $params = explode(",", $parameter);
-        if($winner > 0) {
-          WonClashAbility($winner, $params[0], $params[1]);
-        }
         if($params[0] == "HVY061") {
           $p1Deck = new Deck(1);
           $p1Deck->AddBottom($p1Deck->Top(remove:true));
           $p2Deck = new Deck(2);
           $p2Deck->AddBottom($p2Deck->Top(remove:true));
           Clash("HVY061-" . $winner, effectController:$defPlayer);
+        }
+        if($winner > 0) {
+          WonClashAbility($winner, $params[0], $params[1]);
         }
         return "";
       case "DEAL1DAMAGE":

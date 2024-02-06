@@ -177,7 +177,6 @@
     {
       case "UPR087":
         if(IsHeroAttackTarget() && RuptureActive()) {
-          $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
           AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
           AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);

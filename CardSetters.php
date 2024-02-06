@@ -24,7 +24,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   $characterID = ShiyanaCharacter($character[0]);
   AddEvent("BANISH", ($modifier == "INT" || $modifier == "UZURI" ? "CardBack" : $cardID));
   //Effects that change the modifier
-  if($characterID == "DTD564" && $character[1] != 3) {
+  if($characterID == "DTD564" && $character[1] < 3) {
     AddLayer("TRIGGER", $player, $characterID, uniqueID:-1);
     if($modifier != "INT") $modifier = "DTD564";
   }
@@ -153,7 +153,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
   $arsenal = &GetArsenal($player);
   $character = &GetPlayerCharacter($player);
   $cardSubType = CardSubType($cardID);
-  if($facing == "UP" && $from == "DECK" && $cardSubType == "Arrow" && $character[CharacterPieces()] == "DYN151") $counters=1;
+  if($facing == "UP" && $from == "DECK" && $cardSubType == "Arrow" && FindCharacterIndex($player, "DYN151") != -1) $counters=1;
   array_push($arsenal, $cardID);
   array_push($arsenal, $facing);
   array_push($arsenal, 1); //Num uses - currently always 1

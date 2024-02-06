@@ -362,10 +362,10 @@
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("REELINLOOK", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top cards of your deck are:", 1);
-        AddDecisionQueue("MULTICHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTISHOWCARDSDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REELINCHOOSE", $currentPlayer, "-", 1);
+        AddDecisionQueue("REELINCHOOSE", $currentPlayer, $resourcesPaid + 1, 1);
         AddDecisionQueue("MULTICHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
