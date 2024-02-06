@@ -36,7 +36,16 @@ if(IsUserLoggedIn()) {
     }
   }
 
-  for ($i = 0; $i < 17; ++$i) {
+  //Default Cardback IDs
+  $cardBacks = "68,69,70,71,72,73,74,75"; 
+  $cardBacks = explode(",", $cardBacks);
+  for($i = 0; $i < count($cardBacks); ++$i) {
+    $cardBack = new stdClass();
+    $cardBack->id = $cardBacks[$i];
+    array_push($response->cardBacks, $cardBack);
+  }
+
+  for ($i = 0; $i < 18; ++$i) {
     if($i == 7) continue;
     $playmat = new stdClass();
     $playmat->id = $i;
@@ -84,6 +93,8 @@ function GetPlaymatName($id)
     case 15:
       return "Swarming-Gloomveil-AHS";
     case 16:
+      return "Ponder-AHS";
+    case 17:
       return "FindCenter";
     default:
       return "N/A";
