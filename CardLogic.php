@@ -606,8 +606,8 @@ function AddHitEffectTrigger($cardID)
     case "HVY208": case "HVY213": case "HVY214": case "HVY215":
     case "HVY225": case "HVY226": case "HVY227":
     case "HVY249":
-      AddLayer("TRIGGER", $mainPlayer, $cardID);
-      break;
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID);
+    break;
     default:
       break;
   }
@@ -631,7 +631,7 @@ function AddCrushEffectTrigger($cardID)
     case "CRU035": case "CRU036": case "CRU037":
     case "DTD203":
     case "TCC039": case "TCC044":
-      AddLayer("TRIGGER", $mainPlayer, $cardID);
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID);
       break;
     default:
       break;
@@ -644,8 +644,8 @@ function AddTowerEffectTrigger($cardID)
   switch ($cardID) {
     case "TCC034": case "HVY062":
     case "TCC036": case "HVY064":
-      AddLayer("TRIGGER", $mainPlayer, $cardID);
-      break;
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID);
+    break;
   default:
     break;
   }
