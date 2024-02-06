@@ -722,7 +722,8 @@ function FindDefCharacter($cardID)
 
 function ChainLinkResolvedEffects()
 {
-  global $combatChain, $mainPlayer, $currentTurnEffects;
+  global $combatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex;
+  $allies = GetAllies($mainPlayer);
   if($combatChain[0] == "MON245" && !ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
   switch($combatChain[0])
   {
@@ -736,6 +737,8 @@ function ChainLinkResolvedEffects()
       break;
       default: break;
   }
+  
+  if($allies[$combatChainState[$CCS_WeaponIndex]+2] <= 0) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
 }
 
 function CombatChainClosedMainCharacterEffects()
