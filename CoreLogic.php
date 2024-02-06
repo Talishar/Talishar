@@ -801,6 +801,10 @@ function CombatChainClosedCharacterEffects()
             $character[FindCharacterIndex($defPlayer, "MON089")+1] = 0;
           }
           break;
+        case "MON241": case "MON242": case "MON243": case "MON244": 
+          $charIndex = FindCharacterIndex($defPlayer, $chainLinks[$i][$j]);
+          if(SearchCurrentTurnEffects($chainLinks[$i][$j], $defPlayer, true)) DestroyCharacter($defPlayer, $charIndex);; //Ironhide
+          break;
         case "RVD003":
           $deck = new Deck($defPlayer);
           if($deck->Reveal() && ModifiedAttackValue($deck->Top(), $defPlayer, "DECK", source:"RVD003") < 6) {
