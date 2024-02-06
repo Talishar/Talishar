@@ -124,6 +124,7 @@
   function DoesBlockTriggerPhantasm($index)
   {
     global $CombatChain, $mainPlayer, $defPlayer, $attackModifiers;
+    $attackModifiers = [];
     $card = $CombatChain->Card($index);
     if(CardType($card->ID()) != "AA") return false;
     if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
