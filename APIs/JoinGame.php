@@ -201,7 +201,7 @@ if ($decklink != "") {
   $weapon2 = "";
   $weaponSideboard = "";
   $totalCards = 0;
-
+  $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY"];
   if (is_countable($cards)) {
     for ($i = 0; $i < count($cards); ++$i) {
       $count = $cards[$i]->{'total'};
@@ -215,7 +215,20 @@ if ($decklink != "") {
         $id = explode("-", $id)[0];
       } else if ($isFaBMeta) {
         $id = $cards[$i]->{'identifier'};
-      } else if (isset($cards[$i]->{'cardIdentifier'})) {
+      } else if(isset($cards[$i]->{'setIdentifiers'})) {
+        $earliest = -1;
+        foreach($cards[$i]->{'setIdentifiers'} as $setCard) {
+          $set = substr($setCard, 0, 3);
+          for($j=0; $j<count($orderedSets); ++$j) {
+            if($orderedSets[$j] == $set && ($earliest == -1 || $j < $earliest)) {
+              $earliest = $j;
+              $id = $setCard;
+              break;
+            }
+          }
+        }
+      }
+      if($id == "" && isset($cards[$i]->{'cardIdentifier'})) {
         $id = $cards[$i]->{'cardIdentifier'};
       }
       if ($id == "") continue;

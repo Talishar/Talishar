@@ -123,7 +123,8 @@
 
   function DoesBlockTriggerPhantasm($index)
   {
-    global $CombatChain, $mainPlayer, $defPlayer;
+    global $CombatChain, $mainPlayer, $defPlayer, $attackModifiers;
+    $attackModifiers = [];
     $card = $CombatChain->Card($index);
     if(CardType($card->ID()) != "AA") return false;
     if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
@@ -132,7 +133,7 @@
     if(PowerCantBeModified($card->ID())) return $attackValue >= 6;
     if(SearchCurrentTurnEffectsForCycle("MON008", "MON009", "MON010", $mainPlayer)) --$attackValue;
     if(CardType($attackID) == "AA" && SearchCurrentTurnEffects("DTD411", $defPlayer)) --$attackValue;
-    $attackValue += AuraAttackModifiers($index);
+    $attackValue += AuraAttackModifiers($index, $attackModifiers);
     $attackValue += $card->AttackValue();//Combat chain attack modifier
     $attackValue += EffectDefenderAttackModifiers();
     return $attackValue >= 6;
