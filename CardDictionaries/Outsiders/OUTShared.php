@@ -584,6 +584,7 @@ function OUTAbilityCost($cardID)
     global $mainPlayer, $defPlayer, $combatChain, $chainLinks, $chainLinkSummary;
     global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
     global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    $attackID = $combatChain[0];
     switch ($cardID)
     {
       case "OUT005": case "OUT006":
