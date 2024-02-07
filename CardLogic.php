@@ -488,7 +488,7 @@ function ProcessLayer($player, $parameter)
   }
 }
 
-function AddHitEffectTrigger($cardID)
+function AddOnHitTrigger($cardID)
 {
   global $mainPlayer;
   switch ($cardID) {
@@ -609,7 +609,7 @@ function AddHitEffectTrigger($cardID)
     case "HVY208": case "HVY213": case "HVY214": case "HVY215":
     case "HVY225": case "HVY226": case "HVY227":
     case "HVY249":
-      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "HITEFFECT");
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
     break;
     default:
       break;
@@ -712,7 +712,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
   $otherPlayer = ($player == 1 ? 2 : 1);
-  if($additionalCosts == "HITEFFECT") { ProcessHitEffect($target); return; }
+  if($additionalCosts == "ONHITEFFECT") { ProcessHitEffect($target); return; }
   if($additionalCosts == "CRUSHEFFECT") { ProcessCrushEffect($target); return; }
   if($additionalCosts == "TOWEREFFECT") { ProcessTowerEffect($target); return; }
   if($additionalCosts == "EFFECTHITEFFECT") {
