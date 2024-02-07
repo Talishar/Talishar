@@ -174,7 +174,8 @@
     $otherPlayer = ($playerID == 1 ? 2 : 1);
     $char = &GetPlayerCharacter($playerID);
     $hero = ShiyanaCharacter($char[0], $playerID);
-    if(($hero == "HVY047" || $hero == "HVY048") && CountItem("DYN243", $playerID) > 0 && SearchCurrentTurnEffects($hero."-2", $playerID)) {
+    if(($hero == "HVY047" || $hero == "HVY048") && CountItem("DYN243", $playerID) > 0 && $char[1] == 2) {
+      $char[1] = 1;
       //This all has to be prepend for the case where it's a Victor mirror, one player wins, then the re-do causes that player to win
       PrependDecisionQueue("CLASH", $effectController, $cardID, 1);
       PrependDecisionQueue("ADDBOTTOMREMOVETOP", $otherPlayer, $hero, 1);
