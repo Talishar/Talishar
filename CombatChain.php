@@ -899,20 +899,6 @@ function CachedFusionActive()
   else return false;
 }
 
-function CachedPiercingActive($cardID)
-{
-  global $combatChain, $CombatChain, $currentTurnEffects, $mainPlayer;
-  if ($CombatChain->HasCurrentLink()) {
-    if(HasPiercing($combatChain[0])) return true;
-    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-      if ($currentTurnEffects[$i + 1] == $mainPlayer) {
-        if(HasPiercing($currentTurnEffects[$i])) return true;
-      }
-    }
-  }
-  else return false;
-}
-
 function CachedPhantasmActive()
 {
   global $combatChainState, $CCS_PhantasmThisLink;
@@ -932,6 +918,29 @@ function CachedNumActionBlocked()
 {
   global $combatChainState, $CSS_CachedNumActionBlocked;
   return $combatChainState[$CSS_CachedNumActionBlocked];
+}
+
+function IsPiercingActive($cardID)
+{
+  global $combatChain, $CombatChain, $currentTurnEffects, $mainPlayer;
+  if ($CombatChain->HasCurrentLink()) {
+    if (HasPiercing($combatChain[0]))
+      return true;
+    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+      if ($currentTurnEffects[$i + 1] == $mainPlayer) {
+        if (HasPiercing($currentTurnEffects[$i]))
+          return true;
+      }
+    }
+  } else
+    return false;
+}
+
+
+function IsTowerActive()
+{
+  global $combatChain, $CCS_CachedTowerActive;
+  return (CachedTotalAttack() >= 13 && HasTower($combatChain[0]));
 }
 
 ?>
