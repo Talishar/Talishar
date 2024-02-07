@@ -390,7 +390,7 @@ function ContinueDecisionQueue($lastResult = "")
         else if($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
         else if($cardID == "DEFENDSTEP") { $turn[0] = "A"; $currentPlayer = $mainPlayer; }
         else if($cardID == "TRIGGER") {
-          ProcessTrigger($player, $parameter, $uniqueID, $target);
+          ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts);
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, $params[2]); //This is like a parameter to PlayCardEffect and other functions
@@ -493,8 +493,8 @@ function AddHitEffectTrigger($cardID)
   global $mainPlayer;
   switch ($cardID) {
     case "WTR083": case "WTR084": case "WTR085":
-    case "WTR110": case "WTR111": case "WTR112": 
-    case "WTR115": case "WTR167": case "WTR168": case "WTR169": 
+    case "WTR110": case "WTR111": case "WTR112":
+    case "WTR115": case "WTR167": case "WTR168": case "WTR169":
     case "ARC011": case "ARC012": case "ARC013":
     case "ARC018": case "ARC020": case "ARC021": case "ARC022":
     case "ARC043": case "ARC045":
@@ -523,18 +523,18 @@ function AddHitEffectTrigger($cardID)
     case "MON014": case "MON015": case "MON016":
     case "MON017": case "MON018": case "MON019":
     case "MON020": case "MON021": case "MON022":
-    case "MON023": case "MON024": case "MON025": 
-    case "MON026": case "MON027": case "MON028": 
+    case "MON023": case "MON024": case "MON025":
+    case "MON026": case "MON027": case "MON028":
     case "MON155":
     case "MON042": case "MON043": case "MON044":
     case "MON048": case "MON049": case "MON050":
-    case "MON246": 
+    case "MON246":
     case "MON269": case "MON270": case "MON271":
-    case "MON275": case "MON276": case "MON277": 
-    case "MON072": case "MON073": case "MON074": 
-    case "MON078": case "MON079": case "MON080": 
+    case "MON275": case "MON276": case "MON277":
+    case "MON072": case "MON073": case "MON074":
+    case "MON078": case "MON079": case "MON080":
     case "MON198":
-    case "MON206": case "MON207": case "MON208":    
+    case "MON206": case "MON207": case "MON208":
     case "ELE001": case "ELE002": case "ELE003":
     case "ELE005": case "ELE006": case "ELE205":
     case "ELE206": case "ELE207": case "ELE208":
@@ -550,15 +550,15 @@ function AddHitEffectTrigger($cardID)
     case "EVR110": case "EVR111": case "EVR112":
     case "EVR113": case "EVR114": case "EVR115":case "EVR138":case "EVR156":
     case "UPR024": case "UPR025": case "UPR026":
-    case "UPR411": case "UPR413": case "UPR416": 
+    case "UPR411": case "UPR413": case "UPR416":
     case "UPR048": case "UPR051": case "UPR052": case "UPR053":
     case "UPR054": case "UPR055": case "UPR056":
     case "UPR075": case "UPR076": case "UPR077":
     case "UPR081": case "UPR082": case "UPR083":
     case "UPR161": case "UPR087": case "UPR093":
     case "UPR100": case "UPR187": case "UPR188":
-    case "DYN047": case "DYN050": case "DYN051": case "DYN052": case "DYN067": 
-    case "DYN107": case "DYN108": case "DYN109": case "DYN115": case "DYN116": 
+    case "DYN047": case "DYN050": case "DYN051": case "DYN052": case "DYN067":
+    case "DYN107": case "DYN108": case "DYN109": case "DYN115": case "DYN116":
     case "DYN117": case "DYN118": case "DYN119": case "DYN121":
     case "DYN120": case "DYN122":
     case "DYN124": case "DYN125": case "DYN126": case "DYN127": case "DYN128": case "DYN129":
@@ -606,7 +606,7 @@ function AddHitEffectTrigger($cardID)
     case "HVY208": case "HVY213": case "HVY214": case "HVY215":
     case "HVY225": case "HVY226": case "HVY227":
     case "HVY249":
-      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID);
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "HITEFFECT");
     break;
     default:
       break;
@@ -631,7 +631,7 @@ function AddCrushEffectTrigger($cardID)
     case "CRU035": case "CRU036": case "CRU037":
     case "DTD203":
     case "TCC039": case "TCC044":
-      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID);
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "CRUSHEFFECT");
       break;
     default:
       break;
@@ -644,7 +644,7 @@ function AddTowerEffectTrigger($cardID)
   switch ($cardID) {
     case "TCC034": case "HVY062":
     case "TCC036": case "HVY064":
-      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID);
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "TOWEREFFECT");
     break;
   default:
     break;
@@ -685,21 +685,21 @@ function AddEffectHitTrigger($cardID)
     case "OUT114": case "OUT140": case "OUT143":
     case "OUT158": case "OUT165":  case "OUT166": case "OUT167": case "OUT188_1":
     case "DTD051": case "DTD052":
-    case "DTD066": case "DTD067": case "DTD068": 
+    case "DTD066": case "DTD067": case "DTD068":
     case "DTD080-2":
-    case "DTD080-3": 
-    case "DTD207": 
+    case "DTD080-3":
+    case "DTD207":
     case $Card_LifeBanner:
     case $Card_ResourceBanner:
     case "DTD229-HIT": case "EVO155": case "EVO434":
     case "HVY090": case "HVY091": case "HVY099": case "HVY136":
-      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID);
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
     default:
       break;
   }
 }
 
-function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
+function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
@@ -709,11 +709,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
   $otherPlayer = ($player == 1 ? 2 : 1);
-  ProcessHitEffect($target);
-  ProcessCrushEffect($target);
-  ProcessTowerEffect($target);
-  $shouldRemove = EffectHitEffect($target);
-  if($shouldRemove == 1) RemoveCurrentTurnEffect(FindCurrentTurnEffectIndex($player, $target));
+  if($additionalCosts == "HITEFFECT") ProcessHitEffect($target);
+  if($additionalCosts == "CRUSHEFFECT") ProcessCrushEffect($target);
+  if($additionalCosts == "TOWEREFFECT") ProcessTowerEffect($target);
+  if($additionalCosts == "EFFECTHITEFFECT") {
+    $shouldRemove = EffectHitEffect($target);
+    if($shouldRemove == 1) RemoveCurrentTurnEffect(FindCurrentTurnEffectIndex($player, $target));
+  }
   switch($parameter) {
     case "HEAVE":
       Heave();
