@@ -1381,20 +1381,18 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "HVY059":
       PutItemIntoPlayForPlayer("DYN243", $player, effectController:$player);
-      WriteLog(CardLink("HVY059", "HVY059") . " created a Gold Token for Player ". $player);
+      WriteLog(CardLink($parameter, $parameter) . " created a Gold Token for Player ". $player);
       break;
     case "HVY061":
       Clash($parameter, effectController:$player);
       break;
     case "HVY077": case "HVY078": case "HVY079":
-      $deck = new Deck($player);
       PlayAura("HVY241", $player); //Vigor
-      WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Might Token for Player ". $player);
+      WriteLog(CardLink($parameter, $parameter) . " created a Might Token for Player ". $player);
       break;
     case "HVY080": case "HVY081": case "HVY082":
-      $deck = new Deck($player);
       PlayAura("HVY242", $player); //Vigor
-      WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Vigor Token for Player ". $player);
+      WriteLog(CardLink($parameter, $parameter) . " created a Vigor Token for Player ". $player);
       break;
     case "HVY104":
       AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);
