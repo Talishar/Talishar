@@ -371,6 +371,17 @@ function FindCharacterIndex($player, $cardID)
   return $index;
 }
 
+function FindCurrentTurnEffectIndex($player, $cardID)
+{
+  global $currentTurnEffects;
+  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    if($currentTurnEffects[$i + 1] == $player && $currentTurnEffects[$i] == $cardID) {
+      return $i;
+    }
+  }
+  return -1;
+}
+
 function CombineSearches($search1, $search2)
 {
   if($search2 == "") return $search1;
