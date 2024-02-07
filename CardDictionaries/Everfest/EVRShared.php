@@ -176,6 +176,11 @@
     $rv = "";
     switch($cardID)
     {
+      case "EVR002":
+        if(IsHeroAttackTarget()) {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
+        return "";
       case "EVR003":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
