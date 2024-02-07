@@ -1044,7 +1044,9 @@ function CurrentEffectPreventsDraw($player, $isMainPhase)
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
-        case "WTR045": return $isMainPhase;
+        case "WTR045": 
+          if($isMainPhase) WriteLog("Draw prevented by " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]));
+          return $isMainPhase;
         default: break;
       }
     }
