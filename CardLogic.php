@@ -536,6 +536,9 @@ function AddHitEffectTrigger($cardID)
     case "MON198":
     case "MON206": case "MON207": case "MON208":
     case "ELE001": case "ELE002": case "ELE003":
+    case "ELE004":
+    case "ELE013": case "ELE014": case "ELE015":
+    case "ELE209": case "ELE210": case "ELE211":
     case "ELE005": case "ELE006": case "ELE205":
     case "ELE206": case "ELE207": case "ELE208":
     case "ELE036":
