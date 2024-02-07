@@ -1428,7 +1428,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return DealDamageAsync($lastResultArr[0], 2);
       }
       return "";
-    case "HITEFFECT":
+    case "ONHITEFFECT":
       ProcessHitEffect($parameter);
       return $parameter;
     case "AWAKEN":

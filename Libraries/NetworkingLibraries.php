@@ -988,7 +988,7 @@ function ResolveCombatDamage($damageDone)
       for($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
         if($combatChain[$i] == $mainPlayer) {
           $EffectContext = $combatChain[$i - 1];
-          AddHitEffectTrigger($combatChain[$i - 1]);
+          AddOnHitTrigger($combatChain[$i - 1]);
           if($damageDone >= 4) AddCrushEffectTrigger($combatChain[$i - 1]);
           if(CachedTotalAttack() >= 13) AddTowerEffectTrigger($combatChain[$i - 1]);
         }
