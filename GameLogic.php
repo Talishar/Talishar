@@ -571,6 +571,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("!", $parameter);
       AddCurrentTurnEffect($params[0], $player, (count($params) > 1 ? $params[1] : ""));
       return "1";
+    case "SEARCHCURRENTEFFECTPASS":
+      return SearchCurrentTurnEffects($parameter, $player) ? "PASS" : "1";
     case "REMOVECURRENTTURNEFFECT":
       SearchCurrentTurnEffects($parameter, $player, true);
       return $lastResult;
@@ -1428,7 +1430,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return DealDamageAsync($lastResultArr[0], 2);
       }
       return "";
-    case "HITEFFECT":
+    case "ONHITEFFECT":
       ProcessHitEffect($parameter);
       return $parameter;
     case "AWAKEN":
@@ -1509,7 +1511,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "GETTARGETOFATTACK":
       $params = explode(",", $parameter);
-      if(CardType($params[0]) == "AA" || GetResolvedAbilityType($params[0], $params[1]) == "AA") GetTargetOfAttack($params[0]);
+      if((CardType($params[0]) == "AA" && GetResolvedAbilityType($params[0]) == "") || GetResolvedAbilityType($params[0], $params[1]) == "AA") GetTargetOfAttack($params[0]);
       return $lastResult;
     case "INTIMIDATE":
       if ($parameter != "-") $player = $parameter;
@@ -1575,15 +1577,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       case "WONCLASH":
         $winner = $dqVars[0];
         $params = explode(",", $parameter);
+        if($winner > 0) {
+          WonClashAbility($winner, $params[0], $params[1]);
+        }
         if($params[0] == "HVY061") {
           $p1Deck = new Deck(1);
           $p1Deck->AddBottom($p1Deck->Top(remove:true));
           $p2Deck = new Deck(2);
           $p2Deck->AddBottom($p2Deck->Top(remove:true));
           Clash("HVY061-" . $winner, effectController:$defPlayer);
-        }
-        if($winner > 0) {
-          WonClashAbility($winner, $params[0], $params[1]);
         }
         return "";
       case "DEAL1DAMAGE":

@@ -488,7 +488,7 @@ function ProcessLayer($player, $parameter)
   }
 }
 
-function AddHitEffectTrigger($cardID)
+function AddOnHitTrigger($cardID)
 {
   global $mainPlayer;
   switch ($cardID) {
@@ -536,6 +536,9 @@ function AddHitEffectTrigger($cardID)
     case "MON198":
     case "MON206": case "MON207": case "MON208":
     case "ELE001": case "ELE002": case "ELE003":
+    case "ELE004":
+    case "ELE013": case "ELE014": case "ELE015":
+    case "ELE209": case "ELE210": case "ELE211":
     case "ELE005": case "ELE006": case "ELE205":
     case "ELE206": case "ELE207": case "ELE208":
     case "ELE036":
@@ -606,7 +609,7 @@ function AddHitEffectTrigger($cardID)
     case "HVY208": case "HVY213": case "HVY214": case "HVY215":
     case "HVY225": case "HVY226": case "HVY227":
     case "HVY249":
-      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "HITEFFECT");
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
     break;
     default:
       break;
@@ -709,7 +712,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
   $otherPlayer = ($player == 1 ? 2 : 1);
-  if($additionalCosts == "HITEFFECT") { ProcessHitEffect($target); return; }
+  if($additionalCosts == "ONHITEFFECT") { ProcessHitEffect($target); return; }
   if($additionalCosts == "CRUSHEFFECT") { ProcessCrushEffect($target); return; }
   if($additionalCosts == "TOWEREFFECT") { ProcessTowerEffect($target); return; }
   if($additionalCosts == "EFFECTHITEFFECT") {
@@ -1376,8 +1379,20 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "HVY053":
       AddCurrentTurnEffect("HVY053," . CachedTotalAttack(), $mainPlayer);
       break;
+    case "HVY059":
+      PutItemIntoPlayForPlayer("DYN243", $player, effectController:$player);
+      WriteLog(CardLink($parameter, $parameter) . " created a Gold Token for Player ". $player);
+      break;
     case "HVY061":
       Clash($parameter, effectController:$player);
+      break;
+    case "HVY077": case "HVY078": case "HVY079":
+      PlayAura("HVY241", $player); //Vigor
+      WriteLog(CardLink($parameter, $parameter) . " created a Might Token for Player ". $player);
+      break;
+    case "HVY080": case "HVY081": case "HVY082":
+      PlayAura("HVY242", $player); //Vigor
+      WriteLog(CardLink($parameter, $parameter) . " created a Vigor Token for Player ". $player);
       break;
     case "HVY104":
       AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);

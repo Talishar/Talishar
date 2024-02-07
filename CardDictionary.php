@@ -534,7 +534,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if($phase != "B" && $from == "CHAR" && $character[$index+1] != "2") return false;
   if($from == "CHAR" && $phase != "B" && $character[$index+8] == "1") { $restriction = "Frozen"; return false; }
-  if($from == "PLAY" && $subtype == "Ally" && $phase != "B" && isset($myAllies[$index + 3]) && $myAllies[$index + 3] == "1") { $restriction = "Frozen"; return false; }
+  if($from == "PLAY" && DelimStringContains($subtype, "Ally") && $phase != "B" && isset($myAllies[$index + 3]) && $myAllies[$index + 3] == "1") { $restriction = "Frozen"; return false; }
   if($from == "ARS" && $phase != "B" && $myArsenal[$index + 4] == "1") { $restriction = "Frozen"; return false; }
   if($phase != "P" && $cardType == "DR" && IsAllyAttackTarget() && $currentPlayer != $mainPlayer) return false;
   if($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
@@ -648,7 +648,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   $otherPlayer = $player == 2 ? 1 : 2;
   if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
   $subtype = CardSubType($cardID);
-  if(DelimStringContains($subtype, "Invocation") || DelimStringContains($subtype, "Ash") || $cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441") return "-";
+  if(DelimStringContains($subtype, "Invocation") || DelimStringContains($subtype, "Ash") || $cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441" || $cardID == "EVO410") return "-";
   if (DelimStringContains($subtype, "Construct")) {
     switch ($cardID) {
       case "DYN092":
@@ -762,7 +762,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ARC005": return GetClassState($player, $CS_NumBoosted) < 1;
     case "ARC008": return GetClassState($player, $CS_NumBoosted) < 3;
     case "ARC010": 
-      return ($CombatChain->HasCurrentLink() && $from == "PLAY" && !ClassContains($CombatChain->AttackCard()->ID(), "MECHANOLOGIST", $player) && ($myItems[$index + 1] == 0 || CardSubtype($CombatChain->AttackCard()->ID()) != "Pistol" || $myItems[$index + 2] != 2));
+      return $CombatChain->HasCurrentLink() 
+      && $from == "PLAY" 
+      && (!ClassContains($CombatChain->AttackCard()->ID(), "MECHANOLOGIST", $player) 
+      || $myItems[$index + 1] == 0 
+      || CardSubtype($CombatChain->AttackCard()->ID()) != "Pistol" 
+      || $myItems[$index + 2] != 2);
     case "ARC018": return ($CombatChain->HasCurrentLink() && $from == "PLAY" && ($myItems[$index+1] == 0 || CardType($CombatChain->AttackCard()->ID()) != "AA" || $myItems[$index+2] != 2));
     case "ARC041": return !ArsenalHasFaceDownCard($player);
     case "CRU082": case "CRU083": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
@@ -1033,7 +1038,6 @@ function HasBladeBreak($cardID)
     case "UPR136": case "UPR158": case "UPR182": return true;
     case "DYN045": case "DYN152": case "DYN171": return true;
     case "OUT049": case "OUT094": case "OUT099": case "OUT139": case "OUT140": case "OUT141": case "OUT157": case "OUT158": return true;
-    case "MON241": case "MON242": case "MON243": case "MON244": return SearchCurrentTurnEffects($cardID, $defPlayer); //Ironhide
     case "OUT174": return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer); //Vambrace of determination
     case "DTD200": return true;
     case "DTD222": case "DTD223": case "DTD224": case "DTD225": return true;
@@ -1100,7 +1104,8 @@ function HasGuardwell($cardID)
 
 function HasPiercing($cardID, $from=""){
   switch($cardID) {
-    case "OUT004": case "OUT005":case "OUT007":case "OUT009": //Weapons with Piercing
+    case "DYN115": case "DYN116":
+    case "OUT004": case "OUT005": case "OUT006": case "OUT007": case "OUT008": case "OUT009": case "OUT010": //Weapons with Piercing
     case "HVY245":
       return true;
     case "DYN076": case "DYN077": case "DYN078":
@@ -1110,6 +1115,16 @@ function HasPiercing($cardID, $from=""){
     case "DYN156": case "DYN157": case "DYN158": // Arrows
       return HasAimCounter();
   default: return false;
+  }
+}
+
+function HasTower($cardID)
+{
+  switch($cardID) {
+    case "TCC034": case "TCC035": case "TCC036":
+    case "HVY062": case "HVY063": case "HVY064":
+      return true;
+    default: return false;
   }
 }
 

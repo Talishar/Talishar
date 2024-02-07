@@ -722,7 +722,8 @@ function FindDefCharacter($cardID)
 
 function ChainLinkResolvedEffects()
 {
-  global $combatChain, $mainPlayer, $currentTurnEffects;
+  global $combatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex;
+  $allies = GetAllies($mainPlayer);
   if($combatChain[0] == "MON245" && !ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
   switch($combatChain[0])
   {
@@ -736,6 +737,8 @@ function ChainLinkResolvedEffects()
       break;
       default: break;
   }
+  
+  if($allies[$combatChainState[$CCS_WeaponIndex]+2] <= 0) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
 }
 
 function CombatChainClosedMainCharacterEffects()
@@ -786,10 +789,10 @@ function CombatChainClosedCharacterEffects()
             DestroyCharacter($defPlayer, $charIndex);
           }
         }
-        if(HasBattleworn($chainLinks[$i][$j])) $character[$charIndex+4] -= 1;//Add -1 block counter
-        if(HasGuardwell($chainLinks[$i][$j])) $character[$charIndex+4] -= (BlockValue($character[$charIndex]) + $character[$charIndex+4] + BlockModifier($character[$charIndex], "CC", 0));//Add -block value counter
-        else if(HasBladeBreak($chainLinks[$i][$j])) DestroyCharacter($defPlayer, $charIndex);
+        else if(HasBattleworn($chainLinks[$i][$j])) $character[$charIndex+4] -= 1;//Add -1 block counter
       }
+      if(HasGuardwell($chainLinks[$i][$j])) $character[$charIndex+4] -= (BlockValue($character[$charIndex]) + $character[$charIndex+4] + BlockModifier($character[$charIndex], "CC", 0));//Add -block value counter
+      else if(HasBladeBreak($chainLinks[$i][$j])) DestroyCharacter($defPlayer, $charIndex);
       switch($chainLinks[$i][$j])
       {
         case "MON089":
@@ -797,6 +800,10 @@ function CombatChainClosedCharacterEffects()
           {
             $character[FindCharacterIndex($defPlayer, "MON089")+1] = 0;
           }
+          break;
+        case "MON241": case "MON242": case "MON243": case "MON244": 
+          $charIndex = FindCharacterIndex($defPlayer, $chainLinks[$i][$j]);
+          if(SearchCurrentTurnEffects($chainLinks[$i][$j], $defPlayer, true)) DestroyCharacter($defPlayer, $charIndex);; //Ironhide
           break;
         case "RVD003":
           $deck = new Deck($defPlayer);
@@ -1200,14 +1207,17 @@ function DoesAttackHaveGoAgain()
   $attackType = CardType($attackID);
   $attackSubtype = CardSubType($attackID);
   $isAura = DelimStringContains(CardSubtype($attackID), "Aura");
+  //Prevention First
   if(CurrentEffectPreventsGoAgain()) return false;
   if(SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false;
+  if(SearchAuras("UPR139", $mainPlayer)) return false;
+
+  //Grant go again
   if(!$isAura && HasGoAgain($attackID)) return true;
   if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
     if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if($isAura && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
-  if(SearchAuras("UPR139", $mainPlayer)) return false;
   if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
   if($attackType == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchAuras("MON013", $mainPlayer)) return true;
   if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $mainPlayer))) return true;

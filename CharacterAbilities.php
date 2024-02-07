@@ -224,7 +224,6 @@ function CharacterStartTurnAbility($index)
     case "HVY047": case "HVY048":
       $character = GetPlayerCharacter($mainPlayer);
       if(!SearchCurrentTurnEffects($cardID."-1", $mainPlayer) && $character[1] < 3) AddCurrentTurnEffect($cardID."-1", $mainPlayer);
-      if(!SearchCurrentTurnEffects($cardID."-2", $mainPlayer) && $character[1] < 3) AddCurrentTurnEffect($cardID."-2", $mainPlayer);
       break;
     case "HVY254":
       AddCurrentTurnEffect("HVY254-1", $mainPlayer);
@@ -261,7 +260,6 @@ function DefCharacterStartTurnAbilities()
       case "HVY047": case "HVY048":
         $character = GetPlayerCharacter($defPlayer);
         if(!SearchCurrentTurnEffects($character[$i]."-1", $defPlayer) && $character[1] < 3) AddCurrentTurnEffect($character[$i]."-1", $defPlayer);
-        if(!SearchCurrentTurnEffects($character[$i]."-2", $defPlayer) && $character[1] < 3) AddCurrentTurnEffect($character[$i]."-2", $defPlayer);
         break;
       case "ROGUE018":
         AddCurrentTurnEffect("ROGUE018", $mainPlayer);

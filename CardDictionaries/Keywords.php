@@ -109,16 +109,9 @@
     $deck = new Deck($playerID);
     switch ($deck->Top()) {
       case "HVY059":
-        PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$playerID);
-        WriteLog(CardLink("HVY059", "HVY059") . " created a Gold Token for Player ". $playerID);
-        break;
-      case "HVY080": case "HVY081": case "HVY082":
-        PlayAura("HVY242", $playerID); //Vigor
-        WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Vigor Token for Player ". $playerID);
-        break;
       case "HVY077": case "HVY078": case "HVY079":
-        PlayAura("HVY241", $playerID); //Vigor
-        WriteLog(CardLink($deck->Top(), $deck->Top()) . " created a Might Token for Player ". $playerID);
+      case "HVY080": case "HVY081": case "HVY082":
+        AddLayer("TRIGGER", $playerID, $deck->Top());
         break;
       default:
         break;
@@ -181,7 +174,8 @@
     $otherPlayer = ($playerID == 1 ? 2 : 1);
     $char = &GetPlayerCharacter($playerID);
     $hero = ShiyanaCharacter($char[0], $playerID);
-    if(($hero == "HVY047" || $hero == "HVY048") && CountItem("DYN243", $playerID) > 0 && SearchCurrentTurnEffects($hero."-2", $playerID)) {
+    if(($hero == "HVY047" || $hero == "HVY048") && CountItem("DYN243", $playerID) > 0 && $char[1] == 2) {
+      $char[1] = 1;
       //This all has to be prepend for the case where it's a Victor mirror, one player wins, then the re-do causes that player to win
       PrependDecisionQueue("CLASH", $effectController, $cardID, 1);
       PrependDecisionQueue("ADDBOTTOMREMOVETOP", $otherPlayer, $hero, 1);

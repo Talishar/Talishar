@@ -230,10 +230,15 @@ function PlayerTargetedAbility($player, $card, $lastResult)
 {
   global $dqVars;
   $target = ($lastResult == "Target_Opponent" ? ($player == 1 ? 2 : 1) : $player);
-  switch($card)
+  $params = explode("-", $card);
+  switch($params[0])
   {
     case "CORONETPEAK":
       AddDecisionQueue("DQPAYORDISCARD", $target, "1");
+      return "";
+    case "WINTERSBITE":
+      WriteLog($params[1]);
+      AddDecisionQueue("DQPAYORDISCARD", $target, $params[1]);
       return "";
     case "IMPERIALWARHORN":
       if($lastResult == "Target_Opponent" || $lastResult == "Target_Both_Heroes")
@@ -262,8 +267,8 @@ function PlayerTargetedAbility($player, $card, $lastResult)
       PummelHit($target);
       return "";
     case "DTD178": case "DTD179": case "DTD180":
-      if($card == "DTD178") $pitchTarget = 1;
-      else if($card == "DTD179") $pitchTarget = 2;
+      if($params[0] == "DTD178") $pitchTarget = 1;
+      else if($params[0] == "DTD179") $pitchTarget = 2;
       else $pitchTarget = 3;
       $deck = new Deck($target);
       $banished = $deck->BanishTop();

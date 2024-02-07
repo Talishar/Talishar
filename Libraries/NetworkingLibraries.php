@@ -988,7 +988,7 @@ function ResolveCombatDamage($damageDone)
       for($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
         if($combatChain[$i] == $mainPlayer) {
           $EffectContext = $combatChain[$i - 1];
-          AddHitEffectTrigger($combatChain[$i - 1]);
+          AddOnHitTrigger($combatChain[$i - 1]);
           if($damageDone >= 4) AddCrushEffectTrigger($combatChain[$i - 1]);
           if(CachedTotalAttack() >= 13) AddTowerEffectTrigger($combatChain[$i - 1]);
         }
@@ -1600,31 +1600,37 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "ARC185", 1);
       break;
     case "CRU188":
-      AddDecisionQueue("COUNTITEM", $currentPlayer, "CRU197"); //Copper
-      AddDecisionQueue("LESSTHANPASS", $currentPlayer, "4");
-      AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_4_" . CardLink("CRU197", "CRU197"), 1);
-      AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-      AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "CRU197-4", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
-      AddDecisionQueue("WRITELOG", $currentPlayer, CardLink("CRU197", "CRU197")."_alternative_cost_was_paid.", 1);
-      AddDecisionQueue("COUNTITEM", $currentPlayer, "EVR195"); //Silver
-      AddDecisionQueue("LESSTHANPASS", $currentPlayer, "2");
-      AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_2_" . CardLink("EVR195", "EVR195"), 1);
-      AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-      AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "EVR195-2", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
-      AddDecisionQueue("WRITELOG", $currentPlayer, CardLink("EVR195", "EVR195")."_alternative_cost_was_paid.", 1);
-      AddDecisionQueue("COUNTITEM", $currentPlayer, "DYN243"); //Gold
-      AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
-      AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_1_" . CardLink("DYN243", "DYN243"), 1);
-      AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-      if(SearchCharacterAlive($currentPlayer, "HVY051")) {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=DYN243&MYCHAR:cardID=HVY051", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243-1", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
-      AddDecisionQueue("WRITELOG", $currentPlayer, CardLink("DYN243", "DYN243")."_alternative_cost_was_paid.", 1);
+      if(CountItem("CRU197", $currentPlayer) >= 4) //Copper
+      {
+        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_4_" . CardLink("CRU197", "CRU197"), 1);
+        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+        AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "CRU197-4", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, CardLink("CRU197", "CRU197") . "_alternative_cost_was_paid.", 1);
+      }
+      if(CountItem("EVR195", $currentPlayer) >= 2) //Silver
+      {
+        AddDecisionQueue("SEARCHCURRENTEFFECTPASS", $currentPlayer, "CRU188");
+        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_2_" . CardLink("EVR195", "EVR195"), 1);
+        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+        AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "EVR195-2", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, CardLink("EVR195", "EVR195") . "_alternative_cost_was_paid.", 1);
+      }
+      if(CountItem("DYN243", $currentPlayer) >= 1) //Gold
+      {
+        AddDecisionQueue("SEARCHCURRENTEFFECTPASS", $currentPlayer, "CRU188");
+        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_1_" . CardLink("DYN243", "DYN243"), 1);
+        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+        if (SearchCharacterAlive($currentPlayer, "HVY051")) {
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=DYN243&MYCHAR:cardID=HVY051", 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+        } else
+          AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243-1", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, CardLink("DYN243", "DYN243") . "_alternative_cost_was_paid.", 1);
+      }
       break;
     case "MON199":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIHAND");
