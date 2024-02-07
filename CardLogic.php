@@ -709,12 +709,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
   $otherPlayer = ($player == 1 ? 2 : 1);
-  if($additionalCosts == "HITEFFECT") ProcessHitEffect($target);
-  if($additionalCosts == "CRUSHEFFECT") ProcessCrushEffect($target);
-  if($additionalCosts == "TOWEREFFECT") ProcessTowerEffect($target);
+  if($additionalCosts == "HITEFFECT") { ProcessHitEffect($target); return; }
+  if($additionalCosts == "CRUSHEFFECT") { ProcessCrushEffect($target); return; }
+  if($additionalCosts == "TOWEREFFECT") { ProcessTowerEffect($target); return; }
   if($additionalCosts == "EFFECTHITEFFECT") {
     $shouldRemove = EffectHitEffect($target);
     if($shouldRemove == 1) RemoveCurrentTurnEffect(FindCurrentTurnEffectIndex($player, $target));
+    return;
   }
   switch($parameter) {
     case "HEAVE":
