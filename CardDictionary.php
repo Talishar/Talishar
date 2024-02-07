@@ -1118,6 +1118,16 @@ function HasPiercing($cardID, $from=""){
   }
 }
 
+function HasTower($cardID)
+{
+  switch($cardID) {
+    case "TCC034": case "TCC035": case "TCC036":
+    case "HVY062": case "HVY063": case "HVY064":
+      return true;
+    default: return false;
+  }
+}
+
 function RequiresDiscard($cardID)
 {
   switch($cardID) {

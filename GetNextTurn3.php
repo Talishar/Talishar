@@ -273,7 +273,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $activeChainLink->wager = CachedWagerActive();
   $activeChainLink->phantasm = CachedPhantasmActive();
   $activeChainLink->fusion = CachedFusionActive();
-  if($CombatChain->HasCurrentLink()) $activeChainLink->piercing = CachedPiercingActive($combatChain[0]); 
+  if ($CombatChain->HasCurrentLink()) $activeChainLink->tower = IsTowerActive();
+  if ($CombatChain->HasCurrentLink()) $activeChainLink->piercing = IsPiercingActive($combatChain[0]); 
 
   // TODO: How to find out if a card has been fused?
   $activeChainLink->fused = false;
