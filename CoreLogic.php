@@ -267,8 +267,8 @@ function ArsenalAttackModifier(&$attackModifiers)
   $modifier = 0;
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces()) {
     switch($arsenal[$i]) {
-      case "MON405": 
-        $modifier += ($arsenal[$i+1] == "UP" && $attackType == "W" && Is1H($attackID) ? 1 : 0); 
+      case "MON405":
+        $modifier += ($arsenal[$i+1] == "UP" && $attackType == "W" && Is1H($attackID) ? 1 : 0);
         array_push($attackModifiers, $arsenal[$i]);
         array_push($attackModifiers, $modifier);
         break;
@@ -374,7 +374,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   $damage = PermanentTakeDamageAbilities($player, $damage, $type);
   $damage = ItemTakeDamageAbilities($player, $damage, $type);
   $damage = CharacterTakeDamageAbilities($player, $damage, $type, $preventable);
-  if($damage == 1 && $preventable && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last  
+  if($damage == 1 && $preventable && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
   $dqVars[0] = $damage;
   if($type == "COMBAT") $dqState[6] = $damage;
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
@@ -737,8 +737,8 @@ function ChainLinkResolvedEffects()
       break;
       default: break;
   }
-  
-  if($allies[$combatChainState[$CCS_WeaponIndex]+2] <= 0) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
+
+  if(IsAllyAttacking() && $allies[$combatChainState[$CCS_WeaponIndex]+2] <= 0) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
 }
 
 function CombatChainClosedMainCharacterEffects()
@@ -801,7 +801,7 @@ function CombatChainClosedCharacterEffects()
             $character[FindCharacterIndex($defPlayer, "MON089")+1] = 0;
           }
           break;
-        case "MON241": case "MON242": case "MON243": case "MON244": 
+        case "MON241": case "MON242": case "MON243": case "MON244":
           $charIndex = FindCharacterIndex($defPlayer, $chainLinks[$i][$j]);
           if(SearchCurrentTurnEffects($chainLinks[$i][$j], $defPlayer, true)) DestroyCharacter($defPlayer, $charIndex);; //Ironhide
           break;
@@ -1041,7 +1041,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   switch($cardID) {
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
-    case "HVY186": case "HVY187": case "HVY188": 
+    case "HVY186": case "HVY187": case "HVY188":
     case "HVY209":
       return $from == "HAND";
     default: break;
@@ -1256,7 +1256,7 @@ function DoesAttackHaveGoAgain()
     case "DYN069": case "DYN070": return GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) != "-";
     case "EVO009": return EvoUpgradeAmount($mainPlayer) >= 3;
     case "EVO111": case "EVO112": case "EVO113": return GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0;
-    case "HVY095": 
+    case "HVY095":
       $character = &GetPlayerCharacter($mainPlayer);
       return SearchCurrentTurnEffectsForUniqueID($character[$combatChainState[$CCS_WeaponIndex]+11]) != -1;
     case "HVY134": return true;
