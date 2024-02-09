@@ -1019,7 +1019,7 @@ function ResolveCombatDamage($damageDone)
 
 function FinalizeChainLink($chainClosed = false)
 {
-  global $turn, $actionPoints, $combatChain, $mainPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
+  global $turn, $actionPoints, $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
   global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen;
   UpdateGameState($currentPlayer);
@@ -1075,6 +1075,7 @@ function FinalizeChainLink($chainClosed = false)
   array_push($chainLinkSummary, $numHitsOnLink);
   array_push($chainLinkSummary, CurrentEffectBaseAttackSet());
   array_push($chainLinkSummary, GetClassState($mainPlayer, $CS_ModalAbilityChoosen));
+  array_push($chainLinkSummary, GetChainLinkCardIDs($defPlayer, "", "C"));
 
   ResolveWagers();
 
@@ -1146,6 +1147,7 @@ function EndStep()
   BeginEndPhaseEffectTriggers();
   UndoIntimidate(1);
   UndoIntimidate(2);
+  RemoveBanishedCardFromGraveyard();
   if(HeaveIndices() != "") AddLayer("TRIGGER", $mainPlayer, "HEAVE");
   UndoShiyanaBaseLife();
 }
@@ -1173,8 +1175,21 @@ function UndoIntimidate($player)
   }
 }
 
+function RemoveBanishedCardFromGraveyard() //Already Dead code
+{
+  global $defPlayer;
+  $banish = &GetBanish($defPlayer);
+  for($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+    if($banish[$i+1] == "REMOVEGRAVEYARD") {
+      WriteLog("here");
+      $index = SearchGetFirstIndex(SearchMultizone($defPlayer, "MYDISCARD:cardID=" . $banish[$i]));
+      RemoveGraveyard($defPlayer, $index);
+    }
+  }
+}
+
 //4.4.1. Players do not get priority during the End Phase
-//CR 2.0 4.4.2. - Beginning of the end phase
+//CR 2.0 4.4.2.- Beginning of the end phase
 function FinishTurnPass()
 {
   global $mainPlayer;

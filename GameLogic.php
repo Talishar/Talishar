@@ -21,10 +21,10 @@ include "CombatChain.php";
 
 function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {
-  global $redirectPath, $playerID, $gameName, $currentPlayer, $combatChain, $CombatChain, $defPlayer, $combatChainState, $EffectContext;
+  global $redirectPath, $playerID, $gameName, $currentPlayer, $combatChain, $CombatChain, $defPlayer, $combatChainState, $EffectContext, $chainLinks;
   global $CS_NumCharged, $otherPlayer, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
-  global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
+  global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup, $chainLinkSummary;
   $rv = "";
   switch($phase) {
     case "FINDINDICES":
@@ -167,6 +167,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PlayAbility($lastResult, "-", 0);
       }
       return $lastResult;
+    case "SEARCHCOMBATCHAIN":
+      $cardIDList = "";
+      $otherPlayer = $player == 1 ? 2 : 1;
+      $cardIDList = GetChainLinkCardIDs($otherPlayer, exclCardTypes:"C");
+      for ($i = 0; $i < count($chainLinks); ++$i) {
+        if($chainLinkSummary[$i * ChainLinkSummaryPieces()+8] == 0) continue;
+        if($cardIDList != "") $cardIDList .= ",";
+        $cardIDList .= $chainLinkSummary[$i * ChainLinkSummaryPieces()+8];
+      }
+      return $cardIDList;
     case "PLAYABILITY":
       PlayAbility($lastResult, "-", 0);
       return $lastResult;
@@ -1611,6 +1621,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($lifeDifference > 0) LoseHealth($lifeDifference, $player);
           elseif ($lifeDifference < 0) GainHealth($lifeDifference, $player, true, false);
         }
+        return $lastResult;
+      case "ALREADYDEAD":
+        $type = CardType($lastResult);
+        switch ($type) {
+          case "E":
+            BanishCardForPlayer($lastResult, $defPlayer, "CC", "-", $mainPlayer);
+            $index = FindCharacterIndex($lastResult, $defPlayer);
+            DestroyCharacter($defPlayer, $index, wasBanished:true);
+            break;
+          default:
+            BanishCardForPlayer($lastResult, $defPlayer, "CC", "REMOVEGRAVEYARD", $mainPlayer);
+            break;
+        }
+        WriteLog(CardLink($lastResult, $lastResult). " was banished");
         return $lastResult;
     default:
       return "NOTSTATIC";

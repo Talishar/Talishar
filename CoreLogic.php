@@ -702,6 +702,35 @@ function GetChainLinkCards($playerID="", $cardType="", $exclCardTypes="", $nameC
   return $pieces;
 }
 
+function GetChainLinkCardIDs($playerID="", $cardType="", $exclCardTypes="", $nameContains="", $subType="", $exclCardSubTypes="")
+{
+  global $combatChain;
+  $cardIDs = "";
+  $exclCardTypeArray=explode(",", $exclCardTypes);
+  $exclCardSubTypeArray=explode(",", $exclCardSubTypes);
+  for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+  {
+    $thisType = CardType($combatChain[$i]);
+    $thisSubType = CardSubType($combatChain[$i]);
+    if(($playerID == "" || $combatChain[$i+1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial:true)))
+    {
+      $excluded = false;
+      for($j=0; $j<count($exclCardTypeArray); ++$j)
+      {
+        if($thisType == $exclCardTypeArray[$j]) $excluded = true;
+      }
+      for($k=0; $k<count($exclCardSubTypeArray); ++$k)
+      {
+        if($thisSubType != "" && DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) $excluded = true;
+      }
+      if($excluded) continue;
+      if($cardIDs != "") $cardIDs .= ",";
+      $cardIDs .= $combatChain[$i];
+    }
+  }
+  return $cardIDs;
+}
+
 function GetTheirEquipmentChoices()
 {
   global $currentPlayer;
