@@ -1474,7 +1474,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       ItemPlayAbilities($cardID, $from);
       ResetCardPlayed($cardID);
     }
-    if(EffectPlayCardRestricted($cardID, $playType)) return;
     if($playType == "A" || $playType == "AA") {
       if(!$canPlayAsInstant || GetResolvedAbilityType($cardID, $from) == "AA") --$actionPoints;
       if($cardType == "A" && $abilityType == "") {
@@ -2268,7 +2267,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $baseAttackSet = CurrentEffectBaseAttackSet();
       $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
       $combatChainState[$CCS_LinkBaseAttack] = BaseAttackModifiers($cardID, $attackValue);
-      if(EffectAttackRestricted()) return;
       $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
       if($definedCardType == "AA" && $attackValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
       if($definedCardType == "AA" && (SearchCharacterActive($currentPlayer, "CRU002") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects("CRU002-SHIYANA", $currentPlayer))) && $attackValue >= 6) KayoStaticAbility($cardID);
