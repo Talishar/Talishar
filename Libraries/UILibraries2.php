@@ -743,7 +743,6 @@ function TheirBanishUIMinimal($from = "")
 function CardBorderColor($cardID, $from, $isPlayable, $mod = "-")
 {
   global $playerID, $currentPlayer, $turn;
-  if ($playerID != $currentPlayer) return 0;
   if ($turn[0] == "B") return ($isPlayable ? 6 : 0);
   if ($from == "BANISH") {
     if ($isPlayable || PlayableFromBanish($cardID, $mod)) return 7;
@@ -754,7 +753,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $mod = "-")
     return 0;
   }
   if ($from == "GY") {
-    if ($isPlayable || PlayableFromGraveyard($cardID, $mod)) return 7;
+    if ($isPlayable || PlayableFromGraveyard($cardID)) return 7;
     return 0;
   }
   if ($isPlayable && ComboActive($cardID)) return 3;
