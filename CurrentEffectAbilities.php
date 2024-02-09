@@ -1342,12 +1342,7 @@ function EffectPlayCardRestricted($cardID, $type)
       }
     }
   }
-  if($restrictedBy != "") {
-    WriteLog("The card play is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.");
-    RevertGamestate();
-    return true;
-  }
-  return false;
+  return $restrictedBy;
 }
 
 function EffectCardID($effect) {
