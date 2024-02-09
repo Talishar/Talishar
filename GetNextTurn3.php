@@ -326,12 +326,15 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $layerObject->reorderableLayers = $reorderableLayers;
   $response->layerDisplay = $layerObject;
 
-  //Opponent Hand
-  $handContents = array();
+  // their hand contents
+  $theirHandContents = array();
   for ($i = 0; $i < count($theirHand); ++$i) {
-    array_push($handContents, JSONRenderedCard(cardNumber: $TheirCardBack, controller: ($playerID == 1 ? 2 : 1)));
+    if ($playerID == 3 || $playerID != $otherPlayer) {
+      $playable = false;
+      array_push($theirHandContents, JSONRenderedCard($TheirCardBack));
+    }
   }
-  $response->opponentHand = $handContents;
+  $response->opponentHand = $theirHandContents;
 
   //Their Health
   $response->opponentHealth = $theirHealth;
@@ -364,11 +367,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $response->opponentCardBack = JSONRenderedCard($TheirCardBack);
 
+  $theirBanish = GetBanish($otherPlayer);
   $opponentBanishArr = array();
   for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
     $cardID = $theirBanish[$i];
-    if ($theirBanish[$i + 1] == "INT" || $theirBanish[$i + 1] == "UZURI") $cardID = "CardBack";
-    array_push($opponentBanishArr, JSONRenderedCard($cardID));
+    $mod = explode("-", $theirBanish[$i + 1])[0];
+    if ($mod == "INT" || $mod == "UZURI") $cardID = "CardBack";
+    $action = IsPlayable($theirBanish[$i], $turn[0], "BANISH", $i, player:$otherPlayer) ? 14 : 0;
+    array_push($opponentBanishArr, JSONRenderedCard($cardID, action: $action, borderColor: 7, actionDataOverride: strval($i)));
   }
   $response->opponentBanish = $opponentBanishArr;
   if (TalentContains($theirCharacter[0], "SHADOW")) {
