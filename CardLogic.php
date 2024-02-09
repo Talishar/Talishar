@@ -657,7 +657,8 @@ function AddTowerEffectTrigger($cardID)
 function AddEffectHitTrigger($cardID)
 {
   global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner;
-  switch ($cardID) {
+  $effects = explode(',', $cardID);
+  switch ($effects[0]) {
     case "WTR129": case "WTR130": case "WTR131":
     case "WTR147": case "WTR148": case "WTR149":
     case "WTR206": case "WTR207": case "WTR208":
