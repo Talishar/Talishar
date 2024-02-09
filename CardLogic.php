@@ -705,7 +705,7 @@ function AddEffectHitTrigger($cardID)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-")
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
@@ -846,6 +846,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       } else {
         --$auras[$index+2];
       }
+      break;
+    case "CRU079": case "CRU080":
+      AddCharacterEffect($player, $combatChainState[$CCS_WeaponIndex], $CombatChain->AttackCard()->ID());
+      WriteLog(CardLink($CombatChain->AttackCard()->ID(), $CombatChain->AttackCard()->ID()) . " got +1 for the rest of the turn.");
       break;
     case "CRU097":
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=C&THEIRCHAR:type=C");
