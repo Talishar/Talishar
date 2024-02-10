@@ -100,7 +100,8 @@
             AddDecisionQueue("CHOOSECARDID", $mainPlayer, "<-");
             AddDecisionQueue("ALREADYDEAD", $mainPlayer, "CC,-," . $mainPlayer, 1);
           }
-          break;      case "EVO241":
+          break;      
+        case "EVO241":
         if(!IsAllyAttackTarget()) {
           PlayAura("DTD232", $defPlayer);
           PlayAura("WTR225", $defPlayer);
