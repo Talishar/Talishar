@@ -1334,7 +1334,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         $index = FindCharacterIndex($player, "HVY648");
         CharacterChooseSubcard($player, $index, isMandatory:false);
         AddDecisionQueue("ADDDISCARD", $player, "-", 1);
-        AddDecisionQueue("MULTotherPlayerIZONEINDICES", $player, "THEIRITEMS:minCost=0;maxCost=1", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS:minCost=0;maxCost=1", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to gain control.", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
