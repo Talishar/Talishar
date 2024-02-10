@@ -262,10 +262,10 @@ function CardCost($cardID, $from="-")
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
-      if(GetResolvedAbilityType($cardID, "HAND") == "AA" || $from != "HAND") return 3;
+      if(GetResolvedAbilityType($cardID, "HAND") == "AA" || $from == "CC") return 3;
       else return 0;
     case "HVY209":
-      if(GetResolvedAbilityType($cardID, "HAND") == "AA" || $from != "HAND") return 2;
+      if(GetResolvedAbilityType($cardID, "HAND") == "AA" || $from == "CC") return 2;
       else return 0;
     default: break;
   }
