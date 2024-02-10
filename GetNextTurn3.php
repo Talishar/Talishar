@@ -326,12 +326,15 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $layerObject->reorderableLayers = $reorderableLayers;
   $response->layerDisplay = $layerObject;
 
-  //Opponent Hand
-  $handContents = array();
+  // their hand contents
+  $theirHandContents = array();
   for ($i = 0; $i < count($theirHand); ++$i) {
-    array_push($handContents, JSONRenderedCard(cardNumber: $TheirCardBack, controller: ($playerID == 1 ? 2 : 1)));
+    if ($playerID == 3 || $playerID != $otherPlayer) {
+      $playable = false;
+      array_push($theirHandContents, JSONRenderedCard($TheirCardBack));
+    }
   }
-  $response->opponentHand = $handContents;
+  $response->opponentHand = $theirHandContents;
 
   //Their Health
   $response->opponentHealth = $theirHealth;
@@ -364,11 +367,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $response->opponentCardBack = JSONRenderedCard($TheirCardBack);
 
+  //Their Banish
+  $theirBanish = GetBanish($otherPlayer);
   $opponentBanishArr = array();
   for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
     $cardID = $theirBanish[$i];
-    if ($theirBanish[$i + 1] == "INT" || $theirBanish[$i + 1] == "UZURI") $cardID = "CardBack";
-    array_push($opponentBanishArr, JSONRenderedCard($cardID));
+    $mod = explode("-", $theirBanish[$i + 1])[0];
+    $action = IsPlayable($theirBanish[$i], $turn[0], "BANISH", $i, player:$otherPlayer) ? 14 : 0;
+    if ($mod == "INT" || $mod == "UZURI") $cardID = "CardBack";
+    else $border = CardBorderColor($theirBanish[$i], "BANISH", $action > 0, $mod);
+
+    array_push($opponentBanishArr, JSONRenderedCard($cardID, action: $action, borderColor: $border, actionDataOverride: strval($i)));
   }
   $response->opponentBanish = $opponentBanishArr;
   if (TalentContains($theirCharacter[0], "SHADOW")) {
@@ -472,6 +481,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
 
   $response->playerCardBack = JSONRenderedCard($MyCardBack);
 
+  //My Banish
   $myBanish = GetBanish($playerID);
   $playerBanishArr = array();
   for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
@@ -1030,13 +1040,19 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       } else $card = $option[1];
 
       if ($option[0] == "LAYER" && $card == "TRIGGER") $card = $source[$index + 2];
-      $playerBorderColor = 0;
 
-      if (substr($option[0], 0, 2) == "MY") $playerBorderColor = 1;
-      else if (substr($option[0], 0, 5) == "THEIR") $playerBorderColor = 2;
-      else if ($option[0] == "CC") $playerBorderColor = ($combatChain[$index + 1] == $playerID ? 1 : 2);
+
+      if ($option[0] == "THEIRBANISH") {
+        $mod = explode("-", $theirBanish[$index + 1])[0];
+        $action = IsPlayable($card, $turn[0], "BANISH", $index, player:$otherPlayer) ? 14 : 0;
+        $borderColor = CardBorderColor($card, "BANISH", $action > 0, $mod);
+        if($borderColor == 7) $label = "Playable";
+      }
+      else if (substr($option[0], 0, 2) == "MY") $borderColor = 1;
+      else if (substr($option[0], 0, 5) == "THEIR") $borderColor = 2;
+      else if ($option[0] == "CC") $borderColor = ($combatChain[$index + 1] == $playerID ? 1 : 2);
       else if ($option[0] == "LAYER") {
-        $playerBorderColor = ($layers[$index + 1] == $playerID ? 1 : 2);
+        $borderColor = ($layers[$index + 1] == $playerID ? 1 : 2);
       }
 
       if ($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN") $card = $TheirCardBack;
@@ -1069,7 +1085,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       }
 
       if ($maxCount < 2)
-        array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $playerBorderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, atkCounters: $atkCounters, controller: $playerBorderColor, label: $label, steamCounters: $steamCounters));
+        array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, atkCounters: $atkCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters));
       else
         array_push($cardsMultiZone, JSONRenderedCard($card, actionDataOverride: $i - $countOffset));
     }

@@ -337,7 +337,7 @@ function OnDefenseReactionResolveEffects($from)
 
 function OnBlockResolveEffects()
 {
-  global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex;
+  global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain;
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if(SearchCurrentTurnEffects("ARC160-1", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
@@ -347,44 +347,6 @@ function OnBlockResolveEffects()
     if($itemAttackModifier != 0) CombatChainPowerModifier($i, $itemAttackModifier);
     else ProcessPhantasmOnBlock($i);
     ProcessMirageOnBlock($i);
-  }
-  switch($combatChain[0]) {
-    case "CRU051": case "CRU052":
-      EvaluateCombatChain($totalAttack, $totalBlock);
-      for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-        if($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
-          AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
-        }
-      }
-      break;
-    case "ELE004":
-      if(SearchCurrentTurnEffects($combatChain[0], $defPlayer)) {
-        AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
-      }
-      break;
-    case "OUT185":
-      for($i=0; $i<CachedNumActionBlocked(); ++$i) MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack(), "MYTOPDECK", may:true);
-      break;
-    case "DTD205":
-      $nonEquipBlockingCards = "";
-      if(!SearchCurrentTurnEffects("DTD205", $mainPlayer))
-      {
-        $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", exclCardTypes:"E", exclCardSubTypes:"Evo");
-        if($nonEquipBlockingCards != "") {
-          $options = GetChainLinkCards($defPlayer);
-          AddCurrentTurnEffect("DTD205", $mainPlayer);
-          AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
-          AddDecisionQueue("HALVEBASEDEFENSE", $mainPlayer, "-", 1);
-        }
-      }
-      break;
-    case "HVY095":
-      $character = &GetPlayerCharacter($mainPlayer);
-      if(NumAttacksBlocking() > 0 && SearchCurrentTurnEffectsForUniqueID($character[$combatChainState[$CCS_WeaponIndex]+11] == -1)) {
-        AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC", $character[$combatChainState[$CCS_WeaponIndex]+11]);
-      }
-      break;
-    default: break;
   }
   $blockedFromHand = 0;
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) if($combatChain[$i+2] == "HAND") ++$blockedFromHand;
@@ -448,6 +410,52 @@ function OnBlockResolveEffects()
         break;
       default: break;
     }
+  }
+  switch ($combatChain[0]) {
+    case "CRU051":
+    case "CRU052":
+      EvaluateCombatChain($totalAttack, $totalBlock);
+      for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        if ($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
+          AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+        }
+      }
+      break;
+    case "CRU079":
+    case "CRU080":
+      if (NumAttacksBlocking() > 0) {
+        AddLayer("TRIGGER", $mainPlayer, $CombatChain->AttackCard()->ID());
+      }
+      break;
+    case "ELE004":
+      if (SearchCurrentTurnEffects($combatChain[0], $defPlayer)) {
+        AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
+      }
+      break;
+    case "OUT185":
+      for ($i = 0; $i < CachedNumActionBlocked(); ++$i)
+        MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack(), "MYTOPDECK", may: true);
+      break;
+    case "DTD205":
+      $nonEquipBlockingCards = "";
+      if (!SearchCurrentTurnEffects("DTD205", $mainPlayer)) {
+        $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", exclCardTypes: "E", exclCardSubTypes: "Evo");
+        if ($nonEquipBlockingCards != "") {
+          $options = GetChainLinkCards($defPlayer);
+          AddCurrentTurnEffect("DTD205", $mainPlayer);
+          AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
+          AddDecisionQueue("HALVEBASEDEFENSE", $mainPlayer, "-", 1);
+        }
+      }
+      break;
+    case "HVY095":
+      $character = &GetPlayerCharacter($mainPlayer);
+      if (NumAttacksBlocking() > 0 && SearchCurrentTurnEffectsForUniqueID($character[$combatChainState[$CCS_WeaponIndex] + 11] == -1)) {
+        AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC", $character[$combatChainState[$CCS_WeaponIndex] + 11]);
+      }
+      break;
+    default:
+      break;
   }
   if($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "ELE174", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer)))
   {
@@ -623,12 +631,6 @@ function OnBlockEffects($index, $from)
   }
   $currentTurnEffects = array_values($currentTurnEffects);
   switch($CombatChain->AttackCard()->ID()) {
-    case "CRU079": case "CRU080":
-      if($cardType == "AA" && NumAttacksBlocking() == 1) {
-        AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $CombatChain->AttackCard()->ID());
-        WriteLog(CardLink($CombatChain->AttackCard()->ID(), $CombatChain->AttackCard()->ID()) . " got +1 for the rest of the turn.");
-      }
-      break;
     default: break;
   }
   switch($CombatChain->Card($index)->ID()) {
