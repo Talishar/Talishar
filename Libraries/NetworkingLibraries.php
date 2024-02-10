@@ -2296,6 +2296,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   }
   //Resolve Effects
   if(!$isBlock) {
+    if($definedCardType == "AA") AddLayer("ATTACKSTEP", $mainPlayer, "-"); //I haven't added this for weapon. I don't think it's needed yet.
     CurrentEffectPlayOrActivateAbility($cardID, $from);
     if($from != "PLAY") {
       CurrentEffectPlayAbility($cardID, $from);
@@ -2315,7 +2316,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     CopyCurrentTurnEffectsFromAfterResolveEffects();
     CacheCombatResult();
     if(!$isBlock) ProcessAllMirage();
-    if($definedCardType == "AA") AddLayer("ATTACKSTEP", $mainPlayer, "-"); //I haven't added this for weapon. I don't think it's needed yet.
   }
   if($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID)) RemoveCharacterEffects($currentPlayer, GetClassState($currentPlayer, $CS_CharacterIndex), "INSTANT");
   //Now determine what needs to happen next
