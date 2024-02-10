@@ -252,7 +252,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($turn[0] == "B" || (count($layers) > 0 && $layers[0] == "DEFENDSTEP")) $tracker->position = "Defense";
   else if ($turn[0] == "A" || $turn[0] == "D") $tracker->position = "Reactions";
   else if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && ($layers[0] == "ENDTURN" || $layers[0] == "FINALIZECHAINLINK"))) $tracker->position = "EndTurn";
-  else if (count($chainLinks) > 0) $tracker->position = "Combat";
+  else if (count($chainLinks) > 0 || $layers[0] == "ATTACKSTEP") $tracker->position = "Combat";
   else $tracker->position = "Main";
   $response->tracker = $tracker;
 
