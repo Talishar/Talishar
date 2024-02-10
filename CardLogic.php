@@ -838,7 +838,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "CRU053":
       $index = FindCharacterIndex($player, $parameter);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Breeze_Rider_Boots_to_give_your_Combo_attacks_Go_Again");
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Breeze_Rider_Boots");
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
