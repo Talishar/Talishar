@@ -91,7 +91,8 @@ function RemoveBanish($player, $index)
 //When it matters, make it save this off to a different zone
 function TurnBanishFaceDown($player, $index)
 {
-  RemoveBanish($player, $index);
+  $banish = &GetBanish($player);
+  $banish[$index+1] = "FACEDOWN";
 }
 
 function AddBottomDeck($cardID, $player, $from)

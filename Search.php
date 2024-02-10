@@ -108,7 +108,7 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
   if (!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
   for ($i = 0; $i < count($array); $i += $count) {
     if($zone == "CHAR" && $array[$i+1] == 0) continue;
-    if($zone == "BANISH" && $array[$i+1] == "INT") continue;
+    if($zone == "BANISH" && ($array[$i+1] == "INT" || $array[$i+1] == "FACEDOWN")) continue;
     $cardID = $array[$i];
     if(!isPriorityStep($cardID)) {
       if(($type == "" || CardType($cardID) == $type || ($type == "C" && CardType($cardID) == "D"))
@@ -144,7 +144,7 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
 function isPriorityStep($cardID)
 {
   switch($cardID) {
-    case "ENDTURN": case "RESUMETURN": case "PHANTASM": case "MIRAGE": case "FINALIZECHAINLINK": case "DEFENDSTEP": case "ENDSTEP":
+    case "ENDTURN": case "RESUMETURN": case "PHANTASM": case "MIRAGE": case "FINALIZECHAINLINK": case "DEFENDSTEP": case "ENDSTEP": case "ATTACKSTEP":
       return true;
     default: return false;
   }
