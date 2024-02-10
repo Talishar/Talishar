@@ -460,7 +460,11 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
 
   $response->playerPitchCount = $myResources[0];
   $playerPitchArr = array();
-  for($i = count($myPitch) - PitchPieces(); $i >= 0; $i -= PitchPieces()) {
+
+  $loopMaxCondition = 0;
+  $maxPitchCardsIndex = 6;
+  if((count($myPitch) - PitchPieces()) >= $maxPitchCardsIndex); $loopMaxCondition = abs($maxPitchCardsIndex - (count($myPitch) - PitchPieces()));
+  for($i = count($myPitch) - PitchPieces(); $i >= $loopMaxCondition; $i -= PitchPieces()) {
     array_push($playerPitchArr, JSONRenderedCard($myPitch[$i]));
   }
   $response->playerPitch = $playerPitchArr;
