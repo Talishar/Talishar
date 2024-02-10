@@ -376,7 +376,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $cardID = $theirBanish[$i];
     $mod = explode("-", $theirBanish[$i + 1])[0];
     $action = IsPlayable($theirBanish[$i], $turn[0], "BANISH", $i, player:$otherPlayer) ? 14 : 0;
-    if ($mod == "INT" || $mod == "UZURI" || $mod == "DTD564") {
+    if ($mod == "INT" || $mod == "UZURI" || $mod == "FACEDOWN") {
       $cardID = "CardBack";
     }
     else $border = CardBorderColor($theirBanish[$i], "BANISH", $action > 0, $mod);
@@ -499,7 +499,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $mod = explode("-", $myBanish[$i + 1])[0];
     $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0, $mod);
     $cardID = $myBanish[$i];
-    if($mod == "DTD564") {
+    if($mod == "FACEDOWN") {
       $overlay = 1;
       $border = 0;
     }
