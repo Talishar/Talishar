@@ -2315,6 +2315,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     CopyCurrentTurnEffectsFromAfterResolveEffects();
     CacheCombatResult();
     if(!$isBlock) ProcessAllMirage();
+    AddLayer("ATTACKSTEP", $mainPlayer, "-");
   }
   if($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID)) RemoveCharacterEffects($currentPlayer, GetClassState($currentPlayer, $CS_CharacterIndex), "INSTANT");
   //Now determine what needs to happen next
