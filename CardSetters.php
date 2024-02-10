@@ -25,6 +25,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   AddEvent("BANISH", ($modifier == "INT" || $modifier == "UZURI" ? "CardBack" : $cardID));
   //Effects that change the modifier
   if($characterID == "DTD564" && $character[1] < 3) {
+    AddLayer("TRIGGER", $player, $characterID, uniqueID:-1);
     if($modifier != "INT") $modifier = "DTD564";
   }
   //Do effects that change where it goes, or banish it if not
@@ -90,7 +91,8 @@ function RemoveBanish($player, $index)
 //When it matters, make it save this off to a different zone
 function TurnBanishFaceDown($player, $index)
 {
-  RemoveBanish($player, $index);
+  $banish = &GetBanish($player);
+  $banish[$index+1] = "FACEDOWN";
 }
 
 function AddBottomDeck($cardID, $player, $from)

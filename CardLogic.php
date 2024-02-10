@@ -1268,6 +1268,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "DTD233":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "DTD564":
+      $banish = &GetBanish($player);
+      for($i=count($banish)-BanishPieces(); $i>=0; $i-=BanishPieces()) {
+        if($banish[$i+1] == "DTD564") { TurnBanishFaceDown($player, $i); break; }
+      }
+      break;
     case "TCC019": case "TCC022": case "TCC026":
       $deck = new Deck($player);
       if($deck->Reveal()) {
