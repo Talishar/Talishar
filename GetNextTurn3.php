@@ -376,10 +376,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $cardID = $theirBanish[$i];
     $mod = explode("-", $theirBanish[$i + 1])[0];
     $action = IsPlayable($theirBanish[$i], $turn[0], "BANISH", $i, player:$otherPlayer) ? 14 : 0;
-    if($mod == "DTD564") {
-      $overlay = 1;
-    }
-    elseif ($mod == "INT" || $mod == "UZURI") {
+    if ($mod == "INT" || $mod == "UZURI" || $mod == "DTD564") {
       $cardID = "CardBack";
     }
     else $border = CardBorderColor($theirBanish[$i], "BANISH", $action > 0, $mod);
