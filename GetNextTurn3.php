@@ -488,13 +488,15 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   //My Banish
   $myBanish = GetBanish($playerID);
   $playerBanishArr = array();
+  $label = "";
   for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
     $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
     $mod = explode("-", $myBanish[$i + 1])[0];
     $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0, $mod);
     $cardID = $myBanish[$i];
     if ($myBanish[$i + 1] == "INT" && $playerID == 3) $cardID = "CardBack";
-    array_push($playerBanishArr, JSONRenderedCard($cardID, action: $action, borderColor: $border, actionDataOverride: strval($i)));
+    if ($myBanish[$i + 1] == "INT") $label = "Intimidated";
+    array_push($playerBanishArr, JSONRenderedCard($cardID, action: $action, borderColor: $border, actionDataOverride: strval($i), label: $label));
   }
   $response->playerBanish = $playerBanishArr;
   if (TalentContains($myCharacter[0], "SHADOW")) {
