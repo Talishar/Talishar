@@ -299,7 +299,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($turn[0] == "B" || (count($layers) > 0 && $layers[0] == "DEFENDSTEP")) $tracker->position = "Defense";
   else if ($turn[0] == "A" || $turn[0] == "D") $tracker->position = "Reactions";
   else if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && ($layers[0] == "ENDTURN" || $layers[0] == "FINALIZECHAINLINK"))) $tracker->position = "EndTurn";
-  else if (count($chainLinks) > 0 || $layers[0] == "ATTACKSTEP") $tracker->position = "Combat";
+  else if (count($chainLinks) > 0 || (count($layers) > 0 && $layers[0] == "ATTACKSTEP")) $tracker->position = "Combat";
   else $tracker->position = "Main";
   $response->tracker = $tracker;
 
@@ -371,13 +371,21 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $theirBanish = GetBanish($otherPlayer);
   $opponentBanishArr = array();
   for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
+    $overlay = 0;
     $cardID = $theirBanish[$i];
     $mod = explode("-", $theirBanish[$i + 1])[0];
     $action = IsPlayable($theirBanish[$i], $turn[0], "BANISH", $i, player:$otherPlayer) ? 14 : 0;
-    if ($mod == "INT" || $mod == "UZURI") $cardID = "CardBack";
+    if($mod == "DTD564") {
+      $overlay = 1;
+      $border = 0;
+    }
+    elseif ($mod == "INT" || $mod == "UZURI") {
+      $cardID = "CardBack";
+      $border = 0;
+    }
     else $border = CardBorderColor($theirBanish[$i], "BANISH", $action > 0, $mod);
 
-    array_push($opponentBanishArr, JSONRenderedCard($cardID, action: $action, borderColor: $border, actionDataOverride: strval($i)));
+    array_push($opponentBanishArr, JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i)));
   }
   $response->opponentBanish = $opponentBanishArr;
   if (TalentContains($theirCharacter[0], "SHADOW")) {
@@ -488,15 +496,20 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   //My Banish
   $myBanish = GetBanish($playerID);
   $playerBanishArr = array();
-  $label = "";
   for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
+    $label = "";
+    $overlay = 0;  
     $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
     $mod = explode("-", $myBanish[$i + 1])[0];
     $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0, $mod);
     $cardID = $myBanish[$i];
+    if($mod == "DTD564") {
+      $overlay = 1;
+      $border = 0;
+    }
     if ($myBanish[$i + 1] == "INT" && $playerID == 3) $cardID = "CardBack";
     if ($myBanish[$i + 1] == "INT") $label = "Intimidated";
-    array_push($playerBanishArr, JSONRenderedCard($cardID, action: $action, borderColor: $border, actionDataOverride: strval($i), label: $label));
+    array_push($playerBanishArr, JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label));
   }
   $response->playerBanish = $playerBanishArr;
   if (TalentContains($myCharacter[0], "SHADOW")) {
