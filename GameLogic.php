@@ -171,10 +171,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardIDList = "";
       $otherPlayer = $player == 1 ? 2 : 1;
       $cardIDList = GetChainLinkCardIDs($otherPlayer, exclCardTypes:"C");
-      for ($i = 0; $i < count($chainLinks); ++$i) {
-        if($chainLinkSummary[$i * ChainLinkSummaryPieces()+8] == 0) continue;
-        if($cardIDList != "") $cardIDList .= ",";
-        $cardIDList .= $chainLinkSummary[$i * ChainLinkSummaryPieces()+8];
+        for($i = 0; $i < count($chainLinks); ++$i) {
+          for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+            if($chainLinks[$i][$j + 1] != $otherPlayer || $chainLinks[$i][$j + 2] != "1") continue;
+
+            if($cardIDList != "") $cardIDList .= ",";
+            $cardIDList .=  $chainLinks[$i][$j];
+
+          }
       }
       return $cardIDList;
     case "PLAYABILITY":

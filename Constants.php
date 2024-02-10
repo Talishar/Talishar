@@ -193,10 +193,9 @@ function ChainLinksPieces()
 //5 - Hit on link
 //6 - Modified Base Attack Stats - e.g. Transmogrify
 //7 - Modal Play Ability - e.g. Enlightened Strike
-//8 - Defending Cards
 function ChainLinkSummaryPieces()
 {
-  return 8;
+  return 7;
 }
 
 function DecisionQueuePieces()

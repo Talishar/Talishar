@@ -1075,7 +1075,6 @@ function FinalizeChainLink($chainClosed = false)
   array_push($chainLinkSummary, $numHitsOnLink);
   array_push($chainLinkSummary, CurrentEffectBaseAttackSet());
   array_push($chainLinkSummary, GetClassState($mainPlayer, $CS_ModalAbilityChoosen));
-  array_push($chainLinkSummary, GetChainLinkCardIDs($defPlayer, "", "C"));
 
   ResolveWagers();
 
