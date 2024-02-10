@@ -325,7 +325,7 @@ function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
-  global $CS_ResolvingLayerUniqueID;
+  global $CS_ResolvingLayerUniqueID, $makeBlockBackup;
   if(count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
     else if(count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
@@ -388,7 +388,11 @@ function ContinueDecisionQueue($lastResult = "")
         else if($cardID == "RESUMETURN") $turn[0] = "M";
         else if($cardID == "LAYER") ProcessLayer($player, $parameter);
         else if($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
-        else if($cardID == "ATTACKSTEP") {$turn[0] = "B"; $currentPlayer = $otherPlayer; }
+        else if($cardID == "ATTACKSTEP") {
+          $turn[0] = "B";
+          $currentPlayer = $otherPlayer;
+          $makeBlockBackup = 1;
+        }
         else if($cardID == "DEFENDSTEP") { $turn[0] = "A"; $currentPlayer = $mainPlayer; }
         else if($cardID == "TRIGGER") {
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts);
@@ -1454,7 +1458,7 @@ function FinalizeAction()
   if(!$mainPlayerGamestateStillBuilt) UpdateGameState(1);
   BuildMainPlayerGamestate();
   if($turn[0] == "M") {
-    if(count($combatChain) > 0) //Means we initiated a chain link
+    if(count($combatChain) > 0 && SearchLayersForCardID("ATTACKSTEP") == -1) //Means we initiated a chain link
     {
       $turn[0] = "B";
       $currentPlayer = $defPlayer;
