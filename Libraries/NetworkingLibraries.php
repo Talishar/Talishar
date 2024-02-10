@@ -2296,8 +2296,9 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   }
   //Resolve Effects
   if(!$isBlock) {
-    if(GetResolvedAbilityType($cardID, $from) != "") $definedCardType = GetResolvedAbilityType($cardID, $from);
-    if(!$chainClosed && $definedCardType == "AA") AddLayer("ATTACKSTEP", $mainPlayer, "-"); //I haven't added this for weapon. I don't think it's needed yet.
+    $cardType = $definedCardType;
+    if(GetResolvedAbilityType($cardID, $from) != "") $cardType = GetResolvedAbilityType($cardID, $from);
+    if(!$chainClosed && $cardType == "AA") AddLayer("ATTACKSTEP", $mainPlayer, "-"); //I haven't added this for weapon. I don't think it's needed yet.
     CurrentEffectPlayOrActivateAbility($cardID, $from);
     if($from != "PLAY") {
       CurrentEffectPlayAbility($cardID, $from);
