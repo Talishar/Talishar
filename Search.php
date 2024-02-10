@@ -26,7 +26,7 @@ function SearchCharacter($player, $type = "", $subtype = "", $maxCost = -1, $min
 function SearchPitch($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false)
 {
   $searchPitch = &GetPitch($player);
-  return SearchInner($searchPitch, $player, "PITCH", PitchPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter);
+  return SearchInner($searchPitch, $player, "PITCH", PitchPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, false, false, "PITCH");
 }
 
 function SearchDiscard($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $getDistinctCardNames = false)
@@ -113,8 +113,8 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
     if(!isPriorityStep($cardID)) {
       if(($type == "" || CardType($cardID) == $type || ($type == "C" && CardType($cardID) == "D"))
         && ($subtype == "" || DelimStringContains(CardSubType($cardID), $subtype))
-        && ($maxCost == -1 || CardCost($cardID) <= $maxCost)
-        && ($minCost == -1 || CardCost($cardID) >= $minCost)
+        && ($maxCost == -1 || CardCost($cardID, $from) <= $maxCost)
+        && ($minCost == -1 || CardCost($cardID, $from) >= $minCost)
         && ($class == "" || ClassContains($cardID, $class, $player))
         && (count($talents) == 0 || TalentContainsAny($cardID, implode(",", $talents), $player))
         && ($pitch == -1 || PitchValue($cardID) == $pitch)
