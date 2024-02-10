@@ -1154,11 +1154,11 @@ function UndoShiyanaBaseLife() // Technically not a End Step Trigger but it's th
   global $mainPlayer, $defPlayer;
   $mainChar = GetPlayerCharacter($mainPlayer);
   $defChar = GetPlayerCharacter($defPlayer);
-  if ($defChar[0] == "CRU097" && SearchCurrentTurnEffects($mainChar[0] . "-SHIYANA", $defPlayer)) { 
+  if ($defChar[0] == "CRU097" && SearchCurrentTurnEffects($mainChar[0] . "-SHIYANA", $defPlayer)) {
       $lifeDifference =  GeneratedCharacterHealth($mainChar[0]) - GeneratedCharacterHealth("CRU097");
       if ($lifeDifference > 0) LoseHealth($lifeDifference, $defPlayer);
-      elseif ($lifeDifference < 0) GainHealth(abs($lifeDifference), $defPlayer, true, false);  
-  }  
+      elseif ($lifeDifference < 0) GainHealth(abs($lifeDifference), $defPlayer, true, false);
+  }
 }
 
 function UndoIntimidate($player)
@@ -2150,7 +2150,7 @@ function PayAdditionalCosts($cardID, $from)
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=DYN243&MYCHAR:cardID=HVY051", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-        } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243-1", 1);        
+        } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243-1", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       }
@@ -2183,7 +2183,7 @@ function PayAdditionalCosts($cardID, $from)
       } else {
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "DYN243-");
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-");
-      } 
+      }
       AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
@@ -2296,7 +2296,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   }
   //Resolve Effects
   if(!$isBlock) {
-    if($definedCardType == "AA") AddLayer("ATTACKSTEP", $mainPlayer, "-"); //I haven't added this for weapon. I don't think it's needed yet.
+    if(!$chainClosed && $definedCardType == "AA") AddLayer("ATTACKSTEP", $mainPlayer, "-"); //I haven't added this for weapon. I don't think it's needed yet.
     CurrentEffectPlayOrActivateAbility($cardID, $from);
     if($from != "PLAY") {
       CurrentEffectPlayAbility($cardID, $from);
