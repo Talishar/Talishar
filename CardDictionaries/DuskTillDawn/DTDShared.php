@@ -627,7 +627,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
     case "DTD164":
       for($i=$banish->NumCards() - 1; $i >= 0; --$i) TurnBanishFaceDown($player, $i * BanishPieces());
       break;
-    case "DTD564":
+    case "DTD564": // 3.0.3a A player may look at any private object they own, or is in a zone that they own, unless the object is in the deck zone.
       $deck = new Deck($player);
       for($i=0; $i<$parameter; ++$i) $deck->BanishTop();
       WriteLog("Banished $parameter cards to your remaining blood debt triggers");

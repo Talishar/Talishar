@@ -25,7 +25,6 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   AddEvent("BANISH", ($modifier == "INT" || $modifier == "UZURI" ? "CardBack" : $cardID));
   //Effects that change the modifier
   if($characterID == "DTD564" && $character[1] < 3) {
-    AddLayer("TRIGGER", $player, $characterID, uniqueID:-1);
     if($modifier != "INT") $modifier = "DTD564";
   }
   //Do effects that change where it goes, or banish it if not
