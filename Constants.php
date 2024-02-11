@@ -195,7 +195,7 @@ function ChainLinksPieces()
 //7 - Modal Play Ability - e.g. Enlightened Strike
 function ChainLinkSummaryPieces()
 {
-  return 8;
+  return 7;
 }
 
 function DecisionQueuePieces()
