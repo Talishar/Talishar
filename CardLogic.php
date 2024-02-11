@@ -710,7 +710,7 @@ function AddEffectHitTrigger($cardID)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-")
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
@@ -795,6 +795,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "ARC075": case "ARC076":
       ViseraiPlayCard($target);
+      break;
+    case "ARC106": case "ARC107": case "ARC108":
+      if($parameter == "ARC106") $amount = 3;
+      else if($parameter == "ARC107") $amount = 2;
+      else $amount = 1;
+      WriteLog(CardLink($parameter, $parameter) . " created $amount runechants");
+      PlayAura("ARC112", $player, $amount);
+      DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ARC112":
       DealArcane(1, 1, "RUNECHANT", "ARC112", player:$player);
@@ -937,6 +945,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "ELE110":
+      WriteLog(CardLink($parameter, $parameter) . " grants go again");
+      GiveAttackGoAgain();
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
     case "ELE111":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
@@ -969,6 +982,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "ELE215":
       DestroyArsenal($target, effectController:$player);
       DiscardHand($target, false);
+      break;
+    case "ELE226":
+      DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
       break;
     case "EVR018":
       PlayAura("ELE111", $player);
@@ -1003,18 +1019,22 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
       }      
       break;
+    case "EVR140":
+      WriteLog(CardLink($parameter, $parameter) . " puts a +1 counter");
+      ++$auras[GetClassState($player, $CS_PlayIndex) + 3];
+      break;
     case "HVY097":
-      $hand = &GetHand($mainPlayer);
-      $resources = &GetResources($mainPlayer);
+      $hand = &GetHand($player);
+      $resources = &GetResources($player);
       if(CardType($combatChain[0]) == "W" && (Count($hand) > 0 || $resources[0] > 0))
       {
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to create a " . CardLink("HVY242", "HVY242"), 0, 1);
-        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
-        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-        AddDecisionQueue("WRITELOG", $mainPlayer, "🩸 " . CardLink($parameter, $parameter) . " created a " . CardLink("HVY242", "HVY242") . " token ", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "HVY242", 1);
-        AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+        AddDecisionQueue("YESNO", $player, "if you want to pay 1 to create a " . CardLink("HVY242", "HVY242"), 0, 1);
+        AddDecisionQueue("NOPASS", $player, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
+        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+        AddDecisionQueue("WRITELOG", $player, "🩸 " . CardLink($parameter, $parameter) . " created a " . CardLink("HVY242", "HVY242") . " token ", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "HVY242", 1);
+        AddDecisionQueue("PUTPLAY", $player, "-", 1);
       }
       break;
     case "EVR107": case "EVR108": case "EVR109":
