@@ -413,9 +413,7 @@ function MainCharacterHitAbilities()
         }
         break;
       case "HVY097":
-        $hand = &GetHand($mainPlayer);
-        $resources = &GetResources($mainPlayer);
-        if(CardType($attackID) == "W" && (Count($hand) > 0 || $resources[0] > 0))
+        if(CardType($attackID) == "W")
         {
           AddLayer("TRIGGER", $mainPlayer, $characterID);
         }
