@@ -1297,7 +1297,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         DamageTrigger($target, $params[0], $params[1], GetMZCard($target, $lastResultArr[$i]));
       }
       return $lastResult;
-    case "MZDESTROY": return MZDestroy($player, $lastResult, allArsenal:$parameter);
+    case "MZDESTROY": return MZDestroy($player, $lastResult, $parameter);
     case "MZUNDESTROY": return MZUndestroy($player, $parameter, $lastResult);
     case "MZBANISH": return MZBanish($player, $parameter, $lastResult);
     case "MZREMOVE": return MZRemove($player, $lastResult);
