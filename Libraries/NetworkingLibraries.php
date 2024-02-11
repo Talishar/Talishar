@@ -2275,10 +2275,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         if(DelimStringContains(CardSubType($cardID), "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
         if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
         if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
-        AuraAttackAbilities($cardID);
-        CharacterAttackAbilities($cardID);
-        if($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
-        if($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) SpecificAllyAttackAbilities($cardID);
       }
     } else { //On chain, but not index 0
       if($definedCardType == "DR") OnDefenseReactionResolveEffects($from);
@@ -2313,6 +2309,12 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       CurrentEffectPlayAbility($cardID, $from);
       ArsenalPlayCardAbilities($cardID);
       CharacterPlayCardAbilities($cardID, $from);
+    }
+    if(!$chainClosed || $definedCardType == "AA") {
+      AuraAttackAbilities($cardID);
+      CharacterAttackAbilities($cardID);
+      if($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
+      if($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) SpecificAllyAttackAbilities($cardID);
     }
     $EffectContext = $cardID;
     $playText = "";
