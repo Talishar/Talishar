@@ -776,6 +776,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("OP", $player, "GIVEATTACKGOAGAIN", 1);
       AddDecisionQueue("WRITELOG", $player, "Refraction Bolters was destroyed", 1);
       break;
+    case "WTR119":
+      Draw($mainPlayer);
+      break;
     case "ARC000":
       Opt($parameter, 2);
       break;
@@ -998,7 +1001,22 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       else {
         DestroyItemForPlayer($player, $index);
         WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
-      }      break;
+      }      
+      break;
+    case "HVY097":
+      $hand = &GetHand($mainPlayer);
+      $resources = &GetResources($mainPlayer);
+      if(CardType($combatChain[0]) == "W" && (Count($hand) > 0 || $resources[0] > 0))
+      {
+        AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to create a " . CardLink("HVY242", "HVY242"), 0, 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
+        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "🩸 " . CardLink($parameter, $parameter) . " created a " . CardLink("HVY242", "HVY242") . " token ", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "HVY242", 1);
+        AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+      }
+      break;
     case "EVR107": case "EVR108": case "EVR109":
       $index = SearchAurasForUniqueID($uniqueID, $player);
       if($index == -1) break;
