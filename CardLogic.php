@@ -509,7 +509,7 @@ function AddOnHitTrigger($cardID)
     case "ARC077": case "ARC080": case "ARC159":
     case "ARC164": case "ARC165": case "ARC166":
     case "ARC161": case "ARC179": case "ARC180": case "ARC181":
-    case "ARC182": case "ARC183":  case "ARC184":
+    case "ARC182": case "ARC183": case "ARC184":
     case "ARC185": case "ARC186": case "ARC187":
     case "ARC194": case "ARC195": case "ARC196":
     case "CRU054": case "CRU060": case "CRU061": case "CRU062":
@@ -556,7 +556,7 @@ function AddOnHitTrigger($cardID)
     case "EVR097": case "EVR098": case "EVR099":
     case "EVR104": case "EVR105":
     case "EVR110": case "EVR111": case "EVR112":
-    case "EVR113": case "EVR114": case "EVR115":case "EVR138":case "EVR156":
+    case "EVR113": case "EVR114": case "EVR115": case "EVR138": case "EVR156":
     case "UPR024": case "UPR025": case "UPR026":
     case "UPR411": case "UPR413": case "UPR416":
     case "UPR048": case "UPR051": case "UPR052": case "UPR053":

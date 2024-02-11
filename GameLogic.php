@@ -1552,10 +1552,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $cardID;
       case "REMOVECOUNTERAURAORDESTROY":
         $auras = &GetAuras($player);
-        if($lastResult == "YES") --$auras[$parameter+2];
+        $index = SearchAurasForUniqueID($parameter, $player);
+        if($lastResult == "YES") {
+          --$auras[$index+2];
+          WriteLog("Player " . $playerID . " removed a counter from " . CardLink($auras[$index], $auras[$index]) . ".");
+        }
         else {
-          DestroyAuraUniqueID($player, $auras[$parameter+6]);
-          WriteLog(CardLink($auras[$parameter], $auras[$parameter]) . " was destroyed");
+          DestroyAuraUniqueID($player, $auras[$index+6]);
+          WriteLog("Player " . $playerID . " did not remove a counter and " . CardLink($auras[$index], $auras[$index]) . " was destroyed");
         }
       return "";
       case "REMOVECOUNTERITEMORDESTROY":
