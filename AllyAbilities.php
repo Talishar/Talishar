@@ -180,50 +180,21 @@ function SpecificAllyAttackAbilities($attackID)
   switch($allies[$i]) {
     case "UPR406":
       if(IsHeroAttackTarget()) {
-        $deck = new Deck($mainPlayer);
-        if($deck->Reveal(3)) {
-          $cards = explode(",", $deck->Top(amount:3));
-          $numRed = 0;
-          for($j = 0; $j < count($cards); ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
-          if($numRed > 0) DealArcane($numRed * 2, 2, "ABILITY", $allies[$i], false, $mainPlayer);
-        }
+        AddLayer("TRIGGER", $mainPlayer, $allies[$i], "-", "-", $allies[$i + 5]);
       }
       return "";
     case "UPR407":
       if(IsHeroAttackTarget()) {
-        $deck = new Deck($mainPlayer);
-        if($deck->Reveal(2)) {
-          $cards = explode(",", $deck->Top(amount:2));
-          $numRed = 0;
-          for($j = 0; $j < count($cards); ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
-          if($numRed > 0) {
-            $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-            AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-            AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-            AddDecisionQueue("MODDEFCOUNTER", $otherPlayer, (-1 * $numRed), 1);
-            AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
-          }
-        }
+        AddLayer("TRIGGER", $mainPlayer, $allies[$i], "-", "-", $allies[$i + 5]);
       }
       return "";
     case "UPR408":
       if(IsHeroAttackTarget()) {
-        $deck = new Deck($mainPlayer);
-        if($deck->Reveal(1)) {
-          if(PitchValue($deck->Top()) == 1) {
-            $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-            AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "<-", 1);
-            AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-            AddDecisionQueue("CHOOSETHEIRHAND", $mainPlayer, "<-", 1);
-            AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-            AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,-", 1);
-          }
-        }
+        AddLayer("TRIGGER", $mainPlayer, $allies[$i], "-", "-", $allies[$i + 5]);
       }
       return "";
     case "UPR409":
-      DealArcane(1, 2, "PLAYCARD", $allies[$i], false, $mainPlayer, true, true);
-      DealArcane(1, 2, "PLAYCARD", $allies[$i], false, $mainPlayer, true, false);
+      AddLayer("TRIGGER", $mainPlayer, $allies[$i], "-", "-", $allies[$i + 5]);
       return "";
     case "UPR410":
       if($attackID == $allies[$i] && $allies[$i + 8] > 0) {

@@ -1022,6 +1022,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         WriteLog(CardLink("RVD015", "RVD015") . " put " . CardLink($card, $card) . " on the bottom of your deck");
       }
       break;
+    case "UPR005":
+      DealArcane(1, 1, "STATIC", $combatChain[0], false, $mainPlayer);
+      break;
     case "UPR054": case "UPR055": case "UPR056":
     case "UPR075": case "UPR076": case "UPR077":
     case "UPR081": case "UPR082": case "UPR083":
@@ -1091,6 +1094,47 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "UPR218": case "UPR219": case "UPR220":
       DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "UPR406":  
+      $deck = new Deck($player);
+      if($deck->Reveal(3)) {
+        $cards = explode(",", $deck->Top(amount:3));
+        $numRed = 0;
+        for($j = 0; $j < count($cards); ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
+        if($numRed > 0) DealArcane($numRed * 2, 2, "ABILITY", $combatChain[0], false, $player);
+      }
+      break;
+    case "UPR407":
+      $deck = new Deck($player);
+      if($deck->Reveal(2)) {
+        $cards = explode(",", $deck->Top(amount:2));
+        $numRed = 0;
+        for($j = 0; $j < count($cards); ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
+        if($numRed > 0) {
+          $otherPlayer = ($player == 1 ? 2 : 1);
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+          AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+          AddDecisionQueue("MODDEFCOUNTER", $otherPlayer, (-1 * $numRed), 1);
+          AddDecisionQueue("DESTROYEQUIPDEF0", $player, "-", 1);
+        }
+      }
+      break;
+    case "UPR408":
+      $deck = new Deck($player);
+      if($deck->Reveal(1)) {
+        if(PitchValue($deck->Top()) == 1) {
+          $otherPlayer = ($player == 1 ? 2 : 1);
+          AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "<-", 1);
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+          AddDecisionQueue("CHOOSETHEIRHAND", $player, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+          AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,-", 1);
+        }
+      }
+      break;
+    case "UPR409":
+      DealArcane(1, 2, "PLAYCARD", $combatChain[0], false, $mainPlayer, true, true);
+      DealArcane(1, 2, "PLAYCARD", $combatChain[0], false, $mainPlayer, true, false);
       break;
     case "DYN006":
       $index = FindCharacterIndex($player, $parameter);

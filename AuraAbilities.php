@@ -717,7 +717,7 @@ function AuraAttackAbilities($attackID)
       case "UPR005":
         if($auras[$i + 5] > 0 && DelimStringContains(CardSubType($attackID), "Dragon")) {
           --$auras[$i + 5];
-          DealArcane(1, 1, "STATIC", $attackID, false, $mainPlayer);
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
         }
         break;
       default: break;
