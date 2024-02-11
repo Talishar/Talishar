@@ -2248,7 +2248,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $chainClosed = ProcessAttackTarget();
       $baseAttackSet = CurrentEffectBaseAttackSet();
       $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
-      $combatChainState[$CCS_LinkBaseAttack] = BaseAttackModifiers($attackValue);
+      $combatChainState[$CCS_LinkBaseAttack] = BaseAttackModifiers($cardID, $attackValue);
       if(EffectAttackRestricted()) return;
       $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
       if($definedCardType == "AA" && $attackValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);

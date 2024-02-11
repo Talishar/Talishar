@@ -1631,16 +1631,18 @@ function CanRevealCards($player)
   return true;
 }
 
-function BaseAttackModifiers($attackValue)
+function BaseAttackModifiers($attackID, $attackValue)
 {
   global $currentTurnEffects, $mainPlayer;
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] != $mainPlayer) continue;
     if(!IsCombatEffectActive($currentTurnEffects[$i])) continue;
-    switch($currentTurnEffects[$i])
+    $effects = explode("-", $currentTurnEffects[$i]);
+    switch($effects[0])
     {
       case "EVR094": case "EVR095": case "EVR096": $attackValue = ceil($attackValue/2); break;
+      case "UPR151": if($attackID == "UPR551") $attackValue = $effects[1]; break;
       default: break;
     }
   }
