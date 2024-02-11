@@ -536,13 +536,17 @@ function DYNHitEffect($cardID)
         $deck->BanishTop(banishedBy:$mainPlayer, amount:$combatChainState[$CCS_DamageDealt]);
       }
       break;
-    case "DYN121": if(IsHeroAttackTarget() && IsRoyal($defPlayer)) PlayerLoseHealth($defPlayer, GetHealth($defPlayer)); break;
     case "DYN120":
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
         else $deck->BanishTop(banishedBy:$mainPlayer);
         MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, true);
+      }
+      break;
+    case "DYN121": if(IsHeroAttackTarget() && IsRoyal($defPlayer)) 
+      {
+        PlayerLoseHealth($defPlayer, GetHealth($defPlayer)); 
       }
       break;
     case "DYN122":
