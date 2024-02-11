@@ -536,13 +536,17 @@ function DYNHitEffect($cardID)
         $deck->BanishTop(banishedBy:$mainPlayer, amount:$combatChainState[$CCS_DamageDealt]);
       }
       break;
-    case "DYN121": if(IsHeroAttackTarget() && IsRoyal($defPlayer)) PlayerLoseHealth($defPlayer, GetHealth($defPlayer)); break;
     case "DYN120":
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
         else $deck->BanishTop(banishedBy:$mainPlayer);
         MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, true);
+      }
+      break;
+    case "DYN121": if(IsHeroAttackTarget() && IsRoyal($defPlayer)) 
+      {
+        PlayerLoseHealth($defPlayer, GetHealth($defPlayer)); 
       }
       break;
     case "DYN122":
@@ -572,7 +576,11 @@ function DYNHitEffect($cardID)
         AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
       }
       break;
-    case "DYN162": case "DYN163": case "DYN164": if(HasAimCounter() && IsHeroAttackTarget()) MZChooseAndDestroy($mainPlayer, "THEIRARS"); break;
+    case "DYN162": case "DYN163": case "DYN164": 
+      if(HasAimCounter() && IsHeroAttackTarget()) {
+        MZChooseAndDestroy($mainPlayer, "THEIRARS"); 
+        break;
+      }
     default: break;
   }
 }

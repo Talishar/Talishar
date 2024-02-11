@@ -1,6 +1,6 @@
 <?php
 
-function MZDestroy($player, $lastResult, $effectController="", $allArsenal=true)
+function MZDestroy($player, $lastResult, $effectController="", $extraEffectNeeded=true)
 {
   $lastResultArr = explode(",", $lastResult);
   $otherPlayer = ($player == 1 ? 2 : 1);
@@ -17,8 +17,8 @@ function MZDestroy($player, $lastResult, $effectController="", $allArsenal=true)
       case "THEIRAURAS": $lastResult = DestroyAura($otherPlayer, $mzIndex[1]); break;
       case "MYITEMS": $lastResult = DestroyItemForPlayer($player, $mzIndex[1]); break;
       case "THEIRITEMS": $lastResult = DestroyItemForPlayer($otherPlayer, $mzIndex[1]); break;
-      case "MYARS": $lastResult = DestroyArsenal($player, $mzIndex[1], $effectController, $allArsenal); break;
-      case "THEIRARS": $lastResult = DestroyArsenal($otherPlayer, $mzIndex[1], $effectController, $allArsenal); break;
+      case "MYARS": $lastResult = DestroyArsenal($player, $mzIndex[1], $effectController, $extraEffectNeeded); break;
+      case "THEIRARS": $lastResult = DestroyArsenal($otherPlayer, $mzIndex[1], $effectController, $extraEffectNeeded); break;
       case "LANDMARK": $lastResult = DestroyLandmark($mzIndex[1]); break;
       default: break;
     }
@@ -111,7 +111,7 @@ function MZAddZone($player, $parameter, $lastResult)
       case "MYBOTDECK": AddBottomDeck($cardIDs[$i], $player, "-"); break;
       case "THEIRBOTDECK": AddBottomDeck($cardIDs[$i], $otherPlayer, "-"); break;
       case "MYARSENAL": AddArsenal($cardIDs[$i], $player, $params[1], $params[2]); break;
-      case "THEIRARSENAL": AddArsenal($cardIDs[$i], $otherPlayer, $params[1], $params[2]); break;
+      case "THEIRARS": AddArsenal($cardIDs[$i], $otherPlayer, $params[1], $params[2]); break;
       case "MYPERMANENTS": PutPermanentIntoPlay($player, $cardIDs[$i]); break;
       case "MYSOUL": AddSoul($cardIDs[$i], $player, $params[1]); break;
       case "MYITEMS": PutItemIntoPlayForPlayer($cardIDs[$i], $player); break;
@@ -270,12 +270,12 @@ function MZMoveCard($player, $search, $where, $may=false, $isReveal=false, $sile
   else AddDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
 }
 
-function MZChooseAndDestroy($player, $search, $may=false)
+function MZChooseAndDestroy($player, $search, $may=false, $extraEffectNeeded=false)
 {
   AddDecisionQueue("MULTIZONEINDICES", $player, $search);
   if($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  AddDecisionQueue("MZDESTROY", $player, "-", 1);
+  AddDecisionQueue("MZDESTROY", $player, $extraEffectNeeded, 1);
 }
 
 function MZChooseAndBanish($player, $search, $fromMod, $may=false)

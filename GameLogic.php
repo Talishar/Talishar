@@ -252,8 +252,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("-", $parameter);
       $from = (count($params) > 0 ? $params[0] : "-");
       $facing = (count($params) > 1 ? $params[1] : "DOWN");
-      AddArsenal($lastResult, $player, $from, $facing);
-      return $lastResult;
+      $deck = new Deck($player);
+      if(!ArsenalFull($player)) {
+        AddArsenal($deck->Top(), $player, $from, $facing);
+        return $lastResult;
+      }
+      else {
+        writelog("Your arsenal is full, you cannot put a card in your arsenal");
+        return "PASS";
+      }
     case "TURNARSENALFACEUP":
       $arsenal = &GetArsenal($player);
       $arsenal[$lastResult+1] = "UP";
@@ -1297,7 +1304,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         DamageTrigger($target, $params[0], $params[1], GetMZCard($target, $lastResultArr[$i]));
       }
       return $lastResult;
-    case "MZDESTROY": return MZDestroy($player, $lastResult, allArsenal:$parameter);
+    case "MZDESTROY": return MZDestroy($player, $lastResult, $parameter);
     case "MZUNDESTROY": return MZUndestroy($player, $parameter, $lastResult);
     case "MZBANISH": return MZBanish($player, $parameter, $lastResult);
     case "MZREMOVE": return MZRemove($player, $lastResult);

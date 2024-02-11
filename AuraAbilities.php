@@ -635,7 +635,7 @@ function AuraPlayAbilities($attackID, $from="")
     $remove = 0;
     switch($auras[$i]) {
       case "WTR225":
-        if(($cardType == "AA" && GetResolvedAbilityType($attackID) == "") || ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA")) {
+        if(($cardType == "AA" && GetResolvedAbilityType($attackID) == "") || ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA" && $from == "EQUIP")) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack go again");
           GiveAttackGoAgain();
           $remove = 1;
@@ -701,7 +701,8 @@ function AuraAttackAbilities($attackID)
         break;
       case "EVR140":
         if($auras[$i + 5] > 0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
-          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+          $index = GetClassState($mainPlayer, $CS_PlayIndex);
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], $index, "-", $auras[$i + 6]);
           --$auras[$i + 5];
         }
         break;

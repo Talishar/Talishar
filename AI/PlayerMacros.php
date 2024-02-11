@@ -25,18 +25,6 @@ function ProcessMacros()
       else if((count($decisionQueue) == 0 || $decisionQueue[0] == "INSTANT") && count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDSTEP" && count($layers) < (LayerPieces() * 3)) { $somethingChanged = true; PassInput(); }
       else if($turn[0] == "INSTANT" || ($turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer)))
       {
-        if(SearchLayersForPhase("FINALIZECHAINLINK") != -1 && HoldPrioritySetting($currentPlayer) != "1") { 
-          $somethingChanged = true; 
-          PassInput(); 
-        }
-        if(SearchLayersForPhase("DEFENDSTEP") != -1 && HoldPrioritySetting($currentPlayer) != "1") { 
-          $somethingChanged = true; 
-          PassInput(); 
-        }
-        if(SearchLayersForPhase("ATTACKSTEP") != -1 && HoldPrioritySetting($currentPlayer) != "1") { 
-          $somethingChanged = true; 
-          PassInput(); 
-        }
         if(HoldPrioritySetting($currentPlayer) == 0 && !HasPlayableCard($currentPlayer, $turn[0]))
         {
           $somethingChanged = true;
