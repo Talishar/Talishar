@@ -686,6 +686,15 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       return "GY";
     case "DTD202": return "BANISH";
     case "EVO146": return "-";
+    case "HVY143": case "HVY144": case "HVY145":
+    case "HVY163": case "HVY164": case "HVY165":
+    case "HVY186": case "HVY187": case "HVY188":
+    case "HVY209":
+    if(GetResolvedAbilityType($cardID, "HAND") == "I") {
+      return "-";
+    }
+    break;
+
     default: return "GY";
   }
 }

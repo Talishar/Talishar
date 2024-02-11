@@ -188,7 +188,6 @@
       case "HVY143": case "HVY144": case "HVY145":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
           PlayAura("HVY241", $currentPlayer); //Might
-          CardDiscarded($currentPlayer, $cardID, source:$cardID);
         }
         return "";
       case "HVY149": case "HVY150": case "HVY151":
@@ -210,7 +209,6 @@
       case "HVY163": case "HVY164": case "HVY165":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
           PlayAura("HVY240", $currentPlayer); //Agility
-          CardDiscarded($currentPlayer, $cardID, source:$cardID);
         }
         return "";
       case "HVY166": case "HVY167": case "HVY168":
@@ -237,7 +235,6 @@
       case "HVY186": case "HVY187": case "HVY188":
         if(GetResolvedAbilityType($cardID, "HAND") == "I") {
           PlayAura("HVY242", $currentPlayer); //Vigor
-          CardDiscarded($currentPlayer, $cardID, source:$cardID);
         }
         return "";
       case "HVY189": case "HVY190": case "HVY191":
