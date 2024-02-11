@@ -213,7 +213,9 @@ function ItemHitEffects($attackID)
         }
         break;
       case "EVO098":
-        if($attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+        if($attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
+          $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+        }
         break;
       default: break;
     }

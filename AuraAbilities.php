@@ -688,23 +688,21 @@ function AuraAttackAbilities($attackID)
   $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
   for($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    $remove = 0;
     switch($auras[$i]) {
       case "ELE110":
         if($attackType == "AA") {
-          WriteLog(CardLink($auras[$i], $auras[$i]) . " grants go again");
-          GiveAttackGoAgain();
-          $remove = 1;
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
         }
         break;
       case "ELE226":
-        if($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $CombatChain->CurrentAttack());
+        if($attackType == "AA") {
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+        }
         break;
       case "EVR140":
         if($auras[$i + 5] > 0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
-          WriteLog(CardLink($auras[$i], $auras[$i]) . " puts a +1 counter");
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
           --$auras[$i + 5];
-          ++$auras[GetClassState($mainPlayer, $CS_PlayIndex) + 3];
         }
         break;
       case "EVR142":
@@ -722,7 +720,6 @@ function AuraAttackAbilities($attackID)
         break;
       default: break;
     }
-    if($remove == 1) DestroyAura($mainPlayer, $i);
   }
 }
 
@@ -735,13 +732,8 @@ function AuraHitEffects($attackID)
     $remove = 0;
     switch($auras[$i]) {
       case "ARC106": case "ARC107": case "ARC108":
-        if($auras[$i] == "ARC106") $amount = 3;
-        else if($auras[$i] == "ARC107") $amount = 2;
-        else $amount = 1;
         if($attackType == "AA") {
-          WriteLog(CardLink($auras[$i], $auras[$i]) . " created $amount runechants");
-          PlayAura("ARC112", $mainPlayer, $amount);
-          $remove = 1;
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
         }
         break;
       default: break;

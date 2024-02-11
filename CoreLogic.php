@@ -286,8 +286,14 @@ function ArsenalHitEffects()
   $modifier = 0;
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces()) {
     switch($arsenal[$i]) {
-      case "MON405": if($arsenal[$i+1] == "UP" && CardType($attackID) == "W") MinervaThemisAbility($mainPlayer, $i); break;
-      case "DVR007": if($arsenal[$i+1] == "UP" && CardType($attackID) == "W" && CardSubType($attackID) == "Sword") HalaGoldenhelmAbility($mainPlayer, $i); break;
+      case "MON405": if($arsenal[$i+1] == "UP" && CardType($attackID) == "W") {
+        MinervaThemisAbility($mainPlayer, $i); 
+        break;
+      }
+      case "DVR007": if($arsenal[$i+1] == "UP" && CardType($attackID) == "W" && CardSubType($attackID) == "Sword") {
+        HalaGoldenhelmAbility($mainPlayer, $i); 
+        break;
+      }
       default: break;
     }
   }
