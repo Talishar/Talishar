@@ -74,7 +74,6 @@
       case "UPR088": return 1;
       case "UPR091": return NumChainLinksWithName("Phoenix Flame")*2;
       case "UPR094": return 2;
-      case "UPR151": return $subparam;
       case "UPR158": return 1;
       case "UPR191": case "UPR192": case "UPR193": return 2;
       default: return 0;

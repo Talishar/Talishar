@@ -710,7 +710,7 @@ function AddEffectHitTrigger($cardID)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-")
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
@@ -776,6 +776,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("OP", $player, "GIVEATTACKGOAGAIN", 1);
       AddDecisionQueue("WRITELOG", $player, "Refraction Bolters was destroyed", 1);
       break;
+    case "WTR119":
+      Draw($mainPlayer);
+      break;
     case "ARC000":
       Opt($parameter, 2);
       break;
@@ -792,6 +795,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "ARC075": case "ARC076":
       ViseraiPlayCard($target);
+      break;
+    case "ARC106": case "ARC107": case "ARC108":
+      if($parameter == "ARC106") $amount = 3;
+      else if($parameter == "ARC107") $amount = 2;
+      else $amount = 1;
+      WriteLog(CardLink($parameter, $parameter) . " created $amount runechants");
+      PlayAura("ARC112", $player, $amount);
+      DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ARC112":
       DealArcane(1, 1, "RUNECHANT", "ARC112", player:$player);
@@ -838,7 +849,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "CRU053":
       $index = FindCharacterIndex($player, $parameter);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Breeze_Rider_Boots_to_give_your_Combo_attacks_Go_Again");
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Breeze_Rider_Boots");
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
@@ -934,6 +945,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "ELE110":
+      WriteLog(CardLink($parameter, $parameter) . " grants go again");
+      GiveAttackGoAgain();
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
     case "ELE111":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
@@ -967,6 +983,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       DestroyArsenal($target, effectController:$player);
       DiscardHand($target, false);
       break;
+    case "ELE226":
+      DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
+      break;
     case "EVR018":
       PlayAura("ELE111", $player);
       break;
@@ -998,7 +1017,26 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       else {
         DestroyItemForPlayer($player, $index);
         WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
-      }      break;
+      }      
+      break;
+    case "EVR140":
+      WriteLog(CardLink($parameter, $parameter) . " puts a +1 counter");
+      ++$auras[GetClassState($player, $CS_PlayIndex) + 3];
+      break;
+    case "HVY097":
+      $hand = &GetHand($player);
+      $resources = &GetResources($player);
+      if(CardType($combatChain[0]) == "W" && (Count($hand) > 0 || $resources[0] > 0))
+      {
+        AddDecisionQueue("YESNO", $player, "if you want to pay 1 to create a " . CardLink("HVY242", "HVY242"), 0, 1);
+        AddDecisionQueue("NOPASS", $player, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
+        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+        AddDecisionQueue("WRITELOG", $player, "🩸 " . CardLink($parameter, $parameter) . " created a " . CardLink("HVY242", "HVY242") . " token ", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "HVY242", 1);
+        AddDecisionQueue("PUTPLAY", $player, "-", 1);
+      }
+      break;
     case "EVR107": case "EVR108": case "EVR109":
       $index = SearchAurasForUniqueID($uniqueID, $player);
       if($index == -1) break;
@@ -1021,6 +1059,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         $card = $deck->AddBottom($deck->Top(remove:true), "DECK");
         WriteLog(CardLink("RVD015", "RVD015") . " put " . CardLink($card, $card) . " on the bottom of your deck");
       }
+      break;
+    case "UPR005":
+      DealArcane(1, 1, "STATIC", $combatChain[0], false, $mainPlayer);
       break;
     case "UPR054": case "UPR055": case "UPR056":
     case "UPR075": case "UPR076": case "UPR077":
@@ -1091,6 +1132,47 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "UPR218": case "UPR219": case "UPR220":
       DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "UPR406":  
+      $deck = new Deck($player);
+      if($deck->Reveal(3)) {
+        $cards = explode(",", $deck->Top(amount:3));
+        $numRed = 0;
+        for($j = 0; $j < count($cards); ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
+        if($numRed > 0) DealArcane($numRed * 2, 2, "ABILITY", $combatChain[0], false, $player);
+      }
+      break;
+    case "UPR407":
+      $deck = new Deck($player);
+      if($deck->Reveal(2)) {
+        $cards = explode(",", $deck->Top(amount:2));
+        $numRed = 0;
+        for($j = 0; $j < count($cards); ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
+        if($numRed > 0) {
+          $otherPlayer = ($player == 1 ? 2 : 1);
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+          AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+          AddDecisionQueue("MODDEFCOUNTER", $otherPlayer, (-1 * $numRed), 1);
+          AddDecisionQueue("DESTROYEQUIPDEF0", $player, "-", 1);
+        }
+      }
+      break;
+    case "UPR408":
+      $deck = new Deck($player);
+      if($deck->Reveal(1)) {
+        if(PitchValue($deck->Top()) == 1) {
+          $otherPlayer = ($player == 1 ? 2 : 1);
+          AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "<-", 1);
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+          AddDecisionQueue("CHOOSETHEIRHAND", $player, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+          AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,-", 1);
+        }
+      }
+      break;
+    case "UPR409":
+      DealArcane(1, 2, "PLAYCARD", $combatChain[0], false, $mainPlayer, true, true);
+      DealArcane(1, 2, "PLAYCARD", $combatChain[0], false, $mainPlayer, true, false);
       break;
     case "DYN006":
       $index = FindCharacterIndex($player, $parameter);

@@ -413,17 +413,9 @@ function MainCharacterHitAbilities()
         }
         break;
       case "HVY097":
-        $hand = &GetHand($mainPlayer);
-        $resources = &GetResources($mainPlayer);
-        if(CardType($attackID) == "W" && (Count($hand) > 0 || $resources[0] > 0))
+        if(CardType($attackID) == "W")
         {
-          AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to create a " . CardLink("HVY242", "HVY242"), 0, 1);
-          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
-          AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-          AddDecisionQueue("WRITELOG", $mainPlayer, "🩸 " . CardLink($characterID, $characterID) . " created a " . CardLink("HVY242", "HVY242") . " token ", 1);
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "HVY242", 1);
-          AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+          AddLayer("TRIGGER", $mainPlayer, $characterID);
         }
         break;
       case "ROGUE016":
@@ -506,7 +498,7 @@ function MainCharacterHitEffects()
     if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
       switch($mainCharacterEffects[$i + 1]) {
         case "WTR119":
-          Draw($mainPlayer);
+          AddLayer("TRIGGER", $mainPlayer, $mainCharacterEffects[$i + 1]);
           break;
         default: break;
       }
