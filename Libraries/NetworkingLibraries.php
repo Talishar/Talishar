@@ -2187,6 +2187,15 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
+      case "HVY143": case "HVY144": case "HVY145":
+      case "HVY163": case "HVY164": case "HVY165":
+      case "HVY186": case "HVY187": case "HVY188":
+      case "HVY209":
+      if(GetResolvedAbilityType($cardID, "HAND") == "I") {
+        AddGraveyard($cardID, $currentPlayer, "HAND", $currentPlayer);
+        CardDiscarded($currentPlayer, $cardID, source:$cardID);
+      }
+      break;
     case "HVY245":
       if($from == "GY") {
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195-2", 1);
