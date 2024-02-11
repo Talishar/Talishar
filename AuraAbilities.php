@@ -701,7 +701,8 @@ function AuraAttackAbilities($attackID)
         break;
       case "EVR140":
         if($auras[$i + 5] > 0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
-          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+          $index = GetClassState($mainPlayer, $CS_PlayIndex);
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], $index, "-", $auras[$i + 6]);
           --$auras[$i + 5];
         }
         break;

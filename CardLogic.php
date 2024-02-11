@@ -1021,7 +1021,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "EVR140":
       WriteLog(CardLink($parameter, $parameter) . " puts a +1 counter");
-      ++$auras[GetClassState($player, $CS_PlayIndex) + 3];
+      ++$auras[$target + 3];
       break;
     case "HVY097":
       $hand = &GetHand($player);
