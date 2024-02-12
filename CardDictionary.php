@@ -839,7 +839,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE236": return !HasTakenDamage($player);
     case "EVR054": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W" || Is1H($CombatChain->AttackCard()->ID());
     case "EVR060": case "EVR061": case "EVR062": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W" || !Is1H($CombatChain->AttackCard()->ID());
-    case "EVR063": case "EVR064": case "EVR065": return GetClassState($player, $CS_AtksWWeapon) < 1;
+    case "EVR063": case "EVR064": case "EVR065": return GetClassState($player, $CS_AtksWWeapon) < 1 || CardType($CombatChain->AttackCard()->ID()) != "W";
     case "EVR137": return $player != $mainPlayer;
     case "EVR173": case "EVR174": case "EVR175": return GetClassState($player, $CS_DamageDealt) == 0;
     case "EVR176": return $from == "PLAY" && count($myHand) < 4;
