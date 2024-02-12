@@ -760,9 +760,9 @@
         $xVal = $resourcesPaid/2;
         PlayAura("ARC112", $currentPlayer, $xVal);
         if($xVal >= 6) {
-          DiscardRandom($otherPlayer);
-          DiscardRandom($otherPlayer);
-          DiscardRandom($otherPlayer);
+          DiscardRandom($otherPlayer, $cardID, $currentPlayer);
+          DiscardRandom($otherPlayer, $cardID, $currentPlayer);
+          DiscardRandom($otherPlayer, $cardID, $currentPlayer);
         }
         return "";
       case "EVO245":

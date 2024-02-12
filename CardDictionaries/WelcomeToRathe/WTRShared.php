@@ -558,8 +558,8 @@
     if(!IsHeroAttackTarget()) return;
     switch($cardID) {
       case "WTR043":
-        DiscardRandom($defPlayer);
-        DiscardRandom($defPlayer);
+        DiscardRandom($defPlayer, $cardID, $mainPlayer);
+        DiscardRandom($defPlayer, $cardID, $mainPlayer);
         break;
       case "WTR044":
         AddNextTurnEffect($cardID, $defPlayer);

@@ -752,6 +752,7 @@ function OUTAbilityCost($cardID)
 
   function CodexOfFrailty($player)
   {
+    global $mainPlayer;
     if(!ArsenalFull($player) && SearchDiscard($player, "AA") != "")
     {
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your graveyard.");
@@ -760,7 +761,7 @@ function OUTAbilityCost($cardID)
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your hand to discard.");
       AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
-      AddDecisionQueue("DISCARDCARD", $player, "HAND", 1);    }
+      AddDecisionQueue("DISCARDCARD", $player, "HAND-".$mainPlayer, 1);    }
   }
 
   function HasStealth($cardID)
