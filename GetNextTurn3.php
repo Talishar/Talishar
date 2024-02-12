@@ -972,20 +972,6 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $playerInputPopup->popup = CreatePopupAPI("HANDTOPBOTTOM", [], 0, 1, $caption, 1, "", cardsArray: $cardsArray);
   }
 
-  if ($turn[0] == "CHOOSECARDID" && $turn[1] == $playerID) {
-    $playerInputPopup->active = true;
-    $options = explode(",", $turn[2]);
-    $cardList = array();
-    for ($i = 0; $i < count($options); ++$i) {
-      array_push($cardList, JSONRenderedCard($options[$i], action: 16, actionDataOverride: strval($options[$i])));
-    }
-
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose " . TypeToPlay($turn[0]);
-
-    $playerInputPopup->popup = CreatePopupAPI("CHOOSEZONE", [], 0, 1, $caption, 1, "", cardsArray: $cardList);
-  }
-
   if (($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "CHOOSEMULTIZONE") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     $options = explode(",", $turn[2]);
