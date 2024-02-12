@@ -1499,6 +1499,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       PlayAura("HVY240", $player);//Agility
       PlayAura("HVY241", $player);//Might
       PlayAura("HVY242", $player);//Vigor
+      WriteLog(CardLink($parameter, $parameter) . " created an " . CardLink("HVY240", "HVY240") . ", " . CardLink("HVY241", "HVY241") . " and " . CardLink("HVY242", "HVY242") . " tokens.");
       break;
     case "HVY210":
       MZMoveCard($player, "MYARS", "MYBOTDECK", may:true, silent:true);
@@ -1615,10 +1616,11 @@ function BanishRandom($player, $source)
   return $banished;
 }
 
-function DiscardRandom($player = "", $source = "")
+function DiscardRandom($player = "", $source = "", $effectController = "")
 {
   global $currentPlayer;
   if($player == "") $player = $currentPlayer;
+  if($effectController == "") $effectController = $currentPlayer;
   $hand = &GetHand($player);
   if(count($hand) == 0) return "";
   $index = GetRandom() % count($hand);
@@ -1626,7 +1628,7 @@ function DiscardRandom($player = "", $source = "")
   unset($hand[$index]);
   $hand = array_values($hand);
   CardDiscarded($player, $discarded, $source);
-  AddGraveyard($discarded, $player, "HAND");
+  AddGraveyard($discarded, $player, "HAND", $effectController);
   DiscardedAtRandomEffects($player, $discarded, $source);
   return $discarded;
 }

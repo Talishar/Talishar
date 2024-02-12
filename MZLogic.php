@@ -7,8 +7,8 @@ function MZDestroy($player, $lastResult, $effectController="", $extraEffectNeede
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     switch ($mzIndex[0]) {
-      case "MYHAND": $lastResult = DiscardCard($player, $mzIndex[1]); break;
-      case "THEIRHAND": $lastResult = DiscardCard($otherPlayer, $mzIndex[1]); break;
+      case "MYHAND": $lastResult = DiscardCard($player, $mzIndex[1], effectController:$effectController); break;
+      case "THEIRHAND": $lastResult = DiscardCard($otherPlayer, $mzIndex[1], effectController:$effectController); break;
       case "MYCHAR": $lastResult = DestroyCharacter($player, $mzIndex[1]); break;
       case "THEIRCHAR": $lastResult = DestroyCharacter($otherPlayer, $mzIndex[1]); break;
       case "MYALLY": $lastResult = DestroyAlly($player, $mzIndex[1]); break;
@@ -110,7 +110,9 @@ function MZAddZone($player, $parameter, $lastResult)
       case "MYTOPDECK": AddTopDeck($cardIDs[$i], $player, "-", $deckIndexModifier); break;
       case "MYBOTDECK": AddBottomDeck($cardIDs[$i], $player, "-"); break;
       case "THEIRBOTDECK": AddBottomDeck($cardIDs[$i], $otherPlayer, "-"); break;
-      case "MYARSENAL": AddArsenal($cardIDs[$i], $player, $params[1], $params[2]); break;
+      case "MYDISCARD": AddGraveyard($cardIDs[$i], $player, "-", $params[1]); break;
+      case "THEIRDISCARD": AddGraveyard($cardIDs[$i], $otherPlayer, "-", $params[1]); break;
+      case "MYARS": AddArsenal($cardIDs[$i], $player, $params[1], $params[2]); break;
       case "THEIRARS": AddArsenal($cardIDs[$i], $otherPlayer, $params[1], $params[2]); break;
       case "MYPERMANENTS": PutPermanentIntoPlay($player, $cardIDs[$i]); break;
       case "MYSOUL": AddSoul($cardIDs[$i], $player, $params[1]); break;
