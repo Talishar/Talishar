@@ -110,7 +110,7 @@ function MZAddZone($player, $parameter, $lastResult)
       case "MYTOPDECK": AddTopDeck($cardIDs[$i], $player, "-", $deckIndexModifier); break;
       case "MYBOTDECK": AddBottomDeck($cardIDs[$i], $player, "-"); break;
       case "THEIRBOTDECK": AddBottomDeck($cardIDs[$i], $otherPlayer, "-"); break;
-      case "MYARSENAL": AddArsenal($cardIDs[$i], $player, $params[1], $params[2]); break;
+      case "MYARS": AddArsenal($cardIDs[$i], $player, $params[1], $params[2]); break;
       case "THEIRARS": AddArsenal($cardIDs[$i], $otherPlayer, $params[1], $params[2]); break;
       case "MYPERMANENTS": PutPermanentIntoPlay($player, $cardIDs[$i]); break;
       case "MYSOUL": AddSoul($cardIDs[$i], $player, $params[1]); break;
