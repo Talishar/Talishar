@@ -936,7 +936,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DTD142": return CountAura("ARC112", $currentPlayer) != 6;
     case "DTD164": return $from != "PLAY" || SearchCount(SearchBanish($currentPlayer, bloodDebtOnly:true)) < 13;
     case "DTD199": return GetClassState($currentPlayer, $CS_HighestRoll) != 6;
-    case "DTD208": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
+    case "DTD208": return !$CombatChain->HasCurrentLink() || !CardNameContains($CombatChain->AttackCard()->ID(), "Dawnblade", $mainPlayer, true);
     case "TCC011": return EvoUpgradeAmount($player) == 0;//Restricted if no EVOs
     case "TCC079": return HitsInCombatChain() < 3;
     case "TCC080": return GetClassState($player, $CS_NumCrouchingTigerPlayedThisTurn) == 0;
