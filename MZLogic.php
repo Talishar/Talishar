@@ -69,7 +69,7 @@ function MZDiscard($player, $parameter, $lastResult)
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
     $cardID = $zone[$mzIndex[1]];
-    AddGraveyard($cardID, $cardOwner, $params[0]);
+    AddGraveyard($cardID, $cardOwner, $params[0], $player);
     WriteLog(CardLink($cardID, $cardID) . " was discarded");
   }
   return $lastResult;
