@@ -95,6 +95,7 @@ class ChainCard {
 
     function ModifyPower($amount) {
       $this->chain[$this->index+5] += $amount;
+      CurrentEffectAfterPlayOrActivateAbility();
     }
 
     function ModifyDefense($amount) {
