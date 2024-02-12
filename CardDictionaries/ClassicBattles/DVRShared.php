@@ -64,10 +64,11 @@ function DVREffectAttackModifier($cardID)
 
 function DVRCombatEffectActive($cardID, $attackID)
 {
+  global $mainPlayer;
   $params = explode(",", $cardID);
   $cardID = $params[0];
   switch($cardID) {
-    case "DVR008": case "DVR008-1": return $attackID == "DVR002" || $attackID == "WTR115";
+    case "DVR008": case "DVR008-1": return CardNameContains($attackID, "Dawnblade", $mainPlayer, true); 
     case "DVR009": return CardType($attackID) == "W";
     case "DVR013": case "DVR014": case "DVR019": case "DVR022": case "DVR023": return CardSubType($attackID) == "Sword";
     default: return false;
