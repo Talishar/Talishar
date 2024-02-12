@@ -1396,9 +1396,9 @@ function ComboActive($cardID = "")
   if(SearchCurrentTurnEffects("OUT183", $mainPlayer)) return false;
   if($cardID == "" && $CombatChain->HasCurrentLink()) $cardID = $CombatChain->AttackCard()->ID();
   if($cardID == "") return false;
-  if(count($chainLinkSummary) == 0) return false;//No combat active if no previous chain links
+  if(count($chainLinkSummary) == 0) return false; //No combat active if no previous chain links
   $lastAttackNames = explode(",", $chainLinkSummary[count($chainLinkSummary)-ChainLinkSummaryPieces()+4]);
-  for($i=0; $i<count($lastAttackNames); ++$i)
+  for($i = 0; $i<count($lastAttackNames); ++$i)
   {
     $lastAttackName = GamestateUnsanitize($lastAttackNames[$i]);
     switch($cardID) {
