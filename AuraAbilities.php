@@ -682,7 +682,7 @@ function AuraPlayAbilities($attackID, $from="")
   }
 }
 
-function AuraAttackAbilities($attackID)
+function AuraAttackAbilities($attackID, $from)
 {
   global $CombatChain, $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
   $auras = &GetAuras($mainPlayer);
@@ -700,7 +700,7 @@ function AuraAttackAbilities($attackID)
         }
         break;
       case "EVR140":
-        if($auras[$i + 5] > 0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
+        if($auras[$i + 5] > 0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && $from != "HAND") {
           $index = GetClassState($mainPlayer, $CS_PlayIndex);
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], $index, "-", $auras[$i + 6]);
           --$auras[$i + 5];

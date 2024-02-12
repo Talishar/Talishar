@@ -2311,7 +2311,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       CharacterPlayCardAbilities($cardID, $from);
     }
     if(!$chainClosed || $definedCardType == "AA") {
-      AuraAttackAbilities($cardID);
+      AuraAttackAbilities($cardID, $from);
       CharacterAttackAbilities($cardID);
       if($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
       if($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) SpecificAllyAttackAbilities($cardID);
