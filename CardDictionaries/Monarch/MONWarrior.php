@@ -80,7 +80,8 @@
 
   function DuskPathPilgrimageHit()
   {
-    global $mainCharacter, $combatChainState, $CCS_WeaponIndex;
+    global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+    $mainCharacter = &GetPlayerCharacter($mainPlayer);
     if($mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] == 0) return;
     $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] = 2;
     ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+5];
