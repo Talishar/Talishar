@@ -576,11 +576,7 @@ function DYNHitEffect($cardID)
         AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
       }
       break;
-    case "DYN162": case "DYN163": case "DYN164": 
-      if(HasAimCounter() && IsHeroAttackTarget()) {
-        MZChooseAndDestroy($mainPlayer, "THEIRARS"); 
-        break;
-      }
+    case "DYN162": case "DYN163": case "DYN164": if(HasAimCounter() && IsHeroAttackTarget()) MZChooseAndDestroy($mainPlayer, "THEIRARS"); break;
     default: break;
   }
 }

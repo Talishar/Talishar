@@ -121,9 +121,7 @@ function HVYHitEffect($cardID)
       }
       break;
     case "HVY071": case "HVY072": case "HVY073":
-      if(IsHeroAttackTarget() && HasIncreasedAttack()) {
-        MZChooseAndDestroy($mainPlayer, "THEIRARS"); 
-      }
+      if(IsHeroAttackTarget() && HasIncreasedAttack()) DestroyArsenal($defPlayer, effectController:$mainPlayer, allArsenal:false);
       break;
     case "HVY074": case "HVY075": case "HVY076":
       if(IsHeroAttackTarget() && HasIncreasedAttack()) PummelHit();

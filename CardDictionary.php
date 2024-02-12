@@ -740,11 +740,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "WTR082": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "WTR116": return GetClassState($player, $CS_HitsWithWeapon) == 0;
     case "WTR120": case "WTR121": case "WTR123": case "WTR124": case "WTR125": case "WTR118":
-    case "WTR135": case "WTR136": case "WTR137": case "WTR138": case "WTR139": case "WTR140": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
+    case "WTR135": case "WTR136": case "WTR137": case "WTR138": case "WTR139": case "WTR140": return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     case "WTR132": case "WTR133": case "WTR134":
       if(!$CombatChain->HasCurrentLink()) return true;
       if(!RepriseActive()) return false;
-      return CardType($CombatChain->AttackCard()->ID()) != "W";
+      return !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     case "WTR150": return $character[$index + 2] < 3;
     case "WTR154":
       if(!$CombatChain->HasCurrentLink()) return true;
@@ -773,8 +773,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       || $myItems[$index + 2] != 2);
     case "ARC018": return ($CombatChain->HasCurrentLink() && $from == "PLAY" && ($myItems[$index+1] == 0 || CardType($CombatChain->AttackCard()->ID()) != "AA" || $myItems[$index+2] != 2));
     case "ARC041": return !ArsenalHasFaceDownCard($player);
-    case "CRU082": case "CRU083": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
-    case "CRU088": case "CRU089": case "CRU090": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
+    case "CRU082": case "CRU083": return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
+    case "CRU088": case "CRU089": case "CRU090": return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     case "CRU097": return IsPlayRestricted(ShiyanaCharacter("CRU097"), $restriction, $from, $index, $player);
     case "CRU125": return !HasTakenDamage($player);
     case "CRU126": case "CRU127": case "CRU128": return $from != "ARS";
@@ -837,9 +837,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE233": return count($myHand) != 1;
     case "ELE234": return count($myHand) == 0;
     case "ELE236": return !HasTakenDamage($player);
-    case "EVR054": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W" || Is1H($CombatChain->AttackCard()->ID());
-    case "EVR060": case "EVR061": case "EVR062": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W" || !Is1H($CombatChain->AttackCard()->ID());
-    case "EVR063": case "EVR064": case "EVR065": return GetClassState($player, $CS_AtksWWeapon) < 1;
+    case "EVR054": return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) || Is1H($CombatChain->AttackCard()->ID());
+    case "EVR060": case "EVR061": case "EVR062": return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) || !Is1H($CombatChain->AttackCard()->ID());
+    case "EVR063": case "EVR064": case "EVR065": return GetClassState($player, $CS_AtksWWeapon) < 1 || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     case "EVR137": return $player != $mainPlayer;
     case "EVR173": case "EVR174": case "EVR175": return GetClassState($player, $CS_DamageDealt) == 0;
     case "EVR176": return $from == "PLAY" && count($myHand) < 4;
@@ -848,7 +848,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVR179": return ($from == "PLAY" && GetClassState($player, $CS_NumCardsPlayed) >= 1);
     case "EVR053": return !IsWeaponGreaterThanTwiceBasePower();
     case "EVR181": return $from == "PLAY" && (GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0 || !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA");
-    case "DVR013": return (!$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W" || CardSubType($CombatChain->AttackCard()->ID()) != "Sword");
+    case "DVR013": return (!$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) || CardSubType($CombatChain->AttackCard()->ID()) != "Sword");
     case "DVR014": case "DVR023": return !$CombatChain->HasCurrentLink() || CardSubType($CombatChain->AttackCard()->ID()) != "Sword";
     case "UPR050": return (!$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || (!ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player) && !TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $currentPlayer)));
     case "UPR084": return GetClassState($player, $CS_NumRedPlayed) == 0;
@@ -914,7 +914,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "OUT168": case "OUT169": case "OUT170": return $from == "HAND";
     case "OUT180": return count($myHand) > 0;
     case "OUT181": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
-    case "OUT182": return !$CombatChain->HasCurrentLink() || (CardType($CombatChain->AttackCard()->ID()) != "AA" && CardType($CombatChain->AttackCard()->ID()) != "W") || AttackValue($CombatChain->AttackCard()->ID()) > 1;
+    case "OUT182": return !$CombatChain->HasCurrentLink() || (CardType($CombatChain->AttackCard()->ID()) != "AA" && !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer)) || AttackValue($CombatChain->AttackCard()->ID()) > 1;
     case "DTD001": case "DTD002": return (count($mySoul) == 0 || $character[5] == 0);
     case "DTD003": return !$CombatChain->HasCurrentLink() || (!str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald") && !SubtypeContains($CombatChain->AttackCard()->ID(), "Angel", $mainPlayer));
     case "DTD032": case "DTD033": case "DTD034": return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
@@ -936,7 +936,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DTD142": return CountAura("ARC112", $currentPlayer) != 6;
     case "DTD164": return $from != "PLAY" || SearchCount(SearchBanish($currentPlayer, bloodDebtOnly:true)) < 13;
     case "DTD199": return GetClassState($currentPlayer, $CS_HighestRoll) != 6;
-    case "DTD208": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
+    case "DTD208": return !$CombatChain->HasCurrentLink() || !CardNameContains($CombatChain->AttackCard()->ID(), "Dawnblade", $mainPlayer, true);
     case "TCC011": return EvoUpgradeAmount($player) == 0;//Restricted if no EVOs
     case "TCC079": return HitsInCombatChain() < 3;
     case "TCC080": return GetClassState($player, $CS_NumCrouchingTigerPlayedThisTurn) == 0;
@@ -954,7 +954,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HVY090": case "HVY091": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 2 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 2;
     case "HVY098": return !TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer);
     case "HVY099": return SearchCount(SearchDiscard($currentPlayer, pitch:1)) < 1 || SearchCount(SearchDiscard($currentPlayer, pitch:2)) < 1 || !CardSubtype($CombatChain->AttackCard()->ID()) == "Sword";
-    case "HVY101": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "W";
+    case "HVY101": return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     case "HVY102": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalAttack() <= AttackValue($CombatChain->AttackCard()->ID());
     case "HVY106": case "HVY107": case "HVY108": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
     case "HVY109": case "HVY110": case "HVY111": return !$CombatChain->HasCurrentLink() || NumAttacksBlocking() == 0;
