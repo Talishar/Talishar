@@ -1743,7 +1743,7 @@ function PayAbilityAdditionalCosts($cardID)
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDPITCH,2");
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-".$currentPlayer, 1);
       }
       break;
     default:
@@ -1977,8 +1977,7 @@ function PayAdditionalCosts($cardID, $from)
           WriteLog("This ability requires a discard as an additional cost, but you have no cards to discard. Reverting gamestate prior to the card declaration.");
           RevertGamestate();
         }
-        PummelHit($currentPlayer);
-        AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:$CombatChain->AbilityCard()->UniqueID());
+        MZMoveCard($currentPlayer, "MYHAND", "MYDISCARD,".$currentPlayer, silent:true);
       }
       break;
     case "ELE031": case "ELE032":
