@@ -137,6 +137,8 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid)
   array_push($combatChain, RepriseActive());
   array_push($combatChain, 0);//Attack modifier
   array_push($combatChain, 0);//Defense modifier
+  array_push($combatChain, GetUniqueId());
+  
   if($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility();
   return $index;

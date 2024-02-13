@@ -101,6 +101,10 @@ class ChainCard {
     function ModifyDefense($amount) {
       $this->chain[$this->index+6] += $amount;
     }
+
+    function UniqueID() {
+      return $this->chain[$this->index+7];
+    }
 }
 
 ?>
