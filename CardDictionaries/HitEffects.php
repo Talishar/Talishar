@@ -91,9 +91,17 @@
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
       case "EVO236":
-        AddLayer("TRIGGER", $mainPlayer, $cardID);
-        break;
-      case "EVO241":
+        if(IsHeroAttackTarget()) {
+          $deck = new Deck($defPlayer);
+          if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
+            $deck->BanishTop(banishedBy:$mainPlayer);
+            AddDecisionQueue("SEARCHCOMBATCHAIN", $mainPlayer, "-");
+            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card to banish");
+            AddDecisionQueue("CHOOSECARDID", $mainPlayer, "<-");
+            AddDecisionQueue("ALREADYDEAD", $mainPlayer, "CC,-," . $mainPlayer, 1);
+          }
+          break;      
+        case "EVO241":
         if(!IsAllyAttackTarget()) {
           PlayAura("DTD232", $defPlayer);
           PlayAura("WTR225", $defPlayer);
