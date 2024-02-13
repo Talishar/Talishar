@@ -583,7 +583,11 @@
         AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "WTR063": case "WTR064": case "WTR065":
-        $defCharacter[1] = 3;
+        if(IsHeroAttackTarget()) {
+          $char = &GetPlayerCharacter($defPlayer);
+          $char[1] = 3;
+          AddNextTurnEffect($cardID, $defPlayer);
+        }
         break;
       case "WTR066": case "WTR067": case "WTR068":
         AddNextTurnEffect($cardID, $defPlayer);
