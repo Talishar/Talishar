@@ -1019,10 +1019,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
       }      
       break;
-    case "EVR140":
-      WriteLog(CardLink($parameter, $parameter) . " puts a +1 counter");
-      ++$auras[$target + 3];
-      break;
     case "HVY097":
       $hand = &GetHand($player);
       $resources = &GetResources($player);
