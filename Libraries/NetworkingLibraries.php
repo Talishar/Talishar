@@ -1964,6 +1964,7 @@ function PayAdditionalCosts($cardID, $from)
           RevertGamestate();
         }
         PummelHit($currentPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:$CombatChain->AbilityCard()->UniqueID());
       }
       break;
     case "ELE031": case "ELE032":
