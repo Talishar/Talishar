@@ -515,7 +515,6 @@ function AuraDamagePreventionAmount($player, $index, $damage=0, $active=false, &
   $auras = &GetAuras($player);
   switch($auras[$index])
   {
-    case "ARC112": return (CountAura("CRU144", $player) > 0 ? 1 : 0);
     case "ARC167": return 4;
     case "ARC168": return 3;
     case "ARC169": return 2;
@@ -576,6 +575,30 @@ function AuraTakeDamageAbilities($player, $damage, $type)
     switch($auras[$i]) {
       case "CRU075":
         if($preventable) $damage -= 1;
+        break;
+      case "CRU144":
+        if($auras[$i+1] == 2){
+          $auras[$i+1] = 1;
+          $numRunchants = CountAura("ARC112", $player);
+          if ($numRunchants <= $damage) {
+            for($j=0; $j < $numRunchants; $j++) { 
+              $index = SearchAurasForIndex("ARC112", $player);
+              if($index != -1) DestroyAuraUniqueID($player, $auras[$index+6]);
+            }
+            if($numRunchants > 1) WriteLog($numRunchants . " " . CardLink("ARC112", "ARC112") . "s were destroyed");
+            else WriteLog($numRunchants . " " . CardLink("ARC112", "ARC112") . " was destroyed");
+            if($preventable) $damage -= $numRunchants;
+          }
+          else {
+            for($j=0; $j < $damage; $j++) { 
+              $index = SearchAurasForIndex("ARC112", $player);
+              if($index != -1) DestroyAuraUniqueID($player, $auras[$index+6]);
+            }
+            if($damage > 1) WriteLog($damage . " " . CardLink("ARC112", "ARC112") . "s were destroyed");
+            else WriteLog($damage . " " . CardLink("ARC112", "ARC112") . " was destroyed");
+            if($preventable) $damage -= $damage;
+          }
+        }
         break;
       case "EVR131":
         if($type == "ARCANE" && $preventable) $damage -= 3;
