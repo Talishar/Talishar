@@ -544,7 +544,26 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       $gem = ($myCharacter[$i + 9] == 1 ? 1 : 2);
     }
     $restriction = implode("_", explode(" ", $restriction));
-    array_push($myCharData, JSONRenderedCard($myChar, $currentPlayer == $playerID && $playable ? 3 : 0, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), 0, $myCharacter[$i + 4], $atkCounters, $playerID, $type, $sType, $restriction, $myCharacter[$i + 1] == 0, $myCharacter[$i + 6] == 1, $myCharacter[$i + 8] == 1, $gem, numUses: $myCharacter[$i + 5], subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
+    array_push($myCharData, JSONRenderedCard(
+      $myChar, //CardID
+      $currentPlayer == $playerID && $playable ? 3 : 0, 
+      $myCharacter[$i + 1] != 2 ? 1 : 0, //Overlay
+      $border, 
+      $myCharacter[$i + 1] != 0 ? $counters : 0, //Counters
+      strval($i), //Action Data Override
+      0, //Life Counters
+      $myCharacter[$i + 4], //Def Counters
+      $atkCounters, 
+      $playerID, 
+      $type, 
+      $sType, 
+      $restriction, 
+      $myCharacter[$i + 1] == 0, //Status
+      $myCharacter[$i + 6] == 1, //On Chain
+      $myCharacter[$i + 8] == 1, //Frozen
+      $gem, 
+      numUses: $myCharacter[$i + 5], //Number of Uses
+      subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
   }
   $response->playerEquipment = $myCharData;
 

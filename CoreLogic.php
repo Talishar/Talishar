@@ -396,7 +396,6 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
 function ResetAuraStatus($player) {
   $auras = &GetAuras($player);
   for ($i=0; $i < count($auras); $i += AuraPieces()) { 
-    WriteLog($auras[$i]);
     switch ($auras[$i]) {
       case "CRU144":
         $auras[$i+1] = 2;
