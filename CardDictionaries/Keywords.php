@@ -286,7 +286,7 @@
         case "HVY169": case "HVY170": case "HVY171":
           RemoveCurrentTurnEffect($i);
           PlayAura("HVY240", $wonWager, $amount);//Agility
-          break;;
+          break;
         case "HVY189": case "HVY190": case "HVY191":
           RemoveCurrentTurnEffect($i);
           PlayAura("HVY242", $wonWager, $amount);//Vigor
