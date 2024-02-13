@@ -1254,10 +1254,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "HEAVE":
       PrependDecisionQueue("PAYRESOURCES", $player, "<-");
       AddArsenal($lastResult, $player, "HAND", "UP");
-      $heaveValue = HeaveValue($lastResult);
-      for($i = 0; $i < $heaveValue; ++$i) {
-        PlayAura("WTR075", $player);
-      }
+      PlayAura("WTR075", $player, HeaveValue($lastResult));
       WriteLog("You must pay " . HeaveValue($lastResult) . " resources to heave this");
       return HeaveValue($lastResult);
     case "BRAVOSTARSHOW":
