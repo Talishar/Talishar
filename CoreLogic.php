@@ -386,7 +386,23 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
   if($damage > 0) AddDamagePreventionSelection($player, $damage, $preventable);
   if($source == "ARC112") { SearchCurrentTurnEffects("DTD134", $otherPlayer, true); SearchCurrentTurnEffects("DTD133", $otherPlayer, true); }
+  ResetAuraStatus($player);
   return $damage;
+}
+
+
+function ResetAuraStatus($player) {
+  $auras = &GetAuras($player);
+  for ($i=0; $i < count($auras); $i += AuraPieces()) { 
+    WriteLog($auras[$i]);
+    switch ($auras[$i]) {
+      case "CRU144":
+        $auras[$i+1] = 2;
+        break;
+      default: 
+        break;
+    }
+  }
 }
 
 function AddDamagePreventionSelection($player, $damage, $preventable)
@@ -743,7 +759,6 @@ function ChainLinkResolvedEffects()
       break;
       default: break;
   }
-
   if(IsAllyAttacking() && $allies[$combatChainState[$CCS_WeaponIndex]+2] <= 0) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
 }
 
