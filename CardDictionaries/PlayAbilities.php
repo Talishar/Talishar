@@ -778,7 +778,8 @@
           PrependDecisionQueue("YESNO", $currentPlayer, "if you want to pitch 2 red cards");
         }
         return "";
-      case "EVO246": PutPermanentIntoPlay($currentPlayer, $cardID);
+      case "EVO246": 
+        PutPermanentIntoPlay($currentPlayer, $cardID);
         return "";
       case "EVO247":
         AddCurrentTurnEffect($cardID, $currentPlayer);

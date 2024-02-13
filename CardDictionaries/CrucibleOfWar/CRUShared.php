@@ -575,8 +575,6 @@ function KassaiEndTurnAbility()
 {
   global $mainPlayer, $CS_AtksWWeapon, $CS_HitsWithWeapon;
   if(GetClassState($mainPlayer, $CS_AtksWWeapon) >= 2) {
-    for($i = 0; $i < GetClassState($mainPlayer, $CS_HitsWithWeapon); ++$i) {
-      PutItemIntoPlayForPlayer("CRU197", $mainPlayer);
-    }
+    PutItemIntoPlayForPlayer("CRU197", $mainPlayer, number:GetClassState($mainPlayer, $CS_HitsWithWeapon));
   }
 }
