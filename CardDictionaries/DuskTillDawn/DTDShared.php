@@ -549,7 +549,7 @@ function DoesAttackTriggerMirage()
 function ProcessMirageOnBlock($index)
 {
   global $mainPlayer;
-  if(IsMirageActive($index) && DoesAttackTriggerMirage() && (SearchLayersForPhase("MIRAGE") == -1))
+  if(IsMirageActive($index) && DoesAttackTriggerMirage() && (SearchLayersForCardID("MIRAGE") == -1))
   {
     AddLayer("LAYER", $mainPlayer, "MIRAGE");
   }
