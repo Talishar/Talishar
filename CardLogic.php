@@ -1424,19 +1424,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
       }
       break;
-    case "EVO236":
-      if(IsHeroAttackTarget()) {
-        $deck = new Deck($otherPlayer);
-        if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-        $deck->BanishTop(banishedBy:$player);
-      }
-      $options = GetChainLinkCards($otherPlayer, "", "C");
-      if($options != "") {
-        AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $player, $options);
-        AddDecisionQueue("REMOVECOMBATCHAIN", $player, "-", 1);
-        AddDecisionQueue("MULTIBANISH", $otherPlayer, "CC,-," . $player, 1);
-      }
-      break;
     case "HVY001": case "HVY002":
       PlayAura("HVY241", $player); //Might
       break;
