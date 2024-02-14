@@ -131,9 +131,7 @@
         AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
         return "";
       case "HVY105":
-        for($i=0; $i<intval($additionalCosts); ++$i) {
-          PlayAlly("HVY134", $currentPlayer);
-        }
+        PlayAlly("HVY134", $currentPlayer, number:intval($additionalCosts));
         return "";
       case "HVY106": case "HVY107": case "HVY108":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -780,7 +778,8 @@
           PrependDecisionQueue("YESNO", $currentPlayer, "if you want to pitch 2 red cards");
         }
         return "";
-      case "EVO246": PutPermanentIntoPlay($currentPlayer, $cardID);
+      case "EVO246": 
+        PutPermanentIntoPlay($currentPlayer, $cardID);
         return "";
       case "EVO247":
         AddCurrentTurnEffect($cardID, $currentPlayer);

@@ -23,7 +23,7 @@
       case "UPR109":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         $numFrostBite = GetClassState($currentPlayer, $CS_LastDynCost)/2;
-        for($i=0; $i<$numFrostBite; ++$i) PlayAura("ELE111", $otherPlayer);
+        PlayAura("ELE111", $otherPlayer, $numFrostBite);
         $amountArcane = SearchCount(SearchAurasForCard("ELE111", $otherPlayer));
         if(DelimStringContains($additionalCosts, "ICE")) DealArcane($amountArcane, 0, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         return "";

@@ -30,7 +30,7 @@
         return "";
       case "ELE006":
         $num = GetHealth($currentPlayer == 1 ? 2 : 1) - GetHealth($currentPlayer);
-        for($i = 0; $i < $num * (DelimStringContains($additionalCosts, "EARTH") ? 2 : 1); ++$i) PlayAura("WTR075", $currentPlayer);
+        PlayAura("WTR075", $currentPlayer, $num * (DelimStringContains($additionalCosts, "EARTH") ? 2 : 1));
         MZMoveCard($currentPlayer, "MYDECK:type=AA;class=GUARDIAN;maxCost=" . CountAura("WTR075", $currentPlayer), "MYHAND", may:true, isReveal:true);
         return "";
       case "ELE205":
