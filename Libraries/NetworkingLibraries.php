@@ -604,6 +604,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $resources = &GetResources($playerID);
       $resources[0] -= 1;
       break;
+    case 10016:
+      WriteLog("Player " . $playerID . " manually removed their arsenal", highlight: true);
+      $cardID = RemoveArsenal($playerID, 0);
+      AddGraveyard($cardID, $playerID, "ARS");
+      break;
     case 100000: //Quick Rematch
       if($isSimulation) return;
       if($turn[0] != "OVER") break;
