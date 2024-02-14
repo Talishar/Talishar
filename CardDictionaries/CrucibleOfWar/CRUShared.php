@@ -531,7 +531,7 @@ function CRUHitEffect($cardID)
       break;
     case "CRU129": case "CRU130": case "CRU131":
       if(!ArsenalEmpty($mainPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal";
-      MZMoveCard($mainPlayer, "MYHAND", "MYARSENAL,HAND,DOWN", may:true);
+      MZMoveCard($mainPlayer, "MYHAND", "MYARS,HAND,DOWN", may:true);
       break;
     case "CRU132": case "CRU133": case "CRU134":
       if(IsHeroAttackTarget()) {

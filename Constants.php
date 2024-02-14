@@ -57,9 +57,10 @@ function BanishPieces()
 //4 - Reprise Active? (Or other class effects?)
 //5 - Attack Modifier
 //6 - Defense Modifier
+//7 - Unique ID
 function CombatChainPieces()
 {
-  return 7;
+  return 8;
 }
 
 //0 - Card ID
@@ -195,7 +196,7 @@ function ChainLinksPieces()
 //7 - Modal Play Ability - e.g. Enlightened Strike
 function ChainLinkSummaryPieces()
 {
-  return 8;
+  return 7;
 }
 
 function DecisionQueuePieces()

@@ -28,7 +28,7 @@
     }
   }
 
-  function MONAbilityType($cardID, $index=-1)
+  function MONAbilityType($cardID, $index=-1, $from="")
   {
     global $currentPlayer, $mainPlayer, $defPlayer;
     switch($cardID)
@@ -53,7 +53,7 @@
       case "MON230": return "A";
       case "MON238": return "I";
       case "MON239": case "MON240": return "A";
-      case "MON245": return $currentPlayer == $mainPlayer ? "I" : "";
+      case "MON245": return ($currentPlayer == $mainPlayer && $from == "PLAY") ? "I" : "AA";
       case "MON281": case "MON282": case "MON283": return $currentPlayer == $defPlayer ? "I" : "";
       default: return "";
     }

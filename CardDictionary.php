@@ -415,7 +415,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   if($set == "WTR") return WTRAbilityType($cardID, $index);
   else if($set == "ARC") return ARCAbilityType($cardID, $index);
   else if($set == "CRU") return CRUAbilityType($cardID, $index);
-  else if($set == "MON") return MONAbilityType($cardID, $index);
+  else if($set == "MON") return MONAbilityType($cardID, $index, $from);
   else if($set == "ELE") return ELEAbilityType($cardID, $index);
   else if($set == "EVR") return EVRAbilityType($cardID, $index);
   else if($set == "UPR") return UPRAbilityType($cardID, $index);
@@ -728,7 +728,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   if(IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
   if(SearchCurrentTurnEffects("CRU032", $player) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) { $restriction = "CRU032"; return true; }
   if(SearchCurrentTurnEffects("MON007", $player) && $from == "BANISH") { $restriction = "MON007"; return true; }
-  if(SearchCurrentTurnEffects("ELE036", $player) && CardType($cardID) == "E") { $restriction = "ELE036"; return true; }
+  if(SearchCurrentTurnEffects("ELE036", $player) && TypeContains($cardID, "E", $player)) { $restriction = "ELE036"; return true; }
   if(SearchCurrentTurnEffects("ELE035-3", $player) && CardCost($cardID) == 0 && !IsStaticType(CardType($cardID), $from, $cardID)) { $restriction = "ELE035"; return true; }
   if(SearchCurrentTurnEffects("DYN240-" . str_replace(' ', '_', CardName($cardID)), $player)) { $restriction = "DYN240"; return true; } //Can't be played
   if(SearchCurrentTurnEffects("EVO073-" . $cardID, $player)) { $restriction = "EVO073"; return true; } //Can't be activated
@@ -804,7 +804,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MON198": return $discard->NumCards() < 6;
     case "MON230": return GetClassState($player, $CS_NumAttackCards) == 0 || GetClassState($player, $CS_NumNonAttackCards) == 0;
     case "MON238": return GetClassState($player, $CS_DamageTaken) == 0 && GetClassState($otherPlayer, $CS_DamageTaken) == 0;
-    case "MON281": case "MON282": case "MON283": return SearchCurrentTurnEffects($cardID, $player);
+    case "MON281": case "MON282": case "MON283": return SearchCurrentTurnEffectsForUniqueID($combatChain[$index+7]) != -1;
     case "ELE031": case "ELE032": case "ELE115": return !ArsenalHasFaceDownCard($player);
     case "ELE118": return $from == "ARS" || ArsenalEmpty($player);
     case "ELE125": case "ELE126": case "ELE127":
@@ -1819,5 +1819,5 @@ function Rarity($cardID)
 
 function IsEquipment($cardID, $player="")
 {
-  return CardType($cardID) == "E" || SubtypeContains($cardID, "Evo", $player);
+  return TypeContains($cardID, "E", $player) || SubtypeContains($cardID, "Evo", $player);
 }

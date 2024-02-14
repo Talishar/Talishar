@@ -325,7 +325,7 @@ function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
-  global $CS_ResolvingLayerUniqueID, $makeBlockBackup;
+  global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer;
   if(count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
     else if(count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
@@ -390,7 +390,7 @@ function ContinueDecisionQueue($lastResult = "")
         else if($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
         else if($cardID == "ATTACKSTEP") {
           $turn[0] = "B";
-          $currentPlayer = $otherPlayer;
+          $currentPlayer = $defPlayer;
           $makeBlockBackup = 1;
         }
         else if($cardID == "DEFENDSTEP") { $turn[0] = "A"; $currentPlayer = $mainPlayer; }
@@ -1317,6 +1317,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
         AddDecisionQueue("WRITELOG", $player, "Added to soul by Light of Sol", 1);
       }
+    case "DTD001": case "DTD002":
+      MZMoveCard($player, "MYDECK:subtype=Figment", "MYPERMANENTS", may:true);
+      AddDecisionQueue("PLAYABILITY", $player, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
       break;
     case "DTD047":
       Charge();
@@ -1424,19 +1428,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
       }
       break;
-    case "EVO236":
-      if(IsHeroAttackTarget()) {
-        $deck = new Deck($otherPlayer);
-        if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-        $deck->BanishTop(banishedBy:$player);
-      }
-      $options = GetChainLinkCards($otherPlayer, "", "C");
-      if($options != "") {
-        AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $player, $options);
-        AddDecisionQueue("REMOVECOMBATCHAIN", $player, "-", 1);
-        AddDecisionQueue("MULTIBANISH", $otherPlayer, "CC,-," . $player, 1);
-      }
-      break;
     case "HVY001": case "HVY002":
       PlayAura("HVY241", $player); //Might
       break;
@@ -1462,6 +1453,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "HVY053":
       AddCurrentTurnEffect("HVY053," . CachedTotalAttack(), $mainPlayer);
+      break;
+    case "HVY054":
+      $yellowPitchCards = 0;
+      for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        if(PitchValue($combatChain[$i]) == 2) ++$yellowPitchCards;
+      }
+      if($yellowPitchCards >= 2) {
+        PutItemIntoPlayForPlayer("DYN243", $player, effectController:$player);
+        WriteLog(CardLink("HVY054", "HVY054") . " created a Gold token");
+      }
       break;
     case "HVY059":
       PutItemIntoPlayForPlayer("DYN243", $player, effectController:$player);
@@ -1512,6 +1513,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       PlayAura("HVY240", $player);//Agility
       PlayAura("HVY241", $player);//Might
       PlayAura("HVY242", $player);//Vigor
+      WriteLog(CardLink($parameter, $parameter) . " created an " . CardLink("HVY240", "HVY240") . ", " . CardLink("HVY241", "HVY241") . " and " . CardLink("HVY242", "HVY242") . " tokens.");
       break;
     case "HVY210":
       MZMoveCard($player, "MYARS", "MYBOTDECK", may:true, silent:true);
@@ -1628,10 +1630,11 @@ function BanishRandom($player, $source)
   return $banished;
 }
 
-function DiscardRandom($player = "", $source = "")
+function DiscardRandom($player = "", $source = "", $effectController = "")
 {
   global $currentPlayer;
   if($player == "") $player = $currentPlayer;
+  if($effectController == "") $effectController = $currentPlayer;
   $hand = &GetHand($player);
   if(count($hand) == 0) return "";
   $index = GetRandom() % count($hand);
@@ -1639,7 +1642,7 @@ function DiscardRandom($player = "", $source = "")
   unset($hand[$index]);
   $hand = array_values($hand);
   CardDiscarded($player, $discarded, $source);
-  AddGraveyard($discarded, $player, "HAND");
+  AddGraveyard($discarded, $player, "HAND", $effectController);
   DiscardedAtRandomEffects($player, $discarded, $source);
   return $discarded;
 }

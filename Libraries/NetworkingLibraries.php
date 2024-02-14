@@ -13,7 +13,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break; //Deprecated
     case 2: //Play card from hand - DEPRECATED
       break;
-    case 3: //Play equipment ability
+    case 3: //Play equipment/hero ability
       $index = $cardID;
       $found = -1;
       $character = &GetPlayerCharacter($playerID);
@@ -604,6 +604,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $resources = &GetResources($playerID);
       $resources[0] -= 1;
       break;
+    case 10016:
+      WriteLog("Player " . $playerID . " manually removed their arsenal", highlight: true);
+      $cardID = RemoveArsenal($playerID, 0);
+      AddGraveyard($cardID, $playerID, "ARS");
+      break;
     case 100000: //Quick Rematch
       if($isSimulation) return;
       if($turn[0] != "OVER") break;
@@ -1019,7 +1024,7 @@ function ResolveCombatDamage($damageDone)
 
 function FinalizeChainLink($chainClosed = false)
 {
-  global $turn, $actionPoints, $combatChain, $mainPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
+  global $turn, $actionPoints, $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
   global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen;
   UpdateGameState($currentPlayer);
@@ -1146,6 +1151,7 @@ function EndStep()
   BeginEndPhaseEffectTriggers();
   UndoIntimidate(1);
   UndoIntimidate(2);
+  RemoveBanishedCardFromGraveyard();
   if(HeaveIndices() != "") AddLayer("TRIGGER", $mainPlayer, "HEAVE");
   UndoShiyanaBaseLife();
 }
@@ -1173,8 +1179,21 @@ function UndoIntimidate($player)
   }
 }
 
+function RemoveBanishedCardFromGraveyard() //Already Dead code
+{
+  global $defPlayer;
+  $banish = &GetBanish($defPlayer);
+  for($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+    if($banish[$i+1] == "REMOVEGRAVEYARD") {
+      WriteLog("here");
+      $index = SearchGetFirstIndex(SearchMultizone($defPlayer, "MYDISCARD:cardID=" . $banish[$i]));
+      RemoveGraveyard($defPlayer, $index);
+    }
+  }
+}
+
 //4.4.1. Players do not get priority during the End Phase
-//CR 2.0 4.4.2. - Beginning of the end phase
+//CR 2.0 4.4.2.- Beginning of the end phase
 function FinishTurnPass()
 {
   global $mainPlayer;
@@ -1313,7 +1332,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $lastPlayed, $CS_PlayIndex;
   global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed;
-  global $CS_PlayedAsInstant, $mainPlayer, $CS_DynCostResolved, $EffectContext;
+  global $CS_PlayedAsInstant, $mainPlayer, $EffectContext;
   $resources = &GetResources($currentPlayer);
   $pitch = &GetPitch($currentPlayer);
   $dynCostResolved = intval($dynCostResolved);
@@ -1391,7 +1410,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       else AddDecisionQueue("GETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
       AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index);
-      $decisionQueue = array_merge($dqCopy, $decisionQueue);
+      $decisionQueue = array_merge($decisionQueue, $dqCopy);
       ProcessDecisionQueue();
       //MISSING CR 5.1.3d Decide if action that can be played as instant will be
       //MISSING CR 5.1.3e Decide order of costs to be paid
@@ -1729,7 +1748,7 @@ function PayAbilityAdditionalCosts($cardID)
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDPITCH,2");
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-".$currentPlayer, 1);
       }
       break;
     default:
@@ -1963,7 +1982,7 @@ function PayAdditionalCosts($cardID, $from)
           WriteLog("This ability requires a discard as an additional cost, but you have no cards to discard. Reverting gamestate prior to the card declaration.");
           RevertGamestate();
         }
-        PummelHit($currentPlayer);
+        MZMoveCard($currentPlayer, "MYHAND", "MYDISCARD,".$currentPlayer, silent:true);
       }
       break;
     case "ELE031": case "ELE032":

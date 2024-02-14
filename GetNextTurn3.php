@@ -544,7 +544,26 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       $gem = ($myCharacter[$i + 9] == 1 ? 1 : 2);
     }
     $restriction = implode("_", explode(" ", $restriction));
-    array_push($myCharData, JSONRenderedCard($myChar, $currentPlayer == $playerID && $playable ? 3 : 0, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), 0, $myCharacter[$i + 4], $atkCounters, $playerID, $type, $sType, $restriction, $myCharacter[$i + 1] == 0, $myCharacter[$i + 6] == 1, $myCharacter[$i + 8] == 1, $gem, numUses: $myCharacter[$i + 5], subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
+    array_push($myCharData, JSONRenderedCard(
+      $myChar, //CardID
+      $currentPlayer == $playerID && $playable ? 3 : 0, 
+      $myCharacter[$i + 1] != 2 ? 1 : 0, //Overlay
+      $border, 
+      $myCharacter[$i + 1] != 0 ? $counters : 0, //Counters
+      strval($i), //Action Data Override
+      0, //Life Counters
+      $myCharacter[$i + 4], //Def Counters
+      $atkCounters, 
+      $playerID, 
+      $type, 
+      $sType, 
+      $restriction, 
+      $myCharacter[$i + 1] == 0, //Status
+      $myCharacter[$i + 6] == 1, //On Chain
+      $myCharacter[$i + 8] == 1, //Frozen
+      $gem, 
+      numUses: $myCharacter[$i + 5], //Number of Uses
+      subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
   }
   $response->playerEquipment = $myCharData;
 
@@ -617,9 +636,12 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $theirAlliesOutput = array();
   $theirAllies = GetAllies($playerID == 1 ? 2 : 1);
   for ($i = 0; $i + AllyPieces() - 1 < count($theirAllies); $i += AllyPieces()) {
+    $label = "";
     $type = CardType($theirAllies[$i]);
     $sType = CardSubType($theirAllies[$i]);
-    array_push($theirAlliesOutput, JSONRenderedCard(cardNumber: $theirAllies[$i], overlay: ($theirAllies[$i + 1] != 2 ? 1 : 0), counters: $theirAllies[$i + 6], lifeCounters: $theirAllies[$i + 2], controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirAllies[$i + 3] == 1), subcard: $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL, atkCounters:$theirAllies[$i+9]));
+    $uniqueID = $theirAllies[$i+5];
+    if(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Buffed";
+    array_push($theirAlliesOutput, JSONRenderedCard(cardNumber: $theirAllies[$i], overlay: ($theirAllies[$i + 1] != 2 ? 1 : 0), counters: $theirAllies[$i + 6], lifeCounters: $theirAllies[$i + 2], controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirAllies[$i + 3] == 1), subcard: $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL, atkCounters:$theirAllies[$i+9], label: $label));
   }
   $response->opponentAllies = $theirAlliesOutput;
 
@@ -657,12 +679,15 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $myAllies = GetAllies($playerID == 1 ? 1 : 2);
   //TODO: remove magic numbers
   for ($i = 0; $i + AllyPieces() - 1 < count($myAllies); $i += AllyPieces()) {
+    $label = "";
     $type = CardType($myAllies[$i]);
     $sType = CardSubType($myAllies[$i]);
     $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i + 1] == 2;
     $actionType = ($currentPlayer == $playerID && $turn[0] != "P" && $playable) ? 24 : 0;
     $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
     $actionDataOverride = ($actionType == 24 ? strval($i) : "");
+    $uniqueID = $myAllies[$i+5];
+    if(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Buffed";
     array_push($myAlliesOutput, JSONRenderedCard(
       cardNumber: $myAllies[$i],
       action: $actionType,
@@ -676,7 +701,8 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       sType: $sType,
       isFrozen: ($myAllies[$i+3] == 1),
       subcard: $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL,
-      atkCounters: $myAllies[$i+9]
+      atkCounters: $myAllies[$i+9],
+      label: $label
     ));
   }
   $response->playerAllies = $myAlliesOutput;
@@ -970,6 +996,20 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
     else $caption = "Choose " . TypeToPlay($turn[0]);
     $playerInputPopup->popup = CreatePopupAPI("HANDTOPBOTTOM", [], 0, 1, $caption, 1, "", cardsArray: $cardsArray);
+  }
+
+  if ($turn[0] == "CHOOSECARDID" && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $options = explode(",", $turn[2]);
+    $cardList = array();
+    for ($i = 0; $i < count($options); ++$i) {
+      array_push($cardList, JSONRenderedCard($options[$i], action: 16, actionDataOverride: strval($options[$i])));
+    }
+
+    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
+    else $caption = "Choose " . TypeToPlay($turn[0]);
+
+    $playerInputPopup->popup = CreatePopupAPI("CHOOSEZONE", [], 0, 1, $caption, 1, "", cardsArray: $cardList);
   }
 
   if (($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "CHOOSEMULTIZONE") && $turn[1] == $playerID) {

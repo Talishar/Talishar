@@ -42,7 +42,6 @@
       case "MON281": case "MON282": case "MON283":
         if($from == "PLAY") {
           $CombatChain->AbilityCard()->ModifyDefense(3);
-          AddCurrentTurnEffect($cardID, $currentPlayer);
         }
         return "";
       case "MON296": case "MON297": case "MON298":

@@ -109,7 +109,7 @@ function BlockingCardDefense($index)
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
   $resourcesPaid = intval($combatChain[$index+3]) + intval($baseCost);
   $defense = intval(BlockValue($cardID)) + (BlockCantBeModified($cardID) ? 0 : intval(BlockModifier($cardID, $from, $resourcesPaid)) + intval($combatChain[$index + 6]));
-  if(CardType($cardID) == "E")
+  if(TypeContains($cardID, "E", $defPlayer))
   {
     $defCharacter = &GetPlayerCharacter($defPlayer);
     $charIndex = FindDefCharacter($cardID);
@@ -137,6 +137,8 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid)
   array_push($combatChain, RepriseActive());
   array_push($combatChain, 0);//Attack modifier
   array_push($combatChain, 0);//Defense modifier
+  array_push($combatChain, GetUniqueId());
+  
   if($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility();
   return $index;
@@ -386,7 +388,22 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
   if($damage > 0) AddDamagePreventionSelection($player, $damage, $preventable);
   if($source == "ARC112") { SearchCurrentTurnEffects("DTD134", $otherPlayer, true); SearchCurrentTurnEffects("DTD133", $otherPlayer, true); }
+  ResetAuraStatus($player);
   return $damage;
+}
+
+
+function ResetAuraStatus($player) {
+  $auras = &GetAuras($player);
+  for ($i=0; $i < count($auras); $i += AuraPieces()) { 
+    switch ($auras[$i]) {
+      case "CRU144":
+        $auras[$i+1] = 2;
+        break;
+      default: 
+        break;
+    }
+  }
 }
 
 function AddDamagePreventionSelection($player, $damage, $preventable)
@@ -708,6 +725,35 @@ function GetChainLinkCards($playerID="", $cardType="", $exclCardTypes="", $nameC
   return $pieces;
 }
 
+function GetChainLinkCardIDs($playerID="", $cardType="", $exclCardTypes="", $nameContains="", $subType="", $exclCardSubTypes="")
+{
+  global $combatChain;
+  $cardIDs = "";
+  $exclCardTypeArray=explode(",", $exclCardTypes);
+  $exclCardSubTypeArray=explode(",", $exclCardSubTypes);
+  for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+  {
+    $thisType = CardType($combatChain[$i]);
+    $thisSubType = CardSubType($combatChain[$i]);
+    if(($playerID == "" || $combatChain[$i+1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial:true)))
+    {
+      $excluded = false;
+      for($j=0; $j<count($exclCardTypeArray); ++$j)
+      {
+        if($thisType == $exclCardTypeArray[$j]) $excluded = true;
+      }
+      for($k=0; $k<count($exclCardSubTypeArray); ++$k)
+      {
+        if($thisSubType != "" && DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) $excluded = true;
+      }
+      if($excluded) continue;
+      if($cardIDs != "") $cardIDs .= ",";
+      $cardIDs .= $combatChain[$i];
+    }
+  }
+  return $cardIDs;
+}
+
 function GetTheirEquipmentChoices()
 {
   global $currentPlayer;
@@ -743,7 +789,6 @@ function ChainLinkResolvedEffects()
       break;
       default: break;
   }
-
   if(IsAllyAttacking() && $allies[$combatChainState[$CCS_WeaponIndex]+2] <= 0) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
 }
 

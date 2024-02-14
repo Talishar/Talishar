@@ -618,11 +618,18 @@ function GetEquipmentIndices($player, $maxBlock = -1, $onCombatChain = false)
 function SearchAuras($cardID, $player)
 {
   $auras = &GetAuras($player);
-  $count = 0;
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
     if ($auras[$i] == $cardID) return true;
   }
   return false;
+}
+function SearchAurasForIndex($cardID, $player)
+{
+  $auras = &GetAuras($player);
+  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+    if ($auras[$i] == $cardID) return $i;
+  }
+  return -1;
 }
 
 function SearchAurasForCard($cardID, $player, $selfReferential=true)

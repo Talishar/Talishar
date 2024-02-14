@@ -61,7 +61,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
       AddLayer("TRIGGER", $player, $character[$index]);
     }
   }
-  if (CardType($cardID) == "E") {
+  if (TypeContains($cardID, "E", $player)) {
     $charIndex = FindCharacterIndex($player, $cardID);
     if ($charIndex == -1) {
       DestroyCharacter($player, $charIndex, skipDestroy: true);
@@ -278,9 +278,8 @@ function AddSoul($cardID, $player, $from, $isMainPhase=true)
     {
       if(SearchCharacterActive($player, "DTD001") || SearchCharacterActive($player, "DTD002"))
       {
-        MZMoveCard($player, "MYDECK:subtype=Figment", "MYPERMANENTS", may:true);
-        AddDecisionQueue("PLAYABILITY", $player, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+        $char = GetPlayerCharacter($player);
+        AddLayer("TRIGGER", $player, $char[0]);
       }
     }
     if($player == $mainPlayer)
