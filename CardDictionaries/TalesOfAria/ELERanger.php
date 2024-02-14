@@ -40,7 +40,7 @@
           AddPlayerHand($arsenal[$i], $currentPlayer, "ARS");
         }
         $arsenal = [];
-        MZMoveCard($currentPlayer, "MYHAND", "MYARSENAL,HAND,DOWN", silent:true);
+        MZMoveCard($currentPlayer, "MYHAND", "MYARS,HAND,DOWN", silent:true);
         return "";
       case "ELE215":
         AddCurrentTurnEffect($cardID, $currentPlayer);
