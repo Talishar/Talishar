@@ -2256,6 +2256,10 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $openedChain = true;
       if($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
       if($additionalCosts != "-" && HasFusion($cardID)) $combatChainState[$CCS_AttackFused] = 1;
+      //Add attack step layer prior to anything that triggers in the attack step
+      $cardType = $definedCardType;
+      if(GetResolvedAbilityType($cardID, $from) != "") $cardType = GetResolvedAbilityType($cardID, $from);
+      if(!$chainClosed && $cardType == "AA") AddLayer("ATTACKSTEP", $mainPlayer, "-"); //I haven't added this for weapon. I don't think it's needed yet.
       // If you attacked an aura with Spectra
       if(!$chainClosed && (DelimStringContains($definedCardType, "AA") || DelimStringContains($definedCardType, "W") || DelimStringContains($definedCardSubType, "Ally"))) {
         IncrementClassState($currentPlayer, $CS_NumAttacks);
@@ -2267,7 +2271,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
         if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
         AuraAttackAbilities($cardID);
-        CharacterAttackAbilities($cardID);  
+        CharacterAttackAbilities($cardID);
       }
     } else { //On chain, but not index 0
       if($definedCardType == "DR") OnDefenseReactionResolveEffects($from);
@@ -2294,9 +2298,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   }
   //Resolve Effects
   if(!$isBlock) {
-    $cardType = $definedCardType;
-    if(GetResolvedAbilityType($cardID, $from) != "") $cardType = GetResolvedAbilityType($cardID, $from);
-    if(!$chainClosed && $cardType == "AA") AddLayer("ATTACKSTEP", $mainPlayer, "-"); //I haven't added this for weapon. I don't think it's needed yet.
     CurrentEffectPlayOrActivateAbility($cardID, $from);
     if($from != "PLAY") {
       CurrentEffectPlayAbility($cardID, $from);
