@@ -834,16 +834,16 @@ function CombatChainClosedCharacterEffects()
       {
         if(HasTemper($chainLinks[$i][$j]))
         {
-          $character[$charIndex+4] -= 1;//Add -1 block counter
+          if($character[$charIndex+1] != 0) $character[$charIndex+4] -= 1; //Add -1 block counter
           if((BlockValue($character[$charIndex]) + $character[$charIndex+4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j+5]) <= 0)
           {
             DestroyCharacter($defPlayer, $charIndex);
           }
         }
-        else if(HasBattleworn($chainLinks[$i][$j])) $character[$charIndex+4] -= 1;//Add -1 block counter
+        else if(HasBattleworn($chainLinks[$i][$j]) && $character[$charIndex+1] != 0) $character[$charIndex+4] -= 1;//Add -1 block counter
       }
-      if(HasGuardwell($chainLinks[$i][$j])) $character[$charIndex+4] -= (BlockValue($character[$charIndex]) + $character[$charIndex+4] + BlockModifier($character[$charIndex], "CC", 0));//Add -block value counter
-      else if(HasBladeBreak($chainLinks[$i][$j])) DestroyCharacter($defPlayer, $charIndex);
+      if(HasGuardwell($chainLinks[$i][$j]) && $character[$charIndex+1] != 0) $character[$charIndex+4] -= (BlockValue($character[$charIndex]) + $character[$charIndex+4] + BlockModifier($character[$charIndex], "CC", 0));//Add -block value counter
+      else if(HasBladeBreak($chainLinks[$i][$j]) && $character[$charIndex+1] != 0) DestroyCharacter($defPlayer, $charIndex);
       switch($chainLinks[$i][$j])
       {
         case "MON089":
