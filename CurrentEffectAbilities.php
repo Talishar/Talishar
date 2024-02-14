@@ -5,9 +5,10 @@
 function EffectHitEffect($cardID)
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $CombatChain, $CCS_DamageDealt;
-  global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner;
+  global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers;
   $attackID = $CombatChain->AttackCard()->ID();
-  if(CardType($attackID) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
+  if(HitEffectsArePrevented($attackID)) return;
+  if(SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   $effectArr = explode(",", $cardID);
   $cardID = $effectArr[0];
   switch($cardID) {
