@@ -325,7 +325,7 @@ function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
-  global $CS_ResolvingLayerUniqueID, $makeBlockBackup;
+  global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer;
   if(count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
     else if(count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
@@ -390,7 +390,7 @@ function ContinueDecisionQueue($lastResult = "")
         else if($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
         else if($cardID == "ATTACKSTEP") {
           $turn[0] = "B";
-          $currentPlayer = $otherPlayer;
+          $currentPlayer = $defPlayer;
           $makeBlockBackup = 1;
         }
         else if($cardID == "DEFENDSTEP") { $turn[0] = "A"; $currentPlayer = $mainPlayer; }
