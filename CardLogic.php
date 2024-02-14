@@ -1317,6 +1317,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
         AddDecisionQueue("WRITELOG", $player, "Added to soul by Light of Sol", 1);
       }
+    case "DTD001": case "DTD002":
+      MZMoveCard($player, "MYDECK:subtype=Figment", "MYPERMANENTS", may:true);
+      AddDecisionQueue("PLAYABILITY", $player, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
       break;
     case "DTD047":
       Charge();

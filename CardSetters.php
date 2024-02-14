@@ -278,9 +278,8 @@ function AddSoul($cardID, $player, $from, $isMainPhase=true)
     {
       if(SearchCharacterActive($player, "DTD001") || SearchCharacterActive($player, "DTD002"))
       {
-        MZMoveCard($player, "MYDECK:subtype=Figment", "MYPERMANENTS", may:true);
-        AddDecisionQueue("PLAYABILITY", $player, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+        $char = GetPlayerCharacter($player);
+        AddLayer("TRIGGER", $player, $char[0]);
       }
     }
     if($player == $mainPlayer)
