@@ -1819,5 +1819,5 @@ function Rarity($cardID)
 
 function IsEquipment($cardID, $player="")
 {
-  return CardType($cardID) == "E" || SubtypeContains($cardID, "Evo", $player);
+  return TypeContains($cardID, "E", $player) || SubtypeContains($cardID, "Evo", $player);
 }
