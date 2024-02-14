@@ -439,17 +439,11 @@ function OUTAbilityCost($cardID)
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         if(!ArsenalFull($currentPlayer))
         {
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-          AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-          AddDecisionQueue("ADDARSENAL", $currentPlayer, "GY-DOWN", 1);
+          MZMoveCard($currentPlayer, "MYHAND", "MYARS,HAND,DOWN", silent:true);
         }
         if(!ArsenalFull($otherPlayer))
         {
-          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-          AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
-          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-          AddDecisionQueue("ADDARSENAL", $otherPlayer, "GY-DOWN", 1);
+          MZMoveCard($otherPlayer, "MYHAND", "MYARS,HAND,DOWN", silent:true);
         }
         PlayAura("DYN244", $currentPlayer);//Ponder
         PlayAura($CID_BloodRotPox, $otherPlayer);

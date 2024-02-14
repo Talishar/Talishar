@@ -1007,7 +1007,7 @@ function ClearDieRoll($player)
 function CanPlayAsInstant($cardID, $index=-1, $from="")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
-  global $mainPlayer, $CS_PlayedAsInstant, $CS_NumCharged, $CS_LifeLost;
+  global $mainPlayer, $CS_PlayedAsInstant, $CS_NumCharged, $CS_LifeLost, $CS_NumAddedToSoul;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
@@ -1029,7 +1029,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   }
   if(GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
-  else if($cardID == "DTD085" || $cardID == "DTD086" || $cardID == "DTD087") { return GetClassState($currentPlayer, $CS_NumCharged); }
+  else if($cardID == "DTD085" || $cardID == "DTD086" || $cardID == "DTD087") { return GetClassState($currentPlayer, $CS_NumAddedToSoul); }
   else if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
   else if($cardID == "DTD140") return GetClassState($currentPlayer, $CS_LifeLost) > 0 || GetClassState($otherPlayer, $CS_LifeLost) > 0;
   else if($cardID == "DTD141") return GetClassState($currentPlayer, $CS_LifeLost) > 0 || GetClassState($otherPlayer, $CS_LifeLost) > 0;
@@ -2125,8 +2125,10 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true)
   if(CurrentEffectPreventsDraw($player, $mainPhase)) return -1;
   $cardID = $deck->Top(remove:true);
   if($mainPhase && (SearchAurasForCard("DTD170", 1) != "" || SearchAurasForCard("DTD170", 2) != "")) BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
-  else array_push($hand, $cardID);
-  IncrementClassState($player, $CS_NumCardsDrawn, 1);
+  else {
+    array_push($hand, $cardID);
+    IncrementClassState($player, $CS_NumCardsDrawn, 1);
+  }
   if($mainPhase && (SearchCharacterActive($otherPlayer, "EVR019") || (SearchCurrentTurnEffects("EVR019-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "CRU097")))) PlayAura("WTR075", $otherPlayer);
   if(SearchCharacterActive($player, "EVR020")) {
     if($EffectContext != "-") {

@@ -529,7 +529,7 @@ function CharacterCostModifier($cardID, $from)
   $modifier = 0;
   $char = &GetPlayerCharacter($currentPlayer);
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
-    if($char[$i+1] == 3 || $char[$i+1] == 0) continue;
+    if($char[$i+1] >= 3 || $char[$i+1] == 0) continue;
     switch($char[$i]) {
       case "CRU077": if(CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumSwordAttacks) == 1) --$modifier; break;
       case "TCC001": if(SubtypeContains($cardID, "Evo")) --$modifier; break;
