@@ -106,7 +106,7 @@
       AddDecisionQueue("PASSPARAMETER", $player, "PASS");//Pass any subsequent load effects
       return "Your arsenal is full, so you cannot put an arrow in your arsenal";
     }
-    MZMoveCard($player, "MYHAND:subtype=Arrow", "MYARSENAL,HAND," . $facing, may:true, silent:true);
+    MZMoveCard($player, "MYHAND:subtype=Arrow", "MYARS,HAND," . $facing, may:true, silent:true);
   }
 
   function Reload($player=0)
@@ -114,7 +114,7 @@
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
     if(!ArsenalEmpty($player)) { WriteLog("Your arsenal is not empty, so you cannot Reload"); return; }
-    MZMoveCard($player, "MYHAND", "MYARSENAL,HAND,DOWN", may:true, silent:true);
+    MZMoveCard($player, "MYHAND", "MYARS,HAND,DOWN", may:true, silent:true);
   }
 
   function SuperReload($player=0)
@@ -122,7 +122,7 @@
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
     if(ArsenalFull($player)) { WriteLog("Your arsenal is full, so you do not arsenal a card"); return; }
-    MZMoveCard($player, "MYHAND", "MYARSENAL,HAND,DOWN", may:true, silent:true);
+    MZMoveCard($player, "MYHAND", "MYARS,HAND,DOWN", may:true, silent:true);
   }
 
 ?>

@@ -750,7 +750,7 @@ function OUTAbilityCost($cardID)
     if(!ArsenalFull($player) && SearchDiscard($player, "AA") != "")
     {
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your graveyard.");
-      MZMoveCard($player, "MYDISCARD:type=AA", "MYARSENAL,GY,DOWN");
+      MZMoveCard($player, "MYDISCARD:type=AA", "MYARS,GY,DOWN");
       AddDecisionQueue("FINDINDICES", $player, "HAND");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your hand to discard.");
       AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
