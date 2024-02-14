@@ -61,7 +61,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
       AddLayer("TRIGGER", $player, $character[$index]);
     }
   }
-  if (CardType($cardID) == "E") {
+  if (TypeContains($cardID, "E", $player)) {
     $charIndex = FindCharacterIndex($player, $cardID);
     if ($charIndex == -1) {
       DestroyCharacter($player, $charIndex, skipDestroy: true);

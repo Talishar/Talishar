@@ -728,7 +728,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   if(IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
   if(SearchCurrentTurnEffects("CRU032", $player) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) { $restriction = "CRU032"; return true; }
   if(SearchCurrentTurnEffects("MON007", $player) && $from == "BANISH") { $restriction = "MON007"; return true; }
-  if(SearchCurrentTurnEffects("ELE036", $player) && CardType($cardID) == "E") { $restriction = "ELE036"; return true; }
+  if(SearchCurrentTurnEffects("ELE036", $player) && TypeContains($cardID, "E", $player)) { $restriction = "ELE036"; return true; }
   if(SearchCurrentTurnEffects("ELE035-3", $player) && CardCost($cardID) == 0 && !IsStaticType(CardType($cardID), $from, $cardID)) { $restriction = "ELE035"; return true; }
   if(SearchCurrentTurnEffects("DYN240-" . str_replace(' ', '_', CardName($cardID)), $player)) { $restriction = "DYN240"; return true; } //Can't be played
   if(SearchCurrentTurnEffects("EVO073-" . $cardID, $player)) { $restriction = "EVO073"; return true; } //Can't be activated
