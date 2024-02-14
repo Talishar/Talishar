@@ -1450,6 +1450,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "HVY053":
       AddCurrentTurnEffect("HVY053," . CachedTotalAttack(), $mainPlayer);
       break;
+    case "HVY054":
+      $yellowPitchCards = 0;
+      for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        if(PitchValue($combatChain[$i]) == 2) ++$yellowPitchCards;
+      }
+      if($yellowPitchCards >= 2) {
+        PutItemIntoPlayForPlayer("DYN243", $player, effectController:$player);
+        WriteLog(CardLink("HVY054", "HVY054") . " created a Gold token");
+      }
+      break;
     case "HVY059":
       PutItemIntoPlayForPlayer("DYN243", $player, effectController:$player);
       WriteLog(CardLink($parameter, $parameter) . " created a Gold Token for Player ". $player);
