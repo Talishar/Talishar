@@ -126,16 +126,19 @@
     global $CombatChain, $mainPlayer, $defPlayer, $attackModifiers;
     $attackModifiers = [];
     $card = $CombatChain->Card($index);
-    if(CardType($card->ID()) != "AA") return false;
+    $defendingCardType = CardType($card->ID());
+    if($defendingCardType != "AA") return false;
     if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
-    $attackID = $CombatChain->AttackCard()->ID();
     $attackValue = ModifiedAttackValue($card->ID(), $defPlayer, "CC", source:$card->ID());
     if(PowerCantBeModified($card->ID())) return $attackValue >= 6;
     if(SearchCurrentTurnEffectsForCycle("MON008", "MON009", "MON010", $mainPlayer)) --$attackValue;
-    if(CardType($attackID) == "AA" && SearchCurrentTurnEffects("DTD411", $defPlayer)) --$attackValue;
+    if($defendingCardType == "AA" && SearchCurrentTurnEffects("DTD411", $defPlayer)) --$attackValue;
+    if($defendingCardType == "AA" && SearchCurrentTurnEffects("DTD011", $defPlayer)) --$attackValue;
     $attackValue += AuraAttackModifiers($index, $attackModifiers);
     $attackValue += $card->AttackValue();//Combat chain attack modifier
     $attackValue += EffectDefenderAttackModifiers();
+
+    writelog($attackValue);
     return $attackValue >= 6;
   }
 
