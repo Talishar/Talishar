@@ -87,7 +87,7 @@ function AuraDestroyed($player, $cardID, $isToken = false)
   for($i = 0; $i < $numMercifulRetribution; ++$i) {
     if(TalentContains($cardID, "LIGHT", $player)) $goesWhere = "SOUL";
     if(CardType($cardID) != "T" && $isToken) WriteLog("<span style='color:red;'>The card is not put in your soul from Merciful Retribution because it is a token copy</span>");
-    DealArcane(1, 0, "STATIC", "MON012", false, $player);
+    AddDecisionQueue("ADDTRIGGER", $player, "MON012");
   }
   if(HasWard($cardID, $player) && !$isToken) WardPoppedAbility($player, $cardID);
   if(CardType($cardID) == "T" || $isToken) return;//Don't need to add to anywhere if it's a token
@@ -344,7 +344,7 @@ function AuraStartTurnAbilities()
         break;
       case "DTD170":
         if($auras[$i+2] > 0) {
-          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to remove a Doom Counter from " . CardLink($auras[$i], $auras[$i]) . "?");
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to remove a Doom Counter from " . CardLink($auras[$i], $auras[$i]) . " and keep it in play?");
           AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_Doom_Counter_and_keep_" . CardLink($auras[$i], $auras[$i]));
           AddDecisionQueue("REMOVECOUNTERAURAORDESTROY", $mainPlayer, $auras[$i+6]);
         }

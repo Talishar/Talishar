@@ -688,7 +688,7 @@ function CheckContract($contractType, $cardBanished)
     case "REDPITCH": return PitchValue($cardBanished) == 1;
     case "YELLOWPITCH": return PitchValue($cardBanished) == 2;
     case "BLUEPITCH": return PitchValue($cardBanished) == 3;
-    case "COST1ORLESS": return CardCost($cardBanished) <= 1;
+    case "COST1ORLESS": return CardCost($cardBanished) <= 1 && CardCost($cardBanished) >= 0;
     case "COST2ORMORE": return CardCost($cardBanished) >= 2;
     case "AA": return CardType($cardBanished) == "AA";
     case "GOAGAIN": return HasGoAgain($cardBanished);

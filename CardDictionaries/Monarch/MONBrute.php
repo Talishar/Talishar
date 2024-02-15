@@ -9,6 +9,7 @@
       case "MON121":
         $numBD = SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true));
         $damage = 6 - $numBD;
+        WriteLog("Player " . $currentPlayer . " lost " . $damage . " life");
         DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID);
         return "";
       case "MON125":
