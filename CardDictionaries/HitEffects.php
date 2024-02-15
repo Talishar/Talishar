@@ -97,10 +97,10 @@
             $deck->BanishTop(banishedBy:$mainPlayer);
             AddDecisionQueue("SEARCHCOMBATCHAIN", $mainPlayer, "-");
             AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card to banish");
-            AddDecisionQueue("CHOOSECARDID", $mainPlayer, "<-");
+            AddDecisionQueue("CHOOSECARDID", $mainPlayer, "<-", 1);
             AddDecisionQueue("ALREADYDEAD", $mainPlayer, "CC,-," . $mainPlayer, 1);
           }
-          break;      
+          break;
         case "EVO241":
         if(!IsAllyAttackTarget()) {
           PlayAura("DTD232", $defPlayer);
@@ -130,7 +130,7 @@ function HVYHitEffect($cardID)
       break;
     case "HVY071": case "HVY072": case "HVY073":
       if(IsHeroAttackTarget() && HasIncreasedAttack()) {
-        MZChooseAndDestroy($mainPlayer, "THEIRARS"); 
+        MZChooseAndDestroy($mainPlayer, "THEIRARS");
       }
       break;
     case "HVY074": case "HVY075": case "HVY076":
@@ -143,7 +143,7 @@ function HVYHitEffect($cardID)
         AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
         AddDecisionQueue("ELSE", $mainPlayer, "-");
         AddDecisionQueue("DEAL1DAMAGE", $defPlayer, $cardID, 1);
-      }    
+      }
       break;
     case "HVY213": case "HVY214": case "HVY215":
       if(SearchCurrentTurnEffects($cardID, $mainPlayer, true)) {

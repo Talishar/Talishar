@@ -180,7 +180,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 
           }
       }
-      return $cardIDList;
+      return $cardIDList != "" ? $cardIDList : "PASS";
     case "PLAYABILITY":
       PlayAbility($lastResult, "-", 0);
       return $lastResult;
@@ -1616,7 +1616,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       case "REMOVEINDICESIFACTIVECHAINLINK":
         $indices = explode(",", $lastResult);
         $char = GetPlayerCharacter($player);
-        for ($i=0; $i < count($indices); $i++) { 
+        for ($i=0; $i < count($indices); $i++) {
           $option = explode("-", $indices[$i]);
           if($char[$option[1]] == $combatChain[0]) {
             $lastResult = str_replace($indices[$i], "", $lastResult);
