@@ -439,11 +439,11 @@ function OUTAbilityCost($cardID)
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         if(!ArsenalFull($currentPlayer))
         {
-          MZMoveCard($currentPlayer, "MYHAND", "MYARSENAL,HAND,DOWN", silent:true);
+          MZMoveCard($currentPlayer, "MYHAND", "MYARS,HAND,DOWN", silent:true);
         }
         if(!ArsenalFull($otherPlayer))
         {
-          MZMoveCard($otherPlayer, "MYHAND", "MYARSENAL,HAND,DOWN", silent:true);
+          MZMoveCard($otherPlayer, "MYHAND", "MYARS,HAND,DOWN", silent:true);
         }
         PlayAura("DYN244", $currentPlayer);//Ponder
         PlayAura($CID_BloodRotPox, $otherPlayer);
