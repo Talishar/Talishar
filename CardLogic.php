@@ -1023,7 +1023,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "EVR071":
       $index = SearchItemsForUniqueID($uniqueID, $player);
       if($items[$index+1] > 0) {
-        AddDecisionQueue("SETDQCONTEXT", $player, "Do you want to remove a Steam Counter from " . CardLink($items[$index], $items[$index]) . "?", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Do you want to remove a Steam Counter from " . CardLink($items[$index], $items[$index]) . " and keep it in play?", 1);
         AddDecisionQueue("YESNO", $player, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($items[$index], $items[$index]), 1);
         AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $player, $index, 1);
       }
