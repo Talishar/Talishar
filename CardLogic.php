@@ -1017,7 +1017,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       else {
         DestroyItemForPlayer($player, $index);
         WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
-      }      
+      }
       break;
     case "HVY097":
       $hand = &GetHand($player);
@@ -1129,7 +1129,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "UPR218": case "UPR219": case "UPR220":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
-    case "UPR406":  
+    case "UPR406":
       $deck = new Deck($player);
       if($deck->Reveal(3)) {
         $cards = explode(",", $deck->Top(amount:3));
@@ -1317,6 +1317,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
         AddDecisionQueue("WRITELOG", $player, "Added to soul by Light of Sol", 1);
       }
+      break;
     case "DTD001": case "DTD002":
       MZMoveCard($player, "MYDECK:subtype=Figment", "MYPERMANENTS", may:true);
       AddDecisionQueue("PLAYABILITY", $player, "-", 1);
