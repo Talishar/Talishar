@@ -135,7 +135,7 @@
     if($defendingCardType == "AA" && SearchCurrentTurnEffects("DTD411", $defPlayer)) --$attackValue;
     $attackValue += AuraAttackModifiers($index, $attackModifiers);
     $attackValue += $card->AttackValue();//Combat chain attack modifier
-    $attackValue += EffectDefenderAttackModifiers();
+    $attackValue += EffectDefenderAttackModifiers($card->ID());
     return $attackValue >= 6;
   }
 
