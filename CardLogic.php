@@ -711,7 +711,7 @@ function AddEffectHitTrigger($cardID)
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex;
-  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
   $auras = &GetAuras($player);
@@ -894,26 +894,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("BUFFARCANEPREVLAYER", $player, "CRU161", 1);
       AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
       break;
-    case "MON012":
-      DealArcane(1, 0, "STATIC", $parameter, false, $player);
-      break;
-    case "MON089": //To be moved to ProcessMainCharacterHitEffect() when Fix Tarpit + Main Character Triggers #786 is uploaded
-      if($player == $defPlayer) {
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
-        AddDecisionQueue("BUTTONINPUT", $player, "0,1");
-        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-        AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
-        AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
-        if(!SearchCurrentTurnEffects("MON089", $player)) AddDecisionQueue("ADDCURRENTEFFECT", $player, "MON089", 1);
-      }
-      else {
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
-        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
-        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-        AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
-        AddDecisionQueue("WRITELOG", $mainPlayer, "Gained_an_action_point_from_" . CardLink($character[$target], $character[$target]), 1);
-      }
+    case "MON089":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
+      AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      if(!SearchCurrentTurnEffects("MON089", $player)) AddDecisionQueue("ADDCURRENTEFFECT", $player, "MON089", 1);
       break;
     case "MON122":
       $index = FindCharacterIndex($player, $parameter);

@@ -87,7 +87,7 @@ function AuraDestroyed($player, $cardID, $isToken = false)
   for($i = 0; $i < $numMercifulRetribution; ++$i) {
     if(TalentContains($cardID, "LIGHT", $player)) $goesWhere = "SOUL";
     if(CardType($cardID) != "T" && $isToken) WriteLog("<span style='color:red;'>The card is not put in your soul from Merciful Retribution because it is a token copy</span>");
-    AddDecisionQueue("ADDTRIGGER", $player, "MON012");
+    DealArcane(1, 0, "STATIC", "MON012", false, $player);
   }
   if(HasWard($cardID, $player) && !$isToken) WardPoppedAbility($player, $cardID);
   if(CardType($cardID) == "T" || $isToken) return;//Don't need to add to anywhere if it's a token

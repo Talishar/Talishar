@@ -846,7 +846,12 @@ function CharacterAttackDestroyedAbilities($attackID)
     switch($character[$i]) {
       case "MON089":
         if($character[$i+5] > 0 && CardType($attackID) == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)){
-          AddDecisionQueue("ADDTRIGGER", $mainPlayer, $character[$i], $i);
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
+          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
+          AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+          AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
+          AddDecisionQueue("WRITELOG", $mainPlayer, "Gained_an_action_point_from_" . CardLink($character[$i], $character[$i]), 1);
           --$character[$i+5];
         }
         break;
