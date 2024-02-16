@@ -40,7 +40,8 @@
     switch($cardID)
     {
       case "MON004":
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
         Draw($mainPlayer);
         Draw($mainPlayer);
         break;
@@ -49,16 +50,22 @@
           AddCurrentTurnEffect($cardID, $defPlayer);
           AddNextTurnEffect($cardID, $defPlayer);
         }
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
         break;
-      case "MON008": case "MON009": case "MON010": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
+      case "MON008": case "MON009": case "MON010": 
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
+        break;
       case "MON014": case "MON015": case "MON016":
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
         PlayAura("MON104", $mainPlayer);
         break;
       case "MON017": case "MON018": case "MON019":
         DealArcane(1, 0, "PLAYCARD", $cardID, false, $mainPlayer);
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
         break;
       case "MON020": case "MON021": case "MON022":
         AddDecisionQueue("FINDINDICES", $mainPlayer, $cardID);
@@ -67,10 +74,17 @@
         AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
         AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
         AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was selected.", 1);
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
         break;
-      case "MON023": case "MON024": case "MON025": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
-      case "MON026": case "MON027": case "MON028": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
+      case "MON023": case "MON024": case "MON025": 
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
+        break;
+      case "MON026": case "MON027": case "MON028": 
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
+        break;
       default: break;
     }
   }
