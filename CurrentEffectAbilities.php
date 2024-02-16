@@ -1272,7 +1272,12 @@ function EffectDefenderAttackModifiers($cardID)
     $remove = false;
     if($currentTurnEffects[$i + 1] == $defPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardID)) {
       switch($currentTurnEffects[$i]) {
-        case "DTD011": $mod -= 1; break;
+        case "MON008": case "MON009": case "MON010": 
+          $mod -= 1; 
+          break;
+        case "DTD011": 
+          $mod -= 1; 
+          break;
         default:
           break;
       }

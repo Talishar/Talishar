@@ -2,7 +2,7 @@
 
   function MONIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer;
+    global $currentPlayer, $defPlayer;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
@@ -10,7 +10,7 @@
         PlayAura("MON104", $currentPlayer);
         return "";
       case "MON008": case "MON009": case "MON010":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffect($cardID, $defPlayer);
         return "";
       case "MON090":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -131,7 +131,6 @@
     if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
     $attackValue = ModifiedAttackValue($card->ID(), $defPlayer, "CC", source:$card->ID());
     if(PowerCantBeModified($card->ID())) return $attackValue >= 6;
-    if(SearchCurrentTurnEffectsForCycle("MON008", "MON009", "MON010", $mainPlayer)) --$attackValue;
     if($defendingCardType == "AA" && SearchCurrentTurnEffects("DTD411", $defPlayer)) --$attackValue;
     $attackValue += AuraAttackModifiers($index, $attackModifiers);
     $attackValue += $card->AttackValue();//Combat chain attack modifier

@@ -1709,6 +1709,9 @@ function ModifiedAttackValue($cardID, $player, $from, $source="")
     $characterID = ShiyanaCharacter($char[0]);
     if(($characterID == "HVY001" || $characterID == "HVY002") && $char[1] < 3 && CardType($cardID) == "AA") ++$attack;
   }
+  else {
+    $attack += EffectDefenderAttackModifiers($cardID);
+  }
   return $attack;
 }
 
