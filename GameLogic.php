@@ -1650,7 +1650,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return $lastResult;
       case "ADDTRIGGER":
         $param = explode(",", $parameter);
-        AddLayer("TRIGGER", $mainPlayer, $param[0], $param[1]); 
+        AddLayer("TRIGGER", $player, $param[0], $param[1]); 
         return $lastResult;
     default:
       return "NOTSTATIC";
