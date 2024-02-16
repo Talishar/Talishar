@@ -129,11 +129,10 @@
     $defendingCardType = CardType($card->ID());
     if($defendingCardType != "AA") return false;
     if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
+    if(PowerCantBeModified($card->ID())) return AttackValue($card->ID()) >= 6;
     $attackValue = ModifiedAttackValue($card->ID(), $defPlayer, "CC", source:$card->ID());
-    if(PowerCantBeModified($card->ID())) return $attackValue >= 6;
     $attackValue += AuraAttackModifiers($index, $attackModifiers);
     $attackValue += $card->AttackValue();//Combat chain attack modifier
-    $attackValue += EffectDefenderAttackModifiers($card->ID());
     return $attackValue >= 6;
   }
 
