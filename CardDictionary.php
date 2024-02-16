@@ -262,11 +262,11 @@ function CardCost($cardID, $from="-")
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
-      if(GetResolvedAbilityType($cardID, "HAND") == "AA" || $from == "CC") return 3;
-      else return 0;
+      if(GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
+      else return 3;
     case "HVY209":
-      if(GetResolvedAbilityType($cardID, "HAND") == "AA" || $from == "CC") return 2;
-      else return 0;
+      if(GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
+      else return 2;
     default: break;
   }
   if($set != "ROG" && $set != "DUM") {
