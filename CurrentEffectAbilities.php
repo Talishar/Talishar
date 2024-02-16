@@ -1275,7 +1275,7 @@ function EffectDefenderAttackModifiers($cardID)
         case "MON008": case "MON009": case "MON010": 
           $mod -= 1; 
           break;
-        case "DTD011": 
+        case "DTD011": case "DTD411":
           $mod -= 1; 
           break;
         default:
