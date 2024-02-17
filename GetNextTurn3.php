@@ -393,6 +393,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $numWeapons = 0;
   $characterContents = array();
   for ($i = 0; $i < count($theirCharacter); $i += CharacterPieces()) {
+    $label = "";
     $theirChar = $theirCharacter[$i];
     if ($theirCharacter[$i + 1] == 4) $theirChar = "DUMMYDISHONORED";
     $atkCounters = 0;
@@ -407,17 +408,18 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         break;
       }
     }
-    if (TypeContains($theirCharacter[$i], "W")) {
+    if (TypeContains($theirCharacter[$i], "W", $playerID)) {
       ++$numWeapons;
       if ($numWeapons > 1) {
         $type = "E";
         $sType = "Off-Hand";
       }
+      $label = WeaponHasGoAgainLabel($i) ? "Go Again" : "";
+      $atkCounters = $theirCharacter[$i + 3];
     }
-    if (TypeContains($theirCharacter[$i], "W")) $atkCounters = $theirCharacter[$i + 3];
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
-    array_push($characterContents, JSONRenderedCard($theirChar, overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0), counters: $counters, defCounters: $theirCharacter[$i + 4], atkCounters: $atkCounters, controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirCharacter[$i + 8] == 1), onChain: ($theirCharacter[$i + 6] == 1), isBroken: ($theirCharacter[$i + 1] == 0), numUses: $theirCharacter[$i + 5], subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]));
+    array_push($characterContents, JSONRenderedCard($theirChar, overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0), counters: $counters, defCounters: $theirCharacter[$i + 4], atkCounters: $atkCounters, controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirCharacter[$i + 8] == 1), onChain: ($theirCharacter[$i + 6] == 1), isBroken: ($theirCharacter[$i + 1] == 0), label: $label, numUses: $theirCharacter[$i + 5], subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]));
   }
   $response->opponentEquipment = $characterContents;
 
@@ -516,6 +518,8 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $restriction = "";
     $counters = 0;
     $atkCounters = 0;
+    $gem = 0;
+    $label = "";
     $myChar = $myCharacter[$i];
     if ($myCharacter[$i + 1] == 4) $myChar = "DUMMYDISHONORED";
     if (TypeContains($myCharacter[$i], "W")) $atkCounters = $myCharacter[$i + 3];
@@ -532,14 +536,14 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
         break;
       }
     }
-    if (TypeContains($myCharacter[$i], "W")) {
+    if (TypeContains($myCharacter[$i], "W", $playerID)) {
       ++$numWeapons;
       if ($numWeapons > 1) {
         $type = "E";
         $sType = "Off-Hand";
       }
+      $label = WeaponHasGoAgainLabel($i) ? "Go Again" : "";
     }
-    $gem = 0;
     if ($myCharacter[$i + 9] != 2 && $myCharacter[$i + 1] != 0 && $playerID != 3) {
       $gem = ($myCharacter[$i + 9] == 1 ? 1 : 2);
     }
@@ -562,6 +566,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       $myCharacter[$i + 6] == 1, //On Chain
       $myCharacter[$i + 8] == 1, //Frozen
       $gem, 
+      label: $label,
       numUses: $myCharacter[$i + 5], //Number of Uses
       subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
   }

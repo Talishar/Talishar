@@ -507,13 +507,28 @@ function MainCharacterHitEffects()
   return $modifier;
 }
 
-function MainCharacterGrantsGoAgain()
+function MainCharacterGrantsGoAgain($index=-1)
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   if($combatChainState[$CCS_WeaponIndex] == -1) return false;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   for($i = 0; $i < count($mainCharacterEffects); $i += 2) {
-    if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
+    if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex] || $mainCharacterEffects[$i] == $index) {
+      switch($mainCharacterEffects[$i + 1]) {
+        case "EVR055-2": return true;
+        default: break;
+      }
+    }
+  }
+  return false;
+}
+
+function WeaponHasGoAgainLabel($index)
+{
+  global $mainPlayer;
+  $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
+  for($i = 0; $i < count($mainCharacterEffects); $i += 2) {
+    if($mainCharacterEffects[$i] == $index) {
       switch($mainCharacterEffects[$i + 1]) {
         case "EVR055-2": return true;
         default: break;
