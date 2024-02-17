@@ -441,7 +441,7 @@ function MainCharacterHitAbilities()
   }
 }
 
-function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs = false)
+function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs = false, $player=-1)
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $modifier = 0;
@@ -449,6 +449,7 @@ function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   if($index == -1) $index = $combatChainState[$CCS_WeaponIndex];
   for($i = 0; $i < count($mainCharacterEffects); $i += CharacterEffectPieces()) {
+    if($player != -1 && !SearchCurrentTurnEffects(substr($mainCharacterEffects[$i + 1], 0, 6), $player)) return false;
     if($mainCharacterEffects[$i] == $index) {
       switch($mainCharacterEffects[$i + 1]) {
         case "WTR119": 
@@ -507,13 +508,13 @@ function MainCharacterHitEffects()
   return $modifier;
 }
 
-function MainCharacterGrantsGoAgain($index=-1)
+function MainCharacterGrantsGoAgain()
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   if($combatChainState[$CCS_WeaponIndex] == -1) return false;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   for($i = 0; $i < count($mainCharacterEffects); $i += 2) {
-    if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex] || $mainCharacterEffects[$i] == $index) {
+    if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
       switch($mainCharacterEffects[$i + 1]) {
         case "EVR055-2": return true;
         default: break;
@@ -523,12 +524,13 @@ function MainCharacterGrantsGoAgain($index=-1)
   return false;
 }
 
-function WeaponHasGoAgainLabel($index)
+function WeaponHasGoAgainLabel($index, $player)
 {
   global $mainPlayer;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   for($i = 0; $i < count($mainCharacterEffects); $i += 2) {
     if($mainCharacterEffects[$i] == $index) {
+      if(!SearchCurrentTurnEffects(substr($mainCharacterEffects[$i + 1], 0, 6), $player)) return false;
       switch($mainCharacterEffects[$i + 1]) {
         case "EVR055-2": return true;
         default: break;

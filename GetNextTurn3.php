@@ -394,6 +394,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $characterContents = array();
   for ($i = 0; $i < count($theirCharacter); $i += CharacterPieces()) {
     $label = "";
+    $border = 0;
     $theirChar = $theirCharacter[$i];
     if ($theirCharacter[$i + 1] == 4) $theirChar = "DUMMYDISHONORED";
     $atkCounters = 0;
@@ -414,12 +415,29 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $type = "E";
         $sType = "Off-Hand";
       }
-      $label = WeaponHasGoAgainLabel($i) ? "Go Again" : "";
+      $label = WeaponHasGoAgainLabel($i, $otherPlayer) ? "Go Again" : "";
+      $weaponAttackModifiers = [];
       $atkCounters = $theirCharacter[$i + 3];
+      if(MainCharacterAttackModifiers($weaponAttackModifiers, $i, player: $otherPlayer) > 0) $border = 5;
     }
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
-    array_push($characterContents, JSONRenderedCard($theirChar, overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0), counters: $counters, defCounters: $theirCharacter[$i + 4], atkCounters: $atkCounters, controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirCharacter[$i + 8] == 1), onChain: ($theirCharacter[$i + 6] == 1), isBroken: ($theirCharacter[$i + 1] == 0), label: $label, numUses: $theirCharacter[$i + 5], subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]));
+    array_push($characterContents, JSONRenderedCard(
+     $theirChar, 
+     borderColor: $border,
+     overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0),
+     counters: $counters, 
+     defCounters: $theirCharacter[$i + 4], 
+     atkCounters: $atkCounters, 
+     controller: $otherPlayer, 
+     type: $type,
+     sType: $sType, 
+     isFrozen: ($theirCharacter[$i + 8] == 1), 
+     onChain: ($theirCharacter[$i + 6] == 1), 
+     isBroken: ($theirCharacter[$i + 1] == 0), 
+     label: $label, 
+     numUses: $theirCharacter[$i + 5], 
+     subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]));
   }
   $response->opponentEquipment = $characterContents;
 
@@ -520,9 +538,9 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $atkCounters = 0;
     $gem = 0;
     $label = "";
+    $border = 0;
     $myChar = $myCharacter[$i];
     if ($myCharacter[$i + 1] == 4) $myChar = "DUMMYDISHONORED";
-    if (TypeContains($myCharacter[$i], "W")) $atkCounters = $myCharacter[$i + 3];
     if ($myCharacter[$i + 2] > 0) $counters = $myCharacter[$i + 2];
     $playable = $playerID == $currentPlayer && $myCharacter[$i + 1] > 0 && IsPlayable($myChar, $turn[0], "CHAR", $i, $restriction);
     $border = CardBorderColor($myChar, "CHAR", $playable);
@@ -542,7 +560,10 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
         $type = "E";
         $sType = "Off-Hand";
       }
-      $label = WeaponHasGoAgainLabel($i) ? "Go Again" : "";
+      $label = WeaponHasGoAgainLabel($i, $playerID) ? "Go Again" : "";
+      $weaponAttackModifiers = [];
+      if(MainCharacterAttackModifiers($weaponAttackModifiers, $i, player: $playerID) > 0 && !$playable) $border = 5;
+      $atkCounters = $myCharacter[$i + 3];
     }
     if ($myCharacter[$i + 9] != 2 && $myCharacter[$i + 1] != 0 && $playerID != 3) {
       $gem = ($myCharacter[$i + 9] == 1 ? 1 : 2);
