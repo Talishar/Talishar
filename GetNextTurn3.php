@@ -798,13 +798,17 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   // Deduplicate current turn effects
   $playerEffects = array();
   $opponentEffects = array();
+  $friendlyEffects = "";
+  $BorderColor = NULL;
   for ($i = 0; $i + CurrentTurnPieces() - 1 < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
     $cardID = explode("_", $cardID)[0];
     if($cardID == "EVO013") continue;//Don't show useless administrative effect
-    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) array_push($playerEffects, JSONRenderedCard($cardID));
-    else array_push($opponentEffects, JSONRenderedCard($cardID));
+    $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
+    $BorderColor = ($isFriendly ? "blue" : "red");
+    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) array_push($playerEffects, JSONRenderedCard($cardID, borderColor:$BorderColor));
+    else array_push($opponentEffects, JSONRenderedCard($cardID, borderColor:$BorderColor));
   }
   $response->opponentEffects = $opponentEffects;
   $response->playerEffects = $playerEffects;
