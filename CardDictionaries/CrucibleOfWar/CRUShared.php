@@ -378,7 +378,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "1", 1);
         AddDecisionQueue("ELSE", $otherPlayer, "-");
       }
-      AddDecisionQueue("ATTACKMODIFIER", $otherPlayer, "-2", 1);
+      AddDecisionQueue("ATTACKMODIFIER", $currentPlayer, "-2", 1);
       return "";
     case "CRU135": case "CRU136": case "CRU137":
       AddCurrentTurnEffect($cardID, $currentPlayer);
