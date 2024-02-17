@@ -992,10 +992,8 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $cardsArray = array();
     for ($i = 0; $i < count($myHand); ++$i) {
       array_push($cardsArray, JSONRenderedCard($myHand[$i], action: 0));
-    }
-    for ($i = 0; $i < count($myHand); ++$i) {
-      array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 12, $i, "20px"));
-      array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 13, $i, "20px"));
+      array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 12, $myHand[$i], "20px"));
+      array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 13, $myHand[$i], "20px"));
     }
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
     else $caption = "Choose " . TypeToPlay($turn[0]);
