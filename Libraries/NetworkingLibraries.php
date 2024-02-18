@@ -729,7 +729,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       else if($playerID == 2) SetCachePiece($gameName, 16, 1);
       if(GetCachePiece($gameName, 15) != 1 || GetCachePiece($gameName, 16) != 1)
       {
-        AddEvent("REQUESTCHAT", $playerID);
+        if(!str_contains($myName, "Omegaeclipse") && !str_contains($myName, "OmegaEclipse")) {
+          AddEvent("REQUESTCHAT", $playerID);
+        }
         $theirChar = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
         if($theirChar[0] == "DUMMY") WriteLog("The dummy beeps at you");
         else WriteLog($myName . " wants to enable chat");
