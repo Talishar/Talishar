@@ -3,9 +3,9 @@
 function ProcessHitEffect($cardID)
 {
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
-  global $CombatChain;
-  if(CardType($CombatChain->AttackCard()->ID()) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
-  if(HitEffectsArePrevented()) return;
+  global $CombatChain, $layers, $mainPlayer;
+  if(HitEffectsArePrevented($CombatChain->AttackCard()->ID())) return;
+  if(SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
