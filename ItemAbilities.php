@@ -408,7 +408,7 @@ function ItemAttackModifiers(&$attackModifiers)
   return $modifier;
 }
 
-function ItemsAttackYouControlModifiers($cardID, $player) {
+function ItemsAttackModifiers($cardID, $player) {
   $items = &GetItems($player);
   $attackModifier = 0;
   for($i=0; $i<count($items); $i+=ItemPieces()) {

@@ -130,11 +130,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($turn[0] == "HANDTOPBOTTOM") {
         $hand = &GetHand($playerID);
         $deck = new Deck($playerID);
-        $cardID = $hand[$buttonInput];
-        $deck->AddTop($cardID);
-        unset($hand[$buttonInput]);
+        $deck->AddTop($buttonInput);
+        $index = SearchHandForCard($playerID, $buttonInput);
+        unset($hand[$index]);
         $hand = array_values($hand);
-        ContinueDecisionQueue($cardID);
+        ContinueDecisionQueue($buttonInput);
         WriteLog("Player " . $playerID . " put a card on the top of the deck.");
       }
       break;
@@ -142,11 +142,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($turn[0] == "HANDTOPBOTTOM") {
         $hand = &GetHand($playerID);
         $deck = new Deck($playerID);
-        $cardID = $hand[$buttonInput];
-        $deck->AddBottom($cardID);
-        unset($hand[$buttonInput]);
+        $deck->AddBottom($buttonInput);
+        $index = SearchHandForCard($playerID, $buttonInput);
+        unset($hand[$index]);
         $hand = array_values($hand);
-        ContinueDecisionQueue($cardID);
+        ContinueDecisionQueue($buttonInput);
         WriteLog("Player " . $playerID . " put a card on the bottom of the deck.");
       }
       break;
@@ -1118,7 +1118,6 @@ function CleanUpCombatEffects($weaponSwap = false)
       if ($currentTurnEffects[$i+3] == 0) array_push($effectsToRemove, $i);
     }
     switch($currentTurnEffects[$i]) {
-      case "MON008": case "MON009": case "MON010":
       case "MON281": case "MON282": case "MON283":
       case "DYN079": case "DYN080": case "DYN081":
         array_push($effectsToRemove, $i);

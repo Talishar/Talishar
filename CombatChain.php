@@ -345,7 +345,7 @@ function OnBlockResolveEffects()
     if($effectAttackModifier != 0) CombatChainPowerModifier($i, $effectAttackModifier);
     $auraAttackModifier = AurasAttackYouControlModifiers($combatChain[$i], $defPlayer);
     if($auraAttackModifier != 0) CombatChainPowerModifier($i, $auraAttackModifier);
-    $itemAttackModifier = ItemsAttackYouControlModifiers($combatChain[$i], $defPlayer);
+    $itemAttackModifier = ItemsAttackModifiers($combatChain[$i], $defPlayer);
     if($itemAttackModifier != 0) CombatChainPowerModifier($i, $itemAttackModifier);
     else ProcessPhantasmOnBlock($i);
     ProcessMirageOnBlock($i);
