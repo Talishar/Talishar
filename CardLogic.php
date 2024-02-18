@@ -711,7 +711,6 @@ function AddEffectHitTrigger($cardID)
 function ProcessMainCharacterHitEffect($cardID, $player, $target) {
   global $combatChain, $mainPlayer, $layers;
   $character = &GetPlayerCharacter($player);
-  WriteLog(count($layers) . "<=" . LayerPieces());
   if(CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   switch ($cardID) {
     case "WTR076": case "WTR077":
