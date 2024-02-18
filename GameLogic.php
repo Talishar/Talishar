@@ -1648,6 +1648,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         WriteLog(CardLink($lastResult, $lastResult). " was banished");
         return $lastResult;
+      case "ADDTRIGGER":
+        $param = explode(",", $parameter);
+        AddLayer("TRIGGER", $player, $param[0], $param[1]); 
+        return $lastResult;
     default:
       return "NOTSTATIC";
   }

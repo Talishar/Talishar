@@ -5,9 +5,10 @@
 function EffectHitEffect($cardID)
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $CombatChain, $CCS_DamageDealt;
-  global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner;
+  global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers;
   $attackID = $CombatChain->AttackCard()->ID();
-  if(CardType($attackID) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
+  if(HitEffectsArePrevented($attackID)) return;
+  if(SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   $effectArr = explode(",", $cardID);
   $cardID = $effectArr[0];
   switch($cardID) {
@@ -416,6 +417,7 @@ function RemoveEffectsOnChainClose()
       case "OUT071": case "OUT072": case "OUT073": //Deadly Duo
       case "DTD052"://Spirit of War
       case "TCC086": case "TCC094"://Growl
+      case "HVY256"://Coercive Tendency
         $remove = 1;
         break;
       default:
@@ -1105,33 +1107,34 @@ function CurrentEffectEndTurnAbilities()
   }
 }
 
-function IsCombatEffectActive($cardID)
+function IsCombatEffectActive($cardID, $defendingCard="")
 {
   global $CombatChain, $currentPlayer;
   if(!$CombatChain->HasCurrentLink()) return;
   if($cardID == "AIM") return true;
   $cardID = ShiyanaCharacter($cardID);
-  $attackID = $CombatChain->AttackCard()->ID();
+  if($defendingCard == "") $cardToCheck = $CombatChain->AttackCard()->ID();
+  else $cardToCheck = $defendingCard;
   $set = CardSet($cardID);
-  if($set == "WTR") return WTRCombatEffectActive($cardID, $attackID);
-  else if($set == "ARC") return ARCCombatEffectActive($cardID, $attackID);
-  else if($set == "CRU") return CRUCombatEffectActive($cardID, $attackID);
-  else if($set == "MON") return MONCombatEffectActive($cardID, $attackID);
-  else if($set == "ELE") return ELECombatEffectActive($cardID, $attackID);
-  else if($set == "EVR") return EVRCombatEffectActive($cardID, $attackID);
-  else if($set == "DVR") return DVRCombatEffectActive($cardID, $attackID);
-  else if($set == "UPR") return UPRCombatEffectActive($cardID, $attackID);
-  else if($set == "DYN") return DYNCombatEffectActive($cardID, $attackID);
-  else if($set == "OUT") return OUTCombatEffectActive($cardID, $attackID);
-  else if($set == "DTD") return DTDCombatEffectActive($cardID, $attackID);
-  else if($set == "TCC") return TCCCombatEffectActive($cardID, $attackID);
-  else if($set == "EVO") return EVOCombatEffectActive($cardID, $attackID);
-  else if($set == "HVY") return HVYCombatEffectActive($cardID, $attackID);
-  else if($set == "ROG") return ROGUECombatEffectActive($cardID, $attackID);
+  if($set == "WTR") return WTRCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "ARC") return ARCCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "CRU") return CRUCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "MON") return MONCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "ELE") return ELECombatEffectActive($cardID, $cardToCheck);
+  else if($set == "EVR") return EVRCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "DVR") return DVRCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "UPR") return UPRCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "DYN") return DYNCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "OUT") return OUTCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "DTD") return DTDCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "TCC") return TCCCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "EVO") return EVOCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "HVY") return HVYCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "ROG") return ROGUECombatEffectActive($cardID, $cardToCheck);
   switch($cardID)
   {
-    case "LGS180": return DTDCombatEffectActive($cardID, $attackID);
-    case "LGS181": return DTDCombatEffectActive($cardID, $attackID);
+    case "LGS180": return DTDCombatEffectActive($cardID, $cardToCheck);
+    case "LGS181": return DTDCombatEffectActive($cardID, $cardToCheck);
     default: return;
   }
 }
@@ -1263,15 +1266,20 @@ function CurrentEffectNameModifier($effectID, $effectParameter)
   return $name;
 }
 
-function EffectDefenderAttackModifiers()
+function EffectDefenderAttackModifiers($cardID)
 {
   $mod = 0;
   global $defPlayer, $currentTurnEffects;
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = false;
-    if($currentTurnEffects[$i + 1] == $defPlayer && IsCombatEffectActive($currentTurnEffects[$i])) {
+    if($currentTurnEffects[$i + 1] == $defPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardID)) {
       switch($currentTurnEffects[$i]) {
-        case "DTD011": $mod -= 1; break;
+        case "MON008": case "MON009": case "MON010": 
+          $mod -= 1; 
+          break;
+        case "DTD011": case "DTD411":
+          $mod -= 1; 
+          break;
         default:
           break;
       }
@@ -1282,7 +1290,7 @@ function EffectDefenderAttackModifiers()
   return $mod;
 }
 
-function EffectAttackRestricted()
+function EffectAttackRestricted($cardID, $type)
 {
   global $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBaseAttack;
   $mainChar = &GetPlayerCharacter($mainPlayer);
@@ -1293,19 +1301,14 @@ function EffectAttackRestricted()
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
       switch($effectID) {
-        case "DTD203": if($combatChainState[$CCS_LinkBaseAttack] <= $effectArr[1]) $restrictedBy = "DTD203"; break;
+        case "DTD203": if(AttackValue($cardID) <= $effectArr[1] && (TypeContains($cardID, "AA", $mainPlayer) || GetResolvedAbilityType($cardID) == "AA")) $restrictedBy = "DTD203"; break;
         case "WarmongersPeace": $restrictedBy = "DTD230"; break;
         default:
           break;
       }
     }
   }
-  if($restrictedBy != "") {
-    WriteLog("The attack is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.");
-    RevertGamestate();
-    return true;
-  }
-  return false;
+  return $restrictedBy;
 }
 
 function EffectPlayCardConstantRestriction($cardID, $type, &$restriction = "") {
@@ -1351,5 +1354,20 @@ function EffectCardID($effect) {
   $id = $arr[0];
   $arr = explode("-", $id);
   return $arr[0];
+}
+
+function EffectsAttackYouControlModifiers($cardID, $player) {
+  global $currentTurnEffects;
+  $attackModifier = 0;
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    if ($currentTurnEffects[$i + 1] == $player) {
+      switch($currentTurnEffects[$i]) {
+        case "ARC160-1":
+          if(CardType($cardID) == "AA") $attackModifier += 1;
+        default: break;
+      }
+    }
+  }
+  return $attackModifier;
 }
 

@@ -262,11 +262,11 @@ function CardCost($cardID, $from="-")
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
-      if(GetResolvedAbilityType($cardID, "HAND") == "AA" || $from == "CC") return 3;
-      else return 0;
+      if(GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
+      else return 3;
     case "HVY209":
-      if(GetResolvedAbilityType($cardID, "HAND") == "AA" || $from == "CC") return 2;
-      else return 0;
+      if(GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
+      else return 2;
     default: break;
   }
   if($set != "ROG" && $set != "DUM") {
@@ -540,7 +540,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
   if($CombatChain->HasCurrentLink() && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR"))) {
     if ($from == "HAND") {
-      if(CachedDominateActive() && CachedNumDefendedFromHand() >= 1) return false;
+      if(CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1) return false;
       if(CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "CRU047") || SearchCurrentTurnEffects("CRU047-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "CRU047") || SearchCharacterActive($mainPlayer, "CRU097")) && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
     }
     if(CachedOverpowerActive() && CachedNumActionBlocked() >= 1) {
@@ -735,6 +735,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   if(CardType($cardID) == "A" && $from != "PLAY" && GetClassState($player, $CS_NumNonAttackCards) >= 1 && (SearchItemsForCard("EVR071", 1) != "" || SearchItemsForCard("EVR071", 2) != "")) { $restriction = "EVR071"; return true; }
   if($player != $mainPlayer && SearchAlliesActive($mainPlayer, "UPR415")) { $restriction = "UPR415"; return true; }
   if(EffectPlayCardRestricted($cardID, $type) != "") { $restriction = true; return true; }
+  if(EffectAttackRestricted($cardID, $type) != "") { $restriction = true; return true; }
   switch($cardID) {
     case "WTR080": return !$CombatChain->HasCurrentLink() || !HasCombo($CombatChain->AttackCard()->ID());
     case "WTR082": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player) || CardType($CombatChain->AttackCard()->ID()) != "AA";

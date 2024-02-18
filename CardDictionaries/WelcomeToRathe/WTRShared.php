@@ -553,10 +553,11 @@
 
   function ProcessCrushEffect($cardID)
   {
-    global $mainPlayer, $defPlayer, $defCharacter, $CombatChain, $combatChainState, $CCS_DamageDealt;
-    if(CardType($CombatChain->AttackCard()->ID()) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
+    global $mainPlayer, $defPlayer, $defCharacter, $CombatChain, $combatChainState, $CCS_DamageDealt, $layers;
     if(!IsHeroAttackTarget()) return;
-    switch($cardID) {
+    if(HitEffectsArePrevented($CombatChain->AttackCard()->ID())) return;
+    if(SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
+      switch($cardID) {
       case "WTR043":
         DiscardRandom($defPlayer, $cardID, $mainPlayer);
         DiscardRandom($defPlayer, $cardID, $mainPlayer);

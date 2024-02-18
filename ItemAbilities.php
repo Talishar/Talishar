@@ -36,6 +36,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     $char = &GetPlayerCharacter($player);
     $hero = ShiyanaCharacter($char[0], $player);
     if(($hero == "HVY047" || $hero == "HVY048") && SearchCurrentTurnEffects($hero."-1", $player, true) && $effectController == $player) {
+      $EffectContext = $hero;
       WriteLog("Player $player drew a card from Victor");
       Draw($player);
     }
@@ -407,14 +408,13 @@ function ItemAttackModifiers(&$attackModifiers)
   return $modifier;
 }
 
-function ItemAttackModifiersOnDefend($cardID) {
-  global $defPlayer, $combatChain;
-  $items = &GetItems($defPlayer);
+function ItemsAttackYouControlModifiers($cardID, $player) {
+  $items = &GetItems($player);
   $attackModifier = 0;
   for($i=0; $i<count($items); $i+=ItemPieces()) {
     switch($items[$i]) {
       case "EVO079":
-        if(CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $defPlayer)) ++$attackModifier;
+        if(CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $player)) ++$attackModifier;
       default: break;
     }
   }
