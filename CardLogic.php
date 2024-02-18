@@ -1754,9 +1754,7 @@ function ModifiedAttackValue($cardID, $player, $from, $source="")
     // effect that only affect CC
     $attack += EffectDefenderAttackModifiers($cardID);
   }
-  $attack += ItemsAttackYouControlModifiers($cardID, $player);
-  $attack += EffectsAttackYouControlModifiers($cardID, $player);
-  $attack += AurasAttackYouControlModifiers($cardID, $player);
+  $attack += ItemsAttackModifiers($cardID, $player);
   return $attack;
 }
 
