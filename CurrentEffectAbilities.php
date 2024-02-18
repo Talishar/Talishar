@@ -1353,3 +1353,18 @@ function EffectCardID($effect) {
   return $arr[0];
 }
 
+function EffectsAttackYouControlModifiers($cardID, $player) {
+  global $currentTurnEffects;
+  $attackModifier = 0;
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    if ($currentTurnEffects[$i + 1] == $player) {
+      switch($currentTurnEffects[$i]) {
+        case "ARC160-1":
+          if(CardType($cardID) == "AA") $attackModifier += 1;
+        default: break;
+      }
+    }
+  }
+  return $attackModifier;
+}
+

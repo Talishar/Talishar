@@ -886,3 +886,16 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
     default: break;
   }
 }
+
+function AurasAttackYouControlModifiers($cardID, $player) {
+  $auras = &GetAuras($player);
+  $attackModifier = 0;
+  for($i=0; $i<count($auras); $i+=ItemPieces()) {
+    switch($auras[$i]) {
+      case "ELE117":
+      if(CardType($cardID) == "AA") $attackModifier += 3;
+      default: break;
+    }
+  }
+  return $attackModifier;
+}

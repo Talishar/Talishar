@@ -407,14 +407,13 @@ function ItemAttackModifiers(&$attackModifiers)
   return $modifier;
 }
 
-function ItemAttackModifiersOnDefend($cardID) {
-  global $defPlayer, $combatChain;
-  $items = &GetItems($defPlayer);
+function ItemsAttackYouControlModifiers($cardID, $player) {
+  $items = &GetItems($player);
   $attackModifier = 0;
   for($i=0; $i<count($items); $i+=ItemPieces()) {
     switch($items[$i]) {
       case "EVO079":
-        if(CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $defPlayer)) ++$attackModifier;
+        if(CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $player)) ++$attackModifier;
       default: break;
     }
   }
