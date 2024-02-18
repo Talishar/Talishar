@@ -418,7 +418,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $label = WeaponHasGoAgainLabel($i, $otherPlayer) ? "Go Again" : "";
       $weaponAttackModifiers = [];
       $atkCounters = $theirCharacter[$i + 3];
-      if(MainCharacterAttackModifiers($weaponAttackModifiers, $i, player: $otherPlayer) > 0) $border = 5;
+      if(MainCharacterAttackModifiers($weaponAttackModifiers, $i, true, $otherPlayer) > 0) $border = 5;
     }
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
@@ -562,7 +562,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       }
       $label = WeaponHasGoAgainLabel($i, $playerID) ? "Go Again" : "";
       $weaponAttackModifiers = [];
-      if(MainCharacterAttackModifiers($weaponAttackModifiers, $i, player: $playerID) > 0 && !$playable) $border = 5;
+      if(MainCharacterAttackModifiers($weaponAttackModifiers, $i, true, $playerID) > 0 && !$playable) $border = 5;
       $atkCounters = $myCharacter[$i + 3];
     }
     if ($myCharacter[$i + 9] != 2 && $myCharacter[$i + 1] != 0 && $playerID != 3) {
