@@ -353,7 +353,7 @@ function MainCharacterEndTurnAbilities()
   }
 }
 
-function MainCharacterHitAbilities()
+function MainCharacterHitTrigger()
 {
   global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
@@ -364,13 +364,13 @@ function MainCharacterHitAbilities()
     switch($characterID) {
       case "WTR076": case "WTR077":
         if(CardType($attackID) == "AA") {
-          AddLayer("TRIGGER", $mainPlayer, $characterID);
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
           $mainCharacter[$i+1] = 1;
         }
         break;
       case "WTR079":
         if(CardType($attackID) == "AA" && HitsInRow() >= 2) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID);
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
           $mainCharacter[$i+1] = 1;
         }
         break;
@@ -383,12 +383,12 @@ function MainCharacterHitAbilities()
         break;
       case "WTR117":
         if(CardType($attackID) == "W" && IsCharacterActive($mainPlayer, $i)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID);
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
       case "ARC152":
         if(CardType($attackID) == "AA" && IsCharacterActive($mainPlayer, $i)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID);
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
       case "CRU047":
@@ -399,7 +399,7 @@ function MainCharacterHitAbilities()
         break;
       case "CRU053":
         if(CardType($attackID) == "AA" && ClassContains($attackID, "NINJA", $mainPlayer) && IsCharacterActive($mainPlayer, $i)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID);
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
       case "ELE062": case "ELE063":
@@ -409,13 +409,13 @@ function MainCharacterHitAbilities()
         break;
       case "EVR037":
         if(CardType($attackID) == "AA" && IsCharacterActive($mainPlayer, $i)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID);
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
       case "HVY097":
         if(CardType($attackID) == "W")
         {
-          AddLayer("TRIGGER", $mainPlayer, $characterID);
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
       case "ROGUE016":

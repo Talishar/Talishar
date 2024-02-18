@@ -989,7 +989,7 @@ function ResolveCombatDamage($damageDone)
       IncrementClassState($mainPlayer, $CS_HitsWithWeapon);
       if(SubtypeContains($combatChain[0], "Sword", $mainPlayer)) IncrementClassState($mainPlayer, $CS_HitsWithSword);
     }
-    if(!HitEffectsArePrevented()) {
+    if(!HitEffectsArePrevented($combatChain[0])) {
       for($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
         if($combatChain[$i] == $mainPlayer) {
           $EffectContext = $combatChain[$i - 1];
@@ -1007,7 +1007,7 @@ function ResolveCombatDamage($damageDone)
         }
       }
       $currentTurnEffects = array_values($currentTurnEffects);
-      MainCharacterHitAbilities();
+      MainCharacterHitTrigger();
       MainCharacterHitEffects();
       ArsenalHitEffects();
       AuraHitEffects($combatChain[0]);

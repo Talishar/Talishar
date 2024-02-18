@@ -708,6 +708,75 @@ function AddEffectHitTrigger($cardID)
   }
 }
 
+function ProcessMainCharacterHitEffect($cardID, $player, $target) {
+  global $combatChain, $mainPlayer, $layers;
+  $character = &GetPlayerCharacter($player);
+  WriteLog(count($layers) . "<=" . LayerPieces());
+  if(CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
+  switch ($cardID) {
+    case "WTR076": case "WTR077":
+      KatsuHit();
+      break;
+    case "WTR117":
+      $index = FindCharacterIndex($player, $cardID);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Refraction_Bolters_to_get_Go_Again");
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, "MYCHAR-$index", 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+      AddDecisionQueue("OP", $player, "GIVEATTACKGOAGAIN", 1);
+      AddDecisionQueue("WRITELOG", $player, "Refraction Bolters was destroyed", 1);
+      break;
+    case "WTR079":
+      Draw($player);
+      break;
+    case "ARC152":
+      $index = FindCharacterIndex($player, $cardID);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Vest_of_the_First_Fist_to_gain_2_resources");
+      AddDecisionQueue("NOPASS", $player, "");
+      AddDecisionQueue("PASSPARAMETER", $player, "MYCHAR-" . $index, 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+      AddDecisionQueue("GAINRESOURCES", $player, 2, 1);
+      break;
+    case "CRU053":
+      $index = FindCharacterIndex($player, $cardID);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Breeze_Rider_Boots");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $player, $character[$index], 1);
+      break;
+    case "EVR037":
+      $index = FindCharacterIndex($player, $cardID);
+      AddDecisionQueue("YESNO", $player, "to_destroy_Mask_of_the_Pouncing_Lynx");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+      AddDecisionQueue("FINDINDICES", $player, "MASKPOUNCINGLYNX", 1);
+      AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
+      AddDecisionQueue("MULTIBANISH", $player, "DECK,TT", 1);
+      AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      AddDecisionQueue("WRITELOG", $player, "<0> was banished", 1);
+      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+      break;
+    case "HVY097":
+      $hand = &GetHand($player);
+      $resources = &GetResources($player);
+      if(CardType($combatChain[0]) == "W" && (Count($hand) > 0 || $resources[0] > 0))
+      {
+        AddDecisionQueue("YESNO", $player, "if you want to pay 1 to create a " . CardLink("HVY242", "HVY242"), 0, 1);
+        AddDecisionQueue("NOPASS", $player, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
+        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+        AddDecisionQueue("WRITELOG", $player, "🩸 " . CardLink($cardID, $cardID) . " created a " . CardLink("HVY242", "HVY242") . " token ", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "HVY242", 1);
+        AddDecisionQueue("PUTPLAY", $player, "-", 1);
+      }
+      break;
+    default:
+      break;
+  }
+}
+
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex;
@@ -726,6 +795,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     if($shouldRemove == 1) RemoveCurrentTurnEffect(FindCurrentTurnEffectIndex($player, $target));
     return;
   }
+  if($additionalCosts == "MAINCHARHITEFFECT")  { ProcessMainCharacterHitEffect($parameter, $player, $target); return; }
+
   switch($parameter) {
     case "HEAVE":
       Heave();
@@ -761,21 +832,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
-    case "WTR076": case "WTR077":
-      KatsuHit();
-      break;
-    case "WTR079":
-      Draw($player);
-      break;
-    case "WTR117":
-      $index = FindCharacterIndex($player, $parameter);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Refraction_Bolters_to_get_Go_Again");
-      AddDecisionQueue("NOPASS", $player, "-", 1);
-      AddDecisionQueue("PASSPARAMETER", $player, "MYCHAR-$index", 1);
-      AddDecisionQueue("MZDESTROY", $player, "-", 1);
-      AddDecisionQueue("OP", $player, "GIVEATTACKGOAGAIN", 1);
-      AddDecisionQueue("WRITELOG", $player, "Refraction Bolters was destroyed", 1);
-      break;
     case "WTR119":
       Draw($mainPlayer);
       break;
@@ -808,14 +864,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       DealArcane(1, 1, "RUNECHANT", "ARC112", player:$player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
-    case "ARC152":
-      $index = FindCharacterIndex($player, $parameter);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Vest_of_the_First_Fist_to_gain_2_resources");
-      AddDecisionQueue("NOPASS", $player, "");
-      AddDecisionQueue("PASSPARAMETER", $player, "MYCHAR-" . $index, 1);
-      AddDecisionQueue("MZDESTROY", $player, "-", 1);
-      AddDecisionQueue("GAINRESOURCES", $player, 2, 1);
-      break;
     case "ARC162":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
@@ -846,14 +894,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
           DestroyCurrentWeapon();
         }
       }
-      break;
-    case "CRU053":
-      $index = FindCharacterIndex($player, $parameter);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Breeze_Rider_Boots");
-      AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
-      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $player, $character[$index], 1);
       break;
     case "CRU075":
       $index = SearchAurasForUniqueID($uniqueID, $player);
@@ -989,19 +1029,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "EVR018":
       PlayAura("ELE111", $player);
       break;
-    case "EVR037":
-      $index = FindCharacterIndex($player, $parameter);
-      AddDecisionQueue("YESNO", $player, "to_destroy_Mask_of_the_Pouncing_Lynx");
-      AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
-      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-      AddDecisionQueue("FINDINDICES", $player, "MASKPOUNCINGLYNX", 1);
-      AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
-      AddDecisionQueue("MULTIBANISH", $player, "DECK,TT", 1);
-      AddDecisionQueue("SETDQVAR", $player, "0", 1);
-      AddDecisionQueue("WRITELOG", $player, "<0> was banished", 1);
-      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
-      break;
     case "EVR069":
       $index = SearchItemsForUniqueID($uniqueID, $player);
       --$items[$index+1];
@@ -1017,20 +1044,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       else {
         DestroyItemForPlayer($player, $index);
         WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
-      }
-      break;
-    case "HVY097":
-      $hand = &GetHand($player);
-      $resources = &GetResources($player);
-      if(CardType($combatChain[0]) == "W" && (Count($hand) > 0 || $resources[0] > 0))
-      {
-        AddDecisionQueue("YESNO", $player, "if you want to pay 1 to create a " . CardLink("HVY242", "HVY242"), 0, 1);
-        AddDecisionQueue("NOPASS", $player, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
-        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-        AddDecisionQueue("WRITELOG", $player, "🩸 " . CardLink($parameter, $parameter) . " created a " . CardLink("HVY242", "HVY242") . " token ", 1);
-        AddDecisionQueue("PASSPARAMETER", $player, "HVY242", 1);
-        AddDecisionQueue("PUTPLAY", $player, "-", 1);
       }
       break;
     case "EVR107": case "EVR108": case "EVR109":
