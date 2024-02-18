@@ -541,13 +541,13 @@
         }
         return "";
       case "EVO059":
-        $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = EvoUpgradeAmount($currentPlayer);
         $negCounterEquip = explode(",", SearchCharacter($otherPlayer, hasNegCounters:true));
         $numNegCounterEquip = count($negCounterEquip);
-        if($numNegCounterEquip > 0 && !IsAllyAttackTarget()) {
-          $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = $numNegCounterEquip;
-          if($numNegCounterEquip > 1) $rv = CardLink($cardID, $cardID) . " requires you to block with " . $numNegCounterEquip . " equipments";
-          else $rv = CardLink($cardID, $cardID) . " requires you to block with " . $numNegCounterEquip . " equipment";
+        $requiredEquip = EvoUpgradeAmount($currentPlayer) - $numNegCounterEquip;
+        if($numNegCounterEquip > 0 && $requiredEquip > 0 && !IsAllyAttackTarget()) {
+          $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = $requiredEquip;
+          if($requiredEquip > 1) $rv = CardLink($cardID, $cardID) . " requires you to block with " . $requiredEquip . " equipments";
+          else $rv = CardLink($cardID, $cardID) . " requires you to block with " . $requiredEquip . " equipment";
           WriteLog($rv);
         }
         return "";

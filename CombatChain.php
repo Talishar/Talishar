@@ -3,9 +3,9 @@
 function ProcessHitEffect($cardID)
 {
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
-  global $CombatChain;
-  if(CardType($CombatChain->AttackCard()->ID()) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
-  if(HitEffectsArePrevented()) return;
+  global $CombatChain, $layers, $mainPlayer;
+  if(HitEffectsArePrevented($CombatChain->AttackCard()->ID())) return;
+  if(SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
@@ -389,7 +389,10 @@ function OnBlockResolveEffects()
     default: break;
   }
   $blockedFromHand = 0;
-  for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) if($combatChain[$i+2] == "HAND") ++$blockedFromHand;
+  for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+    if($combatChain[$i+2] == "HAND") 
+    ++$blockedFromHand;
+  }
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if(($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i+2] != "HAND")) UnityEffect($combatChain[$i]);
     if(HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
@@ -417,7 +420,6 @@ function OnBlockResolveEffects()
       case "TCC030": case "TCC031": case "TCC032":
       case "TCC033": case "TCC098": case "TCC102":
       case "TCC060": case "TCC063": case "TCC067": // Crowd Control
-      case "HVY008":
       case "HVY020": case "HVY021": case "HVY022":
       case "HVY052": case "HVY053": case "HVY054":
       case "HVY061": case "HVY162":
@@ -431,10 +433,20 @@ function OnBlockResolveEffects()
       case "HVY648":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
+      case "HVY008":
+        $num6Block = 0;
+        for($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
+        if(ModifiedAttackValue($combatChain[$j], $defPlayer, "CC", "HVY008") >= 6) ++$num6Block;
+        }
+        if($num6Block) {
+          AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
+        }
+        break;
       case "DTD094": case "DTD095": case "DTD096":
         if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
         break;
-      default: break;
+      default: 
+        break;
     }
   }
   if($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "ELE174", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer)))

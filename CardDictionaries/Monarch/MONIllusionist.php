@@ -2,7 +2,7 @@
 
   function MONIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer;
+    global $currentPlayer, $defPlayer;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
@@ -10,7 +10,7 @@
         PlayAura("MON104", $currentPlayer);
         return "";
       case "MON008": case "MON009": case "MON010":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffect($cardID, $defPlayer);
         return "";
       case "MON090":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -40,7 +40,8 @@
     switch($cardID)
     {
       case "MON004":
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
         Draw($mainPlayer);
         Draw($mainPlayer);
         break;
@@ -49,16 +50,22 @@
           AddCurrentTurnEffect($cardID, $defPlayer);
           AddNextTurnEffect($cardID, $defPlayer);
         }
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
         break;
-      case "MON008": case "MON009": case "MON010": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
+      case "MON008": case "MON009": case "MON010": 
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
+        break;
       case "MON014": case "MON015": case "MON016":
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
         PlayAura("MON104", $mainPlayer);
         break;
       case "MON017": case "MON018": case "MON019":
         DealArcane(1, 0, "PLAYCARD", $cardID, false, $mainPlayer);
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
         break;
       case "MON020": case "MON021": case "MON022":
         AddDecisionQueue("FINDINDICES", $mainPlayer, $cardID);
@@ -67,10 +74,17 @@
         AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
         AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
         AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was selected.", 1);
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
         break;
-      case "MON023": case "MON024": case "MON025": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
-      case "MON026": case "MON027": case "MON028": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
+      case "MON023": case "MON024": case "MON025": 
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
+        break;
+      case "MON026": case "MON027": case "MON028": 
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        AddSoul($cardID, $mainPlayer, "CC");
+        break;
       default: break;
     }
   }
@@ -129,13 +143,10 @@
     $defendingCardType = CardType($card->ID());
     if($defendingCardType != "AA") return false;
     if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
+    if(PowerCantBeModified($card->ID())) return AttackValue($card->ID()) >= 6;
     $attackValue = ModifiedAttackValue($card->ID(), $defPlayer, "CC", source:$card->ID());
-    if(PowerCantBeModified($card->ID())) return $attackValue >= 6;
-    if(SearchCurrentTurnEffectsForCycle("MON008", "MON009", "MON010", $mainPlayer)) --$attackValue;
-    if($defendingCardType == "AA" && SearchCurrentTurnEffects("DTD411", $defPlayer)) --$attackValue;
     $attackValue += AuraAttackModifiers($index, $attackModifiers);
     $attackValue += $card->AttackValue();//Combat chain attack modifier
-    $attackValue += EffectDefenderAttackModifiers();
     return $attackValue >= 6;
   }
 

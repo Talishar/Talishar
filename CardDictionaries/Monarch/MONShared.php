@@ -80,6 +80,7 @@
     $cardID = $arr[0];
     switch($cardID)
     {
+      case "MON008": case "MON009": case "MON010": return -1;
       case "MON034": return 1;
       case "MON035": return 1;
       case "MON081": return 3;
@@ -140,6 +141,7 @@
     $cardID = $arr[0];
     switch($cardID)
     {
+      case "MON008": case "MON009": case "MON010": return CardType($attackID) == "AA";
       case "MON034": return CardType($attackID) == "W";
       case "MON035": return true;
       case "MON081": case "MON082": case "MON083": return CardType($attackID) == "AA";

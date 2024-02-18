@@ -349,7 +349,6 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
 {
   global $CS_DamagePrevention, $combatChain, $CS_ArcaneDamagePrevention, $dqVars, $dqState;
   $classState = &GetPlayerClassState($player);
-  if($type == "COMBAT" && $damage > 0 && EffectPreventsHit()) HitEffectsPreventedThisLink();
   if($type == "COMBAT" || $type == "ATTACKHIT") $source = $combatChain[0];
   $otherPlayer = $player == 1 ? 2 : 1;
   $damage = $damage > 0 ? $damage : 0;
@@ -546,7 +545,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
     if($currentTurnEffects[$i+1] == $target) { continue; }
-    if($type == "COMBAT" && HitEffectsArePrevented()) continue;
+    if($type == "COMBAT" && HitEffectsArePrevented($source)) continue;
     $remove = 0;
     switch($currentTurnEffects[$i])
     {
@@ -1347,7 +1346,7 @@ function AttackDestroyed($attackID)
   CharacterAttackDestroyedAbilities($attackID);
   for($i=0; $i<SearchCount(SearchAurasForCard("MON012", $mainPlayer)); ++$i) {
     if(TalentContains($attackID, "LIGHT", $mainPlayer)) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
-    DealArcane(1, 0, "STATIC", "MON012", false, $mainPlayer);
+    AddDecisionQueue("ADDTRIGGER", $mainPlayer, "MON012");
   }
 }
 
@@ -1917,9 +1916,10 @@ function HasAttackName($name)
   return false;
 }
 
-function HitEffectsArePrevented()
+function HitEffectsArePrevented($cardID)
 {
   global $combatChainState, $CCS_ChainLinkHitEffectsPrevented;
+  if(CardType($cardID) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return true;
   return $combatChainState[$CCS_ChainLinkHitEffectsPrevented];
 }
 
@@ -1927,24 +1927,6 @@ function HitEffectsPreventedThisLink()
 {
   global $combatChainState, $CCS_ChainLinkHitEffectsPrevented;
   $combatChainState[$CCS_ChainLinkHitEffectsPrevented] = 1;
-}
-
-function EffectPreventsHit()
-{
-  global $currentTurnEffects, $mainPlayer, $combatChain;
-  $preventsHit = false;
-  for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
-  {
-    if($currentTurnEffects[$i+1] != $mainPlayer) continue;
-    $remove = 0;
-    switch($currentTurnEffects[$i])
-    {
-      case "OUT108": if(CardType($combatChain[0]) == "AA") { $preventsHit = true; $remove = 1; } break;
-      default: break;
-    }
-    if($remove == 1) RemoveCurrentTurnEffect($i);
-  }
-  return $preventsHit;
 }
 
 function HitsInRow()
