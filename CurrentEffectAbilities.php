@@ -539,7 +539,7 @@ function CurrentEffectCostModifiers($cardID, $from)
           if(CardType($cardID) == "A") { $costModifier -= CountAura("ARC112", $currentPlayer); $remove = true; }
           break;
         case "ARC060": case "ARC061": case "ARC062":
-          if((CardType($cardID) == "AA" || GetAbilityType($cardID, -1, $from) == "AA") && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) { $costModifier += 1; $remove = true; }
+          if((CardType($cardID) == "AA" || GetResolvedAbilityType($cardID, $from) == "AA") && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) { $costModifier += 1; $remove = true; }
           break;
         case "ELE035-1": $costModifier += 1; break;
         case "ELE038": case "ELE039": case "ELE040": $costModifier += 1; break;
