@@ -340,10 +340,12 @@ function OnBlockResolveEffects()
   global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex;
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-    if(SearchCurrentTurnEffects("ARC160-1", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
     if(SearchCurrentTurnEffects("ROGUE802", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
-    if(SearchAurasForCard("ELE117", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 3);
-    $itemAttackModifier = ItemAttackModifiersOnDefend($combatChain[$i]);
+    $effectAttackModifier = EffectsAttackYouControlModifiers($combatChain[$i], $defPlayer);
+    if($effectAttackModifier != 0) CombatChainPowerModifier($i, $effectAttackModifier);
+    $auraAttackModifier = AurasAttackYouControlModifiers($combatChain[$i], $defPlayer);
+    if($auraAttackModifier != 0) CombatChainPowerModifier($i, $auraAttackModifier);
+    $itemAttackModifier = ItemsAttackYouControlModifiers($combatChain[$i], $defPlayer);
     if($itemAttackModifier != 0) CombatChainPowerModifier($i, $itemAttackModifier);
     else ProcessPhantasmOnBlock($i);
     ProcessMirageOnBlock($i);

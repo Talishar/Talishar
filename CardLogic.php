@@ -1750,9 +1750,13 @@ function ModifiedAttackValue($cardID, $player, $from, $source="")
     $characterID = ShiyanaCharacter($char[0]);
     if(($characterID == "HVY001" || $characterID == "HVY002") && $char[1] < 3 && CardType($cardID) == "AA") ++$attack;
   }
-  else {
+  else { 
+    // effect that only affect CC
     $attack += EffectDefenderAttackModifiers($cardID);
   }
+  $attack += ItemsAttackYouControlModifiers($cardID, $player);
+  $attack += EffectsAttackYouControlModifiers($cardID, $player);
+  $attack += AurasAttackYouControlModifiers($cardID, $player);
   return $attack;
 }
 
