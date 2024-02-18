@@ -724,21 +724,21 @@
       switch($userInput[$i])
       {
         case "Buff_Weapon":
-          WriteLog("Blood on Her Hands gives a weapon +1 this turn");
+          WriteLog(CardLink("EVR055", "EVR055") . " gives a weapon +1 this turn");
           AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon to give +1", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR055-1", 1);
           break;
         case "Go_Again":
-          WriteLog("Blood on Her Hands gives a weapon go again this turn");
+          WriteLog(CardLink("EVR055", "EVR055") . " gives a weapon go again this turn");
           AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon to give go again", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR055-2", 1);
           break;
         case "Attack_Twice":
-          WriteLog("Blood on Her Hands gives a weapon a second attack this turn");
+          WriteLog(CardLink("EVR055", "EVR055") . " gives a weapon a second attack this turn");
           AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon to give a second attack", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);

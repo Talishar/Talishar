@@ -36,6 +36,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     $char = &GetPlayerCharacter($player);
     $hero = ShiyanaCharacter($char[0], $player);
     if(($hero == "HVY047" || $hero == "HVY048") && SearchCurrentTurnEffects($hero."-1", $player, true) && $effectController == $player) {
+      $EffectContext = $hero;
       WriteLog("Player $player drew a card from Victor");
       Draw($player);
     }

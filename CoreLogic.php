@@ -1346,7 +1346,7 @@ function AttackDestroyed($attackID)
   CharacterAttackDestroyedAbilities($attackID);
   for($i=0; $i<SearchCount(SearchAurasForCard("MON012", $mainPlayer)); ++$i) {
     if(TalentContains($attackID, "LIGHT", $mainPlayer)) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
-    DealArcane(1, 0, "STATIC", "MON012", false, $mainPlayer);
+    AddDecisionQueue("ADDTRIGGER", $mainPlayer, "MON012");
   }
 }
 

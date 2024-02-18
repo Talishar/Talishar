@@ -9,7 +9,7 @@ function CardName($cardID)
     if($set != "ROG" && $set != "DUM")
     {
       $number = intval(substr($cardID, 3));
-      if($number < 400 || ($set != "MON" && $set != "DYN" && $cardID != "EVO410" && $cardID != "EVO410b")) return GeneratedCardName($cardID);
+      if($number < 400 || ($set != "MON" && $set != "DYN" && $cardID != "EVO410" && $cardID != "EVO410b" && $cardID != "DTD564")) return GeneratedCardName($cardID);
     }
     if ($set == "ROG") {
       return ROGUEName($cardID);
@@ -32,6 +32,7 @@ function CardName($cardID)
       case "DUMMYDISHONORED": return "Dishonored Hero";
       case "EVO410": return "Teklovossen, the Mechropotent";
       case "EVO410b": return "Teklovossen, the Mechropotent";
+      case "DTD564": return "Blasmophet, Levia Consumed";
       default: return "";
     }
 	}

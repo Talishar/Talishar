@@ -695,7 +695,7 @@ function CheckContract($contractType, $cardBanished)
     case "NAA": return CardType($cardBanished) == "A";
     case "BLOCK2ORLESS": return BlockValue($cardBanished) <= 2 && BlockValue($cardBanished) >= 0;
     case "REACTIONS": return CardType($cardBanished) == "AR" || CardType($cardBanished) == "DR";
-    case "NONACTION": return !IsAction($cardBanished);
+    case "NONACTION": return !IsActionCard($cardBanished);
     default: return false;
     }
 }

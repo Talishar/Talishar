@@ -441,7 +441,7 @@ function MainCharacterHitTrigger()
   }
 }
 
-function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs = false)
+function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs = false, $player=-1)
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $modifier = 0;
@@ -449,6 +449,7 @@ function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   if($index == -1) $index = $combatChainState[$CCS_WeaponIndex];
   for($i = 0; $i < count($mainCharacterEffects); $i += CharacterEffectPieces()) {
+    if($player != -1 && !SearchCurrentTurnEffects(substr($mainCharacterEffects[$i + 1], 0, 6), $player)) return false;
     if($mainCharacterEffects[$i] == $index) {
       switch($mainCharacterEffects[$i + 1]) {
         case "WTR119": 
@@ -514,6 +515,22 @@ function MainCharacterGrantsGoAgain()
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   for($i = 0; $i < count($mainCharacterEffects); $i += 2) {
     if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
+      switch($mainCharacterEffects[$i + 1]) {
+        case "EVR055-2": return true;
+        default: break;
+      }
+    }
+  }
+  return false;
+}
+
+function WeaponHasGoAgainLabel($index, $player)
+{
+  global $mainPlayer;
+  $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
+  for($i = 0; $i < count($mainCharacterEffects); $i += 2) {
+    if($mainCharacterEffects[$i] == $index) {
+      if(!SearchCurrentTurnEffects(substr($mainCharacterEffects[$i + 1], 0, 6), $player)) return false;
       switch($mainCharacterEffects[$i + 1]) {
         case "EVR055-2": return true;
         default: break;
@@ -846,12 +863,7 @@ function CharacterAttackDestroyedAbilities($attackID)
     switch($character[$i]) {
       case "MON089":
         if($character[$i+5] > 0 && CardType($attackID) == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)){
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
-          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
-          AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-          AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
-          AddDecisionQueue("WRITELOG", $mainPlayer, "Gained_an_action_point_from_" . CardLink($character[$i], $character[$i]), 1);
+          AddDecisionQueue("ADDTRIGGER", $mainPlayer, $character[$i], $i);
           --$character[$i+5];
         }
         break;

@@ -780,7 +780,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target) {
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex;
-  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
   $auras = &GetAuras($player);
@@ -831,6 +831,21 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "WTR075":
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "WTR076": case "WTR077":
+      KatsuHit();
+      break;
+    case "WTR079":
+      Draw($player);
+      break;
+    case "WTR117":
+      $index = FindCharacterIndex($player, $parameter);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Refraction_Bolters");
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, "MYCHAR-$index", 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+      AddDecisionQueue("OP", $player, "GIVEATTACKGOAGAIN", 1);
+      AddDecisionQueue("WRITELOG", $player, "Refraction Bolters was destroyed", 1);
       break;
     case "WTR119":
       Draw($mainPlayer);
@@ -934,13 +949,26 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("BUFFARCANEPREVLAYER", $player, "CRU161", 1);
       AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
       break;
-    case "MON089":
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
-      AddDecisionQueue("BUTTONINPUT", $player, "0,1");
-      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
-      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
-      if(!SearchCurrentTurnEffects("MON089", $player)) AddDecisionQueue("ADDCURRENTEFFECT", $player, "MON089", 1);
+    case "MON012":
+      DealArcane(1, 0, "STATIC", $parameter, false, $player);
+      break;
+    case "MON089": //To be moved to ProcessMainCharacterHitEffect() when Fix Tarpit + Main Character Triggers #786 is uploaded
+      if($player == $defPlayer) {
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
+        AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+        AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+        if(!SearchCurrentTurnEffects("MON089", $player)) AddDecisionQueue("ADDCURRENTEFFECT", $player, "MON089", 1);
+      }
+      else {
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
+        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+        AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "Gained_an_action_point_from_" . CardLink($character[$target], $character[$target]), 1);
+      }
       break;
     case "MON122":
       $index = FindCharacterIndex($player, $parameter);
@@ -1721,6 +1749,9 @@ function ModifiedAttackValue($cardID, $player, $from, $source="")
     $char = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($char[0]);
     if(($characterID == "HVY001" || $characterID == "HVY002") && $char[1] < 3 && CardType($cardID) == "AA") ++$attack;
+  }
+  else {
+    $attack += EffectDefenderAttackModifiers($cardID);
   }
   return $attack;
 }
