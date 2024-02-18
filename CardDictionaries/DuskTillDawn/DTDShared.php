@@ -168,7 +168,7 @@ function DTDCombatEffectActive($cardID, $attackID)
 
 function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $currentPlayer, $defPlayer, $CS_NumCharged, $CS_DamagePrevention, $CS_NumCardsDrawn, $CombatChain;
+  global $currentPlayer, $defPlayer, $CS_NumCharged, $CS_DamagePrevention, $CS_NumCardsDrawn, $combatChain, $CombatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
@@ -202,7 +202,8 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       MZMoveCard($currentPlayer, "MYDISCARD:type=A;pitch=2&MYDISCARD:type=AA;pitch=2", "MYTOPDECK", may:true);
       return;
     case "DTD010":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(count($combatChain) > 0) AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+      else AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD011":
       AddCurrentTurnEffect($cardID, $otherPlayer);
