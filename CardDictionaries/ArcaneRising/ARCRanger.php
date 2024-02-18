@@ -19,7 +19,7 @@
         AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",DECK", 1);
         return "";
       case "ARC040":
-        if(!ArsenalEmpty($currentPlayer)) return "Your arsenal is not empty so you cannot load an arrow.";
+        if(!ArsenalEmpty($currentPlayer)) return "Your arsenal is full, you cannot reload";
         LoadArrow($currentPlayer);
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
@@ -27,7 +27,7 @@
         Opt($cardID, 1);
         return "";
       case "ARC042":
-        if(!ArsenalEmpty($currentPlayer)) return "Your arsenal is not empty so you cannot load an arrow.";
+        if(!ArsenalEmpty($currentPlayer)) return "Your arsenal is full, you cannot reload";
         LoadArrow($currentPlayer);
         AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",HAND", 1);
         return "";
@@ -54,7 +54,7 @@
         Reload();
         return "";
       case "ARC051": case "ARC052": case "ARC053":
-        if(!ArsenalEmpty($currentPlayer)) return "Did nothing because your arsenal is not empty";
+        if(!ArsenalEmpty($currentPlayer)) return "Did nothing because your arsenal is full";
         if($cardID == "ARC051") $count = 4;
         else if($cardID == "ARC052") $count = 3;
         else $count = 2;
@@ -104,7 +104,7 @@
     if(ArsenalFull($player))
     {
       AddDecisionQueue("PASSPARAMETER", $player, "PASS");//Pass any subsequent load effects
-      return "Your arsenal is full, so you cannot put an arrow in your arsenal";
+      return "Your arsenal is full, you cannot put an arrow in arsenal";
     }
     MZMoveCard($player, "MYHAND:subtype=Arrow", "MYARS,HAND," . $facing, may:true, silent:true);
   }
@@ -113,7 +113,7 @@
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
-    if(!ArsenalEmpty($player)) { WriteLog("Your arsenal is not empty, so you cannot Reload"); return; }
+    if(!ArsenalEmpty($player)) { WriteLog("Your arsenal is full, you cannot reload"); return; }
     MZMoveCard($player, "MYHAND", "MYARS,HAND,DOWN", may:true, silent:true);
   }
 
@@ -121,7 +121,7 @@
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
-    if(ArsenalFull($player)) { WriteLog("Your arsenal is full, so you do not arsenal a card"); return; }
+    if(ArsenalFull($player)) { WriteLog("Your arsenal is full, you cannot arsenal a card"); return; }
     MZMoveCard($player, "MYHAND", "MYARS,HAND,DOWN", may:true, silent:true);
   }
 
