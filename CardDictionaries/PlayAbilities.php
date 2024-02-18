@@ -37,7 +37,7 @@
         if($deck->Reveal(6)) {
           $cards = explode(",", $deck->Top(amount:6));
           $numSixes = 0;
-          for($i = 0; $i <= count($cards); ++$i) {
+          for($i = 0; $i < count($cards); ++$i) {
             if(ModifiedAttackValue($cards[$i], $currentPlayer, "DECK") >= 6) ++$numSixes;
           }
           PlayAura("HVY241", $currentPlayer, $numSixes); //Might
@@ -778,7 +778,7 @@
           PrependDecisionQueue("YESNO", $currentPlayer, "if you want to pitch 2 red cards");
         }
         return "";
-      case "EVO246": 
+      case "EVO246":
         PutPermanentIntoPlay($currentPlayer, $cardID);
         return "";
       case "EVO247":
