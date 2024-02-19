@@ -333,7 +333,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "CRU121":
-      if(!ArsenalEmpty($currentPlayer)) return "Your arsenal is not empty so you cannot load an arrow";
+      if(!ArsenalEmpty($currentPlayer)) return "Your arsenal is full, you cannot reload";
       LoadArrow($currentPlayer);
       return "";
     case "CRU122":

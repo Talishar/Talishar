@@ -237,11 +237,11 @@ function ChosenItemTakeDamageAbilities($player, $index, $damage, $preventable)
   return $damage;
 }
 
-function ItemTakeDamageAbilities($player, $damage, $type="", $preventable=true)
+function ItemTakeDamageAbilities($player, $damage, $source, $type, $preventable=true)
 {
   if ($type != "") {
     $otherPlayer = ($player == 1 ? 2 : 1);
-    $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
+    $preventable = CanDamageBePrevented($otherPlayer, $damage, $type, $source);
   }
   $items = &GetItems($player);
   for($i=count($items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces()) {

@@ -8,7 +8,7 @@ function EffectHitEffect($cardID)
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers;
   $attackID = $CombatChain->AttackCard()->ID();
   if(HitEffectsArePrevented($attackID)) return;
-  if(SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
+  if(CardType($attackID) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   $effectArr = explode(",", $cardID);
   $cardID = $effectArr[0];
   switch($cardID) {
@@ -539,7 +539,7 @@ function CurrentEffectCostModifiers($cardID, $from)
           if(CardType($cardID) == "A") { $costModifier -= CountAura("ARC112", $currentPlayer); $remove = true; }
           break;
         case "ARC060": case "ARC061": case "ARC062":
-          if((CardType($cardID) == "AA" || GetAbilityType($cardID, -1, $from) == "AA") && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) { $costModifier += 1; $remove = true; }
+          if((CardType($cardID) == "AA" || GetResolvedAbilityType($cardID, $from) == "AA") && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) { $costModifier += 1; $remove = true; }
           break;
         case "ELE035-1": $costModifier += 1; break;
         case "ELE038": case "ELE039": case "ELE040": $costModifier += 1; break;
@@ -672,6 +672,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
               $currentTurnEffects[$i+3] -= $sourceDamage;
             }
             if($currentTurnEffects[$i+3] <= 0) $remove = true;
+            if($source == "ARC112" || $source == "UPR042") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
           }
           break;
         case "OUT175": case "OUT176": case "OUT177": case "OUT178":
@@ -1302,7 +1303,7 @@ function EffectAttackRestricted($cardID, $type)
       $effectID = $effectArr[0];
       switch($effectID) {
         case "DTD203": if(AttackValue($cardID) <= $effectArr[1] && (TypeContains($cardID, "AA", $mainPlayer) || GetResolvedAbilityType($cardID) == "AA")) $restrictedBy = "DTD203"; break;
-        case "WarmongersPeace": $restrictedBy = "DTD230"; break;
+        case "WarmongersPeace": if($type == "AA" || (CardType($cardID) == "W" && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230"; break;
         default:
           break;
       }

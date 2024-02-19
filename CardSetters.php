@@ -17,7 +17,7 @@ function BanishCardForPlayer($cardID, $player, $from, $modifier = "-", $banished
 
 function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $from = "", $banishedBy = "")
 {
-  global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer;
+  global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer, $combatChain;
   $rv = -1;
   if($player == "") $player = $currentPlayer;
   $character = &GetPlayerCharacter($player);
