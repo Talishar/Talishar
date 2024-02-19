@@ -1302,7 +1302,7 @@ function EffectAttackRestricted($cardID, $type)
       $effectID = $effectArr[0];
       switch($effectID) {
         case "DTD203": if(AttackValue($cardID) <= $effectArr[1] && (TypeContains($cardID, "AA", $mainPlayer) || GetResolvedAbilityType($cardID) == "AA")) $restrictedBy = "DTD203"; break;
-        case "WarmongersPeace": $restrictedBy = "DTD230"; break;
+        case "WarmongersPeace": if($type == "AA" || (CardType($cardID) == "W" && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230"; break;
         default:
           break;
       }
