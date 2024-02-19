@@ -149,6 +149,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "OUT210": case "OUT211": case "OUT212": return (CachedNumActionBlocked() > 0 ? -2 : 0);
     case "DTD046": return GetClassState($mainPlayer, $CS_NumYellowPutSoul) > 0 ? 5 : 0;
     case "DTD097": case "DTD098": case "DTD099": return (SearchPitchForColor($mainPlayer, 2) > 0 ? 2 : 0);
+    case "DTD107": return GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
     case "DTD121": case "DTD122": case "DTD123":
       return GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 1 : 0;
     case "DTD181": case "DTD182": case "DTD183":
@@ -179,7 +180,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 
 function BlockModifier($cardID, $from, $resourcesPaid)
 {
-  global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks, $CS_NumClashesWon;
+  global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan;
   $blockModifier = 0;
   $cardType = CardType($cardID);
   if($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
@@ -233,6 +234,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "DYN036": case "DYN037": case "DYN038":
       $blockModifier += SearchCharacter($defPlayer, subtype: "Off-Hand", class: "GUARDIAN") != "" ? 4 : 0;
       break;
+    case "DTD107":
+      $blockModifier += GetClassState($defPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
+       break;
     case "DTD206":
       $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
       break;

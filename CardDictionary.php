@@ -343,12 +343,11 @@ function PitchValue($cardID)
 
 function BlockValue($cardID)
 {
-  global $defPlayer, $CS_Num6PowBan;
+  global $defPlayer;
   if(!$cardID) return "";
   $set = CardSet($cardID);
   if($cardID == "MON191") return SearchPitchForNumCosts($defPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Block");
-  else if($cardID == "DTD107") return GetClassState($defPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400 || ($set != "MON" && $set != "DYN" && $cardID != "EVO410" && $cardID != "EVO410b")) return GeneratedBlockValue($cardID);
@@ -367,7 +366,7 @@ function BlockValue($cardID)
 
 function AttackValue($cardID)
 {
-  global $combatChainState, $CCS_NumBoosted, $mainPlayer, $currentPlayer, $CS_Num6PowBan;
+  global $combatChainState, $CCS_NumBoosted, $mainPlayer, $currentPlayer;
   if(!$cardID) return "";
   $set = CardSet($cardID);
   $class = CardClass($cardID);
@@ -381,7 +380,6 @@ function AttackValue($cardID)
   else if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Attack");
   else if($cardID == "DYN216") return CountAura("MON104", $currentPlayer);
-  else if($cardID == "DTD107") return GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400 || ($set != "MON" && $set != "DYN")) return GeneratedAttackValue($cardID);
