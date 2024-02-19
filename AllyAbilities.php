@@ -1,13 +1,13 @@
 <?php
 
-function PlayAlly($cardID, $player, $subCards="-", $number=1, $isToken=false)
+function PlayAlly($cardID, $player, $subCards="-", $number=1, $isToken=false, $firstTransform=true)
 {
   global $EffectContext;
   $otherPlayer = ($player == 1 ? 2 : 1);
   if(TypeContains($cardID, "T", $player)) $isToken = true;
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
-  if($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
+  if($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player)) && !$firstTransform) $number -= $numMinusTokens;
   $allies = &GetAllies($player);
   for($i = 0; $i < $number; ++$i) {
     array_push($allies, $cardID);

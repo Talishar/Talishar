@@ -27,7 +27,7 @@
         if($cardID == "UPR033") $maxTransform = 3;
         else if($cardID == "UPR034") $maxTransform = 2;
         else $maxTransform = 1;
-        for($i=0; $i<$maxTransform; ++$i) Transform($currentPlayer, "Ash", "UPR042", true, ($i == 0 ? false : true));
+        for($i=0; $i<$maxTransform; ++$i) Transform($currentPlayer, "Ash", "UPR042", true, ($i == 0 ? false : true), ($i == 0 ? false : true));
         return "";
       case "UPR039": TransformPermanent($currentPlayer, "Ash", "UPR439"); return "";
       case "UPR040": TransformPermanent($currentPlayer, "Ash", "UPR440"); return "";
@@ -102,14 +102,14 @@ function UPRIllusionistDealDamageEffect($cardID)
   }
 }
 
-  function Transform($player, $materialType, $into, $optional=false, $subsequent=false)
+  function Transform($player, $materialType, $into, $optional=false, $subsequent=false, $firstTransform=true)
   {
     if($materialType == "Ash") {
       AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into), 1);
       if($optional) AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
       else AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);
-      AddDecisionQueue("TRANSFORM", $player, $into, 1);
+      AddDecisionQueue("TRANSFORM", $player, $into.",".$firstTransform, 1);
     } else if($materialType == "MON104") {
       $subType = CardSubType($materialType);
       AddDecisionQueue("FINDINDICES", $player, "MON104",($subsequent ? 1 : 0));
@@ -125,10 +125,10 @@ function UPRIllusionistDealDamageEffect($cardID)
     }
   }
 
-  function ResolveTransform($player, $materialIndex, $into)
+  function ResolveTransform($player, $materialIndex, $into, $firstTransform=true)
   {
     $materialType = RemovePermanent($player, $materialIndex);
-    return PlayAlly($into, $player, $materialType);
+    return PlayAlly($into, $player, $materialType, firstTransform: $firstTransform);
   }
 
   function TransformPermanent($player, $materialType, $into, $optional=false)
