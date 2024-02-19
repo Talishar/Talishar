@@ -44,7 +44,7 @@
     global $CombatChain, $mainPlayer, $layers;
     if(!IsHeroAttackTarget()) return;
     if(HitEffectsArePrevented($cardID)) return;
-    if(SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
+    if(CardType($cardID) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
     switch($cardID)
     {
       case "TCC034": case "HVY062":
