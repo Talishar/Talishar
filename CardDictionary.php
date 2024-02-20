@@ -914,7 +914,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "OUT180": return count($myHand) > 0;
     case "OUT181": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "OUT182": return !$CombatChain->HasCurrentLink() || (CardType($CombatChain->AttackCard()->ID()) != "AA" && !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer)) || AttackValue($CombatChain->AttackCard()->ID()) > 1;
-    case "DTD001": case "DTD002": return (count($mySoul) == 0 || $character[5] == 0);
+    case "DTD001": case "DTD002": return (count($mySoul) == 0 || $character[5] == 0 || SearchPermanents($player, subtype:"Figment") == "");
     case "DTD003": return !$CombatChain->HasCurrentLink() || (!str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald") && !SubtypeContains($CombatChain->AttackCard()->ID(), "Angel", $mainPlayer));
     case "DTD032": case "DTD033": case "DTD034": return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
     case "DTD035": case "DTD036": case "DTD037": return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
