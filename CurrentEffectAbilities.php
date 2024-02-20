@@ -1217,11 +1217,11 @@ function BeginEndPhaseEffects()
 
 function BeginEndPhaseEffectTriggers()
 {
-  global $currentTurnEffects, $mainPlayer;
+  global $currentTurnEffects, $mainPlayer, $defPlayer;
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     switch($currentTurnEffects[$i]) {
       case "ELE215-1":
-        AddLayer("TRIGGER", $mainPlayer, "ELE215", $currentTurnEffects[$i+1], "-", "-");
+        AddLayer("TRIGGER", $defPlayer, "ELE215", $currentTurnEffects[$i+1], "-", "-");
         break;
       case "DYN153":
         AddLayer("TRIGGER", $mainPlayer, "DYN153", $currentTurnEffects[$i+1], "-", "-");
