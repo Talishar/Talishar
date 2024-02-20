@@ -173,10 +173,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   $rv = "";
   switch($cardID) {
     case "DTD001": case "DTD002":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Figment");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a figment to awaken");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("AWAKEN", $currentPlayer, "-", 1);
+      AddDecisionQueue("AWAKEN", $currentPlayer, $target, 1);
       return "";
     case "DTD003":
       GiveAttackGoAgain();

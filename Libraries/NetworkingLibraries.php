@@ -1567,6 +1567,12 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
+    case "DTD001": case "DTD002": 
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Figment");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a figment to awaken");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
     case "DTD038":
     case "DTD039":
     case "DTD040":
