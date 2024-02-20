@@ -508,7 +508,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $zone[$index + $offset] = ($zone[$index + $offset] == "1" ? "0" : "1");
       break;
     case 10000: //Undo
-      if($turn[0] == "OVER") break;
       $format = GetCachePiece($gameName, 13);
       $char = &GetPlayerCharacter($otherPlayer);
       if(($format != 1 && $format != 3) || $char[0] == "DUMMY" || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer))
@@ -533,20 +532,18 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       ++$actionPoints;
       break;
     case 10003: //Undo/Revert to prior turn
-      if($turn[0] != "OVER") {
-        $format = GetCachePiece($gameName, 13);
-        $char = &GetPlayerCharacter($otherPlayer);
-        if(($format != 1 && $format != 3) || $char[0] == "DUMMY" || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer))
-        {
-          RevertGamestate($buttonInput);
-          WriteLog("Player " . $playerID . " reverted back to a prior turn");
-        }
-        else {
-          //It's competitive queue, so we must request confirmation
-          WriteLog("Player " . $playerID . " requests to undo the last action");
-          if($buttonInput == "beginTurnGamestate.txt") AddEvent("REQUESTTHISTURNUNDO", $playerID);
-          else if($buttonInput == "lastTurnGamestate.txt") AddEvent("REQUESTLASTTURNUNDO", $playerID);
-        }
+      $format = GetCachePiece($gameName, 13);
+      $char = &GetPlayerCharacter($otherPlayer);
+      if(($format != 1 && $format != 3) || $char[0] == "DUMMY" || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer))
+      {
+        RevertGamestate($buttonInput);
+        WriteLog("Player " . $playerID . " reverted back to a prior turn");
+      }
+      else {
+        //It's competitive queue, so we must request confirmation
+        WriteLog("Player " . $playerID . " requests to undo the last action");
+        if($buttonInput == "beginTurnGamestate.txt") AddEvent("REQUESTTHISTURNUNDO", $playerID);
+        else if($buttonInput == "lastTurnGamestate.txt") AddEvent("REQUESTLASTTURNUNDO", $playerID);
       }
       break;
     case 10004:
