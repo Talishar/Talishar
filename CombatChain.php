@@ -489,15 +489,15 @@ function OnBlockResolveEffects()
   }
 }
 
-function GetDefendingEquipmentsFromCombatChainLink($chainLink, $defPlayer) {
+function GetDefendingCardsFromCombatChainLink($chainLink, $defPlayer) {
   // returns array of equipments played by the defending hero which is still on the chain
-  $defendingEquipments = array();
+  $defendingCards = array();
   for ($i = 0; $i < count($chainLink); $i += ChainLinksPieces()) {
-    if ($chainLink[$i+3] == "EQUIP" && $chainLink[$i+2] == 1 && $chainLink[$i+1] == $defPlayer) {
-      array_push($defendingEquipments, $chainLink[$i]);
+    if ($chainLink[$i+2] == 1 && $chainLink[$i+1] == $defPlayer) {
+      array_push($defendingCards, $chainLink[$i]);
     }
   }
-  return $defendingEquipments;
+  return $defendingCards;
 }
 
 function BeginningReactionStepEffects()
@@ -508,29 +508,27 @@ function BeginningReactionStepEffects()
     case "OUT050":
       if(ComboActive())
       {
-        $equipmentsToBanish = array();
-
+        $cardsToBanish = array();
         for($i=0; $i<count($chainLinks); $i++) {
           if (count($chainLinks[$i]) == ChainLinksPieces()) continue;
-          $defendingEquipments = GetDefendingEquipmentsFromCombatChainLink($chainLinks[$i], $defPlayer);
-          if (count($defendingEquipments) > 0) {
-            $randomIndex = GetRandom(0, count($defendingEquipments) - 1);
-            array_push($equipmentsToBanish, $defendingEquipments[$randomIndex]);
+          $defendingCards = GetDefendingCardsFromCombatChainLink($chainLinks[$i], $defPlayer);
+          if (count($defendingCards) > 0) {
+            $randomIndex = GetRandom(0, count($defendingCards) - 1);
+            array_push($cardsToBanish, $defendingCards[$randomIndex]);
           }
         }
-
-        $defendingEquipments = GetChainLinkCards($defPlayer, "E");
-        if ($defendingEquipments != "") {
-          $defendingEquipments = explode(",", $defendingEquipments);
-          $randomIndex = GetRandom(0, count($defendingEquipments) - 1);
-          array_push($equipmentsToBanish, $combatChain[$defendingEquipments[$randomIndex]]);
+        $defendingCards = GetChainLinkCards($defPlayer);
+        if ($defendingCards != "") {
+          $defendingCards = explode(",", $defendingCards);
+          $randomIndex = GetRandom(0, count($defendingCards) - 1);
+          AddDecisionQueue("PASSPARAMETER", $defPlayer, $defendingCards[$randomIndex]);
+          AddDecisionQueue("REMOVECOMBATCHAIN", $defPlayer, "-", 1);
+          array_push($cardsToBanish, $combatChain[$defendingCards[$randomIndex]]);
         }
-
-        for ($i = 0; $i < count($equipmentsToBanish); $i++)
-          BanishCardForPlayer($equipmentsToBanish[$i], $defPlayer, "EQUIP");
-
-        for ($i = 0; $i < count($equipmentsToBanish); $i++) {
-          AddDecisionQueue("PASSPARAMETER", $defPlayer, $equipmentsToBanish[$i]);
+        for ($i = 0; $i < count($cardsToBanish); $i++)
+          BanishCardForPlayer($cardsToBanish[$i], $defPlayer, "CC");
+        for ($i = 0; $i < count($cardsToBanish); $i++) {
+          AddDecisionQueue("PASSPARAMETER", $defPlayer, $cardsToBanish[$i]);
           AddDecisionQueue("REMOVECOMBATCHAIN", $defPlayer, "-", 1);
           AddDecisionQueue("MULTIBANISH", $defPlayer, "CC,-", 1);
         }
