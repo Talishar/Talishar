@@ -1475,6 +1475,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       ItemPlayAbilities($cardID, $from);
       ResetCardPlayed($cardID);
     }
+    if(EffectPlayCardRestricted($cardID, $playType, true)) return;
     if($playType == "A" || $playType == "AA") {
       if(!$canPlayAsInstant || GetResolvedAbilityType($cardID, $from) == "AA") --$actionPoints;
       if($cardType == "A" && $abilityType == "") {
@@ -2267,6 +2268,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $chainClosed = ProcessAttackTarget();
       $baseAttackSet = CurrentEffectBaseAttackSet();
       $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
+      if(EffectAttackRestricted($cardID, $definedCardType, true)) return;
       $combatChainState[$CCS_LinkBaseAttack] = BaseAttackModifiers($cardID, $attackValue);
       $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
       if($definedCardType == "AA" && $attackValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
