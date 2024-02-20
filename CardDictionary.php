@@ -522,7 +522,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($phase == "B" && $from == "BANISH") return false;
   if($from == "BANISH") {
     $banishCard = $banish->Card($index);
-    if(!(PlayableFromBanish($banishCard->ID(), $banishCard->Modifier()) || AbilityPlayableFromBanish($banishCard->ID()))) return false;
+    if(!(PlayableFromBanish($banishCard->ID(), $banishCard->Modifier()) || AbilityPlayableFromBanish($banishCard->ID(), $banishCard->Modifier()))) return false;
   }
   else if($from == "GY" && !PlayableFromGraveyard($cardID)) return false;
   if($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "EVO001" && $character[0] != "EVO002" || CardCost($cardID) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
@@ -1583,9 +1583,11 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false)
   return false;
 }
 
-function AbilityPlayableFromBanish($cardID)
+function AbilityPlayableFromBanish($cardID, $mod="")
 {
   global $currentPlayer, $mainPlayer;
+  $mod = explode("-", $mod)[0];
+  if($mod == "INT" || $mod == "FACEDOWN") return false;
   switch($cardID) {
     case "MON192": return $currentPlayer == $mainPlayer;
     default: return false;

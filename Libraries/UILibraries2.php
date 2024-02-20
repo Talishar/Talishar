@@ -682,7 +682,7 @@ function BanishUI($from = "")
       $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i)); //Display banished cards that are playable
     else // if($from != "HAND")
     {
-      if (PlayableFromBanish($banish[$i], $banish[$i + 1]) || AbilityPlayableFromBanish($banish[$i]))
+      if (PlayableFromBanish($banish[$i], $banish[$i + 1]) || AbilityPlayableFromBanish($banish[$i], $banish[$i + 1]))
         $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));
       else if ($from != "HAND")
         $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
