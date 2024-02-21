@@ -944,7 +944,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if(!CanDamageBePrevented($player, $damage, "ARCANE", $source)) $lastResult = 0;
       $damage = DealDamageAsync($player, $damage - $lastResult, "ARCANE", $source);
       if($damage < 0) $damage = 0;
-      WriteLog("Player " . $player . " is dealing $damage arcane damage from " . CardLink($source, $source), $player);
+      WriteLog("Player " . $playerSource . " is dealing $damage arcane damage from " . CardLink($source, $source), $player);
       if(DelimStringContains(CardSubType($source), "Ally") && $damage > 0) ProcessDealDamageEffect($source); // Interaction with Burn Them All! + Nekria
       $dqVars[0] = $damage;
       return $damage;
