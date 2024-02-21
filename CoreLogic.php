@@ -2153,8 +2153,9 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true)
   if($deck->Empty()) return -1;
   if(CurrentEffectPreventsDraw($player, $mainPhase)) return -1;
   $cardID = $deck->Top(remove:true);
-  if($mainPhase && (SearchAurasForCard("DTD170", 1) != "" || SearchAurasForCard("DTD170", 2) != "")) BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
-  else {
+  if($mainPhase && (SearchAurasForCard("DTD170", 1) != "" || SearchAurasForCard("DTD170", 2) != "")) {
+    BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
+  } else {
     array_push($hand, $cardID);
     IncrementClassState($player, $CS_NumCardsDrawn, 1);
   }
