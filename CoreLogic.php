@@ -1310,7 +1310,7 @@ function DoesAttackHaveGoAgain()
     case "EVO111": case "EVO112": case "EVO113": return GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0;
     case "HVY095":
       $character = &GetPlayerCharacter($mainPlayer);
-      return SearchCurrentTurnEffectsForUniqueID($character[$combatChainState[$CCS_WeaponIndex]+11]) != -1;
+      return SearchCurrentTurnEffectsForUniqueID($character[$combatChainState[$CCS_WeaponIndex]+11]) != -1 && SearchCurrentTurnEffects($attackID, $mainPlayer);
     case "HVY134": return true;
     default: return false;
   }
