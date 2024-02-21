@@ -522,7 +522,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($phase == "B" && $from == "BANISH") return false;
   if($from == "BANISH") {
     $banishCard = $banish->Card($index);
-    if(!(PlayableFromBanish($banishCard->ID(), $banishCard->Modifier()) || AbilityPlayableFromBanish($banishCard->ID()))) return false;
+    if(!(PlayableFromBanish($banishCard->ID(), $banishCard->Modifier()) || AbilityPlayableFromBanish($banishCard->ID(), $banishCard->Modifier()))) return false;
   }
   else if($from == "GY" && !PlayableFromGraveyard($cardID)) return false;
   if($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "EVO001" && $character[0] != "EVO002" || CardCost($cardID) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
@@ -733,7 +733,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   if(CardType($cardID) == "A" && $from != "PLAY" && GetClassState($player, $CS_NumNonAttackCards) >= 1 && (SearchItemsForCard("EVR071", 1) != "" || SearchItemsForCard("EVR071", 2) != "")) { $restriction = "EVR071"; return true; }
   if($player != $mainPlayer && SearchAlliesActive($mainPlayer, "UPR415")) { $restriction = "UPR415"; return true; }
   if(EffectPlayCardRestricted($cardID, $type) != "") { $restriction = true; return true; }
-  if(EffectAttackRestricted($cardID, $type) != "") { $restriction = true; return true; }
+  if(EffectAttackRestricted($cardID, $type) != "" ) { $restriction = true; return true; }
   switch($cardID) {
     case "WTR080": return !$CombatChain->HasCurrentLink() || !HasCombo($CombatChain->AttackCard()->ID());
     case "WTR082": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player) || CardType($CombatChain->AttackCard()->ID()) != "AA";
@@ -914,7 +914,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "OUT180": return count($myHand) > 0;
     case "OUT181": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "OUT182": return !$CombatChain->HasCurrentLink() || (CardType($CombatChain->AttackCard()->ID()) != "AA" && !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer)) || AttackValue($CombatChain->AttackCard()->ID()) > 1;
-    case "DTD001": case "DTD002": return (count($mySoul) == 0 || $character[5] == 0);
+    case "DTD001": case "DTD002": return (count($mySoul) == 0 || $character[5] == 0 || SearchPermanents($player, subtype:"Figment") == "");
     case "DTD003": return !$CombatChain->HasCurrentLink() || (!str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald") && !SubtypeContains($CombatChain->AttackCard()->ID(), "Angel", $mainPlayer));
     case "DTD032": case "DTD033": case "DTD034": return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
     case "DTD035": case "DTD036": case "DTD037": return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
@@ -1583,9 +1583,11 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false)
   return false;
 }
 
-function AbilityPlayableFromBanish($cardID)
+function AbilityPlayableFromBanish($cardID, $mod="")
 {
   global $currentPlayer, $mainPlayer;
+  $mod = explode("-", $mod)[0];
+  if($mod == "INT" || $mod == "FACEDOWN") return false;
   switch($cardID) {
     case "MON192": return $currentPlayer == $mainPlayer;
     default: return false;

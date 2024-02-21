@@ -1453,7 +1453,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       ProcessHitEffect($parameter);
       return $parameter;
     case "AWAKEN":
-      $mzArr = explode("-", $lastResult);
+      $mzArr = explode("-", $parameter);
       $permanents = &GetPermanents($player);
       $cardID = $permanents[$mzArr[1]];
       $num = intval(substr($cardID, 3));

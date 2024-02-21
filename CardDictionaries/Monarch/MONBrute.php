@@ -91,16 +91,4 @@
     }
   }
 
-  function MentorTrigger($player, $index, $specificCard="")
-  {
-    $cardID = RemoveArsenal($player, $index);
-    BanishCardForPlayer($cardID, $player, "ARS", "-");
-    if($specificCard != "") AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:cardID=$specificCard");
-    else AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:specOnly=true");
-    AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-    AddDecisionQueue("MZREMOVE", $player, "-", 1);
-    AddDecisionQueue("ADDARSENAL", $player, "DECK-DOWN", 1);
-    AddDecisionQueue("SHUFFLEDECK", $player, "-");
-  }
-
 ?>

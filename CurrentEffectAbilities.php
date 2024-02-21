@@ -1217,11 +1217,11 @@ function BeginEndPhaseEffects()
 
 function BeginEndPhaseEffectTriggers()
 {
-  global $currentTurnEffects, $mainPlayer;
+  global $currentTurnEffects, $mainPlayer, $defPlayer;
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     switch($currentTurnEffects[$i]) {
       case "ELE215-1":
-        AddLayer("TRIGGER", $mainPlayer, "ELE215", $currentTurnEffects[$i+1], "-", "-");
+        AddLayer("TRIGGER", $defPlayer, "ELE215", $currentTurnEffects[$i+1], "-", "-");
         break;
       case "DYN153":
         AddLayer("TRIGGER", $mainPlayer, "DYN153", $currentTurnEffects[$i+1], "-", "-");
@@ -1291,7 +1291,7 @@ function EffectDefenderAttackModifiers($cardID)
   return $mod;
 }
 
-function EffectAttackRestricted($cardID, $type)
+function EffectAttackRestricted($cardID, $type, $revertNeeded=false)
 {
   global $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBaseAttack;
   $mainChar = &GetPlayerCharacter($mainPlayer);
@@ -1302,12 +1302,17 @@ function EffectAttackRestricted($cardID, $type)
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
       switch($effectID) {
-        case "DTD203": if(AttackValue($cardID) <= $effectArr[1] && (TypeContains($cardID, "AA", $mainPlayer) || GetResolvedAbilityType($cardID) == "AA")) $restrictedBy = "DTD203"; break;
+        case "DTD203": if(AttackValue($cardID) <= $effectArr[1] && (TypeContains($cardID, "AA", $mainPlayer) || GetResolvedAbilityType($cardID) == "AA") && (GetAbilityTypes($cardID) == "" || GetResolvedAbilityType($cardID) == "AA")) $restrictedBy = "DTD203"; break;
         case "WarmongersPeace": if($type == "AA" || (CardType($cardID) == "W" && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230"; break;
         default:
           break;
       }
     }
+  }
+  if($revertNeeded && $restrictedBy != "") {
+    WriteLog("The attack is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.");
+    RevertGamestate();
+    return true;
   }
   return $restrictedBy;
 }
@@ -1328,7 +1333,7 @@ function EffectPlayCardConstantRestriction($cardID, $type, &$restriction = "") {
   return $restriction != "";
 }
 
-function EffectPlayCardRestricted($cardID, $type)
+function EffectPlayCardRestricted($cardID, $type, $revertNeeded=false)
 {
   global $currentTurnEffects, $currentPlayer;
   $restrictedBy = "";
@@ -1345,6 +1350,11 @@ function EffectPlayCardRestricted($cardID, $type)
           break;
       }
     }
+  }
+  if($revertNeeded && $restrictedBy != "") {
+    WriteLog("The attack is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.");
+    RevertGamestate();
+    return true;
   }
   return $restrictedBy;
 }

@@ -57711,7 +57711,7 @@ function GeneratedIsSpecialization($cardID)
         case "CRU074":
             return "true";
         default:
-            return "false";
+            return "";
     }
 }
 

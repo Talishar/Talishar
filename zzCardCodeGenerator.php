@@ -39,7 +39,7 @@
   GenerateFunction($cardArray, $handler, "Is1H", "1H", "false", true);
   GenerateFunction($cardArray, $handler, "CardClass", "cardClass", "NONE");
   GenerateFunction($cardArray, $handler, "CardTalent", "cardTalent", "NONE");
-  GenerateFunction($cardArray, $handler, "IsSpecialization", "specialization", "false", true);
+  GenerateFunction($cardArray, $handler, "IsSpecialization", "specialization", "", true);
 
   fwrite($handler, "?>");
 

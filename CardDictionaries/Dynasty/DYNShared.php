@@ -533,7 +533,8 @@ function DYNHitEffect($cardID)
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-        $deck->BanishTop(banishedBy:$mainPlayer, amount:$combatChainState[$CCS_DamageDealt]);
+        if($deck->RemainingCards() < $combatChainState[$CCS_DamageDealt]) $deck->BanishTop(banishedBy:$mainPlayer, amount:$deck->RemainingCards());
+        else $deck->BanishTop(banishedBy:$mainPlayer, amount:$combatChainState[$CCS_DamageDealt]);
       }
       break;
     case "DYN120":

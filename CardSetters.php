@@ -254,7 +254,7 @@ function DestroyArsenal($player, $index=-1, $effectController="", $allArsenal=tr
 
 function AddSoul($cardID, $player, $from, $isMainPhase=true)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt, $combatChain;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   AddEvent("SOUL", $cardID);
   global $CS_NumAddedToSoul, $CS_NumYellowPutSoul;
@@ -274,10 +274,14 @@ function AddSoul($cardID, $player, $from, $isMainPhase=true)
     }
     IncrementClassState($player, $CS_NumAddedToSoul);
     if(PitchValue($cardID) == 2) IncrementClassState($player, $CS_NumYellowPutSoul);
-    if($isMainPhase && str_contains(NameOverride($cardID, $player), "Herald"))
+    if($isMainPhase && str_contains(NameOverride($cardID, $player), "Herald") && (SearchCharacterActive($player, "DTD001") || SearchCharacterActive($player, "DTD002")))
     {
-      if(SearchCharacterActive($player, "DTD001") || SearchCharacterActive($player, "DTD002"))
+      if($from != "CC") 
       {
+        $char = GetPlayerCharacter($player);
+        AddLayer("TRIGGER", $player, $char[0]);
+      }
+      elseif (CardNameContains($combatChain[0], "Herald", $player, true)) {
         $char = GetPlayerCharacter($player);
         AddLayer("TRIGGER", $player, $char[0]);
       }

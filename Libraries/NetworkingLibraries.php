@@ -1475,6 +1475,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       ItemPlayAbilities($cardID, $from);
       ResetCardPlayed($cardID);
     }
+    if(EffectPlayCardRestricted($cardID, $playType, true)) return;
     if($playType == "A" || $playType == "AA") {
       if(!$canPlayAsInstant || GetResolvedAbilityType($cardID, $from) == "AA") --$actionPoints;
       if($cardType == "A" && $abilityType == "") {
@@ -1565,6 +1566,12 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      break;
+    case "DTD001": case "DTD002": 
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Figment");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a figment to awaken");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "DTD038":
     case "DTD039":
@@ -2267,6 +2274,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $chainClosed = ProcessAttackTarget();
       $baseAttackSet = CurrentEffectBaseAttackSet();
       $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
+      if(EffectAttackRestricted($cardID, $definedCardType, true)) return;
       $combatChainState[$CCS_LinkBaseAttack] = BaseAttackModifiers($cardID, $attackValue);
       $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
       if($definedCardType == "AA" && $attackValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);

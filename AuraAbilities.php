@@ -658,7 +658,9 @@ function AuraPlayAbilities($attackID, $from="")
     $remove = 0;
     switch($auras[$i]) {
       case "WTR225":
-        if(($cardType == "AA" && GetResolvedAbilityType($attackID) == "") || ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA" && $from == "EQUIP")) {
+        if(($cardType == "AA" && (GetResolvedAbilityType($attackID) == "" || GetResolvedAbilityType($attackID) == "AA")) 
+          || ($cardSubType == "Aura" && $from == "PLAY") 
+          || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA" && $from == "EQUIP")) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack go again");
           GiveAttackGoAgain();
           $remove = 1;
