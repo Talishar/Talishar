@@ -633,7 +633,7 @@ function EquipWeapon($player, $card)
         $char[$i+7] = 0;
         $char[$i+8] = 0;
         $char[$i+9] = 2;
-        $char[$i+10] = "";
+        $char[$i+10] = "-";
         $char[$i+11] = GetUniqueId();
         $replaced = 1;
       }
