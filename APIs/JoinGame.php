@@ -482,12 +482,12 @@ if ($matchup == "") {
   if ($playerID == 1) {
     $p1uid = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "Player 1");
     $p1id = (isset($_SESSION["userid"]) ? $_SESSION["userid"] : "");
-    $p1IsPatron = (isset($_SESSION["isPatron"]) ? "1" : "");
+    $p1IsPatron = (isset($_SESSION["isPatron"]) || isset($_SESSION["isPvtVoidPatron"]) ? "1" : "");
     $p1ContentCreatorID = (isset($_SESSION["patreonEnum"]) ? $_SESSION["patreonEnum"] : "");
   } else if ($playerID == 2) {
     $p2uid = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "Player 2");
     $p2id = (isset($_SESSION["userid"]) ? $_SESSION["userid"] : "");
-    $p2IsPatron = (isset($_SESSION["isPatron"]) ? "1" : "");
+    $p2IsPatron = (isset($_SESSION["isPatron"]) || isset($_SESSION["isPvtVoidPatron"]) ? "1" : "");
     $p2ContentCreatorID = (isset($_SESSION["patreonEnum"]) ? $_SESSION["patreonEnum"] : "");
   }
 

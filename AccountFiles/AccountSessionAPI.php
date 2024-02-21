@@ -19,7 +19,7 @@
 
   function IsLoggedInUserPatron()
   {
-    return (isset($_SESSION["isPatron"]) ? "1" : "0");
+    return (isset($_SESSION["isPatron"]) || isset($_SESSION["isPvtVoidPatron"]) ? "1" : "0");
   }
 
   function SessionLastGameName()
