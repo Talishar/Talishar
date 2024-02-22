@@ -946,9 +946,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $playerInputPopup->active = true;
     array_push($playerInputButtons, CreateButtonAPI($playerID, "Yes", 20, "YES", "20px"));
     array_push($playerInputButtons, CreateButtonAPI($playerID, "No", 20, "NO", "20px"));
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose " . TypeToPlay($turn[0]);
-    $playerInputPopup->popup = CreatePopupAPI("YESNO", [], 0, 1, $caption, 1, "");
+    $playerInputPopup->popup = CreatePopupAPI("YESNO", [], 0, 1, GetPhaseHelptext(), 1, "");
   }
 
   if ($turn[0] == "PDECK" && $currentPlayer == $playerID) {
@@ -966,17 +964,13 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     for ($i = 0; $i < count($options); ++$i) {
       array_push($playerInputButtons, CreateButtonAPI($playerID, $options[$i], 7, $options[$i], "24px"));
     }
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose " . TypeToPlay($turn[0]);
-    $playerInputPopup->popup = CreatePopupAPI("DYNPITCH", [], 0, 1, $caption, 1, "");
+    $playerInputPopup->popup = CreatePopupAPI("DYNPITCH", [], 0, 1, GetPhaseHelptext(), 1, "");
   }
 
   if ($turn[0] == "OK" && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     array_push($playerInputButtons, CreateButtonAPI($playerID, "Ok", 99, "OK", "20px"));
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose " . TypeToPlay($turn[0]);
-    $playerInputPopup->popup = CreatePopupAPI("OK", [], 0, 1, $caption, 1, "");
+    $playerInputPopup->popup = CreatePopupAPI("OK", [], 0, 1, GetPhaseHelptext(), 1, "");
   }
 
   if (($turn[0] == "OPT" || $turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM" || $turn[0] == "CHOOSECARD") && $turn[1] == $playerID) {
@@ -989,9 +983,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       if ($turn[0] == "CHOOSEBOTTOM" || $turn[0] == "OPT") array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 9, $options[$i], "20px"));
       if ($turn[0] == "CHOOSECARD") array_push($playerInputButtons, CreateButtonAPI($playerID, "Choose", 23, $options[$i], "20px"));
     }
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose " . TypeToPlay($turn[0]);
-    $playerInputPopup->popup = CreatePopupAPI("OPT", [], 0, 1, $caption, 1, "", cardsArray: $optCards);
+    $playerInputPopup->popup = CreatePopupAPI("OPT", [], 0, 1, GetPhaseHelptext(), 1, "", cardsArray: $optCards);
   }
 
   if (($turn[0] == "CHOOSETOPOPPONENT") && $turn[1] == $playerID) { //Use when you have to reorder the top of your opponent library e.g. Righteous Cleansing
@@ -1003,9 +995,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       array_push($optCards, JSONRenderedCard($options[$i], action: 0));
       if ($turn[0] == "CHOOSETOPOPPONENT") array_push($playerInputButtons, CreateButtonAPI($otherPlayer, "Top", 29, $options[$i], "20px"));
     }
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose " . TypeToPlay($turn[0]);
-    $playerInputPopup->popup = CreatePopupAPI("CHOOSETOPOPPONENT", [], 0, 1, $caption, 1, "", cardsArray: $optCards);
+    $playerInputPopup->popup = CreatePopupAPI("CHOOSETOPOPPONENT", [], 0, 1, GetPhaseHelptext(), 1, "", cardsArray: $optCards);
   }
 
   if ($turn[0] == "INPUTCARDNAME" && $turn[1] == $playerID) {
@@ -1021,9 +1011,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 12, $myHand[$i], "20px"));
       array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 13, $myHand[$i], "20px"));
     }
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose " . TypeToPlay($turn[0]);
-    $playerInputPopup->popup = CreatePopupAPI("HANDTOPBOTTOM", [], 0, 1, $caption, 1, "", cardsArray: $cardsArray);
+    $playerInputPopup->popup = CreatePopupAPI("HANDTOPBOTTOM", [], 0, 1, GetPhaseHelptext(), 1, "", cardsArray: $cardsArray);
   }
 
   if ($turn[0] == "CHOOSECARDID" && $turn[1] == $playerID) {
@@ -1033,11 +1021,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     for ($i = 0; $i < count($options); ++$i) {
       array_push($cardList, JSONRenderedCard($options[$i], action: 16, actionDataOverride: strval($options[$i])));
     }
-
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose " . TypeToPlay($turn[0]);
-
-    $playerInputPopup->popup = CreatePopupAPI("CHOOSEZONE", [], 0, 1, $caption, 1, "", cardsArray: $cardList);
+    $playerInputPopup->popup = CreatePopupAPI("CHOOSEZONE", [], 0, 1, GetPhaseHelptext(), 1, "", cardsArray: $cardList);
   }
 
   if (($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "CHOOSEMULTIZONE") && $turn[1] == $playerID) {

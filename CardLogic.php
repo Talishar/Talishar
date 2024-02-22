@@ -1743,6 +1743,7 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
 
 function ModifiedAttackValue($cardID, $player, $from, $source="")
 {
+  if($cardID == "") return -1;
   $attack = AttackValue($cardID);
   if($from != "CC") {
     $char = &GetPlayerCharacter($player);

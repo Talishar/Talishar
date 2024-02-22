@@ -20,6 +20,7 @@
         AddDecisionQueue("NONECARDTYPEORPASS", $currentPlayer, "A");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Kano shows the top of your deck is <0>");
         AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with Kano", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
         return "";
       case "ARC115":
         AddCurrentTurnEffect($cardID, $currentPlayer);

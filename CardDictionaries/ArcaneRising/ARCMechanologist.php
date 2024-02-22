@@ -293,7 +293,7 @@ function AddSubcardToChar(&$chars, $index, $cardID) {
   $chars[$index+2]++;
 }
 
-function isSubcardEmpty ($chars, $index)
+function isSubcardEmpty($chars, $index)
 {
   return $chars[$index+10] == '-';
 }
