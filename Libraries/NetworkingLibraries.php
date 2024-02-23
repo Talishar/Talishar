@@ -1558,15 +1558,6 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
-    case "UPR004": //Invocations must target Ash
-    case "UPR006": case "UPR007": case "UPR008": case "UPR009": case "UPR010": case "UPR011":
-    case "UPR012": case "UPR013": case "UPR014": case "UPR015": case "UPR016": case "UPR017":
-    case "UPR036": case "UPR037": case "UPR038": 
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Ash");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an Ash to transform");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-      break;
     case "UPR221":
     case "UPR222":
     case "UPR223":
