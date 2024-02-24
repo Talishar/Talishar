@@ -274,7 +274,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $activeChainLink->phantasm = CachedPhantasmActive();
   $activeChainLink->fusion = CachedFusionActive();
   if ($CombatChain->HasCurrentLink()) $activeChainLink->tower = IsTowerActive();
-  if ($CombatChain->HasCurrentLink()) $activeChainLink->piercing = IsPiercingActive($combatChain[0]); 
+  if ($CombatChain->HasCurrentLink()) $activeChainLink->piercing = IsPiercingActive($combatChain[0]);
 
   // TODO: How to find out if a card has been fused?
   $activeChainLink->fused = false;
@@ -329,10 +329,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // their hand contents
   $theirHandContents = array();
   for ($i = 0; $i < count($theirHand); ++$i) {
-    if ($playerID == 3 || $playerID != $otherPlayer) {
-      $playable = false;
-      array_push($theirHandContents, JSONRenderedCard($TheirCardBack));
-    }
+    if($playerID == 3 && IsCasterMode()) array_push($theirHandContents, JSONRenderedCard($theirHand[$i]));
+    else array_push($theirHandContents, JSONRenderedCard($TheirCardBack));
   }
   $response->opponentHand = $theirHandContents;
 
@@ -423,20 +421,20 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
     array_push($characterContents, JSONRenderedCard(
-     $theirChar, 
+     $theirChar,
      borderColor: $border,
      overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0),
-     counters: $counters, 
-     defCounters: $theirCharacter[$i + 4], 
-     atkCounters: $atkCounters, 
-     controller: $otherPlayer, 
+     counters: $counters,
+     defCounters: $theirCharacter[$i + 4],
+     atkCounters: $atkCounters,
+     controller: $otherPlayer,
      type: $type,
-     sType: $sType, 
-     isFrozen: ($theirCharacter[$i + 8] == 1), 
-     onChain: ($theirCharacter[$i + 6] == 1), 
-     isBroken: ($theirCharacter[$i + 1] == 0), 
-     label: $label, 
-     numUses: $theirCharacter[$i + 5], 
+     sType: $sType,
+     isFrozen: ($theirCharacter[$i + 8] == 1),
+     onChain: ($theirCharacter[$i + 6] == 1),
+     isBroken: ($theirCharacter[$i + 1] == 0),
+     label: $label,
+     numUses: $theirCharacter[$i + 5],
      subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]));
   }
   $response->opponentEquipment = $characterContents;
@@ -448,7 +446,8 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $myHandContents = array();
   for ($i = 0; $i < count($myHand); ++$i) {
     if ($playerID == 3) {
-      array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
+      if(IsCasterMode()) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
+      else array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
     } else {
       if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && $turn[0] != "MULTICHOOSEHAND" && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "");
       else $playable = false;
@@ -510,7 +509,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $playerBanishArr = array();
   for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
     $label = "";
-    $overlay = 0;  
+    $overlay = 0;
     $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
     $mod = explode("-", $myBanish[$i + 1])[0];
     $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0, $mod);
@@ -571,22 +570,22 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $restriction = implode("_", explode(" ", $restriction));
     array_push($myCharData, JSONRenderedCard(
       $myChar, //CardID
-      $currentPlayer == $playerID && $playable ? 3 : 0, 
+      $currentPlayer == $playerID && $playable ? 3 : 0,
       $myCharacter[$i + 1] != 2 ? 1 : 0, //Overlay
-      $border, 
+      $border,
       $myCharacter[$i + 1] != 0 ? $counters : 0, //Counters
       strval($i), //Action Data Override
       0, //Life Counters
       $myCharacter[$i + 4], //Def Counters
-      $atkCounters, 
-      $playerID, 
-      $type, 
-      $sType, 
-      $restriction, 
+      $atkCounters,
+      $playerID,
+      $type,
+      $sType,
+      $restriction,
       $myCharacter[$i + 1] == 0, //Status
       $myCharacter[$i + 6] == 1, //On Chain
       $myCharacter[$i + 8] == 1, //Frozen
-      $gem, 
+      $gem,
       label: $label,
       numUses: $myCharacter[$i + 5], //Number of Uses
       subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
@@ -597,7 +596,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $theirArse = array();
   if ($theirArsenal != "") {
     for ($i = 0; $i < count($theirArsenal); $i += ArsenalPieces()) {
-      if ($theirArsenal[$i + 1] == "UP") {
+      if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && IsCasterMode()) {
         array_push($theirArse, JSONRenderedCard(
           cardNumber: $theirArsenal[$i],
           controller: ($playerID == 1 ? 2 : 1),
@@ -620,7 +619,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $myArse = array();
   if ($myArsenal != "") {
     for ($i = 0; $i < count($myArsenal); $i += ArsenalPieces()) {
-      if ($playerID == 3 && $myArsenal[$i + 1] != "UP") {
+      if ($playerID == 3 && !IsCasterMode() && $myArsenal[$i + 1] != "UP") {
         array_push($myArse, JSONRenderedCard(
           cardNumber: $MyCardBack,
           controller: 2,
