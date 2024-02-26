@@ -1408,6 +1408,14 @@ function DestroyCharacter($player, $index, $skipDestroy=false, $wasBanished = fa
   return $cardID;
 }
 
+function RemoveCharacter($player, $index) {
+  if ($index == -1) return "";
+  $char = &GetPlayerCharacter($player);
+  for($i = 0; $i < CharacterPieces(); ++$i) {
+    unset($char[$index+$i]);
+  }
+}
+
 function RemoveCharacterAndAddAsSubcardToCharacter($player, $index, &$newCharactersSubcardIndex) {
   global $CombatChain;
   $char = &GetPlayerCharacter($player);
