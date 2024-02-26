@@ -403,7 +403,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ADDSUBCARD":
           $mzArr = explode("-", $lastResult);
           $character = &GetPlayerCharacter($player);
-          if($character[$mzArr[1]+10] != "-") {
+          if($character[$mzArr[1]] == "EVO410b") {
+            if($character[10] != "-") {
+              $character[10] .= "," . $paramArr[1];
+              ++$character[2]; // Update the counter
+            }
+            else $character[10] = $paramArr[1];
+            break;
+          }
+          else if($character[$mzArr[1]+10] != "-") {
             $character[$mzArr[1]+10] .= "," . $paramArr[1];
           }
           else $character[$mzArr[1]+10] = $paramArr[1];
