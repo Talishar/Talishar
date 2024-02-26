@@ -185,7 +185,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         if(SearchCombatChainLink($currentPlayer, subtype:"Off-Hand", class:"GUARDIAN") != "") {
           AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYHAND", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $otherPlayer, "<-", 1);
-          AddDecisionQueue("MZDISCARD", $otherPlayer, "-", 1);
+          AddDecisionQueue("MZDISCARD", $otherPlayer, "HAND,".$currentPlayer, 1);
           AddDecisionQueue("MZREMOVE", $otherPlayer, "-", 1);
           AddDecisionQueue("ELSE", $otherPlayer, "-");
           AddDecisionQueue("TAKEDAMAGE", $otherPlayer, 1, 1);

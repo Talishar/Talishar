@@ -493,7 +493,7 @@
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND:maxCost=0;minCost=0", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZDISCARD", $mainPlayer, "-", 1);
+      AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND,".$mainPlayer, 1);
       AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK:comboOnly=true", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
