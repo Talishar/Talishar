@@ -85,9 +85,8 @@ function AuraDestroyed($player, $cardID, $isToken = false)
   $goesWhere = GoesWhereAfterResolving($cardID);
   $numMercifulRetribution = SearchCount(SearchAurasForCard("MON012", $player)) + ($cardID == "MON012" ? 1 : 0);
   for($i = 0; $i < $numMercifulRetribution; ++$i) {
-    if(TalentContains($cardID, "LIGHT", $player)) $goesWhere = "SOUL";
     if(CardType($cardID) != "T" && $isToken) WriteLog("<span style='color:red;'>The card is not put in your soul from Merciful Retribution because it is a token copy</span>");
-    AddDecisionQueue("ADDTRIGGER", $player, "MON012");
+    AddDecisionQueue("ADDTRIGGER", $player, "MON012,".$cardID);
   }
   if(HasWard($cardID, $player) && !$isToken) WardPoppedAbility($player, $cardID);
   if(CardType($cardID) == "T" || $isToken) return;//Don't need to add to anywhere if it's a token
@@ -95,9 +94,6 @@ function AuraDestroyed($player, $cardID, $isToken = false)
     case "GY":
       if(DelimStringContains(CardSubType($cardID), "Affliction")) $player = ($player == 1 ? 2 : 1);
       AddGraveyard($cardID, $player, "PLAY", $player);
-      break;
-    case "SOUL":
-      AddSoul($cardID, $player, "PLAY");
       break;
     case "BANISH":
       BanishCardForPlayer($cardID, $player, "PLAY", "NA");

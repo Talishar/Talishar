@@ -1350,8 +1350,7 @@ function AttackDestroyed($attackID)
   AttackDestroyedEffects($attackID);
   CharacterAttackDestroyedAbilities($attackID);
   for($i=0; $i<SearchCount(SearchAurasForCard("MON012", $mainPlayer)); ++$i) {
-    if(TalentContains($attackID, "LIGHT", $mainPlayer)) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
-    AddDecisionQueue("ADDTRIGGER", $mainPlayer, "MON012");
+    AddDecisionQueue("ADDTRIGGER", $mainPlayer, "MON012,".$attackID);
   }
 }
 
