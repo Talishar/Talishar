@@ -175,6 +175,34 @@ function ModalAbilities($player, $card, $lastResult)
         }
       }
       return $lastResult;
+    case "BLOODONHERHANDS":
+      $choices = explode(",", $lastResult);
+      for($i=0; $i<count($choices); ++$i)
+      {
+        switch($choices[$i])
+        {
+          case "Buff_Weapon":
+            AddDecisionQueue("FINDINDICES", $player, "WEAPON");
+            AddDecisionQueue("SETDQCONTEXT", $player, "Choose a weapon to give +1", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+            AddDecisionQueue("ADDMZBUFF", $player, "EVR055-1", 1);
+            break;
+          case "Go_Again":
+            AddDecisionQueue("FINDINDICES", $player, "WEAPON");
+            AddDecisionQueue("SETDQCONTEXT", $player, "Choose a weapon to give go again", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+            AddDecisionQueue("ADDMZBUFF", $player, "EVR055-2", 1);
+            break;
+          case "Attack_Twice":
+            AddDecisionQueue("FINDINDICES", $player, "WEAPON");
+            AddDecisionQueue("SETDQCONTEXT", $player, "Choose a weapon to give a second attack", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+            AddDecisionQueue("ADDMZUSESBLOODONHERHANDS", $player, "1", 1);
+            break;
+          default: break;
+        }
+      }
+      return $lastResult;
     case "JINGLEWOOD":
       switch($lastResult[0])
       {
@@ -292,9 +320,6 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
   global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext;
   switch($card)
   {
-    case "BLOODONHERHANDS":
-      BloodOnHerHandsResolvePlay($lastResult);
-      return $lastResult;
     case "RIGHTEOUSCLEANSING":
       $numBanished = SearchCount($lastResult);
       $numLeft = 5 - $numBanished;
