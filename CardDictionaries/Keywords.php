@@ -240,6 +240,7 @@
       $hasWager = true;
       switch($currentTurnEffects[$i]) {
         case "HVY055":
+          RemoveCurrentTurnEffect($i);
           PlayAura("HVY241", $wonWager, $amount);//Might
           PlayAura("HVY242", $wonWager, $amount);//Vigor
           break;
