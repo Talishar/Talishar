@@ -1558,6 +1558,7 @@ function CanPassPhase($phase)
     case "CHOOSEPERMANENT": return 0;
     case "MULTICHOOSETEXT": return 0;
     case "CHOOSEMYSOUL": return 0;
+    case "CHOOSEMYAURA": return 0;
     case "OVER": return 0;
     default: return 1;
   }
