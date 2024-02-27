@@ -1455,9 +1455,9 @@ function UpdateSubcardCounterCount($player, $index) {
   else $char[$index + 2] = count(explode(",", $char[$index + 10]));
 }
 
-function RemoveArsenalEffects($player, $cardToReturn){
-  SearchCurrentTurnEffects("EVR087", $player, true);
-  SearchCurrentTurnEffects("ARC042", $player, true);
+function RemoveArsenalEffects($player, $cardToReturn, $uniqueID){
+  if($uniqueID == SearchCurrentTurnEffects("EVR087", $player, returnUniqueID:true)) SearchCurrentTurnEffects("EVR087", $player, true);
+  if($uniqueID == SearchCurrentTurnEffects("ARC042", $player, returnUniqueID:true)) SearchCurrentTurnEffects("ARC042", $player, true);
   if($cardToReturn == "ARC057" ){SearchCurrentTurnEffects("ARC057", $player, true);}
   if($cardToReturn == "ARC058" ){SearchCurrentTurnEffects("ARC058", $player, true);}
   if($cardToReturn == "ARC059" ){SearchCurrentTurnEffects("ARC059", $player, true);}
