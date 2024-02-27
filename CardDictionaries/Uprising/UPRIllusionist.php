@@ -105,7 +105,8 @@ function UPRIllusionistDealDamageEffect($cardID)
   function Transform($player, $materialType, $into, $optional=false, $subsequent=false, $firstTransform=true, $target="")
   {
     if($target != ""){
-      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      $index = explode("-", $target);
+      AddDecisionQueue("PASSPARAMETER", $player, $index[1], 1);
       AddDecisionQueue("TRANSFORM", $player, $into.",".$firstTransform, 1);
     } else if($materialType == "Ash") {
       AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));

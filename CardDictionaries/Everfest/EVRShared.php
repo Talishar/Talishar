@@ -231,7 +231,10 @@
         PlayAura("WTR075", $currentPlayer, $amount);
         return "";
       case "EVR033": case "EVR034": case "EVR035":
-        if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard(($currentPlayer == 1 ? 2 : 1), $target));
+        if($target != "-") {
+          if(substr($target, 0, 2) == "MY") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard(($currentPlayer == 1 ? 2 : 1), $target));
+          else AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard($currentPlayer, $target));
+        }
         return "";
       case "EVR047": case "EVR048": case "EVR049":
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts);

@@ -283,7 +283,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $index = $lastResult;
       $arsenal = &GetArsenal($player);
       $cardToReturn = $arsenal[$index];
-      RemoveArsenalEffects($player, $cardToReturn);
+      RemoveArsenalEffects($player, $cardToReturn, $arsenal[$index+5]);
       for($i = $index + ArsenalPieces() - 1; $i >= $index; --$i) {
         unset($arsenal[$i]);
       }
@@ -550,6 +550,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return ($rv == "" ? "PASS" : $rv);
     case "DESTROYTOPCARD":
       $deck = new Deck($player);
+      WriteLog("Destroyed " . CardLink($deck->Top(),$deck->Top()) . " on top of Player ". $player ." deck");
       AddGraveyard($deck->Top(remove:true), $player, "TOP");
       return $lastResult;
     case "SHOWMODES":
@@ -1335,8 +1336,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "TRANSFORM":
       $params = explode(",", $parameter);
-      $index = explode("-", $lastResult);
-      return "ALLY-" . ResolveTransform($player, $index[1], $params[0], $params[1]);
+      return "ALLY-" . ResolveTransform($player, $lastResult, $params[0], $params[1]);
     case "TRANSFORMPERMANENT":
       return "PERMANENT-" . ResolveTransformPermanent($player, $lastResult, $parameter);
     case "TRANSFORMAURA":

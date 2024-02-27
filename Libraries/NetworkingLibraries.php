@@ -2278,6 +2278,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   //Figure out where it goes
   $openedChain = false;
   $chainClosed = false;
+  $skipDRResolution = false;
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
   if(GoesOnCombatChain($turn[0], $cardID, $from)) {
     if($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains(CardSubType($cardID), "Item")) {
@@ -2288,7 +2289,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $discard = new Discard($currentPlayer);
       $discard->Add($cardID, "LAYER");
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because dominate is active and there is already a card defending from hand.");
-      return;
+      $skipDRResolution = true;
     }
     if(!$isBlock && CardType($cardID) == "AR") {
       AddGraveyard($cardID, $currentPlayer, "LAYER", $currentPlayer);
@@ -2297,7 +2298,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         return;
       }
     }
-    $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
+    if(!$skipDRResolution) $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
     if($index == 0) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
       $combatChainState[$CCS_AttackPlayedFrom] = $from;
@@ -2330,7 +2331,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         CharacterAttackAbilities($cardID);
       }
     } else { //On chain, but not index 0
-      if($definedCardType == "DR") OnDefenseReactionResolveEffects($from);
+      if($definedCardType == "DR" && !$skipDRResolution) OnDefenseReactionResolveEffects($from);
     }
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
   } else if($from != "PLAY" && $from != "EQUIP") {
@@ -2353,7 +2354,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
   }
   //Resolve Effects
-  if(!$isBlock) {
+  if(!$isBlock && !$skipDRResolution) {
     CurrentEffectPlayOrActivateAbility($cardID, $from);
     if($from != "PLAY") {
       CurrentEffectPlayAbility($cardID, $from);
