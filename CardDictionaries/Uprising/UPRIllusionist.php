@@ -18,6 +18,7 @@
       case "UPR015": Transform($currentPlayer, "Ash", "UPR415", target:$target); return "";
       case "UPR016": Transform($currentPlayer, "Ash", "UPR416", target:$target); return "";
       case "UPR017": Transform($currentPlayer, "Ash", "UPR417", target:$target); return "";
+      case "UPR018": case "UPR019": case "UPR020": Transform($currentPlayer, "Ash", "UPR042", true); return "";
       case "UPR030": case "UPR031": case "UPR032":
         PutPermanentIntoPlay($currentPlayer, "UPR043");
         return "";
