@@ -403,7 +403,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ADDSUBCARD":
           $mzArr = explode("-", $lastResult);
           $character = &GetPlayerCharacter($player);
-          if($character[$mzArr[1]+10] != "-") {
+          if($character[$mzArr[1]] == "EVO410b") {
+            if($character[10] != "-") {
+              $character[10] .= "," . $paramArr[1];
+              ++$character[2]; // Update the counter
+            }
+            else $character[10] = $paramArr[1];
+            break;
+          }
+          else if($character[$mzArr[1]+10] != "-") {
             $character[$mzArr[1]+10] .= "," . $paramArr[1];
           }
           else $character[$mzArr[1]+10] = $paramArr[1];
@@ -1327,7 +1335,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "TRANSFORM":
       $params = explode(",", $parameter);
-      return "ALLY-" . ResolveTransform($player, $lastResult, $params[0], $params[1]);
+      $index = explode("-", $lastResult);
+      return "ALLY-" . ResolveTransform($player, $index[1], $params[0], $params[1]);
     case "TRANSFORMPERMANENT":
       return "PERMANENT-" . ResolveTransformPermanent($player, $lastResult, $parameter);
     case "TRANSFORMAURA":
@@ -1645,6 +1654,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             break;
           default:
             BanishCardForPlayer($lastResult, $defPlayer, "CC", "REMOVEGRAVEYARD", $mainPlayer);
+            $index = GetCombatChainIndex($lastResult, $defPlayer);
+            $CombatChain->Remove($index); 
             break;
         }
         WriteLog(CardLink($lastResult, $lastResult). " was banished");

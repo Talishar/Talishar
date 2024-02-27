@@ -1,24 +1,23 @@
 <?php
 
-  function UPRIllusionistPlayAbility($cardID)
+  function UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
     switch($cardID)
     {
-      case "UPR004": Transform($currentPlayer, "Ash", "UPR042"); return "";
-      case "UPR006": Transform($currentPlayer, "Ash", "UPR406"); return "";
-      case "UPR007": Transform($currentPlayer, "Ash", "UPR407"); return "";
-      case "UPR008": Transform($currentPlayer, "Ash", "UPR408"); return "";
-      case "UPR009": Transform($currentPlayer, "Ash", "UPR409"); return "";
-      case "UPR010": Transform($currentPlayer, "Ash", "UPR410"); return "";
-      case "UPR011": Transform($currentPlayer, "Ash", "UPR411"); return "";
-      case "UPR012": Transform($currentPlayer, "Ash", "UPR412"); return "";
-      case "UPR013": Transform($currentPlayer, "Ash", "UPR413"); return "";
-      case "UPR014": Transform($currentPlayer, "Ash", "UPR414"); return "";
-      case "UPR015": Transform($currentPlayer, "Ash", "UPR415"); return "";
-      case "UPR016": Transform($currentPlayer, "Ash", "UPR416"); return "";
-      case "UPR017": Transform($currentPlayer, "Ash", "UPR417"); return "";
-      case "UPR018": case "UPR019": case "UPR020": Transform($currentPlayer, "Ash", "UPR042", true); return "";
+      case "UPR004": Transform($currentPlayer, "Ash", "UPR042", target:$target); return "";
+      case "UPR006": Transform($currentPlayer, "Ash", "UPR406", target:$target); return "";
+      case "UPR007": Transform($currentPlayer, "Ash", "UPR407", target:$target); return "";
+      case "UPR008": Transform($currentPlayer, "Ash", "UPR408", target:$target); return "";
+      case "UPR009": Transform($currentPlayer, "Ash", "UPR409", target:$target); return "";
+      case "UPR010": Transform($currentPlayer, "Ash", "UPR410", target:$target); return "";
+      case "UPR011": Transform($currentPlayer, "Ash", "UPR411", target:$target); return "";
+      case "UPR012": Transform($currentPlayer, "Ash", "UPR412", target:$target); return "";
+      case "UPR013": Transform($currentPlayer, "Ash", "UPR413", target:$target); return "";
+      case "UPR014": Transform($currentPlayer, "Ash", "UPR414", target:$target); return "";
+      case "UPR015": Transform($currentPlayer, "Ash", "UPR415", target:$target); return "";
+      case "UPR016": Transform($currentPlayer, "Ash", "UPR416", target:$target); return "";
+      case "UPR017": Transform($currentPlayer, "Ash", "UPR417", target:$target); return "";
       case "UPR030": case "UPR031": case "UPR032":
         PutPermanentIntoPlay($currentPlayer, "UPR043");
         return "";
@@ -33,7 +32,7 @@
       case "UPR040": TransformPermanent($currentPlayer, "Ash", "UPR440"); return "";
       case "UPR041": TransformPermanent($currentPlayer, "Ash", "UPR441"); return "";
       case "UPR036": case "UPR037": case "UPR038":
-        Transform($currentPlayer, "Ash", "UPR042");
+        Transform($currentPlayer, "Ash", "UPR042", target:$target);
         AddDecisionQueue("MZOP", $currentPlayer, "GETUNIQUEID");
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $currentPlayer, $cardID . ",HAND");
         return "";
@@ -102,9 +101,12 @@ function UPRIllusionistDealDamageEffect($cardID)
   }
 }
 
-  function Transform($player, $materialType, $into, $optional=false, $subsequent=false, $firstTransform=true)
+  function Transform($player, $materialType, $into, $optional=false, $subsequent=false, $firstTransform=true, $target="")
   {
-    if($materialType == "Ash") {
+    if($target != ""){
+      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      AddDecisionQueue("TRANSFORM", $player, $into.",".$firstTransform, 1);
+    } else if($materialType == "Ash") {
       AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into), 1);
       if($optional) AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
@@ -148,7 +150,7 @@ function UPRIllusionistDealDamageEffect($cardID)
 
   function ResolveTransformAura($player, $materialIndex, $into)
   {
-    $materialType = DestroyAura($player, $materialIndex);
+    $materialType = RemoveAura($player, $materialIndex);
     return PlayAlly($into, $player, $materialType);
   }
 

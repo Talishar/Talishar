@@ -1558,6 +1558,15 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
+    case "UPR004": //Invocations must target Ash
+    case "UPR006": case "UPR007": case "UPR008": case "UPR009": case "UPR010": case "UPR011":
+    case "UPR012": case "UPR013": case "UPR014": case "UPR015": case "UPR016": case "UPR017":
+    case "UPR036": case "UPR037": case "UPR038": 
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Ash");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an Ash to transform");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
     case "UPR221":
     case "UPR222":
     case "UPR223":
@@ -2019,6 +2028,27 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Hit_Effect,1_Attack");
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      break;
+    case "EVR055":
+      $numCopper = CountItem("CRU197", $currentPlayer);
+      if($numCopper == 0) return "No copper.";
+      if($numCopper > 6) $numCopper = 6;
+      $buttons = "";
+      for($i=0; $i<=$numCopper; ++$i) {
+        if($buttons != "") $buttons .= ",";
+        $buttons .= $i;
+      }
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Copper to destroy");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, $buttons);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "CRU197-", 1);
+      AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
+      AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
+      AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-Buff_Weapon,Buff_Weapon,Go_Again,Go_Again,Attack_Twice,Attack_Twice", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose {0} modes");
+      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "EVR158":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");

@@ -933,7 +933,7 @@ function NumActionsBlocking()
       $type = CardType($chainCard->ID());
       if($type == "A" || $type == "AA") ++$num;
       if($type == "E") {
-        if (SubtypeContains($chainCard->ID(), "Evo")) {
+        if (SubtypeContains($chainCard->ID(), "Evo" && $chainCard->ID() != "EVO410b")) {
           if (CardType(GetCardIDBeforeTransform($chainCard->ID())) == "A") ++$num;
         }
       }
@@ -1270,7 +1270,10 @@ function DoesAttackHaveGoAgain()
     if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if($isAura && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
-  if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
+  if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) {
+    $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; 
+    return true;
+  }
   if($attackType == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchAuras("MON013", $mainPlayer)) return true;
   if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $mainPlayer))) return true;
   if(SearchItemsForCard("EVO097", $mainPlayer) != "" && $attackType == "AA" && ClassContains($CombatChain->AttackCard()->ID(), "MECHANOLOGIST", $mainPlayer)) return true;
@@ -1347,8 +1350,7 @@ function AttackDestroyed($attackID)
   AttackDestroyedEffects($attackID);
   CharacterAttackDestroyedAbilities($attackID);
   for($i=0; $i<SearchCount(SearchAurasForCard("MON012", $mainPlayer)); ++$i) {
-    if(TalentContains($attackID, "LIGHT", $mainPlayer)) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
-    AddDecisionQueue("ADDTRIGGER", $mainPlayer, "MON012");
+    AddDecisionQueue("ADDTRIGGER", $mainPlayer, "MON012,".$attackID);
   }
 }
 
@@ -1403,6 +1405,14 @@ function DestroyCharacter($player, $index, $skipDestroy=false, $wasBanished = fa
     CharacterDestroyEffect($cardID, $player);
   }
   return $cardID;
+}
+
+function RemoveCharacter($player, $index) {
+  if ($index == -1) return "";
+  $char = &GetPlayerCharacter($player);
+  for($i = 0; $i < CharacterPieces(); ++$i) {
+    unset($char[$index+$i]);
+  }
 }
 
 function RemoveCharacterAndAddAsSubcardToCharacter($player, $index, &$newCharactersSubcardIndex) {
@@ -1558,6 +1568,7 @@ function CanPassPhase($phase)
     case "CHOOSEPERMANENT": return 0;
     case "MULTICHOOSETEXT": return 0;
     case "CHOOSEMYSOUL": return 0;
+    case "CHOOSEMYAURA": return 0;
     case "OVER": return 0;
     default: return 1;
   }

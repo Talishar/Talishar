@@ -21,7 +21,7 @@
           AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
           AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
-          AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
+          AddDecisionQueue("DRAW", $otherPlayer, "-");
         }
         return "";
       case "MON092": PlayAura("MON104", $currentPlayer, 3); return "";

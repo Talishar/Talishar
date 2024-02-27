@@ -155,6 +155,7 @@ function DestroyItemForPlayer($player, $index, $skipDestroy=false)
       DestroyCharacter($player, $indexWeapon);
       $indexEquipment = FindCharacterIndex($player, "DYN492b");
       DestroyCharacter($player, $indexEquipment, true);
+      SearchCurrentTurnEffects("DYN089-UNDER", $player, true);
     }
     unset($items[$i]);
   }
@@ -167,6 +168,13 @@ function StealItem($srcPlayer, $index, $destPlayer)
   $srcItems = &GetItems($srcPlayer);
   $destItems = &GetItems($destPlayer);
   for($i = 0; $i < ItemPieces(); ++$i) {
+    if($srcItems[$i] == "DYN492c") {
+      $indexEquipment = FindCharacterIndex($srcPlayer, "DYN492b");
+      RemoveCharacter($srcPlayer, $indexEquipment);
+      $indexWeapon = FindCharacterIndex($srcPlayer, "DYN492a");
+      RemoveCharacter($srcPlayer, $indexWeapon);
+      SearchCurrentTurnEffects("DYN089-UNDER", $srcPlayer, true);
+    }
     array_push($destItems, $srcItems[$index+$i]);
     unset($srcItems[$index+$i]);
   }

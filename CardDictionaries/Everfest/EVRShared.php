@@ -247,24 +247,9 @@
         AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR054", 1);
         return "";
       case "EVR055":
-        $numCopper = CountItem("CRU197", $currentPlayer);
-        if($numCopper == 0) return "No copper.";
-        if($numCopper > 6) $numCopper = 6;
-        $buttons = "";
-        for($i=0; $i<=$numCopper; ++$i) {
-          if($buttons != "") $buttons .= ",";
-          $buttons .= $i;
-        }
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Copper to destroy");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $buttons);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "CRU197-", 1);
-        AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
-        AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
-        AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-Buff_Weapon,Buff_Weapon,Go_Again,Go_Again,Attack_Twice,Attack_Twice", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose {0} modes");
-        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "BLOODONHERHANDS", 1);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
+        AddDecisionQueue("MODAL", $currentPlayer, "BLOODONHERHANDS", 1);
         break;
       case "EVR056":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -714,39 +699,6 @@
     AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYAURAS", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
     AddDecisionQueue("MULTIZONETOKENCOPY", $mainPlayer, "-", 1);
-  }
-
-  function BloodOnHerHandsResolvePlay($userInput)
-  {
-    global $currentPlayer;
-    for($i=0; $i<count($userInput); ++$i)
-    {
-      switch($userInput[$i])
-      {
-        case "Buff_Weapon":
-          WriteLog(CardLink("EVR055", "EVR055") . " gives a weapon +1 this turn");
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon to give +1", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR055-1", 1);
-          break;
-        case "Go_Again":
-          WriteLog(CardLink("EVR055", "EVR055") . " gives a weapon go again this turn");
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon to give go again", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR055-2", 1);
-          break;
-        case "Attack_Twice":
-          WriteLog(CardLink("EVR055", "EVR055") . " gives a weapon a second attack this turn");
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon to give a second attack", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("ADDMZUSESBLOODONHERHANDS", $currentPlayer, "1", 1);
-          break;
-        default: break;
-      }
-    }
   }
 
   function FractalReplicationStats($stat)
