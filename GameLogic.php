@@ -1335,8 +1335,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "TRANSFORM":
       $params = explode(",", $parameter);
-      $index = explode("-", $lastResult);
-      return "ALLY-" . ResolveTransform($player, $index[1], $params[0], $params[1]);
+      return "ALLY-" . ResolveTransform($player, $lastResult, $params[0], $params[1]);
     case "TRANSFORMPERMANENT":
       return "PERMANENT-" . ResolveTransformPermanent($player, $lastResult, $parameter);
     case "TRANSFORMAURA":
