@@ -169,13 +169,11 @@
       AddDecisionQueue("BUTTONINPUT", $player, "Target_Opponent,Target_Yourself");
     }
     AddDecisionQueue("EQUALPASS", $player, "Target_Opponent");
-    AddDecisionQueue("WRITELOG", $player, "Destroys the top card of Player ". $player ." deck", 1);
     AddDecisionQueue("DESTROYTOPCARD", $player, "0", 1);
     AddDecisionQueue("SETDQVAR", $player, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "{1}");
 
     AddDecisionQueue("NOTEQUALPASS", $player, "ELSE");
-    AddDecisionQueue("WRITELOG", $otherPlayer, "Destroys the top card of Player ". $otherPlayer ." deck", 1);
     AddDecisionQueue("DESTROYTOPCARD", $otherPlayer, "0", 1);
     AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
   }
