@@ -508,7 +508,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $character = &GetPlayerCharacter($player);
   $myHand = &GetHand($player);
   $banish = new Banish($player);
-  $grave = &GetDiscard($currentPlayer);
+  $discard = &GetDiscard($currentPlayer);
   $restriction = "";
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);

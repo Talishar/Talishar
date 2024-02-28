@@ -434,7 +434,7 @@ function ContinueDecisionQueue($lastResult = "")
         $otherPlayer = $currentPlayer == 1 ? 2 : 1;
         BuildMyGamestate($currentPlayer);
       }
-      PlayCard($params[0], $params[1], $lastResult, $params[2]);
+      PlayCard($params[0], $params[1], $lastResult, $params[2], $params[4]);
     } else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECHAINLINK") {
       CloseDecisionQueue();
       ResolveChainLink();
@@ -776,6 +776,51 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target) {
   }
 }
 
+function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
+{
+  global $layers, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  if(HitEffectsArePrevented($target)) return;
+  if(CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $player, count($layers) <= LayerPieces())) return true;
+  switch ($cardID) {
+    case "DYN094":
+      $index = GetItemIndex($cardID, $cardID);
+      AddDecisionQueue("YESNO", $player, "Do_you_want_to_destroy_" . CardLink($cardID, $cardID) . "_and_a_defending_equipment?");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("PASSPARAMETER", $player, "MYITEMS-$index", 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIPONCC", 1);
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+      AddDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
+      break;
+    case "EVO074":
+      $index = SearchItemsForUniqueID($uniqueID, $player);
+      DestroyItemForPlayer($player, $index);
+      AddDecisionQueue("PASSPARAMETER", $player, "0");
+      AddDecisionQueue("SETDQVAR", $player, "0");
+      for($i = 0; $i < 2; ++$i) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS&MYITEMS", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $player, "-");
+        AddDecisionQueue("INCDQVARIFNOTPASS", $player, "0");
+      }
+      AddDecisionQueue("SPECIFICCARD", $otherPlayer, "TICKTOCKCLOCK");
+      break;
+    case "EVO084": case "EVO085": case "EVO086":
+      if($cardID == "EVO084") $amount = 4;
+      else if($cardID == "EVO085") $amount = 3;
+      else $amount = 2;
+      DamageTrigger($otherPlayer, $amount, "DAMAGE", $cardID);
+      DestroyItemForPlayer($player, SearchItemsForUniqueID($uniqueID, $player));
+      break;
+    case "EVO098":
+      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+      break;
+    default:
+      break;
+  }
+}
+
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex;
@@ -794,7 +839,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     return;
   }
   if($additionalCosts == "MAINCHARHITEFFECT")  { ProcessMainCharacterHitEffect($parameter, $player, $target); return; }
-
+  if($additionalCosts == "ITEMHITEFFECT") { ProcessItemsEffect($parameter, $player, $target, $uniqueID); return; }
   switch($parameter) {
     case "HEAVE":
       Heave();
@@ -1243,16 +1288,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("PASSPARAMETER", $player, $uniqueID . "," . $target, 1);
       AddDecisionQueue("SPECIFICCARD", $player, "PLASMAMAINLINE", 1);
       break;
-    case "DYN094":
-      $index = GetItemIndex($parameter, $player);
-      AddDecisionQueue("YESNO", $player, "Do_you_want_to_destroy_" . CardLink($parameter, $parameter) . "_and_a_defending_equipment?");
-      AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("PASSPARAMETER", $player, "MYITEMS-$index", 1);
-      AddDecisionQueue("MZDESTROY", $player, "-", 1);
-      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIPONCC", 1);
-      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      AddDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
-      break;
 		case "DYN101": case "DYN102": case "DYN103":
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:sameName=ARC036");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to get a steam counter", 1);
@@ -1429,19 +1464,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       ChooseToPay($player, $parameter, "0,3");
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "1", 1); // Technically wrong, it should be +1 for each opposing heroes
-      break;
-    case "EVO074":
-      $index = SearchItemsForUniqueID($uniqueID, $player);
-      DestroyItemForPlayer($player, $index);
-      AddDecisionQueue("PASSPARAMETER", $player, "0");
-      AddDecisionQueue("SETDQVAR", $player, "0");
-      for($i = 0; $i < 2; ++$i) {
-        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS&MYITEMS", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZDESTROY", $player, "-");
-        AddDecisionQueue("INCDQVARIFNOTPASS", $player, "0");
-      }
-      AddDecisionQueue("SPECIFICCARD", $otherPlayer, "TICKTOCKCLOCK");
       break;
     case "EVO013":
     case "EVO105": case "EVO106": case "EVO107":

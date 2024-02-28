@@ -1255,7 +1255,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       } else WriteLog(CardLink("EVR156","EVR156") . "... did not hit the mark");
       return $lastResult;
     case "ADDCARDTOCHAINASDEFENDINGCARD":
-      AddCombatChain($lastResult, $player, $parameter, 0);
+      AddCombatChain($lastResult, $player, $parameter, 0, -1);
       return $lastResult;
     case "ATTACKWITHIT":
       PlayCardSkipCosts($lastResult, "DECK");
@@ -1628,7 +1628,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $char = GetPlayerCharacter($player);
         for ($i=0; $i < count($indices); $i++) {
           $option = explode("-", $indices[$i]);
-          if($char[$option[1]] == $combatChain[0]) {
+          if($char[$option[1]] == $combatChain[0] && $char[$option[1]+11] == $combatChain[8]) {
             $lastResult = str_replace($indices[$i], "", $lastResult);
             $lastResult = rtrim($lastResult, ",");
             $lastResult = ltrim($lastResult, ",");
