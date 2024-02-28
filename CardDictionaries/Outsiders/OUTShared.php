@@ -855,6 +855,7 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
     AddDecisionQueue("SETDQCONTEXT", $otherPlayer, CardName($source) . " shows the top of their deck is <1>", 1);
     AddDecisionQueue("OK", $player, "-", 1);
+    AddDecisionQueue("SETDQCONTEXT", $player, "-");
   }
 
   function SpireSnipingAbility($player)
