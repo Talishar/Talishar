@@ -126,7 +126,7 @@ function BlockingCardDefense($index)
   return $defense;
 }
 
-function AddCombatChain($cardID, $player, $from, $resourcesPaid)
+function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID)
 {
   global $combatChain, $turn;
   $index = count($combatChain);
@@ -138,6 +138,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid)
   array_push($combatChain, 0);//Attack modifier
   array_push($combatChain, 0);//Defense modifier
   array_push($combatChain, GetUniqueId());
+  array_push($combatChain, $OriginUniqueID);
   
   if($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility();
