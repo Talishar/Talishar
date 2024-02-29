@@ -1350,7 +1350,12 @@ function AttackDestroyed($attackID)
   }
   AttackDestroyedEffects($attackID);
   CharacterAttackDestroyedAbilities($attackID);
-  for($i=0; $i<SearchCount(SearchAurasForCard("MON012", $mainPlayer)); ++$i) {
+  $numMercifulRetribution = SearchCount(SearchAurasForCard("MON012", $mainPlayer));
+  if($numMercifulRetribution > 0 && TalentContains($attackID, "LIGHT", $mainPlayer)) {
+    AddDecisionQueue("PASSPARAMETER", $mainPlayer, $attackID, 1);
+    AddDecisionQueue("ADDSOUL", $mainPlayer, "CC", 1);
+  }
+  for($i=0; $i<$numMercifulRetribution; ++$i) {
     AddDecisionQueue("ADDTRIGGER", $mainPlayer, "MON012,".$attackID);
   }
 }

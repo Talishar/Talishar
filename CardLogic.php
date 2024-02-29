@@ -994,7 +994,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "MON012":
       DealArcane(1, 0, "STATIC", $parameter, false, $player);
-      if(TalentContains($target, "LIGHT", $player)) AddSoul($target, $player, "PLAY");
       break;
     case "MON089": //To be moved to ProcessMainCharacterHitEffect() when Fix Tarpit + Main Character Triggers #786 is uploaded
       if($player == $defPlayer) {
