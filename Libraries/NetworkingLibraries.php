@@ -24,7 +24,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $character = &GetPlayerCharacter($playerID);
         if($turn[0] == "B") $character[$index + 6] = 1;
         else EquipPayAdditionalCosts($index, "EQUIP");
-        PlayCard($cardID, "EQUIP", -1, $index, $character[$index + 11]);
+        PlayCard($cardID, "EQUIP", -1, $index);
       } else {
         echo("Play equipment ability " . $turn[0] . " Invalid Input<BR>");
         return false;
@@ -273,7 +273,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardID = $combatChain[$index];
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "PLAY", $index)) {
         SetClassState($playerID, $CS_PlayIndex, $index);
-        PlayCard($cardID, "PLAY", -1, -1, $combatChain[$index+7]);
+        PlayCard($cardID, "PLAY", -1);
       }
       break;
     case 22: //Aura ability
@@ -428,18 +428,18 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 36: //Play card from graveyard
       $index = $cardID;
-      $discard = &GetDiscard($playerID);
+      $grave = &GetDiscard($playerID);
       $theirChar = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
-      if($index < 0 || $index >= count($discard)) {
+      if($index < 0 || $index >= count($grave)) {
         echo("Graveyard Index " . $index . " Invalid Input<BR>");
         return false;
       }
-      $cardID = $discard[$index];
+      $cardID = $grave[$index];
       if(!IsPlayable($cardID, $turn[0], "GY", $index)) break;
-      if($discard[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
+      if($grave[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if(CanPlayAsInstant($cardID, $index, "GY")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
-      PlayCard($cardID, "GY", -1, $index, $discard[$index + 2]);
+      PlayCard($cardID, "GY", -1, $index, $grave[$index + 2]);
       break;
     case 99: //Pass
       if(CanPassPhase($turn[0])) {
@@ -2298,7 +2298,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         return;
       }
     }
-    if(!$skipDRResolution) $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
+    if(!$skipDRResolution) $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
     if($index == 0) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
       $combatChainState[$CCS_AttackPlayedFrom] = $from;

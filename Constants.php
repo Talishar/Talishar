@@ -57,11 +57,10 @@ function BanishPieces()
 //4 - Reprise Active? (Or other class effects?)
 //5 - Attack Modifier
 //6 - Defense Modifier
-//7 - Combat Chain Unique ID
-//8 - Origin Unique ID
+//7 - Unique ID
 function CombatChainPieces()
 {
-  return 9;
+  return 8;
 }
 
 //0 - Card ID
