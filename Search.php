@@ -343,7 +343,7 @@ function SearchCharacterAliveSubtype($player, $subtype)
   global $combatChain;
   $character = &GetPlayerCharacter($player);
   for($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if($character[$i+1] != 0 && subtypecontains($character[$i], $subtype, $player) && $character[$i] != $combatChain[0]) return true;
+    if($character[$i+1] != 0 && subtypecontains($character[$i], $subtype, $player) && $character[$i+11] == $combatChain[8]) return true;
   }
   return false;
 }
