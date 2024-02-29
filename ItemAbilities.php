@@ -193,42 +193,36 @@ function GetItemGemState($player, $cardID)
   return $state;
 }
 
-function ItemHitEffects($attackID)
+function ItemHitTrigger($attackID)
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+  global $mainPlayer, $defPlayer;
   $attackType = CardType($attackID);
   $attackSubType = CardSubType($attackID);
   $items = &GetItems($mainPlayer);
   for($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
-    $remove = false;
     switch($items[$i]) {
       case "DYN094":
         if($attackSubType == "Gun" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
-          AddLayer("TRIGGER", $mainPlayer, $items[$i], "-", "-", $items[$i+4]);
+          AddLayer("TRIGGER", $mainPlayer, $items[$i], $attackID, "ITEMHITEFFECT", $items[$i+4]);
         }
         break;
       case "EVO074":
         if(IsHeroAttackTarget() && $attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
-          AddLayer("TRIGGER", $mainPlayer, $items[$i], "-", "-", $items[$i+4]);
+          AddLayer("TRIGGER", $mainPlayer, $items[$i], $attackID, "ITEMHITEFFECT", $items[$i+4]);
         }
         break;
       case "EVO084": case "EVO085": case "EVO086":
-        if($items[$i] == "EVO084") $amount = 4;
-        else if($items[$i] == "EVO085") $amount = 3;
-        else $amount = 2;
         if(IsHeroAttackTarget() && $attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
-          DamageTrigger($defPlayer, $amount, "DAMAGE", $items[$i]);
-          $remove = true;
+          AddLayer("TRIGGER", $mainPlayer, $items[$i], $attackID, "ITEMHITEFFECT", $items[$i+4]);
         }
         break;
       case "EVO098":
         if($attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
-          $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+          AddLayer("TRIGGER", $mainPlayer, $items[$i], $attackID, "ITEMHITEFFECT", $items[$i+4]);
         }
         break;
       default: break;
     }
-    if($remove) DestroyItemForPlayer($mainPlayer, $i);
   }
 }
 

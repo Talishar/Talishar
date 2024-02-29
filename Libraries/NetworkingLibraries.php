@@ -1013,7 +1013,7 @@ function ResolveCombatDamage($damageDone)
       MainCharacterHitEffects();
       ArsenalHitEffects();
       AuraHitEffects($combatChain[0]);
-      ItemHitEffects($combatChain[0]);
+      ItemHitTrigger($combatChain[0]);
       AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
     }
   }
