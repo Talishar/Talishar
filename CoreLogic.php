@@ -112,7 +112,7 @@ function BlockingCardDefense($index)
   if(TypeContains($cardID, "E", $defPlayer))
   {
     $defCharacter = &GetPlayerCharacter($defPlayer);
-    $charIndex = FindDefCharacter($cardID);
+    $charIndex = SearchCharacterForUniqueID($combatChain[$index+8], $defPlayer);
     $defense += $defCharacter[$charIndex+4];
   }
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
