@@ -265,7 +265,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $activeChainLink->reactions = $combatChainReactions;
   $activeChainLink->attackTarget = CardName(GetMZCard($mainPlayer, GetAttackTarget()));
   $activeChainLink->damagePrevention = GetDamagePrevention($defPlayer);
-  $activeChainLink->goAgain = DoesAttackHaveGoAgain();
+  $activeChainLink->goAgain = CachedGoAgainActive();
   $activeChainLink->dominate = CachedDominateActive();
   $activeChainLink->overpower = CachedOverpowerActive();
   if ($combatChainState[$CCS_RequiredEquipmentBlock] > NumEquipBlock()) $activeChainLink->numRequiredEquipBlock = $combatChainState[$CCS_RequiredEquipmentBlock];
@@ -505,7 +505,6 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $response->playerCardBack = JSONRenderedCard($MyCardBack);
 
   //My Banish
-  $myBanish = GetBanish($playerID);
   $playerBanishArr = array();
   for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
     $label = "";

@@ -24,7 +24,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $character = &GetPlayerCharacter($playerID);
         if($turn[0] == "B") $character[$index + 6] = 1;
         else EquipPayAdditionalCosts($index, "EQUIP");
-        PlayCard($cardID, "EQUIP", -1, $index);
+        PlayCard($cardID, "EQUIP", -1, $index, $character[$index + 11]);
       } else {
         echo("Play equipment ability " . $turn[0] . " Invalid Input<BR>");
         return false;
@@ -273,7 +273,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardID = $combatChain[$index];
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "PLAY", $index)) {
         SetClassState($playerID, $CS_PlayIndex, $index);
-        PlayCard($cardID, "PLAY", -1);
+        PlayCard($cardID, "PLAY", -1, -1, $combatChain[$index+7]);
       }
       break;
     case 22: //Aura ability
@@ -428,18 +428,18 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 36: //Play card from graveyard
       $index = $cardID;
-      $grave = &GetDiscard($playerID);
+      $discard = &GetDiscard($playerID);
       $theirChar = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
-      if($index < 0 || $index >= count($grave)) {
+      if($index < 0 || $index >= count($discard)) {
         echo("Graveyard Index " . $index . " Invalid Input<BR>");
         return false;
       }
-      $cardID = $grave[$index];
+      $cardID = $discard[$index];
       if(!IsPlayable($cardID, $turn[0], "GY", $index)) break;
-      if($grave[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
+      if($discard[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if(CanPlayAsInstant($cardID, $index, "GY")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
-      PlayCard($cardID, "GY", -1, $index, $grave[$index + 2]);
+      PlayCard($cardID, "GY", -1, $index, $discard[$index + 2]);
       break;
     case 99: //Pass
       if(CanPassPhase($turn[0])) {
@@ -1013,7 +1013,7 @@ function ResolveCombatDamage($damageDone)
       MainCharacterHitEffects();
       ArsenalHitEffects();
       AuraHitEffects($combatChain[0]);
-      ItemHitEffects($combatChain[0]);
+      ItemHitTrigger($combatChain[0]);
       AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
     }
   }
@@ -1359,6 +1359,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     //CR 5.1.2 Announce (CR 2.0)
     if($from == "ARS") WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);
     else WriteLog("Player " . $playerID . " " . PlayTerm($turn[0], $from, $cardID) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
+    
+    if($turn[0] == "B" && TypeContains($cardID, "E", $currentPlayer)) SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
 
     LogPlayCardStats($currentPlayer, $cardID, $from);
     if($playingCard) {
@@ -1466,7 +1468,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         ResetCombatChainState();
       }
       $remorselessCount = CountCurrentTurnEffects("CRU123-DMG", $playerID);
-      if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0) {
+      if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA")) {
         WriteLog("Lost 1 health to Remorseless");
         LoseHealth($remorselessCount, $playerID);
       }
@@ -2298,7 +2300,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         return;
       }
     }
-    if(!$skipDRResolution) $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
+    if(!$skipDRResolution) $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
     if($index == 0) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
       $combatChainState[$CCS_AttackPlayedFrom] = $from;

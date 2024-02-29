@@ -112,7 +112,7 @@ function BlockingCardDefense($index)
   if(TypeContains($cardID, "E", $defPlayer))
   {
     $defCharacter = &GetPlayerCharacter($defPlayer);
-    $charIndex = FindDefCharacter($cardID);
+    $charIndex = SearchCharacterForUniqueID($combatChain[$index+8], $defPlayer);
     $defense += $defCharacter[$charIndex+4];
   }
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
@@ -126,7 +126,7 @@ function BlockingCardDefense($index)
   return $defense;
 }
 
-function AddCombatChain($cardID, $player, $from, $resourcesPaid)
+function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID)
 {
   global $combatChain, $turn;
   $index = count($combatChain);
@@ -138,6 +138,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid)
   array_push($combatChain, 0);//Attack modifier
   array_push($combatChain, 0);//Defense modifier
   array_push($combatChain, GetUniqueId());
+  array_push($combatChain, $OriginUniqueID);
   
   if($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility();
@@ -1349,7 +1350,12 @@ function AttackDestroyed($attackID)
   }
   AttackDestroyedEffects($attackID);
   CharacterAttackDestroyedAbilities($attackID);
-  for($i=0; $i<SearchCount(SearchAurasForCard("MON012", $mainPlayer)); ++$i) {
+  $numMercifulRetribution = SearchCount(SearchAurasForCard("MON012", $mainPlayer));
+  if($numMercifulRetribution > 0 && TalentContains($attackID, "LIGHT", $mainPlayer)) {
+    AddDecisionQueue("PASSPARAMETER", $mainPlayer, $attackID, 1);
+    AddDecisionQueue("ADDSOUL", $mainPlayer, "CC", 1);
+  }
+  for($i=0; $i<$numMercifulRetribution; ++$i) {
     AddDecisionQueue("ADDTRIGGER", $mainPlayer, "MON012,".$attackID);
   }
 }

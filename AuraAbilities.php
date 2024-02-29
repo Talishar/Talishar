@@ -84,6 +84,10 @@ function AuraDestroyed($player, $cardID, $isToken = false)
   }
   $goesWhere = GoesWhereAfterResolving($cardID);
   $numMercifulRetribution = SearchCount(SearchAurasForCard("MON012", $player)) + ($cardID == "MON012" ? 1 : 0);
+  if($numMercifulRetribution > 0 && TalentContains($cardID, "LIGHT", $player)) {
+    AddDecisionQueue("PASSPARAMETER", $player, $cardID, 1);
+    AddDecisionQueue("ADDSOUL", $player, "PLAY", 1);
+  }
   for($i = 0; $i < $numMercifulRetribution; ++$i) {
     if(CardType($cardID) != "T" && $isToken) WriteLog("<span style='color:red;'>The card is not put in your soul from Merciful Retribution because it is a token copy</span>");
     AddDecisionQueue("ADDTRIGGER", $player, "MON012,".$cardID);
