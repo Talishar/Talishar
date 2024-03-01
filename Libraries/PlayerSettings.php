@@ -159,6 +159,7 @@ function GetCardBack($player)
     case 67: return "CBEmperorsRome";
     case 68: return "CBWeMakeBest";
     case 69: return "CBWeMakeBest2";
+    case 70: return "CBSunflowerSamurai";
     default: return "CardBack";
   }
 }
@@ -527,6 +528,16 @@ function IsTeamEmperorsRome($userID)
   switch($userID) {
     case "Daniele90rm": case "Excelsa": case "kano90": case "Maalox10": case "TriangoloRotondo": case "Piervillo": case "Rean":
     case "Jekpack": case "playboikrame": case "Danyr99": case "ZiFrank": case "Fevic":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
+function IsTeamSunflowerSamurai($userID)
+{
+  switch($userID) {
+    case "Usagi": case "PvtVoid":
       return true;
     default: break;
   }
