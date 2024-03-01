@@ -157,6 +157,8 @@ function GetCardBack($player)
     case 65: return "CBNxi";
     case 66: return "CBPvtVoid";
     case 67: return "CBEmperorsRome";
+    case 68: return "CBWeMakeBest";
+    case 69: return "CBWeMakeBest2";
     default: return "CardBack";
   }
 }
