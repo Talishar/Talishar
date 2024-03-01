@@ -1271,10 +1271,6 @@ function DoesAttackHaveGoAgain()
     if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if($isAura && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
-  if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) {
-    $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; 
-    return true;
-  }
   if($attackType == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchAuras("MON013", $mainPlayer)) return true;
   if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $mainPlayer))) return true;
   if(SearchItemsForCard("EVO097", $mainPlayer) != "" && $attackType == "AA" && ClassContains($CombatChain->AttackCard()->ID(), "MECHANOLOGIST", $mainPlayer)) return true;
@@ -1316,7 +1312,12 @@ function DoesAttackHaveGoAgain()
       $character = &GetPlayerCharacter($mainPlayer);
       return SearchCurrentTurnEffectsForUniqueID($character[$combatChainState[$CCS_WeaponIndex]+11]) != -1 && SearchCurrentTurnEffects($attackID, $mainPlayer);
     case "HVY134": return true;
-    default: return false;
+    default: 
+    if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) {
+      $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; 
+      return true;
+    }
+    return false;
   }
 }
 
