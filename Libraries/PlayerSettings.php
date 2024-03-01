@@ -160,6 +160,7 @@ function GetCardBack($player)
     case 68: return "CBWeMakeBest";
     case 69: return "CBWeMakeBest2";
     case 70: return "CBSunflowerSamurai";
+    case 71: return "CBMnRCast";
     default: return "CardBack";
   }
 }
