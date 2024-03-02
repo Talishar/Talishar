@@ -162,7 +162,7 @@ function BuildMyGamestate($playerID)
   global $myStateBuiltFor, $mainPlayerGamestateStillBuilt;
   DoGamestateUpdate();
   $mainPlayerGamestateStillBuilt = 0;
-  $myStateBuiltFor = $playerID;
+  $myStateBuiltFor = $playerID == 1 ? 1 : 2;
   $myHand = $playerID == 1 ? $p1Hand : $p2Hand;
   $myDeck = $playerID == 1 ? $p1Deck : $p2Deck;
   $myResources = $playerID == 1 ? $p1Resources : $p2Resources;
