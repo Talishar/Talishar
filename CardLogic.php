@@ -1547,6 +1547,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZDESTROY", $player, false, 1);
       break;
+    case "HVY016":
+      $banish = &GetBanish($player);
+      $hand = &GetHand($player);
+      for($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+        if($banish[$i+1] == "NOFEAR") {
+          array_push($hand, $banish[$i]);
+          RemoveBanish($player, $i);
+        }
+      }
+      break;
     case "HVY142":
       if(CountAura("HVY241", $player) > 0) MZMoveCard($player, "MYDISCARD:type=AA", "MYTOPDECK", may:true);
       break;
