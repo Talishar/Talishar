@@ -1651,7 +1651,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         switch ($type) {
           case "E":
             BanishCardForPlayer($lastResult, $defPlayer, "CC", "-", $mainPlayer);
-            $index = FindCharacterIndex($lastResult, $defPlayer);
+            $index = FindCharacterIndex($defPlayer, $lastResult);
             DestroyCharacter($defPlayer, $index, wasBanished:true);
             break;
           default:
