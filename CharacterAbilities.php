@@ -340,6 +340,7 @@ function MainCharacterEndTurnAbilities()
         if(GetClassState($mainPlayer, $CS_ArcaneDamageDealt) < $mainCharacter[$i + 2]) DestroyCharacter($mainPlayer, $i);
         break;
       case "DTD222": case "DTD223": case "DTD224": case "DTD225":
+        if($mainCharacter[$i+1] == 0) break; //Do not add negative counters if destroyed
         --$mainCharacter[$i+4];
         break;
       case "ROGUE018":

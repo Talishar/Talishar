@@ -243,20 +243,22 @@ function EffectHitEffect($cardID)
       $weapons = "";
       $char = &GetPlayerCharacter($mainPlayer);
       $inventory = &GetInventory($mainPlayer);
-      foreach ($inventory as $cardID) {
-        if (CardType($cardID) == "W" && SubtypeContains($cardID, "Dagger")) {
-          if ($weapons != "") $weapons .= ",";
-          $weapons .= $cardID;
-        };
+      if($char[CharacterPieces()+1] == 0 || $char[CharacterPieces()*2+1] == 0) { //Only Equip if there is a broken weapon/off-hand
+        foreach ($inventory as $cardID) {
+          if (CardType($cardID) == "W" && SubtypeContains($cardID, "Dagger")) {
+            if ($weapons != "") $weapons .= ",";
+            $weapons .= $cardID;
+          };
+        }
+        if ($weapons == "") {
+          WriteLog("Player " . $mainPlayer . " doesn't have any dagger in their inventory");
+          return;
+        }
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a dagger to equip");
+        AddDecisionQueue("CHOOSECARD", $mainPlayer, $weapons);
+        AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-INVENTORY");
+        AddDecisionQueue("EQUIPCARD", $mainPlayer, "<-");
       }
-      if ($weapons == "") {
-        WriteLog("Player " . $mainPlayer . " doesn't have any dagger in their inventory");
-        return;
-      }
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a dagger to equip");
-      AddDecisionQueue("CHOOSECARD", $mainPlayer, $weapons);
-      AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-INVENTORY");
-      AddDecisionQueue("EQUIPCARD", $mainPlayer, "<-");
       break;
     case "OUT158":
       if(IsHeroAttackTarget())
