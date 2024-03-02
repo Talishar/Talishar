@@ -500,9 +500,9 @@ function IsTeamSecondCycle($userID)
 function IsTeamSonicDoom($userID)
 {
   switch($userID) {
-    case "KanoSux": case "BestBoy": case "CRGrey": case "jujubeans": case "tog": case "YodasUncle":
+    case "KanoSux": case "BestBoy": case "CRGrey": case "jujubeans": case "YodasUncle":
     case "ravenklath": case "Blazing For Lethal?": case "DimGuy": case "JoeyReads": case "OompaLoompaTron": case "OceansForce":
-    case "radiotoast": case "ThePitchStack": case "KanosWaterBottle": case "yamsandwic": case "ThatOneKano": case "YuutoSJ": case "ZorbyX": case "Littlsnek":
+    case "radiotoast": case "ThePitchStack": case "KanosWaterBottle": case "yamsandwic": case "ThatOneKano": case "YuutoSJ": case "ZorbyX": case "littlsnek":
       return true;
     default: break;
   }
