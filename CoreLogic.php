@@ -1355,6 +1355,7 @@ function AttackDestroyed($attackID)
   if($numMercifulRetribution > 0 && TalentContains($attackID, "LIGHT", $mainPlayer)) {
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, $attackID, 1);
     AddDecisionQueue("ADDSOUL", $mainPlayer, "CC", 1);
+    $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
   }
   for($i=0; $i<$numMercifulRetribution; ++$i) {
     AddDecisionQueue("ADDTRIGGER", $mainPlayer, "MON012,".$attackID);
