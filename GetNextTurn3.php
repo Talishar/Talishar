@@ -265,7 +265,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $activeChainLink->reactions = $combatChainReactions;
   $activeChainLink->attackTarget = CardName(GetMZCard($mainPlayer, GetAttackTarget()));
   $activeChainLink->damagePrevention = GetDamagePrevention($defPlayer);
-  $activeChainLink->goAgain = CachedGoAgainActive();
+  $activeChainLink->goAgain = DoesAttackHaveGoAgain();
   $activeChainLink->dominate = CachedDominateActive();
   $activeChainLink->overpower = CachedOverpowerActive();
   if ($combatChainState[$CCS_RequiredEquipmentBlock] > NumEquipBlock()) $activeChainLink->numRequiredEquipBlock = $combatChainState[$CCS_RequiredEquipmentBlock];

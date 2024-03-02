@@ -843,13 +843,12 @@ function CombatChainClosedEffects()
 function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
-  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink, $CCS_CurrentAttackGainedGoAgain;
+  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink;
   if(count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalAttack] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
   EvaluateCombatChain($combatChainState[$CCS_CachedTotalAttack], $combatChainState[$CCS_CachedTotalBlock]);
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
-  $combatChainState[$CCS_CurrentAttackGainedGoAgain] = (DoesAttackHaveGoAgain() ? "1" : "0");
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();
   if($combatChainState[$CCS_CachedNumDefendedFromHand] == 0) $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand();
@@ -874,11 +873,6 @@ function CachedDominateActive()
 {
   global $combatChainState, $CCS_CachedDominateActive;
   return ($combatChainState[$CCS_CachedDominateActive] == "1" ? true : false);
-}
-function CachedGoAgainActive()
-{
-  global $combatChainState, $CCS_CurrentAttackGainedGoAgain;
-  return ($combatChainState[$CCS_CurrentAttackGainedGoAgain] == "1" ? true : false);
 }
 
 function CachedOverpowerActive()
