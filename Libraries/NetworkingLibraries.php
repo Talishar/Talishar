@@ -1218,8 +1218,6 @@ function PassTurn()
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
   }
-  $MyPitch = GetPitch($playerID);
-  $TheirPitch = GetPitch(($playerID == 1 ? 2 : 1));
   $MainHand = GetHand($mainPlayer);
   if(EndTurnPitchHandling($playerID)) {
     if(EndTurnPitchHandling(($playerID == 1 ? 2 : 1))) {
@@ -1359,7 +1357,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     //CR 5.1.2 Announce (CR 2.0)
     if($from == "ARS") WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);
     else WriteLog("Player " . $playerID . " " . PlayTerm($turn[0], $from, $cardID) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
-    
+
     if($turn[0] == "B" && TypeContains($cardID, "E", $currentPlayer)) SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
 
     LogPlayCardStats($currentPlayer, $cardID, $from);
@@ -1563,7 +1561,7 @@ function GetLayerTarget($cardID)
     case "UPR004": //Invocations must target Ash
     case "UPR006": case "UPR007": case "UPR008": case "UPR009": case "UPR010": case "UPR011":
     case "UPR012": case "UPR013": case "UPR014": case "UPR015": case "UPR016": case "UPR017":
-    case "UPR036": case "UPR037": case "UPR038": 
+    case "UPR036": case "UPR037": case "UPR038":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Ash");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an Ash to transform");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -1578,7 +1576,7 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
-    case "DTD001": case "DTD002": 
+    case "DTD001": case "DTD002":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Figment");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a figment to awaken");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
