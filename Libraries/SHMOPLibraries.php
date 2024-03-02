@@ -75,9 +75,9 @@ function ReadCache($name)
     }
   } else {
     $data = ShmopReadCache($name);
-    if ($data == "") {
-      $data = RedisReadCache($name);
-    }
+    // if ($data == "") {
+    //   $data = RedisReadCache($name);
+    // }
   }
 
   return unserialize($data);
