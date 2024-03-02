@@ -784,14 +784,10 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
   if(CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $player, count($layers) <= LayerPieces())) return true;
   switch ($cardID) {
     case "DYN094":
-      $index = GetItemIndex($cardID, $cardID);
-      AddDecisionQueue("YESNO", $player, "Do_you_want_to_destroy_" . CardLink($cardID, $cardID) . "_and_a_defending_equipment?");
-      AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("PASSPARAMETER", $player, "MYITEMS-$index", 1);
-      AddDecisionQueue("MZDESTROY", $player, "-", 1);
-      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIPONCC", 1);
-      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      AddDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
+      AddDecisionQueue("SEARCHCOMBATCHAIN", $player, "E", 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a defending equipment to destroy", 1);
+      AddDecisionQueue("MAYCHOOSECARDID", $player, "<-", 1);
+      AddDecisionQueue("POWDERKEG", $player, "-", 1);
       break;
     case "EVO074":
       $index = SearchItemsForUniqueID($uniqueID, $player);

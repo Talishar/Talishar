@@ -1012,7 +1012,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $playerInputPopup->popup = CreatePopupAPI("HANDTOPBOTTOM", [], 0, 1, GetPhaseHelptext(), 1, "", cardsArray: $cardsArray);
   }
 
-  if ($turn[0] == "CHOOSECARDID" && $turn[1] == $playerID) {
+  if (($turn[0] == "CHOOSECARDID" || $turn[0] == "MAYCHOOSECARDID") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     $options = explode(",", $turn[2]);
     $cardList = array();
