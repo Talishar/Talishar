@@ -784,14 +784,10 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
   if(CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $player, count($layers) <= LayerPieces())) return true;
   switch ($cardID) {
     case "DYN094":
-      $index = GetItemIndex($cardID, $cardID);
-      AddDecisionQueue("YESNO", $player, "Do_you_want_to_destroy_" . CardLink($cardID, $cardID) . "_and_a_defending_equipment?");
-      AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("PASSPARAMETER", $player, "MYITEMS-$index", 1);
-      AddDecisionQueue("MZDESTROY", $player, "-", 1);
-      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIPONCC", 1);
-      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      AddDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
+      AddDecisionQueue("SEARCHCOMBATCHAIN", $player, "E", 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a defending equipment to destroy", 1);
+      AddDecisionQueue("MAYCHOOSECARDID", $player, "<-", 1);
+      AddDecisionQueue("POWDERKEG", $player, "-", 1);
       break;
     case "EVO074":
       $index = SearchItemsForUniqueID($uniqueID, $player);
@@ -1546,6 +1542,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose which card you want to destroy from their arsenal", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZDESTROY", $player, false, 1);
+      break;
+    case "HVY016":
+      $banish = &GetBanish($player);
+      $hand = &GetHand($player);
+      for($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+        if($banish[$i+1] == "NOFEAR") {
+          array_push($hand, $banish[$i]);
+          RemoveBanish($player, $i);
+        }
+      }
       break;
     case "HVY142":
       if(CountAura("HVY241", $player) > 0) MZMoveCard($player, "MYDISCARD:type=AA", "MYTOPDECK", may:true);

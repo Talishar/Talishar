@@ -169,8 +169,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SEARCHCOMBATCHAIN":
       $cardIDList = "";
+      $cardType = "";
+      if($parameter != "-") $cardType = $parameter;
       $otherPlayer = $player == 1 ? 2 : 1;
-      $cardIDList = GetChainLinkCardIDs($otherPlayer, exclCardTypes:"C");
+      $cardIDList = GetChainLinkCardIDs($otherPlayer, $cardType, exclCardTypes:"C");
         for($i = 0; $i < count($chainLinks); ++$i) {
           for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
             if($chainLinks[$i][$j + 1] != $otherPlayer || $chainLinks[$i][$j + 2] != "1") continue;
@@ -600,6 +602,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDCURRENTEFFECT":
       $params = explode("!", $parameter);
       AddCurrentTurnEffect($params[0], $player, (count($params) > 1 ? $params[1] : ""));
+      return "1";
+    case "ADDCURRENTEFFECTNEXTATTACK":
+      $params = explode("!", $parameter);
+      AddCurrentTurnEffectNextAttack($params[0], $player, (count($params) > 1 ? $params[1] : ""));
       return "1";
     case "SEARCHCURRENTEFFECTPASS":
       return SearchCurrentTurnEffects($parameter, $player) ? "PASS" : "1";
@@ -1649,7 +1655,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         switch ($type) {
           case "E":
             BanishCardForPlayer($lastResult, $defPlayer, "CC", "-", $mainPlayer);
-            $index = FindCharacterIndex($lastResult, $defPlayer);
+            $index = FindCharacterIndex($defPlayer, $lastResult);
             DestroyCharacter($defPlayer, $index, wasBanished:true);
             break;
           default:
@@ -1659,6 +1665,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             break;
         }
         WriteLog(CardLink($lastResult, $lastResult). " was banished");
+        return $lastResult;
+      case "POWDERKEG":
+        $index = FindCharacterIndex($defPlayer, $lastResult);
+        DestroyCharacter($defPlayer, $index);
+        WriteLog(CardLink($lastResult, $lastResult). " was destroyed");
         return $lastResult;
       case "ADDTRIGGER":
         $param = explode(",", $parameter);

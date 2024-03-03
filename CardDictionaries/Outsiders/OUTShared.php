@@ -209,7 +209,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT049-");
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
+        AddDecisionQueue("ADDCURRENTEFFECTNEXTATTACK", $currentPlayer, "<-");
         AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
         return "";
       case "OUT052":
@@ -507,8 +507,8 @@ function OUTAbilityCost($cardID)
         PlayerOpt($currentPlayer, 1);
         return "";
       case "OUT179":
-        AddCurrentTurnEffect($cardID . "_1", $currentPlayer);
-        AddCurrentTurnEffect($cardID . "_2", $currentPlayer);
+        AddCurrentTurnEffectNextAttack($cardID . "_1", $currentPlayer);
+        AddCurrentTurnEffectNextAttack($cardID . "_2", $currentPlayer);
         return "";
       case "OUT180":
         GainResources($currentPlayer, 1);

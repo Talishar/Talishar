@@ -98,7 +98,7 @@
             AddDecisionQueue("SEARCHCOMBATCHAIN", $mainPlayer, "-");
             AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card to banish");
             AddDecisionQueue("CHOOSECARDID", $mainPlayer, "<-", 1);
-            AddDecisionQueue("ALREADYDEAD", $mainPlayer, "CC,-," . $mainPlayer, 1);
+            AddDecisionQueue("ALREADYDEAD", $mainPlayer, "-", 1);
           }
           break;
         case "EVO241":
