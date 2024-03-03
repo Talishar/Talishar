@@ -603,6 +603,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("!", $parameter);
       AddCurrentTurnEffect($params[0], $player, (count($params) > 1 ? $params[1] : ""));
       return "1";
+    case "ADDCURRENTEFFECTNEXTATTACK":
+      $params = explode("!", $parameter);
+      AddCurrentTurnEffectNextAttack($params[0], $player, (count($params) > 1 ? $params[1] : ""));
+      return "1";
     case "SEARCHCURRENTEFFECTPASS":
       return SearchCurrentTurnEffects($parameter, $player) ? "PASS" : "1";
     case "REMOVECURRENTTURNEFFECT":
