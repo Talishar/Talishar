@@ -507,8 +507,8 @@ function OUTAbilityCost($cardID)
         PlayerOpt($currentPlayer, 1);
         return "";
       case "OUT179":
-        AddCurrentTurnEffect($cardID . "_1", $currentPlayer);
-        AddCurrentTurnEffect($cardID . "_2", $currentPlayer);
+        AddCurrentTurnEffectNextAttack($cardID . "_1", $currentPlayer);
+        AddCurrentTurnEffectNextAttack($cardID . "_2", $currentPlayer);
         return "";
       case "OUT180":
         GainResources($currentPlayer, 1);
