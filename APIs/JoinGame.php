@@ -670,9 +670,18 @@ function IsCardBanned($cardID, $format)
   $set = substr($cardID, 0, 3);
   //Ban spoiler cards in non-open-format
   //if($format != "livinglegendscc" && ($set == "HVY")) return true;
+  switch ($cardID) { //Special Use Promos
+    case "JDG002": case "JDG004": case "JDG005": case "JDG008": case "JDG010": case "JDG019": case "JDG024": case "JDG025": 
+    case "LSS001": case "LSS002": case "LSS003": case "LSS004": case "LSS005": case "LSS006": case "LSS007": case "LSS008": 
+    case "FAB094":
+    case "LGS099":
+    case "HER101":
+      return true;
+  }
   switch($format) {
     case "blitz": case "compblitz":
       switch($cardID) {
+        case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
         case "ARC076": case "ARC077": // Viserai | Nebula Black
         case "ELE006": // Awakening
         case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
@@ -702,6 +711,7 @@ function IsCardBanned($cardID, $format)
         case "ELE223":  // Duskblade
         case "ARC170": case "ARC171": case "ARC172": // Plunder Run
         case "MON239": // Stubby Hammers
+        case "MON266": case "MON267": case "MON268": // Belittle
         case "CRU141": // Bloodsheath Skeleta
         case "ELE114": // Pulse of Isenloft
         case "ELE031": case "ELE034": // Lexi, Livewire | Voltaire, Strike Twice
