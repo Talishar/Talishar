@@ -539,7 +539,22 @@ function IsTeamEmperorsRome($userID)
 function IsTeamSunflowerSamurai($userID)
 {
   switch($userID) {
-    case "Usagi": case "PvtVoid":
+    case "Usagi":
+    case "HidaEishi":
+    case "kaikou":
+    case "Akuma":
+    case "Free":
+    case "Yoeresel":
+    case "Kohs":
+    case "Ch3sh1r3":
+    case "NardoPotente":
+    case "dtitan":
+    case "Pokechtulhu":
+    case "CarlosGG":
+    case "N1MP0":
+    case "Clenyu":
+    case "juanmonzonf":
+    case "Raiswind":
       return true;
     default: break;
   }
