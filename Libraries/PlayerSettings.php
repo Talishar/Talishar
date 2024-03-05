@@ -162,6 +162,7 @@ function GetCardBack($player)
     case 70: return "CBSunflowerSamurai";
     case 71: return "CBMnRCast";
     case 72: return "CBOnTheBauble";
+    case 73: return "CBGorganianTome";
     default: return "CardBack";
   }
 }
