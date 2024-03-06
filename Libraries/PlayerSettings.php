@@ -163,6 +163,7 @@ function GetCardBack($player)
     case 71: return "CBMnRCast";
     case 72: return "CBOnTheBauble";
     case 73: return "CBGorganianTome";
+    case 74: return "CBFABChaos";
     default: return "CardBack";
   }
 }
@@ -556,6 +557,26 @@ function IsTeamSunflowerSamurai($userID)
     case "Clenyu":
     case "juanmonzonf":
     case "Raiswind":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
+function IsTeamFABChaos($userID)
+{
+  switch($userID) {
+    case "SaXoChaos":
+    case "nakezuma":
+    case "Broken":
+    case "Atsacus":
+    case "rkntl":
+    case "SlyNight":
+    case "Elnor":
+    case "mythen":
+    case "Enegon":
+    case "Obnoxious":
+    case "PvtVoid":
       return true;
     default: break;
   }
