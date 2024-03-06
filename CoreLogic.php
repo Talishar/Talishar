@@ -57,6 +57,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
     if($attackType == "W") {
       $char = &GetPlayerCharacter($mainPlayer);
       $attack = $char[$combatChainState[$CCS_WeaponIndex]+3];
+      if(filter_var($attack, FILTER_VALIDATE_INT) === false) $attack = 0;
     }
     else if(DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Aura")) {
       $auras = &GetAuras($mainPlayer);
@@ -139,7 +140,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   array_push($combatChain, 0);//Defense modifier
   array_push($combatChain, GetUniqueId());
   array_push($combatChain, $OriginUniqueID);
-  
+
   if($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility();
   return $index;
@@ -290,11 +291,11 @@ function ArsenalHitEffects()
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces()) {
     switch($arsenal[$i]) {
       case "MON405": if($arsenal[$i+1] == "UP" && CardType($attackID) == "W") {
-        MinervaThemisAbility($mainPlayer, $i); 
+        MinervaThemisAbility($mainPlayer, $i);
         break;
       }
       case "DVR007": if($arsenal[$i+1] == "UP" && CardType($attackID) == "W" && CardSubType($attackID) == "Sword") {
-        HalaGoldenhelmAbility($mainPlayer, $i); 
+        HalaGoldenhelmAbility($mainPlayer, $i);
         break;
       }
       default: break;
@@ -395,12 +396,12 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
 
 function ResetAuraStatus($player) {
   $auras = &GetAuras($player);
-  for ($i=0; $i < count($auras); $i += AuraPieces()) { 
+  for ($i=0; $i < count($auras); $i += AuraPieces()) {
     switch ($auras[$i]) {
       case "CRU144":
         $auras[$i+1] = 2;
         break;
-      default: 
+      default:
         break;
     }
   }
@@ -844,7 +845,7 @@ function CombatChainClosedCharacterEffects()
       }
       if(HasGuardwell($chainLinks[$i][$j]) && $character[$charIndex+1] != 0) {
         $character[$charIndex+4] -= (BlockValue($character[$charIndex]) + $character[$charIndex+4] + BlockModifier($character[$charIndex], "CC", 0)+ $chainLinks[$i][$j+5]);//Add -block value counter
-      }  
+      }
       else if(HasBladeBreak($chainLinks[$i][$j]) && $character[$charIndex+1] != 0) DestroyCharacter($defPlayer, $charIndex);
       switch($chainLinks[$i][$j])
       {
@@ -1272,7 +1273,7 @@ function DoesAttackHaveGoAgain()
     if($isAura && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
   if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) {
-    $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; 
+    $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
     return true;
   }
   if($attackType == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchAuras("MON013", $mainPlayer)) return true;
