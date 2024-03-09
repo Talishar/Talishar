@@ -2236,6 +2236,11 @@ function PayAdditionalCosts($cardID, $from)
       $numGold = CountItem("DYN243", $currentPlayer);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numGold+1));
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, 0, 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "RAISEANARMY", 1);
+
+      /*
       if(SearchCharacterAlive($currentPlayer, "HVY051")) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=DYN243&MYCHAR:cardID=HVY051", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -2244,8 +2249,9 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "DYN243-");
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-");
       }
-      AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
-      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      */
+      //AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
+      //AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
     case "HVY245":
       if($from == "GY") {
