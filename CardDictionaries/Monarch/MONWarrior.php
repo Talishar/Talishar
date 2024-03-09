@@ -32,9 +32,6 @@
       case "MON036": case "MON037": case "MON038":
         if(GetClassState($currentPlayer, $CS_NumCharged) > 0) GiveAttackGoAgain();
         return "";
-      case "MON054": case "MON055": case "MON056":
-        if(GetClassState($currentPlayer, $CS_NumCharged) > 0) GiveAttackGoAgain();
-        return "";
       case "MON105":
         if(GetClassState($currentPlayer, $CS_LastAttack) != "MON106") return "";
         AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);

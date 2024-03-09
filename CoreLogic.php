@@ -1255,7 +1255,7 @@ function DoesAttackHaveGoAgain()
 {
   global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_Num6PowDisc;
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
-  global $CS_NumItemsDestroyed, $CS_PlayIndex, $CCS_WeaponIndex;
+  global $CS_NumItemsDestroyed, $CS_PlayIndex, $CCS_WeaponIndex, $CS_NumCharged;
   if(!$CombatChain->HasCurrentLink()) return false;
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
@@ -1295,6 +1295,7 @@ function DoesAttackHaveGoAgain()
     case "CRU057": case "CRU058": case "CRU059": return ComboActive($attackID);
     case "CRU060": case "CRU061": case "CRU062": return ComboActive($attackID);
     case "CRU151": case "CRU152": case "CRU153": return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
+    case "MON054": case "MON055": case "MON056": return GetClassState($mainPlayer, $CS_NumCharged) > 0;
     case "MON180": case "MON181": case "MON182": return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
     case "MON199": case "MON220": return (count(GetSoul($defPlayer)) > 0 && !IsAllyAttackTarget());
     case "MON223": case "MON224": case "MON225": return NumCardsNonEquipBlocking() < 2;
