@@ -1,8 +1,13 @@
 <?php
 
+//0 - Card ID
+//1 - Times Played
+//2 - Times Blocked
+//3 - Times Pitched
+//4 - Times Charged
 function CardStatPieces()
 {
-  return 4;
+  return 5;
 }
 
 function TurnStatPieces()
@@ -13,6 +18,7 @@ function TurnStatPieces()
 $CardStats_TimesPlayed = 1;
 $CardStats_TimesBlocked = 2;
 $CardStats_TimesPitched = 3;
+$CardStats_TimesCharged = 4;
 
 $TurnStats_DamageThreatened = 0;
 $TurnStats_DamageDealt = 1;
@@ -26,10 +32,11 @@ $TurnStats_CardsLeft = 8;
 $TurnStats_DamageBlocked = 9;
 $TurnStats_Overblock = 10;
 
-function LogPlayCardStats($player, $cardID, $from)
+function LogPlayCardStats($player, $cardID, $from, $type="")
 {
-  global $turn, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense;
+  global $turn, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesCharged, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense;
   global $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $mainPlayer;
+  if($type == "") $type = $turn[0];
   $cardStats = &GetCardStats($player);
   $turnStats = &GetTurnStats($player);
   $baseIndex = ($currentTurn-1) * TurnStatPieces();
@@ -39,11 +46,12 @@ function LogPlayCardStats($player, $cardID, $from)
   {
     if($cardStats[$i] == $cardID) { $found = 1; $i -= CardStatPieces(); }
   }
-  if(!$found) array_push($cardStats, $cardID, 0, 0, 0);
-  switch($turn[0])
+  if(!$found) array_push($cardStats, $cardID, 0, 0, 0, 0);
+  switch($type)
   {
     case "P": ++$cardStats[$i + $CardStats_TimesPitched]; ++$turnStats[$baseIndex + $TurnStats_CardsPitched]; break;
     case "B": ++$cardStats[$i + $CardStats_TimesBlocked]; if($from != "PLAY" && $from != "EQUIP") ++$turnStats[$baseIndex + $TurnStats_CardsBlocked]; break;
+    case "CHARGE": ++$cardStats[$i + $CardStats_TimesCharged]; break;
     default:
       if ($from != "PLAY")
       {

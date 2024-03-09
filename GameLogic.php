@@ -831,6 +831,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       WriteLog("This card was charged: " . CardLink($lastResult, $lastResult));
       IncrementClassState($player, $CS_NumCharged);
+      LogPlayCardStats($player, $lastResult, "HAND", "CHARGE");
       global $CCS_AttackNumCharged;
       if(CardType($EffectContext) == "AA") ++$combatChainState[$CCS_AttackNumCharged];
       return $lastResult;
@@ -1661,7 +1662,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           default:
             BanishCardForPlayer($lastResult, $defPlayer, "CC", "REMOVEGRAVEYARD", $mainPlayer);
             $index = GetCombatChainIndex($lastResult, $defPlayer);
-            $CombatChain->Remove($index); 
+            $CombatChain->Remove($index);
             break;
         }
         WriteLog(CardLink($lastResult, $lastResult). " was banished");
@@ -1673,7 +1674,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return $lastResult;
       case "ADDTRIGGER":
         $param = explode(",", $parameter);
-        AddLayer("TRIGGER", $player, $param[0], $param[1]); 
+        AddLayer("TRIGGER", $player, $param[0], $param[1]);
         return $lastResult;
     default:
       return "NOTSTATIC";
