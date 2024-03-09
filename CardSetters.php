@@ -32,12 +32,12 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   if($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
     $character = &GetPlayerCharacter($player);
     AddLayer("TRIGGER", $player, $character[0], $cardID);
-  } 
+  }
   elseif(CardType($cardID) != "T") { //If you banish a token, the token ceases to exist.
     $rv = count($banish);
     array_push($banish, $cardID);
     array_push($banish, $modifier);
-    array_push($banish, GetUniqueId());
+    array_push($banish, GetUniqueId($cardID, $player));
   }
   ++$classState[$CS_CardsBanished];
   if($modifier == "INT") return $rv;
@@ -160,7 +160,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
   array_push($arsenal, 1); //Num uses - currently always 1
   array_push($arsenal, $counters); //Counters
   array_push($arsenal, "0"); //Is Frozen (1 = Frozen)
-  array_push($arsenal, GetUniqueId()); //Unique ID
+  array_push($arsenal, GetUniqueId($cardID, $player)); //Unique ID
   $otherPlayer = $player == 1 ? 2 : 1;
   if($facing == "UP") {
     if($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
@@ -276,7 +276,7 @@ function AddSoul($cardID, $player, $from, $isMainPhase=true)
     if(PitchValue($cardID) == 2) IncrementClassState($player, $CS_NumYellowPutSoul);
     if($isMainPhase && str_contains(NameOverride($cardID, $player), "Herald") && (SearchCharacterActive($player, "DTD001") || SearchCharacterActive($player, "DTD002")))
     {
-      if($from != "CC") 
+      if($from != "CC")
       {
         $char = GetPlayerCharacter($player);
         AddLayer("TRIGGER", $player, $char[0]);
@@ -503,7 +503,7 @@ function AddGraveyard($cardID, $player, $from, $effectController="")
   switch ($cardID) {
     case "MON124":
       BanishCardForPlayer($cardID, $player, $from, "NA");
-      return;   
+      return;
     case "CRU007":
       if($from != "CC") AddLayer("TRIGGER", $player, $cardID);
       break;

@@ -15,7 +15,7 @@ function PlayAlly($cardID, $player, $subCards="-", $number=1, $isToken=false, $f
     array_push($allies, AllyHealth($cardID));
     array_push($allies, 0); //Frozen
     array_push($allies, $subCards); //Subcards
-    array_push($allies, GetUniqueId()); //Unique ID
+    array_push($allies, GetUniqueId($cardID, $player)); //Unique ID
     array_push($allies, AllyEnduranceCounters($cardID)); //Endurance Counters
     array_push($allies, 0); //Life Counters
     array_push($allies, 1); //Ability/effect uses

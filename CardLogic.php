@@ -192,7 +192,7 @@ function PrependLayer($cardID, $player, $parameter, $target = "-", $additionalCo
     array_push($layers, $target);
     array_push($layers, $additionalCosts);
     array_push($layers, $uniqueID);
-    array_push($layers, GetUniqueId());
+    array_push($layers, GetUniqueId($cardID, $player));
     return count($layers);//How far it is from the end
 }
 
@@ -200,7 +200,7 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
 {
   global $layers, $dqState;
   //Layers are on a stack, so you need to push things on in reverse order
-  array_unshift($layers, GetUniqueId());
+  array_unshift($layers, GetUniqueId($cardID, $player));
   array_unshift($layers, $uniqueID);
   array_unshift($layers, $additionalCosts);
   array_unshift($layers, $target);

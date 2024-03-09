@@ -85,7 +85,7 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   array_push($char, 0);
   array_push($char, 2);
   array_push($char, "-");
-  array_push($char, GetUniqueId());
+  array_push($char, GetUniqueId($cardID, $player));
   return $index;
 }
 
@@ -453,16 +453,16 @@ function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs
     if($player != -1 && !SearchCurrentTurnEffects(substr($mainCharacterEffects[$i + 1], 0, 6), $player)) return false;
     if($mainCharacterEffects[$i] == $index) {
       switch($mainCharacterEffects[$i + 1]) {
-        case "WTR119": 
-          $modifier += 2; 
+        case "WTR119":
+          $modifier += 2;
           array_push($attackModifiers, $mainCharacterEffects[$i + 1]);
           array_push($attackModifiers, 2);
           break;
-        case "WTR122": case "WTR135": case "WTR136": case "WTR137": 
-        case "CRU079": case "CRU080": 
-        case "MON105": case "MON106": case "MON113": case "MON114": case "MON115": 
-        case "EVR055-1": 
-          $modifier += 1; 
+        case "WTR122": case "WTR135": case "WTR136": case "WTR137":
+        case "CRU079": case "CRU080":
+        case "MON105": case "MON106": case "MON113": case "MON114": case "MON115":
+        case "EVR055-1":
+          $modifier += 1;
           array_push($attackModifiers, $mainCharacterEffects[$i + 1]);
           array_push($attackModifiers, 1);
           break;
@@ -478,7 +478,7 @@ function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
     switch($characterID) {
       case "MON029": case "MON030":
-        if(HaveCharged($mainPlayer) && NumAttacksBlocking() > 0) 
+        if(HaveCharged($mainPlayer) && NumAttacksBlocking() > 0)
         {
           $modifier += 1;
           array_push($attackModifiers, $characterID);
@@ -569,7 +569,7 @@ function EquipEquipment($player, $card, $slot="")
     else if(SubtypeContains($card, "Legs")) $slot = "Legs";
   }
   $char = &GetPlayerCharacter($player);
-  $uniqueID = GetUniqueId();
+  $uniqueID = GetUniqueId($card, $player);
   $replaced = 0;
   //Replace the first destroyed weapon; if none you can't re-equip
   for($i=CharacterPieces(); $i<count($char) && !$replaced; $i+=CharacterPieces())
@@ -635,7 +635,7 @@ function EquipWeapon($player, $card)
         $char[$i+8] = 0;
         $char[$i+9] = 2;
         $char[$i+10] = "-";
-        $char[$i+11] = GetUniqueId();
+        $char[$i+11] = GetUniqueId($card, $player);
         $replaced = 1;
       }
       else if(Is1H($char[$i])) ++$numHands;
@@ -656,7 +656,7 @@ function EquipWeapon($player, $card)
     array_splice($char, $insertIndex+8, 0, 0);
     array_splice($char, $insertIndex+9, 0, 2);
     array_splice($char, $insertIndex+10, 0, "");
-    array_splice($char, $insertIndex+11, 0, GetUniqueId());
+    array_splice($char, $insertIndex+11, 0, GetUniqueId($card, $player));
   }
 }
 
@@ -769,7 +769,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       --$character[$cardIndex+5];
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1; //By default, if it's used, set it to used
       break;
-    case "HVY055": 
+    case "HVY055":
       $index = GetItemIndex("DYN243", $currentPlayer);
       if($index != -1) DestroyItemForPlayer($currentPlayer, $index);
       else {

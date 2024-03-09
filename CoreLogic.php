@@ -138,7 +138,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   array_push($combatChain, RepriseActive());
   array_push($combatChain, 0);//Attack modifier
   array_push($combatChain, 0);//Defense modifier
-  array_push($combatChain, GetUniqueId());
+  array_push($combatChain, GetUniqueId($cardID, $player));
   array_push($combatChain, $OriginUniqueID);
 
   if($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
@@ -1632,11 +1632,11 @@ function PitchDeck($player, $index)
   $deck->AddBottom($cardID, "PITCH");
 }
 
-function GetUniqueId()
+function GetUniqueId($cardID="", $player="")
 {
   global $permanentUniqueIDCounter;
   ++$permanentUniqueIDCounter;
-  return $permanentUniqueIDCounter;
+  return $player . "-" . $cardID . "-" . $permanentUniqueIDCounter;
 }
 
 function IsHeroAttackTarget()

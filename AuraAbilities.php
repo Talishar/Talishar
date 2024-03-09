@@ -31,7 +31,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     array_push($auras, 0); //Attack counters
     array_push($auras, ($isToken ? 1 : 0)); //Is token 0=No, 1=Yes
     array_push($auras, AuraNumUses($cardID));
-    array_push($auras, GetUniqueId());
+    array_push($auras, GetUniqueId($cardID, $player));
     array_push($auras, $myHoldState); //My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
     array_push($auras, $theirHoldState); //Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
   }
@@ -582,7 +582,7 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
           $auras[$i+1] = 1;
           $numRunchants = CountAura("ARC112", $player);
           if ($numRunchants <= $damage) {
-            for($j=0; $j < $numRunchants; $j++) { 
+            for($j=0; $j < $numRunchants; $j++) {
               $index = SearchAurasForIndex("ARC112", $player);
               if($index != -1) DestroyAuraUniqueID($player, $auras[$index+6]);
             }
@@ -591,7 +591,7 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
             if($preventable) $damage -= $numRunchants;
           }
           else {
-            for($j=0; $j < $damage; $j++) { 
+            for($j=0; $j < $damage; $j++) {
               $index = SearchAurasForIndex("ARC112", $player);
               if($index != -1) DestroyAuraUniqueID($player, $auras[$index+6]);
             }
@@ -659,8 +659,8 @@ function AuraPlayAbilities($attackID, $from="")
     $remove = 0;
     switch($auras[$i]) {
       case "WTR225":
-        if(($cardType == "AA" && (GetResolvedAbilityType($attackID) == "" || GetResolvedAbilityType($attackID) == "AA")) 
-          || ($cardSubType == "Aura" && $from == "PLAY") 
+        if(($cardType == "AA" && (GetResolvedAbilityType($attackID) == "" || GetResolvedAbilityType($attackID) == "AA"))
+          || ($cardSubType == "Aura" && $from == "PLAY")
           || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA" && $from == "EQUIP")) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack go again");
           GiveAttackGoAgain();
@@ -788,7 +788,7 @@ function AuraAttackModifiers($index, &$attackModifiers)
         }
         break;
       case $CID_Frailty:
-        if($index == 0 && (IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS")) 
+        if($index == 0 && (IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS"))
         {
           $modifier -= 1;
           array_push($attackModifiers, $myAuras[$i]);
@@ -802,7 +802,7 @@ function AuraAttackModifiers($index, &$attackModifiers)
   for($i = 0; $i < count($theirAuras); $i += AuraPieces()) {
     switch($theirAuras[$i]) {
       case "MON011":
-        if(CardType($CombatChain->CurrentAttack()) == "AA") 
+        if(CardType($CombatChain->CurrentAttack()) == "AA")
         {
           $modifier -= 1;
           array_push($attackModifiers, $theirAuras[$i]);

@@ -16,7 +16,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
   $theirHoldState = ItemDefaultHoldTriggerState($item);
   if($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
   for($i = 0; $i < $number; ++$i) {
-    $uniqueID = GetUniqueId();
+    $uniqueID = GetUniqueId($item, $player);
     $steamCounters = SteamCounterLogic($item, $player, $uniqueID) + $steamCounterModifier;
     $index = count($items);
     array_push($items, $item);
@@ -400,7 +400,7 @@ function ItemAttackModifiers(&$attackModifiers)
       case "EVO079":
         $attackID = $CombatChain->AttackCard()->ID();
         if(CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
-          $modifier += 1; 
+          $modifier += 1;
           array_push($attackModifiers, "Item Ability");
           array_push($attackModifiers, 1);
         }
