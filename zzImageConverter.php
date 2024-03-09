@@ -6,7 +6,7 @@ function CheckImage($cardID, $isDuplicate=false)
   $number = substr($cardID, 3);
   $filename = "./WebpImages/" . $cardID . ".webp";
   $filenameNew = "./New Cards/" . $cardID . ".webp";
-  $filename2 = "../Talishar-FE/public/cardimages/" . $cardID . ".webp"; // !! Talishar-FE/ to be changed for your own folder name
+  $filename2 = "../FaB-Online-React-Client/public/cardimages/" . $cardID . ".webp"; // !! Talishar-FE/ to be changed for your own folder name
   if(!file_exists($filename) || !file_exists($filename2))
   {
     //$imageURL = "https://fabrary.net/images/cards/" . $cardID . ".webp";
@@ -37,7 +37,7 @@ function CheckImage($cardID, $isDuplicate=false)
     }
   }
   $concatFilename = "./concat/" . $cardID . ".webp";
-  $concatFilename2 = "../Talishar-FE/public/cardsquares/" . $cardID . ".webp";
+  $concatFilename2 = "../FaB-Online-React-Client/public/cardsquares/" . $cardID . ".webp";
   if(!file_exists($concatFilename) || !file_exists($concatFilename2))
   {
     echo("Concat image for " . $cardID . " does not exist.<BR>");
@@ -63,7 +63,7 @@ function CheckImage($cardID, $isDuplicate=false)
     }
   }
   $cropFilename = "./crops/" . $cardID . "_cropped.png";
-  $cropFilename2 = "../Talishar-FE/public/crops/" . $cardID . "_cropped.png";
+  $cropFilename2 = "../FaB-Online-React-Client/public/crops/" . $cardID . "_cropped.png";
   if(!file_exists($cropFilename) || !file_exists($cropFilename2))
   {
     echo("Crop image for " . $cardID . " does not exist.<BR>");
