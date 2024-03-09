@@ -1017,6 +1017,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
+      AddDecisionQueue("WRITELOG", $player, "Gained_an_action_point_from_Hooves_of_the_Shadowbeast", 1);
       break;
     case "MON186":
       $deck = new Deck($player);
