@@ -1637,7 +1637,7 @@ function GetUniqueId($cardID="", $player="")
 {
   global $permanentUniqueIDCounter;
   ++$permanentUniqueIDCounter;
-  return $player . "-" . $cardID . "-" . $permanentUniqueIDCounter;
+  return $player . ";" . $cardID . ";" . $permanentUniqueIDCounter;
 }
 
 function IsHeroAttackTarget()
