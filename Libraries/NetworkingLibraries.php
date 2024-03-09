@@ -985,6 +985,7 @@ function ResolveCombatDamage($damageDone)
   WriteLog("Combat resolved with " . ($wasHit ? "a hit for $damageDone damage" : "no hit"));
   if(!DelimStringContains(CardSubtype($combatChain[0]), "Ally")) SetClassState($mainPlayer, $CS_DamageDealt, GetClassState($mainPlayer, $CS_DamageDealt) + $damageDone);
   if($wasHit) {
+    LogPlayCardStats($mainPlayer, $combatChain[0], "CC", "HIT");
     $combatChainState[$CCS_DamageDealt] = $damageDone;
     if(CardType($combatChain[0]) == "W") {
       ++$combatChainState[$CCS_HitsWithWeapon];
