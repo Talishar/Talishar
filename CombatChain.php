@@ -4,6 +4,7 @@ function ProcessHitEffect($cardID)
 {
   global $CombatChain, $layers, $mainPlayer;
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
+  LogPlayCardStats($mainPlayer, $cardID, "CC", "HIT");
   if(HitEffectsArePrevented($CombatChain->AttackCard()->ID())) return;
   if(CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   $cardID = ShiyanaCharacter($cardID);
@@ -392,7 +393,7 @@ function OnBlockResolveEffects()
   }
   $blockedFromHand = 0;
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-    if($combatChain[$i+2] == "HAND") 
+    if($combatChain[$i+2] == "HAND")
     ++$blockedFromHand;
   }
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
@@ -417,7 +418,7 @@ function OnBlockResolveEffects()
       case "OUT099"://Wayfinder's Crest
       case "OUT174"://Vambrace of Determination
       case "DTD047"://Soulbond Resolve
-      case "DTD200": 
+      case "DTD200":
       case "TCC019": case "TCC022": case "TCC026":
       case "TCC030": case "TCC031": case "TCC032":
       case "TCC033": case "TCC098": case "TCC102":
@@ -447,7 +448,7 @@ function OnBlockResolveEffects()
       case "DTD094": case "DTD095": case "DTD096":
         if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
         break;
-      default: 
+      default:
         break;
     }
   }
