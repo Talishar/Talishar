@@ -1770,11 +1770,10 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
 
 function ModifiedAttackValue($cardID, $player, $from, $source="")
 {
-  global $combatChainState, $CCS_NumBoosted, $mainPlayer, $currentPlayer, $CS_Num6PowBan;
+  global $combatChainState, $mainPlayer, $currentPlayer, $CS_Num6PowBan;
   if($cardID == "") return -1;
   $attack = AttackValue($cardID);
-  if($cardID == "CRU101") return 1 + $combatChainState[$CCS_NumBoosted];
-  else if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
+  if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Attack");
   else if($cardID == "DYN216") return CountAura("MON104", $currentPlayer);
   else if($cardID == "DTD107") return GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
@@ -1783,7 +1782,7 @@ function ModifiedAttackValue($cardID, $player, $from, $source="")
     $characterID = ShiyanaCharacter($char[0]);
     if(($characterID == "HVY001" || $characterID == "HVY002") && $char[1] < 3 && CardType($cardID) == "AA") ++$attack;
   }
-  else { 
+  else {
     // effect that only affect CC
     $attack += EffectDefenderAttackModifiers($cardID);
   }

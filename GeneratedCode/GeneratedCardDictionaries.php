@@ -9320,7 +9320,7 @@ return 2;
 case "3":
 return 4;
 case "1":
-return X;
+return 0;
 case "0":
 return 2;
 default: return 0;

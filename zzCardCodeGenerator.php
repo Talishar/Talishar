@@ -100,7 +100,10 @@
 
   function PopulateTrie(&$cardArray, $handler, &$trie, $propertyName, $cardID, $i, $sparse, $isBool, $isString, $defaultValue, $cardRarity, $isDuplicate=false) {
     if($propertyName == "type") $data = MapType($cardArray[$i], $cardID);
-    else if($propertyName == "attack") $data = $cardArray[$i]->power;
+    else if($propertyName == "attack") {
+      $data = $cardArray[$i]->power;
+      if($data == "X") $data = 0;
+    }
     else if($propertyName == "block")
     {
       $data = $cardArray[$i]->defense;

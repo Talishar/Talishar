@@ -94,6 +94,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "CRU063": case "CRU064": case "CRU065": return NumChainLinks() >= 3 ? 2 : 0;
     case "CRU073": return NumAttacksHit();
     case "CRU083": return 3;
+    case "CRU101": return 1 + $combatChainState[$CCS_NumBoosted];
     case "CRU112": case "CRU113": case "CRU114": return $combatChainState[$CCS_NumBoosted];
     case "MON031": return GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 3 : 0;
     case "MON039": case "MON040": case "MON041": return GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 3 : 0;
