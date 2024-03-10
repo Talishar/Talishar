@@ -481,7 +481,16 @@
         if (isSubcardEmpty($char, 0)) $char[10] = $char[0];
         else $char[10] = $char[10] . "," . $char[0];
         $char[0] = "EVO410";
+        $char[1] = 2;
+        $char[2] = 0;
+        $char[3] = 0;
+        $char[4] = 0;
         $char[5] = 999; // Remove the 'Once per Turn' limitation from Teklovossen
+        $char[6] = 0;
+        $char[7] = 0;
+        $char[8] = 0;
+        $char[9] = 2;
+        $char[11] = GetUniqueId("EVO410", $currentPlayer);
         $mechropotentIndex = 0; // we pushed it, so should be the last element
         for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
           if($char[$i] != "EVO410") {
