@@ -543,7 +543,8 @@
       case "EVO059":
         $negCounterEquip = explode(",", SearchCharacter($otherPlayer, hasNegCounters:true));
         $numNegCounterEquip = count($negCounterEquip);
-        $requiredEquip = EvoUpgradeAmount($currentPlayer) - $numNegCounterEquip;
+        if($numNegCounterEquip > EvoUpgradeAmount($currentPlayer)) $requiredEquip = EvoUpgradeAmount($currentPlayer);
+        else $requiredEquip = $numNegCounterEquip;
         if($numNegCounterEquip > 0 && $requiredEquip > 0 && !IsAllyAttackTarget()) {
           $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = $requiredEquip;
           if($requiredEquip > 1) $rv = CardLink($cardID, $cardID) . " requires you to block with " . $requiredEquip . " equipments";
