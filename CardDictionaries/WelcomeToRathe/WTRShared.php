@@ -242,7 +242,6 @@
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       //Ninja
-      case "WTR078": if(SearchCount(SearchPitch($currentPlayer, minCost:0, maxCost:0)) > 0) GiveAttackGoAgain(); return "";
       case "WTR082":
         Draw($currentPlayer);
         return "";
