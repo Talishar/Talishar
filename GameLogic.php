@@ -176,10 +176,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         for($i = 0; $i < count($chainLinks); ++$i) {
           for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
             if($chainLinks[$i][$j + 1] != $otherPlayer || $chainLinks[$i][$j + 2] != "1") continue;
-
+            if($cardType != "" && !TypeContains($chainLinks[$i][$j], $cardType, $player)) continue;
             if($cardIDList != "") $cardIDList .= ",";
             $cardIDList .=  $chainLinks[$i][$j];
-
           }
       }
       return $cardIDList != "" ? $cardIDList : "PASS";
@@ -1671,6 +1670,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $index = FindCharacterIndex($defPlayer, $lastResult);
         DestroyCharacter($defPlayer, $index);
         WriteLog(CardLink($lastResult, $lastResult). " was destroyed");
+        DestroyItemForPlayer($player, SearchItemsForCard("DYN094", $player));
         return $lastResult;
       case "ADDTRIGGER":
         $param = explode(",", $parameter);

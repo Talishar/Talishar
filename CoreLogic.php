@@ -1282,6 +1282,7 @@ function DoesAttackHaveGoAgain()
   if(SearchCurrentTurnEffectsForCycle("HVY127", "HVY128", "HVY129", $mainPlayer) && ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) && NumAttacksBlocking() > 0) return true;
   $mainPitch = &GetPitch($mainPlayer);
   switch($attackID) {
+    case "WTR078": return SearchCount(SearchPitch($mainPlayer, minCost:0, maxCost:0)) > 0;
     case "WTR083": case "WTR084": return ComboActive($attackID);
     case "WTR095": case "WTR096": case "WTR097": return ComboActive($attackID);
     case "WTR104": case "WTR105": case "WTR106": return ComboActive($attackID);

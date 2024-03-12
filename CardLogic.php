@@ -784,9 +784,11 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
   if(CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $player, count($layers) <= LayerPieces())) return true;
   switch ($cardID) {
     case "DYN094":
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_" . CardLink($cardID, $cardID) . "_and_a_defending_equipment?");
+      AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("SEARCHCOMBATCHAIN", $player, "E", 1);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a defending equipment to destroy", 1);
-      AddDecisionQueue("MAYCHOOSECARDID", $player, "<-", 1);
+      AddDecisionQueue("CHOOSECARDID", $player, "<-", 1);
       AddDecisionQueue("POWDERKEG", $player, "-", 1);
       break;
     case "EVO074":
@@ -942,12 +944,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "CRU051": case "CRU052":
-      EvaluateCombatChain($totalAttack, $totalBlock);
-      for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-        if($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
-          DestroyCurrentWeapon();
-        }
-      }
+      DestroyCurrentWeapon();
       break;
     case "CRU075":
       $index = SearchAurasForUniqueID($uniqueID, $player);
