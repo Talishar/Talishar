@@ -1069,6 +1069,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       $enduranceCounters = 0;
       $atkCounters = 0;
       $steamCounters = 0;
+      $borderColor = 0;
       $label = "";
 
       if (($option[0] == "MYALLY" || $option[0] == "THEIRALLY" || $option[0] == "THEIRAURAS") && $option[1] == $combatChainState[$CCS_WeaponIndex]) {
