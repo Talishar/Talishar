@@ -1211,11 +1211,26 @@ function SearchGetFirst($search)
   return $arr[0];
 }
 
+function SearchGetLast($search)
+{
+  if($search == "") return "";
+  $arr = explode(",", $search);
+  return $arr[count($arr)-1];
+}
+
 function SearchGetFirstIndex($search)
 {
   $firstMZ = SearchGetFirst($search);
   if($search == "") return "";
   $arr = explode("-", $firstMZ);
+  return $arr[1];
+}
+
+function SearchGetLastIndex($search)
+{
+  $lastMZ = SearchGetLast($search);
+  if($search == "") return "";
+  $arr = explode("-", $lastMZ);
   return $arr[1];
 }
 

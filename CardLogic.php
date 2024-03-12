@@ -1269,7 +1269,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       }
       break;
 		case "DYN010": case "DYN011": case "DYN012":
-      $index = SearchGetFirstIndex(SearchMultizone($player, "MYDISCARD:cardID=" . $parameter));
+      $index = SearchGetLastIndex(SearchMultizone($player, "MYDISCARD:cardID=" . $parameter));
       RemoveGraveyard($player, $index);
       $deck = new Deck($player);
       $deck->AddBottom($parameter, "GY");
