@@ -490,7 +490,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
 
   $response->playerDeckCount = count($myDeck);
   if($playerID < 3 && count($myDeck) > 0 && $myCharacter[1] < 3 && ($myCharacter[0] == "EVO002" || $myCharacter[0] == "EVO001") && $turn[0] != "OPT" && $turn[0] != "DOCRANK") {
-    $playable = IsPlayable($myDeck[0], $turn[0], "DECK", 0);
+    $playable = $playerID == $currentPlayer && IsPlayable($myDeck[0], $turn[0], "DECK", 0);
     $response->playerDeckCard = JSONRenderedCard($myDeck[0], action:($playable ? 35 : 0), actionDataOverride:strval(0), borderColor: ($playable ? 6 : 0), controller:$playerID);
   }
   else $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
