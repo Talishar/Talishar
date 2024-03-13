@@ -65,11 +65,6 @@ function EffectHitEffect($cardID)
     case "MON299": case "MON300": case "MON301":
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
       break;
-    case "ELE003":
-      if(IsHeroAttackTarget()) {
-        PlayAura("ELE111", $defPlayer);
-      }
-      break;
     case "ELE005":
       if(IsHeroAttackTarget()) {
         $hand = &GetHand($defPlayer);
@@ -978,7 +973,7 @@ function CurrentEffectGrantsGoAgain()
         case "ELE034-2": return true;
         case "ELE091-GA": return true;
         case "ELE177": case "ELE178": case "ELE179": return true;
-        case "ELE180": case "ELE181": case "ELE182": 
+        case "ELE180": case "ELE181": case "ELE182":
           if($combatChainState[$CCS_AttackFused] == 1) return true;
           else break;
         case "ELE201": return true;
@@ -992,7 +987,7 @@ function CurrentEffectGrantsGoAgain()
         case "DYN076": case "DYN077": case "DYN078": return true;
         case "DTD190": case "DTD191": case "DTD192": return true;
         case "HVY240": return true;
-        case "HVY254-1": case "HVY254-2": 
+        case "HVY254-1": case "HVY254-2":
           if(SearchPitchForColor($mainPlayer, 2) > 0) return true;
           else break;
         case "HVY246": return true;
@@ -1049,7 +1044,7 @@ function CurrentEffectPreventsDraw($player, $isMainPhase)
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if($currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
-        case "WTR045": 
+        case "WTR045":
           if($isMainPhase) WriteLog("Draw prevented by " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]));
           return $isMainPhase;
         default: break;
@@ -1277,11 +1272,11 @@ function EffectDefenderAttackModifiers($cardID)
     $remove = false;
     if($currentTurnEffects[$i + 1] == $defPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardID)) {
       switch($currentTurnEffects[$i]) {
-        case "MON008": case "MON009": case "MON010": 
-          $mod -= 1; 
+        case "MON008": case "MON009": case "MON010":
+          $mod -= 1;
           break;
         case "DTD011": case "DTD411":
-          $mod -= 1; 
+          $mod -= 1;
           break;
         default:
           break;
@@ -1383,4 +1378,3 @@ function EffectsAttackYouControlModifiers($cardID, $player) {
   }
   return $attackModifier;
 }
-

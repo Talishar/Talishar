@@ -48,6 +48,11 @@
     global $defPlayer, $combatChainState, $CCS_AttackFused;
     switch($cardID)
     {
+      case "ELE003":
+        if(IsHeroAttackTarget()) {
+          PlayAura("ELE111", $defPlayer);
+        }
+        break;
       case "ELE004":
         if(IsHeroAttackTarget()) {
           AddCurrentTurnEffect($cardID . "-HIT", $defPlayer);
