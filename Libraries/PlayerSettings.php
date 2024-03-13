@@ -546,7 +546,7 @@ function IsTeamSunflowerSamurai($userID)
     case "kaikou":
     case "Akuma":
     case "Free":
-    case "Yoeresel":
+    case "yoeresel":
     case "Kohs":
     case "Ch3sh1r3":
     case "NardoPotente":
@@ -557,6 +557,7 @@ function IsTeamSunflowerSamurai($userID)
     case "Clenyu":
     case "juanmonzonf":
     case "Raiswind":
+    case "Bossen":
       return true;
     default: break;
   }
