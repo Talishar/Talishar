@@ -5,6 +5,9 @@ include "HostFiles/Redirector.php";
 include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
 
+ob_implicit_flush(true);
+ob_end_flush();
+
 // array holding allowed Origin domains
 SetHeaders();
 
@@ -37,7 +40,6 @@ header('Cache-Control: no-cache');
 
 $lastUpdate = 0;
 $response->message = "update";
-$response->padding = str_pad("", 4096);
 
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 
