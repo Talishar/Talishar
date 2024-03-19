@@ -164,6 +164,7 @@ function GetCardBack($player)
     case 72: return "CBOnTheBauble";
     case 73: return "CBGorganianTome";
     case 74: return "CBFABChaos";
+    case 75: return "CBColdFoilControl";
     default: return "CardBack";
   }
 }
@@ -558,6 +559,7 @@ function IsTeamSunflowerSamurai($userID)
     case "juanmonzonf":
     case "Raiswind":
     case "Bossen":
+    case "PvtVoid":
       return true;
     default: break;
   }
@@ -577,6 +579,22 @@ function IsTeamFABChaos($userID)
     case "mythen":
     case "Enegon":
     case "Obnoxious":
+    case "PvtVoid":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
+function IsTeamColdFoilControl($userID)
+{
+  switch($userID) {
+    case "Z-Gin":
+    case "Chaco":
+    case "Kentshero":
+    case "Ardent":
+    case "PurpleHaze":
+    case "luxas":
     case "PvtVoid":
       return true;
     default: break;
