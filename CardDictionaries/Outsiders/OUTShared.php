@@ -830,7 +830,7 @@ function OUTAbilityCost($cardID)
     if($char[1] == 2 && $characterID == "OUT091" || $characterID == "OUT092")
     {
       WriteLog("Riptide deals 1 damage from a trap.");
-      DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
+      DamageTrigger($mainPlayer, 1, "DAMAGE", $characterID);
     }
   }
 
