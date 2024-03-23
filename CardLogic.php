@@ -744,6 +744,9 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target) {
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $player, $character[$index], 1);
       break;
+    case "ELE062": case "ELE063":
+      PlayAura("ELE109", $player);
+      break;
     case "EVR037":
       $index = FindCharacterIndex($player, $cardID);
       AddDecisionQueue("YESNO", $player, "to_destroy_Mask_of_the_Pouncing_Lynx");

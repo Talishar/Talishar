@@ -405,7 +405,7 @@ function MainCharacterHitTrigger()
         break;
       case "ELE062": case "ELE063":
         if(IsHeroAttackTarget() && CardType($attackID) == "AA" && !SearchAuras("ELE109", $mainPlayer)) {
-          PlayAura("ELE109", $mainPlayer);
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
       case "EVR037":
