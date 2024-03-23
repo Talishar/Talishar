@@ -540,7 +540,7 @@ function AddOnHitTrigger($cardID)
     case "MON078": case "MON079": case "MON080":
     case "MON198":
     case "MON206": case "MON207": case "MON208":
-    case "ELE001": case "ELE002": case "ELE003":
+    case "ELE001": case "ELE002": 
     case "ELE004":
     case "ELE013": case "ELE014": case "ELE015":
     case "ELE209": case "ELE210": case "ELE211":
@@ -616,6 +616,9 @@ function AddOnHitTrigger($cardID)
     case "HVY249":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
     break;
+    case "ELE003":
+      if(SearchCurrentTurnEffects($cardID, $mainPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
+      break;
     default:
       break;
   }
