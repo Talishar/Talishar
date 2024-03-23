@@ -366,7 +366,7 @@ function BlockValue($cardID)
 
 function AttackValue($cardID)
 {
-  global $mainPlayer;
+  global $combatChainState, $CCS_NumBoosted, $mainPlayer, $currentPlayer;
   if(!$cardID) return "";
   $set = CardSet($cardID);
   $class = CardClass($cardID);
@@ -376,6 +376,10 @@ function AttackValue($cardID)
     if(SearchCharacterForCard($mainPlayer, "MON088")) return 4;
     if(SearchCharacterForCard($mainPlayer, "DTD216")) return 5;
   }
+  if($cardID == "CRU101") return 1 + $combatChainState[$CCS_NumBoosted];
+  else if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
+  else if($cardID == "EVR138") return FractalReplicationStats("Attack");
+  else if($cardID == "DYN216") return CountAura("MON104", $currentPlayer);
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400 || ($set != "MON" && $set != "DYN")) return GeneratedAttackValue($cardID);
