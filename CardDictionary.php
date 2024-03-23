@@ -926,7 +926,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return count($mySoul) == 0;
     case "DTD106": 
       $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A")); 
-      $cleanIndexes = RemoveCardSameNames($player, $index);
+      $cleanIndexes = RemoveCardSameNames($player, $index, GetBanish($player));
       return SearchCount($cleanIndexes) < 3;
     case "DTD142": return CountAura("ARC112", $currentPlayer) != 6;
     case "DTD164": return $from != "PLAY" || SearchCount(SearchBanish($currentPlayer, bloodDebtOnly:true)) < 13;

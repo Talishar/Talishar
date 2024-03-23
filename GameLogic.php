@@ -108,10 +108,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if($rv[0] == "0" && (strlen($rv) == 0 || $rv[1] == ",")) $rv = substr($rv, 2);
           break;
         case "MYHANDARROW": $rv = SearchHand($player, "", "Arrow"); break;
-        case "MYDISCARDARROW": $rv = SearchDiscard($player, "", "Arrow"); break;
+        case "MYDISCARDARROW": 
+          $index = SearchDiscard($player, "", "Arrow");
+          $rv = RemoveCardSameNames($player, $index, GetDiscard($player));
+          break;
         case "MULTIACTIONSBANISH":
           $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A"));
-          $rv = RemoveCardSameNames($player, $index);
+          $rv = RemoveCardSameNames($player, $index, GetBanish($player));
           break;
         case "GY":
           $discard = &GetDiscard($player);

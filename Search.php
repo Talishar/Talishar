@@ -1277,17 +1277,16 @@ function GetPlayerNumTokens($player)
   return $count;
 }
 
-function RemoveCardSameNames($player, $stringCardsIndex) {
+function RemoveCardSameNames($player, $stringCardsIndex, $zone) {
   if($stringCardsIndex == "") return "";
-  $banish = GetBanish($player);
   $indexToCheck = explode(',', $stringCardsIndex);
   $newString = "";
   $uniqueNameIndex = "";
   for ($i = 0; $i < count($indexToCheck); $i++)
   {
     if($newString != "") $newString .= ",";
-    if(!str_contains($newString, CardName($banish[$indexToCheck[$i]]))) {
-      $newString .= CardName($banish[$indexToCheck[$i]]);
+    if(!str_contains($newString, CardName($zone[$indexToCheck[$i]]))) {
+      $newString .= CardName($zone[$indexToCheck[$i]]);
       if($uniqueNameIndex != "") $uniqueNameIndex .= ",";
       $uniqueNameIndex .= $indexToCheck[$i];
     }

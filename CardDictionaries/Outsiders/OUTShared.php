@@ -267,7 +267,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "3-", 1);
         AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "QUIVEROFABYSSALDEPTH", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       case "OUT096":
         $deck = new Deck($currentPlayer);
