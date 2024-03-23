@@ -635,9 +635,9 @@ function CanBlockWithEquipment()
   }
 }
 
-function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom="")
+function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom="", $stillOnCombatChain=1)
 {
-  global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer;
+  global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $defPlayer;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
   if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
@@ -659,7 +659,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   switch($cardID) {
     case "WTR163": return "BANISH";
     case "CRU163": return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
-    case "MON063": return ($from == "CHAINCLOSING" ? "SOUL" : "GY");
+    case "MON063": return ($from == "CHAINCLOSING" && $stillOnCombatChain ? "SOUL" : "GY");
     case "MON064": return "SOUL";
     case "MON231": return "BANISH";
     case "ELE113": return "BANISH";

@@ -400,7 +400,7 @@ function ResetCombatChainState()
       }
       if(CardType($chainLinks[$i][$j]) == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
       else {
-        $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3]);
+        $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
         switch($goesWhere) {
           case "GY":
             AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CC");
