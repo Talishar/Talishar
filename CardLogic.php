@@ -1709,7 +1709,8 @@ function DiscardRandom($player = "", $source = "", $effectController = "")
   if($effectController == "") $effectController = $currentPlayer;
   $hand = &GetHand($player);
   if(count($hand) == 0) return "";
-  $index = GetRandom() % count($hand);
+  if(count($hand) > 1) $index = GetRandom(0, count($hand)-1);
+  else $index = 0;
   $discarded = $hand[$index];
   unset($hand[$index]);
   $hand = array_values($hand);
