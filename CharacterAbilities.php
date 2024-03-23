@@ -691,6 +691,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "CRU024": case "CRU101":
     case "MON029": case "MON030":
     case "ELE173":
+    case "DYN001":
     case "OUT096":
     case "TCC050":
       break; //Unlimited uses
