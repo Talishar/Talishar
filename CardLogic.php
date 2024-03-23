@@ -1410,8 +1410,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("PASSPARAMETER", $player, "3", 1);
       AddDecisionQueue("PAYRESOURCES", $player, "3", 1);
       AddDecisionQueue("ELSE", $player, "-");
-      AddDecisionQueue("WRITELOG", $player, "Took 2 damage from Bloodrot Pox.", 1);
-      AddDecisionQueue("TAKEDAMAGE", $player, 2, 1);
+      AddDecisionQueue("WRITELOG", $player, "Took 2 damage from " . CardLink("OUT234", "OUT234"), 1);
+      AddDecisionQueue("TAKEDAMAGE", $player, "2-OUT234", 1);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case $CID_Inertia:
