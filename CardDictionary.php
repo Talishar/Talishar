@@ -1603,8 +1603,8 @@ function RequiresDieRoll($cardID, $from, $player)
   global $turn;
   if(GetDieRoll($player) > 0) return false;
   if($turn[0] == "B") return false;
-  $type = CardType($cardID);
-  if($type == "AA" && AttackValue($cardID) >= 6 && (SearchCharacterActive($player, "CRU002") || SearchCurrentTurnEffects("CRU002-SHIYANA", $player))) return true;
+  $type = CardType($cardID); 
+  if($type == "AA" && (GetResolvedAbilityType($cardID) == "" || GetResolvedAbilityType($cardID) == "AA") && AttackValue($cardID) >= 6 && (SearchCharacterActive($player, "CRU002") || SearchCurrentTurnEffects("CRU002-SHIYANA", $player))) return true;
   switch($cardID) {
     case "WTR004": case "WTR005": case "WTR010": return true;
     case "WTR162": return $from == "PLAY";
