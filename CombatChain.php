@@ -537,7 +537,7 @@ function BeginningReactionStepEffects()
   }
 }
 
-function ModifyBlockForType($type, $amount)
+function ModifyBlockForType($type, $amount,)
 {
   global $combatChain, $defPlayer;
   $count = 0;
@@ -547,6 +547,7 @@ function ModifyBlockForType($type, $amount)
     if(CardType($combatChain[$i]) != $type) continue;
     ++$count;
     $combatChain[$i+6] += $amount;
+    if ($type == "DR") return $count;
   }
   return $count;
 }
