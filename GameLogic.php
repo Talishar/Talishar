@@ -1664,7 +1664,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           default:
             BanishCardForPlayer($lastResult, $defPlayer, "CC", "REMOVEGRAVEYARD", $mainPlayer);
             $index = GetCombatChainIndex($lastResult, $defPlayer);
-            $CombatChain->Remove($index);
+            if($CombatChain->Remove($index) == "") {
+              for($i = 0; $i < count($chainLinks); ++$i) {
+                for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+                  if($chainLinks[$i][$j] == $lastResult) $chainLinks[$i][$j+2] = 0;
+                }
+              }            
+            }
             break;
         }
         WriteLog(CardLink($lastResult, $lastResult). " was banished");
