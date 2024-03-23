@@ -1261,13 +1261,17 @@ function DoesAttackHaveGoAgain()
   $attackType = CardType($attackID);
   $attackSubtype = CardSubType($attackID);
   $isAura = DelimStringContains(CardSubtype($attackID), "Aura");
-  //Prevention First
+  //Prevention Natural Go Again
   if(CurrentEffectPreventsGoAgain()) return false;
   if(SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false;
+  
+  //Natural Go Again
+  if(!$isAura && HasGoAgain($attackID)) return true;
+
+  //Prevention Grant Go Again 
   if(SearchAuras("UPR139", $mainPlayer)) return false;
 
-  //Grant go again
-  if(!$isAura && HasGoAgain($attackID)) return true;
+  //Grant go Again
   if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
     if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if($isAura && SearchCharacterForCard($mainPlayer, "MON088")) return true;
