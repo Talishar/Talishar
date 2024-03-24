@@ -507,6 +507,7 @@ function GetAltCardID($cardID)
     case "FAB024": return "ARC200";
     case "FAB030": return "DYN030";
     case "FAB057": return "EVR063";
+    case "EVR120": return "UPR103";
     case "DVR026": return "WTR182";
     case "RVD008": return "WTR006";
     case "UPR209": return "WTR191";
@@ -557,6 +558,8 @@ function GetAltCardID($cardID)
 function IsBanned($cardID, $format)
 {
   $set = substr($cardID, 0, 3);
+  if($format == "commoner" && (CardType($cardID) == "C" || CardType($cardID) == "E") && (Rarity($cardID) != "C" && Rarity($cardID) != "R" && Rarity($cardID) != "T")) return true;
+  if($format == "commoner" && (Rarity($cardID) != "C" || Rarity($cardID) != "T")) return true;
   //Ban spoilers in formats besides Open Format
   if($format != "livinglegendscc" && ($set == "MST")) return true;
   switch ($format) {
