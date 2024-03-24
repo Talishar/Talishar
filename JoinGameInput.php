@@ -558,8 +558,7 @@ function GetAltCardID($cardID)
 function IsBanned($cardID, $format)
 {
   $set = substr($cardID, 0, 3);
-  if($format == "commoner" && (CardType($cardID) == "C" || CardType($cardID) == "E") && (Rarity($cardID) != "C" && Rarity($cardID) != "R" && Rarity($cardID) != "T")) return true;
-  if($format == "commoner" && (Rarity($cardID) != "C" || Rarity($cardID) != "T")) return true;
+  if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R")) return true;
   //Ban spoilers in formats besides Open Format
   if($format != "livinglegendscc" && ($set == "MST")) return true;
   switch ($format) {
