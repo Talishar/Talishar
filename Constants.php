@@ -298,6 +298,7 @@ $CS_NumMightDestroyed = 72;
 $CS_NumAgilityDestroyed = 73;
 $CS_HaveIntimidated = 74;
 $CS_ModalAbilityChoosen = 75;
+$CS_NumSpectralShieldAttacks = 76;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -400,7 +401,7 @@ function ResetCombatChainState()
       }
       if(CardType($chainLinks[$i][$j]) == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
       else {
-        $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3]);
+        $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
         switch($goesWhere) {
           case "GY":
             AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CC");
@@ -497,7 +498,7 @@ function ResetMainClassState()
   global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks, $CS_ArcaneDamageDealt, $CS_LayerPlayIndex, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumBoostPlayed;
   global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain, $CS_NumContractsCompleted, $CS_HitsWithSword, $CS_NumCardsDrawn;
   global $CS_LifeLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrouchingTigerPlayedThisTurn, $CS_NumClashesWon;
-  global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen;
+  global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -574,6 +575,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumAgilityDestroyed] = 0;
   $mainClassState[$CS_HaveIntimidated] = 0;
   $mainClassState[$CS_ModalAbilityChoosen] = "-";
+  $mainClassState[$CS_NumSpectralShieldAttacks] = 0;
 }
 
 function ResetCardPlayed($cardID)

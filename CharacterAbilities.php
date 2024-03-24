@@ -405,7 +405,7 @@ function MainCharacterHitTrigger()
         break;
       case "ELE062": case "ELE063":
         if(IsHeroAttackTarget() && CardType($attackID) == "AA" && !SearchAuras("ELE109", $mainPlayer)) {
-          PlayAura("ELE109", $mainPlayer);
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
       case "EVR037":
@@ -543,7 +543,7 @@ function WeaponHasGoAgainLabel($index, $player)
 
 function CharacterCostModifier($cardID, $from)
 {
-  global $currentPlayer, $CS_NumSwordAttacks, $CS_NumCardsDrawn;
+  global $currentPlayer, $CS_NumSwordAttacks, $CS_NumCardsDrawn, $CS_NumSpectralShieldAttacks;
   $modifier = 0;
   $char = &GetPlayerCharacter($currentPlayer);
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
@@ -554,6 +554,7 @@ function CharacterCostModifier($cardID, $from)
       case "TCC408": if($cardID == "TCC002") --$modifier; break;
       case "EVO001": case "EVO002": if($from == "DECK" && SubtypeContains($cardID, "Item", $currentPlayer) && CardCost($cardID) < 2) ++$modifier; break;
       case "HVY090": case "HVY091": if(CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumCardsDrawn) >= 1) --$modifier; break;
+      case "MST025": case "MST026": if(CardName($cardID) == "Spectral Shield" && GetClassState($currentPlayer, $CS_NumSpectralShieldAttacks) == 0) --$modifier; break;
       default: break;
     }
   }
@@ -691,6 +692,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "CRU024": case "CRU101":
     case "MON029": case "MON030":
     case "ELE173":
+    case "DYN001":
     case "OUT096":
     case "TCC050":
       break; //Unlimited uses

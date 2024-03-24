@@ -366,7 +366,7 @@ function BlockValue($cardID)
 
 function AttackValue($cardID)
 {
-  global $mainPlayer;
+  global $combatChainState, $CCS_NumBoosted, $mainPlayer, $currentPlayer;
   if(!$cardID) return "";
   $set = CardSet($cardID);
   $class = CardClass($cardID);
@@ -376,6 +376,10 @@ function AttackValue($cardID)
     if(SearchCharacterForCard($mainPlayer, "MON088")) return 4;
     if(SearchCharacterForCard($mainPlayer, "DTD216")) return 5;
   }
+  if($cardID == "CRU101") return 1 + $combatChainState[$CCS_NumBoosted];
+  else if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
+  else if($cardID == "EVR138") return FractalReplicationStats("Attack");
+  else if($cardID == "DYN216") return CountAura("MON104", $currentPlayer);
   if($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if($number < 400 || ($set != "MON" && $set != "DYN")) return GeneratedAttackValue($cardID);
@@ -635,9 +639,9 @@ function CanBlockWithEquipment()
   }
 }
 
-function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom="")
+function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom="", $stillOnCombatChain=1)
 {
-  global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer;
+  global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $defPlayer;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
   if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
@@ -659,7 +663,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   switch($cardID) {
     case "WTR163": return "BANISH";
     case "CRU163": return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
-    case "MON063": return ($from == "CHAINCLOSING" ? "SOUL" : "GY");
+    case "MON063": return ($from == "CHAINCLOSING" && $stillOnCombatChain ? "SOUL" : "GY");
     case "MON064": return "SOUL";
     case "MON231": return "BANISH";
     case "ELE113": return "BANISH";
@@ -926,7 +930,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DTD075": case "DTD076": case "DTD077": case "DTD078": return count($mySoul) == 0;
     case "DTD106": 
       $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A")); 
-      $cleanIndexes = RemoveCardSameNames($player, $index);
+      $cleanIndexes = RemoveCardSameNames($player, $index, GetBanish($player));
       return SearchCount($cleanIndexes) < 3;
     case "DTD142": return CountAura("ARC112", $currentPlayer) != 6;
     case "DTD164": return $from != "PLAY" || SearchCount(SearchBanish($currentPlayer, bloodDebtOnly:true)) < 13;
@@ -1551,6 +1555,7 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false)
   if(HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer, false)) >= CardCost($cardID)) return true;
   $char = &GetPlayerCharacter($currentPlayer);
   if(SubtypeContains($cardID, "Evo") && ($char[0] == "TCC001" || $char[0] == "EVO007" || $char[0] == "EVO008") && $char[1] < 3) return true;
+  if($char[0] == "DTD564" && SearchCurrentTurnEffects("DTD564", $currentPlayer) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E")) return true;
   switch($cardID) {
     case "MON123": return GetClassState($currentPlayer, $CS_Num6PowBan) > 0;
     case "MON156": case "MON158": return true;
@@ -1575,7 +1580,6 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false)
     default: break;
   }
   if($nonLimitedOnly) return false;
-  if($char[0] == "DTD564" && SearchCurrentTurnEffects("DTD564", $currentPlayer) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E")) return true;
   return false;
 }
 
@@ -1603,8 +1607,8 @@ function RequiresDieRoll($cardID, $from, $player)
   global $turn;
   if(GetDieRoll($player) > 0) return false;
   if($turn[0] == "B") return false;
-  $type = CardType($cardID);
-  if($type == "AA" && AttackValue($cardID) >= 6 && (SearchCharacterActive($player, "CRU002") || SearchCurrentTurnEffects("CRU002-SHIYANA", $player))) return true;
+  $type = CardType($cardID); 
+  if($type == "AA" && (GetResolvedAbilityType($cardID) == "" || GetResolvedAbilityType($cardID) == "AA") && AttackValue($cardID) >= 6 && (SearchCharacterActive($player, "CRU002") || SearchCurrentTurnEffects("CRU002-SHIYANA", $player))) return true;
   switch($cardID) {
     case "WTR004": case "WTR005": case "WTR010": return true;
     case "WTR162": return $from == "PLAY";

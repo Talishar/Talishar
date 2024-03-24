@@ -267,7 +267,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "3-", 1);
         AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "QUIVEROFABYSSALDEPTH", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       case "OUT096":
         $deck = new Deck($currentPlayer);
@@ -830,7 +830,7 @@ function OUTAbilityCost($cardID)
     if($char[1] == 2 && $characterID == "OUT091" || $characterID == "OUT092")
     {
       WriteLog("Riptide deals 1 damage from a trap.");
-      DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
+      DamageTrigger($mainPlayer, 1, "DAMAGE", $characterID);
     }
   }
 

@@ -625,6 +625,7 @@ function GetAltCardID($cardID)
     case "FAB057": return "EVR063";
     case "DVR026": return "WTR182";
     case "RVD008": return "WTR006";
+    case "EVR120": return "UPR103";
     case "UPR209": return "WTR191";
     case "UPR210": return "WTR192";
     case "UPR211": return "WTR193";
@@ -668,8 +669,10 @@ function GetAltCardID($cardID)
 function IsCardBanned($cardID, $format)
 {
   $set = substr($cardID, 0, 3);
+  if ($format == "commoner" && (CardType($cardID) == "C" || CardType($cardID) == "E") && (Rarity($cardID) == "C" || Rarity($cardID) == "R" || Rarity($cardID) == "T")) return false;
+  elseif ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T")) return true;
   //Ban spoiler cards in non-open-format
-  //if($format != "livinglegendscc" && ($set == "HVY")) return true;
+  if($format != "livinglegendscc" && ($set == "MST")) return true;
   switch ($cardID) { //Special Use Promos
     case "JDG002": case "JDG004": case "JDG005": case "JDG008": case "JDG010": case "JDG019": case "JDG024": case "JDG025": 
     case "LSS001": case "LSS002": case "LSS003": case "LSS004": case "LSS005": case "LSS006": case "LSS007": case "LSS008": 

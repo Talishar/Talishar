@@ -108,10 +108,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if($rv[0] == "0" && (strlen($rv) == 0 || $rv[1] == ",")) $rv = substr($rv, 2);
           break;
         case "MYHANDARROW": $rv = SearchHand($player, "", "Arrow"); break;
-        case "MYDISCARDARROW": $rv = SearchDiscard($player, "", "Arrow"); break;
+        case "MYDISCARDARROW": 
+          $index = SearchDiscard($player, "", "Arrow");
+          $rv = RemoveCardSameNames($player, $index, GetDiscard($player));
+          break;
         case "MULTIACTIONSBANISH":
           $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A"));
-          $rv = RemoveCardSameNames($player, $index);
+          $rv = RemoveCardSameNames($player, $index, GetBanish($player));
           break;
         case "GY":
           $discard = &GetDiscard($player);
@@ -1661,7 +1664,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           default:
             BanishCardForPlayer($lastResult, $defPlayer, "CC", "REMOVEGRAVEYARD", $mainPlayer);
             $index = GetCombatChainIndex($lastResult, $defPlayer);
-            $CombatChain->Remove($index);
+            if($CombatChain->Remove($index) == "") {
+              for($i = 0; $i < count($chainLinks); ++$i) {
+                for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+                  if($chainLinks[$i][$j] == $lastResult) $chainLinks[$i][$j+2] = 0;
+                }
+              }            
+            }
             break;
         }
         WriteLog(CardLink($lastResult, $lastResult). " was banished");

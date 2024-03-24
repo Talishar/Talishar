@@ -218,15 +218,16 @@
     global $currentPlayer, $CCS_WagersThisLink;
     AddDecisionQueue("INCREMENTCOMBATCHAINSTATE", $currentPlayer, $CCS_WagersThisLink, $canPass);
     $char = &GetPlayerCharacter($currentPlayer);
-    if($char[1] == 2 && ($char[0] == "HVY045" || $char[0] == "HVY046")) {
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $char[0], $canPass ? 1 : 0);
+    $cardID = ShiyanaCharacter($char[0]);
+    if($char[1] == 2 && ($cardID == "HVY045" || $cardID == "HVY046")) {
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, $canPass ? 1 : 0);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to pay 2 for <0> to give overpower and +1?", 1);
       AddDecisionQueue("YESNO", $currentPlayer, "-", 1, 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, 2, 1);
       AddDecisionQueue("PAYRESOURCES", $currentPlayer, "-", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $char[0], 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
     }
   }
 

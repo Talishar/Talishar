@@ -122,7 +122,7 @@
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
     if(ArsenalFull($player)) { WriteLog("Your arsenal is full, you cannot arsenal a card"); return; }
-    MZMoveCard($player, "MYHAND", "MYARS,HAND,DOWN", may:true, silent:true);
+    MZMoveCard($player, "MYHAND", "MYARS,HAND,DOWN", may:true, silent:true, DQContext:"Choose a card to put face down in arsenal");
   }
 
 ?>

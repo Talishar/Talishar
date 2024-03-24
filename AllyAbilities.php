@@ -136,11 +136,11 @@ function AllyEnduranceCounters($cardID)
   }
 }
 
-function AllyDamagePrevention($player, $index, $damage)
+function AllyDamagePrevention($player, $index, $damage, $type="")
 {
   $allies = &GetAllies($player);
   $cardID = $allies[$index];
-  $canBePrevented = CanDamageBePrevented($player, $damage, "");
+  $canBePrevented = CanDamageBePrevented($player, $damage, $type);
   switch($cardID) {
     case "UPR417":
       if($allies[$index + 6] > 0) {

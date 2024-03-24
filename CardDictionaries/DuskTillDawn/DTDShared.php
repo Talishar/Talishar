@@ -657,10 +657,10 @@ function CallDownLightning()
   global $mainPlayer, $CombatChain;
   WriteLog(CardLink("DTD198", "DTD198") . " deals 1 damage");
   if(IsDecisionQueueActive()) {
-    PrependDecisionQueue("MZDAMAGE", $mainPlayer, "1,DAMAGE," . $CombatChain->CurrentAttack());
+    PrependDecisionQueue("MZDAMAGE", $mainPlayer, "1,ATTACKHIT," . $CombatChain->CurrentAttack());
     PrependDecisionQueue("PASSPARAMETER", $mainPlayer, "THEIRCHAR-0");
   } else {
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "THEIRCHAR-0");
-    AddDecisionQueue("MZDAMAGE", $mainPlayer, "1,DAMAGE," . $CombatChain->CurrentAttack());
+    AddDecisionQueue("MZDAMAGE", $mainPlayer, "1,ATTACKHIT," . $CombatChain->CurrentAttack());
   }
 }

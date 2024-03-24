@@ -540,7 +540,7 @@ function AddOnHitTrigger($cardID)
     case "MON078": case "MON079": case "MON080":
     case "MON198":
     case "MON206": case "MON207": case "MON208":
-    case "ELE001": case "ELE002": case "ELE003":
+    case "ELE001": case "ELE002": 
     case "ELE004":
     case "ELE013": case "ELE014": case "ELE015":
     case "ELE209": case "ELE210": case "ELE211":
@@ -616,6 +616,9 @@ function AddOnHitTrigger($cardID)
     case "HVY249":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
     break;
+    case "ELE003":
+      if(SearchCurrentTurnEffects($cardID, $mainPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
+      break;
     default:
       break;
   }
@@ -743,6 +746,9 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target) {
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $player, $character[$index], 1);
+      break;
+    case "ELE062": case "ELE063":
+      PlayAura("ELE109", $player);
       break;
     case "EVR037":
       $index = FindCharacterIndex($player, $cardID);
@@ -1404,8 +1410,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("PASSPARAMETER", $player, "3", 1);
       AddDecisionQueue("PAYRESOURCES", $player, "3", 1);
       AddDecisionQueue("ELSE", $player, "-");
-      AddDecisionQueue("WRITELOG", $player, "Took 2 damage from Bloodrot Pox.", 1);
-      AddDecisionQueue("TAKEDAMAGE", $player, 2, 1);
+      AddDecisionQueue("WRITELOG", $player, "Took 2 damage from " . CardLink("OUT234", "OUT234"), 1);
+      AddDecisionQueue("TAKEDAMAGE", $player, "2-OUT234", 1);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case $CID_Inertia:
@@ -1703,7 +1709,8 @@ function DiscardRandom($player = "", $source = "", $effectController = "")
   if($effectController == "") $effectController = $currentPlayer;
   $hand = &GetHand($player);
   if(count($hand) == 0) return "";
-  $index = GetRandom() % count($hand);
+  if(count($hand) > 1) $index = GetRandom(0, count($hand)-1);
+  else $index = 0;
   $discarded = $hand[$index];
   unset($hand[$index]);
   $hand = array_values($hand);
