@@ -1029,7 +1029,7 @@ function FinalizeChainLink($chainClosed = false)
 {
   global $turn, $actionPoints, $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
-  global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen;
+  global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks;
   UpdateGameState($currentPlayer);
   BuildMainPlayerGameState();
   if(DoesAttackHaveGoAgain() && !$chainClosed) {
@@ -1095,6 +1095,7 @@ function FinalizeChainLink($chainClosed = false)
     ++$mainClassState[$CS_AtksWWeapon];
     if(CardSubtype($combatChain[0]) == "Sword") ++$mainClassState[$CS_NumSwordAttacks];
   }
+  if(CardName($combatChain[0]) == "Spectral Shield") ++$mainClassState[$CS_NumSpectralShieldAttacks];
   SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
   $combatChain = [];
   if($chainClosed) {

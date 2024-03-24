@@ -543,7 +543,7 @@ function WeaponHasGoAgainLabel($index, $player)
 
 function CharacterCostModifier($cardID, $from)
 {
-  global $currentPlayer, $CS_NumSwordAttacks, $CS_NumCardsDrawn;
+  global $currentPlayer, $CS_NumSwordAttacks, $CS_NumCardsDrawn, $CS_NumSpectralShieldAttacks;
   $modifier = 0;
   $char = &GetPlayerCharacter($currentPlayer);
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
@@ -554,6 +554,7 @@ function CharacterCostModifier($cardID, $from)
       case "TCC408": if($cardID == "TCC002") --$modifier; break;
       case "EVO001": case "EVO002": if($from == "DECK" && SubtypeContains($cardID, "Item", $currentPlayer) && CardCost($cardID) < 2) ++$modifier; break;
       case "HVY090": case "HVY091": if(CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumCardsDrawn) >= 1) --$modifier; break;
+      case "MST025": case "MST026": if(CardName($cardID) == "Spectral Shield" && GetClassState($currentPlayer, $CS_NumSpectralShieldAttacks) == 0) --$modifier; break;
       default: break;
     }
   }
