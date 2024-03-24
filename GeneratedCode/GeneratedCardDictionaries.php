@@ -4239,6 +4239,42 @@ default: return "AA";
 }
 default: return "AA";
 }
+case "S":
+switch($cardID[2]) {
+case "T":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "6":
+return "C";
+case "5":
+return "C";
+default: return "AA";
+}
+case "0":
+switch($cardID[5]) {
+case "2":
+return "C";
+case "1":
+return "C";
+default: return "AA";
+}
+case "4":
+switch($cardID[5]) {
+case "7":
+return "C";
+case "6":
+return "C";
+default: return "AA";
+}
+default: return "AA";
+}
+default: return "AA";
+}
+default: return "AA";
+}
 default: return "AA";
 }
 case "L":
@@ -12625,6 +12661,42 @@ default: return 3;
 }
 default: return 3;
 }
+case "S":
+switch($cardID[2]) {
+case "T":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "6":
+return -1;
+case "5":
+return -1;
+default: return 3;
+}
+case "0":
+switch($cardID[5]) {
+case "2":
+return -1;
+case "1":
+return -1;
+default: return 3;
+}
+case "4":
+switch($cardID[5]) {
+case "7":
+return -1;
+case "6":
+return -1;
+default: return 3;
+}
+default: return 3;
+}
+default: return 3;
+}
+default: return 3;
+}
 default: return 3;
 }
 case "D":
@@ -19435,6 +19507,42 @@ case "0":
 return "Warmonger's Recital";
 case "1":
 return "Warmonger's Recital";
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
+case "S":
+switch($cardID[2]) {
+case "T":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "6":
+return "Enigma";
+case "5":
+return "Enigma, Ledger of Ancestry";
+default: return "";
+}
+case "0":
+switch($cardID[5]) {
+case "2":
+return "Nuu";
+case "1":
+return "Nuu, Alluring Desire";
+default: return "";
+}
+case "4":
+switch($cardID[5]) {
+case "7":
+return "Zen";
+case "6":
+return "Zen, Tamer of Purpose";
 default: return "";
 }
 default: return "";
@@ -26687,6 +26795,42 @@ default: return 1;
 }
 default: return 1;
 }
+case "S":
+switch($cardID[2]) {
+case "T":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "6":
+return 0;
+case "5":
+return 0;
+default: return 1;
+}
+case "0":
+switch($cardID[5]) {
+case "2":
+return 0;
+case "1":
+return 0;
+default: return 1;
+}
+case "4":
+switch($cardID[5]) {
+case "7":
+return 0;
+case "6":
+return 0;
+default: return 1;
+}
+default: return 1;
+}
+default: return 1;
+}
+default: return 1;
+}
 default: return 1;
 }
 case "D":
@@ -32739,6 +32883,42 @@ default: return 0;
 }
 default: return 0;
 }
+case "S":
+switch($cardID[2]) {
+case "T":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "6":
+return -1;
+case "5":
+return -1;
+default: return 0;
+}
+case "0":
+switch($cardID[5]) {
+case "2":
+return -1;
+case "1":
+return -1;
+default: return 0;
+}
+case "4":
+switch($cardID[5]) {
+case "7":
+return -1;
+case "6":
+return -1;
+default: return 0;
+}
+default: return 0;
+}
+default: return 0;
+}
+default: return 0;
+}
 default: return 0;
 }
 case "D":
@@ -37425,6 +37605,42 @@ default: return "";
 }
 default: return "";
 }
+case "S":
+switch($cardID[2]) {
+case "T":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "6":
+return "Mystic,Young";
+case "5":
+return "Mystic";
+default: return "";
+}
+case "0":
+switch($cardID[5]) {
+case "2":
+return "Mystic,Young";
+case "1":
+return "Mystic";
+default: return "";
+}
+case "4":
+switch($cardID[5]) {
+case "7":
+return "Mystic,Young";
+case "6":
+return "Mystic";
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
 default: return "";
 }
 case "F":
@@ -39438,14 +39654,18 @@ if(strlen($cardID) < 6) return 0;
 if(is_int($cardID)) return 0;
 switch($cardID) {
 case "DTD407": return 4;
+case "DTD407": return 4;
 case "UPR042": return 1;
 case "DYN113": return 40;
 case "OUT003": return 19;
+case "DTD409": return 4;
 case "DTD409": return 4;
 case "ARC038": return 40;
 case "CRU119": return 40;
 case "OUT089": return 40;
 case "UPR409": return 3;
+case "UPR409": return 3;
+case "DTD412": return 4;
 case "DTD412": return 4;
 case "CRU047": return 17;
 case "OUT047": return 17;
@@ -39462,6 +39682,7 @@ case "FAB191": return 2;
 case "FAB201": return 2;
 case "HVY134": return 2;
 case "UPR410": return 2;
+case "UPR410": return 2;
 case "EVO001": return 36;
 case "HER089": return 36;
 case "HER094": return 36;
@@ -39471,11 +39692,14 @@ case "HER097": return 18;
 case "ARC001": return 40;
 case "CRU098": return 40;
 case "UPR408": return 4;
+case "UPR408": return 4;
 case "CRU076": return 40;
 case "WTR113": return 40;
 case "UPR406": return 6;
+case "UPR406": return 6;
 case "UPR001": return 40;
 case "DYN001": return 15;
+case "MST025": return 40;
 case "UPR044": return 40;
 case "EVR120": return 18;
 case "UPR103": return 18;
@@ -39492,6 +39716,8 @@ case "HER108": return 40;
 case "HVY001": return 40;
 case "CRU002": return 19;
 case "UPR411": return 2;
+case "UPR411": return 2;
+case "DTD564": return 8;
 case "DTD564": return 8;
 case "DTD103": return 40;
 case "MON119": return 40;
@@ -39500,12 +39726,17 @@ case "EVO004": return 40;
 case "HER090": return 40;
 case "HER095": return 40;
 case "DTD410": return 4;
+case "DTD410": return 4;
+case "UPR412": return 4;
 case "UPR412": return 4;
 case "DTD193": return 6;
 case "UPR413": return 7;
+case "UPR413": return 7;
+case "MST001": return 40;
 case "ELE001": return 40;
 case "HER107": return 40;
 case "HVY092": return 40;
+case "UPR414": return 6;
 case "UPR414": return 6;
 case "DTD002": return 16;
 case "HER084": return 16;
@@ -39519,15 +39750,22 @@ case "WTR001": return 40;
 case "OUT092": return 19;
 case "OUT091": return 38;
 case "DTD408": return 4;
+case "DTD408": return 4;
 case "DTD044": return 40;
 case "MON029": return 40;
 case "DTD405": return 4;
+case "DTD405": return 4;
+case "DYN612": return 4;
+case "DYN612": return 4;
 case "DYN612": return 4;
 case "EVO007": return 40;
 case "HER088": return 40;
 case "HER096": return 40;
 case "UPR415": return 4;
+case "UPR415": return 4;
 case "DTD406": return 4;
+case "DTD406": return 4;
+case "UPR407": return 5;
 case "UPR407": return 5;
 case "MON220": return 6;
 case "OUT001": return 40;
@@ -39535,13 +39773,17 @@ case "EVR019": return 21;
 case "HER106": return 40;
 case "HVY047": return 40;
 case "DTD411": return 4;
+case "DTD411": return 4;
 case "ARC075": return 40;
 case "CRU138": return 40;
 case "DTD133": return 40;
 case "HER087": return 40;
 case "UPR416": return 1;
+case "UPR416": return 1;
+case "UPR417": return 3;
 case "UPR417": return 3;
 case "DYN025": return 22;
+case "MST046": return 40;
 default: return 20;}
 }
 
@@ -44421,6 +44663,42 @@ default: return "C";
 }
 default: return "C";
 }
+case "S":
+switch($cardID[2]) {
+case "T":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "6":
+return "V";
+case "5":
+return "V";
+default: return "C";
+}
+case "0":
+switch($cardID[5]) {
+case "2":
+return "V";
+case "1":
+return "V";
+default: return "C";
+}
+case "4":
+switch($cardID[5]) {
+case "7":
+return "V";
+case "6":
+return "V";
+default: return "C";
+}
+default: return "C";
+}
+default: return "C";
+}
+default: return "C";
+}
 default: return "C";
 }
 default: return "C";
@@ -48531,6 +48809,42 @@ case "0":
 return "GENERIC";
 case "1":
 return "GENERIC";
+default: return "NONE";
+}
+default: return "NONE";
+}
+default: return "NONE";
+}
+default: return "NONE";
+}
+case "S":
+switch($cardID[2]) {
+case "T":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "6":
+return "ILLUSIONIST";
+case "5":
+return "ILLUSIONIST";
+default: return "NONE";
+}
+case "0":
+switch($cardID[5]) {
+case "2":
+return "ASSASSIN";
+case "1":
+return "ASSASSIN";
+default: return "NONE";
+}
+case "4":
+switch($cardID[5]) {
+case "7":
+return "NINJA";
+case "6":
+return "NINJA";
 default: return "NONE";
 }
 default: return "NONE";
@@ -54287,6 +54601,7 @@ case "MON264": return "false";
 case "HVY224": return "false";
 case "MON265": return "false";
 case "DTD407": return "false";
+case "DTD407": return "false";
 case "HVY252": return "false";
 case "UPR042": return "false";
 case "CRU160": return "false";
@@ -54398,6 +54713,7 @@ case "ELE128": return "false";
 case "ELE129": return "false";
 case "ELE130": return "false";
 case "DTD409": return "false";
+case "DTD409": return "false";
 case "ELE006": return "false";
 case "RVD014": return "false";
 case "WTR032": return "false";
@@ -54408,6 +54724,7 @@ case "OUT090": return "false";
 case "ARC038": return "false";
 case "CRU119": return "false";
 case "OUT089": return "false";
+case "UPR409": return "false";
 case "UPR409": return "false";
 case "ARC176": return "false";
 case "ARC177": return "false";
@@ -54496,6 +54813,7 @@ case "ARC083": return "true";
 case "MON266": return "false";
 case "MON267": return "false";
 case "MON268": return "false";
+case "DTD412": return "false";
 case "DTD412": return "false";
 case "CRU047": return "false";
 case "OUT047": return "false";
@@ -54903,6 +55221,7 @@ case "UPR206": return "false";
 case "UPR207": return "false";
 case "UPR208": return "false";
 case "UPR410": return "false";
+case "UPR410": return "false";
 case "MON045": return "false";
 case "MON046": return "false";
 case "MON047": return "false";
@@ -55034,6 +55353,7 @@ case "EVO190": return "false";
 case "EVO191": return "false";
 case "RVD026": return "false";
 case "UPR408": return "false";
+case "UPR408": return "false";
 case "MON189": return "true";
 case "WTR114": return "false";
 case "CRU076": return "false";
@@ -55046,6 +55366,7 @@ case "HVY213": return "false";
 case "HVY214": return "false";
 case "HVY215": return "false";
 case "OUT184": return "false";
+case "UPR406": return "false";
 case "UPR406": return "false";
 case "UPR225": return "false";
 case "HVY121": return "false";
@@ -55168,9 +55489,11 @@ case "UPR053": return "false";
 case "MON048": return "false";
 case "MON049": return "false";
 case "MON050": return "false";
+case "MST026": return "false";
 case "MON098": return "false";
 case "MON099": return "false";
 case "MON100": return "false";
+case "MST025": return "false";
 case "WTR159": return "false";
 case "ELE013": return "false";
 case "ELE014": return "false";
@@ -55817,6 +56140,7 @@ case "LGS243": return "true";
 case "ELE000": return "false";
 case "EVR121": return "false";
 case "UPR411": return "false";
+case "UPR411": return "false";
 case "OUT112": return "false";
 case "OUT113": return "false";
 case "OUT114": return "false";
@@ -55854,6 +56178,7 @@ case "WTR103": return "false";
 case "ARC121": return "true";
 case "DTD104": return "false";
 case "MON120": return "false";
+case "DTD564": return "true";
 case "DTD564": return "true";
 case "DTD103": return "false";
 case "MON119": return "false";
@@ -55980,6 +56305,7 @@ case "EVO202": return "false";
 case "EVO203": return "false";
 case "CRU161": return "false";
 case "DTD410": return "false";
+case "DTD410": return "false";
 case "EVR070": return "true";
 case "FAB205": return "false";
 case "HVY241": return "false";
@@ -56000,6 +56326,7 @@ case "LGS238": return "false";
 case "MON296": return "false";
 case "MON297": return "false";
 case "MON298": return "false";
+case "UPR412": return "false";
 case "UPR412": return "false";
 case "EVR139": return "false";
 case "DTD227": return "false";
@@ -56034,6 +56361,7 @@ case "WTR149": return "false";
 case "ARC077": return "false";
 case "CRU139": return "false";
 case "UPR413": return "false";
+case "UPR413": return "false";
 case "OUT005": return "false";
 case "OUT006": return "false";
 case "EVR023": return "false";
@@ -56046,6 +56374,8 @@ case "WTR218": return "false";
 case "WTR219": return "false";
 case "WTR220": return "false";
 case "ARC082": return "false";
+case "DYN492": return "false";
+case "DYN492": return "false";
 case "DYN492": return "false";
 case "DYN139": return "false";
 case "DYN140": return "false";
@@ -56061,6 +56391,8 @@ case "ARC157": return "false";
 case "ARC155": return "false";
 case "ARC156": return "false";
 case "DTD201": return "false";
+case "MST002": return "false";
+case "MST001": return "false";
 case "ELE005": return "false";
 case "UPR221": return "false";
 case "UPR222": return "false";
@@ -56100,6 +56432,7 @@ case "CRU090": return "false";
 case "EVR066": return "false";
 case "EVR067": return "false";
 case "EVR068": return "false";
+case "UPR414": return "false";
 case "UPR414": return "false";
 case "ELE219": return "false";
 case "ELE220": return "false";
@@ -56710,6 +57043,7 @@ case "EVR036": return "false";
 case "FAB203": return "false";
 case "WTR075": return "false";
 case "DTD408": return "false";
+case "DTD408": return "false";
 case "UPR154": return "false";
 case "HVY012": return "false";
 case "DTD044": return "false";
@@ -57040,6 +57374,9 @@ case "ARC212": return "false";
 case "ARC213": return "false";
 case "ARC214": return "false";
 case "DTD405": return "false";
+case "DTD405": return "false";
+case "DYN612": return "false";
+case "DYN612": return "false";
 case "DYN612": return "false";
 case "DYN192": return "false";
 case "DYN122": return "false";
@@ -57138,6 +57475,7 @@ case "EVO007": return "false";
 case "HER088": return "false";
 case "HER096": return "false";
 case "EVO410": return "false";
+case "EVO410": return "false";
 case "DYN209": return "false";
 case "DYN210": return "false";
 case "DYN211": return "false";
@@ -57152,6 +57490,8 @@ case "UPR189": return "false";
 case "UPR086": return "false";
 case "HVY059": return "true";
 case "UPR415": return "false";
+case "UPR415": return "false";
+case "DTD406": return "false";
 case "DTD406": return "false";
 case "EVR160": return "false";
 case "OUT180": return "false";
@@ -57201,6 +57541,7 @@ case "ELE118": return "false";
 case "EVO245": return "false";
 case "MON194": return "false";
 case "ARC084": return "false";
+case "UPR407": return "false";
 case "UPR407": return "false";
 case "EVO114": return "false";
 case "EVO115": return "false";
@@ -57310,6 +57651,7 @@ case "HVY048": return "false";
 case "HER106": return "false";
 case "HVY047": return "false";
 case "DTD411": return "false";
+case "DTD411": return "false";
 case "FAB206": return "false";
 case "HVY242": return "false";
 case "TCC107": return "false";
@@ -57350,6 +57692,7 @@ case "DTD134": return "false";
 case "HER085": return "false";
 case "DTD133": return "false";
 case "HER087": return "false";
+case "UPR416": return "false";
 case "UPR416": return "false";
 case "HVY169": return "false";
 case "HVY170": return "false";
@@ -57468,6 +57811,7 @@ case "MON129": return "false";
 case "MON130": return "false";
 case "MON131": return "false";
 case "UPR417": return "false";
+case "UPR417": return "false";
 case "MON290": return "false";
 case "MON291": return "false";
 case "MON292": return "false";
@@ -57478,7 +57822,9 @@ case "ARC146": return "false";
 case "MON293": return "false";
 case "MON294": return "false";
 case "MON295": return "false";
+case "MST047": return "false";
 case "CRU075": return "false";
+case "MST046": return "false";
 case "CRU051": return "false";
 case "CRU052": return "false";
 case "EVO162": return "false";
@@ -57499,3 +57845,5 @@ case "EVR080": return "false";
 case "EVR081": return "false";
 default: return "";}
 }
+
+?>

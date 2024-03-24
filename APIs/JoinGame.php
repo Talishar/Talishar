@@ -669,7 +669,7 @@ function IsCardBanned($cardID, $format)
 {
   $set = substr($cardID, 0, 3);
   //Ban spoiler cards in non-open-format
-  //if($format != "livinglegendscc" && ($set == "HVY")) return true;
+  if($format != "livinglegendscc" && ($set == "MST")) return true;
   switch ($cardID) { //Special Use Promos
     case "JDG002": case "JDG004": case "JDG005": case "JDG008": case "JDG010": case "JDG019": case "JDG024": case "JDG025": 
     case "LSS001": case "LSS002": case "LSS003": case "LSS004": case "LSS005": case "LSS006": case "LSS007": case "LSS008": 
