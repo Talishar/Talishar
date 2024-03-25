@@ -387,6 +387,10 @@
       case "EVR157":
         if($from == "PLAY") $CombatChain->AttackCard()->ModifyPower(1);
         return "";
+      case "EVR158":
+        WriteLog($additionalCosts);
+        PutItemIntoPlayForPlayer("EVR195", $currentPlayer, 0, intval($additionalCosts));
+        return "";
       case "EVR160":
         Draw(1);
         Draw(2);

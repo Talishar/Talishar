@@ -991,7 +991,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDCLASSSTATE":
       $parameters = explode("-", $parameter);
       IncrementClassState($player, $parameters[0], $parameters[1]);
-      return 1;
+      return $lastResult;
     case "APPENDCLASSSTATE":
       $parameters = explode("-", $parameter);
       AppendClassState($player, $parameters[0], $parameters[1]);

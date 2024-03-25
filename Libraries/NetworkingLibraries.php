@@ -2061,8 +2061,8 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("FINDINDICES", $currentPlayer, "CASHOUT");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195", 1);
-      AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, 1, 1);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CASHOUTCONTINUE", 1);
       break;
     case "EVR159":
