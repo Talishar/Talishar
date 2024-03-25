@@ -315,8 +315,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           } else {
             ++$character[$index + 15];
           }
-          $index = SearchGetFirstIndex(SearchMultizone($currentPlayer, "MYDISCARD:cardID=HVY245"));
-          RemoveGraveyard($currentPlayer, $index);
         }
         return "";
       case "HVY246":

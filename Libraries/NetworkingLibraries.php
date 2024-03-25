@@ -2258,6 +2258,8 @@ function PayAdditionalCosts($cardID, $from)
       if($from == "GY") {
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195-2", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
+        $index = SearchGetFirstIndex(SearchMultizone($currentPlayer, "MYDISCARD:cardID=HVY245"));
+        RemoveGraveyard($currentPlayer, $index);
       }
       break;
     default:
