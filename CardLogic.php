@@ -1354,7 +1354,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         case 3: $auraCreated = "OUT234"; break;
         default: break;
       }
-      WriteLog("Plague Hive created a " . CardLink($auraCreated, $auraCreated));
+      WriteLog(CardLink("OUT000","OUT000") . " created a " . CardLink($auraCreated, $auraCreated));
       PlayAura($auraCreated, $otherPlayer);
       break;
     case "OUT091": case "OUT092":
