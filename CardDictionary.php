@@ -1299,7 +1299,7 @@ function CharacterDefaultActiveState($cardID)
     case "DYN006": return 1;
     case "DTD165": case "DTD166": case "DTD167": case "DTD168": return 0;
     case "DTD564": return 0;
-    case "EVO430": case "EVO431": case "EVO432": case "EVO433": return 0;
+    case "EVO430": case "EVO431": case "EVO432": case "EVO433": return 1;
     default: return 2;
   }
 }
