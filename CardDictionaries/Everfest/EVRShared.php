@@ -359,7 +359,8 @@
         DealArcane($damage, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
         return "";
       case "EVR128": case "EVR129": case "EVR130":
-        if($cardID == "EVR128") $numReveal = 3;
+        if($mainPlayer != $currentPlayer) $numReveal = count(GetHand($otherPlayer));
+        else if($cardID == "EVR128") $numReveal = 3;
         else if($cardID == "EVR129") $numReveal = 2;
         else $numReveal = 1;
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numReveal);
