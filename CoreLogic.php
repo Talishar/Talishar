@@ -1381,11 +1381,11 @@ function AttackDestroyedEffects($attackID)
   }
 }
 
-function CloseCombatChain($chainClosed="true")
+function CloseCombatChain($chainClosed="true", $skipped=false)
 {
   global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers;
   $layers = [];//In case there's another combat chain related layer like defense step
-  PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
+  PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed."|".$skipped);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
   $combatChainState[$CCS_AttackTarget] = "NA";

@@ -343,7 +343,7 @@ $CCS_RequiredNegCounterEquipmentBlock = 37;
 //Deprecated
 //$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsOnChainClose instead
 
-function ResetCombatChainState()
+function ResetCombatChainState($skipped=false)
 {
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt;
   global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_WagersThisLink, $CCS_ChainLinkHitEffectsPrevented;
@@ -422,7 +422,7 @@ function ResetCombatChainState()
     }
   }
   UnsetCombatChainBanish();
-  CombatChainClosedEffects();
+  if(!$skipped) CombatChainClosedEffects();
   CombatChainClosedCharacterEffects();
   CombatChainClosedMainCharacterEffects();
   RemoveEffectsOnChainClose();

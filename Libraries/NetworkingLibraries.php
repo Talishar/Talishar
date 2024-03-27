@@ -1025,7 +1025,7 @@ function ResolveCombatDamage($damageDone)
   ProcessDecisionQueue(); //Any combat related decision queue logic should be main player gamestate
 }
 
-function FinalizeChainLink($chainClosed = false)
+function FinalizeChainLink($chainClosed = false, $skipped=false)
 {
   global $turn, $actionPoints, $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
@@ -1099,7 +1099,7 @@ function FinalizeChainLink($chainClosed = false)
   SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
   $combatChain = [];
   if($chainClosed) {
-    ResetCombatChainState();
+    ResetCombatChainState($skipped);
     $turn[0] = "M";
     FinalizeAction();
   } else {
@@ -2330,7 +2330,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $cardType = $definedCardType;
       if(GetResolvedAbilityType($cardID, $from) != "") $cardType = GetResolvedAbilityType($cardID, $from);
       if(!$chainClosed && $cardType == "AA") AddLayer("ATTACKSTEP", $mainPlayer, "-"); //I haven't added this for weapon. I don't think it's needed yet.
-      // If you attacked an aura with Spectra
+      // If you have not attacked an aura with Spectra
       if(!$chainClosed && (DelimStringContains($definedCardType, "AA") || DelimStringContains($definedCardType, "W") || DelimStringContains($definedCardSubType, "Ally"))) {
         IncrementClassState($currentPlayer, $CS_NumAttacks);
         ArsenalAttackAbilities();
@@ -2407,7 +2407,7 @@ function ProcessAttackTarget()
     $auras = &GetAuras($defPlayer);
     if (HasSpectra($auras[$target[1]])) {
       DestroyAura($defPlayer, $target[1]);
-      CloseCombatChain();
+      CloseCombatChain(skipped:true);
       return true;
     }
   }
