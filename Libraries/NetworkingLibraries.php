@@ -2208,7 +2208,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_the_additional_cost_of_1_" . CardLink("DYN243", "DYN243"), 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         if(SearchCharacterAlive($currentPlayer, "HVY051")) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=DYN243&MYCHAR:cardID=HVY051", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:sameName=DYN243&MYCHAR:cardID=HVY051", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243-1", 1);
