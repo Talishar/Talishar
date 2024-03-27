@@ -548,9 +548,9 @@ function CharacterCostModifier($cardID, $from)
   $char = &GetPlayerCharacter($currentPlayer);
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
     if($char[$i+1] >= 3 || $char[$i+1] == 0) continue;
-    if(CardType($char[$i]) == "C") $cardID = ShiyanaCharacter($char[$i]);
-    else $cardID = $char[$i];
-    switch($cardID) {
+    if(CardType($char[$i]) == "C") $thisChar = ShiyanaCharacter($char[$i]);
+    else $thisChar = $char[$i];
+    switch($thisChar) {
       case "CRU077": if(CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumSwordAttacks) == 1) --$modifier; break;
       case "TCC001": if(SubtypeContains($cardID, "Evo")) --$modifier; break;
       case "TCC408": if($cardID == "TCC002") --$modifier; break;
