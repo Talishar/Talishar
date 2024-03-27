@@ -896,9 +896,29 @@ function BeginChainLinkResolution()
   ProcessDecisionQueue();
 }
 
+function NuuStaticAbility($banishedBy)
+{
+  global $combatChain, $defPlayer;
+  $defendingCards = GetChainLinkCards($defPlayer);
+  if ($defendingCards != "") {
+    $defendingCards = explode(",", $defendingCards);
+    for($i=0; $i < count($defendingCards); ++$i) {
+      if (CardType($combatChain[$defendingCards[$i]]) == "A" || CardType($combatChain[$defendingCards[$i]]) == "AA") {
+        BanishCardForPlayer($combatChain[$defendingCards[$i]], $defPlayer, "CC", "-", $banishedBy);
+        AddDecisionQueue("PASSPARAMETER", $defPlayer, $combatChain[$defendingCards[$i]]);
+        AddDecisionQueue("REMOVECOMBATCHAIN", $defPlayer, "-");
+      }
+    }
+  }
+}
+
 function ChainLinkBeginResolutionEffects()
 {
   global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex, $CID_BloodRotPox;
+  $character = &GetPlayerCharacter($mainPlayer);
+  $charID = $character[0];
+  $charID = ShiyanaCharacter($charID);
+  if(HasStealth($combatChain[0]) && ($charID == "MST001" || $charID == "MST002")) NuuStaticAbility($combatChain[0]);
   if(CardType($combatChain[0]) == "W") {
     $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
     $index = $combatChainState[$CCS_WeaponIndex];
