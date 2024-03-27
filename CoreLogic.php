@@ -1255,7 +1255,7 @@ function DoesAttackHaveGoAgain()
 {
   global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_Num6PowDisc;
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
-  global $CS_NumItemsDestroyed, $CS_PlayIndex, $CCS_WeaponIndex, $CS_NumCharged;
+  global $CS_NumItemsDestroyed, $CS_PlayIndex, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn;
   if(!$CombatChain->HasCurrentLink()) return false;
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
@@ -1323,6 +1323,8 @@ function DoesAttackHaveGoAgain()
       $character = &GetPlayerCharacter($mainPlayer);
       return SearchCurrentTurnEffectsForUniqueID($character[$combatChainState[$CCS_WeaponIndex]+11]) != -1 && SearchCurrentTurnEffects($attackID, $mainPlayer);
     case "HVY134": return true;
+    case "HVY166": case "HVY167": case "HVY168":
+      return GetClassState($mainPlayer, $CS_NumCardsDrawn) > 0;
     default: return false;
   }
 }

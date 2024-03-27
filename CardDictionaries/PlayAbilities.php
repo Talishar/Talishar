@@ -220,9 +220,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           CardDiscarded($currentPlayer, $cardID, source:$cardID);
         }
         return "";
-      case "HVY166": case "HVY167": case "HVY168":
-        if(GetClassState($currentPlayer, $CS_NumCardsDrawn) > 0) GiveAttackGoAgain();
-        return "";
       case "HVY169": case "HVY170": case "HVY171":
         if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
