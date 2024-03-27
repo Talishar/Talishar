@@ -85,9 +85,10 @@ function AuraPieces()
 //4 - Unique ID
 //5 - My Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
 //6 - Opponent Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
+//7 - Frozen (1 = yes, 0 = no)
 function ItemPieces()
 {
-  return 7;
+  return 8;
 }
 
 function PitchPieces()
@@ -342,7 +343,7 @@ $CCS_RequiredNegCounterEquipmentBlock = 37;
 //Deprecated
 //$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsOnChainClose instead
 
-function ResetCombatChainState()
+function ResetCombatChainState($skipped=false)
 {
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt;
   global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_WagersThisLink, $CCS_ChainLinkHitEffectsPrevented;
@@ -421,7 +422,7 @@ function ResetCombatChainState()
     }
   }
   UnsetCombatChainBanish();
-  CombatChainClosedEffects();
+  if(!$skipped) CombatChainClosedEffects();
   CombatChainClosedCharacterEffects();
   CombatChainClosedMainCharacterEffects();
   RemoveEffectsOnChainClose();

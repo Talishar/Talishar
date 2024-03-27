@@ -670,8 +670,7 @@ function NumNonEquipmentDefended()
   $number = 0;
   for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     $cardType = CardType($combatChain[$i]);
-    if($combatChain[$i + 1] == $defPlayer && $cardType != "E" && $cardType != "C") ++$number;
-    if(DelimStringContains(CardSubType($combatChain[$i]), "Evo")) --$number;
+    if($combatChain[$i + 1] == $defPlayer && $cardType != "E" && $cardType != "C" && !DelimStringContains(CardSubType($combatChain[$i]), "Evo")) ++$number;
   }
   return $number;
 }

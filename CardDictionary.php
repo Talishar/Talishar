@@ -1299,7 +1299,7 @@ function CharacterDefaultActiveState($cardID)
     case "DYN006": return 1;
     case "DTD165": case "DTD166": case "DTD167": case "DTD168": return 0;
     case "DTD564": return 0;
-    case "EVO430": case "EVO431": case "EVO432": case "EVO433": return 0;
+    case "EVO430": case "EVO431": case "EVO432": case "EVO433": return 1;
     default: return 2;
   }
 }
@@ -1554,7 +1554,7 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false)
   if(HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer, false)) >= CardCost($cardID)) return true;
   $char = &GetPlayerCharacter($currentPlayer);
   if(SubtypeContains($cardID, "Evo") && ($char[0] == "TCC001" || $char[0] == "EVO007" || $char[0] == "EVO008") && $char[1] < 3) return true;
-  if($char[0] == "DTD564" && SearchCurrentTurnEffects("DTD564", $currentPlayer) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E")) return true;
+  if(!$nonLimitedOnly && $char[0] == "DTD564" && SearchCurrentTurnEffects("DTD564", $currentPlayer) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E")) return true;
   switch($cardID) {
     case "MON123": return GetClassState($currentPlayer, $CS_Num6PowBan) > 0;
     case "MON156": case "MON158": return true;
@@ -1578,7 +1578,6 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false)
     case "DTD178": case "DTD179": case "DTD180": return true;
     default: break;
   }
-  if($nonLimitedOnly) return false;
   return false;
 }
 

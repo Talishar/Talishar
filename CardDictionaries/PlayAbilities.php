@@ -220,9 +220,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           CardDiscarded($currentPlayer, $cardID, source:$cardID);
         }
         return "";
-      case "HVY166": case "HVY167": case "HVY168":
-        if(GetClassState($currentPlayer, $CS_NumCardsDrawn) > 0) GiveAttackGoAgain();
-        return "";
       case "HVY169": case "HVY170": case "HVY171":
         if(IsHeroAttackTarget()) AskWager($cardID);
         return "";
@@ -315,8 +312,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           } else {
             ++$character[$index + 15];
           }
-          $index = SearchGetFirstIndex(SearchMultizone($currentPlayer, "MYDISCARD:cardID=HVY245"));
-          RemoveGraveyard($currentPlayer, $index);
         }
         return "";
       case "HVY246":

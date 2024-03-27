@@ -403,6 +403,20 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD196"://Anthem of Spring
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "DTD197":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=E", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRALLY");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+      return "";
     case "DTD198"://Call Down the Lightning
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";

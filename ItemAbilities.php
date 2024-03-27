@@ -26,6 +26,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     array_push($items, $uniqueID);
     array_push($items, $myHoldState);
     array_push($items, $theirHoldState);
+    array_push($items, 0);
     if(HasCrank($item, $player)) Crank($player, $index, $mainPhase);
   }
   if(($symbiosisIndex = FindCharacterIndex($player, "EVO003")) > 0 && ClassContains($item, "MECHANOLOGIST", $player)) {

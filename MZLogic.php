@@ -186,6 +186,9 @@ function MZFreeze($target)
     case "THEIRARS": case "MYARS":
       $zone[$pieces[1] + 4] = 1;
       break;
+    case "THEIRITEMS": case "MYITEMS":
+      $zone[$pieces[1] + 7] = 1;
+      break;
     default: break;
   }
 }

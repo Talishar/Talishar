@@ -434,8 +434,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return "1";
     case "CASHOUTCONTINUE":
       PrependDecisionQueue("SPECIFICCARD", $player, "CASHOUTCONTINUE", 1);
-      PrependDecisionQueue("PUTPLAY", $player, "-", 1);
-      PrependDecisionQueue("PASSPARAMETER", $player, "EVR195", 1);
+      PrependDecisionQueue("SETCLASSSTATE", $player, $CS_AdditionalCosts, 1);
+      PrependDecisionQueue("PASSPARAMETER", $player, GetClassState($player, $CS_AdditionalCosts)+1, 1);
       PrependDecisionQueue("MZDESTROY", $player, "-", 1);
       PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       PrependDecisionQueue("FINDINDICES", $player, "CASHOUT");

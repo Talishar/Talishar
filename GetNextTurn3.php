@@ -683,7 +683,17 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   for ($i = 0; $i + ItemPieces() - 1 < count($theirItems); $i += ItemPieces()) {
     $type = CardType($theirItems[$i]);
     $sType = CardSubType($theirItems[$i]);
-    array_push($theirItemsOutput, JSONRenderedCard(cardNumber: $theirItems[$i], actionDataOverride: strval($i), overlay: ($theirItems[$i + 2] != 2 ? 1 : 0), counters: $theirItems[$i + 1], controller: $otherPlayer, type: $type, sType: $sType, gem: $theirItems[$i + 6]));
+    array_push($theirItemsOutput, 
+    JSONRenderedCard(
+      cardNumber: $theirItems[$i], 
+      actionDataOverride: strval($i), 
+      overlay: ($theirItems[$i + 2] != 2 ? 1 : 0), 
+      counters: $theirItems[$i + 1], 
+      controller: $otherPlayer, 
+      type: $type, 
+      sType: $sType, 
+      isFrozen: $theirItems[$i + 7] == 1,
+      gem: $theirItems[$i + 6]));
   }
   $response->opponentItems = $theirItemsOutput;
 
@@ -775,7 +785,20 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $gem = $myItems[$i + 5];
     if (isset($itemTileMap[$myItems[$i]])) $gem = $itemTileMap[$myItems[$i]];
     else $itemTileMap[$myItems[$i]] = $gem;
-    array_push($myItemsOutput, JSONRenderedCard(cardNumber: $myItems[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, overlay: ItemOverlay($myItems[$i], $myItems[$i + 2], $myItems[$i + 3]), counters: $myItems[$i + 1], controller: $playerID, type: $type, sType: $sType, gem: $gem, restriction: $restriction));
+    array_push($myItemsOutput, 
+    JSONRenderedCard(
+      cardNumber: $myItems[$i], 
+      action: $actionTypeOut, 
+      borderColor: $border, 
+      actionDataOverride: $actionDataOverride, 
+      overlay: ItemOverlay($myItems[$i], $myItems[$i + 2], $myItems[$i + 3]), 
+      counters: $myItems[$i + 1],
+      controller: $playerID, 
+      type: $type,
+      sType: $sType, 
+      isFrozen: $myItems[$i + 7] == 1, //Frozen
+      gem: $gem, 
+      restriction: $restriction));
   }
   $response->playerItems = $myItemsOutput;
 

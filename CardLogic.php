@@ -387,7 +387,7 @@ function ContinueDecisionQueue($lastResult = "")
         else if($cardID == "ENDSTEP") FinishTurnPass();
         else if($cardID == "RESUMETURN") $turn[0] = "M";
         else if($cardID == "LAYER") ProcessLayer($player, $parameter);
-        else if($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
+        else if($cardID == "FINALIZECHAINLINK") FinalizeChainLink($params[0], $params[1]);
         else if($cardID == "ATTACKSTEP") {
           $turn[0] = "B";
           $currentPlayer = $defPlayer;
@@ -839,7 +839,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
   if($additionalCosts == "CRUSHEFFECT") { ProcessCrushEffect($target); return; }
   if($additionalCosts == "TOWEREFFECT") { ProcessTowerEffect($target); return; }
   if($additionalCosts == "EFFECTHITEFFECT") {
-    if(EffectHitEffect($target)) RemoveCurrentTurnEffect(FindCurrentTurnEffectIndex($player, $target));
+    if(EffectHitEffect($target)) {
+      if(!IsCombatEffectPersistent($target)) RemoveCurrentTurnEffect(FindCurrentTurnEffectIndex($player, $target));
+    }
     return;
   }
   if($additionalCosts == "MAINCHARHITEFFECT")  { ProcessMainCharacterHitEffect($parameter, $player, $target); return; }
@@ -1354,7 +1356,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         case 3: $auraCreated = "OUT234"; break;
         default: break;
       }
-      WriteLog("Plague Hive created a " . CardLink($auraCreated, $auraCreated));
+      WriteLog(CardLink("OUT000","OUT000") . " created a " . CardLink($auraCreated, $auraCreated));
       PlayAura($auraCreated, $otherPlayer);
       break;
     case "OUT091": case "OUT092":

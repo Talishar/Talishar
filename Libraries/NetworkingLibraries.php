@@ -896,9 +896,29 @@ function BeginChainLinkResolution()
   ProcessDecisionQueue();
 }
 
+function NuuStaticAbility($banishedBy)
+{
+  global $combatChain, $defPlayer;
+  $defendingCards = GetChainLinkCards($defPlayer);
+  if ($defendingCards != "") {
+    $defendingCards = explode(",", $defendingCards);
+    for($i=0; $i < count($defendingCards); ++$i) {
+      if (CardType($combatChain[$defendingCards[$i]]) == "A" || CardType($combatChain[$defendingCards[$i]]) == "AA") {
+        BanishCardForPlayer($combatChain[$defendingCards[$i]], $defPlayer, "CC", "-", $banishedBy);
+        AddDecisionQueue("PASSPARAMETER", $defPlayer, $combatChain[$defendingCards[$i]]);
+        AddDecisionQueue("REMOVECOMBATCHAIN", $defPlayer, "-");
+      }
+    }
+  }
+}
+
 function ChainLinkBeginResolutionEffects()
 {
   global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex, $CID_BloodRotPox;
+  $character = &GetPlayerCharacter($mainPlayer);
+  $charID = $character[0];
+  $charID = ShiyanaCharacter($charID);
+  if(HasStealth($combatChain[0]) && ($charID == "MST001" || $charID == "MST002")) NuuStaticAbility($combatChain[0]);
   if(CardType($combatChain[0]) == "W") {
     $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
     $index = $combatChainState[$CCS_WeaponIndex];
@@ -1025,7 +1045,7 @@ function ResolveCombatDamage($damageDone)
   ProcessDecisionQueue(); //Any combat related decision queue logic should be main player gamestate
 }
 
-function FinalizeChainLink($chainClosed = false)
+function FinalizeChainLink($chainClosed = false, $skipped=false)
 {
   global $turn, $actionPoints, $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
@@ -1099,7 +1119,7 @@ function FinalizeChainLink($chainClosed = false)
   SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
   $combatChain = [];
   if($chainClosed) {
-    ResetCombatChainState();
+    ResetCombatChainState($skipped);
     $turn[0] = "M";
     FinalizeAction();
   } else {
@@ -2061,8 +2081,8 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("FINDINDICES", $currentPlayer, "CASHOUT");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195", 1);
-      AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, 1, 1);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CASHOUTCONTINUE", 1);
       break;
     case "EVR159":
@@ -2208,7 +2228,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_the_additional_cost_of_1_" . CardLink("DYN243", "DYN243"), 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         if(SearchCharacterAlive($currentPlayer, "HVY051")) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=DYN243&MYCHAR:cardID=HVY051", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:sameName=DYN243&MYCHAR:cardID=HVY051", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243-1", 1);
@@ -2258,6 +2278,8 @@ function PayAdditionalCosts($cardID, $from)
       if($from == "GY") {
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195-2", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
+        $index = SearchGetFirstIndex(SearchMultizone($currentPlayer, "MYDISCARD:cardID=HVY245"));
+        RemoveGraveyard($currentPlayer, $index);
       }
       break;
     default:
@@ -2328,7 +2350,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $cardType = $definedCardType;
       if(GetResolvedAbilityType($cardID, $from) != "") $cardType = GetResolvedAbilityType($cardID, $from);
       if(!$chainClosed && $cardType == "AA") AddLayer("ATTACKSTEP", $mainPlayer, "-"); //I haven't added this for weapon. I don't think it's needed yet.
-      // If you attacked an aura with Spectra
+      // If you have not attacked an aura with Spectra
       if(!$chainClosed && (DelimStringContains($definedCardType, "AA") || DelimStringContains($definedCardType, "W") || DelimStringContains($definedCardSubType, "Ally"))) {
         IncrementClassState($currentPlayer, $CS_NumAttacks);
         ArsenalAttackAbilities();
@@ -2405,7 +2427,7 @@ function ProcessAttackTarget()
     $auras = &GetAuras($defPlayer);
     if (HasSpectra($auras[$target[1]])) {
       DestroyAura($defPlayer, $target[1]);
-      CloseCombatChain();
+      CloseCombatChain(skipped:true);
       return true;
     }
   }
