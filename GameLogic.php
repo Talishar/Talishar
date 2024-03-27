@@ -1650,7 +1650,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if($lastResult != "CRU097" && $otherChar[0] != "DUMMY") {
           $lifeDifference = GeneratedCharacterHealth("CRU097") - GeneratedCharacterHealth($otherChar[0]);
           if ($lifeDifference > 0) LoseHealth($lifeDifference, $player);
-          elseif ($lifeDifference < 0) GainHealth($lifeDifference, $player, true, false);
+          elseif ($lifeDifference < 0) GainHealth(abs($lifeDifference), $player, true, false);
         }
         return $lastResult;
       case "ALREADYDEAD":
