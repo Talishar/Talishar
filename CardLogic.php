@@ -839,9 +839,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
   if($additionalCosts == "CRUSHEFFECT") { ProcessCrushEffect($target); return; }
   if($additionalCosts == "TOWEREFFECT") { ProcessTowerEffect($target); return; }
   if($additionalCosts == "EFFECTHITEFFECT") {
-    if(EffectHitEffect($target)) {
-      if(!IsCombatEffectPersistent($target)) RemoveCurrentTurnEffect(FindCurrentTurnEffectIndex($player, $target));
-    }
+    if(EffectHitEffect($target)) RemoveCurrentTurnEffect(FindCurrentTurnEffectIndex($player, $target));
     return;
   }
   if($additionalCosts == "MAINCHARHITEFFECT")  { ProcessMainCharacterHitEffect($parameter, $player, $target); return; }
