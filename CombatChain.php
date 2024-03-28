@@ -589,7 +589,7 @@ function OnBlockEffects($index, $from)
           break;
         case "OUT007": case "OUT008":
           if($cardType == "A") $chainCard->ModifyDefense(-1);
-          if(intval(substr($chainCard->ID(), 3, 3)) > 400) {
+          if(intval(substr($chainCard->ID(), 3, 3)) > 400 && $chainCard->ID() != "EVO410b") {
             $set = substr($chainCard->ID(), 0, 3);
             $number = intval(substr($chainCard->ID(), 3, 3)) - 400;
             $id = $number;
