@@ -104,9 +104,9 @@ function EffectHitEffect($cardID)
     case "ELE047": case "ELE048": case "ELE049":
       if(IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT");
       break;
-    case "ELE066-HIT":
-      AddLayer("TRIGGER", $mainPlayer, "ELE066");
-      break;
+    case "ELE066-TRIGGER":
+      if(HasIncreasedAttack()) Draw($mainPlayer);
+      break;  
     case "ELE092-BUFF":
       if(IsHeroAttackTarget()) DamageTrigger($defPlayer, 3, "ATTACKHIT");
       break;
