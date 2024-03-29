@@ -49,7 +49,7 @@
   {
     echo("<BR>" . $functionName . "<BR>");
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
-    $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "LGS", "HER", "FAB", "TCC", "EVO", "HVY", "MST"];
+    $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "LGS", "HER", "FAB", "TCC", "EVO", "HVY", "MST", "AKO"];
     $isString = true;
     $isBool = false;
     if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "1H") $isString = false;
