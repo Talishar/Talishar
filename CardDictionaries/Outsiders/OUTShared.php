@@ -266,6 +266,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYDISCARDARROW");
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "3-", 1);
         AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("VALIDATEALLDIFFERENTNAME", $currentPlayer, "DISCARD", 1);
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "QUIVEROFABYSSALDEPTH", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";

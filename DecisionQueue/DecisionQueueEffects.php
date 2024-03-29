@@ -470,7 +470,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         if($i == 0) $cards .= "and ";
         $cards .= CardLink($cardID, $cardID);
       }
-      WriteLog("Quiver of Abyssal Depths shuffled " . $cards);
+      WriteLog(CardLink("OUT095", "OUT095") . " shuffled into your deck " . $cards);
       return "1";
     case "PLASMAMAINLINE":
       $items = &GetItems($player);

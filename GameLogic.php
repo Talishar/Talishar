@@ -108,10 +108,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if($rv[0] == "0" && (strlen($rv) == 0 || $rv[1] == ",")) $rv = substr($rv, 2);
           break;
         case "MYHANDARROW": $rv = SearchHand($player, "", "Arrow"); break;
-        case "MYDISCARDARROW": 
-          $index = SearchDiscard($player, "", "Arrow");
-          $rv = RemoveCardSameNames($player, $index, GetDiscard($player));
-          break;
+        case "MYDISCARDARROW": $rv = SearchDiscard($player, "", "Arrow"); break;
         case "MULTIACTIONSBANISH":
           $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A"));
           $rv = RemoveCardSameNames($player, $index, GetBanish($player));
@@ -1167,6 +1164,22 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "VALIDATEALLDIFFERENTNAME":
+      if($parameter == "DISCARD") {
+        $zone = &GetDiscard($player);
+      }
+      if(count($lastResult) == 0) return "PASS";
+      if(SearchCurrentTurnEffects("OUT183", $player)) return "PASS";
+      $cardList = [];
+      for($i = 0; $i < count($lastResult); ++$i) {
+        array_push($cardList, CardName($zone[$lastResult[$i]]));
+      }
+      if(count($cardList) !== count(array_unique($cardList))) {
+        WriteLog("You selected cards that have the same name. Reverting gamestate prior to that effect.");
+        RevertGamestate();
+        return "PASS";
+      }
+      return $lastResult;  
     case "PREPENDLASTRESULT":
       return $parameter . $lastResult;
     case "APPENDLASTRESULT":
