@@ -1327,7 +1327,7 @@ function EffectPlayCardConstantRestriction($cardID, $type, &$restriction = "") {
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
       switch($effectID) {
-        case "OUT187": if(in_array(GamestateSanitize(CardName($cardID)), $effectArr)) $restriction = "OUT187"; break;
+        case "OUT187": if(in_array(GamestateSanitize(NameOverride($cardID, $currentPlayer)), $effectArr)) $restriction = "OUT187"; break;
         default:
           break;
       }
@@ -1345,7 +1345,7 @@ function EffectPlayCardRestricted($cardID, $type, $revertNeeded=false)
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
       switch($effectID) {
-        case "ARC162": if(GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "ARC162"; break;
+        case "ARC162": if(GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) $restrictedBy = "ARC162"; break;
         case "DTD226": if(CardType($cardID) != "W" && GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "DTD226"; break;
         case "WarmongersWar": if($type == "A" && CardType($cardID) != "W") $restrictedBy = "DTD230"; break;
         case "WarmongersPeace": if($type == "AA" || (CardType($cardID) == "W" && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230"; break;

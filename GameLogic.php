@@ -1157,6 +1157,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $zone = &GetDeck($player);
       }
       if(count($lastResult) == 0) return "PASS";
+      if(SearchCurrentTurnEffects("OUT183", $player)) return "PASS";
       $name = CardName($zone[$lastResult[0]]);
       for($i = 1; $i < count($lastResult); ++$i) {
         if(CardName($zone[$lastResult[$i]]) != $name) {

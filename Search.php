@@ -194,6 +194,7 @@ function SearchDeckByName($player, $name)
 {
   $deck = &GetDeck($player);
   $cardList = "";
+  if(SearchCurrentTurnEffects("OUT183", $player)) return $cardList;
   for($i = 0; $i < count($deck); $i += DeckPieces()) {
     if(CardName($deck[$i]) == $name) {
       if ($cardList != "") $cardList = $cardList . ",";
@@ -207,6 +208,7 @@ function SearchDiscardByName($player, $name)
 {
   $discard = &GetDiscard($player);
   $cardList = "";
+  if(SearchCurrentTurnEffects("OUT183", $player)) return $cardList;
   for($i = 0; $i < count($discard); $i += DeckPieces()) {
     if(CardName($discard[$i]) == $name) {
       if($cardList != "") $cardList = $cardList . ",";
@@ -220,6 +222,7 @@ function SearchItemsByName($player, $name)
 {
   $items = &GetItems($player);
   $cardList = "";
+  if(SearchCurrentTurnEffects("OUT183", $player)) return $cardList;
   for($i = 0; $i < count($items); $i += ItemPieces()) {
     if(CardName($items[$i]) == $name) {
       if($cardList != "") $cardList = $cardList . ",";
@@ -233,6 +236,7 @@ function SearchBanishByName($player, $name)
 {
   $banish = &GetBanish($player);
   $cardList = "";
+  if(SearchCurrentTurnEffects("OUT183", $player)) return $cardList;
   for($i = 0; $i < count($banish); $i += BanishPieces()) {
     if(CardName($banish[$i]) == $name) {
       if($cardList != "") $cardList = $cardList . ",";
@@ -1085,6 +1089,8 @@ function SearchMultizone($player, $searches)
               case "MYITEMS": $searchResult = SearchItemsByName($player, $name); break;
               case "MYBANISH": $searchResult = SearchBanishByName($player, $name); break;
               case "THEIRDISCARD": $searchResult = SearchDiscardByName($otherPlayer, $name); break;
+              case "THEIRITEMS": $searchResult = SearchItemsByName($otherPlayer, $name); break;
+              case "THEIRBANISH": $searchResult = SearchBanishByName($otherPlayer, $name); break;
               default: break;
             }
             $rv = SearchMultiZoneFormat($searchResult, $zone);
