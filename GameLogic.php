@@ -1449,7 +1449,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $otherPlayer = ($player == 1 ? 2 : 1);
       $params = explode(",", $parameter);
       $removedSteamCounterCount = 0;
-      for($i = 0; $i < count($lastResultArr); ++$i) {
+      for($i = count($lastResultArr); $i >= 0; --$i) {
         $mzIndex = explode("-", $lastResultArr[$i]);
         switch($mzIndex[0]) {
           case "THEIRITEMS": case "MYITEMS":
