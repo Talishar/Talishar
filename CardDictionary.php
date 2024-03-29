@@ -1090,6 +1090,7 @@ function HasTemper($cardID)
     case "HVY008": case "HVY009": case "HVY011": case "HVY051": case "HVY052": case "HVY053": case "HVY055": case "HVY056":
     case "HVY097": case "HVY098": case "HVY100":
     case "HVY648":
+    case "AKO004":
       return true;
     default: return false;
   }

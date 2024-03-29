@@ -1,9 +1,18 @@
 <?php
 
+function AKOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
+{
+  global $currentPlayer;
+  switch($cardID) {
+    case "AKO004":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    default: return "";
+  }
+} 
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch($cardID) {
     default: return "";
   }

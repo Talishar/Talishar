@@ -575,6 +575,9 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "EVO435":
           if(CardType($cardID) == "W") { $costModifier -= 1; $remove = true; }
           break;
+        case "AKO004":
+          if(CardType($cardID) == "AA" && ModifiedAttackValue($cardID, $currentPlayer, $from) >= 6) $costModifier -= 1;
+          break;
         case "ROGUE803":
           if(IsStaticType(CardType($cardID), $from, $cardID)) { $costModifier -= 1; }
           break;
