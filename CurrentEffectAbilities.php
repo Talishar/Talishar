@@ -1203,8 +1203,11 @@ function BeginEndPhaseEffects()
     $EffectContext = $currentTurnEffects[$i];
     switch($currentTurnEffects[$i]) {
       case "EVR106":
-        if(CountAura("ARC112", $mainPlayer) > 0) WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " destroyed your Runechant tokens");
-        DestroyAllThisAura($currentTurnEffects[$i + 1], "ARC112");
+        if(CountAura("ARC112", $mainPlayer) > 0) 
+        {
+          WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " destroyed your Runechant tokens");
+          DestroyAllThisAura($currentTurnEffects[$i + 1], "ARC112");
+        }
         break;
       case "UPR200": case "UPR201": case "UPR202":
         Draw($currentTurnEffects[$i + 1]);
