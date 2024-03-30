@@ -2403,8 +2403,10 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
 
 function EvoUpgradeAmount($player)
 {
-  if (FindCharacterIndex($player, "EVO410") != -1) return 4;
-  return SearchCount(SearchCharacter($player, subtype:"Evo"));
+  $amount = 0;
+  $amount += SearchCount(SearchCharacter($player, subtype:"Evo"));
+  if(FindCharacterIndex($player, "EVO410") != -1) $amount += 2; //Only +2 as we already find EVO410 and EVO410b counted in the search SearchCount(SearchCharacter($player, subtype:"Evo"))
+  return $amount;
 }
 
 function EquipmentsUsingSteamCounter($charID) {
