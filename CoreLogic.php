@@ -541,7 +541,7 @@ function CurrentEffectDamageModifiers($player, $source, $type)
 
 function CurrentEffectDamageEffects($target, $source, $type, $damage)
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $EffectContext;
   $otherPlayer = ($target == 1 ? 2 : 1);
   if(CardType($source) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
@@ -549,6 +549,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
     if($currentTurnEffects[$i+1] == $target) { continue; }
     if($type == "COMBAT" && HitEffectsArePrevented($source)) continue;
     $remove = 0;
+    $EffectContext = $currentTurnEffects[$i];
     switch($currentTurnEffects[$i])
     {
       case "ELE044": case "ELE045": case "ELE046": if(IsHeroAttackTarget() && CardType($source) == "AA")
