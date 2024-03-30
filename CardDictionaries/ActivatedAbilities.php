@@ -1,4 +1,55 @@
 <?php
+function AKOAbilityCost($cardID)
+{
+  switch($cardID)
+  {
+    default: return 0;
+  }
+}
+
+function AKOAbilityType($cardID, $index=-1, $from="-")
+{
+  switch($cardID)
+  {
+    case "AKO004": return "A";
+    default: return "";
+  }
+}
+
+function AKOAbilityHasGoAgain($cardID)
+{
+  global $CombatChain;
+  switch($cardID)
+  {
+    case "AKO004": return true;
+    default: return false;
+  }
+}
+
+function MSTAbilityCost($cardID)
+{
+  switch($cardID)
+  {
+    default: return 0;
+  }
+}
+
+function MSTAbilityType($cardID, $index=-1, $from="-")
+{
+  switch($cardID)
+  {
+    default: return "";
+  }
+}
+
+function MSTAbilityHasGoAgain($cardID)
+{
+  global $CombatChain;
+  switch($cardID)
+  {
+    default: return false;
+  }
+}
 
   function HVYAbilityCost($cardID)
   {

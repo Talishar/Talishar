@@ -962,6 +962,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HVY134": return GetClassState($player, $CS_AtksWWeapon) <= 0;
     case "HVY195": return GetClassState($otherPlayer, $CS_NumCardsDrawn) < 2;
     case "HVY245": if ($from == "GY") return CountItem("EVR195", $currentPlayer) < 2; else return false;
+    case "AKO024": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
     default: return false;
   }
 }
@@ -1090,6 +1091,7 @@ function HasTemper($cardID)
     case "HVY008": case "HVY009": case "HVY011": case "HVY051": case "HVY052": case "HVY053": case "HVY055": case "HVY056":
     case "HVY097": case "HVY098": case "HVY100":
     case "HVY648":
+    case "AKO004":
       return true;
     default: return false;
   }

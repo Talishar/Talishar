@@ -104,9 +104,9 @@ function EffectHitEffect($cardID)
     case "ELE047": case "ELE048": case "ELE049":
       if(IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT");
       break;
-    case "ELE066-HIT":
-      AddLayer("TRIGGER", $mainPlayer, "ELE066");
-      break;
+    case "ELE066-TRIGGER":
+      if(HasIncreasedAttack()) Draw($mainPlayer);
+      break;  
     case "ELE092-BUFF":
       if(IsHeroAttackTarget()) DamageTrigger($defPlayer, 3, "ATTACKHIT");
       break;
@@ -574,6 +574,9 @@ function CurrentEffectCostModifiers($cardID, $from)
           break;
         case "EVO435":
           if(CardType($cardID) == "W") { $costModifier -= 1; $remove = true; }
+          break;
+        case "AKO004":
+          if(CardType($cardID) == "AA" && ModifiedAttackValue($cardID, $currentPlayer, $from) >= 6) $costModifier -= 1;
           break;
         case "ROGUE803":
           if(IsStaticType(CardType($cardID), $from, $cardID)) { $costModifier -= 1; }
@@ -1200,8 +1203,11 @@ function BeginEndPhaseEffects()
     $EffectContext = $currentTurnEffects[$i];
     switch($currentTurnEffects[$i]) {
       case "EVR106":
-        if(CountAura("ARC112", $mainPlayer) > 0) WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " destroyed your Runechant tokens");
-        DestroyAllThisAura($currentTurnEffects[$i + 1], "ARC112");
+        if(CountAura("ARC112", $mainPlayer) > 0) 
+        {
+          WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " destroyed your Runechant tokens");
+          DestroyAllThisAura($currentTurnEffects[$i + 1], "ARC112");
+        }
         break;
       case "UPR200": case "UPR201": case "UPR202":
         Draw($currentTurnEffects[$i + 1]);
@@ -1321,7 +1327,7 @@ function EffectPlayCardConstantRestriction($cardID, $type, &$restriction = "") {
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
       switch($effectID) {
-        case "OUT187": if(in_array(GamestateSanitize(CardName($cardID)), $effectArr)) $restriction = "OUT187"; break;
+        case "OUT187": if(in_array(GamestateSanitize(NameOverride($cardID, $currentPlayer)), $effectArr)) $restriction = "OUT187"; break;
         default:
           break;
       }
@@ -1339,7 +1345,7 @@ function EffectPlayCardRestricted($cardID, $type, $revertNeeded=false)
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
       switch($effectID) {
-        case "ARC162": if(GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "ARC162"; break;
+        case "ARC162": if(GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) $restrictedBy = "ARC162"; break;
         case "DTD226": if(CardType($cardID) != "W" && GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "DTD226"; break;
         case "WarmongersWar": if($type == "A" && CardType($cardID) != "W") $restrictedBy = "DTD230"; break;
         case "WarmongersPeace": if($type == "AA" || (CardType($cardID) == "W" && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230"; break;

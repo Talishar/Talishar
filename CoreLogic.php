@@ -541,7 +541,7 @@ function CurrentEffectDamageModifiers($player, $source, $type)
 
 function CurrentEffectDamageEffects($target, $source, $type, $damage)
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $EffectContext;
   $otherPlayer = ($target == 1 ? 2 : 1);
   if(CardType($source) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
@@ -549,6 +549,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
     if($currentTurnEffects[$i+1] == $target) { continue; }
     if($type == "COMBAT" && HitEffectsArePrevented($source)) continue;
     $remove = 0;
+    $EffectContext = $currentTurnEffects[$i];
     switch($currentTurnEffects[$i])
     {
       case "ELE044": case "ELE045": case "ELE046": if(IsHeroAttackTarget() && CardType($source) == "AA")
@@ -2402,8 +2403,10 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
 
 function EvoUpgradeAmount($player)
 {
-  if (FindCharacterIndex($player, "EVO410") != -1) return 4;
-  return SearchCount(SearchCharacter($player, subtype:"Evo"));
+  $amount = 0;
+  $amount += SearchCount(SearchCharacter($player, subtype:"Evo"));
+  if(FindCharacterIndex($player, "EVO410") != -1) $amount += 2; //Only +2 as we already find EVO410 and EVO410b counted in the search SearchCount(SearchCharacter($player, subtype:"Evo"))
+  return $amount;
 }
 
 function EquipmentsUsingSteamCounter($charID) {

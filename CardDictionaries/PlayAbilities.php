@@ -1,9 +1,18 @@
 <?php
 
+function AKOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
+{
+  global $currentPlayer;
+  switch($cardID) {
+    case "AKO004":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    default: return "";
+  }
+} 
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch($cardID) {
     default: return "";
   }
@@ -525,7 +534,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if(IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) > 0) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true");
           AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MAXCOUNT-" . EvoUpgradeAmount($mainPlayer) . ",MINCOUNT-" . 0 . ",", 1);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to " . EvoUpgradeAmount($currentPlayer) . " card" . (EvoUpgradeAmount($mainPlayer) > 1 ? "s" : "") . " to remove a steam counter from." , 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to " . EvoUpgradeAmount($currentPlayer) . " card" . (EvoUpgradeAmount($mainPlayer) > 1 ? "s" : "") . " to remove all steam counters from." , 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZREMOVESTEAMCOUNTER", $currentPlayer, "<-");
         }

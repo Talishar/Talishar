@@ -664,7 +664,7 @@ function AddTowerEffectTrigger($cardID)
 
 function AddEffectHitTrigger($cardID)
 {
-  global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner;
+  global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers;
   $effects = explode(',', $cardID);
   switch ($effects[0]) {
     case "WTR129": case "WTR130": case "WTR131":
@@ -680,7 +680,7 @@ function AddEffectHitTrigger($cardID)
     case "ELE005": case "ELE019": case "ELE020": case "ELE021":
     case "ELE022": case "ELE023": case "ELE024":
     case "ELE035-2": case "ELE037-2": case "ELE047": case "ELE048": case "ELE049":
-    case "ELE066-HIT": case "ELE092-BUFF":
+    case "ELE092-BUFF":
     case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT":
     case "ELE163": case "ELE164": case "ELE165":
     case "ELE173": case "ELE195": case "ELE196": case "ELE197":
@@ -706,6 +706,10 @@ function AddEffectHitTrigger($cardID)
     case "DTD229-HIT": case "EVO155": case "EVO434":
     case "HVY090": case "HVY091": case "HVY099": case "HVY136":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      break;
+    case "ELE066-HIT":
+      AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");
+      break;  
     default:
       break;
   }
@@ -839,7 +843,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
   if($additionalCosts == "CRUSHEFFECT") { ProcessCrushEffect($target); return; }
   if($additionalCosts == "TOWEREFFECT") { ProcessTowerEffect($target); return; }
   if($additionalCosts == "EFFECTHITEFFECT") {
-    if(EffectHitEffect($target)) RemoveCurrentTurnEffect(FindCurrentTurnEffectIndex($player, $target));
+    if(EffectHitEffect($target)) {
+      $index = FindCurrentTurnEffectIndex($player, $target);
+      if($index != -1) RemoveCurrentTurnEffect($index);
+    }
     return;
   }
   if($additionalCosts == "MAINCHARHITEFFECT")  { ProcessMainCharacterHitEffect($parameter, $player, $target); return; }
@@ -1046,9 +1053,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "ELE062": case "ELE063":
       PlayAura("ELE110", $player);
-      break;
-    case "ELE066":
-      if(HasIncreasedAttack()) Draw($player);
       break;
     case "ELE004":
       for($i = 1; $i < count($combatChain); $i += CombatChainPieces()) if($combatChain[$i] == $player) PlayAura("ELE111", $player);
@@ -1791,7 +1795,7 @@ function ModifiedAttackValue($cardID, $player, $from, $source="")
     // effect that only affect CC
     $attack += EffectDefenderAttackModifiers($cardID);
   }
-  $attack += ItemsAttackModifiers($cardID, $player);
+  $attack += ItemsAttackModifiers($cardID, $player, $from);
   return $attack;
 }
 

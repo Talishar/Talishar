@@ -589,7 +589,7 @@ function OnBlockEffects($index, $from)
           break;
         case "OUT007": case "OUT008":
           if($cardType == "A") $chainCard->ModifyDefense(-1);
-          if(intval(substr($chainCard->ID(), 3, 3)) > 400) {
+          if(intval(substr($chainCard->ID(), 3, 3)) > 400 && $chainCard->ID() != "EVO410b") {
             $set = substr($chainCard->ID(), 0, 3);
             $number = intval(substr($chainCard->ID(), 3, 3)) - 400;
             $id = $number;
@@ -651,7 +651,13 @@ function CombatChainCloseAbilities($player, $cardID, $chainLink)
       }
       break;
     case "UPR189":
-      if($chainLinkSummary[$chainLink*ChainLinkSummaryPieces()+1] <= 2) {
+      $AttackPowerValue = $chainLinkSummary[$chainLink*ChainLinkSummaryPieces()+1];
+      if($chainLinkSummary[$chainLink*ChainLinkSummaryPieces()+1] < $chainLinkSummary[$chainLink*ChainLinkSummaryPieces()+1] + EffectsAttackYouControlModifiers($chainLinks[$chainLink][$chainLink], $mainPlayer)) 
+      {
+        $AttackPowerValue += EffectsAttackYouControlModifiers($chainLinks[$chainLink][$chainLink], $mainPlayer);
+      }
+      if($AttackPowerValue <= 2)
+      {
         Draw($player);
         WriteLog(CardLink($cardID, $cardID) . " drew a card");
       }

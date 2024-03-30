@@ -411,13 +411,13 @@ function ItemAttackModifiers(&$attackModifiers)
   return $modifier;
 }
 
-function ItemsAttackModifiers($cardID, $player) {
+function ItemsAttackModifiers($cardID, $player, $from) {
   $items = &GetItems($player);
   $attackModifier = 0;
   for($i=0; $i<count($items); $i+=ItemPieces()) {
     switch($items[$i]) {
       case "EVO079":
-        if(CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $player)) ++$attackModifier;
+        if(CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $player) && $from == "CC") ++$attackModifier;
       default: break;
     }
   }
