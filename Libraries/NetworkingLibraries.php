@@ -725,6 +725,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100015: // request to enable chat
       include "MenuFiles/ParseGamefile.php";
       $myName = ($playerID == 1 ? $p1uid : $p2uid);
+      $theirName = ($playerID == 1 ? $p2uid : $p1uid);
+      if(!str_contains($theirName, "Omegaeclipse") && !str_contains($theirName, "OmegaEclipse")) break;
       if($playerID == 1) SetCachePiece($gameName, 15, 1);
       else if($playerID == 2) SetCachePiece($gameName, 16, 1);
       if(GetCachePiece($gameName, 15) != 1 || GetCachePiece($gameName, 16) != 1)
