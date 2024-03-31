@@ -41,8 +41,11 @@ if ($authKey != $targetAuth) {
 if($action == "Request Chat")
 {
   $myName = ($playerID == 1 ? $p1uid : $p2uid);
-  if($playerID == 1) SetCachePiece($gameName, 15, 1);
-  else if($playerID == 2) SetCachePiece($gameName, 16, 1);
+  $theirName = ($playerID == 1 ? $p2uid : $p1uid);
+  if(!str_contains($myName, "Omegaeclipse") && !str_contains($theirName, "Omegaeclipse")) {
+    if($playerID == 1) SetCachePiece($gameName, 15, 1);
+    else if($playerID == 2) SetCachePiece($gameName, 16, 1);
+  }
   if(GetCachePiece($gameName, 15) != 1 || GetCachePiece($gameName, 16) != 1)
   {
     WriteLog($myName . " wants to enable chat", path: "../");
