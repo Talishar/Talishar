@@ -5,7 +5,8 @@
 
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/v6.1.1/json/english/card.json";
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/bright-lights/json/english/card.json";
-  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/part-the-mistveil/json/english/card.json";
+  //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/part-the-mistveil/json/english/card.json";
+  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/develop/json/english/card.json";
   $curl = curl_init();
   $headers = array(
     "Content-Type: application/json",
@@ -70,9 +71,9 @@
         $set = substr($cardID, 0, 3);
         $cardNumber = substr($cardID, 3, 3);
         if(!in_array($set, $originalSets)) continue;
-        if($set == "LGS" && $cardNumber < 156) continue;
-        if($set == "HER" && $cardNumber < 84) continue;
-        if($set == "FAB" && $cardNumber < 161) continue;
+        if($set == "LGS" && $cardNumber < 300) continue;
+        if($set == "HER" && $cardNumber < 150) continue;
+        if($set == "FAB" && $cardNumber < 300) continue;
         if(isset($cardArray[$i]->printings[0]->double_sided_card_info) && !$cardArray[$i]->printings[0]->double_sided_card_info[0]->is_front && $cardArray[$i]->printings[0]->rarity != "T") { $cardNumber += 400; $cardID = $set . $cardNumber; }
         else {
           $duplicate = false;
