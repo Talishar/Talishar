@@ -165,6 +165,7 @@ function GetCardBack($player)
     case 73: return "CBGorganianTome";
     case 74: return "CBFABChaos";
     case 75: return "CBColdFoilControl";
+    case 76: return "CBDailyFab";
     default: return "CardBack";
   }
 }
