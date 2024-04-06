@@ -683,6 +683,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       return "GY";
     case "DTD202": return "BANISH";
     case "EVO146": return "-";
+    case "MST010": case "MST032":case "MST053": case "MST097": case "MST099": case "MST101": return "-";
     default: return "GY";
   }
 }
@@ -962,6 +963,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HVY134": return GetClassState($player, $CS_AtksWWeapon) <= 0;
     case "HVY195": return GetClassState($otherPlayer, $CS_NumCardsDrawn) < 2;
     case "HVY245": if ($from == "GY") return CountItem("EVR195", $currentPlayer) < 2; else return false;
+    case "MST099": return CombineSearches(SearchDiscard($player, "A"), SearchDiscard($player, "AA")) == "";
     case "AKO024": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
     default: return false;
   }

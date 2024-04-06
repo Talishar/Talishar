@@ -12,8 +12,13 @@ function AKOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 } 
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer;
+  global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended;
   switch($cardID) {
+    case "MST099":
+      if($CS_NumBluePlayed > 1) SetClassState($currentPlayer, $CS_Transcended, 1);
+      MZMoveCard($currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", "MYBOTDECK");
+      AddPlayerHand("MST499", $currentPlayer, "-");
+      return "";
     default: return "";
   }
 }
