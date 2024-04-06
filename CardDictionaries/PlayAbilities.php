@@ -69,6 +69,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "MST087": case "MST088": case "MST089": case "MST090":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "MST097":
       if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST497");
       MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH");
