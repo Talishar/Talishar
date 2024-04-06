@@ -41,14 +41,16 @@
 
   function ProcessTowerEffect($cardID)
   {
-    global $CombatChain, $mainPlayer, $layers;
+    global $CombatChain, $mainPlayer, $defPlayer, $layers;
     if(!IsHeroAttackTarget()) return;
     if(HitEffectsArePrevented($cardID)) return;
     if(CardType($cardID) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
     switch($cardID)
     {
       case "TCC034": case "HVY062":
-        MZChooseAndDestroy($mainPlayer, "THEIRCHAR:type=E;maxDef=1");
+        AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP1", 1);
+        AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+        AddDecisionQueue("DESTROYCHARACTER", $defPlayer, "-", 1);
         break;
       case "TCC036": case "HVY064":
         MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS:type=T"), $mainPlayer);

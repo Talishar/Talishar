@@ -100,6 +100,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ITEMSMAX": $rv = SearchItems($player, "", "", $subparam); break;
         case "EQUIP": $rv = GetEquipmentIndices($player); break;
         case "EQUIP0": $rv = GetEquipmentIndices($player, 0); break;
+        case "EQUIP1": $rv = GetEquipmentIndices($player, 1); break;
         case "EQUIPCARD": $rv = FindCharacterIndex($player, $subparam); break;
         case "EQUIPONCC": $rv = GetEquipmentIndices($player, onCombatChain:true); break;
         case "CCAA": $rv = SearchCombatChainLink($player, "AA"); break;
