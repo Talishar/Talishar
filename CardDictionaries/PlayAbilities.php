@@ -14,6 +14,11 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended;
   switch($cardID) {
+    case "MST097":
+      if($CS_NumBluePlayed > 1) SetClassState($currentPlayer, $CS_Transcended, 1);
+      MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH");
+      AddPlayerHand("MST497", $currentPlayer, "-");
+      return "";
     case "MST099":
       if($CS_NumBluePlayed > 1) SetClassState($currentPlayer, $CS_Transcended, 1);
       MZMoveCard($currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", "MYBOTDECK");

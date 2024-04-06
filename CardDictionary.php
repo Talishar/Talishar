@@ -722,6 +722,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $myItems = &GetItems($player);
   $mySoul = &GetSoul($player);
   $discard = new Discard($player);
+  $otherPlayerDiscard = &GetDiscard($otherPlayer);  
   $type = CardType($cardID);
   if(IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
   if(SearchCurrentTurnEffects("CRU032", $player) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) { $restriction = "CRU032"; return true; }
@@ -963,6 +964,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HVY134": return GetClassState($player, $CS_AtksWWeapon) <= 0;
     case "HVY195": return GetClassState($otherPlayer, $CS_NumCardsDrawn) < 2;
     case "HVY245": if ($from == "GY") return CountItem("EVR195", $currentPlayer) < 2; else return false;
+    case "MST097": return count($otherPlayerDiscard) <= 0;
     case "MST099": return CombineSearches(SearchDiscard($player, "A"), SearchDiscard($player, "AA")) == "";
     case "AKO024": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
     default: return false;
