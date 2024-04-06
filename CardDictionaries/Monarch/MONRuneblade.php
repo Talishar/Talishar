@@ -15,7 +15,7 @@
         AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
         AddDecisionQueue("MULTICHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEDISCARD", $otherPlayer, "-", 1);
-        AddDecisionQueue("MULTIBANISH", $otherPlayer, "DISCARD,NA", 1);
+        AddDecisionQueue("MULTIBANISH", $otherPlayer, "DISCARD", 1);
         AddDecisionQueue("INVERTEXISTENCE", $currentPlayer, "-", 1);
         return "";
       case "MON159": case "MON160": case "MON161":
@@ -87,7 +87,7 @@
     }
   }
 
-  function InvertExistenceIndices($player)
+  function UpTo2FromOpposingGraveyardIndices($player)
   {
     $discard = new Discard($player);
     if($discard->Empty()) return "";

@@ -124,7 +124,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = GetIndices(count($soul), 1);
           break;
         case "MON033-2": $rv = CombineSearches(SearchDeck($player, "A", "", $lastResult), SearchDeck($player, "AA", "", $lastResult)); break;
-        case "MON158": $rv = InvertExistenceIndices($player); break;//This makes sense because it's a multi
+        case "MON158": $rv = UpTo2FromOpposingGraveyardIndices($player); break;//This makes sense because it's a multi
         case "ELE113": $rv = PulseOfCandleholdIndices($player); break;//This makes sense because it's a multi
         case "ELE125": case "ELE126": case "ELE127": $rv = MZToIndices(SearchMultizone($player, "COMBATCHAINLINK:type=A;talent=EARTH,ELEMENTAL&COMBATCHAINLINK:type=AA;talent=EARTH,ELEMENTAL")); break;
         case "EVR178": $rv = SearchDeckForCard($player, "MON281", "MON282", "MON283"); break;
@@ -151,6 +151,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = implode(",", $rv);
           $rv = SearchCount($rv) . "-" . $rv;
           break;
+        case "MST010": $rv = UpTo2FromOpposingGraveyardIndices($player); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "PASS" : $rv);
@@ -1034,13 +1035,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "INVERTEXISTENCE":
       if($lastResult == "") {
-        WriteLog("No cards were selected, so Invert Existence did not banish any cards");
+        WriteLog("No cards were selected, ". CardLink("MON158", "MON158") ." did not banish any cards");
         return $lastResult;
       }
       $cards = explode(",", $lastResult);
       $numAA = 0;
       $numNAA = 0;
-      $message = "Invert existence banished ";
+      $message = CardLink("MON158", "MON158") ." banished ";
       for($i = 0; $i < count($cards); ++$i) {
         $type = CardType($cards[$i]);
         if($type == "AA") ++$numAA;
@@ -1699,6 +1700,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       case "ADDTRIGGER":
         $param = explode(",", $parameter);
         AddLayer("TRIGGER", $player, $param[0], $param[1]);
+        return $lastResult;
+      case "UNDERCURRENTDESIRES":
+        if($lastResult == "") {
+          WriteLog("No cards were selected, ". CardLink("MST010", "MST010") ." did not banish any cards");
+          return $lastResult;
+        }
+        $cards = explode(",", $lastResult);
+        $message = CardLink("MST010", "MST010") ." banished ";
+        for($i = 0; $i < count($cards); ++$i) {
+          if($i >= 1) $message .= ", ";
+          if($i != 0 && $i == count($cards) - 1) $message .= "and ";
+          $message .= CardLink($cards[$i], $cards[$i]);
+        }
+        WriteLog($message);
         return $lastResult;
     default:
       return "NOTSTATIC";

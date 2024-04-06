@@ -13,7 +13,29 @@ function AKOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended;
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch($cardID) {
+    case "MST010":
+      if($additionalCosts != "-"){
+        $modes = explode(",", $additionalCosts);
+        for($i=0; $i<count($modes); ++$i)
+        {
+          switch($modes[$i])
+          {
+            case "Create_a_Fang_Strike_and_Slither": break; //TODO: When we know what those are
+            case "Banish_up_to_2_cards_in_an_opposing_hero_graveyard": 
+              AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
+              AddDecisionQueue("MULTICHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
+              AddDecisionQueue("MULTIREMOVEDISCARD", $otherPlayer, "-", 1);
+              AddDecisionQueue("MULTIBANISH", $otherPlayer, "DISCARD", 1);
+              AddDecisionQueue("UNDERCURRENTDESIRES", $currentPlayer, "-", 1);
+              return "";
+            case "Transcend": Transcend($currentPlayer, "MST410"); break;
+            default: break;
+          }
+        }
+      }
+      return "";
     case "MST032":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);
@@ -32,7 +54,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
-
     case "MST053":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);

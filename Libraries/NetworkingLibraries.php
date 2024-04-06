@@ -2285,6 +2285,13 @@ function PayAdditionalCosts($cardID, $from)
         RemoveGraveyard($currentPlayer, $index);
       }
       break;
+    case "MST010":
+      $numModes = $CS_NumBluePlayed > 0 ? 3 : 1;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
+      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-Create_a_Fang_Strike_and_Slither,Banish_up_to_2_cards_in_an_opposing_hero_graveyard,Transcend");
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
     case "MST032":
       $numModes = $CS_NumBluePlayed > 0 ? 3 : 1;
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
