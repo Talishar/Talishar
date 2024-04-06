@@ -1695,7 +1695,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $index = FindCharacterIndex($defPlayer, $lastResult);
         DestroyCharacter($defPlayer, $index);
         WriteLog(CardLink($lastResult, $lastResult). " was destroyed");
-        DestroyItemForPlayer($player, SearchItemsForCard("DYN094", $player));
+        DestroyItemForPlayer($player, SearchItemForIndex("DYN094", $player));
         return $lastResult;
       case "ADDTRIGGER":
         $param = explode(",", $parameter);

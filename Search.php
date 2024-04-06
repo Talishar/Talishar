@@ -759,6 +759,17 @@ function SearchItemsForCard($cardID, $player)
   return $indices;
 }
 
+function SearchItemForIndex($cardID, $player)
+{
+  $items = &GetItems($player);
+  for($i = 0; $i < count($items); $i += ItemPieces()) {
+    if($items[$i] == $cardID) {
+      return $i;
+    }
+  }
+  return -1;
+}
+
 function SearchInventoryForCard($player, $cardID)
 {
   $inventory = &GetInventory($player);
