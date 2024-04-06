@@ -14,6 +14,25 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended;
   switch($cardID) {
+    case "MST032":
+      if($additionalCosts != "-"){
+        $modes = explode(",", $additionalCosts);
+        for($i=0; $i<count($modes); ++$i)
+        {
+          switch($modes[$i])
+          {
+            case "Create_2_Spectral_Shield": PlayAura("MON104", $currentPlayer, 2); break;
+            case "Put_a_+1_counter_on_each_aura_with_ward_you_control": 
+              AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasWard=true", 1);
+              AddDecisionQueue("ADDALLATTACKCOUNTERS", $currentPlayer, "1", 1);
+              break;
+            case "Transcend": Transcend($currentPlayer, "MST432"); break;
+            default: break;
+          }
+        }
+      }
+      return "";
+
     case "MST053":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);

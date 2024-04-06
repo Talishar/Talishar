@@ -2285,6 +2285,13 @@ function PayAdditionalCosts($cardID, $from)
         RemoveGraveyard($currentPlayer, $index);
       }
       break;
+    case "MST032":
+      $numModes = $CS_NumBluePlayed > 0 ? 3 : 1;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
+      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-Create_2_Spectral_Shield,Put_a_+1_counter_on_each_aura_with_ward_you_control,Transcend");
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
     case "MST053":
       $numModes = $CS_NumBluePlayed > 0 ? 3 : 1;
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
@@ -2385,7 +2392,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     else if(DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID);
     else if(DelimStringContains($cardSubtype, "Evo")) EvoHandling($cardID, $currentPlayer);
     else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W") {
-      $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer);
+      $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts:$additionalCosts);
       switch($goesWhere) {
         case "BOTDECK": AddBottomDeck($cardID, $currentPlayer, $from); break;
         case "HAND": AddPlayerHand($cardID, $currentPlayer, $from); break;

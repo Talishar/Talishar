@@ -638,9 +638,9 @@ function CanBlockWithEquipment()
   }
 }
 
-function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom="", $stillOnCombatChain=1)
+function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom="", $stillOnCombatChain=1, $additionalCosts="-")
 {
-  global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $defPlayer;
+  global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $defPlayer, $CS_NumBluePlayed;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
   if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
@@ -683,7 +683,19 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       return "GY";
     case "DTD202": return "BANISH";
     case "EVO146": return "-";
-    case "MST010": case "MST032":case "MST053": case "MST097": case "MST099": case "MST101": return "-";
+    case "MST010": case "MST032": case "MST053":
+      if($CS_NumBluePlayed > 1) return "-";
+      else if($additionalCosts != "-"){
+        $modes = explode(",", $additionalCosts);
+        for($i=0; $i<count($modes); ++$i)
+        {
+          if($modes[$i] == "Transcend") return "-";
+        }
+      }
+      return "GY";
+    case "MST097": case "MST099": case "MST101": 
+      if($CS_NumBluePlayed > 1) return "-";
+      else return "GY";
     default: return "GY";
   }
 }
