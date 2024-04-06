@@ -36,6 +36,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "MST025": case "MST026": 
+      PlayAura("MON104", $currentPlayer, 1, numAttackCounters:1);
+      return "";
     case "MST032":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);
@@ -53,6 +56,14 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           }
         }
       }
+      return "";
+    case "MST046": case "MST047": 
+      AddPlayerHand("DYN065", $currentPlayer, "NA");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:comboOnly=true", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,DECK,TT", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       return "";
     case "MST053":
       if($additionalCosts != "-"){
