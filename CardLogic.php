@@ -359,11 +359,6 @@ function ContinueDecisionQueue($lastResult = "")
       if($priorityHeld) {
         ContinueDecisionQueue("");
       } else {
-        if(RequiresDieRoll($layers[0], explode("|", $layers[2])[0], $layers[1])) {
-          RollDie($layers[1]);
-          ContinueDecisionQueue("");
-          return;
-        }
         CloseDecisionQueue();
         $cardID = array_shift($layers);
         $player = array_shift($layers);
@@ -401,6 +396,11 @@ function ContinueDecisionQueue($lastResult = "")
           SetClassState($player, $CS_AbilityIndex, $params[2]); //This is like a parameter to PlayCardEffect and other functions
           PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, $params[3], $params[2]);
           ClearDieRoll($player);
+        }
+        if(RequiresDieRoll($cardID, $params[0], $player)) {
+          RollDie($player);
+          ContinueDecisionQueue("");
+          return;
         }
       }
     } else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPLAY") {
