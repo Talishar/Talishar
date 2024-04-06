@@ -1656,7 +1656,7 @@ function SpellVoidAmount($cardID, $player)
 
 function IsSpecialization($cardID)
 {
-  return GeneratedIsSpecialization($cardID);
+  return GeneratedIsSpecialization($cardID) == "true";
 }
 
 function Is1H($cardID)
