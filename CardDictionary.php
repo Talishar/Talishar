@@ -870,8 +870,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "UPR151": return ($character[$index + 2] < 2 && !SearchCurrentTurnEffects($cardID, $player));
     case "UPR153": return GetClassState($player, $CS_NumPhantasmAADestroyed) < 1;
     case "UPR154":
-      if($CombatChain->HasCurrentLink()) return !(CardType($CombatChain->AttackCard()->ID()) == "AA" || DelimStringContains(CardSubType($CombatChain->AttackCard()->ID()), "Ally")) || !ClassContains($CombatChain->AttackCard()->ID(), "ILLUSIONIST", $player);
-      else if(count($layers) != 0) return !(CardType($layers[0]) == "AA" || DelimStringContains(CardSubType($layers[0]), "Ally")) || !ClassContains($layers[0], "ILLUSIONIST", $player);
+      if($CombatChain->HasCurrentLink()) return !ClassContains($CombatChain->AttackCard()->ID(), "ILLUSIONIST", $player);
+      else if(count($layers) != 0) return !ClassContains($layers[0], "ILLUSIONIST", $player);
       return true;
     case "UPR159": return !$CombatChain->HasCurrentLink() || AttackValue($CombatChain->AttackCard()->ID()) > 2 || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "UPR162": case "UPR163": case "UPR164": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || CardCost($CombatChain->AttackCard()->ID()) > 0;
