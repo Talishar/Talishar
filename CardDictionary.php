@@ -52,7 +52,7 @@ function CardType($cardID)
 {
   if(!$cardID) return "";
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM") {
+  if($set != "ROG" && $set != "DUM" && $set != "LGS") {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardType($cardID);
     else if($set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "EVO410" && $cardID != "EVO410b") return GeneratedCardType($cardID);
@@ -69,6 +69,7 @@ function CardType($cardID)
     case "DTD564": return "D";
     case "EVO410": return "D";
     case "DYN612": return "-";
+    case "LGS176": case "LGS177": case "LGS178": return "A";
     case "DUMMY":
     case "DUMMYDISHONORED":
       return "C";
@@ -246,6 +247,7 @@ function CardTalent($cardID)
   switch ($cardID) {
     case "EVO410": case "EVO410b": return "SHADOW";
     case "DTD564": return "SHADOW";
+    case "LGS176": case "LGS177": case "LGS178": return "SHADOW";
     default: break;
   }
   return GeneratedCardTalent($cardID);
