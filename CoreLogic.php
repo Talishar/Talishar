@@ -1060,7 +1060,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
-  if($cardID == "MON034" && SearchItemsForCard("DYN066", $currentPlayer) != "") return true;
+  if(CardNameContains($cardID, "Lumina Ascension", $currentPlayer) && SearchItemsForCard("DYN066", $currentPlayer) != "") return true;
   if($cardType == "A" && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) && ClassContains($cardID, "WIZARD", $currentPlayer)) return true;
   if(GetClassState($currentPlayer, $CS_NumWizardNonAttack) && ($cardID == "CRU174" || $cardID == "CRU175" || $cardID == "CRU176")) return true;
   if($currentPlayer != $mainPlayer && ($cardID == "CRU165" || $cardID == "CRU166" || $cardID == "CRU167")) return true;
