@@ -336,7 +336,18 @@ function PitchValue($cardID)
 {
   if(!$cardID) return "";
   $set = CardSet($cardID);
-  if (CardType($cardID) == "M") return 0;
+  if(CardType($cardID) == "M") return 0;
+  $number = intval(substr($cardID, 3));
+  if($number > 400)
+  {
+    switch ($cardID) {
+      case "MST410": case "MST432": case "MST453":
+      case "MST497": case "MST499": case "MST501":
+        return 3;   
+      default:
+        break;
+    }
+  }
   if($set != "ROG" && $set != "DUM") {
     return GeneratedPitchValue($cardID);
   }
