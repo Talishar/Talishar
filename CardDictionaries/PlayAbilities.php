@@ -36,6 +36,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "MST025": case "MST026": 
+      PlayAura("MON104", $currentPlayer, 1, numAttackCounters:1);
+      return "";
     case "MST032":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);

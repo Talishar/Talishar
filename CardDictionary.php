@@ -303,6 +303,8 @@ function AbilityCost($cardID)
   else if($set == "TCC") return TCCAbilityCost($cardID);
   else if($set == "EVO") return EVOAbilityCost($cardID);
   else if($set == "HVY") return HVYAbilityCost($cardID);
+  else if($set == "AKO") return AKOAbilityCost($cardID);
+  else if($set == "MST") return MSTAbilityCost($cardID);
   else if($set == "ROG") return ROGUEAbilityCost($cardID);
   return CardCost($cardID);
 }
@@ -424,6 +426,8 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "TCC") return TCCAbilityType($cardID, $index);
   else if($set == "EVO") return EVOAbilityType($cardID, $index);
   else if($set == "HVY") return HVYAbilityType($cardID, $index, $from);
+  else if($set == "AKO") return AKOAbilityType($cardID, $index, $from);
+  else if($set == "MST") return MSTAbilityType($cardID, $index, $from);
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
 }
 
@@ -500,7 +504,7 @@ function GetResolvedAbilityName($cardID, $from="-")
   return $abilityNames[$abilityIndex];
 }
 
-function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "")
+function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "", $pitchRestriction="")
 {
   global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
   global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer;
@@ -561,7 +565,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if($CombatChain->AttackCard()->ID() == "DYN121" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
   if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
-  if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index)) return false;
+  if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index, $pitchRestriction)) return false;
+  if(($phase == "P") && IsPitchRestricted($cardID, $restriction, $from, $index, $pitchRestriction)) return false;
   if($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
   $isStaticType = IsStaticType($cardType, $from, $cardID);
   if($isStaticType) $cardType = GetAbilityType($cardID, $index, $from);
@@ -709,7 +714,7 @@ function CanPlayInstant($phase)
   return false;
 }
 
-function IsPitchRestricted($cardID, &$restriction, $from = "", $index = -1)
+function IsPitchRestricted($cardID, &$restriction, $from = "", $index = -1, $pitchRestriction="")
 {
   global $playerID;
   if(SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0) { $restriction = "ELE035"; return true; }
@@ -717,6 +722,7 @@ function IsPitchRestricted($cardID, &$restriction, $from = "", $index = -1)
   if($pitchValue == 1 && SearchCurrentTurnEffects("OUT101-1", $playerID)) { $restriction = "OUT101"; return true; }
   else if($pitchValue == 2 && SearchCurrentTurnEffects("OUT101-2", $playerID)) { $restriction = "OUT101"; return true; }
   else if($pitchValue == 3 && SearchCurrentTurnEffects("OUT101-3", $playerID)) { $restriction = "OUT101"; return true; }
+  if(CardCareAboutChiPitch($pitchRestriction) && !CardPitchForChi($cardID)) return true;
   return false;
 }
 
@@ -1243,6 +1249,8 @@ function AbilityHasGoAgain($cardID)
   else if($set == "TCC") return TCCAbilityHasGoAgain($cardID);
   else if($set == "EVO") return EVOAbilityHasGoAgain($cardID);
   else if($set == "HVY") return HVYAbilityHasGoAgain($cardID);
+  else if($set == "AKO") return AKOAbilityHasGoAgain($cardID);
+  else if($set == "MST") return MSTAbilityHasGoAgain($cardID);
   else if($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   switch($cardID) {
     case "RVD004": return true;
@@ -1297,6 +1305,7 @@ function CharacterNumUsesPerTurn($cardID)
     case "OUT093": return 2;
     case "EVO073": return 999;
     case "EVO410": return 999;
+    case "MST001": case "MST002": return 999; 
     default: return 1;
   }
 }
@@ -1837,4 +1846,25 @@ function Rarity($cardID)
 function IsEquipment($cardID, $player="")
 {
   return TypeContains($cardID, "E", $player) || SubtypeContains($cardID, "Evo", $player);
+}
+
+function CardCareAboutChiPitch($cardID)
+{
+  $cardID = ShiyanaCharacter($cardID);
+  switch($cardID) {
+      case "MST001": case "MST002": case "MST025":
+      case "MST026": case "MST046": case "MST047":
+      return true;
+    default: return false;
+  }
+}
+
+function CardPitchForChi($cardID)
+{
+  switch($cardID) {
+    case "MST410": case "MST432": case "MST453":
+    case "MST497": case "MST499": case "MST501":
+    return true;
+  default: return false;
+  }
 }
