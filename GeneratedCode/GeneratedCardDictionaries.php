@@ -379,7 +379,7 @@ case "0":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
-case "5":
+case "4":
 return "E";
 default: return "AA";
 }
@@ -8765,6 +8765,12 @@ case "4":
 return 5;
 default: return 0;
 }
+case "1":
+switch($cardID[5]) {
+case "3":
+return 6;
+default: return 0;
+}
 default: return 0;
 }
 default: return 0;
@@ -9551,7 +9557,7 @@ case "0":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
-case "5":
+case "4":
 return 2;
 default: return 3;
 }
@@ -14607,8 +14613,14 @@ default: return "";
 }
 case "0":
 switch($cardID[5]) {
-case "5":
+case "4":
 return "Savage Sash";
+default: return "";
+}
+case "1":
+switch($cardID[5]) {
+case "3":
+return "Strength Rules All";
 default: return "";
 }
 default: return "";
@@ -22253,7 +22265,7 @@ default: return 1;
 }
 case "0":
 switch($cardID[5]) {
-case "5":
+case "4":
 return 0;
 default: return 1;
 }
@@ -28277,8 +28289,14 @@ default: return 0;
 }
 case "0":
 switch($cardID[5]) {
-case "5":
+case "4":
 return -1;
+default: return 0;
+}
+case "1":
+switch($cardID[5]) {
+case "3":
+return 2;
 default: return 0;
 }
 default: return 0;
@@ -34301,7 +34319,7 @@ case "0":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
-case "5":
+case "4":
 return "Chest";
 default: return "";
 }
@@ -37407,7 +37425,13 @@ default: return "C";
 }
 case "0":
 switch($cardID[5]) {
-case "5":
+case "4":
+return "M";
+default: return "C";
+}
+case "1":
+switch($cardID[5]) {
+case "3":
 return "M";
 default: return "C";
 }
@@ -42169,7 +42193,13 @@ default: return "NONE";
 }
 case "0":
 switch($cardID[5]) {
-case "5":
+case "4":
+return "BRUTE";
+default: return "NONE";
+}
+case "1":
+switch($cardID[5]) {
+case "3":
 return "BRUTE";
 default: return "NONE";
 }
@@ -53051,7 +53081,7 @@ case "DYN007": return "false";
 case "WTR014": return "false";
 case "WTR015": return "false";
 case "WTR016": return "false";
-case "AKO005": return "false";
+case "AKO004": return "false";
 case "WTR020": return "false";
 case "WTR021": return "false";
 case "WTR022": return "false";
@@ -53442,6 +53472,7 @@ case "UPR003": return "false";
 case "UPR200": return "false";
 case "UPR201": return "false";
 case "UPR202": return "false";
+case "AKO013": return "false";
 case "ELE028": return "false";
 case "ELE029": return "false";
 case "ELE030": return "false";
