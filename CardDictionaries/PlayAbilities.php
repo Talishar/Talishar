@@ -12,8 +12,78 @@ function AKOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 } 
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer;
+  global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended;
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch($cardID) {
+    case "MST010":
+      if($additionalCosts != "-"){
+        $modes = explode(",", $additionalCosts);
+        for($i=0; $i<count($modes); ++$i)
+        {
+          switch($modes[$i])
+          {
+            case "Create_a_Fang_Strike_and_Slither": break; //TODO: When we know what those are
+            case "Banish_up_to_2_cards_in_an_opposing_hero_graveyard": 
+              AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
+              AddDecisionQueue("MULTICHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
+              AddDecisionQueue("MULTIREMOVEDISCARD", $otherPlayer, "-", 1);
+              AddDecisionQueue("MULTIBANISH", $otherPlayer, "DISCARD", 1);
+              AddDecisionQueue("UNDERCURRENTDESIRES", $currentPlayer, "-", 1);
+              return "";
+            case "Transcend": Transcend($currentPlayer, "MST410"); break;
+            default: break;
+          }
+        }
+      }
+      return "";
+    case "MST032":
+      if($additionalCosts != "-"){
+        $modes = explode(",", $additionalCosts);
+        for($i=0; $i<count($modes); ++$i)
+        {
+          switch($modes[$i])
+          {
+            case "Create_2_Spectral_Shield": PlayAura("MON104", $currentPlayer, 2); break;
+            case "Put_a_+1_counter_on_each_aura_with_ward_you_control": 
+              AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasWard=true", 1);
+              AddDecisionQueue("ADDALLATTACKCOUNTERS", $currentPlayer, "1", 1);
+              break;
+            case "Transcend": Transcend($currentPlayer, "MST432"); break;
+            default: break;
+          }
+        }
+      }
+      return "";
+    case "MST053":
+      if($additionalCosts != "-"){
+        $modes = explode(",", $additionalCosts);
+        for($i=0; $i<count($modes); ++$i)
+        {
+          switch($modes[$i])
+          {
+            case "Create_2_Crouching_Tigers": AddPlayerHand("DYN065", $currentPlayer, "NA", 2); break;
+            case "Crouching_Tigers_Get_+1_this_turn": AddCurrentTurnEffect($cardID, $currentPlayer); break;
+            case "Transcend": Transcend($currentPlayer, "MST453"); break;
+            default: break;
+          }
+        }
+      }
+      return "";
+    case "MST087": case "MST088": case "MST089": case "MST090":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "MST097":
+      MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH");
+      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST497");
+      return "";
+    case "MST099":
+      MZMoveCard($currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", "MYBOTDECK");
+      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST499");
+      return "";
+    case "MST101":
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST501");
+      return "";
     default: return "";
   }
 }

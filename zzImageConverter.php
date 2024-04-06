@@ -12,7 +12,7 @@ function CheckImage($cardID, $isDuplicate=false)
     //$imageURL = "https://fabrary.net/images/cards/" . $cardID . ".webp";
     //$imageURL = "https://fabrary.net/images/cards/" . $cardID . ".width-450.webp";
     if($isDuplicate) $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $set . NormalizeCardBackID($number) . ".webp";
-    else if($number >= 400) $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $set . NormalizeCardBackID($number) . "_Back.webp";
+    else if($number >= 400) $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $set . NormalizeCardBackID($number) . "_BACK.webp";
     else $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $cardID . ".webp";
     //$imageURL = "https://dhhim4ltzu1pj.cloudfront.net/media/images/" . $cardID . "_yajPa8R.width-450.format-webp.webp";
     echo("Image for " . $cardID . " does not exist.<BR>");

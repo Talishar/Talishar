@@ -638,9 +638,9 @@ function CanBlockWithEquipment()
   }
 }
 
-function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom="", $stillOnCombatChain=1)
+function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom="", $stillOnCombatChain=1, $additionalCosts="-")
 {
-  global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $defPlayer;
+  global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $defPlayer, $CS_NumBluePlayed;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
   if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
@@ -683,6 +683,19 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       return "GY";
     case "DTD202": return "BANISH";
     case "EVO146": return "-";
+    case "MST010": case "MST032": case "MST053":
+      if($CS_NumBluePlayed > 1) return "-";
+      else if($additionalCosts != "-"){
+        $modes = explode(",", $additionalCosts);
+        for($i=0; $i<count($modes); ++$i)
+        {
+          if($modes[$i] == "Transcend") return "-";
+        }
+      }
+      return "GY";
+    case "MST097": case "MST099": case "MST101": 
+      if($CS_NumBluePlayed > 1) return "-";
+      else return "GY";
     default: return "GY";
   }
 }
@@ -721,6 +734,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $myItems = &GetItems($player);
   $mySoul = &GetSoul($player);
   $discard = new Discard($player);
+  $otherPlayerDiscard = &GetDiscard($otherPlayer);  
   $type = CardType($cardID);
   if(IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
   if(SearchCurrentTurnEffects("CRU032", $player) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) { $restriction = "CRU032"; return true; }
@@ -962,6 +976,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HVY134": return GetClassState($player, $CS_AtksWWeapon) <= 0;
     case "HVY195": return GetClassState($otherPlayer, $CS_NumCardsDrawn) < 2;
     case "HVY245": if ($from == "GY") return CountItem("EVR195", $currentPlayer) < 2; else return false;
+    case "MST097": return count($otherPlayerDiscard) <= 0;
+    case "MST099": return CombineSearches(SearchDiscard($player, "A"), SearchDiscard($player, "AA")) == "";
     case "AKO024": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
     default: return false;
   }

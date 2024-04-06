@@ -1356,7 +1356,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
 {
   global $playerID, $turn, $currentPlayer, $actionPoints, $layers;
   global $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
-  global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $lastPlayed, $CS_PlayIndex;
+  global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $lastPlayed, $CS_PlayIndex, $CS_NumBluePlayed;
   global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed;
   global $CS_PlayedAsInstant, $mainPlayer, $EffectContext;
   $resources = &GetResources($currentPlayer);
@@ -1516,6 +1516,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if($from == "BANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
     if(HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
     if(PitchValue($cardID) == 1) IncrementClassState($currentPlayer, $CS_NumRedPlayed);
+    if(PitchValue($cardID) == 3) IncrementClassState($currentPlayer, $CS_NumBluePlayed);
     PayAdditionalCosts($cardID, $from);
   }
   if($turn[0] == "B" && $cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
@@ -1801,7 +1802,7 @@ function PayAbilityAdditionalCosts($cardID)
 
 function PayAdditionalCosts($cardID, $from)
 {
-  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain;
+  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain, $CS_NumBluePlayed;
   $cardSubtype = CardSubType($cardID);
   if($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
@@ -2284,6 +2285,27 @@ function PayAdditionalCosts($cardID, $from)
         RemoveGraveyard($currentPlayer, $index);
       }
       break;
+    case "MST010":
+      $numModes = $CS_NumBluePlayed > 0 ? 3 : 1;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
+      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-Create_a_Fang_Strike_and_Slither,Banish_up_to_2_cards_in_an_opposing_hero_graveyard,Transcend");
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
+    case "MST032":
+      $numModes = $CS_NumBluePlayed > 0 ? 3 : 1;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
+      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-Create_2_Spectral_Shield,Put_a_+1_counter_on_each_aura_with_ward_you_control,Transcend");
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
+    case "MST053":
+      $numModes = $CS_NumBluePlayed > 0 ? 3 : 1;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
+      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-Create_2_Crouching_Tigers,Crouching_Tigers_Get_+1_this_turn,Transcend");
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
     default:
       break;
   }
@@ -2377,7 +2399,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     else if(DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID);
     else if(DelimStringContains($cardSubtype, "Evo")) EvoHandling($cardID, $currentPlayer);
     else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W") {
-      $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer);
+      $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts:$additionalCosts);
       switch($goesWhere) {
         case "BOTDECK": AddBottomDeck($cardID, $currentPlayer, $from); break;
         case "HAND": AddPlayerHand($cardID, $currentPlayer, $from); break;

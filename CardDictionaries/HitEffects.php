@@ -1,6 +1,23 @@
 <?php
 
-
+function AKOHitEffect($cardID)
+{
+  global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt;
+  switch ($cardID) {
+    case "AKO013":
+      if(IsHeroAttackTarget()) {
+        SetArsenalFacing("UP", $defPlayer);
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS:type=AA;maxAttack=" . $combatChainState[$CCS_DamageDealt]-1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to BANISH", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZBANISH", $mainPlayer, "-", 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      }
+      break;
+    default:
+      break;
+  }
+}
   function TCCHitEffect($cardID)
   {
     global $mainPlayer, $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
