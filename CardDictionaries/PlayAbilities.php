@@ -73,12 +73,16 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "MST097":
-      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST497");
       MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH");
+      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST497");
       return "";
     case "MST099":
-      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST499");
       MZMoveCard($currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", "MYBOTDECK");
+      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST499");
+      return "";
+    case "MST101":
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST501");
       return "";
     default: return "";
   }
