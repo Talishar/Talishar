@@ -544,7 +544,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     }
     if(CachedOverpowerActive() && CachedNumActionBlocked() >= 1) {
       if ($cardType == "A" || $cardType == "AA") return false;
-      if (SubtypeContains($cardID, "Evo") && $cardID != "EVO410b") {
+      if (SubtypeContains($cardID, "Evo") && $cardID != "EVO410b" && $cardID != "DYN492b") {
         if (CardType(GetCardIDBeforeTransform($cardID)) == "A") return false;
       }
     }
