@@ -111,10 +111,12 @@ function AddTopDeck($cardID, $player, $from, $deckIndexModifier = 0)
   array_splice($deck, $deckIndexModifier, 0, $cardID);
 }
 
-function AddPlayerHand($cardID, $player, $from)
+function AddPlayerHand($cardID, $player, $from, $amount=1)
 {
   $hand = &GetHand($player);
-  array_push($hand, $cardID);
+  for($i = 0; $i < $amount; ++$i) {
+    array_push($hand, $cardID);
+  }
 }
 
 function RemoveHand($player, $index)

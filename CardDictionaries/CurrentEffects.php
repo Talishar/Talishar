@@ -1,5 +1,25 @@
 <?php
 
+function MSTEffectAttackModifier($cardID) {
+  $idArr = explode(",", $cardID);
+  $cardID = $idArr[0];
+  switch($cardID) {
+    case "MST053": return 1;
+    default: return 0;
+  }
+}
+
+function MSTCombatEffectActive($cardID, $attackID)
+{
+  global $mainPlayer;
+  $idArr = explode(",", $cardID);
+  $cardID = $idArr[0];
+  switch($cardID) {
+    case "MST053": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
+    default: return false;
+  }
+}
+
   function TCCEffectAttackModifier($cardID)
   {
     $idArr = explode(",", $cardID);

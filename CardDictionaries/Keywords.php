@@ -328,4 +328,10 @@
     return false;
   }
 
+  function Transcend($player, $cardID)
+  {
+    global $currentPlayer, $CS_Transcended;
+    SetClassState($player, $CS_Transcended, 1);
+    AddPlayerHand($cardID, $player, "-");
+  }
 ?>

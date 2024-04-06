@@ -1802,7 +1802,7 @@ function PayAbilityAdditionalCosts($cardID)
 
 function PayAdditionalCosts($cardID, $from)
 {
-  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain;
+  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain, $CS_NumBluePlayed;
   $cardSubtype = CardSubType($cardID);
   if($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
@@ -2284,6 +2284,13 @@ function PayAdditionalCosts($cardID, $from)
         $index = SearchGetFirstIndex(SearchMultizone($currentPlayer, "MYDISCARD:cardID=HVY245"));
         RemoveGraveyard($currentPlayer, $index);
       }
+      break;
+    case "MST053":
+      $numModes = $CS_NumBluePlayed > 0 ? 3 : 1;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
+      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-Create_2_Crouching_Tigers,Crouching_Tigers_Get_+1_this_turn,Transcend");
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     default:
       break;

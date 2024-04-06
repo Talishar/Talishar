@@ -334,6 +334,7 @@ function EffectAttackModifier($cardID)
   else if($set == "TCC") return TCCEffectAttackModifier($cardID);
   else if($set == "EVO") return EVOEffectAttackModifier($cardID);
   else if($set == "HVY") return HVYEffectAttackModifier($cardID);
+  else if($set == "MST") return MSTEffectAttackModifier($cardID);
   else if($set == "ROG") return ROGUEEffectAttackModifier($cardID);
   return 0;
 }
@@ -1131,6 +1132,7 @@ function IsCombatEffectActive($cardID, $defendingCard="")
   else if($set == "TCC") return TCCCombatEffectActive($cardID, $cardToCheck);
   else if($set == "EVO") return EVOCombatEffectActive($cardID, $cardToCheck);
   else if($set == "HVY") return HVYCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "MST") return MSTCombatEffectActive($cardID, $cardToCheck);
   else if($set == "ROG") return ROGUECombatEffectActive($cardID, $cardToCheck);
   switch($cardID)
   {
@@ -1184,6 +1186,7 @@ function IsCombatEffectPersistent($cardID)
     case "HVY176": return true;
     case "HVY246": return true;
     case "HVY247": return true;
+    case "MST053": return true;
 
 
     //Roguelike

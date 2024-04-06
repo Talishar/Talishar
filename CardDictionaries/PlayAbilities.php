@@ -14,15 +14,28 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended;
   switch($cardID) {
+    case "MST053":
+      if($additionalCosts != "-"){
+        $modes = explode(",", $additionalCosts);
+        for($i=0; $i<count($modes); ++$i)
+        {
+          switch($modes[$i])
+          {
+            case "Create_2_Crouching_Tigers": AddPlayerHand("DYN065", $currentPlayer, "NA", 2); break;
+            case "Crouching_Tigers_Get_+1_this_turn": AddCurrentTurnEffect($cardID, $currentPlayer); break;
+            case "Transcend": Transcend($currentPlayer, "MST453"); break;
+            default: break;
+          }
+        }
+      }
+      return "";
     case "MST097":
-      if($CS_NumBluePlayed > 1) SetClassState($currentPlayer, $CS_Transcended, 1);
+      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST497");
       MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH");
-      AddPlayerHand("MST497", $currentPlayer, "-");
       return "";
     case "MST099":
-      if($CS_NumBluePlayed > 1) SetClassState($currentPlayer, $CS_Transcended, 1);
+      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST499");
       MZMoveCard($currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", "MYBOTDECK");
-      AddPlayerHand("MST499", $currentPlayer, "-");
       return "";
     default: return "";
   }
