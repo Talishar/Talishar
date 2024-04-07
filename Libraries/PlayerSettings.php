@@ -166,6 +166,8 @@ function GetCardBack($player)
     case 74: return "CBFABChaos";
     case 75: return "CBColdFoilControl";
     case 76: return "CBDailyFab";
+    case 77: return "CBRighteousGaming";
+    case 78: return "CBRighteousGaming2";
     default: return "CardBack";
   }
 }
@@ -601,4 +603,26 @@ function IsTeamColdFoilControl($userID)
     default: break;
   }
   return false;
+}
+
+function IsTeamRighteousGaming($userID)
+{  
+  switch($userID) {
+    case "MisterPNP":
+    case "RighteousGaming":
+    case "Perodic":
+    case "zzdog":
+    case "krav":
+    case "Motley":
+    case "Pastry Boi":
+    case "amodell":
+    case "TrentMcB":
+    case "pzych":
+    case "TCGTALK":
+    case "deragun":
+    case "PvtVoid":
+      return true;
+    default: break;
+}
+return false;
 }
