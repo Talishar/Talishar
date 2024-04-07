@@ -15,6 +15,23 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch($cardID) {
+    case "MST001": case "MST002":
+      AddDecisionQueue("DECKCARDS", $otherPlayer, "0");
+      AddDecisionQueue("SETDQVAR", $otherPlayer, "0");
+      AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "3", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with Nuu?");
+      AddDecisionQueue("YESNO", $currentPlayer, "whether to banish a card with Nuu", 1);
+      AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+      AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
+      AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "0", 1);
+      AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK", 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}");
+      AddDecisionQueue("NONECARDPITCHORPASS", $currentPlayer, "3");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Nuu shows the top of your deck is <0>");
+      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with Nuu", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "MST010":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);

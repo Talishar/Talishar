@@ -177,7 +177,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         return false;
       }
       $cardID = $theirBanish[$index];
-      if(!IsPlayable($cardID, $turn[0], "BANISH", $index)) break;
+      if(!IsPlayable($cardID, $turn[0], "THEIRBANISH", $index)) break;
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       PlayCard($cardID, "THEIRBANISH", -1, $index, $theirBanish[$index + 2]);
       break;
@@ -1427,7 +1427,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
           $baseCost = 0;
           AddAdditionalCost($currentPlayer, "ALTERNATIVECOST");
         }
-        $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved + $baseCost : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier($cardID) + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
+        $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved + $baseCost : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier($cardID) + CharacterCostModifier($cardID, $from, $resources[1]) + BanishCostModifier($from, $index);
         if($isAlternativeCostPaid && $resources[1] > 0) WriteLog("<span style='color:red;'>Alternative costs do not offset additional costs.</span>");
       }
       if($resources[1] < 0) $resources[1] = 0;
