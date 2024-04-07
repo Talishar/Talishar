@@ -669,7 +669,7 @@ function CanBlockWithEquipment()
 
 function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom="", $stillOnCombatChain=1, $additionalCosts="-")
 {
-  global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $defPlayer, $CS_NumBluePlayed;
+  global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $defPlayer, $CS_NumBluePlayed, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
   if(($from == "THEIRBANISH" || $playedFrom == "THEIRBANISH")) return "THEIRDISCARD";
@@ -696,7 +696,10 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
     case "MON064": return "SOUL";
     case "MON231": return "BANISH";
     case "ELE113": return "BANISH";
-    case "ELE119": case "ELE120": case "ELE121": return ($playedFrom == "ARS" && $from == "CHAINCLOSING" ? "BOTDECK" : "GY");
+    case "ELE119": case "ELE120": case "ELE121": 
+      if ($playedFrom == "ARS" && $from == "CHAINCLOSING") return "BOTDECK";
+      if(substr($from, 0, 5) != "THEIR") return "GY";
+      else return "THEIRDISCARD";
     case "ELE140": case "ELE141": case "ELE142": return "BANISH";
     case "MON066": case "MON067": case "MON068": return ($from == "CHAINCLOSING" && SearchCurrentTurnEffects($cardID, $mainPlayer) ? "SOUL" : "GY");
     case "MON087":
@@ -704,7 +707,10 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       return (PlayerHasLessHealth($player) && TalentContains($theirChar[0], "SHADOW") ? "SOUL" : "GY");
     case "MON192": return ($from == "BANISH" ? "HAND" : "GY");
     case "EVR082": case "EVR083": case "EVR084": return (GetClassState($player, $CS_NumBoosted) > 0 ? "BOTDECK" : "GY");
-    case "EVR134": case "EVR135": case "EVR136": return ($player != $mainPlayer ? "BOTDECK" : "GY");
+    case "EVR134": case "EVR135": case "EVR136": 
+      if ($player != $mainPlayer && substr($from, 0, 5) != "THEIR") return "BOTDECK";
+      else if($player != $mainPlayer) return "THEIRBOTDECK";
+      else return "GY";
     case "UPR160":
       if($from == "COMBATCHAIN" && !SearchCurrentTurnEffects($cardID, $player)) {
         AddCurrentTurnEffect($cardID, $player);

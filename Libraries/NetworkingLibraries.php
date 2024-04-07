@@ -2433,6 +2433,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;
         case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, $from, "NA"); break;
         case "THEIRDISCARD": AddGraveyard($cardID, $otherPlayer, $from); break;
+        case "THEIRBOTDECK": AddBottomDeck($cardID, $otherPlayer, $from); break;
         default: break;
       }
     }

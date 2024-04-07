@@ -74,7 +74,7 @@
     }
   }
 
-  function ARCRangerHitEffect($cardID)
+  function ARCRangerHitEffect($cardID, $from)
   {
     global $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     switch($cardID)
@@ -89,8 +89,9 @@
         if(IsHeroAttackTarget()) AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "ARC066": case "ARC067": case "ARC068":
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
-        break;
+        if(substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+        else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
+          break;
       case "ARC069": case "ARC070": case "ARC071":
         if(IsHeroAttackTarget()) PlayerLoseHealth($defPlayer, 1);
         break;

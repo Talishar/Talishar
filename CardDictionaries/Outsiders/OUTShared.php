@@ -574,7 +574,7 @@ function OUTAbilityCost($cardID)
     }
   }
 
-  function OUTHitEffect($cardID)
+  function OUTHitEffect($cardID, $from)
   {
     global $mainPlayer, $defPlayer, $combatChain, $chainLinks, $chainLinkSummary;
     global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
@@ -644,7 +644,10 @@ function OUTAbilityCost($cardID)
         if(ComboActive() && IsHeroAttackTarget()) MZMoveCard($defPlayer, "MYHAND", "MYTOPDECK", silent:true);
         break;
       case "OUT062": case "OUT063": case "OUT064":
-        if(ComboActive()) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+        if(ComboActive()) {
+          if(substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+          else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
+        }
         break;
       case "OUT068": case "OUT069": case "OUT070":
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give this a name", 0, 1);

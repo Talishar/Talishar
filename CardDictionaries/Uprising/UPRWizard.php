@@ -112,7 +112,8 @@
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "TOMEOFDUPLICITY", 1);
         return "";
       case "UPR169":
-        NegateLayer($target, "HAND");
+        if(substr($from, 0, 5) != "THEIR") NegateLayer($target, "HAND");
+        else NegateLayer($target, "THEIRHAND"); 
         if($currentPlayer != $mainPlayer) GainActionPoints(1, $mainPlayer);
         return "";
       case "UPR170": case "UPR171": case "UPR172":

@@ -103,7 +103,7 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
   }
 }
 
-function ARCMechanologistHitEffect($cardID)
+function ARCMechanologistHitEffect($cardID, $from)
 {
   global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   switch ($cardID) {
@@ -111,10 +111,12 @@ function ARCMechanologistHitEffect($cardID)
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
       break;
     case "ARC018":
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+      if(substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+      else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
       break;
     case "ARC020": case "ARC021": case "ARC022":
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+      if(substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+      else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
       break;
     default: break;
   }
