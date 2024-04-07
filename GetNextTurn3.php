@@ -373,7 +373,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $border = 0;
     $cardID = $theirBanish[$i];
     $mod = explode("-", $theirBanish[$i + 1])[0];
-    $action = IsPlayable($theirBanish[$i], $turn[0], "BANISH", $i, player:$otherPlayer) ? 14 : 0;
+    $action = $currentPlayer == $playerID && IsPlayable($theirBanish[$i], $turn[0], "THEIRBANISH", $i) ? 15 : 0;
     if ($mod == "INT" || $mod == "UZURI" || $mod == "FACEDOWN") {
       $cardID = "CardBack";
     }

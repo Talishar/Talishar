@@ -684,17 +684,20 @@ function ReplaceBanishModifier($player, $oldMod, $newMod)
 
 function UnsetTurnBanish()
 {
-  global $defPlayer;
+  global $defPlayer, $mainPlayer;
   $p1Banish = new Banish(1);
   $p1Banish->UnsetModifier("TT");
   $p1Banish->UnsetModifier("INST");
   $p1Banish->UnsetModifier("ARC119");
+  $p1Banish->UnsetModifier("TTFromOtherPlayer");
   $p2Banish = new Banish(2);
   $p2Banish->UnsetModifier("TT");
   $p2Banish->UnsetModifier("INST");
   $p2Banish->UnsetModifier("ARC119");
+  $p2Banish->UnsetModifier("TTFromOtherPlayer");
   UnsetCombatChainBanish();
   ReplaceBanishModifier($defPlayer, "NT", "TT");
+  ReplaceBanishModifier($mainPlayer, "NTFromOtherPlayer", "TTFromOtherPlayer");
 }
 
 function GetChainLinkCards($playerID="", $cardType="", $exclCardTypes="", $nameContains="", $subType="", $exclCardSubTypes="")

@@ -418,6 +418,10 @@ function ResetCombatChainState($skipped=false)
           case "SOUL":
             AddSoul($chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CC");
             break;
+          case "THEIRDISCARD":
+            $otherPlayer = $chainLinks[$i][$j + 1] == 1 ? 2 : 1;
+            AddGraveyard($chainLinks[$i][$j], $otherPlayer, "CC");
+            break;
           default: break;
         }
       }

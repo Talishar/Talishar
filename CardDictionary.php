@@ -510,6 +510,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer;
   global $CombatChain;
   if($player == "") $player = $currentPlayer;
+  $otherPlayer = $player == 1 ? 2 : 1;
   $myArsenal = &GetArsenal($player);
   $myAllies = &GetAllies($player);
   $character = &GetPlayerCharacter($player);
@@ -526,6 +527,11 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($from == "BANISH") {
     $banishCard = $banish->Card($index);
     if(!(PlayableFromBanish($banishCard->ID(), $banishCard->Modifier()) || AbilityPlayableFromBanish($banishCard->ID(), $banishCard->Modifier()))) return false;
+  }
+  if($from == "THEIRBANISH") {
+    $theirBanish = new Banish($otherPlayer);
+    $banishCard = $theirBanish->Card($index);
+    if(!(PlayableFromOtherPlayerBanish($banishCard->ID(), $banishCard->Modifier()))) return false;
   }
   else if($from == "GY" && !PlayableFromGraveyard($cardID)) return false;
   if($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "EVO001" && $character[0] != "EVO002" || CardCost($cardID) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
@@ -648,6 +654,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $defPlayer, $CS_NumBluePlayed;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
+  if(($from == "THEIRBANISH" || $playedFrom == "THEIRBANISH")) return "THEIRDISCARD";
   if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
   $subtype = CardSubType($cardID);
   if(DelimStringContains($subtype, "Invocation") || DelimStringContains($subtype, "Ash") || $cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441" || $cardID == "EVO410") return "-";
@@ -1617,6 +1624,13 @@ function AbilityPlayableFromBanish($cardID, $mod="")
     case "MON192": return $currentPlayer == $mainPlayer;
     default: return false;
   }
+}
+function PlayableFromOtherPlayerBanish($cardID, $mod="")
+{
+  global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
+  $mod = explode("-", $mod)[0];
+  if($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer") return true;
+  else return false;
 }
 
 function PlayableFromGraveyard($cardID)
