@@ -1629,6 +1629,7 @@ function PlayableFromOtherPlayerBanish($cardID, $mod="")
 {
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
   $mod = explode("-", $mod)[0];
+  if(PitchValue($cardID) == 3 && (SearchCurrentTurnEffects("MST001", $currentPlayer) || SearchCurrentTurnEffects("MST002", $currentPlayer))) return true;
   if($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer") return true;
   else return false;
 }
