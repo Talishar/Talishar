@@ -167,7 +167,21 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if(!PlayableFromBanish($cardID, mod:$banish[$index+1], nonLimitedOnly:true)) SearchCurrentTurnEffects("DTD564", $currentPlayer, remove:true);
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2]);
       break;
-    case 15: case 16: case 18: //Decision Queue (15 and 18 deprecated)
+    case 15: // Their Banish
+      $index = $cardID;
+      $otherPlayer = ($playerID == 1 ? 2 : 1);
+      $theirBanish = &GetBanish($otherPlayer);
+      $theirChar = &GetPlayerCharacter($otherPlayer);
+      if($index < 0 || $index >= count($theirBanish)) {
+        echo("Banish Index " . $index . " Invalid Input<BR>");
+        return false;
+      }
+      $cardID = $theirBanish[$index];
+      if(!IsPlayable($cardID, $turn[0], "BANISH", $index)) break;
+      SetClassState($currentPlayer, $CS_PlayIndex, $index);
+      PlayCard($cardID, "THEIRBANISH", -1, $index, $theirBanish[$index + 2]);
+      break;
+    case 16: case 18: //Decision Queue (15 and 18 deprecated)
       if (count($decisionQueue) > 0) {
         $index = $cardID;
         $isValid = false;
@@ -1106,6 +1120,7 @@ function FinalizeChainLink($chainClosed = false, $skipped=false)
   array_push($chainLinkSummary, CurrentEffectBaseAttackSet());
   array_push($chainLinkSummary, GetClassState($mainPlayer, $CS_ModalAbilityChoosen));
 
+
   ResolveWagers();
 
   //Clean up combat effects that were used and are one-time
@@ -1358,7 +1373,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $lastPlayed, $CS_PlayIndex, $CS_NumBluePlayed;
   global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed;
-  global $CS_PlayedAsInstant, $mainPlayer, $EffectContext;
+  global $CS_PlayedAsInstant, $mainPlayer, $EffectContext, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $resources = &GetResources($currentPlayer);
   $pitch = &GetPitch($currentPlayer);
   $dynCostResolved = intval($dynCostResolved);
@@ -1517,7 +1533,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
       if(GetResolvedAbilityType($cardID, $from) != "I") IncrementClassState($currentPlayer, $CS_NumActionsPlayed);
     }
-    if($from == "BANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
+    if($from == "BANISH" || $from == "THEIRBANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
     if(HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
     if(PitchValue($cardID) == 1) IncrementClassState($currentPlayer, $CS_NumRedPlayed);
     if(PitchValue($cardID) == 3) IncrementClassState($currentPlayer, $CS_NumBluePlayed);
@@ -1527,6 +1543,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   if($from == "BANISH") {
     $banish = new Banish($currentPlayer);
     $banish->Remove(GetClassState($currentPlayer, $CS_PlayIndex));
+  }
+  else if($from == "THEIRBANISH") {
+    $banish = new Banish($otherPlayer);
+    $banish->Remove(GetClassState($currentPlayer, $CS_PlayIndex));
+    $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "THEIRDISCARD";
   }
   if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
     MainCharacterPlayCardAbilities($cardID, $from);
@@ -2322,6 +2343,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CCS_WeaponIndex, $EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
   global $CS_NumDragonAttacks, $CS_NumAttackCards, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks, $CCS_IsBoosted;
   global $SET_PassDRStep;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   if($layerIndex > -1) SetClassState($currentPlayer, $CS_PlayIndex, $layerIndex);
   $index = SearchForUniqueID($uniqueID, $currentPlayer);
   if($cardID == "ARC003" || $cardID == "CRU101") $index = FindCharacterIndex($currentPlayer, $cardID); //TODO: Fix this. This is an issue with the entire "multiple abilities" framework
@@ -2410,6 +2432,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "GY": AddGraveyard($cardID, $currentPlayer, $from); break;
         case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;
         case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, $from, "NA"); break;
+        case "THEIRDISCARD": AddGraveyard($cardID, $otherPlayer, $from); break;
         default: break;
       }
     }

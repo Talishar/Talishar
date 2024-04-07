@@ -601,7 +601,7 @@ function OUTAbilityCost($cardID)
         {
           $deck = new Deck($defPlayer);
           $deckCard = $deck->Top(true);
-          if($deckCard != "") BanishCardForPlayer($deckCard, $mainPlayer, "THEIRDECK", "NT", $mainPlayer);
+          if($deckCard != "") BanishCardForPlayer($deckCard, $defPlayer, "THEIRDECK", "NTFromOtherPlayer", $mainPlayer);
         }
         break;
       case "OUT013":
