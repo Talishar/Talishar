@@ -422,6 +422,10 @@ function ResetCombatChainState($skipped=false)
             $otherPlayer = $chainLinks[$i][$j + 1] == 1 ? 2 : 1;
             AddGraveyard($chainLinks[$i][$j], $otherPlayer, "CC");
             break;
+          case "THEIRBOTDECK":
+            $otherPlayer = $chainLinks[$i][$j + 1] == 1 ? 2 : 1;
+            AddBottomDeck($chainLinks[$i][$j], $otherPlayer, "CC");
+            break;
           default: break;
         }
       }

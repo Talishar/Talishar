@@ -595,6 +595,9 @@ function NegateLayer($MZIndex, $goesWhere = "GY")
     case "HAND":
       AddPlayerHand($cardID, $player, "LAYER");
       break;
+    case "THEIRHAND":
+      AddPlayerHand($cardID, $otherPlayer, "LAYER");
+      break;
     default:
       break;
   }

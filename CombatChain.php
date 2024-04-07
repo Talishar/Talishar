@@ -1,6 +1,6 @@
 <?php
 
-function ProcessHitEffect($cardID)
+function ProcessHitEffect($cardID, $from="-")
 {
   global $CombatChain, $layers, $mainPlayer;
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
@@ -12,8 +12,8 @@ function ProcessHitEffect($cardID)
   if($set == "WTR") return WTRHitEffect($cardID);
   else if($set == "ARC") {
     switch($class) {
-      case "MECHANOLOGIST": return ARCMechanologistHitEffect($cardID);
-      case "RANGER": return ARCRangerHitEffect($cardID);
+      case "MECHANOLOGIST": return ARCMechanologistHitEffect($cardID, $from);
+      case "RANGER": return ARCRangerHitEffect($cardID, $from);
       case "RUNEBLADE": return ARCRunebladeHitEffect($cardID);
       case "WIZARD": return ARCWizardHitEffect($cardID);
       case "GENERIC": return ARCGenericHitEffect($cardID);
@@ -42,7 +42,7 @@ function ProcessHitEffect($cardID)
   else if($set == "EVR") return EVRHitEffect($cardID);
   else if($set == "UPR") return UPRHitEffect($cardID);
   else if($set == "DYN") return DYNHitEffect($cardID);
-  else if($set == "OUT") return OUTHitEffect($cardID);
+  else if($set == "OUT") return OUTHitEffect($cardID, $from);
   else if($set == "DTD") return DTDHitEffect($cardID);
   else if($set == "TCC") return TCCHitEffect($cardID);
   else if($set == "EVO") return EVOHitEffect($cardID);

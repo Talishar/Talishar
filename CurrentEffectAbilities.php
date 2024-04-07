@@ -63,7 +63,8 @@ function EffectHitEffect($cardID)
       }
       break;
     case "MON299": case "MON300": case "MON301":
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+      if(substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+      else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
       break;
     case "ELE005":
       if(IsHeroAttackTarget()) {

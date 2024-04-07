@@ -395,7 +395,7 @@ function ContinueDecisionQueue($lastResult = "")
         }
         else if($cardID == "DEFENDSTEP") { $turn[0] = "A"; $currentPlayer = $mainPlayer; }
         else if($cardID == "TRIGGER") {
-          ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts);
+          ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, $params[2]); //This is like a parameter to PlayCardEffect and other functions
@@ -830,7 +830,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
   }
 }
 
-function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-")
+function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-", $from)
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
@@ -840,11 +840,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
   $otherPlayer = ($player == 1 ? 2 : 1);
-  if($additionalCosts == "ONHITEFFECT") { ProcessHitEffect($target); return; }
+  if($additionalCosts == "ONHITEFFECT") { ProcessHitEffect($target, $from); return; }
   if($additionalCosts == "CRUSHEFFECT") { ProcessCrushEffect($target); return; }
   if($additionalCosts == "TOWEREFFECT") { ProcessTowerEffect($target); return; }
   if($additionalCosts == "EFFECTHITEFFECT") {
-    if(EffectHitEffect($target)) {
+    if(EffectHitEffect($target, $from)) {
       $index = FindCurrentTurnEffectIndex($player, $target);
       if($index != -1) RemoveCurrentTurnEffect($index);
     }
