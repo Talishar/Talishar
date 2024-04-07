@@ -358,8 +358,10 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN165": case "DYN166": case "DYN167": if(HasAimCounter()) AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "DYN168": case "DYN169": case "DYN170":
       $arsenal = &GetArsenal($currentPlayer);
-      $arsenal[3] = 1;
-      AddCurrentTurnEffect($cardID, $currentPlayer, "HAND", $arsenal[5]);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYARS:faceUp=true", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to buff and a aim counter on", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZADDCOUNTERANDEFFECT", $currentPlayer, $cardID, 1);
       return "";
     case "DYN171": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "DYN172":

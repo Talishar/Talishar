@@ -50,7 +50,7 @@ function AKOHitEffect($cardID)
           AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYITEMS:hasCrank=true");
           AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card with Crank to get a steam counter", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MZADDSTEAMCOUNTER", $mainPlayer, "-", 1);
+          AddDecisionQueue("MZADDCOUNTER", $mainPlayer, "-", 1);
         }
         break;
       case "EVO054":
@@ -93,7 +93,7 @@ function AKOHitEffect($cardID)
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment, item, or weapon. Remove all steam counters from it.");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZREMOVESTEAMCOUNTER", $mainPlayer, "-", 1);
+        AddDecisionQueue("MZREMOVECOUNTER", $mainPlayer, "-", 1);
         break;
       case "EVO186": case "EVO187": case "EVO188":
       case "EVO189": case "EVO190": case "EVO191":

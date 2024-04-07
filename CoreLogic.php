@@ -2107,7 +2107,7 @@ function PitchAbility($cardID)
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:hasCrank=true");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to get a steam counter", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
+      AddDecisionQueue("MZADDCOUNTER", $currentPlayer, "-", 1);
       break;
     case "EVR000":
       PlayAura("WTR075", $currentPlayer);

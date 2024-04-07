@@ -606,7 +606,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MAXCOUNT-" . EvoUpgradeAmount($mainPlayer) . ",MINCOUNT-" . 0 . ",", 1);
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to " . EvoUpgradeAmount($currentPlayer) . " card" . (EvoUpgradeAmount($mainPlayer) > 1 ? "s" : "") . " to remove all steam counters from." , 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZREMOVESTEAMCOUNTER", $currentPlayer, "<-");
+          AddDecisionQueue("MZREMOVECOUNTER", $currentPlayer, "<-");
         }
         return "";
       case "EVO058":
@@ -690,7 +690,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to get a steam counter", 1);
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:hasCrank=true");
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
+          AddDecisionQueue("MZADDCOUNTER", $currentPlayer, "-", 1);
         }
         return "";
       case "EVO079":
@@ -745,7 +745,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:hasCrank=true");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to get a steam counter", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
+          AddDecisionQueue("MZADDCOUNTER", $currentPlayer, "-", 1);
         }
         return "";
       case "EVO135": case "EVO136": case "EVO137":
@@ -771,7 +771,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true&MYITEMS:hasSteamCounter=true&MYCHAR:hasSteamCounter=true");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment, item, or weapon. Remove all steam counters from it.");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZREMOVESTEAMCOUNTER", $currentPlayer, "-", 1);
+        AddDecisionQueue("MZREMOVECOUNTER", $currentPlayer, "-", 1);
         AddDecisionQueue("SYSTEMFAILURE", $currentPlayer, "<-", 1);
         return "";
       case "EVO145":
@@ -805,7 +805,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Hyper Driver to get a steam counter", 1);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:sameName=ARC036");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
+        AddDecisionQueue("MZADDCOUNTER", $currentPlayer, "-", 1);
         return "";
       case "EVO235":
         $options = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "AA");
@@ -905,7 +905,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to get a steam counter", 1);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:hasCrank=true");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
+        AddDecisionQueue("MZADDCOUNTER", $currentPlayer, "-", 1);
         return "";
       case "EVO448":
         MZMoveCard($currentPlayer, "MYHAND:subtype=Item;maxCost=1", "MYITEMS", may:true);

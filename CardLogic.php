@@ -1296,7 +1296,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:sameName=ARC036");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to get a steam counter", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZADDSTEAMCOUNTER", $player, "-", 1);
+      AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
       break;
     case "ARC036": case "DYN110":
     case "DYN111": case "DYN112":
