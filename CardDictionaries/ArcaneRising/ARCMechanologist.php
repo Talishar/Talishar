@@ -217,7 +217,7 @@ function OnBoostedEffects($player, $boosted)
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to get a steam counter", 1);
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:sameName=ARC036");
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZADDSTEAMCOUNTER", $player, "-", 1);
+      AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
       break;
     default: break;
   }

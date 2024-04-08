@@ -52,7 +52,7 @@ function CardType($cardID)
 {
   if(!$cardID) return "";
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM") {
+  if($set != "ROG" && $set != "DUM" && $set != "LGS") {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardType($cardID);
     else if($set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "EVO410" && $cardID != "EVO410b") return GeneratedCardType($cardID);
@@ -69,6 +69,7 @@ function CardType($cardID)
     case "DTD564": return "D";
     case "EVO410": return "D";
     case "DYN612": return "-";
+    case "LGS176": case "LGS177": case "LGS178": return "A";
     case "DUMMY":
     case "DUMMYDISHONORED":
       return "C";
@@ -251,6 +252,7 @@ function CardTalent($cardID)
   switch ($cardID) {
     case "EVO410": case "EVO410b": return "SHADOW";
     case "DTD564": return "SHADOW";
+    case "LGS176": case "LGS177": case "LGS178": return "SHADOW";
     default: break;
   }
   return GeneratedCardTalent($cardID);
@@ -341,7 +343,18 @@ function PitchValue($cardID)
 {
   if(!$cardID) return "";
   $set = CardSet($cardID);
-  if (CardType($cardID) == "M") return 0;
+  if(CardType($cardID) == "M") return 0;
+  $number = intval(substr($cardID, 3));
+  if($number > 400)
+  {
+    switch ($cardID) {
+      case "MST410": case "MST432": case "MST453":
+      case "MST497": case "MST499": case "MST501":
+        return 3;   
+      default:
+        break;
+    }
+  }
   if($set != "ROG" && $set != "DUM") {
     return GeneratedPitchValue($cardID);
   }
@@ -551,7 +564,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     }
     if(CachedOverpowerActive() && CachedNumActionBlocked() >= 1) {
       if ($cardType == "A" || $cardType == "AA") return false;
-      if (SubtypeContains($cardID, "Evo") && $cardID != "EVO410b") {
+      if (SubtypeContains($cardID, "Evo") && $cardID != "EVO410b" && $cardID != "DYN492b") {
         if (CardType(GetCardIDBeforeTransform($cardID)) == "A") return false;
       }
     }
@@ -757,7 +770,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   if(CardType($cardID) == "A" && $from != "PLAY" && GetClassState($player, $CS_NumNonAttackCards) >= 1 && (SearchItemsForCard("EVR071", 1) != "" || SearchItemsForCard("EVR071", 2) != "")) { $restriction = "EVR071"; return true; }
   if($player != $mainPlayer && SearchAlliesActive($mainPlayer, "UPR415")) { $restriction = "UPR415"; return true; }
   if(EffectPlayCardRestricted($cardID, $type) != "") { $restriction = true; return true; }
-  if(EffectAttackRestricted($cardID, $type) != "" ) { $restriction = true; return true; }
+  if(EffectAttackRestricted($cardID, $type) != "" && $currentPlayer == $mainPlayer) { $restriction = true; return true; }
   switch($cardID) {
     case "WTR080": return !$CombatChain->HasCurrentLink() || !HasCombo($CombatChain->AttackCard()->ID());
     case "WTR082": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player) || CardType($CombatChain->AttackCard()->ID()) != "AA";
@@ -881,8 +894,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "UPR151": return ($character[$index + 2] < 2 && !SearchCurrentTurnEffects($cardID, $player));
     case "UPR153": return GetClassState($player, $CS_NumPhantasmAADestroyed) < 1;
     case "UPR154":
-      if($CombatChain->HasCurrentLink()) return !(CardType($CombatChain->AttackCard()->ID()) == "AA" || DelimStringContains(CardSubType($CombatChain->AttackCard()->ID()), "Ally")) || !ClassContains($CombatChain->AttackCard()->ID(), "ILLUSIONIST", $player);
-      else if(count($layers) != 0) return !(CardType($layers[0]) == "AA" || DelimStringContains(CardSubType($layers[0]), "Ally")) || !ClassContains($layers[0], "ILLUSIONIST", $player);
+      if($CombatChain->HasCurrentLink()) return !ClassContains($CombatChain->AttackCard()->ID(), "ILLUSIONIST", $player);
+      else if(count($layers) != 0) return !ClassContains($layers[0], "ILLUSIONIST", $player);
       return true;
     case "UPR159": return !$CombatChain->HasCurrentLink() || AttackValue($CombatChain->AttackCard()->ID()) > 2 || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "UPR162": case "UPR163": case "UPR164": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || CardCost($CombatChain->AttackCard()->ID()) > 0;
@@ -1648,7 +1661,7 @@ function RequiresDieRoll($cardID, $from, $player)
   if(GetDieRoll($player) > 0) return false;
   if($turn[0] == "B") return false;
   $type = CardType($cardID); 
-  if($type == "AA" && (GetResolvedAbilityType($cardID) == "" || GetResolvedAbilityType($cardID) == "AA") && AttackValue($cardID) >= 6 && (SearchCharacterActive($player, "CRU002") || SearchCurrentTurnEffects("CRU002-SHIYANA", $player))) return true;
+  if($type == "AA" && AttackValue($cardID) >= 6 && (GetResolvedAbilityType($cardID) == "" || GetResolvedAbilityType($cardID) == "AA") && (SearchCharacterActive($player, "CRU002") || SearchCurrentTurnEffects("CRU002-SHIYANA", $player))) return true;
   switch($cardID) {
     case "WTR004": case "WTR005": case "WTR010": return true;
     case "WTR162": return $from == "PLAY";
@@ -1680,7 +1693,7 @@ function SpellVoidAmount($cardID, $player)
 
 function IsSpecialization($cardID)
 {
-  return GeneratedIsSpecialization($cardID);
+  return GeneratedIsSpecialization($cardID) == "true";
 }
 
 function Is1H($cardID)

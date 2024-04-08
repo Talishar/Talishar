@@ -1493,7 +1493,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         ResetCombatChainState();
       }
       $remorselessCount = CountCurrentTurnEffects("CRU123-DMG", $playerID);
-      if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA")) {
+      if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID) == "") {
+        WriteLog("Lost 1 health to Remorseless");
+        LoseHealth($remorselessCount, $playerID);
+      }
+      else if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A") {
         WriteLog("Lost 1 health to Remorseless");
         LoseHealth($remorselessCount, $playerID);
       }

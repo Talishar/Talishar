@@ -67,7 +67,7 @@ function AuraDestroyed($player, $cardID, $isToken = false)
         }
         break;
       case "EVO244":
-        PhantomTidemawDestroy($player, $i);
+        if(ClassContains($cardID, "ILLUSIONIST", $player)) PhantomTidemawDestroy($player, $i);
         break;
       default: break;
     }

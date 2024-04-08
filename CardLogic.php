@@ -359,11 +359,6 @@ function ContinueDecisionQueue($lastResult = "")
       if($priorityHeld) {
         ContinueDecisionQueue("");
       } else {
-        if(RequiresDieRoll($layers[0], explode("|", $layers[2])[0], $layers[1])) {
-          RollDie($layers[1]);
-          ContinueDecisionQueue("");
-          return;
-        }
         CloseDecisionQueue();
         $cardID = array_shift($layers);
         $player = array_shift($layers);
@@ -401,6 +396,11 @@ function ContinueDecisionQueue($lastResult = "")
           SetClassState($player, $CS_AbilityIndex, $params[2]); //This is like a parameter to PlayCardEffect and other functions
           PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, $params[3], $params[2]);
           ClearDieRoll($player);
+        }
+        if(RequiresDieRoll($cardID, $params[0], $player)) {
+          RollDie($player);
+          ContinueDecisionQueue("");
+          return;
         }
       }
     } else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPLAY") {
@@ -1296,7 +1296,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:sameName=ARC036");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to get a steam counter", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZADDSTEAMCOUNTER", $player, "-", 1);
+      AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
       break;
     case "ARC036": case "DYN110":
     case "DYN111": case "DYN112":

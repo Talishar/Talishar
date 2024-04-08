@@ -936,7 +936,7 @@ function NumActionsBlocking()
       $type = CardType($chainCard->ID());
       if($type == "A" || $type == "AA") ++$num;
       if($type == "E") {
-        if (SubtypeContains($chainCard->ID(), "Evo" && $chainCard->ID() != "EVO410b")) {
+        if (SubtypeContains($chainCard->ID(), "Evo" && $chainCard->ID() != "EVO410b" && $chainCard->ID() != "DYN492b")) {
           if (CardType(GetCardIDBeforeTransform($chainCard->ID())) == "A") ++$num;
         }
       }
@@ -1060,7 +1060,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
-  if($cardID == "MON034" && SearchItemsForCard("DYN066", $currentPlayer) != "") return true;
+  if(CardNameContains($cardID, "Lumina Ascension", $currentPlayer) && SearchItemsForCard("DYN066", $currentPlayer) != "") return true;
   if($cardType == "A" && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) && ClassContains($cardID, "WIZARD", $currentPlayer)) return true;
   if(GetClassState($currentPlayer, $CS_NumWizardNonAttack) && ($cardID == "CRU174" || $cardID == "CRU175" || $cardID == "CRU176")) return true;
   if($currentPlayer != $mainPlayer && ($cardID == "CRU165" || $cardID == "CRU166" || $cardID == "CRU167")) return true;
@@ -1307,7 +1307,7 @@ function DoesAttackHaveGoAgain()
     case "MON223": case "MON224": case "MON225": return NumCardsNonEquipBlocking() < 2;
     case "MON248": case "MON249": case "MON250": return SearchHighestAttackDefended() < CachedTotalAttack();
     case "MON293": case "MON294": case "MON295": return SearchPitchHighestAttack($mainPitch) > AttackValue($attackID);
-    case "ELE216": case "ELE217": case "ELE218": return CachedTotalAttack() > AttackValue($attackID);
+    case "ELE216": case "ELE217": case "ELE218": return (CachedTotalAttack() > AttackValue($attackID) || SearchCurrentTurnEffects($attackID, $mainPlayer, true));
     case "EVR105": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "EVR138": return FractalReplicationStats("GoAgain");
     case "UPR046": return NumDraconicChainLinks() >= 2;
@@ -2107,7 +2107,7 @@ function PitchAbility($cardID)
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:hasCrank=true");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to get a steam counter", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZADDSTEAMCOUNTER", $currentPlayer, "-", 1);
+      AddDecisionQueue("MZADDCOUNTER", $currentPlayer, "-", 1);
       break;
     case "EVR000":
       PlayAura("WTR075", $currentPlayer);
@@ -2494,7 +2494,7 @@ function MentorTrigger($player, $index, $specificCard="")
   if($specificCard != "") AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:cardID=$specificCard");
   else AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:specOnly=true");
   AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-  AddDecisionQueue("MZADDZONE", $player, "MYARS,DECK,DOWN", 1);
+  AddDecisionQueue("MZADDZONE", $player, "MYARS,DECK,UP", 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
   AddDecisionQueue("SHUFFLEDECK", $player, "-");
 }

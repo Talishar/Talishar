@@ -100,6 +100,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ITEMSMAX": $rv = SearchItems($player, "", "", $subparam); break;
         case "EQUIP": $rv = GetEquipmentIndices($player); break;
         case "EQUIP0": $rv = GetEquipmentIndices($player, 0); break;
+        case "EQUIP1": $rv = GetEquipmentIndices($player, 1); break;
         case "EQUIPCARD": $rv = FindCharacterIndex($player, $subparam); break;
         case "EQUIPONCC": $rv = GetEquipmentIndices($player, onCombatChain:true); break;
         case "CCAA": $rv = SearchCombatChainLink($player, "AA"); break;
@@ -1430,7 +1431,24 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if($items[$index+1] <= 0) DestroyItemForPlayer($player, $index);
       }
       return $lastResult;
-    case "MZADDSTEAMCOUNTER":
+    case "MZADDCOUNTERANDEFFECT":
+      $lastResultArr = explode(",", $lastResult);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $params = explode(",", $parameter);
+      for($i = 0; $i < count($lastResultArr); ++$i) {
+        $mzIndex = explode("-", $lastResultArr[$i]);
+        switch($mzIndex[0]) {
+          case "MYARS":
+            $arsenal = &GetArsenal($currentPlayer);
+            $arsenal[$mzIndex[1]+3] = 1;
+            WriteLog(CardLink($arsenal[$mzIndex[1]], $arsenal[$mzIndex[1]]) . " gained an aim counter");
+            AddCurrentTurnEffect($params[0], $currentPlayer, "HAND", $arsenal[$mzIndex[1]+5]);
+            break;
+          default: break;
+        }
+      }
+      return $lastResult;
+    case "MZADDCOUNTER":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);
       $params = explode(",", $parameter);
@@ -1442,11 +1460,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $items[$mzIndex[1]+1] += 1;
             WriteLog(CardLink($items[$mzIndex[1]], $items[$mzIndex[1]]) . " gained a steam counter");
             break;
+          case "MYARS":
+            $arsenal = &GetArsenal($currentPlayer);
+            $arsenal[$mzIndex[1]+3] = 1;
+            WriteLog(CardLink($arsenal[$mzIndex[1]], $arsenal[$mzIndex[1]]) . " gained an aim counter");
+            break;
           default: break;
         }
       }
       return $lastResult;
-    case "MZREMOVESTEAMCOUNTER":
+    case "MZREMOVECOUNTER":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);
       $params = explode(",", $parameter);
@@ -1695,7 +1718,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $index = FindCharacterIndex($defPlayer, $lastResult);
         DestroyCharacter($defPlayer, $index);
         WriteLog(CardLink($lastResult, $lastResult). " was destroyed");
-        DestroyItemForPlayer($player, SearchItemsForCard("DYN094", $player));
+        DestroyItemForPlayer($player, SearchItemForIndex("DYN094", $player));
         return $lastResult;
       case "ADDTRIGGER":
         $param = explode(",", $parameter);

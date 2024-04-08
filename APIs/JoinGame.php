@@ -700,6 +700,7 @@ function IsCardBanned($cardID, $format)
         case "ARC114": case "ARC115": case "CRU159": // Kano | Crucible of Aetherweave
         case "CRU077":// Kassai, Cintari Sellsword
         case "CRU046": case "CRU050": // Ira, Crimson Haze | Edge of Autumn
+        case "DYN009": //Berserk
           return true;
         default: return false;
       }
@@ -721,6 +722,8 @@ function IsCardBanned($cardID, $format)
         case "ELE062": case "ELE222": // Briar, Warden of Thorns | Rosetta Thorn
         case "ELE001": case "ELE003": // Oldhim, Grandfather of Eternity | Winter's Wail
         case "UPR102": case "EVR121": // Iyslander, Stormbind | Kraken's Aethervein
+        case "DYN009": //Berserk
+        case "ELE115": // Crown of Seeds
           return true;
         default: return false;
       }
