@@ -990,6 +990,16 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST097": return count($otherPlayerDiscard) <= 0;
     case "MST099": return CombineSearches(SearchDiscard($player, "A"), SearchDiscard($player, "AA")) == "";
     case "AKO024": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
+    case "MST098": 
+      if($CombatChain->HasCurrentLink()) return false;//If there's an attack, there's a valid target
+      if(count($layers) == 0) return true;//If there's no attack, and no layers, nothing to do
+      $layerIndex = count($layers) - LayerPieces();//Only the earliest layer can be an attack
+      $layerID = $layers[$layerIndex];
+      if(strlen($layerID) != 6) return true;//Game phase, not a card - sorta hacky
+      $layerType = CardType($layerID);
+      if($layerType == "AA" || $layerType == "W") return false;//It's an attack
+      if(GetResolvedAbilityType($layers[$layerIndex]) == "AA") return false;
+      return true;
     default: return false;
   }
 }

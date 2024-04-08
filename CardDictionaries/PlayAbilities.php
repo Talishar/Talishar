@@ -92,6 +92,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH");
       if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST497");
       return "";
+    case "MST098":
+      GiveAttackGoAgain();
+      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST498");
+      return "";
     case "MST099":
       MZMoveCard($currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", "MYBOTDECK");
       if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST499");
