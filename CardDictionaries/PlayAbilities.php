@@ -105,6 +105,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST087": case "MST088": case "MST089": case "MST090":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "MST096":
+      GainHealth(1, $currentPlayer);
+      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST496");
+      return "";    
     case "MST097":
       MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH");
       if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST497");
