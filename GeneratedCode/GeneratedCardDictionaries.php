@@ -4087,9 +4087,17 @@ case "1":
 return "C";
 default: return "AA";
 }
+case "8":
+switch($cardID[5]) {
+case "0":
+return "I";
+default: return "AA";
+}
 case "9":
 switch($cardID[5]) {
 case "7":
+return "I";
+case "8":
 return "I";
 case "9":
 return "I";
@@ -12023,6 +12031,8 @@ case "8":
 switch($cardID[5]) {
 case "7":
 return 2;
+case "0":
+return -1;
 case "8":
 return 2;
 case "9":
@@ -12048,6 +12058,8 @@ default: return 3;
 case "9":
 switch($cardID[5]) {
 case "7":
+return -1;
+case "8":
 return -1;
 case "9":
 return -1;
@@ -18581,6 +18593,8 @@ case "8":
 switch($cardID[5]) {
 case "7":
 return "Droplet";
+case "0":
+return "Orihon of Mystic Tenets";
 case "8":
 return "Rising Tide";
 case "9":
@@ -18607,6 +18621,8 @@ case "9":
 switch($cardID[5]) {
 case "7":
 return "Pass Over";
+case "8":
+return "Path Well Traveled";
 case "9":
 return "Preserve Tradition";
 case "0":
@@ -25513,6 +25529,8 @@ case "8":
 switch($cardID[5]) {
 case "7":
 return 3;
+case "0":
+return 3;
 case "8":
 return 3;
 case "9":
@@ -25538,6 +25556,8 @@ default: return 1;
 case "9":
 switch($cardID[5]) {
 case "7":
+return 3;
+case "8":
 return 3;
 case "9":
 return 3;
@@ -31303,6 +31323,8 @@ default: return 0;
 }
 case "8":
 switch($cardID[5]) {
+case "0":
+return 4;
 case "8":
 return 1;
 case "9":
@@ -35897,6 +35919,8 @@ case "8":
 switch($cardID[5]) {
 case "7":
 return "Mystic";
+case "0":
+return "Mystic";
 case "8":
 return "Mystic";
 case "9":
@@ -35922,6 +35946,8 @@ default: return "";
 case "9":
 switch($cardID[5]) {
 case "7":
+return "Mystic";
+case "8":
 return "Mystic";
 case "9":
 return "Mystic";
@@ -42274,9 +42300,17 @@ case "1":
 return "V";
 default: return "C";
 }
+case "8":
+switch($cardID[5]) {
+case "0":
+return "M";
+default: return "C";
+}
 case "9":
 switch($cardID[5]) {
 case "7":
+return "V";
+case "8":
 return "V";
 default: return "C";
 }
@@ -53403,6 +53437,7 @@ case "WTR097": return "false";
 case "ARC037": return "false";
 case "OUT007": return "false";
 case "OUT008": return "false";
+case "MST080": return "false";
 case "DYN235": return "false";
 case "MON248": return "false";
 case "MON249": return "false";
@@ -53461,6 +53496,7 @@ case "MON011": return "false";
 case "HVY096": return "false";
 case "MST097": return "false";
 case "EVR142": return "false";
+case "MST098": return "false";
 case "CRU129": return "false";
 case "CRU130": return "false";
 case "CRU131": return "false";
