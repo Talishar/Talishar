@@ -91,8 +91,7 @@ function ModalAbilities($player, $card, $lastResult)
             }
             break;
           case "Your_next_attack_action_card_gains_go_again":
-            if(count($combatChain) > 0) AddCurrentTurnEffectFromCombat("ARC160-3", $player);
-            else AddCurrentTurnEffect("ARC160-3", $player);
+            AddCurrentTurnEffectNextAttack("ARC160-3", $player);
             break;
           case "Defend_with_attack_action_cards_from_arsenal":
             AddCurrentTurnEffect("ARC160-2", $player);
