@@ -36,6 +36,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "MST025": case "MST026": 
+      PlayAura("MON104", $currentPlayer, 1, numAttackCounters:1);
+      return "";
     case "MST032":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);
@@ -54,6 +57,14 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "MST046": case "MST047": 
+      AddPlayerHand("DYN065", $currentPlayer, "NA");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:comboOnly=true", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,DECK,TT", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+      return "";
     case "MST053":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);
@@ -69,12 +80,21 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "MST080":
+      Draw($currentPlayer);
+      Draw($currentPlayer);
+      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") Draw($currentPlayer); 
+      return "";
     case "MST087": case "MST088": case "MST089": case "MST090":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "MST097":
       MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH");
       if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST497");
+      return "";
+    case "MST098":
+      GiveAttackGoAgain();
+      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST498");
       return "";
     case "MST099":
       MZMoveCard($currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", "MYBOTDECK");

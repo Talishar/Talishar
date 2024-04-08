@@ -1,6 +1,6 @@
 <?php
 
-function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false)
+function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numAttackCounters = 0)
 {
   global $CS_NumAuras, $EffectContext;
   $otherPlayer = ($player == 1 ? 2 : 1);
@@ -28,7 +28,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     array_push($auras, 2); //Status
     if($rogueHeronSpecial) array_push($auras, 0); //Only happens on the damage effect of the Heron Master in the Roguelike Gamemode
     else array_push($auras, AuraPlayCounters($cardID)); //Miscellaneous Counters
-    array_push($auras, 0); //Attack counters
+    array_push($auras, $numAttackCounters); //Attack counters
     array_push($auras, ($isToken ? 1 : 0)); //Is token 0=No, 1=Yes
     array_push($auras, AuraNumUses($cardID));
     array_push($auras, GetUniqueId($cardID, $player));

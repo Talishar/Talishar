@@ -30,6 +30,9 @@ function MSTAbilityCost($cardID)
 {
   switch($cardID)
   {
+    case "MST001": case "MST002": return 3; 
+    case "MST025": case "MST026": return 3; 
+    case "MST046": case "MST047": return 3; 
     default: return 0;
   }
 }
@@ -38,6 +41,9 @@ function MSTAbilityType($cardID, $index=-1, $from="-")
 {
   switch($cardID)
   {
+    case "MST001": case "MST002": return "I"; 
+    case "MST025": case "MST026": return "I"; 
+    case "MST046": case "MST047": return "I"; 
     default: return "";
   }
 }
