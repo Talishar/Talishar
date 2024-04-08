@@ -95,7 +95,8 @@ function CardSubType($cardID, $uniqueID=-1)
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardSubtype($cardID);
     else if(
-      $set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "DYN492c" && $cardID != "EVO410" && $cardID != "EVO410b") return GeneratedCardSubtype($cardID);
+      $set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "DYN492c" && $cardID != "EVO410" && $cardID != "EVO410b" && $set != "MST") 
+      return GeneratedCardSubtype($cardID);
   }
   if($set == "ROG") return ROGUECardSubtype($cardID);
   switch($cardID) {
@@ -109,6 +110,10 @@ function CardSubType($cardID, $uniqueID=-1)
       case "DTD564": return "Demon";
       case "EVO410": return "Evo";
       case "EVO410b": return "Chest,Evo";
+      case "MST410": case "MST432": case "MST453":
+      case "MST497": case "MST498": case "MST499": 
+      case "MST501":
+        return "Chi";
       default: return "";
   }
 }
@@ -722,7 +727,7 @@ function IsPitchRestricted($cardID, &$restriction, $from = "", $index = -1, $pit
   if($pitchValue == 1 && SearchCurrentTurnEffects("OUT101-1", $playerID)) { $restriction = "OUT101"; return true; }
   else if($pitchValue == 2 && SearchCurrentTurnEffects("OUT101-2", $playerID)) { $restriction = "OUT101"; return true; }
   else if($pitchValue == 3 && SearchCurrentTurnEffects("OUT101-3", $playerID)) { $restriction = "OUT101"; return true; }
-  if(CardCareAboutChiPitch($pitchRestriction) && !CardPitchForChi($cardID)) return true;
+  if(CardCareAboutChiPitch($pitchRestriction) && !SubtypeContains($cardID, "Chi")) return true;
   return false;
 }
 
@@ -1694,6 +1699,7 @@ function CardCaresAboutPitch($cardID)
     case "DYN176": case "DYN177": case "DYN178":
 		case "DYN182": case "DYN183": case "DYN184":
 		case "DYN185": case "DYN186": case "DYN187":
+    case "MST080":
       return true;
     default: return false;
   }
@@ -1856,15 +1862,5 @@ function CardCareAboutChiPitch($cardID)
       case "MST026": case "MST046": case "MST047":
       return true;
     default: return false;
-  }
-}
-
-function CardPitchForChi($cardID)
-{
-  switch($cardID) {
-    case "MST410": case "MST432": case "MST453":
-    case "MST497": case "MST499": case "MST501":
-    return true;
-  default: return false;
   }
 }

@@ -80,6 +80,11 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "MST080":
+      Draw($currentPlayer);
+      Draw($currentPlayer);
+      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") Draw($currentPlayer); 
+      return "";
     case "MST087": case "MST088": case "MST089": case "MST090":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
