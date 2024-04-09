@@ -121,6 +121,11 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       MZMoveCard($currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", "MYBOTDECK");
       if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST499");
       return "";
+    case "MST100":
+      Draw($currentPlayer);
+      MZMoveCard($currentPlayer, "MYHAND", "MYBOTDECK", silent:true);
+      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST500");
+      return "";
     case "MST101":
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST501");
