@@ -28,12 +28,12 @@ function PlayAlly($cardID, $player, $subCards="-", $number=1, $isToken=false, $f
   return count($allies) - AllyPieces();
 }
 
-function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false)
+function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false, $uniqueID="")
 {
   global $mainPlayer;
   $allies = &GetAllies($player);
   if(!$skipDestroy) AllyDestroyedAbility($player, $index);
-  if(IsSpecificAllyAttacking($player, $index) || (IsSpecificAllyAttackTarget($player, $index) && !$fromCombat)) {
+  if(IsSpecificAllyAttacking($player, $index) || (IsSpecificAllyAttackTarget($player, $index, $uniqueID) && !$fromCombat)) {
     CloseCombatChain();
   }
   $cardID = $allies[$index];
@@ -303,7 +303,7 @@ function AllyTakeDamageAbilities($player, $index, $damage, $preventable)
   switch($allies[$index]) {
     default: break;
   }
-  if($remove) DestroyAlly($player, $index);
+  if($remove) DestroyAlly($player, $index, uniqueID:$allies[$index+5]);
   if($damage <= 0) $damage = 0;
   return $damage;
 }

@@ -614,7 +614,7 @@ function GetAttackTarget()
   if($uid == "-") return $combatChainState[$CCS_AttackTarget];
   $mzArr = explode("-", $combatChainState[$CCS_AttackTarget]);
   $index = SearchZoneForUniqueID($uid, $defPlayer, $mzArr[0]);
-  return $mzArr[0] . "-" . $index;
+  return $mzArr[0] . "-" . $index . "-" . $uid;
 }
 
 function GetDamagePrevention($player)
