@@ -1003,21 +1003,26 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       DealArcane(1, 0, "STATIC", $parameter, false, $player);
       break;
     case "MON089": //To be moved to ProcessMainCharacterHitEffect() when Fix Tarpit + Main Character Triggers #786 is uploaded
-      if($player == $defPlayer) {
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
-        AddDecisionQueue("BUTTONINPUT", $player, "0,1");
-        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-        AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
-        AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
-        if(!SearchCurrentTurnEffects("MON089", $player)) AddDecisionQueue("ADDCURRENTEFFECT", $player, "MON089", 1);
-      }
-      else {
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
-        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
-        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-        AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
-        AddDecisionQueue("WRITELOG", $mainPlayer, "Gained_an_action_point_from_" . CardLink($character[$target], $character[$target]), 1);
+      $hand = &GetHand($player);
+      $resources = &GetResources($player);
+      if(Count($hand) > 0 || $resources[0] > 0)
+      {
+        if($player == $defPlayer) {
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
+          AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+          AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+          AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
+          AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+          if(!SearchCurrentTurnEffects("MON089", $player)) AddDecisionQueue("ADDCURRENTEFFECT", $player, "MON089", 1);
+        }
+        else {
+          AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
+          AddDecisionQueue("NOPASS", $player, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
+          AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+          AddDecisionQueue("GAINACTIONPOINTS", $player, "1", 1);
+          AddDecisionQueue("WRITELOG", $player, "Gained_an_action_point_from_" . CardLink($character[$target], $character[$target]), 1);
+        }
       }
       break;
     case "MON122":
