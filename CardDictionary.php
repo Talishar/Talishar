@@ -349,11 +349,17 @@ function PitchValue($cardID)
   {
     switch ($cardID) {
       case "MST410": case "MST432": case "MST453":
-        case "MST496": case "MST497": case "MST498": case "MST499": 
-        case "MST501":
+      case "MST496": case "MST497": case "MST498": case "MST499": 
+      case "MST501":
           return 3;   
-      default:
-        break;
+      default: break;
+    }
+  }
+  if($set == "LGS") {
+    switch ($cardID) {
+      case "LGS177": return 2;
+      case "LGS178": return 3;
+      default: break;
     }
   }
   if($set != "ROG" && $set != "DUM") {
