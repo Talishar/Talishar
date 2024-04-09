@@ -950,5 +950,3 @@ function IsTowerActive()
   global $combatChain, $CCS_CachedTowerActive;
   return (CachedTotalAttack() >= 13 && HasTower($combatChain[0]));
 }
-
-?>

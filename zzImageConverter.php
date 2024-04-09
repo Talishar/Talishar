@@ -89,5 +89,3 @@ function NormalizeCardBackID($id)
   if($newId < 10) $str = "0" . $str;
   return $str;
 }
-
-?>

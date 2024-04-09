@@ -122,5 +122,3 @@ function StatsStartTurn()
     array_push($p2Stats, 0);
   }
 }
-
-?>

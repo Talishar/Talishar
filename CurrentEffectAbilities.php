@@ -2,7 +2,7 @@
 
 
 //Return 1 if the effect should be removed
-function EffectHitEffect($cardID)
+function EffectHitEffect($cardID, $from)
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $CombatChain, $CCS_DamageDealt;
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers;

@@ -286,5 +286,3 @@
     $file = "'./" . "WebpImages" . "/" . $cardNumber . ".webp'";
     return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . $pitchText . "</span></b>";
   }
-
-?>

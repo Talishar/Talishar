@@ -1143,4 +1143,3 @@ function CharacterBoostAbilities($player) {
     }
   }
 }
-?>

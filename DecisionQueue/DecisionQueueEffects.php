@@ -661,5 +661,3 @@ function PitchCard($player, $search="MYHAND:pitch=1&MYHAND:pitch=2&MYHAND:pitch=
   PrependDecisionQueue("MZOP", $player, "GETCARDINDICES", 1);
   PrependDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
 }
-
-?>
