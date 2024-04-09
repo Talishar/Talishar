@@ -213,6 +213,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if($parameter < $defense * -1) $parameter = $defense * -1;
       }
       $combatChain[$lastResult+6] += $parameter;
+      if($parameter > 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $parameter . " defense");
+      else if($parameter < 0)  writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets " . $parameter . " defense");
       return $lastResult;
     case "HALVEBASEDEFENSE":
       $combatChain[$lastResult+6] -= floor(BlockValue($combatChain[$lastResult])/2);
