@@ -332,7 +332,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
       AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
       AddDecisionQueue("ELSE", $currentPlayer, "-");
-      AddDecisionQueue("WRITELOG", $currentPlayer, "Left the top card", 1);
+      AddDecisionQueue("WRITELOG", $currentPlayer, "Left the card on top", 1);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN151":
