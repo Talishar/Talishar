@@ -1415,12 +1415,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       Intimidate($mainPlayer);
       break;
     case $CID_BloodRotPox:
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_3_to_avoid_taking_2_damage", 0, 1);
-      AddDecisionQueue("NOPASS", $player, "-", 1);
-      AddDecisionQueue("PASSPARAMETER", $player, "3", 1);
-      AddDecisionQueue("PAYRESOURCES", $player, "3", 1);
-      AddDecisionQueue("ELSE", $player, "-");
-      AddDecisionQueue("WRITELOG", $player, "Took 2 damage from " . CardLink("OUT234", "OUT234"), 1);
+      $hand = &GetHand($player);
+      $resources = &GetResources($player);
+      if(Count($hand) > 0 || $resources[0] > 0)
+      {
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_3_to_avoid_taking_2_damage", 0, 1);
+        AddDecisionQueue("NOPASS", $player, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "3", 1);
+        AddDecisionQueue("PAYRESOURCES", $player, "3", 1);
+        AddDecisionQueue("ELSE", $player, "-");
+      }
+      AddDecisionQueue("WRITELOG", $player, "Player " . $player . " took 2 damage from " . CardLink("OUT234", "OUT234"), 1);
       AddDecisionQueue("TAKEDAMAGE", $player, "2-OUT234", 1);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
