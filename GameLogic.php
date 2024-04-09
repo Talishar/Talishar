@@ -213,6 +213,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if($parameter < $defense * -1) $parameter = $defense * -1;
       }
       $combatChain[$lastResult+6] += $parameter;
+      if($parameter > 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $parameter . " defense");
+      else if($parameter < 0)  writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets " . $parameter . " defense");
       return $lastResult;
     case "HALVEBASEDEFENSE":
       $combatChain[$lastResult+6] -= floor(BlockValue($combatChain[$lastResult])/2);
@@ -858,7 +860,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         $allies[$target[1]+2] -= $damage;
         if($damage > 0) AllyDamageTakenAbilities($targetPlayer, $target[1]);
-        if($allies[$target[1]+2] <= 0) DestroyAlly($targetPlayer, $target[1]);
+        if($allies[$target[1]+2] <= 0) DestroyAlly($targetPlayer, $target[1], uniqueID:$allies[$target[1]+5]);
         return $damage;
       } else {
         PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, $parameter);
@@ -918,7 +920,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $dqVars[0] = $damage;
         if($damage > 0) AllyDamageTakenAbilities($targetPlayer, $target[1]);
         if($allies[$target[1]+2] <= 0) {
-          DestroyAlly($targetPlayer, $target[1]);
+          DestroyAlly($targetPlayer, $target[1], uniqueID:$allies[$target[1]+5]);
         } else {
           AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
         }
@@ -1387,7 +1389,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($params[0] == "THEIRALLY") {
         $allies = &GetAllies($otherPlayer);
         WriteLog(CardLink($params[2], $params[2]) . " destroyed your frozen ally");
-        if($allies[$params[1]+8] == "1") DestroyAlly($otherPlayer, $params[1]);
+        if($allies[$params[1]+8] == "1") DestroyAlly($otherPlayer, $params[1], uniqueID:$allies[$params[1]+5]);
       } else {
         DestroyFrozenArsenal($otherPlayer);
         WriteLog(CardLink($params[2], $params[2]) . " destroyed your frozen arsenal card");

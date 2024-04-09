@@ -875,13 +875,18 @@ function CharacterAttackDestroyedAbilities($attackID)
         }
         break;
       case "UPR152":
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_3_to_gain_an_action_point", 0, 1);
-        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, 3, 1);
-        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-        AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIPCARD,UPR152", 1);
-        AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
+        $hand = &GetHand($mainPlayer);
+        $resources = &GetResources($mainPlayer);
+        if(Count($hand) > 0 || $resources[0] > 0)
+        {
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_3_to_gain_an_action_point", 0, 1);
+          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, 3, 1);
+          AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+          AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
+          AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIPCARD,UPR152", 1);
+          AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
+        }
         break;
       default: break;
     }
@@ -1143,4 +1148,3 @@ function CharacterBoostAbilities($player) {
     }
   }
 }
-?>

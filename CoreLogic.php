@@ -1663,13 +1663,14 @@ function IsAllyAttackTarget()
   return $target[0] == "THEIRALLY";
 }
 
-function IsSpecificAllyAttackTarget($player, $index)
+function IsSpecificAllyAttackTarget($player, $index, $uniqueID)
 {
+  global $combatChainState, $CCS_AttackTargetUID;
   $mzTarget = GetAttackTarget();
   $mzArr = explode("-", $mzTarget);
   if($mzArr[0] == "ALLY" || $mzArr[0] == "MYALLY" || $mzArr[0] == "THEIRALLY")
   {
-    return $index == intval($mzArr[1]);
+    return $index == intval($mzArr[1]) && $uniqueID == $combatChainState[$CCS_AttackTargetUID];
   }
   return false;
 }

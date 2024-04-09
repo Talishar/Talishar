@@ -112,8 +112,8 @@ function CardSubType($cardID, $uniqueID=-1)
       case "EVO410": return "Evo";
       case "EVO410b": return "Chest,Evo";
       case "MST410": case "MST432": case "MST453":
-      case "MST497": case "MST498": case "MST499": 
-      case "MST501":
+      case "MST496": case "MST497": case "MST498": case "MST499": 
+      case "MST500": case "MST501":
         return "Chi";
       default: return "";
   }
@@ -349,10 +349,17 @@ function PitchValue($cardID)
   {
     switch ($cardID) {
       case "MST410": case "MST432": case "MST453":
-      case "MST497": case "MST499": case "MST501":
-        return 3;   
-      default:
-        break;
+      case "MST496": case "MST497": case "MST498": case "MST499": 
+      case "MST500": case "MST501":
+          return 3;   
+      default: break;
+    }
+  }
+  if($set == "LGS") {
+    switch ($cardID) {
+      case "LGS177": return 2;
+      case "LGS178": return 3;
+      default: break;
     }
   }
   if($set != "ROG" && $set != "DUM") {
@@ -729,7 +736,8 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
         }
       }
       return "GY";
-    case "MST097": case "MST099": case "MST101": 
+    case "MST097": case "MST096": case "MST098": 
+    case "MST099": case "MST100": case "MST101": 
       if($CS_NumBluePlayed > 1) return "-";
       else return "GY";
     default: return "GY";

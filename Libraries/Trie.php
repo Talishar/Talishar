@@ -35,5 +35,3 @@
     }
     else if(!isset($trie[$cardID[$depth]])) $trie[$cardID[$depth]] = $value;
   }
-
-?>

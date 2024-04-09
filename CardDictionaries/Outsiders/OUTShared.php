@@ -650,15 +650,20 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT068": case "OUT069": case "OUT070":
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give this a name", 0, 1);
-        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
-        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-        AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Head_Jab,Surging_Strike,Twin_Twisters", 1);
-        AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $mainPlayer, "Attack renamed to <b>{0}</b>", 1);
-        AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . "-", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-", 1);
+        $hand = &GetHand($mainPlayer);
+        $resources = &GetResources($mainPlayer);
+        if(Count($hand) > 0 || $resources[0] > 0)
+        {
+          AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give this a name", 0, 1);
+          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
+          AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+          AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Head_Jab,Surging_Strike,Twin_Twisters", 1);
+          AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+          AddDecisionQueue("WRITELOG", $mainPlayer, "Attack renamed to <b>{0}</b>", 1);
+          AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . "-", 1);
+          AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-", 1);
+        }
         break;
       case "OUT071": case "OUT072": case "OUT073":
         AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);

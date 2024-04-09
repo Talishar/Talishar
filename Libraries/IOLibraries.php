@@ -6,5 +6,3 @@
     if($line=="") return [];
     return explode(" ", $line);
   }
-
-?>
