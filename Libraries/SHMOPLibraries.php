@@ -54,7 +54,7 @@ function WriteGamestateCache($name, $data)
 {
   if ($name == 0) return;
   $serData = serialize($data);
-  $gsID = shmop_open(GamestateID($name), "c", 0644, 8192);
+  $gsID = shmop_open(GamestateID($name), "c", 0644, 16384);
   if ($gsID == false) {
     exit;
   } else {
@@ -125,7 +125,7 @@ function DeleteCache($name)
     shmop_delete($id);
     shmop_close($id); //shmop_close is deprecated
   }
-  $gsID = shmop_open(GamestateID($name), "c", 0644, 8192);
+  $gsID = shmop_open(GamestateID($name), "c", 0644, 16384);
   if($gsID) {
     shmop_delete($gsID);
     shmop_close($gsID); //shmop_close is deprecated
