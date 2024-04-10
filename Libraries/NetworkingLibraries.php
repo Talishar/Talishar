@@ -1512,7 +1512,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         WriteLog("Lost 1 health to Remorseless");
         LoseHealth($remorselessCount, $playerID);
       }
-      else if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A") {
+      elseif(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A")) {
         WriteLog("Lost 1 health to Remorseless");
         LoseHealth($remorselessCount, $playerID);
       }
