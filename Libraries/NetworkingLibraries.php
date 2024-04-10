@@ -1506,6 +1506,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if($cardType == "A" && !$canPlayAsInstant) {
         ResetCombatChainState();
       }
+      $remorselessCount = 0;
       $remorselessCount = CountCurrentTurnEffects("CRU123-DMG", $playerID);
       if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID) == "") {
         WriteLog("Lost 1 health to Remorseless");
@@ -2432,6 +2433,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, $from, "NA"); break;
         case "THEIRDISCARD": AddGraveyard($cardID, $otherPlayer, $from); break;
         case "THEIRBOTDECK": AddBottomDeck($cardID, $otherPlayer, $from); break;
+        case "THEIRSOUL": AddSoul($cardID, $otherPlayer, $from); break;
         default: break;
       }
     }
