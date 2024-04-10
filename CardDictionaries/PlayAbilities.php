@@ -130,6 +130,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST501");
       return "";
+    case "MST102":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST502");
+      return "";
     default: return "";
   }
 }

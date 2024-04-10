@@ -41,7 +41,7 @@ function ProcessHitEffect($cardID, $from="-")
   }
   else if($set == "EVR") return EVRHitEffect($cardID);
   else if($set == "UPR") return UPRHitEffect($cardID);
-  else if($set == "DYN") return DYNHitEffect($cardID);
+  else if($set == "DYN") return DYNHitEffect($cardID, $from, $CombatChain->AttackCard()->ID());
   else if($set == "OUT") return OUTHitEffect($cardID, $from);
   else if($set == "DTD") return DTDHitEffect($cardID);
   else if($set == "TCC") return TCCHitEffect($cardID);

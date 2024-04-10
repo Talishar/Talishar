@@ -113,7 +113,7 @@ function CardSubType($cardID, $uniqueID=-1)
       case "EVO410b": return "Chest,Evo";
       case "MST410": case "MST432": case "MST453":
       case "MST496": case "MST497": case "MST498": case "MST499":
-      case "MST500": case "MST501":
+      case "MST500": case "MST501": case "MST502":
         return "Chi";
       default: return "";
   }
@@ -350,7 +350,7 @@ function PitchValue($cardID)
     switch ($cardID) {
       case "MST410": case "MST432": case "MST453":
       case "MST496": case "MST497": case "MST498": case "MST499":
-      case "MST500": case "MST501":
+      case "MST500": case "MST501": case "MST502":
           return 3;
       default: break;
     }
@@ -699,7 +699,9 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   switch($cardID) {
     case "WTR163": return "BANISH";
     case "CRU163": return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
-    case "MON063": return ($from == "CHAINCLOSING" && $stillOnCombatChain ? "SOUL" : "GY");
+    case "MON063": 
+      if(substr($playedFrom, 0, 5) != "THEIR") return $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRSOUL";
+      return ($from == "CHAINCLOSING" && $stillOnCombatChain ? "SOUL" : "GY");
     case "MON064": return "SOUL";
     case "MON231": return "BANISH";
     case "ELE113": return "BANISH";
@@ -738,6 +740,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       return "GY";
     case "MST097": case "MST096": case "MST098":
     case "MST099": case "MST100": case "MST101":
+    case "MST102":
       if($CS_NumBluePlayed > 1) return "-";
       else return "GY";
     default: return "GY";
@@ -1034,6 +1037,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if($layerType == "AA" || $layerType == "W") return false;//It's an attack
       if(GetResolvedAbilityType($layers[$layerIndex]) == "AA") return false;
       return true;
+    case "MST102": return !$CombatChain->HasCurrentLink();
     default: return false;
   }
 }
@@ -1769,6 +1773,7 @@ function WardAmount($cardID, $player)
 {
   switch($cardID)
   {
+    case "MON104": return 1;
     case "DYN213": case "DYN214": return 1;
     case "DYN612": return 4;
     case "DTD004": return SearchCurrentTurnEffects("DTD004-1", $player);
@@ -1783,7 +1788,7 @@ function WardAmount($cardID, $player)
 function HasWard($cardID, $player)
 {
   switch($cardID) {
-    case "MON103":
+    case "MON104":
     case "UPR039": case "UPR040": case "UPR041":
     case "UPR218": case "UPR219": case "UPR220":
     case "DYN213":

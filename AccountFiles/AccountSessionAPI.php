@@ -20,6 +20,7 @@
   function IsLoggedInUserPatron()
   {
     if(isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "lanczzz") return true;
+    if(isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "PvtVoid") return true;
     return (isset($_SESSION["isPatron"]) || isset($_SESSION["isPvtVoidPatron"]) ? "1" : "0");
   }
 
