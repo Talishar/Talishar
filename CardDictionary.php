@@ -1773,6 +1773,7 @@ function WardAmount($cardID, $player)
 {
   switch($cardID)
   {
+    case "MON104": return 1;
     case "DYN213": case "DYN214": return 1;
     case "DYN612": return 4;
     case "DTD004": return SearchCurrentTurnEffects("DTD004-1", $player);
@@ -1787,7 +1788,7 @@ function WardAmount($cardID, $player)
 function HasWard($cardID, $player)
 {
   switch($cardID) {
-    case "MON103":
+    case "MON104":
     case "UPR039": case "UPR040": case "UPR041":
     case "UPR218": case "UPR219": case "UPR220":
     case "DYN213":
