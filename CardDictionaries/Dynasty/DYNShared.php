@@ -507,7 +507,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   }
 }
 
-function DYNHitEffect($cardID)
+function DYNHitEffect($cardID, $from, $attackID)
 {
   global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $CCS_NumBoosted;
   switch($cardID) {
@@ -523,7 +523,7 @@ function DYNHitEffect($cardID)
       MZMoveCard($mainPlayer, "MYHAND:subtype=Item;class=MECHANOLOGIST;maxCost=" . $combatChainState[$CCS_NumBoosted], "MYITEMS", may:true);
       break;
     case "DYN115": case "DYN116": if(IsHeroAttackTarget()) AddCurrentTurnEffect($cardID, $defPlayer); break;
-    case "DYN117": if(IsHeroAttackTarget()) GiveAttackGoAgain(); break;
+    case "DYN117": if(IsHeroAttackTarget() && ClassContains($attackID, "ASSASSIN", $mainPlayer)) GiveAttackGoAgain(); break;
     case "DYN118":
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
