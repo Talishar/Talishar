@@ -289,5 +289,3 @@
     }
     return ($hasAction && $hasEquipment) || ($hasInstant && $hasEquipment);
   }
-
-?>
