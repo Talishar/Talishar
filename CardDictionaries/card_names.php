@@ -33,6 +33,10 @@ function CardName($cardID)
       case "EVO410": return "Teklovossen, the Mechropotent";
       case "EVO410b": return "Teklovossen, the Mechropotent";
       case "DTD564": return "Blasmophet, Levia Consumed";
+      case "MST410": case "MST432": case "MST453":
+      case "MST496": case "MST497": case "MST498": case "MST499":
+      case "MST500": case "MST501": case "MST502":
+        return "Inner Chi";
       default: return "";
     }
 	}

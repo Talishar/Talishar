@@ -1506,7 +1506,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if($cardType == "A" && !$canPlayAsInstant) {
         ResetCombatChainState();
       }
-      $remorselessCount = 0;
       $remorselessCount = CountCurrentTurnEffects("CRU123-DMG", $playerID);
       if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID) == "") {
         WriteLog("Lost 1 health to Remorseless");
@@ -2310,21 +2309,21 @@ function PayAdditionalCosts($cardID, $from)
       }
       break;
     case "MST010":
-      $numModes = $CS_NumBluePlayed > 0 ? 3 : 1;
+      $numModes = GetClassState($currentPlayer, $CS_NumBluePlayed) > 0 ? 3 : 1;
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
       AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-Create_a_Fang_Strike_and_Slither,Banish_up_to_2_cards_in_an_opposing_hero_graveyard,Transcend");
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "MST032":
-      $numModes = $CS_NumBluePlayed > 0 ? 3 : 1;
+      $numModes = GetClassState($currentPlayer, $CS_NumBluePlayed) > 0 ? 3 : 1;
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
       AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-Create_2_Spectral_Shield,Put_a_+1_counter_on_each_aura_with_ward_you_control,Transcend");
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "MST053":
-      $numModes = $CS_NumBluePlayed > 0 ? 3 : 1;
+      $numModes = GetClassState($currentPlayer, $CS_NumBluePlayed) > 0 ? 3 : 1;
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
       AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-Create_2_Crouching_Tigers,Crouching_Tigers_Get_+1_this_turn,Transcend");
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
@@ -2433,7 +2432,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, $from, "NA"); break;
         case "THEIRDISCARD": AddGraveyard($cardID, $otherPlayer, $from); break;
         case "THEIRBOTDECK": AddBottomDeck($cardID, $otherPlayer, $from); break;
-        case "THEIRSOUL": AddSoul($cardID, $otherPlayer, $from); break;
         default: break;
       }
     }

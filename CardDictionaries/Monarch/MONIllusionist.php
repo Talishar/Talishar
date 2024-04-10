@@ -20,6 +20,8 @@
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+          AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+          AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was put at the bottom of the deck.", 1);
           AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
           AddDecisionQueue("DRAW", $otherPlayer, "-");
         }
