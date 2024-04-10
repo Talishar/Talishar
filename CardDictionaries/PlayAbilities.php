@@ -107,32 +107,32 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "MST096":
       GainHealth(1, $currentPlayer);
-      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST496");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) Transcend($currentPlayer, "MST496");
       return "";    
     case "MST097":
       MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH");
-      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST497");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) Transcend($currentPlayer, "MST497");
       return "";
     case "MST098":
       GiveAttackGoAgain();
-      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST498");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) Transcend($currentPlayer, "MST498");
       return "";
     case "MST099":
       MZMoveCard($currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", "MYBOTDECK");
-      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST499");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) Transcend($currentPlayer, "MST499");
       return "";
     case "MST100":
       Draw($currentPlayer);
       MZMoveCard($currentPlayer, "MYHAND", "MYBOTDECK", silent:true);
-      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST500");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) Transcend($currentPlayer, "MST500");
       return "";
     case "MST101":
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST501");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) Transcend($currentPlayer, "MST501");
       return "";
     case "MST102":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      if($CS_NumBluePlayed > 1) Transcend($currentPlayer, "MST502");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) Transcend($currentPlayer, "MST502");
       return "";
     default: return "";
   }

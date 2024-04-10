@@ -727,7 +727,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
     case "DTD202": return "BANISH";
     case "EVO146": return "-";
     case "MST010": case "MST032": case "MST053":
-      if($CS_NumBluePlayed > 1) return "-";
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
       else if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);
         for($i=0; $i<count($modes); ++$i)
@@ -739,7 +739,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
     case "MST097": case "MST096": case "MST098":
     case "MST099": case "MST100": case "MST101":
     case "MST102":
-      if($CS_NumBluePlayed > 1) return "-";
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
       else return "GY";
     default: return "GY";
   }
