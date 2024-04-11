@@ -126,10 +126,6 @@ function JSONRenderedCard(
       $countersMap->doom = $countersMap->counters;
       $countersMap->counters = 0;
     }
-    else if(HasDoomCounters($cardNumber)) {
-      $countersMap->doom = $countersMap->counters;
-      $countersMap->counters = 0;
-    }
     else if ($type == "M") {
       $countersMap->lesson = $countersMap->counters;
       $countersMap->counters = 0;
