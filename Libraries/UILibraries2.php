@@ -92,18 +92,22 @@ function JSONRenderedCard(
     if ($class == "MECHANOLOGIST" && ($subtype == "Item" || CardType($cardNumber) == "W")) {
       $countersMap->steam = $countersMap->counters;
       $countersMap->counters = 0;
-    } else if (CardType($cardNumber) == "E") {
+    } 
+    else if(HasEnergyCounters("-", "-", $cardNumber)){
+      $countersMap->energy = $countersMap->counters;
+      $countersMap->counters = 0;
+    } 
+    else if (CardType($cardNumber) == "E") {
       if (EquipmentsUsingSteamCounter($cardNumber)) {
         $countersMap->steam = $countersMap->counters;
         $countersMap->counters = 0;
       }
-    } else if ($subtype == "Arrow") {
+    } 
+    else if ($subtype == "Arrow") {
       $countersMap->aim = $countersMap->counters;
       $countersMap->counters = 0;
-    } else if ($cardNumber == "WTR150" || $cardNumber == "UPR166") {
-      $countersMap->energy = $countersMap->counters;
-      $countersMap->counters = 0;
-    } else if ($cardNumber == "DYN175") {
+    } 
+    else if ($cardNumber == "DYN175") {
       $countersMap->doom = $countersMap->counters;
       $countersMap->counters = 0;
     }

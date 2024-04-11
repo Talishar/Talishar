@@ -1855,10 +1855,29 @@ function IsWeaponGreaterThanTwiceBasePower()
   return false;
 }
 
-function HasEnergyCounters($array, $index)
+function HasEnergyCounters($array, $index, $cardID)
 {
+  if($array == "-"){
+    switch($cardID) {
+      case "WTR150": case "UPR166": return true;
+      default: return false;
+    }
+  }
   switch($array[$index]) {
     case "WTR150": case "UPR166": return $array[$index+2] > 0;
+    default: return false;
+  }
+}
+
+function HasHauntCounters($array, $index, $cardID){
+  if($array == "-"){
+    switch($cardID) {
+      case "UPR151": return true;
+      default: return false;
+    }
+  }
+  switch($array[$index]) {
+    case "UPR151": return $array[$index+2] > 0;
     default: return false;
   }
 }
