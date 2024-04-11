@@ -74,7 +74,8 @@ function JSONRenderedCard(
   $steamCounters = NULL,
   $energyCounters = NULL,
   $hauntCounters = NULL,
-  $verseCounters = NULL
+  $verseCounters = NULL,
+  $doomCounters = NULL
 ) {
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -95,6 +96,8 @@ function JSONRenderedCard(
   if($hauntCounters != NULL) $countersMap->energy = $energyCounters;
   $verseCounters = property_exists($countersMap, 'verse') ? $verseCounters->verse : $verseCounters;
   if($verseCounters != NULL) $countersMap->verse = $verseCounters;
+  $doomCounters = property_exists($countersMap, 'doom') ? $doomCounters->doom : $doomCounters;
+  if($doomCounters != NULL) $countersMap->doom = $doomCounters;
 
   if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
     $class = CardClass($cardNumber);
@@ -115,6 +118,10 @@ function JSONRenderedCard(
       $countersMap->verse = $countersMap->counters;
       $countersMap->counters = 0;
     } 
+    else if(HasDoomCounters($cardNumber)) {
+      $countersMap->doom = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
     else if (CardType($cardNumber) == "E") {
       if (EquipmentsUsingSteamCounter($cardNumber)) {
         $countersMap->steam = $countersMap->counters;
@@ -125,10 +132,6 @@ function JSONRenderedCard(
       $countersMap->aim = $countersMap->counters;
       $countersMap->counters = 0;
     } 
-    else if ($cardNumber == "DYN175") {
-      $countersMap->doom = $countersMap->counters;
-      $countersMap->counters = 0;
-    }
   }
 
   if($isSpectator) $gem = NULL;

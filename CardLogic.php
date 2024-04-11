@@ -1888,6 +1888,13 @@ function HasVerseCounters($cardID){
     default: return false;
   }
 }
+
+function HasDoomCounters($cardID){
+  switch($cardID) {
+    case "DYN175": case "DTD170": return true;
+    default: return false;
+  }
+}
 function HasSteamCounter($array, $index, $player)
 {
   if (CardType($array[$index]) == 'E') return EquipmentsUsingSteamCounter($array[$index]);
