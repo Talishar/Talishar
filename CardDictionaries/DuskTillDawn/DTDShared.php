@@ -371,14 +371,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD176": GainHealth(2, $currentPlayer); return "";
     case "DTD177": GainHealth(1, $currentPlayer); return "";
     case "DTD178": case "DTD179": case "DTD180":
-      if(ShouldAutotargetOpponent($currentPlayer)) {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
-        AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, $cardID, 1);
-      } else {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
-        AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, $cardID, 1);
-      }
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
+      AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, $cardID, 1);
       return "";
     case "DTD184": case "DTD185": case "DTD186":
       $theirSoul = &GetSoul($otherPlayer);
