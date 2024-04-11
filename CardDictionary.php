@@ -51,7 +51,6 @@ $CID_TekloLegs = "LGS189";
 function CardType($cardID)
 {
   if(!$cardID) return "";
-  if($cardID == "MST102") return "I";
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM" && $set != "LGS") {
     $number = intval(substr($cardID, 3));
