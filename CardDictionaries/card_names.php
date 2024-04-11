@@ -9,7 +9,7 @@ function CardName($cardID)
     if($set != "ROG" && $set != "DUM")
     {
       $number = intval(substr($cardID, 3));
-      if($number < 400 || ($set != "MON" && $set != "DYN" && $cardID != "EVO410" && $cardID != "EVO410b" && $cardID != "DTD564")) return GeneratedCardName($cardID);
+      if($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $cardID != "EVO410" && $cardID != "EVO410b" && $cardID != "DTD564")) return GeneratedCardName($cardID);
     }
     if ($set == "ROG") {
       return ROGUEName($cardID);
