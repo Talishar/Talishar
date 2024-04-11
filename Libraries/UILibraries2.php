@@ -73,7 +73,8 @@ function JSONRenderedCard(
   $subcard = NULL,
   $steamCounters = NULL,
   $energyCounters = NULL,
-  $hauntCounters = NULL
+  $hauntCounters = NULL,
+  $verseCounters = NULL
 ) {
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -91,7 +92,9 @@ function JSONRenderedCard(
   $energyCounters = property_exists($countersMap, 'energy') ? $energyCounters->energy : $energyCounters;
   if($energyCounters != NULL) $countersMap->steam = $steamCounters;
   $hauntCounters = property_exists($countersMap, 'haunt') ? $hauntCounters->haunt : $hauntCounters;
-  if($hauntCounters != NULL) $countersMap->steam = $steamCounters;
+  if($hauntCounters != NULL) $countersMap->energy = $energyCounters;
+  $verseCounters = property_exists($countersMap, 'verse') ? $verseCounters->verse : $verseCounters;
+  if($verseCounters != NULL) $countersMap->verse = $verseCounters;
 
   if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
     $class = CardClass($cardNumber);
@@ -106,6 +109,10 @@ function JSONRenderedCard(
     } 
     else if(HasHauntCounters("-", "-", $cardNumber)){
       $countersMap->haunt = $countersMap->counters;
+      $countersMap->counters = 0;
+    } 
+    else if(HasVerseCounters($cardNumber)){
+      $countersMap->verse = $countersMap->counters;
       $countersMap->counters = 0;
     } 
     else if (CardType($cardNumber) == "E") {
