@@ -274,6 +274,10 @@ function CardCost($cardID, $from="-")
     case "HVY209":
       if(GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
       else return 2;
+    case "MST410": case "MST432": case "MST453":
+    case "MST496": case "MST497": case "MST498": case "MST499":
+    case "MST500": case "MST501": case "MST502":
+      return -1;
     default: break;
   }
   if($set != "ROG" && $set != "DUM") {
