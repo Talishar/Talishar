@@ -71,7 +71,9 @@ function JSONRenderedCard(
   $facing = NULL,
   $numUses = NULL,
   $subcard = NULL,
-  $steamCounters = NULL
+  $steamCounters = NULL,
+  $energyCounters = NULL,
+  $hauntCounters = NULL
 ) {
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -80,12 +82,17 @@ function JSONRenderedCard(
   if($counters != NULL) $countersMap->counters = $counters;
   $lifeCounters = property_exists($countersMap, 'life') ? $countersMap->life : $lifeCounters;
   if($lifeCounters != NULL) $countersMap->life = $lifeCounters;
-  $defCounters = property_exists($countersMap, 'defence') ? $countersMap->defence :  $defCounters;
+  $defCounters = property_exists($countersMap, 'defence') ? $countersMap->defence : $defCounters;
   if($defCounters != NULL) $countersMap->defence = $defCounters;
-  $atkCounters = property_exists($countersMap, 'attack') ? $atkCounters->attack :  $atkCounters;
+  $atkCounters = property_exists($countersMap, 'attack') ? $atkCounters->attack : $atkCounters;
   if($atkCounters != NULL) $countersMap->attack = $atkCounters;
-  $steamCounters = property_exists($countersMap, 'steam') ? $steamCounters->steam :  $steamCounters;
+  $steamCounters = property_exists($countersMap, 'steam') ? $steamCounters->steam : $steamCounters;
   if($steamCounters != NULL) $countersMap->steam = $steamCounters;
+  $energyCounters = property_exists($countersMap, 'energy') ? $energyCounters->energy : $energyCounters;
+  if($energyCounters != NULL) $countersMap->steam = $steamCounters;
+  $hauntCounters = property_exists($countersMap, 'haunt') ? $hauntCounters->haunt : $hauntCounters;
+  if($hauntCounters != NULL) $countersMap->steam = $steamCounters;
+
   if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
     $class = CardClass($cardNumber);
     $subtype = CardSubType($cardNumber);
@@ -95,6 +102,10 @@ function JSONRenderedCard(
     } 
     else if(HasEnergyCounters("-", "-", $cardNumber)){
       $countersMap->energy = $countersMap->counters;
+      $countersMap->counters = 0;
+    } 
+    else if(HasHauntCounters("-", "-", $cardNumber)){
+      $countersMap->haunt = $countersMap->counters;
       $countersMap->counters = 0;
     } 
     else if (CardType($cardNumber) == "E") {
