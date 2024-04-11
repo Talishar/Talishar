@@ -111,7 +111,7 @@ function CardSubType($cardID, $uniqueID=-1)
       case "DTD564": return "Demon";
       case "EVO410": return "Evo";
       case "EVO410b": return "Chest,Evo";
-      case "MST410": case "MST432": case "MST453":
+      case "MST410": case "MST432": case "MST453": case "MST495":
       case "MST496": case "MST497": case "MST498": case "MST499":
       case "MST500": case "MST501": case "MST502":
         return "Chi";
@@ -274,7 +274,7 @@ function CardCost($cardID, $from="-")
     case "HVY209":
       if(GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
       else return 2;
-    case "MST410": case "MST432": case "MST453":
+    case "MST410": case "MST432": case "MST453": case "MST495":
     case "MST496": case "MST497": case "MST498": case "MST499":
     case "MST500": case "MST501": case "MST502":
       return -1;
@@ -352,7 +352,7 @@ function PitchValue($cardID)
   if($number > 400)
   {
     switch ($cardID) {
-      case "MST410": case "MST432": case "MST453":
+      case "MST410": case "MST432": case "MST453": case "MST495":
       case "MST496": case "MST497": case "MST498": case "MST499":
       case "MST500": case "MST501": case "MST502":
           return 3;
@@ -391,7 +391,7 @@ function BlockValue($cardID)
     case "EVO410": return -1;
     case "EVO410b": return 6;
     case "DUMMYDISHONORED": return -1;
-    case "MST410": case "MST432": case "MST453":
+    case "MST410": case "MST432": case "MST453": case "MST495":
     case "MST496": case "MST497": case "MST498": case "MST499":
     case "MST500": case "MST501": case "MST502":
       return -1;
@@ -744,9 +744,9 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
         }
       }
       return "GY";
-    case "MST097": case "MST096": case "MST098":
-    case "MST099": case "MST100": case "MST101":
-    case "MST102":
+    case "MST095": case "MST096": case "MST097": 
+    case "MST098": case "MST099": case "MST100": 
+    case "MST101": case "MST102":
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
       else return "GY";
     default: return "GY";
@@ -1043,7 +1043,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if($layerType == "AA" || $layerType == "W") return false;//It's an attack
       if(GetResolvedAbilityType($layers[$layerIndex]) == "AA") return false;
       return true;
-    case "MST102": return !$CombatChain->HasCurrentLink();
+    case "MST095": case "MST102": return !$CombatChain->HasCurrentLink();
     default: return false;
   }
 }

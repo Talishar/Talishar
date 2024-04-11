@@ -6,6 +6,7 @@ function MSTEffectAttackModifier($cardID) {
   switch($cardID) {
     case "MST053": return 1;
     case "MST087": case "MST088": case "MST089": case "MST090": return 2;
+    case "MST095": return -1;
     case "MST102": return 1;
     default: return 0;
   }
@@ -19,6 +20,7 @@ function MSTCombatEffectActive($cardID, $attackID)
   switch($cardID) {
     case "MST053": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
     case "MST087": case "MST088": case "MST089": case "MST090": return GetClassState($mainPlayer, $CS_NumBluePlayed) > 1;
+    case "MST095": return true;
     case "MST102": return true;
     default: return false;
   }
