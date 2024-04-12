@@ -1425,7 +1425,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         AddDecisionQueue("PAYRESOURCES", $player, "3", 1);
         AddDecisionQueue("ELSE", $player, "-");
       }
-      AddDecisionQueue("WRITELOG", $player, "Player " . $player . " took 2 damage from " . CardLink("OUT234", "OUT234"), 1);
+      AddDecisionQueue("WRITELOG", $player, "Player " . $player . " is taking 2 damage from " . CardLink("OUT234", "OUT234"), 1);
       AddDecisionQueue("TAKEDAMAGE", $player, "2-OUT234", 1);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
