@@ -124,7 +124,7 @@ function CharacterHealth($cardID)
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM") return GeneratedCharacterHealth($cardID);
   switch($cardID) {
-    case "DUMMY": return 1000;
+    case "DUMMY": return 2000;
     case "ROGUE001": return 6;
     case "ROGUE003": return 8;
     case "ROGUE004": return 14;
