@@ -978,4 +978,3 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
   }
 
-?>
