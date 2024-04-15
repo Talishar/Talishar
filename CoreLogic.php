@@ -1385,11 +1385,11 @@ function AttackDestroyedEffects($attackID)
   }
 }
 
-function CloseCombatChain($chainClosed="true", $skipped=false)
+function CloseCombatChain($chainClosed="true")
 {
   global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers;
   $layers = [];//In case there's another combat chain related layer like defense step
-  PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed."|".$skipped);
+  PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
   $combatChainState[$CCS_AttackTarget] = "NA";
@@ -2260,11 +2260,12 @@ function EvoOnPlayHandling($player) {
   if(SearchCurrentTurnEffects("EVO007", $player, true) || SearchCurrentTurnEffects("EVO008", $player, true)) Draw($player);
 }
 
-function EvoHandling($cardID, $player)
+function EvoHandling($cardID, $player, $from)
 {
   global $dqVars;
   $char = &GetPlayerCharacter($player);
   $slot = "";
+  $otherPlayer = $player == 1 ? 2 : 1;
   if(SubtypeContains($cardID, "Head")) $slot = "Head";
   else if(SubtypeContains($cardID, "Chest")) $slot = "Chest";
   else if(SubtypeContains($cardID, "Arms")) $slot = "Arms";
@@ -2285,7 +2286,8 @@ function EvoHandling($cardID, $player)
         EvoTransformAbility($char[$i], $fromCardID, $player);
       }
       else {
-        AddGraveyard($cardID, $player, "HAND", $player);
+        if(substr($from, 0, 5) != "THEIR") AddGraveyard($cardID, $player, "HAND", $player);
+        else AddGraveyard($cardID, $otherPlayer, "GRAVEYARD", $player);
         WriteLog("<b>*ERR0R* // No base of that type equipped //</b>");
       }
       break;

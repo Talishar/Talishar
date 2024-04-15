@@ -274,7 +274,7 @@ function CharacterDestroyEffect($cardID, $player)
 {
   switch($cardID) {
     case "ELE213":
-      WriteLog("New Horizon destroys your arsenal");
+      WriteLog(Cardlink($cardID, $cardID) . " destroys your arsenal");
       DestroyArsenal($player, effectController:$player);
       break;
     case "DYN214":

@@ -336,4 +336,3 @@
     SetClassState($player, $CS_Transcended, 1);
     AddPlayerHand($cardID, $player, "-");
   }
-?>

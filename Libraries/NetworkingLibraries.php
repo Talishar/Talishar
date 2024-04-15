@@ -912,15 +912,27 @@ function BeginChainLinkResolution()
 
 function NuuStaticAbility($banishedBy)
 {
-  global $combatChain, $defPlayer;
+  global $combatChain, $mainPlayer, $defPlayer, $CombatChain;
   $defendingCards = GetChainLinkCards($defPlayer);
   if ($defendingCards != "") {
     $defendingCards = explode(",", $defendingCards);
-    for($i=0; $i < count($defendingCards); ++$i) {
-      if (CardType($combatChain[$defendingCards[$i]]) == "A" || CardType($combatChain[$defendingCards[$i]]) == "AA") {
+    for($i=count($defendingCards); $i >= 0; --$i){
+      $originalID = GetCardIDBeforeTransform($combatChain[$defendingCards[$i]]);
+      if(CardType($combatChain[$defendingCards[$i]]) == "E" && CardType($originalID) == "A") { //EVO handling
+        BanishCardForPlayer(GetCardIDBeforeTransform($combatChain[$defendingCards[$i]]), $defPlayer, "CC", "-", $mainPlayer);
+        $index = FindCharacterIndex($defPlayer, $combatChain[$defendingCards[$i]]);
+        DestroyCharacter($defPlayer, $index, wasBanished:true);
+      }
+      if(CardType($combatChain[$defendingCards[$i]]) == "A" || CardType($combatChain[$defendingCards[$i]]) == "AA") {
         BanishCardForPlayer($combatChain[$defendingCards[$i]], $defPlayer, "CC", "-", $banishedBy);
-        AddDecisionQueue("PASSPARAMETER", $defPlayer, $combatChain[$defendingCards[$i]]);
-        AddDecisionQueue("REMOVECOMBATCHAIN", $defPlayer, "-");
+        $index = GetCombatChainIndex($combatChain[$defendingCards[$i]], $defPlayer);        
+        if($CombatChain->Remove($index) == "") {
+          for($j = 0; $j < count($chainLinks); ++$j) {
+            for($k = 0; $k < count($chainLinks[$j]); $k += ChainLinksPieces()) {
+              if($chainLinks[$j][$k] == $combatChain[$defendingCards[$i]]) $chainLinks[$j][$k+2] = 0;
+            }
+          }            
+        }
       }
     }
   }
@@ -929,10 +941,6 @@ function NuuStaticAbility($banishedBy)
 function ChainLinkBeginResolutionEffects()
 {
   global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex, $CID_BloodRotPox;
-  $character = &GetPlayerCharacter($mainPlayer);
-  $charID = $character[0];
-  $charID = ShiyanaCharacter($charID);
-  if(HasStealth($combatChain[0]) && ($charID == "MST001" || $charID == "MST002")) NuuStaticAbility($combatChain[0]);
   if(CardType($combatChain[0]) == "W") {
     $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
     $index = $combatChainState[$CCS_WeaponIndex];
@@ -1006,6 +1014,10 @@ function ResolveChainLink()
     DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
     AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
   }
+  $character = &GetPlayerCharacter($mainPlayer);
+  $charID = $character[0];
+  $charID = ShiyanaCharacter($charID);
+  if(HasStealth($combatChain[0]) && ($charID == "MST001" || $charID == "MST002")) NuuStaticAbility($combatChain[0]);
   ProcessDecisionQueue();
 }
 
@@ -1059,7 +1071,7 @@ function ResolveCombatDamage($damageDone)
   ProcessDecisionQueue(); //Any combat related decision queue logic should be main player gamestate
 }
 
-function FinalizeChainLink($chainClosed = false, $skipped=false)
+function FinalizeChainLink($chainClosed = false)
 {
   global $turn, $actionPoints, $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
@@ -1134,7 +1146,7 @@ function FinalizeChainLink($chainClosed = false, $skipped=false)
   SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
   $combatChain = [];
   if($chainClosed) {
-    ResetCombatChainState($skipped);
+    ResetCombatChainState();
     $turn[0] = "M";
     FinalizeAction();
   } else {
@@ -1380,12 +1392,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $layerPriority[1] = ShouldHoldPriority(2);
   $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
 
-  if($playingCard) { //Closes the chain, CR 2.5, 7.7.3 link step only allows for attack actions to continue the next chain, else close the combat chain before playing a new card.
-    if(IsStaticType(CardType($cardID), $from, $cardID)) {
-      if(GetResolvedAbilityType($cardID, $from) == "A" && !CanPlayAsInstant($cardID, $index, $from)) ResetCombatChainState();
-    }
-  }
-
   if($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
     if($playingCard) {
@@ -1425,7 +1431,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
           $baseCost = 0;
           AddAdditionalCost($currentPlayer, "ALTERNATIVECOST");
         }
-        $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved + $baseCost : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier($cardID) + CharacterCostModifier($cardID, $from, $resources[1]) + BanishCostModifier($from, $index);
+        $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved + $baseCost : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier($cardID) + CharacterCostModifier($cardID, $from, $baseCost) + BanishCostModifier($from, $index);
         if($isAlternativeCostPaid && $resources[1] > 0) WriteLog("<span style='color:red;'>Alternative costs do not offset additional costs.</span>");
       }
       if($resources[1] < 0) $resources[1] = 0;
@@ -1499,13 +1505,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
       PayAbilityAdditionalCosts($cardID);
+      ResetCombatChainState();
       ActivateAbilityEffects();
     } else {
       if(GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
       else SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) . "," . $cardID);
-      if($cardType == "A" && !$canPlayAsInstant) {
-        ResetCombatChainState();
-      }
       $remorselessCount = CountCurrentTurnEffects("CRU123-DMG", $playerID);
       if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID) == "") {
         WriteLog("Lost 1 health to Remorseless");
@@ -2360,8 +2364,9 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $openedChain = false;
   $chainClosed = false;
   $skipDRResolution = false;
+  $chainClosed = ProcessAttackTarget();
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
-  if(GoesOnCombatChain($turn[0], $cardID, $from)) {
+  if(!$chainClosed && GoesOnCombatChain($turn[0], $cardID, $from)) {
     if($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains(CardSubType($cardID), "Item")) {
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play.");
       return;
@@ -2383,7 +2388,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if($index == 0) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
       $combatChainState[$CCS_AttackPlayedFrom] = $from;
-      $chainClosed = ProcessAttackTarget();
       $baseAttackSet = CurrentEffectBaseAttackSet();
       $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
       if(EffectAttackRestricted($cardID, $definedCardType, true)) return;
@@ -2398,7 +2402,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $cardType = $definedCardType;
       if(GetResolvedAbilityType($cardID, $from) != "") $cardType = GetResolvedAbilityType($cardID, $from);
       if(!$chainClosed && $cardType == "AA") AddLayer("ATTACKSTEP", $mainPlayer, "-"); //I haven't added this for weapon. I don't think it's needed yet.
-      // If you have not attacked an aura with Spectra
+      // If you not attacked an aura with Spectra
       if(!$chainClosed && (DelimStringContains($definedCardType, "AA") || DelimStringContains($definedCardType, "W") || DelimStringContains($definedCardSubType, "Ally"))) {
         IncrementClassState($currentPlayer, $CS_NumAttacks);
         ArsenalAttackAbilities();
@@ -2421,7 +2425,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     else if(DelimStringContains($cardSubtype, "Item")) PutItemIntoPlayForPlayer($cardID, $currentPlayer);
     else if($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer);
     else if(DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID);
-    else if(DelimStringContains($cardSubtype, "Evo")) EvoHandling($cardID, $currentPlayer);
+    else if(DelimStringContains($cardSubtype, "Evo")) EvoHandling($cardID, $currentPlayer, $from);
     else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W") {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts:$additionalCosts);
       switch($goesWhere) {
@@ -2477,7 +2481,7 @@ function ProcessAttackTarget()
     $auras = &GetAuras($defPlayer);
     if (HasSpectra($auras[$target[1]])) {
       DestroyAura($defPlayer, $target[1]);
-      CloseCombatChain(skipped:true);
+      CloseCombatChain();
       return true;
     }
   }
