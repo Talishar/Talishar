@@ -598,6 +598,7 @@ function IsTeamColdFoilControl($userID)
     case "Ardent":
     case "PurpleHaze":
     case "luxas":
+    case "chefwheaton":
     case "PvtVoid":
       return true;
     default: break;

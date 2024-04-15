@@ -557,6 +557,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $abilityTypes = GetAbilityTypes($cardID);
   if($phase == "P" && $from != "HAND") return false;
   if($phase == "B" && $from == "BANISH") return false;
+  if($phase == "B" && $from == "THEIRBANISH") return false;
   if($from == "BANISH") {
     $banishCard = $banish->Card($index);
     if(!(PlayableFromBanish($banishCard->ID(), $banishCard->Modifier()) || AbilityPlayableFromBanish($banishCard->ID(), $banishCard->Modifier()))) return false;
