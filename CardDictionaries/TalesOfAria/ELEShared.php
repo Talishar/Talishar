@@ -181,6 +181,7 @@
       case "ELE205": return ClassContains($attackID, "GUARDIAN", $mainPlayer);
       case "ELE206": case "ELE207": case "ELE208": return ClassContains($attackID, "GUARDIAN", $mainPlayer) && CardType($attackID) == "AA";
       case "ELE215": return CardSubtype($attackID) == "Arrow";
+      case "ELE216": case "ELE217": case "ELE218": return true;
       case "ELE219": case "ELE220": case "ELE221": return CardSubtype($attackID) == "Arrow";
       case "ELE235": return CardType($attackID) == "AA";
       default: return false;
