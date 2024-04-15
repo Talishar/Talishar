@@ -2290,7 +2290,6 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, 0, 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "RAISEANARMY", 1);
-
       /*
       if(SearchCharacterAlive($currentPlayer, "HVY051")) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=DYN243&MYCHAR:cardID=HVY051", 1);
@@ -2332,6 +2331,14 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-Create_2_Crouching_Tigers,Crouching_Tigers_Get_+1_this_turn,Transcend");
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
+    case "MST226":
+      $numGold = CountItem("DYN243", $currentPlayer);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numGold+1));
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, 0, 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "GOLDENANVIL", 1);
       break;
     default:
       break;

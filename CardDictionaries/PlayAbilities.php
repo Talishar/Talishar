@@ -144,6 +144,28 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($numGold >= 3) PlayAura("HVY241", $currentPlayer, $numGold); //Might
       WriteLog(CardLink($cardID, $cardID) . " created a Gold token and " . $numGold . "Might tokens");
       return "";
+    case "MST226":
+      $equipments = "";
+      $char = &GetPlayerCharacter($currentPlayer);
+      $inventory = &GetInventory($currentPlayer);
+      foreach ($inventory as $cardID) {
+        WriteLog($cardID);
+        if (TypeContains($cardID, "W", $currentPlayer) || TypeContains($cardID, "E", $currentPlayer)) {
+          if ($equipments != "") $equipments .= ",";
+          $equipments .= $cardID;
+        };
+      }
+      if ($equipments == "") {
+        WriteLog("Player " . $currentPlayer . " doesn't have any weapons/equipments in their inventory");
+        return "";
+      }
+      for($i = 0; $i < intval($additionalCosts); ++$i) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to equip");
+        AddDecisionQueue("CHOOSECARD", $currentPlayer, $equipments);
+        AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-INVENTORY");
+        AddDecisionQueue("EQUIPCARD", $currentPlayer, "<-");
+      }
+      return "";
     default: return "";
   }
 }
