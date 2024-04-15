@@ -71,7 +71,12 @@ function JSONRenderedCard(
   $facing = NULL,
   $numUses = NULL,
   $subcard = NULL,
-  $steamCounters = NULL
+  $steamCounters = NULL,
+  $energyCounters = NULL,
+  $hauntCounters = NULL,
+  $verseCounters = NULL,
+  $doomCounters = NULL,
+  $lessonCounter = NULL
 ) {
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -80,33 +85,61 @@ function JSONRenderedCard(
   if($counters != NULL) $countersMap->counters = $counters;
   $lifeCounters = property_exists($countersMap, 'life') ? $countersMap->life : $lifeCounters;
   if($lifeCounters != NULL) $countersMap->life = $lifeCounters;
-  $defCounters = property_exists($countersMap, 'defence') ? $countersMap->defence :  $defCounters;
+  $defCounters = property_exists($countersMap, 'defence') ? $countersMap->defence : $defCounters;
   if($defCounters != NULL) $countersMap->defence = $defCounters;
-  $atkCounters = property_exists($countersMap, 'attack') ? $atkCounters->attack :  $atkCounters;
+  $atkCounters = property_exists($countersMap, 'attack') ? $atkCounters->attack : $atkCounters;
   if($atkCounters != NULL) $countersMap->attack = $atkCounters;
-  $steamCounters = property_exists($countersMap, 'steam') ? $steamCounters->steam :  $steamCounters;
+  $steamCounters = property_exists($countersMap, 'steam') ? $steamCounters->steam : $steamCounters;
   if($steamCounters != NULL) $countersMap->steam = $steamCounters;
+  $energyCounters = property_exists($countersMap, 'energy') ? $energyCounters->energy : $energyCounters;
+  if($energyCounters != NULL) $countersMap->steam = $steamCounters;
+  $hauntCounters = property_exists($countersMap, 'haunt') ? $hauntCounters->haunt : $hauntCounters;
+  if($hauntCounters != NULL) $countersMap->energy = $energyCounters;
+  $verseCounters = property_exists($countersMap, 'verse') ? $verseCounters->verse : $verseCounters;
+  if($verseCounters != NULL) $countersMap->verse = $verseCounters;
+  $doomCounters = property_exists($countersMap, 'doom') ? $doomCounters->doom : $doomCounters;
+  if($doomCounters != NULL) $countersMap->doom = $doomCounters;
+  $lessonCounter = property_exists($countersMap, 'lesson') ? $lessonCounter->lesson : $lessonCounter;
+  if($lessonCounter != NULL) $countersMap->lesson = $lessonCounter;
+
   if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
     $class = CardClass($cardNumber);
+    $type = CardType($cardNumber);
     $subtype = CardSubType($cardNumber);
     if ($class == "MECHANOLOGIST" && ($subtype == "Item" || CardType($cardNumber) == "W")) {
       $countersMap->steam = $countersMap->counters;
       $countersMap->counters = 0;
-    } else if (CardType($cardNumber) == "E") {
+    } 
+    else if(HasEnergyCounters("-", "-", $cardNumber)){
+      $countersMap->energy = $countersMap->counters;
+      $countersMap->counters = 0;
+    } 
+    else if(HasHauntCounters("-", "-", $cardNumber)){
+      $countersMap->haunt = $countersMap->counters;
+      $countersMap->counters = 0;
+    } 
+    else if(HasVerseCounters($cardNumber)){
+      $countersMap->verse = $countersMap->counters;
+      $countersMap->counters = 0;
+    } 
+    else if(HasDoomCounters($cardNumber)) {
+      $countersMap->doom = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
+    else if ($type == "M") {
+      $countersMap->lesson = $countersMap->counters;
+      $countersMap->counters = 0;
+    } 
+    else if ($type == "E") {
       if (EquipmentsUsingSteamCounter($cardNumber)) {
         $countersMap->steam = $countersMap->counters;
         $countersMap->counters = 0;
       }
-    } else if ($subtype == "Arrow") {
+    } 
+    else if ($subtype == "Arrow") {
       $countersMap->aim = $countersMap->counters;
       $countersMap->counters = 0;
-    } else if ($cardNumber == "WTR150" || $cardNumber == "UPR166") {
-      $countersMap->energy = $countersMap->counters;
-      $countersMap->counters = 0;
-    } else if ($cardNumber == "DYN175") {
-      $countersMap->doom = $countersMap->counters;
-      $countersMap->counters = 0;
-    }
+    } 
   }
 
   if($isSpectator) $gem = NULL;

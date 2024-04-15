@@ -1855,14 +1855,46 @@ function IsWeaponGreaterThanTwiceBasePower()
   return false;
 }
 
-function HasEnergyCounters($array, $index)
+function HasEnergyCounters($array, $index, $cardID)
 {
+  if($array == "-"){
+    switch($cardID) {
+      case "WTR150": case "UPR166": return true;
+      default: return false;
+    }
+  }
   switch($array[$index]) {
     case "WTR150": case "UPR166": return $array[$index+2] > 0;
     default: return false;
   }
 }
 
+function HasHauntCounters($array, $index, $cardID){
+  if($array == "-"){
+    switch($cardID) {
+      case "UPR151": return true;
+      default: return false;
+    }
+  }
+  switch($array[$index]) {
+    case "UPR151": return $array[$index+2] > 0;
+    default: return false;
+  }
+}
+
+function HasVerseCounters($cardID){
+  switch($cardID) {
+    case "EVR107": case "EVR108": case "EVR109": return true;
+    default: return false;
+  }
+}
+
+function HasDoomCounters($cardID){
+  switch($cardID) {
+    case "DYN175": case "DTD170": return true;
+    default: return false;
+  }
+}
 function HasSteamCounter($array, $index, $player)
 {
   if (CardType($array[$index]) == 'E') return EquipmentsUsingSteamCounter($array[$index]);

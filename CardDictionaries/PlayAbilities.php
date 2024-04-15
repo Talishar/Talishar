@@ -12,7 +12,7 @@ function AKOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 } 
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended;
+  global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch($cardID) {
     case "MST001": case "MST002":
@@ -105,6 +105,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST087": case "MST088": case "MST089": case "MST090":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "MST095":
+      AddCurrentTurnEffect($cardID, $mainPlayer);
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) Transcend($currentPlayer, "MST495");
+      return "";
     case "MST096":
       GainHealth(1, $currentPlayer);
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) Transcend($currentPlayer, "MST496");
@@ -131,7 +135,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) Transcend($currentPlayer, "MST501");
       return "";
     case "MST102":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffect($cardID, $mainPlayer);
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) Transcend($currentPlayer, "MST502");
       return "";
     default: return "";
