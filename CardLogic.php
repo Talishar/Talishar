@@ -387,7 +387,7 @@ function ContinueDecisionQueue($lastResult = "")
         else if($cardID == "ENDSTEP") FinishTurnPass();
         else if($cardID == "RESUMETURN") $turn[0] = "M";
         else if($cardID == "LAYER") ProcessLayer($player, $parameter);
-        else if($cardID == "FINALIZECHAINLINK") FinalizeChainLink($params[0], $params[1]);
+        else if($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
         else if($cardID == "ATTACKSTEP") {
           $turn[0] = "B";
           $currentPlayer = $defPlayer;
