@@ -134,6 +134,12 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) Transcend($currentPlayer, "MST502");
       return "";
+    case "MST225":
+      PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
+      $numGold = CountItem("DYN243", $currentPlayer);
+      if($numGold >= 3) PlayAura("HVY241", $currentPlayer, $numGold); //Might
+      WriteLog(CardLink($cardID, $cardID) . " created a Gold token and " . $numGold . "Might tokens");
+      return "";
     default: return "";
   }
 }
