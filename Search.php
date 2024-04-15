@@ -566,7 +566,7 @@ function SearchHighestAttackDefended()
   $highest = 0;
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     if ($combatChain[$i + 1] == $defPlayer) {
-      $av = AttackValue($combatChain[$i]);
+      $av = ModifiedAttackValue($combatChain[$i], $defPlayer, "CC");
       if ($av > $highest) $highest = $av;
     }
   }
