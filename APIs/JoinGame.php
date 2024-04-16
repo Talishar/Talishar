@@ -721,6 +721,7 @@ function IsCardBanned($cardID, $format)
         case "ELE031": case "ELE034": // Lexi, Livewire | Voltaire, Strike Twice
         case "ELE062": case "ELE222": // Briar, Warden of Thorns | Rosetta Thorn
         case "ELE001": case "ELE003": // Oldhim, Grandfather of Eternity | Winter's Wail
+        case "UPR001": case "UPR003": // Dromai, Ash Artist | Storm of Sandikai
         case "UPR102": case "EVR121": // Iyslander, Stormbind | Kraken's Aethervein
         case "DYN009": //Berserk
         case "ELE115": // Crown of Seeds
