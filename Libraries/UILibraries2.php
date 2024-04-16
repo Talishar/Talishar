@@ -76,7 +76,8 @@ function JSONRenderedCard(
   $hauntCounters = NULL,
   $verseCounters = NULL,
   $doomCounters = NULL,
-  $lessonCounter = NULL
+  $lessonCounters = NULL,
+  $rustCounters = NULL
 ) {
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -99,8 +100,10 @@ function JSONRenderedCard(
   if($verseCounters != NULL) $countersMap->verse = $verseCounters;
   $doomCounters = property_exists($countersMap, 'doom') ? $doomCounters->doom : $doomCounters;
   if($doomCounters != NULL) $countersMap->doom = $doomCounters;
-  $lessonCounter = property_exists($countersMap, 'lesson') ? $lessonCounter->lesson : $lessonCounter;
-  if($lessonCounter != NULL) $countersMap->lesson = $lessonCounter;
+  $lessonCounters = property_exists($countersMap, 'lesson') ? $lessonCounters->lesson : $lessonCounters;
+  if($lessonCounters != NULL) $countersMap->lesson = $lessonCounters;
+  $rustCounters = property_exists($countersMap, 'rust') ? $rustCounters->rust : $rustCounters;
+  if($rustCounters != NULL) $countersMap->rust = $rustCounters;
 
   if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
     $class = CardClass($cardNumber);
@@ -130,6 +133,10 @@ function JSONRenderedCard(
       $countersMap->lesson = $countersMap->counters;
       $countersMap->counters = 0;
     } 
+    else if(HasRustCounters($cardNumber)) {
+      $countersMap->rust = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
     else if ($type == "E") {
       if (EquipmentsUsingSteamCounter($cardNumber)) {
         $countersMap->steam = $countersMap->counters;

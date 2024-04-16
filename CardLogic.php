@@ -1932,6 +1932,13 @@ function HasDoomCounters($cardID){
     default: return false;
   }
 }
+
+function HasRustCounters($cardID){
+  switch($cardID) {
+    case "CRU177": return true;
+    default: return false;
+  }
+}
 function HasSteamCounter($array, $index, $player)
 {
   if (CardType($array[$index]) == 'E') return EquipmentsUsingSteamCounter($array[$index]);
