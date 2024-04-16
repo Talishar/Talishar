@@ -259,7 +259,7 @@ function CardTalent($cardID)
 }
 
 //Minimum cost of the card
-function CardCost($cardID, $from="-")
+function CardCost($cardID, $from="HAND")
 {
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
@@ -269,10 +269,10 @@ function CardCost($cardID, $from="-")
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
-      if(GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
+      if(GetResolvedAbilityType($cardID, $from) == "I" && $from != "CC") return 0;
       else return 3;
     case "HVY209":
-      if(GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
+      if(GetResolvedAbilityType($cardID, $from) == "I" && $from != "CC") return 0;
       else return 2;
     case "MST410": case "MST432": case "MST453": case "MST495":
     case "MST496": case "MST497": case "MST498": case "MST499":
