@@ -110,11 +110,11 @@ function JSONRenderedCard(
       $countersMap->steam = $countersMap->counters;
       $countersMap->counters = 0;
     } 
-    else if(HasEnergyCounters("-", "-", $cardNumber)){
+    else if(IsEnergyCounters($cardNumber)){
       $countersMap->energy = $countersMap->counters;
       $countersMap->counters = 0;
     } 
-    else if(HasHauntCounters("-", "-", $cardNumber)){
+    else if(HasHauntCounters($cardNumber)){
       $countersMap->haunt = $countersMap->counters;
       $countersMap->counters = 0;
     } 
