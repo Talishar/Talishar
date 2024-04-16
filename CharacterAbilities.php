@@ -175,10 +175,13 @@ function CharacterStartTurnAbility($index)
       }
       break;
     case "DTD133": case "DTD134":
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to banish for Vynnset");
-      MZMoveCard($mainPlayer, "MYHAND", "MYBANISH,HAND,-");
-      AddDecisionQueue("PASSPARAMETER", $mainPlayer, "ARC112", 1);
-      AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+      $character = GetPlayerCharacter($mainPlayer);
+      if($character[1] < 3) {
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to banish for Vynnset");
+        MZMoveCard($mainPlayer, "MYHAND", "MYBANISH,HAND,-");
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "ARC112", 1);
+        AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+      }
       break;
     case "ROGUE015":
       $hand = &GetHand($mainPlayer);
