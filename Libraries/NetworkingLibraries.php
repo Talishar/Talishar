@@ -1392,12 +1392,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $layerPriority[1] = ShouldHoldPriority(2);
   $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
 
-  if($playingCard) { //Closes the chain, CR 2.5, 7.7.3 link step only allows for attack actions to continue the next chain, else close the combat chain before playing a new card.
-    if(IsStaticType(CardType($cardID), $from, $cardID)) {
-      if(GetResolvedAbilityType($cardID, $from) == "A" && !CanPlayAsInstant($cardID, $index, $from)) ResetCombatChainState();
-    }
-  }
-
   if($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
     if($playingCard) {
@@ -1512,6 +1506,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $abilityType = $playType;
       PayAbilityAdditionalCosts($cardID);
       ActivateAbilityEffects();
+      if(GetResolvedAbilityType($cardID, $from) == "A" && !CanPlayAsInstant($cardID, $index, $from)) 
+      ResetCombatChainState();
     } else {
       if(GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
       else SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) . "," . $cardID);
@@ -2379,6 +2375,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $openedChain = false;
   $chainClosed = false;
   $skipDRResolution = false;
+  $isSpectraTarget = HasSpectra(GetMzCard($currentPlayer, GetAttackTarget()));
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
   if(GoesOnCombatChain($turn[0], $cardID, $from)) {
     if($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains(CardSubType($cardID), "Item")) {
@@ -2398,8 +2395,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         return;
       }
     }
-    if(!$skipDRResolution) $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
-    if($index == 0) {
+    if(!$skipDRResolution && !$isSpectraTarget) $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
+    if($index == 0 || $isSpectraTarget) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
       $combatChainState[$CCS_AttackPlayedFrom] = $from;
       $chainClosed = ProcessAttackTarget();
@@ -2456,7 +2453,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
   }
   //Resolve Effects
-  if(!$isBlock && !$skipDRResolution) {
+  if(!$isBlock && !$skipDRResolution && !$isSpectraTarget) {
     CurrentEffectPlayOrActivateAbility($cardID, $from);
     if($from != "PLAY") {
       CurrentEffectPlayAbility($cardID, $from);
