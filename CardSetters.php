@@ -17,7 +17,7 @@ function BanishCardForPlayer($cardID, $player, $from, $modifier = "-", $banished
 
 function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $from = "", $banishedBy = "")
 {
-  global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer, $combatChain;
+  global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer, $combatChain, $EffectContext;
   $rv = -1;
   if($player == "") $player = $currentPlayer;
   $character = &GetPlayerCharacter($player);
@@ -43,7 +43,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   if($modifier == "INT") return $rv;
   //Do additional effects
   if($cardID == "DTD109" && $from == "HAND" && $modifier != "DTD564" && ($modifier != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish)-2] = "TT";
-  if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
+  if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player))) {
     WriteLog("Gained 1 action point from banishing " . CardLink($cardID, $cardID));
     ++$actionPoints;
   }
@@ -152,7 +152,7 @@ function RemovePitch($player, $index)
 
 function AddArsenal($cardID, $player, $from, $facing, $counters=0)
 {
-  global $mainPlayer;
+  global $mainPlayer, $EffectContext;
   $arsenal = &GetArsenal($player);
   $character = &GetPlayerCharacter($player);
   $cardSubType = CardSubType($cardID);
@@ -165,7 +165,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
   array_push($arsenal, GetUniqueId($cardID, $player)); //Unique ID
   $otherPlayer = $player == 1 ? 2 : 1;
   if($facing == "UP") {
-    if($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
+    if($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player))) {
       WriteLog("Gained 1 action point from Back Alley Breakline");
       if ($player == $mainPlayer) GainActionPoints(1);
     }
