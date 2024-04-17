@@ -1956,6 +1956,15 @@ function HasFrostCounters($cardID){
     default: return false;
   }
 }
+
+function HasBalanceCounters($cardID){
+  switch($cardID) {
+    case "UPR140":
+      return true;
+    default: return false;
+  }
+}
+
 function HasSteamCounter($array, $index, $player)
 {
   if (CardType($array[$index]) == 'E') return EquipmentsUsingSteamCounter($array[$index]);
