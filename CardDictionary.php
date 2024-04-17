@@ -689,6 +689,8 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   if($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
   if(($from == "THEIRBANISH" || $playedFrom == "THEIRBANISH")) return "THEIRDISCARD";
+  $goesWhereEffect = GoesWhereEffectsModifier($cardID, $from, $player);
+  if($goesWhereEffect != -1) return $goesWhereEffect;
   if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
   $subtype = CardSubType($cardID);
   if(DelimStringContains($subtype, "Invocation") || DelimStringContains($subtype, "Ash") || $cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441" || $cardID == "EVO410") return "-";
@@ -752,6 +754,27 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       else return "GY";
     default: return "GY";
   }
+}
+
+function GoesWhereEffectsModifier($cardID, $from, $player) {
+  global $currentTurnEffects;
+  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $effectID = substr($currentTurnEffects[$i], 0, 6);
+    if($currentTurnEffects[$i + 1] == $player) {
+      switch($effectID) {
+        case "EVR181":
+          $effectArr = explode("-", $currentTurnEffects[$i]);
+          if($cardID == $effectArr[1]) {
+            RemoveCurrentTurnEffect($i);
+            return "BOTDECK";
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  return -1;
 }
 
 function CanPlayInstant($phase)

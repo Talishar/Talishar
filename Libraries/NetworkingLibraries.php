@@ -1095,10 +1095,10 @@ function FinalizeChainLink($chainClosed = false)
       if($i == 1 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "GY") $goesWhere = $combatChainState[$CCS_GoesWhereAfterLinkResolves];
       switch($goesWhere) {
         case "BOTDECK":
-          AddBottomDeck($combatChain[$i-1], $mainPlayer, "CC");
+          AddBottomDeck($combatChain[$i-1], $combatChain[$i], "CC");
           break;
         case "HAND":
-          AddPlayerHand($combatChain[$i-1], $mainPlayer, "CC");
+          AddPlayerHand($combatChain[$i-1], $combatChain[$i], "CC");
           break;
         case "SOUL":
           AddSoul($combatChain[$i-1], $combatChain[$i], "CC");
@@ -1106,7 +1106,7 @@ function FinalizeChainLink($chainClosed = false)
         case "GY": //Things that would go to the GY stay on till the end of the chain
           break;
         case "BANISH":
-          BanishCardForPlayer($combatChain[$i - 1], $mainPlayer, "CC", $modifier);
+          BanishCardForPlayer($combatChain[$i - 1], $combatChain[$i], "CC", $modifier);
           break;
         default: break;
       }

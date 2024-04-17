@@ -1746,6 +1746,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         WriteLog($message);
         return $lastResult;
+      case "AMULETOFOBLATION":
+        $params = explode("!", $parameter);
+        $target = GetMZCard($mainPlayer, $params[1]."-".$lastResult);
+        AddCurrentTurnEffect($params[0].$target, GetMZCard($mainPlayer, $params[1]."-".$lastResult+1), (count($params) > 1 ? $params[1] : ""));
+        WriteLog(CardLink("EVR181", "EVR181") . " targetted " . CardLink($target, $target));
+        return $lastResult;
     default:
       return "NOTSTATIC";
   }
