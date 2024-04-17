@@ -1939,6 +1939,15 @@ function HasRustCounters($cardID){
     default: return false;
   }
 }
+
+function HasFlowCounters($cardID){
+  switch($cardID) {
+    case "ELE117": case "ELE146": case "ELE175": 
+    case "UPR138":
+      return true;
+    default: return false;
+  }
+}
 function HasSteamCounter($array, $index, $player)
 {
   if (CardType($array[$index]) == 'E') return EquipmentsUsingSteamCounter($array[$index]);

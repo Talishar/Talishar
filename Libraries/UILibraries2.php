@@ -77,7 +77,8 @@ function JSONRenderedCard(
   $verseCounters = NULL,
   $doomCounters = NULL,
   $lessonCounters = NULL,
-  $rustCounters = NULL
+  $rustCounters = NULL,
+  $flowCounters = NULL
 ) {
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -104,6 +105,9 @@ function JSONRenderedCard(
   if($lessonCounters != NULL) $countersMap->lesson = $lessonCounters;
   $rustCounters = property_exists($countersMap, 'rust') ? $rustCounters->rust : $rustCounters;
   if($rustCounters != NULL) $countersMap->rust = $rustCounters;
+  $flowCounters = property_exists($countersMap, 'flow') ? $flowCounters->flow : $flowCounters;
+  if($flowCounters != NULL) $countersMap->flow = $flowCounters;
+
 
   if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
     $class = CardClass($cardNumber);
@@ -135,6 +139,10 @@ function JSONRenderedCard(
     } 
     else if(HasRustCounters($cardNumber)) {
       $countersMap->rust = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
+    else if(HasFlowCounters($cardNumber)) {
+      $countersMap->flow = $countersMap->counters;
       $countersMap->counters = 0;
     }
     else if ($type == "E") {
