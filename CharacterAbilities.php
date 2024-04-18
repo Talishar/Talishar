@@ -136,7 +136,7 @@ function CharacterStartTurnAbility($index)
       if(GetHealth($mainPlayer) <= 13) {
         $char->status = 0;
         BanishCardForPlayer($char->cardID, $mainPlayer, "EQUIP", "NA");
-        WriteLog(CardLink($char->cardID, $char->cardID) . " got banished for having 13 or less health");
+        WriteLog(CardLink($char->cardID, $char->cardID) . " got banished for having 13 or less life");
         $char->Finished();
       }
       break;

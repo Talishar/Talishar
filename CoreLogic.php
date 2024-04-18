@@ -442,7 +442,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     ItemDamageTakenAbilities($player, $damage);
     CharacterDamageTakenAbilities($player, $damage);
     CharacterDealDamageAbilities($otherPlayer, $damage);
-    if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(CountAura("MON013", $otherPlayer), $player); WriteLog("Lost health from Ode to Wrath"); }
+    if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(CountAura("MON013", $otherPlayer), $player); WriteLog("Lost life from Ode to Wrath"); }
     $classState[$CS_DamageTaken] += $damage;
     if($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
@@ -613,10 +613,10 @@ function GainHealth($amount, $player, $silent=false, $preventable=true)
   }
   if(SearchCurrentTurnEffects("MON229", $player) && $preventable) { WriteLog(CardLink("MON229","MON229") . " prevented you from gaining life"); return; }
   if((SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140") && $preventable) && $health > $otherHealth) {
-    WriteLog("Reaping Blade prevented player " . $player . " from gaining " . $amount . " health");
+    WriteLog("Reaping Blade prevented player " . $player . " from gaining " . $amount . " life");
     return false;
   }
-  if(!$silent) WriteLog("Player " . $player . " gained " . $amount . " health");
+  if(!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
   $health += $amount;
   return true;
 }

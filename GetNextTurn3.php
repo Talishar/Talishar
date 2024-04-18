@@ -334,7 +334,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->opponentHand = $theirHandContents;
 
-  //Their Health
+  //Their life
   $response->opponentHealth = $theirHealth;
   //Their soul count
   $response->opponentSoulCount = count($theirSoul);
@@ -470,7 +470,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   // }
   // echo ("<br>"); //End hand div
 
-  //My Health
+  //My life
   $response->playerHealth = $myHealth;
   //My soul count
   $response->playerSoulCount = count($mySoul);

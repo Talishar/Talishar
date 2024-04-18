@@ -189,7 +189,7 @@
       }
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numBloodDebt, 1);
       AddDecisionQueue("OP", $mainPlayer, "LOSEHEALTH", 1);
-      AddDecisionQueue("WRITELOG", $mainPlayer, "Player $mainPlayer lost $numBloodDebt health from Blood Debt", 1);
+      AddDecisionQueue("WRITELOG", $mainPlayer, "Player $mainPlayer lost $numBloodDebt life from Blood Debt", 1);
     }
   }
 

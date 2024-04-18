@@ -284,7 +284,7 @@ function AllyDamageTakenAbilities($player, $i)
       $allies[$i+2] -= 1;
       $allies[$i+7] -= 1;
       PutPermanentIntoPlay($player, "UPR043");
-      WriteLog(CardLink($allies[$i], $allies[$i]) . " got a -1 health counter and created an ash token");
+      WriteLog(CardLink($allies[$i], $allies[$i]) . " got a -1 life counter and created an ash token");
       break;
     default: break;
   }
@@ -311,7 +311,7 @@ function AllyTakeDamageAbilities($player, $index, $damage, $preventable)
 function AllyBeginEndTurnEffects()
 {
   global $mainPlayer, $defPlayer;
-  //CR 2.0 4.4.3a Reset health for all allies
+  //CR 2.0 4.4.3a Reset life for all allies
   $mainAllies = &GetAllies($mainPlayer);
   for($i = 0; $i < count($mainAllies); $i += AllyPieces()) {
     if($mainAllies[$i+1] != 0) {

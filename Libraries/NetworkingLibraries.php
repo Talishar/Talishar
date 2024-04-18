@@ -567,21 +567,21 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 10005:
-      WriteLog("Player " . $playerID . " manually subtracted 1 health from themself", highlight: true);
+      WriteLog("Player " . $playerID . " manually subtracted 1 life from themself", highlight: true);
       LoseHealth(1, $playerID);
       break;
     case 10006:
-      WriteLog("Player " . $playerID . " manually added 1 health to themself", highlight: true);
+      WriteLog("Player " . $playerID . " manually added 1 life to themself", highlight: true);
       $health = &GetHealth($playerID);
       $health += 1;
       break;
     case 10007:
-      //WriteLog("Player " . $playerID ." manually added 1 health point to themselves.", highlight: true);
-      WriteLog("Subtracting health from your opponent is not allowed");
+      //WriteLog("Player " . $playerID ." manually added 1 life point to themselves.", highlight: true);
+      WriteLog("Subtracting life from your opponent is not allowed");
       //LoseHealth(1, ($playerID == 1 ? 2 : 1));
       break;
     case 10008:
-      WriteLog("Player " . $playerID . " manually added 1 health to their opponent", highlight: true);
+      WriteLog("Player " . $playerID . " manually added 1 life to their opponent", highlight: true);
       $health = &GetHealth($playerID == 1 ? 2 : 1);
       $health += 1;
       break;
@@ -1516,11 +1516,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
       $remorselessCount = CountCurrentTurnEffects("CRU123-DMG", $playerID);
       if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID) == "") {
-        WriteLog("Lost 1 health to Remorseless");
+        WriteLog("Lost 1 life to Remorseless");
         LoseHealth($remorselessCount, $playerID);
       }
       elseif(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A")) {
-        WriteLog("Lost 1 health to Remorseless");
+        WriteLog("Lost 1 life to Remorseless");
         LoseHealth($remorselessCount, $playerID);
       }
       if(IsCardNamed($currentPlayer, $cardID, "Moon Wish")) AddCurrentTurnEffect("ARC185-GA", $currentPlayer);
