@@ -329,7 +329,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // their hand contents
   $theirHandContents = array();
   for ($i = 0; $i < count($theirHand); ++$i) {
-    if($playerID == 3 && IsCasterMode()) array_push($theirHandContents, JSONRenderedCard($theirHand[$i]));
+    if($playerID == 3 && IsCasterMode() || IsGameOver()) array_push($theirHandContents, JSONRenderedCard($theirHand[$i]));
     else array_push($theirHandContents, JSONRenderedCard($TheirCardBack));
   }
   $response->opponentHand = $theirHandContents;
@@ -448,7 +448,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $myHandContents = array();
   for ($i = 0; $i < count($myHand); ++$i) {
     if ($playerID == 3) {
-      if(IsCasterMode()) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
+      if(IsCasterMode() || IsGameOver()) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
       else array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
     } else {
       if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || ($actionType == 16 && $turn[0] != "MULTICHOOSEHAND" && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "");
@@ -597,7 +597,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $theirArse = array();
   if ($theirArsenal != "") {
     for ($i = 0; $i < count($theirArsenal); $i += ArsenalPieces()) {
-      if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && IsCasterMode()) {
+      if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && IsCasterMode() || IsGameOver()) {
         array_push($theirArse, JSONRenderedCard(
           cardNumber: $theirArsenal[$i],
           controller: ($playerID == 1 ? 2 : 1),
@@ -620,7 +620,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $myArse = array();
   if ($myArsenal != "") {
     for ($i = 0; $i < count($myArsenal); $i += ArsenalPieces()) {
-      if ($playerID == 3 && !IsCasterMode() && $myArsenal[$i + 1] != "UP") {
+      if ($playerID == 3 && !IsCasterMode() && $myArsenal[$i + 1] != "UP" && !IsGameOver()) {
         array_push($myArse, JSONRenderedCard(
           cardNumber: $MyCardBack,
           controller: 2,
