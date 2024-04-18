@@ -352,7 +352,7 @@
           if($roll <= 2) {
             LoseHealth(2, $currentPlayer);
             GainActionPoints(1, $currentPlayer);
-            $rv .= " and lost you 2 health.";
+            $rv .= " and lost you 2 life.";
           }
           else if($roll <= 4) {
             GainHealth(2, $currentPlayer);

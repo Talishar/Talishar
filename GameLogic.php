@@ -556,7 +556,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DESTROYTOPCARD":
       $deck = new Deck($player);
       WriteLog("Destroyed " . CardLink($deck->Top(),$deck->Top()) . " on top of Player ". $player ." deck");
-      AddGraveyard($deck->Top(remove:true), $player, "TOP");
+      AddGraveyard($deck->Top(remove:true), $player, "DECK");
       return $lastResult;
     case "SHOWMODES":
       if(is_array($lastResult)) $modes = $lastResult;
