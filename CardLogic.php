@@ -1969,7 +1969,7 @@ function HasSteamCounter($array, $index, $player)
 {
   if (CardType($array[$index]) == 'E') return EquipmentsUsingSteamCounter($array[$index]);
   if (ClassContains($array[$index], "MECHANOLOGIST", $player)) {
-    if($array[$index] == "DYN492a") return false;//TODO: This is a hack, convert nitro mech to use subcard framework
+    if($array[$index] == "DYN492a") return false;
     if (CardType($array[$index]) == 'W') return $array[$index+2] > 0;
     if (SubtypeContains($array[$index], "Item", $player)) return $array[$index+1] > 0;
   }
