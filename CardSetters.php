@@ -166,7 +166,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
   $otherPlayer = $player == 1 ? 2 : 1;
   if($facing == "UP") {
     if($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player))) {
-      WriteLog("Gained 1 action point from Back Alley Breakline");
+      WriteLog("Gained 1 action point from " . CardLink($cardID, $cardID));
       if ($player == $mainPlayer) GainActionPoints(1);
     }
     if($from == "DECK" && CardSubType($cardID) == "Arrow" && SearchCharacterActive($player, "OUT097"))
@@ -486,9 +486,12 @@ function AddGraveyard($cardID, $player, $from, $effectController="")
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
-  global $myStateBuiltFor, $CS_CardsEnteredGY;
-
-    //Code for EVO400+ going to GY, then Scrapped and it makes them unplayable.
+  global $myStateBuiltFor, $CS_CardsEnteredGY, $EffectContext;
+  if($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player))) {
+    WriteLog("Gained 1 action point from " . CardLink($cardID, $cardID));
+    if ($player == $mainPlayer) GainActionPoints(1);
+  }
+  //Code for EVO400+ going to GY, then Scrapped and it makes them unplayable.
   if ($from == "CHAR") {
   $set = substr($cardID, 0, 3);
   $number = intval(substr($cardID, 3, 3));
