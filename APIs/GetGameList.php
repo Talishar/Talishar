@@ -103,7 +103,7 @@ if ($handle = opendir($path)) {
         $openGame = new stdClass();
         if($format != "compcc" && $format != "compblitz") $openGame->p1Hero = GetCachePiece($gameName, 7);
         $formatName = "";
-        if($format == "commoner") $formatName = "Commoner ";
+        if($format == "commoner") $formatName = "Commoner";
         else if($format == "livinglegendscc") $formatName = "Open Format";
         else if($format == "clash") $formatName = "Clash";
         else if($format == "llcc") $formatName = "Living Legend CC";
