@@ -85,7 +85,7 @@ if($deckCount > 40 && ($format == "blitz" || $format == "compblitz" || $format =
 }
 
 //Remove things in character from inventory
-$inventory = isset($submission->inventory) ? [] : $submission->inventory;
+$inventory = isset($submission->inventory) ? $submission->inventory : [];
 $charArr = explode(" ", $character);
 for($i=0; $i<count($charArr); ++$i) {
   for($j=0; $j<count($inventory); ++$j) {
