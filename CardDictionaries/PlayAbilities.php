@@ -594,7 +594,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       case "TCC065":
         GainHealth(1, $otherPlayer);
         return "";
-      case "TCC066": case "TCC067":
+      case "TCC066": 
+        PlayAura("HVY242", $otherPlayer);
+        return "";
+      case "TCC067":
         PlayAura("HVY241", $otherPlayer);
         return "";
       case "TCC068":
