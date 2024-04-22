@@ -1374,6 +1374,7 @@ function DoesEffectGrantDominate($cardID)
     case "DTD010": case "DTD410":
       return true;
     case "ELE154": case "ELE155": case "ELE156": return $combatChainState[$CCS_AttackFused] == 1;
+    case "MST233": return true;
     default: return false;
   }
 }

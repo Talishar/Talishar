@@ -1,5 +1,20 @@
 <?php
 
+function MSTHitEffect($cardID)
+{
+  global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt;
+  switch ($cardID){
+    case "MST233":
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "MULTITRAPSBANISH");
+      AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "3-", 1);
+      AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-3", 1);
+      AddDecisionQueue("MULTICHOOSEDISCARD", $mainPlayer, "<-", 1);
+      AddDecisionQueue("SPECIFICCARD", $mainPlayer, "MURKYWATER", 1);
+      break;
+    default:
+      break;
+  }
+}
 function AKOHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt;

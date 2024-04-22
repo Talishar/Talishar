@@ -169,6 +169,11 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST232":
       AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       return "";
+    case "MST233":
+      if(HasAimCounter()) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      return "";
     default: return "";
   }
 }
