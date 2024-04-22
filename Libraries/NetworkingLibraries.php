@@ -1025,10 +1025,11 @@ function ResolveCombatDamage($damageDone)
 {
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $currentTurnEffects;
   global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt;
-  global $CS_HitsWithSword;
+  global $CS_HitsWithSword, $CCS_CurrentAttackGainedGoAgain;
   $wasHit = $damageDone > 0;
   PrependLayer("FINALIZECHAINLINK", $mainPlayer, "0");
   WriteLog("Combat resolved with " . ($wasHit ? "a hit for $damageDone damage" : "no hit"));
+  if(DoesAttackHaveGoAgain()) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
   if(!DelimStringContains(CardSubtype($combatChain[0]), "Ally")) SetClassState($mainPlayer, $CS_DamageDealt, GetClassState($mainPlayer, $CS_DamageDealt) + $damageDone);
   if($wasHit) {
     LogPlayCardStats($mainPlayer, $combatChain[0], "CC", "HIT");
@@ -1155,13 +1156,13 @@ function FinalizeChainLink($chainClosed = false)
   ProcessDecisionQueue();
 }
 
-function CleanUpCombatEffects($weaponSwap = false)
+function CleanUpCombatEffects($weaponSwap = false, $skip=false)
 {
   global $currentTurnEffects;
   $effectsToRemove = [];
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $effectArr = explode(",", $currentTurnEffects[$i]);
-    if(IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0])) {
+    if(($skip || IsCombatEffectActive($effectArr[0])) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0])) {
       if($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
       --$currentTurnEffects[$i+3];
       if ($currentTurnEffects[$i+3] == 0) array_push($effectsToRemove, $i);
@@ -2336,6 +2337,10 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
+    case "MST232": 
+      MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK");
+      MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK");
+      break;
     case "MST226":
       $numGold = CountItem("DYN243", $currentPlayer);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
@@ -2396,6 +2401,20 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
     }
     if(!$skipDRResolution && !$isSpectraTarget) $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
+    if($isSpectraTarget) {
+      CleanUpCombatEffects(false, $isSpectraTarget);
+      $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts:$additionalCosts);
+      switch($goesWhere) {
+        case "BOTDECK": AddBottomDeck($cardID, $currentPlayer, $from); break;
+        case "HAND": AddPlayerHand($cardID, $currentPlayer, $from); break;
+        case "GY": AddGraveyard($cardID, $currentPlayer, $from); break;
+        case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;
+        case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, $from, "NA"); break;
+        case "THEIRDISCARD": AddGraveyard($cardID, $otherPlayer, $from); break;
+        case "THEIRBOTDECK": AddBottomDeck($cardID, $otherPlayer, $from); break;
+        default: break;
+      }
+    }
     if($index == 0 || $isSpectraTarget) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
       $combatChainState[$CCS_AttackPlayedFrom] = $from;

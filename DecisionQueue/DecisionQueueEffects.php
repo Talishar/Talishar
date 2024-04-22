@@ -646,6 +646,18 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         AddDecisionQueue("SPECIFICCARD", $player, "RAISEANARMY", 1);
       }
       return "";
+    case "MURKYWATER":
+      $discard = GetDiscard($player);
+      for ($i=0; $i<3; ++$i) { 
+        BanishCardForPlayer($discard[$lastResult[$i]], $player, "GY", "FACEDOWN");
+        RemoveGraveyard($player, $lastResult[$i]);
+      }
+      $banish = GetBanish($player);
+      $rand = GetRandom(count($banish)-3*BanishPieces(), count($banish)-BanishPieces());
+      $cardID = explode(";", $banish[$rand]);
+      AddArsenal($cardID[1], $player, "BANISH", "DOWN");
+      RemoveBanish($player, SearchBanishForCard($player, $cardID[1]));
+      return $lastResult;
     default: return "";
   }
 }

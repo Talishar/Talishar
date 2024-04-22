@@ -44,6 +44,7 @@ function MSTAbilityType($cardID, $index=-1, $from="-")
     case "MST001": case "MST002": return "I"; 
     case "MST025": case "MST026": return "I"; 
     case "MST046": case "MST047": return "I"; 
+    case "MST232": return "I";
     default: return "";
   }
 }

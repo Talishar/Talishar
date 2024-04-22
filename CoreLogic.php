@@ -1304,13 +1304,14 @@ function DoesAttackHaveGoAgain()
     case "CRU057": case "CRU058": case "CRU059": return ComboActive($attackID);
     case "CRU060": case "CRU061": case "CRU062": return ComboActive($attackID);
     case "CRU151": case "CRU152": case "CRU153": return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
+    case "MON036": case "MON037": case "MON038": return GetClassState($mainPlayer, $CS_NumCharged) > 0;
     case "MON054": case "MON055": case "MON056": return GetClassState($mainPlayer, $CS_NumCharged) > 0;
     case "MON180": case "MON181": case "MON182": return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
     case "MON199": case "MON220": return (count(GetSoul($defPlayer)) > 0 && !IsAllyAttackTarget());
     case "MON223": case "MON224": case "MON225": return NumCardsNonEquipBlocking() < 2;
     case "MON248": case "MON249": case "MON250": return SearchHighestAttackDefended() < CachedTotalAttack();
     case "MON293": case "MON294": case "MON295": return SearchPitchHighestAttack($mainPitch) > AttackValue($attackID);
-    case "ELE216": case "ELE217": case "ELE218": return (CachedTotalAttack() > AttackValue($attackID) || SearchCurrentTurnEffects($attackID, $mainPlayer, true));
+    case "ELE216": case "ELE217": case "ELE218": return CachedTotalAttack() > AttackValue($attackID);
     case "EVR105": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "EVR138": return FractalReplicationStats("GoAgain");
     case "UPR046": return NumDraconicChainLinks() >= 2;
@@ -1902,7 +1903,7 @@ function IsCardNamed($player, $cardID, $name)
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     $effectArr = explode("-", $currentTurnEffects[$i]);
-    $name = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"));
+    $name = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"), $player);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with OUT052
     if($name != "" && $currentTurnEffects[$i+1] == $player) return true;
   }
@@ -1918,7 +1919,7 @@ function GetCurrentAttackNames()
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     $effectArr = explode("-", $currentTurnEffects[$i]);
-    $name = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"));
+    $name = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"), $mainPlayer);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with OUT052
     if($name != "" && $currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) array_push($names, $name);
   }

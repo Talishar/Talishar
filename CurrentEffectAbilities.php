@@ -1258,9 +1258,10 @@ function ActivateAbilityEffects()
   $currentTurnEffects = array_values($currentTurnEffects);
 }
 
-function CurrentEffectNameModifier($effectID, $effectParameter)
+function CurrentEffectNameModifier($effectID, $effectParameter, $player)
 {
   $name = "";
+  if(SearchCurrentTurnEffects("OUT183", $player)) return $name;
   switch($effectID)
   {
     case "OUT049":

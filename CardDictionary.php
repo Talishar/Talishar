@@ -1178,6 +1178,7 @@ function HasBattleworn($cardID)
     case "EVO410b": case "EVO438": case "EVO439": case "EVO440": case "EVO441": case "EVO235": return true;
     case "EVO442": case "EVO443": case "EVO444": case "EVO445": return true;
     case "HVY010": case "HVY099": return true;
+    case "MST232": return true;
     default: return false;
   }
 }
@@ -1373,6 +1374,7 @@ function DoesEffectGrantDominate($cardID)
     case "DTD010": case "DTD410":
       return true;
     case "ELE154": case "ELE155": case "ELE156": return $combatChainState[$CCS_AttackFused] == 1;
+    case "MST233": return true;
     default: return false;
   }
 }
