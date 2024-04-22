@@ -1304,6 +1304,7 @@ function DoesAttackHaveGoAgain()
     case "CRU057": case "CRU058": case "CRU059": return ComboActive($attackID);
     case "CRU060": case "CRU061": case "CRU062": return ComboActive($attackID);
     case "CRU151": case "CRU152": case "CRU153": return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
+    case "MON036": case "MON037": case "MON038": return GetClassState($mainPlayer, $CS_NumCharged) > 0;
     case "MON054": case "MON055": case "MON056": return GetClassState($mainPlayer, $CS_NumCharged) > 0;
     case "MON180": case "MON181": case "MON182": return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
     case "MON199": case "MON220": return (count(GetSoul($defPlayer)) > 0 && !IsAllyAttackTarget());
