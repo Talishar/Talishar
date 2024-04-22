@@ -925,13 +925,13 @@ function NuuStaticAbility($banishedBy)
       }
       if(CardType($combatChain[$defendingCards[$i]]) == "A" || CardType($combatChain[$defendingCards[$i]]) == "AA") {
         BanishCardForPlayer($combatChain[$defendingCards[$i]], $defPlayer, "CC", "-", $banishedBy);
-        $index = GetCombatChainIndex($combatChain[$defendingCards[$i]], $defPlayer);
+        $index = GetCombatChainIndex($combatChain[$defendingCards[$i]], $defPlayer);        
         if($CombatChain->Remove($index) == "") {
           for($j = 0; $j < count($chainLinks); ++$j) {
             for($k = 0; $k < count($chainLinks[$j]); $k += ChainLinksPieces()) {
               if($chainLinks[$j][$k] == $combatChain[$defendingCards[$i]]) $chainLinks[$j][$k+2] = 0;
             }
-          }
+          }            
         }
       }
     }
@@ -1457,7 +1457,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
 
       if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       else AddDecisionQueue("GETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
-      AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index . "-" . $uniqueID);
+      AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index);
       $decisionQueue = array_merge($decisionQueue, $dqCopy);
       ProcessDecisionQueue();
       //MISSING CR 5.1.3d Decide if action that can be played as instant will be
