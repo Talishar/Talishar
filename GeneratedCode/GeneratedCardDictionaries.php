@@ -103,6 +103,24 @@ default: return "AA";
 }
 default: return "AA";
 }
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "2":
+return "E";
+default: return "AA";
+}
+case "2":
+switch($cardID[5]) {
+case "5":
+return "A";
+case "6":
+return "A";
+default: return "AA";
+}
+default: return "AA";
+}
 case "1":
 switch($cardID[4]) {
 case "0":
@@ -5977,6 +5995,16 @@ default: return 0;
 }
 default: return 0;
 }
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "3":
+return 6;
+default: return 0;
+}
+default: return 0;
+}
 default: return 0;
 }
 default: return 0;
@@ -9461,6 +9489,16 @@ case "9":
 switch($cardID[5]) {
 case "9":
 return -1;
+default: return 3;
+}
+default: return 3;
+}
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "2":
+return 1;
 default: return 3;
 }
 default: return 3;
@@ -14423,6 +14461,26 @@ case "9":
 switch($cardID[5]) {
 case "9":
 return "Inner Chi";
+default: return "";
+}
+default: return "";
+}
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "2":
+return "Longdraw Half-glove";
+case "3":
+return "Murky Water";
+default: return "";
+}
+case "2":
+switch($cardID[5]) {
+case "5":
+return "Visit Goldmane Estate";
+case "6":
+return "Visit the Golden Anvil";
 default: return "";
 }
 default: return "";
@@ -22332,6 +22390,24 @@ default: return 1;
 case "9":
 switch($cardID[5]) {
 case "9":
+return 3;
+default: return 1;
+}
+default: return 1;
+}
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "2":
+return 0;
+default: return 1;
+}
+case "2":
+switch($cardID[5]) {
+case "5":
+return 3;
+case "6":
 return 3;
 default: return 1;
 }
@@ -31425,6 +31501,24 @@ default: return 0;
 }
 default: return 0;
 }
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "2":
+return -1;
+case "3":
+return 2;
+default: return 0;
+}
+case "2":
+switch($cardID[5]) {
+case "5":
+return 1;
+default: return 0;
+}
+default: return 0;
+}
 default: return 0;
 }
 default: return 0;
@@ -34623,6 +34717,18 @@ case "9":
 switch($cardID[5]) {
 case "9":
 return "Mystic,Chi";
+default: return "";
+}
+default: return "";
+}
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "2":
+return "Arms";
+case "3":
+return "Arrow";
 default: return "";
 }
 default: return "";
@@ -37978,6 +38084,26 @@ case "9":
 switch($cardID[5]) {
 case "9":
 return "V";
+default: return "C";
+}
+default: return "C";
+}
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "2":
+return "M";
+case "3":
+return "M";
+default: return "C";
+}
+case "2":
+switch($cardID[5]) {
+case "5":
+return "M";
+case "6":
+return "M";
 default: return "C";
 }
 default: return "C";
@@ -46396,6 +46522,26 @@ default: return "NONE";
 }
 default: return "NONE";
 }
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "2":
+return "RANGER";
+case "3":
+return "RANGER";
+default: return "NONE";
+}
+case "2":
+switch($cardID[5]) {
+case "5":
+return "GUARDIAN";
+case "6":
+return "WARRIOR";
+default: return "NONE";
+}
+default: return "NONE";
+}
 default: return "NONE";
 }
 default: return "NONE";
@@ -53304,6 +53450,7 @@ case "ARC034": return "false";
 case "DYN165": return "false";
 case "DYN166": return "false";
 case "DYN167": return "false";
+case "MST232": return "false";
 case "OUT195": return "false";
 case "OUT196": return "false";
 case "OUT197": return "false";
@@ -53422,6 +53569,7 @@ case "ELE021": return "false";
 case "OUT121": return "false";
 case "OUT122": return "false";
 case "OUT123": return "false";
+case "MST233": return "true";
 case "RVD018": return "false";
 case "MON191": return "false";
 case "DTD193": return "false";
@@ -54707,8 +54855,10 @@ case "OUT170": return "false";
 case "ARC076": return "false";
 case "ARC075": return "false";
 case "CRU138": return "false";
+case "MST225": return "true";
 case "DVR022": return "false";
 case "OUT055": return "true";
+case "MST226": return "true";
 case "DYN085": return "false";
 case "DYN086": return "false";
 case "DYN087": return "false";
