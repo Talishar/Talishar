@@ -45,9 +45,6 @@
       case "ELE215":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "ELE216": case "ELE217": case "ELE218":
-        if(HasIncreasedAttack()) AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
       case "ELE219": case "ELE220": case "ELE221":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Reload();

@@ -1310,7 +1310,7 @@ function DoesAttackHaveGoAgain()
     case "MON223": case "MON224": case "MON225": return NumCardsNonEquipBlocking() < 2;
     case "MON248": case "MON249": case "MON250": return SearchHighestAttackDefended() < CachedTotalAttack();
     case "MON293": case "MON294": case "MON295": return SearchPitchHighestAttack($mainPitch) > AttackValue($attackID);
-    case "ELE216": case "ELE217": case "ELE218": return (CachedTotalAttack() > AttackValue($attackID) || SearchCurrentTurnEffects($attackID, $mainPlayer, true));
+    case "ELE216": case "ELE217": case "ELE218": return CachedTotalAttack() > AttackValue($attackID);
     case "EVR105": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "EVR138": return FractalReplicationStats("GoAgain");
     case "UPR046": return NumDraconicChainLinks() >= 2;
