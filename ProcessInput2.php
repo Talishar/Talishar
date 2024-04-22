@@ -36,7 +36,7 @@ if($mode == 100015)
 }
 
 //We should also have some information on the type of command
-$buttonInput = isset($_GET["buttonInput"]) ? $_GET["buttonInput"] : ""; //The player that is the target of the command - e.g. for changing health total
+$buttonInput = isset($_GET["buttonInput"]) ? $_GET["buttonInput"] : ""; //The player that is the target of the command - e.g. for changing life total
 $cardID = isset($_GET["cardID"]) ? $_GET["cardID"] : "";
 $chkCount = isset($_GET["chkCount"]) ? $_GET["chkCount"] : 0;
 $chkInput = [];

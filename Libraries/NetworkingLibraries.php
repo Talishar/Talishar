@@ -567,21 +567,21 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 10005:
-      WriteLog("Player " . $playerID . " manually subtracted 1 health from themself", highlight: true);
+      WriteLog("Player " . $playerID . " manually subtracted 1 life from themself", highlight: true);
       LoseHealth(1, $playerID);
       break;
     case 10006:
-      WriteLog("Player " . $playerID . " manually added 1 health to themself", highlight: true);
+      WriteLog("Player " . $playerID . " manually added 1 life to themself", highlight: true);
       $health = &GetHealth($playerID);
       $health += 1;
       break;
     case 10007:
-      //WriteLog("Player " . $playerID ." manually added 1 health point to themselves.", highlight: true);
-      WriteLog("Subtracting health from your opponent is not allowed");
+      //WriteLog("Player " . $playerID ." manually added 1 life point to themselves.", highlight: true);
+      WriteLog("Subtracting life from your opponent is not allowed");
       //LoseHealth(1, ($playerID == 1 ? 2 : 1));
       break;
     case 10008:
-      WriteLog("Player " . $playerID . " manually added 1 health to their opponent", highlight: true);
+      WriteLog("Player " . $playerID . " manually added 1 life to their opponent", highlight: true);
       $health = &GetHealth($playerID == 1 ? 2 : 1);
       $health += 1;
       break;
@@ -1095,10 +1095,10 @@ function FinalizeChainLink($chainClosed = false)
       if($i == 1 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "GY") $goesWhere = $combatChainState[$CCS_GoesWhereAfterLinkResolves];
       switch($goesWhere) {
         case "BOTDECK":
-          AddBottomDeck($combatChain[$i-1], $mainPlayer, "CC");
+          AddBottomDeck($combatChain[$i-1], $combatChain[$i], "CC");
           break;
         case "HAND":
-          AddPlayerHand($combatChain[$i-1], $mainPlayer, "CC");
+          AddPlayerHand($combatChain[$i-1], $combatChain[$i], "CC");
           break;
         case "SOUL":
           AddSoul($combatChain[$i-1], $combatChain[$i], "CC");
@@ -1106,7 +1106,7 @@ function FinalizeChainLink($chainClosed = false)
         case "GY": //Things that would go to the GY stay on till the end of the chain
           break;
         case "BANISH":
-          BanishCardForPlayer($combatChain[$i - 1], $mainPlayer, "CC", $modifier);
+          BanishCardForPlayer($combatChain[$i - 1], $combatChain[$i], "CC", $modifier);
           break;
         default: break;
       }
@@ -1505,18 +1505,22 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
       PayAbilityAdditionalCosts($cardID);
-      ResetCombatChainState();
       ActivateAbilityEffects();
+      if(GetResolvedAbilityType($cardID, $from) == "A" && !CanPlayAsInstant($cardID, $index, $from)) 
+      ResetCombatChainState();
     } else {
       if(GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
       else SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) . "," . $cardID);
+      if($cardType == "A" && !$canPlayAsInstant) {
+        ResetCombatChainState();
+      }
       $remorselessCount = CountCurrentTurnEffects("CRU123-DMG", $playerID);
       if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID) == "") {
-        WriteLog("Lost 1 health to Remorseless");
+        WriteLog("Lost 1 life to Remorseless");
         LoseHealth($remorselessCount, $playerID);
       }
       elseif(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A")) {
-        WriteLog("Lost 1 health to Remorseless");
+        WriteLog("Lost 1 life to Remorseless");
         LoseHealth($remorselessCount, $playerID);
       }
       if(IsCardNamed($currentPlayer, $cardID, "Moon Wish")) AddCurrentTurnEffect("ARC185-GA", $currentPlayer);
@@ -2290,7 +2294,6 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, 0, 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "RAISEANARMY", 1);
-
       /*
       if(SearchCharacterAlive($currentPlayer, "HVY051")) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=DYN243&MYCHAR:cardID=HVY051", 1);
@@ -2333,6 +2336,14 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
+    case "MST226":
+      $numGold = CountItem("DYN243", $currentPlayer);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numGold+1));
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, 0, 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "GOLDENANVIL", 1);
+      break;
     default:
       break;
   }
@@ -2364,9 +2375,9 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $openedChain = false;
   $chainClosed = false;
   $skipDRResolution = false;
-  $chainClosed = ProcessAttackTarget();
+  $isSpectraTarget = HasSpectra(GetMzCard($currentPlayer, GetAttackTarget()));
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
-  if(!$chainClosed && GoesOnCombatChain($turn[0], $cardID, $from)) {
+  if(GoesOnCombatChain($turn[0], $cardID, $from)) {
     if($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains(CardSubType($cardID), "Item")) {
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play.");
       return;
@@ -2384,10 +2395,11 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         return;
       }
     }
-    if(!$skipDRResolution) $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
-    if($index == 0) {
+    if(!$skipDRResolution && !$isSpectraTarget) $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
+    if($index == 0 || $isSpectraTarget) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
       $combatChainState[$CCS_AttackPlayedFrom] = $from;
+      $chainClosed = ProcessAttackTarget();
       $baseAttackSet = CurrentEffectBaseAttackSet();
       $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
       if(EffectAttackRestricted($cardID, $definedCardType, true)) return;
@@ -2402,7 +2414,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $cardType = $definedCardType;
       if(GetResolvedAbilityType($cardID, $from) != "") $cardType = GetResolvedAbilityType($cardID, $from);
       if(!$chainClosed && $cardType == "AA") AddLayer("ATTACKSTEP", $mainPlayer, "-"); //I haven't added this for weapon. I don't think it's needed yet.
-      // If you not attacked an aura with Spectra
+      // If you attacked an aura with Spectra
       if(!$chainClosed && (DelimStringContains($definedCardType, "AA") || DelimStringContains($definedCardType, "W") || DelimStringContains($definedCardSubType, "Ally"))) {
         IncrementClassState($currentPlayer, $CS_NumAttacks);
         ArsenalAttackAbilities();

@@ -135,12 +135,12 @@ function ArsenalPieces()
 
 //0 - Card ID
 //1 - Status: 2 = ready
-//2 - Health
+//2 - Life
 //3 - Frozen - 0 = no, 1 = yes
 //4 - Subcards , delimited
 //5 - Unique ID
 //6 - Endurance Counters
-//7 - Health Counters
+//7 - Life Counters
 //8 - Ability/effect Uses
 //9 - Attack Counters
 function AllyPieces()
@@ -432,7 +432,7 @@ function ResetCombatChainState()
     }
   }
   UnsetCombatChainBanish();
-  CombatChainClosedEffects();
+  CombatChainClosedTriggers();
   CombatChainClosedCharacterEffects();
   CombatChainClosedMainCharacterEffects();
   RemoveEffectsOnChainClose();

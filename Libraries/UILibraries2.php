@@ -76,7 +76,11 @@ function JSONRenderedCard(
   $hauntCounters = NULL,
   $verseCounters = NULL,
   $doomCounters = NULL,
-  $lessonCounter = NULL
+  $lessonCounters = NULL,
+  $rustCounters = NULL,
+  $flowCounters = NULL,
+  $frostCounters = NULL,
+  $balanceCounters = NULL
 ) {
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -99,8 +103,16 @@ function JSONRenderedCard(
   if($verseCounters != NULL) $countersMap->verse = $verseCounters;
   $doomCounters = property_exists($countersMap, 'doom') ? $doomCounters->doom : $doomCounters;
   if($doomCounters != NULL) $countersMap->doom = $doomCounters;
-  $lessonCounter = property_exists($countersMap, 'lesson') ? $lessonCounter->lesson : $lessonCounter;
-  if($lessonCounter != NULL) $countersMap->lesson = $lessonCounter;
+  $lessonCounters = property_exists($countersMap, 'lesson') ? $lessonCounters->lesson : $lessonCounters;
+  if($lessonCounters != NULL) $countersMap->lesson = $lessonCounters;
+  $rustCounters = property_exists($countersMap, 'rust') ? $rustCounters->rust : $rustCounters;
+  if($rustCounters != NULL) $countersMap->rust = $rustCounters;
+  $flowCounters = property_exists($countersMap, 'flow') ? $flowCounters->flow : $flowCounters;
+  if($flowCounters != NULL) $countersMap->flow = $flowCounters;
+  $frostCounters = property_exists($countersMap, 'frost') ? $frostCounters->frost : $frostCounters;
+  if($frostCounters != NULL) $countersMap->frost = $frostCounters;
+  $balanceCounters = property_exists($countersMap, 'balance') ? $balanceCounters->balance : $balanceCounters;
+  if($balanceCounters != NULL) $countersMap->balance = $balanceCounters;
 
   if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
     $class = CardClass($cardNumber);
@@ -110,11 +122,11 @@ function JSONRenderedCard(
       $countersMap->steam = $countersMap->counters;
       $countersMap->counters = 0;
     } 
-    else if(HasEnergyCounters("-", "-", $cardNumber)){
+    else if(IsEnergyCounters($cardNumber)){
       $countersMap->energy = $countersMap->counters;
       $countersMap->counters = 0;
     } 
-    else if(HasHauntCounters("-", "-", $cardNumber)){
+    else if(HasHauntCounters($cardNumber)){
       $countersMap->haunt = $countersMap->counters;
       $countersMap->counters = 0;
     } 
@@ -130,6 +142,22 @@ function JSONRenderedCard(
       $countersMap->lesson = $countersMap->counters;
       $countersMap->counters = 0;
     } 
+    else if(HasRustCounters($cardNumber)) {
+      $countersMap->rust = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
+    else if(HasFlowCounters($cardNumber)) {
+      $countersMap->flow = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
+    else if(HasFrostCounters($cardNumber)) {
+      $countersMap->frost = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
+    else if(HasBalanceCounters($cardNumber)) {
+      $countersMap->balance = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
     else if ($type == "E") {
       if (EquipmentsUsingSteamCounter($cardNumber)) {
         $countersMap->steam = $countersMap->counters;
@@ -310,7 +338,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
     <img style='position:absolute; top: -2px; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1; user-select: none;' src='./Images/Defense.png'></div>";
   }
 
-  //Health Counters style
+  //Life Counters style
   if ($lifeCounters != 0) {
     if ($defCounters == 0 && $atkCounters == 0) {
       $left = "0px";
@@ -872,7 +900,7 @@ function MainMenuUI()
 function PreviousTurnSelectionUI()
 {
   global $playerID, $gameName;
-  $rv = "<h3>Revert to Start of Previous Turn</h3>"; // TODO: Revert Player 1 Turn 1 to the start of the game.
+  $rv = "<h3>Revert to Start of Previous Turn</h3>";
   $rv .= CreateButton($playerID, "This Turn", 10003, "beginTurnGamestate.txt", "20px") . "<BR>";
   $lastTurnFN = "lastTurnGamestate.txt";
   if (file_exists("./Games/" . $gameName . "/" . $lastTurnFN)) $rv .= CreateButton($playerID, "Last Turn", 10003, $lastTurnFN, "20px") . "<BR>";

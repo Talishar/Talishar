@@ -466,7 +466,11 @@
         if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer, $from);
         return "";
       case "EVR181":
-        if($from == "PLAY") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+        if($from == "PLAY") {
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "CCAA");
+          AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
+          AddDecisionQueue("AMULETOFOBLATION", $currentPlayer, $cardID."-!CC", 1);
+        }
         return "";
       case "EVR182":
         if($from == "PLAY") PlayerOpt($currentPlayer, 2);
@@ -575,7 +579,7 @@
           }
           LoseHealth($numDiscarded, $defPlayer);
           RevealCards($cards, $defPlayer);//CanReveal checked earlier
-          WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much health.");
+          WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much life.");
           $hand = array_values($hand);
         }
         break;

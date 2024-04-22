@@ -201,7 +201,7 @@ if ($decklink != "") {
   $weapon2 = "";
   $weaponSideboard = "";
   $totalCards = 0;
-  $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY"];
+  $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY", "MST", "AKO"];
   if (is_countable($cards)) {
     for ($i = 0; $i < count($cards); ++$i) {
       $count = $cards[$i]->{'total'};
@@ -378,14 +378,14 @@ if ($decklink != "") {
     exit;
   }
 
-  if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz")) {
-    $response->error = "⚠️ Adult heroes are not legal in Blitz: Adult - " . CardName($character);
+  if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz" || $format == "clash")) {
+    $response->error = "⚠️ Adult heroes are not legal in this format: " . CardName($character);
     echo (json_encode($response));
     exit;
   }
 
   if ($bannedCard != "") {
-    $response->error = "⚠️ The following cards are not legal in the " . $format . " format: " . $bannedCard;
+    $response->error = "⚠️ The following cards are not legal in this format: " . $bannedCard;
     echo (json_encode($response));
     exit;
   }
@@ -396,7 +396,7 @@ if ($decklink != "") {
     exit;
   }
 
-  if (($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "compblitz" || $format == "commoner")) {
+  if (($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "clash")) {
     $response->error = "⚠️ The deck link you have entered does not have 40 cards (" . $totalCards . ") and is likely for CC. Please double-check your decklist link and try again.";
     echo (json_encode($response));
     exit;
@@ -666,10 +666,21 @@ function GetAltCardID($cardID)
   return $cardID;
 }
 
+function isClashLegal($cardID) {
+  switch (CardType($cardID)) {
+    case "C": case "M": case "W":
+      return false;
+    default: break;
+  }
+  if(IsSpecialization($cardID)) return false;
+  if(Rarity($cardID) == "C" || Rarity($cardID) == "T" || Rarity($cardID) == "R") return false;
+  return true;
+}
 function IsCardBanned($cardID, $format)
 {
   $set = substr($cardID, 0, 3);
   if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R")) return true;
+  if ($format == "clash") return isClashLegal($cardID);
   //Ban spoiler cards in non-open-format
   if($format != "livinglegendscc" && ($set == "MST")) return true; // Launch 31st May
   if($format != "livinglegendscc" && ($set == "AKO")) return true; // Launch 3rd May
@@ -721,6 +732,7 @@ function IsCardBanned($cardID, $format)
         case "ELE031": case "ELE034": // Lexi, Livewire | Voltaire, Strike Twice
         case "ELE062": case "ELE222": // Briar, Warden of Thorns | Rosetta Thorn
         case "ELE001": case "ELE003": // Oldhim, Grandfather of Eternity | Winter's Wail
+        case "UPR001": case "UPR003": // Dromai, Ash Artist | Storm of Sandikai
         case "UPR102": case "EVR121": // Iyslander, Stormbind | Kraken's Aethervein
         case "DYN009": //Berserk
         case "ELE115": // Crown of Seeds

@@ -800,7 +800,7 @@ function IsFusionActive()
   return intval($combatChainState[$CCS_AttackFused]) > 0;
 }
 
-function CombatChainClosedEffects()
+function CombatChainClosedTriggers()
 {
   global $chainLinks, $mainPlayer, $defPlayer, $CS_LifeLost;
   for($i=0; $i<count($chainLinks); ++$i)
@@ -817,29 +817,10 @@ function CombatChainClosedEffects()
             DestroyCharacter($mainPlayer, $index, true);
           }
           break;
-        case "DTD137":
-          if(GetClassState($mainPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($mainPlayer, "MYHAND", "ARS,-");
-          if(GetClassState($defPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($defPlayer, "MYHAND", "ARS,-");
-          break;
-        case "DTD138":
-          if(GetClassState($mainPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($mainPlayer, "MYARS", "ARS,-");
-          if(GetClassState($defPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($defPlayer, "MYARS", "ARS,-");
-          break;
-        case "DTD139":
-          if(GetClassState($mainPlayer, $CS_LifeLost) > 0) { $deck = new Deck($mainPlayer); $deck->BanishTop(); }
-          if(GetClassState($defPlayer, $CS_LifeLost) > 0) { $deck = new Deck($defPlayer); $deck->BanishTop(); }
-          break;
+        case "DTD137": case "DTD138": case "DTD139":
         case "DTD146": case "DTD147": case "DTD148":
-          $numRunechant = 0;
-          if(GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numRunechant;
-          if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numRunechant;
-          if($numRunechant > 0) PlayAura("ARC112", $mainPlayer, $numRunechant);
-          break;
         case "DTD143": case "DTD144": case "DTD145":
-          $numLife = 0;
-          if(GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numLife;
-          if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numLife;
-          if($numLife > 0) GainHealth($numLife, $mainPlayer);
+          AddLayer("TRIGGER", $mainPlayer, $chainLinks[$i][$j], $chainLinks[$i][$j], "CLOSECOMBATCHAINEFFECT");
           break;
         default: break;
       }

@@ -442,7 +442,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     ItemDamageTakenAbilities($player, $damage);
     CharacterDamageTakenAbilities($player, $damage);
     CharacterDealDamageAbilities($otherPlayer, $damage);
-    if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(CountAura("MON013", $otherPlayer), $player); WriteLog("Lost health from Ode to Wrath"); }
+    if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(CountAura("MON013", $otherPlayer), $player); WriteLog("Lost life from Ode to Wrath"); }
     $classState[$CS_DamageTaken] += $damage;
     if($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
@@ -613,10 +613,10 @@ function GainHealth($amount, $player, $silent=false, $preventable=true)
   }
   if(SearchCurrentTurnEffects("MON229", $player) && $preventable) { WriteLog(CardLink("MON229","MON229") . " prevented you from gaining life"); return; }
   if((SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140") && $preventable) && $health > $otherHealth) {
-    WriteLog("Reaping Blade prevented player " . $player . " from gaining " . $amount . " health");
+    WriteLog("Reaping Blade prevented player " . $player . " from gaining " . $amount . " life");
     return false;
   }
-  if(!$silent) WriteLog("Player " . $player . " gained " . $amount . " health");
+  if(!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
   $health += $amount;
   return true;
 }
@@ -1388,7 +1388,7 @@ function AttackDestroyedEffects($attackID)
 function CloseCombatChain($chainClosed="true")
 {
   global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers;
-  $layers = [];//In case there's another combat chain related layer like defense step
+  if(count($layers) <= LayerPieces()) $layers = [];//In case there's another combat chain related layer like defense step
   PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
@@ -2372,7 +2372,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
   switch($fromCardID)
   {
     case "EVO426":
-      if(TypeContains($toCardID, "D", $player)) {
+      if(TypeContains($toCardID, "C", $player)) {
         AddCurrentTurnEffect($fromCardID, $player);
         AddCurrentTurnEffect($fromCardID, $player);
       }
@@ -2381,7 +2381,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       }
       break;
     case "EVO427":
-      if(TypeContains($toCardID, "D", $player)) {
+      if(TypeContains($toCardID, "C", $player)) {
         GainResources($player, 6);
       }
       else if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
@@ -2389,7 +2389,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       }
       break;
     case "EVO428":
-      if(TypeContains($toCardID, "D", $player)) {
+      if(TypeContains($toCardID, "C", $player)) {
         MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
         MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
       }
@@ -2398,7 +2398,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       }
       break;
     case "EVO429":
-      if(TypeContains($toCardID, "D", $player)) {
+      if(TypeContains($toCardID, "C", $player)) {
         GainActionPoints(2, $player);
       }
       else if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {

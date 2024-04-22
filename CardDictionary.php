@@ -66,8 +66,8 @@ function CardType($cardID)
     case "UPR551": return "-";
     case "DYN492a": return "W";
     case "DYN492b": case "EVO410b": return "E";
+    case "EVO410": return "C";
     case "DTD564": return "D";
-    case "EVO410": return "D";
     case "DYN612": return "-";
     case "LGS176": case "LGS177": case "LGS178": return "A";
     case "DUMMY":
@@ -269,10 +269,10 @@ function CardCost($cardID, $from="-")
     case "HVY143": case "HVY144": case "HVY145":
     case "HVY163": case "HVY164": case "HVY165":
     case "HVY186": case "HVY187": case "HVY188":
-      if(GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
+      if(GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
       else return 3;
     case "HVY209":
-      if(GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
+      if(GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
       else return 2;
     case "MST410": case "MST432": case "MST453": case "MST495":
     case "MST496": case "MST497": case "MST498": case "MST499":
@@ -689,6 +689,8 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   if($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
   if(($from == "THEIRBANISH" || $playedFrom == "THEIRBANISH")) return "THEIRDISCARD";
+  $goesWhereEffect = GoesWhereEffectsModifier($cardID, $from, $player);
+  if($goesWhereEffect != -1) return $goesWhereEffect;
   if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
   $subtype = CardSubType($cardID);
   if(DelimStringContains($subtype, "Invocation") || DelimStringContains($subtype, "Ash") || $cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441" || $cardID == "EVO410") return "-";
@@ -752,6 +754,27 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       else return "GY";
     default: return "GY";
   }
+}
+
+function GoesWhereEffectsModifier($cardID, $from, $player) {
+  global $currentTurnEffects;
+  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $effectID = substr($currentTurnEffects[$i], 0, 6);
+    if($currentTurnEffects[$i + 1] == $player) {
+      switch($effectID) {
+        case "EVR181":
+          $effectArr = explode("-", $currentTurnEffects[$i]);
+          if($cardID == $effectArr[1]) {
+            RemoveCurrentTurnEffect($i);
+            return "BOTDECK";
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  return -1;
 }
 
 function CanPlayInstant($phase)

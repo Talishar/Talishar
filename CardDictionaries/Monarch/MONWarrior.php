@@ -33,12 +33,10 @@
         if(GetClassState($currentPlayer, $CS_NumCharged) > 0) GiveAttackGoAgain();
         return "";
       case "MON105":
-        if(GetClassState($currentPlayer, $CS_LastAttack) != "MON106") return "";
-        AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
+        if(CardNameContains(GetClassState($currentPlayer, $CS_LastAttack), "Hatchet of Mind", $currentPlayer)) AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
         return "";
       case "MON106":
-        if(GetClassState($currentPlayer, $CS_LastAttack) != "MON105") return "";
-        AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
+        if(CardNameContains(GetClassState($currentPlayer, $CS_LastAttack), "Hatchet of Body", $currentPlayer)) AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
         return "";
       case "MON108":
         AddCurrentTurnEffect($cardID, $currentPlayer);

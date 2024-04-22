@@ -616,7 +616,6 @@ function MirageLayer()
 
 function ResolveTransformHero($player, $cardID, $parameter)
 {
-  //TODO: Expand this for other demi-heros
   $permIndex = SearchPermanentsForCard($player, "DTD164");
   if($permIndex != "") RemovePermanent($player, $permIndex);
   $inventoryIndex = SearchInventoryForCard($player, "DTD564");

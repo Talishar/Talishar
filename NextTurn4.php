@@ -139,7 +139,6 @@
         rv += "<img " + (id != "" ? "id='" + id + "-img' " : "") + "style='" + border + " height:" + height + "; width:" + width + "px; position:relative;' src='./" + folderPath + "/" + cardNumber + fileExt + "' />";
         rv += "<div " + (id != "" ? "id='" + id + "-ovr' " : "") + "style='visibility:" + (overlay == 1 ? "visible" : "hidden") + "; width:100%; height:100%; top:0px; left:0px; border-radius:10px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
 
-        //TODO: Steam counters missing
         var darkMode = false;
         counterHeight = 28;
         imgCounterHeight = 42;
@@ -167,7 +166,7 @@
           rv += "font-size:" + (imgCounterHeight - 17) + "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" + defCounters + "<img style='position:absolute; top: -2px; width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; opacity: 0.9; z-index:-1;' src='./Images/Defense.png'></div>";
         }
 
-        //Health Counters style
+        //Life Counters style
         if (lifeCounters != 0) {
           var left = "45%";
           if (defCounters == 0 && atkCounters == 0) {

@@ -607,6 +607,7 @@ function IsBanned($cardID, $format)
         case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
         case "ELE223": // Duskblade
         case "EVR017": // Bravo, Star of the Show
+        case "UPR001": case "UPR003": // Dromai, Ash Artist | Storm of Sandikai
         case "UPR102": case "EVR121": // Iyslander, Stormbind | Kraken's Aethervein
         case "DYN009": //Berserk
         case "ELE115": // Crown of Seeds    

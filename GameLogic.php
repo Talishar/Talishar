@@ -556,7 +556,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DESTROYTOPCARD":
       $deck = new Deck($player);
       WriteLog("Destroyed " . CardLink($deck->Top(),$deck->Top()) . " on top of Player ". $player ." deck");
-      AddGraveyard($deck->Top(remove:true), $player, "TOP");
+      AddGraveyard($deck->Top(remove:true), $player, "DECK");
       return $lastResult;
     case "SHOWMODES":
       if(is_array($lastResult)) $modes = $lastResult;
@@ -760,7 +760,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $number;
     case "VOFTHEVANGUARD":
       if($parameter == "1" && TalentContains($lastResult, "LIGHT", $player)) {
-        WriteLog("V of the Vanguard gives all attacks on this combat chain +1");
+        WriteLog(CardLink("MON035", "MON035") . " gives all attacks on this combat chain +1");
         AddCurrentTurnEffect("MON035", $player);
       }
       $hand = &GetHand($player);
@@ -1745,6 +1745,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $message .= CardLink($cards[$i], $cards[$i]);
         }
         WriteLog($message);
+        return $lastResult;
+      case "AMULETOFOBLATION":
+        $params = explode("!", $parameter);
+        $target = GetMZCard($mainPlayer, $params[1]."-".$lastResult);
+        AddCurrentTurnEffect($params[0].$target, GetMZCard($mainPlayer, $params[1]."-".$lastResult+1), (count($params) > 1 ? $params[1] : ""));
+        WriteLog(CardLink("EVR181", "EVR181") . " targetted " . CardLink($target, $target));
         return $lastResult;
     default:
       return "NOTSTATIC";

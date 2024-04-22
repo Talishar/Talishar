@@ -114,7 +114,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   //First initialize the initial state of the game
   $filename = "../Games/" . $gameName . "/gamestate.txt";
   $handler = fopen($filename, "w");
-  fwrite($handler, "20 20\r\n"); //Player health totals
+  fwrite($handler, "20 20\r\n"); //Player life totals
 
   //Player 1
   $p1DeckHandler = fopen("../Games/" . $gameName . "/p1Deck.txt", "r");

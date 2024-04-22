@@ -20,7 +20,6 @@ $ccLinks = "";
 $compCCLinks = "";
 $otherFormatsLinks = "";
 $livingLegendsCCLinks = "";
-// TODO: Have as a global variable.
 $reactFE = "https://fe.talishar.net/game/play";
 
 $isShadowBanned = false;
@@ -96,8 +95,8 @@ if ($handle = opendir($path)) {
     if($status == 0 && $visibility == "public" && intval(GetCachePiece($gameName, 11)) < 3) {
       $p1Hero = GetCachePiece($gameName, 7);
       $formatName = "";
-      if($format == "commoner") $formatName = "Commoner ";
-      else if($format == "livinglegendscc") $formatName = "Open Format ";
+      if($format == "commoner") $formatName = "Commoner";
+      else if($format == "livinglegendscc") $formatName = "Open Format";
       else if($format == "clash") $formatName = "Clash";
       else if($format == "llcc") $formatName = "Living Legend CC";
       else if($format == "llblitz") $formatName = "Living Legend Blitz";

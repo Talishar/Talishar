@@ -830,6 +830,45 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
   }
 }
 
+function CombatChainClosedEffect($cardID, $player, $target, $uniqueID)
+{
+  global $chainLinks, $mainPlayer, $defPlayer, $CS_LifeLost;
+  switch ($cardID) {
+    case "DTD105":
+      $index = FindCharacterIndex($mainPlayer, "DTD105");
+      if($index > -1 && SearchCurrentTurnEffects("DTD105", $mainPlayer, true)) {
+        BanishCardForPlayer("DTD105", $mainPlayer, "CC");
+        DestroyCharacter($mainPlayer, $index, true);
+      }
+      break;
+    case "DTD137":
+      if(GetClassState($mainPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($mainPlayer, "MYHAND", "ARS,-");
+      if(GetClassState($defPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($defPlayer, "MYHAND", "ARS,-");
+      break;
+    case "DTD138":
+      if(GetClassState($mainPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($mainPlayer, "MYARS", "ARS,-");
+      if(GetClassState($defPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($defPlayer, "MYARS", "ARS,-");
+      break;
+    case "DTD139":
+      if(GetClassState($mainPlayer, $CS_LifeLost) > 0) { $deck = new Deck($mainPlayer); $deck->BanishTop(); }
+      if(GetClassState($defPlayer, $CS_LifeLost) > 0) { $deck = new Deck($defPlayer); $deck->BanishTop(); }
+      break;
+    case "DTD146": case "DTD147": case "DTD148":
+      $numRunechant = 0;
+      if(GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numRunechant;
+      if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numRunechant;
+      if($numRunechant > 0) PlayAura("ARC112", $mainPlayer, $numRunechant);
+      break;
+    case "DTD143": case "DTD144": case "DTD145":
+      $numLife = 0;
+      if(GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numLife;
+      if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numLife;
+      if($numLife > 0) GainHealth($numLife, $mainPlayer);
+      break;
+    default: break;
+  }
+}
+
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-", $from="-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex;
@@ -852,6 +891,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
   }
   if($additionalCosts == "MAINCHARHITEFFECT")  { ProcessMainCharacterHitEffect($parameter, $player, $target); return; }
   if($additionalCosts == "ITEMHITEFFECT") { ProcessItemsEffect($parameter, $player, $target, $uniqueID); return; }
+  if($additionalCosts == "CLOSECOMBATCHAINEFFECT") { CombatChainClosedEffect($parameter, $player, $target, $uniqueID); return; }
+
   switch($parameter) {
     case "HEAVE":
       Heave();
@@ -1856,29 +1897,24 @@ function IsWeaponGreaterThanTwiceBasePower()
   return false;
 }
 
-function HasEnergyCounters($array, $index, $cardID)
+function HasEnergyCounters($array, $index)
 {
-  if($array == "-"){
-    switch($cardID) {
-      case "WTR150": case "UPR166": return true;
-      default: return false;
-    }
-  }
   switch($array[$index]) {
     case "WTR150": case "UPR166": return $array[$index+2] > 0;
     default: return false;
   }
 }
 
-function HasHauntCounters($array, $index, $cardID){
-  if($array == "-"){
-    switch($cardID) {
-      case "UPR151": return true;
-      default: return false;
-    }
+function IsEnergyCounters($cardID){
+  switch($cardID) {
+    case "WTR150": case "UPR166": return true;
+    default: return false;
   }
-  switch($array[$index]) {
-    case "UPR151": return $array[$index+2] > 0;
+}
+
+function HasHauntCounters($cardID){
+  switch($cardID) {
+    case "UPR151": return true;
     default: return false;
   }
 }
@@ -1896,11 +1932,44 @@ function HasDoomCounters($cardID){
     default: return false;
   }
 }
+
+function HasRustCounters($cardID){
+  switch($cardID) {
+    case "CRU177": return true;
+    default: return false;
+  }
+}
+
+function HasFlowCounters($cardID){
+  switch($cardID) {
+    case "ELE117": case "ELE146": case "ELE175": 
+    case "UPR138":
+      return true;
+    default: return false;
+  }
+}
+
+function HasFrostCounters($cardID){
+  switch($cardID) {
+    case "UPR140":
+      return true;
+    default: return false;
+  }
+}
+
+function HasBalanceCounters($cardID){
+  switch($cardID) {
+    case "UPR140":
+      return true;
+    default: return false;
+  }
+}
+
 function HasSteamCounter($array, $index, $player)
 {
   if (CardType($array[$index]) == 'E') return EquipmentsUsingSteamCounter($array[$index]);
   if (ClassContains($array[$index], "MECHANOLOGIST", $player)) {
-    if($array[$index] == "DYN492a") return false;//TODO: This is a hack, convert nitro mech to use subcard framework
+    if($array[$index] == "DYN492a") return false;
     if (CardType($array[$index]) == 'W') return $array[$index+2] > 0;
     if (SubtypeContains($array[$index], "Item", $player)) return $array[$index+1] > 0;
   }

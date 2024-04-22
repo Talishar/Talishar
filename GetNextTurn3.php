@@ -276,7 +276,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($CombatChain->HasCurrentLink()) $activeChainLink->tower = IsTowerActive();
   if ($CombatChain->HasCurrentLink()) $activeChainLink->piercing = IsPiercingActive($combatChain[0]);
 
-  // TODO: How to find out if a card has been fused?
   $activeChainLink->fused = false;
 
   // current chain link attack
@@ -329,12 +328,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // their hand contents
   $theirHandContents = array();
   for ($i = 0; $i < count($theirHand); ++$i) {
-    if($playerID == 3 && IsCasterMode()) array_push($theirHandContents, JSONRenderedCard($theirHand[$i]));
+    if($playerID == 3 && IsCasterMode() || IsGameOver()) array_push($theirHandContents, JSONRenderedCard($theirHand[$i]));
     else array_push($theirHandContents, JSONRenderedCard($TheirCardBack));
   }
   $response->opponentHand = $theirHandContents;
 
-  //Their Health
+  //Their life
   $response->opponentHealth = $theirHealth;
   //Their soul count
   $response->opponentSoulCount = count($theirSoul);
@@ -448,7 +447,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $myHandContents = array();
   for ($i = 0; $i < count($myHand); ++$i) {
     if ($playerID == 3) {
-      if(IsCasterMode()) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
+      if(IsCasterMode() || IsGameOver()) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
       else array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
     } else {
       if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || ($actionType == 16 && $turn[0] != "MULTICHOOSEHAND" && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "");
@@ -462,15 +461,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   }
   $response->playerHand = $myHandContents;
 
-  // TODO: Need to fudge for banish UI stuff (or should this be done on the FE?)
-  // if ($playerID != 3)
-  // {
-  //   $banishUI = BanishUIMinimal("HAND");
-  //   echo($banishUI);
-  // }
-  // echo ("<br>"); //End hand div
-
-  //My Health
+  //My life
   $response->playerHealth = $myHealth;
   //My soul count
   $response->playerSoulCount = count($mySoul);
@@ -597,7 +588,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $theirArse = array();
   if ($theirArsenal != "") {
     for ($i = 0; $i < count($theirArsenal); $i += ArsenalPieces()) {
-      if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && IsCasterMode()) {
+      if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && IsCasterMode() || IsGameOver()) {
         array_push($theirArse, JSONRenderedCard(
           cardNumber: $theirArsenal[$i],
           controller: ($playerID == 1 ? 2 : 1),
@@ -620,7 +611,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $myArse = array();
   if ($myArsenal != "") {
     for ($i = 0; $i < count($myArsenal); $i += ArsenalPieces()) {
-      if ($playerID == 3 && !IsCasterMode() && $myArsenal[$i + 1] != "UP") {
+      if ($playerID == 3 && !IsCasterMode() && $myArsenal[$i + 1] != "UP" && !IsGameOver()) {
         array_push($myArse, JSONRenderedCard(
           cardNumber: $MyCardBack,
           controller: 2,
@@ -713,7 +704,6 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   //my allies
   $myAlliesOutput = array();
   $myAllies = GetAllies($playerID == 1 ? 1 : 2);
-  //TODO: remove magic numbers
   for ($i = 0; $i + AllyPieces() - 1 < count($myAllies); $i += AllyPieces()) {
     $label = "";
     $type = CardType($myAllies[$i]);
@@ -807,7 +797,6 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   //my permanents
   $myPermanentsOutput = array();
   $myPermanents = GetPermanents($playerID == 1 ? 1 : 2);
-  // TODO: If other permanents can be interacted with, add interaction.
   for ($i = 0; $i + PermanentPieces() - 1 < count($myPermanents); $i += PermanentPieces()) {
     $type = CardType($myPermanents[$i]);
     $sType = CardSubType($myPermanents[$i]);
@@ -841,7 +830,6 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   $response->landmarks = $landmarksOutput;
 
   // Chat Log
-  // TODO: Not have as HTML, have custom string so cards can be parsed the other end safely.
   $response->chatLog = JSONLog($gameName, $playerID);
 
   // Deduplicate current turn effects
@@ -873,7 +861,6 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   }
   $response->newEvents = $newEvents;
 
-  // TODO: determine the turnPhase and what corresponds to what.
   // Phase of the turn (for the tracker widget)
   $turnPhase = new stdClass();
   $turnPhase->turnPhase = $turn[0];
@@ -1366,9 +1353,8 @@ function GetCharacterLeft($cardType, $cardSubType)
   switch ($cardType) {
     case "C":
       return "calc(50% - " . ($cardWidth / 2 + 5) . "px)";
-      //case "W": return "calc(50% " . ($cardSubType == "" ? "- " : "+ ") . ($cardWidth/2 + $cardWidth + 10) . "px)";//TODO: Second weapon
     case "W":
-      return "calc(50% - " . ($cardWidth / 2 + $cardWidth + 25) . "px)"; //TODO: Second weapon
+      return "calc(50% - " . ($cardWidth / 2 + $cardWidth + 25) . "px)";
     default:
       break;
   }
@@ -1393,7 +1379,7 @@ function GetCharacterBottom($cardType, $cardSubType)
     case "C":
       return ($cardSize * 2 - 25) . "px";
     case "W":
-      return ($cardSize * 2 - 25) . "px"; //TODO: Second weapon
+      return ($cardSize * 2 - 25) . "px";
     default:
       break;
   }
@@ -1418,9 +1404,9 @@ function GetCharacterTop($cardType, $cardSubType)
     case "C":
       return "52px";
     case "W":
-      return "52px"; //TODO: Second weapon
+      return "52px";
       //case "C": return ($cardSize + 20) . "px";
-      //case "W": return ($cardSize + 20) . "px";//TODO: Second weapon
+      //case "W": return ($cardSize + 20) . "px";
     default:
       break;
   }

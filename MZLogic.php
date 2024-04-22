@@ -28,7 +28,6 @@ function MZDestroy($player, $lastResult, $effectController="", $allArsenal=true)
 
 function MZRemove($player, $lastResult)
 {
-  //TODO: Make each removal function return the card ID that was removed, so you know what it was
   $lastResultArr = explode(",", $lastResult);
   $otherPlayer = ($player == 1 ? 2 : 1);
   for($i = count($lastResultArr)-1; $i >= 0; --$i) {
@@ -76,7 +75,6 @@ function MZDiscard($player, $parameter, $lastResult)
 
 function MZAddZone($player, $parameter, $lastResult)
 {
-  //TODO: Add "from", add more zones
   $lastResultArr = explode(",", $lastResult);
   $otherPlayer = ($player == 1 ? 2 : 1);
   $params = explode(",", $parameter);
