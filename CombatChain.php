@@ -538,11 +538,11 @@ function BeginningReactionStepEffects()
   }
 }
 
-function ModifyBlockForType($type, $amount,)
+function ModifyBlockForType($type, $amount)
 {
   global $combatChain, $defPlayer;
   $count = 0;
-  for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
+  for($i=count($combatChain); $i>0; $i-=CombatChainPieces())
   {
     if($combatChain[$i+1] != $defPlayer) continue;
     if(CardType($combatChain[$i]) != $type) continue;
