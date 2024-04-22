@@ -1156,13 +1156,13 @@ function FinalizeChainLink($chainClosed = false)
   ProcessDecisionQueue();
 }
 
-function CleanUpCombatEffects($weaponSwap = false)
+function CleanUpCombatEffects($weaponSwap = false, $skip=false)
 {
   global $currentTurnEffects;
   $effectsToRemove = [];
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $effectArr = explode(",", $currentTurnEffects[$i]);
-    if(IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0])) {
+    if(($skip || IsCombatEffectActive($effectArr[0])) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0])) {
       if($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
       --$currentTurnEffects[$i+3];
       if ($currentTurnEffects[$i+3] == 0) array_push($effectsToRemove, $i);
@@ -2398,6 +2398,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
     if(!$skipDRResolution && !$isSpectraTarget) $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
     if($isSpectraTarget) {
+      CleanUpCombatEffects(false, $isSpectraTarget);
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts:$additionalCosts);
       switch($goesWhere) {
         case "BOTDECK": AddBottomDeck($cardID, $currentPlayer, $from); break;
