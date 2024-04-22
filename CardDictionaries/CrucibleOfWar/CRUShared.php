@@ -555,8 +555,8 @@ function CRUHitEffect($cardID)
       AddDecisionQueue("SHOWMODES", $mainPlayer, $cardID, 1);
       break;
     case "CRU183": case "CRU184": case "CRU185":
-      TopDeckToArsenal($defPlayer);
-      TopDeckToArsenal($mainPlayer);
+      if(ArsenalEmpty($defPlayer)) TopDeckToArsenal($defPlayer);
+      if(ArsenalEmpty($mainPlayer)) TopDeckToArsenal($mainPlayer);
       break;
     default: break;
   }
