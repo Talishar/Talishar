@@ -166,6 +166,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("EQUIPCARD", $currentPlayer, "<-");
       }
       return "";
+    case "MST232":
+      AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
+      return "";
     default: return "";
   }
 }

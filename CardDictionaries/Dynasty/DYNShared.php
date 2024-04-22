@@ -6,23 +6,17 @@ function DYNAbilityCost($cardID)
     case "DYN001": return 3;
     case "DYN005": return 3;
     case "DYN025": return 3;
-    case "DYN046": return 0;
     case "DYN067": return 1;
     case "DYN068": return 3;
     case "DYN069": case "DYN070": return 1;
     case "DYN115": case "DYN116": return 2;
-    case "DYN117": return 0;
-    case "DYN118": return 0;
     case "DYN151": return 1;
     case "DYN172": return 3;
     case "DYN192": return 2;
     case "DYN193": return 3;
     case "DYN235": return 1;
-    case "DYN240": return 0;
-    case "DYN241": return 0;
     case "DYN242": return 1;
     case "DYN243": return 2;
-    case "DYN492a": return 0;
     case "DYN612": return 2;
     default: return 0;
   }

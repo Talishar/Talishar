@@ -2337,6 +2337,10 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
+    case "MST232": 
+      MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK");
+      MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK");
+      break;
     case "MST226":
       $numGold = CountItem("DYN243", $currentPlayer);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
