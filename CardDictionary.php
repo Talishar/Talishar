@@ -1068,6 +1068,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if(GetResolvedAbilityType($layers[$layerIndex]) == "AA") return false;
       return true;
     case "MST095": case "MST102": return !$CombatChain->HasCurrentLink();
+    case "MST232": return (count($myHand) + count($myArsenal)) < 2;
     default: return false;
   }
 }
