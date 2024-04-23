@@ -1106,6 +1106,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ROLLDIE":
       RollDie($player, true, $parameter == "1");
       return "";
+    case "REROLLDIE":
+      RollDie($player, true, $parameter == "1", true);
+      return "";
     case "SETCOMBATCHAINSTATE":
       $combatChainState[$parameter] = $lastResult;
       return $lastResult;
