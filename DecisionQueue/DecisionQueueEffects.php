@@ -648,15 +648,15 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return "";
     case "MURKYWATER":
       $discard = GetDiscard($player);
+      $cardList = [];
       for ($i=0; $i<3; ++$i) { 
+        array_push($cardList, $discard[$lastResult[$i]]);
         BanishCardForPlayer($discard[$lastResult[$i]], $player, "GY", "FACEDOWN");
         RemoveGraveyard($player, $lastResult[$i]);
       }
-      $banish = GetBanish($player);
-      $rand = GetRandom(count($banish)-3*BanishPieces(), count($banish)-BanishPieces());
-      $cardID = explode(";", $banish[$rand]);
-      AddArsenal($cardID[1], $player, "BANISH", "DOWN");
-      RemoveBanish($player, SearchBanishForCard($player, $cardID[1]));
+      $rand = GetRandom(0, count($cardList));
+      AddArsenal($cardList[$rand], $player, "BANISH", "DOWN");
+      RemoveBanish($player, SearchBanishForCard($player, $cardList[$rand]));
       return $lastResult;
     default: return "";
   }
