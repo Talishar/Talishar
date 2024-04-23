@@ -654,9 +654,11 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         BanishCardForPlayer($discard[$lastResult[$i]], $player, "GY", "FACEDOWN");
         RemoveGraveyard($player, $lastResult[$i]);
       }
-      $rand = GetRandom(0, count($cardList));
-      AddArsenal($cardList[$rand], $player, "BANISH", "DOWN");
-      RemoveBanish($player, SearchBanishForCard($player, $cardList[$rand]));
+      if(!ArsenalFull($player)) {
+        $rand = GetRandom(0, count($cardList));
+        AddArsenal($cardList[$rand], $player, "BANISH", "DOWN");
+        RemoveBanish($player, SearchBanishForCard($player, $cardList[$rand]));
+      }
       return $lastResult;
     default: return "";
   }
