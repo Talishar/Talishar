@@ -608,12 +608,15 @@ function GetArsenalFaceUpIndices($player)
   return $indices;
 }
 
-function GetEquipmentIndices($player, $maxBlock = -1, $onCombatChain = false)
+function GetEquipmentIndices($player, $maxBlock = -1, $minBlock = -1, $onCombatChain = false)
 {
   $character = &GetPlayerCharacter($player);
   $indices = "";
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i + 1] != 0 && CardType($character[$i]) == "E" && ($maxBlock == -1 || (BlockValue($character[$i]) + $character[$i + 4]) <= $maxBlock) && ($onCombatChain == false || $character[$i + 6] > 0)) {
+    if ($character[$i + 1] != 0 
+    && CardType($character[$i]) == "E" 
+    && (($minBlock == -1 && $maxBlock == -1) || (BlockValue($character[$i]) + $character[$i + 4] <= $maxBlock && BlockValue($character[$i]) >= $minBlock))
+    && ($onCombatChain == false || $character[$i + 6] > 0)) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
     }
