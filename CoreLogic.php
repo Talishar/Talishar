@@ -1342,8 +1342,8 @@ function AttackDestroyed($attackID)
   CharacterAttackDestroyedAbilities($attackID);
   $numMercifulRetribution = SearchCount(SearchAurasForCard("MON012", $mainPlayer));
   if($numMercifulRetribution > 0 && TalentContains($attackID, "LIGHT", $mainPlayer)) {
-    AddDecisionQueue("PASSPARAMETER", $mainPlayer, $attackID, 1);
-    AddDecisionQueue("ADDSOUL", $mainPlayer, "CC", 1);
+    AddDecisionQueue("PASSPARAMETER", $mainPlayer, $attackID);
+    AddDecisionQueue("ADDSOUL", $mainPlayer, "CC");
     $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
   }
   for($i=0; $i<$numMercifulRetribution; ++$i) {
