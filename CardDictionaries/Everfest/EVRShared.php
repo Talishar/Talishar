@@ -270,14 +270,13 @@
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         return "";
       case "EVR070":
-        $rv = "Manually choose each option only once per turn";
         if($from == "PLAY")
         {
           $items = &GetItems($currentPlayer);
           if($items[GetClassState($currentPlayer, $CS_PlayIndex)+3] == 2) { $rv = "Gained an action point from Micro-Processor"; GainActionPoints(1); }
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
-          AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Opt,Draw_then_top_deck,Banish_top_deck");
-          AddDecisionQueue("MODAL", $currentPlayer, "MICROPROCESSOR", 1);
+          AddDecisionQueue("BUTTONINPUT", $currentPlayer, $items[GetClassState($currentPlayer, $CS_PlayIndex)+8]);
+          AddDecisionQueue("MODAL", $currentPlayer, "MICROPROCESSOR,".GetClassState($currentPlayer, $CS_PlayIndex), 1);
         }
         return $rv;
       case "EVR073": case "EVR074": case "EVR075":

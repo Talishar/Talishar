@@ -86,9 +86,10 @@ function AuraPieces()
 //5 - My Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
 //6 - Opponent Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
 //7 - Frozen (1 = yes, 0 = no)
+//8 - Modalities (eg. Micro-Processor) 
 function ItemPieces()
 {
-  return 8;
+  return 9;
 }
 
 function PitchPieces()
