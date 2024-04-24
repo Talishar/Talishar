@@ -2402,7 +2402,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
     if(!$skipDRResolution && !$isSpectraTarget) $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
     if($isSpectraTarget) {
-      CleanUpCombatEffects(false, $isSpectraTarget);
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts:$additionalCosts);
       switch($goesWhere) {
         case "BOTDECK": AddBottomDeck($cardID, $currentPlayer, $from); break;
@@ -2496,6 +2495,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     CopyCurrentTurnEffectsFromAfterResolveEffects();
     CacheCombatResult();
     if(!$isBlock) ProcessAllMirage();
+    if($isSpectraTarget) CleanUpCombatEffects(false, $isSpectraTarget);
   }
   if($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID)) RemoveCharacterEffects($currentPlayer, GetClassState($currentPlayer, $CS_CharacterIndex), "INSTANT");
   //Now determine what needs to happen next
