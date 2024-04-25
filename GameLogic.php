@@ -1332,7 +1332,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AfterDieRoll($player);
       return $lastResult;
     case "MODAL":
-      return ModalAbilities($player, $parameter, $lastResult);
+      $params = explode(",", $parameter);
+      return ModalAbilities($player, $params[0], $lastResult, $params[1]);
     case "SCOUR":
       WriteLog("Scour deals " . $parameter . " arcane damage");
       DealArcane($parameter, 0, "PLAYCARD", "EVR124", true, $player, resolvedTarget: ($player == 1 ? 2 : 1));
