@@ -58,7 +58,7 @@ function ItemModalities($cardID)
   switch ($cardID) {
     case 'EVR070':
       return "Opt,Draw_then_top_deck,Banish_top_deck";
-    default: return "";
+    default: return "-";
   }
 }
 
