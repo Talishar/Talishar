@@ -984,11 +984,12 @@ function RollDie($player, $fromDQ=false, $subsequent=false, $reroll=false)
   }
   AddEvent("ROLL", $highRoll);
   SetClassState($player, $CS_DieRoll, $highRoll);
-  $GGActive = HasGamblersGloves(1) || HasGamblersGloves(2);
-  if($GGActive & !$reroll) {
+  $playerHasGamblersGloves = HasGamblersGloves($player);
+  $otherPlayerHasGamblersGloves = HasGamblersGloves($otherPlayer);
+  if(($playerHasGamblersGloves || $otherPlayerHasGamblersGloves) && !$reroll) {
     if($fromDQ && !$subsequent) PrependDecisionQueue("AFTERDIEROLL", $player, "-");
-    AddLayer("TRIGGER", $player, "CRU179", $player, $fromDQ);
-    AddLayer("TRIGGER", $otherPlayer, "CRU179", $player, $fromDQ);
+    if($playerHasGamblersGloves) AddLayer("TRIGGER", $player, "CRU179", $player, $fromDQ);
+    if($otherPlayerHasGamblersGloves) AddLayer("TRIGGER", $otherPlayer, "CRU179", $player, $fromDQ);
     if(!$fromDQ && !$subsequent) AddDecisionQueue("AFTERDIEROLL", $player, "-");
   } else {
     if(!$subsequent) AfterDieRoll($player);
