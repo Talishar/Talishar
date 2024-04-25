@@ -76,14 +76,15 @@
 
   function ARCRangerHitEffect($cardID, $from)
   {
-    global $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    global $defPlayer, $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     switch($cardID)
     {
       case "ARC043":
         if(IsHeroAttackTarget()) AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "ARC045":
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "HAND";
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+        AddPlayerHand($cardID, $mainPlayer, "CC");
         break;
       case "ARC060": case "ARC061": case "ARC062":
         if(IsHeroAttackTarget()) AddNextTurnEffect($cardID, $defPlayer);

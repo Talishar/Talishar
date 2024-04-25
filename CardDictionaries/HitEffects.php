@@ -5,11 +5,14 @@ function MSTHitEffect($cardID)
   global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt;
   switch ($cardID){
     case "MST233":
-      AddDecisionQueue("FINDINDICES", $mainPlayer, "MULTITRAPSBANISH");
-      AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "3-", 1);
-      AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-3", 1);
-      AddDecisionQueue("MULTICHOOSEDISCARD", $mainPlayer, "<-", 1);
-      AddDecisionQueue("SPECIFICCARD", $mainPlayer, "MURKYWATER", 1);
+      $trapsArr = explode(",",SearchDiscard($mainPlayer, subtype:"Trap"));
+      if(count($trapsArr) >= 3) {
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "MULTITRAPSBANISH");
+        AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "3-", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-3", 1);
+        AddDecisionQueue("MULTICHOOSEDISCARD", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "MURKYWATER", 1);
+      }
       break;
     default:
       break;

@@ -1041,6 +1041,25 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("BUFFARCANEPREVLAYER", $player, "CRU161", 1);
       AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
       break;
+    case "CRU179":
+      $gamblersGlovesIndex = FindCharacterIndex($player, "CRU179");
+      if($additionalCosts)
+      {
+        PrependDecisionQueue("REROLLDIE", $target, "1", 1);
+        PrependDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+        PrependDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
+        PrependDecisionQueue("NOPASS", $player, "-");
+        PrependDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result");
+      }
+      else
+      {
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result");
+        AddDecisionQueue("NOPASS", $player, "-");
+        AddDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
+        AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+        AddDecisionQueue("REROLLDIE", $target, "1", 1);
+      }
+      break;
     case "MON012":
       DealArcane(1, 0, "STATIC", $parameter, false, $player);
       break;

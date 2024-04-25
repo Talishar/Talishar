@@ -971,9 +971,10 @@ function GetIndices($count, $add=0, $pieces=1)
   return $indices;
 }
 
-function RollDie($player, $fromDQ=false, $subsequent=false)
+function RollDie($player, $fromDQ=false, $subsequent=false, $reroll=false)
 {
   global $CS_DieRoll;
+  $otherPlayer = ($player == 1 ? 2 : 1);
   $numRolls = 1 + CountCurrentTurnEffects("EVR003", $player);
   $highRoll = 0;
   for($i=0; $i<$numRolls; ++$i) {
@@ -984,16 +985,15 @@ function RollDie($player, $fromDQ=false, $subsequent=false)
   AddEvent("ROLL", $highRoll);
   SetClassState($player, $CS_DieRoll, $highRoll);
   $GGActive = HasGamblersGloves(1) || HasGamblersGloves(2);
-  if($GGActive) {
+  if($GGActive & !$reroll) {
     if($fromDQ && !$subsequent) PrependDecisionQueue("AFTERDIEROLL", $player, "-");
-    GamblersGloves($player, $player, $fromDQ);
-    GamblersGloves(($player == 1 ? 2 : 1), $player, $fromDQ);
+    AddLayer("TRIGGER", $player, "CRU179", $player, $fromDQ);
+    AddLayer("TRIGGER", $otherPlayer, "CRU179", $player, $fromDQ);
     if(!$fromDQ && !$subsequent) AddDecisionQueue("AFTERDIEROLL", $player, "-");
   } else {
     if(!$subsequent) AfterDieRoll($player);
   }
 }
-
 function AfterDieRoll($player)
 {
   global $CS_DieRoll, $CS_HighestRoll;
@@ -1011,30 +1011,6 @@ function HasGamblersGloves($player)
 {
   $gamblersGlovesIndex = FindCharacterIndex($player, "CRU179");
   return $gamblersGlovesIndex != -1 && IsCharacterAbilityActive($player, $gamblersGlovesIndex);
-}
-
-function GamblersGloves($player, $origPlayer, $fromDQ)
-{
-  $gamblersGlovesIndex = FindCharacterIndex($player, "CRU179");
-  if(HasGamblersGloves($player))
-  {
-    if($fromDQ)
-    {
-      PrependDecisionQueue("ROLLDIE", $origPlayer, "1", 1);
-      PrependDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-      PrependDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
-      PrependDecisionQueue("NOPASS", $player, "-");
-      PrependDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result");
-    }
-    else
-    {
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result");
-      AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
-      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-      AddDecisionQueue("ROLLDIE", $origPlayer, "1", 1);
-    }
-  }
 }
 
 function IsCharacterAbilityActive($player, $index, $checkGem=false)
@@ -1366,8 +1342,8 @@ function AttackDestroyed($attackID)
   CharacterAttackDestroyedAbilities($attackID);
   $numMercifulRetribution = SearchCount(SearchAurasForCard("MON012", $mainPlayer));
   if($numMercifulRetribution > 0 && TalentContains($attackID, "LIGHT", $mainPlayer)) {
-    AddDecisionQueue("PASSPARAMETER", $mainPlayer, $attackID, 1);
-    AddDecisionQueue("ADDSOUL", $mainPlayer, "CC", 1);
+    AddDecisionQueue("PASSPARAMETER", $mainPlayer, $attackID);
+    AddDecisionQueue("ADDSOUL", $mainPlayer, "CC");
     $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
   }
   for($i=0; $i<$numMercifulRetribution; ++$i) {

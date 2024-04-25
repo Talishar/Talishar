@@ -1,6 +1,6 @@
 <?php
 
-function ModalAbilities($player, $card, $lastResult)
+function ModalAbilities($player, $card, $lastResult, $index=-1)
 {
   global $combatChain, $defPlayer, $CombatChain, $combatChainState, $CS_ModalAbilityChoosen;
   SetClassState($player, $CS_ModalAbilityChoosen, $card."-".$lastResult);
@@ -15,6 +15,11 @@ function ModalAbilities($player, $card, $lastResult)
       return $lastResult;
     case "MICROPROCESSOR":
       $deck = new Deck($player);
+      $items = &GetItems($player);
+      $modalities = explode(",", $items[$index+8]);
+      $indexToRemove = array_search($lastResult, $modalities);
+      unset($modalities[$indexToRemove]);
+      $items[$index+8] = implode(",", $modalities);
       switch($lastResult) {
         case "Opt":
           WriteLog(Cardlink("EVR070","EVR070") . " let you Opt 1");
@@ -648,15 +653,17 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return "";
     case "MURKYWATER":
       $discard = GetDiscard($player);
+      $cardList = [];
       for ($i=0; $i<3; ++$i) { 
+        array_push($cardList, $discard[$lastResult[$i]]);
         BanishCardForPlayer($discard[$lastResult[$i]], $player, "GY", "FACEDOWN");
         RemoveGraveyard($player, $lastResult[$i]);
       }
-      $banish = GetBanish($player);
-      $rand = GetRandom(count($banish)-3*BanishPieces(), count($banish)-BanishPieces());
-      $cardID = explode(";", $banish[$rand]);
-      AddArsenal($cardID[1], $player, "BANISH", "DOWN");
-      RemoveBanish($player, SearchBanishForCard($player, $cardID[1]));
+      if(!ArsenalFull($player)) {
+        $rand = GetRandom(0, count($cardList));
+        AddArsenal($cardList[$rand], $player, "BANISH", "DOWN");
+        RemoveBanish($player, SearchBanishForCard($player, $cardList[$rand]));
+      }
       return $lastResult;
     default: return "";
   }

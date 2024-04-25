@@ -234,10 +234,11 @@
   }
 
   function ResolveWagers() {
-    global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $currentTurnEffects;
+    global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $currentTurnEffects, $EffectContext, $combatChain;
     $wonWager = $combatChainState[$CCS_DamageDealt] > 0 ? $mainPlayer : $defPlayer;
     $numWagersWon = 0;
     $amount = 1;
+    $EffectContext = $combatChain[0];
     if(SearchCurrentTurnEffects("HVY176", $wonWager)) ++$amount;
     for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
       $hasWager = true;

@@ -693,8 +693,10 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   if($goesWhereEffect != -1) return $goesWhereEffect;
   if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
   $subtype = CardSubType($cardID);
+  $type = CardType($cardID);
+  if(DelimStringContains($type, "W")) return "-";
   if(DelimStringContains($subtype, "Invocation") || DelimStringContains($subtype, "Ash") || $cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441" || $cardID == "EVO410") return "-";
-  if (DelimStringContains($subtype, "Construct")) {
+  if(DelimStringContains($subtype, "Construct")) {
     switch ($cardID) {
       case "DYN092":
         if (CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer) == "") return "-";
@@ -1068,6 +1070,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if(GetResolvedAbilityType($layers[$layerIndex]) == "AA") return false;
       return true;
     case "MST095": case "MST102": return !$CombatChain->HasCurrentLink();
+    case "MST232": return (count($myHand) + count($myArsenal)) < 2;
     default: return false;
   }
 }
