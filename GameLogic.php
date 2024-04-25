@@ -1195,7 +1195,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         RevertGamestate();
         return "PASS";
       }
-      return $lastResult;  
+      return $lastResult;
     case "PREPENDLASTRESULT":
       return $parameter . $lastResult;
     case "APPENDLASTRESULT":
@@ -1723,7 +1723,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
                 for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
                   if($chainLinks[$i][$j] == $lastResult) $chainLinks[$i][$j+2] = 0;
                 }
-              }            
+              }
             }
             break;
         }
@@ -1759,6 +1759,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddCurrentTurnEffect($params[0].$target, GetMZCard($mainPlayer, $params[1]."-".$lastResult+1), (count($params) > 1 ? $params[1] : ""));
         WriteLog(CardLink("EVR181", "EVR181") . " targetted " . CardLink($target, $target));
         return $lastResult;
+      case "LISTEMPTYEQUIPSLOTS":
+        $character = &GetPlayerCharacter($player);
+        $available = array_filter(["Head", "Chest", "Arms", "Legs"], function ($slot) use ($character) {
+          for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+            if (SubtypeContains($character[$i], $slot)) return false;
+          }
+          return true;
+        });
+        return empty($available) ? "PASS" : implode(",", $available);
     default:
       return "NOTSTATIC";
   }
