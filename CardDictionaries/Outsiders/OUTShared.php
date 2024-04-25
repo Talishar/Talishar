@@ -170,8 +170,9 @@ function OUTAbilityCost($cardID)
   function OUTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer, $CS_PlayIndex, $mainPlayer, $defPlayer, $combatChain, $combatChainState, $CCS_LinkBaseAttack;
-    global $CID_Frailty, $CID_BloodRotPox, $CID_Inertia;
+    global $CID_Frailty, $CID_BloodRotPox, $CID_Inertia, $CombatChain;
     $rv = "";
+    $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     switch ($cardID)
     {
       case "OUT001": case "OUT002":
@@ -180,7 +181,8 @@ function OUTAbilityCost($cardID)
         if($card == null) return "Uzuri's knife is re-sheathed";
         if(CardType($card->ID()) != "AA") { $card->ClearModifier(); return "Uzuri was bluffing"; }
         if(CardCost($card->ID()) > 2) { $card->ClearModifier(); return "Uzuri was bluffing"; }
-        $deck = new Deck($currentPlayer);
+        if(substr($CombatChain->AttackCard()->From(), 0, 5) != "THEIR") $deck = new Deck($currentPlayer);
+        else $deck = new Deck($otherPlayer);
         $deck->AddBottom($combatChain[0], "CC");
         AttackReplaced();
         $combatChain[0] = $card->ID();
