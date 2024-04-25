@@ -1546,7 +1546,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if(PitchValue($cardID) == 3) IncrementClassState($currentPlayer, $CS_NumBluePlayed);
     PayAdditionalCosts($cardID, $from);
   }
-  if($turn[0] == "B" && $cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
+  if($turn[0] == "B" && $cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
   if($from == "BANISH") {
     $banish = new Banish($currentPlayer);
     $banish->Remove(GetClassState($currentPlayer, $CS_PlayIndex));
@@ -2486,7 +2486,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     $playText = "";
     if(!$chainClosed) {
       $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      if($definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
+      if($definedCardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
     }
     CurrentEffectAfterPlayOrActivateAbility();
     if($from != "EQUIP" && $from != "PLAY") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
