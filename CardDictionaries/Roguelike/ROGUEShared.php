@@ -329,7 +329,6 @@ function ROGUECardSubtype($cardID)
 function ROGUEName($cardID)
 {
     switch ($cardID) {
-      case "ROGUE002": return "Tusk";
       case "ROGUE501": return "Broken Hourglass";
       case "ROGUE502": return "Perfect Mirror";
       case "ROGUE503": return "Scroll of Mastery";

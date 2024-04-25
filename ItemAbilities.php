@@ -27,7 +27,6 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     array_push($items, $myHoldState);
     array_push($items, $theirHoldState);
     array_push($items, 0);
-    array_push($items, ItemModalities($item));
     if(HasCrank($item, $player)) Crank($player, $index, $mainPhase);
   }
   if(($symbiosisIndex = FindCharacterIndex($player, "EVO003")) > 0 && ClassContains($item, "MECHANOLOGIST", $player)) {
@@ -50,15 +49,6 @@ function ItemUses($cardID)
   switch($cardID) {
     case "EVR070": return 3;
     default: return 1;
-  }
-}
-
-function ItemModalities($cardID)
-{
-  switch ($cardID) {
-    case 'EVR070':
-      return "Opt,Draw_then_top_deck,Banish_top_deck";
-    default: return "";
   }
 }
 

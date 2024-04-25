@@ -1,6 +1,6 @@
 <?php
 
-function ModalAbilities($player, $card, $lastResult, $index=-1)
+function ModalAbilities($player, $card, $lastResult)
 {
   global $combatChain, $defPlayer, $CombatChain, $combatChainState, $CS_ModalAbilityChoosen;
   SetClassState($player, $CS_ModalAbilityChoosen, $card."-".$lastResult);
@@ -15,11 +15,6 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       return $lastResult;
     case "MICROPROCESSOR":
       $deck = new Deck($player);
-      $items = &GetItems($player);
-      $modalities = explode(",", $items[$index+8]);
-      $indexToRemove = array_search($lastResult, $modalities);
-      unset($modalities[$indexToRemove]);
-      $items[$index+8] = implode(",", $modalities);
       switch($lastResult) {
         case "Opt":
           WriteLog(Cardlink("EVR070","EVR070") . " let you Opt 1");
