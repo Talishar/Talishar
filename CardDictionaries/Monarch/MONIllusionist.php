@@ -134,7 +134,7 @@
   function ProcessPhantasmOnBlock($index)
   {
     global $mainPlayer;
-    if(IsPhantasmActive() && DoesBlockTriggerPhantasm($index)) AddLayer("LAYER", $mainPlayer, "PHANTASM");
+    if(IsPhantasmActive() && DoesBlockTriggerPhantasm($index) && SearchLayersForCardID("PHANTASM") == -1) AddLayer("LAYER", $mainPlayer, "PHANTASM");
   }
 
   function DoesBlockTriggerPhantasm($index)
