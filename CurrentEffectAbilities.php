@@ -1213,7 +1213,7 @@ function BeginEndPhaseEffects()
         }
         break;
       case "UPR200": case "UPR201": case "UPR202":
-        Draw($currentTurnEffects[$i + 1]);
+        Draw($currentTurnEffects[$i + 1], false);
         break;
       default:
         break;
