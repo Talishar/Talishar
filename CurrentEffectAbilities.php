@@ -1177,6 +1177,7 @@ function IsCombatEffectPersistent($cardID)
     case "DTD229-HIT": return true;
     case "DTD410": return true;
     case "DTD411": return true;
+    case "EVO426": return true;
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
     case "HVY052": case "HVY090": case "HVY091": return true;
