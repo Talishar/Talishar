@@ -14,6 +14,14 @@ $p1H = CharacterHealth($p1Char[0]);
 $p2H = CharacterHealth($p2Char[0]);
 if($p1StartingHealth != "") $p1H = $p1StartingHealth;
 
+$fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
+if(!file_exists($fullLog)) $fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
+if(file_exists($fullLog)) {
+  $handler = fopen($fullLog, "w+");
+  fwrite($handler, "Player $firstPlayer is the first player and will begin play" . "\r\n");
+  fclose($handler);
+}
+
 $mainPlayer = $firstPlayer;
 $currentPlayer = $firstPlayer;
 $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
