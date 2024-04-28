@@ -1766,6 +1766,60 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddCurrentTurnEffect($params[0].$target, GetMZCard($mainPlayer, $params[1]."-".$lastResult+1), (count($params) > 1 ? $params[1] : ""));
         WriteLog(CardLink("EVR181", "EVR181") . " targetted " . CardLink($target, $target));
         return $lastResult;
+      case "VISITTHEGOLDENANVIL":
+        $char = &GetPlayerCharacter($currentPlayer);
+        $inventory = &GetInventory($currentPlayer);
+        foreach ($inventory as $cardID) {
+          if(TypeContains($cardID, "W", $currentPlayer) && Is1H($cardID)){
+            if($char[CharacterPieces()+1] == 0 || $char[CharacterPieces()*2+1] == 0) {
+              if ($equipments != "") $equipments .= ",";
+              $equipments .= $cardID;
+            }
+          }
+          if(TypeContains($cardID, "E", $currentPlayer)) {
+            switch (CardSubType($cardID)) {
+              case "Head":
+                if(!SearchCharacterAliveSubtype($currentPlayer, "Head")) {
+                  if ($equipments != "") $equipments .= ",";
+                  $equipments .= $cardID;
+                }
+                break;
+              case "Chest":
+                if(!SearchCharacterAliveSubtype($currentPlayer, "Chest")) {
+                  if ($equipments != "") $equipments .= ",";
+                  $equipments .= $cardID;
+                }
+                break;
+              case "Arms":
+                if(!SearchCharacterAliveSubtype($currentPlayer, "Arms")) {
+                  if ($equipments != "") $equipments .= ",";
+                  $equipments .= $cardID;
+                }
+                break;
+              case "Legs":
+                if(!SearchCharacterAliveSubtype($currentPlayer, "Legs")) {
+                  if ($equipments != "") $equipments .= ",";
+                  $equipments .= $cardID;
+                }
+                break;
+              case "Off-hand":
+                if(!SearchCharacterAliveSubtype($currentPlayer, "Off-hand")) {
+                  if ($equipments != "") $equipments .= ",";
+                  $equipments .= $cardID;
+                }
+                break;
+              case "Quiver":
+                if(!SearchCharacterAliveSubtype($currentPlayer, "Quiver")) {
+                  if ($equipments != "") $equipments .= ",";
+                  $equipments .= $cardID;
+                }
+                break;          
+              default:
+                break;
+            }
+          }
+        }
+        return $equipments;
     default:
       return "NOTSTATIC";
   }
