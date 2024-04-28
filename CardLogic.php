@@ -866,6 +866,12 @@ function CombatChainClosedEffect($cardID, $player, $target, $uniqueID)
       if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numLife;
       if($numLife > 0) GainHealth($numLife, $mainPlayer);
       break;
+    case "MST237":
+      $numEloquence = 0;
+      if(GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numEloquence;
+      if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numEloquence;
+      if($numEloquence > 0) PlayAura("DTD233", $mainPlayer);
+      break;
     default: break;
   }
 }

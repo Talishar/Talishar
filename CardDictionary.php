@@ -1641,6 +1641,7 @@ function HasBloodDebt($cardID)
     case "DTD178": case "DTD179": case "DTD180":
     case "DTD181": case "DTD182": case "DTD183":
     case "DTD184": case "DTD185": case "DTD186":
+    case "MST237":
       return true;
     default: return false;
   }
@@ -1656,6 +1657,7 @@ function HasRunegate($cardID)
     case "DTD152": case "DTD153": case "DTD154":
     case "DTD155": case "DTD156": case "DTD157":
     case "DTD158": case "DTD159": case "DTD160":
+    case "MST237":
       return true;
     default: return false;
   }
