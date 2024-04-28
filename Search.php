@@ -1323,3 +1323,12 @@ function RemoveCardSameNames($player, $stringCardsIndex, $zone) {
   }
   return $uniqueNameIndex;
 }
+
+function SearchSoulForIndex($cardID, $player)
+{
+  $souls = &GetSoul($player);
+  for ($i = 0; $i < count($souls); $i += SoulPieces()) {
+    if ($souls[$i] == $cardID) return $i;
+  }
+  return -1;
+}

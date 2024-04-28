@@ -653,6 +653,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         // We don't want function calls in every iteration check
         $charCount = count($char);
         $charPieces = CharacterPieces();
+        AddSoul($char[0], $currentPlayer, "-");
         if (isSubcardEmpty($char, 0)) $char[10] = $char[0];
         else $char[10] = $char[10] . "," . $char[0];
         $char[0] = "EVO410";

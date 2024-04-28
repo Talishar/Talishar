@@ -1641,6 +1641,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $char[$parameter+10] = implode(",", $subcards);
       UpdateSubcardCounterCount($currentPlayer, $parameter);
       return $cardID;
+    case "REMOVESOUL":
+      $char = &GetPlayerCharacter($player);
+      for ($i=0; $i < count($lastResult); $i++) 
+      { 
+        RemoveSoul($player, SearchSoulForIndex($lastResult[$i], $player));
+      }
+      return $lastResult;
       case "REMOVECOUNTERAURAORDESTROY":
         $auras = &GetAuras($player);
         $index = SearchAurasForUniqueID($parameter, $player);
