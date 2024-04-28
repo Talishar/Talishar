@@ -690,11 +690,13 @@ function UnsetTurnBanish()
   $p1Banish->UnsetModifier("INST");
   $p1Banish->UnsetModifier("ARC119");
   $p1Banish->UnsetModifier("TTFromOtherPlayer");
+  $p1Banish->UnsetModifier("MST236");
   $p2Banish = new Banish(2);
   $p2Banish->UnsetModifier("TT");
   $p2Banish->UnsetModifier("INST");
   $p2Banish->UnsetModifier("ARC119");
   $p2Banish->UnsetModifier("TTFromOtherPlayer");
+  $p2Banish->UnsetModifier("MST236");
   UnsetCombatChainBanish();
   ReplaceBanishModifier($defPlayer, "NT", "TT");
   ReplaceBanishModifier($mainPlayer, "NTFromOtherPlayer", "TTFromOtherPlayer");
@@ -1053,7 +1055,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
     $banish = GetBanish($currentPlayer);
     if($index < count($banish)) {
       $mod = explode("-", $banish[$index+1])[0];
-      if(($cardType == "I" && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212")) || $mod == "INST" || $mod == "ARC119") return true;
+      if(($cardType == "I" && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212" || $mod == "MST236")) || $mod == "INST" || $mod == "ARC119") return true;
     }
   }
   if(GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;

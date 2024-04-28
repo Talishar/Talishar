@@ -164,7 +164,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if($banish[$index + 1] == "MON212" && TalentContains($theirChar[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("MON212", $currentPlayer);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if(CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
-      if(!PlayableFromBanish($cardID, mod:$banish[$index+1], nonLimitedOnly:true)) SearchCurrentTurnEffects("DTD564", $currentPlayer, remove:true);
+      if(!PlayableFromBanish($cardID, $banish[$index+1], true)) SearchCurrentTurnEffects("DTD564", $currentPlayer, true);
+      if($banish[$index+1] == "MST236") {
+        SearchCurrentTurnEffects("MST236-3", $currentPlayer, true);
+      }
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2]);
       break;
     case 15: // Their Banish
@@ -1992,7 +1995,7 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "MON126": case "MON127": case "MON128": case "MON129": case "MON130": case "MON131": case "MON132":
     case "MON133": case "MON134": case "MON141": case "MON142": case "MON143":
-      if(RandomBanish3GY($cardID)) AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(RandomBanish3GY($cardID) > 0) AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "MON135": case "MON136": case "MON137": case "MON147": case "MON148": case "MON149": case "MON150": case "MON151": case "MON152":
       RandomBanish3GY($cardID);
@@ -2348,6 +2351,12 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, 0, 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "GOLDENANVIL", 1);
+      break;
+    case "MST236":
+      $num6Banished = RandomBanish3GY($cardID, $cardID);
+      if($num6Banished > 0) AddCurrentTurnEffect($cardID."-1", $currentPlayer);
+      if($num6Banished > 1) AddCurrentTurnEffect($cardID."-2", $currentPlayer);
+      if($num6Banished > 2) AddCurrentTurnEffect($cardID."-3", $currentPlayer);
       break;
     default:
       break;

@@ -10,6 +10,7 @@ function MSTEffectAttackModifier($cardID) {
     case "MST102": return 1;
     case "MST232": return 4;
     case "MST233": return 1;
+    case "MST236-1": return 1;
     default: return 0;
   }
 }
@@ -26,6 +27,7 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST102": return true;
     case "MST232": return CardSubType($attackID) == "Arrow";
     case "MST233": return true;
+    case "MST236-1": case "MST236-2": return true;
     default: return false;
   }
 }

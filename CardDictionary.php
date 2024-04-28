@@ -1072,6 +1072,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return true;
     case "MST095": case "MST102": return !$CombatChain->HasCurrentLink();
     case "MST232": return (count($myHand) + count($myArsenal)) < 2;
+    case "MST236": 
+      return $discard->NumCards() < 3;
     default: return false;
   }
 }
@@ -1641,7 +1643,7 @@ function HasBloodDebt($cardID)
     case "DTD178": case "DTD179": case "DTD180":
     case "DTD181": case "DTD182": case "DTD183":
     case "DTD184": case "DTD185": case "DTD186":
-    case "MST237":
+    case "MST236": case "MST237":
       return true;
     default: return false;
   }
@@ -1669,6 +1671,7 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false)
   $mod = explode("-", $mod)[0];
   if($mod == "INT" || $mod == "FACEDOWN") return false;
   if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
+  if($mod == "MST236" && SearchCurrentTurnEffects("MST236-3", $currentPlayer)) return true;
   if(HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer, false)) >= CardCost($cardID)) return true;
   $char = &GetPlayerCharacter($currentPlayer);
   if(SubtypeContains($cardID, "Evo") && ($char[0] == "TCC001" || $char[0] == "EVO007" || $char[0] == "EVO008") && $char[1] < 3) return true;
