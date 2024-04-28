@@ -275,68 +275,81 @@ if ($decklink != "") {
           $weaponSideboard .= $id;
         }
       } else if (TypeContains($id, "E")) {
-        if ($numSideboard == 0) {
           ++$totalCards;
+          $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
           if (SubtypeContains($id, "Head")) {
-            if ($head == "") $head = $id;
-            else {
+            for ($j = 0; $j < $numMainBoard; ++$j) {
+              if ($head == "") $head = $id;
+              else {
+                if ($headSideboard != "") $headSideboard .= " ";
+                $headSideboard .= $id;
+              }
+            }
+            for ($j = 0; $j < $numSideboard; ++$j) {
               if ($headSideboard != "") $headSideboard .= " ";
               $headSideboard .= $id;
             }
           } else if (SubtypeContains($id, "Chest")) {
-            if ($chest == "") $chest = $id;
-            else {
+            for ($j = 0; $j < $numMainBoard; ++$j) {
+              if ($chest == "") $chest = $id;
+              else {
+                if ($chestSideboard != "") $chestSideboard .= " ";
+                $chestSideboard .= $id;
+              }
+            }
+            for ($j = 0; $j < $numSideboard; ++$j) {
               if ($chestSideboard != "") $chestSideboard .= " ";
               $chestSideboard .= $id;
             }
           } else if (SubtypeContains($id, "Arms")) {
-            if ($arms == "") $arms = $id;
-            else {
-              $armsSideboard .= " ";
+            for ($j = 0; $j < $numMainBoard; ++$j) {
+              if ($arms == "") $arms = $id;
+              else {
+                if ($armsSideboard != "") $armsSideboard .= " ";
+                $armsSideboard .= $id;
+              }
+            }
+            for ($j = 0; $j < $numSideboard; ++$j) {
+              if ($armsSideboard != "") $armsSideboard .= " ";
               $armsSideboard .= $id;
             }
           } else if (SubtypeContains($id, "Legs")) {
-            if ($legs == "") $legs = $id;
-            else
-            {
-              $legsSideboard .= " ";
+            for ($j = 0; $j < $numMainBoard; ++$j) {
+              if ($legs == "") $legs = $id;
+              else {
+                if ($legsSideboard != "") $legsSideboard .= " ";
+                $legsSideboard .= $id;
+              }
+            }
+            for ($j = 0; $j < $numSideboard; ++$j) {
+              if ($legsSideboard != "") $legsSideboard .= " ";
               $legsSideboard .= $id;
             }
           } else if (SubtypeContains($id, "Off-Hand")) {
-            if ($offhand == "") $offhand = $id;
-            else {
+            for ($j = 0; $j < $numMainBoard; ++$j) {
+              if ($offhand == "") $offhand = $id;
+              else {
+                if ($offhandSideboard != "") $offhandSideboard .= " ";
+                $offhandSideboard .= $id;
+              }
+            }
+            for ($j = 0; $j < $numSideboard; ++$j) {
               if ($offhandSideboard != "") $offhandSideboard .= " ";
               $offhandSideboard .= $id;
             }
           } else if (SubtypeContains($id, "Quiver")) {
-            if ($quiver == "") $quiver = $id;
-            else {
+            for ($j = 0; $j < $numMainBoard; ++$j) {
+              if ($quiver == "") $quiver = $id;
+              else {
+                if ($quiverSideboard != "") $quiverSideboard .= " ";
+                $quiverSideboard .= $id;
+              }
+            }
+            for ($j = 0; $j < $numSideboard; ++$j) {
               if ($quiverSideboard != "") $quiverSideboard .= " ";
               $quiverSideboard .= $id;
             }
           }
-        } else {
-          ++$totalCards;
-          if (SubtypeContains($id, "Head")) {
-            if ($headSideboard != "") $headSideboard .= " ";
-            $headSideboard .= $id;
-          } else if (SubtypeContains($id, "Chest")) {
-            if ($chestSideboard != "") $chestSideboard .= " ";
-            $chestSideboard .= $id;
-          } else if (SubtypeContains($id, "Arms")) {
-            if ($armsSideboard != "") $armsSideboard .= " ";
-            $armsSideboard .= $id;
-          } else if (SubtypeContains($id, "Legs")) {
-            if ($legsSideboard != "") $legsSideboard .= " ";
-            $legsSideboard .= $id;
-          } else if (SubtypeContains($id, "Off-Hand")) {
-            if ($offhandSideboard != "") $offhandSideboard .= " ";
-            $offhandSideboard .= $id;
-          } else if (SubtypeContains($id, "Quiver")) {
-            if ($quiverSideboard != "") $quiverSideboard .= " ";
-            $quiverSideboard .= $id;
-          }
-        }
       } else {
         $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
         for ($j = 0; $j < $numMainBoard; ++$j) {
