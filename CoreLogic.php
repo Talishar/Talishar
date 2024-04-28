@@ -1419,13 +1419,13 @@ function RemoveCharacterAndAddAsSubcardToCharacter($player, $index, &$newCharact
   global $CombatChain;
   $char = &GetPlayerCharacter($player);
   $cardID = $char[$index];
-  AddSoul($cardID, $player, "-");
+  if($char[0] == "EVO410") AddSoul($cardID, $player, "-");
   if($char[$index+6] == 1) $CombatChain->Remove(GetCombatChainIndex($cardID, $player));
   if (!isSubcardEmpty($char, $index)) {
     $subcards = explode(',', $char[$index+10]);
     $subcardsCount = count($subcards);
     for ($i = 0; $i < $subcardsCount; $i++) {
-      AddSoul($subcards[$i], $player, "-");
+      if($char[0] == "EVO410") AddSoul($subcards[$i], $player, "-");
       if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex+10] = $subcards[$i];
       else $char[$newCharactersSubcardIndex+10] = $char[$newCharactersSubcardIndex+10] . "," . $subcards[$i];
     }
@@ -2300,13 +2300,13 @@ function CharacterChooseSubcard($player, $index, $fromDQ=false, $count=1, $isMan
       if ($isMandatory) AddDecisionQueue("CHOOSEMULTIZONE", $player, $chooseMultizoneData);
       else AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, $chooseMultizoneData);
       AddDecisionQueue("MZOP", $player, "GETCARDINDEX", 1);
-      AddDecisionQueue("REMOVESOUL", $player, $index, 1);
+      if($character[0] == "EVO410") AddDecisionQueue("REMOVESOUL", $player, $index, 1);
       AddDecisionQueue("REMOVESUBCARD", $player, $index, 1);
     }
     else {
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $count . " subcards to banish from " . CardName($character[$index]));
       AddDecisionQueue("MULTICHOOSESUBCARDS", $player, $count . "-" . str_replace("CARDID-", "", $chooseMultizoneData) . "-" . $count);
-      AddDecisionQueue("REMOVESOUL", $player, $index);
+      if($character[0] == "EVO410") AddDecisionQueue("REMOVESOUL", $player, $index);
       AddDecisionQueue("REMOVESUBCARD", $player, $index);
     }
   }
