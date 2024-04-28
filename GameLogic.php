@@ -1763,7 +1763,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $character = &GetPlayerCharacter($player);
         $available = array_filter(["Head", "Chest", "Arms", "Legs"], function ($slot) use ($character) {
           for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-            if (SubtypeContains($character[$i], $slot)) return false;
+            $subtype = CardSubType($character[$i], $character[$i + 11]);
+            if (DelimStringContains($subtype, $slot)) return false;
           }
           return true;
         });
