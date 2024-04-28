@@ -2242,7 +2242,7 @@ function EvoOnPlayHandling($player) {
 
 function EvoHandling($cardID, $player, $from)
 {
-  global $dqVars;
+  global $dqVars, $CombatChain;
   $char = &GetPlayerCharacter($player);
   $slot = "";
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -2253,6 +2253,7 @@ function EvoHandling($cardID, $player, $from)
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
     if(SubtypeContains($char[$i], $slot)) {
       if(SubtypeContains($char[$i], "Base")) {
+        $CombatChain->Remove(GetCombatChainIndex($char[$i], $player));
         CharacterAddSubcard($player, $i, $char[$i]);
         $fromCardID = $char[$i];
         $char[$i+2] = 0;//Reset counters
