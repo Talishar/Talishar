@@ -1374,6 +1374,7 @@ function FinalizeTurn()
   $MakeStartTurnBackup = true;
   $layerPriority[0] = ShouldHoldPriority(1);
   $layerPriority[1] = ShouldHoldPriority(2);
+  WriteLog("Player $mainPlayer's turn has begun");
   DoGamestateUpdate();
   ProcessDecisionQueue();
 }
@@ -1507,7 +1508,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $abilityType = $playType;
       PayAbilityAdditionalCosts($cardID);
       ActivateAbilityEffects();
-      if(GetResolvedAbilityType($cardID, $from) == "A" && !CanPlayAsInstant($cardID, $index, $from)) 
+      if(GetResolvedAbilityType($cardID, $from) == "A" && !CanPlayAsInstant($cardID, $index, $from))
       ResetCombatChainState();
     } else {
       if(GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
@@ -2337,7 +2338,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
-    case "MST232": 
+    case "MST232":
       MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK");
       MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK");
       break;
