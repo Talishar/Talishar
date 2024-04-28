@@ -165,18 +165,14 @@ function InventoryStartGameAbilities($player) {
         array_push($inventory, "DTD564");
         break;
       case "EVO013":
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to put " . CardLink($inventory[$i], $inventory[$i]) . " (one per prompt)", 1);
-        AddDecisionQueue("OK", $player, "-", 1);
-        AddDecisionQueue("MODAL", $player, "ADAPTIVEPLATING", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to equip your " . CardLink($inventory[$i], $inventory[$i]) );
-        AddDecisionQueue("MULTICHOOSETEXT", $player, "1-Head,Chest,Arms,Legs,None-1");
+        AddDecisionQueue("LISTEMPTYEQUIPSLOTS", $player, "-");
+        AddDecisionQueue("SETDQVAR", $player, "0", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to equip your " . CardLink($inventory[$i], $inventory[$i]) . " (one at a time)", 1);
+        AddDecisionQueue("BUTTONINPUT", $player, "{0},None", 1);
         AddDecisionQueue("MODAL", $player, "ADAPTIVEPLATING", 1);
         AddDecisionQueue("SHOWMODES", $player, "EVO013", 1);
         break;
       default: break;
     }
   }
-  if($player == 1) $p1Inventory = $inventory;
-  else $p2Inventory = $inventory;
 }
-
