@@ -1554,7 +1554,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "EVO120": case "EVO121": case "EVO122":
     case "EVO123": case "EVO124": case "EVO125":
     case "EVO141": //Galvanize
-      MZChooseAndDestroy($player, "MYITEMS", may:true);
+      MZChooseAndDestroy($player, "MYITEMS", may:true, context:"Choose an item to galvanize");
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
       break;
