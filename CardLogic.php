@@ -1685,6 +1685,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("PLAYAURA", $player, "HVY241-2", 1);
       AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_2_Might_tokens_from_" . CardLink("AKO005", "AKO005"), 1);
       break;
+    case "AKO019":
+      AddCurrentTurnEffect($parameter, $player, "CC");
+      break;
     default: break;
   }
 }

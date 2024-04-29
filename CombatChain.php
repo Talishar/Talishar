@@ -436,6 +436,7 @@ function OnBlockResolveEffects()
       case "HVY210":
       case "HVY239"://Clash blocks
       case "HVY648":
+      case "AKO019": // Battlefront Bastion
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "HVY008":
