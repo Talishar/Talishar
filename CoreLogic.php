@@ -781,20 +781,22 @@ function FindDefCharacter($cardID)
 
 function ChainLinkResolvedEffects()
 {
-  global $combatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex;
+  global $combatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain;
   $allies = GetAllies($mainPlayer);
-  if($combatChain[0] == "MON245" && !ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
-  switch($combatChain[0])
-  {
-    case "CRU051": case "CRU052":
-      EvaluateCombatChain($totalAttack, $totalBlock);
-      for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-        if(!($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack)) {
-          UndestroyCurrentWeapon();
+  if($CombatChain->HasCurrentLink()) {
+    if($combatChain[0] == "MON245" && !ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
+    switch($combatChain[0])
+    {
+      case "CRU051": case "CRU052":
+        EvaluateCombatChain($totalAttack, $totalBlock);
+        for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+          if(!($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack)) {
+            UndestroyCurrentWeapon();
+          }
         }
-      }
-      break;
-      default: break;
+        break;
+        default: break;
+    }
   }
   if(IsAllyAttacking() && $allies[$combatChainState[$CCS_WeaponIndex]+2] <= 0) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
 }
@@ -2221,7 +2223,7 @@ function WardPoppedAbility($player, $cardID)
     AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_create_a_ponder");
     AddDecisionQueue("NOPASS", $player, "-");
     AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
-    AddDecisionQueue("PLAYAURA", $player, "DYN244", 1);
+    AddDecisionQueue("PLAYAURA", $player, "DYN244-1", 1);
   }
 }
 

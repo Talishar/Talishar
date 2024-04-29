@@ -1079,7 +1079,7 @@ function FinalizeChainLink($chainClosed = false)
 {
   global $turn, $actionPoints, $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
-  global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks;
+  global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CombatChain;
   UpdateGameState($currentPlayer);
   BuildMainPlayerGameState();
   if(DoesAttackHaveGoAgain() && !$chainClosed) {
@@ -1125,8 +1125,8 @@ function FinalizeChainLink($chainClosed = false)
 
   array_push($chainLinkSummary, $combatChainState[$CCS_DamageDealt]);
   array_push($chainLinkSummary, $combatChainState[$CCS_LinkTotalAttack]);
-  array_push($chainLinkSummary, TalentOverride($combatChain[0], $mainPlayer));
-  array_push($chainLinkSummary, ClassOverride($combatChain[0], $mainPlayer));
+  array_push($chainLinkSummary, TalentOverride(isset($combatChain[0]) ? $combatChain[0] : "", $mainPlayer));
+  array_push($chainLinkSummary, ClassOverride(isset($combatChain[0]) ? $combatChain[0] : "", $mainPlayer));
   array_push($chainLinkSummary, SerializeCurrentAttackNames());
   $numHitsOnLink = ($combatChainState[$CCS_DamageDealt] > 0 ? 1 : 0);
   $numHitsOnLink += intval($combatChainState[$CCS_HitThisLink]);
@@ -1142,12 +1142,14 @@ function FinalizeChainLink($chainClosed = false)
   CopyCurrentTurnEffectsFromCombat();
 
   //Don't change state until the end, in case it changes what effects are active
-  if(CardType($combatChain[0]) == "W" && !$chainClosed) {
-    ++$mainClassState[$CS_AtksWWeapon];
-    if(CardSubtype($combatChain[0]) == "Sword") ++$mainClassState[$CS_NumSwordAttacks];
+  if($CombatChain->HasCurrentLink()) {
+    if(CardType($combatChain[0]) == "W" && !$chainClosed) {
+      ++$mainClassState[$CS_AtksWWeapon];
+      if(CardSubtype($combatChain[0]) == "Sword") ++$mainClassState[$CS_NumSwordAttacks];
+    }
+    if(CardName($combatChain[0]) == "Spectral Shield") ++$mainClassState[$CS_NumSpectralShieldAttacks];
+    SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
   }
-  if(CardName($combatChain[0]) == "Spectral Shield") ++$mainClassState[$CS_NumSpectralShieldAttacks];
-  SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
   $combatChain = [];
   if($chainClosed) {
     ResetCombatChainState();
@@ -1229,6 +1231,7 @@ function UndoIntimidate($player)
     if($banish[$i+1] == "INT") {
       array_push($hand, $banish[$i]);
       RemoveBanish($player, $i);
+      continue;
     }
     if($banish[$i+1] == "NOFEAR" && SearchLayersForCardID("HVY016") == -1) {
       AddLayer("TRIGGER", $player, "HVY016", "-");

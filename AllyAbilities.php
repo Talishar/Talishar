@@ -228,8 +228,7 @@ function SpecificAllyAttackAbilities($attackID)
       AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
       AddDecisionQueue("NOPASS", $mainPlayer, "-");
       MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent:true);
-      AddDecisionQueue("PLAYAURA", $mainPlayer, "MON104", 1);
-      AddDecisionQueue("PLAYAURA", $mainPlayer, "MON104", 1);
+      AddDecisionQueue("PLAYAURA", $mainPlayer, "MON104-2", 1);
       break;
     case "DTD408":
       $soul = &GetSoul($mainPlayer);

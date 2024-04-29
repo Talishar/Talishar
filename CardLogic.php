@@ -1069,7 +1069,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "MON012":
       DealArcane(1, 0, "STATIC", $parameter, false, $player);
       break;
-    case "MON089": //To be moved to ProcessMainCharacterHitEffect() when Fix Tarpit + Main Character Triggers #786 is uploaded
+    case "MON089": 
       $hand = &GetHand($player);
       $resources = &GetResources($player);
       if(Count($hand) > 0 || $resources[0] > 0)
@@ -1088,7 +1088,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
           AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
           AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
           AddDecisionQueue("GAINACTIONPOINTS", $player, "1", 1);
-          AddDecisionQueue("WRITELOG", $player, "Gained_an_action_point_from_" . CardLink($character[$target], $character[$target]), 1);
+          AddDecisionQueue("WRITELOG", $player, "Gained_an_action_point_from_" . CardLink("MON089", "MON089"), 1);
         }
       }
       break;
