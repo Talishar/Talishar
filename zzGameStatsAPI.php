@@ -20,6 +20,6 @@
   include "./GameTerms.php";
   include "./HostFiles/Redirector.php";
 
-  echo(SerializeGameResult($playerID, "", file_get_contents("./Games/" . $gameName . "/p" . $playerID . "Deck.txt"), $gameName, includeFullLog:true));
+  echo(SerializeGameResult($playerID, "", file_get_contents("./Games/" . $gameName . "/p" . $playerID . "Deck.txt"), $gameName, includeFullLog:false));
 
 ?>
