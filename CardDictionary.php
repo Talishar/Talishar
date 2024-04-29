@@ -749,8 +749,8 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
         }
       }
       return "GY";
-    case "MST095": case "MST096": case "MST097": 
-    case "MST098": case "MST099": case "MST100": 
+    case "MST095": case "MST096": case "MST097":
+    case "MST098": case "MST099": case "MST100":
     case "MST101": case "MST102":
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
       else return "GY";
@@ -1959,6 +1959,14 @@ function CardCareAboutChiPitch($cardID)
       case "MST001": case "MST002": case "MST025":
       case "MST026": case "MST046": case "MST047":
       return true;
+    default: return false;
+  }
+}
+
+function IsModular($cardID)
+{
+  switch($cardID) {
+    case "EVO013": return true;
     default: return false;
   }
 }

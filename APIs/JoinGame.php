@@ -188,6 +188,7 @@ if ($decklink != "") {
   $legsSideboard = "";
   $offhandSideboard = "";
   $quiverSideboard = "";
+  $modularSideboard = "";
   $unsupportedCards = "";
   $bannedCard = "";
   $character = "";
@@ -241,21 +242,19 @@ if ($decklink != "") {
         $bannedCard .= CardName($id);
       }
 
-      if ($cardType == "") //Card not supported, error
-      {
+      if ($cardType == "") { //Card not supported, error
         if ($unsupportedCards != "") $unsupportedCards .= " ";
         $unsupportedCards .= $id;
-      }
-      else if($id == "EVO013") {
-        ++$totalCards;
+      } else if (IsModular($id)) {
+        // The way we handle modular equipment, we force it to the sideboard,
+        // and it'll equipped straight from the inventory at start of game
         $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
-        $count = $numMainBoard + $numSideboard;
-        for($j=0; $j<$count; ++$j) {
-          if ($legsSideboard != "") $legsSideboard .= " ";
-          $legsSideboard .= $id;
+        for($j=0; $j < $numMainBoard + $numSideboard; ++$j) {
+          if ($modularSideboard != "") $modularSideboard .= " ";
+          $modularSideboard .= $id;
         }
-      }
-      else if (TypeContains($id, "C")) {
+        $totalCards += $numMainBoard + $numSideboard;
+      } else if (TypeContains($id, "C")) {
         $character = $id;
       } else if (TypeContains($id, "W")) {
         ++$totalCards;
@@ -377,8 +376,7 @@ if ($decklink != "") {
     exit;
   }
 
-  if(($format == "sealed" || $format == "draft") && substr($decklink, 0, 9) != "DRAFTFAB-")
-  {
+  if(($format == "sealed" || $format == "draft") && substr($decklink, 0, 9) != "DRAFTFAB-") {
     //Currently must use draft fab for sealed/draft
     $response->error = "You must use a DraftFaB deck for " . $format . ".";
     echo json_encode($response);
@@ -442,7 +440,8 @@ if ($decklink != "") {
   fwrite($deckFile, $offhandSideboard . "\r\n");
   fwrite($deckFile, $weaponSideboard . "\r\n");
   fwrite($deckFile, $sideboardCards . "\r\n");
-  fwrite($deckFile, $quiverSideboard);
+  fwrite($deckFile, $quiverSideboard . "\r\n");
+  fwrite($deckFile, $modularSideboard);
   fclose($deckFile);
   copy($filename, "../Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
 
@@ -698,8 +697,8 @@ function IsCardBanned($cardID, $format)
   if($format != "livinglegendscc" && ($set == "MST")) return true; // Launch 31st May
   if($format != "livinglegendscc" && ($set == "AKO")) return true; // Launch 3rd May
   switch ($cardID) { //Special Use Promos
-    case "JDG002": case "JDG004": case "JDG005": case "JDG008": case "JDG010": case "JDG019": case "JDG024": case "JDG025": 
-    case "LSS001": case "LSS002": case "LSS003": case "LSS004": case "LSS005": case "LSS006": case "LSS007": case "LSS008": 
+    case "JDG002": case "JDG004": case "JDG005": case "JDG008": case "JDG010": case "JDG019": case "JDG024": case "JDG025":
+    case "LSS001": case "LSS002": case "LSS003": case "LSS004": case "LSS005": case "LSS006": case "LSS007": case "LSS008":
     case "FAB094":
     case "LGS099":
     case "HER101":

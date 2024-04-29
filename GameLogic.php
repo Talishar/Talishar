@@ -1195,7 +1195,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         RevertGamestate();
         return "PASS";
       }
-      return $lastResult;  
+      return $lastResult;
     case "PREPENDLASTRESULT":
       return $parameter . $lastResult;
     case "APPENDLASTRESULT":
@@ -1730,7 +1730,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
                 for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
                   if($chainLinks[$i][$j] == $lastResult) $chainLinks[$i][$j+2] = 0;
                 }
-              }            
+              }
             }
             break;
         }
@@ -1820,6 +1820,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
         }
         return $equipments;
+      case "LISTEMPTYEQUIPSLOTS":
+        $character = &GetPlayerCharacter($player);
+        $available = array_filter(["Head", "Chest", "Arms", "Legs"], function ($slot) use ($character) {
+          for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+            if (SubtypeContains($character[$i], $slot)) return false;
+          }
+          return true;
+        });
+        return empty($available) ? "PASS" : implode(",", $available);
     default:
       return "NOTSTATIC";
   }

@@ -647,8 +647,8 @@ function PlayerWon($playerID)
   if($turn[0] == "OVER") return;
   include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
-  if($playerID == 1 && $p1uid != "") WriteLog($p1uid . " won! 🎉", $playerID);
-  else if($playerID == 2 && $p2uid != "") WriteLog($p2uid . " won! 🎉", $playerID);
+  if($playerID == 1 && $p1uid != "") WriteLog("Player 1 (" . $p1uid . ") won! 🎉", $playerID);
+  else if($playerID == 2 && $p2uid != "") WriteLog("Player 2 (" . $p2uid . ") won! 🎉", $playerID);
   else WriteLog("Player " . $winner . " won! 🎉");
   $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
@@ -1247,11 +1247,11 @@ function DoesAttackHaveGoAgain()
   //Prevention Natural Go Again
   if(CurrentEffectPreventsGoAgain()) return false;
   if(SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false;
-  
+
   //Natural Go Again
   if(!$isAura && HasGoAgain($attackID)) return true;
 
-  //Prevention Grant Go Again 
+  //Prevention Grant Go Again
   if(SearchAuras("UPR139", $mainPlayer)) return false;
 
   //Grant go Again

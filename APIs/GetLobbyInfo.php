@@ -101,6 +101,7 @@ if($handler) {
     else if (SubtypeContains($cardID, "Chest")) array_push($response->deck->chest, $cardID);
     else if (SubtypeContains($cardID, "Arms")) array_push($response->deck->arms, $cardID);
     else if (SubtypeContains($cardID, "Legs")) array_push($response->deck->legs, $cardID);
+    else if (IsModular($cardID)) array_push($response->deck->modular, $cardID);
     else {
       $handItem = new stdClass();
       $handItem->id = $cardID;
@@ -162,6 +163,8 @@ if($handler) {
     $handItem->is1H = Is1H($handItem->id);
     array_push($response->deck->handsSB, $handItem);
   }
+
+  $response->deck->modular = GetArray($handler);
 
   $cardIndex = [];
   $response->deck->cardDictionary = [];
