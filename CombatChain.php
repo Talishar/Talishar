@@ -436,6 +436,7 @@ function OnBlockResolveEffects()
       case "HVY210":
       case "HVY239"://Clash blocks
       case "HVY648":
+      case "AKO019": // Battlefront Bastion
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "HVY008":
@@ -821,6 +822,7 @@ function CombatChainClosedTriggers()
         case "DTD137": case "DTD138": case "DTD139":
         case "DTD146": case "DTD147": case "DTD148":
         case "DTD143": case "DTD144": case "DTD145":
+        case "MST237":
           AddLayer("TRIGGER", $mainPlayer, $chainLinks[$i][$j], $chainLinks[$i][$j], "CLOSECOMBATCHAINEFFECT");
           break;
         default: break;

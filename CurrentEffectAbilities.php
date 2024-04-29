@@ -768,6 +768,10 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if($preventable) $damage -= 2;
           $remove = true;
           break;
+        case "AKO019":
+          if($preventable) $damage -= 1;
+          $remove = true;
+          break;
         default: break;
       }
       if($remove) RemoveCurrentTurnEffect($i);
@@ -995,6 +999,7 @@ function CurrentEffectGrantsGoAgain()
           if(SearchPitchForColor($mainPlayer, 2) > 0) return true;
           else break;
         case "HVY246": return true;
+        case "MST236-2": return true;
         case "ROGUE710-GA": return true;
         default:
           break;
@@ -1177,6 +1182,7 @@ function IsCombatEffectPersistent($cardID)
     case "DTD229-HIT": return true;
     case "DTD410": return true;
     case "DTD411": return true;
+    case "EVO426": return true;
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
     case "HVY052": case "HVY090": case "HVY091": return true;
@@ -1213,7 +1219,7 @@ function BeginEndPhaseEffects()
         }
         break;
       case "UPR200": case "UPR201": case "UPR202":
-        Draw($currentTurnEffects[$i + 1]);
+        Draw($currentTurnEffects[$i + 1], false);
         break;
       default:
         break;

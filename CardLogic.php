@@ -866,6 +866,12 @@ function CombatChainClosedEffect($cardID, $player, $target, $uniqueID)
       if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numLife;
       if($numLife > 0) GainHealth($numLife, $mainPlayer);
       break;
+    case "MST237":
+      $numEloquence = 0;
+      if(GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numEloquence;
+      if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numEloquence;
+      if($numEloquence > 0) PlayAura("DTD233", $mainPlayer);
+      break;
     default: break;
   }
 }
@@ -1063,7 +1069,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "MON012":
       DealArcane(1, 0, "STATIC", $parameter, false, $player);
       break;
-    case "MON089": //To be moved to ProcessMainCharacterHitEffect() when Fix Tarpit + Main Character Triggers #786 is uploaded
+    case "MON089": 
       $hand = &GetHand($player);
       $resources = &GetResources($player);
       if(Count($hand) > 0 || $resources[0] > 0)
@@ -1082,7 +1088,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
           AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
           AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
           AddDecisionQueue("GAINACTIONPOINTS", $player, "1", 1);
-          AddDecisionQueue("WRITELOG", $player, "Gained_an_action_point_from_" . CardLink($character[$target], $character[$target]), 1);
+          AddDecisionQueue("WRITELOG", $player, "Gained_an_action_point_from_" . CardLink("MON089", "MON089"), 1);
         }
       }
       break;
@@ -1669,6 +1675,19 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $player, "2", 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
       break;
+    case "AKO005":
+      $index = FindCharacterIndex($player, $parameter);
+      AddDecisionQueue("CHARREADYORPASS", $player, $index);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Hiden_Tanner_to_gain_2_Might tokens", 1);
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+      AddDecisionQueue("PLAYAURA", $player, "HVY241-2", 1);
+      AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_2_Might_tokens_from_" . CardLink("AKO005", "AKO005"), 1);
+      break;
+    case "AKO019":
+      AddCurrentTurnEffect($parameter, $player, "CC");
+      break;
     default: break;
   }
 }
@@ -1809,6 +1828,10 @@ function DiscardedAtRandomEffects($player, $discarded, $source) {
   if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer && ModifiedAttackValue($discarded, $player, "GY", "HAND") >= 6) {
     AddLayer("TRIGGER", $player, $character[$index]);
   }
+  $index = FindCharacterIndex($player, "AKO005");
+  if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer && ModifiedAttackValue($discarded, $player, "GY", "HAND") >= 6) {
+    AddLayer("TRIGGER", $player, $character[$index]);
+  }
   switch($discarded) {
     case "DYN008": AddLayer("TRIGGER", $player, $discarded); break;
     case "DYN010": case "DYN011": case "DYN012": AddLayer("TRIGGER", $player, $discarded); break;
@@ -1851,13 +1874,13 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
 
 function ModifiedAttackValue($cardID, $player, $from, $source="")
 {
-  global $combatChainState, $mainPlayer, $currentPlayer, $CS_Num6PowBan;
+  global $combatChainState, $CS_Num6PowBan;
   if($cardID == "") return -1;
   $attack = AttackValue($cardID);
-  if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
+  if($cardID == "MON191") return SearchPitchForNumCosts($player) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Attack");
   else if($cardID == "DYN216") return CountAura("MON104", $player);
-  else if($cardID == "DTD107") return GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
+  else if($cardID == "DTD107") return GetClassState($player, $CS_Num6PowBan) > 0 ? 6 : 0;
   else if($cardID == "DYN492b") return SearchCurrentTurnEffects("DYN089-UNDER", $player) > 0 ? 6 : 5;
   if($from != "CC") {
     $char = &GetPlayerCharacter($player);

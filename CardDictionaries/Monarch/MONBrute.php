@@ -61,17 +61,17 @@
     }
   }
 
-  function RandomBanish3GY($cardID)
+  function RandomBanish3GY($cardID, $modifier = "NA")
   {
     global $currentPlayer;
     $hand = &GetHand($currentPlayer);
     $discard = &GetDiscard($currentPlayer);
     if(count($discard) < 3) return;
-    $BanishedIncludes6 = false;
+    $BanishedIncludes6 = 0;
     for($i = 0; $i < 3; $i++) {
       $index = GetRandom() % count($discard);
-      if(ModifiedAttackValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) $BanishedIncludes6 = true;
-      BanishCardForPlayer($discard[$index], $currentPlayer, "DISCARD", "NA");
+      if(ModifiedAttackValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) ++$BanishedIncludes6;
+      BanishCardForPlayer($discard[$index], $currentPlayer, "DISCARD", $modifier);
       unset($discard[$index]);
       $discard = array_values($discard);
     }

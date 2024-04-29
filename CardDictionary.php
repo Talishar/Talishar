@@ -379,7 +379,7 @@ function BlockValue($cardID)
   $set = CardSet($cardID);
   if($cardID == "MON191") return SearchPitchForNumCosts($defPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Block");
-  if($set != "ROG" && $set != "DUM") {
+  if($set != "ROG" && $set != "DUM" && $set != "LGS") {
     $number = intval(substr($cardID, 3));
     if($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $cardID != "EVO410" && $cardID != "EVO410b")) return GeneratedBlockValue($cardID);
   }
@@ -391,6 +391,7 @@ function BlockValue($cardID)
     case "EVO410": return -1;
     case "EVO410b": return 6;
     case "DUMMYDISHONORED": return -1;
+    case "LGS176": case "LGS177": case "LGS178": return 2;
     case "MST410": case "MST432": case "MST453": case "MST495":
     case "MST496": case "MST497": case "MST498": case "MST499":
     case "MST500": case "MST501": case "MST502":
@@ -1002,6 +1003,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $subtype = CardSubtype($CombatChain->AttackCard()->ID());
       if($subtype == "Dagger" || (CardType($CombatChain->AttackCard()->ID()) == "AA" && AttackValue($CombatChain->AttackCard()->ID()) <= 2)) return false;
       return true;
+    case "OUT157": return (count($myHand) + count($myArsenal)) < 2;
     case "OUT162": case "OUT163": case "OUT164": return $from == "HAND";
     case "OUT168": case "OUT169": case "OUT170": return $from == "HAND";
     case "OUT180": return count($myHand) > 0;
@@ -1071,6 +1073,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return true;
     case "MST095": case "MST102": return !$CombatChain->HasCurrentLink();
     case "MST232": return (count($myHand) + count($myArsenal)) < 2;
+    case "MST236": 
+      return $discard->NumCards() < 3;
     default: return false;
   }
 }
@@ -1182,6 +1186,7 @@ function HasBattleworn($cardID)
     case "EVO442": case "EVO443": case "EVO444": case "EVO445": return true;
     case "HVY010": case "HVY099": return true;
     case "MST232": return true;
+    case "AKO005": return true;
     default: return false;
   }
 }
@@ -1415,6 +1420,7 @@ function CharacterDefaultActiveState($cardID)
     case "DTD165": case "DTD166": case "DTD167": case "DTD168": return 0;
     case "DTD564": return 0;
     case "EVO430": case "EVO431": case "EVO432": case "EVO433": return 1;
+    case "AKO005": return 1;
     default: return 2;
   }
 }
@@ -1640,6 +1646,7 @@ function HasBloodDebt($cardID)
     case "DTD178": case "DTD179": case "DTD180":
     case "DTD181": case "DTD182": case "DTD183":
     case "DTD184": case "DTD185": case "DTD186":
+    case "MST236": case "MST237":
       return true;
     default: return false;
   }
@@ -1655,6 +1662,7 @@ function HasRunegate($cardID)
     case "DTD152": case "DTD153": case "DTD154":
     case "DTD155": case "DTD156": case "DTD157":
     case "DTD158": case "DTD159": case "DTD160":
+    case "MST237":
       return true;
     default: return false;
   }
@@ -1666,10 +1674,11 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false)
   $mod = explode("-", $mod)[0];
   if($mod == "INT" || $mod == "FACEDOWN") return false;
   if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
+  if($mod == "MST236" && SearchCurrentTurnEffects("MST236-3", $currentPlayer)) return true;
   if(HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer, false)) >= CardCost($cardID)) return true;
   $char = &GetPlayerCharacter($currentPlayer);
   if(SubtypeContains($cardID, "Evo") && ($char[0] == "TCC001" || $char[0] == "EVO007" || $char[0] == "EVO008") && $char[1] < 3) return true;
-  if(!$nonLimitedOnly && $char[0] == "DTD564" && SearchCurrentTurnEffects("DTD564", $currentPlayer) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E")) return true;
+  if(!$nonLimitedOnly && $char[0] == "DTD564" && SearchCurrentTurnEffects("DTD564", $currentPlayer) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
   switch($cardID) {
     case "MON123": return GetClassState($currentPlayer, $CS_Num6PowBan) > 0;
     case "MON156": case "MON158": return true;

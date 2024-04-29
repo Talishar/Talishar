@@ -313,6 +313,7 @@ function ItemEndTurnAbilities()
         break;
       default: break;
     }
+    if(ItemModalities($items[$i]) != "-") $items[$i+8] = ItemModalities($items[$i]);
     if($remove) DestroyItemForPlayer($mainPlayer, $i);
   }
 }

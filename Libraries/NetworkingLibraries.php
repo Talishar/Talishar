@@ -164,7 +164,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if($banish[$index + 1] == "MON212" && TalentContains($theirChar[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("MON212", $currentPlayer);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if(CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
-      if(!PlayableFromBanish($cardID, mod:$banish[$index+1], nonLimitedOnly:true)) SearchCurrentTurnEffects("DTD564", $currentPlayer, remove:true);
+      if(!PlayableFromBanish($cardID, $banish[$index+1], true)) SearchCurrentTurnEffects("DTD564", $currentPlayer, true);
+      if($banish[$index+1] == "MST236") {
+        SearchCurrentTurnEffects("MST236-3", $currentPlayer, true);
+      }
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2]);
       break;
     case 15: // Their Banish
@@ -1076,7 +1079,7 @@ function FinalizeChainLink($chainClosed = false)
 {
   global $turn, $actionPoints, $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
-  global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks;
+  global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CombatChain;
   UpdateGameState($currentPlayer);
   BuildMainPlayerGameState();
   if(DoesAttackHaveGoAgain() && !$chainClosed) {
@@ -1122,8 +1125,8 @@ function FinalizeChainLink($chainClosed = false)
 
   array_push($chainLinkSummary, $combatChainState[$CCS_DamageDealt]);
   array_push($chainLinkSummary, $combatChainState[$CCS_LinkTotalAttack]);
-  array_push($chainLinkSummary, TalentOverride($combatChain[0], $mainPlayer));
-  array_push($chainLinkSummary, ClassOverride($combatChain[0], $mainPlayer));
+  array_push($chainLinkSummary, TalentOverride(isset($combatChain[0]) ? $combatChain[0] : "", $mainPlayer));
+  array_push($chainLinkSummary, ClassOverride(isset($combatChain[0]) ? $combatChain[0] : "", $mainPlayer));
   array_push($chainLinkSummary, SerializeCurrentAttackNames());
   $numHitsOnLink = ($combatChainState[$CCS_DamageDealt] > 0 ? 1 : 0);
   $numHitsOnLink += intval($combatChainState[$CCS_HitThisLink]);
@@ -1139,12 +1142,14 @@ function FinalizeChainLink($chainClosed = false)
   CopyCurrentTurnEffectsFromCombat();
 
   //Don't change state until the end, in case it changes what effects are active
-  if(CardType($combatChain[0]) == "W" && !$chainClosed) {
-    ++$mainClassState[$CS_AtksWWeapon];
-    if(CardSubtype($combatChain[0]) == "Sword") ++$mainClassState[$CS_NumSwordAttacks];
+  if($CombatChain->HasCurrentLink()) {
+    if(CardType($combatChain[0]) == "W" && !$chainClosed) {
+      ++$mainClassState[$CS_AtksWWeapon];
+      if(CardSubtype($combatChain[0]) == "Sword") ++$mainClassState[$CS_NumSwordAttacks];
+    }
+    if(CardName($combatChain[0]) == "Spectral Shield") ++$mainClassState[$CS_NumSpectralShieldAttacks];
+    SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
   }
-  if(CardName($combatChain[0]) == "Spectral Shield") ++$mainClassState[$CS_NumSpectralShieldAttacks];
-  SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
   $combatChain = [];
   if($chainClosed) {
     ResetCombatChainState();
@@ -1226,6 +1231,7 @@ function UndoIntimidate($player)
     if($banish[$i+1] == "INT") {
       array_push($hand, $banish[$i]);
       RemoveBanish($player, $i);
+      continue;
     }
     if($banish[$i+1] == "NOFEAR" && SearchLayersForCardID("HVY016") == -1) {
       AddLayer("TRIGGER", $player, "HVY016", "-");
@@ -1993,7 +1999,7 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "MON126": case "MON127": case "MON128": case "MON129": case "MON130": case "MON131": case "MON132":
     case "MON133": case "MON134": case "MON141": case "MON142": case "MON143":
-      if(RandomBanish3GY($cardID)) AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(RandomBanish3GY($cardID) > 0) AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "MON135": case "MON136": case "MON137": case "MON147": case "MON148": case "MON149": case "MON150": case "MON151": case "MON152":
       RandomBanish3GY($cardID);
@@ -2186,7 +2192,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("WRITELOG", $currentPlayer, "Paid extra resource to throw a dagger", 1);
       break;
     case "OUT157":
-      BottomDeckMultizone($currentPlayer, "MYHAND", "MYARS");
+      BottomDeckMultizone($currentPlayer, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add to the bottom of your deck");
       break;
     case "OUT195": case "OUT196": case "OUT197":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:maxAttack=1;minAttack=1");
@@ -2349,6 +2355,12 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, 0, 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "GOLDENANVIL", 1);
+      break;
+    case "MST236":
+      $num6Banished = RandomBanish3GY($cardID, $cardID);
+      if($num6Banished > 0) AddCurrentTurnEffect($cardID."-1", $currentPlayer);
+      if($num6Banished > 1) AddCurrentTurnEffect($cardID."-2", $currentPlayer);
+      if($num6Banished > 2) AddCurrentTurnEffect($cardID."-3", $currentPlayer);
       break;
     default:
       break;

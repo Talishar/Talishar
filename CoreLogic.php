@@ -690,11 +690,13 @@ function UnsetTurnBanish()
   $p1Banish->UnsetModifier("INST");
   $p1Banish->UnsetModifier("ARC119");
   $p1Banish->UnsetModifier("TTFromOtherPlayer");
+  $p1Banish->UnsetModifier("MST236");
   $p2Banish = new Banish(2);
   $p2Banish->UnsetModifier("TT");
   $p2Banish->UnsetModifier("INST");
   $p2Banish->UnsetModifier("ARC119");
   $p2Banish->UnsetModifier("TTFromOtherPlayer");
+  $p2Banish->UnsetModifier("MST236");
   UnsetCombatChainBanish();
   ReplaceBanishModifier($defPlayer, "NT", "TT");
   ReplaceBanishModifier($mainPlayer, "NTFromOtherPlayer", "TTFromOtherPlayer");
@@ -779,20 +781,22 @@ function FindDefCharacter($cardID)
 
 function ChainLinkResolvedEffects()
 {
-  global $combatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex;
+  global $combatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain;
   $allies = GetAllies($mainPlayer);
-  if($combatChain[0] == "MON245" && !ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
-  switch($combatChain[0])
-  {
-    case "CRU051": case "CRU052":
-      EvaluateCombatChain($totalAttack, $totalBlock);
-      for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-        if(!($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack)) {
-          UndestroyCurrentWeapon();
+  if($CombatChain->HasCurrentLink()) {
+    if($combatChain[0] == "MON245" && !ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
+    switch($combatChain[0])
+    {
+      case "CRU051": case "CRU052":
+        EvaluateCombatChain($totalAttack, $totalBlock);
+        for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+          if(!($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack)) {
+            UndestroyCurrentWeapon();
+          }
         }
-      }
-      break;
-      default: break;
+        break;
+        default: break;
+    }
   }
   if(IsAllyAttacking() && $allies[$combatChainState[$CCS_WeaponIndex]+2] <= 0) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
 }
@@ -1053,7 +1057,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
     $banish = GetBanish($currentPlayer);
     if($index < count($banish)) {
       $mod = explode("-", $banish[$index+1])[0];
-      if(($cardType == "I" && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212")) || $mod == "INST" || $mod == "ARC119") return true;
+      if(($cardType == "I" && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212" || $mod == "MST236")) || $mod == "INST" || $mod == "ARC119") return true;
     }
   }
   if(GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
@@ -1417,11 +1421,13 @@ function RemoveCharacterAndAddAsSubcardToCharacter($player, $index, &$newCharact
   global $CombatChain;
   $char = &GetPlayerCharacter($player);
   $cardID = $char[$index];
+  if($char[0] == "EVO410") AddSoul($cardID, $player, "-");
   if($char[$index+6] == 1) $CombatChain->Remove(GetCombatChainIndex($cardID, $player));
   if (!isSubcardEmpty($char, $index)) {
     $subcards = explode(',', $char[$index+10]);
     $subcardsCount = count($subcards);
     for ($i = 0; $i < $subcardsCount; $i++) {
+      if($char[0] == "EVO410") AddSoul($subcards[$i], $player, "-");
       if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex+10] = $subcards[$i];
       else $char[$newCharactersSubcardIndex+10] = $char[$newCharactersSubcardIndex+10] . "," . $subcards[$i];
     }
@@ -2217,7 +2223,7 @@ function WardPoppedAbility($player, $cardID)
     AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_create_a_ponder");
     AddDecisionQueue("NOPASS", $player, "-");
     AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
-    AddDecisionQueue("PLAYAURA", $player, "DYN244", 1);
+    AddDecisionQueue("PLAYAURA", $player, "DYN244-1", 1);
   }
 }
 
@@ -2240,7 +2246,7 @@ function EvoOnPlayHandling($player) {
 
 function EvoHandling($cardID, $player, $from)
 {
-  global $dqVars;
+  global $dqVars, $CombatChain;
   $char = &GetPlayerCharacter($player);
   $slot = "";
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -2251,6 +2257,7 @@ function EvoHandling($cardID, $player, $from)
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
     if(SubtypeContains($char[$i], $slot)) {
       if(SubtypeContains($char[$i], "Base")) {
+        $CombatChain->Remove(GetCombatChainIndex($char[$i], $player));
         CharacterAddSubcard($player, $i, $char[$i]);
         $fromCardID = $char[$i];
         $char[$i+2] = 0;//Reset counters
@@ -2295,11 +2302,13 @@ function CharacterChooseSubcard($player, $index, $fromDQ=false, $count=1, $isMan
       if ($isMandatory) AddDecisionQueue("CHOOSEMULTIZONE", $player, $chooseMultizoneData);
       else AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, $chooseMultizoneData);
       AddDecisionQueue("MZOP", $player, "GETCARDINDEX", 1);
+      if($character[0] == "EVO410") AddDecisionQueue("REMOVESOUL", $player, $index, 1);
       AddDecisionQueue("REMOVESUBCARD", $player, $index, 1);
     }
     else {
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $count . " subcards to banish from " . CardName($character[$index]));
       AddDecisionQueue("MULTICHOOSESUBCARDS", $player, $count . "-" . str_replace("CARDID-", "", $chooseMultizoneData) . "-" . $count);
+      if($character[0] == "EVO410") AddDecisionQueue("REMOVESOUL", $player, $index);
       AddDecisionQueue("REMOVESUBCARD", $player, $index);
     }
   }

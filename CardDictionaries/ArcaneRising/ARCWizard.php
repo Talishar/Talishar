@@ -491,7 +491,7 @@
         break;
       case "UPR122": case "UPR123": case "UPR124":
         if(MZIsPlayer($target) && $damage > 0) {
-          AddDecisionQueue("PLAYAURA", MZPlayerID($player, $target), "ELE111", 1);
+          AddDecisionQueue("PLAYAURA", MZPlayerID($player, $target), "ELE111-1", 1);
         }
         break;
       default:
