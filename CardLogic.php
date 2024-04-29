@@ -1857,13 +1857,13 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
 
 function ModifiedAttackValue($cardID, $player, $from, $source="")
 {
-  global $combatChainState, $mainPlayer, $currentPlayer, $CS_Num6PowBan;
+  global $combatChainState, $CS_Num6PowBan;
   if($cardID == "") return -1;
   $attack = AttackValue($cardID);
-  if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
+  if($cardID == "MON191") return SearchPitchForNumCosts($player) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Attack");
   else if($cardID == "DYN216") return CountAura("MON104", $player);
-  else if($cardID == "DTD107") return GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
+  else if($cardID == "DTD107") return GetClassState($player, $CS_Num6PowBan) > 0 ? 6 : 0;
   else if($cardID == "DYN492b") return SearchCurrentTurnEffects("DYN089-UNDER", $player) > 0 ? 6 : 5;
   if($from != "CC") {
     $char = &GetPlayerCharacter($player);
