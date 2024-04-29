@@ -1937,8 +1937,9 @@ function HasAttackName($name)
 
 function HitEffectsArePrevented($cardID)
 {
-  global $combatChainState, $CCS_ChainLinkHitEffectsPrevented;
+  global $combatChainState, $CCS_ChainLinkHitEffectsPrevented, $mainPlayer, $layers;
   if(CardType($cardID) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return true;
+  if($combatChainState[$CCS_ChainLinkHitEffectsPrevented]) SearchCurrentTurnEffects("OUT108", $mainPlayer, true);
   return $combatChainState[$CCS_ChainLinkHitEffectsPrevented];
 }
 
