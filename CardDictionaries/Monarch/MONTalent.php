@@ -178,7 +178,7 @@
       {
         $numBloodDebt -= ($health - 13);
         $health = 13;
-        if(SearchInventoryForCard($mainPlayer, "DTD564") != "")
+        if(SearchInventoryForCard($mainPlayer, "DTD164") != "")
         {
           AddDecisionQueue("YESNO", $mainPlayer, "if you want to transform into Levia Consumed");
           AddDecisionQueue("NOPASS", $mainPlayer, "-");
