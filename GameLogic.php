@@ -520,7 +520,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = new Deck($player);
       return $deck->Remove($lastResult);
     case "PLAYAURA":
-      PlayAura($parameter, $player);
+      $params = explode("-", $parameter);
+      PlayAura($params[0], $player, $params[1]);
       break;
     case "DESTROYALLY":
       DestroyAlly($player, $lastResult);
@@ -1333,7 +1334,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MODAL":
       $params = explode(",", $parameter);
-      return ModalAbilities($player, $params[0], $lastResult, $params[1]);
+      return ModalAbilities($player, $params[0], $lastResult, isset($params[1]) ? $params[1] : -1);
     case "SCOUR":
       WriteLog("Scour deals " . $parameter . " arcane damage");
       DealArcane($parameter, 0, "PLAYCARD", "EVR124", true, $player, resolvedTarget: ($player == 1 ? 2 : 1));
@@ -1744,7 +1745,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return $lastResult;
       case "ADDTRIGGER":
         $param = explode(",", $parameter);
-        AddLayer("TRIGGER", $player, $param[0], $param[1]);
+        AddLayer("TRIGGER", $player, $param[0], isset($param[1]) ? $param[1] : "-");
         return $lastResult;
       case "UNDERCURRENTDESIRES":
         if($lastResult == "") {

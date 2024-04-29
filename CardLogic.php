@@ -1675,6 +1675,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $player, "2", 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
       break;
+    case "AKO005":
+      $index = FindCharacterIndex($player, $parameter);
+      AddDecisionQueue("CHARREADYORPASS", $player, $index);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Hiden_Tanner_to_gain_2_Might tokens", 1);
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+      AddDecisionQueue("PLAYAURA", $player, "HVY241-2", 1);
+      AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_2_Might_tokens_from_" . CardLink("AKO005", "AKO005"), 1);
+      break;
     default: break;
   }
 }
@@ -1812,6 +1822,10 @@ function DiscardedAtRandomEffects($player, $discarded, $source) {
   }
   $character = GetPlayerCharacter($player);
   $index = FindCharacterIndex($player, "DYN006");
+  if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer && ModifiedAttackValue($discarded, $player, "GY", "HAND") >= 6) {
+    AddLayer("TRIGGER", $player, $character[$index]);
+  }
+  $index = FindCharacterIndex($player, "AKO005");
   if($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem:true) && $player == $mainPlayer && ModifiedAttackValue($discarded, $player, "GY", "HAND") >= 6) {
     AddLayer("TRIGGER", $player, $character[$index]);
   }

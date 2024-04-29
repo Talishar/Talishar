@@ -1186,6 +1186,7 @@ function HasBattleworn($cardID)
     case "EVO442": case "EVO443": case "EVO444": case "EVO445": return true;
     case "HVY010": case "HVY099": return true;
     case "MST232": return true;
+    case "AKO005": return true;
     default: return false;
   }
 }
@@ -1419,6 +1420,7 @@ function CharacterDefaultActiveState($cardID)
     case "DTD165": case "DTD166": case "DTD167": case "DTD168": return 0;
     case "DTD564": return 0;
     case "EVO430": case "EVO431": case "EVO432": case "EVO433": return 1;
+    case "AKO005": return 1;
     default: return 2;
   }
 }
