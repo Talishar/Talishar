@@ -4,8 +4,8 @@ function WriteLog($text, $playerColor = 0, $highlight=false, $path="./")
 {
   global $gameName;
   $filename = $path . "Games/" . $gameName . "/gamelog.txt";
-  $handler = fopen($filename, "a");
-  if(!$handler) return;//File does not exist
+  if(file_exists($filename)) $handler = fopen($filename, "a");
+  else return; //File does not exist
   if($highlight) $output =  ($playerColor != 0 ? "<span style='color:<PLAYER" . $playerColor . "COLOR>; '>" : "") . "<mark style='background-color: brown; color:azure;'>" . $text . "</mark>" . ($playerColor != 0 ? "</span>" : "");
   else $output = ($playerColor != 0 ? "<span style='color:<PLAYER" . $playerColor . "COLOR>; '>" : "")  . $text . ($playerColor != 0 ? "</span>" : "");
   fwrite($handler, $output . "\r\n");
