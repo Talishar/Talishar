@@ -379,7 +379,7 @@ function BlockValue($cardID)
   $set = CardSet($cardID);
   if($cardID == "MON191") return SearchPitchForNumCosts($defPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Block");
-  if($set != "ROG" && $set != "DUM") {
+  if($set != "ROG" && $set != "DUM" && $set != "LGS") {
     $number = intval(substr($cardID, 3));
     if($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $cardID != "EVO410" && $cardID != "EVO410b")) return GeneratedBlockValue($cardID);
   }
@@ -391,6 +391,7 @@ function BlockValue($cardID)
     case "EVO410": return -1;
     case "EVO410b": return 6;
     case "DUMMYDISHONORED": return -1;
+    case "LGS176": case "LGS177": case "LGS178": return 2;
     case "MST410": case "MST432": case "MST453": case "MST495":
     case "MST496": case "MST497": case "MST498": case "MST499":
     case "MST500": case "MST501": case "MST502":
