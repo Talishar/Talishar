@@ -1786,8 +1786,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $char = &GetPlayerCharacter($currentPlayer);
         $inventory = &GetInventory($currentPlayer);
         foreach ($inventory as $cardID) {
-          if(TypeContains($cardID, "W", $currentPlayer) && Is1H($cardID)){
-            if($char[CharacterPieces()+1] == 0 || $char[CharacterPieces()*2+1] == 0) {
+          if(TypeContains($cardID, "W", $currentPlayer)){
+            if($char[CharacterPieces()+1] == 0 || (Is1H($cardID) && $char[CharacterPieces()*2+1] == 0)) {
               if ($equipments != "") $equipments .= ",";
               $equipments .= $cardID;
             }
