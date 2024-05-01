@@ -1395,3 +1395,13 @@ function EffectsAttackYouControlModifiers($cardID, $player) {
   }
   return $attackModifier;
 }
+
+function AdministrativeEffect($cardID)
+{
+  switch ($cardID) {
+    case "EVO013":
+      return true;
+    default:
+      return false;
+  }
+}

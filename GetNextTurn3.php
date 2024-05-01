@@ -841,7 +841,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
     $cardID = explode("_", $cardID)[0];
-    if($cardID == "EVO013") continue;//Don't show useless administrative effect
+    if(AdministrativeEffect($cardID)) continue; //Don't show useless administrative effect
     $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
     $BorderColor = ($isFriendly ? "blue" : "red");
     if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) array_push($playerEffects, JSONRenderedCard($cardID, borderColor:$BorderColor));
