@@ -523,7 +523,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MULTISHOWCARDSDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REELINCHOOSE", $currentPlayer, $resourcesPaid + 1, 1);
+        AddDecisionQueue("TOPDECKCHOOSE", $currentPlayer, $resourcesPaid + 1 .",Trap" , 1);
         AddDecisionQueue("MULTICHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);

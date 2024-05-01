@@ -54,17 +54,25 @@
         Reload();
         return "";
       case "ARC051": case "ARC052": case "ARC053":
-        if(!ArsenalEmpty($currentPlayer)) return "Did nothing because your arsenal is full";
+        if(!ArsenalEmpty($currentPlayer)) return "It does nothing because your arsenal is full";
         if($cardID == "ARC051") $count = 4;
         else if($cardID == "ARC052") $count = 3;
         else $count = 2;
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXREMOVE," . $count);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("FILTER", $currentPlayer, "LastResult-include-subtype-Arrow", 1);
-        AddDecisionQueue("CHOOSECARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the top " . $count . " cards of your deck.", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count);
+        AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REELINLOOK", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top cards of your deck are:", 1);
+        AddDecisionQueue("MULTISHOWCARDSDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count);
+        AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
+        AddDecisionQueue("TOPDECKCHOOSE", $currentPlayer, "1,Arrow", 1);
+        AddDecisionQueue("MULTICHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENAL", $currentPlayer, "DECK-UP", 1);
-        AddDecisionQueue("OP", $currentPlayer, "REMOVECARD");
-        AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count-1);
+        AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
+        AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-", 1);
         return "";
       case "ARC054": case "ARC055": case "ARC056":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -115,7 +123,7 @@
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
-    if(!ArsenalEmpty($player)) { WriteLog("Your arsenal is full, you cannot reload"); return; }
+    if(!ArsenalEmpty($player)) { WriteLog("It does nothing, because your arsenal is not empty"); return; }
     MZMoveCard($player, "MYHAND", "MYARS,HAND,DOWN", may:true, silent:true);
   }
 

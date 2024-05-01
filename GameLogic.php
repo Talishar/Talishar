@@ -311,6 +311,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if($log != "") WriteLog($log . " added to hand");
       return $lastResult;
+    case "MULTIADDARSENAL":
+      $cards = explode(",", $lastResult);
+      $arsenal = &GetArsenal($player);
+      $log = "";
+      for($i = 0; $i < count($cards); ++$i) {
+        if($parameter == "1") {
+          if($log != "") $log .= ", ";
+          if($i != 0 && $i == count($cards) - 1) $log .= "and ";
+          $log .= CardLink($cards[$i], $cards[$i]);
+        }
+        array_push($arsenal, $cards[$i]);
+      }
+      if($log != "") WriteLog($log . " added to arsenal");
+      return $lastResult;
     case "MULTIREMOVEHAND":
       $cards = "";
       $hand = &GetHand($player);
@@ -809,19 +823,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $cardsIndices .= $i;
         }
         return $cardsIndices;
-      case "REELINCHOOSE":
+      case "TOPDECKCHOOSE":
         $cards = explode(",", $lastResult);
-        $TrapIndices = "";
+        $params = explode(",", $parameter);
+        $indices = "";
         $numMatch = 0;
         for($i = 0; $i < count($cards); ++$i) {
-          if(DelimStringContains(CardSubType($cards[$i]), "Trap")) {
-            if($TrapIndices != "") $TrapIndices .= ",";
-            $TrapIndices .= $i;
+          if(DelimStringContains(CardSubType($cards[$i]), $params[1])) {
+            if($indices != "") $indices .= ",";
+            $indices .= $i;
             ++$numMatch;
           }
         }
         if($numMatch == 0) return "PASS";
-        return $parameter . "-" . $TrapIndices . "-" . "0";
+        return $params[0] . "-" . $indices . "-" . "0";
     case "SONATAARCANIXSTEP2":
       $numArcane = count(explode(",", $lastResult));
       DealArcane($numArcane, 0, "PLAYCARD", "MON231", true);
