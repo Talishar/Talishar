@@ -1806,6 +1806,20 @@ function GeneratedGoAgain($cardID)
                         default:
                             return false;
                     }
+                case "S":
+                    switch ($cardID[2]) {
+                        case "T":
+                            switch ($cardID[3]) {
+                                case "2":
+                                    switch ($cardID[4]) {
+                                        case "2":
+                                            switch ($cardID[5]) {
+                                                case "5":
+                                                    return true;
+                                            }
+                                    }
+                            }
+                    }
                 default:
                     return false;
             }
