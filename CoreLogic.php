@@ -2007,7 +2007,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   {
     $targetArr = explode("-", $target);
     if($targetArr[0] == "LAYERUID") { $targetArr[0] = "LAYER"; $targetArr[1] = SearchLayersForUniqueID($targetArr[1]); }
-    $target = $targetArr[0] . "-" . $targetArr[1];
+    if(isset($targetArr[1])) $target = $targetArr[0] . "-" . $targetArr[1];
+    else $target = $targetArr[0];
   }
   if(($set == "ELE" || $set == "UPR") && $additionalCosts != "-" && HasFusion($cardID)) {
     FuseAbility($cardID, $currentPlayer, $additionalCosts);
