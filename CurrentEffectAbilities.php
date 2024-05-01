@@ -1207,7 +1207,6 @@ function IsCombatEffectPersistent($cardID)
 function BeginEndPhaseEffects()
 {
   global $currentTurnEffects, $mainPlayer, $EffectContext;
-  EndTurnBloodDebt(); //Must be done before resetting character (e.g. sleep dart)
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     $EffectContext = $currentTurnEffects[$i];
     switch($currentTurnEffects[$i]) {
@@ -1230,6 +1229,7 @@ function BeginEndPhaseEffects()
 function BeginEndPhaseEffectTriggers()
 {
   global $currentTurnEffects, $mainPlayer, $defPlayer;
+  if(!IsImmuneToBloodDebt($mainPlayer)) AddLayer("TRIGGER", $mainPlayer, "BLOODDEBT");
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     switch($currentTurnEffects[$i]) {
       case "ELE215-1":

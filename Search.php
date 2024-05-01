@@ -146,7 +146,7 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
 function isPriorityStep($cardID)
 {
   switch($cardID) {
-    case "ENDTURN": case "RESUMETURN": case "PHANTASM": case "MIRAGE": case "FINALIZECHAINLINK": case "DEFENDSTEP": case "ENDSTEP": case "ATTACKSTEP":
+    case "ENDTURN": case "RESUMETURN": case "PHANTASM": case "MIRAGE": case "FINALIZECHAINLINK": case "DEFENDSTEP": case "ENDSTEP": case "ATTACKSTEP": case "BLOODDEBT":
       return true;
     default: return false;
   }

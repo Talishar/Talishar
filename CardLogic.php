@@ -1085,6 +1085,30 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         AddDecisionQueue("REROLLDIE", $target, "1", 1);
       }
       break;
+    case "BLOODDEBT":
+      $numBloodDebt = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
+      $char = &GetPlayerCharacter($mainPlayer);
+      if($char[0] == "DTD564" && +$char[1] == 2) { $deck = new Deck($mainPlayer); for($i=0; $i<$numBloodDebt; ++$i) $deck->BanishTop(); return; }
+      $health = &GetHealth($mainPlayer);
+      if($numBloodDebt > 0) {
+        if($health > 13 && $health - $numBloodDebt <= 13)
+        {
+          $numBloodDebt -= ($health - 13);
+          $health = 13;
+          if(SearchInventoryForCard($mainPlayer, "DTD164") != "")
+          {
+            AddDecisionQueue("YESNO", $mainPlayer, "if you want to transform into Levia Consumed");
+            AddDecisionQueue("NOPASS", $mainPlayer, "-");
+            AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numBloodDebt, 1);
+            AddDecisionQueue("TRANSFORMHERO", $mainPlayer, "DTD564", 1);
+            AddDecisionQueue("ELSE", $mainPlayer, "-");
+          }
+        }
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numBloodDebt, 1);
+        AddDecisionQueue("OP", $mainPlayer, "LOSEHEALTH", 1);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "Player $mainPlayer lost $numBloodDebt life from Blood Debt", 1);
+      }
+      break;
     case "MON012":
       DealArcane(1, 0, "STATIC", $parameter, false, $player);
       break;
