@@ -1256,7 +1256,8 @@ function RemoveBanishedCardFromGraveyard() //Already Dead code
 //CR 2.0 4.4.2.- Beginning of the end phase
 function FinishTurnPass()
 {
-  global $mainPlayer;
+  global $mainPlayer, $turn;
+  if($turn[0] == "OVER") return;
   ClearLog();
   ResetCombatChainState();
   QuellEndPhase(1);
