@@ -1396,8 +1396,9 @@ function EffectsAttackYouControlModifiers($cardID, $player) {
   return $attackModifier;
 }
 
-function AdministrativeEffect($cardID)
+function AdministrativeEffect($effectID)
 {
+  $cardID = substr($effectID, 0, 6);
   switch ($cardID) {
     case "EVO013":
       return true;
