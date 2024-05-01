@@ -1155,6 +1155,7 @@ function IsCombatEffectPersistent($cardID)
   $cardID = ShiyanaCharacter($effectArr[0]);
   switch($cardID) {
     case "WTR007": case "WTR038": case "WTR039": return true;
+    case "ARC006": return true;
     case "ARC047": return true;
     case "ARC160-1": return true;
     case "ARC170-1": case "ARC171-1": case "ARC172-1": return true;
