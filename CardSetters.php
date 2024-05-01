@@ -534,9 +534,12 @@ function AddGraveyard($cardID, $player, $from, $effectController="")
 function RemoveGraveyard($player, $index)
 {
   $discard = &GetDiscard($player);
-  $cardID = $discard[$index];
-  unset($discard[$index]);
-  $discard = array_values($discard);
+  $cardID = "";
+  if(isset($discard[$index])){
+    $cardID = $discard[$index];
+    unset($discard[$index]);
+    $discard = array_values($discard);
+  }
   return $cardID;
 }
 
