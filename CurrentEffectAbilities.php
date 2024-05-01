@@ -7,7 +7,6 @@ function EffectHitEffect($cardID, $from)
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $CombatChain, $CCS_DamageDealt;
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers;
   $attackID = $CombatChain->AttackCard()->ID();
-  if(HitEffectsArePrevented($attackID)) return;
   if(CardType($attackID) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   $effectArr = explode(",", $cardID);
   $cardID = $effectArr[0];

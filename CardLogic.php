@@ -664,7 +664,35 @@ function AddTowerEffectTrigger($cardID)
   }
 }
 
-function AddEffectHitTrigger($cardID)
+function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
+{
+  global $mainPlayer;
+  $effects = explode(',', $cardID);
+  switch ($effects[0]) {
+    case "ARC170-1": case "ARC171-1": case "ARC172-1":
+    case "CRU084-2":
+    case "MON218":
+    case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT":
+    case "ELE163": case "ELE164": case "ELE165":
+    case "ELE173": 
+    case "ELE198": case "ELE199": case "ELE200":
+    case "EVR066-1": case "EVR067-1": case "EVR068-1":
+    case "EVR170-1": case "EVR171-1": case "EVR172-1":
+    case "DVR008-1": 
+    case "OUT140": case "OUT188_1":
+    case "DTD229-HIT": 
+    case "HVY090": case "HVY091": case "HVY136":
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      break;
+    case "ELE066-HIT":
+      AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");
+      break;  
+    default:
+      break;
+  }
+}
+
+function AddEffectHitTrigger($cardID) // Effects that gives effect to the attack (keywords "attack gains/gets")
 {
   global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers;
   $effects = explode(',', $cardID);
@@ -673,31 +701,26 @@ function AddEffectHitTrigger($cardID)
     case "WTR147": case "WTR148": case "WTR149":
     case "WTR206": case "WTR207": case "WTR208":
     case "WTR209": case "WTR210": case "WTR211":
-    case "ARC170-1": case "ARC171-1": case "ARC172-1":
-    case "CRU124": case "CRU145": case "CRU146": case "CRU147":
-    case "CRU084-2":
-    case "MON034": case "MON081": case "MON082": case "MON083":
+    case "CRU124": 
+    case "CRU145": case "CRU146": case "CRU147":
+    case "MON034": 
+    case "MON081": case "MON082": case "MON083":
     case "MON110": case "MON111": case "MON112":
-    case "MON193": case "MON218": case "MON299": case "MON300": case "MON301":
+    case "MON193": case "MON299": case "MON300": case "MON301":
     case "ELE005": case "ELE019": case "ELE020": case "ELE021":
     case "ELE022": case "ELE023": case "ELE024":
     case "ELE035-2": case "ELE037-2": case "ELE047": case "ELE048": case "ELE049":
     case "ELE092-BUFF":
-    case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT":
-    case "ELE163": case "ELE164": case "ELE165":
-    case "ELE173": case "ELE195": case "ELE196": case "ELE197":
-    case "ELE198": case "ELE199": case "ELE200":
+    case "ELE195": case "ELE196": case "ELE197":
     case "ELE205": case "ELE215":
     case "EVR047-1": case "EVR048-1": case "EVR049-1":
-    case "EVR066-1": case "EVR067-1": case "EVR068-1":
     case "EVR161-1": case "EVR164": case "EVR165": case "EVR166":
-    case "EVR170-1": case "EVR171-1": case "EVR172-1":
-    case "DVR008-1": case "DYN028": case "DYN071": case "DYN155":
+    case "DYN028": case "DYN071": case "DYN155":
     case "DYN185-HIT": case "DYN186-HIT": case "DYN187-HIT":
     case "OUT021": case "OUT022": case "OUT023":
     case "OUT105": case "OUT112": case "OUT113":
-    case "OUT114": case "OUT140": case "OUT143":
-    case "OUT158": case "OUT165":  case "OUT166": case "OUT167": case "OUT188_1":
+    case "OUT114": case "OUT143":
+    case "OUT158": case "OUT165":  case "OUT166": case "OUT167": 
     case "DTD051": case "DTD052":
     case "DTD066": case "DTD067": case "DTD068":
     case "DTD080-2":
@@ -705,12 +728,9 @@ function AddEffectHitTrigger($cardID)
     case "DTD207":
     case $Card_LifeBanner:
     case $Card_ResourceBanner:
-    case "DTD229-HIT": case "EVO155": case "EVO434":
-    case "HVY090": case "HVY091": case "HVY099": case "HVY136":
+    case "EVO155": case "EVO434":
+    case "HVY099":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
-      break;
-    case "ELE066-HIT":
-      AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");
       break;
     default:
       break;
@@ -792,7 +812,6 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 {
   global $layers, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   $otherPlayer = ($player == 1 ? 2 : 1);
-  if(HitEffectsArePrevented($target)) return;
   if(CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $player, count($layers) <= LayerPieces())) return true;
   switch ($cardID) {
     case "DYN094":

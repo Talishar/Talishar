@@ -1108,7 +1108,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
       if ($option[0] == "MYARS") $label = "Arsenal";
       //Add indication for Attacking Mechanoid
-      if ($option[0] == "CC" && (GetMZCard($currentPlayer, $options[$i]) == "DYN492a" || GetMZCard($currentPlayer, $options[$i]) == "EVO410a")) $label = "Attack";
+      if (($option[0] == "CC" || $option[0] == "LAYER") && (GetMZCard($currentPlayer, $options[$i]) == "DYN492a" || GetMZCard($currentPlayer, $options[$i]) == "EVO410a")) $label = "Attack";
 
       if ($option[0] != "CARDID") {
         $index = intval($option[1]);

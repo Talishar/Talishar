@@ -4,7 +4,6 @@ function ProcessHitEffect($cardID, $from="-")
 {
   global $CombatChain, $layers, $mainPlayer;
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
-  if(HitEffectsArePrevented($CombatChain->AttackCard()->ID())) return;
   if(CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);

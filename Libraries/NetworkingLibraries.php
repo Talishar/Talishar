@@ -1052,10 +1052,9 @@ function ResolveCombatDamage($damageDone)
         }
       }
       for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-        if($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
         if(IsCombatEffectActive($currentTurnEffects[$i])) {
           if($currentTurnEffects[$i + 1] == $mainPlayer) {
-            AddEffectHitTrigger($currentTurnEffects[$i]);
+            AddEffectHitTrigger($currentTurnEffects[$i]); // Effects that gives effect to the attack
           }
         }
       }
@@ -1066,6 +1065,12 @@ function ResolveCombatDamage($damageDone)
       AuraHitEffects($combatChain[0]);
       ItemHitTrigger($combatChain[0]);
       AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
+    }
+    for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+      if ($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
+      if (IsCombatEffectActive($currentTurnEffects[$i] && $currentTurnEffects[$i + 1] == $mainPlayer)) { 
+          AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
+      }
     }
   }
   else {

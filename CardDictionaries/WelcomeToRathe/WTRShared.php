@@ -554,7 +554,6 @@
   {
     global $mainPlayer, $defPlayer, $defCharacter, $CombatChain, $combatChainState, $CCS_DamageDealt, $layers;
     if(!IsHeroAttackTarget()) return;
-    if(HitEffectsArePrevented($CombatChain->AttackCard()->ID())) return;
     if(CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
     switch($cardID) {
       case "WTR043":
