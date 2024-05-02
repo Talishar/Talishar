@@ -1731,6 +1731,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "AKO019":
       AddCurrentTurnEffect($parameter, $player, "CC");
       break;
+    case "ASB006":
+      Charge();
+      AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
+      AddDecisionQueue("PLAYAURA", $player, "WTR225-1", 1); // Quicken
+      break;
     default: break;
   }
 }
