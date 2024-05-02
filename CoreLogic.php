@@ -2057,6 +2057,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   else if($set == "HVY") return HVYPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "AKO") return AKOPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "MST") return MSTPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if($set == "ASB") return ASBPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "LGS") {
     switch ($cardID) {
       case "LGS176": case "LGS177": case "LGS178":

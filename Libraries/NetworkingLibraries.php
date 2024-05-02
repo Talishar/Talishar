@@ -2368,6 +2368,9 @@ function PayAdditionalCosts($cardID, $from)
       if($num6Banished > 1) AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       if($num6Banished > 2) AddCurrentTurnEffect($cardID."-3", $currentPlayer);
       break;
+    case "ASB025":
+      Charge();
+      break;
     default:
       break;
   }

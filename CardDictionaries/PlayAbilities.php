@@ -10,6 +10,17 @@ function AKOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     default: return "";
   }
 } 
+
+function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
+{
+  global $currentPlayer, $CS_NumCharged, $CombatChain;
+  switch($cardID) {
+    case "ASB025":
+      if(GetClassState($currentPlayer, $CS_NumCharged) > 0) $CombatChain->Card(0)->ModifyPower(-2);
+      return "";
+    default: return "";
+  }
+} 
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer;
