@@ -202,7 +202,7 @@ if ($decklink != "") {
   $weapon2 = "";
   $weaponSideboard = "";
   $totalCards = 0;
-  $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY", "MST", "AKO"];
+  $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY", "MST", "AKO", "ASB"];
   if (is_countable($cards)) {
     for ($i = 0; $i < count($cards); ++$i) {
       $count = $cards[$i]->{'total'};
@@ -695,7 +695,7 @@ function IsCardBanned($cardID, $format)
   if ($format == "clash") return isClashLegal($cardID);
   //Ban spoiler cards in non-open-format
   if($format != "livinglegendscc" && ($set == "MST")) return true; // Launch 31st May
-  if($format != "livinglegendscc" && ($set == "AKO")) return true; // Launch 3rd May
+  if($format != "livinglegendscc" && ($set == "ASB")) return true; // Launch 12th July
   switch ($cardID) { //Special Use Promos
     case "JDG002": case "JDG004": case "JDG005": case "JDG008": case "JDG010": case "JDG019": case "JDG024": case "JDG025":
     case "LSS001": case "LSS002": case "LSS003": case "LSS004": case "LSS005": case "LSS006": case "LSS007": case "LSS008":
