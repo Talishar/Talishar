@@ -21,7 +21,7 @@
     }
   }
 
-  function ELEAbilityType($cardID, $index=-1)
+  function ELEAbilityType($cardID, $index=-1, $from="")
   {
     switch($cardID)
     {
@@ -37,7 +37,9 @@
       case "ELE145": return "A";
       case "ELE172": return "I";
       case "ELE173": return "I";
-      case "ELE195": case "ELE196": case "ELE197": return "I";
+      case "ELE195": case "ELE196": case "ELE197": 
+        if($from == "PLAY") return "I";
+        else return "AA";
       case "ELE201": return "I";
       case "ELE202": return "AA";
       case "ELE214": return "I";
