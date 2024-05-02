@@ -174,6 +174,3 @@
     if($character[1] == 2 && ($characterID == "MON119" || $characterID == "MON120") && GetClassState($player, $CS_Num6PowBan) > 0) return true;
     return false;
   }
-
-
-?>
