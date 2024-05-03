@@ -1002,13 +1002,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
       case "DTD133": case "DTD134":
         if(CardType($cardID) == "A" && TalentContains($cardID, "SHADOW", $currentPlayer))
         {
-          AddDecisionQueue("YESNO", $currentPlayer, "if you want to pay 1 life for Vynnset");
-          AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
-          AddDecisionQueue("OP", $currentPlayer, "LOSEHEALTH", 1);
-          if(!SearchCurrentTurnEffects($characterID, $currentPlayer)) { //The effect only apply to one event of damage. Anti-duplicate.
-            AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $characterID, 1);
-          }
+          AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
       case "EVO001": case "EVO002":

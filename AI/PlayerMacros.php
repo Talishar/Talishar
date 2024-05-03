@@ -40,9 +40,9 @@ function ProcessMacros()
           else if($layers[5] != "-")//Means there is a unique ID
           {
             $subtype = CardSubType($layers[2]);
-            if(DelimStringContains($subtype, "Aura") && GetAuraGemState($layers[1], $layers[2]) == 0) { $somethingChanged = true; PassInput(); }
-            else if(DelimStringContains($subtype, "Item") && GetItemGemState($layers[1], $layers[2]) == 0) { $somethingChanged = true; PassInput(); }
-            else if($layers[2] == "DTD564" && GetCharacterGemState($layers[1], $layers[2]) == 0) { $somethingChanged = true; PassInput(); }
+            if(DelimStringContains($subtype, "Aura") && GetAuraGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
+            else if(DelimStringContains($subtype, "Item") && GetItemGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
+            else if($layers[2] == "DTD564" && GetCharacterGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
           }
         }
       }

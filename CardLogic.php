@@ -1431,6 +1431,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("ELSE", $player, "-");
       AddDecisionQueue("WRITELOG", $player, "<b>Arakni</b> left the top card there", 1);
       break;
+    case "DTD133": case "DTD134":
+        AddDecisionQueue("YESNO", $player, "if you want to pay 1 life for Vynnset");
+        AddDecisionQueue("NOPASS", $player, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
+        AddDecisionQueue("OP", $player, "LOSEHEALTH", 1);
+        if(!SearchCurrentTurnEffects($parameter, $player)) { //The effect only apply to one event of damage. Anti-duplicate.
+          AddDecisionQueue("ADDCURRENTEFFECT", $player, $parameter, 1);
+        }
+      break;
     case "DYN152":
       $deck = new Deck($player);
       if($deck->Reveal()) {
