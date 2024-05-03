@@ -1165,7 +1165,7 @@ function HasBladeBreak($cardID)
     case "HVY135": case "HVY155": case "HVY175": return true;
     case "HVY198": case "HVY199": case "HVY200": case "HVY201": return true;
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
-    case "ASB006":
+    case "ASB006": return true;
     default: return false;
   }
 }
