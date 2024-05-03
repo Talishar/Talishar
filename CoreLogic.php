@@ -996,7 +996,7 @@ function RollDie($player, $fromDQ=false, $subsequent=false, $reroll=false)
     if($otherPlayerHasGamblersGloves) AddLayer("TRIGGER", $otherPlayer, "CRU179", $player, $fromDQ);
     if(!$fromDQ && !$subsequent) AddDecisionQueue("AFTERDIEROLL", $player, "-");
   } else {
-    if(!$subsequent) AfterDieRoll($player);
+    AfterDieRoll($player);
   }
 }
 function AfterDieRoll($player)
