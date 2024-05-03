@@ -5,8 +5,8 @@
 
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/v6.1.1/json/english/card.json";
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/bright-lights/json/english/card.json";
-  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/part-the-mistveil/json/english/card.json"; //!MST
-  //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/develop/json/english/card.json"; //!AKO
+  //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/part-the-mistveil/json/english/card.json"; //!MST
+  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/develop/json/english/card.json"; //!AKO
   $curl = curl_init();
   $headers = array(
     "Content-Type: application/json",
