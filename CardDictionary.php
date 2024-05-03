@@ -450,7 +450,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "CRU") return CRUAbilityType($cardID, $index);
   else if($set == "MON") return MONAbilityType($cardID, $index, $from);
   else if($set == "ELE") return ELEAbilityType($cardID, $index, $from);
-  else if($set == "EVR") return EVRAbilityType($cardID, $index);
+  else if($set == "EVR") return EVRAbilityType($cardID, $index, $from);
   else if($set == "UPR") return UPRAbilityType($cardID, $index);
   else if($set == "DVR") return DVRAbilityType($cardID);
   else if($set == "RVD") return RVDAbilityType($cardID);

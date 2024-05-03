@@ -27,7 +27,7 @@
     }
   }
 
-  function EVRAbilityType($cardID, $index=-1)
+  function EVRAbilityType($cardID, $index=-1, $from="")
   {
     global $currentPlayer, $mainPlayer, $defPlayer;
     switch($cardID)
@@ -39,7 +39,9 @@
       case "EVR103": return "A";
       case "EVR137": return "I";
       case "EVR121": return "I";
-      case "EVR157": return $currentPlayer == $mainPlayer ? "I" : "";
+      case "EVR157": 
+        if($from == "PLAY") return "I";
+        else return "AA";
       case "EVR173": case "EVR174": case "EVR175": return "I";
       case "EVR176": return "AR";
       case "EVR177": return "I";
