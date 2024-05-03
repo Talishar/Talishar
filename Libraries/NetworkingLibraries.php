@@ -1590,7 +1590,7 @@ function PlayCardSkipCosts($cardID, $from)
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
   }
-  PlayCardEffect($cardID, $from, 0);
+  PlayCardEffect($cardID, $from, "Skipped");
 }
 
 function GetLayerTarget($cardID)
@@ -2421,7 +2421,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         return;
       }
     }
-    $target = GetMzCard($currentPlayer, GetAttackTarget());
+    if($resourcesPaid != "Skipped") $target = GetMzCard($currentPlayer, GetAttackTarget());
     if(!$skipDRResolution && !$isSpectraTarget && $target != "") $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
     if($isSpectraTarget) {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts:$additionalCosts);
