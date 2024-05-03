@@ -229,6 +229,7 @@ if ($decklink != "") {
           }
         }
       }
+
       if($id == "" && isset($cards[$i]->{'cardIdentifier'})) {
         $id = $cards[$i]->{'cardIdentifier'};
       }
@@ -236,11 +237,6 @@ if ($decklink != "") {
       $id = GetAltCardID($id);
       $cardType = CardType($id);
       $cardSet = substr($id, 0, 3);
-
-      if (IsCardBanned($id, $format)) {
-        if ($bannedCard != "") $bannedCard .= ", ";
-        $bannedCard .= CardName($id);
-      }
 
       if ($cardType == "") { //Card not supported, error
         if ($unsupportedCards != "") $unsupportedCards .= " ";
@@ -360,6 +356,11 @@ if ($decklink != "") {
           $sideboardCards .= $id;
         }
         $totalCards += $numMainBoard + $numSideboard;
+      }
+
+      if (IsCardBanned($id, $format, $character)) {
+        if ($bannedCard != "") $bannedCard .= ", ";
+        $bannedCard .= CardName($id);
       }
     }
     $deckLoaded = true;
@@ -678,21 +679,25 @@ function GetAltCardID($cardID)
   return $cardID;
 }
 
-function isClashLegal($cardID) {
+function isClashLegal($cardID, $character) {
+  $set = substr($cardID, 0, 3);
+  $number = intval(substr($cardID, 3, 3));
   switch (CardType($cardID)) {
     case "C": case "M": case "W":
-      return false;
+      return true;
     default: break;
   }
-  if(IsSpecialization($cardID)) return false;
-  if(Rarity($cardID) == "C" || Rarity($cardID) == "T" || Rarity($cardID) == "R") return false;
-  return true;
+  if(IsSpecialization($cardID)) return true;
+  if(Rarity($cardID) == "C" || Rarity($cardID) == "T" || Rarity($cardID) == "R") return true;
+  if(($character == "DYN001" || $character == "") && $cardID == "ARC159") return true; //C&C is legal for Emperor in Clash
+  if(($character == "DTD002" || $character == "") && $set == "DTD" && $number >= 5 && $number <= 12) return true; //Figments are legal for Prism in Clash
+  return false;
 }
-function IsCardBanned($cardID, $format)
+function IsCardBanned($cardID, $format, $character)
 {
   $set = substr($cardID, 0, 3);
   if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R")) return true;
-  if ($format == "clash") return isClashLegal($cardID);
+  if ($format == "clash") return !isClashLegal($cardID, $character);
   //Ban spoiler cards in non-open-format
   if($format != "livinglegendscc" && ($set == "MST")) return true; // Launch 31st May
   if($format != "livinglegendscc" && ($set == "ASB")) return true; // Launch 12th July
