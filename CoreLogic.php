@@ -691,12 +691,14 @@ function UnsetTurnBanish()
   $p1Banish->UnsetModifier("ARC119");
   $p1Banish->UnsetModifier("TTFromOtherPlayer");
   $p1Banish->UnsetModifier("MST236");
+  $p1Banish->UnsetModifier("REMOVEGRAVEYARD");
   $p2Banish = new Banish(2);
   $p2Banish->UnsetModifier("TT");
   $p2Banish->UnsetModifier("INST");
   $p2Banish->UnsetModifier("ARC119");
   $p2Banish->UnsetModifier("TTFromOtherPlayer");
   $p2Banish->UnsetModifier("MST236");
+  $p2Banish->UnsetModifier("REMOVEGRAVEYARD");
   UnsetCombatChainBanish();
   ReplaceBanishModifier($defPlayer, "NT", "TT");
   ReplaceBanishModifier($mainPlayer, "NTFromOtherPlayer", "TTFromOtherPlayer");

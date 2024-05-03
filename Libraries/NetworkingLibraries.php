@@ -1250,7 +1250,6 @@ function RemoveBanishedCardFromGraveyard() //Already Dead code
   $banish = &GetBanish($defPlayer);
   for($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
     if($banish[$i+1] == "REMOVEGRAVEYARD") {
-      WriteLog("here");
       $index = SearchGetFirstIndex(SearchMultizone($defPlayer, "MYDISCARD:cardID=" . $banish[$i]));
       RemoveGraveyard($defPlayer, $index);
     }
