@@ -319,12 +319,12 @@ function ArsenalPlayCardAbilities($cardID)
 
 function HasIncreasedAttack()
 {
-  global $CombatChain;
+  global $CombatChain, $combatChainState, $CCS_LinkBaseAttack;
   if($CombatChain->HasCurrentLink()) {
     $attack = 0;
     $defense = 0;
     EvaluateCombatChain($attack, $defense);
-    if($attack > AttackValue($CombatChain->AttackCard()->ID())) return true;
+    if($attack > $combatChainState[$CCS_LinkBaseAttack]) return true;
   }
   return false;
 }
