@@ -1575,8 +1575,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     PermanentPlayAbilities($cardID, $from);
     if(SubtypeContains($cardID, "Evo", $currentPlayer, $uniqueID)) EvoOnPlayHandling($currentPlayer);
   }
-  WriteLog($decisionQueue[0] . "-" . $decisionQueue[DecisionQueuePieces()]);
-  if($dqState[8] == -1){
+  if($dqState[8] <= 0){
     AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID));
     ProcessDecisionQueue();
   }
