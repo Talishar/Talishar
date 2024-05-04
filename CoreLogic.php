@@ -2339,7 +2339,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       break;
     case "EVO028": case "EVO428":
       if(SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
-        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
+        MZMoveCard($player, "MYDISCARD:type=AA;maxAttack=6;minAttack=6", "MYTOPDECK-4");
       }
       break;
     case "EVO029": case "EVO429":
