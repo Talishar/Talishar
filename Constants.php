@@ -394,10 +394,6 @@ function ResetCombatChainState()
   $combatChainState[$CCS_HitThisLink] = 0;
   $combatChainState[$CCS_PhantasmThisLink] = 0;
   $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = 0;
-  $defCharacter = &GetPlayerCharacter($defPlayer);
-  for($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
-    $defCharacter[$i + 6] = 0;
-  }
   for($i = 0; $i < count($chainLinks); ++$i) {
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j + 2] != "1") continue;
@@ -441,6 +437,10 @@ function ResetCombatChainState()
   CombatChainClosedCharacterEffects();
   CombatChainClosedMainCharacterEffects();
   RemoveEffectsOnChainClose();
+  $defCharacter = &GetPlayerCharacter($defPlayer);
+  for($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
+    $defCharacter[$i + 6] = 0;
+  }
   $chainLinks = [];
   $chainLinkSummary = [];
 }

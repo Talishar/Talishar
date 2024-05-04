@@ -836,7 +836,6 @@ function CombatChainClosedCharacterEffects()
     {
       if($chainLinks[$i][$j+1] != $defPlayer) continue;
       $charIndex = FindCharacterIndex($defPlayer, $chainLinks[$i][$j]);
-      //if($character[$charIndex+6] == 0) continue;
       if($charIndex == -1) continue;
       if($chainLinks[$i][$j] == "MON187") {
         $character[$charIndex+1] = 0;
@@ -846,7 +845,10 @@ function CombatChainClosedCharacterEffects()
       {
         if(HasTemper($chainLinks[$i][$j]))
         {
-          if($character[$charIndex+1] != 0) $character[$charIndex+4] -= 1; //Add -1 block counter
+          if($character[$charIndex+1] != 0 && $character[$charIndex+6] != 0) {
+            $character[$charIndex+4] -= 1; //Add -1 block counter
+            $character[$charIndex+6] = 0;
+          }
           if((BlockValue($character[$charIndex]) + $character[$charIndex+4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j+5]) <= 0)
           {
             DestroyCharacter($defPlayer, $charIndex);
@@ -2281,7 +2283,7 @@ function EvoHandling($cardID, $player, $from)
         else AddGraveyard($cardID, $otherPlayer, "GRAVEYARD", $player);
         WriteLog("<b>*ERR0R* // No base of that type equipped //</b>");
       }
-      break;
+      break; 
     }
   }
 }
