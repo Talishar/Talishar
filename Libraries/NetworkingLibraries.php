@@ -1392,7 +1392,7 @@ function FinalizeTurn()
 
 function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID = -1)
 {
-  global $playerID, $turn, $currentPlayer, $actionPoints, $layers;
+  global $playerID, $turn, $currentPlayer, $actionPoints, $layers, $dqState;
   global $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $lastPlayed, $CS_PlayIndex, $CS_NumBluePlayed;
   global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed;
@@ -1403,6 +1403,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $dynCostResolved = intval($dynCostResolved);
   $layerPriority[0] = ShouldHoldPriority(1);
   $layerPriority[1] = ShouldHoldPriority(2);
+  $cardType = CardType($cardID);
   $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
 
   if($dynCostResolved == -1) {
@@ -1427,7 +1428,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $lastPlayed = [];
       $lastPlayed[0] = $cardID;
       $lastPlayed[1] = $currentPlayer;
-      $lastPlayed[2] = CardType($cardID);
+      $lastPlayed[2] = $cardType;
       $lastPlayed[3] = "-";
       SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
     }
@@ -1466,7 +1467,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       //CR 5.1.4a Declare targets for resolution abilities
       if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) GetLayerTarget($cardID);
       //CR 5.1.4b Declare target of attack
-      if($turn[0] == "M" && $actionPoints > 0) AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from);
+      if($turn[0] == "M" && $actionPoints > 0 && $cardType != "A") AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from);
 
       if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       else AddDecisionQueue("GETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
@@ -1574,8 +1575,16 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     PermanentPlayAbilities($cardID, $from);
     if(SubtypeContains($cardID, "Evo", $currentPlayer, $uniqueID)) EvoOnPlayHandling($currentPlayer);
   }
-  AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID));
-  ProcessDecisionQueue();
+  WriteLog($decisionQueue[0] . "-" . $decisionQueue[DecisionQueuePieces()]);
+  if($dqState[8] == -1){
+    AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID));
+    ProcessDecisionQueue();
+  }
+  else {
+    ProcessDecisionQueue();
+    AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID));
+  }
+
 }
 
 function PlayCardSkipCosts($cardID, $from)

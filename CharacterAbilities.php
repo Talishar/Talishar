@@ -999,7 +999,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
-      case "DTD133": case "DTD134":
+      case "DTD133": case "DTD134": //Vynnset
         if(CardType($cardID) == "A" && TalentContains($cardID, "SHADOW", $currentPlayer))
         {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);

@@ -202,6 +202,9 @@ function ChainLinkSummaryPieces()
   return 8;
 }
 
+//0 - Card ID
+//1 - PlayerId
+//2 - ??
 function DecisionQueuePieces()
 {
   return 5;

@@ -126,8 +126,8 @@ switch ($mode) {
       }
     }
     if(count($layers) > count($newLayers)) {
-      for($i = $dqState[8] + LayerPieces(); $i < $dqState[8] + LayerPieces() * 2; ++$i) {
-        array_push($newLayers, $layers[$i]);
+      for($i = $dqState[8] + LayerPieces(); $i < $dqState[8] + LayerPieces() * count($layers); ++$i) {
+        if(isset($layers[$i])) array_push($newLayers, $layers[$i]);
       }
     }
     $layers = $newLayers;

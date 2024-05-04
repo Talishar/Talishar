@@ -258,7 +258,6 @@ function ProcessDecisionQueue()
 {
   global $turn, $decisionQueue, $dqState;
   if($dqState[0] != "1") {
-    $count = count($turn);
     if(count($turn) < 3) $turn[2] = "-";
     $dqState[0] = "1"; //If the decision queue is currently active/processing
     $dqState[1] = $turn[0];
@@ -326,6 +325,7 @@ function ContinueDecisionQueue($lastResult = "")
   global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer;
+  $count = 0;
   if(count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
     else if(count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
@@ -1561,6 +1561,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "DTD233":
+      global $CS_NextNAACardGoAgain;
+      SetClassState($player, $CS_NextNAACardGoAgain, 1);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "DTD564":
