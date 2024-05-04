@@ -897,7 +897,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MON198": return $discard->NumCards() < 6;
     case "MON230": return GetClassState($player, $CS_NumAttackCards) == 0 || GetClassState($player, $CS_NumNonAttackCards) == 0;
     case "MON238": return GetClassState($player, $CS_DamageTaken) == 0 && GetClassState($otherPlayer, $CS_DamageTaken) == 0;
-    case "MON281": case "MON282": case "MON283": return SearchCurrentTurnEffectsForUniqueID($combatChain[$index+7]) != -1;
+    case "MON281": case "MON282": case "MON283": 
+      if(isset($combatChain[$index+7])) return SearchCurrentTurnEffectsForUniqueID($combatChain[$index+7]) != -1;
+      else return true;
     case "ELE031": case "ELE032": case "ELE115": return !ArsenalHasFaceDownCard($player);
     case "ELE118": return $from == "ARS" || ArsenalEmpty($player);
     case "ELE125": case "ELE126": case "ELE127":
