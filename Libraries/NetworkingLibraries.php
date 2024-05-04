@@ -1467,7 +1467,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       //CR 5.1.4a Declare targets for resolution abilities
       if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) GetLayerTarget($cardID);
       //CR 5.1.4b Declare target of attack
-      if($turn[0] == "M" && $actionPoints > 0 && $cardType != "A") AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from);
+      if($turn[0] == "M" && $actionPoints > 0) AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from);
 
       if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       else AddDecisionQueue("GETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
@@ -2402,7 +2402,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
   }
   if($index > -1) SetClassState($currentPlayer, $CS_PlayIndex, $index);
-
   $definedCardType = CardType($cardID);
   $definedCardSubType = CardSubType($cardID);
   //Figure out where it goes
