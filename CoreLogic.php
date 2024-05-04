@@ -836,6 +836,7 @@ function CombatChainClosedCharacterEffects()
     {
       if($chainLinks[$i][$j+1] != $defPlayer) continue;
       $charIndex = FindCharacterIndex($defPlayer, $chainLinks[$i][$j]);
+      if($character[$charIndex+6] == 0) continue;
       if($charIndex == -1) continue;
       if($chainLinks[$i][$j] == "MON187") {
         $character[$charIndex+1] = 0;

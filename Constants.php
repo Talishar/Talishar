@@ -149,7 +149,7 @@ function AllyPieces()
   return 10;
 }
 
-//Card ID
+//0 - Card ID
 function PermanentPieces()
 {
   return 1;
@@ -167,6 +167,7 @@ function LayerPieces()
   return 7;
 }
 
+//0 - Card ID
 function LandmarkPieces()
 {
   return 2;
