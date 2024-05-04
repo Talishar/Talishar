@@ -1166,13 +1166,13 @@ function FinalizeChainLink($chainClosed = false)
   ProcessDecisionQueue();
 }
 
-function CleanUpCombatEffects($weaponSwap = false, $skip=false)
+function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget=false)
 {
   global $currentTurnEffects;
   $effectsToRemove = [];
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $effectArr = explode(",", $currentTurnEffects[$i]);
-    if(($skip || IsCombatEffectActive($effectArr[0])) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0])) {
+    if(IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0])) {
       if($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
       --$currentTurnEffects[$i+3];
       if ($currentTurnEffects[$i+3] == 0) array_push($effectsToRemove, $i);
@@ -2517,7 +2517,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     CopyCurrentTurnEffectsFromAfterResolveEffects();
     CacheCombatResult();
     if(!$isBlock) ProcessAllMirage();
-    if($isSpectraTarget) CleanUpCombatEffects(false, $isSpectraTarget);
+    if($isSpectraTarget) CleanUpCombatEffects(isSpectraTarget:$isSpectraTarget);
   }
   if($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID)) RemoveCharacterEffects($currentPlayer, GetClassState($currentPlayer, $CS_CharacterIndex), "INSTANT");
   //Now determine what needs to happen next
