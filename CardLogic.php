@@ -1047,6 +1047,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "CRU099":
       PutItemIntoPlayForPlayer($target, $player);
+      RemoveBanish($player, SearchBanishForCard($player, $target));
       break;
     case "CRU102":
       AddDecisionQueue("DRAW", $player, "-", 1);
@@ -1612,6 +1613,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       MZChooseAndDestroy($player, "MYITEMS", may:true, context:"Choose an item to galvanize");
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
+      break;
+    case "EVO073":
+    {
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment it cannot be activated until the end of its controller next turn");
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+      AddDecisionQueue("ADDSTASISTURNEFFECT", $otherPlayer, "EVO073-", 1);
+    }
       break;
     case "HVY648":
       if(IsAllyAttacking()){

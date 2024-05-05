@@ -43,6 +43,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
       Draw($player);
     }
   }
+  if($item == "EVO073") AddLayer("TRIGGER", $player, $item);
 }
 
 function ItemUses($cardID)
@@ -442,10 +443,7 @@ function ItemDestroyedAbility($player, $index)
   $cardID = $items[$index];
   switch($cardID) {
     case "EVO073":
-      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment it cannot be activated until the end of its controller next turn");
-      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      AddDecisionQueue("ADDSTASISTURNEFFECT", $otherPlayer, "EVO073-", 1);
+      AddLayer("TRIGGER", $player, $cardID);
       break;
     default: break;
   }

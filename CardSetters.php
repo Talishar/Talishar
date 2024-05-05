@@ -21,6 +21,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   $rv = -1;
   if($player == "") $player = $currentPlayer;
   $character = &GetPlayerCharacter($player);
+  $items = &GetItems($player);
   $characterID = ShiyanaCharacter($character[0]);
   AddEvent("BANISH", ($modifier == "INT" || $modifier == "UZURI" ? "CardBack" : $cardID));
   //Effects that change the modifier
@@ -33,7 +34,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     $character = &GetPlayerCharacter($player);
     AddLayer("TRIGGER", $player, $character[0], $cardID);
   }
-  elseif(CardType($cardID) != "T") { //If you banish a token, the token ceases to exist.
+  if(CardType($cardID) != "T") { //If you banish a token, the token ceases to exist.
     $rv = count($banish);
     array_push($banish, $cardID);
     array_push($banish, $modifier);
