@@ -629,7 +629,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($CombatChain->HasCurrentLink()) if ($CombatChain->AttackCard()->ID() == "MON245" && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
   if(SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
   if(($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
-  if($from == "CC" && AbilityPlayableFromCombatChain($cardID)) return true;
+  if($from == "PLAY" && AbilityPlayableFromCombatChain($cardID)) return true;
   if(($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
   if($cardID == "DYN492a" || $cardID == "EVO410") {
     if (($phase == "M" && $mainPlayer == $currentPlayer)) {
