@@ -1502,7 +1502,7 @@ function HaveUnblockedEquip($player)
   for($i=CharacterPieces(); $i<count($char); $i+=CharacterPieces()) {
     if($char[$i+1] == 0) continue;//If broken
     if($char[$i+6] == 1) continue;//On combat chain
-    if(CardType($char[$i]) != "E") continue;
+    if(!TypeContains($char[$i], "E", $player)) continue;
     if(BlockValue($char[$i]) == -1) continue;
     return true;
   }
@@ -1516,7 +1516,7 @@ function NumEquipBlock()
   for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
   {
     if(DelimStringContains(CardSubType($combatChain[$i]), "Evo") && $combatChain[$i+1] == $defPlayer && $combatChainState[$CCS_RequiredEquipmentBlock] < 1) ++$numEquipBlock; // Working, but technically wrong until we get CardTypeContains
-    else if(CardType($combatChain[$i]) == "E" && $combatChain[$i+1] == $defPlayer) ++$numEquipBlock;
+    else if(TypeContains($combatChain[$i], "E", $defPlayer) && $combatChain[$i+1] == $defPlayer) ++$numEquipBlock;
   }
   return $numEquipBlock;
 }
@@ -1528,7 +1528,7 @@ function HaveUnblockedNegCounterEquip($player)
     if($char[$i+1] == 0) continue;//If broken
     if($char[$i+4] == 0) continue;//No negative counters
     if($char[$i+6] == 1) continue;//On combat chain
-    if(CardType($char[$i]) != "E") continue;
+    if(!TypeContains($char[$i], "E", $player)) continue;
     if(BlockValue($char[$i]) == -1) continue;
     return true;
   }
@@ -1542,7 +1542,7 @@ function NumNegCounterEquipBlock()
   for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
   {
     if(DelimStringContains(CardSubType($combatChain[$i]), "Evo") && $combatChain[$i+1] == $defPlayer && $combatChain[$i+4] < 0 && $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] < 1) ++$numNegCounterEquipBlock;
-    else if(CardType($combatChain[$i]) == "E" && $combatChain[$i+1] == $defPlayer && $combatChain[$i+4] < 0) ++$numNegCounterEquipBlock;
+    else if(TypeContains($combatChain[$i], "E", $defPlayer) && $combatChain[$i+1] == $defPlayer && $combatChain[$i+4] < 0) ++$numNegCounterEquipBlock;
   }
   return $numNegCounterEquipBlock;
 }
