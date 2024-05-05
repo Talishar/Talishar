@@ -516,6 +516,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = new Deck($player);
       $deck->AddBottom($lastResult);
       return $lastResult;
+    case "ADDTOPDECK":
+      $deck = new Deck($player);
+      $deck->AddTop($lastResult);
+      return $lastResult;
     case "MULTIADDDECK":
       $deck = new Deck($player);
       $cards = explode(",", $lastResult);
