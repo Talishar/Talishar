@@ -25,6 +25,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $hand = &GetHand($currentPlayer);
   switch($cardID) {
     case "MST001": case "MST002":
       AddDecisionQueue("DECKCARDS", $otherPlayer, "0");
@@ -171,6 +172,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(HasAimCounter()) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
+      return "";
+    case "MST234":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(count($hand) == 0) Draw($currentPlayer);
       return "";
     default: return "";
   }
