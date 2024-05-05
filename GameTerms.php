@@ -23,7 +23,7 @@ function TypeToPlay($phase)
   global $turn;
   switch ($phase) {
     case "M":
-      return "an Action";
+      return "an action";
     case "B":
       return "a card to block";
     case "A":

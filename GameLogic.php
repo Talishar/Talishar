@@ -283,6 +283,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         writelog("Your arsenal is full, you cannot put a card in your arsenal");
         return "PASS";
       }
+    case "TURNCHARACTERFACEUP":
+      $character = &GetPlayerCharacter($player);
+      $character[$lastResult+12] = "UP";
+      return $lastResult;
     case "TURNARSENALFACEUP":
       $arsenal = &GetArsenal($player);
       $arsenal[$lastResult+1] = "UP";

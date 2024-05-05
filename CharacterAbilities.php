@@ -235,9 +235,22 @@ function CharacterStartTurnAbility($index)
       AddCurrentTurnEffect("HVY254-1", $mainPlayer);
       AddCurrentTurnEffect("HVY254-2", $mainPlayer);
       break;
-     case "MST067": case "MST069": case "MST070":
+    case "MST067": case "MST069": case "MST070":
       $index = FindCharacterIndex($mainPlayer, $cardID);
       if($character[$index+12] == "UP") DestroyCharacter($mainPlayer, $index);
+      break;
+    case "MST068":
+      $index = FindCharacterIndex($mainPlayer, $cardID);
+      if($character[$index+12] == "DOWN" && GetHealth($mainPlayer) == 1) {
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to turn face-up " . CardLink($cardID, $cardID) . "?", 1);
+        AddDecisionQueue("YESNO", $mainPlayer, "an_action", 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $index, 1);
+        AddDecisionQueue("TURNCHARACTERFACEUP", $mainPlayer, "-", 1);
+        AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
+        MZMoveCard($mainPlayer, "MYDECK:sameName=MST499", "MYHAND", may:true, isReveal:true, isSubsequent:true);
+        AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
+      }
       break;
     default: break;
   }
