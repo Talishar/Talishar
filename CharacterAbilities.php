@@ -12,62 +12,66 @@
 //9 - Is Active (2 = always active, 1 = yes, 0 = no)
 //10 - Subcards , delimited
 //11 - Unique ID
+//12 - Face Up/Down
 class Character
 {
-    // property declaration
-    public $cardID = "";
-    public $status = 2;
-    public $numCounters = 0;
-    public $numAttackCounters = 0;
-    public $numDefenseCounters = 0;
-    public $numUses = 0;
-    public $onChain = 0;
-    public $flaggedForDestruction = 0;
-    public $frozen = 0;
-    public $isActive = 2;
-    public $subCards = "";
-    public $uniqueID = 0;
+  // property declaration
+  public $cardID = "";
+  public $status = 2;
+  public $numCounters = 0;
+  public $numAttackCounters = 0;
+  public $numDefenseCounters = 0;
+  public $numUses = 0;
+  public $onChain = 0;
+  public $flaggedForDestruction = 0;
+  public $frozen = 0;
+  public $isActive = 2;
+  public $subCards = "";
+  public $uniqueID = 0;
+  public $facing = "UP";
 
-    private $player = null;
-    private $arrIndex = -1;
 
-    public function __construct($player, $index)
-    {
-      $this->player = $player;
-      $this->arrIndex = $index;
-      $array = &GetPlayerCharacter($player);
+  private $player = null;
+  private $arrIndex = -1;
 
-      $this->cardID = $array[$index];
-      $this->status = $array[$index+1];
-      $this->numCounters = $array[$index+2];
-      $this->numAttackCounters = $array[$index+3];
-      $this->numDefenseCounters = $array[$index+4];
-      $this->numUses = $array[$index+5];
-      $this->onChain = $array[$index+6];
-      $this->flaggedForDestruction = $array[$index+7];
-      $this->frozen = $array[$index+8];
-      $this->isActive = $array[$index+9];
-      $this->subCards = $array[$index+10];
-      $this->uniqueID = $array[$index+11];
-    }
+  public function __construct($player, $index)
+  {
+    $this->player = $player;
+    $this->arrIndex = $index;
+    $array = &GetPlayerCharacter($player);
 
-    public function Finished()
-    {
-      $array = &GetPlayerCharacter($this->player);
-      $array[$this->arrIndex] = $this->cardID;
-      $array[$this->arrIndex+1] = $this->status;
-      $array[$this->arrIndex+2] = $this->numCounters;
-      $array[$this->arrIndex+3] = $this->numAttackCounters;
-      $array[$this->arrIndex+4] = $this->numDefenseCounters;
-      $array[$this->arrIndex+5] = $this->numUses;
-      $array[$this->arrIndex+6] = $this->onChain;
-      $array[$this->arrIndex+7] = $this->flaggedForDestruction;
-      $array[$this->arrIndex+8] = $this->frozen;
-      $array[$this->arrIndex+9] = $this->isActive;
-      $array[$this->arrIndex+10] = $this->subCards;
-      $array[$this->arrIndex+11] = $this->uniqueID;
-    }
+    $this->cardID = $array[$index];
+    $this->status = $array[$index+1];
+    $this->numCounters = $array[$index+2];
+    $this->numAttackCounters = $array[$index+3];
+    $this->numDefenseCounters = $array[$index+4];
+    $this->numUses = $array[$index+5];
+    $this->onChain = $array[$index+6];
+    $this->flaggedForDestruction = $array[$index+7];
+    $this->frozen = $array[$index+8];
+    $this->isActive = $array[$index+9];
+    $this->subCards = $array[$index+10];
+    $this->uniqueID = $array[$index+11];
+    $this->facing = $array[$index+12];
+  }
 
+  public function Finished()
+  {
+    $array = &GetPlayerCharacter($this->player);
+    $array[$this->arrIndex] = $this->cardID;
+    $array[$this->arrIndex+1] = $this->status;
+    $array[$this->arrIndex+2] = $this->numCounters;
+    $array[$this->arrIndex+3] = $this->numAttackCounters;
+    $array[$this->arrIndex+4] = $this->numDefenseCounters;
+    $array[$this->arrIndex+5] = $this->numUses;
+    $array[$this->arrIndex+6] = $this->onChain;
+    $array[$this->arrIndex+7] = $this->flaggedForDestruction;
+    $array[$this->arrIndex+8] = $this->frozen;
+    $array[$this->arrIndex+9] = $this->isActive;
+    $array[$this->arrIndex+10] = $this->subCards;
+    $array[$this->arrIndex+11] = $this->uniqueID;
+    $array[$this->arrIndex+12] = $this->facing;
+  }
 }
 
 function PutCharacterIntoPlayForPlayer($cardID, $player)
@@ -86,6 +90,7 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   array_push($char, 2);
   array_push($char, "-");
   array_push($char, GetUniqueId($cardID, $player));
+  array_push($char, HasCloaked($cardID));
   return $index;
 }
 
@@ -233,6 +238,22 @@ function CharacterStartTurnAbility($index)
       AddCurrentTurnEffect("HVY254-2", $mainPlayer);
       break;
     default: break;
+  }
+}
+function CharacterStartTurnAbilities()
+{
+  global $mainPlayer;
+  $character = &GetPlayerCharacter($mainPlayer);
+  for($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if($character[$i + 1] == 0 || $character[$i + 1] == 1) continue; //Do not process ability if it is destroyed
+    $character[$i] = ShiyanaCharacter($character[$i]);
+    switch($character[$i]) {
+      case "MST067": case "MST069": case "MST070":
+        if($character[$i+12] == "UP") DestroyCharacter($mainPlayer, $i);
+        break;
+      default:
+        break;
+    }
   }
 }
 
@@ -790,6 +811,13 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       DestroyCharacter($currentPlayer, $cardIndex, true);
       MZMoveCard($currentPlayer, "MYDISCARD:pitch=1", "MYBANISH,GY,-");
       MZMoveCard($currentPlayer, "MYDISCARD:pitch=2", "MYBANISH,GY,-");
+      break;
+    case "MST067": case "MST069": case "MST070": 
+      $character[$cardIndex + 12] = "UP";
+      break;
+    case "MST071": case "MST072": case "MST073": case "MST074":
+      $character[$cardIndex + 12] = "UP";
+      DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "MST232": 
       DestroyCharacter($currentPlayer, $cardIndex, true);

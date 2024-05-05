@@ -420,22 +420,40 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
-    array_push($characterContents, JSONRenderedCard(
-     $theirChar,
-     borderColor: $border,
-     overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0),
-     counters: $counters,
-     defCounters: $theirCharacter[$i + 4],
-     atkCounters: $atkCounters,
-     controller: $otherPlayer,
-     type: $type,
-     sType: $sType,
-     isFrozen: ($theirCharacter[$i + 8] == 1),
-     onChain: ($theirCharacter[$i + 6] == 1),
-     isBroken: ($theirCharacter[$i + 1] == 0),
-     label: $label,
-     numUses: $theirCharacter[$i + 5],
-     subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]));
+    if ($theirCharacter[$i + 12] == "UP" || $playerID == 3 && IsCasterMode() || IsGameOver()) {
+      array_push($characterContents, JSONRenderedCard(
+        $theirChar,
+        borderColor: $border,
+        overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0),
+        counters: $counters,
+        defCounters: $theirCharacter[$i + 4],
+        atkCounters: $atkCounters,
+        controller: $otherPlayer,
+        type: $type,
+        sType: $sType,
+        isFrozen: ($theirCharacter[$i + 8] == 1),
+        onChain: ($theirCharacter[$i + 6] == 1),
+        isBroken: ($theirCharacter[$i + 1] == 0),
+        label: $label,
+        facing: $theirCharacter[$i + 12],
+        numUses: $theirCharacter[$i + 5],
+        subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]
+        ));
+    } else {
+      array_push($characterContents, JSONRenderedCard(
+          $TheirCardBack,
+          overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0),
+          counters: $counters,
+          defCounters: $theirCharacter[$i + 4],
+          atkCounters: $atkCounters,
+          controller: $otherPlayer,
+          type: $type,
+          sType: $sType,
+          label: $label,
+          facing: $theirCharacter[$i + 12],
+          subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]
+          ));
+    } 
   }
   $response->opponentEquipment = $characterContents;
 
@@ -580,6 +598,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       $myCharacter[$i + 8] == 1, //Frozen
       $gem,
       label: $label,
+      facing: $myCharacter[$i + 12],
       numUses: $myCharacter[$i + 5], //Number of Uses
       subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
   }
@@ -1133,6 +1152,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       }
 
       if ($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN") $card = $TheirCardBack;
+      if ($option[0] == "THEIRCHAR" && $theirCharacter[$i + 12] == "DOWN") $card = $TheirCardBack;
 
       //Show Life and Def counters on allies in the popups
       if ($option[0] == "THEIRALLY") {

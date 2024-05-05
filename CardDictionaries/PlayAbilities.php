@@ -109,6 +109,15 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "MST067":
+      Draw($currentPlayer);
+      return "";
+    case "MST069":
+      AddCurrentTurnEffect($cardID, $mainPlayer);
+      return "";
+    case "MST070":
+      GiveAttackGoAgain();
+      return "";
     case "MST080":
       Draw($currentPlayer);
       Draw($currentPlayer);

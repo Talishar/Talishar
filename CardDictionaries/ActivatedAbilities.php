@@ -32,7 +32,9 @@ function MSTAbilityCost($cardID)
   {
     case "MST001": case "MST002": return 3; 
     case "MST025": case "MST026": return 3; 
-    case "MST046": case "MST047": return 3; 
+    case "MST046": case "MST047": return 3;
+    case "MST067": return 3;
+    case "MST069": case "MST070": return 1;
     default: return 0;
   }
 }
@@ -44,6 +46,9 @@ function MSTAbilityType($cardID, $index=-1, $from="-")
     case "MST001": case "MST002": return "I"; 
     case "MST025": case "MST026": return "I"; 
     case "MST046": case "MST047": return "I"; 
+    case "MST067": return "I";
+    case "MST069": case "MST070": return "AR";
+    case "MST071": case "MST072": case "MST073": case "MST074": return "I";
     case "MST232": return "I";
     default: return "";
   }

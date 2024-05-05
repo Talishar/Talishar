@@ -1064,6 +1064,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST097": return count($otherPlayerDiscard) <= 0;
     case "MST099": return CombineSearches(SearchDiscard($player, "A"), SearchDiscard($player, "AA")) == "";
     case "AKO024": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
+    case "MST067": case "MST071": case "MST072": case "MST073": case "MST074": 
+      $charIndex = FindCharacterIndex($player, $cardID);
+      return $character[$charIndex+12] != "DOWN";
+    case "MST069": case "MST070": 
+      $charIndex = FindCharacterIndex($player, $cardID);
+      return $character[$charIndex+12] != "DOWN" || !$CombatChain->HasCurrentLink();
     case "MST098":
       if($CombatChain->HasCurrentLink()) return false;//If there's an attack, there's a valid target
       if(count($layers) == 0) return true;//If there's no attack, and no layers, nothing to do
@@ -1975,5 +1981,15 @@ function IsModular($cardID)
   switch($cardID) {
     case "EVO013": return true;
     default: return false;
+  }
+}
+
+function HasCloaked($cardID)
+{
+  switch($cardID) {
+    case "MST067": case "MST068": case "MST069": case "MST070": 
+    case "MST071": case "MST072": case "MST073": case "MST074": 
+      return "DOWN";
+    default: return "UP";
   }
 }
