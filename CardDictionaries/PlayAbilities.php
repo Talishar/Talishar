@@ -753,13 +753,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
         break;
       case "EVO073":
-        if($from != "PLAY") {
-          AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target equipment it cannot be activated until the end of its controller next turn");
-          AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
-          AddDecisionQueue("ADDSTASISTURNEFFECT", $otherPlayer, "EVO073-", 1);
-        }
-        else {
+        if($from == "PLAY") {
           $index = GetClassState($currentPlayer, $CS_PlayIndex);
           RemoveItem($currentPlayer, $index);
           $deck = new Deck($currentPlayer);

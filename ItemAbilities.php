@@ -159,7 +159,6 @@ function DestroyItemForPlayer($player, $index, $skipDestroy=false)
       AddGraveyard($items[$index], $player, "PLAY");
     IncrementClassState($player, $CS_NumItemsDestroyed);
   }
-  ItemDestroyedAbility($player, $index);
   $cardID = $items[$index];
   for($i = $index + ItemPieces() - 1; $i >= $index; --$i) {
     if($items[$i] == "DYN492c") {
@@ -436,17 +435,3 @@ function ItemsAttackModifiers($cardID, $player, $from) {
   return $attackModifier;
 }
 
-function ItemDestroyedAbility($player, $index)
-{
-  $otherPlayer = ($player == 1 ? 2 : 1);
-  $items = &GetItems($player);
-  $cardID = $items[$index];
-  switch($cardID) {
-    case "EVO073":
-      AddLayer("TRIGGER", $player, $cardID);
-      break;
-    default: break;
-  }
-}
-
-?>
