@@ -23,7 +23,7 @@ function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 } 
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer;
+  global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer, $CS_DamagePrevention;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $hand = &GetHand($currentPlayer);
   switch($cardID) {
@@ -117,6 +117,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "MST070":
       GiveAttackGoAgain();
+      return "";
+    case "MST071": case "MST072": case "MST073": case "MST074":
+      IncrementClassState($currentPlayer, $CS_DamagePrevention);
       return "";
     case "MST080":
       Draw($currentPlayer);
