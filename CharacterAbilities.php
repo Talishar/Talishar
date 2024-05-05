@@ -615,6 +615,7 @@ function EquipEquipment($player, $card, $slot="")
       $char[$i+9] = 2;
       $char[$i+10] = "";
       $char[$i+11] = $uniqueID;
+      $char[$i+12] = HasCloaked($card);
       $replaced = 1;
     }
   }
@@ -633,6 +634,7 @@ function EquipEquipment($player, $card, $slot="")
     array_splice($char, $insertIndex+9, 0, 2);
     array_splice($char, $insertIndex+10, 0, "");
     array_splice($char, $insertIndex+11, 0, $uniqueID);
+    array_splice($char, $insertIndex+12, 0, HasCloaked($card));
   }
   if($card == "EVO013") AddCurrentTurnEffect("EVO013-" . $uniqueID . "," . $slot, $player);
 }
@@ -663,6 +665,7 @@ function EquipWeapon($player, $card)
         $char[$i+9] = 2;
         $char[$i+10] = "-";
         $char[$i+11] = GetUniqueId($card, $player);
+        $char[$i+12] = HasCloaked($card);
         $replaced = 1;
       }
       else if(Is1H($char[$i])) ++$numHands;
@@ -684,6 +687,7 @@ function EquipWeapon($player, $card)
     array_splice($char, $insertIndex+9, 0, 2);
     array_splice($char, $insertIndex+10, 0, "");
     array_splice($char, $insertIndex+11, 0, GetUniqueId($card, $player));
+    array_splice($char, $insertIndex+12, 0, HasCloaked($card));
   }
 }
 
