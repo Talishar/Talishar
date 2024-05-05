@@ -168,7 +168,6 @@ function StartTurnAbilities()
   global $mainPlayer, $defPlayer;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for($i=count($mainCharacter) - CharacterPieces(); $i>=0; $i -= CharacterPieces()) CharacterStartTurnAbility($i);
-  CharacterStartTurnAbilities();
   ArsenalStartTurnAbilities();
   DefCharacterStartTurnAbilities();
   ArsenalStartTurnAbilities();
