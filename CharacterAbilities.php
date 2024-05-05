@@ -125,6 +125,7 @@ function CharacterStartTurnAbility($index)
   global $mainPlayer;
   $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $char = new Character($mainPlayer, $index);
+  $character = GetPlayerCharacter($mainPlayer);
   if($char->status == 0 && !CharacterTriggerInGraveyard($char->cardID)) return;
   if($char->status == 1 || $char->status == 3) return;
   $cardID = $char->cardID;
@@ -174,13 +175,11 @@ function CharacterStartTurnAbility($index)
       }
       break;
     case "DTD564":
-      $character = GetPlayerCharacter($mainPlayer);
       if($character[1] < 3) {
         AddCurrentTurnEffect("DTD564", $mainPlayer);
       }
       break;
     case "DTD133": case "DTD134":
-      $character = GetPlayerCharacter($mainPlayer);
       if($character[1] < 3) {
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to banish for Vynnset");
         MZMoveCard($mainPlayer, "MYHAND", "MYBANISH,HAND,-");
@@ -230,30 +229,17 @@ function CharacterStartTurnAbility($index)
       PlayAura("MON104", $mainPlayer);
       break;
     case "HVY047": case "HVY048":
-      $character = GetPlayerCharacter($mainPlayer);
       if(!SearchCurrentTurnEffects($cardID."-1", $mainPlayer) && $character[1] < 3) AddCurrentTurnEffect($cardID."-1", $mainPlayer);
       break;
     case "HVY254":
       AddCurrentTurnEffect("HVY254-1", $mainPlayer);
       AddCurrentTurnEffect("HVY254-2", $mainPlayer);
       break;
+     case "MST067": case "MST069": case "MST070":
+      $index = FindCharacterIndex($mainPlayer, $cardID);
+      if($character[$index+12] == "UP") DestroyCharacter($mainPlayer, $index);
+      break;
     default: break;
-  }
-}
-function CharacterStartTurnAbilities()
-{
-  global $mainPlayer;
-  $character = &GetPlayerCharacter($mainPlayer);
-  for($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if($character[$i + 1] == 0 || $character[$i + 1] == 1) continue; //Do not process ability if it is destroyed
-    $character[$i] = ShiyanaCharacter($character[$i]);
-    switch($character[$i]) {
-      case "MST067": case "MST069": case "MST070":
-        if($character[$i+12] == "UP") DestroyCharacter($mainPlayer, $i);
-        break;
-      default:
-        break;
-    }
   }
 }
 
