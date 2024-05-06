@@ -1843,6 +1843,7 @@ function WardAmount($cardID, $player)
     case "DTD405": case "DTD406": case "DTD407": case "DTD408"://Angels
     case "DTD409": case "DTD410": case "DTD411": case "DTD412": return 4;
     case "EVO244": return 1;
+    case "MST028": return 4;
     default: return 0;
   }
 }
@@ -1866,6 +1867,10 @@ function HasWard($cardID, $player)
       return true;
     case "EVO093": case "EVO094": case "EVO095": case "EVO244":
       return true;
+    case "MST028": 
+      $char = &GetPlayerCharacter($player);
+      $index = FindCharacterIndex($player, $cardID);
+      return $char[$index+12] == "UP";
     default: return false;
   }
 }
@@ -1995,6 +2000,7 @@ function IsModular($cardID)
 function HasCloaked($cardID)
 {
   switch($cardID) {
+    case "MST028": case "MST029": case "MST030":
     case "MST067": case "MST068": case "MST069": case "MST070": 
     case "MST071": case "MST072": case "MST073": case "MST074": 
       return "DOWN";
