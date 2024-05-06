@@ -1752,6 +1752,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "AKO019":
       AddCurrentTurnEffect($parameter, $player, "CC");
       break;
+    case "MST050":
+      AddPlayerHand("DYN065", $player, $parameter);
+      break;
     case "ASB006":
       Charge();
       AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
