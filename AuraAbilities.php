@@ -18,6 +18,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     $index = SearchArsenalReadyCard($player, "MON404");
     if($index > -1) TheLibrarianEffect($player, $index);
   }
+  if($cardID == "MST043" || $cardID == "MST044" || $cardID == "MST045") $numAttackCounters += SearchPitchForColor($player, 3) > 0 ? 1 : 0;
   $myHoldState = AuraDefaultHoldTriggerState($cardID);
   if($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
   $theirHoldState = AuraDefaultHoldTriggerState($cardID);

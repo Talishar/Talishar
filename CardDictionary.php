@@ -1860,6 +1860,9 @@ function WardAmount($cardID, $player)
     case "MST040": return 3;
     case "MST041": return 2;
     case "MST042": return 1;
+    case "MST043": return 3;
+    case "MST044": return 2;
+    case "MST045": return 1;
     default: return 0;
   }
 }
@@ -1888,8 +1891,8 @@ function HasWard($cardID, $player)
       $index = FindCharacterIndex($player, $cardID);
       return $char[$index+12] == "UP";
     case "MST037": case "MST038": case "MST039":
-      return true;
     case "MST040": case "MST041": case "MST042":
+    case "MST043": case "MST044": case "MST045":
       return true;
     default: return false;
   }
