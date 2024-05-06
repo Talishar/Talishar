@@ -1064,6 +1064,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST097": return count($otherPlayerDiscard) <= 0;
     case "MST099": return CombineSearches(SearchDiscard($player, "A"), SearchDiscard($player, "AA")) == "";
     case "AKO024": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
+    case "MST023": case "MST024": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "MST067": case "MST071": case "MST072": case "MST073": case "MST074": 
       $charIndex = FindCharacterIndex($player, $cardID);
       return $character[$charIndex+12] != "DOWN";
@@ -1195,6 +1196,7 @@ function HasBattleworn($cardID)
     case "EVO410b": case "EVO438": case "EVO439": case "EVO440": case "EVO441": case "EVO235": return true;
     case "EVO442": case "EVO443": case "EVO444": case "EVO445": return true;
     case "HVY010": case "HVY099": return true;
+    case "MST006": case "MST007": return true;
     case "MST232": return true;
     case "AKO005": return true;
     default: return false;

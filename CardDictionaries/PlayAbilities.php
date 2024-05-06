@@ -51,7 +51,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         {
           switch($modes[$i])
           {
-            case "Create_a_Fang_Strike_and_Slither": break; //TODO: When we know what those are
+            case "Create_a_Fang_Strike_and_Slither": 
+              AddPlayerHand("MST023", $currentPlayer, $cardID);
+              AddPlayerHand("MST024", $currentPlayer, $cardID);
+              break;
             case "Banish_up_to_2_cards_in_an_opposing_hero_graveyard": 
               AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
               AddDecisionQueue("MULTICHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
@@ -65,6 +68,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "MST023": case "MST024":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";  
     case "MST025": case "MST026": 
       PlayAura("MON104", $currentPlayer, 1, numAttackCounters:1);
       return "";
