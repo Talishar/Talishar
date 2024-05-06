@@ -7,6 +7,44 @@ function MSTHitEffect($cardID)
     case "MST003":
       AddCurrentTurnEffect($cardID, $mainPlayer);
       break;
+    case "MST106": case "MST107": case "MST108": 
+      if(IsHeroAttackTarget())
+      {
+        $deck = new Deck($defPlayer);
+        $deckCard = $deck->Top(true);
+        if($deckCard != "") BanishCardForPlayer($deckCard, $defPlayer, "THEIRDECK", "-", $cardID);
+      }
+      break;
+    case "MST109": case "MST110": case "MST111": 
+    case "MST112": case "MST113": case "MST114": 
+      if(IsHeroAttackTarget() && NumAttackReactionsPlayed() > 1)
+      {
+        $deck = new Deck($defPlayer);
+        $deckCard = $deck->Top(true);
+        if($deckCard != "") BanishCardForPlayer($deckCard, $defPlayer, "THEIRDECK", "-", $cardID);
+        $deckCard = $deck->Top(true);
+        if($deckCard != "") BanishCardForPlayer($deckCard, $defPlayer, "THEIRDECK", "-", $cardID);
+      }
+      break;
+    case "MST115": case "MST116": case "MST117": 
+      if(IsHeroAttackTarget())
+      {
+        $deck = new Deck($defPlayer);
+        $deckCard = $deck->Top(true);
+        if($deckCard != "") BanishCardForPlayer($deckCard, $defPlayer, "THEIRDECK", "-", '');
+        MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,THEIRBANISH,-,".$cardID, false, true);
+      }
+      break;
+    case "MST118": case "MST119": case "MST120": 
+    case "MST121": case "MST122": case "MST123": 
+    case "MST124": case "MST125": case "MST126":
+      if(IsHeroAttackTarget())
+      {
+        $deck = new Deck($defPlayer);
+        $deckCard = $deck->Top(true);
+        if($deckCard != "") BanishCardForPlayer($deckCard, $defPlayer, "THEIRDECK", "-", $cardID);
+      }
+      break;
     case "MST233":
       $trapsArr = explode(",",SearchDiscard($mainPlayer, subtype:"Trap"));
       if(count($trapsArr) >= 3) {
