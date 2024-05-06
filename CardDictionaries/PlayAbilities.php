@@ -44,6 +44,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "MST003":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "MST010":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);
