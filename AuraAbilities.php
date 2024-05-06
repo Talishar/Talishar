@@ -145,6 +145,9 @@ function AuraLeavesPlay($player, $index)
     case "MST155": case "MST156": case "MST157":
       if(SearchAura($player, class:"ILLUSIONIST") == "") AddCurrentTurnEffect($cardID, $player, "PLAY");
       break;
+    case "MST155": case "MST156": case "MST157":
+      if(SearchAura($player, class:"ILLUSIONIST") == "") AddCurrentTurnEffect($cardID, $player, "PLAY");
+      break;
     default: break;
   }
 }
