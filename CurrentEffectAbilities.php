@@ -369,26 +369,17 @@ function EffectBlockModifier($cardID, $index, $from)
     case "MON089":
       if($CombatChain->Card($index)->ID() == $cardID) return 1;
       return 0;
-    case "ELE000-2":
-      return 1;
-    case "ELE143":
-      return 1;
-    case "ELE203":
-      return ($CombatChain->Card($index)->ID() == $cardID ? 1 : 0);
-    case "OUT109":
-      return (PitchValue($CombatChain->Card($index)->ID()) == 1 && HasAimCounter() ? -1 : 0);
-    case "OUT110":
-      return (PitchValue($CombatChain->Card($index)->ID()) == 2 && HasAimCounter() ? -1 : 0);
-    case "OUT111":
-      return (PitchValue($CombatChain->Card($index)->ID()) == 3 && HasAimCounter() ? -1 : 0);
-    case "DTD094": case "DTD095": case "DTD096":
-      return (CardType($CombatChain->Card($index)->ID()) != "E" && TalentContains($CombatChain->Card($index)->ID(), "LIGHT", $defPlayer) && TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $mainPlayer) ? 1 : 0);
-    case "TCC035": case "HVY063":
-      return (CachedTotalAttack() >= 13 && !TypeContains($CombatChain->Card($index)->ID(), "E") && !DelimStringContains(CardSubType($CombatChain->Card($index)->ID()), "Evo")) ? -1 : 0;
-    case "EVO105": case "EVO106": case "EVO107":
-      return IsActionCard($CombatChain->Card($index)->ID()) ? -1 : 0;
-    case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206":
-      return $CombatChain->Card($index)->ID() == $cardID && PlayerHasLessHealth($defPlayer) ? 1 : 0;
+    case "ELE000-2": return 1;
+    case "ELE143": return 1;
+    case "ELE203": return ($CombatChain->Card($index)->ID() == $cardID ? 1 : 0);
+    case "OUT109": return (PitchValue($CombatChain->Card($index)->ID()) == 1 && HasAimCounter() ? -1 : 0);
+    case "OUT110": return (PitchValue($CombatChain->Card($index)->ID()) == 2 && HasAimCounter() ? -1 : 0);
+    case "OUT111": return (PitchValue($CombatChain->Card($index)->ID()) == 3 && HasAimCounter() ? -1 : 0);
+    case "DTD094": case "DTD095": case "DTD096": return (CardType($CombatChain->Card($index)->ID()) != "E" && TalentContains($CombatChain->Card($index)->ID(), "LIGHT", $defPlayer) && TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $mainPlayer) ? 1 : 0);
+    case "TCC035": case "HVY063": return (CachedTotalAttack() >= 13 && !TypeContains($CombatChain->Card($index)->ID(), "E") && !DelimStringContains(CardSubType($CombatChain->Card($index)->ID()), "Evo")) ? -1 : 0;
+    case "EVO105": case "EVO106": case "EVO107": return IsActionCard($CombatChain->Card($index)->ID()) ? -1 : 0;
+    case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return $CombatChain->Card($index)->ID() == $cardID && PlayerHasLessHealth($defPlayer) ? 1 : 0;
+    case "MST085": return SearchPitchForColor($mainPlayer, 3);
     default: return 0;
   }
 }

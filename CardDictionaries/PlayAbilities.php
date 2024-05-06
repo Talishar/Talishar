@@ -179,6 +179,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST082": 
       if(GetClassState($currentPlayer, $CS_Transcended) > 0) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "MST084": case "MST085": case "MST086":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "MST087": case "MST088": case "MST089": case "MST090":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
