@@ -19,6 +19,19 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     if($index > -1) TheLibrarianEffect($player, $index);
   }
   if($cardID == "MST043" || $cardID == "MST044" || $cardID == "MST045") $numAttackCounters += SearchPitchForColor($player, 3) > 0 ? 1 : 0;
+  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST155", $player) && CardCost($cardID) <= 2) {
+    ++$numAttackCounters;
+    RemoveCurrentTurnEffect(SearchCurrentTurnEffects("MST155", $player));
+  }
+  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST156", $player) && CardCost($cardID) <= 1) {
+    ++$numAttackCounters;
+    RemoveCurrentTurnEffect(SearchCurrentTurnEffects("MST156", $player));
+  }
+  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST157", $player) && CardCost($cardID) <= 0)  {
+    ++$numAttackCounters;
+    RemoveCurrentTurnEffect(SearchCurrentTurnEffects("MST157", $player));
+  }
+
   $myHoldState = AuraDefaultHoldTriggerState($cardID);
   if($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
   $theirHoldState = AuraDefaultHoldTriggerState($cardID);
@@ -127,6 +140,9 @@ function AuraLeavesPlay($player, $index)
       if(SearchPitchForColor($player, 3) > 0) PlayAura("MON104", $player);
       break;
     case "MST139": 
+      if(SearchAura($player, class:"ILLUSIONIST") == "") AddCurrentTurnEffect($cardID, $player, "PLAY");
+      break;
+    case "MST155": case "MST156": case "MST157":
       if(SearchAura($player, class:"ILLUSIONIST") == "") AddCurrentTurnEffect($cardID, $player, "PLAY");
       break;
     default: break;
