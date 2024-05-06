@@ -776,21 +776,39 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if($preventable) $damage -= 1;
           $remove = true;
           break;
-        case "MST034":
+        case "MST034-1":
           if($preventable) {
-            $damage -= GetClassState($player, $CS_Transcended) > 0 ? 5 : 3;
+            $damage -= 3;
           }
           $remove = true;
           break;
-        case "MST035":
+        case "MST035-1":
           if($preventable) {
-            $damage -= GetClassState($player, $CS_Transcended) > 0 ? 4 : 2;
+            $damage -= 2;
           }
           $remove = true;
           break;
-        case "MST036":
+        case "MST036-1":
           if($preventable) {
-            $damage -= GetClassState($player, $CS_Transcended) > 0 ? 3 : 1;
+            $damage -= 1;
+          }
+          $remove = true;
+          break;
+        case "MST034-2":
+          if($preventable) {
+            $damage -= 5;
+          }
+          $remove = true;
+          break;
+        case "MST035-2":
+          if($preventable) {
+            $damage -= 4;
+          }
+          $remove = true;
+          break;
+        case "MST036-2":
+          if($preventable) {
+            $damage -= 3;
           }
           $remove = true;
           break;

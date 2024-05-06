@@ -75,7 +75,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "MST011": case "MST012": case "MST013":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(GetClassState($currentPlayer, $CS_Transcended) <= 0) AddCurrentTurnEffect($cardID."-1", $currentPlayer);
+      else AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       return "";  
     case "MST014": case "MST015": case "MST016":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -117,7 +118,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "MST034": case "MST035": case "MST036":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(GetClassState($currentPlayer, $CS_Transcended) <= 0) AddCurrentTurnEffect($cardID."-1", $currentPlayer);
+      else AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       return "";
     case "MST046": case "MST047": 
       AddPlayerHand("DYN065", $currentPlayer, "NA");
@@ -144,6 +146,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           }
         }
       }
+      return "";
+    case "MST054": case "MST055": case "MST056":
+      if(GetClassState($currentPlayer, $CS_Transcended) <= 0) AddCurrentTurnEffect($cardID."-1", $currentPlayer);
+      else AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       return "";
     case "MST057":
       if(SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("DYN065", $currentPlayer, "NA");

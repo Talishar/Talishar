@@ -6,9 +6,12 @@ function MSTEffectAttackModifier($cardID) {
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
   switch($cardID) {
-    case "MST011": return GetClassState($mainPlayer, $CS_Transcended) > 0 ? 5 : 3;
-    case "MST012": return GetClassState($mainPlayer, $CS_Transcended) > 0 ? 4 : 2;
-    case "MST013": return GetClassState($mainPlayer, $CS_Transcended) > 0 ? 3 : 1;
+    case "MST011-1": return 3;
+    case "MST012-1": return 2;
+    case "MST013-1": return 1;
+    case "MST011-2": return 5;
+    case "MST012-2": return 4;
+    case "MST013-2": return 3;
     case "MST014": return 3;
     case "MST015": return 2;
     case "MST016": return 1;
@@ -18,6 +21,12 @@ function MSTEffectAttackModifier($cardID) {
     case "MST023": return 1;
     case "MST048": return 1;
     case "MST053": return 1;
+    case "MST054-1": 3;
+    case "MST055-1": 2;
+    case "MST056-1": 1;
+    case "MST054-2": 5;
+    case "MST055-2": 4;
+    case "MST056-2": 3;
     case "MST069": return 1;
     case "MST087": case "MST088": case "MST089": case "MST090": return 2;
     case "MST095": return -1;
@@ -41,6 +50,7 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST020": case "MST021": case "MST022": return true;
     case "MST023": case "MST024": return true;
     case "MST048": case "MST053": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
+    case "MST054": case "MST055": case "MST056": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
     case "MST069": return true;
     case "MST087": case "MST088": case "MST089": case "MST090": return GetClassState($mainPlayer, $CS_NumBluePlayed) > 1;
     case "MST092": return PitchValue($attackID) == 3;
