@@ -482,6 +482,11 @@ function OnAttackEffects($attack)
             AskWager(substr($currentTurnEffects[$i], 0, 6));
           }
           break;
+        case "MST092":
+          if(PitchValue($attack) == 3) {
+            Draw($mainPlayer);
+            $remove = true;
+          }  
         default:
           break;
       }
