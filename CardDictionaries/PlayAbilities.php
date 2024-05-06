@@ -152,13 +152,18 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       else AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       return "";
     case "MST057": case "MST058": case "MST059":
-      if(SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("DYN065", $currentPlayer, "NA");
+    case "MST060": case "MST061": case "MST062":
+      if(SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("DYN065", $currentPlayer, $cardID);
+      return "";
+    case "MST063": case "MST064": case "MST065":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("DYN065", $currentPlayer, $cardID);
       return "";
     case "MST067":
       Draw($currentPlayer);
       return "";
     case "MST069":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "MST070":
       GiveAttackGoAgain();
@@ -170,6 +175,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       Draw($currentPlayer);
       Draw($currentPlayer);
       if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") Draw($currentPlayer); 
+      return "";
+    case "MST082": 
+      if(GetClassState($currentPlayer, $CS_Transcended) > 0) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "MST087": case "MST088": case "MST089": case "MST090":
       AddCurrentTurnEffect($cardID, $currentPlayer);
