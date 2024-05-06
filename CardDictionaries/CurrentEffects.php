@@ -2,6 +2,7 @@
 
 function MSTEffectAttackModifier($cardID) {
   global $mainPlayer, $CS_Transcended;
+  global $mainPlayer, $CS_Transcended;
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
   switch($cardID) {
