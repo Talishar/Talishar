@@ -469,12 +469,12 @@ function SearchPitchHighestAttack(&$pitch)
   return $highest;
 }
 
-function SearchPitchForColor($player, $color)
+function SearchPitchForColor($player, $pitchValue)
 {
   $count = 0;
   $pitch = &GetPitch($player);
   for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
-    if (PitchValue($pitch[$i]) == $color) ++$count;
+    if (PitchValue($pitch[$i]) == $pitchValue) ++$count;
   }
   return $count;
 }

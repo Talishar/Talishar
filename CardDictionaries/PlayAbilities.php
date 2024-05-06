@@ -112,6 +112,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "MST057":
+      if(SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("DYN065", $currentPlayer, "NA");
+      return "";
     case "MST067":
       Draw($currentPlayer);
       return "";
