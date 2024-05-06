@@ -1872,6 +1872,9 @@ function WardAmount($cardID, $player)
     case "MST045": return 1;
     case "MST139": return 2;
     case "MST146": case "MST147": case "MST148": return 2;
+    case "MST149": return 3;
+    case "MST150": return 2;
+    case "MST151": return 1;
     default: return 0;
   }
 }
@@ -1904,7 +1907,9 @@ function HasWard($cardID, $player)
     case "MST043": case "MST044": case "MST045":
       return true;
     case "MST139": return true;
-    case "MST146": case "MST147": case "MST148": return true;
+    case "MST146": case "MST147": case "MST148": 
+    case "MST149": case "MST150": case "MST151": 
+      return true;
     default: return false;
   }
 }

@@ -235,6 +235,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       else if ($cardID == "MST148") $amount = 1;
       if(SearchAura($currentPlayer, class:"ILLUSIONIST") == "") $auras[3] += $amount;
       return "";
+    case "MST149": case "MST150": case "MST151": 
+      if(SearchAura($currentPlayer, class:"ILLUSIONIST") == "") PlayAura("MON104", $currentPlayer);
+      return "";
     case "MST225":
       PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
       $numGold = CountItem("DYN243", $currentPlayer);
