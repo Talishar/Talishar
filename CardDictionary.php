@@ -1184,6 +1184,10 @@ function HasBladeBreak($cardID)
     case "HVY135": case "HVY155": case "HVY175": return true;
     case "HVY198": case "HVY199": case "HVY200": case "HVY201": return true;
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
+    case "MST049": 
+      $char = &GetPlayerCharacter($defPlayer);
+      $index = FindCharacterIndex($defPlayer, $cardID);
+      return $char[$index+12] == "UP";
     case "ASB006": return true;
     default: return false;
   }
@@ -2024,6 +2028,7 @@ function HasCloaked($cardID)
 {
   switch($cardID) {
     case "MST028": case "MST029": case "MST030":
+    case "MST049": case "MST050":
     case "MST067": case "MST068": case "MST069": case "MST070": 
     case "MST071": case "MST072": case "MST073": case "MST074": 
       return "DOWN";

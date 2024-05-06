@@ -245,6 +245,16 @@ function CharacterStartTurnAbility($index)
         AddDecisionQueue("TURNCHARACTERFACEUP", $mainPlayer, "-", 1);
       }
       break;
+    case "MST049": 
+      $index = FindCharacterIndex($mainPlayer, $cardID);
+      if($character[$index+12] == "DOWN" && GetHealth($mainPlayer) == 1) {
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to turn face-up " . CardLink($cardID, $cardID) . "?", 1);
+        AddDecisionQueue("YESNO", $mainPlayer, "an_action", 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $index, 1);
+        AddDecisionQueue("TURNCHARACTERFACEUP", $mainPlayer, "-", 1);
+      }
+      break;
     case "MST067": case "MST069": case "MST070":
       $index = FindCharacterIndex($mainPlayer, $cardID);
       if($character[$index+12] == "UP") DestroyCharacter($mainPlayer, $index);
