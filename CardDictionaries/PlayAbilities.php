@@ -151,7 +151,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_Transcended) <= 0) AddCurrentTurnEffect($cardID."-1", $currentPlayer);
       else AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       return "";
-    case "MST057":
+    case "MST057": case "MST058": case "MST059":
       if(SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("DYN065", $currentPlayer, "NA");
       return "";
     case "MST067":
