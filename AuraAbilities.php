@@ -126,6 +126,9 @@ function AuraLeavesPlay($player, $index)
     case "MST040": case "MST041": case "MST042":
       if(SearchPitchForColor($player, 3) > 0) PlayAura("MON104", $player);
       break;
+    case "MST139": 
+      if(count($auras) <= 0) AddCurrentTurnEffect($cardID, $player, "PLAY");
+      break;
     default: break;
   }
 }
