@@ -769,6 +769,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           $remove = true;
           break;
         case "AKO019":
+        case "MST203": case "MST204": case "MST205":
           if($preventable) $damage -= 1;
           $remove = true;
           break;

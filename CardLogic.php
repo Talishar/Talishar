@@ -1758,6 +1758,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_2_Might_tokens_from_" . CardLink("AKO005", "AKO005"), 1);
       break;
     case "AKO019":
+    case "MST203": case "MST204": case "MST205":
       AddCurrentTurnEffect($parameter, $player, "CC");
       break;
     case "MST050":

@@ -453,6 +453,7 @@ function OnBlockResolveEffects()
         if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
         break;
       case "AKO019": // Battlefront Bastion
+      case "MST203": case "MST204": case "MST205":
         if (NumCardsBlocking() <= 1) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       default:

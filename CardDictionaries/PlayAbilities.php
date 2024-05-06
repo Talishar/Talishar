@@ -248,6 +248,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST166":
       if(ComboActive()) BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
       return "";
+    case "MST200": case "MST201": case "MST202":
+      if(IsHeroAttackTarget()) MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH", true, true, DQContext:"Choose a card to banish from their graveyard.");
+      return "";
     case "MST225":
       PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
       $numGold = CountItem("DYN243", $currentPlayer);
