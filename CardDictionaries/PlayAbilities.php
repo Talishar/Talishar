@@ -251,6 +251,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST200": case "MST201": case "MST202":
       if(IsHeroAttackTarget()) MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH", true, true, DQContext:"Choose a card to banish from their graveyard.");
       return "";
+    case "MST212": case "MST213": case "MST214":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "MST225":
       PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
       $numGold = CountItem("DYN243", $currentPlayer);
