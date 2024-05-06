@@ -116,6 +116,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "MST034": case "MST035": case "MST036":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "MST046": case "MST047": 
       AddPlayerHand("DYN065", $currentPlayer, "NA");
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:comboOnly=true", 1);

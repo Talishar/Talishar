@@ -619,7 +619,7 @@ function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
 
 function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable)
 {
-  global $currentPlayer, $currentTurnEffects;
+  global $currentPlayer, $currentTurnEffects, $CS_Transcended;
   $otherPlayer = ($player == 1 ? 2 : 1);
   for($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0 && $damage > 0; $i -= CurrentTurnEffectPieces()) {
     $remove = false;
@@ -774,6 +774,24 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           break;
         case "AKO019":
           if($preventable) $damage -= 1;
+          $remove = true;
+          break;
+        case "MST034":
+          if($preventable) {
+            $damage -= GetClassState($player, $CS_Transcended) > 0 ? 5 : 3;
+          }
+          $remove = true;
+          break;
+        case "MST035":
+          if($preventable) {
+            $damage -= GetClassState($player, $CS_Transcended) > 0 ? 4 : 2;
+          }
+          $remove = true;
+          break;
+        case "MST036":
+          if($preventable) {
+            $damage -= GetClassState($player, $CS_Transcended) > 0 ? 3 : 1;
+          }
           $remove = true;
           break;
         default: break;
