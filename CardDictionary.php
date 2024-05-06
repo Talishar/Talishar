@@ -1857,6 +1857,9 @@ function WardAmount($cardID, $player)
     case "MST039":
       if(SearchPitchForColor($player, 3) > 0) return 2;
       else return 1;
+    case "MST040": return 3;
+    case "MST041": return 2;
+    case "MST042": return 1;
     default: return 0;
   }
 }
@@ -1885,6 +1888,8 @@ function HasWard($cardID, $player)
       $index = FindCharacterIndex($player, $cardID);
       return $char[$index+12] == "UP";
     case "MST037": case "MST038": case "MST039":
+      return true;
+    case "MST040": case "MST041": case "MST042":
       return true;
     default: return false;
   }

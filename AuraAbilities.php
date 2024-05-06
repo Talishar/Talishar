@@ -122,6 +122,9 @@ function AuraLeavesPlay($player, $index)
       $banishIndex = $banishCard->Index();
       if($banishIndex > -1) PlayAura($banish->Remove($banishIndex), $otherPlayer);
       break;
+    case "MST040": case "MST041": case "MST042":
+      if(SearchPitchForColor($player, 3) > 0) PlayAura("MON104", $player);
+      break;
     default: break;
   }
 }
