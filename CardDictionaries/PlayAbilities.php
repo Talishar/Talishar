@@ -77,6 +77,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST011": case "MST012": case "MST013":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";  
+    case "MST014": case "MST015": case "MST016":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("MST024", $currentPlayer, $cardID);
+      return "";
     case "MST023": case "MST024":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";  
