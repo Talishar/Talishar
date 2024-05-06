@@ -1995,3 +1995,12 @@ function HasCloaked($cardID)
     default: return "UP";
   }
 }
+
+function HasEphemeral($cardID) {
+  switch($cardID) {
+    case "DYN065": 
+    case "MST023": case "MST024": 
+      return true;
+    default: return false;
+  }
+}

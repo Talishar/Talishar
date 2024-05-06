@@ -44,6 +44,12 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "MST006":
+      AddPlayerHand("MST023", $currentPlayer, $cardID); //Fang Strike
+      return "";
+    case "MST007":
+      AddPlayerHand("MST024", $currentPlayer, $cardID); //Slither
+      return "";
     case "MST010":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);
@@ -52,8 +58,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           switch($modes[$i])
           {
             case "Create_a_Fang_Strike_and_Slither": 
-              AddPlayerHand("MST023", $currentPlayer, $cardID);
-              AddPlayerHand("MST024", $currentPlayer, $cardID);
+              AddPlayerHand("MST023", $currentPlayer, $cardID); //Fang Strike
+              AddPlayerHand("MST024", $currentPlayer, $cardID); //Slither
               break;
             case "Banish_up_to_2_cards_in_an_opposing_hero_graveyard": 
               AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
