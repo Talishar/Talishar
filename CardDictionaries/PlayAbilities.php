@@ -44,9 +44,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "MST003":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
     case "MST010":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);
@@ -97,6 +94,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       return "";
+    case "MST048":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";  
     case "MST053":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);

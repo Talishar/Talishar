@@ -4,6 +4,9 @@ function MSTHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt;
   switch ($cardID){
+    case "MST003":
+      AddCurrentTurnEffect($cardID, $mainPlayer);
+      break;
     case "MST233":
       $trapsArr = explode(",",SearchDiscard($mainPlayer, subtype:"Trap"));
       if(count($trapsArr) >= 3) {
