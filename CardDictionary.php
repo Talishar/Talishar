@@ -1848,6 +1848,15 @@ function WardAmount($cardID, $player)
     case "EVO244": return 1;
     case "MST028": return 4;
     case "MST029": case "MST030": return 1;
+    case "MST037": 
+      if(SearchPitchForColor($player, 3) > 0) return 4;
+      else return 1;
+    case "MST038": 
+      if(SearchPitchForColor($player, 3) > 0) return 3;
+      else return 1;
+    case "MST039":
+      if(SearchPitchForColor($player, 3) > 0) return 2;
+      else return 1;
     default: return 0;
   }
 }
@@ -1875,6 +1884,8 @@ function HasWard($cardID, $player)
       $char = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $cardID);
       return $char[$index+12] == "UP";
+    case "MST037": case "MST038": case "MST039":
+      return true;
     default: return false;
   }
 }
