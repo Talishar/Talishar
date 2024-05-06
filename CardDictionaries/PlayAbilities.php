@@ -79,8 +79,12 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";  
     case "MST014": case "MST015": case "MST016":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      if(SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("MST024", $currentPlayer, $cardID);
+      if(SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("MST024", $currentPlayer, $cardID); //Slither
       return "";
+    case "MST020": case "MST021": case "MST022":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("MST023", $currentPlayer, $cardID); //Fang Strike
+      return "";  
     case "MST023": case "MST024":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";  

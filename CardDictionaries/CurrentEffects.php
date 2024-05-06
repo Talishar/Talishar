@@ -12,6 +12,9 @@ function MSTEffectAttackModifier($cardID) {
     case "MST014": return 3;
     case "MST015": return 2;
     case "MST016": return 1;
+    case "MST020": return 3;
+    case "MST021": return 2;
+    case "MST022": return 1;
     case "MST023": return 1;
     case "MST048": return 1;
     case "MST053": return 1;
@@ -35,6 +38,7 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST003": return PitchValue($attackID) == 3;
     case "MST011": case "MST012": case "MST013": return true;
     case "MST014": case "MST015": case "MST016": return true;
+    case "MST020": case "MST021": case "MST022": return true;
     case "MST023": case "MST024": return true;
     case "MST048": case "MST053": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
     case "MST069": return true;
