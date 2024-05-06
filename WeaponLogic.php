@@ -25,7 +25,7 @@ function WeaponIndices($chooser, $player, $subtype = "")
       $weapons .= $whoPrefix . "CHAR-" . $i;
     }
   }
-  $auraWeapons = (SearchCharacterForCard($player, "MON003") || SearchCharacterForCard($player, "MON088") || SearchCharacterForCard($player, "DTD216")) && ($player == $mainPlayer);
+  $auraWeapons = (SearchCharacterForCard($player, "MON003") || SearchCharacterForCard($player, "MON088") || SearchCharacterForCard($player, "DTD216") || SearchCharacterForCard($player, "MST130")) && ($player == $mainPlayer);
   if($auraWeapons) {
     $auras = GetAuras($player);
     for($i = 0; $i < count($auras); $i += AuraPieces()) {
@@ -49,6 +49,6 @@ function ApplyEffectToEachWeapon($effectID)
 
 function IsAuraWeapon($cardID, $player, $from)
 {
-  if((SearchCharacterForCard($player, "MON003") || SearchCharacterForCard($player, "MON088") || SearchCharacterForCard($player, "DTD216")) && DelimStringContains(CardSubType($cardID), "Aura") && $from == "PLAY") return true;
+  if((SearchCharacterForCard($player, "MON003") || SearchCharacterForCard($player, "MON088") || SearchCharacterForCard($player, "DTD216") || SearchCharacterForCard($player, "MST130")) && DelimStringContains(CardSubType($cardID), "Aura") && $from == "PLAY") return true;
   else return false;
 }

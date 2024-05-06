@@ -1265,8 +1265,10 @@ function DoesAttackHaveGoAgain()
 
   //Grant go Again
   if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
+    $auras = &GetAuras($mainPlayer);
     if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if($isAura && SearchCharacterForCard($mainPlayer, "MON088")) return true;
+    if($isAura && SearchCharacterForCard($mainPlayer, "MST130") && isset($auras[$combatChainState[$CCS_WeaponIndex]])) return $auras[$combatChainState[$CCS_WeaponIndex]+3] > 0;
   }
   if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) {
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
