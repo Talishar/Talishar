@@ -238,6 +238,13 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST149": case "MST150": case "MST151": 
       if(SearchAura($currentPlayer, class:"ILLUSIONIST") == "") PlayAura("MON104", $currentPlayer);
       return "";
+    case "MST152": case "MST153": case "MST154":  
+      if(SearchAura($currentPlayer, class:"ILLUSIONIST") != "") $amount = 0;
+      else if ($cardID == "MST152") $amount = 3;
+      else if($cardID == "MST153") $amount = 2;
+      else if ($cardID == "MST154") $amount = 1;  
+      PlayAura("MON104", $currentPlayer, numAttackCounters:$amount);
+      return "";
     case "MST225":
       PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
       $numGold = CountItem("DYN243", $currentPlayer);
