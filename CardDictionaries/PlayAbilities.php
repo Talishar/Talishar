@@ -245,6 +245,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       else if ($cardID == "MST154") $amount = 1;  
       PlayAura("MON104", $currentPlayer, numAttackCounters:$amount);
       return "";
+    case "MST166":
+      if(ComboActive()) BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
+      return "";
     case "MST225":
       PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
       $numGold = CountItem("DYN243", $currentPlayer);

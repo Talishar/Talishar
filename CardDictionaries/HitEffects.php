@@ -45,6 +45,9 @@ function MSTHitEffect($cardID)
         if($deckCard != "") BanishCardForPlayer($deckCard, $defPlayer, "THEIRDECK", "-", $cardID);
       }
       break;
+    case "MST173": case "MST174": case "MST175":
+      BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
+      break;
     case "MST233":
       $trapsArr = explode(",",SearchDiscard($mainPlayer, subtype:"Trap"));
       if(count($trapsArr) >= 3) {
