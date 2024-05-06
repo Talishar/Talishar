@@ -91,6 +91,13 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST025": case "MST026": 
       PlayAura("MON104", $currentPlayer, 1, numAttackCounters:1);
       return "";
+    case "MST029": 
+      MZMoveCard($currentPlayer, "MYDISCARD:type=Aura", "MYBOTDECK");
+      return "";
+    case "MST030": 
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasWard=true", 1);
+      AddDecisionQueue("MZADDCOUNTERS", $currentPlayer, "1", 1);
+      return "";
     case "MST032":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);
@@ -193,6 +200,13 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST102":
       AddCurrentTurnEffect($cardID, $mainPlayer);
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) Transcend($currentPlayer, "MST502");
+      return "";
+    case "MST134": case "MST135": case "MST136":
+      $amount = 3;
+      if($cardID == "MST135") $amount = 2;
+      else if ($cardID == "MST135") $amount = 1;
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $target, 1);
+      AddDecisionQueue("MZADDCOUNTERS", $currentPlayer, $amount, 1);
       return "";
     case "MST225":
       PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);

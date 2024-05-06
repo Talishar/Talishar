@@ -825,6 +825,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       MZMoveCard($currentPlayer, "MYDISCARD:pitch=1", "MYBANISH,GY,-");
       MZMoveCard($currentPlayer, "MYDISCARD:pitch=2", "MYBANISH,GY,-");
       break;
+    case "MST029": case "MST030": 
     case "MST067": case "MST069": case "MST070": 
       $character[$cardIndex + 12] = "UP";
       break;

@@ -1071,7 +1071,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
         if((CardType($CombatChain->AttackCard()->ID()) == "AA" && (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $player) || TalentContains($CombatChain->AttackCard()->ID(), "MYSTIC", $player)))) return false;
         return true;
     case "MST023": case "MST024": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
-    case "MST067": case "MST071": case "MST072": case "MST073": case "MST074": 
+    case "MST029": case "MST030": case "MST067": case "MST071": case "MST072": case "MST073": case "MST074": 
       $charIndex = FindCharacterIndex($player, $cardID);
       return $character[$charIndex+12] != "DOWN";
     case "MST069": case "MST070": 
@@ -1088,6 +1088,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if(GetResolvedAbilityType($layers[$layerIndex]) == "AA") return false;
       return true;
     case "MST095": case "MST102": return !$CombatChain->HasCurrentLink();
+    case "MST134": case "MST135": case "MST136": 
+      $auras = &GetAuras($player);
+      return Count($auras) <= 0;
     case "MST232": return (count($myHand) + count($myArsenal)) < 2;
     case "MST236": 
       return $discard->NumCards() < 3;
@@ -1844,6 +1847,7 @@ function WardAmount($cardID, $player)
     case "DTD409": case "DTD410": case "DTD411": case "DTD412": return 4;
     case "EVO244": return 1;
     case "MST028": return 4;
+    case "MST029": case "MST030": return 1;
     default: return 0;
   }
 }
@@ -1867,7 +1871,7 @@ function HasWard($cardID, $player)
       return true;
     case "EVO093": case "EVO094": case "EVO095": case "EVO244":
       return true;
-    case "MST028": 
+    case "MST028": case "MST029": case "MST030":
       $char = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $cardID);
       return $char[$index+12] == "UP";

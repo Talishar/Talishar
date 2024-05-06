@@ -1669,6 +1669,11 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
+    case "MST134": case "MST135": case "MST136":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasWard=true");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target aura");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
     default:
       break;
   }

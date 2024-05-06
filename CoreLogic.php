@@ -1088,6 +1088,8 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
     case "HVY186": case "HVY187": case "HVY188":
     case "HVY209":
       return $from == "HAND";
+    case "MST134": case "MST135": case "MST136":
+      return SearchAuras("MON104", $currentPlayer);
     default: break;
   }
   return false;
