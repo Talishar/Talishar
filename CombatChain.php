@@ -435,7 +435,6 @@ function OnBlockResolveEffects()
       case "HVY210":
       case "HVY239"://Clash blocks
       case "HVY648":
-      case "AKO019": // Battlefront Bastion
       case "MST050":
       case "ASB006":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
@@ -451,6 +450,9 @@ function OnBlockResolveEffects()
         break;
       case "DTD094": case "DTD095": case "DTD096":
         if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
+        break;
+      case "AKO019": // Battlefront Bastion
+        if (NumCardsBlocking() <= 1) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       default:
         break;
