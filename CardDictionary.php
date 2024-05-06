@@ -1064,6 +1064,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST097": return count($otherPlayerDiscard) <= 0;
     case "MST099": return CombineSearches(SearchDiscard($player, "A"), SearchDiscard($player, "AA")) == "";
     case "AKO024": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
+    case "MST011": case "MST012": case "MST013":
+        if(!$CombatChain->HasCurrentLink()) return true;
+        if((CardType($CombatChain->AttackCard()->ID()) == "AA" && (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $player) || TalentContains($CombatChain->AttackCard()->ID(), "MYSTIC", $player)))) return false;
+        return true;
     case "MST023": case "MST024": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "MST067": case "MST071": case "MST072": case "MST073": case "MST074": 
       $charIndex = FindCharacterIndex($player, $cardID);

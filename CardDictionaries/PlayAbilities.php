@@ -74,6 +74,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "MST011": case "MST012": case "MST013":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";  
     case "MST023": case "MST024":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";  
