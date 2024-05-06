@@ -228,6 +228,13 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $target, 1);
       AddDecisionQueue("MZADDCOUNTERS", $currentPlayer, $amount, 1);
       return "";
+    case "MST146": case "MST147": case "MST148": 
+      $auras = &GetAuras($currentPlayer);
+      $amount = 3;
+      if($cardID == "MST147") $amount = 2;
+      else if ($cardID == "MST148") $amount = 1;
+      if(SearchAura($currentPlayer, class:"ILLUSIONIST") == "") $auras[3] += $amount;
+      return "";
     case "MST225":
       PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
       $numGold = CountItem("DYN243", $currentPlayer);

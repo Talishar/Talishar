@@ -127,7 +127,7 @@ function AuraLeavesPlay($player, $index)
       if(SearchPitchForColor($player, 3) > 0) PlayAura("MON104", $player);
       break;
     case "MST139": 
-      if(count($auras) <= 0) AddCurrentTurnEffect($cardID, $player, "PLAY");
+      if(SearchAura($player, class:"ILLUSIONIST") == "") AddCurrentTurnEffect($cardID, $player, "PLAY");
       break;
     default: break;
   }
