@@ -1418,6 +1418,7 @@ function DestroyCharacter($player, $index, $skipDestroy=false, $wasBanished = fa
   if(!$skipDestroy) {
     if (!$wasBanished) AddGraveyard($cardID, $player, "CHAR");
     CharacterDestroyEffect($cardID, $player);
+    if(HasWard($cardID, $player) && ClassContains($cardID, "ILLUSIONIST", $player)) PhantomTidemawDestroy($player);
   }
   return $cardID;
 }
