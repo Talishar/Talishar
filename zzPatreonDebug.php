@@ -14,7 +14,7 @@ if (!isset($_SESSION["useruid"])) {
   exit;
 }
 $useruid = $_SESSION["useruid"];
-if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "Tower") {
+if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "Tower" && $useruid != "PvtVoid") {
   echo ("You must log in to use this page.");
   exit;
 }
