@@ -79,12 +79,12 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
   }
-  if($banishedBy == "MST109" || $banishedBy == "MST110" || $banishedBy == "MST111" && count($banish)/BanishPieces() >= 2) {
-    $index = SearchGetLastIndex(SearchMultizone($player, "THEIRDISCARD:pitch=" . PitchValue($cardID)));
+  if($banishedBy == "MST109" || $banishedBy == "MST110" || $banishedBy == "MST111" && $from == "GY" && count($banish)/BanishPieces() >= 2) {
+    $index = count($banish)-BanishPieces();
     if(PitchValue($banish[$index]) == PitchValue($banish[$index-BanishPieces()])) GainHealth(1, $otherPlayer);
   }
-  if(($banishedBy == "MST115" || $banishedBy == "MST116" || $banishedBy == "MST117") && CardNameContains($cardID, CardName($cardID), $player) && count($banish)/BanishPieces() >= 2) {
-    $index = SearchGetLastIndex(SearchMultizone($player, "THEIRDISCARD:cardID=" . $cardID));
+  if(($banishedBy == "MST115" || $banishedBy == "MST116" || $banishedBy == "MST117") && $from == "GY" && CardNameContains($cardID, CardName($cardID), $player) && count($banish)/BanishPieces() >= 2) {
+    $index = count($banish)-BanishPieces();
     if(CardName($banish[$index]) == CardName($banish[$index-BanishPieces()])) GainHealth(1, $otherPlayer);
   }
   if(($banishedBy == "MST118" || $banishedBy == "MST119" || $banishedBy == "MST120") && TypeContains($cardID, "AA", $player)) {

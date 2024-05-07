@@ -4,7 +4,6 @@ function MSTEffectAttackModifier($cardID) {
   global $mainPlayer, $CS_Transcended;
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
-  WriteLog($cardID);
   switch($cardID) {
     case "MST003": return 1;
     case "MST011-1": return 3;

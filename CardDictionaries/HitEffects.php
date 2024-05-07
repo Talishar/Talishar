@@ -19,7 +19,7 @@ function MSTHitEffect($cardID)
       if(IsHeroAttackTarget())
       {
         $deck->BanishTop(banishedBy:$cardID);
-        if($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,-,".$cardID);
+        if($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,-,".$cardID);
       }
       break;
     case "MST112": case "MST113": case "MST114": 
@@ -34,7 +34,7 @@ function MSTHitEffect($cardID)
       {
         $deck = new Deck($defPlayer);
         $deck->BanishTop(banishedBy:$cardID);
-        if($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,-,".$cardID, false, true);
+        if($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,-,".$cardID, false, true);
       }
       break;
     case "MST118": case "MST119": case "MST120": 
