@@ -2545,8 +2545,8 @@ function ProcessAttackTarget()
   if ($target[0] == "THEIRAURAS") {
     $auras = &GetAuras($defPlayer);
     if (HasSpectra($auras[$target[1]])) {
-      DestroyAura($defPlayer, $target[1]);
       CloseCombatChain();
+      DestroyAura($defPlayer, $target[1]);
       return true;
     }
   }
