@@ -291,6 +291,10 @@
             $remove = true;
           }
           break;
+        case "MST234":
+          $modifier += 1;
+          $remove = true;
+          break;
         default: break;
       }
       if($remove) RemoveCurrentTurnEffect($i);

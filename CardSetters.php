@@ -373,7 +373,6 @@ function EffectArcaneBonus($cardID)
     case "DYN201": return 2;
     case "DYN202": return 1;
     case "DYN209": case "DYN210": case "DYN211": return 1;
-    case "MST234": return 1;
     default: return 0;
   }
 }
@@ -415,7 +414,7 @@ function ClearNextCardArcaneBuffs($player, $playedCard="", $from="")
     {
       switch($currentTurnEffects[$i])
       {
-        case "DYN200": case "DYN201": case "DYN202": if(!IsStaticType(CardType($playedCard), $from, $playedCard))$remove = 1; break;
+        case "DYN200": case "DYN201": case "DYN202": if(!IsStaticType(CardType($playedCard), $from, $playedCard)) $remove = 1; break;
         default: break;
       }
     }
