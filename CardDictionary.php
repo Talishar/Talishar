@@ -434,7 +434,8 @@ function AttackValue($cardID)
 function HasGoAgain($cardID)
 {
   $set = CardSet($cardID);
-  if($cardID == "MST003") return true;
+  if($cardID == "MST003") return true; // can be deleted after the database is updated
+  if($cardID == "MST092") return true; // can be deleted after the database is updated
   if($set == "ROG") return ROGUEHasGoAgain($cardID);
   else return GeneratedGoAgain($cardID);
 }
