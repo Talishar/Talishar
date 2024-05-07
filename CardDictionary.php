@@ -1853,10 +1853,15 @@ function WardAmount($cardID, $player)
   switch($cardID)
   {
     case "MON104": return 1;
+    case "UPR218": return 4;
+    case "UPR219": return 3;
+    case "UPR220": return 2;
     case "DYN213": case "DYN214": return 1;
     case "DYN612": return 4;
     case "DTD004": return SearchCurrentTurnEffects("DTD004-1", $player);
     case "DTD217": return 2;
+    case "DYN218": case "DYN219": case "DYN220": return 1;
+    case "DYN221": case "DYN222": case "DYN223": return 1;
     case "DTD405": case "DTD406": case "DTD407": case "DTD408"://Angels
     case "DTD409": case "DTD410": case "DTD411": case "DTD412": return 4;
     case "EVO244": return 1;

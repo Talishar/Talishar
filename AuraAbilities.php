@@ -538,18 +538,12 @@ function AuraEndTurnCleanup()
 function AuraDamagePreventionAmount($player, $index, $damage=0, $active=false, &$cancelRemove=false)
 {
   $auras = &GetAuras($player);
+  if(HasWard($auras[$index], $player)) return WardAmount($auras[$index], $player);
   switch($auras[$index])
   {
     case "ARC167": return 4;
     case "ARC168": return 3;
     case "ARC169": return 2;
-    case "MON104": return 1;
-    case "UPR218": return 4;
-    case "UPR219": return 3;
-    case "UPR220": return 2;
-    case "DYN217": return 1;
-    case "DYN218": case "DYN219": case "DYN220": return 1;
-    case "DYN221": case "DYN222": case "DYN223": return 1;
     case "DTD081":
       $auras = &GetAuras($player);
       if($active)
@@ -570,7 +564,6 @@ function AuraDamagePreventionAmount($player, $index, $damage=0, $active=false, &
         return 0;
       }
       break;
-    case "EVO244": return 1;
     default: break;
   }
 }
