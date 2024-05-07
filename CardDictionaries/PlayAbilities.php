@@ -224,7 +224,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST134": case "MST135": case "MST136":
       $amount = 3;
       if($cardID == "MST135") $amount = 2;
-      else if ($cardID == "MST135") $amount = 1;
+      else if ($cardID == "MST136") $amount = 1;
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $target, 1);
       AddDecisionQueue("MZADDCOUNTERS", $currentPlayer, $amount, 1);
       return "";

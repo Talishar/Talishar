@@ -1269,8 +1269,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $zone = $lastResultArr[0];
       $index = $lastResultArr[1];
       $zoneDS = &GetMZZone($player, $zone);
-      if($zone == "MYAURAS" || $zone == "THEIRAURAS") $zoneDS[$zone[$index]+3] += $parameter;
-      if($zone == "MYALLY" || $zone == "THEIRALLY") $zoneDS[$zone[$index]+9] += $parameter;
+      if($zone == "MYAURAS" || $zone == "THEIRAURAS") $zoneDS[$index+3] += $parameter;
+      if($zone == "MYALLY" || $zone == "THEIRALLY") $zoneDS[$index+9] += $parameter;
       return $lastResult;
     case "MODDEFCOUNTER":
       if($lastResult == "") return $lastResult;
