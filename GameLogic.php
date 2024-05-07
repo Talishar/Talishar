@@ -1862,6 +1862,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           return true;
         });
         return empty($available) ? "PASS" : implode(",", $available);
+      case "TRANSCEND":
+        Transcend($player, $parameter);
+        return $lastResult;
     default:
       return "NOTSTATIC";
   }
