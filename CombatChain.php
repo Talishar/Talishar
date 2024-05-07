@@ -56,7 +56,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
   global $mainPlayer, $defPlayer, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
   global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated;
-  global $combatChain;
+  global $combatChain, $CS_Transcended, $CS_NumBluePlayed;
   if($repriseActive == -1) $repriseActive = RepriseActive();
   switch($cardID) {
     case "WTR003": return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
@@ -176,6 +176,8 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HVY114": return 1;
     case "HVY146": case "HVY147": case "HVY148": return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 1 : 0;
     case "HVY245": return NumEquipBlock() > 0 ? 1 : 0;
+    case "MST082": return GetClassState($mainPlayer, $CS_Transcended) > 0 ? 2 : 0;
+    case "MST087": case "MST088": case "MST089": case "MST090": return GetClassState($mainPlayer, $CS_NumBluePlayed) > 1 ? 2 : 0;
     case "MST112": case "MST113": case "MST114": return (NumAttackReactionsPlayed() > 1 ? 2 : 0);
     default: return 0;
   }

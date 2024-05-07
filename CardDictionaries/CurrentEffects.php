@@ -30,10 +30,8 @@ function MSTEffectAttackModifier($cardID) {
     case "MST064": return 2;
     case "MST065": return 1;
     case "MST069": return 1;
-    case "MST082": return 2;
     case "MST084": return SearchPitchForColor($mainPlayer, 3);
     case "MST085": return SearchPitchForColor($mainPlayer, 3);
-    case "MST087": case "MST088": case "MST089": case "MST090": return 2;
     case "MST095": return -1;
     case "MST102": return 1;
     case "MST159": return 1;
@@ -48,7 +46,7 @@ function MSTEffectAttackModifier($cardID) {
 
 function MSTCombatEffectActive($cardID, $attackID)
 {
-  global $mainPlayer, $CS_NumBluePlayed, $combatChainState, $CCS_LinkBaseAttack;
+  global $mainPlayer, $CS_NumBluePlayed, $combatChainState, $CCS_LinkBaseAttack, $CS_Transcended;
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
   switch($cardID) {
@@ -63,9 +61,7 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST053": 
       return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
     case "MST069": return true;
-    case "MST082": return true;
     case "MST084": case "MST085": case "MST086": return true;
-    case "MST087": case "MST088": case "MST089": case "MST090": return GetClassState($mainPlayer, $CS_NumBluePlayed) > 1;
     case "MST092": return PitchValue($attackID) == 3;
     case "MST095": return true;
     case "MST102": return true;
