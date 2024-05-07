@@ -434,9 +434,22 @@ function AttackValue($cardID)
 function HasGoAgain($cardID)
 {
   $set = CardSet($cardID);
-  if($cardID == "MST003") return true; // can be deleted after the database is updated
-  if($cardID == "MST092") return true; // can be deleted after the database is updated
-  if($cardID == "MST159") return true; // can be deleted after the database is updated
+
+  switch ($cardID) {// can be deleted after the database is updated
+    case "MST003": 
+    case "MST054": case "MST055": case "MST056":
+    case "MST057": case "MST058": case "MST059":
+    case "MST060": case "MST061": case "MST062":
+    case "MST063":case "MST064":case "MST065":
+    case "MST092": 
+    case "MST152": case "MST153":  case "MST154":
+    case "MST159":
+    case "MST173": case "MST174": case "MST175":
+    case "MST185": case "MST186": case "MST187":
+    case "MST212": case "MST213": case "MST214":
+      return true; 
+  }
+
   if($set == "ROG") return ROGUEHasGoAgain($cardID);
   else return GeneratedGoAgain($cardID);
 }
@@ -1916,7 +1929,6 @@ function HasWard($cardID, $player)
     case "MST028": case "MST029": case "MST030":
       $char = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $cardID);
-      WriteLog($char[$index+12]);
       return $char[$index+12] == "UP";
     case "MST037": case "MST038": case "MST039":
     case "MST040": case "MST041": case "MST042":
