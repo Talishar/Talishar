@@ -97,6 +97,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "MST030": 
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasWard=true", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target aura");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZADDCOUNTERS", $currentPlayer, "1", 1);
       return "";
     case "MST032":
