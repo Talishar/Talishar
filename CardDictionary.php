@@ -1937,7 +1937,7 @@ function HasWard($cardID, $player)
       return true;
     case "MST139": return true;
     case "MST146": case "MST147": case "MST148": 
-    case "MST149": case "MST150": 
+    case "MST149": case "MST150": case "MST151": 
     case "MST155": case "MST156": case "MST157": 
       return true;
     default: return false;
