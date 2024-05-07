@@ -1,13 +1,14 @@
 <?php
 
-function MSTHitEffect($cardID)
+function MSTHitEffect($cardID, $from)
 {
   global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt;
   $deck = new Deck($defPlayer);
   $discard = new Discard($defPlayer);
   switch ($cardID){
     case "MST003":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
+      if($from != "OUT139") AddCurrentTurnEffect($cardID, $mainPlayer);
+      else AddCurrentTurnEffectNextAttack($cardID, $mainPlayer);
       break;
     case "MST106": case "MST107": case "MST108": 
       if(IsHeroAttackTarget())

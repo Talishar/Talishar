@@ -1554,7 +1554,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return "";
     case "ONHITEFFECT":
-      ProcessHitEffect($parameter);
+      ProcessHitEffect($lastResult, $parameter);
       return $parameter;
     case "AWAKEN":
       $mzArr = explode("-", $parameter);

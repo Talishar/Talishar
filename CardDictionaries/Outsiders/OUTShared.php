@@ -409,7 +409,7 @@ function OUTAbilityCost($cardID)
         }
         return $rv;
       case "OUT139":
-        ThrowWeapon("Dagger");
+        ThrowWeapon("Dagger", $cardID);
         return "";
       case "OUT140":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -426,7 +426,7 @@ function OUTAbilityCost($cardID)
       case "OUT148": case "OUT149": case "OUT150":
         if(DelimStringContains($additionalCosts, "PAY1"))
         {
-          ThrowWeapon("Dagger");
+          ThrowWeapon("Dagger", $cardID);
         }
         return "";
       case "OUT154": case "OUT155": case "OUT156":
@@ -813,7 +813,7 @@ function OUTAbilityCost($cardID)
     }
   }
 
-  function ThrowWeapon($subtype)
+  function ThrowWeapon($subtype, $source)
   {
     global $currentPlayer, $CCS_HitThisLink;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -827,7 +827,7 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("DEALDAMAGE", $otherPlayer, "<-", 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-    AddDecisionQueue("ONHITEFFECT", $otherPlayer, "<-", 1);
+    AddDecisionQueue("ONHITEFFECT", $otherPlayer, $source, 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
     AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_HitThisLink, 1);
   }
