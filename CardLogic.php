@@ -1160,7 +1160,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "MON186":
       $deck = new Deck($player);
-      $deck->BanishTop(banishedBy:$player);
+      $deck->BanishTop(banishedBy:$parameter);
       break;
     case "MON241": case "MON242": case "MON243":
     case "MON244": case "RVD005": case "RVD006":

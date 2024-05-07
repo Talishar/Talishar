@@ -580,7 +580,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $destroyedItems = [];
       for($i=count($lastResult)-1; $i>=0; --$i) {
         $cardID = DestroyItemForPlayer($player, $lastResult[$i], skipDestroy:true);
-        $banishIndex = BanishCardForPlayer($cardID, $player, "PLAY", "-", banishedBy:$player);
+        $banishIndex = BanishCardForPlayer($cardID, $player, "PLAY", "-", banishedBy:"EVO145");
         $cardID = RemoveBanish($player, $banishIndex);
         array_push($destroyedItems, $cardID);
       }
@@ -638,7 +638,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       if(!is_array($lastResult)) $lastResult = [];
       for($i=count($lastResult)-1; $i>=0; --$i) {
         $cardID = RemoveHand($player, $lastResult[$i]);
-        BanishCardForPlayer($cardID, $player, "HAND", "NOFEAR", banishedBy:$player);
+        BanishCardForPlayer($cardID, $player, "HAND", "NOFEAR", banishedBy:"HVY016");
       }
       SetClassState($player, $CS_AdditionalCosts, count($lastResult));
       return "";

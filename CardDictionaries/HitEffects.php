@@ -173,7 +173,7 @@ function AKOHitEffect($cardID)
         if(IsHeroAttackTarget()) {
           $deck = new Deck($defPlayer);
           if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-            $deck->BanishTop(banishedBy:$mainPlayer);
+            $deck->BanishTop(banishedBy:$cardID);
             AddDecisionQueue("SEARCHCOMBATCHAIN", $mainPlayer, "-");
             AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card to banish");
             AddDecisionQueue("CHOOSECARDID", $mainPlayer, "<-", 1);

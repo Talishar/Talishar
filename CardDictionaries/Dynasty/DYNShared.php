@@ -522,22 +522,22 @@ function DYNHitEffect($cardID, $from, $attackID)
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-        $deck->BanishTop(banishedBy:$mainPlayer);
+        $deck->BanishTop(banishedBy:$cardID);
       }
       break;
     case "DYN119":
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-        if($deck->RemainingCards() < $combatChainState[$CCS_DamageDealt]) $deck->BanishTop(banishedBy:$mainPlayer, amount:$deck->RemainingCards());
-        else $deck->BanishTop(banishedBy:$mainPlayer, amount:$combatChainState[$CCS_DamageDealt]);
+        if($deck->RemainingCards() < $combatChainState[$CCS_DamageDealt]) $deck->BanishTop(banishedBy:$cardID, amount:$deck->RemainingCards());
+        else $deck->BanishTop(banishedBy:$cardID, amount:$combatChainState[$CCS_DamageDealt]);
       }
       break;
     case "DYN120":
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
-        else $deck->BanishTop(banishedBy:$mainPlayer);
+        else $deck->BanishTop(banishedBy:$cardID);
         MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, true);
       }
       break;
@@ -550,7 +550,7 @@ function DYNHitEffect($cardID, $from, $attackID)
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
-        else $deck->BanishTop(banishedBy:$mainPlayer);
+        else $deck->BanishTop(banishedBy:$cardID);
         MZMoveCard($mainPlayer, "THEIRHAND", "THEIRBANISH,HAND,-," . $mainPlayer);
       }
       break;
@@ -561,7 +561,7 @@ function DYNHitEffect($cardID, $from, $attackID)
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-        $deck->BanishTop(banishedBy:$mainPlayer);
+        $deck->BanishTop(banishedBy:$cardID);
       }
       break;
     case "DYN153": AddCurrentTurnEffectFromCombat($cardID, $mainPlayer); break;
