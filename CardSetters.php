@@ -79,8 +79,8 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
   }
-  if($banishedBy == "MST109" || $banishedBy == "MST110" || $banishedBy == "MST111") {
-    $index = SearchGetLastIndex(SearchMultizone($player, "THEIRDISCARD:pitch=" . PitchValue($cardID)) && count($banish)/BanishPieces() >= 2);
+  if($banishedBy == "MST109" || $banishedBy == "MST110" || $banishedBy == "MST111" && count($banish)/BanishPieces() >= 2) {
+    $index = SearchGetLastIndex(SearchMultizone($player, "THEIRDISCARD:pitch=" . PitchValue($cardID)));
     if(PitchValue($banish[$index]) == PitchValue($banish[$index-BanishPieces()])) GainHealth(1, $otherPlayer);
   }
   if(($banishedBy == "MST115" || $banishedBy == "MST116" || $banishedBy == "MST117") && CardNameContains($cardID, CardName($cardID), $player) && count($banish)/BanishPieces() >= 2) {
