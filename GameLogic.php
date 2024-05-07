@@ -1864,7 +1864,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return empty($available) ? "PASS" : implode(",", $available);
       case "TRANSCEND":
         $params = explode(",", $parameter);
-        Transcend($player, $param[0], $param[1]);
+        Transcend($player, $params[0], $params[1]);
         return $lastResult;
     default:
       return "NOTSTATIC";
