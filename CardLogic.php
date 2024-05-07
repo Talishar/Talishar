@@ -1266,6 +1266,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "EVR131": case "EVR132": case "EVR133":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "EVR141":
+      PlayAura("MON104", $player);
+      break;
     case "RVD015":
       $deck = new Deck($player);
       if($deck->Reveal() && ModifiedAttackValue($deck->Top(), $player, "DECK", source:"RVD015") < 6) {
@@ -1763,6 +1766,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "AKO019":
     case "MST203": case "MST204": case "MST205":
       AddCurrentTurnEffect($parameter, $player, "CC");
+      break;
+    case "MST040": case "MST041": case "MST042":
+      PlayAura("MON104", $player);
       break;
     case "MST050":
       AddPlayerHand("DYN065", $player, $parameter);

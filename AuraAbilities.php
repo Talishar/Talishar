@@ -77,7 +77,7 @@ function AuraDestroyed($player, $cardID, $isToken = false)
       case "EVR141":
         if(!$isToken && $auras[$i+5] > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
           --$auras[$i+5];
-          PlayAura("MON104", $player);
+          AddLayer("TRIGGER", $player, $auras[$i], "-", "-", $auras[$i + 6]);
         }
         break;
       case "EVO244":
@@ -137,7 +137,7 @@ function AuraLeavesPlay($player, $index)
       if($banishIndex > -1) PlayAura($banish->Remove($banishIndex), $otherPlayer);
       break;
     case "MST040": case "MST041": case "MST042":
-      if(SearchPitchForColor($player, 3) > 0) PlayAura("MON104", $player);
+      if(SearchPitchForColor($player, 3) > 0) AddLayer("TRIGGER", $player, $cardID);
       break;
     case "MST139": 
       if(SearchAura($player, class:"ILLUSIONIST") == "") AddCurrentTurnEffect($cardID, $player, "PLAY");
