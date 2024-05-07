@@ -2081,7 +2081,7 @@ function HasCloaked($cardID)
 {
   switch($cardID) {
     case "MST028": case "MST029": case "MST030":
-    case "MST049": case "MST050":
+    case "MST049":
     case "MST067": case "MST068": case "MST069": case "MST070": 
     case "MST071": case "MST072": case "MST073": case "MST074": 
       return "DOWN";
