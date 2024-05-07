@@ -1747,7 +1747,7 @@ function GetDamagePreventionIndices($player)
   $char = &GetPlayerCharacter($player);
   $indices = "";
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
-    if($char[$i+1] != 0 && WardAmount($char[$i], $player) > 0) {
+    if($char[$i+1] != 0 && WardAmount($char[$i], $player) > 0 && $char[$i+12] == "UP") {
       if($indices != "") $indices .= ",";
       $indices .= $i;
     }
