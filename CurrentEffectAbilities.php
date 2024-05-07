@@ -773,39 +773,24 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if($preventable) $damage -= 1;
           $remove = true;
           break;
-        case "MST034-1":
+        case "MST034":
           if($preventable) {
-            $damage -= 3;
+            if($currentTurnEffects[$i] == "MST034-1") $damage -= 3;
+            else $damage -= 5;
           }
           $remove = true;
           break;
-        case "MST035-1":
+        case "MST035":
           if($preventable) {
-            $damage -= 2;
+            if($currentTurnEffects[$i] == "MST035-1") $damage -= 2;
+            else $damage -= 4;
           }
           $remove = true;
           break;
-        case "MST036-1":
+        case "MST036":
           if($preventable) {
-            $damage -= 1;
-          }
-          $remove = true;
-          break;
-        case "MST034-2":
-          if($preventable) {
-            $damage -= 5;
-          }
-          $remove = true;
-          break;
-        case "MST035-2":
-          if($preventable) {
-            $damage -= 4;
-          }
-          $remove = true;
-          break;
-        case "MST036-2":
-          if($preventable) {
-            $damage -= 3;
+            if($currentTurnEffects[$i] == "MST036-1") $damage -= 1;
+            else $damage -= 3;
           }
           $remove = true;
           break;
