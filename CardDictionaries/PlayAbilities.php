@@ -230,10 +230,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $amount = 3;
       if($cardID == "MST147") $amount = 2;
       else if ($cardID == "MST148") $amount = 1;
-      if(SearchAura($currentPlayer, class:"ILLUSIONIST") == "") $auras[3] += $amount;
+      if(SearchAura($currentPlayer, class:"ILLUSIONIST") == 0) $auras[3] += $amount;
       return "";
     case "MST149": case "MST150": case "MST151": 
-      if(SearchAura($currentPlayer, class:"ILLUSIONIST") == "") PlayAura("MON104", $currentPlayer);
+      if(SearchAura($currentPlayer, class:"ILLUSIONIST") == 0) PlayAura("MON104", $currentPlayer);
       return "";
     case "MST152": case "MST153": case "MST154":  
       if(SearchAura($currentPlayer, class:"ILLUSIONIST") != "") $amount = 0;
