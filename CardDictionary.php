@@ -294,7 +294,7 @@ function AbilityCost($cardID)
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
-  if($class == "ILLUSIONIST" && $subtype == "Aura") {
+  if($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {
     if(SearchCharacterForCard($currentPlayer, "MON003")) return 0;
     if(SearchCharacterForCard($currentPlayer, "MON088")) return 3;
     if(SearchCharacterForCard($currentPlayer, "DTD216")) return 2;
@@ -410,11 +410,11 @@ function AttackValue($cardID)
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
-  if($class == "ILLUSIONIST" && $subtype == "Aura") {
+  if($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {
     if(SearchCharacterForCard($mainPlayer, "MON003")) return 1;
     if(SearchCharacterForCard($mainPlayer, "MON088")) return 4;
     if(SearchCharacterForCard($mainPlayer, "DTD216")) return 5;
-    if(SearchCharacterForCard($currentPlayer, "MST130") && HasWard($cardID, $currentPlayer)) return WardAmount($cardID, $currentPlayer);
+    if(SearchCharacterForCard($mainPlayer, "MST130") && HasWard($cardID, $currentPlayer)) return WardAmount($cardID, $currentPlayer);
   }
   if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Attack");
@@ -1373,7 +1373,7 @@ function AbilityHasGoAgain($cardID)
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
-  if($class == "ILLUSIONIST" && $subtype == "Aura" && SearchCharacterForCard($currentPlayer, "MON088")) return true;
+  if($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($currentPlayer, "MON088")) return true;
   if($set == "WTR") return WTRAbilityHasGoAgain($cardID);
   else if($set == "ARC") return ARCAbilityHasGoAgain($cardID);
   else if($set == "CRU") return CRUAbilityHasGoAgain($cardID);
