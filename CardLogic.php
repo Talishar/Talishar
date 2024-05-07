@@ -616,6 +616,7 @@ function AddOnHitTrigger($cardID)
     case "HVY225": case "HVY226": case "HVY227":
     case "HVY249":
     case "AKO013":
+    case "MST003":
     case "MST173": case "MST174": case "MST175":
     case "MST233":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
