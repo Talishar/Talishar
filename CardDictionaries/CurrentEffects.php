@@ -5,6 +5,7 @@ function MSTEffectAttackModifier($cardID) {
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
   switch($cardID) {
+    case "MST003": return 1;
     case "MST011-1": return 3;
     case "MST012-1": return 2;
     case "MST013-1": return 1;
