@@ -273,6 +273,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "HVY210":
       if(SearchCurrentTurnEffects($cardID, $defPlayer, true)) $blockModifier += 2;
       break;
+    case "MST086":
+      if(SearchCurrentTurnEffects($cardID, $defPlayer, true)) $blockModifier += SearchPitchForColor($defPlayer, 3);
+      break;
     default: break;
   }
   return $blockModifier;
