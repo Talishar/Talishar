@@ -66,7 +66,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = $deck->Top(true, $subparam);
           break;
         case "PERMSUBTYPE":
-          if($subparam == "Aura") $rv = SearchAura($player, "", $subparam);
+          if(DelimStringContains($subparam, "Aura")) $rv = SearchAura($player, "", $subparam);
           else $rv = SearchPermanents($player, "", $subparam);
           break;
         case "MZSTARTTURN": $rv = MZStartTurnIndices(); break;

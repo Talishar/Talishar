@@ -9,7 +9,7 @@ function IsWeaponAttack()
 {
   global $combatChain;
   if(count($combatChain) == 0) return false;
-  if(CardType($combatChain[0]) == "W" || CardSubType($combatChain[0]) == "Aura") return true;
+  if(CardType($combatChain[0]) == "W" || DelimStringContains(CardSubType($combatChain[0]), "Aura")) return true;
   return false;
 }
 

@@ -674,7 +674,7 @@ function AuraPlayAbilities($attackID, $from="")
     switch($auras[$i]) {
       case "WTR225":
         if(($cardType == "AA" && (GetResolvedAbilityType($attackID) == "" || GetResolvedAbilityType($attackID) == "AA"))
-          || ($cardSubType == "Aura" && $from == "PLAY")
+          || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY")
           || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA" && $from == "EQUIP")) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack go again");
           GiveAttackGoAgain();
@@ -682,7 +682,7 @@ function AuraPlayAbilities($attackID, $from="")
         }
         break;
       case "ARC112":
-        if(($cardType == "AA" || ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA")) && GetResolvedAbilityType($attackID) != "I") {
+        if(($cardType == "AA" || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA")) && GetResolvedAbilityType($attackID) != "I") {
           $numRunechants = CountAura("ARC112", $currentPlayer);
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
@@ -703,7 +703,7 @@ function AuraPlayAbilities($attackID, $from="")
         }
         break;
       case "DTD232":
-        if(($cardType == "AA" || ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) != "A")) && GetResolvedAbilityType($attackID) != "I") {
+        if(($cardType == "AA" || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) != "A")) && GetResolvedAbilityType($attackID) != "I") {
           AddCurrentTurnEffect("DTD232", $currentPlayer);
           $remove = 1;
         }
