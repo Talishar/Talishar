@@ -685,6 +685,10 @@ function IsBlockRestricted($cardID, $phase, $from, $index = -1, &$restriction = 
 {
   global $CombatChain, $mainPlayer, $CS_NumCardsDrawn, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
   if(IsEquipment($cardID, $player) && !CanBlockWithEquipment()) { $restriction = "This attack disallows blocking with equipment"; return true; }
+  if(IsEquipment($cardID, $player)) {
+    $char = GetPlayerCharacter($player);
+    if($char[FindCharacterIndex($player, $cardID)+12] == "DOWN") { return true; }
+  }
   if(SearchCurrentTurnEffects("EVO073-B-" . $cardID, $player)) { $restriction = "EVO073"; return true; }
   if($CombatChain->AttackCard()->ID() == "EVO061" || $CombatChain->AttackCard()->ID() == "EVO062" || $CombatChain->AttackCard()->ID() == "EVO063") {
     if(CardCost($cardID) < EvoUpgradeAmount($mainPlayer) && CardType($cardID) == "AA") { $restriction = $CombatChain->AttackCard()->ID(); return true; }
