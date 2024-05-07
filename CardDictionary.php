@@ -1563,7 +1563,7 @@ function HasCombo($cardID)
 
 function ComboActive($cardID = "")
 {
-  global $CombatChain, $chainLinkSummary, $mainPlayer;
+  global $CombatChain, $chainLinkSummary, $mainPlayer, $chainLinks;
   if(SearchCurrentTurnEffects("OUT183", $mainPlayer)) return false;
   if($cardID == "" && $CombatChain->HasCurrentLink()) $cardID = $CombatChain->AttackCard()->ID();
   if($cardID == "") return false;
@@ -1657,7 +1657,7 @@ function ComboActive($cardID = "")
         if($lastAttackName == "Crouching Tiger") return true;
         break;
       case "MST166":
-        return PitchValue($cardID) == 3;
+        return PitchValue($chainLinks[count($chainLinks)-1][0]) == 3;
       default: break;
     }
   }

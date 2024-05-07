@@ -246,8 +246,14 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";  
     case "MST166":
-      if(ComboActive()) BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
+      if(ComboActive()) {
+        BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
+        GiveAttackGoAgain();
+      }
       return "";
+    case "MST185": case "MST186": case "MST187":
+      AddCurrentTurnEffect($cardID, $mainPlayer);
+      break;
     case "MST200": case "MST201": case "MST202":
       if(IsHeroAttackTarget()) MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH", true, true, DQContext:"Choose a card to banish from their graveyard.");
       return "";

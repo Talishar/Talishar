@@ -67,7 +67,6 @@ function MSTAbilityHasGoAgain($cardID)
   global $CombatChain;
   switch($cardID)
   {
-    case "MST166": return ComboActive();
     default: return false;
   }
 }
