@@ -31,7 +31,7 @@ function MSTAbilityCost($cardID)
   switch($cardID)
   {
     case "MST001": case "MST002": return 3; 
-    case "MST003": 2;
+    case "MST003": return 2;
     case "MST025": case "MST026": return 3; 
     case "MST029": case "MST030": return 1;
     case "MST046": case "MST047": return 3;
