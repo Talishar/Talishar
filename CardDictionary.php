@@ -378,6 +378,7 @@ function BlockValue($cardID)
 {
   global $defPlayer;
   if(!$cardID) return "";
+  if($cardID == "MST146" || $cardID == "MST147" || $cardID == "MST148") return 3; //Temporary block value. Can be deleted after database update
   $set = CardSet($cardID);
   if($cardID == "MON191") return SearchPitchForNumCosts($defPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Block");
