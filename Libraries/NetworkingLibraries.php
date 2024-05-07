@@ -1017,10 +1017,6 @@ function ResolveChainLink()
     DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
     AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
   }
-  $character = &GetPlayerCharacter($mainPlayer);
-  $charID = $character[0];
-  $charID = ShiyanaCharacter($charID);
-  if(HasStealth($combatChain[0]) && ($charID == "MST001" || $charID == "MST002")) NuuStaticAbility($combatChain[0]);
   ProcessDecisionQueue();
 }
 
@@ -1076,6 +1072,10 @@ function ResolveCombatDamage($damageDone)
   else {
     NonHitEffects($combatChain[0]);
   }
+  $character = &GetPlayerCharacter($mainPlayer);
+  $charID = $character[0];
+  $charID = ShiyanaCharacter($charID);    
+  if(HasStealth($combatChain[0]) && ($charID == "MST001" || $charID == "MST002")) NuuStaticAbility($combatChain[0]);
   $currentPlayer = $mainPlayer;
   ProcessDecisionQueue(); //Any combat related decision queue logic should be main player gamestate
 }
