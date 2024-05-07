@@ -51,7 +51,9 @@ function MSTCombatEffectActive($cardID, $attackID)
   $cardID = $idArr[0];
   switch($cardID) {
     case "MST003": return PitchValue($attackID) == 3;
-    case "MST011": case "MST012": case "MST013": return true;
+    case "MST011-1": case "MST012-1": case "MST013-1": 
+    case "MST011-2": case "MST012-2": case "MST013-2": 
+      return true;
     case "MST014": case "MST015": case "MST016": return true;
     case "MST020": case "MST021": case "MST022": return true;
     case "MST023": case "MST024": return true;
