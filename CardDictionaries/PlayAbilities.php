@@ -129,9 +129,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       return "";
-    case "MST048":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";  
     case "MST053":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);
@@ -245,6 +242,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       else if ($cardID == "MST154") $amount = 1;  
       PlayAura("MON104", $currentPlayer, numAttackCounters:$amount);
       return "";
+    case "MST159":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";  
     case "MST166":
       if(ComboActive()) BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
       return "";

@@ -19,7 +19,6 @@ function MSTEffectAttackModifier($cardID) {
     case "MST021": return 2;
     case "MST022": return 1;
     case "MST023": return 1;
-    case "MST048": return 1;
     case "MST053": return 1;
     case "MST054-1": 3;
     case "MST055-1": 2;
@@ -37,6 +36,7 @@ function MSTEffectAttackModifier($cardID) {
     case "MST087": case "MST088": case "MST089": case "MST090": return 2;
     case "MST095": return -1;
     case "MST102": return 1;
+    case "MST159": return 1;
     case "MST185": case "MST186": case "MST187": return 1;
     case "MST212": case "MST213": case "MST214": return 1;
     case "MST232": return 4;
@@ -57,9 +57,9 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST014": case "MST015": case "MST016": return true;
     case "MST020": case "MST021": case "MST022": return true;
     case "MST023": case "MST024": return true;
-    case "MST048": case "MST053": 
     case "MST054": case "MST055": case "MST056": 
     case "MST063": case "MST064": case "MST065":
+    case "MST053": 
       return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
     case "MST069": return true;
     case "MST082": return true;
@@ -68,6 +68,7 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST092": return PitchValue($attackID) == 3;
     case "MST095": return true;
     case "MST102": return true;
+    case "MST159": 
     case "MST185": case "MST186": case "MST187": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
     case "MST212": case "MST213": case "MST214": return $combatChainState[$CCS_LinkBaseAttack] <= 1;
     case "MST232": return CardSubType($attackID) == "Arrow";
