@@ -330,9 +330,11 @@
     return false;
   }
 
-  function Transcend($player, $cardID)
+  function Transcend($player, $cardID, $from)
   {
     global $currentPlayer, $CS_Transcended;
+    $otherplayer = $player == 1 ? 2 : 1;
     SetClassState($player, $CS_Transcended, 1);
-    AddPlayerHand($cardID, $player, "-");
+    if(substr($from, 0, 5) == "THEIR") AddPlayerHand($cardID, $otherplayer, "-");
+    else AddPlayerHand($cardID, $player, "-");
   }

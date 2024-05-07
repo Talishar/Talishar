@@ -68,7 +68,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
               AddDecisionQueue("MULTIBANISH", $otherPlayer, "DISCARD", 1);
               AddDecisionQueue("UNDERCURRENTDESIRES", $currentPlayer, "-", 1);
               break;
-            case "Transcend": Transcend($currentPlayer, "MST410"); break;
+            case "Transcend": Transcend($currentPlayer, "MST410", $from); break;
             default: break;
           }
         }
@@ -113,7 +113,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
               AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasWard=true", 1);
               AddDecisionQueue("ADDALLATTACKCOUNTERS", $currentPlayer, "1", 1);
               break;
-            case "Transcend": Transcend($currentPlayer, "MST432"); break;
+            case "Transcend": Transcend($currentPlayer, "MST432", $from); break;
             default: break;
           }
         }
@@ -140,7 +140,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           {
             case "Create_2_Crouching_Tigers": AddPlayerHand("DYN065", $currentPlayer, "NA", 2); break;
             case "Crouching_Tigers_Get_+1_this_turn": AddCurrentTurnEffect($cardID, $currentPlayer); break;
-            case "Transcend": Transcend($currentPlayer, "MST453"); break;
+            case "Transcend": Transcend($currentPlayer, "MST453", $from); break;
             default: break;
           }
         }
@@ -183,36 +183,36 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "MST095":
       AddCurrentTurnEffect($cardID, $mainPlayer);
-      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST495");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST495,".$from);
       return "";
     case "MST096":
       GainHealth(1, $currentPlayer);
-      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST496");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST496,".$from);
       return "";    
     case "MST097":
       MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH");
-      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST497");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST497,".$from);
       return "";
     case "MST098":
       GiveAttackGoAgain();
-      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST498");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST498,".$from);
       return "";
     case "MST099":
       MZMoveCard($currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", "MYBOTDECK");
-      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST499");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST499,".$from);
       return "";
     case "MST100":
       Draw($currentPlayer);
       MZMoveCard($currentPlayer, "MYHAND", "MYBOTDECK", silent:true);
-      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST500");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST500,".$from);
       return "";
     case "MST101":
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST501");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST501,".$from);
       return "";
     case "MST102":
       AddCurrentTurnEffect($cardID, $mainPlayer);
-      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST502");
+      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST502,".$from);
       return "";
     case "MST134": case "MST135": case "MST136":
       $amount = 3;
