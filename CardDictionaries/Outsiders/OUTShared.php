@@ -800,6 +800,13 @@ function OUTAbilityCost($cardID)
       case "OUT033": case "OUT034": case "OUT035":
       case "OUT036": case "OUT037": case "OUT038":
       case "OUT039": case "OUT040": case "OUT041":
+      case "MST106": case "MST107": case "MST108": 
+      case "MST109": case "MST110": case "MST111": 
+      case "MST112": case "MST113": case "MST114": 
+      case "MST115": case "MST116": case "MST117": 
+      case "MST118": case "MST119": case "MST120": 
+      case "MST121": case "MST122": case "MST123": 
+      case "MST124": case "MST125": case "MST126":
         return true;
       default:
         return false;
