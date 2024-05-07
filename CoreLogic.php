@@ -134,7 +134,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   array_push($combatChain, $cardID);
   array_push($combatChain, $player);
   array_push($combatChain, $from);
-  array_push($combatChain, $resourcesPaid);
+  array_push($combatChain, $resourcesPaid != "" ? $resourcesPaid : 0);
   array_push($combatChain, RepriseActive());
   array_push($combatChain, 0);//Attack modifier
   array_push($combatChain, 0);//Defense modifier
