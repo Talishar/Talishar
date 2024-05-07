@@ -4,6 +4,7 @@ function MSTHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt;
   $deck = new Deck($defPlayer);
+  $discard = new Discard($defPlayer);
   switch ($cardID){
     case "MST003":
       AddCurrentTurnEffect($cardID, $mainPlayer);
@@ -18,8 +19,8 @@ function MSTHitEffect($cardID)
       if(IsHeroAttackTarget())
       {
         $deck->BanishTop(banishedBy:$cardID);
+        if($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,-,".$cardID);
       }
-      MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,-,".$cardID);
       break;
     case "MST112": case "MST113": case "MST114": 
       if(IsHeroAttackTarget() && NumAttackReactionsPlayed() > 1)
@@ -31,8 +32,9 @@ function MSTHitEffect($cardID)
     case "MST115": case "MST116": case "MST117": 
       if(IsHeroAttackTarget())
       {
+        $deck = new Deck($defPlayer);
         $deck->BanishTop(banishedBy:$cardID);
-        MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,-,".$cardID, false, true);
+        if($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,-,".$cardID, false, true);
       }
       break;
     case "MST118": case "MST119": case "MST120": 

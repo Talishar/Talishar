@@ -620,7 +620,7 @@ function AddOnHitTrigger($cardID)
     case "MST173": case "MST174": case "MST175":
     case "MST233":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
-    break;
+      break;
     case "ELE003":
       if(SearchCurrentTurnEffects($cardID, $mainPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
