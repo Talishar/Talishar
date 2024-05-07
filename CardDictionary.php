@@ -231,6 +231,13 @@ function CardClass($cardID)
 
 function CardTalent($cardID)
 {
+  switch ($cardID) { // Can be removed after updating the database
+    case "MST082": case "MST083": case "MST084": 
+    case "MST085": case "MST086": case "MST087": 
+    case "MST088": case "MST089": case "MST090":
+      return "MYSTIC";
+  }
+
   $set = substr($cardID, 0, 3);
   if($set == "ROG") return ROGUECardTalent($cardID);
   $number = intval(substr($cardID, 3));

@@ -633,7 +633,7 @@ function EquipEquipment($player, $card, $slot="")
       $char[$i+7] = 0;
       $char[$i+8] = 0;
       $char[$i+9] = 2;
-      $char[$i+10] = "";
+      $char[$i+10] = "-";
       $char[$i+11] = $uniqueID;
       $char[$i+12] = HasCloaked($card);
       $replaced = 1;
@@ -652,7 +652,7 @@ function EquipEquipment($player, $card, $slot="")
     array_splice($char, $insertIndex+7, 0, 0);
     array_splice($char, $insertIndex+8, 0, 0);
     array_splice($char, $insertIndex+9, 0, 2);
-    array_splice($char, $insertIndex+10, 0, "");
+    array_splice($char, $insertIndex+10, 0, "-");
     array_splice($char, $insertIndex+11, 0, $uniqueID);
     array_splice($char, $insertIndex+12, 0, HasCloaked($card));
   }
@@ -705,7 +705,7 @@ function EquipWeapon($player, $card)
     array_splice($char, $insertIndex+7, 0, 0);
     array_splice($char, $insertIndex+8, 0, 0);
     array_splice($char, $insertIndex+9, 0, 2);
-    array_splice($char, $insertIndex+10, 0, "");
+    array_splice($char, $insertIndex+10, 0, "-");
     array_splice($char, $insertIndex+11, 0, GetUniqueId($card, $player));
     array_splice($char, $insertIndex+12, 0, HasCloaked($card));
   }
