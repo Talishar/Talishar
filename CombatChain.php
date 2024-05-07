@@ -929,7 +929,7 @@ function IsPiercingActive($cardID)
     if (HasPiercing($combatChain[0]))
       return true;
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-      if ($currentTurnEffects[$i + 1] == $mainPlayer) {
+      if (isset($currentTurnEffects[$i + 1]) == $mainPlayer) {
         if (HasPiercing($currentTurnEffects[$i]))
           return true;
       }

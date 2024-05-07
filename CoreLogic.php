@@ -1116,7 +1116,7 @@ function ClassOverride($cardID, $player="")
     $cardClass .= "ILLUSIONIST";
   }
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces()) {
-    if($currentTurnEffects[$i+1] != $player) { continue; }
+    if(isset($currentTurnEffects[$i+1]) != $player) { continue; }
     $classToAdd = "";
     switch($currentTurnEffects[$i])
     {
@@ -1187,7 +1187,7 @@ function TalentOverride($cardID, $player="")
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     $talentToAdd = "";
-    if($currentTurnEffects[$i+1] != $player) { continue; }
+    if(isset($currentTurnEffects[$i+1]) != $player) { continue; }
     switch($currentTurnEffects[$i])
     {
       case "UPR060": case "UPR061": case "UPR062": $talentToAdd = "DRACONIC"; //Brand of Cinderclaw

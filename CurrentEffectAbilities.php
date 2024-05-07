@@ -980,7 +980,7 @@ function CurrentEffectGrantsGoAgain()
 {
   global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused;
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-    if($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
+    if(isset($currentTurnEffects[$i+1]) == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       if(strlen($currentTurnEffects[$i]) > 6) $turnEffects = explode(",", $currentTurnEffects[$i]);
       else $turnEffects[0] = $currentTurnEffects[$i];
       switch($turnEffects[0]) {
@@ -1037,7 +1037,7 @@ function CurrentEffectPreventsGoAgain()
 {
   global $currentTurnEffects, $mainPlayer;
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-    if($currentTurnEffects[$i + 1] == $mainPlayer) {
+    if(isset($currentTurnEffects[$i+1]) == $mainPlayer) {
       switch($currentTurnEffects[$i]) {
         case "WTR044": return true;
         default: break;
@@ -1052,7 +1052,7 @@ function CurrentEffectPreventsDefenseReaction($from)
   global $currentTurnEffects, $currentPlayer;
   $reactionPrevented = false;
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-    if($currentTurnEffects[$i + 1] == $currentPlayer) {
+    if(isset($currentTurnEffects[$i+1]) == $currentPlayer) {
       switch($currentTurnEffects[$i]) {
         case "CRU123":
           if($from == "ARS" && IsCombatEffectActive($currentTurnEffects[$i])) $reactionPrevented = true;
