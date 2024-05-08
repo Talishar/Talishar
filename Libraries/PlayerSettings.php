@@ -458,12 +458,13 @@ function FormatCode($format)
     case "compcc": return 1;
     case "blitz": return 2;
     case "compblitz": return 3;
-    case "livinglegendscc": return 4;
+    case "openformatcc": return 4;
     case "commoner": return 5;
     case "sealed": return 6;
     case "draft": return 7;
     case "llcc": return 8;
     case "llblitz": return 9;
+    case "openformatblitz": return 10;
     default: return -1;
   }
 }
@@ -476,12 +477,13 @@ function FormatName($formatCode)
     case 1: return "compcc";
     case 2: return "blitz";
     case 3: return "compblitz";
-    case 4: return "livinglegendscc";
+    case 4: return "openformatcc";
     case 5: return "commoner";
     case 6: return "sealed";
     case 7: return "draft";
     case 8: return "llcc";
     case 9: return "llblitz";
+    case 10: return "openformatblitz";
     default: return "-";
   }
 }

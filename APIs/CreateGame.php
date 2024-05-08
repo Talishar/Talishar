@@ -87,9 +87,9 @@ if ((!file_exists("../Games/$gameName")) && (mkdir("../Games/$gameName", 0700, t
 }
 
 if($isShadowBanned) {
-  if($format == "cc" || $format == "livinglegendscc" || $format == "llcc") $format = "shadowcc";
+  if($format == "cc" || $format == "openformatcc" || $format == "llcc") $format = "shadowcc";
   else if($format == "compcc") $format = "shadowcompcc";
-  else if($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz") $format = "shadowblitz";
+  else if($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz" || $format == "openformatblitz") $format = "shadowblitz";
 }
 
 $p1Data = [1];

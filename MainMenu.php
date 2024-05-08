@@ -120,7 +120,7 @@ if ($canSeeQueue) {
   echo ("<option value='llcc'" . ($defaultFormat == 8 ? " selected" : "") . ">Living Legend CC</option>");
   echo ("<option value='llblitz'" . ($defaultFormat == 9 ? " selected" : "") . ">Living Legend Blitz</option>");
 }
-echo ("<option value='livinglegendscc'" . ($defaultFormat == 4 ? " selected" : "") . ">Open Format</option>");
+echo ("<option value='openformatcc'" . ($defaultFormat == 4 ? " selected" : "") . ">Open Format</option>");
 echo ("</select>");
 ?>
 <BR>

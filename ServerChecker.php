@@ -19,7 +19,8 @@ $compBlitzLinks = "";
 $ccLinks = "";
 $compCCLinks = "";
 $otherFormatsLinks = "";
-$livingLegendsCCLinks = "";
+$openformatccLinks = "";
+$openformatblitzLinks = "";
 $reactFE = "https://fe.talishar.net/game/play";
 
 $isShadowBanned = false;
@@ -96,7 +97,8 @@ if ($handle = opendir($path)) {
       $p1Hero = GetCachePiece($gameName, 7);
       $formatName = "";
       if($format == "commoner") $formatName = "Commoner";
-      else if($format == "livinglegendscc") $formatName = "Open Format";
+      else if($format == "openformatcc") $formatName = "Open Format CC";
+      else if($format == "openformatblitz") $formatName = "Open Format Blitz";
       else if($format == "clash") $formatName = "Clash";
       else if($format == "llcc") $formatName = "Living Legend CC";
       else if($format == "llblitz") $formatName = "Living Legend Blitz";
