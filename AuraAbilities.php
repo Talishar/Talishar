@@ -145,10 +145,10 @@ function AuraLeavesPlay($player, $index)
       if(SearchPitchForColor($player, 3) > 0) AddLayer("TRIGGER", $player, $cardID);
       break;
     case "MST139": 
-      if(SearchAura($player, class:"ILLUSIONIST") == 0) AddCurrentTurnEffect($cardID, $player, "PLAY");
+      if(SearchAura($player, class:"ILLUSIONIST") == 0) AddLayer("TRIGGER", $player, $cardID);
       break;
     case "MST155": case "MST156": case "MST157":
-      if(SearchAura($player, class:"ILLUSIONIST") == 0) AddCurrentTurnEffect($cardID, $player, "PLAY");
+      if(SearchAura($player, class:"ILLUSIONIST") == 0) AddLayer("TRIGGER", $player, $cardID);
       break;
     default: break;
   }

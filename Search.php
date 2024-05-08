@@ -426,6 +426,7 @@ function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniq
 {
   global $currentTurnEffects;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    if(!isset($currentTurnEffects[$i+1])) continue;
     if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $player) {
       if ($remove) RemoveCurrentTurnEffect($i);
       return $returnUniqueID ? $currentTurnEffects[$i+2] : true;
