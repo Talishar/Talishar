@@ -1,6 +1,6 @@
 <?php
 
-function PlayLandmark($cardID, $player)
+function PlayLandmark($cardID, $player, $from="-")
 {
   global $landmarks;
   if (count($landmarks) > 0) DestroyLandmark(0); //Right now, playing a new landmark destroys the old landmark
@@ -10,6 +10,7 @@ function PlayLandmark($cardID, $player)
   }
   array_push($landmarks, $cardID);
   array_push($landmarks, $player); //The player that originally played the landmark
+  array_push($landmarks, $from);
 }
 
 function DestroyLandmark($index)

@@ -1,7 +1,7 @@
 <?php
 
 
-function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1, $effectController="", $isToken=false, $mainPhase="True")
+function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1, $effectController="", $isToken=false, $mainPhase="True", $from="-")
 {
   global $turn, $EffectContext;
   $otherPlayer = ($player == 1 ? 2 : 1);
@@ -28,6 +28,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     array_push($items, $theirHoldState);
     array_push($items, 0);
     array_push($items, ItemModalities($item));
+    array_push($items, $from);
     if(HasCrank($item, $player)) Crank($player, $index, $mainPhase);
   }
   if(($symbiosisIndex = FindCharacterIndex($player, "EVO003")) > 0 && ClassContains($item, "MECHANOLOGIST", $player)) {

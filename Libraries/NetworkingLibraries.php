@@ -2485,10 +2485,10 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
   } else if($from != "PLAY" && $from != "EQUIP") {
     $cardSubtype = CardSubType($cardID);
-    if(DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer);
-    else if(DelimStringContains($cardSubtype, "Item")) PutItemIntoPlayForPlayer($cardID, $currentPlayer);
-    else if($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer);
-    else if(DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID);
+    if(DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer, from:$from);
+    else if(DelimStringContains($cardSubtype, "Item")) PutItemIntoPlayForPlayer($cardID, $currentPlayer, from:$from);
+    else if($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer, $from);
+    else if(DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID, from:$from);
     else if(DelimStringContains($cardSubtype, "Evo")) EvoHandling($cardID, $currentPlayer, $from);
     else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W") {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts:$additionalCosts);

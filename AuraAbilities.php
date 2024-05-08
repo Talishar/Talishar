@@ -1,6 +1,6 @@
 <?php
 
-function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numAttackCounters = 0)
+function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numAttackCounters = 0, $from="-")
 {
   global $CS_NumAuras, $EffectContext;
   $otherPlayer = ($player == 1 ? 2 : 1);
@@ -48,6 +48,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     array_push($auras, GetUniqueId($cardID, $player));
     array_push($auras, $myHoldState); //My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
     array_push($auras, $theirHoldState); //Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
+    array_push($auras, $from);
   }
   if(DelimStringContains(CardSubType($cardID), "Affliction") || DelimStringContains(CardSubType($EffectContext), "Trap") || CardType($EffectContext) == "DR") IncrementClassState($otherPlayer, $CS_NumAuras, $number);
   else if($cardID != "ELE111") IncrementClassState($player, $CS_NumAuras, $number);
@@ -69,7 +70,7 @@ function TokenCopyAura($player, $index)
   PlayAura($auras[$index], $player, 1, true);
 }
 
-function AuraDestroyed($player, $cardID, $isToken = false)
+function AuraDestroyed($player, $cardID, $isToken = false, $from="HAND")
 {
   $auras = &GetAuras($player);
   for($i = 0; $i < count($auras); $i += AuraPieces()) {
@@ -96,7 +97,7 @@ function AuraDestroyed($player, $cardID, $isToken = false)
       break;
     default: break;
   }
-  $goesWhere = GoesWhereAfterResolving($cardID);
+  $goesWhere = GoesWhereAfterResolving($cardID, $from);
   $numMercifulRetribution = SearchCount(SearchAurasForCard("MON012", $player)) + ($cardID == "MON012" ? 1 : 0);
   if($numMercifulRetribution > 0 && TalentContains($cardID, "LIGHT", $player)) {
     AddDecisionQueue("PASSPARAMETER", $player, $cardID, 1);
@@ -109,10 +110,14 @@ function AuraDestroyed($player, $cardID, $isToken = false)
   }
   if(HasWard($cardID, $player) && !$isToken) WardPoppedAbility($player, $cardID);
   if(CardType($cardID) == "T" || $isToken) return;//Don't need to add to anywhere if it's a token
+  $otherPlayer = $player == 1 ? 2 : 1;
   switch($goesWhere) {
     case "GY":
       if(DelimStringContains(CardSubType($cardID), "Affliction")) $player = ($player == 1 ? 2 : 1);
       AddGraveyard($cardID, $player, "PLAY", $player);
+      break;
+    case "THEIRDISCARD":
+      AddGraveyard($cardID, $otherPlayer, "PLAY", $player);
       break;
     case "BANISH":
       BanishCardForPlayer($cardID, $player, "PLAY", "NA");
@@ -173,8 +178,9 @@ function DestroyAura($player, $index, $uniqueID="")
   $isToken = $auras[$index + 4] == 1;
   if($uniqueID != "") $index = SearchAurasForUniqueID($uniqueID, $player);
   AuraDestroyAbility($player, $index, $isToken);
+  $from = $auras[$index+9];
   $cardID = RemoveAura($player, $index);
-  AuraDestroyed($player, $cardID, $isToken);
+  AuraDestroyed($player, $cardID, $isToken, $from);
   return $cardID;
 }
 

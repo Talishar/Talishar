@@ -1,6 +1,6 @@
 <?php
 
-function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false)
+function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from="-")
 {
   global $EffectContext;
   $permanents = &GetPermanents($player);
@@ -11,6 +11,7 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false)
   if($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
   for($i = 0; $i < $number; ++$i) {
     array_push($permanents, $cardID);
+    array_push($permanents, $from);
   }
   return count($permanents) - PermanentPieces();
 }

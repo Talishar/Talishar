@@ -74,9 +74,10 @@ function CombatChainPieces()
 //6 - Unique ID
 //7 - My Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
 //8 - Opponent Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
+//9 - Where it's played from
 function AuraPieces()
 {
-  return 9;
+  return 10;
 }
 
 //0 - Item ID
@@ -88,9 +89,10 @@ function AuraPieces()
 //6 - Opponent Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
 //7 - Frozen (1 = yes, 0 = no)
 //8 - Modalities (eg. Micro-Processor) 
+//9 - Where it's played from
 function ItemPieces()
 {
-  return 9;
+  return 10;
 }
 
 function PitchPieces()
@@ -151,9 +153,10 @@ function AllyPieces()
 }
 
 //0 - Card ID
+//1 - Where it's played from
 function PermanentPieces()
 {
-  return 1;
+  return 2;
 }
 
 //0 - Card ID/Layer type
@@ -169,6 +172,8 @@ function LayerPieces()
 }
 
 //0 - Card ID
+//1 - Player
+//2 - Where it's played from
 function LandmarkPieces()
 {
   return 2;
