@@ -63,6 +63,8 @@ case "6":
 return "E";
 case "3":
 return "W";
+case "8":
+return "AR";
 case "2":
 return "C";
 case "1":
@@ -10081,12 +10083,6 @@ default: return 3;
 }
 case "4":
 switch($cardID[5]) {
-case "6":
-return -1;
-case "7":
-return -1;
-case "8":
-return -1;
 case "9":
 return 2;
 default: return 3;
@@ -15129,6 +15125,8 @@ case "6":
 return "Arousing Wave";
 case "3":
 return "Beckoning Mistblade";
+case "8":
+return "Gorgon's Gaze";
 case "2":
 return "Nuu";
 case "1":
@@ -23447,6 +23445,8 @@ case "6":
 return 0;
 case "3":
 return 0;
+case "8":
+return 2;
 case "2":
 return 0;
 case "1":
@@ -32931,6 +32931,8 @@ case "6":
 return -1;
 case "3":
 return -1;
+case "8":
+return 2;
 case "2":
 return -1;
 case "1":
@@ -36381,6 +36383,8 @@ case "6":
 return "Mystic,Arms";
 case "3":
 return "Mystic,Dagger";
+case "8":
+return "Mystic";
 case "2":
 return "Mystic,Young";
 case "1":
@@ -44469,6 +44473,8 @@ case "0":
 switch($cardID[5]) {
 case "3":
 return "T";
+case "8":
+return "M";
 case "2":
 return "T";
 case "1":
@@ -48644,6 +48650,8 @@ switch($cardID[5]) {
 case "6":
 return "ASSASSIN";
 case "3":
+return "ASSASSIN";
+case "8":
 return "ASSASSIN";
 case "2":
 return "ASSASSIN";
@@ -55590,6 +55598,7 @@ case "WTR153": return "false";
 case "HVY055": return "true";
 case "OUT186": return "false";
 case "CRU181": return "false";
+case "MST008": return "false";
 case "HVY097": return "false";
 case "EVR000": return "false";
 case "HVY205": return "false";
