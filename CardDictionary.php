@@ -1883,7 +1883,7 @@ function WardAmount($cardID, $player)
     case "UPR218": return 4;
     case "UPR219": return 3;
     case "UPR220": return 2;
-    case "DYN213": case "DYN214": return 1;
+    case "DYN213": case "DYN214": case "DYN217": return 1;
     case "DYN612": return 4;
     case "DTD004": return SearchCurrentTurnEffects("DTD004-1", $player);
     case "DTD217": return 2;
@@ -1926,7 +1926,7 @@ function HasWard($cardID, $player)
     case "UPR039": case "UPR040": case "UPR041":
     case "UPR218": case "UPR219": case "UPR220":
     case "DYN213":
-    case "DYN214": case "DYN215": case "DYN217":
+    case "DYN214": case "DYN217":
     case "DYN218": case "DYN219": case "DYN220":
     case "DYN221": case "DYN222": case "DYN223":
     case "DYN612":
