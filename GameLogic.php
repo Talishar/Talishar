@@ -543,7 +543,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $deck->Remove($lastResult);
     case "PLAYAURA":
       $params = explode("-", $parameter);
-      PlayAura($params[0], $player, $params[1]);
+      if(isset($params[1])) PlayAura($params[0], $player, $params[1]);
+      else PlayAura($params[0], $player);
       break;
     case "DESTROYALLY":
       DestroyAlly($player, $lastResult);
