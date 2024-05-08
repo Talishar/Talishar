@@ -174,6 +174,7 @@ function DestroyAuraUniqueID($player, $uniqueID)
 
 function DestroyAura($player, $index, $uniqueID="")
 {
+  global $combatChainState, $CCS_WeaponIndex, $combatChain;
   $auras = &GetAuras($player);
   $isToken = $auras[$index + 4] == 1;
   if($uniqueID != "") $index = SearchAurasForUniqueID($uniqueID, $player);
@@ -181,6 +182,9 @@ function DestroyAura($player, $index, $uniqueID="")
   $from = $auras[$index+9];
   $cardID = RemoveAura($player, $index);
   AuraDestroyed($player, $cardID, $isToken, $from);
+  
+  // Refreshes the aura index with the Unique ID in case of aura destruction
+  if(DelimStringContains(CardSubtype($combatChain[0]), "Aura")) $combatChainState[$CCS_WeaponIndex] = SearchAurasForUniqueID($combatChain[8], $player);
   return $cardID;
 }
 
