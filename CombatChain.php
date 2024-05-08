@@ -926,16 +926,14 @@ function IsPiercingActive($cardID)
 {
   global $combatChain, $CombatChain, $currentTurnEffects, $mainPlayer;
   if ($CombatChain->HasCurrentLink()) {
-    if (HasPiercing($combatChain[0]))
+    if (HasPiercing($cardID))
       return true;
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-      if (isset($currentTurnEffects[$i + 1]) == $mainPlayer) {
-        if (HasPiercing($currentTurnEffects[$i]))
-          return true;
-      }
+      if(!isset($currentTurnEffects[$i+1])) continue;
+      if($currentTurnEffects[$i + 1] == $mainPlayer && HasPiercing($currentTurnEffects[$i])) return true;
+    else return false;
     }
-  } else
-    return false;
+  }
 }
 
 
