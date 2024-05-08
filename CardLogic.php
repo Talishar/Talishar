@@ -410,8 +410,8 @@ function ContinueDecisionQueue($lastResult = "")
       }
       $params = explode("|", $decisionQueue[2]);
       CloseDecisionQueue();
+      if($params[2] == "") $params[2] = 0;
       if($turn[0] == "B" && count($layers) == 0) { //If a layer is not created
-        if($params[2] == "") $params[2] = 0;
         PlayCardEffect($params[0], $params[1], $params[2], "-", $params[3], $params[4]);
       } else {
         //params 3 = ability index
