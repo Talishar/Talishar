@@ -113,7 +113,7 @@ function TypeToPlay($phase)
     case "CHOOSEMYAURA":
       return " an aura";
     case "DYNPITCH":
-      return "the value of X you want to pay for";
+      return "how much you wish to pay";
     case "CHOOSEMYSOUL": case "MAYCHOOSEMYSOUL":
       return "a card from soul";
     case "INPUTCARDNAME":
