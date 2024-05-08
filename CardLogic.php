@@ -1605,7 +1605,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       PlayAura("HVY241", $otherPlayer);
       break;
     case "TCC098": case "TCC102":
-      BanishCardForPlayer("DYN065", $player, "-", "NT", $player);
+      BanishCardForPlayer("DYN065", $player, "-", "NT");
       break;
     case "TCC033":
       PlayAura("WTR225", $otherPlayer);
