@@ -411,7 +411,7 @@ function AddDamagePreventionSelection($player, $damage, $preventable)
 {
   PrependDecisionQueue("PROCESSDAMAGEPREVENTION", $player, $damage . "-" . $preventable, 1);
   PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to prevent damage", 1);
+  PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to prevent damage: " . $damage . " damage left", 1);
   PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION");
 }
 
