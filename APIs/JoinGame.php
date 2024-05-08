@@ -384,13 +384,13 @@ if ($decklink != "") {
     exit;
   }
 
-  if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc")) {
+  if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc" || $format == "openformatcc")) {
     $response->error = "⚠️ Young heroes are not legal in Classic Constructed: Young - " . CardName($character);
     echo (json_encode($response));
     exit;
   }
 
-  if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz" || $format == "clash")) {
+  if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz" || $format == "clash" || $format == "openformatblitz")) {
     $response->error = "⚠️ Adult heroes are not legal in this format: " . CardName($character);
     echo (json_encode($response));
     exit;
