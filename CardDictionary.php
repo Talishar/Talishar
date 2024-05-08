@@ -2045,6 +2045,10 @@ function BlockCantBeModified($cardID)
 function Rarity($cardID)
 {
   $set = CardSet($cardID);
+  switch ($cardID) {
+  case "MST167": case "MST168": case "MST169": // Commoner workaround. Can be deleted later when the database is updated.
+      return "C";
+  }
   if($set != "ROG" && $set != "DUM") {
     return GeneratedRarity($cardID);
   }
