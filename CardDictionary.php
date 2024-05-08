@@ -657,7 +657,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($CombatChain->HasCurrentLink()) if ($CombatChain->AttackCard()->ID() == "MON245" && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
   if(SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
   if(($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
-  if($from == "PLAY" && AbilityPlayableFromCombatChain($cardID)) return true;
+  if($from == "PLAY" && AbilityPlayableFromCombatChain($cardID) && $phase != "B") return true;
   if(($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
   if($cardID == "DYN492a" || $cardID == "EVO410") {
     if (($phase == "M" && $mainPlayer == $currentPlayer)) {
@@ -930,8 +930,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MON230": return GetClassState($player, $CS_NumAttackCards) == 0 || GetClassState($player, $CS_NumNonAttackCards) == 0;
     case "MON238": return GetClassState($player, $CS_DamageTaken) == 0 && GetClassState($otherPlayer, $CS_DamageTaken) == 0;
     case "MON281": case "MON282": case "MON283": 
-      if(isset($combatChain[$index+7])) return SearchCurrentTurnEffectsForUniqueID($combatChain[$index+7]) != -1;
-      else return true;
+      if(isset($combatChain[$index+7]) && $from == "CC") return SearchCurrentTurnEffectsForUniqueID($combatChain[$index+7]) != -1;
+      else return false;
     case "ELE031": case "ELE032": case "ELE115": return !ArsenalHasFaceDownCard($player);
     case "ELE118": return $from == "ARS" || ArsenalEmpty($player);
     case "ELE125": case "ELE126": case "ELE127":
