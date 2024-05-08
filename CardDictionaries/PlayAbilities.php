@@ -24,6 +24,7 @@ function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer, $CS_DamagePrevention;
+  global $combatChain, $defPlayer, $CombatChain, $chainLinks;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $hand = &GetHand($currentPlayer);
   switch($cardID) {
@@ -49,6 +50,30 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "MST007":
       AddPlayerHand("MST024", $currentPlayer, $cardID); //Slither
+      return "";
+    case "MST008":
+      AddPlayerHand("MST024", $currentPlayer, $cardID); //Slither
+      $mod = "-";
+      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") $mod = "TCCGorgonsGaze";
+      $defendingCards = GetChainLinkCards($defPlayer);
+      if ($defendingCards != "") {
+        $defendingCards = explode(",", $defendingCards);
+        for($i=count($defendingCards); $i >= 0; --$i){
+          if(CardType($combatChain[$defendingCards[$i]]) == "AA") {
+            BanishCardForPlayer($combatChain[$defendingCards[$i]], $defPlayer, "CC", $mod, $cardID);
+            $index = GetCombatChainIndex($combatChain[$defendingCards[$i]], $defPlayer);
+            $CombatChain->Remove($index);    
+          }
+        }
+      }
+      for($j = 0; $j < count($chainLinks); ++$j) {
+        for($k = 0; $k < count($chainLinks[$j]); $k += ChainLinksPieces()) {
+          if(CardType($chainLinks[$j][$k]) == "AA" && $chainLinks[$j][$k+1] == $defPlayer) {
+            BanishCardForPlayer($chainLinks[$j][$k], $defPlayer, "CC", $mod, $cardID);
+            $chainLinks[$j][$k+2] = 0;
+          }
+        }
+      } 
       return "";
     case "MST010":
       if($additionalCosts != "-"){

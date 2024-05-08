@@ -1782,7 +1782,7 @@ function PlayableFromOtherPlayerBanish($cardID, $mod="")
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
   $mod = explode("-", $mod)[0];
   if(PitchValue($cardID) == 3 && (SearchCurrentTurnEffects("MST001", $currentPlayer) || SearchCurrentTurnEffects("MST002", $currentPlayer))) return true;
-  if($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer") return true;
+  if($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer" || $mod == "TCCGorgonsGaze") return true;
   else return false;
 }
 
@@ -1861,7 +1861,7 @@ function CardCaresAboutPitch($cardID)
     case "DYN176": case "DYN177": case "DYN178":
 		case "DYN182": case "DYN183": case "DYN184":
 		case "DYN185": case "DYN186": case "DYN187":
-    case "MST080":
+    case "MST008": case "MST080":
       return true;
     default: return false;
   }

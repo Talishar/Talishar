@@ -671,9 +671,11 @@ function UnsetCombatChainBanish()
   $p1Banish = new Banish(1);
   $p1Banish->UnsetModifier("TCL");
   $p1Banish->UnsetModifier("TCC");
+  $p1Banish->UnsetModifier("TCCGorgonsGaze");
   $p2Banish = new Banish(2);
   $p2Banish->UnsetModifier("TCL");
   $p2Banish->UnsetModifier("TCC");
+  $p2Banish->UnsetModifier("TCCGorgonsGaze");
 }
 
 function ReplaceBanishModifier($player, $oldMod, $newMod)
@@ -1873,7 +1875,7 @@ function IsAlternativeCostPaid($cardID, $from)
   return $isAlternativeCostPaid;
 }
 
-function BanishCostModifier($from, $index)
+function BanishCostModifier($from, $index, $cost)
 {
   global $currentPlayer;
   if($from != "BANISH") return 0;
@@ -1881,6 +1883,7 @@ function BanishCostModifier($from, $index)
   $mod = explode("-", $banish[$index + 1]);
   switch($mod[0]) {
     case "ARC119": return -1 * intval($mod[1]);
+    case "TCCGorgonsGaze": return -1 * intval($cost);
     default: return 0;
   }
 }

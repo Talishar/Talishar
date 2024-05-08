@@ -929,13 +929,7 @@ function NuuStaticAbility($banishedBy)
       if(CardType($combatChain[$defendingCards[$i]]) == "A" || CardType($combatChain[$defendingCards[$i]]) == "AA") {
         BanishCardForPlayer($combatChain[$defendingCards[$i]], $defPlayer, "CC", "-", $banishedBy);
         $index = GetCombatChainIndex($combatChain[$defendingCards[$i]], $defPlayer);
-        if($CombatChain->Remove($index) == "") {
-          for($j = 0; $j < count($chainLinks); ++$j) {
-            for($k = 0; $k < count($chainLinks[$j]); $k += ChainLinksPieces()) {
-              if($chainLinks[$j][$k] == $combatChain[$defendingCards[$i]]) $chainLinks[$j][$k+2] = 0;
-            }
-          }
-        }
+        $CombatChain->Remove($index);
       }
     }
   }
@@ -1445,7 +1439,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
           $baseCost = 0;
           AddAdditionalCost($currentPlayer, "ALTERNATIVECOST");
         }
-        $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved + $baseCost : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier($cardID) + CharacterCostModifier($cardID, $from, $baseCost) + BanishCostModifier($from, $index);
+        $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved + $baseCost : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier($cardID) + CharacterCostModifier($cardID, $from, $baseCost) + BanishCostModifier($from, $index, $baseCost);
         if($isAlternativeCostPaid && $resources[1] > 0) WriteLog("<span style='color:red;'>Alternative costs do not offset additional costs.</span>");
       }
       if($resources[1] < 0) $resources[1] = 0;
