@@ -114,16 +114,16 @@
       case "CRU053": return HasCombo($attackID);
       case "CRU055": return true;
       case "CRU072": return true;
-      case "CRU084": return CardType($attackID) == "W";
-      case "CRU084-2": return CardType($attackID) == "W";
-      case "CRU085-1": case "CRU086-1": case "CRU087-1": return CardType($attackID) == "W";
-      case "CRU088-1": case "CRU089-1": case "CRU090-1": return CardType($attackID) == "W";
+      case "CRU084": return TypeContains($attackID, "W", $mainPlayer);
+      case "CRU084-2": return TypeContains($attackID, "W", $mainPlayer);
+      case "CRU085-1": case "CRU086-1": case "CRU087-1": return TypeContains($attackID, "W", $mainPlayer);
+      case "CRU088-1": case "CRU089-1": case "CRU090-1": return TypeContains($attackID, "W", $mainPlayer);
       case "CRU088-2": case "CRU089-2": case "CRU090-2": return true;
-      case "CRU091-1": case "CRU092-1": case "CRU093-1": return CardType($attackID) == "W";
+      case "CRU091-1": case "CRU092-1": case "CRU093-1": return TypeContains($attackID, "W", $mainPlayer);
       case "CRU091-2": case "CRU092-2": case "CRU093-2": return true;
-      case "CRU094-1": case "CRU095-1": case "CRU096-1": return CardType($attackID) == "W";
+      case "CRU094-1": case "CRU095-1": case "CRU096-1": return TypeContains($attackID, "W", $mainPlayer);
       case "CRU094-2": case "CRU095-2": case "CRU096-2": return true;
-      case "CRU105": return CardType($attackID) == "W" && CardSubtype($attackID) == "Pistol" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
+      case "CRU105": return TypeContains($attackID, "W", $mainPlayer) && CardSubtype($attackID) == "Pistol" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
       case "CRU106": case "CRU107": case "CRU108": return $combatChainState[$CCS_IsBoosted] == "1";
       case "CRU109": case "CRU110": case "CRU111": return $combatChainState[$CCS_IsBoosted] == "1";
       case "CRU122": return $CombatChain->AttackCard()->From() == "ARS" && GetClassState($mainPlayer, $CS_ArsenalFacing) == "UP" && CardSubtype($attackID) == "Arrow"; //The card being played from ARS and being an Arrow implies that the card is UP.

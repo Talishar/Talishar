@@ -803,7 +803,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target) {
     case "HVY097":
       $hand = &GetHand($player);
       $resources = &GetResources($player);
-      if(CardType($combatChain[0]) == "W" && (Count($hand) > 0 || $resources[0] > 0))
+      if(TypeContains($combatChain[0], "W", $mainPlayer) && (Count($hand) > 0 || $resources[0] > 0))
       {
         AddDecisionQueue("YESNO", $player, "if you want to pay 1 to create a " . CardLink("HVY242", "HVY242"), 0, 1);
         AddDecisionQueue("NOPASS", $player, "-", 1);
@@ -2031,7 +2031,7 @@ function IsWeaponGreaterThanTwiceBasePower()
 {
   global $combatChain, $mainPlayer, $CS_NumCharged, $CS_NumYellowPutSoul;
   if(count($combatChain) == 0) return false;
-  if(CardType($combatChain[0]) == "W" && CachedTotalAttack() > (AttackValue($combatChain[0]) * 2)) return true;
+  if(TypeContains($combatChain[0], "W", $mainPlayer) && CachedTotalAttack() > (AttackValue($combatChain[0]) * 2)) return true;
   $char = &GetPlayerCharacter($mainPlayer);
   if($char[CharacterPieces()] == "MON031" && GetClassState($mainPlayer, $CS_NumCharged) > 0) return true;
   if($char[CharacterPieces()] == "DTD046" && GetClassState($mainPlayer, $CS_NumYellowPutSoul) > 0) return true;

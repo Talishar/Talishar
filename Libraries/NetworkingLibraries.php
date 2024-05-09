@@ -939,7 +939,7 @@ function NuuStaticAbility($banishedBy)
 function ChainLinkBeginResolutionEffects()
 {
   global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex, $CID_BloodRotPox;
-  if(CardType($combatChain[0]) == "W") {
+  if(TypeContains($combatChain[0], "W", $mainPlayer)) {
     $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
     $index = $combatChainState[$CCS_WeaponIndex];
     for($i = 0; $i < count($mainCharacterEffects); $i += CharacterEffectPieces()) {
@@ -1027,7 +1027,7 @@ function ResolveCombatDamage($damageDone)
   if($wasHit) {
     LogPlayCardStats($mainPlayer, $combatChain[0], "CC", "HIT");
     $combatChainState[$CCS_DamageDealt] = $damageDone;
-    if(CardType($combatChain[0]) == "W") {
+    if(TypeContains($combatChain[0], "W", $mainPlayer)) {
       ++$combatChainState[$CCS_HitsWithWeapon];
       IncrementClassState($mainPlayer, $CS_HitsWithWeapon);
       if(SubtypeContains($combatChain[0], "Sword", $mainPlayer)) IncrementClassState($mainPlayer, $CS_HitsWithSword);
@@ -1084,7 +1084,7 @@ function FinalizeChainLink($chainClosed = false)
   if(DoesAttackHaveGoAgain() && !$chainClosed) {
     ++$actionPoints;
     if($combatChain[0] == "DVR002" && SearchCharacterActive($mainPlayer, "DVR001")) DoriQuicksilverProdigyEffect();
-    if(CardType($combatChain[0]) == "W" && GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) == "-") SetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain, $combatChain[0]);
+    if(TypeContains($combatChain[0], "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) == "-") SetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain, $combatChain[0]);
   }
   ChainLinkResolvedEffects();
   array_push($chainLinks, array());
@@ -1142,7 +1142,7 @@ function FinalizeChainLink($chainClosed = false)
 
   //Don't change state until the end, in case it changes what effects are active
   if($CombatChain->HasCurrentLink()) {
-    if(CardType($combatChain[0]) == "W" && !$chainClosed) {
+    if(TypeContains($combatChain[0], "W", $mainPlayer) && !$chainClosed) {
       ++$mainClassState[$CS_AtksWWeapon];
       if(CardSubtype($combatChain[0]) == "Sword") ++$mainClassState[$CS_NumSwordAttacks];
     }

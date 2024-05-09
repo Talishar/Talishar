@@ -198,7 +198,7 @@ function RogEffectCostMod($cardID)
           if (CardType($cardID) == "AA") $costModifier -= 2;
           break;
         case "CRU081":
-          if (CardType($cardID) == "W" && CardSubType($cardID) == "Sword") $costModifier -= 1;
+          if (TypeContains($cardID, "W", $currentPlayer) && CardSubType($cardID) == "Sword") $costModifier -= 1;
           break;
         case "CRU085-2":
         case "CRU086-2":
@@ -297,18 +297,18 @@ function ReactionRequirementsMet($storedPriorityNode)
     case "WTR123": case "WTR124": case "WTR125":
     case "WTR132": case "WTR133": case "WTR134":
     case "WTR135": case "WTR136": case "WTR137":
-    case "WTR138": case "WTR139": case "WTR140": return CardType($combatChain[0]) == "W";
+    case "WTR138": case "WTR139": case "WTR140": return TypeContains($combatChain[0], "W", $mainPlayer);
     case "WTR154": return CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) <= 1;
     case "WTR206": case "WTR207": case "WTR208": return CardSubtype($combatChain[0]) == "Club" || CardSubtype($combatChain[0]) == "Hammer" || (CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) >= 2);
     case "WTR209": case "WTR210": case "WTR211": return CardSubtype($combatChain[0]) == "Sword" || CardSubtype($combatChain[0]) == "Dagger" || (CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) <= 1);
     case "CRU082": return CardSubtype($combatChain[0]) == "Sword";
     case "CRU083":
-    case "CRU088": case "CRU089": case "CRU090": return CardType($combatChain[0]) == "W";
+    case "CRU088": case "CRU089": case "CRU090": return TypeContains($combatChain[0], "W", $mainPlayer);
     case "CRU186": return CardType($combatChain[0]) == "AA";
     case "MON057": case "MON058": case "MON059": return true;
     case "ELE225": return CardType($combatChain[0]) == "AA" && GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0;
-    case "EVR054": return CardType($combatChain[0]) == "W" && !Is1H($combatChain[0]);
-    case "EVR060": case "EVR061": case "EVR062": return CardType($combatChain[0]) == "W" && Is1H($combatChain[0]);
+    case "EVR054": return TypeContains($combatChain[0], "W", $mainPlayer) && !Is1H($combatChain[0]);
+    case "EVR060": case "EVR061": case "EVR062": return TypeContains($combatChain[0], "W", $mainPlayer) && Is1H($combatChain[0]);
     case "EVR063": case "EVR064": case "EVR065": return GetClassState($currentPlayer, $CS_AtksWWeapon) >= 1;
     case "DVR013":
     case "DVR014":
@@ -324,7 +324,7 @@ function ReactionRequirementsMet($storedPriorityNode)
     case "ELE172": return GetClassState($currentPlayer, $CS_NumFusedIce) > 0;
     case "ELE183": case "ELE184": case "ELE185": return CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) <= 1;
     case "ELE201": return GetClassState($currentPlayer, $CS_NumFusedLightning) > 0;
-    case "HVY101": return CardType($combatChain[0]) == "W";
+    case "HVY101": return TypeContains($combatChain[0], "W", $mainPlayer);
     default: return true;
   }
 }

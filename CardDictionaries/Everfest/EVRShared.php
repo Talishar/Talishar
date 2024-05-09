@@ -141,14 +141,14 @@
       case "EVR057-1": case "EVR058-1": case "EVR059-1":
         $subtype = CardSubType($attackID);
         if($subtype != "Sword" && $subtype != "Dagger") return false;
-        return CardType($attackID) == "W" && GetClassState($mainPlayer, $CS_AtksWWeapon) == 0;
+        return TypeContains($attackID, "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AtksWWeapon) == 0;
       case "EVR057-2": case "EVR058-2": case "EVR059-2":
         $subtype = CardSubType($attackID);
         if($subtype != "Sword" && $subtype != "Dagger") return false;
-        return CardType($attackID) == "W" && GetClassState($mainPlayer, $CS_AtksWWeapon) == 1;
-      case "EVR060": case "EVR061": case "EVR062": return CardType($attackID) == "W";
-      case "EVR066": case "EVR067": case "EVR068": return CardType($attackID) == "W" && Is1H($attackID);
-      case "EVR066-1": case "EVR067-1": case "EVR068-1": return CardType($attackID) == "W";
+        return TypeContains($attackID, "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AtksWWeapon) == 1;
+      case "EVR060": case "EVR061": case "EVR062": return TypeContains($attackID, "W", $mainPlayer);
+      case "EVR066": case "EVR067": case "EVR068": return TypeContains($attackID, "W", $mainPlayer) && Is1H($attackID);
+      case "EVR066-1": case "EVR067-1": case "EVR068-1": return TypeContains($attackID, "W", $mainPlayer);
       case "EVR072": return true;
       case "EVR082": case "EVR083": case "EVR084": return CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
       case "EVR087": return CardSubType($attackID) == "Arrow";

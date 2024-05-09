@@ -128,11 +128,11 @@
       case "WTR066": case "WTR067": case "WTR068": return true;
       case "WTR069": case "WTR070": case "WTR071": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $mainPlayer);
       case "WTR081": return true;
-      case "WTR116": return CardType($attackID) == "W";
-      case "WTR129": case "WTR130": case "WTR131": return CardType($attackID) == "W";
-      case "WTR141": case "WTR142": case "WTR143": return CardType($attackID) == "W";
-      case "WTR144": case "WTR145": case "WTR146": return CardType($attackID) == "W";
-      case "WTR147": case "WTR148": case "WTR149": return CardType($attackID) == "W";
+      case "WTR116": return TypeContains($attackID, "W", $mainPlayer);
+      case "WTR129": case "WTR130": case "WTR131": return TypeContains($attackID, "W", $mainPlayer);
+      case "WTR141": case "WTR142": case "WTR143": return TypeContains($attackID, "W", $mainPlayer);
+      case "WTR144": case "WTR145": case "WTR146": return TypeContains($attackID, "W", $mainPlayer);
+      case "WTR147": case "WTR148": case "WTR149": return TypeContains($attackID, "W", $mainPlayer);
       case "WTR153": return CardType($attackID) == "AA" && (CardCost($attackID) >= 2 || GetClassState($mainPlayer, $CS_LastDynCost) >= 2);
       case "WTR154": return true;
       case "WTR159": return true;

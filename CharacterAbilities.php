@@ -403,7 +403,7 @@ function MainCharacterHitTrigger()
   $attackID = $CombatChain->AttackCard()->ID();
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
-    if(CardType($mainCharacter[$i]) == "W" || $mainCharacter[$i + 1] != "2") continue;
+    if(TypeContains($mainCharacter[$i], "W", $mainPlayer) || $mainCharacter[$i + 1] != "2") continue;
     $characterID = ShiyanaCharacter($mainCharacter[$i], $mainPlayer);
     switch($characterID) {
       case "WTR076": case "WTR077":
@@ -419,14 +419,14 @@ function MainCharacterHitTrigger()
         }
         break;
       case "WTR113": case "WTR114":
-        if($mainCharacter[$i+1] == 2 && CardType($attackID) == "W" && $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] != 0) {
+        if($mainCharacter[$i+1] == 2 && TypeContains($attackID, "W", $mainPlayer) && $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] != 0) {
           $mainCharacter[$i+1] = 1;
           $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] = 2;
           ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+5];
         }
         break;
       case "WTR117":
-        if(CardType($attackID) == "W" && IsCharacterActive($mainPlayer, $i)) {
+        if(TypeContains($attackID, "W", $mainPlayer) && IsCharacterActive($mainPlayer, $i)) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
@@ -457,7 +457,7 @@ function MainCharacterHitTrigger()
         }
         break;
       case "HVY097":
-        if(CardType($attackID) == "W")
+        if(TypeContains($attackID, "W", $mainPlayer))
         {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
@@ -668,7 +668,7 @@ function EquipWeapon($player, $card)
   //Replace the first destroyed weapon; if none you can't re-equip
   for($i=CharacterPieces(); $i<count($char) && !$replaced; $i+=CharacterPieces())
   {
-    if(CardType($char[$i]) == "W")
+    if(TypeContains($char[$i], "W", $player))
     {
       $lastWeapon = $i;
       if($char[$i+1] == 0)

@@ -146,17 +146,17 @@
     switch($cardID)
     {
       case "MON008": case "MON009": case "MON010": return CardType($attackID) == "AA";
-      case "MON034": return CardType($attackID) == "W";
+      case "MON034": return TypeContains($attackID, "W", $mainPlayer);
       case "MON035": return true;
       case "MON081": case "MON082": case "MON083": return CardType($attackID) == "AA";
       case "MON087": $theirChar = GetPlayerCharacter($defPlayer); return TalentContains($theirChar[0], "SHADOW");
       case "MON089": return true;
       case "MON090": return ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && CardType($attackID) == "AA";
       case "MON095": case "MON096": case "MON097": return CardType($attackID) == "AA";
-      case "MON108": return CardType($attackID) == "W";
+      case "MON108": return TypeContains($attackID, "W", $mainPlayer);
       case "MON109": return CardSubtype($attackID) == "Axe";
-      case "MON110": case "MON111": case "MON112": return CardType($attackID) == "W";
-      case "MON113": case "MON114": case "MON115": return CardType($attackID) == "W";
+      case "MON110": case "MON111": case "MON112": return TypeContains($attackID, "W", $mainPlayer);
+      case "MON113": case "MON114": case "MON115": return TypeContains($attackID, "W", $mainPlayer);
       case "MON116": case "MON117": case "MON118": return true;
       case "MON126": case "MON127": case "MON128": return true;
       case "MON129": case "MON130": case "MON131": return true;

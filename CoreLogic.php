@@ -272,7 +272,7 @@ function ArsenalAttackModifier(&$attackModifiers)
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces()) {
     switch($arsenal[$i]) {
       case "MON405":
-        $modifier += ($arsenal[$i+1] == "UP" && $attackType == "W" && Is1H($attackID) ? 1 : 0);
+        $modifier += ($arsenal[$i+1] == "UP" && TypeContains($attackID, "W", $mainPlayer) && Is1H($attackID) ? 1 : 0);
         array_push($attackModifiers, $arsenal[$i]);
         array_push($attackModifiers, $modifier);
         break;
@@ -290,11 +290,11 @@ function ArsenalHitEffects()
   $modifier = 0;
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces()) {
     switch($arsenal[$i]) {
-      case "MON405": if($arsenal[$i+1] == "UP" && CardType($attackID) == "W") {
+      case "MON405": if($arsenal[$i+1] == "UP" && TypeContains($attackID, "W", $mainPlayer)) {
         MinervaThemisAbility($mainPlayer, $i);
         break;
       }
-      case "DVR007": if($arsenal[$i+1] == "UP" && CardType($attackID) == "W" && CardSubType($attackID) == "Sword") {
+      case "DVR007": if($arsenal[$i+1] == "UP" && TypeContains($attackID, "W", $mainPlayer) && CardSubType($attackID) == "Sword") {
         HalaGoldenhelmAbility($mainPlayer, $i);
         break;
       }

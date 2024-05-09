@@ -240,7 +240,7 @@ function EffectHitEffect($cardID, $from)
       $inventory = &GetInventory($mainPlayer);
       if($char[CharacterPieces()+1] == 0 || $char[CharacterPieces()*2+1] == 0) { //Only Equip if there is a broken weapon/off-hand
         foreach ($inventory as $cardID) {
-          if (CardType($cardID) == "W" && SubtypeContains($cardID, "Dagger")) {
+          if (TypeContains($cardID, "W", $mainPlayer) && SubtypeContains($cardID, "Dagger")) {
             if ($weapons != "") $weapons .= ",";
             $weapons .= $cardID;
           };
@@ -522,7 +522,7 @@ function CurrentEffectCostModifiers($cardID, $from)
           if(CardType($cardID) == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) { $costModifier -= 2; $remove = true; }
           break;
         case "CRU081":
-          if(CardType($cardID) == "W" && CardSubType($cardID) == "Sword") { $costModifier -= 1; }
+          if(TypeContains($cardID, "W", $currentPlayer) && CardSubType($cardID) == "Sword") { $costModifier -= 1; }
           break;
         case "CRU085-2": case "CRU086-2": case "CRU087-2":
           if(CardType($cardID) == "DR") { $costModifier += 1; $remove = true; }
@@ -571,7 +571,7 @@ function CurrentEffectCostModifiers($cardID, $from)
           if(ClassContains($cardID, "GUARDIAN", $currentPlayer) && CardType($cardID) == "AA") $costModifier -= 1;
           break;
         case "EVO435":
-          if(CardType($cardID) == "W") { $costModifier -= 1; $remove = true; }
+          if(TypeContains($cardID, "W", $currentPlayer)) { $costModifier -= 1; $remove = true; }
           break;
         case "AKO004":
           if(CardType($cardID) == "AA" && ModifiedAttackValue($cardID, $currentPlayer, $from) >= 6) $costModifier -= 1;
@@ -1128,7 +1128,7 @@ function CurrentEffectEndTurnAbilities()
         if($mainPlayer == $currentTurnEffects[$i + 1]) {
           $char = &GetPlayerCharacter($currentTurnEffects[$i + 1]);
           for($j = 0; $j < count($char); $j += CharacterPieces()) {
-            if(CardType($char[$j]) == "W") $char[$j + 3] = 0;
+            if(TypeContains($char[$j], "W", $mainPlayer)) $char[$j + 3] = 0;
           }
           $remove = true;
         }
@@ -1345,7 +1345,7 @@ function EffectAttackRestricted($cardID, $type, $revertNeeded=false)
       $effectID = $effectArr[0];
       switch($effectID) {
         case "DTD203": if(AttackValue($cardID) <= $effectArr[1] && (TypeContains($cardID, "AA", $mainPlayer) || GetResolvedAbilityType($cardID) == "AA") && (GetAbilityTypes($cardID) == "" || GetResolvedAbilityType($cardID) == "AA")) $restrictedBy = "DTD203"; break;
-        case "WarmongersPeace": if($type == "AA" || (CardType($cardID) == "W" && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230"; break;
+        case "WarmongersPeace": if($type == "AA" || (TypeContains($cardID, "W", $mainPlayer) && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230"; break;
         default:
           break;
       }
@@ -1387,7 +1387,7 @@ function EffectPlayCardRestricted($cardID, $type, $revertNeeded=false)
         case "ARC162": if(GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) $restrictedBy = "ARC162"; break;
         case "DTD226": if(CardType($cardID) != "W" && GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "DTD226"; break;
         case "WarmongersWar": if($type == "A" && CardType($cardID) != "W") $restrictedBy = "DTD230"; break;
-        case "WarmongersPeace": if($type == "AA" || (CardType($cardID) == "W" && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230"; break;
+        case "WarmongersPeace": if($type == "AA" || (TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230"; break;
         default:
           break;
       }

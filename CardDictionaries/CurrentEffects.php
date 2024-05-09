@@ -161,10 +161,10 @@ function MSTCombatEffectActive($cardID, $attackID)
       case "EVO222": case "EVO223": case "EVO224":
       case "EVO225": case "EVO226": case "EVO227":
       case "EVO228": case "EVO229": case "EVO230": return $combatChainState[$CCS_IsBoosted];
-      case "EVO240": return CardType($attackID) == "W";
+      case "EVO240": return TypeContains($attackID, "W", $mainPlayer);
       case "EVO432": return true;
-      case "EVO434": return CardType($attackID) == "W";
-      case "EVO436": return CardType($attackID) == "W";
+      case "EVO434": return TypeContains($attackID, "W", $mainPlayer);
+      case "EVO436": return TypeContains($attackID, "W", $mainPlayer);
       default: return false;
     }
   }
@@ -251,9 +251,9 @@ function MSTCombatEffectActive($cardID, $attackID)
       case "HVY083-BUFF": case "HVY084-BUFF": case "HVY085-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer);
       case "HVY086": case "HVY087": case "HVY088": return true;
       case "HVY086-BUFF": case "HVY087-BUFF": case "HVY088-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer);
-      case "HVY090": case "HVY091": return CardType($attackID) == "W" && !IsAllyAttackTarget();
+      case "HVY090": case "HVY091": return TypeContains($attackID, "W", $mainPlayer) && !IsAllyAttackTarget();
       case "HVY099": return true;
-      case "HVY101": return CardType($attackID) == "W";
+      case "HVY101": return TypeContains($attackID, "W", $mainPlayer);
       case "HVY104": case "HVY104-BUFF": return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
       case "HVY106": case "HVY107": case "HVY108":
       case "HVY109": case "HVY110": case "HVY111":
