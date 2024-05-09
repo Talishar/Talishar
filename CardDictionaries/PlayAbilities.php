@@ -247,13 +247,15 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MZADDCOUNTERS", $currentPlayer, $amount, 1);
       return "";
     case "MST146": case "MST147": case "MST148": 
-      $auras = &GetAuras($currentPlayer);
-      $illusionistAuras = SearchAura($currentPlayer, class:"ILLUSIONIST");
-      $arrayAuras = explode(",", $illusionistAuras);
-      $amount = 3;
-      if($cardID == "MST147") $amount = 2;
-      else if ($cardID == "MST148") $amount = 1;
-      if(count($arrayAuras) <= 1) $auras[3] += $amount;
+      if($from != "PLAY") {
+        $auras = &GetAuras($currentPlayer);
+        $illusionistAuras = SearchAura($currentPlayer, class:"ILLUSIONIST");
+        $arrayAuras = explode(",", $illusionistAuras);
+        $amount = 3;
+        if($cardID == "MST147") $amount = 2;
+        else if ($cardID == "MST148") $amount = 1;
+        if(count($arrayAuras) <= 1) $auras[3] += $amount;
+      }
       return "";
     case "MST149": case "MST150": case "MST151": 
       $illusionistAuras = SearchAura($currentPlayer, class:"ILLUSIONIST");
