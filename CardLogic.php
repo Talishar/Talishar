@@ -399,7 +399,7 @@ function ContinueDecisionQueue($lastResult = "")
         } else {
           SetClassState($player, $CS_AbilityIndex, $params[2]); //This is like a parameter to PlayCardEffect and other functions
           PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, $params[3], $params[2]);
-          ClearDieRoll($player);
+          if(RequiresDieRoll($cardID, $params[0], $player)) ClearDieRoll($player);
         }
       }
     } else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPLAY") {
