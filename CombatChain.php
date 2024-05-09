@@ -753,14 +753,11 @@ function IsDominateActive()
     case "EVR110": case "EVR111": case "EVR112": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "EVR138":
       $hasDominate = false;
-      for($i = 0; $i < count($chainLinks); ++$i)
-      {
-        for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces())
-        {
+      for($i = 0; $i < count($chainLinks); ++$i){
+        for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
           $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $mainPlayer) || ($j == 0 && DelimStringContains($chainLinkSummary[$i*ChainLinkSummaryPieces()+3], "ILLUSIONIST"));
-          if($chainLinks[$i][$j+2] == "1" && $chainLinks[$i][$j] != "EVR138" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA")
-          {
-              if(!$hasDominate) $hasDominate = HasDominate($chainLinks[$i][$j]);
+          if($chainLinks[$i][$j+2] == "1" && $chainLinks[$i][$j] != "EVR138" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA"){
+            if(!$hasDominate) $hasDominate = HasDominate($chainLinks[$i][$j]);
           }
         }
       }

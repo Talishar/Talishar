@@ -917,19 +917,20 @@ function NuuStaticAbility($banishedBy)
 {
   global $combatChain, $mainPlayer, $defPlayer, $CombatChain;
   $defendingCards = GetChainLinkCards($defPlayer);
-  if ($defendingCards != "") {
-    $defendingCards = explode(",", $defendingCards);
-    for($i=count($defendingCards); $i >= 0; --$i){
-      $originalID = GetCardIDBeforeTransform($combatChain[$defendingCards[$i]]);
-      if(CardType($combatChain[$defendingCards[$i]]) == "E" && CardType($originalID) == "A") { //EVO handling
-        BanishCardForPlayer(GetCardIDBeforeTransform($combatChain[$defendingCards[$i]]), $defPlayer, "CC", "-", $mainPlayer);
-        $index = FindCharacterIndex($defPlayer, $combatChain[$defendingCards[$i]]);
-        DestroyCharacter($defPlayer, $index, wasBanished:true);
+  if (!empty($defendingCards)) {
+    $defendingCards = array_reverse(explode(",", $defendingCards));
+    foreach ($defendingCards as $card) {
+      $originalID = GetCardIDBeforeTransform($combatChain[$card]);
+      $cardType = CardType($combatChain[$card]);
+      if ($cardType === "E" && CardType($originalID) === "A") {
+          BanishCardForPlayer(GetCardIDBeforeTransform($combatChain[$card]), $defPlayer, "CC", "-", $mainPlayer);
+          $index = FindCharacterIndex($defPlayer, $combatChain[$card]);
+          DestroyCharacter($defPlayer, $index, wasBanished: true);
       }
-      if(CardType($combatChain[$defendingCards[$i]]) == "A" || CardType($combatChain[$defendingCards[$i]]) == "AA") {
-        BanishCardForPlayer($combatChain[$defendingCards[$i]], $defPlayer, "CC", "-", $banishedBy);
-        $index = GetCombatChainIndex($combatChain[$defendingCards[$i]], $defPlayer);
-        $CombatChain->Remove($index);
+      if ($cardType === "A" || $cardType === "AA") {
+          BanishCardForPlayer($combatChain[$card], $defPlayer, "CC", "-", $banishedBy);
+          $index = GetCombatChainIndex($combatChain[$card], $defPlayer);
+          $CombatChain->Remove($index);
       }
     }
   }
@@ -1006,8 +1007,7 @@ function ResolveChainLink()
     }
     AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, $totalAttack);
   } else {
-    if($combatChainState[$CCS_CombatDamageReplaced] == 1) $damage = 0;
-    else $damage = $totalAttack - $totalDefense;
+    $damage = $combatChainState[$CCS_CombatDamageReplaced] === 1 ? 0 : $totalAttack - $totalDefense;
     DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
     AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
   }
@@ -2493,6 +2493,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "GY": AddGraveyard($cardID, $currentPlayer, $from); break;
         case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;
         case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, $from, "NA"); break;
+        case "THEIRBANISH": BanishCardForPlayer($cardID, $otherPlayer, $from, "NA"); break;
         case "THEIRDISCARD": AddGraveyard($cardID, $otherPlayer, $from); break;
         case "THEIRBOTDECK": AddBottomDeck($cardID, $otherPlayer, $from); break;
         default: break;

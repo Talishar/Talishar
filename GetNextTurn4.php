@@ -659,7 +659,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (count($layers) > 0) {
     $turnPhase->layer = $layers[0];
   }
-  $isItMeOrThem = $currentPlayer == $playerID ? "Choose " : "Your opponent choosing ";
+  $isItMeOrThem = $currentPlayer == $playerID ? "Choose " : "Your opponent is choosing ";
   $turnPhase->caption = $isItMeOrThem . TypeToPlay($turn[0]);
   $response->turnPhase = $turnPhase;
 

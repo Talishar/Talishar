@@ -887,7 +887,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   if (count($layers) > 0) {
     $turnPhase->layer = $layers[0];
   }
-  $isItMeOrThem = $currentPlayer == $playerID ? "Choose " : "Your opponent choosing ";
+  $isItMeOrThem = $currentPlayer == $playerID ? "Choose " : "Your opponent is choosing ";
   $turnPhase->caption = $isItMeOrThem . TypeToPlay($turn[0]);
   $response->turnPhase = $turnPhase;
 
