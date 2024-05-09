@@ -1104,31 +1104,28 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       $borderColor = 0;
       $label = "";
 
-      if (($option[0] == "MYALLY" || $option[0] == "THEIRALLY" || $option[0] == "THEIRAURAS") && $option[1] == $combatChainState[$CCS_WeaponIndex]) {
-        $label = "Attacker";
-      }
+      if ((substr($option[0], -4) == "ALLY" || substr($option[0], -5) == "AURAS") && $option[1] == $combatChainState[$CCS_WeaponIndex]) $label = "Attacking";
 
       if (count($layers) > 0) {
         if ($option[0] == "THEIRALLY" && $layers[0] != "" && $mainPlayer != $currentPlayer) {
           $index = SearchLayer($otherPlayer, subtype: "Ally");
           if ($index != "") {
             $params = explode("|", $layers[$index + 2]);
-            if ($option[1] == $params[2]) $label = "Attacker";
+            if ($option[1] == $params[2]) $label = "Attacking";
           }
         }
         if ($option[0] == "THEIRAURAS" && $layers[0] != "" && $mainPlayer != $currentPlayer) {
           $index = SearchLayer($otherPlayer, subtype: "Aura");
           if ($index != "") {
             $params = explode("|", $layers[$index + 2]);
-            if ($option[1] == $params[2]) $label = "Attacker";
+            if ($option[1] == $params[2]) $label = "Attacking";
           }
         }
       }
-
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
       if ($option[0] == "MYARS") $label = "Arsenal";
       //Add indication for Attacking Mechanoid
-      if (($option[0] == "CC" || $option[0] == "LAYER") && (GetMZCard($currentPlayer, $options[$i]) == "DYN492a" || GetMZCard($currentPlayer, $options[$i]) == "EVO410a")) $label = "Attack";
+      if (($option[0] == "CC" || $option[0] == "LAYER") && (GetMZCard($currentPlayer, $options[$i]) == "DYN492a" || GetMZCard($currentPlayer, $options[$i]) == "EVO410a")) $label = "Attacking";
 
       if ($option[0] != "CARDID") {
         $index = intval($option[1]);
