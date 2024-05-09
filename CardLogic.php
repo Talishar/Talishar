@@ -1780,6 +1780,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "MST160":
       MZMoveCard($player, "MYDISCARD:comboOnly=true", "MYBOTDECK");
+      break;  
+    case "ASB003":
+      Charge();
+      AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
+      AddDecisionQueue("DRAW", $player, "-", 1);
       break;   
     case "ASB006":
       Charge();
