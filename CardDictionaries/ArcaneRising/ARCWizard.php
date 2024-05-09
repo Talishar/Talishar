@@ -53,7 +53,8 @@
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
         AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sonic Boom shows the top of your deck is <1>", 1);
-        AddDecisionQueue("OK", $currentPlayer, "-", 1);
+        AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with Sonic Boom", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
         return "";
       case "ARC120":
         $damage = ArcaneDamage($cardID) + ConsumeArcaneBonus($currentPlayer) * 2;
