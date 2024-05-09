@@ -37,7 +37,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
       AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "0", 1);
-      AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK", 1);
+      AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK,-,".$cardID, 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}");
       AddDecisionQueue("NONECARDPITCHORPASS", $currentPlayer, "3");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Nuu shows the top of your deck is <0>");
