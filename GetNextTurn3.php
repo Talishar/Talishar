@@ -1248,7 +1248,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $options = explode(",", $params[1]);
     $maxNumber = intval($params[0]);
     $minNumber = count($params) > 2 ? intval($params[2]) : 0;
-    $title = "Choose " . ($minNumber > 0 ? $maxNumber : "up to ") . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".");
+    $title = "Choose " . ($minNumber > 0 ? $maxNumber : "up to " . $maxNumber ) . " card" . ($maxNumber > 1 ? "s." : ".");
 
     if(GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
     else $caption = $title;

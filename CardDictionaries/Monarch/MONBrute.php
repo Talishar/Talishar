@@ -68,14 +68,17 @@
     $discard = &GetDiscard($currentPlayer);
     if(count($discard) < 3) return;
     $BanishedIncludes6 = 0;
+    $diabolicOfferingCount = 0;
     for($i = 0; $i < 3; $i++) {
       $index = GetRandom() % count($discard);
       if(ModifiedAttackValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) ++$BanishedIncludes6;
+      if($discard[$index] == "DTD107") ++$diabolicOfferingCount;
       BanishCardForPlayer($discard[$index], $currentPlayer, "DISCARD", $modifier);
       unset($discard[$index]);
       $discard = array_values($discard);
     }
-    return $BanishedIncludes6;
+    if($BanishedIncludes6 > 0 && $diabolicOfferingCount > 0) ++$BanishedIncludes6;
+    return $BanishedIncludes6 > 3 ? 3 : $BanishedIncludes6;
   }
 
   function LadyBarthimontAbility($player, $index)
