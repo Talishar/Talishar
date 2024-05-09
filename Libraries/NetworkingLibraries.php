@@ -223,11 +223,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
 
         $selectionCount = count($chkInput);
         if ($maxSelect < $selectionCount) { // we won't revert the gamestate as may the opponent is requested to choose (EVO143)
-          WriteLog("Player " . $playerID . " selected " . $selectionCount . " items, but a maximum of " . $maxSelect . " is allowed.");
+          WriteLog("Player " . $playerID . " selected " . $selectionCount . " items, but a maximum of " . $maxSelect . " is allowed.", highlight:true);
           $skipWriteGamestate = true;
           break;
         } else if ($selectionCount < $minSelect) {
-          WriteLog("Player " . $playerID . " selected " . $selectionCount . " items, but a minimum of " . $maxSelect . " is requested.");
+          WriteLog("Player " . $playerID . " selected " . $selectionCount . " items, but a minimum of " . $maxSelect . " is requested.", highlight:true);
           $skipWriteGamestate = true;
           break;
         }
@@ -237,7 +237,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $index = intval($chkInput[$i]);
           if ($index < 0 || $index >= count($options)) {
             WriteLog($selectionCount);
-            WriteLog("An unvalid option was selected. Please try selecting the items again, if you feel experienced a bug please report it.");
+            WriteLog("An unvalid option was selected. Please try selecting the items again, if you feel experienced a bug please report it.", highlight:true);
             $skipWriteGamestate = true;
             break;
           }
@@ -256,13 +256,13 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (count($params) > 2) $minSelect = intval($params[2]);
       else $minSelect = -1;
       if (count($chkInput) > $maxSelect) {
-        WriteLog("You selected " . count($chkInput) . " items, but a maximum of " . $maxSelect . " is allowed. Reverting gamestate prior to that effect.");
+        WriteLog("You selected " . count($chkInput) . " items, but a maximum of " . $maxSelect . " is allowed. Reverting gamestate prior to that effect.", highlight:true);
         RevertGamestate();
         $skipWriteGamestate = true;
         break;
       }
       if ($minSelect != -1 && count($chkInput) < $minSelect && count($chkInput) < count($options)) {
-        WriteLog("You selected " . count($chkInput) . " items, but a minimum of " . $minSelect . " is requested. Reverting gamestate prior to that effect.");
+        WriteLog("You selected " . count($chkInput) . " items, but a minimum of " . $minSelect . " is requested. Reverting gamestate prior to that effect.", highlight:true);
         RevertGamestate();
         $skipWriteGamestate = true;
         break;
@@ -270,7 +270,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $input = [];
       for ($i = 0; $i < count($chkInput); ++$i) {
         if ($chkInput[$i] < 0 || $chkInput[$i] >= count($options)) {
-          WriteLog("You selected option " . $chkInput[$i] . " but that was not one of the original options. Reverting gamestate prior to that effect.");
+          WriteLog("You selected option " . $chkInput[$i] . " but that was not one of the original options. Reverting gamestate prior to that effect.", highlight:true);
           RevertGamestate();
           $skipWriteGamestate = true;
           break;
@@ -1878,7 +1878,7 @@ function PayAdditionalCosts($cardID, $from)
   if(RequiresDiscard($cardID)) {
     $discarded = DiscardRandom($currentPlayer, $cardID);
     if($discarded == "") {
-      WriteLog("You do not have a card to discard. Reverting gamestate.");
+      WriteLog("You do not have a card to discard. Reverting gamestate.", highlight:true);
       RevertGamestate();
       return;
     }
@@ -1887,7 +1887,7 @@ function PayAdditionalCosts($cardID, $from)
   if(RequiresBanish($cardID)) {
     $banished = BanishRandom($currentPlayer, $cardID);
     if($banished == "") {
-      WriteLog("You do not have a card to banish. Reverting gamestate.");
+      WriteLog("You do not have a card to banish. Reverting gamestate.", highlight:true);
       RevertGamestate();
       return;
     }
@@ -1907,7 +1907,7 @@ function PayAdditionalCosts($cardID, $from)
     case "WTR159":
       $hand = &GetHand($currentPlayer);
       if (count($hand) == 0) {
-        WriteLog("You do not have a card to sink. Reverting gamestate.");
+        WriteLog("You do not have a card to sink. Reverting gamestate.", highlight:true);
         RevertGamestate();
         return;
       }
@@ -2074,7 +2074,7 @@ function PayAdditionalCosts($cardID, $from)
       if($from == "PLAY") {
         $hand = &GetHand($currentPlayer);
         if (count($hand) == 0) {
-          WriteLog("This ability requires a discard as an additional cost, but you have no cards to discard. Reverting gamestate prior to the card declaration.");
+          WriteLog("This ability requires a discard as an additional cost, but you have no cards to discard. Reverting gamestate prior to the card declaration.", highlight:true);
           RevertGamestate();
         }
         MZMoveCard($currentPlayer, "MYHAND", "MYDISCARD,".$currentPlayer, silent:true);
@@ -2245,7 +2245,7 @@ function PayAdditionalCosts($cardID, $from)
       global $CS_DynCostResolved;
       $xVal = GetClassState($currentPlayer, $CS_DynCostResolved)/2;
       if(SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) < $xVal) {
-        WriteLog("You do not have enough Hyper Drivers. Reverting gamestate.");
+        WriteLog("You do not have enough Hyper Drivers. Reverting gamestate.", highlight:true);
         RevertGamestate();
         return;
       }

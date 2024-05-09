@@ -682,7 +682,8 @@ function AuraPlayAbilities($attackID, $from="")
       case "WTR225":
         if(($cardType == "AA" && (GetResolvedAbilityType($attackID) == "" || GetResolvedAbilityType($attackID) == "AA"))
           || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY")
-          || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA" && $from == "EQUIP")) {
+          || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA" && $from == "EQUIP")) 
+        {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack go again");
           GiveAttackGoAgain();
           $remove = 1;
@@ -897,7 +898,7 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
     case "DTD060": case "DTD061": case "DTD062":
       $hand = &GetHand($currentPlayer);
       if(count($hand) == 0) {
-        WriteLog("You do not have a card to charge. Reverting gamestate.");
+        WriteLog("You do not have a card to charge. Reverting gamestate.", highlight:true);
         RevertGamestate();
         return;
       }

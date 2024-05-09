@@ -1015,7 +1015,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $hand = &GetHand($player);
         $char = &GetPlayerCharacter($player);
         if(count($hand) == 0 && $char[0] != "DUMMY") {
-          WriteLog("You have resources to pay for, but have no cards to pitch. Reverting gamestate prior to that declaration.");
+          WriteLog("You have resources to pay for, but have no cards to pitch. Reverting gamestate prior to that declaration.", highlight:true);
           RevertGamestate();
         }
         PrependDecisionQueue("PAYRESOURCES", $player, $parameter, 1);
@@ -1199,7 +1199,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $name = CardName($zone[$lastResult[0]]);
       for($i = 1; $i < count($lastResult); ++$i) {
         if(CardName($zone[$lastResult[$i]]) != $name) {
-          WriteLog("You selected cards that do not have the same name. Reverting gamestate prior to that effect.");
+          WriteLog("You selected cards that do not have the same name. Reverting gamestate prior to that effect.", highlight:true);
           RevertGamestate();
           return "PASS";
         }
@@ -1216,7 +1216,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         array_push($cardList, CardName($zone[$lastResult[$i]]));
       }
       if(count($cardList) !== count(array_unique($cardList))) {
-        WriteLog("You selected cards that have the same name. Reverting gamestate prior to that effect.");
+        WriteLog("You selected cards that have the same name. Reverting gamestate prior to that effect.", highlight:true);
         RevertGamestate();
         return "PASS";
       }
@@ -1233,7 +1233,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return ($lastResult == "" ? "PASS" : implode($parameter, $lastResult));
     case "VALIDATECOUNT":
       if(count($lastResult) != $parameter) {
-        WriteLog("The count from the last step is incorrect. Reverting gamestate prior to that effect.");
+        WriteLog("The count from the last step is incorrect. Reverting gamestate prior to that effect.", highlight:true);
         RevertGamestate();
         return "PASS";
       }
