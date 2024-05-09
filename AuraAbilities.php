@@ -19,15 +19,15 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     if($index > -1) TheLibrarianEffect($player, $index);
   }
   if($cardID == "MST043" || $cardID == "MST044" || $cardID == "MST045") $numAttackCounters += SearchPitchForColor($player, 3) > 0 ? 1 : 0;
-  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST155", $player) && CardCost($cardID) <= 2) {
+  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST155", $player) && CardCost($cardID) <= 2 && CardCost($cardID) > -1) {
     ++$numAttackCounters;
     RemoveCurrentTurnEffect(SearchCurrentTurnEffects("MST155", $player));
   }
-  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST156", $player) && CardCost($cardID) <= 1) {
+  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST156", $player) && CardCost($cardID) <= 1 && CardCost($cardID) > -1) {
     ++$numAttackCounters;
     RemoveCurrentTurnEffect(SearchCurrentTurnEffects("MST156", $player));
   }
-  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST157", $player) && CardCost($cardID) <= 0)  {
+  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST157", $player) && CardCost($cardID) <= 0 && CardCost($cardID) > -1)  {
     ++$numAttackCounters;
     RemoveCurrentTurnEffect(SearchCurrentTurnEffects("MST157", $player));
   }
