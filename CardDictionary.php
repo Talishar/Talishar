@@ -305,8 +305,9 @@ function AbilityCost($cardID)
     if(SearchCharacterForCard($currentPlayer, "MON003")) return 0;
     if(SearchCharacterForCard($currentPlayer, "MON088")) return 3;
     if(SearchCharacterForCard($currentPlayer, "DTD216")) return 2;
-    if(SearchCharacterForCard($currentPlayer, "MST130") && HasWard($cardID, $currentPlayer)) return 1;
   }
+  if(SearchCharacterForCard($currentPlayer, "MST130") && HasWard($cardID, $currentPlayer) && DelimStringContains($subtype, "Aura")) return 1;
+
   if(DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "UPR003")) return 0;
   if($set == "WTR") return WTRAbilityCost($cardID);
   else if($set == "ARC") return ARCAbilityCost($cardID);
@@ -421,8 +422,8 @@ function AttackValue($cardID)
     if(SearchCharacterForCard($mainPlayer, "MON003")) return 1;
     if(SearchCharacterForCard($mainPlayer, "MON088")) return 4;
     if(SearchCharacterForCard($mainPlayer, "DTD216")) return 5;
-    if(SearchCharacterForCard($mainPlayer, "MST130") && HasWard($cardID, $currentPlayer)) return WardAmount($cardID, $currentPlayer);
   }
+  if(SearchCharacterForCard($mainPlayer, "MST130") && HasWard($cardID, $currentPlayer) && DelimStringContains($subtype, "Aura")) return WardAmount($cardID, $currentPlayer);
   if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Attack");
   else if($cardID == "DYN216") return CountAura("MON104", $currentPlayer);
