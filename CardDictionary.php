@@ -470,8 +470,8 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   $subtype = CardSubtype($cardID);
   if($from == "PLAY" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura")) {
     if(SearchCharacterForCard($currentPlayer, "MON003") || SearchCharacterForCard($currentPlayer, "MON088") || SearchCharacterForCard($currentPlayer, "DTD216")) return "AA";
-    if(SearchCharacterForCard($currentPlayer, "MST130") && HasWard($cardID, $currentPlayer)) return "AA";
   }
+  if($from == "PLAY" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($currentPlayer, "MST130") && HasWard($cardID, $currentPlayer)) return "AA";
   if(DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "UPR003")) return "AA";
   if($set == "WTR") return WTRAbilityType($cardID, $index);
   else if($set == "ARC") return ARCAbilityType($cardID, $index);
