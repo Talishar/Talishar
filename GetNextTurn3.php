@@ -1106,20 +1106,15 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
 
       if ((substr($option[0], -4) == "ALLY" || substr($option[0], -5) == "AURAS") && $option[1] == $combatChainState[$CCS_WeaponIndex]) $label = "Attacking";
 
-      if (count($layers) > 0) {
-        if ($option[0] == "THEIRALLY" && $layers[0] != "" && $mainPlayer != $currentPlayer) {
-          $index = SearchLayer($otherPlayer, subtype: "Ally");
-          if ($index != "") {
+      //Add indication for attacking Allies and Auras
+      if (count($layers) > 0 && $layers[0] != "" && $mainPlayer != $currentPlayer) {
+        $searchType = $option[0] == "THEIRALLY" ? "Ally" : "Aura";
+        $index = SearchLayer($otherPlayer, subtype: $searchType);
+        if ($index != "") {
             $params = explode("|", $layers[$index + 2]);
-            if ($option[1] == $params[2]) $label = "Attacking";
-          }
-        }
-        if ($option[0] == "THEIRAURAS" && $layers[0] != "" && $mainPlayer != $currentPlayer) {
-          $index = SearchLayer($otherPlayer, subtype: "Aura");
-          if ($index != "") {
-            $params = explode("|", $layers[$index + 2]);
-            if ($option[1] == $params[2]) $label = "Attacking";
-          }
+            if ($option[1] == $params[2]) {
+                $label = "Attacking";
+            }
         }
       }
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
@@ -1127,13 +1122,9 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       //Add indication for Attacking Mechanoid
       if (($option[0] == "CC" || $option[0] == "LAYER") && (GetMZCard($currentPlayer, $options[$i]) == "DYN492a" || GetMZCard($currentPlayer, $options[$i]) == "EVO410a")) $label = "Attacking";
 
-      if ($option[0] != "CARDID") {
-        $index = intval($option[1]);
-        $card = $source[$index];
-      } else $card = $option[1];
-
+      $index = intval($option[1]);
+      $card = ($option[0] != "CARDID") ? $source[$index] : $option[1];
       if ($option[0] == "LAYER" && $card == "TRIGGER") $card = $source[$index + 2];
-
 
       if ($option[0] == "THEIRBANISH") {
         $mod = explode("-", $theirBanish[$index + 1])[0];
@@ -1148,35 +1139,26 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
         $borderColor = ($layers[$index + 1] == $playerID ? 1 : 2);
       }
 
-      if ($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN") $card = $TheirCardBack;
-      if ($option[0] == "THEIRCHAR" && $theirCharacter[$i + 12] == "DOWN") $card = $TheirCardBack;
+      if (($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN") || ($option[0] == "THEIRCHAR" && $theirCharacter[$i + 12] == "DOWN")) {
+        $card = $TheirCardBack;
+      }
 
       //Show Life and Def counters on allies in the popups
-      if ($option[0] == "THEIRALLY") {
-        $lifeCounters = $theirAllies[$index + 2];
-        $enduranceCounters = $theirAllies[$index + 6];
-        if (SearchCurrentTurnEffectsForUniqueID($theirAllies[$index + 5]) != -1) $attackCounters = EffectAttackModifier(SearchUniqueIDForCurrentTurnEffects($theirAllies[$index + 5])) + AttackValue($theirAllies[$index]);
-        else $attackCounters = 0;
-      } elseif ($option[0] == "MYALLY") {
-        $lifeCounters = $myAllies[$index + 2];
-        $enduranceCounters = $myAllies[$index + 6];
-        if (SearchCurrentTurnEffectsForUniqueID($myAllies[$index + 5]) != -1) $attackCounters = EffectAttackModifier(SearchUniqueIDForCurrentTurnEffects($myAllies[$index + 5])) + AttackValue($myAllies[$index]);
-        else $attackCounters = 0;
+      if ($option[0] == "THEIRALLY" || $option[0] == "MYALLY") {
+        $lifeCounters = ($option[0] == "THEIRALLY") ? $theirAllies[$index + 2] : $myAllies[$index + 2];
+        $enduranceCounters = ($option[0] == "THEIRALLY") ? $theirAllies[$index + 6] : $myAllies[$index + 6];
+        
+        $uniqueID = ($option[0] == "THEIRALLY") ? $theirAllies[$index + 5] : $myAllies[$index + 5];
+        $attackCounters = 0;
+        if (SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) {
+            $attackCounters = EffectAttackModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID)) + AttackValue(($option[0] == "THEIRALLY") ? $theirAllies[$index] : $myAllies[$index]);
+        }
       }
 
       //Show Atk counters on Auras in the popups
-      if ($option[0] == "THEIRAURAS") {
-        $atkCounters = $theirAuras[$index + 3];
-      } elseif ($option[0] == "MYAURAS") {
-        $atkCounters = $myAuras[$index + 3];
-      }
-
+      $atkCounters = ($option[0] == "THEIRAURAS" || $option[0] == "MYAURAS") ? ($option[0] == "THEIRAURAS" ? $theirAuras[$index + 3] : $myAuras[$index + 3]) : null;
       //Show Steam Counters on items
-      if ($option[0] == "THEIRITEMS") {
-        $steamCounters = $theirItems[$index + 1];
-      } elseif ($option[0] == "MYITEMS") {
-        $steamCounters = $myItems[$index + 1];
-      }
+      $steamCounters = ($option[0] == "THEIRITEMS" || $option[0] == "MYITEMS") ? ($option[0] == "THEIRITEMS" ? $theirItems[$index + 1] : $myItems[$index + 1]) : null;
 
       if ($maxCount < 2)
         array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, atkCounters: $atkCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters));
@@ -1265,10 +1247,8 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $params = explode("-", $turn[2]);
     $options = explode(",", $params[1]);
     $maxNumber = intval($params[0]);
-    if (count($params) > 2) $minNumber = intval($params[2]);
-    else $minNumber = 0;
-    if ($minNumber > 0) $title = "Choose " . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".");
-    else $title = "Choose up to " . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".");
+    $minNumber = count($params) > 2 ? intval($params[2]) : 0;
+    $title = "Choose " . ($minNumber > 0 ? $maxNumber : "up to ") . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".");
 
     if(GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
     else $caption = $title;
@@ -1309,11 +1289,12 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $playerInputPopup->active = true;
     $cardsToShow = array();
     $options = explode(",", $turn[2]);
-    if(GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = $title;
-    for ($i = 0; $i < count($options); ++$i) {
-      array_push($cardsToShow, JSONRenderedCard($myDeck[$i], actionDataOverride: $i));
+    $caption = GetDQHelpText() != "-" ? implode(" ", explode("_", GetDQHelpText())) : $title;    
+    
+    foreach ($options as $i => $option) {
+      $cardsToShow[] = JSONRenderedCard($myDeck[$i], actionDataOverride: $i);
     }
+    
     $playerInputPopup->popup = CreatePopupAPI("OK", [], 0, 1, $caption, 1, cardsArray: $cardsToShow);
     array_push($playerInputButtons, CreateButtonAPI($playerID, "Ok", 99, "OK", "20px"));
   }
@@ -1365,128 +1346,6 @@ function ItemOverlay($item, $isReady, $numUses)
 {
   if ($item == "EVR070" && $numUses < 3) return 1;
   return ($isReady != 2 ? 1 : 0);
-}
-
-function GetCharacterLeft($cardType, $cardSubType)
-{
-  global $cardWidth;
-  switch ($cardType) {
-    case "C":
-      return "calc(50% - " . ($cardWidth / 2 + 5) . "px)";
-    case "W":
-      return "calc(50% - " . ($cardWidth / 2 + $cardWidth + 25) . "px)";
-    default:
-      break;
-  }
-  switch ($cardSubType) {
-    case "Head":
-      return "95px";
-    case "Chest":
-      return "95px";
-    case "Arms":
-      return ($cardWidth + 115) . "px";
-    case "Legs":
-      return "95px";
-    case "Off-Hand":
-      return "calc(50% + " . ($cardWidth / 2 + 15) . "px)";
-  }
-}
-
-function GetCharacterBottom($cardType, $cardSubType)
-{
-  global $cardSize;
-  switch ($cardType) {
-    case "C":
-      return ($cardSize * 2 - 25) . "px";
-    case "W":
-      return ($cardSize * 2 - 25) . "px";
-    default:
-      break;
-  }
-  switch ($cardSubType) {
-    case "Head":
-      return ($cardSize * 2 - 25) . "px";
-    case "Chest":
-      return ($cardSize - 10) . "px";
-    case "Arms":
-      return ($cardSize - 10) . "px";
-    case "Legs":
-      return "5px";
-    case "Off-Hand":
-      return ($cardSize * 2 - 25) . "px";
-  }
-}
-
-function GetCharacterTop($cardType, $cardSubType)
-{
-  global $cardSize;
-  switch ($cardType) {
-    case "C":
-      return "52px";
-    case "W":
-      return "52px";
-      //case "C": return ($cardSize + 20) . "px";
-      //case "W": return ($cardSize + 20) . "px";
-    default:
-      break;
-  }
-  switch ($cardSubType) {
-    case "Head":
-      return "5px";
-    case "Chest":
-      return ($cardSize - 10) . "px";
-    case "Arms":
-      return ($cardSize - 10) . "px";
-    case "Legs":
-      return ($cardSize * 2 - 25) . "px";
-    case "Off-Hand":
-      return "52px";
-  }
-}
-
-function GetZoneRight($zone)
-{
-  global $cardWidth, $rightSideWidth;
-  switch ($zone) {
-    case "DISCARD":
-      return intval($rightSideWidth * 1.08) . "px";
-    case "DECK":
-      return intval($rightSideWidth * 1.08) . "px";
-    case "BANISH":
-      return intval($rightSideWidth * 1.08) . "px";
-    case "PITCH":
-      return (intval($rightSideWidth * 1.18) + $cardWidth) . "px";
-  }
-}
-
-function GetZoneBottom($zone)
-{
-  global $cardSize;
-  switch ($zone) {
-    case "MYDISCARD":
-      return ($cardSize * 2 - 25) . "px";
-    case "MYDECK":
-      return ($cardSize - 10) . "px";
-    case "MYBANISH":
-      return (5) . "px";
-    case "MYPITCH":
-      return ($cardSize - 10) . "px";
-  }
-}
-
-function GetZoneTop($zone)
-{
-  global $cardSize;
-  switch ($zone) {
-    case "THEIRDISCARD":
-      return ($cardSize * 2 - 25) . "px";
-    case "THEIRDECK":
-      return ($cardSize - 10) . "px";
-    case "THEIRBANISH":
-      return (5) . "px";
-    case "THEIRPITCH":
-      return ($cardSize - 10) . "px";
-  }
 }
 
 function GetPhaseHelptext()

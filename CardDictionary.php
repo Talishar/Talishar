@@ -538,7 +538,8 @@ function GetAbilityNames($cardID, $index = -1)
 function GetAbilityIndex($cardID, $index, $abilityName)
 {
   $names = explode(",", GetAbilityNames($cardID, $index));
-  for($i = 0; $i < count($names); ++$i) {
+  $countNames = count($names);
+  for($i = 0; $i < $countNames; ++$i) {
     if($abilityName == $names[$i]) return $i;
   }
   return 0;

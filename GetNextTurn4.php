@@ -747,8 +747,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->active = true;
     array_push($playerInputButtons, CreateButtonAPI($playerID, "Yes", 20, "YES", "20px"));
     array_push($playerInputButtons, CreateButtonAPI($playerID, "No", 20, "NO", "20px"));
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose " . TypeToPlay($turn[0]);
+    $caption = GetDQHelpText() != "-" ? implode(" ", explode("_", GetDQHelpText())) : "Choose " . TypeToPlay($turn[0]);
     $playerInputPopup->popup = CreatePopupAPI("YESNO", [], 0, 1, $caption, 1, "");
   }
 
@@ -773,8 +772,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($turn[0] == "OK" && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     array_push($playerInputButtons, CreateButtonAPI($playerID, "Ok", 99, "OK", "20px"));
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose " . TypeToPlay($turn[0]);
+    $caption = GetDQHelpText() != "-" ? implode(" ", explode("_", GetDQHelpText())) : "Choose " . TypeToPlay($turn[0]);
     $playerInputPopup->popup = CreatePopupAPI("OK", [], 0, 1, $caption, 1, "");
   }
 
@@ -992,8 +990,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   if (($turn[0] == "CHOOSEDISCARD" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID) {
-    $caption = "Choose a card from your discard";
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
+    $caption = GetDQHelpText() != "-" ? implode(" ", explode("_", GetDQHelpText())) : "Choose a card from your discard";
     $playerInputPopup->active = true;
     $playerInputPopup->popup = ChoosePopup($myDiscard, $turn[2], 16, $caption);
   }
@@ -1029,12 +1026,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $options = explode(",", $params[1]);
 
     $maxNumber = intval($params[0]);
-    if (count($params) > 2) $minNumber = intval($params[2]);
-    else $minNumber = 0;
-    if ($minNumber > 0) $title = "Choose " . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".");
-    else $title = "Choose up to " . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".");
-    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = $title;
+    $minNumber = count($params) > 2 ? intval($params[2]) : 0;
+    $title = ($minNumber > 0 ? "Choose " : "Choose up to ") . $maxNumber . " card" . ($maxNumber > 1 ? "s." : ".");
+    $caption = GetDQHelpText() != "-" ? implode(" ", explode("_", GetDQHelpText())) : $title;
 
     $formOptions->playerID = $playerID;
     $formOptions->caption = "Submit";
@@ -1115,126 +1109,6 @@ function ItemOverlay($item, $isReady, $numUses)
 {
   if ($item == "EVR070" && $numUses < 3) return 1;
   return ($isReady != 2 ? 1 : 0);
-}
-
-function GetCharacterLeft($cardType, $cardSubType)
-{
-  global $cardWidth;
-  switch ($cardType) {
-    case "C":
-      return "calc(50% - " . ($cardWidth / 2 + 5) . "px)";
-    case "W":
-      return "calc(50% - " . ($cardWidth / 2 + $cardWidth + 25) . "px)"; 
-    default:
-      break;
-  }
-  switch ($cardSubType) {
-    case "Head":
-      return "95px";
-    case "Chest":
-      return "95px";
-    case "Arms":
-      return ($cardWidth + 115) . "px";
-    case "Legs":
-      return "95px";
-    case "Off-Hand":
-      return "calc(50% + " . ($cardWidth / 2 + 15) . "px)";
-  }
-}
-
-function GetCharacterBottom($cardType, $cardSubType)
-{
-  global $cardSize;
-  switch ($cardType) {
-    case "C":
-      return ($cardSize * 2 - 25) . "px";
-    case "W":
-      return ($cardSize * 2 - 25) . "px"; 
-    default:
-      break;
-  }
-  switch ($cardSubType) {
-    case "Head":
-      return ($cardSize * 2 - 25) . "px";
-    case "Chest":
-      return ($cardSize - 10) . "px";
-    case "Arms":
-      return ($cardSize - 10) . "px";
-    case "Legs":
-      return "5px";
-    case "Off-Hand":
-      return ($cardSize * 2 - 25) . "px";
-  }
-}
-
-function GetCharacterTop($cardType, $cardSubType)
-{
-  global $cardSize;
-  switch ($cardType) {
-    case "C":
-      return "52px";
-    case "W":
-      return "52px";
-    default:
-      break;
-  }
-  switch ($cardSubType) {
-    case "Head":
-      return "5px";
-    case "Chest":
-      return ($cardSize - 10) . "px";
-    case "Arms":
-      return ($cardSize - 10) . "px";
-    case "Legs":
-      return ($cardSize * 2 - 25) . "px";
-    case "Off-Hand":
-      return "52px";
-  }
-}
-
-function GetZoneRight($zone)
-{
-  global $cardWidth, $rightSideWidth;
-  switch ($zone) {
-    case "DISCARD":
-      return intval($rightSideWidth * 1.08) . "px";
-    case "DECK":
-      return intval($rightSideWidth * 1.08) . "px";
-    case "BANISH":
-      return intval($rightSideWidth * 1.08) . "px";
-    case "PITCH":
-      return (intval($rightSideWidth * 1.18) + $cardWidth) . "px";
-  }
-}
-
-function GetZoneBottom($zone)
-{
-  global $cardSize;
-  switch ($zone) {
-    case "MYDISCARD":
-      return ($cardSize * 2 - 25) . "px";
-    case "MYDECK":
-      return ($cardSize - 10) . "px";
-    case "MYBANISH":
-      return (5) . "px";
-    case "MYPITCH":
-      return ($cardSize - 10) . "px";
-  }
-}
-
-function GetZoneTop($zone)
-{
-  global $cardSize;
-  switch ($zone) {
-    case "THEIRDISCARD":
-      return ($cardSize * 2 - 25) . "px";
-    case "THEIRDECK":
-      return ($cardSize - 10) . "px";
-    case "THEIRBANISH":
-      return (5) . "px";
-    case "THEIRPITCH":
-      return ($cardSize - 10) . "px";
-  }
 }
 
 function GetPhaseHelptext()
