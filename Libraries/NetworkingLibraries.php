@@ -2421,7 +2421,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $skipDRResolution = true;
     }
     if(!$isBlock && CardType($cardID) == "AR") {
-      AddGraveyard($cardID, $currentPlayer, "LAYER", $currentPlayer);
+      if(substr($from, 0, 5) == "THEIR") AddGraveyard($cardID, $otherPlayer, $from, $currentPlayer);
+      else AddGraveyard($cardID, $currentPlayer, $from, $currentPlayer);
       if(IsPlayRestricted($cardID, $restriction, $from) && $additionalCosts == "-") {
         WriteLog(CardLink($cardID, $cardID) . " does not resolve because fail to resolve because the target is no longer a legal target.");
         return;
