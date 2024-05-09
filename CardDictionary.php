@@ -1879,6 +1879,9 @@ function WardAmount($cardID, $player)
 {
   switch($cardID)
   {
+    case "ARC167": return 4;
+    case "ARC168": return 3;
+    case "ARC169": return 2;
     case "MON104": return 1;
     case "UPR218": return 4;
     case "UPR219": return 3;
@@ -1922,6 +1925,8 @@ function WardAmount($cardID, $player)
 function HasWard($cardID, $player)
 {
   switch($cardID) {
+    case "ARC167": case "ARC168": case "ARC169": 
+      return true;
     case "MON104":
     case "UPR039": case "UPR040": case "UPR041":
     case "UPR218": case "UPR219": case "UPR220":
