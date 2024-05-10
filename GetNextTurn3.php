@@ -687,7 +687,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   for ($i = 0; $i + AuraPieces() - 1 < count($theirAuras); $i += AuraPieces()) {
     $type = CardType($theirAuras[$i]);
     $sType = CardSubType($theirAuras[$i]);
-    array_push($theirAurasOutput, JSONRenderedCard(cardNumber: $theirAuras[$i], actionDataOverride: strval($i), overlay: ($theirAuras[$i + 1] != 2 ? 1 : 0), counters: $theirAuras[$i + 2], atkCounters: $theirAuras[$i + 3], controller: $otherPlayer, type: $type, sType: $sType, gem: $theirAuras[$i + 8]));
+    array_push($theirAurasOutput, JSONRenderedCard(cardNumber: $theirAuras[$i], actionDataOverride: strval($i), overlay: ($theirAuras[$i + 1] != 2 ? 1 : 0), counters: $theirAuras[$i + 2], atkCounters: $theirAuras[$i + 3], controller: $otherPlayer, type: $type, sType: $sType, gem: $theirAuras[$i + 8], label: (!TypeContains($theirAuras[$i], "T") && $theirAuras[$i + 4] == 1 ? "Token Copy" : "")));
   }
   $response->opponentAuras = $theirAurasOutput;
 
@@ -778,7 +778,8 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       type: $type,
       actionDataOverride: strval($i),
       sType: $sType,
-      gem: $gem
+      gem: $gem,
+      label: !TypeContains($myAuras[$i], "T") && $myAuras[$i + 4] == 1 ? "Token Copy" : ""
     ));
   }
   $response->playerAuras = $myAurasOutput;
