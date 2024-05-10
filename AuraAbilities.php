@@ -682,7 +682,7 @@ function AuraPlayAbilities($attackID, $from="")
       case "WTR225":
         if(($cardType == "AA" && (GetResolvedAbilityType($attackID) == "" || GetResolvedAbilityType($attackID) == "AA"))
           || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY")
-          || (TypeContains($cardType, "W", $currentPlayer) && GetResolvedAbilityType($attackID) == "AA" && $from == "EQUIP")) 
+          || (TypeContains($attackID, "W") && GetResolvedAbilityType($attackID) == "AA" && $from == "EQUIP")) 
         {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack go again");
           GiveAttackGoAgain();
@@ -690,7 +690,7 @@ function AuraPlayAbilities($attackID, $from="")
         }
         break;
       case "ARC112":
-        if($cardType == "AA" || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY") || ((TypeContains($cardType, "W", $currentPlayer) && GetResolvedAbilityType($attackID) == "AA")) && GetResolvedAbilityType($attackID) != "I") {
+        if($cardType == "AA" || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY") || ((TypeContains($attackID, "W", $currentPlayer) && GetResolvedAbilityType($attackID) == "AA")) && GetResolvedAbilityType($attackID) != "I") {
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
         break;
@@ -710,7 +710,7 @@ function AuraPlayAbilities($attackID, $from="")
         }
         break;
       case "DTD232":
-        if($cardType == "AA" || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY") || ((TypeContains($cardType, "W", $currentPlayer) && GetResolvedAbilityType($attackID) != "A")) && GetResolvedAbilityType($attackID) != "I") {
+        if($cardType == "AA" || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY") || ((TypeContains($attackID, "W", $currentPlayer) && GetResolvedAbilityType($attackID) != "A")) && GetResolvedAbilityType($attackID) != "I") {
           AddCurrentTurnEffect("DTD232", $currentPlayer);
           $remove = 1;
         }
