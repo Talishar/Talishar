@@ -90,7 +90,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
               AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
               AddDecisionQueue("MULTICHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
               AddDecisionQueue("MULTIREMOVEDISCARD", $otherPlayer, "-", 1);
-              AddDecisionQueue("MULTIBANISH", $otherPlayer, "DISCARD", 1);
+              AddDecisionQueue("MULTIBANISH", $otherPlayer, "DISCARD,Source-" . $cardID . "," . $cardID, 1);
               AddDecisionQueue("UNDERCURRENTDESIRES", $currentPlayer, "-", 1);
               break;
             case "Transcend": Transcend($currentPlayer, "MST410", $from); break;
