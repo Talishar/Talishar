@@ -840,7 +840,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink;
+  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBaseAttack;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -1121,6 +1121,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if(GetResolvedAbilityType($layers[$layerIndex]) == "AA") return false;
       return true;
     case "MST095": case "MST102": return !$CombatChain->HasCurrentLink();
+    case "MST105":
+      if(!$CombatChain->HasCurrentLink()) return true;
+      if(HasStealth($CombatChain->AttackCard()->ID())) return false;
+      if($combatChainState[$CCS_LinkBaseAttack] <= 1) return false;
+      return true;
     case "MST134": case "MST135": case "MST136": 
       $auras = &GetAuras($player);
       return Count($auras) <= 0;
