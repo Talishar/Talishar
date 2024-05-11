@@ -1229,6 +1229,7 @@ function HasBladeBreak($cardID)
 
 function HasBattleworn($cardID)
 {
+  global $currentPlayer;
   switch($cardID) {
     case "WTR004": case "WTR005": case "WTR041": case "WTR042": case "WTR080": case "WTR116": case "WTR117": return true;
     case "ARC004": case "ARC078": case "ARC150": return true;
@@ -1243,6 +1244,10 @@ function HasBattleworn($cardID)
     case "EVO410b": case "EVO438": case "EVO439": case "EVO440": case "EVO441": case "EVO235": return true;
     case "EVO442": case "EVO443": case "EVO444": case "EVO445": return true;
     case "HVY010": case "HVY099": return true;
+    case "MST005":
+      $char = &GetPlayerCharacter($currentPlayer);
+      $index = FindCharacterIndex($currentPlayer, $cardID);
+      return $char[$index+12] == "UP";
     case "MST006": case "MST007": return true;
     case "MST232": return true;
     case "AKO005": return true;
@@ -2099,7 +2104,7 @@ function IsModular($cardID)
 function HasCloaked($cardID)
 {
   switch($cardID) {
-    case "MST028": case "MST029": case "MST030":
+    case "MST005": case "MST028": case "MST029": case "MST030":
     case "MST049":
     case "MST067": case "MST068": case "MST069": case "MST070": 
     case "MST071": case "MST072": case "MST073": case "MST074": 
