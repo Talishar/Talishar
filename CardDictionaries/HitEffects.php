@@ -17,6 +17,18 @@ function MSTHitEffect($cardID, $from)
       AddDecisionQueue("BONDSOFAGONY", $mainPlayer, "<-", 1);
       AddDecisionQueue("SHUFFLE", $mainPlayer, "-", 1);
       break;
+    case "MST104":
+      if(IsHeroAttackTarget())
+      {
+        $pitchValue = PitchValue($deck->Top());
+        $deck->BanishTop("Source-".$cardID, banishedBy:$cardID);
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND:pitch=" . $pitchValue);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to banish", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZBANISH", $mainPlayer, "HAND,Source-" . $cardID .",". $cardID, 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      }
+      break;
     case "MST106": case "MST107": case "MST108": 
       if(IsHeroAttackTarget())
       {
