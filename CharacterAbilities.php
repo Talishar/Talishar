@@ -235,6 +235,16 @@ function CharacterStartTurnAbility($index)
       AddCurrentTurnEffect("HVY254-1", $mainPlayer);
       AddCurrentTurnEffect("HVY254-2", $mainPlayer);
       break;
+    case "MST005":
+      $index = FindCharacterIndex($mainPlayer, $cardID);
+      if($character[$index+12] == "DOWN" && GetHealth($mainPlayer) == 1) {
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to turn face-up " . CardLink($cardID, $cardID) . "?", 1);
+        AddDecisionQueue("YESNO", $mainPlayer, "an_action", 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $index, 1);
+        AddDecisionQueue("TURNCHARACTERFACEUP", $mainPlayer, "-", 1);
+      }
+      break;
     case "MST028":
       $index = FindCharacterIndex($mainPlayer, $cardID);
       if($character[$index+12] == "DOWN" && GetHealth($mainPlayer) == 1) {

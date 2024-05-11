@@ -840,7 +840,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink;
+  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBaseAttack;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -1121,6 +1121,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if(GetResolvedAbilityType($layers[$layerIndex]) == "AA") return false;
       return true;
     case "MST095": case "MST102": return !$CombatChain->HasCurrentLink();
+    case "MST105":
+      if(!$CombatChain->HasCurrentLink()) return true;
+      if(HasStealth($CombatChain->AttackCard()->ID())) return false;
+      if($combatChainState[$CCS_LinkBaseAttack] <= 1) return false;
+      return true;
     case "MST134": case "MST135": case "MST136": 
       $auras = &GetAuras($player);
       return Count($auras) <= 0;
@@ -1217,6 +1222,7 @@ function HasBladeBreak($cardID)
     case "HVY135": case "HVY155": case "HVY175": return true;
     case "HVY198": case "HVY199": case "HVY200": case "HVY201": return true;
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
+    case "MST004": return true;
     case "MST049": 
       $char = &GetPlayerCharacter($defPlayer);
       $index = FindCharacterIndex($defPlayer, $cardID);
@@ -1229,6 +1235,7 @@ function HasBladeBreak($cardID)
 
 function HasBattleworn($cardID)
 {
+  global $currentPlayer;
   switch($cardID) {
     case "WTR004": case "WTR005": case "WTR041": case "WTR042": case "WTR080": case "WTR116": case "WTR117": return true;
     case "ARC004": case "ARC078": case "ARC150": return true;
@@ -1243,6 +1250,10 @@ function HasBattleworn($cardID)
     case "EVO410b": case "EVO438": case "EVO439": case "EVO440": case "EVO441": case "EVO235": return true;
     case "EVO442": case "EVO443": case "EVO444": case "EVO445": return true;
     case "HVY010": case "HVY099": return true;
+    case "MST005":
+      $char = &GetPlayerCharacter($currentPlayer);
+      $index = FindCharacterIndex($currentPlayer, $cardID);
+      return $char[$index+12] == "UP";
     case "MST006": case "MST007": return true;
     case "MST232": return true;
     case "AKO005": return true;
@@ -2081,8 +2092,10 @@ function CardCareAboutChiPitch($cardID)
 {
   $cardID = ShiyanaCharacter($cardID);
   switch($cardID) {
-      case "MST001": case "MST002": case "MST025":
-      case "MST026": case "MST046": case "MST047":
+      case "MST001": case "MST002": 
+      case "MST004":
+      case "MST025": case "MST026": 
+      case "MST046": case "MST047":
       return true;
     default: return false;
   }
@@ -2099,7 +2112,7 @@ function IsModular($cardID)
 function HasCloaked($cardID)
 {
   switch($cardID) {
-    case "MST028": case "MST029": case "MST030":
+    case "MST005": case "MST028": case "MST029": case "MST030":
     case "MST049":
     case "MST067": case "MST068": case "MST069": case "MST070": 
     case "MST071": case "MST072": case "MST073": case "MST074": 

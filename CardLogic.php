@@ -681,7 +681,7 @@ function AddTowerEffectTrigger($cardID)
 
 function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
 {
-  global $mainPlayer;
+  global $mainPlayer, $combatChain;
   $effects = explode(',', $cardID);
   switch ($effects[0]) {
     case "ARC170-1": case "ARC171-1": case "ARC172-1":
@@ -702,6 +702,9 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
     case "ELE066-HIT":
       AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");
       break;  
+    case "MST105":
+      if(HasStealth($combatChain[0])) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      break;
     default:
       break;
   }
@@ -912,7 +915,7 @@ function CombatChainClosedEffect($cardID, $player, $target, $uniqueID)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-", $from="-")
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex, $CombatChain;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
@@ -1772,6 +1775,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "MST040": case "MST041": case "MST042":
       PlayAura("MON104", $player);
+      break;
+    case "MST075":
+      $index = GetCombatChainIndex($parameter, $player);
+      $chainCard = $CombatChain->Card($index);
+      $chainCard->ModifyDefense(3);
       break;
     case "MST137": case "MST138": case "MST139":
       AddCurrentTurnEffect($parameter, $player, "PLAY");

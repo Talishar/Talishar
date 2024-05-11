@@ -178,8 +178,9 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HVY245": return NumEquipBlock() > 0 ? 1 : 0;
     case "MST082": return GetClassState($mainPlayer, $CS_Transcended) > 0 ? 2 : 0;
     case "MST087": case "MST088": case "MST089": case "MST090": return GetClassState($mainPlayer, $CS_NumBluePlayed) > 1 ? 2 : 0;
-    case "MST103": return (NumAttackReactionsPlayed() > 2 ? 3 : 0);
-    case "MST112": case "MST113": case "MST114": return (NumAttackReactionsPlayed() > 1 ? 2 : 0);
+    case "MST103": return NumAttackReactionsPlayed() > 2 ? 3 : 0;
+    case "MST112": case "MST113": case "MST114": return NumAttackReactionsPlayed() > 1 ? 2 : 0;
+    case "MST127": case "MST128": case "MST129": return NumAttackReactionsPlayed() > 0 ? 1 : 0;
     case "MST191": return (CachedNumActionBlocked() > 0 ? 2 : 0);
     default: return 0;
   }
@@ -458,6 +459,14 @@ function OnBlockResolveEffects()
         break;
       case "DTD094": case "DTD095": case "DTD096":
         if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
+        break;
+      case "MST075":
+        if(!IsAllyAttacking()) {
+          $deck = new Deck($mainPlayer);
+          if($deck->Reveal(1) && PitchValue($deck->Top()) == 3) {
+            AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
+          }
+        }
         break;
       case "AKO019": // Battlefront Bastion
       case "MST203": case "MST204": case "MST205":

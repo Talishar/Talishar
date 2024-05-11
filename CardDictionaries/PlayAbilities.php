@@ -45,6 +45,13 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "MST004": 
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "THEIRHAND");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
+      AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+      AddDecisionQueue("BANISHCARD", $currentPlayer, "THEIRHAND", 1);  
+      return "";
     case "MST006":
       AddPlayerHand("MST023", $currentPlayer, $cardID); //Fang Strike
       return "";
@@ -195,6 +202,14 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST071": case "MST072": case "MST073": case "MST074":
       IncrementClassState($currentPlayer, $CS_DamagePrevention);
       return "";
+    case "MST075":
+      if (IsHeroAttackTarget()) {
+        $deck = new Deck($defPlayer);
+        if($deck->Reveal(1) && PitchValue($deck->Top()) == 3) {
+            AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
+      }
+      return "";
     case "MST080":
       Draw($currentPlayer);
       Draw($currentPlayer);
@@ -204,6 +219,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "MST092":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "MST093":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "MST095":
@@ -238,6 +256,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST102":
       AddCurrentTurnEffect($cardID, $mainPlayer);
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST502,".$from);
+      return "";
+    case "MST105":
+      AddCurrentTurnEffect($cardID, $mainPlayer);
       return "";
     case "MST134": case "MST135": case "MST136":
       $amount = 3;

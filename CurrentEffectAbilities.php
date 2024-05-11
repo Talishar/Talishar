@@ -311,6 +311,13 @@ function EffectHitEffect($cardID, $from)
         return 1;
       }
       break;
+    case "MST105":
+      if(IsHeroAttackTarget())
+      {
+        $deck = new Deck($defPlayer);
+        $deck->BanishTop("Source-".$attackID, banishedBy:$cardID);
+      }
+      break;
     default: break;
   }
   return 0;
