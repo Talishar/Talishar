@@ -75,7 +75,15 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   if($banishedBy == "DTD193" && TalentContains($cardID, "LIGHT", $player)) {
     GainHealth(1, $otherPlayer);
   }
-  if(($banishedBy == "MST106" || $banishedBy == "MST107" || $banishedBy == "MST108") && PitchValue($cardID) == 1) {
+  if($banishedBy == "MST106" && PitchValue($cardID) == 1) {
+    Draw($otherPlayer);
+    GainHealth(1, $otherPlayer);
+  }
+  if($banishedBy == "MST107" && PitchValue($cardID) == 2) {
+    Draw($otherPlayer);
+    GainHealth(1, $otherPlayer);
+  }
+  if($banishedBy == "MST108" && PitchValue($cardID) == 3) {
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
   }
