@@ -272,7 +272,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST159":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";  
-    case "MST166":
+    case "MST164": case "MST165": case "MST166":
       if(ComboActive()) {
         BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
         GiveAttackGoAgain();

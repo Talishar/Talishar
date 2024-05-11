@@ -1566,8 +1566,8 @@ function HasCombo($cardID)
     case "OUT074": case "OUT075": case "OUT076":
     case "OUT080": case "OUT081": case "OUT082":
     case "TCC088":
-      return true;
-    case "MST166":
+      return true; 
+    case "MST164": case "MST165": case "MST166":
       return true;
     default: 
       return false;
@@ -1669,6 +1669,10 @@ function ComboActive($cardID = "")
       case "TCC088":
         if($lastAttackName == "Crouching Tiger") return true;
         break;
+      case "MST164": 
+        return PitchValue($chainLinks[count($chainLinks)-1][0]) == 1;
+      case "MST165":
+        return PitchValue($chainLinks[count($chainLinks)-1][0]) == 2;
       case "MST166":
         return PitchValue($chainLinks[count($chainLinks)-1][0]) == 3;
       default: break;
