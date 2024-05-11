@@ -1868,15 +1868,30 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         Transcend($player, $params[0], $params[1]);
         return $lastResult;
       case "BONDSOFAGONY":
+        $hand = &GetHand($defPlayer);
+        $deck = &GetDeck($defPlayer);
+        $graveyard = &GetDiscard($defPlayer);
         $cardName = CardName($lastResult);
-        $locations = [&GetHand($defPlayer), &GetDeck($defPlayer), &GetDiscard($defPlayer)];
-        foreach ($locations as &$location) {
-            for ($i = 0; $i < count($location); ++$i) {
-                if (CardNameContains($location[$i], $cardName, $defPlayer)) {
-                    BanishCardForPlayer($location[$i], $defPlayer, "MST103", "-", $mainPlayer);
-                    RemoveFromLocation($location, $i);
-                }
-            }
+        for($i = 0; $i < count($hand); ++$i){
+          if(CardNameContains($hand[$i], $cardName, $defPlayer))
+          {
+            BanishCardForPlayer($hand[$i], $defPlayer, "MST103", "-", $mainPlayer);
+            RemoveHand($defPlayer, $i);
+          }
+        }
+        for($i = 0; $i < count($deck); ++$i){
+          if(CardNameContains($deck[$i], $cardName, $defPlayer))
+          {
+            BanishCardForPlayer($deck[$i], $defPlayer, "MST103", "-", $mainPlayer);
+            RemoveDeck($defPlayer, $i);
+          }
+        }
+        for($i = 0; $i < count($deck); ++$i){
+          if(CardNameContains($graveyard[$i], $cardName, $defPlayer))
+          {
+            BanishCardForPlayer($graveyard[$i], $defPlayer, "MST103", "-", $mainPlayer);
+            RemoveDiscard($defPlayer, $i);
+          }
         }
         return $lastResult;
     default:
