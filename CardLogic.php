@@ -915,7 +915,7 @@ function CombatChainClosedEffect($cardID, $player, $target, $uniqueID)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-", $from="-")
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex, $CombatChain;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
@@ -1775,6 +1775,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "MST040": case "MST041": case "MST042":
       PlayAura("MON104", $player);
+      break;
+    case "MST075":
+      $index = GetCombatChainIndex($parameter, $player);
+      $chainCard = $CombatChain->Card($index);
+      $chainCard->ModifyDefense(3);
       break;
     case "MST137": case "MST138": case "MST139":
       AddCurrentTurnEffect($parameter, $player, "PLAY");

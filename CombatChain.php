@@ -460,6 +460,14 @@ function OnBlockResolveEffects()
       case "DTD094": case "DTD095": case "DTD096":
         if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
         break;
+      case "MST075":
+        if(!IsAllyAttacking()) {
+          $deck = new Deck($mainPlayer);
+          if($deck->Reveal(1) && PitchValue($deck->Top()) == 3) {
+            AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
+          }
+        }
+        break;
       case "AKO019": // Battlefront Bastion
       case "MST203": case "MST204": case "MST205":
         if (NumCardsBlocking() <= 1) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);

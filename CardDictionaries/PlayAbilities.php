@@ -195,6 +195,14 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST071": case "MST072": case "MST073": case "MST074":
       IncrementClassState($currentPlayer, $CS_DamagePrevention);
       return "";
+    case "MST075":
+      if (IsHeroAttackTarget()) {
+        $deck = new Deck($defPlayer);
+        if($deck->Reveal(1) && PitchValue($deck->Top()) == 3) {
+            AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
+      }
+      return "";
     case "MST080":
       Draw($currentPlayer);
       Draw($currentPlayer);
