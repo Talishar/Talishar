@@ -49,6 +49,21 @@ function MSTHitEffect($cardID, $from)
     case "MST173": case "MST174": case "MST175":
       BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $cardID);
       break;
+    case "MST191":
+      $hand = GetHand($mainPlayer);
+      if(count($hand) > 0) {
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "HAND");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card from your hand to discard.");
+        AddDecisionQueue("CHOOSEHAND", $mainPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEMYHAND", $mainPlayer, "-", 1);
+        AddDecisionQueue("DISCARDCARD", $mainPlayer, "HAND-".$mainPlayer, 1);   
+        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from your hand to discard.", 1);
+        AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEMYHAND", $defPlayer, "-", 1);
+        AddDecisionQueue("DISCARDCARD", $defPlayer, "HAND-".$defPlayer, 1);   
+      }
+      break;
     case "MST233":
       $trapsArr = explode(",",SearchDiscard($mainPlayer, subtype:"Trap"));
       if(count($trapsArr) >= 3) {
