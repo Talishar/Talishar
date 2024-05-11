@@ -1317,7 +1317,7 @@ function DoesAttackHaveGoAgain()
     case "UPR069": case "UPR070": case "UPR071": return NumDraconicChainLinks() >= 2;
     case "UPR048": return NumChainLinksWithName("Phoenix Flame") >= 1;
     case "UPR092": return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
-    case "DYN047": return (ComboActive($attackID));
+    case "DYN047": return ComboActive($attackID);
     case "DYN056": case "DYN057": case "DYN058": return (ComboActive($attackID));
     case "DYN069": case "DYN070": return GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) != "-";
     case "EVO009": return EvoUpgradeAmount($mainPlayer) >= 3;
@@ -1328,6 +1328,7 @@ function DoesAttackHaveGoAgain()
     case "HVY134": return true;
     case "HVY166": case "HVY167": case "HVY168":
       return GetClassState($mainPlayer, $CS_NumCardsDrawn) > 0;
+    case "MST161": return ComboActive($attackID);
     default: return false;
   }
 }
