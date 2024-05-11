@@ -10,6 +10,13 @@ function MSTHitEffect($cardID, $from)
       if($from != "OUT139") AddCurrentTurnEffect($cardID, $mainPlayer);
       else AddCurrentTurnEffectNextAttack($cardID, $mainPlayer);
       break;
+    case "MST103":
+      LookAtHand($defPlayer);
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "THEIRHAND");
+      AddDecisionQueue("CHOOSEHAND", $mainPlayer, "<-", 1);
+      AddDecisionQueue("BONDSOFAGONY", $mainPlayer, "<-", 1);
+      AddDecisionQueue("SHUFFLE", $mainPlayer, "-", 1);
+      break;
     case "MST106": case "MST107": case "MST108": 
       if(IsHeroAttackTarget())
       {

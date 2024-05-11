@@ -172,13 +172,29 @@ function AddPlayerHand($cardID, $player, $from, $amount=1)
 function RemoveHand($player, $index)
 {
   $hand = &GetHand($player);
-  if(count($hand) == 0) return "";
+  if(empty($hand)) return "";
   $cardID = $hand[$index];
-  for($j = $index + HandPieces() - 1; $j >= $index; --$j) unset($hand[$j]);
-  $hand = array_values($hand);
+  array_splice($hand, $index, HandPieces());
   return $cardID;
 }
 
+function RemoveDeck($player, $index)
+{
+  $deck = &GetDeck($player);
+  if(empty($deck)) return "";
+  $cardID = $deck[$index];
+  array_splice($deck, $index, DeckPieces());
+  return $cardID;
+}
+
+function RemoveDiscard($player, $index)
+{
+  $discard = &GetDiscard($player);
+  if(empty($discard)) return "";
+  $cardID = $discard[$index];
+  array_splice($discard, $index, DiscardPieces());
+  return $cardID;
+}
 function GainResources($player, $amount)
 {
   $resources = &GetResources($player);

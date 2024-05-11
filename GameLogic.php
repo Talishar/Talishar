@@ -1867,6 +1867,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $params = explode(",", $parameter);
         Transcend($player, $params[0], $params[1]);
         return $lastResult;
+      case "BONDSOFAGONY":
+        $cardName = CardName($lastResult);
+        $locations = [&GetHand($defPlayer), &GetDeck($defPlayer), &GetDiscard($defPlayer)];
+        foreach ($locations as &$location) {
+            for ($i = 0; $i < count($location); ++$i) {
+                if (CardNameContains($location[$i], $cardName, $defPlayer)) {
+                    BanishCardForPlayer($location[$i], $defPlayer, "MST103", "-", $mainPlayer);
+                    RemoveFromLocation($location, $i);
+                }
+            }
+        }
+        return $lastResult;
     default:
       return "NOTSTATIC";
   }
