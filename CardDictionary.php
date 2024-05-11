@@ -1222,6 +1222,7 @@ function HasBladeBreak($cardID)
     case "HVY135": case "HVY155": case "HVY175": return true;
     case "HVY198": case "HVY199": case "HVY200": case "HVY201": return true;
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
+    case "MST004": return true;
     case "MST049": 
       $char = &GetPlayerCharacter($defPlayer);
       $index = FindCharacterIndex($defPlayer, $cardID);
@@ -2091,8 +2092,10 @@ function CardCareAboutChiPitch($cardID)
 {
   $cardID = ShiyanaCharacter($cardID);
   switch($cardID) {
-      case "MST001": case "MST002": case "MST025":
-      case "MST026": case "MST046": case "MST047":
+      case "MST001": case "MST002": 
+      case "MST004":
+      case "MST025": case "MST026": 
+      case "MST046": case "MST047":
       return true;
     default: return false;
   }
