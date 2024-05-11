@@ -602,10 +602,18 @@ function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
           $damage += 1;
           $remove = true;
           break;
+          case "MST137": 
+            if (PitchValue($source) == 1) $damage = 0;
+            $remove = true;
+            return $damage;
+        case "MST138": 
+            if (PitchValue($source) == 2) $damage = 0;
+            $remove = true;
+            return $damage;
         case "MST139": 
-          if(PitchValue($source) == 3) $damage -= $damage;
-          $remove = true;
-          return $damage;
+            if (PitchValue($source) == 3) $damage = 0;
+            $remove = true;
+            return $damage;
         default: break;
       }
     }

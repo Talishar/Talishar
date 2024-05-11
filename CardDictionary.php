@@ -1918,7 +1918,7 @@ function WardAmount($cardID, $player)
     case "MST043": return 3;
     case "MST044": return 2;
     case "MST045": return 1;
-    case "MST139": return 2;
+    case "MST137": case "MST138": case "MST139": return 2;
     case "MST146": case "MST147": case "MST148": return 2;
     case "MST149": return 3;
     case "MST150": return 2;
@@ -1957,7 +1957,7 @@ function HasWard($cardID, $player)
     case "MST040": case "MST041": case "MST042":
     case "MST043": case "MST044": case "MST045":
       return true;
-    case "MST139": return true;
+    case "MST137": case "MST138": case "MST139": return true;
     case "MST146": case "MST147": case "MST148": 
     case "MST149": case "MST150": case "MST151": 
     case "MST155": case "MST156": case "MST157": 
