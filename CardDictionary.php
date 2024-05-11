@@ -1566,8 +1566,9 @@ function HasCombo($cardID)
     case "OUT074": case "OUT075": case "OUT076":
     case "OUT080": case "OUT081": case "OUT082":
     case "TCC088":
-      return true;
-    case "MST166":
+      return true; 
+    case "MST161":
+    case "MST164": case "MST165": case "MST166":
       return true;
     default: 
       return false;
@@ -1669,6 +1670,13 @@ function ComboActive($cardID = "")
       case "TCC088":
         if($lastAttackName == "Crouching Tiger") return true;
         break;
+      case "MST161": 
+        if($lastAttackName == "Crouching Tiger") return true;
+        break;
+      case "MST164": 
+        return PitchValue($chainLinks[count($chainLinks)-1][0]) == 1;
+      case "MST165":
+        return PitchValue($chainLinks[count($chainLinks)-1][0]) == 2;
       case "MST166":
         return PitchValue($chainLinks[count($chainLinks)-1][0]) == 3;
       default: break;
@@ -1914,7 +1922,7 @@ function WardAmount($cardID, $player)
     case "MST043": return 3;
     case "MST044": return 2;
     case "MST045": return 1;
-    case "MST139": return 2;
+    case "MST137": case "MST138": case "MST139": return 2;
     case "MST146": case "MST147": case "MST148": return 2;
     case "MST149": return 3;
     case "MST150": return 2;
@@ -1953,7 +1961,7 @@ function HasWard($cardID, $player)
     case "MST040": case "MST041": case "MST042":
     case "MST043": case "MST044": case "MST045":
       return true;
-    case "MST139": return true;
+    case "MST137": case "MST138": case "MST139": return true;
     case "MST146": case "MST147": case "MST148": 
     case "MST149": case "MST150": case "MST151": 
     case "MST155": case "MST156": case "MST157": 

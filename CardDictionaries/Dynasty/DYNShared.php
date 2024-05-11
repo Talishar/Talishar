@@ -503,7 +503,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function DYNHitEffect($cardID, $from, $attackID)
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $CCS_NumBoosted;
+  global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $CCS_NumBoosted, $combatChain;
   switch($cardID) {
     case "DYN047":
       if(ComboActive()) {
@@ -522,7 +522,7 @@ function DYNHitEffect($cardID, $from, $attackID)
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-        $deck->BanishTop(banishedBy:$cardID);
+        $deck->BanishTop("Source-" . $combatChain[0], banishedBy:$combatChain[0]);
       }
       break;
     case "DYN119":

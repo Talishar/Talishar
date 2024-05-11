@@ -623,6 +623,9 @@ function AddOnHitTrigger($cardID)
     case "ELE003":
       if(SearchCurrentTurnEffects($cardID, $mainPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
+    case "MST103":
+      if(NumAttackReactionsPlayed() > 2 && IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
+      break;
     case "MST106": case "MST107": case "MST108": 
     case "MST109": case "MST110": case "MST111": 
     case "MST112": case "MST113": case "MST114": 
@@ -630,6 +633,7 @@ function AddOnHitTrigger($cardID)
     case "MST118": case "MST119": case "MST120": 
     case "MST121": case "MST122": case "MST123": 
     case "MST124": case "MST125": case "MST126":
+    case "MST191": case "MST192":
       if(IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     default:
@@ -1769,7 +1773,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "MST040": case "MST041": case "MST042":
       PlayAura("MON104", $player);
       break;
-    case "MST139": 
+    case "MST137": case "MST138": case "MST139":
       AddCurrentTurnEffect($parameter, $player, "PLAY");
       break;
     case "MST155": case "MST156": case "MST157":

@@ -922,7 +922,7 @@ function NuuStaticAbility($banishedBy)
     foreach ($defendingCards as $card) {
       $originalID = GetCardIDBeforeTransform($combatChain[$card]);
       $cardType = CardType($combatChain[$card]);
-      if ($cardType === "E" && CardType($originalID) === "A") {
+      if ($cardType === "E" && CardType($originalID) === "A" && $combatChain[$card] !== "EVO410b" && $combatChain[$card] !== "DYN492b") {
           BanishCardForPlayer(GetCardIDBeforeTransform($combatChain[$card]), $defPlayer, "CC", "-", $mainPlayer);
           $index = FindCharacterIndex($defPlayer, $combatChain[$card]);
           DestroyCharacter($defPlayer, $index, wasBanished: true);

@@ -90,7 +90,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
               AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
               AddDecisionQueue("MULTICHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
               AddDecisionQueue("MULTIREMOVEDISCARD", $otherPlayer, "-", 1);
-              AddDecisionQueue("MULTIBANISH", $otherPlayer, "DISCARD", 1);
+              AddDecisionQueue("MULTIBANISH", $otherPlayer, "DISCARD,Source-" . $cardID . "," . $cardID, 1);
               AddDecisionQueue("UNDERCURRENTDESIRES", $currentPlayer, "-", 1);
               break;
             case "Transcend": Transcend($currentPlayer, "MST410", $from); break;
@@ -272,7 +272,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST159":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";  
-    case "MST166":
+    case "MST161":
+      if(ComboActive()) AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";  
+    case "MST164": case "MST165": case "MST166":
       if(ComboActive()) {
         BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
         GiveAttackGoAgain();

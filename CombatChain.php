@@ -178,7 +178,9 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HVY245": return NumEquipBlock() > 0 ? 1 : 0;
     case "MST082": return GetClassState($mainPlayer, $CS_Transcended) > 0 ? 2 : 0;
     case "MST087": case "MST088": case "MST089": case "MST090": return GetClassState($mainPlayer, $CS_NumBluePlayed) > 1 ? 2 : 0;
+    case "MST103": return (NumAttackReactionsPlayed() > 2 ? 3 : 0);
     case "MST112": case "MST113": case "MST114": return (NumAttackReactionsPlayed() > 1 ? 2 : 0);
+    case "MST191": return (CachedNumActionBlocked() > 0 ? 2 : 0);
     default: return 0;
   }
 }
