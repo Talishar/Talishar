@@ -64,6 +64,15 @@ function MSTHitEffect($cardID, $from)
         AddDecisionQueue("DISCARDCARD", $defPlayer, "HAND-".$defPlayer, 1);   
       }
       break;
+    case "MST192":
+      LookAtHand($defPlayer);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND:maxDef=-1");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND," . $mainPlayer, 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
+      break;
     case "MST233":
       $trapsArr = explode(",",SearchDiscard($mainPlayer, subtype:"Trap"));
       if(count($trapsArr) >= 3) {
