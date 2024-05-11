@@ -32,6 +32,7 @@ function MSTEffectAttackModifier($cardID) {
     case "MST069": return 1;
     case "MST084": return SearchPitchForColor($mainPlayer, 3);
     case "MST085": return SearchPitchForColor($mainPlayer, 3);
+    case "MST093": return 2;
     case "MST095": return -1;
     case "MST102": return 1;
     case "MST159": return 1;
@@ -66,6 +67,7 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST069": return true;
     case "MST084": case "MST085": case "MST086": return true;
     case "MST092": return PitchValue($attackID) == 3;
+    case "MST093": return PitchValue($attackID) == 3;
     case "MST095": return true;
     case "MST102": return true;
     case "MST159": case "MST161":
