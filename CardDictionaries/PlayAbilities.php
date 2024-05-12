@@ -24,7 +24,7 @@ function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer, $CS_DamagePrevention;
-  global $combatChain, $defPlayer, $CombatChain, $chainLinks;
+  global $combatChain, $defPlayer, $CombatChain, $chainLinks, $combatChainState, $CCS_LinkBaseAttack;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $hand = &GetHand($currentPlayer);
   switch($cardID) {
@@ -258,7 +258,18 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST502,".$from);
       return "";
     case "MST105":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
+      if($combatChainState[$CCS_LinkBaseAttack] <= 1 && HasStealth($combatChain[0])) $modalities = "Buff_Power,Gain_On-Hit,Both";
+      elseif ($combatChainState[$CCS_LinkBaseAttack] <= 1) $modalities = "Buff_Power";
+      else $modalities = "Gain_On-Hit";
+      if($modalities == "Buff_Power,Gain_On-Hit,Both") {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities, 1);
+        AddDecisionQueue("MODAL", $currentPlayer, "JUSTANICK", 1);
+      }
+      else {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities, 1);
+        AddDecisionQueue("MODAL", $currentPlayer, "JUSTANICK", 1);
+      }
       return "";
     case "MST134": case "MST135": case "MST136":
       $amount = 3;

@@ -311,7 +311,7 @@ function EffectHitEffect($cardID, $from)
         return 1;
       }
       break;
-    case "MST105":
+    case "MST105-HIT":
       if(IsHeroAttackTarget())
       {
         $deck = new Deck($defPlayer);
