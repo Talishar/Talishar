@@ -76,7 +76,7 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST102": return true;
     case "MST105-BUFF": return true;
     case "MST105-HIT": return true;
-    case "MST159": case "MST161":
+    case "MST159": case "MST161": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
     case "MST162-BUFF": return true;
     case "MST162-HIT": return true;
     case "MST185": case "MST186": case "MST187": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
