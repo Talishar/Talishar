@@ -76,9 +76,9 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "WTR123": return $repriseActive ? 6 : 4;
     case "WTR124": return $repriseActive ? 5 : 3;
     case "WTR125": return $repriseActive ? 4 : 2;
-    case "WTR132": return CardType($CombatChain->AttackCard()->ID()) == "W" && $repriseActive ? 3 : 0;
-    case "WTR133": return CardType($CombatChain->AttackCard()->ID()) == "W" && $repriseActive ? 2 : 0;
-    case "WTR134": return CardType($CombatChain->AttackCard()->ID()) == "W" && $repriseActive ? 1 : 0;
+    case "WTR132": return TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) && $repriseActive ? 3 : 0;
+    case "WTR133": return TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) && $repriseActive ? 2 : 0;
+    case "WTR134": return TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) && $repriseActive ? 1 : 0;
     case "WTR135": return 3;
     case "WTR136": return 2;
     case "WTR137": return 1;
