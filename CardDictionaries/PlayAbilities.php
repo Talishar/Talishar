@@ -289,7 +289,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $amount = 3;
         if($cardID == "MST147") $amount = 2;
         else if ($cardID == "MST148") $amount = 1;
-        if(count($arrayAuras) <= 1) $auras[3] += $amount;
+        if(count($arrayAuras) <= 1) {
+          $index = count($auras)-AuraPieces();
+          $auras[$index+3] += $amount;
+        }
       }
       return "";
     case "MST149": case "MST150": case "MST151": 
