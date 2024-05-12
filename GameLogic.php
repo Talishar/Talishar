@@ -57,7 +57,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if(!$deck->Empty()) $rv = "0";
           break;
         case "DECKTOPXINDICES":
-        $deck = new Deck($player);
+          $deck = new Deck($player);
           $amount = ($subparam > $deck->RemainingCards() ? $deck->RemainingCards() : $subparam);
           $rv = GetIndices($amount);
           break;
@@ -1872,10 +1872,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         Transcend($player, $params[0], $params[1]);
         return $lastResult;
       case "BONDSOFAGONY":
+        $cardID = GetMZCard($player, $lastResult);
         $hand = &GetHand($defPlayer);
         $deck = &GetDeck($defPlayer);
         $graveyard = &GetDiscard($defPlayer);
-        $cardName = CardName($lastResult);
+        $cardName = CardName($cardID);
         for($i = 0; $i < count($hand); ++$i){
           if(CardNameContains($hand[$i], $cardName, $defPlayer))
           {

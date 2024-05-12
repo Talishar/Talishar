@@ -11,10 +11,16 @@ function MSTHitEffect($cardID, $from)
       else AddCurrentTurnEffectNextAttack($cardID, $mainPlayer);
       break;
     case "MST103":
-      LookAtHand($defPlayer);
-      AddDecisionQueue("FINDINDICES", $mainPlayer, "THEIRHAND");
-      AddDecisionQueue("CHOOSEHAND", $mainPlayer, "<-", 1);
-      AddDecisionQueue("BONDSOFAGONY", $mainPlayer, "<-", 1);
+      $count = count(GetDeck($defPlayer));
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to banish from their hand", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("BONDSOFAGONY", $mainPlayer, "-", 1);
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "DECKTOPXINDICES," . $count);
+      AddDecisionQueue("DECKCARDS", $mainPlayer, "<-", 1);
+      AddDecisionQueue("REELINLOOK", $mainPlayer, "-", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($cardID, $cardID) . " shows the your opponents deck are:", 1);
+      AddDecisionQueue("MULTISHOWCARDSDECK", $mainPlayer, "<-", 1);
       AddDecisionQueue("SHUFFLE", $mainPlayer, "-", 1);
       break;
     case "MST104":
