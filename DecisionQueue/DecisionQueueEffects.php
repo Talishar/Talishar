@@ -20,6 +20,13 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
         case "Both": AddCurrentTurnEffect("MST105-BUFF", $player); AddCurrentTurnEffect("MST105-HIT", $player); break;
       }
       return $lastResult;
+    case "MAUL":
+      switch($lastResult) {
+        case "Buff_Power": AddCurrentTurnEffect("MST162-BUFF", $player); break;
+        case "Gain_On-Hit": AddCurrentTurnEffect("MST162-HIT", $player); break;
+        case "Both": AddCurrentTurnEffect("MST162-BUFF", $player); AddCurrentTurnEffect("MST162-HIT", $player); break;
+      }
+      return $lastResult;
     case "MICROPROCESSOR":
       $deck = new Deck($player);
       $items = &GetItems($player);

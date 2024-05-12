@@ -318,6 +318,10 @@ function EffectHitEffect($cardID, $from)
         $deck->BanishTop("Source-".$attackID, banishedBy:$cardID);
       }
       break;
+    case "MST162-HIT":
+      BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
+      BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
+      break;
     default: break;
   }
   return 0;

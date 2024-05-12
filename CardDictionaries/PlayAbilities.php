@@ -307,6 +307,20 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST161":
       if(ComboActive()) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";  
+    case "MST162":
+      if($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardNameContains($combatChain[0], "Crouching Tiger", $currentPlayer)) $modalities = "Buff_Power,Gain_On-Hit,Both";
+      elseif ($combatChainState[$CCS_LinkBaseAttack] <= 1) $modalities = "Buff_Power";
+      else $modalities = "Gain_On-Hit";
+      if($modalities == "Buff_Power,Gain_On-Hit,Both") {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities, 1);
+        AddDecisionQueue("MODAL", $currentPlayer, "MAUL", 1);
+      }
+      else {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities, 1);
+        AddDecisionQueue("MODAL", $currentPlayer, "MAUL", 1);
+      }
+      return "";
     case "MST164": case "MST165": case "MST166":
       if(ComboActive()) {
         BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);

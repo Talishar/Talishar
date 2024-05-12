@@ -703,7 +703,7 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
     case "ELE066-HIT":
       AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");
       break;  
-    case "MST105-HIT":
+    case "MST105-HIT": case "MST162-HIT":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     default:

@@ -1129,6 +1129,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST134": case "MST135": case "MST136": 
       $auras = &GetAuras($player);
       return Count($auras) <= 0;
+    case "MST162":
+      if(!$CombatChain->HasCurrentLink()) return true;
+      if(CardNameContains($CombatChain->AttackCard()->ID(), "Crouching Tiger", $player)) return false;
+      if($combatChainState[$CCS_LinkBaseAttack] <= 1) return false;
+      return true;
     case "MST232": return (count($myHand) + count($myArsenal)) < 2;
     case "MST236": 
       return $discard->NumCards() < 3;
