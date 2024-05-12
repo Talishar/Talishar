@@ -299,6 +299,11 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST164": case "MST165": case "MST166":
       if(ComboActive()) {
         BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
+      }
+      return "";
+    case "MST176": case "MST177": case "MST178":
+      if(ComboActive()) {
+        BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
         GiveAttackGoAgain();
       }
       return "";

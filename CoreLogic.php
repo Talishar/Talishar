@@ -1330,9 +1330,11 @@ function DoesAttackHaveGoAgain()
       $character = &GetPlayerCharacter($mainPlayer);
       return SearchCurrentTurnEffectsForUniqueID($character[$combatChainState[$CCS_WeaponIndex]+11]) != -1 && SearchCurrentTurnEffects($attackID, $mainPlayer);
     case "HVY134": return true;
+    case "MST161": return ComboActive($attackID);
+    case "MST164": case "MST165": case "MST166": return ComboActive($attackID);
     case "HVY166": case "HVY167": case "HVY168":
       return GetClassState($mainPlayer, $CS_NumCardsDrawn) > 0;
-    case "MST161": return ComboActive($attackID);
+    case "MST176": case "MST177": case "MST178": return ComboActive($attackID);
     default: return false;
   }
 }

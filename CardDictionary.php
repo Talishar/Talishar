@@ -1580,6 +1580,7 @@ function HasCombo($cardID)
       return true; 
     case "MST161":
     case "MST164": case "MST165": case "MST166":
+    case "MST176": case "MST177": case "MST178":
       return true;
     default: 
       return false;
@@ -1690,6 +1691,9 @@ function ComboActive($cardID = "")
         return PitchValue($chainLinks[count($chainLinks)-1][0]) == 2;
       case "MST166":
         return PitchValue($chainLinks[count($chainLinks)-1][0]) == 3;
+      case "MST176": case "MST177": case "MST178":
+        if($lastAttackName == "Crouching Tiger") return true;
+        break;
       default: break;
     }
   }
