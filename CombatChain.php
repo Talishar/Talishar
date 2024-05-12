@@ -188,7 +188,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 
 function BlockModifier($cardID, $from, $resourcesPaid)
 {
-  global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan;
+  global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan, $CS_NumCrouchingTigerCreatedThisTurn;
   $blockModifier = 0;
   $cardType = CardType($cardID);
   if($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
@@ -280,6 +280,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       break;
     case "MST086":
       if(SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += SearchPitchForColor($defPlayer, 3);
+      break;
+    case "MST163":
+      if(GetClassState($defPlayer, $CS_NumCrouchingTigerCreatedThisTurn) > 0) $blockModifier += 3;
       break;
     default: break;
   }

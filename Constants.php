@@ -313,6 +313,7 @@ $CS_ModalAbilityChoosen = 75;
 $CS_NumSpectralShieldAttacks = 76;
 $CS_NumBluePlayed = 77;
 $CS_Transcended = 78;
+$CS_NumCrouchingTigerCreatedThisTurn = 79;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -509,7 +510,7 @@ function ResetChainLinkState()
 function ResetMainClassState()
 {
   global $mainClassState, $CS_Num6PowDisc, $CS_NumBoosted, $CS_AtksWWeapon, $CS_HitsWDawnblade, $CS_DamagePrevention, $CS_CardsBanished;
-  global $CS_DamageTaken, $CS_NumActionsPlayed, $CS_CharacterIndex, $CS_PlayIndex, $CS_NumNonAttackCards;
+  global $CS_DamageTaken, $CS_NumActionsPlayed, $CS_CharacterIndex, $CS_PlayIndex, $CS_NumNonAttackCards, $CS_NumCrouchingTigerCreatedThisTurn;
   global $CS_NumAddedToSoul, $CS_NextNAACardGoAgain, $CS_NumCharged, $CS_Num6PowBan, $CS_ResolvingLayerUniqueID, $CS_NextWizardNAAInstant;
   global $CS_ArcaneDamageTaken, $CS_NextNAAInstant, $CS_NextDamagePrevented, $CS_LastAttack, $CS_PlayCCIndex;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard, $CS_NumAttackCards, $CS_NumPlayedFromBanish;
@@ -600,6 +601,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumSpectralShieldAttacks] = 0;
   $mainClassState[$CS_NumBluePlayed] = 0;
   $mainClassState[$CS_Transcended] = 0;
+  $mainClassState[$CS_NumCrouchingTigerCreatedThisTurn] = 0;
 }
 
 function ResetCardPlayed($cardID)

@@ -5,7 +5,8 @@ function BanishCardForPlayer($cardID, $player, $from, $modifier = "-", $banished
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myBanish, $theirBanish, $mainBanish, $defBanish;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
-  global $myStateBuiltFor;
+  global $myStateBuiltFor, $CS_NumCrouchingTigerCreatedThisTurn;
+  if(CardNameContains($cardID, "Crouching Tiger", $player)) IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn);
   if ($mainPlayerGamestateStillBuilt) {
     if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $modifier, $player, $from, $banishedBy);
     else return BanishCard($defBanish, $defClassState, $cardID, $modifier, $player, $from, $banishedBy);
@@ -166,7 +167,9 @@ function AddTopDeck($cardID, $player, $from, $deckIndexModifier = 0)
 
 function AddPlayerHand($cardID, $player, $from, $amount=1)
 {
+  global $CS_NumCrouchingTigerCreatedThisTurn;
   $hand = &GetHand($player);
+  if(CardNameContains($cardID, "Crouching Tiger", $player)) IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn);
   for($i = 0; $i < $amount; ++$i) {
     array_push($hand, $cardID);
   }
