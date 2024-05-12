@@ -131,6 +131,9 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
 {
   global $combatChain, $turn;
   $index = count($combatChain);
+  $correction = count($combatChain) % CombatChainPieces();
+  if($correction != 0) $correction = CombatChainPieces() - $correction;
+  for($i=0; $i<$correction; ++$i) array_push($combatChain, 0);
   array_push($combatChain, $cardID);
   array_push($combatChain, $player);
   array_push($combatChain, $from);
@@ -2299,7 +2302,7 @@ function EvoHandling($cardID, $player, $from)
         else AddGraveyard($cardID, $otherPlayer, "GRAVEYARD", $player);
         WriteLog("<b>*ERR0R* // No base of that type equipped //</b>");
       }
-      break; 
+      break;
     }
   }
 }
