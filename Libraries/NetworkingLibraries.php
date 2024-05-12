@@ -2358,7 +2358,7 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "MST199":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to put on top of your deck (or pass)", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to put on the bottom of your deck (or pass)", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
