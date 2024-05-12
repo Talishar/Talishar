@@ -36,7 +36,7 @@ function MSTAbilityCost($cardID)
     case "MST006": case "MST007": return 1;
     case "MST025": case "MST026": return 3; 
     case "MST029": case "MST030": return 1;
-    case "MST046": case "MST047": return 3;
+    case "MST046": case "MST047": case "MST048": return 3;
     case "MST067": return 3;
     case "MST069": case "MST070": return 1;
     case "MST159": return 2;
@@ -54,7 +54,7 @@ function MSTAbilityType($cardID, $index=-1, $from="-")
     case "MST006": case "MST007": return "AR";
     case "MST025": case "MST026": return "I"; 
     case "MST029": case "MST030": return "I";
-    case "MST046": case "MST047": return "I"; 
+    case "MST046": case "MST047": case "MST048": return "I"; 
     case "MST067": return "I";
     case "MST069": case "MST070": return "AR";
     case "MST071": case "MST072": case "MST073": case "MST074": return "I";

@@ -163,6 +163,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       return "";
+    case "MST048": 
+      PlayAura("CRU075", $currentPlayer); //Zen Token
+      return "";
     case "MST053":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);

@@ -335,6 +335,11 @@
     global $currentPlayer, $CS_Transcended;
     $otherplayer = $player == 1 ? 2 : 1;
     SetClassState($player, $CS_Transcended, 1);
+    if(SearchCharacterAlive($player, "MST048")) {
+      AddDecisionQueue("YESNO", $player, "if you want to gain a resource");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("GAINRESOURCES", $player, "1", 1);
+    }
     if(substr($from, 0, 5) == "THEIR") AddPlayerHand($cardID, $otherplayer, "-");
     else AddPlayerHand($cardID, $player, "-");
   }
