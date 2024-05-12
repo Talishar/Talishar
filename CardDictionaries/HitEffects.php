@@ -26,6 +26,7 @@ function MSTHitEffect($cardID, $from)
     case "MST104":
       if(IsHeroAttackTarget())
       {
+        LookAtHand($defPlayer);
         $pitchValue = PitchValue($deck->Top());
         $deck->BanishTop("Source-".$cardID, banishedBy:$cardID);
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND:pitch=" . $pitchValue);
