@@ -415,6 +415,7 @@ function RemoveEffectsOnChainClose()
       case "TCC086": case "TCC094"://Growl
       case "HVY256"://Coercive Tendency
       case "MST185": case "MST186": case "MST187": //Untamed 
+      case "MST161"://Chase the Tail
         $remove = 1;
         break;
       default:

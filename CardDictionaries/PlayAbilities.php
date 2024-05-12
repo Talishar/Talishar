@@ -46,11 +46,11 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "MST004": 
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "THEIRHAND");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+      AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card to banish", 1);
       AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
-      AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-      AddDecisionQueue("BANISHCARD", $currentPlayer, "THEIRHAND", 1);  
+      AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+      AddDecisionQueue("BANISHCARD", $otherPlayer, "HAND", 1);  
       return "";
     case "MST006":
       AddPlayerHand("MST023", $currentPlayer, $cardID); //Fang Strike
@@ -305,11 +305,14 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST185": case "MST186": case "MST187":
       AddCurrentTurnEffect($cardID, $mainPlayer);
       break;
+    case "MST199":
+      if($additionalCosts != "-") AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
+      break;
     case "MST200": case "MST201": case "MST202":
       if(IsHeroAttackTarget()) MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH", true, true, DQContext:"Choose a card to banish from their graveyard.");
       return "";
     case "MST212": case "MST213": case "MST214":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       return "";
     case "MST225":
       PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
