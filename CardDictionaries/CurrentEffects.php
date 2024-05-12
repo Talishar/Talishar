@@ -72,6 +72,7 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST084": case "MST085": case "MST086": return true;
     case "MST092": return PitchValue($attackID) == 3;
     case "MST093": return PitchValue($attackID) == 3;
+    case "MST094": return PitchValue($attackID) == 3;
     case "MST095": return true;
     case "MST102": return true;
     case "MST105-BUFF": return true;
