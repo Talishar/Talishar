@@ -16,12 +16,12 @@ function MSTHitEffect($cardID, $from)
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to banish from their hand", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("BONDSOFAGONY", $mainPlayer, "-", 1);
-      AddDecisionQueue("FINDINDICES", $mainPlayer, "DECKTOPXINDICES," . $count);
-      AddDecisionQueue("DECKCARDS", $mainPlayer, "<-", 1);
-      AddDecisionQueue("REELINLOOK", $mainPlayer, "-", 1);
+      AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES," . $count);
+      AddDecisionQueue("DECKCARDS", $defPlayer, "<-", 1);
+      AddDecisionQueue("REELINLOOK", $defPlayer, "-", 1);
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($cardID, $cardID) . " shows the your opponents deck are:", 1);
-      AddDecisionQueue("MULTISHOWCARDSDECK", $mainPlayer, "<-", 1);
-      AddDecisionQueue("SHUFFLE", $mainPlayer, "-", 1);
+      AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $mainPlayer, "<-", 1);
+      AddDecisionQueue("SHUFFLE", $defPlayer, "-", 1);
       break;
     case "MST104":
       if(IsHeroAttackTarget())
