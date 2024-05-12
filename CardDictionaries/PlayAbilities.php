@@ -312,7 +312,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(IsHeroAttackTarget()) MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH", true, true, DQContext:"Choose a card to banish from their graveyard.");
       return "";
     case "MST212": case "MST213": case "MST214":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       return "";
     case "MST225":
       PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
