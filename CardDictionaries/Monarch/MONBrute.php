@@ -77,7 +77,7 @@
       unset($discard[$index]);
       $discard = array_values($discard);
     }
-    if($BanishedIncludes6 > 0 && $diabolicOfferingCount > 0) ++$BanishedIncludes6;
+    if($BanishedIncludes6 > 0) $BanishedIncludes6 += $diabolicOfferingCount;
     return $BanishedIncludes6 > 3 ? 3 : $BanishedIncludes6;
   }
 
