@@ -88,7 +88,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       {
         LookAtHand($defPlayer);
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HANDPITCH,3");
-        AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to add to the chain link", 1);
         AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
