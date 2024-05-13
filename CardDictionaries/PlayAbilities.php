@@ -139,7 +139,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "DECK", 1);
       AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "3", 1);
       AddDecisionQueue("PUTCOMBATCHAINDEFENSE0", $otherPlayer, "-", 1);
-      AddDecisionQueue("PUTINANYORDER", $currentPlayer, $amount-1, 1);
+      AddDecisionQueue("PUTINANYORDER", $currentPlayer, $amount-1);
       AddCurrentTurnEffect($cardID."-BUFF", $currentPlayer);
       return "";
     case "MST020": case "MST021": case "MST022":
