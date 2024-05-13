@@ -2401,7 +2401,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target to deal 1 damage");
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZDAMAGE", $player, "2,DAMAGE," . $toCardID, 1);
+      AddDecisionQueue("MZDAMAGE", $player, "1,DAMAGE," . $toCardID, 1);
       break;
     case "MST231": case "MST631":
       AddCurrentTurnEffect("MST231", $player);
