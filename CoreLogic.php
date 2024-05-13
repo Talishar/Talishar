@@ -1888,8 +1888,9 @@ function IsAlternativeCostPaid($cardID, $from)
 function BanishCostModifier($from, $index, $cost)
 {
   global $currentPlayer;
-  if($from != "BANISH") return 0;
-  $banish = GetBanish($currentPlayer);
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  if($from != "BANISH" && $from != "THEIRBANISH") return 0;
+  $from == "BANISH" ? $banish = GetBanish($currentPlayer) : $banish = GetBanish($otherPlayer);
   $mod = explode("-", $banish[$index + 1]);
   switch($mod[0]) {
     case "ARC119": return -1 * intval($mod[1]);
