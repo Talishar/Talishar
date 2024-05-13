@@ -628,15 +628,15 @@ function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
           break;
         case "MST137": 
           if (PitchValue($source) == 1) $damage = 0;
-          $remove = true;
+          RemoveCurrentTurnEffect($i);
           return $damage;
         case "MST138": 
           if (PitchValue($source) == 2) $damage = 0;
-          $remove = true;
+          RemoveCurrentTurnEffect($i);
           return $damage;
         case "MST139": 
           if (PitchValue($source) == 3) $damage = 0;
-          $remove = true;
+          RemoveCurrentTurnEffect($i);
           return $damage;
         default: break;
       }
