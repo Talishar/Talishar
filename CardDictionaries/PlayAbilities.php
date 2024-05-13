@@ -323,6 +323,14 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MODAL", $currentPlayer, "JUSTANICK", 1);
       }
       return "";
+    case "MST132": 
+      $illusionistAuras = SearchAura($currentPlayer, class:"ILLUSIONIST");
+      $arrayAuras = explode(",", $illusionistAuras);
+      if(count($arrayAuras) <= 1) GainActionPoints(1, $currentPlayer);
+      return "";
+    case "MST133":
+      if($from == "PLAY") PlayAura("MON104", $currentPlayer);
+      return "";
     case "MST134": case "MST135": case "MST136":
       $amount = 3;
       if($cardID == "MST135") $amount = 2;

@@ -58,6 +58,7 @@ function MSTAbilityType($cardID, $index=-1, $from="-")
     case "MST067": return "I";
     case "MST069": case "MST070": return "AR";
     case "MST071": case "MST072": case "MST073": case "MST074": return "I";
+    case "MST133": return "I";
     case "MST159": return "AA";
     case "MST232": return "I";
     default: return "";
