@@ -61,7 +61,7 @@ function MSTHitEffect($cardID, $from)
       {
         $deck = new Deck($defPlayer);
         $deck->BanishTop(banishedBy:$cardID);
-        if($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,GY,Source-" . $cardID . "," . $cardID, false, true);
+        if($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,Source-" . $cardID . "," . $cardID, false, true);
       }
       break;
     case "MST118": case "MST119": case "MST120": 
