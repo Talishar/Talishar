@@ -1818,6 +1818,15 @@ function GeneratedGoAgain($cardID)
                                                     return true;
                                             }
                                     }
+                                case "0":    
+                                    switch ($cardID[4]) {
+                                        case "9":
+                                            switch ($cardID[5]) {
+                                                case "4":
+                                                    return true;
+                                            }
+                                    }
+
                             }
                     }
                 default:

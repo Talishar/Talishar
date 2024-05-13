@@ -928,5 +928,3 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
     return $cardRemoved;
   }
-
-?>

@@ -551,5 +551,3 @@
       default: break;
     }
   }
-
-?>
