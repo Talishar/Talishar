@@ -33,6 +33,7 @@ function MSTEffectAttackModifier($cardID) {
     case "MST065": return 1;
     case "MST069": return 1;
     case "MST075": return 3;
+    case "MST077": return 2;
     case "MST084": return SearchPitchForColor($mainPlayer, 3);
     case "MST085": return SearchPitchForColor($mainPlayer, 3);
     case "MST093": return 2;
@@ -73,6 +74,7 @@ function MSTCombatEffectActive($cardID, $attackID)
       return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
     case "MST069": return true;
     case "MST075": return true;
+    case "MST077": return true;
     case "MST084": case "MST085": case "MST086": return true;
     case "MST092": return PitchValue($attackID) == 3;
     case "MST093": return PitchValue($attackID) == 3;
