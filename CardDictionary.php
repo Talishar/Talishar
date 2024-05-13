@@ -1134,7 +1134,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST105":
       if(!$CombatChain->HasCurrentLink()) return true;
       if(HasStealth($CombatChain->AttackCard()->ID())) return false;
-      if($combatChainState[$CCS_LinkBaseAttack] <= 1) return false;
+      if($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
       return true;
     case "MST134": case "MST135": case "MST136": 
       $auras = &GetAuras($player);

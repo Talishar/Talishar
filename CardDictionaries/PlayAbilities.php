@@ -310,8 +310,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST502,".$from);
       return "";
     case "MST105":
-      if($combatChainState[$CCS_LinkBaseAttack] <= 1 && HasStealth($combatChain[0])) $modalities = "Buff_Power,Gain_On-Hit,Both";
-      elseif ($combatChainState[$CCS_LinkBaseAttack] <= 1) $modalities = "Buff_Power";
+      if($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA" && HasStealth($combatChain[0])) $modalities = "Buff_Power,Gain_On-Hit,Both";
+      elseif ($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") $modalities = "Buff_Power";
       else $modalities = "Gain_On-Hit";
       if($modalities == "Buff_Power,Gain_On-Hit,Both") {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
