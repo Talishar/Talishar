@@ -123,8 +123,9 @@ function ARCMechanologistHitEffect($cardID, $from)
   return "";
 }
 
-function HasBoost($cardID)
+function HasBoost($cardID, $player)
 {
+  if(SearchCurrentTurnEffects("MST231", $player) && TypeContains($cardID, "AA", $player)) return true;
   switch ($cardID) {
     case "ARC011": case "ARC012": case "ARC013":
     case "ARC020": case "ARC021": case "ARC022":

@@ -1589,7 +1589,7 @@ function PlayCardSkipCosts($cardID, $from)
   GetTargetOfAttack($cardID); // Not sure why this is needed (2x GetTargetOfAttack), but it works....
   if (($turn[0] == "M" || $turn[0] == "ATTACKWITHIT") && $cardType == "AA") GetTargetOfAttack($cardID);
   if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
-    if (HasBoost($cardID) && $cardID != "EVO142") Boost($cardID);
+    if (HasBoost($cardID, $currentPlayer) && $cardID != "EVO142") Boost($cardID);
     GetLayerTarget($cardID);
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
@@ -1873,7 +1873,7 @@ function PayAdditionalCosts($cardID, $from)
       default: break;
     }
   }
-  if(HasBoost($cardID) && $cardID != "EVO142") Boost($cardID);
+  if(HasBoost($cardID, $currentPlayer) && $cardID != "EVO142") Boost($cardID);
   $fuseType = HasFusion($cardID);
   if($fuseType != "") Fuse($cardID, $currentPlayer, $fuseType);
   if(HasScrap($cardID)) Scrap($currentPlayer);

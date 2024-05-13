@@ -1039,7 +1039,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         break;
       case "DYN088":
         $numBoostPlayed = 0;
-        if(HasBoost($cardID)) {
+        if(HasBoost($cardID, $currentPlayer)) {
           $numBoostPlayed = GetClassState($currentPlayer, $CS_NumBoostPlayed) + 1;
           SetClassState($currentPlayer, $CS_NumBoostPlayed, $numBoostPlayed);
         }

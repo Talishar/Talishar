@@ -2357,6 +2357,7 @@ function EvoHasUnderCard($player, $index)
 
 function EvoTransformAbility($toCardID, $fromCardID, $player="")
 {
+  $otherPlayer = ($player == 1 ? 2 : 1);
   switch($toCardID)
   {
     case "EVO026": case "EVO426":
@@ -2389,6 +2390,21 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
     case "EVO053": case "EVO453":
       GiveAttackGoAgain();
       break;
+    case "MST228": case "MST628":
+      MZMoveCard($player, "MYBANISH:type=AA;class=MECHANOLOGIST&MYBANISH:type=A;class=MECHANOLOGIST", "MYTOPDECK", true, true);
+      break;
+    case "MST229": case "MST629":
+      AddCurrentTurnEffect("MST229", $player);
+      break;
+    case "MST230": case "MST630":
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target to deal 1 damage");
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZDAMAGE", $player, "2,DAMAGE," . $toCardID, 1);
+      break;
+    case "MST231": case "MST631":
+      AddCurrentTurnEffect("MST231", $player);
+      break;      
     default: break;
   }
   switch($fromCardID)

@@ -116,6 +116,10 @@ function CardSubType($cardID, $uniqueID=-1)
       case "MST496": case "MST497": case "MST498": case "MST499":
       case "MST500": case "MST501": case "MST502":
         return "Chi";
+      case "MST628": return "Head";
+      case "MST629": return "Chest";
+      case "MST630": return "Arms";
+      case "MST631": return "Legs";
       default: return "";
   }
 }

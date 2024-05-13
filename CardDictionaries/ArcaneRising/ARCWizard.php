@@ -423,6 +423,10 @@
         case "DTD106": ++$barrierArray[1]; $total += 1; break;
         case "DTD136": ++$barrierArray[1]; $total += 1; break;
         case "DTD211": ++$barrierArray[2]; $total += 2; break;
+        case "MST228": ++$barrierArray[1]; $total += 1; break;
+        case "MST229": ++$barrierArray[1]; $total += 1; break;
+        case "MST230": ++$barrierArray[1]; $total += 1; break;
+        case "MST231": ++$barrierArray[1]; $total += 1; break;
         default: break;
       }
     }
