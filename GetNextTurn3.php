@@ -1305,7 +1305,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     array_push($playerInputButtons, CreateButtonAPI($playerID, "Ok", 99, "OK", "20px"));
   }
 
-  if ($turn[0] == "MULTISHOWCARDSTHEIRDECK") {
+  if ($turn[0] == "MULTISHOWCARDSTHEIRDECK" && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     $cardsToShow = array();
     $options = explode(",", $turn[2]);
