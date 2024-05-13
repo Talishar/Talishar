@@ -412,7 +412,9 @@ function BlockValue($cardID)
     case "MST496": case "MST497": case "MST498": case "MST499":
     case "MST500": case "MST501": case "MST502":
       return -1;
-    default: return 3;
+    case "MST628": case "MST629": case "MST630": case "MST631":
+      return 0; 
+        default: return 3;
   }
 }
 
