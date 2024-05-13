@@ -166,6 +166,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIZONEINDICES":
       $rv = SearchMultizone($player, $parameter);
       return ($rv == "" ? "PASS" : $rv);
+    case "BLOCKLESS0HAND":
+      $hand = &GetHand($player);
+      $countHand = count($hand);
+      $cardList = "";
+      for ($i=0; $i <$countHand; $i++) { 
+        if(BlockValue($hand[$i]) < 0) {
+          if($cardList != "") $cardList = $cardList . ",";
+          $cardList = $cardList . $i;
+        }
+      }
+      $searchResult = SearchMultiZoneFormat($cardList, "THEIRHAND");
+      $rv = CombineSearches($rv, $searchResult);
+      return ($rv == "" ? "PASS" : $rv);
     case "PUTPLAY":
       $subtype = CardSubType($lastResult);
       if($subtype == "Item") {

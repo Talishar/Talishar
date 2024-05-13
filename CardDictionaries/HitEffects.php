@@ -92,7 +92,7 @@ function MSTHitEffect($cardID, $from)
       break;
     case "MST192":
       LookAtHand($defPlayer);
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND:maxDef=-1");
+      AddDecisionQueue("BLOCKLESS0HAND", $defPlayer, "THEIRHAND:maxDef=-1");
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND," . $mainPlayer, 1);
