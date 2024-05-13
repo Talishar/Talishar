@@ -486,6 +486,15 @@ function OnAttackEffects($attack)
             AskWager(substr($currentTurnEffects[$i], 0, 6));
           }
           break;
+        case "MST052":
+          if(CardNameContains($attack, "Crouching Tiger", $mainPlayer)) {
+            AddDecisionQueue("INPUTCARDNAME", $mainPlayer, "-");
+            AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
+            AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "DYN065-");
+            AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-");
+            AddDecisionQueue("WRITELOG", $mainPlayer, "<b>{0}</b> was chosen");
+          }
+          break;
         case "MST092":
           if(PitchValue($attack) == 3) {
             Draw($mainPlayer);
@@ -1322,6 +1331,9 @@ function CurrentEffectNameModifier($effectID, $effectParameter, $player)
       $name = $effectParameter;
       break;
     case "OUT068": case "OUT069": case "OUT070":
+      $name = $effectParameter;
+      break;
+    case "DYN065":
       $name = $effectParameter;
       break;
     default: break;

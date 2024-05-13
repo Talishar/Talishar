@@ -445,7 +445,7 @@ function HasGoAgain($cardID)
   $set = CardSet($cardID);
 
   switch ($cardID) {// can be deleted after the database is updated
-    case "MST003": 
+    case "MST003": case "MST052":
     case "MST054": case "MST055": case "MST056":
     case "MST057": case "MST058": case "MST059":
     case "MST060": case "MST061": case "MST062":
@@ -1893,7 +1893,7 @@ function CardCaresAboutPitch($cardID)
     case "DYN176": case "DYN177": case "DYN178":
 		case "DYN182": case "DYN183": case "DYN184":
 		case "DYN185": case "DYN186": case "DYN187":
-    case "MST008": case "MST080":
+    case "MST008": case "MST052": case "MST080":
       return true;
     default: return false;
   }

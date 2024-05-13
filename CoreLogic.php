@@ -1933,7 +1933,10 @@ function GetCurrentAttackNames()
     $effectArr = explode("-", $currentTurnEffects[$i]);
     $name = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"), $mainPlayer);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with OUT052
-    if($name != "" && $currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) array_push($names, $name);
+    if($name != "" && $currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) {
+      array_push($names, $name);
+      if($effectArr[0] == "DYN065") RemoveCurrentTurnEffect($i);
+    }
   }
   return $names;
 }

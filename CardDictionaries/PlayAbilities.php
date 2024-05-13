@@ -195,6 +195,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST048": 
       PlayAura("CRU075", $currentPlayer); //Zen Token
       return "";
+    case "MST052":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") AddPlayerHand("DYN065", $currentPlayer, "NA", 2);
+      return "";
     case "MST053":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);
