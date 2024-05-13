@@ -120,7 +120,7 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
         && ($pitch == -1 || PitchValue($cardID) == $pitch)
         && ($maxAttack == -1 || ModifiedAttackValue($cardID, $player, $zone) <= $maxAttack)
         && ($minAttack == -1 || ModifiedAttackValue($cardID, $player, $zone) >= $minAttack)
-        && ($maxDef == -2 || BlockValue($cardID) <= $maxDef)
+        && ($maxDef == -1 || BlockValue($cardID) <= $maxDef)
       ) {
         if($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
         if($phantasmOnly && !HasPhantasm($cardID)) continue;
@@ -971,7 +971,7 @@ function SearchMultizone($player, $searches)
     $specOnly = false;
     $maxAttack = -1;
     $minAttack = -1;
-    $maxDef = -2;
+    $maxDef = -1;
     $frozenOnly = false;
     $hasNegCounters = false;
     $hasEnergyCounters = false;
