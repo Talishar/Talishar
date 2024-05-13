@@ -15,6 +15,7 @@ function MSTEffectAttackModifier($cardID) {
     case "MST014": return 3;
     case "MST015": return 2;
     case "MST016": return 1;
+    case "MST017-BUFF": case "MST018-BUFF": case "MST019-BUFF": return 1;
     case "MST020": return 3;
     case "MST021": return 2;
     case "MST022": return 1;
@@ -60,6 +61,7 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST011-2": case "MST012-2": case "MST013-2": 
       return true;
     case "MST014": case "MST015": case "MST016": return true;
+    case "MST017-BUFF": case "MST018-BUFF": case "MST019-BUFF": return true;
     case "MST020": case "MST021": case "MST022": return true;
     case "MST023": case "MST024": return true;
     case "MST054-1": case "MST055-1": case "MST056-1": 

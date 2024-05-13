@@ -128,6 +128,21 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if(SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("MST024", $currentPlayer, $cardID); //Slither
       return "";
+    case "MST017": case "MST018": case "MST019":
+      $amount = 4;
+      if($cardID == "MST018") $amount = 3;
+      elseif ($cardID == "MST019") $amount = 2;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the card that on top of your deck.", 1);
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "DECKTOPXINDICES," . $amount);
+      AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
+      AddDecisionQueue("LOOKTOPDECK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("CHOOSETHEIRDECK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "DECK", 1);
+      AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "3", 1);
+      AddDecisionQueue("PUTCOMBATCHAINDEFENSE0", $otherPlayer, "-", 1);
+      AddDecisionQueue("PUTINANYORDER", $currentPlayer, $amount-1, 1);
+      AddCurrentTurnEffect($cardID."-BUFF", $currentPlayer);
+      return "";
     case "MST020": case "MST021": case "MST022":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if(SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("MST023", $currentPlayer, $cardID); //Fang Strike
@@ -751,7 +766,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the card that on top of your deck.", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REELINLOOK", $currentPlayer, "-", 1);
+        AddDecisionQueue("LOOKTOPDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top cards of your deck are:", 1);
         AddDecisionQueue("MULTISHOWCARDSDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));

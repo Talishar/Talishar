@@ -18,7 +18,7 @@ function MSTHitEffect($cardID, $from)
       AddDecisionQueue("BONDSOFAGONY", $mainPlayer, "-", 1);
       AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES," . $count);
       AddDecisionQueue("DECKCARDS", $defPlayer, "<-", 1);
-      AddDecisionQueue("REELINLOOK", $defPlayer, "-", 1);
+      AddDecisionQueue("LOOKTOPDECK", $defPlayer, "-", 1);
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($cardID, $cardID) . " shows the your opponents deck are:", 1);
       AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $mainPlayer, "<-", 1);
       AddDecisionQueue("SHUFFLE", $defPlayer, "-", 1);

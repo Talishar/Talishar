@@ -61,7 +61,7 @@
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the top " . $count . " cards of your deck.", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REELINLOOK", $currentPlayer, "-", 1);
+        AddDecisionQueue("LOOKTOPDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top cards of your deck are:", 1);
         AddDecisionQueue("MULTISHOWCARDSDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count);

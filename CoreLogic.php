@@ -1579,6 +1579,7 @@ function CanPassPhase($phase)
     case "P": return 0;
     case "PDECK": return 0;
     case "CHOOSEDECK": return 0;
+    case "CHOOSETHEIRDECK": return 0;
     case "HANDTOPBOTTOM": return 0;
     case "CHOOSECOMBATCHAIN": return 0;
     case "CHOOSECHARACTER": return 0;

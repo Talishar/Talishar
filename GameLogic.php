@@ -222,6 +222,24 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "HALVEBASEDEFENSE":
       $combatChain[$lastResult+6] -= floor(BlockValue($combatChain[$lastResult])/2);
       return $lastResult;
+    case "PUTCOMBATCHAINDEFENSE0":
+      $index = GetCombatChainIndex($lastResult, $player);
+      $combatChain[$index+6] -= BlockValue($lastResult);
+      return $lastResult;
+    case "PUTINANYORDER":
+      $deck = new Deck($player == 1 ? 2 : 1);
+      $reorderCards = "";
+      for($i = 0; $i < $parameter; ++$i) {
+        if($deck->RemainingCards() > 0) {
+          if($reorderCards != "") $reorderCards .= ",";
+          $reorderCards .= $deck->Top(remove:true);
+        }
+      }
+      if($reorderCards != "") {
+        PrependDecisionQueue("CHOOSETOPOPPONENT", $player, $reorderCards);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put on top of their deck");
+      }
+      return "";
     case "COMBATCHAINCHARACTERDEFENSEMODIFIER":
       $character = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $combatChain[$parameter]);
@@ -528,6 +546,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = new Deck($player);
       $deck->AddTop($lastResult);
       return $lastResult;
+    case "REMOVEDECK":
+      $deck = new Deck($player);
+      $deck->Remove($lastResult);
+      return $deck->Remove($lastResult);
     case "MULTIADDDECK":
       $deck = new Deck($player);
       $cards = explode(",", $lastResult);
@@ -828,7 +850,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $numMatch = ($numAA > $numNAA ? $numNAA : $numAA);
       if($numMatch == 0) return "PASS";
       return $numMatch . "-" . $AAIndices . "-" . $numMatch;
-      case "REELINLOOK":
+      case "LOOKTOPDECK":
         $cards = explode(",", $lastResult);
         $cardsIndices = "";
         for($i = 0; $i < count($cards); ++$i) {

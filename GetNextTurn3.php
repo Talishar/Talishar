@@ -1185,6 +1185,11 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $playerInputPopup->popup = ChoosePopup($myDeck, $turn[2], 11, "Choose a card from your deck");
   }
 
+  if (($turn[0] == "MAYCHOOSETHEIRDECK" || $turn[0] == "CHOOSETHEIRDECK") && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($theirDeck, $turn[2], 11, "Choose a card from your opponent deck");
+  }
+
   if ($turn[0] == "CHOOSEBANISH" && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     $playerInputPopup->popup = ChoosePopup($myBanish, $turn[2], 16, "Choose a card from your banish", BanishPieces());

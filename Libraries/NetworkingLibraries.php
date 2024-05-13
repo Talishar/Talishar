@@ -119,8 +119,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       PlayCard($cardID, "PLAY", -1, $index, $items[$index + 4]);
       break;
     case 11: //CHOOSEDECK
-      if ($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK") {
-        $deck = new Deck($playerID);
+      if ($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSETHEIRDECK") {
+        if($turn[0] == "CHOOSETHEIRDECK") $player = $playerID == 1 ? 2 : 1;
+        else $player = $playerID;
+        $deck = new Deck($player);
         $index = $cardID;
         $cardID = $deck->Remove($index);
         ContinueDecisionQueue($cardID);
