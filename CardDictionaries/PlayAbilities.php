@@ -258,6 +258,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MODAL", $currentPlayer, "LEVELSOFENLIGHTNMENT", 1);
       }
       return "";
+    case "MST078":
+      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") Draw($currentPlayer); 
+      return "";
     case "MST080":
       Draw($currentPlayer);
       Draw($currentPlayer);
