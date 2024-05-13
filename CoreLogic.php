@@ -1249,7 +1249,7 @@ function RevealCards($cards, $player="")
     AddEvent("REVEAL", $cardArray[$i]);
   }
   $string .= (count($cardArray) == 1 ? " is" : " are");
-  $string .= " revealed.";
+  $string .= " revealed";
   WriteLog($string);
   if($player != "" && SearchLandmark("ELE000")) { KorshemRevealAbility($player); }
   return true;

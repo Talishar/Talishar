@@ -414,6 +414,26 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("EQUIPCARD", $currentPlayer, "<-");
       }
       return "";
+    case "MST227":
+
+      $cardList = SearchItemsByName($currentPlayer, "Hyper Driver");
+      $countHyperDriver = count(explode(",", $cardList));
+      for($i=0; $i < $countHyperDriver; $i++) { 
+        if($i==0){
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:sameName=ARC036");
+          AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        }
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . $countHyperDriver - $i . " Hyper Driver to get " . $resourcesPaid . " steam counter", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "{0}", 1);
+        AddDecisionQueue("SUPERCELL", $currentPlayer, $resourcesPaid, 1);  
+      }
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "EVO234", 1);
+      AddDecisionQueue("PUTPLAY", $currentPlayer, $resourcesPaid, 1);
+      if($resourcesPaid >= 3 && SearchBanishForCardName($currentPlayer, "DYN092") != -1){
+        MZMoveCard($currentPlayer, "MYBANISH:isSameName=DYN092", "MYTOPDECK", true, true, DQContext:"Choose a card to shuffle in your deck, or pass");
+        AddDecisionQueue("SHUFFLE", $currentPlayer, "-", 1);
+      }
+      return "";
     case "MST232":
       AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       return "";
