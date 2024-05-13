@@ -390,6 +390,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST185": case "MST186": case "MST187":
       AddCurrentTurnEffect($cardID, $mainPlayer);
       break;
+    case "MST197":
+      if($additionalCosts != "-") Draw($currentPlayer);
+      break;
     case "MST199":
       if($additionalCosts != "-") AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
