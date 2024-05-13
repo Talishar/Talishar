@@ -165,6 +165,19 @@ function SearchHandForCard($player, $card)
   return $indices;
 }
 
+function SearchHandForCardName($player, $name)
+{
+  $hand = &GetHand($player);
+  $indices = "";
+  for($i = 0; $i < count($hand); $i += HandPieces()) {
+    if(CardNameContains($hand[$i], $name, $player)) {
+      if($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
+}
+
 function SearchArsenalForCard($player, $card)
 {
   $arsenal = &GetArsenal($player);

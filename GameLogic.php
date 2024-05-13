@@ -91,6 +91,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $search = SearchHand($player, "AA");
           $rv = SearchCount($search) . "-" . $search;
           break;
+        case "CROUCHINGTIGERHAND":
+          $search = SearchHandForCardName($player, "Crouching Tiger");
+          $rv = SearchCount($search) . "-" . $search;
+          break;
         case "ARSENAL":
           $arsenal = &GetArsenal($player);
           $rv = GetIndices(count($arsenal), 0, ArsenalPieces());
@@ -1126,6 +1130,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddCurrentTurnEffect("MON247", $player);
         WriteLog(CardLink("MON247", "MON247") . " got +7 and go again");
       }
+      return $lastResult;
+    case "TOOTHANDCLAW":
+      $cards = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
+      $totalReveal = 0;
+      for($i = 0; $i < count($cards); ++$i) {
+        if(CardNameContains($cards[$i], "Crouching Tiger", $player)) ++$totalReveal;
+      }
+      if($totalReveal > 0) GiveAttackGoAgain();
+      if($totalReveal > 1) AddCurrentTurnEffect("MST051-BUFF", $player);
+      if($totalReveal > 2) Draw($player);
       return $lastResult;
     case "GIVEACTIONGOAGAIN":
       if($parameter == "A") SetClassState($player, $CS_NextNAACardGoAgain, 1);

@@ -20,6 +20,7 @@ function MSTEffectAttackModifier($cardID) {
     case "MST021": return 2;
     case "MST022": return 1;
     case "MST023": return 1;
+    case "MST051-BUFF": return 1;
     case "MST053": return 1;
     case "MST054-1": return 3;
     case "MST055-1": return 2;
@@ -64,10 +65,11 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST017-BUFF": case "MST018-BUFF": case "MST019-BUFF": return true;
     case "MST020": case "MST021": case "MST022": return true;
     case "MST023": case "MST024": return true;
+    case "MST051-BUFF": return true;
     case "MST054-1": case "MST055-1": case "MST056-1": 
     case "MST054-2": case "MST055-2": case "MST056-2":
-    case "MST063": case "MST064": case "MST065":
     case "MST053": 
+    case "MST063": case "MST064": case "MST065":
       return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
     case "MST069": return true;
     case "MST075": return true;
