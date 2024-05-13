@@ -94,12 +94,15 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   if($banishedBy == "MST109" || $banishedBy == "MST110" || $banishedBy == "MST111" && count($banish)/BanishPieces() >= 2) {
     $indexArray = array_keys($banish, "Source-" . $banishedBy);
     foreach ($indexArray as $key => $index) {
-      $currentCardPitch = PitchValue($banish[$index-1]);
+      $currentCardPitch = PitchValue($cardID);
       $comparedIndexes = []; // Keep track of the indexes that have already been compared
       for ($i = $key + 1; $i < count($indexArray); $i++) {
           $otherIndex = $indexArray[$i];
-          if (!in_array($otherIndex, $comparedIndexes) && PitchValue($banish[$otherIndex-1]) == $currentCardPitch) {
-              GainHealth(1, $otherPlayer);
+          if (!in_array($otherIndex, $comparedIndexes) && PitchValue($cardID) == $currentCardPitch) {
+              if(count($comparedIndexes) > 0) {
+                GainHealth(1, $otherPlayer);
+                return $rv;
+              }
               $comparedIndexes[] = $otherIndex; // Add the compared index to the list
           }
       }
@@ -108,13 +111,16 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   if(($banishedBy == "MST115" || $banishedBy == "MST116" || $banishedBy == "MST117") && count($banish)/BanishPieces() >= 2) {
     $indexArray = array_keys($banish, "Source-" . $banishedBy);
     foreach ($indexArray as $key => $index) {
-      $currentCardName = CardName($banish[$index-1]);
+      $currentCardName = CardName($cardID);
       $comparedIndexes = []; // Keep track of the indexes that have already been compared
       for ($i = $key + 1; $i < count($indexArray); $i++) {
           $otherIndex = $indexArray[$i];
-          if (!in_array($otherIndex, $comparedIndexes) && CardNameContains($banish[$otherIndex-1], $currentCardName, $player)) {
-            GainHealth(1, $otherPlayer);
-            $comparedIndexes[] = $otherIndex; // Add the compared index to the list
+          if (!in_array($otherIndex, $comparedIndexes) && CardNameContains($cardID, $currentCardName, $player)) {
+              if(count($comparedIndexes) > 0) {
+                GainHealth(1, $otherPlayer);
+                return $rv;
+              }
+              $comparedIndexes[] = $otherIndex; // Add the compared index to the list
           }
       }
     }
