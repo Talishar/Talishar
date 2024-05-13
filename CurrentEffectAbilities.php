@@ -315,7 +315,7 @@ function EffectHitEffect($cardID, $from)
       if(IsHeroAttackTarget())
       {
         $deck = new Deck($defPlayer);
-        $deck->BanishTop("Source-".$attackID, banishedBy:$cardID);
+        $deck->BanishTop("Source-".$attackID, banishedBy:$attackID);
       }
       break;
     case "MST162-HIT":
