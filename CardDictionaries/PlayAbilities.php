@@ -82,6 +82,20 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           }
       }
       return "";
+    case "MST009":
+      $deck = new Deck($defPlayer);
+      if(IsHeroAttackTarget())
+      {
+        LookAtHand($defPlayer);
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "HANDPITCH,3");
+        AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to add to the chain link", 1);
+        AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+        AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "HAND", 1);
+        AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+      }
+      return "";
     case "MST010":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);
@@ -225,6 +239,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "MST093":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "MST094":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "MST095":
