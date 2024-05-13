@@ -1794,6 +1794,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "MST160":
       MZMoveCard($player, "MYDISCARD:comboOnly=true", "MYBOTDECK");
       break;  
+    case "MST190":
+      if(HasIncreasedAttack()) {
+        AddCurrentTurnEffect($parameter, $otherPlayer);
+      }
+      break;
     case "ASB003":
       Charge();
       AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);

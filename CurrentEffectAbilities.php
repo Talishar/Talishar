@@ -418,8 +418,9 @@ function RemoveEffectsOnChainClose()
       case "DTD052"://Spirit of War
       case "TCC086": case "TCC094"://Growl
       case "HVY256"://Coercive Tendency
-      case "MST185": case "MST186": case "MST187": //Untamed 
       case "MST161"://Chase the Tail
+      case "MST185": case "MST186": case "MST187": //Untamed 
+      case "MST190": //Stonewall Gauntlet
         $remove = 1;
         break;
       default:
@@ -1253,8 +1254,7 @@ function IsCombatEffectPersistent($cardID)
     case "HVY246": return true;
     case "HVY247": return true;
     case "MST053": return true;
-
-
+    case "MST190": return true;
     //Roguelike
     case "ROGUE018": case "ROGUE601": case "ROGUE702": case "ROGUE704": case "ROGUE707": return true;
     case "ROGUE603": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
