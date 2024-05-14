@@ -436,7 +436,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $countHyperDriver = count(explode(",", $cardList));
       for($i=0; $i < $countHyperDriver; $i++) { 
         if($i==0){
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:sameName=ARC036");
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=ARC036");
           AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         }
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . $countHyperDriver - $i . " Hyper Driver to get " . $resourcesPaid . " steam counter", 1);
@@ -1170,7 +1170,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         return "";
       case "EVO222": case "EVO223": case "EVO224":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        MZMoveCard($currentPlayer, "MYBANISH:sameName=ARC036", "", may:true);
+        MZMoveCard($currentPlayer, "MYBANISH:isSameName=ARC036", "", may:true);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "0", 1);
         return "";
       case "EVO225": case "EVO226": case "EVO227":
@@ -1179,7 +1179,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       case "EVO228": case "EVO229": case "EVO230":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Hyper Driver to get a steam counter", 1);
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:sameName=ARC036");
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=ARC036");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZADDCOUNTER", $currentPlayer, "-", 1);
         return "";

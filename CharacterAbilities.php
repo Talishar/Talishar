@@ -278,7 +278,7 @@ function CharacterStartTurnAbility($index)
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $index, 1);
         AddDecisionQueue("TURNCHARACTERFACEUP", $mainPlayer, "-", 1);
         AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
-        MZMoveCard($mainPlayer, "MYDECK:sameName=MST499", "MYHAND", may:true, isReveal:true, isSubsequent:true);
+        MZMoveCard($mainPlayer, "MYDECK:isSameName=MST499", "MYHAND", may:true, isReveal:true, isSubsequent:true);
         AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
       }
       break;

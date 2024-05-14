@@ -218,7 +218,7 @@ function OnBoostedEffects($player, $boosted)
   {
     case "EVO177": case "EVO178": case "EVO179":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to get a steam counter", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:sameName=ARC036");
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=ARC036");
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
       break;

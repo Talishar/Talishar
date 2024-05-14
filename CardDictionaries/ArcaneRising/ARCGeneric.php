@@ -118,7 +118,7 @@ function ARCGenericHitEffect($cardID)
       PlayerOpt($mainPlayer, 2);
       break;
     case "ARC185": case "ARC186": case "ARC187":
-      MZMoveCard($mainPlayer, "MYDECK:sameName=ARC212", "MYHAND", may:true, isReveal:true);
+      MZMoveCard($mainPlayer, "MYDECK:isSameName=ARC212", "MYHAND", may:true, isReveal:true);
       AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
       break;
     case "ARC194": case "ARC195": case "ARC196":

@@ -1297,11 +1297,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $parameter . ",HIT", 1);
       break;
     case "UPR095":
-      if(GetClassState($player, $CS_DamageTaken) > 0) MZMoveCard($player, "MYDISCARD:sameName=UPR101", "MYHAND", may:true);
+      if(GetClassState($player, $CS_DamageTaken) > 0) MZMoveCard($player, "MYDISCARD:isSameName=UPR101", "MYHAND", may:true);
       break;
     case "UPR096":
       if(GetClassState($player, $CS_NumRedPlayed) > 1 && CanRevealCards($player)) {
-        MZMoveCard($player, "MYDECK:sameName=UPR101", "MYHAND", may:true);
+        MZMoveCard($player, "MYDECK:isSameName=UPR101", "MYHAND", may:true);
         AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
       }
       return "";
@@ -1431,7 +1431,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("SPECIFICCARD", $player, "PLASMAMAINLINE", 1);
       break;
 		case "DYN101": case "DYN102": case "DYN103":
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:sameName=ARC036");
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=ARC036");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to get a steam counter", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);

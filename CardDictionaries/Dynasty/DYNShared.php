@@ -291,7 +291,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         }
       }
 
-      $hyperDrivers = SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036");
+      $hyperDrivers = SearchMultizone($currentPlayer, "MYITEMS:isSameName=ARC036");
       $hyperDrivers = str_replace("MYITEMS-", "", $hyperDrivers); // MULTICHOOSEITEMS expects indexes only but SearchItems does not have a sameName parameter
       AddDecisionQueue("MULTICHOOSEITEMS", $currentPlayer, "3-" . $hyperDrivers. "-3");
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CONSTRUCTNITROMECHANOID," . $mechanoidIndex, 1);

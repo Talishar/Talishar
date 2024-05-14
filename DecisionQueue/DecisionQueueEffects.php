@@ -644,7 +644,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       PrependDecisionQueue("MZREMOVE", $player, "-", 1);
       PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to transform (or pass)", 1);
-      PrependDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:sameName=ARC036", 1);
+      PrependDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=ARC036", 1);
       return $lastResult;
     case "HYPERSCRAPPER":
       global $CombatChain;

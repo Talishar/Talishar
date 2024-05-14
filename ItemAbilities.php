@@ -133,7 +133,7 @@ function ItemPlayAbilities($cardID, $from)
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD");
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
-          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "THEIRDISCARD:sameName=", 1);
+          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "THEIRDISCARD:isSameName=", 1);
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);

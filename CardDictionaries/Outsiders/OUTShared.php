@@ -222,7 +222,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
         return "";
       case "OUT055":
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:sameName=WTR107");
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:isSameName=WTR107");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Surging Strike from your graveyard");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
@@ -243,7 +243,7 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MYDECK:sameName=", 1);
+          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MYDECK:isSameName=", 1);
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "<-", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZBANISH", $currentPlayer, "DECK,TCC," . $currentPlayer, 1);
@@ -321,7 +321,7 @@ function OUTAbilityCost($cardID)
           $deck = new Deck($mainPlayer);
           $topDeck = $deck->Top(remove:true);
           AddGraveyard($topDeck, $mainPlayer, "DECK");
-          $numName = SearchCount(SearchMultizone($mainPlayer, "MYDISCARD:sameName=" . $topDeck));
+          $numName = SearchCount(SearchMultizone($mainPlayer, "MYDISCARD:isSameName=" . $topDeck));
           LoseHealth($numName, $mainPlayer);
           $rv = Cardlink($topDeck, $topDeck) . " put into discard. Player $mainPlayer lost $numName life";
           TrapTriggered($cardID);

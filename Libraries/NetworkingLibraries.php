@@ -2186,7 +2186,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       break;
     case "UPR094":
-      MZMoveCard($currentPlayer, "MYDISCARD:sameName=UPR101", "MYBANISH,GY,-", may: true);
+      MZMoveCard($currentPlayer, "MYDISCARD:isSameName=UPR101", "MYBANISH,GY,-", may: true);
       AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-PHOENIXBANISH", 1);
       break;
     case "OUT001": case "OUT002":
@@ -2248,12 +2248,12 @@ function PayAdditionalCosts($cardID, $from)
     case "EVO140":
       global $CS_DynCostResolved;
       $xVal = GetClassState($currentPlayer, $CS_DynCostResolved)/2;
-      if(SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) < $xVal) {
+      if(SearchCount(SearchMultizone($currentPlayer, "MYITEMS:isSameName=ARC036")) < $xVal) {
         WriteLog("You do not have enough Hyper Drivers. Reverting gamestate.", highlight:true);
         RevertGamestate();
         return;
       }
-      for($i=0; $i < $xVal; ++$i) MZChooseAndDestroy($currentPlayer, "MYITEMS:sameName=ARC036");
+      for($i=0; $i < $xVal; ++$i) MZChooseAndDestroy($currentPlayer, "MYITEMS:isSameName=ARC036");
       break;
     case "EVO142":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many times you want to activate boost on " . CardLink($cardID, $cardID));
@@ -2286,7 +2286,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_the_additional_cost_of_1_" . CardLink("DYN243", "DYN243"), 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         if(SearchCharacterAlive($currentPlayer, "HVY051")) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:sameName=DYN243&MYCHAR:cardID=HVY051", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=DYN243&MYCHAR:cardID=HVY051", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243-1", 1);

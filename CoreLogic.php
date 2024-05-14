@@ -1833,7 +1833,7 @@ function SelfCostModifier($cardID, $from)
     case "MON084": case "MON085": case "MON086":
       return TalentContains($combatChain[$layers[3]], "SHADOW") ? -1 : 0;
     case "DYN104": case "DYN105": case "DYN106":
-      return SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036") != "" ? -1 : 0;
+      return SearchMultizone($currentPlayer, "MYITEMS:isSameName=ARC036") != "" ? -1 : 0;
     case "OUT056": case "OUT057": case "OUT058":
       return (ComboActive($cardID) ? -2 : 0);
     case "OUT074": case "OUT075": case "OUT076":
@@ -1852,8 +1852,8 @@ function SelfCostModifier($cardID, $from)
     case "EVO064": case "EVO065": case "EVO066":
     case "TCC012": case "TCC023": return EvoUpgradeAmount($currentPlayer) * -1;
     case "EVO054": case "EVO055": case "EVO056": return EvoUpgradeAmount($currentPlayer) >= 2? -3 : 0;
-    case "EVO183": case "EVO184": case "EVO185": return SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036") != "" ? -1 : 0;
-    case "EVO225": case "EVO226": case "EVO227": return SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) * -1;
+    case "EVO183": case "EVO184": case "EVO185": return SearchMultizone($currentPlayer, "MYITEMS:isSameName=ARC036") != "" ? -1 : 0;
+    case "EVO225": case "EVO226": case "EVO227": return SearchCount(SearchMultizone($currentPlayer, "MYITEMS:isSameName=ARC036")) * -1;
     case "HVY058":
       if(GetClassState($currentPlayer, $CS_NumVigorDestroyed) > 0 || CountAura("HVY242", $currentPlayer) > 0) return -1;
       else return 0;
@@ -2488,7 +2488,7 @@ function CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer) {
         }
       }
       if(!$hasHead || !$hasChest || !$hasArms || !$hasLegs || !$hasWeapon) return "You do not meet the equipment requirement";
-      if(SearchCount(SearchMultizone($currentPlayer, "MYITEMS:sameName=ARC036")) < 3) return "You do not meet the Hyper Driver requirement";
+      if(SearchCount(SearchMultizone($currentPlayer, "MYITEMS:isSameName=ARC036")) < 3) return "You do not meet the Hyper Driver requirement";
       return "";
 }
 

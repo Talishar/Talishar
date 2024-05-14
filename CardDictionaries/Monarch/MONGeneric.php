@@ -24,7 +24,7 @@
         return $rv;
       case "MON266": case "MON267": case "MON268":
         if(DelimStringContains($additionalCosts, "BELITTLE") && CanRevealCards($currentPlayer)) {
-          MZMoveCard($currentPlayer, "MYDECK:sameName=MON296", "MYHAND", may:true, isReveal:true);
+          MZMoveCard($currentPlayer, "MYDECK:isSameName=MON296", "MYHAND", may:true, isReveal:true);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         }
         return "";
