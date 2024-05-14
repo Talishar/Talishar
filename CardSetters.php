@@ -75,21 +75,26 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   if($banishedBy != "" && $player != $mainPlayer) CheckContracts($mainPlayer, $cardID);
   if($banishedBy == "DTD193" && TalentContains($cardID, "LIGHT", $player)) {
     GainHealth(1, $otherPlayer);
+    return $rv;
   }
   if($banishedBy == "MST104" && (CardType($cardID) == "A" || CardType($cardID) == "AA")) {
     GainHealth(1, $otherPlayer);
+    return $rv;
   }
   if($banishedBy == "MST106" && PitchValue($cardID) == 1) {
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
+    return $rv;
   }
   if($banishedBy == "MST107" && PitchValue($cardID) == 2) {
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
+    return $rv;
   }
   if($banishedBy == "MST108" && PitchValue($cardID) == 3) {
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
+    return $rv;
   }
   if($banishedBy == "MST109" || $banishedBy == "MST110" || $banishedBy == "MST111" && count($banish)/BanishPieces() >= 2) {    $indexArray = array_keys($banish, "Source-" . $banishedBy);
     $count = count($indexArray);
@@ -114,12 +119,15 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   }
   if(($banishedBy == "MST118" || $banishedBy == "MST119" || $banishedBy == "MST120") && TypeContains($cardID, "AA", $player)) {
     GainHealth(1, $otherPlayer);
+    return $rv;
   }
   if(($banishedBy == "MST121" || $banishedBy == "MST122" || $banishedBy == "MST123") && (TypeContains($cardID, "AR", $player) || TypeContains($cardID, "DR", $player) || TypeContains($cardID, "I", $player))) {
     GainHealth(1, $otherPlayer);
+    return $rv;
   }
   if(($banishedBy == "MST124" || $banishedBy == "MST125" || $banishedBy == "MST126") && TypeContains($cardID, "A", $player)) {
     GainHealth(1, $otherPlayer);
+    return $rv;
   }
   return $rv;
 }
