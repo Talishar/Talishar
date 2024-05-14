@@ -421,6 +421,11 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST185": case "MST186": case "MST187":
       AddCurrentTurnEffect($cardID, $mainPlayer);
       break;
+    case "MST193":
+      AddCurrentTurnEffect($cardID."-RED", $mainPlayer);
+      AddCurrentTurnEffect($cardID."-YELLOW", $mainPlayer);
+      AddCurrentTurnEffect($cardID."-BLUE", $mainPlayer);
+      break;
     case "MST197":
       if($additionalCosts != "-") Draw($currentPlayer);
       break;
