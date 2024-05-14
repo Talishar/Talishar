@@ -139,7 +139,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
             PrependDecisionQueue("DRAW", $player, "-", 1);
             PrependDecisionQueue("DRAW", $player, "-", 1);
             PrependDecisionQueue("MZREMOVE", $player, "-", 1);
-            PrependDecisionQueue("MZADDZONE", $player, "MYBANISH,HAND,-", 1);
+            PrependDecisionQueue("MZADDZONE", $player, "MYBANISH,HAND", 1);
             PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
             PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to banish", 1);
             PrependDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:type=AA");
