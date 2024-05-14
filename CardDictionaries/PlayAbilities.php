@@ -295,7 +295,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST496,".$from);
       return "";    
     case "MST097":
-      MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH");
+      MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH,GY,-,".$cardID);
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST497,".$from);
       return "";
     case "MST098":
