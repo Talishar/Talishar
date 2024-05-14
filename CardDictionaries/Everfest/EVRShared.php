@@ -817,15 +817,11 @@
     return CombineSearches($rv, $itemIndices);
   }
 
-  function IsAmuletOfEchoesRestricted($from)
+  function IsAmuletOfEchoesRestricted($from, $player)
   {
     global $CS_NamesOfCardsPlayed;
     if($from == "PLAY") {
-      $names = explode(",", GetClassState(1, $CS_NamesOfCardsPlayed));
-      foreach(array_count_values($names) as $name => $count) {
-        if($count > 1) return false;
-      }
-      $names = explode(",", GetClassState(2, $CS_NamesOfCardsPlayed));
+      $names = explode(",", GetClassState($player, $CS_NamesOfCardsPlayed));
       foreach(array_count_values($names) as $name => $count) {
         if($count > 1) return false;
       }
