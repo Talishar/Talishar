@@ -697,13 +697,13 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "MURKYWATER":
       $discard = GetDiscard($player);
       $cardList = [];
-      for ($i=2; $i>=0; --$i) { 
-        $index = $lastResult[$i];
-        $cardID = $discard[$index];
-        array_push($cardList, $cardID);
-        RemoveDiscard($player, $index);
-        WriteLog(CardLink($cardID, $cardID) . " was banished");
-        BanishCardForPlayer($cardID, $player, "GY", "FACEDOWN", "MST233");
+      for ($i=0; $i<3; ++$i) { 
+        WriteLog(CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]) . " was banished");
+        array_push($cardList, $discard[$lastResult[$i]]);
+        BanishCardForPlayer($discard[$lastResult[$i]], $player, "GY", "FACEDOWN");
+      }
+      for ($i=0; $i<3; ++$i) { 
+        RemoveGraveyard($player, $lastResult[$i]);
       }
       if(!ArsenalFull($player)) {
         $rand = GetRandom(0, count($cardList));
