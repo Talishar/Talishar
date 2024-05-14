@@ -1915,8 +1915,9 @@ function IsIyslander($character)
 
 function WardAmount($cardID, $player, $index=-1)
 {
-  global $mainPlayer;
+  global $mainPlayer, $CS_PlayIndex;
   $auras = &GetAuras($player);
+  if($index == -1) $index = GetClassState($mainPlayer, $CS_PlayIndex);
   switch($cardID)
   {
     case "ARC167": return 4;
@@ -1954,6 +1955,7 @@ function WardAmount($cardID, $player, $index=-1)
     case "MST043": return 3;
     case "MST044": return 2;
     case "MST045": return 1;
+    case "MST131": return 10;
     case "MST132": return $player == $mainPlayer ? 6 : 1;
     case "MST133": return 2;
     case "MST137": case "MST138": case "MST139": return 2;
@@ -1996,7 +1998,7 @@ function HasWard($cardID, $player)
     case "MST040": case "MST041": case "MST042":
     case "MST043": case "MST044": case "MST045":
       return true;
-    case "MST132": case "MST133": return true;
+    case "MST131": case "MST132": case "MST133": return true;
     case "MST137": case "MST138": case "MST139": return true;
     case "MST146": case "MST147": case "MST148": 
     case "MST149": case "MST150": case "MST151": 

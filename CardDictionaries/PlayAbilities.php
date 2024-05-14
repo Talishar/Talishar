@@ -23,7 +23,7 @@ function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 } 
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer, $CS_DamagePrevention, $CS_PlayIndex;
+  global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer, $CS_DamagePrevention;
   global $combatChain, $defPlayer, $CombatChain, $chainLinks, $combatChainState, $CCS_LinkBaseAttack;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $hand = &GetHand($currentPlayer);
