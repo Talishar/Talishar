@@ -1944,7 +1944,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $graveyard = &GetDiscard($defPlayer);
         $cardName = CardName($cardID);
         $banishedCount = 0;
-        for($i = 0; $i < count($hand); ++$i){
+        $countHand = count($hand);
+        for($i = 0; $i < $countHand; ++$i){
           if(CardNameContains($hand[$i], $cardName, $defPlayer) && $banishedCount < 3)
           {
             BanishCardForPlayer($hand[$i], $defPlayer, "MST103", "-", $mainPlayer);
@@ -1952,7 +1953,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             ++$banishedCount;
           }
         }
-        for($i = 0; $i < count($deck); ++$i){
+        $countDeck = count($deck);
+        for($i = 0; $i < $countDeck; ++$i){
           if(CardNameContains($deck[$i], $cardName, $defPlayer) && $banishedCount < 3)
           {
             BanishCardForPlayer($deck[$i], $defPlayer, "MST103", "-", $mainPlayer);
@@ -1960,7 +1962,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             ++$banishedCount;
           }
         }
-        for($i = 0; $i < count($deck); ++$i){
+        $countGraveyard = count($graveyard);
+        for($i = 0; $i < $countGraveyard; ++$i){
           if(CardNameContains($graveyard[$i], $cardName, $defPlayer) && $banishedCount < 3)
           {
             BanishCardForPlayer($graveyard[$i], $defPlayer, "MST103", "-", $mainPlayer);
