@@ -2069,6 +2069,14 @@ function HasEnergyCounters($array, $index)
   }
 }
 
+function HasAttackCounters($zone, $array, $index)
+{
+  switch($zone) {
+    case "AURAS": return $array[$index+3] > 0;
+    default: return false;
+  }
+}
+
 function IsEnergyCounters($cardID){
   switch($cardID) {
     case "WTR150": case "UPR166": return true;

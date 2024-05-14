@@ -478,6 +478,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           else $character[$mzArr[1]+10] = $paramArr[1];
           ++$character[$mzArr[1]+2]; // Update the counter
           break;
+        case "REMOVEATKCOUNTER":
+          $auras = &GetAuras($player);
+          $mzArr = explode("-", $lastResult);
+          switch ($mzArr[0]) {
+            case "MYAURAS": 
+              --$auras[$mzArr[1]+3];
+              break;
+            default: break;
+          }
+          break;
         default: break;
       }
       return $lastResult;

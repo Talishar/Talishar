@@ -1872,7 +1872,7 @@ function IsAlternativeCostPaid($cardID, $from)
     $remove = false;
     if($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch($currentTurnEffects[$i]) {
-        case "ARC185": case "CRU188": case "MON199": case "MON257": case "EVR161": case "HVY176-PAID":
+        case "ARC185": case "CRU188": case "MON199": case "MON257": case "EVR161": case "HVY176-PAID": case "MST131":
           $isAlternativeCostPaid = true;
           $remove = true;
           break;

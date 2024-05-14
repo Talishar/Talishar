@@ -1698,7 +1698,7 @@ function GetLayerTarget($cardID)
 
 function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
 {
-  global $currentPlayer, $CS_NumActionsPlayed;
+  global $currentPlayer, $CS_NumActionsPlayed, $CS_PlayIndex;
   if (IsStaticType(CardType($cardID), $from, $cardID)) {
     $names = GetAbilityNames($cardID, $index);
     if($names != "") {
@@ -1803,6 +1803,22 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243-1", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "HVY176-PAID", 1);
       break;
+    case "MST131": 
+      $count = CountAuraAtkCounters($currentPlayer);
+      if($from == "HAND" && $count >= 3) {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasAttackCounters=true");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 attack counter or pass");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-");
+        AddDecisionQueue("MZOP", $currentPlayer, "REMOVEATKCOUNTER", 1);
+        for ($i=0; $i < 2; $i++) { 
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasAttackCounters=true", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 attack counter", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZOP", $currentPlayer, "REMOVEATKCOUNTER", 1);
+        }
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      }
+      return "";
     default:
       break;
   }
