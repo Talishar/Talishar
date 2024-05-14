@@ -248,6 +248,11 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "MST076":
+      $chiArray = explode(",", SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi"));
+      $amountChiPitch = count($chiArray);
+      AddCurrentTurnEffect($cardID."-" . $amountChiPitch, $currentPlayer);
+      return "";
     case "MST077":
       $numChoices = SearchPitchForColor($currentPlayer, 3);
       $modalities = "Draw_a_card,Buff_Power,Go_again";
