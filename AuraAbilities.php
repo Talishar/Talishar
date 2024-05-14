@@ -1,6 +1,6 @@
 <?php
 
-function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numAttackCounters = 0, $from="-")
+function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numAttackCounters = 0, $from="-", $additionalCosts = "-")
 {
   global $CS_NumAuras, $EffectContext;
   $otherPlayer = ($player == 1 ? 2 : 1);
@@ -18,6 +18,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     $index = SearchArsenalReadyCard($player, "MON404");
     if($index > -1) TheLibrarianEffect($player, $index);
   }
+  if($cardID == "MST031") SearchCardList($additionalCosts, $player, subtype:"Chi") != "" ? $numAttackCounters += 4 : $numAttackCounters += 2;
   if($cardID == "MST043" || $cardID == "MST044" || $cardID == "MST045") $numAttackCounters += SearchPitchForColor($player, 3) > 0 ? 1 : 0;
   if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST155", $player) && CardCost($cardID) <= 2 && CardCost($cardID) > -1) {
     ++$numAttackCounters;
@@ -545,7 +546,7 @@ function AuraEndTurnCleanup()
 function AuraDamagePreventionAmount($player, $index, $damage=0, $active=false, &$cancelRemove=false)
 {
   $auras = &GetAuras($player);
-  if(HasWard($auras[$index], $player)) return WardAmount($auras[$index], $player);
+  if(HasWard($auras[$index], $player)) return WardAmount($auras[$index], $player, $index);
   switch($auras[$index])
   {
     case "DTD081":

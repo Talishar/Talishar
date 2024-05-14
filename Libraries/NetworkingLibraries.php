@@ -2522,7 +2522,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
   } else if($from != "PLAY" && $from != "EQUIP") {
     $cardSubtype = CardSubType($cardID);
-    if(DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer, from:$from);
+    if(DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer, from:$from, additionalCosts:$additionalCosts);
     else if(DelimStringContains($cardSubtype, "Item")) PutItemIntoPlayForPlayer($cardID, $currentPlayer, from:$from);
     else if($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer, $from);
     else if(DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID, from:$from);

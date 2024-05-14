@@ -1898,8 +1898,8 @@ function CardCaresAboutPitch($cardID)
     case "DYN176": case "DYN177": case "DYN178":
 		case "DYN182": case "DYN183": case "DYN184":
 		case "DYN185": case "DYN186": case "DYN187":
-    case "MST008": case "MST052": 
-    case "MST078":case "MST080":
+    case "MST008": case "MST031":case "MST052": 
+    case "MST078": case "MST080":
       return true;
     default: return false;
   }
@@ -1913,9 +1913,10 @@ function IsIyslander($character)
   }
 }
 
-function WardAmount($cardID, $player)
+function WardAmount($cardID, $player, $index=-1)
 {
   global $mainPlayer;
+  $auras = &GetAuras($player);
   switch($cardID)
   {
     case "ARC167": return 4;
@@ -1936,6 +1937,7 @@ function WardAmount($cardID, $player)
     case "EVO244": return 1;
     case "MST028": return 4;
     case "MST029": case "MST030": return 1;
+    case "MST031": return $auras[$index+3];
     case "MST037": 
       if(SearchPitchForColor($player, 3) > 0) return 4;
       else return 1;
@@ -1988,6 +1990,7 @@ function HasWard($cardID, $player)
       $char = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $cardID);
       return $char[$index+12] == "UP";
+    case "MST031": return true;
     case "MST037": case "MST038": case "MST039":
     case "MST040": case "MST041": case "MST042":
     case "MST043": case "MST044": case "MST045":
