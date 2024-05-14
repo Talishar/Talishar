@@ -334,9 +334,12 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "MST132": 
-      $illusionistAuras = SearchAura($currentPlayer, class:"ILLUSIONIST");
-      $arrayAuras = explode(",", $illusionistAuras);
-      if(count($arrayAuras) <= 1) GainActionPoints(1, $currentPlayer);
+      if($from == "HAND")
+      {
+        $illusionistAuras = SearchAura($currentPlayer, class:"ILLUSIONIST");
+        $arrayAuras = explode(",", $illusionistAuras);
+        if(count($arrayAuras) <= 1) GainActionPoints(1, $currentPlayer);
+      }
       return "";
     case "MST133":
       if($from == "HAND"){
