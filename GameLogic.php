@@ -549,8 +549,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddGraveyard($lastResult, $player, $params[0], $params[1]);
       return $lastResult;
     case "BANISHCARD":
-      $params = explode("-", $parameter);
-      BanishCardForPlayer($lastResult, $player, $params[0]);
+      $params = explode(",", $parameter);
+      BanishCardForPlayer($lastResult, $player, $params[0], count($params) > 1 ? $params[1] : "", count($params) > 2 ? $params[2] : "");
       return $lastResult;
     case "ADDDISCARD":
       AddGraveyard($lastResult, $player, $parameter);
