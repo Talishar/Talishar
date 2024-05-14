@@ -560,8 +560,8 @@ function IsBanned($cardID, $format)
   $set = substr($cardID, 0, 3);
   if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R")) return true;
   //Ban spoilers in formats besides Open Format
-  if(($format != "openformatcc" && $format != "openformatblitz") && ($set == "MST")) return true; // Launch 31st May
-  if(($format != "openformatcc" && $format != "openformatblitz") && ($set == "ASB")) return true; // Launch 12th July
+  if(($format != "openformatcc" && $format != "openformatblitz") && $set == "MST" && $cardID != "MST205") return true; // Launch 31st May
+  if(($format != "openformatcc" && $format != "openformatblitz") && $set == "ASB") return true; // Launch 12th July
   switch ($format) {
     case "blitz":
     case "compblitz":
