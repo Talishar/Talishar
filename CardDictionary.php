@@ -1974,6 +1974,9 @@ function WardAmount($cardID, $player, $index=-1)
     case "MST132": return $player == $mainPlayer ? 6 : 1;
     case "MST133": return 2;
     case "MST137": case "MST138": case "MST139": return 2;
+    case "MST140": return 4;
+    case "MST141": return 3;
+    case "MST142": return 2;
     case "MST146": case "MST147": case "MST148": return 2;
     case "MST149": return 3;
     case "MST150": return 2;
@@ -2015,6 +2018,7 @@ function HasWard($cardID, $player)
       return true;
     case "MST131": case "MST132": case "MST133": return true;
     case "MST137": case "MST138": case "MST139": return true;
+    case "MST140": case "MST141": case "MST142": 
     case "MST146": case "MST147": case "MST148": 
     case "MST149": case "MST150": case "MST151": 
     case "MST155": case "MST156": case "MST157": 

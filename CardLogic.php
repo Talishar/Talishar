@@ -1785,6 +1785,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "MST137": case "MST138": case "MST139":
       AddCurrentTurnEffect($parameter, $player, "PLAY");
       break;
+    case "MST140": case "MST141": case "MST142": 
+      if(SearchAura($player, class:"ILLUSIONIST") == 0) PlayAura("MON104", $player, numAttackCounters:1);
+      else PlayAura("MON104", $player);
+      break;
     case "MST155": case "MST156": case "MST157":
       AddCurrentTurnEffect($parameter, $player, "PLAY");
       break;

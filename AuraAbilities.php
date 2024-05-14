@@ -148,6 +148,9 @@ function AuraLeavesPlay($player, $index)
     case "MST137": case "MST138": case "MST139": 
       if(SearchAura($player, class:"ILLUSIONIST") == 0) AddLayer("TRIGGER", $player, $cardID);
       break;
+    case "MST140": case "MST141": case "MST142": 
+      AddLayer("TRIGGER", $player, $cardID);
+      break;
     case "MST155": case "MST156": case "MST157":
       if(SearchAura($player, class:"ILLUSIONIST") == 0) AddLayer("TRIGGER", $player, $cardID);
       break;
