@@ -798,7 +798,7 @@ function AuraHitEffects($attackID)
 
 function AuraAttackModifiers($index, &$attackModifiers)
 {
-  global $CombatChain, $combatChainState, $CCS_AttackPlayedFrom;
+  global $CombatChain, $combatChainState, $CCS_AttackPlayedFrom, $combatChain;
   global $CID_Frailty;
   $chainCard = $CombatChain->Card($index);
   $modifier = 0;
@@ -821,6 +821,13 @@ function AuraAttackModifiers($index, &$attackModifiers)
           array_push($attackModifiers, -1);
         }
         break;
+      case "MST031":
+        if($combatChain[8] == $myAuras[$i + 6])
+        {
+          $modifier += $myAuras[$i+3];
+          array_push($attackModifiers, $myAuras[$i]);
+          array_push($attackModifiers, +$myAuras[$i+3]);
+        }
       default: break;
     }
   }

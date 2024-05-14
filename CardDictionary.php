@@ -1913,7 +1913,7 @@ function CardCaresAboutPitch($cardID)
     case "DYN176": case "DYN177": case "DYN178":
 		case "DYN182": case "DYN183": case "DYN184":
 		case "DYN185": case "DYN186": case "DYN187":
-    case "MST008": case "MST031":case "MST052": 
+    case "MST008": case "MST031": case "MST052": 
     case "MST076": case "MST078": case "MST080":
       return true;
     default: return false;
@@ -1931,8 +1931,6 @@ function IsIyslander($character)
 function WardAmount($cardID, $player, $index=-1)
 {
   global $mainPlayer, $CS_PlayIndex;
-  $auras = &GetAuras($player);
-  if($index == -1) $index = GetClassState($mainPlayer, $CS_PlayIndex);
   switch($cardID)
   {
     case "ARC167": return 4;
@@ -1953,7 +1951,6 @@ function WardAmount($cardID, $player, $index=-1)
     case "EVO244": return 1;
     case "MST028": return 4;
     case "MST029": case "MST030": return 1;
-    case "MST031": return $auras[$index+3];
     case "MST033": return SearchPitchForColor($player, 3)*3;
     case "MST037": 
       if(SearchPitchForColor($player, 3) > 0) return 4;
