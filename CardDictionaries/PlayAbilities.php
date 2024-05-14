@@ -444,7 +444,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PUTPLAY", $currentPlayer, $resourcesPaid, 1);
       if($resourcesPaid >= 3 && SearchBanishForCardName($currentPlayer, "DYN092") != -1){
         MZMoveCard($currentPlayer, "MYBANISH:isSameName=DYN092", "MYTOPDECK", true, true, DQContext:"Choose a card to shuffle in your deck, or pass");
-        AddDecisionQueue("SHUFFLE", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       }
       return "";
     case "MST232":

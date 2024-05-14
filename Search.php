@@ -1112,7 +1112,7 @@ function SearchMultizone($player, $searches)
             $rv = CombineSearches($rv, $searchResult);
             $isCardID = true;
             break;
-          case "sameName":
+          case "isSameName":
             $name = CardName($condition[1]);
             switch($zone)
             {
