@@ -1931,6 +1931,7 @@ function IsIyslander($character)
 function WardAmount($cardID, $player, $index=-1)
 {
   global $mainPlayer, $CS_PlayIndex;
+  $auras = &GetAuras($player);
   switch($cardID)
   {
     case "ARC167": return 4;
@@ -1952,6 +1953,7 @@ function WardAmount($cardID, $player, $index=-1)
     case "MST027": return SearchCurrentTurnEffects("MST027-WARD", $player) ? 3 : 0;
     case "MST028": return 4;
     case "MST029": case "MST030": return 1;
+    case "MST031": return $auras[$index+3];
     case "MST033": return SearchPitchForColor($player, 3)*3;
     case "MST037": 
       if(SearchPitchForColor($player, 3) > 0) return 4;
