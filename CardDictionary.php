@@ -1246,7 +1246,7 @@ function HasBladeBreak($cardID)
 
 function HasBattleworn($cardID)
 {
-  global $currentPlayer;
+  global $defPlayer;
   switch($cardID) {
     case "WTR004": case "WTR005": case "WTR041": case "WTR042": case "WTR080": case "WTR116": case "WTR117": return true;
     case "ARC004": case "ARC078": case "ARC150": return true;
@@ -1262,8 +1262,8 @@ function HasBattleworn($cardID)
     case "EVO442": case "EVO443": case "EVO444": case "EVO445": return true;
     case "HVY010": case "HVY099": return true;
     case "MST005":
-      $char = &GetPlayerCharacter($currentPlayer);
-      $index = FindCharacterIndex($currentPlayer, $cardID);
+      $char = &GetPlayerCharacter($defPlayer);
+      $index = FindCharacterIndex($defPlayer, $cardID);
       return $char[$index+12] == "UP";
     case "MST006": case "MST007": return true;
     case "MST232": return true;
