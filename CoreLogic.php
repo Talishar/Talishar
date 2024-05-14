@@ -1078,6 +1078,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   else if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
   else if($cardID == "DTD140") return GetClassState($currentPlayer, $CS_LifeLost) > 0 || GetClassState($otherPlayer, $CS_LifeLost) > 0;
   else if($cardID == "DTD141") return GetClassState($currentPlayer, $CS_LifeLost) > 0 || GetClassState($otherPlayer, $CS_LifeLost) > 0;
+  if(SearchCurrentTurnEffects("MST027", $currentPlayer) && SubtypeContains($cardID, "Aura", $currentPlayer)) return true;
   if(SubtypeContains($cardID, "Evo")) {
     if(SearchCurrentTurnEffects("EVO007", $currentPlayer) || SearchCurrentTurnEffects("EVO008", $currentPlayer)) return true;
     if(SearchCurrentTurnEffects("EVO129", $currentPlayer) || SearchCurrentTurnEffects("EVO130", $currentPlayer) || SearchCurrentTurnEffects("EVO131", $currentPlayer)) return true;
@@ -2121,6 +2122,11 @@ function PitchAbility($cardID)
       WriteLog("Dromai creates an Ash");
       PutPermanentIntoPlay($currentPlayer, "UPR043");
     }
+  }
+  if (CardNameContains($cardID, "Chi", $currentPlayer) && SearchCharacterForCard($currentPlayer, "MST027") && GetCharacterGemState($currentPlayer, "MST027") == 1) {
+    AddDecisionQueue("YESNO", $currentPlayer, "if you want " . CardLink("MST027", "MST027") . " to gain Ward 3");
+    AddDecisionQueue("NOPASS", $currentPlayer, "-");
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "MST027-WARD", 1);
   }
   switch($cardID) {
     case "WTR000": case "ARC000": case "CRU000": case "OUT000": case "DTD000":

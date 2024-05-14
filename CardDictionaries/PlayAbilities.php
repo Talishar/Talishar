@@ -152,6 +152,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST025": case "MST026": 
       PlayAura("MON104", $currentPlayer, 1, numAttackCounters:1);
       return "";
+    case "MST027":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "MST029": 
       MZMoveCard($currentPlayer, "MYDISCARD:type=Aura", "MYBOTDECK");
       return "";

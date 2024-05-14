@@ -1502,6 +1502,7 @@ function CharacterDefaultActiveState($cardID)
     case "DTD564": return 0;
     case "EVO430": case "EVO431": case "EVO432": case "EVO433": return 1;
     case "AKO005": return 1;
+    case "MST027": return 1;
     default: return 2;
   }
 }
@@ -2114,7 +2115,7 @@ function CardCareAboutChiPitch($cardID)
   switch($cardID) {
       case "MST001": case "MST002": 
       case "MST004":
-      case "MST025": case "MST026": 
+      case "MST025": case "MST026": case "MST027":
       case "MST046": case "MST047": case "MST048": 
       return true;
     default: return false;
