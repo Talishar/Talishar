@@ -418,6 +418,7 @@ function RemoveEffectsOnChainClose()
       case "DTD052"://Spirit of War
       case "TCC086": case "TCC094"://Growl
       case "HVY256"://Coercive Tendency
+      case "MST159": //Tiger Taming
       case "MST161"://Chase the Tail
       case "MST185": case "MST186": case "MST187": //Untamed 
       case "MST190": //Stonewall Gauntlet
