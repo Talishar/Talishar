@@ -963,6 +963,7 @@ function ChainLinkBeginResolutionEffects()
           case "HVY053":
             RemoveCurrentTurnEffect($i);
             break;
+
           default: break;
         }
       }
@@ -1173,6 +1174,7 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget=false)
       --$currentTurnEffects[$i+3];
       if ($currentTurnEffects[$i+3] == 0) array_push($effectsToRemove, $i);
     }
+    if(substr($currentTurnEffects[$i], 0, 6) == "DYN065") array_push($effectsToRemove, $i);
     switch($currentTurnEffects[$i]) {
       case "MON281": case "MON282": case "MON283":
       case "DYN079": case "DYN080": case "DYN081":

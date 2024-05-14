@@ -525,7 +525,7 @@
 
   function EVRHitEffect($cardID)
   {
-    global $mainPlayer, $defPlayer, $CS_NumAuras, $chainLinks;
+    global $mainPlayer, $defPlayer, $CS_NumAuras, $chainLinks, $chainLinkSummary;
     switch($cardID)
     {
       case "EVR021":
@@ -547,10 +547,14 @@
           for($i=0; $i<count($chainLinks); ++$i)
           {
             $attackID = $chainLinks[$i][0];
-            if($chainLinks[$i][2] == "1" && ($attackID == "EVR041" || $attackID == "EVR042" || $attackID == "EVR043"))
+            if($chainLinks[$i][2] == "1")
             {
-              $chainLinks[$i][2] = "0";
-              $deck->AddBottom($attackID, "CC");
+              $lastAttackNames = explode(",", $chainLinkSummary[count($chainLinkSummary)-(ChainLinkSummaryPieces()*$i+1)+4]);
+              for($i=0; $i<count($lastAttackNames); ++$i)
+              {
+                $chainLinks[$i][2] = "0";
+                $deck->AddBottom($attackID, "CC");
+              }
             }
           }
           AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
