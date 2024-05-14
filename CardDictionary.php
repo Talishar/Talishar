@@ -1130,7 +1130,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST069": case "MST070": 
       $charIndex = FindCharacterIndex($player, $cardID);
       return $character[$charIndex+12] != "DOWN" || !$CombatChain->HasCurrentLink();
-    case "MST098":
+      case "MST095": case "MST098": case "MST102":
       if($CombatChain->HasCurrentLink()) return false;//If there's an attack, there's a valid target
       if(count($layers) == 0) return true;//If there's no attack, and no layers, nothing to do
       $layerIndex = count($layers) - LayerPieces();//Only the earliest layer can be an attack
@@ -1140,7 +1140,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if($layerType == "AA" || $layerType == "W") return false;//It's an attack
       if(GetResolvedAbilityType($layers[$layerIndex]) == "AA") return false;
       return true;
-    case "MST095": case "MST102": return !$CombatChain->HasCurrentLink();
     case "MST105":
       if(!$CombatChain->HasCurrentLink()) return true;
       if(HasStealth($CombatChain->AttackCard()->ID())) return false;
