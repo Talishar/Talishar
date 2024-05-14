@@ -264,7 +264,7 @@
     switch($term)
     {
       case "Elemental": case "Light": case "Shadow": case "Draconic": return true;
-      case "Ice": case "Lightning": case "Earth": return true;
+      case "Ice": case "Lightning": case "Earth": case "Mystic": return true;
       default: return false;
     }
   }
