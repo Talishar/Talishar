@@ -940,7 +940,7 @@ function NuuStaticAbility($banishedBy)
 
 function ChainLinkBeginResolutionEffects()
 {
-  global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex, $CID_BloodRotPox;
+  global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex, $CID_BloodRotPox, $CS_Transcended;
   if(TypeContains($combatChain[0], "W", $mainPlayer)) {
     $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
     $index = $combatChainState[$CCS_WeaponIndex];
@@ -963,7 +963,6 @@ function ChainLinkBeginResolutionEffects()
           case "HVY053":
             RemoveCurrentTurnEffect($i);
             break;
-
           default: break;
         }
       }
@@ -973,9 +972,15 @@ function ChainLinkBeginResolutionEffects()
     case "OUT168": case "OUT169": case "OUT170":
       for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
         if($combatChain[$i + 1] != $defPlayer || $combatChain[$i + 2] != "HAND") continue;
-        WriteLog("Virulent Touch creates a Bloodrot Pox from being blocked from hand.");
+        WriteLog(CardLink($combatChain[0], $combatChain[0]) ." creates a Bloodrot Pox from being blocked from hand.");
         PlayAura($CID_BloodRotPox, $defPlayer);
         break;
+      }
+      break;
+    case "MST081":
+      if(GetClassState($mainPlayer, $CS_Transcended) > 0) {
+        Draw($mainPlayer);
+        WriteLog(CardLink($combatChain[0], $combatChain[0]) . " draw a card.");
       }
       break;
     default: break;
