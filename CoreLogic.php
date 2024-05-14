@@ -2123,10 +2123,8 @@ function PitchAbility($cardID)
       PutPermanentIntoPlay($currentPlayer, "UPR043");
     }
   }
-  if (CardNameContains($cardID, "Chi", $currentPlayer) && SearchCharacterForCard($currentPlayer, "MST027") && GetCharacterGemState($currentPlayer, "MST027") == 1) {
-    AddDecisionQueue("YESNO", $currentPlayer, "if you want " . CardLink("MST027", "MST027") . " to gain Ward 3");
-    AddDecisionQueue("NOPASS", $currentPlayer, "-");
-    AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "MST027-WARD", 1);
+  if (SubtypeContains($cardID, "Chi", $currentPlayer) && SearchCharacterForCard($currentPlayer, "MST027") && GetCharacterGemState($currentPlayer, "MST027") == 1) {
+    AddLayer("TRIGGER", $currentPlayer, "MST027");
   }
   switch($cardID) {
     case "WTR000": case "ARC000": case "CRU000": case "OUT000": case "DTD000":

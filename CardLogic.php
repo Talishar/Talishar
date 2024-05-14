@@ -1771,8 +1771,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_2_Might_tokens_from_" . CardLink("AKO005", "AKO005"), 1);
       break;
     case "AKO019":
-    case "MST203": case "MST204": case "MST205":
-      AddCurrentTurnEffect($parameter, $player, "CC");
+    case "MST027":
+      AddDecisionQueue("YESNO", $player, "if you want " . CardLink("MST027", "MST027") . " to gain Ward 3");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("ADDCURRENTEFFECT", $player, "MST027-WARD", 1);  
       break;
     case "MST040": case "MST041": case "MST042":
       PlayAura("MON104", $player);
@@ -1803,6 +1805,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         AddCurrentTurnEffect($parameter, $otherPlayer);
       }
       break;
+    case "MST203": case "MST204": case "MST205":
+      AddCurrentTurnEffect($parameter, $player, "CC");
+      break;  
     case "ASB003":
       Charge();
       AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
