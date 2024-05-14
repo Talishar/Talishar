@@ -1001,6 +1001,12 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
             $remove = true;
           }
           break;
+        case "MST094":
+          if(PitchValue($cardID) == 3 && (TypeContains($cardID, "AA", $currentPlayer) || TypeContains($cardID, "A", $currentPlayer))) {
+            $hasGoAgain = true;
+            $remove = true;
+          }
+          break;
         default:
           break;
       }
@@ -1058,6 +1064,7 @@ function CurrentEffectGrantsGoAgain()
         case "HVY246": return true;
         case "MST003": return true;
         case "MST024": return true;
+        case "MST094": return true;
         case "MST236-2": return true;
         case "ROGUE710-GA": return true;
         default:
