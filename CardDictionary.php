@@ -298,6 +298,7 @@ function AbilityCost($cardID)
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
+  if($cardID == "MST133" && GetResolvedAbilityType($cardID) == "I") return 0;
   if($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {
     if(SearchCharacterForCard($currentPlayer, "MON003")) return 0;
     if(SearchCharacterForCard($currentPlayer, "MON088")) return 3;
@@ -465,14 +466,14 @@ function HasGoAgain($cardID)
 
 function GetAbilityType($cardID, $index = -1, $from="-")
 {
-  global $currentPlayer;
+  global $currentPlayer, $mainPlayer;
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $subtype = CardSubtype($cardID);
   if($from == "PLAY" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura")) {
     if(SearchCharacterForCard($currentPlayer, "MON003") || SearchCharacterForCard($currentPlayer, "MON088") || SearchCharacterForCard($currentPlayer, "DTD216")) return "AA";
   }
-  if($from == "PLAY" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($currentPlayer, "MST130") && HasWard($cardID, $currentPlayer)) return "AA";
+  if($from == "PLAY" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($currentPlayer, "MST130") && HasWard($cardID, $currentPlayer) && $currentPlayer == $mainPlayer) return "AA";
   if(DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "UPR003")) return "AA";
   if($set == "WTR") return WTRAbilityType($cardID, $index);
   else if($set == "ARC") return ARCAbilityType($cardID, $index);
@@ -494,9 +495,10 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
 }
 
-function GetAbilityTypes($cardID)
+function GetAbilityTypes($cardID, $index=-1, $from="-")
 {
-  global $CS_NumActionsPlayed, $mainPlayer;
+  global $CS_NumActionsPlayed, $mainPlayer, $currentPlayer;
+  $auras = &GetAuras($currentPlayer);
   switch($cardID) {
     case "ARC003": case "CRU101": return "A,AA";
     case "OUT093": return "I,I";
@@ -506,14 +508,18 @@ function GetAbilityTypes($cardID)
     case "HVY186": case "HVY187": case "HVY188":
     case "HVY209":
       return "I,AA";
+    case "MST133":
+      if ($currentPlayer != $mainPlayer || $auras[$index+1] == 1) return "Instant";
+      return "I,AA";
     default: return "";
   }
 }
 
-function GetAbilityNames($cardID, $index = -1)
+function GetAbilityNames($cardID, $index = -1, $from="-")
 {
-  global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints;
+  global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $phase;
   $character = &GetPlayerCharacter($currentPlayer);
+  $auras = &GetAuras($currentPlayer);
   switch ($cardID) {
     case "ARC003": case "CRU101":
       if($index == -1) return "";
@@ -531,6 +537,9 @@ function GetAbilityNames($cardID, $index = -1)
       $names = "Ability";
       if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Attack";
       return $names;
+    case "MST133":
+      if ($currentPlayer != $mainPlayer || $auras[$index+1] == 1) return "Instant";
+      return "Instant,Attack";
     default: return "";
   }
 }
@@ -549,7 +558,7 @@ function GetResolvedAbilityType($cardID, $from="-")
 {
   global $currentPlayer, $CS_AbilityIndex;
   $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
-  $abilityTypes = GetAbilityTypes($cardID);
+  $abilityTypes = GetAbilityTypes($cardID, $abilityIndex, $from);
   if($abilityTypes == "" || $abilityIndex == "-") return GetAbilityType($cardID, -1, $from);
   $abilityTypes = explode(",", $abilityTypes);
   if(isset($abilityTypes[$abilityIndex])) {
@@ -580,12 +589,13 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $character = &GetPlayerCharacter($player);
   $myHand = &GetHand($player);
   $banish = new Banish($player);
+  $auras = &GetAuras($player);
   $discard = &GetDiscard($currentPlayer);
   $restriction = "";
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
   $abilityType = GetAbilityType($cardID, $index, $from);
-  $abilityTypes = GetAbilityTypes($cardID);
+  $abilityTypes = GetAbilityTypes($cardID, $index, $from);
   if($phase == "P" && $from != "HAND") return false;
   if($phase == "B" && $from == "BANISH") return false;
   if($phase == "B" && $from == "THEIRBANISH") return false;
@@ -646,6 +656,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if($from == "HAND" && count($myHand) < 2) return false;
     else if(count($myHand) < 1) return false;
   }
+  if($cardID == "MST133" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1) return true;
   if(EffectPlayCardConstantRestriction($cardID, CardType($cardID), $restriction)) return false;
   if($phase != "B" && $phase != "P" && !str_contains($phase, "CHOOSE") && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
   if($phase == "M" && $subtype == "Arrow") {
@@ -669,7 +680,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
         case "EVO410": return $character[$charIndex + 2] > 1;
       }
     }
-    return  false;
+    return false;
   }
     switch($cardType) {
     case "A": return $phase == "M";
@@ -1130,6 +1141,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if(HasStealth($CombatChain->AttackCard()->ID())) return false;
       if($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
       return true;
+    case "MST133":
+      $auras = &GetAuras($player);
+      if(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) == -1 && $auras[$index+1] == 1) return true;
+      return;
     case "MST134": case "MST135": case "MST136": 
       $auras = &GetAuras($player);
       return Count($auras) <= 0;

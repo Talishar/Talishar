@@ -488,6 +488,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             default: break;
           }
           break;
+        case "TRANSFERATKCOUNTER":
+          $auras = &GetAuras($player);
+          $mzArr = explode("-", $lastResult);
+          switch ($mzArr[0]) {
+            case "MYAURAS": 
+              --$auras[$mzArr[1]+3];
+              ++$auras[count($auras)-AuraPieces()+3];
+              break;
+            default: break;
+          }
+          break;
         default: break;
       }
       return $lastResult;

@@ -422,6 +422,9 @@ function AuraStartTurnAbilities()
         DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         IncrementClassState($mainPlayer, $CS_NumAgilityDestroyed, 1);
         break;
+      case "MST133":
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY", $auras[$i+6]);
+        break;
       default: break;
     }
   }
@@ -895,6 +898,7 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
 {
   global $currentPlayer, $CS_PlayIndex;
   $index = GetClassState($currentPlayer, $CS_PlayIndex);
+  $auras = &GetAuras($currentPlayer);
   switch($cardID) {
     case "DTD060": case "DTD061": case "DTD062":
       $hand = &GetHand($currentPlayer);
@@ -905,6 +909,12 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
       }
       DestroyAura($currentPlayer, $index);
       Charge(may:false);
+      break;
+    case "MST133":
+      if(GetResolvedAbilityType($cardID, $from) == "I") {
+        --$auras[$index+3];
+        RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]));
+      }
       break;
     default: break;
   }

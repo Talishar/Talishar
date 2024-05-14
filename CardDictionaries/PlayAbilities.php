@@ -339,7 +339,20 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(count($arrayAuras) <= 1) GainActionPoints(1, $currentPlayer);
       return "";
     case "MST133":
-      if($from == "PLAY") PlayAura("MON104", $currentPlayer);
+      if($from == "HAND"){
+        $count = CountAuraAtkCounters($currentPlayer)+10; //+10 is an arbitrary number to keep the loop going until the player pass
+        for($i=0; $i < $count; $i++) { 
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasAttackCounters=true", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 attack counter or pass", 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZOP", $currentPlayer, "TRANSFERATKCOUNTER", 1);
+        }
+      }
+      $abilityType = GetResolvedAbilityType($cardID, $from);
+      if($abilityType == "I")
+      {
+        PlayAura("MON104", $currentPlayer);
+      }
       return "";
     case "MST134": case "MST135": case "MST136":
       $amount = 3;
