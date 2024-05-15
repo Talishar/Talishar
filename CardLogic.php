@@ -635,6 +635,7 @@ function AddOnHitTrigger($cardID)
     case "MST121": case "MST122": case "MST123": 
     case "MST124": case "MST125": case "MST126":
     case "MST191": case "MST192":
+    case "MST194": case "MST195": case "MST196":
       if(IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     default:

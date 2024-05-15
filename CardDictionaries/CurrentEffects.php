@@ -65,7 +65,7 @@ function MSTCombatEffectActive($cardID, $attackID)
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
   switch($cardID) {
-    case "MST003": return PitchValue($attackID) == 3;
+    case "MST003": return ColorContains($attackID, 3, $mainPlayer);
     case "MST011-1": case "MST012-1": case "MST013-1": 
     case "MST011-2": case "MST012-2": case "MST013-2": 
       return true;
@@ -84,9 +84,9 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST076-1": case "MST076-2": case "MST076-3": return true;
     case "MST077": return true;
     case "MST084": case "MST085": case "MST086": return true;
-    case "MST092": return PitchValue($attackID) == 3;
-    case "MST093": return PitchValue($attackID) == 3;
-    case "MST094": return (PitchValue($cardID) == 3 && (TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "A", $mainPlayer)));
+    case "MST092": return ColorContains($attackID, 3, $mainPlayer);
+    case "MST093": return ColorContains($attackID, 3, $mainPlayer);
+    case "MST094": return ColorContains($cardID, 3, $mainPlayer) && (TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "A", $mainPlayer));
     case "MST095": return true;
     case "MST102": return true;
     case "MST105-BUFF": return true;
@@ -96,9 +96,9 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST162-HIT": return true;
     case "MST185": case "MST186": case "MST187": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
     case "MST190": return true;
-    case "MST193-RED": return PitchValue($attackID) == 1;
-    case "MST193-YELLOW": return PitchValue($attackID) == 2;
-    case "MST193-BLUE": return PitchValue($attackID) == 3;
+    case "MST193-RED": return ColorContains($attackID, 1, $mainPlayer);
+    case "MST193-YELLOW": return ColorContains($attackID, 2, $mainPlayer);
+    case "MST193-BLUE": return ColorContains($attackID, 3, $mainPlayer);
     case "MST212": case "MST213": case "MST214": return $combatChainState[$CCS_LinkBaseAttack] <= 1;
     case "MST232": return CardSubType($attackID) == "Arrow";
     case "MST233": return true;

@@ -117,7 +117,7 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
         && ($minCost == -1 || CardCost($cardID) >= $minCost)
         && ($class == "" || ClassContains($cardID, $class, $player))
         && (count($talents) == 0 || TalentContainsAny($cardID, implode(",", $talents), $player))
-        && ($pitch == -1 || PitchValue($cardID) == $pitch)
+        && ($pitch == -1 || ColorContains($cardID, $pitch, $player))
         && ($maxAttack == -1 || ModifiedAttackValue($cardID, $player, $zone) <= $maxAttack)
         && ($minAttack == -1 || ModifiedAttackValue($cardID, $player, $zone) >= $minAttack)
         && ($maxDef == -1 || BlockValue($cardID) <= $maxDef)

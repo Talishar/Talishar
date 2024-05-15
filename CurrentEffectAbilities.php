@@ -1003,7 +1003,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
           }
           break;
         case "MST094":
-          if(PitchValue($cardID) == 3 && (TypeContains($cardID, "AA", $currentPlayer) || TypeContains($cardID, "A", $currentPlayer))) {
+          if(ColorContains($cardID, 3, $currentPlayer) && (TypeContains($cardID, "AA", $currentPlayer) || TypeContains($cardID, "A", $currentPlayer))) {
             $hasGoAgain = true;
             if($cardID != $turnEffects[0]) $remove = true;
           }

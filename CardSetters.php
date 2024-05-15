@@ -81,17 +81,17 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     GainHealth(1, $otherPlayer);
     return $rv;
   }
-  if($banishedBy == "MST106" && PitchValue($cardID) == 1) {
+  if($banishedBy == "MST106" && ColorContains($cardID, 1, $currentPlayer)) {
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
     return $rv;
   }
-  if($banishedBy == "MST107" && PitchValue($cardID) == 2) {
+  if($banishedBy == "MST107" && ColorContains($cardID, 2, $currentPlayer)) {
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
     return $rv;
   }
-  if($banishedBy == "MST108" && PitchValue($cardID) == 3) {
+  if($banishedBy == "MST108" && ColorContains($cardID, 3, $currentPlayer)) {
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
     return $rv;
@@ -100,7 +100,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     $count = count($indexArray);
     $currentCardPitch = PitchValue($cardID);
       for ($i=0; $i < $count; $i++) { 
-        if (PitchValue($banish[$indexArray[$i]-1]) == $currentCardPitch) {
+        if (ColorContains($cardID, PitchValue($banish[$indexArray[$i]-1]), $currentPlayer)  == $currentCardPitch) {
           GainHealth(1, $otherPlayer);
           return $rv;
         }
@@ -348,7 +348,7 @@ function AddSoul($cardID, $player, $from, $isMainPhase=true)
       else AddSpecificSoul($cardID, $theirSoul, $from);
     }
     IncrementClassState($player, $CS_NumAddedToSoul);
-    if(PitchValue($cardID) == 2) IncrementClassState($player, $CS_NumYellowPutSoul);
+    if(ColorContains($cardID, 2, $player)) IncrementClassState($player, $CS_NumYellowPutSoul);
     if($isMainPhase && str_contains(NameOverride($cardID, $player), "Herald") && (SearchCharacterActive($player, "DTD001") || SearchCharacterActive($player, "DTD002")))
     {
       if($from != "CC")

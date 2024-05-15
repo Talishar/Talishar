@@ -844,10 +844,10 @@ function IsPitchRestricted($cardID, &$restriction, $from = "", $index = -1, $pit
 {
   global $playerID;
   if(SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0) { $restriction = "ELE035"; return true; }
-  $pitchValue = PitchValue($cardID);
-  if($pitchValue == 1 && SearchCurrentTurnEffects("OUT101-1", $playerID)) { $restriction = "OUT101"; return true; }
-  else if($pitchValue == 2 && SearchCurrentTurnEffects("OUT101-2", $playerID)) { $restriction = "OUT101"; return true; }
-  else if($pitchValue == 3 && SearchCurrentTurnEffects("OUT101-3", $playerID)) { $restriction = "OUT101"; return true; }
+  
+  if(ColorContains($cardID, 1, $playerID) && SearchCurrentTurnEffects("OUT101-1", $playerID)) { $restriction = "OUT101"; return true; }
+  else if(ColorContains($cardID, 2, $playerID) && SearchCurrentTurnEffects("OUT101-2", $playerID)) { $restriction = "OUT101"; return true; }
+  else if(ColorContains($cardID, 3, $playerID) && SearchCurrentTurnEffects("OUT101-3", $playerID)) { $restriction = "OUT101"; return true; }
   if(CardCareAboutChiPitch($pitchRestriction) && !SubtypeContains($cardID, "Chi")) return true;
   return false;
 }
@@ -1841,7 +1841,7 @@ function PlayableFromOtherPlayerBanish($cardID, $mod="")
 {
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
   $mod = explode("-", $mod)[0];
-  if(PitchValue($cardID) == 3 && (SearchCurrentTurnEffects("MST001", $currentPlayer) || SearchCurrentTurnEffects("MST002", $currentPlayer))) return true;
+  if(ColorContains($cardID, 3, $currentPlayer) && (SearchCurrentTurnEffects("MST001", $currentPlayer) || SearchCurrentTurnEffects("MST002", $currentPlayer))) return true;
   if($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer" || $mod == "TCCGorgonsGaze") return true;
   else return false;
 }

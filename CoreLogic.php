@@ -1083,7 +1083,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
     if(SearchCurrentTurnEffects("EVO007", $currentPlayer) || SearchCurrentTurnEffects("EVO008", $currentPlayer)) return true;
     if(SearchCurrentTurnEffects("EVO129", $currentPlayer) || SearchCurrentTurnEffects("EVO130", $currentPlayer) || SearchCurrentTurnEffects("EVO131", $currentPlayer)) return true;
   }
-  if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0])))) return true;
+  if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && ColorContains($cardID, 3, $currentPlayer) && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0])))) return true;
   if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST155", $currentPlayer) && CardCost($cardID) <= 2) return true;
   if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST156", $currentPlayer) && CardCost($cardID) <= 1) return true;
   if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST157", $currentPlayer) && CardCost($cardID) <= 0) return true;
@@ -1157,10 +1157,25 @@ function NameOverride($cardID, $player="")
   return $name;
 }
 
+function ColorOverride($cardID, $player="")
+{
+  $pitch = PitchValue($cardID);
+  if(SearchCurrentTurnEffects("MST194", $player)) $pitch = 0;
+  if(SearchCurrentTurnEffects("MST195", $player)) $pitch = 0;
+  if(SearchCurrentTurnEffects("MST196", $player)) $pitch = 0;
+  return $pitch;
+}
+
 function ClassContains($cardID, $class, $player="")
 {
   $cardClass = ClassOverride($cardID, $player);
   return DelimStringContains($cardClass, $class);
+}
+
+function ColorContains($cardID, $color, $player="")
+{
+  $cardColor = ColorOverride($cardID, $player);
+  return DelimStringContains($cardColor, $color);
 }
 
 function TypeContains($cardID, $type, $player="")
@@ -2095,7 +2110,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
     switch ($cardID) {
       case "LGS176": case "LGS177": case "LGS178":
         $deck = new Deck($currentPlayer);
-        if (!$deck->Empty()) if (PitchValue($deck->BanishTop()) == PitchValue($cardID)) PlayAura("ARC112", $currentPlayer, 1, true);
+        if (!$deck->Empty()) if (ColorContains(PitchValue($deck->BanishTop()), PitchValue($cardID), $currentPlayer)) PlayAura("ARC112", $currentPlayer, 1, true);
         return "";
     }
   }
@@ -2118,7 +2133,7 @@ function PitchAbility($cardID)
       DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
       GainResources($currentPlayer, 2);
     }
-    if(SearchCharacterActive($currentPlayer, "UPR001") || SearchCharacterActive($currentPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $currentPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $currentPlayer)) {
+    if(ColorContains($cardID, 1, $currentPlayer) && SearchCharacterActive($currentPlayer, "UPR001") || SearchCharacterActive($currentPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $currentPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $currentPlayer)) {
       WriteLog("Dromai creates an Ash");
       PutPermanentIntoPlay($currentPlayer, "UPR043");
     }

@@ -100,6 +100,9 @@ function MSTHitEffect($cardID, $from)
       AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
       break;
+    case "MST194": case "MST195": case "MST196":
+      AddCurrentTurnEffect($cardID, $mainPlayer);
+      break;
     case "MST233":
       $trapsArr = explode(",",SearchDiscard($mainPlayer, subtype:"Trap"));
       if(count($trapsArr) >= 3) {
