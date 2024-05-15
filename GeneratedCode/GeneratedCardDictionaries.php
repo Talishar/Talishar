@@ -32,7 +32,7 @@ return "A";
 case "2":
 return "A";
 case "3":
-return "A";
+return "I";
 default: return "AA";
 }
 case "4":
