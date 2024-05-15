@@ -59,6 +59,7 @@ if(isset($submission->head) && $submission->head != "") $character .= " " . $sub
 if(isset($submission->chest) && $submission->chest != "") $character .= " " . $submission->chest;
 if(isset($submission->arms) && $submission->arms != "") $character .= " " . $submission->arms;
 if(isset($submission->legs) && $submission->legs != "") $character .= " " . $submission->legs;
+if(isset($submission->offhand) && $submission->offhand != "") $character .= " " . $submission->offhand;
 $deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
 //TODO: parse inventory
 

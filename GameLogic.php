@@ -1926,8 +1926,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
                   $equipments .= $cardID;
                 }
                 break;
-              case "Off-hand":
-                if(!SearchCharacterAliveSubtype($currentPlayer, "Off-hand")) {
+              case "Off-Hand":
+                if(!SearchCharacterAliveSubtype($currentPlayer, "Off-Hand")) {
                   if ($equipments != "") $equipments .= ",";
                   $equipments .= $cardID;
                 }
