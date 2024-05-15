@@ -43,7 +43,7 @@ if(isset($_SESSION["isPatron"]) && isset($_SESSION['useruid']) && !in_array($_SE
 if(isset($_SESSION['useruid']) && in_array($_SESSION['useruid'], $contributors)) $displayName = "<img title='Contributor' style='margin-bottom:2px; margin-right:-2px; height:18px;' src='./images/copper.webp' /> " . $displayName;
 
 //This is the code for PvtVoid Patreon
-if(isset($_SESSION["isPvtVoidPatron"]) || isset($_SESSION['useruid']) && in_array($_SESSION['useruid'], array("PvtVoid"))) $displayName = "<img title='PvtVoid Supporter' style='margin-bottom:5px; margin-right:-2px; height:18px;' src='./images/patronEye.webp' /> " . $displayName;
+if(isset($_SESSION["isPvtVoidPatron"]) || isset($_SESSION['useruid']) && in_array($_SESSION['useruid'], array("PvtVoid"))) $displayName = "<img title='PvtVoid Patreon' style='margin-bottom:5px; margin-right:-2px; height:18px;' src='./images/patronEye.webp' /> " . $displayName;
 
 $filename = "./Games/" . $gameName . "/gamelog.txt";
 $handler = fopen($filename, "a");

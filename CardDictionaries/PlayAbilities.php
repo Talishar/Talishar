@@ -251,7 +251,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST076":
       $chiArray = explode(",", SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi"));
       $amountChiPitch = count($chiArray);
-      AddCurrentTurnEffect($cardID."-" . $amountChiPitch, $currentPlayer);
+      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") AddCurrentTurnEffect($cardID."-" . $amountChiPitch, $currentPlayer);
       return "";
     case "MST077":
       $numChoices = SearchPitchForColor($currentPlayer, 3);
