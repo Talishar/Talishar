@@ -87,7 +87,7 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   array_push($char, 0);
   array_push($char, 0);
   array_push($char, 0);
-  array_push($char, 2);
+  array_push($char, CharacterDefaultActiveState($cardID));
   array_push($char, "-");
   array_push($char, GetUniqueId($cardID, $player));
   array_push($char, HasCloaked($cardID));
@@ -645,7 +645,7 @@ function EquipEquipment($player, $card, $slot="")
       $char[$i+6] = 0;
       $char[$i+7] = 0;
       $char[$i+8] = 0;
-      $char[$i+9] = 2;
+      $char[$i+9] = CharacterDefaultActiveState($card);
       $char[$i+10] = "-";
       $char[$i+11] = $uniqueID;
       $char[$i+12] = HasCloaked($card);
@@ -695,7 +695,7 @@ function EquipWeapon($player, $card)
         $char[$i+6] = 0;
         $char[$i+7] = 0;
         $char[$i+8] = 0;
-        $char[$i+9] = 2;
+        $char[$i+9] = CharacterDefaultActiveState($card);
         $char[$i+10] = "-";
         $char[$i+11] = GetUniqueId($card, $player);
         $char[$i+12] = HasCloaked($card);
