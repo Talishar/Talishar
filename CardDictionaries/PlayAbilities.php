@@ -254,8 +254,18 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID."-" . $amountChiPitch, $currentPlayer);
       return "";
     case "MST077":
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-      AddDecisionQueue("MODAL", $currentPlayer, "LEVELSOFENLIGHTNMENT", 1);
+      $numChoices = SearchPitchForColor($currentPlayer, 3);
+      $modalities = "Draw_a_card,Buff_Power,Go_again";
+      for ($i=0; $i < $numChoices; $i++) {     
+        if($i==0){
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities, 1);
+          AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        }
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . $numChoices - $i . " mode" . ($numChoices - $i > 1 ? "s" : ""), 1);
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "{0}", 1);
+        AddDecisionQueue("MODAL", $currentPlayer, "LEVELSOFENLIGHTNMENT", 1);
+      }
+      return "";
     case "MST078":
       if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") Draw($currentPlayer); 
       return "";
