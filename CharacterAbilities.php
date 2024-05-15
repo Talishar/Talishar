@@ -90,7 +90,7 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   array_push($char, CharacterDefaultActiveState($cardID));
   array_push($char, "-");
   array_push($char, GetUniqueId($cardID, $player));
-  array_push($char, HasCloaked($cardID));
+  array_push($char, HasCloaked($cardID, $player));
   return $index;
 }
 
