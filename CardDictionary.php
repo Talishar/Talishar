@@ -452,7 +452,6 @@ function HasGoAgain($cardID)
     case "MST057": case "MST058": case "MST059":
     case "MST060": case "MST061": case "MST062":
     case "MST063": case "MST064": case "MST065":
-    
     case "MST092": case "MST093": case "MST094": 
     case "MST152": case "MST153": case "MST154":
     case "MST159":
