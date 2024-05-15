@@ -176,7 +176,7 @@
       if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($attackID), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
       if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
         GhostlyTouchPhantasmDestroy();
-        if(!SubtypeContains($attackID, "Aura", $mainPlayer)) PhantomTidemawDestroy();//Aura destroy is handled elsewhere
+        if(!SubtypeContains($attackID, "Aura", $mainPlayer)) PhantomTidemawDestroy($mainPlayer);//Aura destroy is handled elsewhere
       }
       AttackDestroyed($attackID);
       if(CardType($attackID) == "AA") {
