@@ -575,7 +575,7 @@ function ModifyBlockForType($type, $amount)
   for($i=count($combatChain); $i>0; $i-=CombatChainPieces())
   {
     if(isset($combatChain[$i+1]) && $combatChain[$i+1] != $defPlayer) continue;
-    if(CardType($combatChain[$i]) != $type) continue;
+    if(isset($combatChain[$i]) && CardType($combatChain[$i]) != $type) continue;
     ++$count;
     $combatChain[$i+6] += $amount;
     if ($type == "DR") return $count;
