@@ -2150,8 +2150,7 @@ function CardCareAboutChiPitch($cardID)
       case "MST001": case "MST002": 
       case "MST004":
       case "MST025": case "MST026": case "MST027":
-      case "MST046": case "MST047": case "MST048":
-      case "MST238":
+      case "MST046": case "MST047": case "MST048": 
       return true;
     default: return false;
   }
@@ -2165,11 +2164,8 @@ function IsModular($cardID)
   }
 }
 
-function HasCloaked($cardID, $player)
+function HasCloaked($cardID)
 {
-  $char = &GetPlayerCharacter($player);
-  $characterID = ShiyanaCharacter($char[0]);
-  if($characterID == "MST238" && $char[1] < 3 && TypeContains($cardID, "E", $player)) return "DOWN";
   switch($cardID) {
     case "MST005": case "MST028": case "MST029": case "MST030":
     case "MST049":
