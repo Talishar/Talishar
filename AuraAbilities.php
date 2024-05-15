@@ -77,7 +77,6 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from="HAND")
   for($i = 0; $i < count($auras); $i += AuraPieces()) {
     switch($auras[$i]) {
       case "EVR141":
-        writelog($isToken . "-" . $auras[$i+5] . "-" . ClassContains($cardID, "ILLUSIONIST", $player));
         if(!$isToken && $auras[$i+5] > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
           --$auras[$i+5];
           AddLayer("TRIGGER", $player, $auras[$i], "-", "-", $auras[$i + 6]);
