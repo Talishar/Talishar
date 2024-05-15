@@ -27,25 +27,24 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
         case "Both": AddCurrentTurnEffect("MST162-BUFF", $player); AddCurrentTurnEffect("MST162-HIT", $player); break;
       }
       return $lastResult;
-    case "LEVELSOFENLIGHTNMENT":
-      switch($lastResult) {
-        case "Draw_a_card": {
-          Draw($player); 
-          break;
-        }
-        case "Buff_Power": {
-          AddCurrentTurnEffect("MST077", $player);
-          break;
-        }
-        case "Go_again": {
-          GiveAttackGoAgain(); 
-          break;
+    case "LEVELSOFENLIGHTENMENT":
+      if(!is_array($lastResult)) return $lastResult;
+      for($i = 0; $i < count($lastResult); ++$i) {
+        switch($lastResult[$i]) {
+          case "Draw_a_card": {
+            Draw($player); 
+            break;
+          }
+          case "Buff_Power": {
+            AddCurrentTurnEffect("MST077", $player);
+            break;
+          }
+          case "Go_again": {
+            GiveAttackGoAgain(); 
+            break;
+          }
         }
       }
-      $dqVars[0] = str_replace($lastResult, "", $dqVars[0]);
-      if(substr($dqVars[0], 0, 1) == ",") $dqVars[0] = substr($dqVars[0], 1);
-      if ($lastResult == "Go_again") $dqVars[0] = rtrim($dqVars[0], ",");
-      $dqVars[0] = str_replace(",,", ",", $dqVars[0]);
       return $lastResult;
     case "MICROPROCESSOR":
       $deck = new Deck($player);
