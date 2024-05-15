@@ -2111,7 +2111,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
     switch ($cardID) {
       case "LGS176": case "LGS177": case "LGS178":
         $deck = new Deck($currentPlayer);
-        if (!$deck->Empty()) if (ColorContains(PitchValue($deck->BanishTop()), PitchValue($cardID), $currentPlayer)) PlayAura("ARC112", $currentPlayer, 1, true);
+        if (!$deck->Empty()) if(ColorContains($deck->BanishTop(), PitchValue($cardID), $currentPlayer)) PlayAura("ARC112", $currentPlayer, 1, true);
         return "";
     }
   }
