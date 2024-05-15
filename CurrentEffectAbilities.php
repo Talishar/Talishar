@@ -1262,6 +1262,8 @@ function IsCombatEffectPersistent($cardID)
     case "HVY246": return true;
     case "HVY247": return true;
     case "MST053": return true;
+    case "MST079-DEBUFF": return true;
+    case "MST079-HITPREVENTION": return true;
     case "MST190": return true;
     //Roguelike
     case "ROGUE018": case "ROGUE601": case "ROGUE702": case "ROGUE704": case "ROGUE707": return true;

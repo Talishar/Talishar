@@ -260,6 +260,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST078":
       if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") Draw($currentPlayer); 
       return "";
+    case "MST079": 
+      AddCurrentTurnEffect($cardID."-DEBUFF", $currentPlayer);
+      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") AddCurrentTurnEffect($cardID."-HITPREVENTION", $currentPlayer);      ; 
+      return "";
     case "MST080":
       Draw($currentPlayer);
       Draw($currentPlayer);

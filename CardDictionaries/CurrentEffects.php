@@ -37,6 +37,7 @@ function MSTEffectAttackModifier($cardID) {
     case "MST076-2": return 15;
     case "MST076-3": return 20;
     case "MST077": return 2;
+    case "MST079-DEBUFF": return IsHeroAttackTarget() ? -1 : 0;
     case "MST084": return SearchPitchForColor($mainPlayer, 3);
     case "MST085": return SearchPitchForColor($mainPlayer, 3);
     case "MST093": return 2;
@@ -83,6 +84,8 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST075": return true;
     case "MST076-1": case "MST076-2": case "MST076-3": return true;
     case "MST077": return true;
+    case "MST079-DEBUFF": return true;
+    case "MST079-HITPREVENTION": return true;
     case "MST084": case "MST085": case "MST086": return true;
     case "MST092": return ColorContains($attackID, 3, $mainPlayer);
     case "MST093": return ColorContains($attackID, 3, $mainPlayer);
