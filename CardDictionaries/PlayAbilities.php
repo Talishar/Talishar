@@ -1329,17 +1329,22 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   }
 
   function PhantomTidemawDestroy($player = -1, $index = -1)
-  {
+{
     global $mainPlayer;
     $auras = &GetAuras($player);
-    if($player == -1) $player = $mainPlayer;
+    if($player == -1) {
+        $player = $mainPlayer;
+    }
+
     if($index == -1) {
-      for($i=0; $i < count($auras); $i++) { 
-        if($auras[$i*AuraPieces()] == "EVO244") ++$auras[$i*AuraPieces()+3];
-      }
+        for($i=0; $i < count($auras); $i++) { 
+            if(isset($auras[$i*AuraPieces()]) && $auras[$i*AuraPieces()] == "EVO244") {
+                ++$auras[$i*AuraPieces()+3];
+            }
+        }
     }
     else if($index > -1) {
-      ++$auras[$index+3];
+        ++$auras[$index+3];
     }
-  }
+}
 
