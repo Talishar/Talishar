@@ -301,7 +301,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($index >= count($auras)) break; //Item doesn't exist
       $cardID = $auras[$index];
       if (!IsPlayable($cardID, $turn[0], "PLAY", $index)) break; //Aura ability not playable
-      $auras[$index + 1] = 1; //Set status to used - for now
+      if(GetAbilityNames($auras[$index] == "")) $auras[$index + 1] = 1; //Set status to used - for now
       SetClassState($playerID, $CS_PlayIndex, $index);
       PlayCard($cardID, "PLAY", -1, $index, $auras[$index + 6]);
       break;
@@ -1521,7 +1521,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if(IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
-      PayAbilityAdditionalCosts($cardID);
+      PayAbilityAdditionalCosts($cardID, $index);
       ActivateAbilityEffects();
       if(GetResolvedAbilityType($cardID, $from) == "A" && !CanPlayAsInstant($cardID, $index, $from))
       ResetCombatChainState();
@@ -1532,7 +1532,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         ResetCombatChainState();
       }
       $remorselessCount = CountCurrentTurnEffects("CRU123-DMG", $playerID);
-      if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID, $from) == "") {
+      if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID, from:$from) == "") {
         WriteLog("Lost 1 life to Remorseless");
         LoseHealth($remorselessCount, $playerID);
       }
@@ -1859,7 +1859,7 @@ function GetTargetOfAttack($cardID="")
   }
 }
 
-function PayAbilityAdditionalCosts($cardID)
+function PayAbilityAdditionalCosts($cardID, $index)
 {
   global $currentPlayer;
   switch ($cardID) {
@@ -1869,6 +1869,13 @@ function PayAbilityAdditionalCosts($cardID)
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-".$currentPlayer, 1);
+      }
+      break;
+    case "MST133":
+      if(DelimStringContains(GetResolvedAbilityType($cardID), "AA")) {
+        $auras = &GetAuras($currentPlayer);
+        if($index == -1) $index = SearchAurasForIndex($cardID, $currentPlayer);
+        $auras[$index + 1] = 1;
       }
       break;
     default:

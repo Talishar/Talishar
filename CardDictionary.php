@@ -293,12 +293,13 @@ function CardCost($cardID, $from="-")
 
 function AbilityCost($cardID)
 {
-  global $currentPlayer;
+  global $currentPlayer, $phase;
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
-  if($cardID == "MST133" && GetResolvedAbilityType($cardID) == "I") return 0;
+  WriteLog($phase);
+  if($cardID == "MST133" && $phase != "M") return 0;
   if($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {
     if(SearchCharacterForCard($currentPlayer, "MON003")) return 0;
     if(SearchCharacterForCard($currentPlayer, "MON088")) return 3;
@@ -509,7 +510,7 @@ function GetAbilityTypes($cardID, $index=-1, $from="-")
     case "HVY209":
       return "I,AA";
     case "MST133":
-      if ($currentPlayer != $mainPlayer || $auras[$index+1] == 1) return "Instant";
+      if($currentPlayer != $mainPlayer || $auras[$index+1] == 1) return "I";
       return "I,AA";
     default: return "";
   }
@@ -558,7 +559,7 @@ function GetResolvedAbilityType($cardID, $from="-")
 {
   global $currentPlayer, $CS_AbilityIndex;
   $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
-  $abilityTypes = GetAbilityTypes($cardID, $abilityIndex, $from);
+  $abilityTypes = GetAbilityTypes($cardID, from:$from);
   if($abilityTypes == "" || $abilityIndex == "-") return GetAbilityType($cardID, -1, $from);
   $abilityTypes = explode(",", $abilityTypes);
   if(isset($abilityTypes[$abilityIndex])) {

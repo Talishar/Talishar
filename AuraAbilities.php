@@ -431,6 +431,15 @@ function AuraStartTurnAbilities()
       default: break;
     }
   }
+  $defPlayerAuras = &GetAuras($defPlayer);
+  for($i = count($defPlayerAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    $EffectContext = $defPlayerAuras[$i];
+    switch ($defPlayerAuras[$i]) {
+      case "MST133":
+        AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY", $defPlayerAuras[$i+6]);
+      default: break;
+    }
+  }
 }
 
 
