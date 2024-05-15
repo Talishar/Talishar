@@ -934,9 +934,14 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
       Charge(may:false);
       break;
     case "MST133":
-      if(GetResolvedAbilityType($cardID, $from) == "I") {
+      $abilityType = GetResolvedAbilityType($cardID);
+      if($abilityType == "I" && $from == "PLAY" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1) 
+      {
         --$auras[$index+3];
-        RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]));
+      }
+      elseif($abilityType == "AA") 
+      {
+        $auras[$index+1] = 1;
       }
       break;
     default: break;

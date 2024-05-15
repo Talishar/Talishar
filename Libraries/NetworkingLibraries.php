@@ -1872,13 +1872,6 @@ function PayAbilityAdditionalCosts($cardID, $index)
         AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-".$currentPlayer, 1);
       }
       break;
-    case "MST133":
-      if(DelimStringContains(GetResolvedAbilityType($cardID), "AA")) {
-        $auras = &GetAuras($currentPlayer);
-        if($index == -1) $index = SearchAurasForIndex($cardID, $currentPlayer);
-        $auras[$index + 1] = 1;
-      }
-      break;
     default:
       break;
   }

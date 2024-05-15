@@ -337,7 +337,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "MST133":
-      if($from == "HAND"){
+      $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      $auras = GetAuras($currentPlayer);
+      if($from != "PLAY"){
         $count = CountAuraAtkCounters($currentPlayer)+10; //+10 is an arbitrary number to keep the loop going until the player pass
         for($i=0; $i < $count; $i++) { 
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasAttackCounters=true", 1);
@@ -345,11 +347,13 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZOP", $currentPlayer, "TRANSFERATKCOUNTER", 1);
         }
+        AddCurrentTurnEffect($cardID, $currentPlayer, $from, $auras[count($auras)-AuraPieces()+6]);
       }
       $abilityType = GetResolvedAbilityType($cardID, $from);
-      if($abilityType == "I")
+      if($abilityType == "I" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1)
       {
         PlayAura("MON104", $currentPlayer);
+        RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]));
       }
       return "";
     case "MST134": case "MST135": case "MST136":
