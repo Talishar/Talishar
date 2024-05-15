@@ -55,7 +55,7 @@
     $isBool = false;
     if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "1H") $isString = false;
     if($propertyName == "1H" || $propertyName == "specialization") $isBool = true;
-    fwrite($handler, "if(strlen(\$cardID) < 6) return " . ($isString ? "\"\"" : "0") . ";\r\n");
+    fwrite($handler, "if(\$cardID !== null && strlen(\$cardID) < 6) return " . ($isString ? "\"\"" : "0") . ";\r\n");
     fwrite($handler, "if(is_int(\$cardID)) return " . ($isString ? "\"\"" : "0") . ";\r\n");
     if($sparse) fwrite($handler, "switch(\$cardID) {\r\n");
     $trie = [];

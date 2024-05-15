@@ -74,7 +74,7 @@ class ChainCard {
     }
 
     function PlayerID() {
-      return $this->chain[$this->index+1];
+      return isset($this->chain[$this->index+1]) ? $this->chain[$this->index+1] : null;
     }
 
     function From() {

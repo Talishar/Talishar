@@ -34,7 +34,7 @@ function DestroyPermanent($player, $index)
   $index = intval($index);
   $permanents = &GetPermanents($player);
   $cardID = $permanents[$index];
-  $isToken = $permanents[$index + 4] == 1;
+  $isToken = isset($permanents[$index + 4]) ? ($permanents[$index + 4] == 1) : false;
   PermanentDestroyed($player, $cardID, $isToken);
   for ($j = $index + PermanentPieces() - 1; $j >= $index; --$j) {
     unset($permanents[$j]);

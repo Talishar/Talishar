@@ -256,7 +256,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
     array_push($combatChainReactions, JSONRenderedCard(
       cardNumber: $combatChain[$i],
-      controller: $combatChain[$i + 1],
+      controller: isset($combatChain[$i + 1]) ? $combatChain[$i + 1] : NULL,
       action: $action,
       actionDataOverride: strval($i),
       borderColor: $borderColor,
