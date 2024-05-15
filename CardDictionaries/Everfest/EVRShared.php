@@ -549,7 +549,9 @@
             $attackID = $chainLinks[$i][0];
             if($chainLinks[$i][2] == "1")
             {
-              $lastAttackNames = explode(",", $chainLinkSummary[count($chainLinkSummary)-(ChainLinkSummaryPieces()*$i+1)+4]);
+              $index = count($chainLinkSummary) - (ChainLinkSummaryPieces() * $i + 1) + 4;
+              $stringToExplode = isset($chainLinkSummary[$index]) ? $chainLinkSummary[$index] : null;
+              $lastAttackNames = is_string($stringToExplode) ? explode(",", $stringToExplode) : [];
               for($i=0; $i<count($lastAttackNames); ++$i)
               {
                 $chainLinks[$i][2] = "0";

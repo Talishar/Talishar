@@ -3,7 +3,7 @@
 function ModalAbilities($player, $card, $lastResult, $index=-1)
 {
   global $combatChain, $defPlayer, $CombatChain, $combatChainState, $CS_ModalAbilityChoosen, $dqVars;
-  SetClassState($player, $CS_ModalAbilityChoosen, $card."-".(string)$lastResult);  
+  SetClassState($player, $CS_ModalAbilityChoosen, $card."-".$lastResult[0]);  
   switch($card)
   {
     case "ESTRIKE":

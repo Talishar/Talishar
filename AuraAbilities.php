@@ -387,8 +387,8 @@ function AuraStartTurnAbilities()
           AddDecisionQueue("REMOVECOUNTERAURAORDESTROY", $mainPlayer, $auras[$i+6]);
         }
         else {
-          DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
           WriteLog(CardLink($auras[$i], $auras[$i]) . " was destroyed");
+          DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         }
         break;
       case "TCC037": case "TCC038": case "TCC042": case "TCC043":

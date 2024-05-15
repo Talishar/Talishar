@@ -122,12 +122,14 @@
     if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($attackID), "Ally"))
     {
       $allies = &GetAllies($mainPlayer);
-      if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "UPR043")) return true;
-      else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN002") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Themai")) return true;
-      else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN003") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Vynserakai")) return true;
-      else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN004") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Nekria")) return true;
-      else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "EVO246") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Cromai")) return true;
-      else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "MST235") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Miragai")) return true;
+      if(isset($allies[$combatChainState[$CCS_WeaponIndex] + 4])){
+        if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "UPR043")) return true;
+        else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN002") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Themai")) return true;
+        else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN003") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Vynserakai")) return true;
+        else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN004") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Nekria")) return true;
+        else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "EVO246") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Cromai")) return true;
+        else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "MST235") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Miragai")) return true;  
+      }
     }
     return HasPhantasm($attackID);
   }

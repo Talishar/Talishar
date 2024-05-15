@@ -91,5 +91,3 @@ class Deck {
     return $cardID;
   }
 }
-
-?>

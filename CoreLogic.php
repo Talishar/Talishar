@@ -806,7 +806,9 @@ function ChainLinkResolvedEffects()
         default: break;
     }
   }
-  if(IsAllyAttacking() && $allies[$combatChainState[$CCS_WeaponIndex]+2] <= 0) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
+  if(IsAllyAttacking() && isset($allies[$combatChainState[$CCS_WeaponIndex]+2]) && $allies[$combatChainState[$CCS_WeaponIndex]+2] <= 0) {
+    DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
+  }
 }
 
 function CombatChainClosedMainCharacterEffects()
