@@ -510,7 +510,9 @@ function GetAbilityTypes($cardID, $index=-1, $from="-")
     case "HVY209":
       return "I,AA";
     case "MST133":
-      if($currentPlayer != $mainPlayer || $auras[$index+1] == 1) return "I";
+      if(isset($auras[$index+1])){
+        if($currentPlayer != $mainPlayer || $auras[$index+1] == 1) return "I";
+      }
       return "I,AA";
     default: return "";
   }
@@ -657,7 +659,9 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if($from == "HAND" && count($myHand) < 2) return false;
     else if(count($myHand) < 1) return false;
   }
-  if($cardID == "MST133" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1) return true;
+  if(isset($auras[$index+6])){
+    if($cardID == "MST133" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1) return true;
+  }
   if(EffectPlayCardConstantRestriction($cardID, CardType($cardID), $restriction)) return false;
   if($phase != "B" && $phase != "P" && !str_contains($phase, "CHOOSE") && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
   if($phase == "M" && $subtype == "Arrow") {
@@ -1144,7 +1148,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return true;
     case "MST133":
       $auras = &GetAuras($player);
-      if(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) == -1 && $auras[$index+1] == 1) return true;
+      if(isset($auras[$index+1]) && isset($auras[$index+6])) {
+        if(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) == -1 && $auras[$index+1] == 1) return true;
+      }
       return;
     case "MST134": case "MST135": case "MST136": 
       $auras = &GetAuras($player);
