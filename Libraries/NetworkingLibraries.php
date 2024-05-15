@@ -1806,7 +1806,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       break;
     case "MST131": 
       $count = CountAuraAtkCounters($currentPlayer);
-      if($from == "HAND" && $count >= 3) {
+      if($from != "PLAY" && $count >= 3) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasAttackCounters=true");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 attack counter or pass");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-");
