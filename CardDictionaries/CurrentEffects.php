@@ -52,6 +52,7 @@ function MSTEffectAttackModifier($cardID) {
     case "MST193-RED": return 1;
     case "MST193-YELLOW": return 2;
     case "MST193-BLUE": return 3;
+    case "MST198": return 2;
     case "MST212": case "MST213": case "MST214": return 1;
     case "MST232": return 4;
     case "MST233": return 1;
@@ -102,6 +103,7 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST193-RED": return ColorContains($attackID, 1, $mainPlayer);
     case "MST193-YELLOW": return ColorContains($attackID, 2, $mainPlayer);
     case "MST193-BLUE": return ColorContains($attackID, 3, $mainPlayer);
+    case "MST198": return true;
     case "MST212": case "MST213": case "MST214": return $combatChainState[$CCS_LinkBaseAttack] <= 1;
     case "MST232": return CardSubType($attackID) == "Arrow";
     case "MST233": return true;

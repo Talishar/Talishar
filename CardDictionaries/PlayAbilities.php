@@ -407,26 +407,29 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "MST164": case "MST165": case "MST166":
       if(ComboActive()) {
-        BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
+        BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
       }
       return "";
     case "MST176": case "MST177": case "MST178":
       if(ComboActive()) {
-        BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
+        BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
         GiveAttackGoAgain();
       }
       return "";
     case "MST185": case "MST186": case "MST187":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "MST193":
-      AddCurrentTurnEffect($cardID."-RED", $mainPlayer);
-      AddCurrentTurnEffect($cardID."-YELLOW", $mainPlayer);
-      AddCurrentTurnEffect($cardID."-BLUE", $mainPlayer);
+      AddCurrentTurnEffect($cardID."-RED", $currentPlayer);
+      AddCurrentTurnEffect($cardID."-YELLOW", $currentPlayer);
+      AddCurrentTurnEffect($cardID."-BLUE", $currentPlayer);
       break;
     case "MST197":
       if($additionalCosts != "-") Draw($currentPlayer);
       break;
+    case "MST197":
+      if($additionalCosts != "-") AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;  
     case "MST199":
       if($additionalCosts != "-") AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
