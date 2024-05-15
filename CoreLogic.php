@@ -1753,7 +1753,7 @@ function GetDamagePreventionIndices($player)
   $auras = &GetAuras($player);
   $indices = "";
   for($i=0; $i<count($auras); $i+=AuraPieces()) {
-    if(AuraDamagePreventionAmount($player, $i) > 0) {
+    if(AuraDamagePreventionAmount($player, $i) > 0 || HasWard($auras[$i], $player)) {
       if($indices != "") $indices .= ",";
       $indices .= $i;
     }
