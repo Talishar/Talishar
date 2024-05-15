@@ -301,7 +301,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($index >= count($auras)) break; //Item doesn't exist
       $cardID = $auras[$index];
       if (!IsPlayable($cardID, $turn[0], "PLAY", $index)) break; //Aura ability not playable
-      if(GetAbilityNames($auras[$index] == "")) $auras[$index + 1] = 1; //Set status to used - for now
+      $names = GetAbilityNames($cardID, $index);
+      if($names == "") $auras[$index + 1] = 1; //Set status to used - for now
       SetClassState($playerID, $CS_PlayIndex, $index);
       PlayCard($cardID, "PLAY", -1, $index, $auras[$index + 6]);
       break;
