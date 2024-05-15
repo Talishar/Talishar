@@ -1261,6 +1261,7 @@ function HasBladeBreak($cardID)
       $index = FindCharacterIndex($defPlayer, $cardID);
       return $char[$index+12] == "UP";
     case "MST050": case "MST160": return true;
+    case "MST066": return true;
     case "MST190": return true;
     case "ASB003": case "ASB006": return true;
     default: return false;

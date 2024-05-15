@@ -1800,7 +1800,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "MST160":
       MZMoveCard($player, "MYDISCARD:comboOnly=true", "MYBOTDECK");
-      break;  
+      break; 
+    case "MST066":
+      MZMoveCard($player, "MYDECK:isSameName=MST499", "MYHAND", may:true);
+      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+      break;
     case "MST190":
       if(HasIncreasedAttack()) {
         AddCurrentTurnEffect($parameter, $otherPlayer);
