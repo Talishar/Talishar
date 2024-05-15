@@ -2141,7 +2141,7 @@ function PitchAbility($cardID)
       PutPermanentIntoPlay($currentPlayer, "UPR043");
     }
   }
-  if (SubtypeContains($cardID, "Chi", $currentPlayer) && SearchCharacterActive($currentPlayer, "MST027") && SearchCharacterForCard($currentPlayer, "MST027") && GetCharacterGemState($currentPlayer, "MST027") == 1) {
+  if (SubtypeContains($cardID, "Chi", $currentPlayer) && SearchCharacterAlive($currentPlayer, "MST027") && SearchCharacterForCard($currentPlayer, "MST027") && GetCharacterGemState($currentPlayer, "MST027") == 1) {
     AddLayer("TRIGGER", $currentPlayer, "MST027");
   }
   switch($cardID) {
