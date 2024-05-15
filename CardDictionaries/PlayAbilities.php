@@ -486,6 +486,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if(count($hand) == 0) Draw($currentPlayer);
       return "";
+    case "MST235":
+      PutPermanentIntoPlay($currentPlayer, $cardID);
+      return "";
     default: return "";
   }
 }
