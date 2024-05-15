@@ -333,7 +333,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "MST132": 
-      if($from == "HAND")
+      if($from != "PLAY")
       {
         $illusionistAuras = SearchAura($currentPlayer, class:"ILLUSIONIST");
         $arrayAuras = explode(",", $illusionistAuras);
