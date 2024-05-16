@@ -401,7 +401,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";  
     case "MST162":
       if($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardNameContains($combatChain[0], "Crouching Tiger", $currentPlayer)) $modalities = "Buff_Power,Gain_On-Hit,Both";
-      elseif ($combatChainState[$CCS_LinkBaseAttack] <= 1) $modalities = "Buff_Power";
+      elseif ($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($combatChain[0]) == "AA") $modalities = "Buff_Power";
       else $modalities = "Gain_On-Hit";
       if($modalities == "Buff_Power,Gain_On-Hit,Both") {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
