@@ -1404,14 +1404,14 @@ function EffectAttackRestricted($cardID, $type, $revertNeeded=false)
   return $restrictedBy;
 }
 
-function EffectPlayCardConstantRestriction($cardID, $type, &$restriction = "") {
-  global $currentTurnEffects, $currentPlayer;
+function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase) {
+  global $currentTurnEffects, $currentPlayer, $turn;
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     if($currentTurnEffects[$i+1] == $currentPlayer) {
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
       switch($effectID) {
-        case "OUT187": if(in_array(GamestateSanitize(NameOverride($cardID, $currentPlayer)), $effectArr)) $restriction = "OUT187"; break;
+        case "OUT187": if(in_array(GamestateSanitize(NameOverride($cardID, $currentPlayer)), $effectArr) && CardType($cardID) == "DR" && ($turn[0] == "A" || $turn[0] == "D" || $turn[0] == "INSTANT")) $restriction = "OUT187"; break;
         default:
           break;
       }
