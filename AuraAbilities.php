@@ -146,13 +146,17 @@ function AuraLeavesPlay($player, $index)
       if(SearchPitchForColor($player, 3) > 0) AddLayer("TRIGGER", $player, $cardID);
       break;
     case "MST137": case "MST138": case "MST139": 
-      if(SearchAura($player, class:"ILLUSIONIST") == 0) AddLayer("TRIGGER", $player, $cardID);
+      $illusionistAuras = SearchAura($player, class:"ILLUSIONIST");
+      $aurasArray = explode(",", $illusionistAuras);
+      if(count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID);
       break;
     case "MST140": case "MST141": case "MST142": 
       AddLayer("TRIGGER", $player, $cardID);
       break;
     case "MST155": case "MST156": case "MST157":
-      if(SearchAura($player, class:"ILLUSIONIST") == 0) AddLayer("TRIGGER", $player, $cardID);
+      $illusionistAuras = SearchAura($player, class:"ILLUSIONIST");
+      $aurasArray = explode(",", $illusionistAuras);
+      if(count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID);
       break;
     default: break;
   }
