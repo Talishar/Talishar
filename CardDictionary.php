@@ -2018,7 +2018,7 @@ function HasWard($cardID, $player)
     case "MST028": case "MST029": case "MST030":
       $char = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $cardID);
-      return $char[$index+12] == "UP";
+      return $char[$index+12] != "DOWN";
     case "MST031": case "MST033": return true;
     case "MST037": case "MST038": case "MST039":
     case "MST040": case "MST041": case "MST042":
