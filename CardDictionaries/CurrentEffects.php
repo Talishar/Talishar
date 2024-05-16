@@ -80,7 +80,7 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST054-2": case "MST055-2": case "MST056-2":
     case "MST053": 
     case "MST063": case "MST064": case "MST065":
-      return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
+      return CardNameContains($attackID, "Crouching Tiger", $mainPlayer);
     case "MST069": return true;
     case "MST075": return true;
     case "MST076-1": case "MST076-2": case "MST076-3": return true;
@@ -95,10 +95,10 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST102": return true;
     case "MST105-BUFF": return true;
     case "MST105-HIT": return true;
-    case "MST159": case "MST161": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
+    case "MST159": case "MST161": return CardNameContains($attackID, "Crouching Tiger", $mainPlayer);
     case "MST162-BUFF": return true;
     case "MST162-HIT": return true;
-    case "MST185": case "MST186": case "MST187": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
+    case "MST185": case "MST186": case "MST187": return CardNameContains($attackID, "Crouching Tiger", $mainPlayer);
     case "MST190": return true;
     case "MST193-RED": return ColorContains($attackID, 1, $mainPlayer);
     case "MST193-YELLOW": return ColorContains($attackID, 2, $mainPlayer);
@@ -140,7 +140,7 @@ function MSTCombatEffectActive($cardID, $attackID)
       case "TCC037": case "TCC038": case "TCC042": case "TCC043": return ClassContains($attackID, "GUARDIAN", $mainPlayer) && CardType($attackID) == "AA";
       case "TCC057": return true;
       case "TCC083": return true;
-      case "TCC086": case "TCC094": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
+      case "TCC086": case "TCC094": return CardNameContains($attackID, "Crouching Tiger", $mainPlayer);
       case "TCC105": return true;
       case "TCC409": return true;
       default: return false;

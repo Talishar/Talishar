@@ -121,9 +121,9 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN019": case "DYN020": case "DYN021": return true;
     case "DYN022": case "DYN023": case "DYN024": return ClassContains($attackID, "BRUTE", $mainPlayer);
     case "DYN028": return ClassContains($attackID, "GUARDIAN", $mainPlayer);
-    case "DYN046": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
-    case "DYN049": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
-    case "DYN053": case "DYN054": case "DYN055": return IsCardNamed($mainPlayer, $attackID, "Crouching Tiger");
+    case "DYN046": return CardNameContains($attackID, "Crouching Tiger", $mainPlayer);
+    case "DYN049": return CardNameContains($attackID, "Crouching Tiger", $mainPlayer);
+    case "DYN053": case "DYN054": case "DYN055": return CardNameContains($attackID, "Crouching Tiger", $mainPlayer);
     case "DYN065": return true;
     case "DYN068": return true;
     case "DYN071": return CardSubType($attackID) == "Axe";
