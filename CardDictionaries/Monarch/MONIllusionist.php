@@ -180,7 +180,7 @@
         GhostlyTouchPhantasmDestroy();
         if(!SubtypeContains($attackID, "Aura", $mainPlayer)) PhantomTidemawDestroy($mainPlayer);//Aura destroy is handled elsewhere
       }
-      AttackDestroyed($attackID);
+      if($attackID != "EVO244") AttackDestroyed($attackID); //Need to skip PhantomTidemaw Phatasm once or it triggers twice. Here and in DestroyAura
       if(CardType($attackID) == "AA") {
         IncrementClassState($mainPlayer, $CS_NumPhantasmAADestroyed);
       } else if(SubtypeContains($attackID, "Aura", $mainPlayer)) {
