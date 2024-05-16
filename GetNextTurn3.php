@@ -1106,7 +1106,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       $borderColor = 0;
       $label = "";
 
-      if ((substr($option[0], -4) == "ALLY" || substr($option[0], -5) == "AURAS") && $option[1] == $combatChainState[$CCS_WeaponIndex]) $label = "Attacking";
+      if (($option[0] == "THEIRALLY" || $option[0] == "THEIRAURAS") && $option[1] == $combatChainState[$CCS_WeaponIndex]) $label = "Attacking";
 
       //Add indication for attacking Allies and Auras
       if (count($layers) > 0 && $layers[0] != "" && $mainPlayer != $currentPlayer) {
