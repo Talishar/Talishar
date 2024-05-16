@@ -265,8 +265,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") Draw($currentPlayer); 
       return "";
     case "MST079": 
-      AddCurrentTurnEffect($cardID."-DEBUFF", $currentPlayer);
-      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") AddCurrentTurnEffect($cardID."-HITPREVENTION", $currentPlayer);
+      AddCurrentTurnEffect($cardID."-DEBUFF", $otherPlayer);
+      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") AddCurrentTurnEffect($cardID."-HITPREVENTION", $otherPlayer);
       return "";
     case "MST080":
       Draw($currentPlayer);
