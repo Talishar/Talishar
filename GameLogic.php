@@ -629,6 +629,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $zone = array_values($zone);
       }
       $zone = $destArr;
+      WriteLog("Player " . $player . " deck was shuffled");
       return $lastResult;
     case "EXHAUSTCHARACTER":
       $character = &GetPlayerCharacter($player);
