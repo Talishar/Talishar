@@ -1149,7 +1149,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $character[$charIndex+12] != "DOWN" || !$CombatChain->HasCurrentLink();
       case "MST095": case "MST098": case "MST102":
       if($CombatChain->HasCurrentLink()) return false;//If there's an attack, there's a valid target
-      if(count($chainLinks) >= 0) return false; //If there's an attack on previous chain links, there's a valid target
+      if(count($chainLinks) > 0) return false; //If there's an attack on previous chain links, there's a valid target
       return !HasAttackLayer();
     case "MST105":
       if(!$CombatChain->HasCurrentLink()) return true;
@@ -2195,7 +2195,6 @@ function HasEphemeral($cardID) {
 
 function HasAttackLayer() {
   global $layers;
-
   if(count($layers) == 0) return false;//If there's no attack, and no layers, nothing to do
   $layerIndex = count($layers) - LayerPieces();//Only the earliest layer can be an attack
   $layerID = $layers[$layerIndex];
