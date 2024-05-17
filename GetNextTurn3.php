@@ -579,28 +579,36 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       $gem = ($myCharacter[$i + 9] == 1 ? 1 : 2);
     }
     $restriction = implode("_", explode(" ", $restriction));
-    array_push($myCharData, JSONRenderedCard(
-      $myChar, //CardID
-      $currentPlayer == $playerID && $playable ? 3 : 0,
-      $myCharacter[$i + 1] != 2 ? 1 : 0, //Overlay
-      $border,
-      $myCharacter[$i + 1] != 0 ? $counters : 0, //Counters
-      strval($i), //Action Data Override
-      0, //Life Counters
-      $myCharacter[$i + 4], //Def Counters
-      $atkCounters,
-      $playerID,
-      $type,
-      $sType,
-      $restriction,
-      $myCharacter[$i + 1] == 0, //Status
-      $myCharacter[$i + 6] == 1, //On Chain
-      $myCharacter[$i + 8] == 1, //Frozen
-      $gem,
-      label: $label,
-      facing: $myCharacter[$i + 12],
-      numUses: $myCharacter[$i + 5], //Number of Uses
-      subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
+
+    if($playerID == 3 && $myCharacter[$i + 12] == "DOWN") {
+      array_push($myCharData, JSONRenderedCard(
+        $MyCardBack)); //CardID
+    }
+    else{
+      array_push($myCharData, JSONRenderedCard(
+        $myChar, //CardID
+        $currentPlayer == $playerID && $playable ? 3 : 0,
+        $myCharacter[$i + 1] != 2 ? 1 : 0, //Overlay
+        $border,
+        $myCharacter[$i + 1] != 0 ? $counters : 0, //Counters
+        strval($i), //Action Data Override
+        0, //Life Counters
+        $myCharacter[$i + 4], //Def Counters
+        $atkCounters,
+        $playerID,
+        $type,
+        $sType,
+        $restriction,
+        $myCharacter[$i + 1] == 0, //Status
+        $myCharacter[$i + 6] == 1, //On Chain
+        $myCharacter[$i + 8] == 1, //Frozen
+        $gem,
+        label: $label,
+        facing: $myCharacter[$i + 12],
+        numUses: $myCharacter[$i + 5], //Number of Uses
+        subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
+
+    }
   }
   $response->playerEquipment = $myCharData;
 
