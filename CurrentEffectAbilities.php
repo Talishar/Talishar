@@ -579,28 +579,46 @@ function CurrentEffectCostModifiers($cardID, $from)
           if(IsStaticType(CardType($cardID), $from, $cardID) && DelimStringContains(CardSubType($cardID), "Staff")) { $costModifier -= 3; $remove = true; }
           break;
         case "OUT011":
-          if(CardType($cardID) == "AR") { $costModifier -= 1; $remove = true; }
+          if(CardType($cardID) == "AR") { 
+            $costModifier -= 1; 
+            $remove = true; 
+          }
           break;
         case "OUT179_1":
-          if(CardType($cardID) == "AA") { $costModifier -= 1; $remove = true; }
+          if(CardType($cardID) == "AA") { 
+            $costModifier -= 1; 
+            $remove = true; 
+          }
           break;
         case "DTD004":
-          if(CardType($cardID) == "C") { $costModifier -= 2; $remove = true; }
+          if(CardType($cardID) == "C") { 
+            $costModifier -= 2; 
+            $remove = true; 
+          }
           break;
         case "DTD212":
-          if(CardType($cardID) == "AA" && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) { $costModifier -= CountAura("ARC112", $currentPlayer); $remove = true; }
+          if(CardType($cardID) == "AA" && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) { 
+            $costModifier -= CountAura("ARC112", $currentPlayer); 
+            $remove = true; 
+          }
           break;
         case "TCC038": case "TCC043":
           if(ClassContains($cardID, "GUARDIAN", $currentPlayer) && CardType($cardID) == "AA") $costModifier -= 1;
           break;
         case "EVO435":
-          if(TypeContains($cardID, "W", $currentPlayer)) { $costModifier -= 1; $remove = true; }
+          if(TypeContains($cardID, "W", $currentPlayer)) { 
+            $costModifier -= 1; 
+            $remove = true; 
+          }
           break;
         case "AKO004":
           if(CardType($cardID) == "AA" && ModifiedAttackValue($cardID, $currentPlayer, $from) >= 6) $costModifier -= 1;
           break;
         case "MST229":
-          if(CardType($cardID) == "AA") $costModifier -= 1;
+          if(CardType($cardID) == "AA") { 
+            $costModifier -= 1; 
+            $remove = true; 
+          }
           break;
         case "ROGUE803":
           if(IsStaticType(CardType($cardID), $from, $cardID)) { $costModifier -= 1; }
