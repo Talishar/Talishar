@@ -40,29 +40,29 @@ function MSTHitEffect($cardID, $from)
     case "MST106": case "MST107": case "MST108": 
       if(IsHeroAttackTarget())
       {
-        $deck->BanishTop(banishedBy:$cardID);
+        $deck->BanishTop("Source-".$cardID, banishedBy:$cardID);
       }
       break;
     case "MST109": case "MST110": case "MST111": 
       if(IsHeroAttackTarget())
       {
         $deck->BanishTop("Source-".$cardID, banishedBy:$cardID);
-        if($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,Source-" . $cardID . "," . $cardID);
+        if($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,Source-" . $cardID . "," . $cardID, silent:true);
       }
       break;
     case "MST112": case "MST113": case "MST114": 
       if(IsHeroAttackTarget() && NumAttackReactionsPlayed() > 1)
       {
-        $deck->BanishTop(banishedBy:$cardID);
-        $deck->BanishTop(banishedBy:$cardID);
+        $deck->BanishTop("Source-".$cardID, banishedBy:$cardID);
+        $deck->BanishTop("Source-".$cardID, banishedBy:$cardID);
       }
       break;
     case "MST115": case "MST116": case "MST117": 
       if(IsHeroAttackTarget())
       {
         $deck = new Deck($defPlayer);
-        $deck->BanishTop(banishedBy:$cardID);
-        if($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,Source-" . $cardID . "," . $cardID, false, true);
+        $deck->BanishTop("Source-".$cardID, banishedBy:$cardID);
+        if($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,Source-" . $cardID . "," . $cardID, silent:true);
       }
       break;
     case "MST118": case "MST119": case "MST120": 
@@ -70,7 +70,7 @@ function MSTHitEffect($cardID, $from)
     case "MST124": case "MST125": case "MST126":
       if(IsHeroAttackTarget())
       {
-        $deck->BanishTop(banishedBy:$cardID);
+        $deck->BanishTop("Source-".$cardID, banishedBy:$cardID);
       }
       break;
     case "MST173": case "MST174": case "MST175":

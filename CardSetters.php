@@ -97,25 +97,28 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     return $rv;
   }
   if($banishedBy == "MST109" || $banishedBy == "MST110" || $banishedBy == "MST111" && count($banish)/BanishPieces() >= 2) {    $indexArray = array_keys($banish, "Source-" . $banishedBy);
-    $count = count($indexArray);
-    $currentCardPitch = PitchValue($cardID);
-      for ($i=0; $i < $count; $i++) { 
-        if (ColorContains($cardID, PitchValue($banish[$indexArray[$i]-1]), $currentPlayer)  == $currentCardPitch) {
-          GainHealth(1, $otherPlayer);
-          return $rv;
-        }
+    $count = count($banish);
+    $pitchValues = [];
+    for ($i=$count; $i >= 0; $i--) { 
+      if($banish[$i+1] == "Source-" . $banishedBy) {
+        array_push($pitchValues, PitchValue($banish[$i]));
       }
+    }
+    if(count($pitchValues) !== count(array_unique($pitchValues))){
+      GainHealth(1, $otherPlayer);
+    }
   }
   if(($banishedBy == "MST115" || $banishedBy == "MST116" || $banishedBy == "MST117") && count($banish)/BanishPieces() >= 2) {
-    $indexArray = array_keys($banish, "Source-" . $banishedBy);
-    $count = count($indexArray);
-    $currentCardName = CardName($cardID);
-      for ($i=0; $i < $count; $i++) { 
-        if (CardNameContains($banish[$indexArray[$i]-1], $currentCardName, $player)) {
-          GainHealth(1, $otherPlayer);
-          return $rv;
-        }
+    $count = count($banish);
+    $cardNames = [];
+    for ($i=$count; $i >= 0; $i--) { 
+      if($banish[$i+1] == "Source-" . $banishedBy) {
+        array_push($cardNames, CardName($banish[$i]));
       }
+    }
+    if(count($cardNames) !== count(array_unique($cardNames))){
+      GainHealth(1, $otherPlayer);
+    }
   }
   if(($banishedBy == "MST118" || $banishedBy == "MST119" || $banishedBy == "MST120") && TypeContains($cardID, "AA", $player)) {
     GainHealth(1, $otherPlayer);
