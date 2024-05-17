@@ -436,7 +436,8 @@ function AuraStartTurnAbilities()
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY", $auras[$i+6]);
         break;
       case "MST143": case "MST144": case "MST145": 
-        if(SearchAura($mainPlayer, class:"ILLUSIONIST") > AuraPieces()) DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
+        $AurasArray= explode(",", SearchAura($mainPlayer, class:"ILLUSIONIST"));
+        if(count($AurasArray) > 1) DestroyAuraUniqueID($mainPlayer, $auras[$i+6]);
         break;
       default: break;
     }
