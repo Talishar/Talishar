@@ -538,7 +538,6 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $response->myBloodDebtCount = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
     $response->amIBloodDebtImmune = IsImmuneToBloodDebt($playerID);
   }
-
   //Now display my character and equipment
   $numWeapons = 0;
   $myCharData = array();
@@ -579,28 +578,44 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       $gem = ($myCharacter[$i + 9] == 1 ? 1 : 2);
     }
     $restriction = implode("_", explode(" ", $restriction));
-    array_push($myCharData, JSONRenderedCard(
-      $myChar, //CardID
-      $currentPlayer == $playerID && $playable ? 3 : 0,
-      $myCharacter[$i + 1] != 2 ? 1 : 0, //Overlay
-      $border,
-      $myCharacter[$i + 1] != 0 ? $counters : 0, //Counters
-      strval($i), //Action Data Override
-      0, //Life Counters
-      $myCharacter[$i + 4], //Def Counters
-      $atkCounters,
-      $playerID,
-      $type,
-      $sType,
-      $restriction,
-      $myCharacter[$i + 1] == 0, //Status
-      $myCharacter[$i + 6] == 1, //On Chain
-      $myCharacter[$i + 8] == 1, //Frozen
-      $gem,
-      label: $label,
-      facing: $myCharacter[$i + 12],
-      numUses: $myCharacter[$i + 5], //Number of Uses
-      subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
+    if ($myCharacter[$i + 12] == "UP" || $playerID == $myCharacter[$i + 1]  || $playerID == 3 && IsCasterMode() || IsGameOver()) {
+      array_push($myCharData, JSONRenderedCard(
+        $myChar, //CardID
+        $currentPlayer == $playerID && $playable ? 3 : 0,
+        $myCharacter[$i + 1] != 2 ? 1 : 0, //Overlay
+        $border,
+        $myCharacter[$i + 1] != 0 ? $counters : 0, //Counters
+        strval($i), //Action Data Override
+        0, //Life Counters
+        $myCharacter[$i + 4], //Def Counters
+        $atkCounters,
+        $playerID,
+        $type,
+        $sType,
+        $restriction,
+        $myCharacter[$i + 1] == 0, //Status
+        $myCharacter[$i + 6] == 1, //On Chain
+        $myCharacter[$i + 8] == 1, //Frozen
+        $gem,
+        label: $label,
+        facing: $myCharacter[$i + 12],
+        numUses: $myCharacter[$i + 5], //Number of Uses
+        subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
+    } else{
+        array_push($myCharData, JSONRenderedCard(
+            $MyCardBack,
+            overlay: ($myCharacter[$i + 1] != 2 ? 1 : 0),
+            counters: $counters,
+            defCounters: $myCharacter[$i + 4],
+            atkCounters: $atkCounters,
+            controller: $otherPlayer,
+            type: $type,
+            sType: $sType,
+            label: $label,
+            facing: $myCharacter[$i + 12],
+            subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]
+            ));
+      } 
   }
   $response->playerEquipment = $myCharData;
 
