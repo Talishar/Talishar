@@ -2278,8 +2278,10 @@ function PayAdditionalCosts($cardID, $from)
       for($i=0; $i < $xVal; ++$i) MZChooseAndDestroy($currentPlayer, "MYITEMS:isSameName=ARC036");
       break;
     case "EVO142":
+      $amountBoostChoices = "0,1,2";
+      if(SearchCurrentTurnEffects("MST231", $currentPlayer)) $amountBoostChoices = "0,1,2,3";
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many times you want to activate boost on " . CardLink($cardID, $cardID));
-      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0,1,2");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, $amountBoostChoices);
       AddDecisionQueue("OP", $currentPlayer, "BOOST-".$cardID, 1);
       break;
     case "EVO146":

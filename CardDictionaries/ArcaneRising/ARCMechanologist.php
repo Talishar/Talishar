@@ -169,9 +169,16 @@ function HasBoost($cardID, $player)
 function Boost($cardID)
 {
   global $currentPlayer;
-  AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_boost");
-  AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-  AddDecisionQueue("OP", $currentPlayer, "BOOST-".$cardID, 1);
+  if(SearchCurrentTurnEffects("MST231", $currentPlayer)) {
+      $amountBoostChoices = "0,1,2";
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many times you want to activate boost on " . CardLink($cardID, $cardID));
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, $amountBoostChoices);
+      AddDecisionQueue("OP", $currentPlayer, "BOOST-".$cardID, 1);
+  } else {
+    AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_boost");
+    AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+    AddDecisionQueue("OP", $currentPlayer, "BOOST-".$cardID, 1);
+  }
 }
 
 function DoBoost($player, $cardID, $boostCount=1)
