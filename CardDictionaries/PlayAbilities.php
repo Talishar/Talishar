@@ -258,11 +258,13 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "MST077":
       $numChoices = SearchPitchForColor($currentPlayer, 3);
-      $modalities = "Draw_a_card,Buff_Power,Go_again";
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . $numChoices . " modes");
-      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, $numChoices."-".$modalities."-".$numChoices);
-      AddDecisionQueue("MODAL", $currentPlayer, "LEVELSOFENLIGHTENMENT", 1);
-      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      if($numChoices > 0) {
+        $modalities = "Draw_a_card,Buff_Power,Go_again";
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . $numChoices . " modes");
+        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, $numChoices."-".$modalities."-".$numChoices);
+        AddDecisionQueue("MODAL", $currentPlayer, "LEVELSOFENLIGHTENMENT", 1);
+        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      }
       return "";
     case "MST078":
       if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") Draw($currentPlayer); 
