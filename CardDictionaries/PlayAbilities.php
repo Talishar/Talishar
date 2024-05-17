@@ -28,6 +28,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $hand = &GetHand($currentPlayer);
   switch($cardID) {
+    case "MST000":
+      AddCurrentTurnEffect($cardID, $otherPlayer);
+      return "";
     case "MST001": case "MST002":
       AddDecisionQueue("DECKCARDS", $otherPlayer, "0");
       AddDecisionQueue("SETDQVAR", $otherPlayer, "0");

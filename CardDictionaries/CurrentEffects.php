@@ -5,6 +5,7 @@ function MSTEffectAttackModifier($cardID) {
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
   switch($cardID) {
+    case "MST000": return IsHeroAttackTarget() ? -1 : 0;
     case "MST003": return 1;
     case "MST011-1": return 3;
     case "MST012-1": return 2;
@@ -67,6 +68,7 @@ function MSTCombatEffectActive($cardID, $attackID)
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
   switch($cardID) {
+    case "MST000":return IsHeroAttackTarget();
     case "MST003": return ColorContains($attackID, 3, $mainPlayer);
     case "MST011-1": case "MST012-1": case "MST013-1": 
     case "MST011-2": case "MST012-2": case "MST013-2": 
