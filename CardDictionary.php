@@ -879,7 +879,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBaseAttack;
+  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBaseAttack, $chainLinks;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -986,14 +986,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE143": return $from == "PLAY" && GetClassState($player, $CS_NumFusedEarth) == 0;
     case "ELE147":
       if($CombatChain->HasCurrentLink()) return false;//If there's an attack, there's a valid target
-      if(count($layers) == 0) return true;//If there's no attack, and no layers, nothing to do
-      $layerIndex = count($layers) - LayerPieces();//Only the earliest layer can be an attack
-      $layerID = $layers[$layerIndex];
-      if(strlen($layerID) != 6) return true;//Game phase, not a card - sorta hacky
-      $layerType = CardType($layerID);
-      if($layerType == "AA" || $layerType == "W") return false;//It's an attack
-      if(GetResolvedAbilityType($layers[$layerIndex]) == "AA") return false;
-      return true;
+      return !HasAttackLayer();
     case "ELE172": return $from == "PLAY" && GetClassState($player, $CS_NumFusedIce) == 0;
     case "ELE183": case "ELE184": case "ELE185":
       if(count($layers) == 0 && !$CombatChain->HasCurrentLink()) return true;
@@ -1156,14 +1149,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $character[$charIndex+12] != "DOWN" || !$CombatChain->HasCurrentLink();
       case "MST095": case "MST098": case "MST102":
       if($CombatChain->HasCurrentLink()) return false;//If there's an attack, there's a valid target
-      if(count($layers) == 0) return true;//If there's no attack, and no layers, nothing to do
-      $layerIndex = count($layers) - LayerPieces();//Only the earliest layer can be an attack
-      $layerID = $layers[$layerIndex];
-      if(strlen($layerID) != 6) return true;//Game phase, not a card - sorta hacky
-      $layerType = CardType($layerID);
-      if($layerType == "AA" || $layerType == "W") return false;//It's an attack
-      if(GetResolvedAbilityType($layers[$layerIndex]) == "AA") return false;
-      return true;
+      if(count($chainLinks) >= 0) return false; //If there's an attack on previous chain links, there's a valid target
+      return !HasAttackLayer();
     case "MST105":
       if(!$CombatChain->HasCurrentLink()) return true;
       if(HasStealth($CombatChain->AttackCard()->ID())) return false;
@@ -2204,4 +2191,17 @@ function HasEphemeral($cardID) {
       return true;
     default: return false;
   }
+}
+
+function HasAttackLayer() {
+  global $layers;
+
+  if(count($layers) == 0) return false;//If there's no attack, and no layers, nothing to do
+  $layerIndex = count($layers) - LayerPieces();//Only the earliest layer can be an attack
+  $layerID = $layers[$layerIndex];
+  if(strlen($layerID) != 6) return false;//Game phase, not a card - sorta hacky
+  $layerType = CardType($layerID);
+  if($layerType == "AA" || $layerType == "W") return true;//It's an attack
+  if(GetResolvedAbilityType($layers[$layerIndex]) == "AA") return true;
+  return false;
 }

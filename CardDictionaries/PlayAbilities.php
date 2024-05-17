@@ -289,7 +289,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "MST095":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
+      if($CombatChain->HasCurrentLink() || HasAttackLayer()) {
+        AddCurrentTurnEffect($cardID, $mainPlayer);
+      }
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST495,".$from);
       return "";
     case "MST096":
@@ -318,7 +320,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST501,".$from);
       return "";
     case "MST102":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
+      if($CombatChain->HasCurrentLink() || HasAttackLayer()) {
+        AddCurrentTurnEffect($cardID, $mainPlayer);
+      }
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST502,".$from);
       return "";
     case "MST105":
@@ -466,15 +470,15 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "MST227":
-
       $cardList = SearchItemsByName($currentPlayer, "Hyper Driver");
       $countHyperDriver = count(explode(",", $cardList));
-      for($i=0; $i < $countHyperDriver; $i++) { 
+      if($resourcesPaid > $countHyperDriver) $resourcesPaid = $countHyperDriver;
+      for($i=0; $i < $resourcesPaid; $i++) { 
         if($i==0){
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=ARC036");
           AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         }
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . $countHyperDriver - $i . " Hyper Driver to get " . $resourcesPaid . " steam counter", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . $resourcesPaid . " Hyper Driver to get " . $resourcesPaid . " steam counter", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "{0}", 1);
         AddDecisionQueue("SUPERCELL", $currentPlayer, $resourcesPaid, 1);  
       }
