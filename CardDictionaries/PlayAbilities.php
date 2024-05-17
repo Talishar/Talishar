@@ -159,7 +159,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "MST029": 
-      MZMoveCard($currentPlayer, "MYDISCARD:type=Aura", "MYBOTDECK");
+      MZMoveCard($currentPlayer, "MYDISCARD:subtype=Aura", "MYBOTDECK");
       return "";
     case "MST030": 
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasWard=true", 1);
