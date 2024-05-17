@@ -324,11 +324,16 @@ function ArsenalPlayCardAbilities($cardID)
 
 function HasIncreasedAttack()
 {
-  global $CombatChain, $combatChainState, $CCS_LinkBaseAttack;
+  global $CombatChain, $combatChainState, $CCS_LinkBaseAttack, $mainPlayer, $combatChain;
   if($CombatChain->HasCurrentLink()) {
     $attack = 0;
     $defense = 0;
     EvaluateCombatChain($attack, $defense);
+    if(SearchCharacterActive($mainPlayer, "MST130") && HasWard($combatChain[0], $mainPlayer) && SubtypeContains($combatChain[0], "Aura", $mainPlayer)) {
+      WriteLog($attack . "-" . WardAmount($combatChain[0], $mainPlayer));
+      if($attack > WardAmount($combatChain[0], $mainPlayer)) return true;
+      else return false;
+    }
     if($attack > $combatChainState[$CCS_LinkBaseAttack]) return true;
   }
   return false;
