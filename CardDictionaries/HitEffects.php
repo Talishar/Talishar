@@ -21,7 +21,7 @@ function MSTHitEffect($cardID, $from)
       AddDecisionQueue("LOOKTOPDECK", $defPlayer, "-", 1);
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($cardID, $cardID) . " shows the your opponents deck are:", 1);
       AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $mainPlayer, "<-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $defPlayer, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $defPlayer, "-");
       break;
     case "MST104":
       if(IsHeroAttackTarget())
