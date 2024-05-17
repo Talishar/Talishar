@@ -1162,10 +1162,7 @@ function CharacterAttackAbilities($attackID)
         }
         break;
       case "MST130":
-        writelog("here");
         if(HasWard($attackID, $mainPlayer) && SubtypeContains($attackID, "Aura", $mainPlayer)) {
-          writelog("there");
-
           AddCurrentTurnEffect($char[$i], $mainPlayer);
         }
         break;
