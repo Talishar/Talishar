@@ -41,7 +41,7 @@ function LandmarkBeginEndPhaseAbilities()
           Transcend($landmarks[$i+1], "MST400", $landmarks[$i+2]);
           DestroyLandmark($i, true);
         }
-        else {
+        elseif(GetClassState($landmarks[$i+1], $CS_NumBluePlayed) <= 0 && SearchPitchForColor($landmarks[$i+1], 3) <= 0 && GetClassState($landmarks[$i+1], $CS_NumBlueDefended) <= 0) {
           DestroyLandmark($i);
         }
         break;
@@ -49,4 +49,20 @@ function LandmarkBeginEndPhaseAbilities()
         break;
     }
   }
+}
+
+function LandmarkStartTurnAbilities()
+{
+  global $landmarks, $mainPlayer;
+  for ($i = 0; $i < count($landmarks); ++$i) {
+    switch ($landmarks[$i]) {
+      case "MST000":
+        if($landmarks[$i+1] != $mainPlayer) {
+          AddCurrentTurnEffect($landmarks[$i], $mainPlayer);
+        }
+        break;
+      default:
+        break;
+      }
+    }
 }
