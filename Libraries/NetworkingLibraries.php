@@ -2414,7 +2414,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);  
       }
       return "";
-    case "MST197": case "MST199":
+    case "MST197": case "MST198": case "MST199":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to put on the bottom of your deck (or pass)", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
