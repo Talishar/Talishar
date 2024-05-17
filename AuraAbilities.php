@@ -69,6 +69,7 @@ function TokenCopyAura($player, $index)
 {
   $auras = &GetAuras($player);
   PlayAura($auras[$index], $player, 1, true);
+  PlayAbility($auras[$index], "TRIGGER", 0);
 }
 
 function AuraDestroyed($player, $cardID, $isToken = false, $from="HAND")
