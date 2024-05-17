@@ -169,7 +169,7 @@ function HasBoost($cardID, $player)
 function Boost($cardID)
 {
   global $currentPlayer;
-  if(SearchCurrentTurnEffects("MST231", $currentPlayer, true)) {
+  if(SearchCurrentTurnEffects("MST231", $currentPlayer, true) && HasBoost($cardID, $currentPlayer)) {
       $amountBoostChoices = "0,1,2";
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many times you want to activate boost on " . CardLink($cardID, $cardID));
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $amountBoostChoices);
