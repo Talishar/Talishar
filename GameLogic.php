@@ -1996,6 +1996,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
         }
         return $lastResult;
+      case "CURRENTEFFECTAFTERPLAYORACTIVATEABILITY";
+        CurrentEffectAfterPlayOrActivateAbility();
+        return $lastResult;
     default:
       return "NOTSTATIC";
   }

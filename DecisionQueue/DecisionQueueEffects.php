@@ -4,6 +4,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
 {
   global $combatChain, $defPlayer, $CombatChain, $combatChainState, $CS_ModalAbilityChoosen, $dqVars;
   SetClassState($player, $CS_ModalAbilityChoosen, $card."-".$lastResult[0]);  
+  AddDecisionQueue("CURRENTEFFECTAFTERPLAYORACTIVATEABILITY", $player, "", 1);
   switch($card)
   {
     case "ESTRIKE":
