@@ -112,9 +112,9 @@ function CardSubType($cardID, $uniqueID=-1)
       case "DTD564": return "Demon";
       case "EVO410": return "Evo";
       case "EVO410b": return "Chest,Evo";
-      case "MST410": case "MST432": case "MST453": case "MST495":
-      case "MST496": case "MST497": case "MST498": case "MST499":
-      case "MST500": case "MST501": case "MST502":
+      case "MST400": case "MST410": case "MST432": case "MST453": 
+      case "MST495": case "MST496": case "MST497": case "MST498": 
+      case "MST499": case "MST500": case "MST501": case "MST502":
         return "Chi";
       case "MST628": return "Head,Evo";
       case "MST629": return "Chest,Evo";
@@ -279,10 +279,10 @@ function CardCost($cardID, $from="-")
     case "HVY209":
       if(GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
       else return 2;
-    case "MST410": case "MST432": case "MST453": case "MST495":
-    case "MST496": case "MST497": case "MST498": case "MST499":
-    case "MST500": case "MST501": case "MST502":
-      return -1;
+    case "MST400": case "MST410": case "MST432": case "MST453": 
+    case "MST495": case "MST496": case "MST497": case "MST498": 
+    case "MST499": case "MST500": case "MST501": case "MST502":
+        return -1;
     default: break;
   }
   if($set != "ROG" && $set != "DUM") {
@@ -364,10 +364,10 @@ function PitchValue($cardID)
   if($number > 400)
   {
     switch ($cardID) {
-      case "MST410": case "MST432": case "MST453": case "MST495":
-      case "MST496": case "MST497": case "MST498": case "MST499":
-      case "MST500": case "MST501": case "MST502":
-          return 3;
+      case "MST400": case "MST410": case "MST432": case "MST453": 
+      case "MST495": case "MST496": case "MST497": case "MST498": 
+      case "MST499": case "MST500": case "MST501": case "MST502":
+        return 3;
       default: break;
     }
   }
@@ -405,9 +405,9 @@ function BlockValue($cardID)
     case "EVO410b": return 6;
     case "DUMMYDISHONORED": return -1;
     case "LGS176": case "LGS177": case "LGS178": return 2;
-    case "MST410": case "MST432": case "MST453": case "MST495":
-    case "MST496": case "MST497": case "MST498": case "MST499":
-    case "MST500": case "MST501": case "MST502":
+    case "MST400": case "MST410": case "MST432": case "MST453": 
+    case "MST495": case "MST496": case "MST497": case "MST498": 
+    case "MST499": case "MST500": case "MST501": case "MST502":
       return -1;
     case "MST628": case "MST629": case "MST630": case "MST631":
       return 0; 
