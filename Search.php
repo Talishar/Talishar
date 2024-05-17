@@ -107,7 +107,7 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
   $cardList = "";
   if (!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
   for ($i = 0; $i < count($array); $i += $count) {
-    if($zone == "CHAR" && $array[$i+1] == 0) continue;
+    if($zone == "CHAR" && ($array[$i+1] == 0 || $array[$i+12] == "DOWN")) continue;
     if($zone == "BANISH" && ($array[$i+1] == "INT" || $array[$i+1] == "FACEDOWN")) continue;
     $cardID = $array[$i];
     if(!isPriorityStep($cardID)) {
@@ -567,7 +567,7 @@ function SearchCharacterForCardMulti($playerID, $card1, $card2 = "", $card3 = ""
   $cardList = "";
   $char = GetPlayerCharacter($playerID);
   for ($i = 0; $i < count($char); ++$i) {
-    if (($char[$i] == $card1 || $char[$i] == $card2 || $char[$i] == $card3) && $char[$i+1] != 0) {
+    if (($char[$i] == $card1 || $char[$i] == $card2 || $char[$i] == $card3) && $char[$i+1] != 0 && $char[$i+12] != "DOWN") {
       if ($cardList != "") $cardList .= ",";
       $cardList .= $i;
     }
