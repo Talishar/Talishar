@@ -1161,6 +1161,14 @@ function CharacterAttackAbilities($attackID)
           WriteLog("Evo Rapid Fire gives Go Again");
         }
         break;
+      case "MST130":
+        writelog("here");
+        if(HasWard($attackID, $mainPlayer) && SubtypeContains($attackID, "Aura", $mainPlayer)) {
+          writelog("there");
+
+          AddCurrentTurnEffect($char[$i], $mainPlayer);
+        }
+        break;
       default: break;
     }
   }

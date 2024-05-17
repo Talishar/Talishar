@@ -12,6 +12,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
   $attackType = CardType($CombatChain->AttackCard()->ID());
   $canGainAttack = CanGainAttack($CombatChain->AttackCard()->ID());
   $snagActive = SearchCurrentTurnEffects("CRU182", $mainPlayer) && $attackType == "AA";
+  
   for($i=0; $i<$CombatChain->NumCardsActiveLink(); ++$i)
   {
     $chainCard = $CombatChain->Card($i, true);
@@ -2142,7 +2143,11 @@ function PitchAbility($cardID)
       PutPermanentIntoPlay($currentPlayer, "UPR043");
     }
   }
-  if (SubtypeContains($cardID, "Chi", $currentPlayer) && SearchCharacterAlive($currentPlayer, "MST027") && SearchCharacterForCard($currentPlayer, "MST027") && GetCharacterGemState($currentPlayer, "MST027") == 1) {
+  if (SubtypeContains($cardID, "Chi", $currentPlayer) 
+    && SearchCharacterAlive($currentPlayer, "MST027") 
+    && SearchCharacterForCard($currentPlayer, "MST027") 
+    && GetCharacterGemState($currentPlayer, "MST027") == 1
+    && !SearchCurrentTurnEffects("MST027-WARD", $currentPlayer)) {
     AddLayer("TRIGGER", $currentPlayer, "MST027");
   }
   switch($cardID) {

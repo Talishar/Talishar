@@ -1774,7 +1774,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "MST027":
       AddDecisionQueue("YESNO", $player, "if you want " . CardLink("MST027", "MST027") . " to gain Ward 3");
       AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("ADDCURRENTEFFECT", $player, "MST027-WARD", 1);  
+      AddDecisionQueue("ADDCURRENTEFFECT", $player, "MST027-WARD", 1);    
       break;
     case "MST040": case "MST041": case "MST042":
       PlayAura("MON104", $player);

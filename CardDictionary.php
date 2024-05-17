@@ -427,7 +427,6 @@ function AttackValue($cardID)
     if(SearchCharacterForCard($mainPlayer, "MON088")) return 4;
     if(SearchCharacterForCard($mainPlayer, "DTD216")) return 5;
   }
-  if(SearchCharacterForCard($mainPlayer, "MST130") && HasWard($cardID, $currentPlayer) && DelimStringContains($subtype, "Aura")) return WardAmount($cardID, $currentPlayer);
   if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Attack");
   else if($cardID == "DYN216") return CountAura("MON104", $currentPlayer);
