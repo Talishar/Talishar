@@ -314,6 +314,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "MST100":
       Draw($currentPlayer);
+      if(count($hand) == 1) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Show the card drawn:");
+        AddDecisionQueue("OK", $currentPlayer, "<-", 1);
+      }
       MZMoveCard($currentPlayer, "MYHAND", "MYBOTDECK", silent:true);
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST500,".$from);
       return "";

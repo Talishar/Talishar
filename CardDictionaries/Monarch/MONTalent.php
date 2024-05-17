@@ -109,6 +109,7 @@
       case "MON219":
         $otherPlayer = $currentPlayer == 2 ? 1 : 2;
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:talent=SHADOW");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to banish a shadow card");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
