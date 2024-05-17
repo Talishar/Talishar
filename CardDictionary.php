@@ -741,7 +741,28 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $defPlayer, $CS_NumBluePlayed, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   if($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
-  if(($from == "THEIRBANISH" || $playedFrom == "THEIRBANISH")) return "THEIRDISCARD";
+  if(($from == "THEIRBANISH" || $playedFrom == "THEIRBANISH")) {
+    switch ($cardID) {
+      case "MST010": case "MST032": case "MST053":
+        if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
+        else if($additionalCosts != "-"){
+          $modes = explode(",", $additionalCosts);
+          for($i=0; $i<count($modes); ++$i)
+          {
+            if($modes[$i] == "Transcend") return "-";
+          }
+        }
+        return "THEIRDISCARD";  
+      case "MST095": case "MST096": case "MST097":
+      case "MST098": case "MST099": case "MST100":
+      case "MST101": case "MST102":
+        if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
+        else return "THEIRDISCARD";      
+      default:
+        return "THEIRDISCARD";
+    }
+  }
+  
   $goesWhereEffect = GoesWhereEffectsModifier($cardID, $from, $player);
   if($goesWhereEffect != -1) return $goesWhereEffect;
   if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
