@@ -546,17 +546,11 @@
           $deck = new Deck($mainPlayer);
           for($i=0; $i<count($chainLinks); ++$i)
           {
-            $attackID = $chainLinks[$i][0];
-            if($chainLinks[$i][2] == "1")
+            $listOfNames = $chainLinkSummary[$i*ChainLinkSummaryPieces()+4];
+            if($chainLinks[$i][2] == "1" && GamestateUnsanitize($listOfNames) == "Hundred Winds")
             {
-              $index = count($chainLinkSummary) - (ChainLinkSummaryPieces() * $i + 1) + 4;
-              $stringToExplode = isset($chainLinkSummary[$index]) ? $chainLinkSummary[$index] : null;
-              $lastAttackNames = is_string($stringToExplode) ? explode(",", $stringToExplode) : [];
-              for($i=0; $i<count($lastAttackNames); ++$i)
-              {
-                $chainLinks[$i][2] = "0";
-                $deck->AddBottom($attackID, "CC");
-              }
+              $chainLinks[$i][2] = "0";
+              $deck->AddBottom($chainLinks[$i][0], "CC");
             }
           }
           AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
