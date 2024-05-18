@@ -1171,7 +1171,7 @@ function FinalizeChainLink($chainClosed = false)
 
 function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget=false)
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $combatChainState, $CCS_DamageDealt;
   $effectsToRemove = [];
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $effectArr = explode(",", $currentTurnEffects[$i]);
@@ -1185,6 +1185,9 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget=false)
       case "MON281": case "MON282": case "MON283":
       case "DYN079": case "DYN080": case "DYN081":
         array_push($effectsToRemove, $i);
+        break;
+      case "OUT108":
+        if($combatChainState[$CCS_DamageDealt] > 0) array_push($effectsToRemove, $i);
         break;
       default:
         break;
