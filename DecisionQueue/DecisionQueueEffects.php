@@ -29,10 +29,9 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       }
       return $lastResult;
     case "LEVELSOFENLIGHTENMENT":
-      $choices = explode(",", $lastResult);
-      $numChoices = count($choices);
-      for($i = 0; $i < $numChoices; ++$i) {
-        switch($choices[$i]) {
+      if(!is_array($lastResult)) $lastResult = explode(",", $lastResult);
+      for($i = 0; $i < count($lastResult); ++$i) {
+        switch($lastResult[$i]) {
           case "Draw_a_card": {
             Draw($player); 
             break;
