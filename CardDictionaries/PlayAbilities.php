@@ -395,9 +395,11 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "MST149": case "MST150": case "MST151": 
-      $illusionistAuras = SearchAura($currentPlayer, class:"ILLUSIONIST");
-      $arrayAuras = explode(",", $illusionistAuras);
-      if(count($arrayAuras) <= 1) PlayAura("MON104", $currentPlayer);
+      if($from != "PLAY") {
+        $illusionistAuras = SearchAura($currentPlayer, class:"ILLUSIONIST");
+        $arrayAuras = explode(",", $illusionistAuras);
+        if(count($arrayAuras) <= 1) PlayAura("MON104", $currentPlayer);  
+      }
       return "";
     case "MST152": case "MST153": case "MST154":  
       if(SearchAura($currentPlayer, class:"ILLUSIONIST") != "") $amount = 0;
