@@ -983,6 +983,10 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
       if(strlen($currentTurnEffects[$i]) > 6) $turnEffects = explode(",", $currentTurnEffects[$i]);
       else $turnEffects[0] = $currentTurnEffects[$i];
       switch($turnEffects[0]) {
+        case "WTR007-GOAGAIN":
+          $hasGoAgain = true;
+          $remove = true;
+          break;
         case "MON153": case "MON154":
           if(ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer)) {
             $hasGoAgain = true;

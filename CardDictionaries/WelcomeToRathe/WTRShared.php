@@ -169,16 +169,16 @@
         Intimidate();
         return "";
       case "WTR007":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
+          AddCurrentTurnEffect($cardID."-GOAGAIN", $currentPlayer);
           Draw($currentPlayer);
           Draw($currentPlayer);
-          if(!CurrentEffectPreventsGoAgain()) GainActionPoints(1, $currentPlayer);
+          ResolveGoAgain($cardID, $currentPlayer, $from);
           $rv = "Draws 2 cards and gains go again";
         }
-        AddCurrentTurnEffect($cardID, $currentPlayer);
         return $rv;
       case "WTR008":
-        $damaged = false;
         if(IsAllyAttacking()) {
           return "<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>";
         }
