@@ -73,8 +73,6 @@ function PermanentBeginEndPhaseEffects()
   global $mainPlayer, $defPlayer;
 
   $permanents = &GetPermanents($mainPlayer);
-  /*WriteLog("size of zone = " . count($permanents));
-  WriteLog("zone[0] = " . $permanents[0]);*/
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
     switch ($permanents[$i]) {
@@ -86,9 +84,6 @@ function PermanentBeginEndPhaseEffects()
         $deck = &GetDeck($mainPlayer);
         $discard = &GetDiscard($mainPlayer);
         $banish = &GetBanish($mainPlayer);
-        /*WriteLog("size of discard = " . count($discard));
-        WriteLog("discard[0] = " . $discard[0]);
-        WriteLog("discard[1] = " . $discard[1]);*/
         for($i = count($discard)-1; $i >= 0; --$i)
         {
           if(rand(0, 1) == 0) array_push($deck, $discard[$i]);
@@ -98,10 +93,6 @@ function PermanentBeginEndPhaseEffects()
             array_push($banish, "");
             array_push($banish, GetUniqueId());
           }
-          /*WriteLog("banish[0] = " . $banish[0]);
-          WriteLog("banish[1] = " . $banish[1]);
-          WriteLog("banish[2] = " . $banish[2]);*/
-
           unset($discard[$i]);
         }
         $destArr = [];
@@ -245,9 +236,6 @@ function PermanentStartTurnAbilities()
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         array_unshift($hand, "DYN065");
         break;
-      /*case "ROGUE511":
-        MayBottomDeckDraw(); // !Undefined Function
-        break; */
       case "ROGUE512": case "ROGUE513":
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;

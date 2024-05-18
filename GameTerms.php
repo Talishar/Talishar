@@ -135,14 +135,3 @@ function PlayTerm($phase, $from="", $cardID="")
       return "played";
   }
 }
-
-function CardTypeName($cardType)
-{
-  /*
-    switch($cardType)
-    {
-      case "A": return "Action";
-      case "AR"
-    }
-*/
-}

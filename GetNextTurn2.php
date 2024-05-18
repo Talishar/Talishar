@@ -1013,14 +1013,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
     if ($characterContents != "") $characterContents .= "|";
     $characterContents .= ClientRenderedCard(cardNumber: $theirCharacter[$i], overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0), counters: $counters, defCounters: $theirCharacter[$i + 4], atkCounters: $atkCounters, controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirCharacter[$i + 8] == 1), onChain: ($theirCharacter[$i + 6] == 1), isBroken: ($theirCharacter[$i + 1] == 0));
-
-    /*
-    echo ("<div style='z-index:5; position:fixed; left:" . GetCharacterLeft($type, $sType) . "; top:" . GetCharacterTop($type, $sType) . ";'>");
-    echo (Card($theirCharacter[$i], "concat", $cardSizeEquipment, 0, 1, $theirCharacter[$i + 1] != 2 ? 1 : 0, 0, $counters, "", "", false, 0, $theirCharacter[$i + 4], $atkCounters, "CHARACTER", controller:$otherPlayer));
-    if ($theirCharacter[$i + 8] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:7px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
-    if ($theirCharacter[$i + 6] == 1) echo ("<img title='On Combat Chain' style='position:absolute; z-index:100; top:-25px; left:7px; width:" . $cardWidth . "' src='./Images/onChain.png' />");
-    if ($theirCharacter[$i + 1] == 0) echo ("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardEquipmentWidth . "; bottom: 6px; left:16px;' src='./Images/brokenEquip.png' />");
-    */
   }
   echo ($characterContents);
 

@@ -658,8 +658,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SHOWMODES":
       if(is_array($lastResult)) $modes = $lastResult;
       else {
-        $modes = [];
-        array_push($modes, $lastResult);
+        $modes = explode(",", $lastResult);
       }
       $text = "";
       for($i = 0; $i < count($modes); ++$i) {
