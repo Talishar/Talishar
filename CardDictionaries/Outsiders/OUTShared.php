@@ -901,7 +901,7 @@ function OUTAbilityCost($cardID)
   {
     AddDecisionQueue("PASSPARAMETER", $player, "0,1");
     AddDecisionQueue("MULTIREMOVEDECK", $player, "-");
-    AddDecisionQueue("SETDQCONTEXT", "Choose a card to put back on top", 1);
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put back on top", 1);
     AddDecisionQueue("CHOOSETOP", $player, "<-");
   }
 

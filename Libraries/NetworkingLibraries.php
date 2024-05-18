@@ -2457,7 +2457,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex, $CS_NumAttacks, $CCS_LinkBaseAttack;
   global $CCS_WeaponIndex, $EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
   global $CS_NumDragonAttacks, $CS_NumAttackCards, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks, $CCS_IsBoosted;
-  global $SET_PassDRStep;
+  global $SET_PassDRStep, $CS_NumBlueDefended;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   if($layerIndex > -1) SetClassState($currentPlayer, $CS_PlayIndex, $layerIndex);
   $index = SearchForUniqueID($uniqueID, $currentPlayer);
@@ -2544,7 +2544,10 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         CharacterAttackAbilities($cardID);
       }
     } else { //On chain, but not index 0
-      if($definedCardType == "DR" && !$skipDRResolution) OnDefenseReactionResolveEffects($from);
+      if($definedCardType == "DR" && !$skipDRResolution) {
+        OnDefenseReactionResolveEffects($from);
+        if(ColorContains($cardID, 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
+      }
     }
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
   } else if($from != "PLAY" && $from != "EQUIP") {
