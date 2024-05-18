@@ -298,6 +298,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDHAND":
       AddPlayerHand($lastResult, $player, "-");
       return $lastResult;
+    case "ADDHANDOWNER":
+      $otherPlayer = $player == 1 ? 2 : 1;
+      if(substr($combatChain[$lastResult+2], 0, 5) == "THEIR") AddPlayerHand($combatChain[$lastResult], $otherPlayer, "CC");
+      else AddPlayerHand($combatChain[$lastResult], $player, "CC");
+      return $lastResult;
     case "ADDMYPITCH":
       $pitch = &GetPitch($player);
       array_push($pitch, $lastResult);

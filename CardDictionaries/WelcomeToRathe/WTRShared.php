@@ -267,8 +267,8 @@
         $options = GetChainLinkCards($defPlayer, "", "E,C", exclCardSubTypes:"Evo");
         if(RepriseActive() && $options != "") {
           AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $mainPlayer, $options);
+          AddDecisionQueue("ADDHANDOWNER", $defPlayer, "-", 1);
           AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-", 1);
-          AddDecisionQueue("ADDHAND", $defPlayer, "-", 1);
         }
         return "";
       case "WTR121":
