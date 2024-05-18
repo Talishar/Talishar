@@ -1127,6 +1127,25 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
             }
         }
       }
+      //Add indication for layers targets
+      if (count($layers) > 0 && $layers[0] != "") {
+        $search = SearchLayer($otherPlayer, type:"I");
+        if($search != "") {
+          $indices = explode(",", $search);
+          $countIndices = count($indices);
+          for ($j=0; $j < $countIndices; $j++) { 
+            $searchParams = explode(",", $layers[$indices[$i] + 3]);
+            if(isset($option[0], $option[1], $searchParams[1])){
+              $cardID = GetMZCard($currentPlayer, $option[0]."-".$option[1]);
+              if($cardID == $searchParams[1]) {
+                  $label = "Targetted";
+                  continue;
+              }
+            }
+          }   
+        }
+      }
+
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
       if ($option[0] == "MYARS") $label = "Arsenal";
       //Add indication for Attacking Mechanoid

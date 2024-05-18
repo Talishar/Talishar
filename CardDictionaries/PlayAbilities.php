@@ -306,16 +306,32 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST496,".$from);
       return "";    
     case "MST097":
-      MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH,GY,-,".$cardID);
-      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST497,".$from);
+      $targetArr = explode(",", $target);
+      if(GetMZCard($currentPlayer, $targetArr[0]) == $targetArr[1]) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targetArr[0], 1);
+        AddDecisionQueue("MZADDZONE", $currentPlayer, "THEIRBANISH,GY,-,".$cardID, 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST497,".$from);  
+      }
+      else {
+        WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect and this card does not transcend.");
+      }
       return "";
     case "MST098":
       GiveAttackGoAgain();
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST498,".$from);
       return "";
     case "MST099":
-      MZMoveCard($currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", "MYBOTDECK");
+      $targetArr = explode(",", $target);
+      if(GetMZCard($currentPlayer, $targetArr[0]) == $targetArr[1]) {
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targetArr[0], 1);
+      AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST499,".$from);
+    }
+    else {
+      WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect and this card does not transcend.");
+    }
       return "";
     case "MST100":
       Draw($currentPlayer);
