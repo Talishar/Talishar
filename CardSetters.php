@@ -105,8 +105,10 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
       }
     }
     if(count($pitchValues) !== count(array_unique($pitchValues))){
-      GainHealth(1, $otherPlayer);
+      if(count(array_unique($pitchValues)) == 1 && count($pitchValues) == 2) GainHealth(2, $otherPlayer);
+      else GainHealth(1, $otherPlayer);
     }
+    return $rv;
   }
   if(($banishedBy == "MST115" || $banishedBy == "MST116" || $banishedBy == "MST117") && count($banish)/BanishPieces() >= 2) {
     $count = count($banish);
@@ -117,8 +119,10 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
       }
     }
     if(count($cardNames) !== count(array_unique($cardNames))){
-      GainHealth(1, $otherPlayer);
+      if(count(array_unique($cardNames)) == 1 && count($cardNames) == 2) GainHealth(2, $otherPlayer);
+      else GainHealth(1, $otherPlayer);
     }
+    return $rv;
   }
   if(($banishedBy == "MST118" || $banishedBy == "MST119" || $banishedBy == "MST120") && TypeContains($cardID, "AA", $player)) {
     GainHealth(1, $otherPlayer);
