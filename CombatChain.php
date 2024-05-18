@@ -312,7 +312,6 @@ function PlayBlockModifier($cardID)
 function OnDefenseReactionResolveEffects($from)
 {
   global $currentTurnEffects, $mainPlayer, $defPlayer, $combatChain;
-  OnBlockResolveEffects();
   switch($combatChain[0])
   {
     case "CRU051": case "CRU052":
@@ -413,9 +412,7 @@ function OnBlockResolveEffects()
   }
   $blockedFromHand = 0;
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-    if(ColorContains($combatChain[$i], 3, $defPlayer)) {
-      IncrementClassState($defPlayer, $CS_NumBlueDefended);
-    }
+    if(ColorContains($combatChain[$i], 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
     if($combatChain[$i+2] == "HAND")
     ++$blockedFromHand;
     if(($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i+2] != "HAND")) UnityEffect($combatChain[$i]);

@@ -72,7 +72,7 @@
     for($i = 0; $i < 3; $i++) {
       $index = GetRandom() % count($discard);
       if(ModifiedAttackValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) ++$BanishedIncludes6;
-      if($discard[$index] == "DTD107") ++$diabolicOfferingCount;
+      elseif($discard[$index] == "DTD107") ++$diabolicOfferingCount;
       BanishCardForPlayer($discard[$index], $currentPlayer, "DISCARD", $modifier);
       unset($discard[$index]);
       $discard = array_values($discard);
