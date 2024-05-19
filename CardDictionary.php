@@ -70,7 +70,6 @@ function CardType($cardID)
     case "EVO410": return "C";
     case "DTD564": return "D";
     case "DYN612": return "-";
-    case "LGS176": case "LGS177": case "LGS178": return "A";
     case "DUMMY":
     case "DUMMYDISHONORED":
       return "C";
@@ -257,7 +256,6 @@ function CardTalent($cardID)
   switch ($cardID) {
     case "EVO410": case "EVO410b": return "SHADOW";
     case "DTD564": return "SHADOW";
-    case "LGS176": case "LGS177": case "LGS178": return "SHADOW";
     default: break;
   }
   return GeneratedCardTalent($cardID);
@@ -404,7 +402,6 @@ function BlockValue($cardID)
     case "EVO410": return -1;
     case "EVO410b": return 6;
     case "DUMMYDISHONORED": return -1;
-    case "LGS176": case "LGS177": case "LGS178": return 2;
     case "MST400": case "MST410": case "MST432": case "MST453": 
     case "MST495": case "MST496": case "MST497": case "MST498": 
     case "MST499": case "MST500": case "MST501": case "MST502":

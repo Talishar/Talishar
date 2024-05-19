@@ -33,7 +33,6 @@ function CardName($cardID)
       case "EVO410": return "Teklovossen, the Mechropotent";
       case "EVO410b": return "Teklovossen, the Mechropotent";
       case "DTD564": return "Blasmophet, Levia Consumed";
-      case "LGS176": case "LGS177": case "LGS178": return "Jack-o'-lantern";
       case "MST400": case "MST410": case "MST432": case "MST453": 
       case "MST495": case "MST496": case "MST497": case "MST498": 
       case "MST499": case "MST500": case "MST501": case "MST502":
