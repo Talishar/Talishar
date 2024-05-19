@@ -926,11 +926,13 @@ function NuuStaticAbility($banishedBy)
       $originalID = GetCardIDBeforeTransform($combatChain[$card]);
       $cardType = CardType($combatChain[$card]);
       if ($cardType === "E" && CardType($originalID) === "A" && $combatChain[$card] !== "EVO410b" && $combatChain[$card] !== "DYN492b") {
+          WriteLog(CardLink($combatChain[$card], $combatChain[$card]). " was banished");
           BanishCardForPlayer(GetCardIDBeforeTransform($combatChain[$card]), $defPlayer, "CC", "Source-".$banishedBy, $mainPlayer);
           $index = FindCharacterIndex($defPlayer, $combatChain[$card]);
           DestroyCharacter($defPlayer, $index, wasBanished: true);
       }
       if ($cardType === "A" || $cardType === "AA") {
+          WriteLog(CardLink($combatChain[$card], $combatChain[$card]). " was banished");
           BanishCardForPlayer($combatChain[$card], $defPlayer, "CC", "Source-".$banishedBy, $banishedBy);
           $index = GetCombatChainIndex($combatChain[$card], $defPlayer);
           $CombatChain->Remove($index);
