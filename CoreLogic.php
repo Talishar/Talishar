@@ -1455,9 +1455,9 @@ function DestroyCharacter($player, $index, $skipDestroy=false, $wasBanished = fa
   }
   $char[$index+10] = "-";
   if(!$skipDestroy) {
-    if (!$wasBanished) AddGraveyard($cardID, $player, "CHAR");
-    CharacterDestroyEffect($cardID, $player);
     if(HasWard($cardID, $player) && ClassContains($cardID, "ILLUSIONIST", $player)) PhantomTidemawDestroy($player);
+    if(!$wasBanished) AddGraveyard($cardID, $player, "CHAR");
+    CharacterDestroyEffect($cardID, $player);
   }
   return $cardID;
 }
@@ -2161,7 +2161,7 @@ function PitchAbility($cardID)
     && SearchCharacterAlive($currentPlayer, "MST027") 
     && SearchCharacterForCard($currentPlayer, "MST027") 
     && GetCharacterGemState($currentPlayer, "MST027") == 1
-    && !SearchCurrentTurnEffects("MST027-WARD", $currentPlayer)) {
+    && !SearchCurrentTurnEffects("MERIDIANWARD", $currentPlayer)) {
     AddLayer("TRIGGER", $currentPlayer, "MST027");
   }
   switch($cardID) {

@@ -1962,7 +1962,7 @@ function WardAmount($cardID, $player, $index=-1)
     case "DTD405": case "DTD406": case "DTD407": case "DTD408"://Angels
     case "DTD409": case "DTD410": case "DTD411": case "DTD412": return 4;
     case "EVO244": return 1;
-    case "MST027": return SearchCurrentTurnEffects("MST027-WARD", $player) ? 3 : 0;
+    case "MST027": return SearchCurrentTurnEffects("MERIDIANWARD", $player) ? 3 : 0;
     case "MST028": return 4;
     case "MST029": case "MST030": return 1;
     case "MST031": return $auras[$index+3];
@@ -2022,7 +2022,7 @@ function HasWard($cardID, $player)
       return true;
     case "EVO093": case "EVO094": case "EVO095": case "EVO244":
       return true;
-    case "MST027": return SearchCurrentTurnEffects("MST027-WARD", $player);
+    case "MST027": return SearchCurrentTurnEffects("MERIDIANWARD", $player);
     case "MST028": case "MST029": case "MST030":
       $char = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $cardID);

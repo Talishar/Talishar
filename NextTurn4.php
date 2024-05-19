@@ -100,7 +100,20 @@
         fileExt = ".png";
         folderPath = folder;
 
-        if (cardNumber == "ENDSTEP" || cardNumber == "ENDTURN" || cardNumber == "RESUMETURN" || cardNumber == "PHANTASM" || cardNumber == "MIRAGE" || cardNumber == "FINALIZECHAINLINK" || cardNumber == "DEFENDSTEP" || cardNumber == "ATTACKSTEP" || cardNumber == "CardBack" || cardNumber == "NONE00" || $cardNumber == "BLOODDEBT") {
+        if (cardNumber == "ENDSTEP" 
+        || cardNumber == "ENDTURN" 
+        || cardNumber == "RESUMETURN" 
+        || cardNumber == "PHANTASM" 
+        || cardNumber == "MIRAGE" 
+        || cardNumber == "FINALIZECHAINLINK" 
+        || cardNumber == "DEFENDSTEP" 
+        || cardNumber == "ATTACKSTEP" 
+        || cardNumber == "CardBack" 
+        || cardNumber == "NONE00" 
+        || $cardNumber == "BLOODDEBT" 
+        || $cardNumer == "BEATCHEST"
+        || $cardNumer == "MERIDIANWARD"
+      ) {
           showHover = 0;
           borderColor = 0;
         } else if (folder == "concat") {

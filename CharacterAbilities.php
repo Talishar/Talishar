@@ -346,7 +346,7 @@ function CharacterDestroyEffect($cardID, $player)
       if(!IsGameOver()) PlayerLoseHealth($player, GetHealth($player));
       break;
     case "MST027":
-      SearchCurrentTurnEffects("MST027-WARD", $player, true);
+      SearchCurrentTurnEffects("MERIDIANWARD", $player, true);
       break;
     default:
       break;
