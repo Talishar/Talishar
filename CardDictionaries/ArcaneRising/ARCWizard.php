@@ -281,6 +281,7 @@
     for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
       $remove = false;
       $effectArr = explode(",", $currentTurnEffects[$i]);
+      if($currentTurnEffects[$i+1] != $player) continue;
       switch($effectArr[0]) {
         case "EVR123":
           $cardType = CardType($source);
