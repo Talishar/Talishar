@@ -2470,11 +2470,11 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       break;
     case "EVO428":
       if(TypeContains($toCardID, "C", $player)) {
-        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
-        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
+        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4", true);
+        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4", true);
       }
       else if(SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
-        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4");
+        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4", true);
       }
       break;
     case "EVO429":
