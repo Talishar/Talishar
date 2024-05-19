@@ -533,6 +533,11 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST235":
       PutPermanentIntoPlay($currentPlayer, $cardID);
       return "";
+    case "MST238":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;faceDown=true");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("ENIGMAMOON", $mainPlayer, "-", 1);
+      return "";
     default: return "";
   }
 }

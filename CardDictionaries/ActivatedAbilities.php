@@ -40,6 +40,7 @@ function MSTAbilityCost($cardID)
     case "MST067": return 3;
     case "MST069": case "MST070": return 1;
     case "MST159": return 2;
+    case "MST238": return 3;
     default: return 0;
   }
 }
@@ -61,6 +62,7 @@ function MSTAbilityType($cardID, $index=-1, $from="-")
     case "MST133": return "I";
     case "MST159": return "AA";
     case "MST232": return "I";
+    case "MST238": return "I";
     default: return "";
   }
 }

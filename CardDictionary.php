@@ -1502,7 +1502,7 @@ function CharacterNumUsesPerTurn($cardID)
     case "OUT093": return 2;
     case "EVO073": return 999;
     case "EVO410": return 999;
-    case "MST001": case "MST002": return 999;
+    case "MST001": case "MST002": case "MST238": return 999;
     default: return 1;
   }
 }
@@ -2155,6 +2155,7 @@ function CardCareAboutChiPitch($cardID)
       case "MST004":
       case "MST025": case "MST026": case "MST027":
       case "MST046": case "MST047": case "MST048": 
+      case "MST238":
       return true;
     default: return false;
   }
@@ -2168,8 +2169,11 @@ function IsModular($cardID)
   }
 }
 
-function HasCloaked($cardID)
+function HasCloaked($cardID, $player="", $hero="")
 {
+  $char = GetPlayerCharacter($player);
+  if(TypeContains($cardID, "E", $player) && $hero == "MST238") return "DOWN";
+  if(isset($char[0]) && TypeContains($cardID, "E", $player) && $char[0] == "MST238") return "DOWN";
   switch($cardID) {
     case "MST005": case "MST028": case "MST029": case "MST030":
     case "MST049":

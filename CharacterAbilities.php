@@ -90,7 +90,7 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   array_push($char, CharacterDefaultActiveState($cardID));
   array_push($char, "-");
   array_push($char, GetUniqueId($cardID, $player));
-  array_push($char, HasCloaked($cardID));
+  array_push($char, HasCloaked($cardID, $player));
   return $index;
 }
 
@@ -645,7 +645,7 @@ function EquipEquipment($player, $card, $slot="")
       $char[$i+9] = CharacterDefaultActiveState($card);
       $char[$i+10] = "-";
       $char[$i+11] = $uniqueID;
-      $char[$i+12] = HasCloaked($card);
+      $char[$i+12] = HasCloaked($card, $player);
       $replaced = 1;
     }
   }
@@ -664,7 +664,7 @@ function EquipEquipment($player, $card, $slot="")
     array_splice($char, $insertIndex+9, 0, 2);
     array_splice($char, $insertIndex+10, 0, "-");
     array_splice($char, $insertIndex+11, 0, $uniqueID);
-    array_splice($char, $insertIndex+12, 0, HasCloaked($card));
+    array_splice($char, $insertIndex+12, 0, HasCloaked($card, $player));
   }
   if($card == "EVO013") AddCurrentTurnEffect("EVO013-" . $uniqueID . "," . $slot, $player);
 }
@@ -695,7 +695,7 @@ function EquipWeapon($player, $card)
         $char[$i+9] = CharacterDefaultActiveState($card);
         $char[$i+10] = "-";
         $char[$i+11] = GetUniqueId($card, $player);
-        $char[$i+12] = HasCloaked($card);
+        $char[$i+12] = HasCloaked($card, $player);
         $replaced = 1;
       }
       else if(Is1H($char[$i])) ++$numHands;
@@ -717,14 +717,14 @@ function EquipWeapon($player, $card)
     array_splice($char, $insertIndex+9, 0, 2);
     array_splice($char, $insertIndex+10, 0, "-");
     array_splice($char, $insertIndex+11, 0, GetUniqueId($card, $player));
-    array_splice($char, $insertIndex+12, 0, HasCloaked($card));
+    array_splice($char, $insertIndex+12, 0, HasCloaked($card, $player));
   }
 }
 
 function ShiyanaCharacter($cardID, $player="")
 {
   global $currentPlayer;
-  if($player == "") $player = $currentPlayer;
+  if($player == "") $player = $currentPlayer; 
   if($cardID == "CRU097") {
     $otherPlayer = ($player == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
