@@ -2519,15 +2519,17 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if(!$skipDRResolution && !$isSpectraTarget && $target != "") $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
     if($isSpectraTarget) {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts:$additionalCosts);
-      switch($goesWhere) {
-        case "BOTDECK": AddBottomDeck($cardID, $currentPlayer, $from); break;
-        case "HAND": AddPlayerHand($cardID, $currentPlayer, $from); break;
-        case "GY": AddGraveyard($cardID, $currentPlayer, $from); break;
-        case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;
-        case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, $from, "NA"); break;
-        case "THEIRDISCARD": AddGraveyard($cardID, $otherPlayer, $from); break;
-        case "THEIRBOTDECK": AddBottomDeck($cardID, $otherPlayer, $from); break;
-        default: break;
+      if(CardType(($cardID) !== "T")) { //Don't need to add to anywhere if it's a token
+        switch($goesWhere) {
+          case "BOTDECK": AddBottomDeck($cardID, $currentPlayer, $from); break;
+          case "HAND": AddPlayerHand($cardID, $currentPlayer, $from); break;
+          case "GY": AddGraveyard($cardID, $currentPlayer, $from); break;
+          case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;
+          case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, $from, "NA"); break;
+          case "THEIRDISCARD": AddGraveyard($cardID, $otherPlayer, $from); break;
+          case "THEIRBOTDECK": AddBottomDeck($cardID, $otherPlayer, $from); break;
+          default: break;
+        }
       }
     }
     if($index == 0 || $isSpectraTarget) {
