@@ -57,7 +57,7 @@
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
         return "";
       case "ARC120":
-        $damage = ArcaneDamage($cardID) + ConsumeArcaneBonus($currentPlayer) * 2;
+        $damage = ArcaneDamage($cardID)*2 + ConsumeArcaneBonus($currentPlayer) * 2;
         DealArcane($damage, 1, "PLAYCARD", $cardID, resolvedTarget: $target, nbArcaneInstance: 2);
         return "";
       case "ARC121":
@@ -311,9 +311,9 @@
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
-      case "ARC118": return GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
       case "ARC147": return 5;
-      case "ARC120": case "ARC126": case "ARC141": case "ARC148": return 4;
+      case "ARC120": return 2;
+      case "ARC126": case "ARC141": case "ARC148": return 4;
       case "ARC119": case "ARC121": case "ARC127": case "ARC132": case "ARC138": case "ARC142": case "ARC144": case "ARC149": return 3;
       case "ARC128": case "ARC133": case "ARC139": case "ARC143": case "ARC145": return 2;
       case "ARC134": case "ARC140": case "ARC146": return 1;
