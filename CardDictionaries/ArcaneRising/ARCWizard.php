@@ -306,6 +306,7 @@
 
   function ArcaneDamage($cardID)
   {
+    //Blaze - Replacement effects aren't considered when evaluating how much an effect does so Emeritus Scolding (blu) would require 2 counters. 
     global $mainPlayer, $currentPlayer, $CS_ArcaneDamageTaken, $resourcesPaid;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
@@ -320,14 +321,14 @@
       case "CRU162": case "CRU168": case "CRU172": case "CRU174": return 3;
       case "CRU169": case "CRU173": case "CRU175": return 2;
       case "CRU170": case "CRU176": return 1;
-      case "EVR124": return $resourcesPaid;
-      if ($cardID == "EVR125") return $oppTurn ? 6 : 4;
-      if ($cardID == "EVR126") return $oppTurn ? 5 : 3;
-      if ($cardID == "EVR127") return $oppTurn ? 4 : 2;
+      case "EVR124": return 0;
+      case "EVR125": return 4;
+      case "EVR126": return 3;
+      case "EVR127": return 2;
       case "EVR134": return 5;
       case "EVR123": case "EVR135": return 4;
       case "EVR136": return 3;
-      case "UPR105": return 5 + CountAura("ELE111", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Affliction", -1, -1, "", "ICE")) + FrozenCount($otherPlayer);
+      case "UPR105": return 5;
       case "UPR133": case "UPR110": case "UPR113": return 5;
       case "UPR170": case "UPR134": case "UPR127": case "UPR122": case "UPR111": case "UPR114": return 4;
       case "UPR173": case "UPR171": case "UPR135": case "UPR130": case "UPR128": case "UPR123": case "UPR112": case "UPR115": case "UPR104": case "UPR119": return 3;
