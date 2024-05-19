@@ -614,6 +614,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   else if($from == "GY" && !PlayableFromGraveyard($cardID)) return false;
   if($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "EVO001" && $character[0] != "EVO002" || CardCost($cardID) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
+  if(TypeContains($cardID, "E", $player) && $character[$index+12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
   if($phase == "B") {
     if(TypeContains($cardID, "E", $player) && $character[$index+6] == 1) return false;
     if(IsBlockRestricted($cardID, $phase, $from, $index, $restriction, $player)) return false;
@@ -2177,7 +2178,6 @@ function HasCloaked($cardID, $player="", $hero="")
 {
   $char = GetPlayerCharacter($player);
   if(TypeContains($cardID, "E", $player) && $hero == "MST238") return "DOWN";
-  if(isset($char[0]) && TypeContains($cardID, "E", $player) && $char[0] == "MST238") return "DOWN";
   switch($cardID) {
     case "MST005": case "MST028": case "MST029": case "MST030":
     case "MST049":
