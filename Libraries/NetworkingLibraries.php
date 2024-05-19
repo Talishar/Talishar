@@ -1716,7 +1716,7 @@ function GetLayerTarget($cardID)
 
 function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
 {
-  global $currentPlayer, $CS_NumActionsPlayed, $CS_PlayIndex;
+  global $currentPlayer, $CS_NumActionsPlayed, $CS_PlayIndex, $CS_AdditionalCosts;
   if (IsStaticType(CardType($cardID), $from, $cardID)) {
     $names = GetAbilityNames($cardID, $index);
     if($names != "") {
@@ -1836,6 +1836,19 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         }
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       }
+      return "";
+    case "HER117": 
+      $char = &GetPlayerCharacter($currentPlayer);
+      $numCounters = $char[2];
+      $costChoices = "0";
+      for($i = 1; $i <= $numCounters; ++$i)
+      {
+        $costChoices .= ",".$i;
+      }
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how much you want to pay");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, $costChoices);
+      AddDecisionQueue("ADDCURRENTEFFECTLASTRESULT", $currentPlayer, "HER117-", 1);
+      AddDecisionQueue("BLAZEPAYCOST", $currentPlayer, "<-", 1);
       return "";
     default:
       break;

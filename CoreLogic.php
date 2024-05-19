@@ -1042,6 +1042,7 @@ function IsCharacterAbilityActive($player, $index, $checkGem=false)
 {
   $character = &GetPlayerCharacter($player);
   if($checkGem && $character[$index+9] == 0) return false;
+  if($character[$index+12] == "DOWN") return false;
   return $character[$index+1] == 2;
 }
 
@@ -2057,7 +2058,7 @@ function ClearGameFiles($gameName)
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
 {
-  global $currentPlayer, $layers, $CS_NumCrouchingTigerPlayedThisTurn;
+  global $currentPlayer, $layers, $CS_NumCrouchingTigerPlayedThisTurn, $currentTurnEffects;
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
@@ -2116,15 +2117,23 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   else if($set == "AKO") return AKOPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "MST") return MSTPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "ASB") return ASBPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-  else if($set == "LGS") {
+  else { 
     switch ($cardID) {
       case "LGS176": case "LGS177": case "LGS178":
         $deck = new Deck($currentPlayer);
         if (!$deck->Empty()) if(ColorContains($deck->BanishTop(), PitchValue($cardID), $currentPlayer)) PlayAura("ARC112", $currentPlayer, 1, true);
         return "";
+      case "HER117":
+        $character = &GetPlayerCharacter($currentPlayer);
+        $index = SearchCurrentTurnEffectsForIndex("HER117", $currentPlayer);
+        $dynCost = explode("-", $currentTurnEffects[$index]);
+        MZMoveCard($currentPlayer, "MYHAND:type=A;class=WIZARD;arcaneDamage=".$dynCost[1], "MYBANISH,HAND,INST,".$cardID);
+        return "";
+      default:
+        break;
     }
   }
-  else return ROGUEPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  return ROGUEPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
 }
 
 function PitchAbility($cardID)

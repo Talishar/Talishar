@@ -307,7 +307,6 @@
   {
     global $mainPlayer, $currentPlayer, $CS_ArcaneDamageTaken, $resourcesPaid;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $oppTurn = $currentPlayer != $mainPlayer;
     switch($cardID)
     {
       case "ARC118": return GetClassState($otherPlayer, $CS_ArcaneDamageTaken);

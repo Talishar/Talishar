@@ -735,7 +735,7 @@ function ShiyanaCharacter($cardID, $player="")
 
 function EquipPayAdditionalCosts($cardIndex, $from)
 {
-  global $currentPlayer;
+  global $currentPlayer, $CS_AdditionalCosts, $currentTurnEffects;
   $character = &GetPlayerCharacter($currentPlayer);
   $cardID = $character[$cardIndex];
   $cardID = ShiyanaCharacter($cardID);
@@ -856,7 +856,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       break;
     case "MST232": 
       DestroyCharacter($currentPlayer, $cardIndex, true);
-      break;
+      break;  
     default:
       --$character[$cardIndex+5];
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1; //By default, if it's used, set it to used

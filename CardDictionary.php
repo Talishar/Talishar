@@ -326,6 +326,7 @@ function AbilityCost($cardID)
   else if($set == "AKO") return AKOAbilityCost($cardID);
   else if($set == "MST") return MSTAbilityCost($cardID);
   else if($set == "ROG") return ROGUEAbilityCost($cardID);
+  else if($cardID == "HER117") return 0;
   return CardCost($cardID);
 }
 
@@ -493,6 +494,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "AKO") return AKOAbilityType($cardID, $index, $from);
   else if($set == "MST") return MSTAbilityType($cardID, $index, $from);
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
+  else if($cardID == "HER117") return "I";
 }
 
 function GetAbilityTypes($cardID, $index=-1, $from="-")
@@ -1163,6 +1165,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST232": return (count($myHand) + count($myArsenal)) < 2;
     case "MST236": 
       return $discard->NumCards() < 3;
+    case "HER117":
+     return $character[$index + 2] < 1;
     default: return false;
   }
 }

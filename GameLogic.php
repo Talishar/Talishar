@@ -323,12 +323,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         writelog("Your arsenal is full, you cannot put a card in your arsenal");
         return "PASS";
       }
-    case "ENIGMAMOON":
-      $character = &GetPlayerCharacter($player);
-      $MZZone = explode("-", $lastResult);
-      $character[$MZZone[1]+12] = "UP";
-      if(hasWard($character[$MZZone[1]], $player)) PlayAura("MON104", $player, 3);
-      return $lastResult;
     case "TURNCHARACTERFACEUP":
       $character = &GetPlayerCharacter($player);
       $character[$lastResult+12] = "UP";
@@ -2023,6 +2017,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return $lastResult;
       case "CURRENTEFFECTAFTERPLAYORACTIVATEABILITY";
         CurrentEffectAfterPlayOrActivateAbility();
+        return $lastResult;
+      case "ENIGMAMOON":
+        $character = &GetPlayerCharacter($player);
+        $MZZone = explode("-", $lastResult);
+        $character[$MZZone[1]+12] = "UP";
+        if(hasWard($character[$MZZone[1]], $player)) PlayAura("MON104", $player, 3);
+        return $lastResult;
+      case "BLAZE":
+        $character = &GetPlayerCharacter($player);
+        $character[2] += $parameter;
+        return $lastResult;
+      case "BLAZEPAYCOST":  
+        $character = &GetPlayerCharacter($player);    
+        $character[2] -= $lastResult;
         return $lastResult;
     default:
       return "NOTSTATIC";

@@ -1916,8 +1916,12 @@ function Opt($cardID, $amount)
 
 function PlayerOpt($player, $amount, $optKeyword = true)
 {
+  $char = GetPlayerCharacter($player);
+  $heroID = ShiyanaCharacter($char[0]);
+  $heroStatus = $char[1];
   AddDecisionQueue("FINDINDICES", $player, "DECKTOPXREMOVE," . $amount);
   AddDecisionQueue("OPT", $player, "<-", 1);
+  if($heroID == "HER117" && $heroStatus < 3) AddDecisionQueue("BLAZE", $player, $amount, 1);
 }
 
 function BanishRandom($player, $source)
@@ -2078,7 +2082,7 @@ function IsWeaponGreaterThanTwiceBasePower()
 function HasEnergyCounters($array, $index)
 {
   switch($array[$index]) {
-    case "WTR150": case "UPR166": return $array[$index+2] > 0;
+    case "WTR150": case "UPR166": case "HER117": return $array[$index+2] > 0;
     default: return false;
   }
 }
@@ -2093,7 +2097,7 @@ function HasAttackCounters($zone, $array, $index)
 
 function IsEnergyCounters($cardID){
   switch($cardID) {
-    case "WTR150": case "UPR166": return true;
+    case "WTR150": case "UPR166": case "HER117": return true;
     default: return false;
   }
 }
