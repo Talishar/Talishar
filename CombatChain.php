@@ -413,8 +413,9 @@ function OnBlockResolveEffects()
   $blockedFromHand = 0;
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if(ColorContains($combatChain[$i], 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
-    if($combatChain[$i+2] == "HAND")
-    ++$blockedFromHand;
+    if($combatChain[$i+2] == "HAND") ++$blockedFromHand;
+  }
+  for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if(($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i+2] != "HAND")) UnityEffect($combatChain[$i]);
     if(HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
     if(SearchCurrentTurnEffects("HVY104", $mainPlayer && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("HVY104") == -1)) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);
