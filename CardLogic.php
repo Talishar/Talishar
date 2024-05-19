@@ -2149,7 +2149,7 @@ function HasFrostCounters($cardID){
 
 function HasBalanceCounters($cardID){
   switch($cardID) {
-    case "UPR140":
+    case "CRU075":
       return true;
     default: return false;
   }
