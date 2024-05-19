@@ -1168,8 +1168,18 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
         $borderColor = ($layers[$index + 1] == $playerID ? 1 : 2);
       }
 
-      if (($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN") || ($option[0] == "THEIRCHAR" && $theirCharacter[$i + 12] == "DOWN")) {
+      if (($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN") || ($option[0] == "THEIRCHAR" && $theirCharacter[$option[1] + 12] == "DOWN")) {
         $card = $TheirCardBack;
+        switch ($option[0]) {
+          case "THEIRARS":
+            $label = "Arsenal";
+            break;
+          case "THEIRCHAR":
+            $label = "Equip-".CardSubType($theirCharacter[$option[1]]);
+            break;
+          default:
+            break;
+        }
       }
 
       //Show Life and Def counters on allies in the popups

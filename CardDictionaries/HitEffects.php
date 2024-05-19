@@ -103,6 +103,9 @@ function MSTHitEffect($cardID, $from)
       AddCurrentTurnEffect($cardID, $mainPlayer);
       break;
     case "MST206": case "MST207": case "MST208":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;faceDown=true&THEIRARS:faceDown=true");
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZREVEAL", $mainPlayer, "-", 1);
       break;
     case "MST233":
       $trapsArr = explode(",",SearchDiscard($mainPlayer, subtype:"Trap"));

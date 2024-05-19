@@ -73,6 +73,20 @@ function MZDiscard($player, $parameter, $lastResult)
   return $lastResult;
 }
 
+function MZReveal($player, $parameter, $lastResult)
+{
+  $lastResultArr = explode(",", $lastResult);
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  for($i = count($lastResultArr) - 1; $i >= 0; $i--) {
+    $mzIndex = explode("-", $lastResultArr[$i]);
+    $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
+    $zone = &GetMZZone($cardOwner, $mzIndex[0]);
+    $cardID = $zone[$mzIndex[1]];
+    WriteLog(CardLink($cardID, $cardID) . " was revealed");
+  }
+  return $lastResult;
+}
+
 function MZAddZone($player, $parameter, $lastResult)
 {
   $lastResultArr = explode(",", $lastResult);
