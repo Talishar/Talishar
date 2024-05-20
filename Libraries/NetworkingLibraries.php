@@ -1044,12 +1044,12 @@ function ResolveCombatDamage($damageDone)
       if(SubtypeContains($combatChain[0], "Sword", $mainPlayer)) IncrementClassState($mainPlayer, $CS_HitsWithSword);
     }
     if(!HitEffectsArePrevented($combatChain[0])) {
-      for($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
-        if($combatChain[$i] == $mainPlayer) {
-          $EffectContext = $combatChain[$i - 1];
-          AddOnHitTrigger($combatChain[$i - 1]);
-          if($damageDone >= 4) AddCrushEffectTrigger($combatChain[$i - 1]);
-          if(CachedTotalAttack() >= 13) AddTowerEffectTrigger($combatChain[$i - 1]);
+      for($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+        if($combatChain[$i+1] == $mainPlayer) {
+          $EffectContext = $combatChain[$i];
+          AddOnHitTrigger($combatChain[$i]);
+          if($damageDone >= 4) AddCrushEffectTrigger($combatChain[$i]);
+          if(CachedTotalAttack() >= 13) AddTowerEffectTrigger($combatChain[$i]);
         }
       }
       for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
@@ -1121,6 +1121,9 @@ function FinalizeChainLink($chainClosed = false)
           break;
         case "BANISH":
           BanishCardForPlayer($combatChain[$i - 1], $combatChain[$i], "CC", $modifier);
+          break;
+        case "THEIRBOTDECK":
+          AddBottomDeck($combatChain[$i-1], ($combatChain[$i] == 1 ? 2 : 1), "CC");
           break;
         default: break;
       }

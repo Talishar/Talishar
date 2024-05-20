@@ -91,12 +91,14 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       $rv = "";
       return $rv;
     case "ARC037":
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      $items = &GetItems($currentPlayer);
-      if($index != -1) {
-        PlayerOpt($currentPlayer, 1);
-        --$items[$index+1];
-        if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
+      if($from == "PLAY") {
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        $items = &GetItems($currentPlayer);
+        if($index != -1) {
+          PlayerOpt($currentPlayer, 1);
+          --$items[$index+1];
+          if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
+        }
       }
       return $rv;
     default: return "";

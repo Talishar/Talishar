@@ -926,11 +926,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
   $otherPlayer = ($player == 1 ? 2 : 1);
-  if($additionalCosts == "ONHITEFFECT") { ProcessHitEffect($target, $from); return; }
+  if($additionalCosts == "ONHITEFFECT") { ProcessHitEffect($target, $combatChain[2]); return; }
   if($additionalCosts == "CRUSHEFFECT") { ProcessCrushEffect($target); return; }
   if($additionalCosts == "TOWEREFFECT") { ProcessTowerEffect($target); return; }
   if($additionalCosts == "EFFECTHITEFFECT") {
-    if(EffectHitEffect($target, $from)) {
+    if(EffectHitEffect($target, $combatChain[2])) {
       $index = FindCurrentTurnEffectIndex($player, $target);
       if($index != -1) RemoveCurrentTurnEffect($index);
     }
