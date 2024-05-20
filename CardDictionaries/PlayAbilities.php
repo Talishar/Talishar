@@ -306,9 +306,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST496,".$from);
       return "";    
     case "MST097":
-      $targetArr = explode(",", $target);
-      if(SearchDiscardForCard($otherPlayer, $targetArr[1]) != "") {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targetArr[0], 1);
+      WriteLog($target . "-". GetMZCard($currentPlayer, $target));
+      if(SearchDiscardForCard($otherPlayer, GetMZCard($currentPlayer, $target)) != "") {   
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $target, 1);
         AddDecisionQueue("MZADDZONE", $currentPlayer, "THEIRBANISH,GY,-,".$cardID, 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST497,".$from);  
@@ -322,9 +322,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST498,".$from);
       return "";
     case "MST099":
-      $targetArr = explode(",", $target);
-      if(SearchDiscardForCard($currentPlayer, $targetArr[1]) != "") {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targetArr[0], 1);
+      if(SearchDiscardForCard($currentPlayer, GetMZCard($currentPlayer, $target)) != "") {   
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $target, 1);
         AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST499,".$from);

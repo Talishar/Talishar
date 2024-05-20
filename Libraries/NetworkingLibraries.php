@@ -1695,14 +1695,14 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target action card");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SETLAYERTARGETCARDID", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
     case "MST099":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target action card");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SETLAYERTARGETCARDID", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
     case "MST134": case "MST135": case "MST136":
