@@ -333,7 +333,7 @@
       case "UPR170": case "UPR134": case "UPR127": case "UPR122": case "UPR111": case "UPR114": return 4;
       case "UPR173": case "UPR171": case "UPR135": case "UPR130": case "UPR128": case "UPR123": case "UPR112": case "UPR115": case "UPR104": case "UPR119": return 3;
       case "UPR174": case "UPR172": case "UPR131": case "UPR129": case "UPR124": case "UPR120": return 2;
-      case "UPR179": case "UPR180": case "UPR181": case "UPR132": case "UPR121": return 1;
+      case "UPR175": case "UPR179": case "UPR180": case "UPR181": case "UPR132": case "UPR121": return 1;
       case "DYN194": return 2;
       case "DYN195": return 5;
       case "DYN197": return 4;
