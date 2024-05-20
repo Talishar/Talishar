@@ -100,7 +100,8 @@ function MSTHitEffect($cardID, $from)
       AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
       break;
     case "MST194": case "MST195": case "MST196":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
+      AddCurrentTurnEffect($cardID, $defPlayer);
+      AddNextTurnEffect($cardID, $defPlayer);
       break;
     case "MST206": case "MST207": case "MST208":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;faceDown=true&THEIRARS:faceDown=true");
