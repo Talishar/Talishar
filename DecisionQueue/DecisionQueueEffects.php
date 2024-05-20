@@ -699,17 +699,18 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $cardList = [];
       for($i=2; $i>=0; $i--) {
         WriteLog(CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]) . " was banished");
+        BanishCardForPlayer($discard[$lastResult[$i]], $player, "GY", "FACEDOWN", "MST233");
         array_push($cardList, $discard[$lastResult[$i]]);
-        BanishCardForPlayer($discard[$lastResult[$i]], $player, "GY", "FACEDOWN");
-    
-        WriteLog($lastResult[$i]);
-        RemoveGraveyard($player, $lastResult[$i]);
-    }
+      }
     if(!ArsenalFull($player)) {
         $rand = GetRandom(0, count($cardList));
         AddArsenal($cardList[$rand], $player, "BANISH", "DOWN");
         RemoveBanish($player, SearchBanishForCard($player, $cardList[$rand]));
-    }
+      }
+      for($j=count($cardList); $j>=0; $j--) {
+        $index = SearchDiscardForCard($player, $cardList[$j]);
+        RemoveGraveyard($player, $index);
+      }
       return $lastResult;
     default: return "";
   }
