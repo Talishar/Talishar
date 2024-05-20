@@ -864,12 +864,12 @@ function CanPlayInstant($phase)
 function IsPitchRestricted($cardID, &$restriction, $from = "", $index = -1, $pitchRestriction="")
 {
   global $playerID;
+  $resources = &GetResources($playerID);
   if(SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0) { $restriction = "ELE035"; return true; }
-  
   if(ColorContains($cardID, 1, $playerID) && SearchCurrentTurnEffects("OUT101-1", $playerID)) { $restriction = "OUT101"; return true; }
   else if(ColorContains($cardID, 2, $playerID) && SearchCurrentTurnEffects("OUT101-2", $playerID)) { $restriction = "OUT101"; return true; }
   else if(ColorContains($cardID, 3, $playerID) && SearchCurrentTurnEffects("OUT101-3", $playerID)) { $restriction = "OUT101"; return true; }
-  if(CardCareAboutChiPitch($pitchRestriction) && !SubtypeContains($cardID, "Chi")) return true;
+  if(CardCareAboutChiPitch($pitchRestriction) && !SubtypeContains($cardID, "Chi") && $resources[0] < 3) return true;
   return false;
 }
 
