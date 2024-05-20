@@ -353,7 +353,7 @@ function PlayerTargetedAbility($player, $card, $lastResult)
   }
 }
 
-function SpecificCardLogic($player, $card, $lastResult, $initiator)
+function SpecificCardLogic($player, $card, $lastResult, $parameter)
 {
   global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext;
   switch($card)
@@ -607,7 +607,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "CONSTRUCTNITROMECHANOID":
       sort($lastResult);
       for($i = count($lastResult)-1; $i >= 0; --$i) {
-        RemoveItemAndAddAsSubcardToCharacter($player, $lastResult[$i], $initiator);
+        RemoveItemAndAddAsSubcardToCharacter($player, $lastResult[$i], $parameter);
       }
       return $lastResult;
     case "SYSTEMRESET":
@@ -697,7 +697,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "MURKYWATER":
       $discard = GetDiscard($player);
       $cardList = [];
-      for($i=2; $i>=0; $i--) {
+      for($i=$parameter; $i>=0; $i--) {
         WriteLog(CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]) . " was banished");
         BanishCardForPlayer($discard[$lastResult[$i]], $player, "GY", "FACEDOWN", "MST233");
         array_push($cardList, $discard[$lastResult[$i]]);
