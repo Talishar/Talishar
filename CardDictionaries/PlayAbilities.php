@@ -323,7 +323,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "MST099":
       $targetArr = explode(",", $target);
-      if(SearchDiscardForCard($otherPlayer, GetMZCard($currentPlayer, $targetArr[0]))) {
+      if(SearchDiscardForCard($currentPlayer, GetMZCard($currentPlayer, $targetArr[0]))) {
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targetArr[0], 1);
         AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
