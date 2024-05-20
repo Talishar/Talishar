@@ -420,6 +420,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
+    if(IsGameOver()) $theirCharacter[$i + 12] = "UP";
     if ($theirCharacter[$i + 12] == "UP" || $playerID == 3 && IsCasterMode() || IsGameOver()) {
       array_push($characterContents, JSONRenderedCard(
         $theirChar,
@@ -579,8 +580,8 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       $gem = ($myCharacter[$i + 9] == 1 ? 1 : 2);
     }
     $restriction = implode("_", explode(" ", $restriction));
-
-    if($playerID == 3 && $myCharacter[$i + 12] == "DOWN") {
+    if(IsGameOver()) $myCharacter[$i + 12] = "UP";
+    if($playerID == 3 && $myCharacter[$i + 12] == "DOWN" && !IsGameOver()) {
       array_push($myCharData, JSONRenderedCard(
         $MyCardBack)); //CardID
     }
