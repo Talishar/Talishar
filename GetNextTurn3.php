@@ -1128,25 +1128,17 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
         }
       }
       //Add indication for layers targets
-      if (count($layers) > 0 && $layers[0] != "") {
-        $search = SearchLayer($otherPlayer, type:"I");
-        if($search != "") {
-          $indices = explode(",", $search);
-          $countIndices = count($indices);
-          for ($j=0; $j < $countIndices; $j++) { 
-              if(!isset($indices[$i])) continue;
-              if(!isset($option[0])) continue;
-              if(!isset($option[1])) continue;
-              $searchParams = explode(",", $layers[$indices[$i] + 3]);
-              $cardID = GetMZCard($currentPlayer, $option[0]."-".$option[1]);
-              if(!isset($searchParams[1])) continue;
-              if($cardID == $searchParams[1]) {
-                  $label = "Targetted";
-                  continue;
-              }
+      if (count($layers) > 0 && $layers[0] != "" && ($option[0] == "MYDISCARD" || $option[0] == "THEIRDISCARD")) {
+        $countLayers = count($layers);
+        for ($j=0; $j < $countLayers; $j += LayerPieces()) { 
+            $target = $option[0]."-".$option[1];
+            $cardID = GetMZCard($currentPlayer, $target); //CRU123
+            if($cardID == GetMZCard($layers[$j + 1], $layers[$j + 3])) {
+                $label = "Targetted";
+                continue;
             }
-          }   
-        }
+        }   
+      }
 
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
       if ($option[0] == "MYARS") $label = "Arsenal";

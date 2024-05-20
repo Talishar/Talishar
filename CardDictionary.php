@@ -976,6 +976,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MON281": case "MON282": case "MON283": 
       if(isset($combatChain[$index+7]) && $from == "CC") return SearchCurrentTurnEffectsForUniqueID($combatChain[$index+7]) != -1;
       else return false;
+    case "MON303": case "MON304": case "MON305": 
+      $maxCost = 3;
+      if($cardID == "MON304") $maxCost = 2;
+      elseif ($cardID == "MON305") $maxCost = 1;
+      return SearchDiscard($player, "AA", "", $maxCost) == "";
     case "ELE031": case "ELE032": case "ELE115": return !ArsenalHasFaceDownCard($player);
     case "ELE118": return $from == "ARS" || ArsenalEmpty($player);
     case "ELE125": case "ELE126": case "ELE127":
