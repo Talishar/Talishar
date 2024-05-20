@@ -6,7 +6,7 @@ function CardName($cardID)
     $arr = str_split($cardID, 3);
     if(count($arr) < 2) return "";
     $set = $arr[0];
-    if($set != "ROG" && $set != "DUM" && $set != "LGS")
+    if($set != "ROG" && $set != "DUM")
     {
       $number = intval(substr($cardID, 3));
       if($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $cardID != "EVO410" && $cardID != "EVO410b" && $cardID != "DTD564")) return GeneratedCardName($cardID);
