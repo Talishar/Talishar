@@ -307,7 +307,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";    
     case "MST097":
       $targetArr = explode(",", $target);
-      if(GetMZCard($currentPlayer, $targetArr[0]) == $targetArr[1]) {
+      if(SearchDiscardForCard($otherPlayer, GetMZCard($currentPlayer, $targetArr[0]))) {
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targetArr[0], 1);
         AddDecisionQueue("MZADDZONE", $currentPlayer, "THEIRBANISH,GY,-,".$cardID, 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
@@ -323,15 +323,15 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "MST099":
       $targetArr = explode(",", $target);
-      if(GetMZCard($currentPlayer, $targetArr[0]) == $targetArr[1]) {
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targetArr[0], 1);
-      AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
-      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-      if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST499,".$from);
-    }
-    else {
-      WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect and this card does not transcend.");
-    }
+      if(SearchDiscardForCard($otherPlayer, GetMZCard($currentPlayer, $targetArr[0]))) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targetArr[0], 1);
+        AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST499,".$from);
+      }
+      else {
+        WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect and this card does not transcend.");
+      }
       return "";
     case "MST100":
       Draw($currentPlayer);

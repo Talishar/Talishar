@@ -1237,13 +1237,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $target = $lastResult;
       $targetArr = explode("-", $target);
       if($targetArr[0] == "LAYER") $target = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
-      for($i=0; $i<count($layers); $i+=LayerPieces())
-      {
-        if($layers[$i] == $parameter)
-        {
-          $layers[$i+3] = $target.",".GetMZCard($player, $target);
+      $i = count($layers) - LayerPieces();
+        while ($i >= 0) {
+          if($layers[$i] == $parameter) {
+            $layers[$i+3] = $target.",".GetMZCard($player, $target);
+          }
+          $i -= LayerPieces();
         }
-      }
       return $lastResult;  
     case "SHOWSELECTEDTARGET":
       $targetPlayer = (substr($lastResult, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player);
