@@ -276,6 +276,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $activeChainLink->fusion = CachedFusionActive();
   if ($CombatChain->HasCurrentLink()) $activeChainLink->tower = IsTowerActive();
   if ($CombatChain->HasCurrentLink()) $activeChainLink->piercing = IsPiercingActive($combatChain[0]);
+  if ($CombatChain->HasCurrentLink()) $activeChainLink->combo = ComboActive();
 
   $activeChainLink->fused = false;
 
