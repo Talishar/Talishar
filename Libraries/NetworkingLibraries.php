@@ -1926,7 +1926,7 @@ function PayAbilityAdditionalCosts($cardID, $index)
 
 function PayAdditionalCosts($cardID, $from)
 {
-  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain, $CS_NumBluePlayed;
+  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain, $CS_NumBluePlayed, $combatChain;
   $cardSubtype = CardSubType($cardID);
   if($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
@@ -2150,6 +2150,8 @@ function PayAdditionalCosts($cardID, $from)
           WriteLog("This ability requires a discard as an additional cost, but you have no cards to discard. Reverting gamestate prior to the card declaration.", highlight:true);
           RevertGamestate();
         }
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        AddCurrentTurnEffect($cardID, $currentPlayer, "CC", $combatChain[$index+7]);
         MZMoveCard($currentPlayer, "MYHAND", "MYDISCARD,".$currentPlayer, silent:true);
       }
       break;
