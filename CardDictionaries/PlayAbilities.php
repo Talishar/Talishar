@@ -24,12 +24,12 @@ function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer, $CS_DamagePrevention, $CS_PlayIndex;
-  global $combatChain, $defPlayer, $CombatChain, $chainLinks, $combatChainState, $CCS_LinkBaseAttack;
+  global $combatChain, $defPlayer, $CombatChain, $chainLinks, $combatChainState, $CCS_LinkBaseAttack, $CS_NumAttacks;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $hand = &GetHand($currentPlayer);
   switch($cardID) {
     case "MST000":
-      AddCurrentTurnEffect($cardID, $otherPlayer);
+      if(GetClassState($otherPlayer, $CS_NumAttacks) <= 1)  AddCurrentTurnEffect($cardID, $otherPlayer);
       return "";
     case "MST001": case "MST002":
       AddDecisionQueue("DECKCARDS", $otherPlayer, "0");
