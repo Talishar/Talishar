@@ -110,15 +110,14 @@ function MSTHitEffect($cardID, $from)
       break;
     case "MST233":
       $trapsArr = explode(",",SearchDiscard($mainPlayer, subtype:"Trap"));
-      $numTraps = count($trapsArr) > 3 ? 3 : count($trapsArr);
-      if($numTraps > 0) {
+      if(count($trapsArr) >= 3) {
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish traps");
         AddDecisionQueue("NOPASS", $mainPlayer, "-");
         AddDecisionQueue("FINDINDICES", $mainPlayer, "MULTITRAPSBANISH", 1);
-        AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $numTraps."-", 1);
-        AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-".$numTraps, 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "3-", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-3", 1);
         AddDecisionQueue("MULTICHOOSEDISCARD", $mainPlayer, "<-", 1);
-        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "MURKYWATER,".$numTraps-1, 1);
+        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "MURKYWATER", 1);
       }
       break;
     default:
