@@ -2429,16 +2429,6 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
         AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);  
       }
-    case "MST051":
-      if(CanRevealCards($currentPlayer)) {
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "CROUCHINGTIGERHAND");
-        AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to reveal", 1);
-        AddDecisionQueue("MAYMULTICHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
-        AddDecisionQueue("TOOTHANDCLAW", $currentPlayer, "-", 1);
-      }
-      break;
     case "MST053":
       $modalities = "Create_2_Crouching_Tigers,Crouching_Tigers_Get_+1_this_turn,Transcend";
       $numModes = GetClassState($currentPlayer, $CS_NumBluePlayed) > 1 ? 3 : 1;

@@ -200,6 +200,16 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST048": 
       PlayAura("CRU075", $currentPlayer); //Zen Token
       return "";
+    case "MST051":
+      if(CanRevealCards($currentPlayer)) {
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "CROUCHINGTIGERHAND");
+        AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to reveal", 1);
+        AddDecisionQueue("MAYMULTICHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
+        AddDecisionQueue("TOOTHANDCLAW", $currentPlayer, "-", 1);
+      }
+      break;
     case "MST052":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") AddPlayerHand("DYN065", $currentPlayer, "NA", 2);
