@@ -306,7 +306,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST496,".$from);
       return "";    
     case "MST097":
-      WriteLog($target . "-". GetMZCard($currentPlayer, $target));
       if(SearchDiscardForCard($otherPlayer, GetMZCard($currentPlayer, $target)) != "") {   
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $target, 1);
         AddDecisionQueue("MZADDZONE", $currentPlayer, "THEIRBANISH,GY,-,".$cardID, 1);

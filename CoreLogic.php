@@ -1713,6 +1713,18 @@ function IsSpecificAllyAttackTarget($player, $index, $uniqueID)
   return false;
 }
 
+function IsSpecificAuraAttackTarget($player, $index, $uniqueID)
+{
+  global $combatChainState, $CCS_AttackTargetUID;
+  $mzTarget = GetAttackTarget();
+  $mzArr = explode("-", $mzTarget);
+  if($mzArr[0] == "AURAS" || $mzArr[0] == "MYAURAS" || $mzArr[0] == "THEIRALLYAURAS")
+  {
+    return $index == intval($mzArr[1]) && $uniqueID == $combatChainState[$CCS_AttackTargetUID];
+  }
+  return false;
+}
+
 function IsAllyAttacking()
 {
   global $combatChain;
