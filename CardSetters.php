@@ -97,7 +97,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     return $rv;
   }
   if($banishedBy == "MST109" || $banishedBy == "MST110" || $banishedBy == "MST111" && count($banish)/BanishPieces() >= 2) {    $indexArray = array_keys($banish, "Source-" . $banishedBy);
-    $count = count($banish);
+    $count = count($banish)-BanishPieces();
     $pitchValues = [];
     for ($i=$count; $i >= 0; $i--) { 
       if($banish[$i+1] == "Source-" . $banishedBy) {
@@ -111,7 +111,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     return $rv;
   }
   if(($banishedBy == "MST115" || $banishedBy == "MST116" || $banishedBy == "MST117") && count($banish)/BanishPieces() >= 2) {
-    $count = count($banish);
+    $count = count($banish)-BanishPieces();
     $cardNames = [];
     for ($i=$count; $i >= 0; $i--) { 
       if($banish[$i+1] == "Source-" . $banishedBy) {

@@ -116,7 +116,7 @@ function MZAddZone($player, $parameter, $lastResult)
         break;
       case "THEIRBANISH":
         if(count($params) < 4) array_push($params, $player);
-        BanishCardForPlayer($cardIDs[$i], $otherPlayer, $params[1], $params[2], isset($params[3]) ? $params[3] : "-");
+        BanishCardForPlayer($cardIDs[$i], $otherPlayer, $params[1], isset($params[2]) ? $params[2] : "-", isset($params[3]) ? $params[3] : "-");
         WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]). " was banished");
         break;
       case "MYHAND": AddPlayerHand($cardIDs[$i], $player, "-"); break;
