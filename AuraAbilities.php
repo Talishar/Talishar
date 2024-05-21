@@ -13,7 +13,6 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
 
-  WriteLog($numMinusTokens . "-" . $isToken.  "-" . $EffectContext);
   if($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
   if($cardID == "ARC112") $number += CountCurrentTurnEffects("ARC081", $player);
   if($cardID == "MON104") {
@@ -954,6 +953,7 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
       {
         --$auras[$index+3];
         RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]));
+        AddCurrentTurnEffect($cardID, $currentPlayer, "", $auras[$index+6]."-PAID");
       }
       elseif($abilityType == "AA") 
       {

@@ -396,9 +396,13 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffect($cardID, $currentPlayer, $from, $auras[count($auras)-AuraPieces()+6]);
       }
       $abilityType = GetResolvedAbilityType($cardID, $from);
-      if($abilityType == "I" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1)
+      if($abilityType == "I" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]."-PAID") != -1)
       {
         PlayAura("MON104", $currentPlayer);
+        RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]."-PAID"));
+      }
+      else {
+        WriteLog("You do not have the counters to pay for ". CardLink($cardID, $cardID)." ability.", highlight:true);
       }
       return "";
     case "MST134": case "MST135": case "MST136":
