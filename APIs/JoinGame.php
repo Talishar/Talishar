@@ -699,7 +699,7 @@ function IsCardBanned($cardID, $format, $character)
   if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R")) return true;
   if ($format == "clash") return !isClashLegal($cardID, $character);
   //Ban spoiler cards in non-open-format
-  if(($format != "openformatcc" && $format != "openformatblitz") && $set == "MST" && $cardID != "MST205") return true; // Launch 31st May
+  if((($format != "openformatcc" && $format != "openformatblitz") && $set == "MST" && $cardID != "MST205") || $cardID == "HER117") return true; // Launch 31st May
   if(($format != "openformatcc" && $format != "openformatblitz") && ($set == "ASB")) return true; // Launch 12th July
   switch ($cardID) { //Special Use Promos
     case "JDG002": case "JDG004": case "JDG005": case "JDG008": case "JDG010": case "JDG019": case "JDG024": case "JDG025":
