@@ -2429,6 +2429,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
         AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);  
       }
+      break;
     case "MST053":
       $modalities = "Create_2_Crouching_Tigers,Crouching_Tigers_Get_+1_this_turn,Transcend";
       $numModes = GetClassState($currentPlayer, $CS_NumBluePlayed) > 1 ? 3 : 1;
@@ -2443,7 +2444,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
         AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);  
       }
-      return "";
+      break;
     case "MST197": case "MST198": case "MST199":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to put on the bottom of your deck (or pass)", 1);
