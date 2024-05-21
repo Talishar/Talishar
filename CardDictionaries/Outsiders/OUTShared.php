@@ -647,8 +647,14 @@ function OUTAbilityCost($cardID)
         break;
       case "OUT062": case "OUT063": case "OUT064":
         if(ComboActive()) {
-          if(substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
-          else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
+          if(substr($from, 0, 5) != "THEIR") {
+            AddBottomDeck($cardID, $mainPlayer, "CC");
+            $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+          }
+          else {
+            AddBottomDeck($cardID, $defPlayer, "CC");
+            $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+          }
         }
         break;
       case "OUT068": case "OUT069": case "OUT070":
