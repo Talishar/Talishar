@@ -12,6 +12,8 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $auras = &GetAuras($player);
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
+
+  WriteLog($numMinusTokens . "-" . $isToken.  "-" . $EffectContext);
   if($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
   if($cardID == "ARC112") $number += CountCurrentTurnEffects("ARC081", $player);
   if($cardID == "MON104") {
@@ -74,8 +76,10 @@ function TokenCopyAura($player, $index)
 
 function AuraDestroyed($player, $cardID, $isToken = false, $from="HAND")
 {
+  global $EffectContext;
   $auras = &GetAuras($player);
   for($i = 0; $i < count($auras); $i += AuraPieces()) {
+    $EffectContext = $auras[$i];
     switch($auras[$i]) {
       case "EVR141":
         if(!$isToken && $auras[$i+5] > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
@@ -203,8 +207,10 @@ function DestroyAura($player, $index, $uniqueID="")
 
 function AuraDestroyAbility($player, $index, $isToken)
 {
+  global $EffectContext;
   $auras = &GetAuras($player);
   $cardID = $auras[$index];
+  $EffectContext = $cardID;
   switch($cardID)
   {
     case "EVR141":
