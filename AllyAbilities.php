@@ -179,17 +179,9 @@ function SpecificAllyAttackAbilities($attackID)
   $i = $combatChainState[$CCS_WeaponIndex];
   switch($allies[$i]) {
     case "UPR406":
-      if(IsHeroAttackTarget()) {
-        AddLayer("TRIGGER", $mainPlayer, $allies[$i], "-", "-", $allies[$i + 5]);
-      }
-      return "";
     case "UPR407":
-      if(IsHeroAttackTarget()) {
-        AddLayer("TRIGGER", $mainPlayer, $allies[$i], "-", "-", $allies[$i + 5]);
-      }
-      return "";
     case "UPR408":
-      if(IsHeroAttackTarget()) {
+      if (IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, $allies[$i], "-", "-", $allies[$i + 5]);
       }
       return "";
@@ -312,20 +304,21 @@ function AllyBeginEndTurnEffects()
   global $mainPlayer, $defPlayer;
   //CR 2.0 4.4.3a Reset life for all allies
   $mainAllies = &GetAllies($mainPlayer);
-  for($i = 0; $i < count($mainAllies); $i += AllyPieces()) {
-    if($mainAllies[$i+1] != 0) {
-      $mainAllies[$i+1] = 2;
-      $mainAllies[$i+2] = AllyHealth($mainAllies[$i]) + $mainAllies[$i+7];
-      $mainAllies[$i+8] = 1;
-    }
-  }
+  updateAllyHealth($mainAllies);
+  
   $defAllies = &GetAllies($defPlayer);
-  for($i = 0; $i < count($defAllies); $i += AllyPieces()) {
-    if($defAllies[$i+1] != 0) {
-      $defAllies[$i+1] = 2;
-      $defAllies[$i+2] = AllyHealth($defAllies[$i]) + $defAllies[$i + 7];
-      $defAllies[$i+8] = 1;
-    }
+  updateAllyHealth($defAllies);
+}
+
+function updateAllyHealth(&$allies) {
+  $pieces = AllyPieces();
+  $count = count($allies);
+  for($i = 0; $i < $count; $i += $pieces) {
+      if($allies[$i+1] != 0) {
+          $allies[$i+1] = 2;
+          $allies[$i+2] = AllyHealth($allies[$i]) + $allies[$i+7];
+          $allies[$i+8] = 1;
+      }
   }
 }
 

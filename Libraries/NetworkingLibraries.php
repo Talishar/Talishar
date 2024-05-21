@@ -2772,8 +2772,8 @@ function ReportBug()
     ++$bugCount;
     $folderName = "./BugReports/" . $gameName . "-" . $bugCount;
   }
-  if ($bugCount == 5) {
-    WriteLog("Bug report file is temporarily full for this game. Please use the discord to report further bugs.");
+  if ($bugCount == 3) {
+    WriteLog("⚠️ Bug report file is full for this game. Please use the discord to report further bugs.", highlight:true);
   }
   mkdir($folderName, 0700, true);
   copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");
@@ -2781,5 +2781,5 @@ function ReportBug()
   copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
   copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
   copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
-  WriteLog("Thank you for reporting a bug. To describe what happened, please report it on the discord server with the game number for reference ($gameName).");
+  WriteLog("🐛 Thank you for reporting a bug. Please report it on the discord server with the game number as reference ($gameName).");
 }
