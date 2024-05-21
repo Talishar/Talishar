@@ -389,7 +389,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($abilityType == "I" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1)
       {
         PlayAura("MON104", $currentPlayer);
-        RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]));
       }
       return "";
     case "MST134": case "MST135": case "MST136":

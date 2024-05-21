@@ -953,6 +953,7 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
       if($abilityType == "I" && $from == "PLAY" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1) 
       {
         --$auras[$index+3];
+        RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]));
       }
       elseif($abilityType == "AA") 
       {
