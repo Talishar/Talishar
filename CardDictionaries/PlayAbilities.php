@@ -401,9 +401,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         PlayAura("MON104", $currentPlayer);
         RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]."-PAID"));
       }
-      else {
+/*       else {
         WriteLog("You do not have the counters to pay for ". CardLink($cardID, $cardID)." ability.", highlight:true);
-      }
+      } */
       return "";
     case "MST134": case "MST135": case "MST136":
       $amount = 3;
