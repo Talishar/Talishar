@@ -389,6 +389,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST133":
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
       $auras = GetAuras($currentPlayer);
+      $abilityType = GetResolvedAbilityType($cardID, $from);
       if($from != "PLAY"){
         $count = CountAuraAtkCounters($currentPlayer)+10; //+10 is an arbitrary number to keep the loop going until the player pass
         for($i=0; $i < $count; $i++) { 
@@ -399,15 +400,17 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
         AddCurrentTurnEffect($cardID, $currentPlayer, $from, $auras[count($auras)-AuraPieces()+6]);
       }
-      $abilityType = GetResolvedAbilityType($cardID, $from);
-      if($abilityType == "I" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]."-PAID") != -1)
+      if ($abilityType != "I") return "";
+
+      if(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]."-PAID") != -1)
       {
         PlayAura("MON104", $currentPlayer);
         RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]."-PAID"));
       }
-/*       else {
+      else 
+      {
         WriteLog("You do not have the counters to pay for ". CardLink($cardID, $cardID)." ability.", highlight:true);
-      } */
+      }
       return "";
     case "MST134": case "MST135": case "MST136":
       $amount = 3;

@@ -440,7 +440,7 @@ function AuraStartTurnAbilities()
         IncrementClassState($mainPlayer, $CS_NumAgilityDestroyed, 1);
         break;
       case "MST133":
-        if($auras[$i+3] > 0) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY", $auras[$i+6]);
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY", $auras[$i+6]);
         break;
       case "MST143": case "MST144": case "MST145": 
         $AurasArray= explode(",", SearchAura($mainPlayer, class:"ILLUSIONIST"));
@@ -454,7 +454,7 @@ function AuraStartTurnAbilities()
     $EffectContext = $defPlayerAuras[$i];
     switch ($defPlayerAuras[$i]) {
       case "MST133":
-        if($defPlayerAuras[$i+3] > 0) AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY", $defPlayerAuras[$i+6]);
+        AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY", $defPlayerAuras[$i+6]);
       default: break;
     }
   }
