@@ -784,7 +784,9 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   }
   switch($cardID) {
     case "WTR163": return "BANISH";
-    case "CRU163": return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
+    case "CRU163": 
+      if(substr($from, 0, 5) != "THEIR") return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY"; 
+      else return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "THEIRHAND" : "THEIRDISCARD";
     case "MON063": return ($from == "CHAINCLOSING" && $stillOnCombatChain ? "SOUL" : "GY");
     case "MON064": return "SOUL";
     case "MON231": return "BANISH";

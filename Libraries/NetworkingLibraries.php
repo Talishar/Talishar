@@ -1114,6 +1114,9 @@ function FinalizeChainLink($chainClosed = false)
         case "HAND":
           AddPlayerHand($combatChain[$i-1], $combatChain[$i], "CC");
           break;
+        case "THEIRHAND":
+          AddPlayerHand($combatChain[$i-1], ($combatChain[$i] == 1 ? 2 : 1), "CC");
+          break;
         case "SOUL":
           AddSoul($combatChain[$i-1], $combatChain[$i], "CC");
           break;
@@ -2591,6 +2594,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       switch($goesWhere) {
         case "BOTDECK": AddBottomDeck($cardID, $currentPlayer, $from); break;
         case "HAND": AddPlayerHand($cardID, $currentPlayer, $from); break;
+        case "THEIRHAND": AddPlayerHand($cardID, $otherPlayer, $from); break;
         case "GY": AddGraveyard($cardID, $currentPlayer, $from); break;
         case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;
         case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, $from, "NA"); break;
