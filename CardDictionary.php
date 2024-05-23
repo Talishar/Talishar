@@ -892,6 +892,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $otherPlayerDiscard = &GetDiscard($otherPlayer);
   $type = CardType($cardID);
   if(IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
+  if(CardCareAboutChiPitch($cardID) && !SearchHand($player, subtype:"Chi")) return true;
   if(SearchCurrentTurnEffects("CRU032", $player) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) { $restriction = "CRU032"; return true; }
   if(SearchCurrentTurnEffects("MON007", $player) && $from == "BANISH") { $restriction = "MON007"; return true; }
   if(SearchCurrentTurnEffects("ELE036", $player) && TypeContains($cardID, "E", $player)) { $restriction = "ELE036"; return true; }
