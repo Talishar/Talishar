@@ -20,6 +20,7 @@ function HandPieces()
   return 1;
 }
 
+//0 - Card ID
 function DiscardPieces()
 {
   return 1;

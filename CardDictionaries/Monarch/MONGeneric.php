@@ -51,8 +51,10 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "MON303": case "MON304": case "MON305": 
-        if(SearchDiscardForCard($currentPlayer, GetMZCard($currentPlayer, $target)) != "") {   
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $target, 1);
+        $params = explode("-", $target);
+        $discard = GetDiscard($currentPlayer);
+        if($discard[$params[1]] == $params[0]) {   
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDISCARD-".$params[1], 1);
           AddDecisionQueue("MZADDZONE", $currentPlayer, "MYTOPDECK", 1);
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         }
