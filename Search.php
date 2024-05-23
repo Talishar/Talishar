@@ -539,7 +539,7 @@ function SearchPitchForColor($player, $pitchValue)
   $count = 0;
   $pitch = &GetPitch($player);
   for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
-    if (PitchValue($pitch[$i]) == $pitchValue) ++$count;
+    if (PitchValue($pitch[$i]) == $pitchValue && ColorContains($pitch[$i], $pitchValue, $player)) ++$count;
   }
   return $count;
 }
