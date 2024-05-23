@@ -582,6 +582,9 @@ function AuraDamagePreventionAmount($player, $index, $damage=0, $active=false, &
   if(HasWard($auras[$index], $player)) return WardAmount($auras[$index], $player, $index);
   switch($auras[$index])
   {
+    case "ARC167": return 4;
+    case "ARC168": return 3;
+    case "ARC169": return 2;
     case "DTD081":
       $auras = &GetAuras($player);
       if($active)
