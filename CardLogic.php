@@ -699,7 +699,6 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
     case "DVR008-1": 
     case "OUT140": case "OUT188_1":
     case "DTD229-HIT": 
-    case "HVY090": case "HVY091": case "HVY136":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     case "ELE066-HIT":
@@ -747,6 +746,7 @@ function AddEffectHitTrigger($cardID) // Effects that gives effect to the attack
     case $Card_LifeBanner:
     case $Card_ResourceBanner:
     case "EVO155": case "EVO434":
+    case "HVY090": case "HVY091": case "HVY136":
     case "HVY099":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
