@@ -686,10 +686,6 @@ function CombatChainCloseAbilities($player, $cardID, $chainLink)
       break;
     case "UPR189":
       $AttackPowerValue = $chainLinkSummary[$chainLink*ChainLinkSummaryPieces()+1];
-      if($chainLinkSummary[$chainLink*ChainLinkSummaryPieces()+1] < $chainLinkSummary[$chainLink*ChainLinkSummaryPieces()+1] + EffectsAttackYouControlModifiers($chainLinks[$chainLink][$chainLink], $mainPlayer)) 
-      {
-        $AttackPowerValue += EffectsAttackYouControlModifiers($chainLinks[$chainLink][$chainLink], $mainPlayer);
-      }
       if($AttackPowerValue <= 2)
       {
         Draw($player);
