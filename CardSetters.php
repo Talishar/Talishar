@@ -105,8 +105,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
       }
     }
     if(count($pitchValues) !== count(array_unique($pitchValues))){
-      if(count(array_unique($pitchValues)) == 1 && count($pitchValues) == 2) GainHealth(2, $otherPlayer);
-      else GainHealth(1, $otherPlayer);
+      GainHealth(1, $otherPlayer);
     }
     return $rv;
   }
@@ -119,8 +118,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
       }
     }
     if(count($cardNames) !== count(array_unique($cardNames))){
-      if(count(array_unique($cardNames)) == 1 && count($cardNames) == 2) GainHealth(2, $otherPlayer);
-      else GainHealth(1, $otherPlayer);
+      GainHealth(1, $otherPlayer);
     }
     return $rv;
   }
