@@ -499,7 +499,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
 
 function GetAbilityTypes($cardID, $index=-1, $from="-")
 {
-  global $CS_NumActionsPlayed, $mainPlayer, $currentPlayer, $CS_PlayIndex, $actionPoints;
+  global $CS_NumActionsPlayed, $mainPlayer, $currentPlayer, $CS_PlayIndex, $actionPoints, $layers, $combatChain;
   $auras = &GetAuras($currentPlayer);
   if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
   switch($cardID) {
@@ -512,8 +512,9 @@ function GetAbilityTypes($cardID, $index=-1, $from="-")
     case "HVY209":
       return "I,AA";
     case "MST133":
-      if($currentPlayer != $mainPlayer || $actionPoints <= 0) return "I";
-      return "I,AA";
+      $names = "I";
+      if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",A";
+      return $names;
     default: return "";
   }
 }
@@ -542,8 +543,9 @@ function GetAbilityNames($cardID, $index = -1, $from="-")
       if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Attack";
       return $names;
     case "MST133":
-      if($currentPlayer != $mainPlayer || $actionPoints <= 0) return "Instant";
-      return "Instant,Attack";
+      $names = "Instant";
+      if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Attack";
+      return $names;
     default: return "";
   }
 }
