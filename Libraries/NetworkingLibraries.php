@@ -1740,6 +1740,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   if (IsStaticType(CardType($cardID), $from, $cardID)) {
     $names = GetAbilityNames($cardID, $index);
     if($names != "") {
+      $names = str_replace("-,", "", $names);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which ability to activate");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
       AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);

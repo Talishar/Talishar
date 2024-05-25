@@ -400,14 +400,19 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
         AddCurrentTurnEffect($cardID, $currentPlayer, $from, $auras[count($auras)-AuraPieces()+6]);
       }
-      if ($abilityType != "I") return "";
+      if($abilityType != "I") return "";
 
       if(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]."-PAID") != -1)
       {
         PlayAura("MON104", $currentPlayer);
         RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]."-PAID"));
       }
-      else 
+      elseif(SearchCurrentTurnEffectsForPartielID("PAID")) //It needs to check if the auras was destroy, but it's already paid for
+      {
+        PlayAura("MON104", $currentPlayer);
+        RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]."-PAID"));
+      }
+      else
       {
         WriteLog("You do not have the counters to pay for ". CardLink($cardID, $cardID)." ability.", highlight:true);
       }

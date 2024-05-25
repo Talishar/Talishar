@@ -512,7 +512,6 @@ function GetAbilityTypes($cardID, $index=-1, $from="-")
     case "HVY209":
       return "I,AA";
     case "MST133":
-      if($currentPlayer != $mainPlayer) return "I";
       return "I,AA";
     default: return "";
   }
@@ -542,8 +541,11 @@ function GetAbilityNames($cardID, $index = -1, $from="-")
       if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Attack";
       return $names;
     case "MST133":
-      if($currentPlayer != $mainPlayer) return "Instant";
-      return "Instant,Attack";
+      if($auras[$index + 3] > 0) $names = "Instant";
+      if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0 && $auras[$index+1] == 2) {
+        $names != "" ? $names .= ",Attack" : $names = "-,Attack";
+      }
+      return $names;
     default: return "";
   }
 }
@@ -668,7 +670,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if(!SubtypeContains($character[CharacterPieces()], "Bow") && !SubtypeContains($character[CharacterPieces()*2], "Bow")) return false;
   }
   if($cardID == "MST133" && $from == "PLAY" && $auras[$index+1] == 2 && $currentPlayer == $mainPlayer && $phase != "INSTANT" && CanPlayInstant($phase)) return true;
-  if($cardID == "MST133" && $from == "PLAY" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1 && CanPlayInstant($phase)) return true;
+  if($cardID == "MST133" && $from == "PLAY" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1 && CanPlayInstant($phase) && $auras[$index+3] > 0) return true;
+  if($cardID == "MST133" && $from == "PLAY" && $auras[$index+1] != 2 && $auras[$index+3] > 0) return false;
   if(SearchCurrentTurnEffects("ARC044", $player) && !$isStaticType && $from != "ARS") return false;
   if(SearchCurrentTurnEffects("ARC043", $player) && ($cardType == "A" || $cardType == "AA") && !str_contains($abilityTypes, "I") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
   if(SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "A" && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
@@ -1216,6 +1219,8 @@ function GoesOnCombatChain($phase, $cardID, $from)
     case "HVY186": case "HVY187": case "HVY188":
     case "HVY209":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
+    case "MST133": 
+      return GetResolvedAbilityType($cardID, $from) == "AA";
     default: break;
   }
   if($phase != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetResolvedAbilityType($cardID, $from);
