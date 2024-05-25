@@ -745,6 +745,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   $otherPlayer = $player == 2 ? 1 : 2;
   if(($from == "THEIRBANISH" || $playedFrom == "THEIRBANISH")) {
     switch ($cardID) {
+      case "DTD202": return "THEIRBANISH";
       case "MST010": case "MST032": case "MST053":
         if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
         else if($additionalCosts != "-"){
