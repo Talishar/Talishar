@@ -1550,6 +1550,7 @@ function HaveUnblockedEquip($player)
   for($i=CharacterPieces(); $i<count($char); $i+=CharacterPieces()) {
     if($char[$i+1] == 0) continue;//If broken
     if($char[$i+6] == 1) continue;//On combat chain
+    if($char[$i+12] == "DOWN") continue; //Face-down
     if(!TypeContains($char[$i], "E", $player)) continue;
     if(BlockValue($char[$i]) == -1) continue;
     return true;
@@ -1576,6 +1577,7 @@ function HaveUnblockedNegCounterEquip($player)
     if($char[$i+1] == 0) continue;//If broken
     if($char[$i+4] == 0) continue;//No negative counters
     if($char[$i+6] == 1) continue;//On combat chain
+    if($char[$i+12] == "DOWN") continue; //Face-down
     if(!TypeContains($char[$i], "E", $player)) continue;
     if(BlockValue($char[$i]) == -1) continue;
     return true;

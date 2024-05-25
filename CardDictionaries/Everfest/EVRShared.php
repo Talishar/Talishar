@@ -779,7 +779,11 @@
     $character = &GetPlayerCharacter($player);
     $indices = "";
     for($i=0; $i<count($character); $i+=CharacterPieces()) {
-      if($character[$i+6] == 1 && $character[$i+1] != 0 && (CardType($character[$i]) == "E" || DelimStringContains(CardSubType($character[$i]), "Evo")) && (BlockValue($character[$i]) - $character[$i+4]) < $pendingDamage)
+      if($character[$i+6] == 1 
+      && $character[$i+1] != 0 
+      && $character[$i+12] != "DOWN"
+      && (CardType($character[$i]) == "E" || DelimStringContains(CardSubType($character[$i]), "Evo")) 
+      && (BlockValue($character[$i]) - $character[$i+4]) < $pendingDamage)
       {
         if($indices != "") $indices .= ",";
         $indices .= $i;
