@@ -1781,7 +1781,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("ADDCURRENTEFFECT", $player, "MERIDIANWARD", 1);    
       break;
     case "MST040": case "MST041": case "MST042":
-      PlayAura("MON104", $player);
+      if(SearchPitchForColor($player, 3) > 0) PlayAura("MON104", $player);
       break;
     case "MST075":
       $index = GetCombatChainIndex($parameter, $player);

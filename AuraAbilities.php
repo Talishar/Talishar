@@ -147,7 +147,7 @@ function AuraLeavesPlay($player, $index)
       if($banishIndex > -1) PlayAura($banish->Remove($banishIndex), $otherPlayer);
       break;
     case "MST040": case "MST041": case "MST042":
-      if(SearchPitchForColor($player, 3) > 0) AddLayer("TRIGGER", $player, $cardID);
+      AddLayer("TRIGGER", $player, $cardID);
       break;
     case "MST137": case "MST138": case "MST139": 
       $illusionistAuras = SearchAura($player, class:"ILLUSIONIST");
