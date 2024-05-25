@@ -811,7 +811,6 @@ function SearchCurrentTurnEffectsForPartielID($partial)
 {
   global $currentTurnEffects;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-    WriteLog($currentTurnEffects[$i+2]);
     if(strpos($currentTurnEffects[$i+2], $partial) !== false) return true;
   }
   return false;
