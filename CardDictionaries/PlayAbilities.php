@@ -504,8 +504,11 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST225":
       PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController:$currentPlayer);
       $numGold = CountItem("DYN243", $currentPlayer);
-      if($numGold >= 3) PlayAura("HVY241", $currentPlayer, $numGold); //Might
-      WriteLog(CardLink($cardID, $cardID) . " created a Gold token and " . $numGold . " Might tokens");
+      if($numGold >= 3) {
+        PlayAura("HVY241", $currentPlayer, $numGold); //Might
+        WriteLog(CardLink($cardID, $cardID) . " created a Gold token and " . $numGold . " Might tokens");
+      }
+      else WriteLog(CardLink($cardID, $cardID) . " created a Gold token");
       return "";
     case "MST226":
       for($i = 0; $i < intval($additionalCosts); ++$i) {
