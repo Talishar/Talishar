@@ -357,7 +357,7 @@ function OnDefenseReactionResolveEffects($from)
   ProcessMirageOnBlock(count($combatChain)-CombatChainPieces());
 }
 
-function OnBlockResolveEffects()
+function OnBlockResolveEffects($index = -1)
 {
   global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain, $CS_NumBlueDefended;
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
@@ -386,7 +386,12 @@ function OnBlockResolveEffects()
         }
         break;
       case "OUT185":
-        for($i=0; $i<CachedNumActionBlocked(); ++$i) MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack(), "MYTOPDECK", may:true);
+        $NumActionsBlocking = CachedNumActionBlocked();
+        if($index != -1) $NumActionsBlocking = 1;
+        for($i=0; $i<$NumActionsBlocking; ++$i) {
+          
+          AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
+        }
         break;
       case "DTD205":
         $nonEquipBlockingCards = "";
@@ -416,6 +421,7 @@ function OnBlockResolveEffects()
     if($combatChain[$i+2] == "HAND") ++$blockedFromHand;
   }
   for($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+    if($index != -1) $i = $index;
     if(($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i+2] != "HAND")) UnityEffect($combatChain[$i]);
     if(HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
     if(SearchCurrentTurnEffects("HVY104", $mainPlayer && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("HVY104") == -1)) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);

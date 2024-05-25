@@ -1534,6 +1534,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
+      case "OUT185":
+        MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack(), "MYTOPDECK", may:true);
+      break;
     case "DTD000":
       $deck = new Deck($player);
       if($deck->Reveal() && PitchValue($deck->Top()) == 2)

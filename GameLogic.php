@@ -1410,6 +1410,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDCARDTOCHAINASDEFENDINGCARD":
       AddCombatChain($lastResult, $player, $parameter, 0, -1);
+      OnBlockResolveEffects(count($combatChain));
       return $lastResult;
     case "ATTACKWITHIT":
       PlayCardSkipCosts($lastResult, "DECK");
