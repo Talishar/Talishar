@@ -923,8 +923,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DQCharge();
       return "1";
     case "FINISHCHARGE":
+      $otherPlayer = $player == 1 ? 2 : 1;
       //Abilities when you charge it
-      global $Card_CourageBanner, $Card_QuickenBanner, $Card_SpellbaneBanner, $Card_LifeBanner, $Card_BlockBanner, $Card_ResourceBanner;
+      global $Card_CourageBanner, $Card_QuickenBanner, $Card_SpellbaneBanner, $Card_LifeBanner, $Card_BlockBanner, $Card_ResourceBanner, $CS_DamageDealt;
       switch($lastResult)
       {
         case $Card_CourageBanner: PlayAura("DTD232", $player); break;
@@ -938,6 +939,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("This card was charged: " . CardLink($lastResult, $lastResult));
       IncrementClassState($player, $CS_NumCharged);
       LogPlayCardStats($player, $lastResult, "HAND", "CHARGE");
+      if(SearchCharacterActive($player, "DTD047") && GetClassState($otherPlayer, $CS_DamageDealt) <= 0) AddCurrentTurnEffect("DTD047", $player);
       global $CCS_AttackNumCharged;
       if(CardType($EffectContext) == "AA") ++$combatChainState[$CCS_AttackNumCharged];
       return $lastResult;
