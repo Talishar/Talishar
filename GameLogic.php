@@ -2022,6 +2022,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $character = &GetPlayerCharacter($player);    
         $character[2] -= $lastResult;
         return $lastResult;
+      case "LOGPLAYCARDSTATS":
+        $param = explode(",", $parameter);
+        LogPlayCardStats($player, $param[0], $param[1], $param[2]);
+        return $lastResult;
     default:
       return "NOTSTATIC";
   }

@@ -395,7 +395,7 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
 
 function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)
 {
-	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer;
+	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer, $CardStats_TimesKatsuDiscard;
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked;
 	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $TurnStats_ResourcesLeft;
 	global $p1TotalTime, $p2TotalTime;
@@ -440,6 +440,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 				$deck["cardResults"][$j]["pitched"] = $cardStats[$i + $CardStats_TimesPitched];
 				$deck["cardResults"][$j]["hits"] = $cardStats[$i + $CardStats_TimesHit];
 				$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesCharged];
+				$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesKatsuDiscard];
 				break;
 			}
 		}
