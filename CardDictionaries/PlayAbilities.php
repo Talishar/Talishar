@@ -1023,7 +1023,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $mainPlayer, $currentPlayer, $defPlayer, $layers, $combatChain, $CCS_RequiredNegCounterEquipmentBlock, $combatChainState;
-    global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_PlayIndex, $CS_NumItemsDestroyed;
+    global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_PlayIndex, $CS_NumItemsDestroyed, $CS_DamagePrevention;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $character = &GetPlayerCharacter($currentPlayer);
@@ -1185,7 +1185,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
         return "";
       case "EVO087": case "EVO088": case "EVO089":
-        if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
+        if($from == "PLAY") {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          IncrementClassState($currentPlayer, $CS_DamagePrevention, 1);
+        }
         return "";
       case "EVO100":
         $items = SearchDiscard($currentPlayer, subtype: "Item");

@@ -173,7 +173,7 @@
   function EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $CombatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_NumBoosted;
-    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $mainPlayer, $CCS_RequiredEquipmentBlock;
+    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $mainPlayer, $CCS_RequiredEquipmentBlock, $CS_DamagePrevention;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $rv = "";
     switch($cardID)
@@ -464,7 +464,10 @@
         if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer, $from);
         return "";
       case "EVR180":
-        if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer, $from);
+        if($from == "PLAY") {
+          AddCurrentTurnEffect($cardID, $currentPlayer, $from);
+          IncrementClassState($currentPlayer, $CS_DamagePrevention, 1);
+        }
         return "";
       case "EVR181":
         if($from == "PLAY") {

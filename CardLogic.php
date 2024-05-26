@@ -920,6 +920,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex, $CombatChain;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
+  global $CS_DamagePrevention;
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
   $auras = &GetAuras($player);
@@ -1815,6 +1816,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "AKO019": case "MST203": case "MST204": case "MST205":
       AddCurrentTurnEffect($parameter, $player, "CC");
+      IncrementClassState($player, $CS_DamagePrevention, 1);
       break;  
     case "ASB003":
       Charge();

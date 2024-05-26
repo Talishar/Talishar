@@ -710,7 +710,6 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           }
           break;
         case "EVR180":
-          if($preventable) $damage -= 1;
           $remove = true;
           break;
         case "UPR183":
@@ -784,7 +783,6 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           $remove = true;
           break;
         case "EVO087": case "EVO088": case "EVO089":
-          if($preventable) $damage -= 1;
           $remove = true;
           break;
         case "EVO030": case "EVO031": case "EVO032": case "EVO033": //Card
@@ -823,7 +821,6 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           break;
         case "AKO019":
         case "MST203": case "MST204": case "MST205":
-          if($preventable) $damage -= 1;
           $remove = true;
           break;
         case "MST034":
