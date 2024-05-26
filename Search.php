@@ -1196,16 +1196,13 @@ function SearchMultizone($player, $searches)
               case "MYDISCARD": $searchResult = SearchDiscardByName($player, $name); break;
               case "MYITEMS": $searchResult = SearchItemsByName($player, $name); break;
               case "MYBANISH": $searchResult = SearchBanishByName($player, $name); break;
-              case "THEIRHAND": $searchResult = SearchHandForCardName($otherPlayer, $name); break;
-              case "THEIRDECK": $searchResult = SearchDeckByName($otherPlayer, $name); break;
               case "THEIRDISCARD": $searchResult = SearchDiscardByName($otherPlayer, $name); break;
               case "THEIRITEMS": $searchResult = SearchItemsByName($otherPlayer, $name); break;
               case "THEIRBANISH": $searchResult = SearchBanishByName($otherPlayer, $name); break;
               default: break;
             }
-            if($rv != "") $rv = $rv . ",";
-            $rv = $rv . SearchMultiZoneFormat($searchResult, $zone);
-            if(substr($rv, -1) == ",") $rv = substr($rv, 0, -1);
+            $rv = SearchMultiZoneFormat($searchResult, $zone);
+            //$rv = CombineSearches($rv, $searchResult);
             $isSameName = true;
             break;
           case "is1h":

@@ -49,9 +49,6 @@ function MZRemove($player, $lastResult)
       case "MYDECK":
         $deck = new Deck($player);
         return $deck->Remove($mzIndex[1]);
-      case "THEIRDECK":
-        $deck = new Deck($otherPlayer);
-        return $deck->Remove($mzIndex[1]);
       case "MYITEMS": $lastResult = RemoveItem($player, $mzIndex[1]); break;
       case "THEIRITEMS": $lastResult = RemoveItem($otherPlayer, $mzIndex[1]); break;
       default: break;

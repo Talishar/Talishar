@@ -1378,9 +1378,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $dqState[6] = $damage;
       }
       return FinalizeDamage($player, $damage, $damageThreatened, $params[1], $params[2]);
-    case "MZSETDQVAR":
-      $cardID = GetMZCard($player, $lastResult);
-      $dqVars[$parameter] = $cardID;
+    case "SETDQVAR":
+      $dqVars[$parameter] = $lastResult;
       return $lastResult;
     case "INCDQVAR":
       $dqVars[$parameter] = intval($dqVars[$parameter]) + intval($lastResult);
@@ -2011,6 +2010,44 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       case "TRANSCEND":
         $params = explode(",", $parameter);
         Transcend($player, $params[0], $params[1]);
+        return $lastResult;
+      case "BONDSOFAGONY":
+        $cardID = GetMZCard($player, $lastResult);
+        $hand = &GetHand($defPlayer);
+        $deck = &GetDeck($defPlayer);
+        $graveyard = &GetDiscard($defPlayer);
+        $cardName = CardName($cardID);
+        $banishedCount = 0;
+        $countHand = count($hand);
+        for($i = $countHand-1; $i >= 0; --$i){
+          if(CardNameContains($hand[$i], $cardName, $defPlayer) && $banishedCount < 3)
+          {
+            BanishCardForPlayer($hand[$i], $defPlayer, "MST103", "-", $mainPlayer);
+            WriteLog(CardLink($hand[$i], $hand[$i]) . " was banished");
+            RemoveHand($defPlayer, $i);
+            ++$banishedCount;
+          }
+        }
+        $countDeck = count($deck);
+        for($i = $countDeck-1; $i >= 0; --$i){
+          if(CardNameContains($deck[$i], $cardName, $defPlayer) && $banishedCount < 3)
+          {
+            BanishCardForPlayer($deck[$i], $defPlayer, "MST103", "-", $mainPlayer);
+            WriteLog(CardLink($deck[$i], $deck[$i]) . " was banished");
+            RemoveDeck($defPlayer, $i);
+            ++$banishedCount;
+          }
+        }
+        $countGraveyard = count($graveyard);
+        for($i = $countGraveyard-1; $i >= 0; --$i){
+          if(CardNameContains($graveyard[$i], $cardName, $defPlayer) && $banishedCount < 3)
+          {
+            BanishCardForPlayer($graveyard[$i], $defPlayer, "MST103", "-", $mainPlayer);
+            WriteLog(CardLink($graveyard[$i], $graveyard[$i]) . " was banished");
+            RemoveDiscard($defPlayer, $i);
+            ++$banishedCount;
+          }
+        }
         return $lastResult;
       case "CURRENTEFFECTAFTERPLAYORACTIVATEABILITY";
         CurrentEffectAfterPlayOrActivateAbility();
