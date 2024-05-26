@@ -697,7 +697,18 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   for ($i = 0; $i + AuraPieces() - 1 < count($theirAuras); $i += AuraPieces()) {
     $type = CardType($theirAuras[$i]);
     $sType = CardSubType($theirAuras[$i]);
-    array_push($theirAurasOutput, JSONRenderedCard(cardNumber: $theirAuras[$i], actionDataOverride: strval($i), overlay: ($theirAuras[$i + 1] != 2 ? 1 : 0), counters: $theirAuras[$i + 2], atkCounters: $theirAuras[$i + 3], controller: $otherPlayer, type: $type, sType: $sType, gem: $theirAuras[$i + 8], label: (!TypeContains($theirAuras[$i], "T") && $theirAuras[$i + 4] == 1 ? "Token Copy" : "")));
+    $gem = $theirAuras[$i + 8] != 2 ? $theirAuras[$i + 8] : NULL;
+    array_push($theirAurasOutput, 
+      JSONRenderedCard(cardNumber: $theirAuras[$i],
+      actionDataOverride: strval($i),
+      overlay: ($theirAuras[$i + 1] != 2 ? 1 : 0),
+      counters: $theirAuras[$i + 2], 
+      atkCounters: $theirAuras[$i + 3],
+      controller: $otherPlayer,
+      type: $type,
+      sType: $sType,
+      gem: $gem,
+      label: (!TypeContains($theirAuras[$i], "T") && $theirAuras[$i + 4] == 1 ? "Token Copy" : "")));
   }
   $response->opponentAuras = $theirAurasOutput;
 
@@ -706,6 +717,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
   for ($i = 0; $i + ItemPieces() - 1 < count($theirItems); $i += ItemPieces()) {
     $type = CardType($theirItems[$i]);
     $sType = CardSubType($theirItems[$i]);
+    $gem = $theirItems[$i + 6] != 2 ? $theirItems[$i + 6] : NULL;
     array_push($theirItemsOutput, 
     JSONRenderedCard(
       cardNumber: $theirItems[$i], 
@@ -716,7 +728,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       type: $type, 
       sType: $sType, 
       isFrozen: $theirItems[$i + 7] == 1,
-      gem: $theirItems[$i + 6]));
+      gem: $gem));
   }
   $response->opponentItems = $theirItemsOutput;
 
@@ -775,7 +787,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $action = $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0;
     $type = CardType($myAuras[$i]);
     $sType = CardSubType($myAuras[$i]);
-    $gem = $myAuras[$i + 7];
+    $gem = $myAuras[$i + 7] != 2 ? $myAuras[$i + 7] : NULL;
     if (isset($auraTileMap[$myAuras[$i]])) $gem = $auraTileMap[$myAuras[$i]];
     else $auraTileMap[$myAuras[$i]] = $gem;
     array_push($myAurasOutput, JSONRenderedCard(
@@ -806,7 +818,7 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
     $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? 10 : 0);
     if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
     $actionDataOverride = strval($i);
-    $gem = $myItems[$i + 5];
+    $gem = $myItems[$i + 5] != 2 ? $myItems[$i + 5] : NULL;
     if (isset($itemTileMap[$myItems[$i]])) $gem = $itemTileMap[$myItems[$i]];
     else $itemTileMap[$myItems[$i]] = $gem;
     array_push($myItemsOutput, 
