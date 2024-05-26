@@ -1120,8 +1120,8 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
       if (($option[0] == "MYALLY" || $option[0] == "MYAURAS") && $option[1] == $combatChainState[$CCS_WeaponIndex]) $label = "Attacking";
 
       //Add indication for attacking Allies and Auras
-      if (count($layers) > 0 && $layers[0] != "" && $mainPlayer != $currentPlayer) {
-        $searchType = $option[0] == "THEIRALLY" ? "Ally" : "Aura";
+      if (count($layers) > 0 && $layers[0] != "") {
+        $searchType = $option[0] == "THEIRALLY" || $option[0] == "MYALLY" ? "Ally" : "Aura";
         $index = SearchLayer($otherPlayer, subtype: $searchType);
         if ($index != "") {
             $params = explode("|", $layers[$index + 2]);

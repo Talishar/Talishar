@@ -69,7 +69,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       if(isset($allies[$combatChainState[$CCS_WeaponIndex]])) $attack = $allies[$combatChainState[$CCS_WeaponIndex]+9];
     }
     if($canGainAttack || $attack < 0) {
-      array_push($attackModifiers, "+1 Attack Counters");
+      array_push($attackModifiers, "ATKCOU"); //Attack Counter image ID
       array_push($attackModifiers, $attack);
       AddAttack($totalAttack, $attack);
     }

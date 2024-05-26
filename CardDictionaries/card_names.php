@@ -3,6 +3,7 @@
 function CardName($cardID)
 {
     if($cardID == NULL) return "";
+    if($cardID == "ATKCOU") return "+1 Attack Counter";
     $arr = str_split($cardID, 3);
     if(count($arr) < 2) return "";
     $set = $arr[0];
