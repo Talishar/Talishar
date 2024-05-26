@@ -634,7 +634,7 @@ function OUTAbilityCost($cardID)
         $char = &GetPlayerCharacter($defPlayer);
         if(IsHeroAttackTarget() && HasAttackName("Surging Strike") && HasAttackName("Descendent Gustwave") && HasAttackName("Bonds of Ancestry"))
         {
-          if($char[0] == "DUMMY") { $char[1] = 4; WriteLog("Combat Dummies have no honor."); }
+          if($char[0] == "DUMMY") { $char[1] = 4; WriteLog("🤖 Combat Dummies have no honor."); }
           else if($char[1] == 4) WriteLog("🥷 Those who have been dishonored have nothing left to lose.");
           else $char[1] = 4;
         }

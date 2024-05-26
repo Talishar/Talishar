@@ -731,8 +731,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         ++$reportCount;
         $folderName = "./BugReports/" . $gameName . "-" . $reportCount;
       }
-      if($reportCount == 5) {
-        WriteLog("Report file is full for this game. Please use discord for further reports.");
+      if($reportCount == 3) {
+        WriteLog("⚠️Report file is full for this game. Please use discord for further reports.", highlight:true);
       }
       mkdir($folderName, 0700, true);
       copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");
@@ -740,7 +740,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
       copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
       copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
-      WriteLog("Thank you for reporting the player. The chat log has been saved to the server. Please report it to mods on the discord server with the game number for reference ($gameName).");
+      WriteLog("🚨Thank you for reporting a player. The chat log has been saved on the server. Please report it to a mod on Discord with the game number for reference ($gameName).", highlight:true);
       break;
     case 100015: // request to enable chat
       include "MenuFiles/ParseGamefile.php";
@@ -2782,7 +2782,7 @@ function ReportBug()
     $folderName = "./BugReports/" . $gameName . "-" . $bugCount;
   }
   if ($bugCount == 3) {
-    WriteLog("⚠️ Bug report file is full for this game. Please use the discord to report further bugs.", highlight:true);
+    WriteLog("⚠️ Bug report file is full for this game. Please use Discord to report further bugs.", highlight:true);
   }
   mkdir($folderName, 0700, true);
   copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");
@@ -2790,5 +2790,5 @@ function ReportBug()
   copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
   copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
   copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
-  WriteLog("🐛 Thank you for reporting a bug. Please report it on the discord server with the game number as reference ($gameName).");
+  WriteLog("🐛 Thank you for reporting a bug. Please report it on Discord with the game number as reference ($gameName).");
 }

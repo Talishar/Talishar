@@ -6,7 +6,7 @@ function WriteLog($text, $playerColor = 0, $highlight=false, $path="./")
   $filename = $path . "Games/" . $gameName . "/gamelog.txt";
   if(file_exists($filename)) $handler = fopen($filename, "a");
   else return; //File does not exist
-  if($highlight) $output = ($playerColor != 0 ? "<span style='color:<PLAYER" . $playerColor . "COLOR>;'>" : "") . "<mark style='background-color:brown; color:azure;'>" . $text . "</mark>" . ($playerColor != 0 ? "</span>" : "");
+  if($highlight) $output = ($playerColor != 0 ? "<span style='color:<PLAYER" . $playerColor . "COLOR>;'>" : "") . "<p style='background: brown;font-size: max(1em, 14px);margin-bottom:0px;'><span style='color:azure;'>" . $text . "</span></p>" . ($playerColor != 0 ? "</span>" : "");
   else $output = ($playerColor != 0 ? "<span style='color:<PLAYER" . $playerColor . "COLOR>;'>" : "") . $text . ($playerColor != 0 ? "</span>" : "");
   fwrite($handler, $output . "\r\n");
   fclose($handler);

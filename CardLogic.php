@@ -819,7 +819,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target) {
         AddDecisionQueue("NOPASS", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-        AddDecisionQueue("WRITELOG", $player, "🩸 " . CardLink($cardID, $cardID) . " created a " . CardLink("HVY242", "HVY242") . " token ", 1);
+        AddDecisionQueue("WRITELOG", $player, CardLink($cardID, $cardID) . " created a " . CardLink("HVY242", "HVY242") . " token ", 1);
         AddDecisionQueue("PASSPARAMETER", $player, "HVY242", 1);
         AddDecisionQueue("PUTPLAY", $player, "-", 1);
       }
@@ -1673,7 +1673,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       }
       if($num6Block) {
         PlayAura("HVY241", $player);//Might
-        WriteLog("🦴 " . CardLink("HVY008", "HVY008") . " created a " . CardLink("HVY241", "HVY241") . " token");
+        WriteLog(CardLink("HVY008", "HVY008") . " created a " . CardLink("HVY241", "HVY241") . " token");
       }
       break;
     case "HVY020": case "HVY021": case "HVY022":
