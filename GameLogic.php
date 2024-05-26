@@ -1379,8 +1379,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return FinalizeDamage($player, $damage, $damageThreatened, $params[1], $params[2]);
     case "SETDQVAR":
-      $cardID = GetMZCard($player, $lastResult);
-      $dqVars[$parameter] = $cardID;
+      $dqVars[$parameter] = $lastResult;
       return $lastResult;
     case "MZSETDQVAR":
       $cardID = GetMZCard($player, $lastResult);
