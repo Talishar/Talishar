@@ -1156,10 +1156,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
 
       //Bonds of Agony - add indication for hand, graveyard and deck
-      if($combatChain[0] == "MST103" && $turn[0] == "MAYCHOOSEMULTIZONE") {
-        if($option[0] == "THEIRHAND") $label = "Hand"; 
-        elseif ($option[0] == "THEIRDECK") $label = "Deck";
-        elseif ($option[0] == "THEIRDISCARD") $label = "Graveyard";  
+      if(count($combatChain) > 0) {
+        if($combatChain[0] == "MST103" && $turn[0] == "MAYCHOOSEMULTIZONE") {
+          if($option[0] == "THEIRHAND") $label = "Hand"; 
+          elseif ($option[0] == "THEIRDECK") $label = "Deck";
+          elseif ($option[0] == "THEIRDISCARD") $label = "Graveyard";  
+        }
       }
 
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
