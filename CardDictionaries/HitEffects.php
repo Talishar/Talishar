@@ -13,9 +13,16 @@ function MSTHitEffect($cardID, $from)
     case "MST103":
       $count = count(GetDeck($defPlayer));
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND");
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to banish from their hand", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card you wantfrom your opponent hand", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("BONDSOFAGONY", $mainPlayer, "-", 1);
+      AddDecisionQueue("MZSETDQVAR", $mainPlayer, "0", 1);
+      for ($i=0; $i < 3; $i++) { 
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND:isSameName={0}&THEIRDECK:isSameName={0}&THEIRDISCARD:isSameName={0}", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which cards you want your opponent to banish", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZBANISH", $mainPlayer, "-,Source-" . $cardID .",". $cardID, 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      }
       AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES," . $count);
       AddDecisionQueue("DECKCARDS", $defPlayer, "<-", 1);
       AddDecisionQueue("LOOKTOPDECK", $defPlayer, "-", 1);
