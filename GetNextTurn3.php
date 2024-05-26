@@ -473,7 +473,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $actionType = $turn[0] == "ARS" ? 4 : 27;
   $resourceRestrictedCard = "";
   if(isset($turn[3])) $resourceRestrictedCard = $turn[3];
-if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" || $turn[0] != "MAYMULTICHOOSEHAND")) $actionType = 16;
+  if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" || $turn[0] != "MAYMULTICHOOSEHAND")) $actionType = 16;
   $myHandContents = array();
   for ($i = 0; $i < count($myHand); ++$i) {
     if ($playerID == 3) {
@@ -1162,6 +1162,15 @@ if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" |
                 continue;
             }
         }   
+      }
+
+      //Bonds of Agony - add indication for hand, graveyard and deck
+      if(count($combatChain) > 0) {
+        if($combatChain[0] == "MST103" && $turn[0] == "MAYCHOOSEMULTIZONE") {
+          if($option[0] == "THEIRHAND") $label = "Hand"; 
+          elseif ($option[0] == "THEIRDECK") $label = "Deck";
+          elseif ($option[0] == "THEIRDISCARD") $label = "Graveyard";  
+        }
       }
 
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
