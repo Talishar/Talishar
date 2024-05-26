@@ -166,7 +166,6 @@ if (!$skipWriteGamestate) {
   //else UpdateGameState(1);
   if(!IsModeAsync($mode))
   {
-    if(GetCachePiece($gameName, 12) == "1") WriteLog("Current player is active again.");
     SetCachePiece($gameName, 12, "0");
     $currentPlayerActivity = 0;
   }
