@@ -1042,7 +1042,7 @@ function IsCharacterAbilityActive($player, $index, $checkGem=false)
   $character = &GetPlayerCharacter($player);
   if($checkGem && $character[$index+9] == 0) return false;
   if($character[$index+12] == "DOWN") return false;
-  return $character[$index+1] == 2 && $character[$index+5] > 0;
+  return $character[$index+1] == 2;
 }
 
 function GetDieRoll($player)
