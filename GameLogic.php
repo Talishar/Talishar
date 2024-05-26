@@ -1901,6 +1901,48 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddCurrentTurnEffect($params[0].$target, GetMZCard($mainPlayer, $params[1]."-".$lastResult+1), (count($params) > 1 ? $params[1] : ""));
         WriteLog(CardLink("EVR181", "EVR181") . " targetted " . CardLink($target, $target));
         return $lastResult;
+      case "FABRICATE":
+        $char = &GetPlayerCharacter($currentPlayer);
+        $inventory = &GetInventory($currentPlayer);
+        $equipments = "";
+        foreach ($inventory as $cardID) {
+          if(TypeContains($cardID, "E", $currentPlayer) && CardNameContains($cardID, "Proto", $currentPlayer, true)) {
+            switch (CardSubType($cardID)) {
+              case "Base,Head":
+                if(!SearchCharacterAliveSubtype($currentPlayer, "Head")) {
+                  if ($equipments != "") $equipments .= ",";
+                  $equipments .= $cardID;
+                }
+                break;
+              case "Base,Chest":
+                if(!SearchCharacterAliveSubtype($currentPlayer, "Chest")) {
+                  if ($equipments != "") $equipments .= ",";
+                  $equipments .= $cardID;
+                }
+                break;
+              case "Base,Arms":
+                if(!SearchCharacterAliveSubtype($currentPlayer, "Arms")) {
+                  if ($equipments != "") $equipments .= ",";
+                  $equipments .= $cardID;
+                }
+                break;
+              case "Base,Legs":
+                if(!SearchCharacterAliveSubtype($currentPlayer, "Legs")) {
+                  if ($equipments != "") $equipments .= ",";
+                  $equipments .= $cardID;
+                }
+                break;          
+              default:
+                break;
+            }
+          }
+        }
+        WriteLog($equipments);
+        if ($equipments == "") { 
+          WriteLog("🚫Proto Equipments not found in your inventory"); 
+          return "PASS";
+        }
+        else return $equipments;
       case "VISITTHEGOLDENANVIL":
         $char = &GetPlayerCharacter($currentPlayer);
         $inventory = &GetInventory($currentPlayer);
