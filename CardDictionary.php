@@ -1809,23 +1809,24 @@ function HasRunegate($cardID)
   }
 }
 
-function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false)
+function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false, $player="")
 {
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
+  if($player == "") $player = $currentPlayer;
   $mod = explode("-", $mod)[0];
   if($mod == "INT" || $mod == "FACEDOWN") return false;
   if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
-  if($mod == "MST236" && SearchCurrentTurnEffects("MST236-3", $currentPlayer)) return true;
-  if(HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer, false)) >= CardCost($cardID)) return true;
-  $char = &GetPlayerCharacter($currentPlayer);
+  if($mod == "MST236" && SearchCurrentTurnEffects("MST236-3", $player)) return true;
+  if(HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $player, false)) >= CardCost($cardID)) return true;
+  $char = &GetPlayerCharacter($player);
   if(SubtypeContains($cardID, "Evo") && ($char[0] == "TCC001" || $char[0] == "EVO007" || $char[0] == "EVO008") && $char[1] < 3) return true;
-  if(!$nonLimitedOnly && $char[0] == "DTD564" && SearchCurrentTurnEffects("DTD564", $currentPlayer) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
+  if(!$nonLimitedOnly && $char[0] == "DTD564" && SearchCurrentTurnEffects("DTD564", $player) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
   switch($cardID) {
-    case "MON123": return GetClassState($currentPlayer, $CS_Num6PowBan) > 0;
+    case "MON123": return GetClassState($player, $CS_Num6PowBan) > 0;
     case "MON156": case "MON158": return true;
-    case "MON159": case "MON160": case "MON161": return GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0;
+    case "MON159": case "MON160": case "MON161": return GetClassState($player, $CS_NumNonAttackCards) > 0;
     case "MON165": case "MON166": case "MON167": return true;
-    case "MON168": case "MON169": case "MON170": return GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0;
+    case "MON168": case "MON169": case "MON170": return GetClassState($player, $CS_NumNonAttackCards) > 0;
     case "MON171": case "MON172": case "MON173": return true;
     case "MON174": case "MON175": case "MON176": return true;
     case "MON177": case "MON178": case "MON179": return true;
@@ -1838,7 +1839,7 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false)
     case "DTD175": case "DTD176": case "DTD177":
     case "DTD140": case "DTD170": case "DTD171": return true;
     case "DTD172": case "DTD173": case "DTD174":
-      $soul = &GetSoul($currentPlayer == 1 ? 2 : 1);
+      $soul = &GetSoul($player == 1 ? 2 : 1);
       return count($soul) > 0;
     case "DTD178": case "DTD179": case "DTD180": return true;
     default: break;

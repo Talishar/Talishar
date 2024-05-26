@@ -333,6 +333,15 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if($playerID == 3 && IsCasterMode() || IsGameOver()) array_push($theirHandContents, JSONRenderedCard($theirHand[$i]));
     else array_push($theirHandContents, JSONRenderedCard($TheirCardBack));
   }
+  $theirBanish = GetBanish($otherPlayer);
+  for ($i=0; $i < count($theirBanish); $i += BanishPieces()) {
+    if (PlayableFromBanish($theirBanish[$i], $theirBanish[$i+1], player:$otherPlayer)) {
+      $border = CardBorderColor($theirBanish[$i], "BANISH", true, $theirBanish[$i+1]);
+      array_push($theirHandContents, 
+      JSONRenderedCard($theirBanish[$i], borderColor:$border));
+    }
+  }
+
   $response->opponentHand = $theirHandContents;
 
   //Their life
