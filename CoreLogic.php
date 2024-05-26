@@ -1209,6 +1209,10 @@ function SubtypeContains($cardID, $subtype, $player="", $uniqueID="")
 function CardNameContains($cardID, $name, $player="", $partial=false)
 {
   $cardName = NameOverride($cardID, $player);
+  if($partial) {
+    $cardName = explode(" ", $cardName);
+    $cardName = implode(",", $cardName);
+  }
   return DelimStringContains($cardName, $name, $partial);
 }
 
