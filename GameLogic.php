@@ -1230,7 +1230,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($targetArr[0] == "MYDISCARD") $target = GetMZCard($player, $lastResult) . "-" . $targetArr[1];
       for($i=0; $i<count($layers); $i+=LayerPieces())
       {
-        if($layers[$i] == $parameter)
+        if($layers[$i] == $parameter && $layers[$i+3] == "-")
         {
           $layers[$i+3] = $target;
         }
