@@ -329,21 +329,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   // their hand contents
   $theirHandContents = array();
-  $theirBanish = GetBanish($otherPlayer);
-  for ($i=0; $i < count($theirBanish); $i += BanishPieces()) {
-    if (PlayableFromBanish($theirBanish[$i], $theirBanish[$i+1], player:$otherPlayer)) {
-      array_push($theirHandContents, JSONRenderedCard($theirBanish[$i], borderColor:7));
-    }
-  }
-  $myBanish = GetBanish($playerID);
-  for ($i=0; $i < count($myBanish); $i += BanishPieces()) {
-    if(PlayableFromOtherPlayerBanish($myBanish[$i], $myBanish[$i+1])) {
-      array_push($theirHandContents, JSONRenderedCard($myBanish[$i], borderColor:7));
-    }
-  }
   for ($i = 0; $i < count($theirHand); ++$i) {
     if($playerID == 3 && IsCasterMode() || IsGameOver()) array_push($theirHandContents, JSONRenderedCard($theirHand[$i]));
     else array_push($theirHandContents, JSONRenderedCard($TheirCardBack));
+  }
+  $theirBanish = GetBanish($otherPlayer);
+  for ($i=0; $i < count($theirBanish); $i += BanishPieces()) {
+    if (PlayableFromBanish($theirBanish[$i], $theirBanish[$i+1], player:$otherPlayer)) {
+      $border = CardBorderColor($theirBanish[$i], "BANISH", true, $theirBanish[$i+1]);
+      array_push($theirHandContents, 
+      JSONRenderedCard($theirBanish[$i], borderColor:$border));
+    }
   }
 
   $response->opponentHand = $theirHandContents;
