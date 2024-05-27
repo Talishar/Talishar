@@ -294,6 +294,7 @@ function ShouldHoldPriorityNow($player)
 {
   global $layerPriority, $layers;
   if($layerPriority[$player - 1] != "1") return false;
+  if($layers[count($layers)-LayerPieces()] == "ENDPHASE") return false;
   $currentLayer = $layers[count($layers) - LayerPieces()];
   $layerType = CardType($currentLayer);
   if(HoldPrioritySetting($player) == 3 && $layerType != "AA" && $layerType != "W") return false;
