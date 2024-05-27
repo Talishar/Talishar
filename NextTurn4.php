@@ -100,7 +100,7 @@
         fileExt = ".png";
         folderPath = folder;
 
-        if (cardNumber == "ENDSTEP" 
+        if (cardNumber == "ENDPHASE" 
         || cardNumber == "ENDTURN" 
         || cardNumber == "RESUMETURN" 
         || cardNumber == "PHANTASM" 

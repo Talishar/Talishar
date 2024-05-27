@@ -11,7 +11,7 @@
     global $playerID, $gameName, $darkMode;
     if($darkMode == null) $darkMode = false;
     $fileExt = ".png";
-    if($cardNumber == "ENDSTEP" || $cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN")
+    if($cardNumber == "ENDPHASE" || $cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN")
     {
       $folder = str_replace("CardImages", "Images", $folder);
     }

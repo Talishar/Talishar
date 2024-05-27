@@ -185,7 +185,7 @@ function SearchInner(
 function isPriorityStep($cardID)
 {
   switch($cardID) {
-    case "ENDTURN": case "RESUMETURN": case "PHANTASM": case "MIRAGE": case "FINALIZECHAINLINK": case "DEFENDSTEP": case "ENDSTEP": case "ATTACKSTEP": case "BLOODDEBT":
+    case "ENDTURN": case "RESUMETURN": case "PHANTASM": case "MIRAGE": case "FINALIZECHAINLINK": case "DEFENDSTEP": case "ENDPHASE": case "ATTACKSTEP": case "BLOODDEBT":
       return true;
     default: return false;
   }
