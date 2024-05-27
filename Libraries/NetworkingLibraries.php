@@ -2573,7 +2573,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         ArsenalAttackAbilities();
         OnAttackEffects($cardID);
       }
-      if(!$chainClosed || $definedCardType == "AA") {
+      if(!$chainClosed || $definedCardType == "AA" || GetResolvedAbilityType($cardID) == "AA") {
         if(DelimStringContains(CardSubType($cardID), "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
         if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
         if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
