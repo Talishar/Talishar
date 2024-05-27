@@ -824,11 +824,16 @@
   {
     global $CS_NamesOfCardsPlayed;
     if($from == "PLAY") {
-      $names = explode(",", GetClassState($player, $CS_NamesOfCardsPlayed));
-      foreach(array_count_values($names) as $name => $count) {
-        if($count > 1) return false;
+      $cardsPlayed = array_unique(explode(",", GetClassState($player, $CS_NamesOfCardsPlayed)));
+      $cardCount = count($cardsPlayed);
+      for($i=0; $i<$cardCount; ++$i) {
+        for ($j=0; $j < $cardCount; ++$j) { 
+          if($i == $j) continue;
+          if(CardNameContains($cardsPlayed[$j], $cardsPlayed[$i], $player)) {
+            return true;
+          }
+        }
       }
-      return true;
     }
     return false;
   }
