@@ -337,7 +337,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $myBanish = GetBanish($playerID);
   for ($i=0; $i < count($myBanish); $i += BanishPieces()) {
-    if(PlayableFromOtherPlayerBanish($myBanish[$i], $myBanish[$i+1])) {
+    if(PlayableFromOtherPlayerBanish($myBanish[$i], $myBanish[$i+1], $otherPlayer)) {
       array_push($theirHandContents, JSONRenderedCard($myBanish[$i], borderColor:7));
     }
   }

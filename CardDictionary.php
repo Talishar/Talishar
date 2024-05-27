@@ -1857,12 +1857,13 @@ function AbilityPlayableFromBanish($cardID, $mod="")
     default: return false;
   }
 }
-function PlayableFromOtherPlayerBanish($cardID, $mod="")
+function PlayableFromOtherPlayerBanish($cardID, $mod="", $player="")
 {
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
   $mod = explode("-", $mod)[0];
+  if($player == "") $player = $currentPlayer;
   if ($mod == "INT" || $mod == "UZURI" || $mod == "FACEDOWN") return false;
-  if(ColorContains($cardID, 3, $currentPlayer) && (SearchCurrentTurnEffects("MST001", $currentPlayer) || SearchCurrentTurnEffects("MST002", $currentPlayer))) return true;
+  if(ColorContains($cardID, 3, $player) && (SearchCurrentTurnEffects("MST001", $player) || SearchCurrentTurnEffects("MST002", $player))) return true;
   if($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer" || $mod == "TCCGorgonsGaze") return true;
   else return false;
 }
