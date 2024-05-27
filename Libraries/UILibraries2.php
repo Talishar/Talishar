@@ -80,7 +80,8 @@ function JSONRenderedCard(
   $rustCounters = NULL,
   $flowCounters = NULL,
   $frostCounters = NULL,
-  $balanceCounters = NULL
+  $balanceCounters = NULL,
+  $bindCounters = NULL
 ) {
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -113,6 +114,8 @@ function JSONRenderedCard(
   if($frostCounters != NULL) $countersMap->frost = $frostCounters;
   $balanceCounters = property_exists($countersMap, 'balance') ? $balanceCounters->balance : $balanceCounters;
   if($balanceCounters != NULL) $countersMap->balance = $balanceCounters;
+  $bindCounters = property_exists($countersMap, 'bind') ? $bindCounters->bind : $bindCounters;
+  if($bindCounters != NULL) $countersMap->bind = $bindCounters;
 
   if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
     $class = CardClass($cardNumber);
@@ -156,6 +159,10 @@ function JSONRenderedCard(
     }
     else if(HasBalanceCounters($cardNumber)) {
       $countersMap->balance = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
+    else if(HasBindCounters($cardNumber)) {
+      $countersMap->bind = $countersMap->counters;
       $countersMap->counters = 0;
     }
     else if ($type == "E") {

@@ -2161,6 +2161,13 @@ function HasBalanceCounters($cardID){
   }
 }
 
+function HasBindCounters($cardID){
+  switch($cardID) {
+    case "ELE224": return true;
+    default: return false;
+  }
+}
+
 function HasSteamCounter($array, $index, $player)
 {
   if (CardType($array[$index]) == 'E') return EquipmentsUsingSteamCounter($array[$index]);
