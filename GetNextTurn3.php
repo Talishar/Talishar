@@ -1150,8 +1150,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $index = SearchLayer($otherPlayer, subtype: $searchType);
         if ($index != "") {
             $params = explode("|", $layers[$index + 2]);
-            if ($option[1] == $params[2]) {
-                $label = "Attacking";
+            if (isset($params[2]) && $option[1] == $params[2]) {
+              $label = "Attacking";
             }
         }
       }
