@@ -1558,6 +1558,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         LoseHealth($remorselessCount, $playerID);
       }
       if(CardNameContains($cardID, "Moon Wish", $currentPlayer)) AddCurrentTurnEffect("ARC185-GA", $currentPlayer);
+      if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains(CardSubType($cardID), "Aura") && CardCost($cardID) <= 2 && SearchCurrentTurnEffects("MST155", $currentPlayer, true)) AddCurrentTurnEffect("MST155-USED", $currentPlayer);
+      if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains(CardSubType($cardID), "Aura") && CardCost($cardID) <= 1 && SearchCurrentTurnEffects("MST156", $currentPlayer, true)) AddCurrentTurnEffect("MST156-USED", $currentPlayer);
+      if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains(CardSubType($cardID), "Aura") && CardCost($cardID) <= 0 && SearchCurrentTurnEffects("MST157", $currentPlayer, true)) AddCurrentTurnEffect("MST157-USED", $currentPlayer);
       CombatChainPlayAbility($cardID);
       ItemPlayAbilities($cardID, $from);
       ResetCardPlayed($cardID);

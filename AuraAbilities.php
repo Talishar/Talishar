@@ -21,17 +21,17 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   }
   if($cardID == "MST031") SearchCardList($additionalCosts, $player, subtype:"Chi") != "" ? $numAttackCounters += 4 : $numAttackCounters += 2;
   if($cardID == "MST043" || $cardID == "MST044" || $cardID == "MST045") $numAttackCounters += SearchPitchForColor($player, 3) > 0 ? 1 : 0;
-  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST155", $player) && CardCost($cardID) <= 2 && CardCost($cardID) > -1) {
+  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST155-USED", $player) && CardCost($cardID) <= 2 && CardCost($cardID) > -1) {
     ++$numAttackCounters;
-    RemoveCurrentTurnEffect(SearchCurrentTurnEffects("MST155", $player));
+    RemoveCurrentTurnEffect(SearchCurrentTurnEffects("MST155-USED", $player));
   }
-  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST156", $player) && CardCost($cardID) <= 1 && CardCost($cardID) > -1) {
+  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST156-USED", $player) && CardCost($cardID) <= 1 && CardCost($cardID) > -1) {
     ++$numAttackCounters;
-    RemoveCurrentTurnEffect(SearchCurrentTurnEffects("MST156", $player));
+    RemoveCurrentTurnEffect(SearchCurrentTurnEffects("MST156-USED", $player));
   }
-  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST157", $player) && CardCost($cardID) <= 0 && CardCost($cardID) > -1)  {
+  if(ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST157-USED", $player) && CardCost($cardID) <= 0 && CardCost($cardID) > -1)  {
     ++$numAttackCounters;
-    RemoveCurrentTurnEffect(SearchCurrentTurnEffects("MST157", $player));
+    RemoveCurrentTurnEffect(SearchCurrentTurnEffects("MST157-USED", $player));
   }
 
   $myHoldState = AuraDefaultHoldTriggerState($cardID);
