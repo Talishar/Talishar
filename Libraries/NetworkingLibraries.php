@@ -1505,7 +1505,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     PitchAbility($cardID);
   }
   //CR 2.0 5.1.7. Pay Asset-Costs
-  if($resources[0] < $resources[1] || (CardCareAboutChiPitch($cardID) && $turn[0] != "B")) {
+  if($resources[0] < $resources[1] || (CardCareAboutChiPitch($cardID) && ($turn[0] != "B" || count($layers) > 0))) {
     if ($turn[0] != "P") {
       $turn[2] = $turn[0];
       $turn[3] = $cardID;
