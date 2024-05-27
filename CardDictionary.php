@@ -669,7 +669,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if($from != "ARS") return false;
     if(!SubtypeContains($character[CharacterPieces()], "Bow") && !SubtypeContains($character[CharacterPieces()*2], "Bow")) return false;
   }
-  if($cardID == "MST133" && $from == "PLAY" && $auras[$index+1] == 2 && $currentPlayer == $mainPlayer && $phase != "INSTANT" && CanPlayInstant($phase)) return true;
+  if($cardID == "MST133" && $from == "PLAY" && $auras[$index+1] == 2 && $currentPlayer == $mainPlayer && $phase != "INSTANT" && CanPlayInstant($phase) && $actionPoints > 0) return true;
   if($cardID == "MST133" && $from == "PLAY" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1 && CanPlayInstant($phase) && $auras[$index+3] > 0) return true;
   if($cardID == "MST133" && $from == "PLAY" && $auras[$index+1] != 2 && $auras[$index+3] > 0) return false;
   if(SearchCurrentTurnEffects("ARC044", $player) && !$isStaticType && $from != "ARS") return false;
