@@ -1066,7 +1066,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if(!$arsenalHasFaceUp) $restriction = "There must be a face up arrow in your arsenal.";
       return !$arsenalHasFaceUp;
     case "DYN212": return CountAura("MON104", $currentPlayer) < 1;
-    case "OUT001": case "OUT002": return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID());
+    case "OUT001": case "OUT002": return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID()) || count($myHand) == 0;
     case "OUT021": case "OUT022": case "OUT023":
     case "OUT042": case "OUT043": case "OUT044":
       return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID());
