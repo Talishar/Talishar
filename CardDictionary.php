@@ -867,14 +867,24 @@ function CanPlayInstant($phase)
   return false;
 }
 
-function IsPitchRestricted($cardID, &$restriction, $from = "", $index = -1, $pitchRestriction="")
+function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pitchRestriction="")
 {
-  global $playerID;
+  global $playerID, $currentTurnEffects;
   $resources = &GetResources($playerID);
-  if(SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0) { $restriction = "ELE035"; return true; }
-  if(ColorContains($cardID, 1, $playerID) && SearchCurrentTurnEffects("OUT101-1", $playerID)) { $restriction = "OUT101"; return true; }
-  else if(ColorContains($cardID, 2, $playerID) && SearchCurrentTurnEffects("OUT101-2", $playerID)) { $restriction = "OUT101"; return true; }
-  else if(ColorContains($cardID, 3, $playerID) && SearchCurrentTurnEffects("OUT101-3", $playerID)) { $restriction = "OUT101"; return true; }
+  for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    if($currentTurnEffects[$i+1] == $playerID) {
+      $effectArr = explode(",", $currentTurnEffects[$i]);
+      $effectID = $effectArr[0];
+      switch($effectID) {
+        case "ARC162": if(GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) $restrictedBy = "ARC162"; return true;
+        default: break;
+      }
+    }
+  }
+  if(SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0) { $restrictedBy = "ELE035"; return true; }
+  if(ColorContains($cardID, 1, $playerID) && SearchCurrentTurnEffects("OUT101-1", $playerID)) { $restrictedBy = "OUT101"; return true; }
+  else if(ColorContains($cardID, 2, $playerID) && SearchCurrentTurnEffects("OUT101-2", $playerID)) { $restrictedBy = "OUT101"; return true; }
+  else if(ColorContains($cardID, 3, $playerID) && SearchCurrentTurnEffects("OUT101-3", $playerID)) { $restrictedBy = "OUT101"; return true; }
   if(CardCareAboutChiPitch($pitchRestriction) && !SubtypeContains($cardID, "Chi") && $resources[0] < 3) return true;
   return false;
 }
