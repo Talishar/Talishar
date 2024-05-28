@@ -1644,7 +1644,6 @@ function HasCombo($cardID)
 function ComboActive($cardID = "")
 {
   global $CombatChain, $chainLinkSummary, $mainPlayer, $chainLinks;
-  if(SearchCurrentTurnEffects("OUT183", $mainPlayer)) return false;
   if($cardID == "" && $CombatChain->HasCurrentLink()) $cardID = $CombatChain->AttackCard()->ID();
   if($cardID == "") return false;
   if(count($chainLinkSummary) == 0) return false;//No combat active if no previous chain links
@@ -1652,6 +1651,7 @@ function ComboActive($cardID = "")
   for($i=0; $i<count($lastAttackNames); ++$i)
   {
     $lastAttackName = GamestateUnsanitize($lastAttackNames[$i]);
+    if(SearchCurrentTurnEffects("OUT183", $mainPlayer)) $lastAttackName = "";
     switch($cardID) {
       case "WTR081":
         if($lastAttackName == "Mugenshi: RELEASE") return true;
