@@ -1872,8 +1872,9 @@ function PlayableFromOtherPlayerBanish($cardID, $mod="", $player="")
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
   $mod = explode("-", $mod)[0];
   if($player == "") $player = $currentPlayer;
+  $otherPlayer = $player == 1 ? 2 : 1;
   if ($mod == "INT" || $mod == "UZURI" || $mod == "FACEDOWN") return false;
-  if(ColorContains($cardID, 3, $player) && (SearchCurrentTurnEffects("MST001", $player) || SearchCurrentTurnEffects("MST002", $player))) return true;
+  if(ColorContains($cardID, 3, $otherPlayer) && (SearchCurrentTurnEffects("MST001", $player) || SearchCurrentTurnEffects("MST002", $player))) return true;
   if($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer" || $mod == "TCCGorgonsGaze") return true;
   else return false;
 }
