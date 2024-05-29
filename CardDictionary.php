@@ -876,7 +876,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
       switch($effectID) {
-        case "ARC162": if(GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) $restrictedBy = "ARC162"; return true;
+        case "ARC162": if(GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) { $restrictedBy = "ARC162"; return true; }
         default: break;
       }
     }
