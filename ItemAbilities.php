@@ -68,6 +68,8 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
 {
   global $currentPlayer, $CS_PlayIndex, $combatChain;
   $index = GetClassState($currentPlayer, $CS_PlayIndex);
+  $items = &GetItems($currentPlayer);
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch($cardID) {
     case "WTR162":
     case "WTR170": case "WTR171": case "WTR172":
@@ -81,38 +83,38 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "ARC035":
-      $items = &GetItems($currentPlayer);
       AddAdditionalCost($currentPlayer, $items[$index+1]);
       DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "ARC010": case "ARC018":
-      $items = &GetItems($currentPlayer);
       if($from == "PLAY" && $items[$index+1] > 0 && count($combatChain) > 0) {
         $items[$index+1] -= 1;
         $items[$index+2] = 1;
       }
       break;
     case "CRU105":
-      $items = &GetItems($currentPlayer);
       if($from == "PLAY" && $items[$index+1] > 0) {
         $items[$index+1] -= 1;
         AddAdditionalCost($currentPlayer, "PAID");
       }
       break;
     case "EVO071": case "EVO072":
-      $items = &GetItems($currentPlayer);
       if($from == "PLAY") {
         $items[$index+2] = 1;
       }
       break;
     case "EVO075": case "EVO076": case "EVO077":
       RemoveItem($currentPlayer, $index);
-      $deck = new Deck($currentPlayer);
+      if(substr($items[$index+9], 0, 5 != "THEIR")) {
+        $deck = new Deck($currentPlayer);
+      }
+      else{
+        $deck = new Deck($otherPlayer);
+      }
       $deck->AddBottom($cardID, from:"PLAY");
       break;
     case "EVO087": case "EVO088": case "EVO089":
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      $items = &GetItems($currentPlayer);
       --$items[$index+1];
       if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
       break;
