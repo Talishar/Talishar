@@ -2350,7 +2350,7 @@ function EvoHandling($cardID, $player, $from)
   else if(SubtypeContains($cardID, "Legs")) $slot = "Legs";
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
     if(SubtypeContains($char[$i], $slot)) {
-      if(SubtypeContains($char[$i], "Base")) {
+      if(SubtypeContains($char[$i], "Base") && $char[$i+1] != 0) {
         $CombatChain->Remove(GetCombatChainIndex($char[$i], $player));
         CharacterAddSubcard($player, $i, $char[$i]);
         $fromCardID = $char[$i];

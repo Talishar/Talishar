@@ -917,11 +917,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   if($player != $mainPlayer && SearchAlliesActive($mainPlayer, "UPR415")) { $restriction = "UPR415"; return true; }
   if(EffectPlayCardRestricted($cardID, $type) != "") { $restriction = true; return true; }
   if(EffectAttackRestricted($cardID, $type) != "" && $currentPlayer == $mainPlayer) { $restriction = true; return true; }
-  if(SubtypeContains($cardID, "Evo", $player) && SubtypeContains($cardID, "Chest", $player)&& !SearchCharacterAliveSubtype($player, "Chest")) { $restriction = "Evo"; return true; }
-  if(SubtypeContains($cardID, "Evo", $player) && SubtypeContains($cardID, "Head", $player)&& !SearchCharacterAliveSubtype($player, "Head")) { $restriction = "Evo"; return true; }
-  if(SubtypeContains($cardID, "Evo", $player) && SubtypeContains($cardID, "Arms", $player)&& !SearchCharacterAliveSubtype($player, "Arms")) { $restriction = "Evo"; return true; }
-  if(SubtypeContains($cardID, "Evo", $player) && SubtypeContains($cardID, "Legs", $player)&& !SearchCharacterAliveSubtype($player, "Legs")) { $restriction = "Evo"; return true; }
-  switch($cardID) {
+    switch($cardID) {
     case "WTR080": return !$CombatChain->HasCurrentLink() || !HasCombo($CombatChain->AttackCard()->ID());
     case "WTR082": return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "WTR116": return GetClassState($player, $CS_HitsWithWeapon) == 0;
