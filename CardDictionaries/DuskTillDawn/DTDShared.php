@@ -185,7 +185,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PlayAura("DYN244", $currentPlayer);
       return "";
     case "DTD006":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRBANISH");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRBANISH&MYBANISH");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "TURNBANISHFACEDOWN", 1);
       return "";
