@@ -1746,15 +1746,10 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   if (IsStaticType(CardType($cardID), $from, $cardID)) {
     $names = GetAbilityNames($cardID, $index);
     if($names != "") {
-      if(SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1){
-        AddDecisionQueue("SETABILITYTYPEINSTANT", $currentPlayer, $cardID);
-      }
-      else {
-        $names = str_replace("-,", "", $names);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which ability to activate");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
-        AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);  
-      }
+      $names = str_replace("-,", "", $names);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which ability to activate");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
+      AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
     }
   }
   switch($cardID) {

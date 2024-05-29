@@ -391,7 +391,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $auras = GetAuras($currentPlayer);
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if($from != "PLAY"){
-        $count = CountAuraAtkCounters($currentPlayer)+6; //+6 is an arbitrary number to keep the loop going until the player pass
+        $count = CountAuraAtkCounters($currentPlayer)+10; //+10 is an arbitrary number to keep the loop going until the player pass
         for($i=0; $i < $count; $i++) { 
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasAttackCounters=true", 1);
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 attack counter or pass", 1);
