@@ -489,7 +489,7 @@ function CRUHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer, $combatChainState, $CS_ArcaneDamageTaken;
   switch($cardID) {
-    case "CRU054": if(ComboActive()) PlayAura("CRU075", $mainPlayer); break;
+    case "CRU054": PlayAura("CRU075", $mainPlayer); break;
     case "CRU060": case "CRU061": case "CRU062":
       if(ComboActive()) {
         $num = NumAttacksHit()+1;

@@ -507,7 +507,7 @@ function AddOnHitTrigger($cardID)
     case "ARC182": case "ARC183": case "ARC184":
     case "ARC185": case "ARC186": case "ARC187":
     case "ARC194": case "ARC195": case "ARC196":
-    case "CRU054": case "CRU060": case "CRU061": case "CRU062":
+    case "CRU060": case "CRU061": case "CRU062":
     case "CRU066": case "CRU067": case "CRU068":
     case "CRU069": case "CRU070": case "CRU071":
     case "CRU072": case "CRU074": case "CRU106": case "CRU107": case "CRU108":
@@ -614,6 +614,9 @@ function AddOnHitTrigger($cardID)
     case "MST173": case "MST174": case "MST175":
     case "MST233":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
+      break;
+    case "CRU054": 
+      if(ComboActive($cardID)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "ELE003":
       if(SearchCurrentTurnEffects($cardID, $mainPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
