@@ -519,7 +519,7 @@ function GetAbilityTypes($cardID, $index=-1, $from="-")
 
 function GetAbilityNames($cardID, $index = -1, $from="-")
 {
-  global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $phase, $CS_PlayIndex;
+  global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $phase, $CS_PlayIndex, $CS_NumActionsPlayed;
   $character = &GetPlayerCharacter($currentPlayer);
   $auras = &GetAuras($currentPlayer);
   if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
@@ -542,7 +542,10 @@ function GetAbilityNames($cardID, $index = -1, $from="-")
       return $names;
     case "MST133":
       if($auras[$index + 3] > 0) $names = "Instant";
-      if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0 && $auras[$index+1] == 2) {
+      if(SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
+        return $names;
+      }
+      else if($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0 && $auras[$index+1] == 2 ){
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
       return $names;
@@ -676,7 +679,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "MON245" && $player == $defPlayer && ($abilityType == "I" || $cardType == "I")) { $restriction = "Exude Confidance"; return false; }
   if(SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && ($abilityType == "I" || $cardType == "I")) { $restriction = "Exude Confidance"; return false; }
   if($cardID == "MST133" && $from == "PLAY") {
-    if($auras[$index+1] == 2 && $currentPlayer == $mainPlayer && $phase != "INSTANT" && CanPlayInstant($phase) && $actionPoints > 0) return true;
+    if($auras[$index+1] == 2 && $currentPlayer == $mainPlayer && $actionPoints > 0) return true;
     if(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1 && CanPlayInstant($phase) && $auras[$index+3] > 0) return true;
     if($auras[$index+1] != 2 && $auras[$index+3] <= 0) return false;
   }
