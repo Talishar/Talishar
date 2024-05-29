@@ -301,12 +301,6 @@ function ShouldHoldPriorityNow($player)
   return true;
 }
 
-function SkipHoldingPriorityNow($player)
-{
-  global $layerPriority;
-  $layerPriority[$player - 1] = "0";
-}
-
 function IsGamePhase($phase)
 {
   switch ($phase) {
