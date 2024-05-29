@@ -1213,6 +1213,7 @@ function CardNameContains($cardID, $name, $player="", $partial=false)
     $cardName = explode(" ", $cardName);
     $cardName = implode(",", $cardName);
   }
+  if($cardName == $name) return true; //Card is breaking due to comma
   return DelimStringContains($cardName, $name, $partial);
 }
 
