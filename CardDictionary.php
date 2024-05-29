@@ -669,15 +669,15 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if($from != "ARS") return false;
     if(!SubtypeContains($character[CharacterPieces()], "Bow") && !SubtypeContains($character[CharacterPieces()*2], "Bow")) return false;
   }
-  if($cardID == "MST133" && $from == "PLAY" && $auras[$index+1] == 2 && $currentPlayer == $mainPlayer && $phase != "INSTANT" && CanPlayInstant($phase) && $actionPoints > 0) return true;
-  if($cardID == "MST133" && $from == "PLAY" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1 && CanPlayInstant($phase) && $auras[$index+3] > 0) return true;
-  if($cardID == "MST133" && $from == "PLAY" && $auras[$index+1] != 2 && $auras[$index+3] > 0) return false;
   if(SearchCurrentTurnEffects("ARC044", $player) && !$isStaticType && $from != "ARS") return false;
   if(SearchCurrentTurnEffects("ARC043", $player) && ($cardType == "A" || $cardType == "AA") && !str_contains($abilityTypes, "I") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
   if(SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "A" && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
   if(SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
-  if($CombatChain->HasCurrentLink()) if ($CombatChain->AttackCard()->ID() == "MON245" && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
-  if(SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
+  if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "MON245" && $player == $defPlayer && ($abilityType == "I" || $cardType == "I")) { $restriction = "Exude Confidance"; return false; }
+  if(SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && ($abilityType == "I" || $cardType == "I")) { $restriction = "Exude Confidance"; return false; }
+  if($cardID == "MST133" && $from == "PLAY" && $auras[$index+1] == 2 && $currentPlayer == $mainPlayer && $phase != "INSTANT" && CanPlayInstant($phase) && $actionPoints > 0) return true;
+  if($cardID == "MST133" && $from == "PLAY" && SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1 && CanPlayInstant($phase) && $auras[$index+3] > 0) return true;
+  if($cardID == "MST133" && $from == "PLAY" && $auras[$index+1] != 2 && $auras[$index+3] > 0) return false;
   if(($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
   if($from == "PLAY" && AbilityPlayableFromCombatChain($cardID) && $phase != "B") return true;
   if(($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
