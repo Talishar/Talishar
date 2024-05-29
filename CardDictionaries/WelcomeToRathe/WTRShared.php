@@ -152,8 +152,7 @@
 
   function WTRPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $mainPlayer, $currentPlayer, $defPlayer;
-    global $CS_DamagePrevention;
+    global $mainPlayer, $currentPlayer, $defPlayer, $CS_DamagePrevention;
     $rv = "";
     switch($cardID) {
       case "WTR054": case "WTR055": case "WTR056": if(SearchCount(SearchPitch($currentPlayer, minCost:3)) > 0) Draw($currentPlayer); return "";
