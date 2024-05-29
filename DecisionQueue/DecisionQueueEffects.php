@@ -704,7 +704,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         array_push($cardList, $discard[$lastResult[$i]]);
       }
     if(!ArsenalFull($player)) {
-        $rand = GetRandom(0, count($cardList));
+        $rand = GetRandom(0, count($cardList)-1);
         AddArsenal($cardList[$rand], $player, "BANISH", "DOWN");
         RemoveBanish($player, SearchBanishForCard($player, $cardList[$rand]));
       }
