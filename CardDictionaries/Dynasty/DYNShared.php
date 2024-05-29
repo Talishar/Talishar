@@ -417,7 +417,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN215":
       AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
+      AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "DYN215-{0}");
       AddDecisionQueue("ADDCURRENTEFFECT", $otherPlayer, "DYN215-{0}");
       return "";
@@ -460,7 +460,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         }
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
+        AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
         AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $otherPlayer, "DYN240-{0}");
       }
       return $rv;

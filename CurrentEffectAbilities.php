@@ -494,7 +494,7 @@ function OnAttackEffects($attack)
             AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
             AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "DYN065-");
             AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-");
-            AddDecisionQueue("WRITELOG", $mainPlayer, "<b>{0}</b> was chosen");
+            AddDecisionQueue("WRITELOG", $mainPlayer, "📣<b>{0}</b> was chosen");
           }
           break;
         case "MST092":
