@@ -182,7 +182,7 @@
           return "<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>";
         }
         else if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
-          WriteLog("Deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID);
+          WriteLog(Cardlink($cardID, $cardID) . " deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID);
         }
         return "";
       case "WTR009":
