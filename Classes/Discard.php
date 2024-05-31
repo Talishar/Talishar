@@ -36,6 +36,7 @@ class Discard {
 
   function Remove($index) {
     $cardID = $this->discard[$index];
+    unset($this->discard[$index+1]);
     unset($this->discard[$index]);
     $this->discard = array_values($this->discard);
     return $cardID;
