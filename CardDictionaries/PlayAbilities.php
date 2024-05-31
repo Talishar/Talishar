@@ -365,18 +365,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST502,".$from);
       return "";
     case "MST105":
-      if($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA" && HasStealth($combatChain[0])) $modalities = "Buff_Power,Gain_On-Hit,Both";
-      elseif ($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") $modalities = "Buff_Power";
-      else $modalities = "Gain_On-Hit";
-      if($modalities == "Buff_Power,Gain_On-Hit,Both") {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities, 1);
-        AddDecisionQueue("MODAL", $currentPlayer, "JUSTANICK", 1);
-      }
-      else {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities, 1);
-        AddDecisionQueue("MODAL", $currentPlayer, "JUSTANICK", 1);
-      }
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
+      AddDecisionQueue("MODAL", $currentPlayer, "JUSTANICK", 1);
       return "";
     case "MST132": 
       if($from != "PLAY")
@@ -459,18 +449,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(ComboActive()) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";  
     case "MST162":
-      if($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardNameContains($combatChain[0], "Crouching Tiger", $currentPlayer)) $modalities = "Buff_Power,Gain_On-Hit,Both";
-      elseif ($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($combatChain[0]) == "AA") $modalities = "Buff_Power";
-      else $modalities = "Gain_On-Hit";
-      if($modalities == "Buff_Power,Gain_On-Hit,Both") {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities, 1);
-        AddDecisionQueue("MODAL", $currentPlayer, "MAUL", 1);
-      }
-      else {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities, 1);
-        AddDecisionQueue("MODAL", $currentPlayer, "MAUL", 1);
-      }
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
+      AddDecisionQueue("MODAL", $currentPlayer, "MAUL", 1);
       return "";
     case "MST164": case "MST165": case "MST166":
       if(ComboActive()) {

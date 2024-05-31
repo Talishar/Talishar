@@ -2098,6 +2098,15 @@ function PayAdditionalCosts($cardID, $from)
       BanishFromSoul($currentPlayer);
       BanishFromSoul($currentPlayer);
       break;
+    case "MST105":
+      if($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA" && HasStealth($combatChain[0])) $modalities = "Buff_Power,Gain_On-Hit,Both";
+      elseif ($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") $modalities = "Buff_Power";
+      else $modalities = "Gain_On-Hit";
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
     case "MON126": case "MON127": case "MON128": case "MON129": case "MON130": case "MON131": case "MON132":
     case "MON133": case "MON134": case "MON141": case "MON142": case "MON143":
       if(RandomBanish3GY($cardID) > 0) AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -2108,6 +2117,15 @@ function PayAdditionalCosts($cardID, $from)
     case "MON156":
       MZMoveCard($currentPlayer, "MYHAND:bloodDebtOnly=true", "MYBANISH,HAND,-", may: true);
       AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
+      break;
+    case "MST162":
+      if($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardNameContains($combatChain[0], "Crouching Tiger", $currentPlayer)) $modalities = "Buff_Power,Gain_On-Hit,Both";
+      elseif ($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($combatChain[0]) == "AA") $modalities = "Buff_Power";
+      else $modalities = "Gain_On-Hit";
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "MON195": case "MON196": case "MON197":
       MZMoveCard($currentPlayer, "MYHAND", "MYBANISH,HAND,-", may: true);
