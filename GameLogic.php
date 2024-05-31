@@ -1568,12 +1568,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "HYPERDRIVER":
       $index = SearchItemsForUniqueID($parameter, $player);
       $items = &GetItems($player);
-      if($items[$index+2] == 2) {
-        --$items[$index+1];
-        $items[$index+2] = 1;
-        GainResources($player, 1);
-        if($items[$index+1] <= 0) DestroyItemForPlayer($player, $index);
-      }
+      --$items[$index+1];
+      GainResources($player, 1);
+      if($items[$index+1] <= 0) DestroyItemForPlayer($player, $index);
       return $lastResult;
     case "MZADDCOUNTERANDEFFECT":
       $lastResultArr = explode(",", $lastResult);
