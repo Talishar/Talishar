@@ -1751,11 +1751,11 @@ function ComboActive($cardID = "")
         if($lastAttackName == "Crouching Tiger") return true;
         break;
       case "MST164": 
-        return PitchValue($chainLinks[count($chainLinks)-1][0]) == 1;
+        return ColorContains($chainLinks[count($chainLinks)-1][0], 1, $mainPlayer);
       case "MST165":
-        return PitchValue($chainLinks[count($chainLinks)-1][0]) == 2;
+        return ColorContains($chainLinks[count($chainLinks)-1][0], 2, $mainPlayer);
       case "MST166":
-        return PitchValue($chainLinks[count($chainLinks)-1][0]) == 3;
+        return ColorContains($chainLinks[count($chainLinks)-1][0], 3, $mainPlayer);
       case "MST176": case "MST177": case "MST178":
         if($lastAttackName == "Crouching Tiger") return true;
         break;
