@@ -1093,9 +1093,9 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
     if(SearchCurrentTurnEffects("EVO129", $currentPlayer) || SearchCurrentTurnEffects("EVO130", $currentPlayer) || SearchCurrentTurnEffects("EVO131", $currentPlayer)) return true;
   }
   if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && ColorContains($cardID, 3, $currentPlayer) && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0])))) return true;
-  if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST155", $currentPlayer) && CardCost($cardID) <= 2) return true;
-  if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST156", $currentPlayer) && CardCost($cardID) <= 1) return true;
-  if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST157", $currentPlayer) && CardCost($cardID) <= 0) return true;
+  if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST155-INST", $currentPlayer) && CardCost($cardID) <= 2) return true;
+  if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST156-INST", $currentPlayer) && CardCost($cardID) <= 1) return true;
+  if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST157-INST", $currentPlayer) && CardCost($cardID) <= 0) return true;
   $isStaticType = IsStaticType($cardType, $from, $cardID);
   $abilityType = "-";
   if($isStaticType) $abilityType = GetAbilityType($cardID, $index, $from);

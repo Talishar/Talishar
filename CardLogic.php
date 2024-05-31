@@ -1795,7 +1795,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       else PlayAura("MON104", $player);
       break;
     case "MST155": case "MST156": case "MST157":
-      AddCurrentTurnEffect($parameter, $player, "PLAY");
+      AddCurrentTurnEffect($parameter."-INST", $player, "PLAY");
       break;
     case "MST050":
       AddPlayerHand("DYN065", $player, $parameter);
