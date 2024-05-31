@@ -334,7 +334,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "MST099":
       $params = explode("-", $target);
-      $index = SearchdiscardForUniqueID($params[1], $otherPlayer);
+      $index = SearchdiscardForUniqueID($params[1], $currentPlayer);
       if($index != -1) {
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDISCARD-".$index, 1);
         AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
