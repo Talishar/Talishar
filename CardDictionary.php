@@ -681,7 +681,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($cardID == "MST133" && $from == "PLAY") {
     if($auras[$index+1] == 2 && $currentPlayer == $mainPlayer && $actionPoints > 0) return true;
     if(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1 && CanPlayInstant($phase) && $auras[$index+3] > 0) return true;
-    if($auras[$index+1] != 2 && $auras[$index+3] <= 0) return false;
+    if($auras[$index+1] != 2 || $auras[$index+3] <= 0) return false;
   }
   if(($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
   if($from == "PLAY" && AbilityPlayableFromCombatChain($cardID) && $phase != "B") return true;
