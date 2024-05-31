@@ -762,6 +762,15 @@ function SearchAurasForUniqueID($uniqueID, $player)
   return -1;
 }
 
+function SearchDiscardForUniqueID($uniqueID, $player)
+{
+  $discard = &GetDiscard($player);
+  for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
+    if ($discard[$i + 1] == $uniqueID) return $i;
+  }
+  return -1;
+}
+
 function SearchArsenalForUniqueID($uniqueID, $player)
 {
   $arsenal = &GetArsenal($player);

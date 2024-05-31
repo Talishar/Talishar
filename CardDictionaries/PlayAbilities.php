@@ -317,9 +317,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";    
     case "MST097":
       $params = explode("-", $target);
-      $discard = GetDiscard($otherPlayer);
-      if($discard[$params[1]] == $params[0]) {   
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRDISCARD-".$params[1], 1);
+      $index = SearchdiscardForUniqueID($params[1], $otherPlayer);
+      if($index != -1) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRDISCARD-".$index, 1);
         AddDecisionQueue("MZADDZONE", $currentPlayer, "THEIRBANISH,GY,-,".$cardID, 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST497,".$from);  
@@ -334,9 +334,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "MST099":
       $params = explode("-", $target);
-      $discard = GetDiscard($currentPlayer);
-      if($discard[$params[1]] == $params[0]) {   
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDISCARD-".$params[1], 1);
+      $index = SearchdiscardForUniqueID($params[1], $otherPlayer);
+      if($index != -1) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDISCARD-".$index, 1);
         AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST499,".$from);

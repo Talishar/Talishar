@@ -1225,9 +1225,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       global $layers;
       $target = $lastResult;
       $targetArr = explode("-", $target);
+      $otherPlayer = ($player == 1 ? 2 : 1);
       if($targetArr[0] == "LAYER") $target = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
-      if($targetArr[0] == "THEIRDISCARD") $target = GetMZCard($player, $lastResult). "-" . $targetArr[1];
-      if($targetArr[0] == "MYDISCARD") $target = GetMZCard($player, $lastResult) . "-" . $targetArr[1];
+      if($targetArr[0] == "THEIRDISCARD") {
+        $discard = GetDiscard($otherPlayer);
+        $target = "THEIRDISCARDUID-" . $discard[$targetArr[1]+1];
+      }
+      if($targetArr[0] == "MYDISCARD") {
+        $discard = GetDiscard($player);
+        $target = "MYDISCARDUID-" . $discard[$targetArr[1]+1];
+      }
       for($i=0; $i<count($layers); $i+=LayerPieces())
       {
         if($layers[$i] == $parameter && $layers[$i+3] == "-")

@@ -615,6 +615,7 @@ function RemoveGraveyard($player, $index)
   $cardID = "";
   if(isset($discard[$index])){
     $cardID = $discard[$index];
+    unset($discard[$index + 1]);
     unset($discard[$index]);
     $discard = array_values($discard);
   }
@@ -658,6 +659,7 @@ function RemoveCharacterEffects($player, $index, $effect)
 function AddSpecificGraveyard($cardID, &$graveyard, $from)
 {
   array_push($graveyard, $cardID);
+  array_push($graveyard, GetUniqueId());
 }
 
 function NegateLayer($MZIndex, $goesWhere = "GY")

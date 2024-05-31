@@ -21,9 +21,10 @@ function HandPieces()
 }
 
 //0 - Card ID
+//1 - Unique ID
 function DiscardPieces()
 {
-  return 1;
+  return 2;
 }
 
 //0 - Card ID
