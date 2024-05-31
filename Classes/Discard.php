@@ -19,7 +19,7 @@ class Discard {
   }
 
   function NumCards() {
-    return count($this->discard) / DiscardPieces();
+    return count($this->discard)/DiscardPieces();
   }
 
   function RemoveRandom($count=1) {

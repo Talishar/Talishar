@@ -92,7 +92,7 @@
     $discard = new Discard($player);
     if($discard->Empty()) return "";
     $rv = ($discard->NumCards() == 1 ? "1" : "2") . "-";
-    $rv .= GetIndices($discard->NumCards());
+    $rv .= GetIndices($discard->NumCards()*DiscardPieces(), 0, DiscardPieces());
     return $rv;
   }
 
