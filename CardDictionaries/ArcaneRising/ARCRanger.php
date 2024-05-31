@@ -123,7 +123,7 @@
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
-    if(!ArsenalEmpty($player)) { WriteLog("It does nothing, because your arsenal is not empty"); return; }
+    if(!ArsenalEmpty($player)) { WriteLog("Reload does nothing, because your arsenal is not empty"); return; }
     MZMoveCard($player, "MYHAND", "MYARS,HAND,DOWN", may:true, silent:true);
   }
 
