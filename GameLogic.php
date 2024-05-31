@@ -265,6 +265,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "REMOVEDISCARD":
       $discard = &GetDiscard($player);
       $cardID = $discard[$lastResult];
+      unset($discard[$lastResult+1]);
       unset($discard[$lastResult]);
       $discard = array_values($discard);
       return $cardID;

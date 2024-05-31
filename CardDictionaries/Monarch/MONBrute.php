@@ -70,11 +70,11 @@
     $BanishedIncludes6 = 0;
     $diabolicOfferingCount = 0;
     for($i = 0; $i < 3; $i++) {
-      $index = GetRandom() % count($discard);
+      $index = GetRandom(0, count($discard)/DiscardPieces()-1) * DiscardPieces();
       if(ModifiedAttackValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) ++$BanishedIncludes6;
       elseif($discard[$index] == "DTD107") ++$diabolicOfferingCount;
-      BanishCardForPlayer($discard[$index], $currentPlayer, "DISCARD", $modifier);
-      unset($discard[$index]);
+      $cardID = RemoveDiscard($currentPlayer, $index);
+      BanishCardForPlayer($cardID, $currentPlayer, "DISCARD", $modifier);
       $discard = array_values($discard);
     }
     if($BanishedIncludes6 > 0) $BanishedIncludes6 += $diabolicOfferingCount;
