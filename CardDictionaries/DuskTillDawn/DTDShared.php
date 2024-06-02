@@ -292,6 +292,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD106":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIACTIONSBANISH");
       AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "3-", 1);
+      AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-3", 1);
       AddDecisionQueue("MULTICHOOSEBANISH", $currentPlayer, "<-", 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SPOILEDSKULL", 1);
       return "";
