@@ -1549,11 +1549,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
       $remorselessCount = CountCurrentTurnEffects("CRU123-DMG", $playerID);
       if(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID, from:$from) == "") {
-        WriteLog("Lost 1 life to Remorseless");
+        WriteLog("Player ". $playerID ." lost ". $remorselessCount ." life to ". CardLink("CRU123", "CRU123"));
         LoseHealth($remorselessCount, $playerID);
       }
       elseif(($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A")) {
-        WriteLog("Lost 1 life to Remorseless");
+        WriteLog("Player ". $playerID ." lost ". $remorselessCount ." life to ". CardLink("CRU123", "CRU123"));
         LoseHealth($remorselessCount, $playerID);
       }
       if(CardNameContains($cardID, "Moon Wish", $currentPlayer)) AddCurrentTurnEffect("ARC185-GA", $currentPlayer);
