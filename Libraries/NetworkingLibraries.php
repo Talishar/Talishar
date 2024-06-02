@@ -2275,16 +2275,9 @@ function PayAdditionalCosts($cardID, $from)
       if($numGold > 0) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numGold + 1));
-        if(SearchCharacterAlive($currentPlayer, "HVY051")) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=DYN243&MYCHAR:cardID=HVY051", 1);
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-        } else {
-          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "DYN243-");
-          AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-");
-        }
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "DYN243-");
+        AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-");
         AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
-        AddDecisionQueue("DIVIDE", $currentPlayer, "1"); //Useless line?
         AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
       }
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "KNICKKNACK");
