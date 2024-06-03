@@ -169,6 +169,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if(!PlayableFromBanish($cardID, $banish[$index+1], true)) SearchCurrentTurnEffects("DTD564", $currentPlayer, true);
       if($banish[$index+1] == "MST236") {
         SearchCurrentTurnEffects("MST236-3", $currentPlayer, true);
+        $currentPlayerBanish = new Banish($currentPlayer);
+        $currentPlayerBanish->UnsetModifier("MST236");
       }
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2]);
       break;
