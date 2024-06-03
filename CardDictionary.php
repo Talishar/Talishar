@@ -1461,7 +1461,8 @@ function AbilityHasGoAgain($cardID)
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
-  if($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($currentPlayer, "MON088")) return true;
+  $abilityType = GetResolvedAbilityType($cardID);
+  if($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($currentPlayer, "MON088") && $abilityType == "AA") return true;
   if($set == "WTR") return WTRAbilityHasGoAgain($cardID);
   else if($set == "ARC") return ARCAbilityHasGoAgain($cardID);
   else if($set == "CRU") return CRUAbilityHasGoAgain($cardID);
