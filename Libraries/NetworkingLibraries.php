@@ -2280,8 +2280,8 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
         AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
       }
-      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "KNICKKNACK");
-      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}");
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
       break;
     case "UPR094":
       MZMoveCard($currentPlayer, "MYDISCARD:isSameName=UPR101", "MYBANISH,GY,-", may: true);

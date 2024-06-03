@@ -390,9 +390,12 @@
         if($from == "PLAY") $CombatChain->AttackCard()->ModifyPower(1);
         return "";
       case "EVR158":
-        WriteLog($additionalCosts);
         PutItemIntoPlayForPlayer("EVR195", $currentPlayer, 0, intval($additionalCosts));
         return "";
+      case "EVR159":
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "KNICKKNACK");
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");  
       case "EVR160":
         Draw(1);
         Draw(2);

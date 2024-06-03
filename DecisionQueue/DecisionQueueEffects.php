@@ -452,7 +452,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "KNICKKNACK":
-      for($i = 0; $i < ($dqVars[0] + 1); ++$i) {
+      for($i = 0; $i < $lastResult; ++$i) {
         PrependDecisionQueue("PUTPLAY", $player, "-", 1);
         PrependDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
         PrependDecisionQueue("FINDINDICES", $player, "KNICKKNACK");
