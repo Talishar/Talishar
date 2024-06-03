@@ -681,7 +681,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       if($dqVars[0] > 0) {
         --$dqVars[0];
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=DYN243&MYCHAR:cardID=HVY051", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZDESTROY", $player, "-", 1);
         AddDecisionQueue("SPECIFICCARD", $player, "RAISEANARMY", 1);
       }
