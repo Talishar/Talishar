@@ -7,9 +7,9 @@ include_once "../includes/dbh.inc.php";
 SetHeaders();
 
 $_POST = json_decode(file_get_contents('php://input'), true);
-$decklink = is_null($_POST["deckLink"]) ? "" : $_POST["deckLink"];
+$decklink = $_POST["deckLink"];
 
-if (IsUserLoggedIn() && $decklink != "") {
+if (IsUserLoggedIn()) {
   $sql = "DELETE FROM favoritedeck WHERE decklink=? AND usersId=?";
 
   $conn = GetDBConnection();
