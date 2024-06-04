@@ -2604,8 +2604,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
     } else { //On chain, but not index 0
       if($definedCardType == "DR" && !$skipDRResolution) {
-        OnDefenseReactionResolveEffects($from);
-        OnBlockResolveEffects();
+        OnDefenseReactionResolveEffects($from, $cardID);
         if(ColorContains($cardID, 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
       }
     }
