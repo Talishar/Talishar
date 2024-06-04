@@ -1073,25 +1073,25 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       MZMoveCard($player, "MYHAND", "MYTOPDECK", silent:true);
       break;
     case "CRU126":
-      TrapTriggered($cardID);
+      TrapTriggered($parameter);
       AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
-      AddDecisionQueue("NOPASS", $mainPlayer, $cardID, 1);
+      AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
       AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
       AddDecisionQueue("ELSE", $mainPlayer, "-");
       AddDecisionQueue("TRIPWIRETRAP", $mainPlayer, "-", 1);
       break;
     case "CRU127":
-      TrapTriggered($cardID);
+      TrapTriggered($parameter);
       AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 1, 1);
-      AddDecisionQueue("NOPASS", $mainPlayer, $cardID, 1);
+      AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
       AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
       AddDecisionQueue("ELSE", $mainPlayer, "-");
       AddDecisionQueue("TAKEDAMAGE", $mainPlayer, 2, 1);
         break;
     case "CRU128":
-      TrapTriggered($cardID);
+      TrapTriggered($parameter);
       AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
-      AddDecisionQueue("NOPASS", $mainPlayer, $cardID, 1);
+      AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
       AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
       AddDecisionQueue("ELSE", $mainPlayer, "-");
       AddDecisionQueue("ATTACKMODIFIER", $player, "-2", 1);
@@ -1558,7 +1558,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       DiscardHand($mainPlayer);
       for($i=0; $i<$numDraw; ++$i) Draw($mainPlayer);
       WriteLog("Attacker discarded their hand and drew $numDraw cards");
-      TrapTriggered($cardID);
+      TrapTriggered($parameter);
       break;
     case "OUT104":
       $deck = new Deck($mainPlayer);
@@ -1567,14 +1567,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       $numName = SearchCount(SearchMultizone($mainPlayer, "MYDISCARD:isSameName=" . $topDeck));
       LoseHealth($numName, $mainPlayer);
       WriteLog(Cardlink($topDeck, $topDeck) . " put into discard. Player $mainPlayer lost $numName life");
-      TrapTriggered($cardID);
+      TrapTriggered($parameter);
       break;
     case "OUT106":
       AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIP");
-      AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       AddDecisionQueue("MODDEFCOUNTER", $mainPlayer, "-1", 1);
       WriteLog("Trap triggered and puts a -1 counter on an equipment");
-      TrapTriggered($cardID);
+      TrapTriggered($parameter);
       break;
     case "OUT107":
       $deck = new Deck($mainPlayer);
@@ -1587,11 +1587,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         else $rv .= " and " . Cardlink($cardRemoved, $cardRemoved) . " into the graveyard";
       }
       WriteLog($rv);
-      TrapTriggered($cardID);
+      TrapTriggered($parameter);
       break;
     case "OUT108":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
-      if(!IsAllyAttacking()) TrapTriggered($cardID);
+      AddCurrentTurnEffect($parameter, $mainPlayer);
+      if(!IsAllyAttacking()) TrapTriggered($parameter);
       break;
     case "OUT171":
       PlayAura($CID_BloodRotPox, $mainPlayer);
