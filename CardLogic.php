@@ -1086,7 +1086,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
       AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
       AddDecisionQueue("ELSE", $mainPlayer, "-");
-      AddDecisionQueue("TAKEDAMAGE", $mainPlayer, 2, 1);
+      AddDecisionQueue("TAKEDAMAGE", $mainPlayer, "2-".$parameter, 1);
         break;
     case "CRU128":
       TrapTriggered($parameter);
@@ -1652,7 +1652,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         AddDecisionQueue("PAYRESOURCES", $player, "3", 1);
         AddDecisionQueue("ELSE", $player, "-");
       }
-      AddDecisionQueue("WRITELOG", $player, "Player " . $player . " is taking 2 damage from " . CardLink("OUT234", "OUT234"), 1);
       AddDecisionQueue("TAKEDAMAGE", $player, "2-OUT234", 1);
       DestroyAuraUniqueID($player, $uniqueID);
       break;

@@ -466,14 +466,14 @@ function OnBlockResolveEffects($index = -1, $cardID = "")
         break;
       case "CRU126":
         if(!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
-        AddDecisionQueue("TRIPWIRETRAP", $otherPlayer, "-", 1);
+        AddDecisionQueue("TRIPWIRETRAP", $defPlayer, "-", 1);
         break;
       case "CRU127":
         if(!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "CRU128":
         if(!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
-        AddDecisionQueue("ATTACKMODIFIER", $currentPlayer, "-2", 1);
+        AddDecisionQueue("ATTACKMODIFIER", $mainPlayer, "-2", 1);
         break;
       case "EVR018":
         if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $defendingCard);

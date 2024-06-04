@@ -1712,7 +1712,7 @@ function GetLayerTarget($cardID)
       break;
     case "MST097": 
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target action card");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target card");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
@@ -2605,6 +2605,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     } else { //On chain, but not index 0
       if($definedCardType == "DR" && !$skipDRResolution) {
         OnDefenseReactionResolveEffects($from);
+        OnBlockResolveEffects();
         if(ColorContains($cardID, 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
       }
     }

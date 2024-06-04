@@ -593,7 +593,6 @@ function OUTAbilityCost($cardID)
       case "OUT080": case "OUT081": case "OUT082":
         if(ComboActive() && IsHeroAttackTarget())
         {
-          WriteLog("Deals 2 damage");
           AddDecisionQueue("DEALDAMAGE", $defPlayer, "2-" . $cardID . "-DAMAGE", 1);
         }
         break;
@@ -788,7 +787,6 @@ function OUTAbilityCost($cardID)
     $characterID = ShiyanaCharacter($char[0], $defPlayer);
     if($char[1] == 2 && $characterID == "OUT091" || $characterID == "OUT092")
     {
-      WriteLog(CardLink($characterID, $characterID) . " deals 1 damage from a trap.");
       DamageTrigger($mainPlayer, 1, "DAMAGE", $characterID);
     }
   }

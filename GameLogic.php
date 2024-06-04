@@ -979,6 +979,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage -= intval($lastResult);
       $damage = DealDamageAsync($player, $damage, $type, $source);
       if($type == "COMBAT") $dqState[6] = $damage;
+      Writelog("Player $player took $damage damage from ". Cardlink($source, $source));
       return $damage;
     case "AFTERQUELL":
       $maxQuell = GetClassState($player, $CS_MaxQuellUsed);

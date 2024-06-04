@@ -183,7 +183,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
           AddDecisionQueue("MZDISCARD", $otherPlayer, "HAND,".$currentPlayer, 1);
           AddDecisionQueue("MZREMOVE", $otherPlayer, "-", 1);
           AddDecisionQueue("ELSE", $otherPlayer, "-");
-          AddDecisionQueue("TAKEDAMAGE", $otherPlayer, 1, 1);
+          AddDecisionQueue("TAKEDAMAGE", $otherPlayer, "1-".$cardID, 1);
         }
       }
       return "";
