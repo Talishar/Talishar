@@ -347,39 +347,6 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       SetClassState($currentPlayer, $CS_NextDamagePrevented, 1);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "CRU126":
-      if(!IsAllyAttacking()) {
-        TrapTriggered($cardID);
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
-        AddDecisionQueue("NOPASS", $otherPlayer, $cardID, 1);
-        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "1", 1);
-        AddDecisionQueue("ELSE", $otherPlayer, "-");
-      }
-      AddDecisionQueue("TRIPWIRETRAP", $otherPlayer, "-", 1);
-      return "";
-    case "CRU127":
-      if(!IsAllyAttacking()) {
-        TrapTriggered($cardID);
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 1, 1);
-        AddDecisionQueue("NOPASS", $otherPlayer, $cardID, 1);
-        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "1", 1);
-        AddDecisionQueue("ELSE", $otherPlayer, "-");
-        AddDecisionQueue("TAKEDAMAGE", $otherPlayer, 2, 1);
-      }
-      return "";
-    case "CRU128":
-      if(!IsAllyAttacking()) {
-        TrapTriggered($cardID);
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
-        AddDecisionQueue("NOPASS", $otherPlayer, $cardID, 1);
-        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "1", 1);
-        AddDecisionQueue("ELSE", $otherPlayer, "-");
-      }
-      AddDecisionQueue("ATTACKMODIFIER", $currentPlayer, "-2", 1);
-      return "";
     case "CRU135": case "CRU136": case "CRU137":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddCurrentTurnEffect($cardID . "-1", ($currentPlayer == 1 ? 2 : 1));

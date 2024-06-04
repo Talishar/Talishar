@@ -357,7 +357,7 @@ function OnDefenseReactionResolveEffects($from)
   ProcessMirageOnBlock(count($combatChain)-CombatChainPieces());
 }
 
-function OnBlockResolveEffects($index = -1)
+function OnBlockResolveEffects($index = -1, $cardID = "")
 {
   global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain, $CS_NumBlueDefended;
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
@@ -425,11 +425,12 @@ function OnBlockResolveEffects($index = -1)
     if(($blockedFromHand >= 2 && $combatChain[$i+2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i+2] != "HAND")) UnityEffect($combatChain[$i]);
     if(HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
     if(SearchCurrentTurnEffects("HVY104", $mainPlayer && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("HVY104") == -1)) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);
-    switch($combatChain[$i]) {
-      case "EVR018":
-        if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
-        else WriteLog("<span style='color:red;'>No frostbite is created because there is no attacking hero when allies attack.</span>");
-        break;
+    $defendingCard = $combatChain[$i];
+    if($cardID != "") { //Code for when a card is pulled as a defending card on the chain
+      $defendingCard = $cardID;
+      $i = count($combatChain);
+    }
+    switch($defendingCard) {
       case "MON241": case "MON242": case "MON243": case "MON244": case "RVD005": case "RVD006"://Ironhide
       case "RVD015"://Pack Call
       case "ELE203"://Rampart of the Ram's Head
@@ -461,7 +462,49 @@ function OnBlockResolveEffects($index = -1)
       case "HVY648":
       case "MST050": case "MST066": case "MST160": case "MST190":
       case "ASB003": case "ASB006":
-        AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
+        AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
+      case "CRU126":
+        if(!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        AddDecisionQueue("TRIPWIRETRAP", $otherPlayer, "-", 1);
+        break;
+      case "CRU127":
+        if(!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
+      case "CRU128":
+        if(!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        AddDecisionQueue("ATTACKMODIFIER", $currentPlayer, "-2", 1);
+        break;
+      case "EVR018":
+        if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $defendingCard);
+        else WriteLog("<span style='color:red;'>No frostbite is created because there is no attacking hero when allies attack.</span>");
+        break;
+      case "OUT102":
+        if(!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
+      case "OUT103":
+        if(!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
+      case "OUT104":
+        if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
+      case "OUT106":
+        if(!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
+      case "OUT107":
+        if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
+      case "OUT108":
+        if(DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
+      case "OUT171":
+        if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
+      case "OUT172":
+        if(!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
+      case "OUT173":
+        if(!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "HVY008":
         $num6Block = 0;
@@ -469,23 +512,23 @@ function OnBlockResolveEffects($index = -1)
         if(ModifiedAttackValue($combatChain[$j], $defPlayer, "CC", "HVY008") >= 6) ++$num6Block;
         }
         if($num6Block) {
-          AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
+          AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         }
         break;
       case "DTD094": case "DTD095": case "DTD096":
-        if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($combatChain[$i], $defPlayer);
+        if(TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($defendingCard, $defPlayer);
         break;
       case "MST075":
         if(!IsAllyAttacking()) {
           $deck = new Deck($mainPlayer);
           if($deck->Reveal(1) && PitchValue($deck->Top()) == 3) {
-            AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
+            AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
           }
         }
         break;
       case "AKO019": // Battlefront Bastion
       case "MST203": case "MST204": case "MST205":
-        if (NumCardsBlocking() <= 1) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
+        if (NumCardsBlocking() <= 1) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       default:
         break;

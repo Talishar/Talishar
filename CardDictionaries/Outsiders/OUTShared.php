@@ -296,72 +296,8 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
         break;
-      case "OUT102":
-        if(!IsAllyAttacking() && HasIncreasedAttack())
-        {
-          AddCurrentTurnEffect($cardID, $mainPlayer);
-          $rv = "Trap triggered and the attack cannot gain power.";
-          TrapTriggered($cardID);
-        }
-        return "";
-      case "OUT103":
-        if(!IsAllyAttacking() && DoesAttackHaveGoAgain())
-        {
-          $hand = &GetHand($mainPlayer);
-          $numDraw = count($hand) - 1;
-          DiscardHand($mainPlayer);
-          for($i=0; $i<$numDraw; ++$i) Draw($mainPlayer);
-          WriteLog("Attacker discarded their hand and drew $numDraw cards");
-          TrapTriggered($cardID);
-        }
-        return "";
-      case "OUT104":
-        if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0)
-        {
-          $deck = new Deck($mainPlayer);
-          $topDeck = $deck->Top(remove:true);
-          AddGraveyard($topDeck, $mainPlayer, "DECK");
-          $numName = SearchCount(SearchMultizone($mainPlayer, "MYDISCARD:isSameName=" . $topDeck));
-          LoseHealth($numName, $mainPlayer);
-          $rv = Cardlink($topDeck, $topDeck) . " put into discard. Player $mainPlayer lost $numName life";
-          TrapTriggered($cardID);
-        }
-        return $rv;
       case "OUT105":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
-      case "OUT106":
-        if(!IsAllyAttacking() && HasIncreasedAttack())
-        {
-          AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIP");
-          AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MODDEFCOUNTER", $mainPlayer, "-1", 1);
-          $rv = "Trap triggered and puts a -1 counter on an equipment";
-          TrapTriggered($cardID);
-        }
-        return "";
-      case "OUT107":
-        if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0)
-        {
-          $deck = new Deck($mainPlayer);
-          $rv = "put  ";
-          for($i=0; $i<2; ++$i)
-          {
-            $cardRemoved = $deck->Top(remove:true);
-            AddGraveyard($cardRemoved, $mainPlayer, "DECK");
-            if($i == 0) $rv .= Cardlink($cardRemoved, $cardRemoved);
-            else $rv .= " and " . Cardlink($cardRemoved, $cardRemoved) . " into the graveyard";
-          }
-          TrapTriggered($cardID);
-        }
-        return $rv;
-      case "OUT108":
-        if(DoesAttackHaveGoAgain())
-        {
-          AddCurrentTurnEffect($cardID, $mainPlayer);
-          WriteLog("Trap triggers and hit effects do not fire.");
-          if(!IsAllyAttacking()) TrapTriggered($cardID);
-        }
         return "";
       case "OUT109": case "OUT110": case "OUT111":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -480,30 +416,6 @@ function OUTAbilityCost($cardID)
       case "OUT165": case "OUT166": case "OUT167":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Your opponent loses life if your next assassin or ranger attack hits.";
-      case "OUT171":
-        if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0)
-        {
-          PlayAura($CID_BloodRotPox, $mainPlayer);
-          $rv = "Trap triggered and created a Bloodrot Pox.";
-          TrapTriggered($cardID);
-        }
-        return $rv;
-      case "OUT172":
-        if(!IsAllyAttacking() && DoesAttackHaveGoAgain())
-        {
-          PlayAura($CID_Frailty, $mainPlayer);
-          $rv = "Trap triggered and created a Frailty.";
-          TrapTriggered($cardID);
-        }
-        return $rv;
-      case "OUT173":
-        if(!IsAllyAttacking() && HasIncreasedAttack())
-        {
-          PlayAura($CID_Inertia, $mainPlayer);
-          $rv = "Trap triggered and created an Inertia.";
-          TrapTriggered($cardID);
-        }
-        return $rv;
       case "OUT174":
         AddCurrentTurnEffect($cardID, $defPlayer);
         return "";

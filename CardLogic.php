@@ -1072,6 +1072,30 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("DRAW", $player, "-", 1);
       MZMoveCard($player, "MYHAND", "MYTOPDECK", silent:true);
       break;
+    case "CRU126":
+      TrapTriggered($cardID);
+      AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
+      AddDecisionQueue("NOPASS", $mainPlayer, $cardID, 1);
+      AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
+      AddDecisionQueue("ELSE", $mainPlayer, "-");
+      AddDecisionQueue("TRIPWIRETRAP", $mainPlayer, "-", 1);
+      break;
+    case "CRU127":
+      TrapTriggered($cardID);
+      AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 1, 1);
+      AddDecisionQueue("NOPASS", $mainPlayer, $cardID, 1);
+      AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
+      AddDecisionQueue("ELSE", $mainPlayer, "-");
+      AddDecisionQueue("TAKEDAMAGE", $mainPlayer, 2, 1);
+        break;
+    case "CRU128":
+      TrapTriggered($cardID);
+      AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
+      AddDecisionQueue("NOPASS", $mainPlayer, $cardID, 1);
+      AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
+      AddDecisionQueue("ELSE", $mainPlayer, "-");
+      AddDecisionQueue("ATTACKMODIFIER", $player, "-2", 1);
+      break;
     case "CRU142":
       if(GetClassState($player, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $player);
       if(GetClassState($player, $CS_ArcaneDamageDealt) > 0) PlayAura("ARC112", $player);
@@ -1523,6 +1547,63 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "OUT099":
       LookAtTopCard($player, "OUT099");
+      break;
+    case "OUT102":
+      AddCurrentTurnEffect($parameter, $mainPlayer);
+      TrapTriggered($parameter);
+      break;
+    case "OUT103":
+      $hand = &GetHand($mainPlayer);
+      $numDraw = count($hand) - 1;
+      DiscardHand($mainPlayer);
+      for($i=0; $i<$numDraw; ++$i) Draw($mainPlayer);
+      WriteLog("Attacker discarded their hand and drew $numDraw cards");
+      TrapTriggered($cardID);
+      break;
+    case "OUT104":
+      $deck = new Deck($mainPlayer);
+      $topDeck = $deck->Top(remove:true);
+      AddGraveyard($topDeck, $mainPlayer, "DECK");
+      $numName = SearchCount(SearchMultizone($mainPlayer, "MYDISCARD:isSameName=" . $topDeck));
+      LoseHealth($numName, $mainPlayer);
+      WriteLog(Cardlink($topDeck, $topDeck) . " put into discard. Player $mainPlayer lost $numName life");
+      TrapTriggered($cardID);
+      break;
+    case "OUT106":
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIP");
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MODDEFCOUNTER", $mainPlayer, "-1", 1);
+      WriteLog("Trap triggered and puts a -1 counter on an equipment");
+      TrapTriggered($cardID);
+      break;
+    case "OUT107":
+      $deck = new Deck($mainPlayer);
+      $rv = "put  ";
+      for($i=0; $i<2; ++$i)
+      {
+        $cardRemoved = $deck->Top(remove:true);
+        AddGraveyard($cardRemoved, $mainPlayer, "DECK");
+        if($i == 0) $rv .= Cardlink($cardRemoved, $cardRemoved);
+        else $rv .= " and " . Cardlink($cardRemoved, $cardRemoved) . " into the graveyard";
+      }
+      WriteLog($rv);
+      TrapTriggered($cardID);
+      break;
+    case "OUT108":
+      AddCurrentTurnEffect($cardID, $mainPlayer);
+      if(!IsAllyAttacking()) TrapTriggered($cardID);
+      break;
+    case "OUT171":
+      PlayAura($CID_BloodRotPox, $mainPlayer);
+      TrapTriggered($parameter);
+      break;
+    case "OUT172":
+      PlayAura($CID_Frailty, $mainPlayer);
+      TrapTriggered($parameter);
+      break;
+    case "OUT173":
+      PlayAura($CID_Inertia, $mainPlayer);
+      TrapTriggered($parameter);
       break;
     case "OUT174":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
