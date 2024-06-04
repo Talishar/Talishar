@@ -338,46 +338,42 @@ function OnDefenseReactionResolveEffects($from, $cardID)
   }
   switch($cardID) {
     case "CRU126":
-      if(!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
+      if(!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $cardID);
       AddDecisionQueue("TRIPWIRETRAP", $defPlayer, "-", 1);
       break;
     case "CRU127":
-      if(!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
+      if(!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "CRU128":
-      if(!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
+      if(!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $cardID);
       AddDecisionQueue("ATTACKMODIFIER", $mainPlayer, "-2", 1);
       break;
-    case "EVR018":
-      if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $cardID);
-      else WriteLog("<span style='color:red;'>No frostbite is created because there is no attacking hero when allies attack.</span>");
-      break;
     case "OUT102":
-      if(!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
+      if(!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "OUT103":
-      if(!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
+      if(!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "OUT104":
-      if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
+      if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "OUT106":
-      if(!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
+      if(!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "OUT107":
-      if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
+      if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "OUT108":
-      if(DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
+      if(DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "OUT171":
-      if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
+      if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "OUT172":
-      if(!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
+      if(!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "OUT173":
-      if(!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
+      if(!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
   }
   for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
@@ -475,6 +471,10 @@ function OnBlockResolveEffects($index = -1, $cardID = "")
       $i = count($combatChain);
     }
     switch($defendingCard) {
+      case "EVR018":
+        if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $cardID);
+        else WriteLog("<span style='color:red;'>No frostbite is created because there is no attacking hero when allies attack.</span>");
+        break;  
       case "MON241": case "MON242": case "MON243": case "MON244": case "RVD005": case "RVD006"://Ironhide
       case "RVD015"://Pack Call
       case "ELE203"://Rampart of the Ram's Head
