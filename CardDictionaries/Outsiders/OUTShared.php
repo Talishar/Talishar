@@ -344,13 +344,15 @@ function OUTAbilityCost($cardID)
         if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0)
         {
           $deck = new Deck($mainPlayer);
+          $rv = "put  ";
           for($i=0; $i<2; ++$i)
           {
             $cardRemoved = $deck->Top(remove:true);
             AddGraveyard($cardRemoved, $mainPlayer, "DECK");
+            if($i == 0) $rv .= Cardlink($cardRemoved, $cardRemoved);
+            else $rv .= " and " . Cardlink($cardRemoved, $cardRemoved) . " into the graveyard";
           }
           TrapTriggered($cardID);
-          $rv = "Milled two cards.";
         }
         return $rv;
       case "OUT108":

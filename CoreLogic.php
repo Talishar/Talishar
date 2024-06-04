@@ -1635,6 +1635,7 @@ function CanPassPhase($phase)
     case "CHOOSEMYAURA": return 0;
     case "CHOOSECARDID": return 0;
     case "OVER": return 0;
+    case "BUTTONINPUT": return 0;
     default: return 1;
   }
 }
