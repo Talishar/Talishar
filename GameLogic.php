@@ -242,7 +242,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "PUTCOMBATCHAINDEFENSE0":
       $index = GetCombatChainIndex($lastResult, $player);
       $combatChain[$index+6] -= BlockValue($lastResult);
-      OnBlockResolveEffects(cardID:$lastResult);
+      OnBlockResolveEffects($lastResult);
       OnDefenseReactionResolveEffects("CC", cardID:$lastResult);
       return $lastResult;
     case "PUTINANYORDER":
@@ -1428,7 +1428,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDCARDTOCHAINASDEFENDINGCARD":
       AddCombatChain($lastResult, $player, $parameter, 0, -1);
-      OnBlockResolveEffects(count($combatChain));
+      OnBlockResolveEffects($lastResult);
+      OnDefenseReactionResolveEffects("CC", cardID:$lastResult);
       return $lastResult;
     case "ATTACKWITHIT":
       PlayCardSkipCosts($lastResult, "DECK");

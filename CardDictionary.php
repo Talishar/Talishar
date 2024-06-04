@@ -522,6 +522,7 @@ function GetAbilityNames($cardID, $index = -1, $from="-")
   global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $phase, $CS_PlayIndex, $CS_NumActionsPlayed;
   $character = &GetPlayerCharacter($currentPlayer);
   $auras = &GetAuras($currentPlayer);
+  $names = "";
   if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
   switch ($cardID) {
     case "ARC003": case "CRU101":
