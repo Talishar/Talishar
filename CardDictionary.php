@@ -1189,8 +1189,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST232": return (count($myHand) + count($myArsenal)) < 2;
     case "MST236": 
       return $discard->NumCards() < 3;
-    case "HER117":
-     return $character[$index + 2] < 1;
     default: return false;
   }
 }
