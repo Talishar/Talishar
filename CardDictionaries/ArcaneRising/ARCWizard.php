@@ -350,7 +350,6 @@
   function ActionsThatDoArcaneDamage($cardID)
   {
     switch($cardID) {
-      case "ARC118":
       case "ARC119": case "ARC120": case "ARC121":
       case "ARC126": case "ARC127": case "ARC128":
       case "ARC132": case "ARC133": case "ARC134":
@@ -364,11 +363,11 @@
       case "CRU171": case "CRU172": case "CRU173":
       case "CRU174": case "CRU175": case "CRU176":
         return true;
-      case "EVR123": case "EVR124":
+      case "EVR123":
       case "EVR125": case "EVR126": case "EVR127":
       case "EVR134": case "EVR135": case "EVR136":
         return true;
-      case "UPR104": case "UPR105": case "UPR109":
+      case "UPR104": case "UPR105":
       case "UPR110": case "UPR111": case "UPR112":
       case "UPR113": case "UPR114": case "UPR115":
       case "UPR119": case "UPR120": case "UPR121":
