@@ -122,7 +122,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     include_once "./includes/functions.inc.php";
     PlayerLoseHealth($otherP, GetHealth($otherP));
     include "WriteGamestate.php";
-  } else if ($opponentInactive && !IsGameOver()) {
+  } else if ($currentPlayerActivity != 2 && $opponentInactive && !IsGameOver() ) {
     $currentPlayerActivity = 2;
     WriteLog("⌛The current player is inactive.");
     include "WriteGamestate.php";
