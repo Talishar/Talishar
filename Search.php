@@ -140,7 +140,7 @@ function SearchInner(
     if($zone == "CHAR" && ($array[$i+1] == 0 || $array[$i+12] == "DOWN") && !$faceDown) continue;
     if($zone == "BANISH" && ($array[$i+1] == "INT" || $array[$i+1] == "FACEDOWN")) continue;
     $cardID = $array[$i];
-    if(!isPriorityStep($cardID)) {
+    if(!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
       if(($type == "" || CardType($cardID) == $type || ($type == "C" && CardType($cardID) == "D"))
         && ($subtype == "" || DelimStringContains(CardSubType($cardID), $subtype))
         && ($maxCost == -1 || CardCost($cardID) <= $maxCost)
@@ -185,11 +185,19 @@ function SearchInner(
 function isPriorityStep($cardID)
 {
   switch($cardID) {
-    case "ENDTURN": case "RESUMETURN": case "PHANTASM": case "MIRAGE": case "FINALIZECHAINLINK": case "DEFENDSTEP": case "ENDPHASE": case "ATTACKSTEP": case "BLOODDEBT":
+    case "ENDTURN": case "RESUMETURN": case "FINALIZECHAINLINK": case "DEFENDSTEP": case "ENDPHASE": case "ATTACKSTEP":
       return true;
     default: return false;
   }
 }
+
+function isAdministrativeStep($cardID)
+{
+  switch($cardID) {
+    case "PHANTASM": case "MIRAGE": case "BLOODDEBT":
+      return true;
+    default: return false;
+  }}
 
 function SearchHandForCard($player, $card)
 {
