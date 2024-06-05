@@ -345,8 +345,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       if(!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "CRU128":
-      if(!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $cardID);
-      AddDecisionQueue("ATTACKMODIFIER", $mainPlayer, "-2", 1);
+      AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "OUT102":
       if(!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);

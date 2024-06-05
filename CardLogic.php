@@ -1091,11 +1091,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         break;
     case "CRU128":
       TrapTriggered($parameter);
-      AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
-      AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
-      AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
-      AddDecisionQueue("ELSE", $mainPlayer, "-");
-      AddDecisionQueue("ATTACKMODIFIER", $player, "-2", 1);
+      if(!IsAllyAttacking()) {
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
+        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
+        AddDecisionQueue("ELSE", $mainPlayer, "-");
+        AddDecisionQueue("ATTACKMODIFIER", $player, "-2", 1);
+      }
+      else {
+        AddDecisionQueue("ATTACKMODIFIER", $mainPlayer, "-2", 1);
+      }
       break;
     case "CRU142":
       if(GetClassState($player, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $player);
