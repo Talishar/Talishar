@@ -682,7 +682,8 @@ function AddTowerEffectTrigger($cardID)
 
 function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
 {
-  global $mainPlayer, $combatChain;
+  global $mainPlayer, $combatChain, $defPlayer;
+  if(SearchCurrentTurnEffects("MST079-HITPREVENTION", $defPlayer)) return false;
   $effects = explode(',', $cardID);
   switch ($effects[0]) {
     case "ARC170-1": case "ARC171-1": case "ARC172-1":
