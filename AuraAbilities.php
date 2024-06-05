@@ -128,7 +128,7 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from="HAND")
   }
 }
 
-function AuraLeavesPlay($player, $index)
+function AuraLeavesPlay($player, $index, $uniqueID)
 {
   $auras = &GetAuras($player);
   $cardID = $auras[$index];
@@ -144,20 +144,20 @@ function AuraLeavesPlay($player, $index)
       if($banishIndex > -1) PlayAura($banish->Remove($banishIndex), $otherPlayer);
       break;
     case "MST040": case "MST041": case "MST042":
-      AddLayer("TRIGGER", $player, $cardID);
+      AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
     case "MST137": case "MST138": case "MST139": 
       $illusionistAuras = SearchAura($player, class:"ILLUSIONIST");
       $aurasArray = explode(",", $illusionistAuras);
-      if(count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID);
+      if(count($aurasArray) <= 1)       AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
     case "MST140": case "MST141": case "MST142": 
-      AddLayer("TRIGGER", $player, $cardID);
+      AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
     case "MST155": case "MST156": case "MST157":
       $illusionistAuras = SearchAura($player, class:"ILLUSIONIST");
       $aurasArray = explode(",", $illusionistAuras);
-      if(count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID);
+      if(count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
     default: break;
   }
@@ -189,11 +189,8 @@ function DestroyAura($player, $index, $uniqueID="")
   if($uniqueID != "") $index = SearchAurasForUniqueID($uniqueID, $player);
   AuraDestroyAbility($player, $index, $isToken);
   $from = $auras[$index+9];
-  $cardID = RemoveAura($player, $index);
+  $cardID = RemoveAura($player, $index, $uniqueID);
   AuraDestroyed($player, $cardID, $isToken, $from);
-  if(IsSpecificAuraAttacking($player, $index) || (IsSpecificAuraAttackTarget($player, $index, $uniqueID))) {
-    CloseCombatChain();
-  }
   // Refreshes the aura index with the Unique ID in case of aura destruction
   if(isset($combatChain[0]) && DelimStringContains(CardSubtype($combatChain[0]), "Aura") && $player == $mainPlayer) {
     $combatChainState[$CCS_WeaponIndex] = SearchAurasForUniqueID($combatChain[8], $player);
@@ -219,16 +216,16 @@ function AuraDestroyAbility($player, $index, $isToken)
   }
 }
 
-function RemoveAura($player, $index)
+function RemoveAura($player, $index, $uniqueID)
 {
-  AuraLeavesPlay($player, $index);
+  AuraLeavesPlay($player, $index, $uniqueID);
   $auras = &GetAuras($player);
   $cardID = $auras[$index];
   for($i = $index + AuraPieces() - 1; $i >= $index; --$i) {
     unset($auras[$i]);
   }
   $auras = array_values($auras);
-  if(IsSpecificAuraAttacking($player, $index)) {
+  if(IsSpecificAuraAttacking($player, $index) || (IsSpecificAuraAttackTarget($player, $index, $uniqueID))) {
     CloseCombatChain();
   }
   return $cardID;
