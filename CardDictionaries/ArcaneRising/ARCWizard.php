@@ -347,6 +347,15 @@
     }
   }
 
+  function ActionsThatDoXArcaneDamage($cardID)
+  {
+    switch($cardID) {
+      case "ARC118": case "EVR124": case "UPR109":
+        return true;
+      default: return false;
+    }
+  }
+
   function ActionsThatDoArcaneDamage($cardID)
   {
     switch($cardID) {

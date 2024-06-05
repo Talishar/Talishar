@@ -1027,7 +1027,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         }
         break;
       case "CRU161":
-        if(ActionsThatDoArcaneDamage($cardID) && SearchCharacterActive($currentPlayer, "CRU161", checkGem:true)) AddLayer("TRIGGER", $currentPlayer, "CRU161");
+        if((ActionsThatDoArcaneDamage($cardID) || ActionsThatDoXArcaneDamage($cardID)) && SearchCharacterActive($currentPlayer, "CRU161", checkGem:true)) AddLayer("TRIGGER", $currentPlayer, "CRU161");
         break;
       case "ELE062": case "ELE063":
         if(CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2 && $from != "PLAY") {
