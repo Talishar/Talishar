@@ -290,7 +290,7 @@
           if($cardType == "A" || $cardType == "AA") $modifier += $effectArr[1];
           break;
         case "DYN192":
-          if(ActionsThatDoArcaneDamage($source)) {
+          if(ActionsThatDoArcaneDamage($source) || ActionsThatDoXArcaneDamage($source)) {
             $modifier += $effectArr[1];
             $remove = true;
           }
