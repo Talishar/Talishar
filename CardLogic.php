@@ -1891,7 +1891,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break; 
     case "MST066":
       MZMoveCard($player, "MYDECK:isSameName=MST499", "MYHAND", may:true);
-      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $player, "-");
       break;
     case "MST190":
       if(HasIncreasedAttack()) {
