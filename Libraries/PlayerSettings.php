@@ -170,6 +170,7 @@ function GetCardBack($player)
     case 78: return "CBRighteousGaming2";
     case 79: return "CBThePlagueHive";
     case 80: return "CBDropcast";
+    case 81: return "CBSunflowerSamurai";
     default: return "CardBack";
   }
 }
@@ -568,7 +569,6 @@ function IsTeamSunflowerSamurai($userID)
     case "juanmonzonf":
     case "Raiswind":
     case "Bossen":
-    case "PvtVoid":
       return true;
     default: break;
   }
