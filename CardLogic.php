@@ -870,58 +870,12 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
   }
 }
 
-function CombatChainClosedEffect($cardID, $player, $target, $uniqueID)
-{
-  global $chainLinks, $mainPlayer, $defPlayer, $CS_LifeLost;
-  switch ($cardID) {
-    case "DTD105":
-      $index = FindCharacterIndex($mainPlayer, "DTD105");
-      if($index > -1 && SearchCurrentTurnEffects("DTD105", $mainPlayer, true)) {
-        BanishCardForPlayer("DTD105", $mainPlayer, "CC");
-        DestroyCharacter($mainPlayer, $index, true);
-      }
-      break;
-    case "DTD137":
-      if(GetClassState($mainPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($mainPlayer, "MYHAND", "ARS,-");
-      if(GetClassState($defPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($defPlayer, "MYHAND", "ARS,-");
-      break;
-    case "DTD138":
-      if(GetClassState($mainPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($mainPlayer, "MYARS", "ARS,-");
-      if(GetClassState($defPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($defPlayer, "MYARS", "ARS,-");
-      break;
-    case "DTD139":
-      if(GetClassState($mainPlayer, $CS_LifeLost) > 0) { $deck = new Deck($mainPlayer); $deck->BanishTop(); }
-      if(GetClassState($defPlayer, $CS_LifeLost) > 0) { $deck = new Deck($defPlayer); $deck->BanishTop(); }
-      break;
-    case "DTD146": case "DTD147": case "DTD148":
-      $numRunechant = 0;
-      if(GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numRunechant;
-      if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numRunechant;
-      if($numRunechant > 0) PlayAura("ARC112", $mainPlayer, $numRunechant);
-      break;
-    case "DTD143": case "DTD144": case "DTD145":
-      $numLife = 0;
-      if(GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numLife;
-      if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numLife;
-      if($numLife > 0) GainHealth($numLife, $mainPlayer);
-      break;
-    case "MST237":
-      $numEloquence = 0;
-      if(GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numEloquence;
-      if(GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numEloquence;
-      if($numEloquence > 0) PlayAura("DTD233", $mainPlayer);
-      break;
-    default: break;
-  }
-}
-
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-", $from="-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex, $CombatChain;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
   global $CS_DamagePrevention;
   $items = &GetItems($player);
-  $character = &GetPlayerCharacter($player);
   $auras = &GetAuras($player);
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
@@ -938,8 +892,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
   }
   if($additionalCosts == "MAINCHARHITEFFECT")  { ProcessMainCharacterHitEffect($parameter, $player, $target); return; }
   if($additionalCosts == "ITEMHITEFFECT") { ProcessItemsEffect($parameter, $player, $target, $uniqueID); return; }
-  if($additionalCosts == "CLOSECOMBATCHAINEFFECT") { CombatChainClosedEffect($parameter, $player, $target, $uniqueID); return; }
-
   switch($parameter) {
     case "HEAVE":
       Heave();
