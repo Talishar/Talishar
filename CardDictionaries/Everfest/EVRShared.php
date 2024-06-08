@@ -827,17 +827,17 @@
   {
     global $CS_NamesOfCardsPlayed;
     if($from == "PLAY") {
-      $cardsPlayed = array_unique(explode(",", GetClassState($player, $CS_NamesOfCardsPlayed)));
+      if(GetClassState($player, $CS_NamesOfCardsPlayed) == "-") return true;
+      $cardsPlayed = explode(",", GetClassState($player, $CS_NamesOfCardsPlayed));
       $cardCount = count($cardsPlayed);
       for($i=0; $i<$cardCount; ++$i) {
-        for ($j=0; $j < $cardCount; ++$j) { 
+        for($j=0; $j < $cardCount; ++$j) { 
           if($i == $j) continue;
-          if(CardNameContains($cardsPlayed[$j], $cardsPlayed[$i], $player)) {
-            return true;
+          if(CardNameContains($cardsPlayed[$j], CardName($cardsPlayed[$i]), $player)) {
+            return false;
           }
         }
       }
     }
-    return false;
+    return true;
   }
-?>
