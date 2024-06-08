@@ -1767,6 +1767,9 @@ function ComboActive($cardID = "")
 
 function HasBloodDebt($cardID)
 {
+  global $currentPlayer;
+  $char = GetPlayerCharacter($currentPlayer);
+  if($char[0] == "DTD164") return false;
   switch($cardID) {
     case "MON123"; case "MON124"; case "MON125"; case "MON126": case "MON127": case "MON128"; case "MON129":
     case "MON130": case "MON131"; case "MON135": case "MON136": case "MON137"; case "MON138": case "MON139":
