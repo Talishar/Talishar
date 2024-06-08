@@ -569,7 +569,7 @@
         break;
       case "WTR048": case "WTR049": case "WTR050":
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put at the bottom of the deck", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put on the bottom of the deck", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZADDZONE", $mainPlayer, "THEIRBOTDECK", 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
