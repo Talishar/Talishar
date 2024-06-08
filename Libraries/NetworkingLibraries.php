@@ -1586,8 +1586,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if($from == "BANISH" || $from == "THEIRBANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
     if(HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
-    if(ColorContains($cardID, 1, $currentPlayer) && $from != "PLAY") IncrementClassState($currentPlayer, $CS_NumRedPlayed);
-    if(ColorContains($cardID, 3, $currentPlayer) && $from != "PLAY") IncrementClassState($currentPlayer, $CS_NumBluePlayed);
+    if(ColorContains($cardID, 1, $currentPlayer) && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") IncrementClassState($currentPlayer, $CS_NumRedPlayed);
+    if(ColorContains($cardID, 3, $currentPlayer) && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") IncrementClassState($currentPlayer, $CS_NumBluePlayed);
     PayAdditionalCosts($cardID, $from);
   }
   if($turn[0] == "B" && $cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
