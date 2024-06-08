@@ -65,7 +65,8 @@ function MSTEffectAttackModifier($cardID) {
 
 function MSTCombatEffectActive($cardID, $attackID)
 {
-  global $mainPlayer, $CS_NumBluePlayed, $combatChainState, $CCS_LinkBaseAttack, $CS_Transcended;
+  global $mainPlayer, $CS_NumBluePlayed, $combatChainState, $CCS_LinkBaseAttack, $CS_Transcended, $CombatChain;
+  $from = $CombatChain->AttackCard()->From();
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
   switch($cardID) {
@@ -93,7 +94,7 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST084": case "MST085": case "MST086": return true;
     case "MST092": return ColorContains($attackID, 3, $mainPlayer);
     case "MST093": return ColorContains($attackID, 3, $mainPlayer);
-    case "MST094": return ColorContains($attackID, 3, $mainPlayer) && (TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "A", $mainPlayer));
+    case "MST094": return $from != "PLAY" && ColorContains($attackID, 3, $mainPlayer) && (TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "A", $mainPlayer));
     case "MST095": return true;
     case "MST102": return true;
     case "MST105-BUFF": return true;
