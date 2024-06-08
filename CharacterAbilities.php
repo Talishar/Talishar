@@ -279,7 +279,7 @@ function CharacterStartTurnAbility($index)
         AddDecisionQueue("TURNCHARACTERFACEUP", $mainPlayer, "-", 1);
         AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
         MZMoveCard($mainPlayer, "MYDECK:isSameName=MST499", "MYHAND", may:true, isReveal:true, isSubsequent:true);
-        AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
+        if($character[$index+12] == "UP") AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
       }
       break;
     default: break;
