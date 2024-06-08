@@ -741,7 +741,9 @@ function AuraPlayAbilities($attackID, $from="")
         }
         break;
       case "DTD232":
-        if($cardType == "AA" || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY") || ((TypeContains($attackID, "W", $currentPlayer) && GetResolvedAbilityType($attackID) != "A")) && GetResolvedAbilityType($attackID) != "I") {
+        if($cardType == "AA" && (GetResolvedAbilityType($attackID, $from) == "" || GetResolvedAbilityType($attackID, $from) == "AA")
+        || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY") 
+        || ((TypeContains($attackID, "W", $currentPlayer) && GetResolvedAbilityType($attackID) != "A")) && GetResolvedAbilityType($attackID) != "I") {
           AddCurrentTurnEffect("DTD232", $currentPlayer);
           $remove = 1;
         }
