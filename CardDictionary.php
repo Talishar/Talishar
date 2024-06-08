@@ -658,7 +658,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if($CombatChain->AttackCard()->ID() == "DYN121" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
   if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
   if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index, $pitchRestriction)) return false;
-  if(($phase == "P") && IsPitchRestricted($cardID, $restriction, $from, $index, $pitchRestriction)) return false;
+  elseif($phase == "P" || $phase == "CHOOSEHANDCANCEL" && $from == "HAND") return true;
   if($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
   $isStaticType = IsStaticType($cardType, $from, $cardID);
   if($isStaticType) $cardType = GetAbilityType($cardID, $index, $from);
@@ -678,7 +678,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if(SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "A" && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
   if(SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
   if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "MON245" && $player == $defPlayer && ($abilityType == "I" || $cardType == "I")) { $restriction = "Exude Confidance"; return false; }
-  if(SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && ($abilityType == "I" || $cardType == "I")) { $restriction = "Exude Confidance"; return false; }
+  if(SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && ($abilityType == "I" || $cardType == "I")) { $restriction = "Exude Confidance"; return false; }  
   if($cardID == "MST133" && $from == "PLAY") {
     if($auras[$index+1] == 2 && $currentPlayer == $mainPlayer && $actionPoints > 0) return true;
     if(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1 && CanPlayInstant($phase) && $auras[$index+3] > 0) return true;
