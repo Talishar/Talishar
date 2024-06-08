@@ -1031,7 +1031,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVR137": return $player != $mainPlayer;
     case "EVR173": case "EVR174": case "EVR175": return GetClassState($player, $CS_DamageDealt) == 0;
     case "EVR176": return $from == "PLAY" && count($myHand) < 4;
-    case "EVR177": return IsAmuletOfEchoesRestricted($from, $otherPlayer);
+    case "EVR177": return $from == "PLAY" && IsAmuletOfEchoesRestricted($from, $otherPlayer);
     case "EVR178": return ($from == "PLAY" && count($myHand) > 0);
     case "EVR179": return ($from == "PLAY" && GetClassState($player, $CS_NumCardsPlayed) >= 1);
     case "EVR053": return !IsWeaponGreaterThanTwiceBasePower();
