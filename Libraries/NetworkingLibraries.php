@@ -1601,7 +1601,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "THEIRDISCARD";
   }
   if($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
-    IncrementClassState($currentPlayer, $CS_NumAttacks);
+    if($playType == "AA") IncrementClassState($currentPlayer, $CS_NumAttacks);
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
     PermanentPlayAbilities($cardID, $from);
