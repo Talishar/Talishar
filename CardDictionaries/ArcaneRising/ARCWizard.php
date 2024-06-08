@@ -283,7 +283,6 @@
     for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
       $remove = false;
       $effectArr = explode(",", $currentTurnEffects[$i]);
-      if($currentTurnEffects[$i+1] != $player) continue;
       switch($effectArr[0]) {
         case "EVR123":
           $cardType = CardType($source);
@@ -291,11 +290,13 @@
           break;
         case "DYN192":
           if(ActionsThatDoArcaneDamage($source) || ActionsThatDoXArcaneDamage($source)) {
+            if($currentTurnEffects[$i+1] != $player) break;
             $modifier += $effectArr[1];
             $remove = true;
           }
           break;
         case "MST234":
+          if($currentTurnEffects[$i+1] != $player) break;
           $modifier += 1;
           $remove = true;
           break;
