@@ -5,7 +5,7 @@
 
 function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[])
 {
-  global $CombatChain, $mainPlayer, $currentTurnEffects, $playerID, $combatChainState, $CCS_LinkBaseAttack;
+  global $CombatChain, $mainPlayer, $currentTurnEffects, $playerID, $combatChainState, $CCS_LinkBaseAttack, $CCS_WeaponIndex;
   global $CCS_WeaponIndex;
   UpdateGameState($playerID);
   BuildMainPlayerGameState();
@@ -16,6 +16,9 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
   for($i=0; $i<$CombatChain->NumCardsActiveLink(); ++$i)
   {
     $chainCard = $CombatChain->Card($i, true);
+    if($chainCard->ID() == "MST031") {
+      $combatChainState[$CCS_LinkBaseAttack] = WardAmount($chainCard->ID(), $mainPlayer, $combatChainState[$CCS_WeaponIndex]);
+    }
     if($chainCard->PlayerID() == $mainPlayer) {
       if($i == 0) $attack = $combatChainState[$CCS_LinkBaseAttack];
       else $attack = AttackValue($chainCard->ID());

@@ -1975,7 +1975,7 @@ function IsIyslander($character)
 
 function WardAmount($cardID, $player, $index=-1)
 {
-  global $mainPlayer, $CS_PlayIndex;
+  global $mainPlayer;
   $auras = &GetAuras($player);
   switch($cardID)
   {
