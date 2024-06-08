@@ -264,7 +264,22 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST076":
       $chiArray = explode(",", SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi"));
       $amountChiPitch = count($chiArray);
-      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") AddCurrentTurnEffect($cardID."-" . $amountChiPitch, $currentPlayer);
+      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") 
+      {
+        switch ($amountChiPitch) {
+          case 1:
+            $combatChainState[$CCS_LinkBaseAttack] = 10;
+            break;
+          case 2:
+            $combatChainState[$CCS_LinkBaseAttack] = 15;
+            break;
+          case 3:
+            $combatChainState[$CCS_LinkBaseAttack] = 20;
+            break;    
+          default:
+            break;
+        }
+      }
       return "";
     case "MST077":
       $modalities = "Draw_a_card,Buff_Power,Go_again";
