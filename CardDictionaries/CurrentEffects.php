@@ -42,7 +42,6 @@ function MSTEffectAttackModifier($cardID) {
     case "MST095": return -1;
     case "MST102": return 1;
     case "MST105-BUFF": return 5;
-    case "MST130": return WardAmount($combatChain[0], $mainPlayer);
     case "MST159": return 1;
     case "MST161": return 3;
     case "MST162-BUFF": return 3;
@@ -95,7 +94,6 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST102": return true;
     case "MST105-BUFF": return true;
     case "MST105-HIT": return true;
-    case "MST130": return true;
     case "MST159": case "MST161": return CardNameContains($attackID, "Crouching Tiger", $mainPlayer);
     case "MST162-BUFF": return true;
     case "MST162-HIT": return true;

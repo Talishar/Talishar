@@ -847,13 +847,6 @@ function AuraAttackModifiers($index, &$attackModifiers)
           array_push($attackModifiers, -1);
         }
         break;
-      case "MST031":
-        if($combatChain[8] == $myAuras[$i + 6] && SearchCharacterForCard($player, "MST130"))
-        {
-          $modifier += $myAuras[$i+3];
-          array_push($attackModifiers, $myAuras[$i]);
-          array_push($attackModifiers, +$myAuras[$i+3]);
-        }
       default: break;
     }
   }

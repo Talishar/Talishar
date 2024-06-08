@@ -1143,7 +1143,7 @@ function CharacterDealDamageAbilities($player, $damage)
 
 function CharacterAttackAbilities($attackID)
 {
-  global $mainPlayer;
+  global $mainPlayer, $combatChainState, $CCS_LinkBaseAttack, $CS_PlayIndex;
   $char = &GetPlayerCharacter($mainPlayer);
   for($i=0; $i<count($char); $i+=CharacterPieces()) {
     if($char[$i+1] == 0) continue;//Don't do effect if destroyed
@@ -1162,7 +1162,7 @@ function CharacterAttackAbilities($attackID)
         break;
       case "MST130":
         if(HasWard($attackID, $mainPlayer) && SubtypeContains($attackID, "Aura", $mainPlayer)) {
-          AddCurrentTurnEffect($char[$i], $mainPlayer);
+          $combatChainState[$CCS_LinkBaseAttack] = WardAmount($attackID, $mainPlayer, GetClassState($mainPlayer, $CS_PlayIndex));
         }
         break;
       default: break;
