@@ -39,11 +39,12 @@ function MZRemove($player, $lastResult)
       case "THEIRBANISH": $lastResult = RemoveBanish($otherPlayer, $mzIndex[1]); break;
       case "MYARS": $lastResult = RemoveArsenal($player, $mzIndex[1]); break;
       case "THEIRARS": $lastResult = RemoveArsenal($otherPlayer, $mzIndex[1]); break;
-      case "MYPITCH": RemovePitch($player, $mzIndex[1]); break;
-      case "THEIRPITCH": RemovePitch($otherPlayer, $mzIndex[1]); break;
+      case "MYPITCH": $lastResult = RemovePitch($player, $mzIndex[1]); break;
+      case "THEIRPITCH": $lastResult = RemovePitch($otherPlayer, $mzIndex[1]); break;
       case "MYHAND": $lastResult = RemoveHand($player, $mzIndex[1]); break;
       case "THEIRHAND": $lastResult = RemoveHand($otherPlayer, $mzIndex[1]); break;
-      case "THEIRAURAS": RemoveAura($otherPlayer, $mzIndex[1]); break;
+      case "MYAURAS": $lastResult = RemoveAura($otherPlayer, $mzIndex[1], $mzIndex[1]+6); break;
+      case "THEIRAURAS": $lastResult = RemoveAura($otherPlayer, $mzIndex[1], $mzIndex[1]+6); break;
       case "MYSOUL": $lastResult = RemoveSoul($player, $mzIndex[1]); break;
       case "THEIRSOUL": $lastResult = RemoveSoul($otherPlayer, $mzIndex[1]); break;
       case "MYDECK":

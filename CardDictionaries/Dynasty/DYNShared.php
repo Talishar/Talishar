@@ -431,7 +431,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       else $maxCost = 1;
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:maxCost=" . $maxCost);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZBANISH", $currentPlayer, "AURAS,DYN221-" . $uniqueID . "," . $currentPlayer, 1);
+      AddDecisionQueue("MZBANISH", $currentPlayer, "AURAS," . $cardID . "-" . $uniqueID, 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       return "";
     case "DYN224": case "DYN225": case "DYN226":

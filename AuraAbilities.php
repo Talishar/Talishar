@@ -138,7 +138,7 @@ function AuraLeavesPlay($player, $index, $uniqueID)
   {
     case "DYN221": case "DYN222": case "DYN223":
       $banish = new Banish($otherPlayer);
-      $banishCard = $banish->FirstCardWithModifier("DYN221-" . $uniqueID);
+      $banishCard = $banish->FirstCardWithModifier($cardID . "-" . $uniqueID);
       if($banishCard == null) break;
       $banishIndex = $banishCard->Index();
       if($banishIndex > -1) PlayAura($banish->Remove($banishIndex), $otherPlayer);
