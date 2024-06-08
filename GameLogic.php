@@ -242,8 +242,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "PUTCOMBATCHAINDEFENSE0":
       $index = GetCombatChainIndex($lastResult, $player);
       $combatChain[$index+6] -= BlockValue($lastResult);
-      OnBlockResolveEffects($lastResult);
-      OnDefenseReactionResolveEffects("CC", cardID:$lastResult);
       return $lastResult;
     case "PUTINANYORDER":
       $deck = new Deck($player == 1 ? 2 : 1);

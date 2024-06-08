@@ -1532,7 +1532,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   PlayerMacrosCardPlayed();
   //We've paid resources, now pay action points if applicable
   if($playingCard) {
-    
     $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
