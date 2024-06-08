@@ -77,14 +77,14 @@ if($p2IsDash) {
 if($p1Char[0] == "UPR044" || $p1Char[0] == "UPR045") {
   $cards = SearchDeckForCard(1, "UPR101");
   if($cards != "") {
-    AddDecisionQueue("CHOOSEDECK", 1, $cards);
+    AddDecisionQueue("MAYCHOOSEDECK", 1, $cards);
     AddDecisionQueue("ADDDISCARD", 1, "DECK", 1);
   }
 }
 if($p2Char[0] == "UPR044" || $p2Char[0] == "UPR045") {
   $cards = SearchDeckForCard(2, "UPR101");
   if($cards != "") {
-    AddDecisionQueue("CHOOSEDECK", 2, $cards);
+    AddDecisionQueue("MAYCHOOSEDECK", 2, $cards);
     AddDecisionQueue("ADDDISCARD", 2, "DECK", 1);
   }
 }
