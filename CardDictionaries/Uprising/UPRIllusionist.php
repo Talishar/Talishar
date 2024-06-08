@@ -152,7 +152,7 @@ function UPRIllusionistDealDamageEffect($cardID)
 
   function ResolveTransformAura($player, $materialIndex, $into)
   {
-    $materialType = RemoveAura($player, $materialIndex);
+    $materialType = RemoveAura($player, $materialIndex, -1);
     return PlayAlly($into, $player, $materialType);
   }
 
