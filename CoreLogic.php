@@ -16,7 +16,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
   for($i=0; $i<$CombatChain->NumCardsActiveLink(); ++$i)
   {
     $chainCard = $CombatChain->Card($i, true);
-    if($chainCard->ID() == "MST031") {
+    if($chainCard->ID() == "MST031" && SearchCharacterActive($mainPlayer, "MST130")) {
       $combatChainState[$CCS_LinkBaseAttack] = WardAmount($chainCard->ID(), $mainPlayer, $combatChainState[$CCS_WeaponIndex]);
     }
     if($chainCard->PlayerID() == $mainPlayer) {
