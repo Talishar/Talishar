@@ -468,7 +468,7 @@ function OnBlockResolveEffects($cardID = "")
     }
     switch($defendingCard) {
       case "EVR018":
-        if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $cardID);
+        if(!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $defendingCard);
         else WriteLog("<span style='color:red;'>No frostbite is created because there is no attacking hero when allies attack.</span>");
         break;  
       case "MON241": case "MON242": case "MON243": case "MON244": case "RVD005": case "RVD006"://Ironhide
