@@ -422,6 +422,7 @@ function RemoveEffectsOnChainClose()
       case "MST161"://Chase the Tail
       case "MST185": case "MST186": case "MST187": //Untamed 
       case "MST190": //Stonewall Gauntlet
+      case "MST212": case "MST213": case "MST214": //Water the Seeds
         $remove = 1;
         break;
       default:
