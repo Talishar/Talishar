@@ -16,7 +16,7 @@
     }
   }
 
-  function WTRAbilityType($cardID, $index=-1)
+  function WTRAbilityType($cardID, $index=-1, $from="")
   {
     switch($cardID)
     {
@@ -36,7 +36,9 @@
       case "WTR154": return "AR";
       case "WTR153": return "A";
       case "WTR162": return "A";
-      case "WTR170": return "I";
+      case "WTR170": 
+        if($from == "PLAY") return "I";
+        else return "A";
       case "WTR171": case "WTR172": return "A";
       default: return "";
     }

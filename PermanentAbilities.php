@@ -369,7 +369,7 @@ function PermanentStartTurnAbilities()
         $deck = new Deck($mainPlayer);
         $deck->BanishTop(banishedBy:$mainPlayer, amount:4);
         $deck = &GetDeck($mainPlayer);
-        if(count($deck) < 1) AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        if($deck->RemainingCards() < 1) AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
       case "ROGUE807":
         Draw($mainPlayer);
@@ -475,5 +475,3 @@ function PermanentDrawCardAbilities($player)
     }
   }
 }
-
-?>

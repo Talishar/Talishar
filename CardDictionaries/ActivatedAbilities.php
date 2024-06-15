@@ -194,7 +194,7 @@ function MSTAbilityHasGoAgain($cardID)
     }
   }
 
-  function EVOAbilityType($cardID, $index=-1)
+  function EVOAbilityType($cardID, $index=-1, $from="")
   {
     global $currentPlayer, $CS_NumCranked, $CS_NumBoosted;
     switch($cardID)
@@ -206,14 +206,20 @@ function MSTAbilityHasGoAgain($cardID)
       case "EVO009": return EvoUpgradeAmount($currentPlayer) >= 1 ? "AA" : "";
       case "EVO014": case "EVO015": case "EVO016": case "EVO017": return "I";
       case "EVO070": return "A";
-      case "EVO071": return "I";
-      case "EVO072": return "I";
+      case "EVO071": 
+      case "EVO072": 
+        if($from == "PLAY") return "I";
+        else return "A";
       case "EVO073": return "A";
-      case "EVO075": return "I";
+      case "EVO075": 
+        if($from == "PLAY") return "I";
+        else return "A";
       case "EVO076": return "A";
-      case "EVO077": return "I";
-      case "EVO081": case "EVO082": case "EVO083": return "I";
-      case "EVO087": case "EVO088": case "EVO089": return "I";
+      case "EVO077": 
+      case "EVO081": case "EVO082": case "EVO083": 
+      case "EVO087": case "EVO088": case "EVO089": 
+        if($from == "PLAY") return "I";
+        else return "A";
       case "EVO235": return "AR";
       case "EVO247": return "A";
       case "EVO410": return "AA";
