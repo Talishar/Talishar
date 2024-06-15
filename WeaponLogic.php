@@ -30,7 +30,13 @@ function WeaponIndices($chooser, $player, $subtype = "")
   if($auraWeapons) {
     $auras = GetAuras($player);
     for($i = 0; $i < count($auras); $i += AuraPieces()) {
-      if(ClassContains($auras[$i], "ILLUSIONIST", $player)) {
+      if(SearchCharacterForCard($player, "MST130")){
+        if(HasWard($auras[$i], $player)){
+          if($weapons != "") $weapons .= ",";
+          $weapons .= $whoPrefix . "AURAS-" . $i;
+        }
+      }
+      else if(ClassContains($auras[$i], "ILLUSIONIST", $player)) {
         if($weapons != "") $weapons .= ",";
         $weapons .= $whoPrefix . "AURAS-" . $i;
       }
