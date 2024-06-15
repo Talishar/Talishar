@@ -2,7 +2,7 @@
 
 function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numAttackCounters = 0, $from="-", $additionalCosts = "-")
 {
-  global $CS_NumAuras, $EffectContext;
+  global $CS_NumAuras, $EffectContext, $defPlayer;
   $otherPlayer = ($player == 1 ? 2 : 1);
   if(TypeContains($cardID, "T", $player)) $isToken = true;
   if(DelimStringContains(CardSubType($cardID), "Affliction")) {
@@ -49,7 +49,8 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     array_push($auras, $theirHoldState); //Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
     array_push($auras, $from);
   }
-  if(DelimStringContains(CardSubType($cardID), "Affliction") || DelimStringContains(CardSubType($EffectContext), "Trap") || CardType($EffectContext) == "DR") IncrementClassState($otherPlayer, $CS_NumAuras, $number);
+  if(DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
+  else if (DelimStringContains(CardSubType($EffectContext), "Trap") || CardType($EffectContext) == "DR") IncrementClassState($defPlayer, $CS_NumAuras, $number);
   else if($cardID != "ELE111") IncrementClassState($player, $CS_NumAuras, $number);
 }
 
