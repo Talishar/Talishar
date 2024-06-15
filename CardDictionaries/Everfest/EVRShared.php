@@ -402,6 +402,7 @@
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts);
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "KNICKKNACK");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");  
+        return "";
       case "EVR160":
         Draw(1);
         Draw(2);
