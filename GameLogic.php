@@ -1852,13 +1852,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
         }
         return $lastResult;
-      case "CHANGESHIYANABASELIFE":
+      case "CHANGESHIYANA":
         $otherPlayer = ($player == 1 ? 2 : 1);
         $otherChar = GetPlayerCharacter($otherPlayer);
         if($lastResult != "CRU097" && $otherChar[0] != "DUMMY") {
           $lifeDifference = GeneratedCharacterHealth("CRU097") - GeneratedCharacterHealth($otherChar[0]);
           if ($lifeDifference > 0) LoseHealth($lifeDifference, $player);
           elseif ($lifeDifference < 0) GainHealth(abs($lifeDifference), $player, true, false);
+        }
+        if($otherChar[0] == "HVY047" || $otherChar[0] == "HVY048") {
+          AddCurrentTurnEffect($otherChar[0]."-1", $mainPlayer);
         }
         return $lastResult;
       case "ALREADYDEAD":

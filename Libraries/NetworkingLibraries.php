@@ -2409,10 +2409,19 @@ function PayAdditionalCosts($cardID, $from)
       global $CS_LastDynCost;
       $dynCost = GetClassState($currentPlayer, $CS_LastDynCost);
       $max = $dynCost > 4 ? 4 : $dynCost+1;
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $max == 1 ? "Choose 1 mode" : "Choose " . $max . " modes");
-      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, $max . "-Wager_Agility,Wager_Gold,Wager_Vigor,Buff_Attack-0");
-      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      $modalities = "Wager_Agility,Wager_Gold,Wager_Vigor,Buff_Attack";
+      if($max < 4)
+      {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $max == 1 ? "Choose 1 mode" : "Choose " . $max . " modes");
+        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, $max . "-" . $modalities . "-" . $max);
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      }
+      else {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities);
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
+        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);  
+      }
       break;
     case "HVY105":
       $numGold = CountItem("DYN243", $currentPlayer);
