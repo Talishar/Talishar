@@ -69,7 +69,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
   global $currentPlayer, $CS_PlayIndex, $combatChain;
   $index = GetClassState($currentPlayer, $CS_PlayIndex);
   $items = &GetItems($currentPlayer);
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch($cardID) {
     case "WTR162":
     case "WTR170": case "WTR171": case "WTR172":
@@ -105,7 +105,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       break;
     case "EVO075": case "EVO076": case "EVO077":
       RemoveItem($currentPlayer, $index);
-      if(substr($items[$index+9], 0, 5 != "THEIR")) {
+      if(substr($items[$index+9], 0, 5) != "THEIR") {
         $deck = new Deck($currentPlayer);
       }
       else{
