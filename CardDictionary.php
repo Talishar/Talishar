@@ -476,7 +476,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   }
   if($from == "PLAY" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($currentPlayer, "MST130") && HasWard($cardID, $currentPlayer) && $currentPlayer == $mainPlayer) return "AA";
   if(DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "UPR003")) return "AA";
-  if($set == "WTR") return WTRAbilityType($cardID, $index);
+  if($set == "WTR") return WTRAbilityType($cardID, $index, $from);
   else if($set == "ARC") return ARCAbilityType($cardID, $index);
   else if($set == "CRU") return CRUAbilityType($cardID, $index);
   else if($set == "MON") return MONAbilityType($cardID, $index, $from);
@@ -489,7 +489,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "OUT") return OUTAbilityType($cardID, $index);
   else if($set == "DTD") return DTDAbilityType($cardID, $index);
   else if($set == "TCC") return TCCAbilityType($cardID, $index);
-  else if($set == "EVO") return EVOAbilityType($cardID, $index);
+  else if($set == "EVO") return EVOAbilityType($cardID, $index, $from);
   else if($set == "HVY") return HVYAbilityType($cardID, $index, $from);
   else if($set == "AKO") return AKOAbilityType($cardID, $index, $from);
   else if($set == "MST") return MSTAbilityType($cardID, $index, $from);
