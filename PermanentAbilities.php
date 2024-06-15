@@ -151,6 +151,7 @@ function PermanentBeginEndPhaseEffects()
 
 function PermanentTakeDamageAbilities($player, $damage, $type, $source)
 {
+  $char = &GetPlayerCharacter($player);
   $permanents = &GetPermanents($player);
   $otherPlayer = $player == 1 ? 1 : 2;
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
@@ -184,6 +185,7 @@ function PermanentTakeDamageAbilities($player, $damage, $type, $source)
         $index = FindCharacterIndex($player, "DYN213");
         $char[$index + 1] = 1;
         GainResources($player, 1);
+        WriteLog("Player " . $player . " gained 1 resource from " . CardLink("DYN213", "DYN213"));
       }
       DestroyPermanent($player, $i);
     }

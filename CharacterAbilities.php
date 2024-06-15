@@ -110,7 +110,6 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable) {
   if($damage > 0 && HasWard($char[$index], $player)) {
     if($preventable) $damage -= WardAmount($char[$index], $player);
     $remove = true;
-    WardPoppedAbility($player, $char[$index]);
   }
   switch($char[$index]) {
     default: break;

@@ -1462,6 +1462,7 @@ function DestroyCharacter($player, $index, $skipDestroy=false, $wasBanished = fa
   }
   $char[$index+10] = "-";
   if(!$skipDestroy) {
+    if(HasWard($cardID, $player)) WardPoppedAbility($player, $char[$index]);
     if(HasWard($cardID, $player) && ClassContains($cardID, "ILLUSIONIST", $player)) PhantomTidemawDestroy($player);
     if(!$wasBanished) AddGraveyard($cardID, $player, "CHAR");
     CharacterDestroyEffect($cardID, $player);
@@ -2317,7 +2318,10 @@ function ChooseToPay($player, $cardID, $amounts)
 
 function WardPoppedAbility($player, $cardID)
 {
-  if(SearchCharacterActive($player, "DYN213", setInactive:true)) GainResources($player, 1);
+  if(SearchCharacterActive($player, "DYN213", setInactive:true)) {
+    GainResources($player, 1);
+    WriteLog("Player " . $player . " gained 1 resource from " . CardLink("DYN213", "DYN213"));
+  }
   if(SearchCharacterActive($player, "DTD217", setInactive:true)) {
     AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_create_a_ponder");
     AddDecisionQueue("NOPASS", $player, "-");
