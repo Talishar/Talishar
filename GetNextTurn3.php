@@ -363,7 +363,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->opponentPitchCount = $theirResources[0];
   $opponentPitchArr = array();
   for ($i = count($theirPitch) - PitchPieces(); $i >= 0; $i -= PitchPieces()) {
-    array_push($opponentPitchArr, JSONRenderedCard($theirPitch[$i]));
+    if($turn[0] != "PDECK") array_push($opponentPitchArr, JSONRenderedCard($theirPitch[$i]));
+    else array_push($opponentPitchArr, JSONRenderedCard($TheirCardBack));
   }
   $response->opponentPitch = $opponentPitchArr;
 
@@ -1022,7 +1023,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     for ($i = 0; $i < count($myPitch); $i += 1) {
       array_push($pitchingCards, JSONRenderedCard($myPitch[$i], action: 6, actionDataOverride: $myPitch[$i]));
     }
-    $playerInputPopup->popup = CreatePopupAPI("PITCH", [], 0, 1, "Choose a card from your Pitch Zone to add to the bottom of your deck", 1, cardsArray: $pitchingCards);
+    $playerInputPopup->popup = CreatePopupAPI("PITCH", [], 0, 1, "Choose a card from your pitch zone to put on the bottom of your deck", 1, cardsArray: $pitchingCards);
   }
 
   if ($turn[0] == "DYNPITCH" && $turn[1] == $playerID) {
