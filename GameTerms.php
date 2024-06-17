@@ -38,7 +38,7 @@ function TypeToPlay($phase)
       return "a card from the pitch zone";
     case "OPT":
       return "a card to add to the deck top or bottom";
-    case "CHOOSETOPOPPONENT":
+    case "CHOOSETOP": case "CHOOSETOPOPPONENT":
       return "a card to add to the top of the deck";
     case "CHOOSEDECK": case "CHOOSETHEIRDECK":
       return "a card from deck";
