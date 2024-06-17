@@ -1873,7 +1873,7 @@ function AbilityPlayableFromBanish($cardID, $mod="")
 }
 function PlayableFromOtherPlayerBanish($cardID, $mod="", $player="")
 {
-  global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
+  global $currentPlayer;
   $mod = explode("-", $mod)[0];
   if($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;

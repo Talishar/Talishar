@@ -156,6 +156,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $index = $cardID;
       $banish = &GetBanish($playerID);
       $theirChar = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
+      $otherPlayer = $playerID == 1 ? 2 : 1;
       if($index < 0 || $index >= count($banish)) {
         echo("Banish Index " . $index . " Invalid Input<BR>");
         return false;
@@ -170,7 +171,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if($banish[$index+1] == "MST236") {
         SearchCurrentTurnEffects("MST236-3", $currentPlayer, true);
         $currentPlayerBanish = new Banish($currentPlayer);
+        $otherPlayerBanish = new Banish($otherPlayer);
         $currentPlayerBanish->UnsetModifier("MST236");
+        $otherPlayerBanish->UnsetModifier("MST236");
       }
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2]);
       break;
