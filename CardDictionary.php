@@ -1830,7 +1830,7 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false, $player="")
   $mod = explode("-", $mod)[0];
   if($mod == "INT" || $mod == "FACEDOWN") return false;
   if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
-  if($mod == "MST236" && SearchCurrentTurnEffects("MST236-3", $player)) return true;
+  if($mod == "MST236" && SearchCurrentTurnEffects("MST236-3", $player) && CardType($cardID) != "E") return true;
   if(HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $player, false)) >= CardCost($cardID)) return true;
   $char = &GetPlayerCharacter($player);
   if(SubtypeContains($cardID, "Evo") && ($char[0] == "TCC001" || $char[0] == "EVO007" || $char[0] == "EVO008") && $char[1] < 3) return true;
