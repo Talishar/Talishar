@@ -55,9 +55,8 @@ function TypeToPlay($phase)
     case "CHOOSETHEIRCHARACTER":
       return "a card";
     case "MAYCHOOSEHAND":
-      return "a card from hand";
-    case "CHOOSEHAND":
-      return "a card from hand";
+    case "CHOOSEHAND": 
+    case "CHOOSETHEIRHAND":
     case "CHOOSEHANDCANCEL":
       return "a card from hand";
     case "BUTTONINPUT":
