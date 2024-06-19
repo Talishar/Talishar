@@ -226,6 +226,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $CombatChain->Remove($lastResult);
     case "COMBATCHAINPOWERMODIFIER":
       CombatChainPowerModifier($lastResult, $parameter);
+      if($parameter > 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $parameter . " power");
+      else if($parameter < 0)  writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets " . $parameter . " power");
       return $lastResult;
     case "COMBATCHAINDEFENSEMODIFIER":
       if($parameter < 0) {

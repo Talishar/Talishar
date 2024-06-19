@@ -536,8 +536,8 @@ function SearchPitchHighestAttack(&$pitch)
   global $mainPlayer;
   $highest = 0;
   for($i = 0; $i < count($pitch); ++$i) {
-    $av = ModifiedAttackValue($pitch[$i], $mainPlayer, "PITCH", source:"");
-    if($av > $highest) $highest = $av;
+    $powerValue = ModifiedAttackValue($pitch[$i], $mainPlayer, "PITCH", source:"");
+    if($powerValue > $highest) $highest = $powerValue;
   }
   return $highest;
 }
@@ -639,8 +639,9 @@ function SearchHighestAttackDefended()
   $highest = 0;
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     if ($combatChain[$i + 1] == $defPlayer) {
-      $av = ModifiedAttackValue($combatChain[$i], $defPlayer, "CC");
-      if ($av > $highest) $highest = $av;
+      $powerValue = ModifiedAttackValue($combatChain[$i], $defPlayer, "CC");
+      $powerValue += $combatChain[$i+5];//Combat chain attack modifier
+      if ($powerValue > $highest) $highest = $powerValue;
     }
   }
   return $highest;
