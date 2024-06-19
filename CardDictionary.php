@@ -398,6 +398,7 @@ function BlockValue($cardID)
   if($set == "ROG") return ROGUEBlockValue($cardID);
   switch($cardID) {
     case "MON400": case "MON401": case "MON402": return 0;
+    case "MON404": case "MON405": case "MON406": case "MON407": return 3;
     case "DYN492a": return -1;
     case "DYN492b": return 5;
     case "EVO410": return -1;
