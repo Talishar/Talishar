@@ -2322,7 +2322,7 @@ function WardPoppedAbility($player, $cardID)
     GainResources($player, 1);
     WriteLog("Player " . $player . " gained 1 resource from " . CardLink("DYN213", "DYN213"));
   }
-  if(SearchCharacterActive($player, "DTD217", setInactive:true)) {
+  if(SearchCharacterActive($player, "DTD217", setInactive:true) || $cardID == "DTD217") {
     AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_create_a_ponder");
     AddDecisionQueue("NOPASS", $player, "-");
     AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
