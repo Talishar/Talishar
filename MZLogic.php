@@ -293,6 +293,12 @@ function MZStartTurnAbility($player, $MZIndex)
 
 function MZMoveCard($player, $search, $where, $may=false, $isReveal=false, $silent=false, $isSubsequent=false, $DQContext="")
 {
+  $otherPlayer = $player == 1 ? 2 : 1;
+  if(str_contains($search, "DECK") && (SearchAurasForCard("UPR138", $otherPlayer) != "" || SearchAurasForCard("UPR138", $player) != "")) 
+  {
+    WriteLog("Deck search prevented by " . CardLink("UPR138", "UPR138"));
+    return "";
+  }
   AddDecisionQueue("MULTIZONEINDICES", $player, $search, ($isSubsequent ? 1 : 0));
   if($DQContext != "") AddDecisionQueue("SETDQCONTEXT", $player, $DQContext);
   if($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
