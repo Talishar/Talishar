@@ -85,6 +85,7 @@ enum PatreonCampaign : string
   case SunflowerSamurai = "11";
   case ColdFoilControl = "12";
   case RighteousGaming = "13";
+  case TeamTalishar = "14";
   case Talishar = "7198186";
   case PushThePoint = "7579026";
   case GoAgainGaming = "7329070";
@@ -193,6 +194,7 @@ enum PatreonCampaign : string
       case "11": return "Sunflower Samurai";
       case "12": return "Cold Foil Control";
       case "13": return "Righteous Gaming";
+      case "14": return "Team Talishar";
       case "7198186": return "Talishar";
       case "7579026": return "Push the Point";
       case "7329070": return "Go Again Gaming";
@@ -256,6 +258,7 @@ enum PatreonCampaign : string
       case "11": return IsTeamSunflowerSamurai($userName);
       case "12": return IsTeamColdFoilControl($userName);
       case "13": return IsTeamRighteousGaming($userName);
+      case "14": return IsTeamTalishar($userName);
       case "7198186": return ($userName == "OotTheMonk");
       case "7579026": return ($userName == "Hamsack" || $userName == "BigMedSi" || $userName == "Tripp");
       case "7329070": return ($userName == "GoAgainGamingAz");
@@ -332,6 +335,7 @@ enum PatreonCampaign : string
       case "11": return "70";
       case "12": return "75";
       case "13": return "77,78";
+      case "14": return "82,83";
       case "7198186": return "1,2,3,4,5,6,7,8";
       case "7579026": return "9";
       case "7329070": return "10,11,12,13,14,15,16";

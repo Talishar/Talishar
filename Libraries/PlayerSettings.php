@@ -171,6 +171,8 @@ function GetCardBack($player)
     case 79: return "CBThePlagueHive";
     case 80: return "CBDropcast";
     case 81: return "CBSunflowerSamurai";
+    case 82: return "CBTalisharTeam";
+    case 83: return "CBTalisharTeam2";
     default: return "CardBack";
   }
 }
@@ -543,6 +545,21 @@ function IsTeamEmperorsRome($userID)
   switch($userID) {
     case "Daniele90rm": case "Excelsa": case "kano90": case "Maalox10": case "TriangoloRotondo": case "Piervillo": case "Rean":
     case "Jekpack": case "playboikrame": case "Danyr99": case "ZiFrank": case "Fevic":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
+function IsTeamTalishar($userID)
+{
+  switch($userID) {
+    case "PvtVoid":
+    case "HelpMeJace2":
+    case "RainyDays":
+    case "Ragnell":
+    case "Hochi":
+    case "Cwaugh":
       return true;
     default: break;
   }
