@@ -300,6 +300,10 @@
           $modifier += 1;
           $remove = true;
           break;
+        case "ROS033":
+          $modifier += 3;
+          $remove = true;
+          break;
         default: break;
       }
       if($remove) RemoveCurrentTurnEffect($i);

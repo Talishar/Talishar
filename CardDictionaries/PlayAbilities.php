@@ -559,6 +559,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("ENIGMAMOON", $currentPlayer, "-", 1);
       return "";
+    case "ROS033":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     default: return "";
   }
 }

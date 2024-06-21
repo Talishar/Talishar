@@ -2175,6 +2175,7 @@ function HasFlowCounters($cardID){
   switch($cardID) {
     case "ELE117": case "ELE146": case "ELE175": 
     case "UPR138":
+    case "ROS033":
       return true;
     default: return false;
   }
