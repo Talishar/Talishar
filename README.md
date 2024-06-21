@@ -43,9 +43,7 @@ cp -n HostFiles/RedirectorTemplate.php HostFiles/Redirector.php
 docker compose up -d
 ```
 
-You'll then be able to access your local dev Talishar at http://localhost:8080/game/MainMenu.php , play a game or two against yourself and have a play about.
-
-The containers are running in detached (background) mode. To stop them:
+The containers are running in detached (background) mode. If you need to stop them:
 ```
 bash stop.sh
 ```
