@@ -409,7 +409,7 @@
     $total = 0;
     for($i=0; $i<count($character); $i+=CharacterPieces())
     {
-      if($character[$i+1] == 0) continue;
+      if($character[$i+1] == 0 || $character[$i+12] == "DOWN") continue;
       switch($character[$i])
       {
         case "ARC005": ++$barrierArray[1]; $total += 1; break;
