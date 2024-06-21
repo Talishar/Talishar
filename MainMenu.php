@@ -65,6 +65,10 @@ else echo ("<div class='ContentWindow' style='top:225px; left:32%; width:36%; bo
 <h5>Talishar is an open-source, fan-made platform not associated with LSS. It may not be a completely accurate representation of the Rules as Written. If you have questions about interactions or rulings, please <a style='text-decoration: underline;' target='_blank' href='https://discord.gg/VFhYB9T7s8'>contact the judge community</a> for clarification.</h5>
 
 <h1><?php echo ($createNewGameText); ?></h1>
+<h2 style='width:60%; color: orange; margin: auto;'>
+
+  This is the Legacy UI. It is no longer supported. Please download the <b><a href="https://github.com/Talishar/Talishar-FE">Talishar Front End</a></b> and follow the README. Failure to do so will result in errors.
+</h2>
 
 <?php
 echo ("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/CreateGame.php'>");
