@@ -21,6 +21,7 @@ Learn more here: [Talishar-FE](https://github.com/Talishar/Talishar-FE)
 
 ### Prerequisites:
  - Docker
+ - Talishar-FE
 
 Easier to do on *nix OS than on MS OS.
 
