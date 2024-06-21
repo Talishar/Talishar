@@ -560,6 +560,8 @@ function IsTeamTalishar($userID)
     case "Ragnell":
     case "Hochi":
     case "Cwaugh":
+    case "QZXK20":
+    case "VexingTie":
       return true;
     default: break;
   }
