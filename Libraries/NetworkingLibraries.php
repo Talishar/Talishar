@@ -1034,7 +1034,7 @@ function ResolveCombatDamage($damageDone)
 {
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $currentTurnEffects;
   global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt;
-  global $CS_HitsWithSword, $CCS_CurrentAttackGainedGoAgain;
+  global $CS_HitsWithSword, $CCS_CurrentAttackGainedGoAgain, $CCS_ChainLinkHitEffectsPrevented;
   $wasHit = $damageDone > 0;
   PrependLayer("FINALIZECHAINLINK", $mainPlayer, "0");
   WriteLog("Combat resolved with " . ($wasHit ? "a hit for $damageDone damage" : "no hit"));
@@ -1059,7 +1059,7 @@ function ResolveCombatDamage($damageDone)
       }
       for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
         if(IsCombatEffectActive($currentTurnEffects[$i])) {
-          if($currentTurnEffects[$i + 1] == $mainPlayer) {
+          if($currentTurnEffects[$i + 1] == $mainPlayer ) {
             AddEffectHitTrigger($currentTurnEffects[$i]); // Effects that gives effect to the attack
           }
         }
@@ -1074,7 +1074,7 @@ function ResolveCombatDamage($damageDone)
     }
     for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
       if ($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
-      if (IsCombatEffectActive($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) { 
+      if (IsCombatEffectActive($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) { 
           AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
       }
     }

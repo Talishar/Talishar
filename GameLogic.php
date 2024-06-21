@@ -873,6 +873,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($lastResult == 0) {
         WriteLog("Hit effects are prevented by " . CardLink("CRU126", "CRU126") . " this chain link");
         HitEffectsPreventedThisLink();
+        AddCurrentTurnEffect("CRU126", $player);
       }
       return 1;
     case "ATTACKMODIFIER":

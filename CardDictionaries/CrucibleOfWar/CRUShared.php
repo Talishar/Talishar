@@ -130,6 +130,7 @@
       case "CRU123": return $attackID == "CRU123";
       case "CRU124": return CardSubtype($attackID) == "Arrow";
       case "CRU125": return true;
+      case "CRU126": return true;
       case "CRU135": case "CRU136": case "CRU137": return CardSubtype($attackID) == "Arrow";
       case "CRU135-1": case "CRU136-1": case "CRU137-1": return CardSubtype($attackID) == "Arrow";
       case "CRU145": case "CRU146": case "CRU147": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
