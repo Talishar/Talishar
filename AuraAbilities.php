@@ -482,12 +482,9 @@ function AuraBeginEndPhaseAbilities()
     $remove = 0;
     switch($auras[$i]) {
       case "ELE117":
+      case "ROS033":
         ChannelTalent($i, "EARTH");
         break;
-      case "ROS033":
-          ChannelTalent($i, "EARTH");
-          // Can I check and see if this object gets destroyed?
-          break;
       case "ELE146":
         ChannelTalent($i, "ICE");
         break;
