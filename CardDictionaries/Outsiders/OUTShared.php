@@ -258,6 +258,7 @@ function OUTAbilityCost($cardID)
           if($arsenalFaceDown != "" && CardSubType($arsenalFaceDown) == "Arrow") {
             SetArsenalFacing("UP", $currentPlayer);
             $arsenal = &GetArsenal($currentPlayer);
+            $arsenal[count($arsenal)-ArsenalPieces()+3] += 1;
           }
         }
         return "";

@@ -28,11 +28,14 @@ function AAZPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   switch($cardID) {
     case "AAZ024":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      if(ArsenalHasFaceDownCard($currentPlayer)) {
-        $arsenalFaceDown = ArsenalFaceDownCard($currentPlayer);
-        if($arsenalFaceDown != "" && CardSubType($arsenalFaceDown) == "Arrow") {
-          SetArsenalFacing("UP", $currentPlayer);
-          AddAimCounterToCard($currentPlayer);
+      $arsenal = &GetArsenal($currentPlayer);
+      for($i=0; $i<count($arsenal); $i+=ArsenalPieces()) {
+        if($arsenal[$i+1] == "DOWN") {
+          AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_turn_your_arsenal_face_up");
+          AddDecisionQueue("NOPASS", $currentPlayer, "-");
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $i, 1);
+          AddDecisionQueue("TURNARSENALFACEUP", $currentPlayer, $i, 1);
+          AddDecisionQueue("ADDAIMCOUNTER", $currentPlayer, $i, 1);
         }
       }
       return "";
