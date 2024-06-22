@@ -1866,6 +1866,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "ROS033":
       AddCurrentTurnEffect($parameter, $player);
+    case "ROS008":
+      AddDecisionQueue("PLAYABILITY", $player, "-", 1);
+      PlayAura("ELE110", $player);
       break;
     default: break;
   }

@@ -35,6 +35,8 @@ include "CardDictionaries/Dynasty/DYNShared.php";
 include "CardDictionaries/Outsiders/OUTShared.php";
 include "CardDictionaries/DuskTillDawn/DTDShared.php";
 include "CardDictionaries/Roguelike/ROGUEShared.php";
+include "CardDictionaries/FirstStrike/FSShared.php";
+include "CardDictionaries/Rosetta/ROSShared.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
 include "GeneratedCode/DatabaseGeneratedCardDictionaries.php";
@@ -326,6 +328,7 @@ function AbilityCost($cardID)
   else if($set == "AKO") return AKOAbilityCost($cardID);
   else if($set == "MST") return MSTAbilityCost($cardID);
   else if($set == "ROG") return ROGUEAbilityCost($cardID);
+  else if($set == "ROS") return ROSAbilityCost($cardID);
   else if($cardID == "HER117") return 0;
   return CardCost($cardID);
 }
@@ -497,6 +500,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "AKO") return AKOAbilityType($cardID, $index, $from);
   else if($set == "MST") return MSTAbilityType($cardID, $index, $from);
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
+  else if($set == "ROS") return ROSAbilityType($cardID, $index);
   else if($cardID == "HER117") return "I";
 }
 
@@ -904,7 +908,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "")
 {
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
-  global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed;
+  global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBaseAttack, $chainLinks;
   if($player == "") $player = $currentPlayer;
@@ -1196,6 +1200,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST232": return (count($myHand) + count($myArsenal)) < 2;
     case "MST236": 
       return $discard->NumCards() < 3;
+    case "ROS008": return GetClassState($player, $CS_NumLightningPlayed) == 0;
     default: return false;
   }
 }

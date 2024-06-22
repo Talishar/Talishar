@@ -317,6 +317,7 @@ $CS_NumBluePlayed = 77;
 $CS_Transcended = 78;
 $CS_NumCrouchingTigerCreatedThisTurn = 79;
 $CS_NumBlueDefended = 80;
+$CS_NumLightningPlayed = 81;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -519,7 +520,7 @@ function ResetMainClassState()
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard, $CS_NumAttackCards, $CS_NumPlayedFromBanish;
   global $CS_NumAttacks, $CS_DieRoll, $CS_NumBloodDebtPlayed, $CS_NumWizardNonAttack, $CS_LayerTarget, $CS_NumSwordAttacks;
   global $CS_HitsWithWeapon, $CS_ArcaneDamagePrevention, $CS_DynCostResolved, $CS_CardsEnteredGY, $CS_Transcended, $CS_NumBlueDefended;
-  global $CS_HighestRoll, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_AlluvionUsed, $CS_NumBluePlayed;
+  global $CS_HighestRoll, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_AlluvionUsed, $CS_NumBluePlayed, $CS_NumLightningPlayed;
   global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
   global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks, $CS_ArcaneDamageDealt, $CS_LayerPlayIndex, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumBoostPlayed;
   global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain, $CS_NumContractsCompleted, $CS_HitsWithSword, $CS_NumCardsDrawn;
@@ -606,6 +607,7 @@ function ResetMainClassState()
   $mainClassState[$CS_Transcended] = 0;
   $mainClassState[$CS_NumCrouchingTigerCreatedThisTurn] = 0;
   $mainClassState[$CS_NumBlueDefended] = 0;
+  $mainClassState[$CS_NumLightningPlayed] = 0;
 }
 
 function ResetCardPlayed($cardID)
