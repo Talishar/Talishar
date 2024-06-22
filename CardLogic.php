@@ -1864,6 +1864,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
       AddDecisionQueue("PLAYAURA", $player, "WTR225-1", 1); // Quicken
       break;
+    case "ROS033":
+      AddCurrentTurnEffect($parameter, $player);
+      break;
     default: break;
   }
 }
@@ -2175,6 +2178,7 @@ function HasFlowCounters($cardID){
   switch($cardID) {
     case "ELE117": case "ELE146": case "ELE175": 
     case "UPR138":
+    case "ROS033":
       return true;
     default: return false;
   }

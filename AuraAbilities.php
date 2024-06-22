@@ -280,6 +280,7 @@ function AuraStartTurnAbilities()
       case "EVR107": case "EVR108": case "EVR109": case "EVR131": case "EVR132": case "EVR133":
       case "UPR190": case "UPR218": case "UPR219": case "UPR220":
       case "DYN217":
+      case "ROS033":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       //These are all start of turn events without priority
@@ -481,6 +482,7 @@ function AuraBeginEndPhaseAbilities()
     $remove = 0;
     switch($auras[$i]) {
       case "ELE117":
+      case "ROS033":
         ChannelTalent($i, "EARTH");
         break;
       case "ELE146":
