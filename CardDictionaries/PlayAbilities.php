@@ -21,6 +21,28 @@ function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     default: return "";
   }
 } 
+
+function AAZPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
+{
+  global $currentPlayer;
+  switch($cardID) {
+    case "AAZ024":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      $arsenal = &GetArsenal($currentPlayer);
+      for($i=0; $i<count($arsenal); $i+=ArsenalPieces()) {
+        if($arsenal[$i+1] == "DOWN") {
+          AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_turn_your_arsenal_face_up");
+          AddDecisionQueue("NOPASS", $currentPlayer, "-");
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $i, 1);
+          AddDecisionQueue("TURNARSENALFACEUP", $currentPlayer, $i, 1);
+          AddDecisionQueue("ADDAIMCOUNTER", $currentPlayer, $i, 1);
+        }
+      }
+      return "";
+    default: return "";
+  }
+}
+
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer, $CS_DamagePrevention, $CS_PlayIndex;

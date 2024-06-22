@@ -1,4 +1,19 @@
 <?php
+function AAZEffectAttackModifier($cardID) 
+{
+  switch($cardID) {
+    case "AAZ024": return 3;
+    default: return 0;
+  }
+}
+
+function AAZCombatEffectActive($cardID, $attackID)
+{
+  switch ($cardID) {
+    case "AAZ024": return CardSubType($attackID) == "Arrow";
+  }
+}
+
 
 function MSTEffectAttackModifier($cardID) {
   global $mainPlayer, $CS_Transcended, $combatChain;
