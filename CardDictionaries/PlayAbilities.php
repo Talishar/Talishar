@@ -1414,18 +1414,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       default: return "";
     }
   }
-
-  function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
-  {
-    global $currentPlayer;
-    switch($cardID)
-    {
-      case "ROS033":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
-      default: return "";
-    }
-  }
   
   function PhantomTidemawDestroy($player = -1, $index = -1)
 {

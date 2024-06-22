@@ -24,6 +24,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
             PlayAura("ELE110", $currentPlayer);
             return "";
         break;
+        case "ROS033":
+            AddCurrentTurnEffect($cardID, $currentPlayer);
+            return "";
         default:
             return "";
      }
