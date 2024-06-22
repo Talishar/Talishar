@@ -875,6 +875,9 @@ function return_Hero_Type($Cardcode){
 	case "RIP001":
 		return Young;
 		break;
+	case "TER001":
+		return Young
+		break;
         default:
             return False;}
             }

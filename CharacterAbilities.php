@@ -372,7 +372,7 @@ function CharacterBanishEffect($cardID, $player) {
 
 function MainCharacterEndTurnAbilities()
 {
-  global $mainClassState, $CS_HitsWDawnblade, $CS_AtksWWeapon, $mainPlayer, $CS_NumNonAttackCards;
+  global $mainClassState, $CS_HitsWDawnblade, $CS_AtksWWeapon, $mainPlayer, $CS_NumNonAttackCards, $defPlayer;
   global $CS_NumAttackCards, $CS_ArcaneDamageDealt;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
@@ -400,6 +400,22 @@ function MainCharacterEndTurnAbilities()
         break;
       case "ROGUE018":
         PlayAura("ELE109", $mainPlayer);
+        break;
+      case "TER001":
+        if($mainCharacter[$i+1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
+        TerraEndTurnAbility($characterID, $mainPlayer);
+        break;
+      default: break;
+    }
+  }
+
+  $defCharacter = &GetPlayerCharacter($defPlayer);
+  for($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
+    $characterID = ShiyanaCharacter($defCharacter[$i]);
+    switch($characterID) {
+      case "TER001":
+        if($defCharacter[$i+1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
+        TerraEndTurnAbility($characterID, $defPlayer);
         break;
       default: break;
     }
