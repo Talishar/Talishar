@@ -30,11 +30,10 @@ function AAZPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if(ArsenalHasFaceDownCard($currentPlayer)) {
         $arsenalFaceDown = ArsenalFaceDownCard($currentPlayer);
-          if($arsenalFaceDown != "" && CardSubType($arsenalFaceDown) == "Arrow") {
-            SetArsenalFacing("UP", $currentPlayer);
-            $arsenal = &GetArsenal($currentPlayer);
-            $arsenal[count($arsenal)-ArsenalPieces()+3] += 1;
-          }
+        if($arsenalFaceDown != "" && CardSubType($arsenalFaceDown) == "Arrow") {
+          SetArsenalFacing("UP", $currentPlayer);
+          AddAimCounterToCard($currentPlayer);
+        }
       }
       return "";
     default: return "";

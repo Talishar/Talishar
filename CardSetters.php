@@ -332,6 +332,12 @@ function DestroyArsenal($player, $index=-1, $effectController="", $allArsenal=tr
   return $cardIDs;
 }
 
+function AddAimCounterToCard($currentPlayer)
+{
+  $arsenal = &GetArsenal($currentPlayer);
+  $arsenal[count($arsenal)-ArsenalPieces()+3] += 1;
+}
+
 function AddSoul($cardID, $player, $from, $isMainPhase=true)
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt, $combatChain;
