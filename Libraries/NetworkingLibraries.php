@@ -1288,6 +1288,7 @@ function FinishTurnPass()
   QuellEndPhase(2);
   ItemEndTurnAbilities();
   AuraBeginEndPhaseAbilities();
+  MainCharacterEndTurnAbilities();
   LandmarkBeginEndPhaseAbilities();
   BeginEndPhaseEffects();
   PermanentBeginEndPhaseEffects();
