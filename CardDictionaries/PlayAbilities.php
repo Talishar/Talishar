@@ -1423,6 +1423,11 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       case "ROS033":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "ROS016":
+        GainHealth(1, $currentPlayer);
+        GainHealth(1, $currentPlayer);
+        GainHealth(1, $currentPlayer);
+        return "";
       default: return "";
     }
   }
