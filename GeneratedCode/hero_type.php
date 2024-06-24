@@ -878,6 +878,12 @@ function return_Hero_Type($Cardcode){
 	case "TER001":
 		return Young
 		break;
+	case "AUR001":
+		return Young
+		break;
+	case "ROS008":
+		return Young
+		break;
         default:
             return False;}
             }
