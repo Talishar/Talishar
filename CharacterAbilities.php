@@ -890,6 +890,25 @@ function CharacterTriggerInGraveyard($cardID)
   }
 }
 
+function CharacterModifiesPlayAura($player) {
+  $char = &GetPlayerCharacter($player);
+  for($i=0; $i<count($char); $i+=CharacterPieces()) {
+    if(intval($char[$i+1]) < 2) continue;
+    switch($char[$i]) {
+      case "ROS002":
+        // Now we need to check that we banished 4 earth cards.
+        $results = SearchCount(SearchMultiZone($player, "MYBANISH:TALENT=EARTH"));
+        if($results >= 4) {
+          WriteLog("Florian increases the number of auras created by 1.");
+          return 1;
+        }
+        return 0;
+      default: 
+        return 0;
+    }
+  }
+}
+
 function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
 {
   global $CS_NumCharged, $CS_DamageDealt;
