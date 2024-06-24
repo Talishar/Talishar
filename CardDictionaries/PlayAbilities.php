@@ -26,6 +26,7 @@ function AAZPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer;
   switch($cardID) {
+    case "AAZ004": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "AAZ024":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $arsenal = &GetArsenal($currentPlayer);
@@ -1428,8 +1429,17 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
           AddDecisionQueue("GAINLIFE", $currentPlayer, $xVal + 1);
         return "";
+      case "ROS008":
+        PlayAura("ELE110", $currentPlayer);
+        return "";
+        break;
       case "ROS033":
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "ROS016":
+        GainHealth(1, $currentPlayer);
+        GainHealth(1, $currentPlayer);
+        GainHealth(1, $currentPlayer);
         return "";
       default: return "";
     }

@@ -327,6 +327,7 @@ function AbilityCost($cardID)
   else if($set == "AKO") return AKOAbilityCost($cardID);
   else if($set == "MST") return MSTAbilityCost($cardID);
   else if($set == "ROG") return ROGUEAbilityCost($cardID);
+  else if($set == "ROS") return ROSAbilityCost($cardID);
   else if($cardID == "HER117") return 0;
   return CardCost($cardID);
 }
@@ -462,7 +463,7 @@ function HasGoAgain($cardID)
     case "MST193":
     case "MST212": case "MST213": case "MST214":
     case "AAZ024":
-    case "ROS033":
+    case "ROS033": case "ROS016":
       return true; 
   }
 
@@ -498,7 +499,9 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "HVY") return HVYAbilityType($cardID, $index, $from);
   else if($set == "AKO") return AKOAbilityType($cardID, $index, $from);
   else if($set == "MST") return MSTAbilityType($cardID, $index, $from);
+  else if($set == "AAZ") return AAZAbilityType($cardID, $index, $from);
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
+  else if($set == "ROS") return ROSAbilityType($cardID, $index);
   else if($cardID == "HER117") return "I";
 }
 
@@ -906,7 +909,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "")
 {
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
-  global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed;
+  global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBaseAttack, $chainLinks;
   if($player == "") $player = $currentPlayer;
@@ -1198,6 +1201,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST232": return (count($myHand) + count($myArsenal)) < 2;
     case "MST236": 
       return $discard->NumCards() < 3;
+    case "ROS008": return GetClassState($player, $CS_NumLightningPlayed) == 0;
     default: return false;
   }
 }
@@ -1485,6 +1489,7 @@ function AbilityHasGoAgain($cardID)
   else if($set == "HVY") return HVYAbilityHasGoAgain($cardID);
   else if($set == "AKO") return AKOAbilityHasGoAgain($cardID);
   else if($set == "MST") return MSTAbilityHasGoAgain($cardID);
+  else if($set == "AAZ") return AAZAbilityHasGoAgain($cardID);
   else if($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   switch($cardID) {
     case "RVD004": return true;

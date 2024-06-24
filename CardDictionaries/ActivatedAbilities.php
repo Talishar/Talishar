@@ -1,4 +1,24 @@
 <?php
+
+function AAZAbilityType($cardID, $index=-1, $from="-")
+{
+  switch($cardID)
+  {
+    case "AAZ004": return "A";
+    default: return "";
+  }
+}
+
+function AAZAbilityHasGoAgain($cardID)
+{
+  global $CombatChain;
+  switch($cardID)
+  {
+    case "AAZ004": return true;
+    default: return false;
+  }
+}
+
 function AKOAbilityCost($cardID)
 {
   switch($cardID)
@@ -238,6 +258,22 @@ function MSTAbilityHasGoAgain($cardID)
       default: return false;
     }
   }
+
+function ROSAbilityType($cardID, $index = -1)
+{
+  switch($cardID) {
+    case "ROS008": return "I";
+    default: return "";
+  }
+}
+
+function ROSAbilityCost($cardID)
+{
+    switch($cardID) {
+        case "ROS008": return 2;
+        default: return 0;
+      }
+}
 
   function DestroyTopCardTarget($player)
   {
