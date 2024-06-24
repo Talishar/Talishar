@@ -809,6 +809,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "HVY009": case "HVY010": case "HVY098": case "HVY135": case "HVY155": case "HVY175": case "HVY195": case "HVY196": case "HVY197":
     case "AKO004":
     case "MST006": case "MST007": case "MST048": 
+    case "AAZ004":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "DTD001": case "DTD002":

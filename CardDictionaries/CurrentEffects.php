@@ -11,6 +11,8 @@ function AAZCombatEffectActive($cardID, $attackID)
 {
   switch ($cardID) {
     case "AAZ024": return CardSubType($attackID) == "Arrow";
+    case "AAZ004": return CardSubType($attackID) == "Arrow" && HasAimCounter();
+    default: return false;
   }
 }
 

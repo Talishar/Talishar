@@ -1,4 +1,24 @@
 <?php
+
+function AAZAbilityType($cardID, $index=-1, $from="-")
+{
+  switch($cardID)
+  {
+    case "AAZ004": return "A";
+    default: return "";
+  }
+}
+
+function AAZAbilityHasGoAgain($cardID)
+{
+  global $CombatChain;
+  switch($cardID)
+  {
+    case "AAZ004": return true;
+    default: return false;
+  }
+}
+
 function AKOAbilityCost($cardID)
 {
   switch($cardID)
