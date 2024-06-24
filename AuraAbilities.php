@@ -13,7 +13,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
 
-  $number += CharacterModifiesPlayAura($player);
+  $number += CharacterModifiesPlayAura($player, $isToken);
 
   if($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
   if($cardID == "ARC112") $number += CountCurrentTurnEffects("ARC081", $player);
