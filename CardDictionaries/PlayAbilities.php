@@ -26,6 +26,7 @@ function AAZPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer;
   switch($cardID) {
+    case "AAZ004": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "AAZ024":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $arsenal = &GetArsenal($currentPlayer);
@@ -1410,6 +1411,23 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         return "";
       case "EVO449":
         PlayAura("WTR225", $currentPlayer);
+        return "";
+      default: return "";
+    }
+  }
+
+  function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
+  {
+    global $currentPlayer;
+    switch($cardID)
+    {
+      case "ROS033":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "ROS016":
+        GainHealth(1, $currentPlayer);
+        GainHealth(1, $currentPlayer);
+        GainHealth(1, $currentPlayer);
         return "";
       default: return "";
     }

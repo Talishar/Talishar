@@ -463,7 +463,7 @@ function HasGoAgain($cardID)
     case "MST193":
     case "MST212": case "MST213": case "MST214":
     case "AAZ024":
-    case "ROS033":
+    case "ROS033": case "ROS016":
       return true; 
   }
 
@@ -499,6 +499,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "HVY") return HVYAbilityType($cardID, $index, $from);
   else if($set == "AKO") return AKOAbilityType($cardID, $index, $from);
   else if($set == "MST") return MSTAbilityType($cardID, $index, $from);
+  else if($set == "AAZ") return AAZAbilityType($cardID, $index, $from);
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
   else if($set == "ROS") return ROSAbilityType($cardID, $index);
   else if($cardID == "HER117") return "I";
@@ -1488,6 +1489,7 @@ function AbilityHasGoAgain($cardID)
   else if($set == "HVY") return HVYAbilityHasGoAgain($cardID);
   else if($set == "AKO") return AKOAbilityHasGoAgain($cardID);
   else if($set == "MST") return MSTAbilityHasGoAgain($cardID);
+  else if($set == "AAZ") return AAZAbilityHasGoAgain($cardID);
   else if($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   switch($cardID) {
     case "RVD004": return true;
