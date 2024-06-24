@@ -1421,6 +1421,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     global $currentPlayer;
     switch($cardID)
     {
+    case "ROS008":
+        PlayAura("ELE110", $currentPlayer);
+        return "";
+    break;
       case "ROS033":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
