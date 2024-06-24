@@ -259,6 +259,22 @@ function MSTAbilityHasGoAgain($cardID)
     }
   }
 
+function ROSAbilityType($cardID, $index = -1)
+{
+  switch($cardID) {
+    case "ROS008": return "I";
+    default: return "";
+  }
+}
+
+function ROSAbilityCost($cardID)
+{
+    switch($cardID) {
+        case "ROS008": return 2;
+        default: return 0;
+      }
+}
+
   function DestroyTopCardTarget($player)
   {
     $otherPlayer = ($player == 1 ? 2 : 1);
