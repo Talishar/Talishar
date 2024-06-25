@@ -873,8 +873,8 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additionalCosts="-", $from="-")
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex, $CombatChain;
-  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_ArcaneDamageTaken, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex, $CombatChain;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $layers;
   global $CS_DamagePrevention;
   $items = &GetItems($player);
   $auras = &GetAuras($player);
@@ -1063,6 +1063,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "CRU161":
+      // Handle Blazing Aether dealing 0 damage bug.
+      $layerIndex = count($layers) - LayerPieces();
+      $layerID = $layers[$layerIndex];
+      $damage = GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
+      if( $layerID == "ARC118" && $damage == 0) {
+        WriteLog(CardLink("CRU161", "CRU161") . " cannot buff Arcane on attacks that would deal 0 damage.");
+        break;
+      }
+
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
       AddDecisionQueue("NOPASS", $player, "-", 1, 1);
       AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
