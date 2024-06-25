@@ -1066,12 +1066,20 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       // Handle Blazing Aether dealing 0 damage bug.
       $layerIndex = count($layers) - LayerPieces();
       $layerID = $layers[$layerIndex];
+      $player = $layers[$layerIndex + 1];
+      $additionalCosts = $layers[$layerIndex + 4];
+      $layerParams = $layers[$layerIndex + 2]; 
+      $values = explode("|", $layerParams);
+      // Do I need to take into account additional resources for cards like Channel Lake Frigid?
+      $r_paid = $values[1]; 
+
       $damage = GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
-      if( $layerID == "ARC118" && $damage == 0) {
+      // Grab the $resourcePaid from the layer.
+      if(($layerID == "ARC118" && $damage == 0) || ($layerID == "EVR124" && $r_paid == 0)) {
         WriteLog(CardLink("CRU161", "CRU161") . " cannot buff Arcane on attacks that would deal 0 damage.");
         break;
       }
-
+    
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
       AddDecisionQueue("NOPASS", $player, "-", 1, 1);
       AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
