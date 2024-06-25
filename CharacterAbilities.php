@@ -900,7 +900,7 @@ function CharacterModifiesPlayAura($player, $isToken) {
         // Now we need to check that we banished 4 earth cards.
         $results = SearchCount(SearchMultiZone($player, "MYBANISH:TALENT=EARTH"));
         if($results >= 4) {
-          WriteLog("Florian increases the number of auras created by 1.");
+          WriteLog(CardLink($char[$i],$char[$i]) . " increases the number of auras tokens created by 1.");
           return 1;
         }
         return 0;
