@@ -1419,6 +1419,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer;
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+
     switch($cardID)
     {
       case "ROS004":
@@ -1432,7 +1434,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       case "ROS008":
         PlayAura("ELE110", $currentPlayer);
         return "";
-        break;
       case "ROS033":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -1440,6 +1441,44 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         GainHealth(1, $currentPlayer);
         GainHealth(1, $currentPlayer);
         GainHealth(1, $currentPlayer);
+        return "";
+      case "ROS031":
+        $r = SearchCount(
+          SearchRemoveDuplicates(
+            CombineSearches(
+              CombineSearches(
+                SearchDiscard($currentPlayer, "A", talent: "EARTH"), 
+                SearchDiscard($currentPlayer, "AA", talent: "EARTH")
+              ),
+              CombineSearches(
+                SearchDiscard($currentPlayer, "A"), 
+                SearchDiscard($currentPlayer, "AA"))
+              )
+            )
+          );
+          
+        // Only perform if we have enough matches to save time.
+        if($r >= 3) {
+          // Banish two earth cards.
+          for($i = 0; $i < 2; $i++) {
+            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:talent=EARTH", 1);
+            AddDecisionQueue("MZSETDQVAR", $currentPlayer, "0", 1);
+            AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
+            AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+          }
+
+          // Banish an Action
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", 1);
+          AddDecisionQueue("MZSETDQVAR", $currentPlayer, "0", 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+
+          // Both players have to Bottom a Card.
+          BottomDeck($currentPlayer);
+          BottomDeck($otherPlayer);
+        }
         return "";
       default: return "";
     }
