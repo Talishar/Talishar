@@ -2050,6 +2050,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $param = explode(",", $parameter);
         LogPlayCardStats($player, $param[0], $param[1], $param[2]);
         return $lastResult;
+      case "GAINLIFE":
+          $param = explode(",", $parameter);
+          GainHealth($param[0], $player, true, false);
+        return $lastResult;
     default:
       return "NOTSTATIC";
   }

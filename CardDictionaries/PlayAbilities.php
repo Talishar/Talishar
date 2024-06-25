@@ -1421,10 +1421,18 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     global $currentPlayer;
     switch($cardID)
     {
-    case "ROS008":
+      case "ROS004":
+        $xVal = $resourcesPaid/2;
+        for ($i = 0; $i <= $xVal; $i++) {
+            AddDecisionQueue("CHOOSECARD", $currentPlayer, "ARC112" . "," . "ELE109");
+            AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
+        }
+          AddDecisionQueue("GAINLIFE", $currentPlayer, $xVal + 1);
+        return "";
+      case "ROS008":
         PlayAura("ELE110", $currentPlayer);
         return "";
-    break;
+        break;
       case "ROS033":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
