@@ -890,6 +890,26 @@ function CharacterTriggerInGraveyard($cardID)
   }
 }
 
+function CharacterModifiesPlayAura($player, $isToken) {
+  $char = &GetPlayerCharacter($player);
+  for($i=0; $i<count($char); $i+=CharacterPieces()) {
+    if(intval($char[$i+1]) < 2) continue;
+    switch($char[$i]) {
+      case "ROS002":
+        if(!$isToken) return 0;
+        // Now we need to check that we banished 4 earth cards.
+        $results = SearchCount(SearchMultiZone($player, "MYBANISH:TALENT=EARTH"));
+        if($results >= 4) {
+          WriteLog(CardLink($char[$i],$char[$i]) . " increases the number of auras tokens created by 1.");
+          return 1;
+        }
+        return 0;
+      default: 
+        return 0;
+    }
+  }
+}
+
 function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
 {
   global $CS_NumCharged, $CS_DamageDealt;
