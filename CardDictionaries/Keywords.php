@@ -353,7 +353,8 @@
    * 
    * This function returns true if the decompose conditions were met and cards were banished, and false otherwise.
    */
-  function Decompose($player, $totalBanishes, $earthBanishes, $actionBanishes) {
+  function Decompose($player, $earthBanishes, $actionBanishes) {
+    $totalBanishes = $earthBanishes + $actionBanishes
     // Only perform the action if we have the minimum # of cards that meet the requirement for total banishes.
     $countInDiscard = SearchCount(
       SearchRemoveDuplicates(

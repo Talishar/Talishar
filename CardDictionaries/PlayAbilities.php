@@ -1443,7 +1443,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         GainHealth(1, $currentPlayer);
         return "";
       case "ROS031":
-        if(Decompose($currentPlayer, 3, 2, 1)) {
+        if(Decompose($currentPlayer, 2, 1)) {
           BottomDeck($currentPlayer);
           BottomDeck($otherPlayer);
         }
