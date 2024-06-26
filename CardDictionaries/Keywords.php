@@ -369,26 +369,29 @@
         )
       );
     
-      // This is not a MAY ability.
-      if($countInDiscard >= $totalBanishes) {
-        // Earth Banishes
-        for($i = 0; $i < $earthBanishes; $i++) {
-          AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:talent=EARTH", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-          AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
-          AddDecisionQueue("MZREMOVE", $player, "-", 1);
-        }
+    // Must have the minimum # of earth cards too. 
+    $earthCountInDiscard = SearchCount(SearchDiscard($player, talent: "EARTH"));
 
-        for($i = 0; $i < $actionBanishes; $i++) {
-          AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:type=A&MYDISCARD:type=AA", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-          AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
-          AddDecisionQueue("MZREMOVE", $player, "-", 1);
-        }
-
-        return true;
+    // This is not a MAY ability.
+    if($countInDiscard >= $totalBanishes && $earthCountInDiscard >= $earthBanishes) {
+      // Earth Banishes
+      for($i = 0; $i < $earthBanishes; $i++) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:talent=EARTH", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
       }
 
-      return false;
+      for($i = 0; $i < $actionBanishes; $i++) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:type=A&MYDISCARD:type=AA", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      }
+
+      return true;
+    }
+
+    return false;
   }
   
