@@ -370,7 +370,6 @@
         )
       );
     
-      WriteLog("Count in Discard: " . $countInDiscard);
       // This is not a MAY ability.
       if($countInDiscard >= $totalBanishes) {
         // Earth Banishes
