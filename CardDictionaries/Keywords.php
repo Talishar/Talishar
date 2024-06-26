@@ -354,15 +354,13 @@
    * This function returns true if the decompose conditions were met and cards were banished, and false otherwise.
    */
   function Decompose($player, $earthBanishes, $actionBanishes) {
-    $totalBanishes = $earthBanishes + $actionBanishes
+    $totalBanishes = $earthBanishes + $actionBanishes;
+
     // Only perform the action if we have the minimum # of cards that meet the requirement for total banishes.
     $countInDiscard = SearchCount(
       SearchRemoveDuplicates(
         CombineSearches(
-          CombineSearches(
-            SearchDiscard($player, "A", talent: "EARTH"), 
-            SearchDiscard($player, "AA", talent: "EARTH")
-          ),
+          SearchDiscard($player, talent: "EARTH"), 
           CombineSearches(
             SearchDiscard($player, "A"), 
             SearchDiscard($player
@@ -376,7 +374,6 @@
         // Earth Banishes
         for($i = 0; $i < $earthBanishes; $i++) {
           AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:talent=EARTH", 1);
-          AddDecisionQueue("MZSETDQVAR", $player, "0", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
           AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
           AddDecisionQueue("MZREMOVE", $player, "-", 1);
@@ -384,7 +381,6 @@
 
         for($i = 0; $i < $actionBanishes; $i++) {
           AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:type=A&MYDISCARD:type=AA", 1);
-          AddDecisionQueue("MZSETDQVAR", $player, "0", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
           AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
           AddDecisionQueue("MZREMOVE", $player, "-", 1);
