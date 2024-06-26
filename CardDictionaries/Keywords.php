@@ -345,3 +345,54 @@
     if(substr($from, 0, 5) == "THEIR") AddPlayerHand($cardID, $otherplayer, "-");
     else AddPlayerHand($cardID, $player, "-");
   }
+
+  /**
+   * Decompose is a keyword added in ROS. This function is meant to support future instances of
+   * decompose that may have different requirements in the number of earth banishes and action
+   * banishes.
+   * 
+   * This function returns true if the decompose conditions were met and cards were banished, and false otherwise.
+   */
+  function Decompose($player, $earthBanishes, $actionBanishes) {
+    $totalBanishes = $earthBanishes + $actionBanishes;
+
+    // Only perform the action if we have the minimum # of cards that meet the requirement for total banishes.
+    $countInDiscard = SearchCount(
+      SearchRemoveDuplicates(
+        CombineSearches(
+          SearchDiscard($player, talent: "EARTH"), 
+          CombineSearches(
+            SearchDiscard($player, "A"), 
+            SearchDiscard($player
+            , "AA"))
+          )
+        )
+      );
+    
+    // Must have the minimum # of earth cards too. 
+    $earthCountInDiscard = SearchCount(SearchDiscard($player, talent: "EARTH"));
+
+    // This is a MAY ability.
+    if($countInDiscard >= $totalBanishes && $earthCountInDiscard >= $earthBanishes) {
+      // Earth Banishes
+      for($i = 0; $i < $earthBanishes; $i++) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:talent=EARTH", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      }
+      
+      // This is not a MAY ability.
+      for($i = 0; $i < $actionBanishes; $i++) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:type=A&MYDISCARD:type=AA", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      }
+
+      return true;
+    }
+
+    return false;
+  }
+  

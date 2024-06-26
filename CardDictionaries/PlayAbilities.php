@@ -1419,6 +1419,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer;
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+
     switch($cardID)
     {
       case "ROS004":
@@ -1432,7 +1434,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       case "ROS008":
         PlayAura("ELE110", $currentPlayer);
         return "";
-        break;
       case "ROS033":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -1440,6 +1441,12 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         GainHealth(1, $currentPlayer);
         GainHealth(1, $currentPlayer);
         GainHealth(1, $currentPlayer);
+        return "";
+      case "ROS031":
+        if(Decompose($currentPlayer, 2, 1)) {
+          BottomDeck($currentPlayer);
+          BottomDeck($otherPlayer);
+        }
         return "";
       default: return "";
     }
