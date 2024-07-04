@@ -173,6 +173,7 @@ function GetCardBack($player)
     case 81: return "CBSunflowerSamurai";
     case 82: return "CBTalisharTeam";
     case 83: return "CBTalisharTeam2";
+    case 84: return "CBTideBreakers";
     default: return "CardBack";
   }
 }
@@ -568,6 +569,17 @@ function IsTeamTalishar($userID)
   return false;
 }
 
+function IsTeamTideBreakers($userID)
+{
+  switch($userID) {
+    case "OotTheMonk": case "Yarandor": case "grossmaul2130": case "EggShot": case "Kasadoom": case "Gulto":
+    case "FinnElbe": case "Stardragon": case "DragonSlayer": case "TerranceSkill": case "TaddelDown":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
 function IsTeamSunflowerSamurai($userID)
 {
   switch($userID) {
@@ -632,7 +644,7 @@ function IsTeamColdFoilControl($userID)
 }
 
 function IsTeamRighteousGaming($userID)
-{  
+{
   switch($userID) {
     case "MisterPNP":
     case "RighteousGaming":
