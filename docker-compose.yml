@@ -31,9 +31,8 @@ services:
       MYSQL_SERVER_USER_NAME: "root"
       MYSQL_DATABASE: "fabonline"
     volumes:
-      - ./mysql-data:/var/lib/mysql:rw
+      - ./mysql-data:/var/lib/mysql
       - ./Database:/docker-entrypoint-initdb.d
-    user: mysql
   phpmyadmin:
     image: phpmyadmin:latest
     restart: always
