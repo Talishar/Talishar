@@ -501,6 +501,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "AAZ") return AAZAbilityType($cardID, $index, $from);
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
   else if($set == "ROS") return ROSAbilityType($cardID, $index);
+  else if($set == "ASB") return ASBAbilityType($cardID, $index);
   else if($cardID == "HER117") return "I";
 }
 
@@ -1201,6 +1202,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST236": 
       return $discard->NumCards() < 3;
     case "ROS008": return GetClassState($player, $CS_NumLightningPlayed) == 0;
+    case "ASB004": return count($mySoul) == 0;
     default: return false;
   }
 }
@@ -1302,7 +1304,7 @@ function HasBladeBreak($cardID)
     case "MST050": case "MST160": return true;
     case "MST066": return true;
     case "MST190": return true;
-    case "ASB003": case "ASB006": return true;
+    case "ASB003": case "ASB005": case "ASB006": return true;
     default: return false;
   }
 }

@@ -501,7 +501,7 @@ function OnBlockResolveEffects($cardID = "")
       case "HVY239"://Clash blocks
       case "HVY648":
       case "MST050": case "MST066": case "MST160": case "MST190":
-      case "ASB003": case "ASB006":
+      case "ASB003": case "ASB005": case "ASB006":
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "HVY008":

@@ -631,6 +631,9 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "ROGUE024":
           $costModifier += 1;
           break;
+        case "ASB004":
+          if(PitchValue($cardID) == 2) $costModifier -= 1;
+          break;
         default: break;
       }
       if($remove) RemoveCurrentTurnEffect($i);
