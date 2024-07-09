@@ -15,6 +15,9 @@ function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_NumCharged, $CombatChain;
   switch($cardID) {
+    case "ASB004":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "ASB025":
       if(GetClassState($currentPlayer, $CS_NumCharged) > 0) $CombatChain->Card(0)->ModifyPower(-2);
       return "";

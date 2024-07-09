@@ -872,6 +872,10 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       break;
     case "MST232": 
       DestroyCharacter($currentPlayer, $cardIndex, true);
+      break;
+    case "ASB004":
+      DestroyCharacter($currentPlayer, $cardIndex);
+      BanishFromSoul($currentPlayer);
       break;  
     default:
       --$character[$cardIndex+5];

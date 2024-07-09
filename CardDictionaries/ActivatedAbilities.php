@@ -314,4 +314,12 @@ function ROSAbilityCost($cardID)
         return false;
     }
   }
+
+function ASBAbilityType($cardID, $index = -1)
+{
+  switch($cardID) {
+    case "ASB004": return "I";
+    default: return "";
+  }
+}
 ?>

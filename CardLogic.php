@@ -1859,7 +1859,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       Charge();
       AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
       AddDecisionQueue("DRAW", $player, "-", 1);
-      break;   
+      break;  
+    case "ASB005":
+      Charge();
+      AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
+      AddDecisionQueue("PLAYAURA", $player, "DTD232", 1);
+      break; 
     case "ASB006":
       Charge();
       AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
