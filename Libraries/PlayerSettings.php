@@ -174,6 +174,8 @@ function GetCardBack($player)
     case 82: return "CBTalisharTeam";
     case 83: return "CBTalisharTeam2";
     case 84: return "CBTideBreakers";
+    case 85: return "CBCD1";
+    case 86: return "CBCD2";
     default: return "CardBack";
   }
 }
