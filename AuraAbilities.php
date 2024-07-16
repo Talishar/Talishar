@@ -60,7 +60,7 @@ function AuraNumUses($cardID)
 {
   switch ($cardID) {
     case "EVR140": case "EVR141": case "EVR142": case "EVR143":
-    case "UPR005": return 1;
+    case "UPR005": case "ROS077": return 1;
     case "DTD081": return 1;
     default: return 0;
   }
@@ -491,6 +491,7 @@ function AuraBeginEndPhaseAbilities()
         ChannelTalent($i, "ICE");
         break;
       case "ELE175":
+      case "ROS077":
         ChannelTalent($i, "LIGHTNING");
         break;
       case "UPR005":
@@ -818,6 +819,13 @@ function AuraHitEffects($attackID)
     switch($auras[$i]) {
       case "ARC106": case "ARC107": case "ARC108":
         if($attackType == "AA") {
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+        }
+        break;
+      case "ROS077":
+        if($auras[$i + 5] > 0 && isHeroAttackTarget()) {
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " draws a card");
+          --$auras[$i + 5];
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
         }
         break;

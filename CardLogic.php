@@ -1873,6 +1873,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "ROS033":
       AddCurrentTurnEffect($parameter, $player);
       break;
+    case "ROS077":
+      Draw($player);
+      break;
     default: break;
   }
 }
