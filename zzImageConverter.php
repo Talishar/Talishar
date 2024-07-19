@@ -6,7 +6,7 @@ function CheckImage($cardID, $isDuplicate=false)
   $number = substr($cardID, 3);
   $filename = "./WebpImages/" . $cardID . ".webp";
   $filenameNew = "./New Cards/" . $cardID . ".webp";
-  $filename2 = "../Talishar-FE/public/cardimages/" . $cardID . ".webp"; // !! Talishar-FE/ to be changed for your own folder name
+  $filename2 = "../Talishar-FE/public/cardimages/English/" . $cardID . ".webp"; // !! Talishar-FE/ to be changed for your own folder name
   if(!file_exists($filename) || !file_exists($filename2))
   {
     //$imageURL = "https://fabrary.net/images/cards/" . $cardID . ".webp";
@@ -37,7 +37,7 @@ function CheckImage($cardID, $isDuplicate=false)
     }
   }
   $concatFilename = "./concat/" . $cardID . ".webp";
-  $concatFilename2 = "../Talishar-FE/public/cardsquares/" . $cardID . ".webp"; // !! Talishar-FE/ to be changed for your own folder name
+  $concatFilename2 = "../Talishar-FE/public/cardsquares/English/" . $cardID . ".webp"; // !! Talishar-FE/ to be changed for your own folder name
   if(!file_exists($concatFilename) || !file_exists($concatFilename2))
   {
     echo("Concat image for " . $cardID . " does not exist.<BR>");

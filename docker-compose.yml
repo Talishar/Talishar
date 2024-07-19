@@ -7,7 +7,11 @@ services:
     restart: always
     volumes:
       - "./:/var/www/html/game"
-    command: bash "/var/www/html/game/docker-entrypoint.sh"
+      - "../Talishar-FE:/opt/project/Talishar-FE" # Frontend project for ad-hoc running of zzCardCodeGenerator.php
+      - "./docker/docker-php-ext-xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini" # Xdebug configuration
+      - "./docker/docker-php-ext-opcache.ini:/usr/local/etc/php/conf.d/docker-php-ext-opcache.ini" # OPCache configuration
+#      - "./.tmp:/tmp" # Temporary files for debugging
+    command: apache2-foreground
     ports:
       - "8080:80"
     depends_on:
@@ -19,7 +23,7 @@ services:
       MYSQL_SERVER_NAME: "mysql-server"
       MYSQL_SERVER_USER_NAME: "root"
       REDIS_HOST: "app_redis"
-      REDIS_ENABLED: true
+      REDIS_ENABLED: "true"
       DOMAIN: "localhost"
   mysql-server:
     image: mysql:latest

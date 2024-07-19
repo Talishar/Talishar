@@ -401,7 +401,7 @@ function RevertGamestate($filename = "gamestateBackup.txt")
   copy($filepath . $filename, $filepath . "gamestate.txt");
   $skipWriteGamestate = true;
   $gamestate = file_get_contents($filepath . $filename);
-  WriteCache(GamestateID($gameName), $gamestate);
+  WriteGamestateCache($gameName, $gamestate);
 }
 
 function MakeStartTurnBackup()
