@@ -1087,6 +1087,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   if(GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
   else if($cardID == "DTD085" || $cardID == "DTD086" || $cardID == "DTD087") { return GetClassState($currentPlayer, $CS_NumAddedToSoul); }
+  else if($cardID == "DTD088" || $cardID == "DTD089" || $cardID == "DTD090") {return GetClassState($currentPlayer, $CS_NumAddedToSoul); }
   else if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
   else if($cardID == "DTD140") return GetClassState($currentPlayer, $CS_LifeLost) > 0 || GetClassState($otherPlayer, $CS_LifeLost) > 0;
   else if($cardID == "DTD141") return GetClassState($currentPlayer, $CS_LifeLost) > 0 || GetClassState($otherPlayer, $CS_LifeLost) > 0;
