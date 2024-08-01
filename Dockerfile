@@ -35,3 +35,5 @@ RUN pecl install xdebug \
     && docker-php-ext-enable xdebug # Debugger
 
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+
+RUN a2enmod proxy proxy_http proxy_wstunnel
