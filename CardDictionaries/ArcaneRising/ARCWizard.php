@@ -443,6 +443,7 @@
         case "MST229": case "MST629": ++$barrierArray[1]; $total += 1; break;
         case "MST230": case "MST630": ++$barrierArray[1]; $total += 1; break;
         case "MST231": case "MST631": ++$barrierArray[1]; $total += 1; break;
+        case "AAZ005": ++$barrierArray[1]; $total += 1; break;
         default: break;
       }
     }

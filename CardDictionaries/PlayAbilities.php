@@ -29,10 +29,13 @@ function AAZPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer;
   switch($cardID) {
-    case "AAZ004": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
+    case "AAZ004": AddCurrentTurnEffect($cardID, $currentPlayer); 
+      return "";
     case "AAZ006":
         LoadArrow($currentPlayer, "UP", 1);
         return "";
+    case "AAZ007": GiveAttackGoAgain(); 
+      return "";
     case "AAZ024":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $arsenal = &GetArsenal($currentPlayer);
@@ -44,6 +47,10 @@ function AAZPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           AddDecisionQueue("ADDAIMCOUNTER", $currentPlayer, $i, 1);
         }
       }
+      return "";
+    case "AAZ005":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      GainResources($currentPlayer, 1); 
       return "";
     default: return "";
   }
