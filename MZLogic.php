@@ -129,8 +129,8 @@ function MZAddZone($player, $parameter, $lastResult)
       case "THEIRBOTDECK": AddBottomDeck($cardIDs[$i], $otherPlayer, "-"); break;
       case "MYDISCARD": AddGraveyard($cardIDs[$i], $player, "-", $params[1]); break;
       case "THEIRDISCARD": AddGraveyard($cardIDs[$i], $otherPlayer, "-", $params[1]); break;
-      case "MYARS": AddArsenal($cardIDs[$i], $player, $params[1], $params[2], $params[3]); break;
-      case "THEIRARS": AddArsenal($cardIDs[$i], $otherPlayer, $params[1], $params[2], $params[3]); break;
+      case "MYARS": AddArsenal($cardIDs[$i], $player, $params[1], $params[2], isset($params[3]) ? $params[3] : "0"); break;
+      case "THEIRARS": AddArsenal($cardIDs[$i], $otherPlayer, $params[1], $params[2], isset($params[3]) ? $params[3] : "0"); break;
       case "MYPERMANENTS": PutPermanentIntoPlay($player, $cardIDs[$i]); break;
       case "MYSOUL": AddSoul($cardIDs[$i], $player, $params[1]); break;
       case "MYITEMS": PutItemIntoPlayForPlayer($cardIDs[$i], $player); break;
