@@ -25,7 +25,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   $character = &GetPlayerCharacter($player);
   $items = &GetItems($player);
   $characterID = ShiyanaCharacter($character[0]);
-  AddEvent("BANISH", ($modifier == "INT" || $modifier == "UZURI" ? "CardBack" : $cardID));
+  AddEvent("BANISH", ($modifier == "INT" || $modifier == "NTINT" || $modifier == "UZURI" ? "CardBack" : $cardID));
   //Effects that change the modifier
   if($characterID == "DTD564" && $character[1] < 3) {
     AddLayer("TRIGGER", $player, $characterID);
@@ -43,7 +43,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     array_push($banish, GetUniqueId($cardID, $player));
   }
   ++$classState[$CS_CardsBanished];
-  if($modifier == "INT") return $rv;
+  if($modifier == "INT" || $modifier == "NTINT") return $rv;
   //Do additional effects
   if($cardID == "DTD109" && $from == "HAND" && $modifier != "DTD564" && ($modifier != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish)-2] = "TT";
   if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player))) {

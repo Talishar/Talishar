@@ -1848,7 +1848,7 @@ function PlayableFromBanish($cardID, $mod="", $nonLimitedOnly=false, $player="")
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
   if($player == "") $player = $currentPlayer;
   $mod = explode("-", $mod)[0];
-  if($mod == "INT" || $mod == "FACEDOWN") return false;
+  if($mod == "INT" || $mod == "NTINT" || $mod == "FACEDOWN") return false;
   if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
   if($mod == "MST236" && SearchCurrentTurnEffects("MST236-3", $player) && CardType($cardID) != "E") return true;
   if(HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $player, false)) >= CardCost($cardID)) return true;
@@ -1885,7 +1885,7 @@ function AbilityPlayableFromBanish($cardID, $mod="")
 {
   global $currentPlayer, $mainPlayer;
   $mod = explode("-", $mod)[0];
-  if($mod == "INT" || $mod == "FACEDOWN") return false;
+  if($mod == "INT" || $mod == "NTINT" || $mod == "FACEDOWN") return false;
   switch($cardID) {
     case "MON192": return $currentPlayer == $mainPlayer;
     default: return false;
@@ -1897,7 +1897,7 @@ function PlayableFromOtherPlayerBanish($cardID, $mod="", $player="")
   $mod = explode("-", $mod)[0];
   if($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
-  if ($mod == "INT" || $mod == "UZURI" || $mod == "FACEDOWN") return false;
+  if ($mod == "INT" || $mod == "NTINT" || $mod == "UZURI" || $mod == "FACEDOWN") return false;
   if(ColorContains($cardID, 3, $otherPlayer) && (SearchCurrentTurnEffects("MST001", $player) || SearchCurrentTurnEffects("MST002", $player))) return true;
   if($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer" || $mod == "TCCGorgonsGaze") return true;
   else return false;
