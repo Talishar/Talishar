@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) gd
 
-RUN docker-php-ext-install zip mysqli pdo pdo_mysql opcachevim  bz2
+RUN docker-php-ext-install zip mysqli pdo pdo_mysql opcache bz2
 
 RUN apt-get update && apt-get install -y vim # Text Editor for manual edits
 
@@ -35,3 +35,5 @@ RUN pecl install xdebug \
     && docker-php-ext-enable xdebug # Debugger
 
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+
+RUN a2enmod proxy proxy_http proxy_wstunnel
