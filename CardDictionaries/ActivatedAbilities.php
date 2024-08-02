@@ -16,7 +16,7 @@ function AAZAbilityHasGoAgain($cardID)
   global $CombatChain;
   switch($cardID)
   {
-    case "AAZ004": return true;
+    case "AAZ004": case "AAZ006": return true;
     default: return false;
   }
 }

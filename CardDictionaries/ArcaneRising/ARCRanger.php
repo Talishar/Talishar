@@ -109,14 +109,14 @@
     return "";
   }
 
-  function LoadArrow($player, $facing = "UP")
+  function LoadArrow($player, $facing = "UP", $counters = 0)
   {
     if(ArsenalFull($player))
     {
       AddDecisionQueue("PASSPARAMETER", $player, "PASS");//Pass any subsequent load effects
       return "Your arsenal is full, you cannot put an arrow in arsenal";
     }
-    MZMoveCard($player, "MYHAND:subtype=Arrow", "MYARS,HAND," . $facing, may:true, silent:true);
+    MZMoveCard($player, "MYHAND:subtype=Arrow", "MYARS,HAND," . $facing . "," .$counters, may:true, silent:true);
   }
 
   function Reload($player=0)

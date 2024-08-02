@@ -333,8 +333,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "TURNARSENALFACEUP":
       $arsenal = &GetArsenal($player);
-      $arsenal[$lastResult+1] = "UP";
-      return $lastResult;
+      $arsenal[$parameter+1] = "UP";
+      return $parameter;
     case "REMOVEARSENAL":
       $index = $lastResult;
       $arsenal = &GetArsenal($player);
