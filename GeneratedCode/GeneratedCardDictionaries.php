@@ -8247,6 +8247,24 @@ default: return 0;
 }
 default: return 0;
 }
+case "A":
+switch($cardID[2]) {
+case "Z":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "1":
+switch($cardID[5]) {
+case "6":
+return 4;
+default: return 0;
+}
+default: return 0;
+}
+default: return 0;
+}
+default: return 0;
+}
 default: return 0;
 }
 case "R":
@@ -18299,6 +18317,12 @@ case "2":
 switch($cardID[5]) {
 case "4":
 return "Line It Up";
+default: return "";
+}
+case "1":
+switch($cardID[5]) {
+case "6":
+return "Stone Rain";
 default: return "";
 }
 default: return "";
@@ -39731,6 +39755,12 @@ case "4":
 return "Head";
 default: return "";
 }
+case "1":
+switch($cardID[5]) {
+case "6":
+return "Arrow";
+default: return "";
+}
 default: return "";
 }
 default: return "";
@@ -43738,6 +43768,12 @@ default: return "C";
 case "2":
 switch($cardID[5]) {
 case "4":
+return "M";
+default: return "C";
+}
+case "1":
+switch($cardID[5]) {
+case "6":
 return "M";
 default: return "C";
 }
@@ -49613,6 +49649,12 @@ default: return "NONE";
 case "2":
 switch($cardID[5]) {
 case "4":
+return "RANGER";
+default: return "NONE";
+}
+case "1":
+switch($cardID[5]) {
+case "6":
 return "RANGER";
 default: return "NONE";
 }
@@ -61391,6 +61433,7 @@ case "ELE082": return "false";
 case "ELE083": return "false";
 case "ELE084": return "false";
 case "UPR100": return "false";
+case "AAZ016": return "false";
 case "WTR072": return "false";
 case "WTR073": return "false";
 case "WTR074": return "false";
