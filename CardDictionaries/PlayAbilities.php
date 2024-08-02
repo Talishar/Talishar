@@ -9,7 +9,7 @@ function AKOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     default: return "";
   }
-} 
+}
 
 function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
@@ -23,13 +23,16 @@ function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     default: return "";
   }
-} 
+}
 
 function AAZPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer;
   switch($cardID) {
     case "AAZ004": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
+    case "AAZ006":
+        LoadArrow($currentPlayer, "UP", 1);
+        return "";
     case "AAZ024":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $arsenal = &GetArsenal($currentPlayer);
@@ -37,7 +40,6 @@ function AAZPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if($arsenal[$i+1] == "DOWN") {
           AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_turn_your_arsenal_face_up");
           AddDecisionQueue("NOPASS", $currentPlayer, "-");
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $i, 1);
           AddDecisionQueue("TURNARSENALFACEUP", $currentPlayer, $i, 1);
           AddDecisionQueue("ADDAIMCOUNTER", $currentPlayer, $i, 1);
         }
@@ -74,12 +76,12 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "MST004": 
+    case "MST004":
       AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
       AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card to banish", 1);
       AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-      AddDecisionQueue("BANISHCARD", $otherPlayer, "HAND,-,".$cardID, 1);  
+      AddDecisionQueue("BANISHCARD", $otherPlayer, "HAND,-,".$cardID, 1);
       return "";
     case "MST006":
       AddPlayerHand("MST023", $currentPlayer, $cardID); //Fang Strike
@@ -131,11 +133,11 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         {
           switch($modes[$i])
           {
-            case "Create_a_Fang_Strike_and_Slither": 
+            case "Create_a_Fang_Strike_and_Slither":
               AddPlayerHand("MST023", $currentPlayer, $cardID); //Fang Strike
               AddPlayerHand("MST024", $currentPlayer, $cardID); //Slither
               break;
-            case "Banish_up_to_2_cards_in_an_opposing_hero_graveyard": 
+            case "Banish_up_to_2_cards_in_an_opposing_hero_graveyard":
               AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
               AddDecisionQueue("MULTICHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
               AddDecisionQueue("MULTIREMOVEDISCARD", $otherPlayer, "-", 1);
@@ -151,7 +153,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST011": case "MST012": case "MST013":
       if(GetClassState($currentPlayer, $CS_Transcended) <= 0) AddCurrentTurnEffect($cardID."-1", $currentPlayer);
       else AddCurrentTurnEffect($cardID."-2", $currentPlayer);
-      return "";  
+      return "";
     case "MST014": case "MST015": case "MST016":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if(SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("MST024", $currentPlayer, $cardID); //Slither
@@ -174,20 +176,20 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST020": case "MST021": case "MST022":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if(SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("MST023", $currentPlayer, $cardID); //Fang Strike
-      return "";  
+      return "";
     case "MST023": case "MST024":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";  
-    case "MST025": case "MST026": 
+      return "";
+    case "MST025": case "MST026":
       PlayAura("MON104", $currentPlayer, 1, numAttackCounters:1);
       return "";
     case "MST027":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "MST029": 
+    case "MST029":
       MZMoveCard($currentPlayer, "MYDISCARD:subtype=Aura", "MYBOTDECK");
       return "";
-    case "MST030": 
+    case "MST030":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasWard=true", 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target aura");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -201,7 +203,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           switch($modes[$i])
           {
             case "Create_2_Spectral_Shield": PlayAura("MON104", $currentPlayer, 2); break;
-            case "Put_a_+1_counter_on_each_aura_with_ward_you_control": 
+            case "Put_a_+1_counter_on_each_aura_with_ward_you_control":
               AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasWard=true", 1);
               AddDecisionQueue("ADDALLATTACKCOUNTERS", $currentPlayer, "1", 1);
               break;
@@ -215,7 +217,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_Transcended) <= 0) AddCurrentTurnEffect($cardID."-1", $currentPlayer);
       else AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       return "";
-    case "MST046": case "MST047": 
+    case "MST046": case "MST047":
       AddPlayerHand("DYN065", $currentPlayer, "NA");
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:comboOnly=true", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -223,7 +225,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       return "";
-    case "MST048": 
+    case "MST048":
       PlayAura("CRU075", $currentPlayer); //Zen Token
       return "";
     case "MST051":
@@ -290,7 +292,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST076":
       $chiArray = explode(",", SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi"));
       $amountChiPitch = count($chiArray);
-      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") 
+      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "")
       {
         switch ($amountChiPitch) {
           case 1:
@@ -301,7 +303,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             break;
           case 3:
             $combatChainState[$CCS_LinkBaseAttack] = 20;
-            break;    
+            break;
           default:
             break;
         }
@@ -323,16 +325,16 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "MST078":
-      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") Draw($currentPlayer); 
+      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") Draw($currentPlayer);
       return "";
-    case "MST079": 
+    case "MST079":
       AddCurrentTurnEffect($cardID."-DEBUFF", $otherPlayer);
       if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") AddCurrentTurnEffect($cardID."-HITPREVENTION", $currentPlayer);
       return "";
     case "MST080":
       Draw($currentPlayer);
       Draw($currentPlayer);
-      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") Draw($currentPlayer); 
+      if(SearchCardList($additionalCosts, $currentPlayer, subtype:"Chi") != "") Draw($currentPlayer);
       return "";
     case "MST084": case "MST085": case "MST086":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -355,7 +357,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST096":
       GainHealth(1, $currentPlayer);
       if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST496,".$from);
-      return "";    
+      return "";
     case "MST097":
       $params = explode("-", $target);
       $index = SearchdiscardForUniqueID($params[1], $otherPlayer);
@@ -363,7 +365,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRDISCARD-".$index, 1);
         AddDecisionQueue("MZADDZONE", $currentPlayer, "THEIRBANISH,GY,-,".$cardID, 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST497,".$from);  
+        if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST497,".$from);
       }
       else {
         WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect and this card does not transcend.");
@@ -409,7 +411,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "JUSTANICK", 1);
       return "";
-    case "MST132": 
+    case "MST132":
       if($from != "PLAY")
       {
         $illusionistAuras = SearchAura($currentPlayer, class:"ILLUSIONIST");
@@ -423,7 +425,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if($from != "PLAY"){
         $count = CountAuraAtkCounters($currentPlayer)+10; //+10 is an arbitrary number to keep the loop going until the player pass
-        for($i=0; $i < $count; $i++) { 
+        for($i=0; $i < $count; $i++) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasAttackCounters=true", 1);
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 attack counter or pass", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -455,7 +457,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $target, 1);
       AddDecisionQueue("MZADDCOUNTERS", $currentPlayer, $amount, 1);
       return "";
-    case "MST146": case "MST147": case "MST148": 
+    case "MST146": case "MST147": case "MST148":
       if($from != "PLAY") {
         $auras = &GetAuras($currentPlayer);
         $illusionistAuras = SearchAura($currentPlayer, class:"ILLUSIONIST");
@@ -469,26 +471,26 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
-    case "MST149": case "MST150": case "MST151": 
+    case "MST149": case "MST150": case "MST151":
       if($from != "PLAY") {
         $illusionistAuras = SearchAura($currentPlayer, class:"ILLUSIONIST");
         $arrayAuras = explode(",", $illusionistAuras);
-        if(count($arrayAuras) <= 1) PlayAura("MON104", $currentPlayer);  
+        if(count($arrayAuras) <= 1) PlayAura("MON104", $currentPlayer);
       }
       return "";
-    case "MST152": case "MST153": case "MST154":  
+    case "MST152": case "MST153": case "MST154":
       if(SearchAura($currentPlayer, class:"ILLUSIONIST") != "") $amount = 0;
       else if ($cardID == "MST152") $amount = 3;
       else if($cardID == "MST153") $amount = 2;
-      else if ($cardID == "MST154") $amount = 1;  
+      else if ($cardID == "MST154") $amount = 1;
       PlayAura("MON104", $currentPlayer, numAttackCounters:$amount);
       return "";
     case "MST159":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";  
+      return "";
     case "MST161":
       if(ComboActive()) AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";  
+      return "";
     case "MST162":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "MAUL", 1);
@@ -517,7 +519,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "MST198":
       if($additionalCosts != "-") AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;  
+      break;
     case "MST199":
       if($additionalCosts != "-") AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
@@ -549,14 +551,14 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $cardList = SearchItemsByName($currentPlayer, "Hyper Driver");
       $countHyperDriver = count(explode(",", $cardList));
       if($resourcesPaid > $countHyperDriver) $resourcesPaid = $countHyperDriver;
-      for($i=0; $i < $resourcesPaid; $i++) { 
+      for($i=0; $i < $resourcesPaid; $i++) {
         if($i==0){
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=ARC036");
           AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         }
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . $resourcesPaid . " Hyper Driver to get " . $resourcesPaid . " steam counter", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "{0}", 1);
-        AddDecisionQueue("SUPERCELL", $currentPlayer, $resourcesPaid, 1);  
+        AddDecisionQueue("SUPERCELL", $currentPlayer, $resourcesPaid, 1);
       }
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "EVO234", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, $resourcesPaid, 1);
@@ -1013,7 +1015,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       case "TCC065":
         GainHealth(1, $otherPlayer);
         return "";
-      case "TCC066": 
+      case "TCC066":
         PlayAura("HVY242", $otherPlayer);
         return "";
       case "TCC067":
@@ -1454,7 +1456,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       default: return "";
     }
   }
-  
+
   function PhantomTidemawDestroy($player = -1, $index = -1)
 {
     global $mainPlayer;
@@ -1464,7 +1466,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
 
     if($index == -1) {
-        for($i=0; $i < count($auras); $i++) { 
+        for($i=0; $i < count($auras); $i++) {
             if(isset($auras[$i*AuraPieces()]) && $auras[$i*AuraPieces()] == "EVO244") {
                 ++$auras[$i*AuraPieces()+3];
             }

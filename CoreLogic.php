@@ -247,7 +247,6 @@ function ArsenalStartTurnAbilities()
         if($arsenal[$i+1] == "DOWN") {
           AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_turn_your_mentor_face_up");
           AddDecisionQueue("NOPASS", $mainPlayer, "-");
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, $i, 1);
           AddDecisionQueue("TURNARSENALFACEUP", $mainPlayer, $i, 1);
         }
         break;
