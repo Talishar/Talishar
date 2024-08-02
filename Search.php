@@ -138,7 +138,7 @@ function SearchInner(
   if (!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
   for ($i = 0; $i < count($array); $i += $count) {
     if($zone == "CHAR" && ($array[$i+1] == 0 || $array[$i+12] == "DOWN") && !$faceDown) continue;
-    if($zone == "BANISH" && ($array[$i+1] == "INT" || $array[$i+1] == "FACEDOWN")) continue;
+    if($zone == "BANISH" && ($array[$i+1] == "INT" || $array[$i+1] == "NTINT" || $array[$i+1] == "FACEDOWN")) continue;
     $cardID = $array[$i];
     if(!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
       if(($type == "" || CardType($cardID) == $type || ($type == "C" && CardType($cardID) == "D"))

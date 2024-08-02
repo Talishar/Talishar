@@ -871,12 +871,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (count($theirBanish) > 0) {
     echo ("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; top:" . GetZoneTop("THEIRBANISH") . ";'>");
     $mod = $theirBanish[count($theirBanish) - BanishPieces() + 1];
-    $card = $mod == "INT" || $mod == "UZURI" ? $TheirCardBack : $theirBanish[count($theirBanish) - BanishPieces()];
+    $card = $mod == "INT" || $mod == "NTINT" || $mod == "UZURI" ? $TheirCardBack : $theirBanish[count($theirBanish) - BanishPieces()];
     echo (Card($card, "concat", $cardSizeAura, 0, 0, 0, 0, controller: $otherPlayer));
 
     $theirBloodDeptCount = 0;
     for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
-      if (HasBloodDebt($theirBanish[$i]) && $theirBanish[$i + 1] != "INT") ++$theirBloodDeptCount;
+      if (HasBloodDebt($theirBanish[$i]) && ($theirBanish[$i + 1] != "INT" || $theirBanish[$i + 1] != "NTINT")) ++$theirBloodDeptCount;
     }
 
     if (TalentContains($theirCharacter[0], "SHADOW") || $theirBloodDeptCount > 0) {
@@ -1227,7 +1227,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (count($myBanish) > 0) {
     echo ("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; bottom:" . GetZoneBottom("MYBANISH") . ";'>");
     $mod = $myBanish[count($myBanish) - BanishPieces() + 1];
-    if ($playerID == 3) $card = ($mod == "INT" || $mod == "UZURI" ? $MyCardBack : $myBanish[count($myBanish) - BanishPieces()]);
+    if ($playerID == 3) $card = ($mod == "INT" || $mod == "NTINT" || $mod == "UZURI" ? $MyCardBack : $myBanish[count($myBanish) - BanishPieces()]);
     else $card = $myBanish[count($myBanish) - BanishPieces()];
     echo (Card($card, "concat", $cardSizeAura, 0, 0, 0, 0, controller: $playerID));
     echo ("<span title='Click to see your Banish Zone.' onclick='ShowPopup(\"myBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer;

@@ -48,6 +48,7 @@ function ProcessHitEffect($cardID, $from="-")
   else if($set == "HVY") return HVYHitEffect($cardID);
   else if($set == "AKO") return AKOHitEffect($cardID);
   else if($set == "MST") return MSTHitEffect($cardID, $from);
+  else if($set == "AAZ") return AAZHitEffect($cardID);
   else return -1;
 }
 

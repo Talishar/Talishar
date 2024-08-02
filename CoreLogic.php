@@ -715,6 +715,7 @@ function UnsetTurnBanish()
   $p2Banish->UnsetModifier("REMOVEGRAVEYARD");
   UnsetCombatChainBanish();
   ReplaceBanishModifier($defPlayer, "NT", "TT");
+  ReplaceBanishModifier($defPlayer, "NTINT", "INT");
   ReplaceBanishModifier($mainPlayer, "NTFromOtherPlayer", "TTFromOtherPlayer");
 }
 
