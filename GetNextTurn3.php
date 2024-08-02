@@ -547,7 +547,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $border = 0;
     }
     if ($myBanish[$i + 1] == "INT" || $myBanish[$i + 1] == "NTINT" && $playerID == 3) $cardID = "CardBack";
-    if ($myBanish[$i + 1] == "INT" || $myBanish[$i + 1] == "NTINT") $label = "Intimidated";
+    if ($myBanish[$i + 1] == "INT") $label = "Intimidated";
     array_push($playerBanishArr, JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label));
   }
   $response->playerBanish = $playerBanishArr;
