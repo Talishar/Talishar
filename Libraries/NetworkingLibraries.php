@@ -1074,7 +1074,7 @@ function ResolveCombatDamage($damageDone)
     }
     for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
       if ($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
-      if (IsCombatEffectActive($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) { 
+      if (IsCombatEffectActive($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
           AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
       }
     }
@@ -1084,7 +1084,7 @@ function ResolveCombatDamage($damageDone)
   }
   $character = &GetPlayerCharacter($mainPlayer);
   $charID = $character[0];
-  $charID = ShiyanaCharacter($charID);    
+  $charID = ShiyanaCharacter($charID);
   if(HasStealth($combatChain[0]) && ($charID == "MST001" || $charID == "MST002") && $character[1] < 3) NuuStaticAbility($combatChain[0]);
   $currentPlayer = $mainPlayer;
   ProcessDecisionQueue(); //Any combat related decision queue logic should be main player gamestate
@@ -1572,7 +1572,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
       if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains(CardSubType($cardID), "Aura") && CardCost($cardID) <= 0 && SearchCurrentTurnEffects("MST157-INST", $currentPlayer, true)) {
         AddCurrentTurnEffect("MST157", $currentPlayer);
-      } 
+      }
       CombatChainPlayAbility($cardID);
       ItemPlayAbilities($cardID, $from);
       ResetCardPlayed($cardID);
@@ -1716,7 +1716,7 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
-    case "MST097": 
+    case "MST097":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target card");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -1862,14 +1862,14 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243-1", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "HVY176-PAID", 1);
       break;
-    case "MST131": 
+    case "MST131":
       $count = CountAuraAtkCounters($currentPlayer);
       if($from != "PLAY" && $count >= 3) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasAttackCounters=true");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 attack counter or pass");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-");
         AddDecisionQueue("MZOP", $currentPlayer, "REMOVEATKCOUNTER", 1);
-        for ($i=0; $i < 2; $i++) { 
+        for ($i=0; $i < 2; $i++) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasAttackCounters=true", 1);
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 attack counter", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -1878,7 +1878,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       }
       return "";
-    case "HER117": 
+    case "HER117":
       $char = &GetPlayerCharacter($currentPlayer);
       $numCounters = $char[2];
       $costChoices = "0";
@@ -2425,7 +2425,7 @@ function PayAdditionalCosts($cardID, $from)
       else {
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
-        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);  
+        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
       }
       break;
     case "HVY105":
@@ -2451,12 +2451,12 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 1 mode");
         AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-" . $modalities);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);  
+        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       }
       else {
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
-        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);  
+        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
       }
       break;
     case "MST032":
@@ -2471,7 +2471,7 @@ function PayAdditionalCosts($cardID, $from)
       else {
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
-        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);  
+        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
       }
       break;
     case "MST053":
@@ -2486,7 +2486,7 @@ function PayAdditionalCosts($cardID, $from)
       else {
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
-        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);  
+        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
       }
       break;
     case "MST197": case "MST198": case "MST199":
@@ -2517,6 +2517,11 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "ASB025":
       Charge();
+      break;
+    case "AAZ005":
+      if(ArsenalHasFaceDownCard($currentPlayer)) {
+         SetArsenalFacing("UP", $currentPlayer);
+      }
       break;
     default:
       break;

@@ -43,6 +43,9 @@ function AAZPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "AAZ005":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      GainResources($currentPlayer, 1); return "";
     default: return "";
   }
 }
