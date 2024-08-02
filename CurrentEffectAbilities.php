@@ -106,7 +106,7 @@ function EffectHitEffect($cardID, $from)
       break;
     case "ELE066-TRIGGER":
       if(HasIncreasedAttack()) Draw($mainPlayer);
-      break;  
+      break;
     case "ELE092-BUFF":
       if(IsHeroAttackTarget()) DamageTrigger($defPlayer, 3, "ATTACKHIT");
       break;
@@ -424,7 +424,7 @@ function RemoveEffectsOnChainClose()
       case "HVY256"://Coercive Tendency
       case "MST159": //Tiger Taming
       case "MST161"://Chase the Tail
-      case "MST185": case "MST186": case "MST187": //Untamed 
+      case "MST185": case "MST186": case "MST187": //Untamed
       case "MST190": //Stonewall Gauntlet
       case "MST212": case "MST213": case "MST214": //Water the Seeds
         $remove = 1;
@@ -506,7 +506,7 @@ function OnAttackEffects($attack)
           if(PitchValue($attack) == 3) {
             Draw($mainPlayer);
             $remove = true;
-          }  
+          }
         default:
           break;
       }
@@ -584,45 +584,45 @@ function CurrentEffectCostModifiers($cardID, $from)
           if(IsStaticType(CardType($cardID), $from, $cardID) && DelimStringContains(CardSubType($cardID), "Staff")) { $costModifier -= 3; $remove = true; }
           break;
         case "OUT011":
-          if(CardType($cardID) == "AR") { 
-            $costModifier -= 1; 
-            $remove = true; 
+          if(CardType($cardID) == "AR") {
+            $costModifier -= 1;
+            $remove = true;
           }
           break;
         case "OUT179_1":
-          if(CardType($cardID) == "AA") { 
-            $costModifier -= 1; 
-            $remove = true; 
+          if(CardType($cardID) == "AA") {
+            $costModifier -= 1;
+            $remove = true;
           }
           break;
         case "DTD004":
-          if(CardType($cardID) == "C") { 
-            $costModifier -= 2; 
-            $remove = true; 
+          if(CardType($cardID) == "C") {
+            $costModifier -= 2;
+            $remove = true;
           }
           break;
         case "DTD212":
-          if(CardType($cardID) == "AA" && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) { 
-            $costModifier -= CountAura("ARC112", $currentPlayer); 
-            $remove = true; 
+          if(CardType($cardID) == "AA" && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) {
+            $costModifier -= CountAura("ARC112", $currentPlayer);
+            $remove = true;
           }
           break;
         case "TCC038": case "TCC043":
           if(ClassContains($cardID, "GUARDIAN", $currentPlayer) && CardType($cardID) == "AA") $costModifier -= 1;
           break;
         case "EVO435":
-          if(TypeContains($cardID, "W", $currentPlayer)) { 
-            $costModifier -= 1; 
-            $remove = true; 
+          if(TypeContains($cardID, "W", $currentPlayer)) {
+            $costModifier -= 1;
+            $remove = true;
           }
           break;
         case "AKO004":
           if(CardType($cardID) == "AA" && ModifiedAttackValue($cardID, $currentPlayer, $from) >= 6) $costModifier -= 1;
           break;
         case "MST229":
-          if(CardType($cardID) == "AA") { 
-            $costModifier -= 1; 
-            $remove = true; 
+          if(CardType($cardID) == "AA") {
+            $costModifier -= 1;
+            $remove = true;
           }
           break;
         case "ROGUE803":
@@ -654,19 +654,19 @@ function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
           $damage += 1;
           $remove = true;
           break;
-        case "MST137": 
+        case "MST137":
           if (PitchValue($source) == 1) {
             $damage = 0;
             RemoveCurrentTurnEffect($i);
           }
           return $damage;
-        case "MST138": 
+        case "MST138":
           if (PitchValue($source) == 2) {
             $damage = 0;
             RemoveCurrentTurnEffect($i);
           }
           return $damage;
-        case "MST139": 
+        case "MST139":
           if (PitchValue($source) == 3) {
             $damage = 0;
             RemoveCurrentTurnEffect($i);
@@ -1312,12 +1312,12 @@ function IsCombatEffectPersistent($cardID)
 
 function BeginEndPhaseEffects()
 {
-  global $currentTurnEffects, $mainPlayer, $EffectContext;
+  global $currentTurnEffects, $mainPlayer, $EffectContext, $defPlayer;
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     $EffectContext = $currentTurnEffects[$i];
     switch($currentTurnEffects[$i]) {
       case "EVR106":
-        if(CountAura("ARC112", $mainPlayer) > 0) 
+        if(CountAura("ARC112", $mainPlayer) > 0)
         {
           WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " destroyed your Runechant tokens");
           DestroyAllThisAura($currentTurnEffects[$i + 1], "ARC112");
@@ -1326,6 +1326,15 @@ function BeginEndPhaseEffects()
       case "UPR200": case "UPR201": case "UPR202":
         Draw($currentTurnEffects[$i + 1], false);
         break;
+      case "AAZ005":
+          $attackCharIndex = FindCharacterIndex($mainPlayer, "AAZ005");
+          $defendCharIndex = FindCharacterIndex($defPlayer, "AAZ005");
+          if($attackCharIndex > -1) {
+              DestroyCharacter($mainPlayer, $attackCharIndex);
+          } elseif ($defendCharIndex > -1) {
+              DestroyCharacter($defPlayer, $defendCharIndex);
+          }
+          break;
       default:
         break;
     }

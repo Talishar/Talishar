@@ -5,6 +5,7 @@ function AAZAbilityType($cardID, $index=-1, $from="-")
   switch($cardID)
   {
     case "AAZ004": return "A";
+    case "AAZ005": return "I";
     case "AAZ007": return "AR";
     default: return "";
   }
