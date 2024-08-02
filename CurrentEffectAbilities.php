@@ -351,6 +351,7 @@ function EffectAttackModifier($cardID)
   else if($set == "MST") return MSTEffectAttackModifier($cardID);
   else if($set == "ROG") return ROGUEEffectAttackModifier($cardID);
   else if($set == "AAZ") return AAZEffectAttackModifier($cardID);
+  else if($set == "TER") return TEREffectAttackModifier($cardID);
   return 0;
 }
 
@@ -1243,6 +1244,7 @@ function IsCombatEffectActive($cardID, $defendingCard="", $SpectraTarget=false)
   else if($set == "MST") return MSTCombatEffectActive($cardID, $cardToCheck);
   else if($set == "ROG") return ROGUECombatEffectActive($cardID, $cardToCheck);
   else if($set == "AAZ") return AAZCombatEffectActive($cardID, $cardToCheck);
+  else if($set == "TER") return TERCombatEffectActive($cardID, $cardToCheck);
   switch($cardID)
   {
     case "LGS180": return DTDCombatEffectActive($cardID, $cardToCheck);
