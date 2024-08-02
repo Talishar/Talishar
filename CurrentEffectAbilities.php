@@ -1101,6 +1101,7 @@ function CurrentEffectGrantsGoAgain()
         case "MST094": return true;
         case "MST236-2": return true;
         case "ROGUE710-GA": return true;
+        case "AAZ007": return true;
         default:
           break;
       }
