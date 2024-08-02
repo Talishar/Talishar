@@ -232,7 +232,7 @@
       $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
       $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
       $mod = explode("-", $banish[$i+1])[0];
-      if($mod == "INT") $rv .= Card($banish[$i], "CardImages", $size, 0, 1, 1);//Display intimidated cards grayed out and unplayable
+      if($mod == "INT" || $mod == "NTINT") $rv .= Card($banish[$i], "CardImages", $size, 0, 1, 1);//Display intimidated cards grayed out and unplayable
       else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119")
         $rv .= Card($banish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
       else if($from != "HAND")

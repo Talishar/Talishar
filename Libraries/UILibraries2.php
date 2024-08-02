@@ -745,7 +745,7 @@ function BanishUI($from = "")
     $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
     $mod = explode("-", $banish[$i + 1])[0];
     $border = CardBorderColor($banish[$i], "BANISH", $action > 0, $mod);
-    if ($mod == "INT") $rv .= Card($banish[$i], "concat", $size, 0, 1, 1); //Display intimidated cards grayed out and unplayable
+    if ($mod == "INT" || $mod == "NTINT") $rv .= Card($banish[$i], "concat", $size, 0, 1, 1); //Display intimidated cards grayed out and unplayable
     else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119" || $mod == "MST236")
       $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i)); //Display banished cards that are playable
     else // if($from != "HAND")
@@ -769,7 +769,7 @@ function BanishUIMinimal($from = "")
     $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
     $mod = explode("-", $banish[$i + 1])[0];
     $border = CardBorderColor($banish[$i], "BANISH", $action > 0, $mod);
-    if ($mod == "INT") {
+    if ($mod == "INT" || $mod == "NTINT") {
       if ($rv != "") $rv .= "|";
       if ($playerID == 3) ClientRenderedCard(cardNumber: $MyCardBack, overlay: 1, controller: $playerID);
       else $rv .= ClientRenderedCard(cardNumber: $banish[$i], overlay: 1, controller: $playerID);
@@ -794,7 +794,7 @@ function TheirBanishUIMinimal($from = "")
   $banish = GetBanish($otherPlayer);
   for ($i = 0; $i < count($banish); $i += BanishPieces()) {
     $mod = explode("-", $banish[$i + 1])[0];
-    if ($mod == "INT") {
+    if ($mod == "INT" || $mod == "NTINT") {
       if ($rv != "") $rv .= "|";
       $rv .= ClientRenderedCard(cardNumber: $TheirCardBack, overlay: 1, controller: $playerID);
     } else {
@@ -920,7 +920,7 @@ function GetTheirBanishForDisplay($playerID)
   $TheirCardBack = GetCardBack($playerID == 1 ? 2 : 1);
   $banish = array();
   for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
-    if ($theirBanish[$i + 1] == "INT" || $theirBanish[$i + 1] == "UZURI") array_push($banish, $TheirCardBack);
+    if ($theirBanish[$i + 1] == "INT" || $theirBanish[$i + 1] == "NTINT" || $theirBanish[$i + 1] == "UZURI") array_push($banish, $TheirCardBack);
     else array_push($banish, $theirBanish[$i]);
   }
   return $banish;
@@ -932,7 +932,7 @@ function GetMyBanishForDisplay($playerID)
   $myCardBack = GetCardBack($playerID == 1 ? 1 : 2);
   $banish = array();
   for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
-    if ($myBanish[$i + 1] == "INT" || $myBanish[$i + 1] == "UZURI") array_push($banish, $myCardBack);
+    if ($myBanish[$i + 1] == "INT" || $myBanish[$i + 1] == "NTINT" || $myBanish[$i + 1] == "UZURI") array_push($banish, $myCardBack);
     else array_push($banish, $myBanish[$i]);
   }
   return $banish;

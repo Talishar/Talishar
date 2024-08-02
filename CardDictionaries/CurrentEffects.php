@@ -10,8 +10,9 @@ function AAZEffectAttackModifier($cardID)
 function AAZCombatEffectActive($cardID, $attackID)
 {
   switch ($cardID) {
-    case "AAZ024": return CardSubType($attackID) == "Arrow";
+    case "AAZ024": case "AAZ007": return CardSubType($attackID) == "Arrow";
     case "AAZ004": return CardSubType($attackID) == "Arrow" && HasAimCounter();
+    case "AAZ016": return true;
     default: return false;
   }
 }
@@ -124,7 +125,6 @@ function MSTCombatEffectActive($cardID, $attackID)
     case "MST232": return CardSubType($attackID) == "Arrow";
     case "MST233": return true;
     case "MST236-1": case "MST236-2": return true;
-    case "AAZ007": return CardSubType($attackID) == "Arrow";
     default: return false;
   }
 }
