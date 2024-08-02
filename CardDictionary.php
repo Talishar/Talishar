@@ -1334,6 +1334,7 @@ function HasBattleworn($cardID)
     case "MST006": case "MST007": return true;
     case "MST232": return true;
     case "AKO005": return true;
+    case "AAZ007": return true;
     default: return false;
   }
 }
