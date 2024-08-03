@@ -1,5 +1,15 @@
 <?php
 
+function AAZAbilityType($cardID, $index = -1, $from = "-")
+{
+  return match ($cardID) {
+    "AAZ004", "AAZ006" => "A",
+    "AAZ005" => "I",
+    "AAZ007" => "AR",
+    default => "",
+  };
+}
+
 function AAZAbilityHasGoAgain($cardID)
 {
   return match ($cardID) {
