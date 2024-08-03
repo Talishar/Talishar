@@ -1245,6 +1245,7 @@ function IsCombatEffectActive($cardID, $defendingCard="", $SpectraTarget=false)
   else if($set == "ROG") return ROGUECombatEffectActive($cardID, $cardToCheck);
   else if($set == "AAZ") return AAZCombatEffectActive($cardID, $cardToCheck);
   else if($set == "AUR" || $set == "TER") return FSCombatEffectActive($cardID, $cardToCheck);
+
   switch($cardID)
   {
     case "LGS180": return DTDCombatEffectActive($cardID, $cardToCheck);

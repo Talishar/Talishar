@@ -328,6 +328,7 @@ function AbilityCost($cardID)
   else if($set == "MST") return MSTAbilityCost($cardID);
   else if($set == "ROG") return ROGUEAbilityCost($cardID);
   else if($set == "ROS") return ROSAbilityCost($cardID);
+  else if($set == "TER") return TERAbilityCost($cardID);
   else if($cardID == "HER117") return 0;
   return CardCost($cardID);
 }
@@ -504,6 +505,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
   else if($set == "ROS") return ROSAbilityType($cardID, $index);
   else if($set == "ASB") return ASBAbilityType($cardID, $index);
+  else if($set == "TER") return TERAbilityType($cardID, $index);
   else if($cardID == "HER117") return "I";
 }
 
@@ -1981,6 +1983,7 @@ function CardCaresAboutPitch($cardID)
 		case "DYN185": case "DYN186": case "DYN187":
     case "MST008": case "MST031": case "MST052": 
     case "MST076": case "MST078": case "MST079": case "MST080":
+    case "TER002":
       return true;
     default: return false;
   }
