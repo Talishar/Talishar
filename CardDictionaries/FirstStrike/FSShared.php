@@ -1,6 +1,6 @@
 <?php
 
-function FSEndTurnAbility($characterID, $player)
+function TerraEndFaseAbility($characterID, $player)
 {
     $resources = &GetResources($player);
     $hand = &GetHand($player);
