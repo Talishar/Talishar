@@ -1294,6 +1294,7 @@ function DoesAttackHaveGoAgain()
   global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_Num6PowDisc;
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
   global $CS_NumItemsDestroyed, $CS_PlayIndex, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
+  global $CS_NumLightningPlayed;
   if(!$CombatChain->HasCurrentLink()) return false;
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
@@ -1371,6 +1372,8 @@ function DoesAttackHaveGoAgain()
     case "HVY166": case "HVY167": case "HVY168":
       return GetClassState($mainPlayer, $CS_NumCardsDrawn) > 0;
     case "MST176": case "MST177": case "MST178": return ComboActive($attackID);
+    case "AUR011": case "AUR024":
+      return GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0;
     default: return false;
   }
 }
