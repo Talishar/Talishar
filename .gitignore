@@ -25,7 +25,7 @@ CardDictionaries/.DS_Store
 Roguelike/HostFiles
 RogueLike/Games
 /mysql-data/
-/ApiKeys/ApiKeys.php
-/ApiKeys/APIKeys.php
+/APIKeys/ApiKeys.php
+/APIKeys/APIKeys.php
 BugReports/CreateGameFailsafe.txt
 .idea
