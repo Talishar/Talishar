@@ -184,7 +184,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "MST127": case "MST128": case "MST129": return NumAttackReactionsPlayed() > 0 ? 1 : 0;
     case "MST191": return (CachedNumActionBlocked() > 0 ? 2 : 0);
     case "ROS031": return (SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:TALENT=EARTH")) >= 4 ? 4 : 0);
-      
     default: return 0;
   }
 }
