@@ -20,7 +20,7 @@ function TEREffectAttackModifier($cardID)
 {
   return match ($cardID) {
     "TER002" => 1,
-    default => 0,
+    default => 0
   };
 }
 
@@ -28,6 +28,6 @@ function TERCombatEffectActive($cardID)
 {
   return match ($cardID) {
     "TER002" => true,
-    default => false,
+    default => false
   };
 }

@@ -4,7 +4,7 @@ function TERAbilityCost($cardID)
 {
   return match ($cardID) {
     "TER002" => 3,
-    default => 0,
+    default => 0
   };
 }
 
