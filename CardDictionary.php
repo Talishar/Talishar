@@ -449,6 +449,26 @@ function AttackValue($cardID)
 function HasGoAgain($cardID)
 {
   $set = CardSet($cardID);
+
+  switch ($cardID) {// can be deleted after the database is updated
+    case "MST003": case "MST052":
+    case "MST054": case "MST055": case "MST056":
+    case "MST057": case "MST058": case "MST059":
+    case "MST060": case "MST061": case "MST062":
+    case "MST063": case "MST064": case "MST065":
+    case "MST092": case "MST093": case "MST094": 
+    case "MST152": case "MST153": case "MST154":
+    case "MST159":
+    case "MST173": case "MST174": case "MST175":
+    case "MST185": case "MST186": case "MST187":
+    case "MST193":
+    case "MST212": case "MST213": case "MST214":
+    case "AAZ024":
+    case "ROS033": case "ROS016":
+    case "AUR014": case "AUR021":
+      return true; 
+  }
+
   if($set == "ROG") return ROGUEHasGoAgain($cardID);
   else return GeneratedGoAgain($cardID);
 }
