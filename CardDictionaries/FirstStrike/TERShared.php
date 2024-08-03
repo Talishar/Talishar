@@ -1,6 +1,6 @@
 <?php
 
-function TerraEndFaseAbility($characterID, $player)
+function TerraEndPhaseAbility($characterID, $player)
 {
   $resources = &GetResources($player);
   $hand = &GetHand($player);
