@@ -1074,6 +1074,20 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   }
 }
 
+function FSPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
+{
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_DamagePrevention, $combatChain, $layers;
+    $rv = "";
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    switch($cardID)
+    {
+        case "AUR014": case "AUR021":
+            AddCurrentTurnEffect($cardID, $currentPlayer);
+            return "";
+        default: return "";
+    }
+}
+
 function TCCPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $mainPlayer, $currentPlayer, $defPlayer;

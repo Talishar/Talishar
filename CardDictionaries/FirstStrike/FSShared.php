@@ -15,3 +15,24 @@ function TerraEndTurnAbility($characterID, $player)
         AddDecisionQueue("PUTPLAY", $player, "-", 1);
     }
 }
+
+function FSEffectAttackModifier($cardID)
+{
+    switch($cardID)
+    {
+        case "AUR014": return 3;
+        case "AUR021": return 2;
+        default: return 0;
+    }
+}
+
+function FSCombatEffectActive($cardID, $attackID)
+{
+    global $mainPlayer;
+    switch($cardID)
+    {
+        case "AUR014": case "AUR021":
+            return TalentContainsAny($attackID, "LIGHTNING,ELEMENTAL",$mainPlayer);
+        default: return "";
+    }
+}
