@@ -1,6 +1,6 @@
 <?php
 
-function TEREndTurnAbility($characterID, $player)
+function FSEndTurnAbility($characterID, $player)
 {
     $resources = &GetResources($player);
     $hand = &GetHand($player);
@@ -16,7 +16,7 @@ function TEREndTurnAbility($characterID, $player)
     }
 }
 
-function AUREffectAttackModifier($cardID)
+function FSEffectAttackModifier($cardID)
 {
     switch($cardID)
     {
@@ -26,7 +26,7 @@ function AUREffectAttackModifier($cardID)
     }
 }
 
-function AURCombatEffectActive($cardID, $attackID)
+function FSCombatEffectActive($cardID, $attackID)
 {
     global $mainPlayer;
     switch($cardID)
