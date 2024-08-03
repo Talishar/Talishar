@@ -37,6 +37,7 @@ include "CardDictionaries/DuskTillDawn/DTDShared.php";
 include "CardDictionaries/Roguelike/ROGUEShared.php";
 include "CardDictionaries/FirstStrike/AURShared.php";
 include "CardDictionaries/FirstStrike/TERShared.php";
+include "CardDictionaries/PartTheMistveil/MSTShared.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
 include "GeneratedCode/DatabaseGeneratedCardDictionaries.php";
@@ -1498,7 +1499,6 @@ function AbilityHasGoAgain($cardID)
   else if($set == "EVO") return EVOAbilityHasGoAgain($cardID);
   else if($set == "HVY") return HVYAbilityHasGoAgain($cardID);
   else if($set == "AKO") return AKOAbilityHasGoAgain($cardID);
-  else if($set == "MST") return MSTAbilityHasGoAgain($cardID);
   else if($set == "AAZ") return AAZAbilityHasGoAgain($cardID);
   else if($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   switch($cardID) {

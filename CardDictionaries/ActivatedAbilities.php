@@ -49,38 +49,8 @@ function AKOAbilityType($cardID, $index = -1, $from = "-")
 
 function AKOAbilityHasGoAgain($cardID)
 {
-  global $CombatChain;
   return match ($cardID) {
     "AKO004" => true,
-    default => false
-  };
-}
-
-function MSTAbilityCost($cardID)
-{
-  return match ($cardID) {
-    "MST001", "MST004", "MST027", "MST026", "MST025", "MST048", "MST067", "MST047", "MST046", "MST238", "MST002" => 3,
-    "MST159", "MST003" => 2,
-    "MST006", "MST030", "MST029", "MST070", "MST069", "MST007" => 1,
-    default => 0
-  };
-}
-
-function MSTAbilityType($cardID, $index = -1, $from = "-")
-{
-  return match ($cardID) {
-    "MST001", "MST002", "MST025", "MST026", "MST027", "MST046", "MST047", "MST048", "MST029", "MST030", "MST067",
-    "MST071", "MST072", "MST073", "MST074", "MST133", "MST232", "MST238" => "I",
-    "MST003", "MST159" => "AA",
-    "MST004", "MST006", "MST007", "MST069", "MST070" => "AR",
-    default => ""
-  };
-}
-
-function MSTAbilityHasGoAgain($cardID)
-{
-  global $CombatChain;
-  return match ($cardID) {
     default => false
   };
 }
