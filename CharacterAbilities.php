@@ -403,7 +403,7 @@ function MainCharacterEndTurnAbilities()
         break;
       case "TER001":
         if($mainCharacter[$i+1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
-        TerraEndFaseAbility($characterID, $mainPlayer);
+        TerraEndPhaseAbility($characterID, $mainPlayer);
         break;
       default: break;
     }
@@ -415,7 +415,7 @@ function MainCharacterEndTurnAbilities()
     switch($characterID) {
       case "TER001":
         if($defCharacter[$i+1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
-        TerraEndFaseAbility($characterID, $defPlayer);
+        TerraEndPhaseAbility($characterID, $defPlayer);
         break;
       default: break;
     }
