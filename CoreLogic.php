@@ -2143,7 +2143,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   else if($set == "ASB") return ASBPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "AAZ") return AAZPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "ROS") return ROSPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-  else if($set == "AUR" || $set == "TER") return FSPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if($set == "TER") return TERPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if($set == "AUR") return FSPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else { 
     switch ($cardID) {
       case "LGS176": case "LGS177": case "LGS178":

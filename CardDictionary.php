@@ -35,7 +35,8 @@ include "CardDictionaries/Dynasty/DYNShared.php";
 include "CardDictionaries/Outsiders/OUTShared.php";
 include "CardDictionaries/DuskTillDawn/DTDShared.php";
 include "CardDictionaries/Roguelike/ROGUEShared.php";
-include "CardDictionaries/FirstStrike/FSShared.php";
+include "CardDictionaries/FirstStrike/AURShared.php";
+include "CardDictionaries/FirstStrike/TERShared.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
 include "GeneratedCode/DatabaseGeneratedCardDictionaries.php";
