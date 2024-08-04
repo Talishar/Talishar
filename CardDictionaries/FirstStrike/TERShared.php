@@ -31,3 +31,19 @@ function TERCombatEffectActive($cardID)
     default => false
   };
 }
+
+function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
+{
+  global $currentPlayer;
+  switch ($cardID) {
+    case "TER002":
+      if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "TER008":
+    case "TER014":
+      if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") PlayAura("HVY241", $currentPlayer);
+      return "";
+    default:
+      return "";
+  }
+}

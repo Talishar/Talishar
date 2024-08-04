@@ -1,17 +1,5 @@
 <?php
 
-function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
-{
-  global $currentPlayer;
-  switch ($cardID) {
-    case "TER002":
-      if(SearchCardList($additionalCosts, $currentPlayer, talent:"EARTH") != "") AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    default:
-      return "";
-  }
-}
-
 function AKOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer;

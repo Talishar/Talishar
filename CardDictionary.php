@@ -1973,21 +1973,15 @@ function AbilityPlayableFromCombatChain($cardID)
   }
 }
 
-function CardCaresAboutPitch($cardID)
+function CardCaresAboutPitch($cardID): bool
 {
   $cardID = ShiyanaCharacter($cardID);
-  switch($cardID) {
-    case "ELE001": case "ELE002": case "ELE003":
-    case "DYN172": case "DYN173": case "DYN174":
-    case "DYN176": case "DYN177": case "DYN178":
-		case "DYN182": case "DYN183": case "DYN184":
-		case "DYN185": case "DYN186": case "DYN187":
-    case "MST008": case "MST031": case "MST052": 
-    case "MST076": case "MST078": case "MST079": case "MST080":
-    case "TER002":
-      return true;
-    default: return false;
-  }
+  return match ($cardID) {
+    "ELE001", "ELE002", "ELE003", "DYN172", "DYN173", "DYN174", "DYN176", "DYN177", "DYN178", "DYN182", "DYN183",
+    "DYN184","DYN185", "DYN186", "DYN187", "MST008", "MST031", "MST052", "MST076", "MST078", "MST079", "MST080",
+    "TER002", "TER008", "TER014" => true,
+    default => false
+  };
 }
 
 function IsIyslander($character)
