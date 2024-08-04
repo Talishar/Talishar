@@ -1372,8 +1372,8 @@ function DoesAttackHaveGoAgain()
     case "HVY166": case "HVY167": case "HVY168":
       return GetClassState($mainPlayer, $CS_NumCardsDrawn) > 0;
     case "MST176": case "MST177": case "MST178": return ComboActive($attackID);
-    case "AUR011": case "AUR024":
-      return GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0;
+    case "AUR011": case "AUR024": case "ROS009":
+      return (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0);
     default: return false;
   }
 }
