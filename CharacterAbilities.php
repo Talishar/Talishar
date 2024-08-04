@@ -487,6 +487,11 @@ function MainCharacterHitTrigger()
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
+      case "AUR005":
+        if (IsHeroAttackTarget()) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+        }
+        break;
       case "ROGUE016":
         if(CardType($attackID) == "AA") {
           $deck = &GetDeck($mainPlayer);
