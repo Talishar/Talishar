@@ -1508,17 +1508,16 @@ function AbilityHasGoAgain($cardID)
   }
 }
 
-function DoesEffectGrantOverpower($cardID) {
+function DoesEffectGrantOverpower($cardID): bool
+{
   $cardID = ShiyanaCharacter($cardID);
-  switch($cardID) {
-    case "HVY045": case "HVY046": return true;
-    case "HVY059": return true;
-    case "HVY213": case "HVY214": case "HVY215": return true;
-    default: return false;
-  }
+  return match ($cardID) {
+    "HVY045", "HVY046", "HVY059", "HVY213", "HVY214", "HVY215", "TER011", "TER015" => true,
+    default => false,
+  };
 }
 
-function DoesEffectGrantDominate($cardID)
+function DoesEffectGrantDominate($cardID): bool
 {
   global $combatChainState, $CCS_AttackFused;
   $cardID = ShiyanaCharacter($cardID);
@@ -1984,7 +1983,7 @@ function CardCaresAboutPitch($cardID)
 		case "DYN185": case "DYN186": case "DYN187":
     case "MST008": case "MST031": case "MST052": 
     case "MST076": case "MST078": case "MST079": case "MST080":
-    case "TER002":
+    case "TER002": case "TER011": case "TER015":
       return true;
     default: return false;
   }
