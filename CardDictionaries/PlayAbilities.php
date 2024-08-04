@@ -15,10 +15,13 @@ function AURPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additional
         if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0){
           DealArcane(2, 0, "PLAYCARD", $cardID);
         }
-          return "";
+        return "";
       case "AUR014": case "AUR021":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-          return "";
+        return "";
+      case "AUR023":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       default: return "";
     }
 }
