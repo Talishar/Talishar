@@ -466,7 +466,8 @@ function HasGoAgain($cardID)
     case "MST193":
     case "MST212": case "MST213": case "MST214":
     case "AAZ024":
-    case "ROS033": case "ROS016":
+    case "ROS016": case "ROS033": 
+    case "ROS092": case "ROS093": case "ROS094":
     case "AUR014": case "AUR021":
       return true; 
   }
