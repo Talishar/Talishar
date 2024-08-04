@@ -65,7 +65,7 @@ function AAZPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $arsenal = &GetArsenal($currentPlayer);
       for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-        if ($arsenal[$i + 1] == "DOWN") {
+        if ($arsenal[$i + 1] == "DOWN" && ArsenalHasFaceDownArrowCard($currentPlayer)) {
           AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_turn_your_arsenal_face_up");
           AddDecisionQueue("NOPASS", $currentPlayer, "-");
           AddDecisionQueue("TURNARSENALFACEUP", $currentPlayer, $i, 1);
