@@ -224,4 +224,18 @@ function HVYHitEffect($cardID)
   }
 }
 
+function AURHitEffect($cardID)
+{
+  global $mainPlayer, $CS_NumLightningPlayed;
+  switch ($cardID) {
+    case "AUR012": case "AUR019":
+      if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0) {
+        DealArcane(1, 0, "PLAYCARD", $cardID, false, $mainPlayer);
+      }
+      break;
+    default:
+      break;
+  }
+}
+
 ?>

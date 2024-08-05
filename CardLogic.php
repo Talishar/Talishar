@@ -636,6 +636,7 @@ function AddOnHitTrigger($cardID)
     case "MST194": case "MST195": case "MST196":
     case "MST206": case "MST207": case "MST208":
     case "AAZ016":
+    case "AUR012": case "AUR019":
       if(IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     default:
@@ -825,6 +826,15 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target) {
         AddDecisionQueue("PUTPLAY", $player, "-", 1);
       }
       break;
+      case "AUR005":
+        $index = FindCharacterIndex($player, $cardID);
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Aether_Crackers_to_deal_one_arcane");
+        AddDecisionQueue("NOPASS", $player, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+        AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+        AddDecisionQueue("DEALARCANE", $player,  "1" . "-" . "AUR005" . "-" . "TRIGGER", 1);
+        AddDecisionQueue("WRITELOG", $player, "Aether Crackers was destroyed", 1);
+        break;
     default:
       break;
   }

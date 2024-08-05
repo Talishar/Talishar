@@ -1,5 +1,31 @@
 <?php
 
+function AURPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
+{
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumLightningPlayed;
+    $rv = "";
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    switch($cardID) {
+      case "AUR013":
+        if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0){
+          DealArcane(3, 0, "PLAYCARD", $cardID);
+        }
+        return "";
+      case "AUR020":
+        if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0){
+          DealArcane(2, 0, "PLAYCARD", $cardID);
+        }
+        return "";
+      case "AUR014": case "AUR021":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "AUR023":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      default: return "";
+    }
+}
+
 function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer;
@@ -498,20 +524,6 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     default:
       return "";
   }
-}
-
-function FSPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
-{
-    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_DamagePrevention, $combatChain, $layers;
-    $rv = "";
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    switch($cardID)
-    {
-        case "AUR014": case "AUR021":
-            AddCurrentTurnEffect($cardID, $currentPlayer);
-            return "";
-        default: return "";
-    }
 }
 
 function TCCPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")

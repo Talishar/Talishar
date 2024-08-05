@@ -154,6 +154,7 @@ function ROSAbilityType($cardID, $index = -1)
 {
   return match ($cardID) {
     "ROS008" => "I",
+    "ROS009" => "AA",
     default => ""
   };
 }
@@ -162,6 +163,7 @@ function ROSAbilityCost($cardID)
 {
   return match ($cardID) {
     "ROS008" => 2,
+    "ROS009" => 1,
     default => 0
   };
 }

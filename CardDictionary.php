@@ -466,7 +466,8 @@ function HasGoAgain($cardID)
     case "MST193":
     case "MST212": case "MST213": case "MST214":
     case "AAZ024":
-    case "ROS033": case "ROS016":
+    case "ROS016": case "ROS033": 
+    case "ROS092": case "ROS093": case "ROS094":
     case "AUR014": case "AUR021":
       return true; 
   }
@@ -1580,6 +1581,7 @@ function CharacterDefaultActiveState($cardID)
     case "EVO430": case "EVO431": case "EVO432": case "EVO433": return 1;
     case "AKO005": return 1;
     case "MST027": return 1;
+    case "AUR005": return 1;
     default: return 2;
   }
 }
