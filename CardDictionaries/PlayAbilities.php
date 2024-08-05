@@ -1,37 +1,25 @@
 <?php
 
-function AURPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
+function AURPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumLightningPlayed;
-    $rv = "";
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    switch($cardID) {
-      case "AUR013":
-        if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0){
-          DealArcane(3, 0, "PLAYCARD", $cardID);
-        }
-        return "";
-      case "AUR020":
-        if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0){
-          DealArcane(2, 0, "PLAYCARD", $cardID);
-        }
-        return "";
-      case "AUR014": case "AUR021":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
-      case "AUR023":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
-      default: return "";
-    }
-}
-
-function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
-{
-  global $currentPlayer;
+  global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumLightningPlayed;
+  $rv = "";
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
-    case "TER002": case "TER011": case "TER015":
-      if(SearchCardList($additionalCosts, $currentPlayer, talent:"EARTH") != "") AddCurrentTurnEffect($cardID, $currentPlayer);
+    case "AUR013":
+      if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0) {
+        DealArcane(3, 0, "PLAYCARD", $cardID);
+      }
+      return "";
+    case "AUR020":
+      if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0) {
+        DealArcane(2, 0, "PLAYCARD", $cardID);
+      }
+      return "";
+    case "AUR014":
+    case "AUR023":
+    case "AUR021":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     default:
       return "";
