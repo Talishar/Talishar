@@ -1980,7 +1980,7 @@ function CardCaresAboutPitch($cardID): bool
   return match ($cardID) {
     "ELE001", "ELE002", "ELE003", "DYN172", "DYN173", "DYN174", "DYN176", "DYN177", "DYN178", "DYN182", "DYN183",
     "DYN184","DYN185", "DYN186", "DYN187", "MST008", "MST031", "MST052", "MST076", "MST078", "MST079", "MST080",
-    "TER002", "TER008", "TER014", "TER018", "TER025" => true,
+    "TER002", "TER008", "TER014", "TER012", "TER016", "TER018", "TER025" => true,
     default => false
   };
 }

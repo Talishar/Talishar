@@ -1,29 +1,29 @@
 <?php
 
-function AURPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
+function AURPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumLightningPlayed;
-    $rv = "";
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    switch($cardID) {
-      case "AUR013":
-        if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0){
-          DealArcane(3, 0, "PLAYCARD", $cardID);
-        }
-        return "";
-      case "AUR020":
-        if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0){
-          DealArcane(2, 0, "PLAYCARD", $cardID);
-        }
-        return "";
-      case "AUR014": case "AUR021":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
-      case "AUR023":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
-      default: return "";
-    }
+  global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumLightningPlayed;
+  $rv = "";
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  switch ($cardID) {
+    case "AUR013":
+      if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0) {
+        DealArcane(3, 0, "PLAYCARD", $cardID);
+      }
+      return "";
+    case "AUR020":
+      if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0) {
+        DealArcane(2, 0, "PLAYCARD", $cardID);
+      }
+      return "";
+    case "AUR014":
+    case "AUR023":
+    case "AUR021":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    default:
+      return "";
+  }
 }
 
 function AKOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
