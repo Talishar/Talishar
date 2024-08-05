@@ -1580,7 +1580,7 @@ function CharacterDefaultActiveState($cardID)
     case "EVO430": case "EVO431": case "EVO432": case "EVO433": return 1;
     case "AKO005": return 1;
     case "MST027": return 1;
-    case "AUR005": return 1;
+    case "AUR005": case "TER006": return 1;
     default: return 2;
   }
 }
@@ -1980,7 +1980,7 @@ function CardCaresAboutPitch($cardID): bool
   return match ($cardID) {
     "ELE001", "ELE002", "ELE003", "DYN172", "DYN173", "DYN174", "DYN176", "DYN177", "DYN178", "DYN182", "DYN183",
     "DYN184","DYN185", "DYN186", "DYN187", "MST008", "MST031", "MST052", "MST076", "MST078", "MST079", "MST080",
-    "TER002", "TER008", "TER014", "TER012", "TER016" => true,
+    "TER002", "TER008", "TER014", "TER012", "TER016", "TER018", "TER025" => true,
     default => false
   };
 }
