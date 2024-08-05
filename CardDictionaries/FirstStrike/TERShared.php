@@ -19,7 +19,7 @@ function TerraEndPhaseAbility($characterID, $player): void
 function TEREffectAttackModifier($cardID): int
 {
   return match ($cardID) {
-    "TER002" => 1,
+    "TER002", "TER006" => 1,
     default => 0
   };
 }
@@ -27,7 +27,7 @@ function TEREffectAttackModifier($cardID): int
 function TERCombatEffectActive($cardID): bool
 {
   return match ($cardID) {
-    "TER002", "TER011", "TER015" => true,
+    "TER002", "TER011", "TER015", "TER006" => true,
     default => false
   };
 }

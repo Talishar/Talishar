@@ -1887,6 +1887,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "ROS077":
       Draw($player);
       break;
+    case "TER006":
+      $index = FindCharacterIndex($player, "TER006");
+      AddDecisionQueue("YESNO", $player, "to_destroy_Hard_Knuckle");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "TER006", 1);
+      break;
     default: break;
   }
 }
