@@ -37,6 +37,8 @@ function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $currentPlayer;
   switch ($cardID) {
     case "TER002":
+    case "TER011":
+    case "TER015":
       if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "TER008":
