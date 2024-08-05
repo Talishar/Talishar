@@ -860,6 +860,12 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           }
           $remove = true;
           break;
+        case "AUR023":
+          if($preventable) {
+            $damage -= 2;
+          }
+          $remove = true;
+          break;          
         default: break;
       }
       if($remove) RemoveCurrentTurnEffect($i);

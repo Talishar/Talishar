@@ -466,7 +466,8 @@ function HasGoAgain($cardID)
     case "MST193":
     case "MST212": case "MST213": case "MST214":
     case "AAZ024":
-    case "ROS033": case "ROS016":
+    case "ROS016": case "ROS033": 
+    case "ROS092": case "ROS093": case "ROS094":
     case "AUR014": case "AUR021":
       return true; 
   }
@@ -1209,7 +1210,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $discard->NumCards() < 3;
     case "ROS008": return GetClassState($player, $CS_NumLightningPlayed) == 0;
     case "ASB004": return count($mySoul) == 0;
-    case "AAZ005": return !ArsenalHasFaceDownCard($player);
+    case "AAZ005": return !ArsenalHasFaceDownArrowCard($player);
     case "AAZ007": return !HasAimCounter();
     default: return false;
   }
@@ -1508,17 +1509,16 @@ function AbilityHasGoAgain($cardID)
   }
 }
 
-function DoesEffectGrantOverpower($cardID) {
+function DoesEffectGrantOverpower($cardID): bool
+{
   $cardID = ShiyanaCharacter($cardID);
-  switch($cardID) {
-    case "HVY045": case "HVY046": return true;
-    case "HVY059": return true;
-    case "HVY213": case "HVY214": case "HVY215": return true;
-    default: return false;
-  }
+  return match ($cardID) {
+    "HVY045", "HVY046", "HVY059", "HVY213", "HVY214", "HVY215", "TER011", "TER015" => true,
+    default => false,
+  };
 }
 
-function DoesEffectGrantDominate($cardID)
+function DoesEffectGrantDominate($cardID): bool
 {
   global $combatChainState, $CCS_AttackFused;
   $cardID = ShiyanaCharacter($cardID);
@@ -1580,6 +1580,7 @@ function CharacterDefaultActiveState($cardID)
     case "EVO430": case "EVO431": case "EVO432": case "EVO433": return 1;
     case "AKO005": return 1;
     case "MST027": return 1;
+    case "AUR005": return 1;
     default: return 2;
   }
 }

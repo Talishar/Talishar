@@ -49,6 +49,7 @@ function ProcessHitEffect($cardID, $from="-")
   else if($set == "AKO") return AKOHitEffect($cardID);
   else if($set == "MST") return MSTHitEffect($cardID, $from);
   else if($set == "AAZ") return AAZHitEffect($cardID);
+  else if($set == "AUR") return AURHitEffect($cardID);
   else return -1;
 }
 
@@ -57,7 +58,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
   global $mainPlayer, $defPlayer, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
   global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated;
-  global $combatChain, $CS_Transcended, $CS_NumBluePlayed;
+  global $combatChain, $CS_Transcended, $CS_NumBluePlayed, $CS_NumLightningPlayed;
   if($repriseActive == -1) $repriseActive = RepriseActive();
   switch($cardID) {
     case "WTR003": return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
@@ -183,6 +184,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "MST112": case "MST113": case "MST114": return NumAttackReactionsPlayed() > 1 ? 2 : 0;
     case "MST127": case "MST128": case "MST129": return NumAttackReactionsPlayed() > 0 ? 1 : 0;
     case "MST191": return (CachedNumActionBlocked() > 0 ? 2 : 0);
+    case "ROS009": case "AUR007": case "AUR015": return (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0 ? 1 : 0);
     case "ROS031": return (SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:TALENT=EARTH")) >= 4 ? 4 : 0);
     default: return 0;
   }
@@ -504,6 +506,7 @@ function OnBlockResolveEffects($cardID = "")
       case "HVY648":
       case "MST050": case "MST066": case "MST160": case "MST190":
       case "ASB003": case "ASB005": case "ASB006":
+      case "TER027":
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "HVY008":
