@@ -26,18 +26,6 @@ function AURPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additional
     }
 }
 
-function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
-{
-  global $currentPlayer;
-  switch ($cardID) {
-    case "TER002": case "TER011": case "TER015":
-      if(SearchCardList($additionalCosts, $currentPlayer, talent:"EARTH") != "") AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    default:
-      return "";
-  }
-}
-
 function AKOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer;

@@ -19,7 +19,7 @@ function TerraEndPhaseAbility($characterID, $player): void
 function TEREffectAttackModifier($cardID): int
 {
   return match ($cardID) {
-    "TER002" => 1,
+    "TER002", "TER006" => 1,
     default => 0
   };
 }
@@ -27,7 +27,7 @@ function TEREffectAttackModifier($cardID): int
 function TERCombatEffectActive($cardID): bool
 {
   return match ($cardID) {
-    "TER002", "TER011", "TER015" => true,
+    "TER002", "TER011", "TER015", "TER006" => true,
     default => false
   };
 }
@@ -37,11 +37,26 @@ function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $currentPlayer;
   switch ($cardID) {
     case "TER002":
+    case "TER011":
+    case "TER015":
       if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "TER008":
     case "TER014":
       if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") PlayAura("HVY241", $currentPlayer);
+      return "";
+    case "TER018":
+      PlayAura("HVY241", $currentPlayer);
+      PlayAura("HVY241", $currentPlayer);
+      if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") {
+        PlayAura("HVY241", $currentPlayer);
+      }
+      return "";
+    case "TER025":
+      PlayAura("HVY241", $currentPlayer);
+      if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") {
+        PlayAura("HVY241", $currentPlayer);
+      }
       return "";
     default:
       return "";
