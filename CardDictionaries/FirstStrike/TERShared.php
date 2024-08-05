@@ -28,7 +28,7 @@ function TERAbilityCost($cardID): int
 function TERCombatEffectActive($cardID): bool
 {
   return match ($cardID) {
-    "TER002", "TER011", "TER015", "TER012", "TER016" => true,
+    "TER002", "TER011", "TER015", "TER012", "TER016", "TER019", "TER006" => true,
     default => false
   };
 }
@@ -36,7 +36,7 @@ function TERCombatEffectActive($cardID): bool
 function TEREffectAttackModifier($cardID): int
 {
   return match ($cardID) {
-    "TER002", "TER012", "TER016" => 1,
+    "TER002", "TER012", "TER016", "TER006" => 1,
     default => 0
   };
 }
@@ -54,6 +54,7 @@ function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "TER020":
     case "TER026":
+    case "TER019":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "TER018":

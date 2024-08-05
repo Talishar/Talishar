@@ -97,10 +97,11 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
 
 function AddAttack(&$totalAttack, $amount)
 {
-  global $CombatChain;
+  global $CombatChain, $currentPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   if(PowerCantBeModified($attackID)) return;
   if($amount > 0 && $attackID == "OUT100") $amount += 1;
+  if($amount > 0 && SearchCurrentTurnEffects("TER019", $currentPlayer)) $amount += 1;
   if($amount > 0 && ($attackID == "OUT065" || $attackID == "OUT066" || $attackID == "OUT067") && ComboActive()) $amount += 1;
   if($amount > 0) $amount += PermanentAddAttackAbilities();
   $totalAttack += $amount;

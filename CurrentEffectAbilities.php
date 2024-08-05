@@ -1318,6 +1318,7 @@ function IsCombatEffectPersistent($cardID)
     case "MST079-HITPREVENTION": return true;
     case "MST190": return true;
     case "AAZ004": return true;
+    case "TER019": return true;
     //Roguelike
     case "ROGUE018": case "ROGUE601": case "ROGUE702": case "ROGUE704": case "ROGUE707": return true;
     case "ROGUE603": case "ROGUE612": case "ROGUE613": case "ROGUE614": case "ROGUE615": case "ROGUE616": return true;
