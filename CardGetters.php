@@ -365,6 +365,15 @@ function ArsenalHasFaceUpArrowCard($player)
   return false;
 }
 
+function ArsenalHasFaceDownArrowCard($player)
+{
+  $arsenal = &GetArsenal($player);
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if (CardSubType($arsenal[$i]) == "Arrow" && $arsenal[$i + 1] == "DOWN") return true;
+  }
+  return false;
+}
+
 function ArsenalFull($player)
 {
   $arsenal = &GetArsenal($player);

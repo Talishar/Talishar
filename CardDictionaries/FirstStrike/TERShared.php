@@ -1,6 +1,6 @@
 <?php
 
-function TerraEndPhaseAbility($characterID, $player)
+function TerraEndPhaseAbility($characterID, $player): void
 {
   $resources = &GetResources($player);
   $hand = &GetHand($player);
@@ -16,7 +16,7 @@ function TerraEndPhaseAbility($characterID, $player)
   }
 }
 
-function TEREffectAttackModifier($cardID)
+function TEREffectAttackModifier($cardID): int
 {
   return match ($cardID) {
     "TER002" => 1,
@@ -24,10 +24,10 @@ function TEREffectAttackModifier($cardID)
   };
 }
 
-function TERCombatEffectActive($cardID)
+function TERCombatEffectActive($cardID): bool
 {
   return match ($cardID) {
-    "TER002" => true,
+    "TER002", "TER011", "TER015" => true,
     default => false
   };
 }
