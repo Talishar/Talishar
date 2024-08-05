@@ -27,45 +27,6 @@ function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   }
 }
 
-function AAZPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
-{
-  global $currentPlayer;
-  switch ($cardID) {
-    case "AAZ004":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "AAZ006":
-      LoadArrow($currentPlayer, "UP", 1);
-      return "";
-    case "AAZ007":
-      GiveAttackGoAgain();
-      return "";
-    case "AAZ005":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      GainResources($currentPlayer, 1);
-      return "";
-    case "AAZ016":
-      if (HasAimCounter()) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-      }
-      return "";
-    case "AAZ024":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      $arsenal = &GetArsenal($currentPlayer);
-      for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-        if (ArsenalHasFaceDownArrowCard($currentPlayer)) {
-          AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_turn_your_arsenal_face_up");
-          AddDecisionQueue("NOPASS", $currentPlayer, "-");
-          AddDecisionQueue("TURNARSENALFACEUP", $currentPlayer, $i, 1);
-          AddDecisionQueue("ADDAIMCOUNTER", $currentPlayer, $i, 1);
-        }
-      }
-      return "";
-    default:
-      return "";
-  }
-}
-
 function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $chainLinks, $defPlayer, $CS_NumCardsDrawn, $CS_HighestRoll, $CombatChain, $CS_NumMightDestroyed, $CS_DieRoll;
