@@ -5,159 +5,13 @@ function AAZHitEffect($cardID)
   global $mainPlayer, $defPlayer;
   switch ($cardID) {
     case "AAZ016":
-      if (IsHeroAttackTarget()) {
+      if (IsHeroAttackTarget() && HasAimCounter()) {
         AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
         AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card to banish", 1);
         AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
         AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,NTINT," . $cardID, 1);
       }
-      break;
-  }
-}
-
-function MSTHitEffect($cardID, $from)
-{
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt;
-  $deck = new Deck($defPlayer);
-  $discard = new Discard($defPlayer);
-  switch ($cardID) {
-    case "MST003":
-      if ($from != "OUT139" && $from != "OUT148" && $from != "OUT149" && $from != "OUT150") AddCurrentTurnEffect($cardID, $mainPlayer);
-      else AddCurrentTurnEffectNextAttack($cardID, $mainPlayer);
-      break;
-    case "MST103":
-      $count = count(GetDeck($defPlayer));
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND");
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card from your opponent hand", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZSETDQVAR", $mainPlayer, "0", 1);
-      for ($i = 0; $i < 3; $i++) {
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND:isSameName={0}&THEIRDECK:isSameName={0}&THEIRDISCARD:isSameName={0}", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which cards you want your opponent to banish", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZBANISH", $mainPlayer, "-,Source-" . $cardID . "," . $cardID, 1);
-        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-      }
-      AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES," . $count);
-      AddDecisionQueue("DECKCARDS", $defPlayer, "<-", 1);
-      AddDecisionQueue("LOOKTOPDECK", $defPlayer, "-", 1);
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($cardID, $cardID) . " shows the your opponents deck are:", 1);
-      AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $mainPlayer, "<-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $defPlayer, "-");
-      break;
-    case "MST104":
-      if (IsHeroAttackTarget()) {
-        LookAtHand($defPlayer);
-        $pitchValue = PitchValue($deck->Top());
-        $deck->BanishTop("Source-" . $cardID, banishedBy: $cardID);
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND:pitch=" . $pitchValue);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to banish", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZBANISH", $mainPlayer, "HAND,Source-" . $cardID . "," . $cardID, 1);
-        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-      }
-      break;
-    case "MST106":
-    case "MST107":
-    case "MST108":
-      if (IsHeroAttackTarget()) {
-        $deck->BanishTop("Source-" . $cardID, banishedBy: $cardID);
-      }
-      break;
-    case "MST109":
-    case "MST110":
-    case "MST111":
-      if (IsHeroAttackTarget()) {
-        $deck->BanishTop("Source-" . $cardID, banishedBy: $cardID);
-        if ($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,Source-" . $cardID . "," . $cardID, silent: true);
-      }
-      break;
-    case "MST112":
-    case "MST113":
-    case "MST114":
-      if (IsHeroAttackTarget() && NumAttackReactionsPlayed() > 1) {
-        $deck->BanishTop("Source-" . $cardID, banishedBy: $cardID);
-        $deck->BanishTop("Source-" . $cardID, banishedBy: $cardID);
-      }
-      break;
-    case "MST115":
-    case "MST116":
-    case "MST117":
-      if (IsHeroAttackTarget()) {
-        $deck = new Deck($defPlayer);
-        $deck->BanishTop("Source-" . $cardID, banishedBy: $cardID);
-        if ($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,Source-" . $cardID . "," . $cardID, silent: true);
-      }
-      break;
-    case "MST118":
-    case "MST119":
-    case "MST120":
-    case "MST121":
-    case "MST122":
-    case "MST123":
-    case "MST124":
-    case "MST125":
-    case "MST126":
-      if (IsHeroAttackTarget()) {
-        $deck->BanishTop("Source-" . $cardID, banishedBy: $cardID);
-      }
-      break;
-    case "MST173":
-    case "MST174":
-    case "MST175":
-      BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $cardID);
-      break;
-    case "MST191":
-      $hand = GetHand($mainPlayer);
-      if (count($hand) > 0) {
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "HAND");
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card from your hand to discard.");
-        AddDecisionQueue("CHOOSEHAND", $mainPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEMYHAND", $mainPlayer, "-", 1);
-        AddDecisionQueue("DISCARDCARD", $mainPlayer, "HAND-" . $mainPlayer, 1);
-        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND", 1);
-        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from your hand to discard.", 1);
-        AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEMYHAND", $defPlayer, "-", 1);
-        AddDecisionQueue("DISCARDCARD", $defPlayer, "HAND-" . $defPlayer, 1);
-      }
-      break;
-    case "MST192":
-      LookAtHand($defPlayer);
-      AddDecisionQueue("BLOCKLESS0HAND", $defPlayer, "THEIRHAND:maxDef=-1");
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND," . $mainPlayer, 1);
-      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-      AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
-      break;
-    case "MST194":
-    case "MST195":
-    case "MST196":
-      AddCurrentTurnEffect($cardID, $defPlayer);
-      AddNextTurnEffect($cardID, $defPlayer);
-      break;
-    case "MST206":
-    case "MST207":
-    case "MST208":
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;faceDown=true&THEIRARS:faceDown=true");
-      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZREVEAL", $mainPlayer, "-", 1);
-      break;
-    case "MST233":
-      $trapsArr = explode(",", SearchDiscard($mainPlayer, subtype: "Trap"));
-      if (count($trapsArr) >= 3) {
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish traps");
-        AddDecisionQueue("NOPASS", $mainPlayer, "-");
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "MULTITRAPSBANISH", 1);
-        AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "3-", 1);
-        AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-3", 1);
-        AddDecisionQueue("MULTICHOOSEDISCARD", $mainPlayer, "<-", 1);
-        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "MURKYWATER", 1);
-      }
-      break;
-    default:
       break;
   }
 }
@@ -365,6 +219,20 @@ function HVYHitEffect($cardID)
         }
         break;
       }
+    default:
+      break;
+  }
+}
+
+function AURHitEffect($cardID)
+{
+  global $mainPlayer, $CS_NumLightningPlayed;
+  switch ($cardID) {
+    case "AUR012": case "AUR019":
+      if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0) {
+        DealArcane(1, 0, "PLAYCARD", $cardID, false, $mainPlayer);
+      }
+      break;
     default:
       break;
   }

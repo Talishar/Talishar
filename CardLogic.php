@@ -393,7 +393,7 @@ function ContinueDecisionQueue($lastResult = "")
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
-          PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, isset($params[3]) ? $params[3] : "-1", isset($params[2]) ? $params[2] : -1);  
+          PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, isset($params[3]) ? $params[3] : "-1", isset($params[2]) ? $params[2] : -1);
           ClearDieRoll($player);
         }
       }
@@ -615,7 +615,7 @@ function AddOnHitTrigger($cardID)
     case "MST233":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
-    case "CRU054": 
+    case "CRU054":
       if(ComboActive($cardID)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "ELE003":
@@ -625,17 +625,18 @@ function AddOnHitTrigger($cardID)
       if(NumAttackReactionsPlayed() > 2 && IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "MST104":
-    case "MST106": case "MST107": case "MST108": 
-    case "MST109": case "MST110": case "MST111": 
-    case "MST112": case "MST113": case "MST114": 
-    case "MST115": case "MST116": case "MST117": 
-    case "MST118": case "MST119": case "MST120": 
-    case "MST121": case "MST122": case "MST123": 
+    case "MST106": case "MST107": case "MST108":
+    case "MST109": case "MST110": case "MST111":
+    case "MST112": case "MST113": case "MST114":
+    case "MST115": case "MST116": case "MST117":
+    case "MST118": case "MST119": case "MST120":
+    case "MST121": case "MST122": case "MST123":
     case "MST124": case "MST125": case "MST126":
     case "MST191": case "MST192":
     case "MST194": case "MST195": case "MST196":
     case "MST206": case "MST207": case "MST208":
     case "AAZ016":
+    case "AUR012": case "AUR019":
       if(IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     default:
@@ -692,19 +693,19 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
     case "MON218":
     case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT":
     case "ELE163": case "ELE164": case "ELE165":
-    case "ELE173": 
+    case "ELE173":
     case "ELE198": case "ELE199": case "ELE200":
     case "EVR066-1": case "EVR067-1": case "EVR068-1":
     case "EVR170-1": case "EVR171-1": case "EVR172-1":
-    case "DVR008-1": 
+    case "DVR008-1":
     case "OUT140": case "OUT188_1":
     case "AAZ004":
-    case "DTD229-HIT": 
+    case "DTD229-HIT":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     case "ELE066-HIT":
       AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");
-      break;  
+      break;
     default:
       break;
   }
@@ -719,9 +720,9 @@ function AddEffectHitTrigger($cardID) // Effects that gives effect to the attack
     case "WTR147": case "WTR148": case "WTR149":
     case "WTR206": case "WTR207": case "WTR208":
     case "WTR209": case "WTR210": case "WTR211":
-    case "CRU124": 
+    case "CRU124":
     case "CRU145": case "CRU146": case "CRU147":
-    case "MON034": 
+    case "MON034":
     case "MON081": case "MON082": case "MON083":
     case "MON110": case "MON111": case "MON112":
     case "MON193": case "MON299": case "MON300": case "MON301":
@@ -738,7 +739,7 @@ function AddEffectHitTrigger($cardID) // Effects that gives effect to the attack
     case "OUT021": case "OUT022": case "OUT023":
     case "OUT105": case "OUT112": case "OUT113":
     case "OUT114": case "OUT143":
-    case "OUT158": case "OUT165":  case "OUT166": case "OUT167": 
+    case "OUT158": case "OUT165":  case "OUT166": case "OUT167":
     case "DTD051": case "DTD052":
     case "DTD066": case "DTD067": case "DTD068":
     case "DTD080-2":
@@ -825,6 +826,15 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target) {
         AddDecisionQueue("PUTPLAY", $player, "-", 1);
       }
       break;
+      case "AUR005":
+        $index = FindCharacterIndex($player, $cardID);
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Aether_Crackers_to_deal_one_arcane");
+        AddDecisionQueue("NOPASS", $player, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+        AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+        AddDecisionQueue("DEALARCANE", $player,  "1" . "-" . "AUR005" . "-" . "TRIGGER", 1);
+        AddDecisionQueue("WRITELOG", $player, "Aether Crackers was destroyed", 1);
+        break;
     default:
       break;
   }
@@ -1117,7 +1127,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "MON012":
       DealArcane(1, 0, "STATIC", $parameter, false, $player);
       break;
-    case "MON089": 
+    case "MON089":
       $hand = &GetHand($player);
       $resources = &GetResources($player);
       if(Count($hand) > 0 || $resources[0] > 0)
@@ -1701,7 +1711,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
         AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
       }
       break;
-    case "HVY001": case "HVY002":
+    case "HVY001": case "HVY002": case "TER027":
       PlayAura("HVY241", $player); //Might
       break;
     case "HVY008":
@@ -1817,7 +1827,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "MST027":
       AddDecisionQueue("YESNO", $player, "if you want " . CardLink("MST027", "MST027") . " to gain Ward 3");
       AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("ADDCURRENTEFFECT", $player, "MERIDIANWARD", 1);    
+      AddDecisionQueue("ADDCURRENTEFFECT", $player, "MERIDIANWARD", 1);
       break;
     case "MST040": case "MST041": case "MST042":
       if(SearchPitchForColor($player, 3) > 0) PlayAura("MON104", $player);
@@ -1830,7 +1840,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "MST137": case "MST138": case "MST139":
       AddCurrentTurnEffect($parameter, $player, "PLAY");
       break;
-    case "MST140": case "MST141": case "MST142": 
+    case "MST140": case "MST141": case "MST142":
       if(SearchAura($player, class:"ILLUSIONIST") < 0) PlayAura("MON104", $player, numAttackCounters:1);
       else PlayAura("MON104", $player);
       break;
@@ -1842,7 +1852,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       break;
     case "MST160":
       MZMoveCard($player, "MYDISCARD:comboOnly=true", "MYBOTDECK");
-      break; 
+      break;
     case "MST066":
       MZMoveCard($player, "MYDECK:isSameName=MST499", "MYHAND", may:true);
       AddDecisionQueue("SHUFFLEDECK", $player, "-");
@@ -1855,17 +1865,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
     case "AKO019": case "MST203": case "MST204": case "MST205":
       AddCurrentTurnEffect($parameter, $player, "CC");
       IncrementClassState($player, $CS_DamagePrevention, 1);
-      break;  
+      break;
     case "ASB003":
       Charge();
       AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
       AddDecisionQueue("DRAW", $player, "-", 1);
-      break;  
+      break;
     case "ASB005":
       Charge();
       AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
       AddDecisionQueue("PLAYAURA", $player, "DTD232", 1);
-      break; 
+      break;
     case "ASB006":
       Charge();
       AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
@@ -2186,7 +2196,7 @@ function HasRustCounters($cardID){
 
 function HasFlowCounters($cardID){
   switch($cardID) {
-    case "ELE117": case "ELE146": case "ELE175": 
+    case "ELE117": case "ELE146": case "ELE175":
     case "UPR138":
     case "ROS033":
       return true;

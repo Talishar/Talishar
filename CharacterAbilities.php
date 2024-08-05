@@ -403,7 +403,7 @@ function MainCharacterEndTurnAbilities()
         break;
       case "TER001":
         if($mainCharacter[$i+1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
-        TerraEndTurnAbility($characterID, $mainPlayer);
+        TerraEndPhaseAbility($characterID, $mainPlayer);
         break;
       default: break;
     }
@@ -415,7 +415,7 @@ function MainCharacterEndTurnAbilities()
     switch($characterID) {
       case "TER001":
         if($defCharacter[$i+1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
-        TerraEndTurnAbility($characterID, $defPlayer);
+        TerraEndPhaseAbility($characterID, $defPlayer);
         break;
       default: break;
     }
@@ -484,6 +484,11 @@ function MainCharacterHitTrigger()
       case "HVY097":
         if(TypeContains($attackID, "W", $mainPlayer))
         {
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+        }
+        break;
+      case "AUR005":
+        if (IsHeroAttackTarget()) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
@@ -770,6 +775,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "DYN001":
     case "OUT096":
     case "TCC050":
+    case "AAZ005":
       break; //Unlimited uses
     case "ELE224": //Spellbound Creepers - Bind counters
       ++$character[$cardIndex + 2];//Add a counter

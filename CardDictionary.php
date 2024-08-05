@@ -35,7 +35,9 @@ include "CardDictionaries/Dynasty/DYNShared.php";
 include "CardDictionaries/Outsiders/OUTShared.php";
 include "CardDictionaries/DuskTillDawn/DTDShared.php";
 include "CardDictionaries/Roguelike/ROGUEShared.php";
-include "CardDictionaries/FirstStrike/FSShared.php";
+include "CardDictionaries/FirstStrike/AURShared.php";
+include "CardDictionaries/FirstStrike/TERShared.php";
+include "CardDictionaries/PartTheMistveil/MSTShared.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
 include "GeneratedCode/DatabaseGeneratedCardDictionaries.php";
@@ -328,6 +330,7 @@ function AbilityCost($cardID)
   else if($set == "MST") return MSTAbilityCost($cardID);
   else if($set == "ROG") return ROGUEAbilityCost($cardID);
   else if($set == "ROS") return ROSAbilityCost($cardID);
+  else if($set == "TER") return TERAbilityCost($cardID);
   else if($cardID == "HER117") return 0;
   return CardCost($cardID);
 }
@@ -463,7 +466,9 @@ function HasGoAgain($cardID)
     case "MST193":
     case "MST212": case "MST213": case "MST214":
     case "AAZ024":
-    case "ROS033": case "ROS016":
+    case "ROS016": case "ROS033": 
+    case "ROS092": case "ROS093": case "ROS094":
+    case "AUR014": case "AUR021":
       return true; 
   }
 
@@ -503,6 +508,7 @@ function GetAbilityType($cardID, $index = -1, $from="-")
   else if($set == "ROG") return ROGUEAbilityType($cardID, $index);
   else if($set == "ROS") return ROSAbilityType($cardID, $index);
   else if($set == "ASB") return ASBAbilityType($cardID, $index);
+  else if($set == "TER") return TERAbilityType($cardID, $index);
   else if($cardID == "HER117") return "I";
 }
 
@@ -1204,7 +1210,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $discard->NumCards() < 3;
     case "ROS008": return GetClassState($player, $CS_NumLightningPlayed) == 0;
     case "ASB004": return count($mySoul) == 0;
-    case "AAZ005": return !ArsenalHasFaceDownCard($player);
+    case "AAZ005": return !ArsenalHasFaceDownArrowCard($player);
     case "AAZ007": return !HasAimCounter();
     default: return false;
   }
@@ -1494,7 +1500,6 @@ function AbilityHasGoAgain($cardID)
   else if($set == "EVO") return EVOAbilityHasGoAgain($cardID);
   else if($set == "HVY") return HVYAbilityHasGoAgain($cardID);
   else if($set == "AKO") return AKOAbilityHasGoAgain($cardID);
-  else if($set == "MST") return MSTAbilityHasGoAgain($cardID);
   else if($set == "AAZ") return AAZAbilityHasGoAgain($cardID);
   else if($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   switch($cardID) {
@@ -1504,17 +1509,16 @@ function AbilityHasGoAgain($cardID)
   }
 }
 
-function DoesEffectGrantOverpower($cardID) {
+function DoesEffectGrantOverpower($cardID): bool
+{
   $cardID = ShiyanaCharacter($cardID);
-  switch($cardID) {
-    case "HVY045": case "HVY046": return true;
-    case "HVY059": return true;
-    case "HVY213": case "HVY214": case "HVY215": return true;
-    default: return false;
-  }
+  return match ($cardID) {
+    "HVY045", "HVY046", "HVY059", "HVY213", "HVY214", "HVY215", "TER011", "TER015" => true,
+    default => false,
+  };
 }
 
-function DoesEffectGrantDominate($cardID)
+function DoesEffectGrantDominate($cardID): bool
 {
   global $combatChainState, $CCS_AttackFused;
   $cardID = ShiyanaCharacter($cardID);
@@ -1576,6 +1580,7 @@ function CharacterDefaultActiveState($cardID)
     case "EVO430": case "EVO431": case "EVO432": case "EVO433": return 1;
     case "AKO005": return 1;
     case "MST027": return 1;
+    case "AUR005": return 1;
     default: return 2;
   }
 }
@@ -1969,20 +1974,15 @@ function AbilityPlayableFromCombatChain($cardID)
   }
 }
 
-function CardCaresAboutPitch($cardID)
+function CardCaresAboutPitch($cardID): bool
 {
   $cardID = ShiyanaCharacter($cardID);
-  switch($cardID) {
-    case "ELE001": case "ELE002": case "ELE003":
-    case "DYN172": case "DYN173": case "DYN174":
-    case "DYN176": case "DYN177": case "DYN178":
-		case "DYN182": case "DYN183": case "DYN184":
-		case "DYN185": case "DYN186": case "DYN187":
-    case "MST008": case "MST031": case "MST052": 
-    case "MST076": case "MST078": case "MST079": case "MST080":
-      return true;
-    default: return false;
-  }
+  return match ($cardID) {
+    "ELE001", "ELE002", "ELE003", "DYN172", "DYN173", "DYN174", "DYN176", "DYN177", "DYN178", "DYN182", "DYN183",
+    "DYN184","DYN185", "DYN186", "DYN187", "MST008", "MST031", "MST052", "MST076", "MST078", "MST079", "MST080",
+    "TER002", "TER008", "TER014" => true,
+    default => false
+  };
 }
 
 function IsIyslander($character)
