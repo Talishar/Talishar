@@ -45,6 +45,19 @@ function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "TER014":
       if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") PlayAura("HVY241", $currentPlayer);
       return "";
+    case "TER018":
+      PlayAura("HVY241", $currentPlayer);
+      PlayAura("HVY241", $currentPlayer);
+      if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") {
+        PlayAura("HVY241", $currentPlayer);
+      }
+      return "";
+    case "TER025":
+      PlayAura("HVY241", $currentPlayer);
+      if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") {
+        PlayAura("HVY241", $currentPlayer);
+      }
+      return "";
     default:
       return "";
   }
