@@ -1,21 +1,5 @@
 <?php
 
-function TERAbilityCost($cardID)
-{
-  return match ($cardID) {
-    "TER002" => 3,
-    default => 0
-  };
-}
-
-function TERAbilityType($cardID)
-{
-  return match ($cardID) {
-    "TER002" => "AA",
-    default => ""
-  };
-}
-
 function AAZAbilityType($cardID, $index = -1, $from = "-")
 {
   return match ($cardID) {
