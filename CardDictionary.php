@@ -1209,7 +1209,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST232": return (count($myHand) + count($myArsenal)) < 2;
     case "MST236": 
       return $discard->NumCards() < 3;
-    case "ROS008": return GetClassState($player, $CS_NumLightningPlayed) == 0;
+    case "ROS007": case "ROS008": return GetClassState($player, $CS_NumLightningPlayed) == 0;
     case "ASB004": return count($mySoul) == 0;
     case "AAZ005": return !ArsenalHasFaceDownArrowCard($player);
     case "AAZ007": return !HasAimCounter();

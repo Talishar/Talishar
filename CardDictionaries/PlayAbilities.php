@@ -959,7 +959,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       AddDecisionQueue("GAINLIFE", $currentPlayer, $xVal + 1);
       return "";
-    case "ROS008":
+    case "ROS007": case "ROS008":
       PlayAura("ELE110", $currentPlayer);
       return "";
     case "ROS033":

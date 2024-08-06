@@ -119,7 +119,7 @@ function EVOAbilityHasGoAgain($cardID)
 function ROSAbilityType($cardID, $index = -1)
 {
   return match ($cardID) {
-    "ROS008" => "I",
+    "ROS007", "ROS008" => "I",
     "ROS009" => "AA",
     default => ""
   };
@@ -128,7 +128,7 @@ function ROSAbilityType($cardID, $index = -1)
 function ROSAbilityCost($cardID)
 {
   return match ($cardID) {
-    "ROS008" => 2,
+    "ROS007", "ROS008" => 2,
     "ROS009" => 1,
     default => 0
   };
