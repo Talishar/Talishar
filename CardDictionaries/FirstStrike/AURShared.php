@@ -14,6 +14,7 @@ function AUREffectAttackModifier($cardID): int
   return match ($cardID) {
     "AUR014" => 3,
     "AUR021" => 2,
+    "AUR022", "AUR025" => 1,
     default => 0,
   };
 }
@@ -23,6 +24,7 @@ function AURCombatEffectActive($cardID, $attackID): bool|string
     global $mainPlayer;
   return match ($cardID) {
     "AUR014", "AUR021" => TalentContainsAny($attackID, "LIGHTNING,ELEMENTAL", $mainPlayer),
+    "AUR022", "AUR025" => true,
     default => "",
   };
 }

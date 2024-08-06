@@ -453,6 +453,13 @@ function OnBlockResolveEffects($cardID = "")
           AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC", $character[$combatChainState[$CCS_WeaponIndex]+11]);
         }
         break;
+      case "AUR022": case "AUR025":
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_buff_Spark_Spray", 0, 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
+        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+        AddDecisionQueue("ADDTRIGGER", $mainPlayer, $combatChain[0], 1);
+        break;
       default: break;
     }
   }
