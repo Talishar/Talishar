@@ -1,11 +1,11 @@
 <?php
 
-function AKOAbilityCost($cardID)
+function AKOAbilityCost($cardID): int
 {
   return 0;
 }
 
-function AKOAbilityType($cardID, $index = -1, $from = "-")
+function AKOAbilityType($cardID, $index = -1, $from = "-"): string
 {
   return match ($cardID) {
     "AKO004" => "A",
@@ -13,7 +13,7 @@ function AKOAbilityType($cardID, $index = -1, $from = "-")
   };
 }
 
-function AKOAbilityHasGoAgain($cardID)
+function AKOAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
     "AKO004" => true,
@@ -21,7 +21,7 @@ function AKOAbilityHasGoAgain($cardID)
   };
 }
 
-function HVYAbilityCost($cardID)
+function HVYAbilityCost($cardID): int
 {
   return match ($cardID) {
     "HVY049", "HVY050", "HVY196", "HVY197" => 3,
@@ -31,7 +31,7 @@ function HVYAbilityCost($cardID)
   };
 }
 
-function HVYAbilityType($cardID, $index = -1, $from = "-")
+function HVYAbilityType($cardID, $index = -1, $from = "-"): string
 {
   return match ($cardID) {
     "HVY134", "HVY096", "HVY095", "HVY007", "HVY049", "HVY050", "HVY006" => "AA",
@@ -43,7 +43,7 @@ function HVYAbilityType($cardID, $index = -1, $from = "-")
   };
 }
 
-function HVYAbilityHasGoAgain($cardID)
+function HVYAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
     "HVY010", "HVY055", "HVY090", "HVY091", "HVY135", "HVY155", "HVY175", "HVY243" => true,
@@ -51,7 +51,7 @@ function HVYAbilityHasGoAgain($cardID)
   };
 }
 
-function TCCAbilityCost($cardID)
+function TCCAbilityCost($cardID): int
 {
   return match ($cardID) {
     "TCC002", "TCC028" => 3,
@@ -60,7 +60,7 @@ function TCCAbilityCost($cardID)
   };
 }
 
-function TCCAbilityType($cardID, $index = -1)
+function TCCAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
     "TCC002", "TCC028" => "AA",
@@ -70,7 +70,7 @@ function TCCAbilityType($cardID, $index = -1)
   };
 }
 
-function TCCAbilityHasGoAgain($cardID)
+function TCCAbilityHasGoAgain($cardID): bool
 {
   global $CombatChain;
   return match ($cardID) {
@@ -80,7 +80,7 @@ function TCCAbilityHasGoAgain($cardID)
   };
 }
 
-function EVOAbilityCost($cardID)
+function EVOAbilityCost($cardID): int
 {
   global $currentPlayer;
   return match ($cardID) {
@@ -92,7 +92,7 @@ function EVOAbilityCost($cardID)
   };
 }
 
-function EVOAbilityType($cardID, $index = -1, $from = "")
+function EVOAbilityType($cardID, $index = -1, $from = ""): string
 {
   global $currentPlayer, $CS_NumCranked, $CS_NumBoosted;
   return match ($cardID) {
@@ -108,7 +108,7 @@ function EVOAbilityType($cardID, $index = -1, $from = "")
   };
 }
 
-function EVOAbilityHasGoAgain($cardID)
+function EVOAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
     "EVO073", "EVO247" => true,
@@ -116,7 +116,7 @@ function EVOAbilityHasGoAgain($cardID)
   };
 }
 
-function DestroyTopCardTarget($player)
+function DestroyTopCardTarget($player): void
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
   AddDecisionQueue("PASSPARAMETER", $player, "ELSE");
@@ -137,14 +137,14 @@ function DestroyTopCardTarget($player)
   AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
 }
 
-function DestroyTopCardOpponent($player)
+function DestroyTopCardOpponent($player): void
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
   AddDecisionQueue("WRITELOG", $otherPlayer, "Destroys the top card of Player " . $otherPlayer . " deck", 1);
   AddDecisionQueue("DESTROYTOPCARD", $otherPlayer, "0", 1);
 }
 
-function DestroyItemWithoutSteamCounter($cardID, $player)
+function DestroyItemWithoutSteamCounter($cardID, $player): bool
 {
   if (CardNameContains($cardID, "Hyper Driver", $player)) return true;
   return match ($cardID) {
@@ -153,7 +153,7 @@ function DestroyItemWithoutSteamCounter($cardID, $player)
   };
 }
 
-function ASBAbilityType($cardID, $index = -1)
+function ASBAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
     "ASB004" => "I",
