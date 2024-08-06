@@ -12,7 +12,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
   $attackType = CardType($CombatChain->AttackCard()->ID());
   $canGainAttack = CanGainAttack($CombatChain->AttackCard()->ID());
   $snagActive = SearchCurrentTurnEffects("CRU182", $mainPlayer) && $attackType == "AA";
-  
+
   for($i=0; $i<$CombatChain->NumCardsActiveLink(); ++$i)
   {
     $chainCard = $CombatChain->Card($i, true);
@@ -102,6 +102,10 @@ function AddAttack(&$totalAttack, $amount)
   if(PowerCantBeModified($attackID)) return;
   if($amount > 0 && $attackID == "OUT100") $amount += 1;
   if($amount > 0 && SearchCurrentTurnEffects("TER019", $currentPlayer)) $amount += 1;
+  if ($amount > 0) {
+    SearchCurrentTurnEffects("TER017-INACTIVE", $currentPlayer, false, false, true);
+    SearchCurrentTurnEffects("TER024-INACTIVE", $currentPlayer, false, false, true);
+  }
   if($amount > 0 && ($attackID == "OUT065" || $attackID == "OUT066" || $attackID == "OUT067") && ComboActive()) $amount += 1;
   if($amount > 0) $amount += PermanentAddAttackAbilities();
   $totalAttack += $amount;
@@ -114,7 +118,7 @@ function BlockingCardDefense($index)
   $cardID = isset($combatChain[$index]) ? $combatChain[$index] : "-";
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
   $resourcesPaid = (isset($combatChain[$index+3]) ? intval($combatChain[$index+3]) : 0) + intval($baseCost);
-  $defense = intval(BlockValue($cardID)) + (BlockCantBeModified($cardID) ? 0 : (isset($combatChain[$index + 6]) ? intval(BlockModifier($cardID, $from, $resourcesPaid)) + intval($combatChain[$index + 6]) : 0));  
+  $defense = intval(BlockValue($cardID)) + (BlockCantBeModified($cardID) ? 0 : (isset($combatChain[$index + 6]) ? intval(BlockModifier($cardID, $from, $resourcesPaid)) + intval($combatChain[$index + 6]) : 0));
   if(TypeContains($cardID, "E", $defPlayer))
   {
     $defCharacter = &GetPlayerCharacter($defPlayer);
@@ -2149,7 +2153,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   else if($set == "ROS") return ROSPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "TER") return TERPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if($set == "AUR") return AURPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-  else { 
+  else {
     switch ($cardID) {
       case "LGS176": case "LGS177": case "LGS178":
         $deck = new Deck($currentPlayer);
@@ -2189,9 +2193,9 @@ function PitchAbility($cardID)
       PutPermanentIntoPlay($currentPlayer, "UPR043");
     }
   }
-  if (SubtypeContains($cardID, "Chi", $currentPlayer) 
-    && SearchCharacterAlive($currentPlayer, "MST027") 
-    && SearchCharacterForCard($currentPlayer, "MST027") 
+  if (SubtypeContains($cardID, "Chi", $currentPlayer)
+    && SearchCharacterAlive($currentPlayer, "MST027")
+    && SearchCharacterForCard($currentPlayer, "MST027")
     && GetCharacterGemState($currentPlayer, "MST027") == 1
     && !SearchCurrentTurnEffects("MERIDIANWARD", $currentPlayer)) {
     AddLayer("TRIGGER", $currentPlayer, "MST027");
@@ -2481,7 +2485,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player="")
       break;
     case "MST231": case "MST631":
       AddCurrentTurnEffect("MST231", $player);
-      break;      
+      break;
     default: break;
   }
   switch($fromCardID)

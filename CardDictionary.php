@@ -470,7 +470,7 @@ function HasGoAgain($cardID): bool|int
     case "ROS016": case "ROS033":
     case "ROS092": case "ROS093": case "ROS094":
     case "AUR014": case "AUR021":
-    case "TER019":
+    case "TER017": case "TER019": case "TER024":
       return true;
   }
 
