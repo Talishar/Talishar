@@ -33,9 +33,10 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       AddDecisionQueue("GAINLIFE", $currentPlayer, $xVal + 1);
       return "";
-    case "ROS007": case "ROS008":
-    PlayAura("ELE110", $currentPlayer);
-    return "";
+    case "ROS007":
+    case "ROS008":
+      PlayAura("ELE110", $currentPlayer);
+      return "";
     case "ROS033":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
@@ -52,5 +53,24 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     default:
       return "";
+  }
+}
+
+function ROSHitEffect($cardID): void
+{
+  global $currentPlayer;
+  switch ($cardID) {
+    case "ROS082":
+    case "ROS083":
+    case "ROS084":
+      PlayAura("ELE110", $currentPlayer);
+      break;
+    case "ROS036":
+    case "ROS037":
+    case "ROS038":
+      PlayAura("ELE109", $currentPlayer);
+      break;
+    default:
+      break;
   }
 }

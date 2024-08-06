@@ -496,7 +496,7 @@ function ProcessLayer($player, $parameter)
   }
 }
 
-function AddOnHitTrigger($cardID)
+function AddOnHitTrigger($cardID): void
 {
   global $mainPlayer;
   switch ($cardID) {
@@ -870,6 +870,12 @@ function AddOnHitTrigger($cardID)
     case "MST174":
     case "MST175":
     case "MST233":
+    case "ROS082":
+    case "ROS083":
+    case "ROS084":
+    case "ROS036":
+    case "ROS037":
+    case "ROS038":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "CRU054":
