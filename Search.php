@@ -482,13 +482,14 @@ function SearchMultizoneFormat($search, $zone)
   return implode(",", $searchArr);
 }
 
-function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniqueID = false)
+function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniqueID = false, $activate = false)
 {
   global $currentTurnEffects;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if(!isset($currentTurnEffects[$i+1])) continue;
     if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $player) {
       if ($remove) RemoveCurrentTurnEffect($i);
+      if ($activate) $currentTurnEffects[$i] = substr($currentTurnEffects[$i], 0, 6);
       return $returnUniqueID ? $currentTurnEffects[$i+2] : true;
     }
   }
