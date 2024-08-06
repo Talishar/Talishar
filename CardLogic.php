@@ -1888,12 +1888,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-", $additional
       Draw($player);
       break;
     case "TER006":
-      $index = FindCharacterIndex($player, "TER006");
-      AddDecisionQueue("YESNO", $player, "to_destroy_Hard_Knuckle");
-      AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
-      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+      $index = FindCharacterIndex($mainPlayer, "TER006");
+      AddDecisionQueue("YESNO", $mainPlayer, "to_destroy_Hard_Knuckle");
+      AddDecisionQueue("NOPASS", $mainPlayer, "-");
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "TER006", 1);
+      break;
+    case "AUR022": case "AUR025":
+      AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $parameter, 1);
       break;
     default: break;
   }
