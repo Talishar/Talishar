@@ -115,8 +115,8 @@ function CardSubType($cardID, $uniqueID=-1)
       case "DTD564": return "Demon";
       case "EVO410": return "Evo";
       case "EVO410b": return "Chest,Evo";
-      case "MST400": case "MST410": case "MST432": case "MST453": 
-      case "MST495": case "MST496": case "MST497": case "MST498": 
+      case "MST400": case "MST410": case "MST432": case "MST453":
+      case "MST495": case "MST496": case "MST497": case "MST498":
       case "MST499": case "MST500": case "MST501": case "MST502":
         return "Chi";
       case "MST628": return "Head,Evo";
@@ -132,7 +132,7 @@ function CharacterHealth($cardID)
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM") return GeneratedCharacterHealth($cardID);
   switch($cardID) {
-    case "DUMMY": return 2000;
+    case "DUMMY": return 200000;
     case "ROGUE001": return 6;
     case "ROGUE003": return 8;
     case "ROGUE004": return 14;
@@ -281,8 +281,8 @@ function CardCost($cardID, $from="-")
     case "HVY209":
       if(GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
       else return 2;
-    case "MST400": case "MST410": case "MST432": case "MST453": 
-    case "MST495": case "MST496": case "MST497": case "MST498": 
+    case "MST400": case "MST410": case "MST432": case "MST453":
+    case "MST495": case "MST496": case "MST497": case "MST498":
     case "MST499": case "MST500": case "MST501": case "MST502":
         return -1;
     default: break;
@@ -370,8 +370,8 @@ function PitchValue($cardID)
   if($number > 400)
   {
     switch ($cardID) {
-      case "MST400": case "MST410": case "MST432": case "MST453": 
-      case "MST495": case "MST496": case "MST497": case "MST498": 
+      case "MST400": case "MST410": case "MST432": case "MST453":
+      case "MST495": case "MST496": case "MST497": case "MST498":
       case "MST499": case "MST500": case "MST501": case "MST502":
         return 3;
       default: break;
@@ -411,12 +411,12 @@ function BlockValue($cardID)
     case "EVO410": return -1;
     case "EVO410b": return 6;
     case "DUMMYDISHONORED": return -1;
-    case "MST400": case "MST410": case "MST432": case "MST453": 
-    case "MST495": case "MST496": case "MST497": case "MST498": 
+    case "MST400": case "MST410": case "MST432": case "MST453":
+    case "MST495": case "MST496": case "MST497": case "MST498":
     case "MST499": case "MST500": case "MST501": case "MST502":
       return -1;
     case "MST628": case "MST629": case "MST630": case "MST631":
-      return 0; 
+      return 0;
         default: return 3;
   }
 }
@@ -459,7 +459,7 @@ function HasGoAgain($cardID): bool|int
     case "MST057": case "MST058": case "MST059":
     case "MST060": case "MST061": case "MST062":
     case "MST063": case "MST064": case "MST065":
-    case "MST092": case "MST093": case "MST094": 
+    case "MST092": case "MST093": case "MST094":
     case "MST152": case "MST153": case "MST154":
     case "MST159":
     case "MST173": case "MST174": case "MST175":
@@ -467,11 +467,11 @@ function HasGoAgain($cardID): bool|int
     case "MST193":
     case "MST212": case "MST213": case "MST214":
     case "AAZ024":
-    case "ROS016": case "ROS033": 
+    case "ROS016": case "ROS033":
     case "ROS092": case "ROS093": case "ROS094":
     case "AUR014": case "AUR021":
     case "TER019":
-      return true; 
+      return true;
   }
 
   if ($set == "ROG") return ROGUEHasGoAgain($cardID);
@@ -698,7 +698,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if(SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "A" && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
   if(SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
   if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "MON245" && $player == $defPlayer && ($abilityType == "I" || $cardType == "I")) { $restriction = "Exude Confidance"; return false; }
-  if(SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && ($abilityType == "I" || $cardType == "I")) { $restriction = "Exude Confidance"; return false; }  
+  if(SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && ($abilityType == "I" || $cardType == "I")) { $restriction = "Exude Confidance"; return false; }
   if($cardID == "MST133" && $from == "PLAY") {
     if($auras[$index+1] == 2 && $currentPlayer == $mainPlayer && $actionPoints > 0) return true;
     if(SearchCurrentTurnEffectsForUniqueID($auras[$index+6]) != -1 && CanPlayInstant($phase) && $auras[$index+3] > 0) return true;
@@ -781,17 +781,17 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
             if($modes[$i] == "Transcend") return "-";
           }
         }
-        return "THEIRDISCARD";  
+        return "THEIRDISCARD";
       case "MST095": case "MST096": case "MST097":
       case "MST098": case "MST099": case "MST100":
       case "MST101": case "MST102":
         if(GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
-        else return "THEIRDISCARD";      
+        else return "THEIRDISCARD";
       default:
         return "THEIRDISCARD";
     }
   }
-  
+
   $goesWhereEffect = GoesWhereEffectsModifier($cardID, $from, $player);
   if($goesWhereEffect != -1) return $goesWhereEffect;
   if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
@@ -814,8 +814,8 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   }
   switch($cardID) {
     case "WTR163": return "BANISH";
-    case "CRU163": 
-      if(substr($from, 0, 5) != "THEIR") return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY"; 
+    case "CRU163":
+      if(substr($from, 0, 5) != "THEIR") return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
       else return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "THEIRHAND" : "THEIRDISCARD";
     case "MON063": return ($from == "CHAINCLOSING" && $stillOnCombatChain ? "SOUL" : "GY");
     case "MON064": return "SOUL";
@@ -1012,10 +1012,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MON198": return $discard->NumCards() < 6;
     case "MON230": return GetClassState($player, $CS_NumAttackCards) == 0 || GetClassState($player, $CS_NumNonAttackCards) == 0;
     case "MON238": return GetClassState($player, $CS_DamageTaken) == 0 && GetClassState($otherPlayer, $CS_DamageTaken) == 0;
-    case "MON281": case "MON282": case "MON283": 
+    case "MON281": case "MON282": case "MON283":
       if(isset($combatChain[$index+7]) && $from == "PLAY") return SearchCurrentTurnEffects($cardID, $player, false, true) == $combatChain[$index+7];
       else return false;
-    case "MON303": case "MON304": case "MON305": 
+    case "MON303": case "MON304": case "MON305":
       $maxCost = 3;
       if($cardID == "MON304") $maxCost = 2;
       elseif ($cardID == "MON305") $maxCost = 1;
@@ -1184,10 +1184,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
         if((CardType($CombatChain->AttackCard()->ID()) == "AA" && (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $player) || TalentContains($CombatChain->AttackCard()->ID(), "MYSTIC", $player)))) return false;
         return true;
     case "MST023": case "MST024": return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
-    case "MST029": case "MST030": case "MST067": case "MST071": case "MST072": case "MST073": case "MST074": 
+    case "MST029": case "MST030": case "MST067": case "MST071": case "MST072": case "MST073": case "MST074":
       $charIndex = FindCharacterIndex($player, $cardID);
       return $character[$charIndex+12] != "DOWN";
-    case "MST069": case "MST070": 
+    case "MST069": case "MST070":
       $charIndex = FindCharacterIndex($player, $cardID);
       return $character[$charIndex+12] != "DOWN" || !$CombatChain->HasCurrentLink();
       case "MST095": case "MST098": case "MST102":
@@ -1199,7 +1199,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if(HasStealth($CombatChain->AttackCard()->ID())) return false;
       if($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
       return true;
-    case "MST134": case "MST135": case "MST136": 
+    case "MST134": case "MST135": case "MST136":
       $auras = &GetAuras($player);
       return Count($auras) <= 0;
     case "MST162":
@@ -1208,9 +1208,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
       return true;
     case "MST232": return (count($myHand) + count($myArsenal)) < 2;
-    case "MST236": 
+    case "MST236":
       return $discard->NumCards() < 3;
-    case "ROS008": return GetClassState($player, $CS_NumLightningPlayed) == 0;
+    case "ROS007": case "ROS008": return GetClassState($player, $CS_NumLightningPlayed) == 0;
     case "ASB004": return count($mySoul) == 0;
     case "AAZ005": return !ArsenalHasFaceDownArrowCard($player);
     case "AAZ007": return !HasAimCounter();
@@ -1254,7 +1254,7 @@ function GoesOnCombatChain($phase, $cardID, $from)
     case "HVY186": case "HVY187": case "HVY188":
     case "HVY209":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
-    case "MST133": 
+    case "MST133":
       return GetResolvedAbilityType($cardID, $from) == "AA";
     default: break;
   }
@@ -1308,7 +1308,7 @@ function HasBladeBreak($cardID)
     case "HVY202": case "HVY203": case "HVY204": case "HVY205": case "HVY206": return true;
     case "MST004": return true;
     case "MST048": return true;
-    case "MST049": 
+    case "MST049":
       $char = &GetPlayerCharacter($defPlayer);
       $index = FindCharacterIndex($defPlayer, $cardID);
       return $char[$index+12] == "UP";
@@ -1669,12 +1669,12 @@ function HasCombo($cardID)
     case "OUT074": case "OUT075": case "OUT076":
     case "OUT080": case "OUT081": case "OUT082":
     case "TCC088":
-      return true; 
+      return true;
     case "MST161":
     case "MST164": case "MST165": case "MST166":
     case "MST176": case "MST177": case "MST178":
       return true;
-    default: 
+    default:
       return false;
   }
 }
@@ -1774,10 +1774,10 @@ function ComboActive($cardID = "")
       case "TCC088":
         if($lastAttackName == "Crouching Tiger") return true;
         break;
-      case "MST161": 
+      case "MST161":
         if($lastAttackName == "Crouching Tiger") return true;
         break;
-      case "MST164": 
+      case "MST164":
         return ColorContains($chainLinks[count($chainLinks)-1][0], 1, $mainPlayer);
       case "MST165":
         return ColorContains($chainLinks[count($chainLinks)-1][0], 2, $mainPlayer);
@@ -2019,10 +2019,10 @@ function WardAmount($cardID, $player, $index=-1)
     case "MST029": case "MST030": return 1;
     case "MST031": return $auras[$index+3];
     case "MST033": return SearchPitchForColor($player, 3)*3;
-    case "MST037": 
+    case "MST037":
       if(SearchPitchForColor($player, 3) > 0) return 4;
       else return 1;
-    case "MST038": 
+    case "MST038":
       if(SearchPitchForColor($player, 3) > 0) return 3;
       else return 1;
     case "MST039":
@@ -2084,11 +2084,11 @@ function HasWard($cardID, $player)
       return true;
     case "MST131": case "MST132": case "MST133": return true;
     case "MST137": case "MST138": case "MST139": return true;
-    case "MST140": case "MST141": case "MST142": 
-    case "MST143": case "MST144": case "MST145": 
-    case "MST146": case "MST147": case "MST148": 
-    case "MST149": case "MST150": case "MST151": 
-    case "MST155": case "MST156": case "MST157": 
+    case "MST140": case "MST141": case "MST142":
+    case "MST143": case "MST144": case "MST145":
+    case "MST146": case "MST147": case "MST148":
+    case "MST149": case "MST150": case "MST151":
+    case "MST155": case "MST156": case "MST157":
       return true;
     default: return false;
   }
@@ -2205,10 +2205,10 @@ function CardCareAboutChiPitch($cardID)
 {
   $cardID = ShiyanaCharacter($cardID);
   switch($cardID) {
-      case "MST001": case "MST002": 
+      case "MST001": case "MST002":
       case "MST004":
       case "MST025": case "MST026": case "MST027":
-      case "MST046": case "MST047": case "MST048": 
+      case "MST046": case "MST047": case "MST048":
       case "MST238":
       return true;
     default: return false;
@@ -2230,8 +2230,8 @@ function HasCloaked($cardID, $player="", $hero="")
   switch($cardID) {
     case "MST005": case "MST028": case "MST029": case "MST030":
     case "MST049":
-    case "MST067": case "MST068": case "MST069": case "MST070": 
-    case "MST071": case "MST072": case "MST073": case "MST074": 
+    case "MST067": case "MST068": case "MST069": case "MST070":
+    case "MST071": case "MST072": case "MST073": case "MST074":
       return "DOWN";
     default: return "UP";
   }
@@ -2239,8 +2239,8 @@ function HasCloaked($cardID, $player="", $hero="")
 
 function HasEphemeral($cardID) {
   switch($cardID) {
-    case "DYN065": 
-    case "MST023": case "MST024": 
+    case "DYN065":
+    case "MST023": case "MST024":
       return true;
     default: return false;
   }
