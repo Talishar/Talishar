@@ -1,31 +1,5 @@
 <?php
 
-function AURPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
-{
-  global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumLightningPlayed;
-  $rv = "";
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-  switch ($cardID) {
-    case "AUR013":
-      if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0) {
-        DealArcane(3, 0, "PLAYCARD", $cardID);
-      }
-      return "";
-    case "AUR020":
-      if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0) {
-        DealArcane(2, 0, "PLAYCARD", $cardID);
-      }
-      return "";
-    case "AUR014":
-    case "AUR023":
-    case "AUR021":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    default:
-      return "";
-  }
-}
-
 function AKOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer;
@@ -47,45 +21,6 @@ function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ASB025":
       if (GetClassState($currentPlayer, $CS_NumCharged) > 0) $CombatChain->Card(0)->ModifyPower(-2);
-      return "";
-    default:
-      return "";
-  }
-}
-
-function AAZPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
-{
-  global $currentPlayer;
-  switch ($cardID) {
-    case "AAZ004":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "AAZ006":
-      LoadArrow($currentPlayer, "UP", 1);
-      return "";
-    case "AAZ007":
-      GiveAttackGoAgain();
-      return "";
-    case "AAZ005":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      GainResources($currentPlayer, 1);
-      return "";
-    case "AAZ016":
-      if (HasAimCounter()) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-      }
-      return "";
-    case "AAZ024":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      $arsenal = &GetArsenal($currentPlayer);
-      for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-        if (ArsenalHasFaceDownArrowCard($currentPlayer)) {
-          AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_turn_your_arsenal_face_up");
-          AddDecisionQueue("NOPASS", $currentPlayer, "-");
-          AddDecisionQueue("TURNARSENALFACEUP", $currentPlayer, $i, 1);
-          AddDecisionQueue("ADDAIMCOUNTER", $currentPlayer, $i, 1);
-        }
-      }
       return "";
     default:
       return "";
@@ -1024,7 +959,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       AddDecisionQueue("GAINLIFE", $currentPlayer, $xVal + 1);
       return "";
-    case "ROS008":
+    case "ROS007": case "ROS008":
       PlayAura("ELE110", $currentPlayer);
       return "";
     case "ROS033":

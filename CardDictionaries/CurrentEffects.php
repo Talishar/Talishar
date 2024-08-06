@@ -1,21 +1,4 @@
 <?php
-function AAZEffectAttackModifier($cardID): int
-{
-  return match ($cardID) {
-    "AAZ024" => 3,
-    default => 0
-  };
-}
-
-function AAZCombatEffectActive($cardID, $attackID): bool
-{
-  return match ($cardID) {
-    "AAZ024", "AAZ007" => CardSubType($attackID) == "Arrow",
-    "AAZ004" => CardSubType($attackID) == "Arrow" && HasAimCounter(),
-    "AAZ016" => true,
-    default => false
-  };
-}
 
 function TCCEffectAttackModifier($cardID): int|string
 {

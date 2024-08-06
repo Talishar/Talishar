@@ -1,25 +1,26 @@
 <?php
 
-function TerraEndPhaseAbility($characterID, $player): void
-{
-  $resources = &GetResources($player);
-  $hand = &GetHand($player);
-  $earthTalent = SearchCount(SearchPitch($player, talent: "EARTH"));
-  if (($earthTalent >= 1) && (Count($hand) > 0 || $resources[0] > 0)) {
-    AddDecisionQueue("YESNO", $player, "if you want to pay 1 to create a " . CardLink("HVY241", "HVY241"), 0, 1);
-    AddDecisionQueue("NOPASS", $player, "-", 1);
-    AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
-    AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-    AddDecisionQueue("WRITELOG", $player, CardLink($characterID, $characterID) . " created a " . CardLink("HVY241", "HVY241") . " token ", 1);
-    AddDecisionQueue("PASSPARAMETER", $player, "HVY241", 1);
-    AddDecisionQueue("PUTPLAY", $player, "-", 1);
-  }
-}
+/*  Terra First Strike Deck METHODS
+  // Ability Type
+  // Ability Cost
+  // Combat Effect active
+  // Effect Attack Modifier
+  // Play Ability
+  // Hit Effect
+*/
 
-function TEREffectAttackModifier($cardID): int
+function TERAbilityType($cardID): string
 {
   return match ($cardID) {
-    "TER002", "TER012", "TER016" => 1,
+    "TER002" => "AA",
+    default => ""
+  };
+}
+
+function TERAbilityCost($cardID): int
+{
+  return match ($cardID) {
+    "TER002" => 3,
     default => 0
   };
 }
@@ -29,6 +30,14 @@ function TERCombatEffectActive($cardID): bool
   return match ($cardID) {
     "TER002", "TER011", "TER015", "TER012", "TER016" => true,
     default => false
+  };
+}
+
+function TEREffectAttackModifier($cardID): int
+{
+  return match ($cardID) {
+    "TER002", "TER012", "TER016" => 1,
+    default => 0
   };
 }
 
@@ -62,5 +71,21 @@ function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     default:
       return "";
+  }
+}
+
+function TerraEndPhaseAbility($characterID, $player): void
+{
+  $resources = &GetResources($player);
+  $hand = &GetHand($player);
+  $earthTalent = SearchCount(SearchPitch($player, talent: "EARTH"));
+  if (($earthTalent >= 1) && (Count($hand) > 0 || $resources[0] > 0)) {
+    AddDecisionQueue("YESNO", $player, "if you want to pay 1 to create a " . CardLink("HVY241", "HVY241"), 0, 1);
+    AddDecisionQueue("NOPASS", $player, "-", 1);
+    AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
+    AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+    AddDecisionQueue("WRITELOG", $player, CardLink($characterID, $characterID) . " created a " . CardLink("HVY241", "HVY241") . " token ", 1);
+    AddDecisionQueue("PASSPARAMETER", $player, "HVY241", 1);
+    AddDecisionQueue("PUTPLAY", $player, "-", 1);
   }
 }

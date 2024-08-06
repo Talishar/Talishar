@@ -1,21 +1,5 @@
 <?php
 
-function AAZHitEffect($cardID)
-{
-  global $mainPlayer, $defPlayer;
-  switch ($cardID) {
-    case "AAZ016":
-      if (IsHeroAttackTarget() && HasAimCounter()) {
-        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
-        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card to banish", 1);
-        AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
-        AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,NTINT," . $cardID, 1);
-      }
-      break;
-  }
-}
-
 function AKOHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt;
@@ -219,20 +203,6 @@ function HVYHitEffect($cardID)
         }
         break;
       }
-    default:
-      break;
-  }
-}
-
-function AURHitEffect($cardID)
-{
-  global $mainPlayer, $CS_NumLightningPlayed;
-  switch ($cardID) {
-    case "AUR012": case "AUR019":
-      if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0) {
-        DealArcane(1, 0, "PLAYCARD", $cardID, false, $mainPlayer);
-      }
-      break;
     default:
       break;
   }

@@ -1,39 +1,5 @@
 <?php
 
-function TERAbilityCost($cardID)
-{
-  return match ($cardID) {
-    "TER002" => 3,
-    default => 0
-  };
-}
-
-function TERAbilityType($cardID)
-{
-  return match ($cardID) {
-    "TER002" => "AA",
-    default => ""
-  };
-}
-
-function AAZAbilityType($cardID, $index = -1, $from = "-")
-{
-  return match ($cardID) {
-    "AAZ004", "AAZ006" => "A",
-    "AAZ005" => "I",
-    "AAZ007" => "AR",
-    default => ""
-  };
-}
-
-function AAZAbilityHasGoAgain($cardID)
-{
-  return match ($cardID) {
-    "AAZ004", "AAZ006" => true,
-    default => false
-  };
-}
-
 function AKOAbilityCost($cardID)
 {
   return 0;
@@ -153,7 +119,7 @@ function EVOAbilityHasGoAgain($cardID)
 function ROSAbilityType($cardID, $index = -1)
 {
   return match ($cardID) {
-    "ROS008" => "I",
+    "ROS007", "ROS008" => "I",
     "ROS009" => "AA",
     default => ""
   };
@@ -162,7 +128,7 @@ function ROSAbilityType($cardID, $index = -1)
 function ROSAbilityCost($cardID)
 {
   return match ($cardID) {
-    "ROS008" => 2,
+    "ROS007", "ROS008" => 2,
     "ROS009" => 1,
     default => 0
   };
