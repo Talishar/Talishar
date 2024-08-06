@@ -116,24 +116,6 @@ function EVOAbilityHasGoAgain($cardID)
   };
 }
 
-function ROSAbilityType($cardID, $index = -1)
-{
-  return match ($cardID) {
-    "ROS007", "ROS008" => "I",
-    "ROS009" => "AA",
-    default => ""
-  };
-}
-
-function ROSAbilityCost($cardID)
-{
-  return match ($cardID) {
-    "ROS007", "ROS008" => 2,
-    "ROS009" => 1,
-    default => 0
-  };
-}
-
 function DestroyTopCardTarget($player)
 {
   $otherPlayer = ($player == 1 ? 2 : 1);

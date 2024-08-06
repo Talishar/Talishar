@@ -39,6 +39,7 @@ include "CardDictionaries/FirstStrike/AURShared.php";
 include "CardDictionaries/FirstStrike/TERShared.php";
 include "CardDictionaries/PartTheMistveil/MSTShared.php";
 include "CardDictionaries/ArmoryDecks/AAZShared.php";
+include "CardDictionaries/Rosetta/ROSShared.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
 include "GeneratedCode/DatabaseGeneratedCardDictionaries.php";
