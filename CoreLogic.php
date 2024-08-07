@@ -654,6 +654,7 @@ function LoseHealth($amount, $player)
 
 function GainHealth($amount, $player, $silent = false, $preventable = true)
 {
+  global $mainPlayer;
   $otherPlayer = ($player == 1 ? 2 : 1);
   $health = &GetHealth($player);
   $otherHealth = &GetHealth($otherPlayer);
@@ -672,6 +673,29 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
   }
   if (!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
   $health += $amount;
+
+  if ($player == $mainPlayer) {
+    $char = &GetPlayerCharacter($player);
+    for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+      if (intval($char[$i + 1]) < 2) continue;
+      switch ($char[$i]) {
+        case "ROS013":
+          // Now we need to check that we banished 8 earth cards.
+          $results = SearchCount(SearchMultiZone($player, "MYBANISH:TALENT=EARTH"));
+          if ($results >= 8) {
+            AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
+          }
+        case "ROS014":
+          // Now we need to check that we banished 4 earth cards.
+          $results = SearchCount(SearchMultiZone($player, "MYBANISH:TALENT=EARTH"));
+          if ($results >= 4) {
+            AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
+          }
+          return 0;  
+        }
+  }
+
+
   return true;
 }
 
