@@ -1845,6 +1845,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ROS007":
     case "ROS008":
       return GetClassState($player, $CS_NumLightningPlayed) == 0;
+    case "ROS019":
+    case "ROS020":
+      return SearchCount(SearchMultiZone($player, "MYHAND:type=I")) == 0;
     case "ASB004":
       return count($mySoul) == 0;
     case "AAZ005":

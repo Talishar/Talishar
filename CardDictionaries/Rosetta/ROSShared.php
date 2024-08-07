@@ -6,6 +6,7 @@ function ROSAbilityType($cardID, $index = -1): string
   return match ($cardID) {
     "ROS007", "ROS008" => "I",
     "ROS009" => "AA",
+    "ROS019", "ROS020" => "I",
     default => ""
   };
 }
@@ -36,6 +37,10 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS007":
     case "ROS008":
       PlayAura("ELE110", $currentPlayer);
+      return "";
+    case "ROS019":
+    case "ROS020":
+      Draw($currentPlayer);
       return "";
     case "ROS033":
       AddCurrentTurnEffect($cardID, $currentPlayer);

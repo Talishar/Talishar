@@ -107,5 +107,3 @@ function GetArray($handler)
   if ($line == "") return [];
   return explode(" ", $line);
 }
-
-?>

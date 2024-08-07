@@ -2525,6 +2525,11 @@ function PayAdditionalCosts($cardID, $from)
          SetArsenalFacing("UP", $currentPlayer);
       }
       break;
+    case "ROS019":
+    case "ROS020":
+      $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      MZMoveCard($currentPlayer, "MYHAND:type=I", "MYDISCARD,".$currentPlayer);
+      break;
     default:
       break;
   }

@@ -106,5 +106,3 @@ class ChainCard {
       return $this->chain[$this->index+7];
     }
 }
-
-?>

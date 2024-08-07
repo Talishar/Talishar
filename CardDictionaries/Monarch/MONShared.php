@@ -192,5 +192,3 @@
       default: return false;
     }
   }
-
-?>
