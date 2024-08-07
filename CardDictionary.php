@@ -104,8 +104,7 @@ function CardSubType($cardID, $uniqueID = -1)
     global $currentTurnEffects;
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
       $effectArr = explode("-", $currentTurnEffects[$i]);
-      if ($effectArr[0] != "EVO013") continue;
-      if ($effectArr[0] != "ROS246") continue;
+      if ($effectArr[0] != "EVO013" && $effectArr[0] != "ROS246") continue;
       $effectArr = explode(",", $effectArr[1]);
       if ($effectArr[0] != $uniqueID) continue;
       return $effectArr[1];

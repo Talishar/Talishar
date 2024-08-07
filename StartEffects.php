@@ -173,7 +173,7 @@ function InventoryStartGameAbilities($player)
       case "EVO013":
         AddDecisionQueue("LISTEMPTYEQUIPSLOTS", $player, "-");
         AddDecisionQueue("SETDQVAR", $player, "0", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to equip your " . CardLink($inventory[$i], $inventory[$i]) . " (one at a time)", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to equip your " . CardLink($inventory[$i], $inventory[$i]), 1);
         AddDecisionQueue("BUTTONINPUT", $player, "{0},None", 1);
         AddDecisionQueue("MODAL", $player, "ADAPTIVEPLATING", 1);
         AddDecisionQueue("SHOWMODES", $player, "EVO013", 1);
@@ -181,10 +181,11 @@ function InventoryStartGameAbilities($player)
       case "ROS246":
         AddDecisionQueue("LISTEMPTYEQUIPSLOTS", $player, "-");
         AddDecisionQueue("SETDQVAR", $player, "0", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to equip your " . CardLink($inventory[$i], $inventory[$i]) . " (one at a time)", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to equip your " . CardLink($inventory[$i], $inventory[$i]), 1);
         AddDecisionQueue("BUTTONINPUT", $player, "{0},None", 1);
         AddDecisionQueue("MODAL", $player, "ADAPTIVEDISSOLVER", 1);
         AddDecisionQueue("SHOWMODES", $player, "ROS246", 1);
+        break;
       default:
         break;
     }
