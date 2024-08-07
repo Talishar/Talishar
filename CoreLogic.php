@@ -1523,7 +1523,7 @@ function DoesAttackHaveGoAgain()
     case "AUR011":
     case "AUR024":
     case "ROS009":
-      return (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0);
+      return GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0;
     default:
       return false;
   }

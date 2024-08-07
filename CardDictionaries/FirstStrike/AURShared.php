@@ -31,9 +31,7 @@ function AURCombatEffectActive($cardID, $attackID): bool|string
 
 function AURPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumLightningPlayed;
-  $rv = "";
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  global $currentPlayer, $mainPlayer, $CS_NumLightningPlayed;
   switch ($cardID) {
     case "AUR013":
       if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0) {

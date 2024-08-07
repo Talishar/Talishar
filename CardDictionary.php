@@ -716,14 +716,13 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "ROG") return ROGUEAbilityType($cardID, $index);
   else if ($set == "ROS") return ROSAbilityType($cardID, $index);
   else if ($set == "ASB") return ASBAbilityType($cardID, $index);
-  else if ($set == "TER") return TERAbilityType($cardID, $index);
+  else if ($set == "TER") return TERAbilityType($cardID);
   else if ($cardID == "HER117") return "I";
 }
 
 function GetAbilityTypes($cardID, $index = -1, $from = "-")
 {
-  global $CS_NumActionsPlayed, $mainPlayer, $currentPlayer, $CS_PlayIndex;
-  $auras = &GetAuras($currentPlayer);
+  global $currentPlayer, $CS_PlayIndex;
   if ($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
   switch ($cardID) {
     case "ARC003":
@@ -753,7 +752,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-")
 
 function GetAbilityNames($cardID, $index = -1, $from = "-")
 {
-  global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $phase, $CS_PlayIndex, $CS_NumActionsPlayed;
+  global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $CS_PlayIndex, $CS_NumActionsPlayed;
   $character = &GetPlayerCharacter($currentPlayer);
   $auras = &GetAuras($currentPlayer);
   $names = "";
