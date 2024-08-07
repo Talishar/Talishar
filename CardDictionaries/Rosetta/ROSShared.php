@@ -80,7 +80,7 @@ function ROSHitEffect($cardID): void
         SetArsenalFacing("UP", $defPlayer);
       }
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRARS:type=A");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to destroy", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to banish", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZBANISH", $currentPlayer, "THEIRARS", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
@@ -90,7 +90,7 @@ function ROSHitEffect($cardID): void
         SetArsenalFacing("UP", $defPlayer);
       }
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRARS:type=AA");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to destroy", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to banish", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZBANISH", $currentPlayer, "THEIRARS", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
@@ -100,7 +100,7 @@ function ROSHitEffect($cardID): void
         SetArsenalFacing("UP", $defPlayer);
       }
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRARS:type=I");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to destroy", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to banish", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZBANISH", $currentPlayer, "THEIRARS", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
