@@ -63,6 +63,7 @@ function ProcessHitEffect($cardID, $from = "-")
   else if ($set == "MST") return MSTHitEffect($cardID, $from);
   else if ($set == "AAZ") return AAZHitEffect($cardID);
   else if ($set == "AUR") return AURHitEffect($cardID);
+  else if ($set == "ROS") return ROSHitEffect($cardID);
   else return -1;
 }
 
