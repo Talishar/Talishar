@@ -100,11 +100,12 @@ function CardType($cardID)
 function CardSubType($cardID, $uniqueID = -1)
 {
   if (!$cardID) return "";
-  if ($uniqueID > -1 && $cardID == "EVO013") { //Adaptive Plating
+  if ($uniqueID > -1 && IsModular($cardID)) {
     global $currentTurnEffects;
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
       $effectArr = explode("-", $currentTurnEffects[$i]);
       if ($effectArr[0] != "EVO013") continue;
+      if ($effectArr[0] != "ROS246") continue;
       $effectArr = explode(",", $effectArr[1]);
       if ($effectArr[0] != $uniqueID) continue;
       return $effectArr[1];
@@ -3787,6 +3788,7 @@ function IsModular($cardID)
 {
   switch ($cardID) {
     case "EVO013":
+    case "ROS246":
       return true;
     default:
       return false;

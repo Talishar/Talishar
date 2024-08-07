@@ -738,6 +738,7 @@ function EquipEquipment($player, $card, $slot = "")
     array_splice($char, $insertIndex + 12, 0, HasCloaked($card, $player));
   }
   if ($card == "EVO013") AddCurrentTurnEffect("EVO013-" . $uniqueID . "," . $slot, $player);
+  if ($card == "ROS246") AddCurrentTurnEffect("ROS246-" . $uniqueID . "," . $slot, $player);
 }
 
 function EquipWeapon($player, $card)

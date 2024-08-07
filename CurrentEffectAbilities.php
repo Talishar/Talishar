@@ -1526,7 +1526,7 @@ function CurrentEffectEndTurnAbilities()
           $remove = true;
         }
         break;
-      case "EVO013":
+      case "EVO013": case "ROS246":
         AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i + 1]);
         break;
       default:
@@ -1562,7 +1562,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "MST") return MSTCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "ROG") return ROGUECombatEffectActive($cardID, $cardToCheck);
   else if ($set == "AAZ") return AAZCombatEffectActive($cardID, $cardToCheck);
-  else if ($set == "TER") return TERCombatEffectActive($cardID, $cardToCheck);
+  else if ($set == "TER") return TERCombatEffectActive($cardID);
   else if ($set == "AUR") return AURCombatEffectActive($cardID, $cardToCheck);
 
   switch ($cardID) {
@@ -1998,6 +1998,7 @@ function AdministrativeEffect($effectID)
   $cardID = substr($effectID, 0, 6);
   switch ($cardID) {
     case "EVO013":
+    case "ROS246":
       return true;
     default:
       return false;

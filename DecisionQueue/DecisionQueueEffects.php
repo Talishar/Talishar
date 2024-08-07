@@ -255,6 +255,10 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       if(is_array($lastResult) && count($lastResult) > 0) $lastResult = $lastResult[0];
       if($lastResult != "None") EquipEquipment($player, "EVO013", $lastResult);
       return $lastResult;
+    case "ADAPTIVEDISSOLVER":
+      if(is_array($lastResult) && count($lastResult) > 0) $lastResult = $lastResult[0];
+      if($lastResult != "None") EquipEquipment($player, "ROS246", $lastResult);
+      return $lastResult;
     case "UPTHEANTE":
       $numNewWagers = 0;
       $params = explode(",", $lastResult);
