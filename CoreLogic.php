@@ -692,10 +692,9 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
             AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
           return 0;  
-        }
+      }
+    }
   }
-
-
   return true;
 }
 
