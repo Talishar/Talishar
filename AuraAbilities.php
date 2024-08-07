@@ -953,6 +953,27 @@ function AuraHitEffects($attackID)
   }
 }
 
+function AuraDamageEffects($source)
+{
+  global $mainPlayer;
+  $auras = &GetAuras($mainPlayer);
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    $remove = 0;
+    switch ($auras[$i]) {
+      case "ROS077":
+        if ($auras[$i + 5] > 0 && isHeroAttackTarget()) {
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " draws a card");
+          --$auras[$i + 5];
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $source, $auras[$i + 6]);
+        }
+        break;
+      default:
+        break;
+    }
+    if ($remove == 1) DestroyAura($mainPlayer, $i);
+  }
+}
+
 function AuraAttackModifiers($index, &$attackModifiers)
 {
   global $CombatChain, $combatChainState, $CCS_AttackPlayedFrom, $combatChain;
