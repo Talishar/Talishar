@@ -1058,6 +1058,15 @@ function CharacterModifiesPlayAura($player, $isToken)
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
     if (intval($char[$i + 1]) < 2) continue;
     switch ($char[$i]) {
+      case "ROS001":
+        if (!$isToken) return 0;
+        // Now we need to check that we banished 4 earth cards.
+        $results = SearchCount(SearchMultiZone($player, "MYBANISH:TALENT=EARTH"));
+        if ($results >= 8) {
+          WriteLog(CardLink($char[$i], $char[$i]) . " increases the number of auras tokens created by 1.");
+          return 1;
+        }
+        return 0;
       case "ROS002":
         if (!$isToken) return 0;
         // Now we need to check that we banished 4 earth cards.
