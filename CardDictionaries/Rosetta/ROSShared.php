@@ -63,7 +63,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function ROSHitEffect($cardID): void
 {
-  global $currentPlayer;
+  global $currentPlayer, $defPlayer;
   switch ($cardID) {
     case "ROS082":
     case "ROS083":
@@ -74,6 +74,36 @@ function ROSHitEffect($cardID): void
     case "ROS037":
     case "ROS038":
       PlayAura("ELE109", $currentPlayer);
+      break;
+    case "ROS220":
+      if (ArsenalHasFaceDownCard($defPlayer)) {
+        SetArsenalFacing("UP", $defPlayer);
+      }
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRARS:type=A");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to banish", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZBANISH", $currentPlayer, "THEIRARS", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      break;
+    case "ROS221":
+      if (ArsenalHasFaceDownCard($defPlayer)) {
+        SetArsenalFacing("UP", $defPlayer);
+      }
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRARS:type=AA");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to banish", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZBANISH", $currentPlayer, "THEIRARS", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      break;
+    case "ROS222":
+      if (ArsenalHasFaceDownCard($defPlayer)) {
+        SetArsenalFacing("UP", $defPlayer);
+      }
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRARS:type=I");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to banish", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZBANISH", $currentPlayer, "THEIRARS", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       break;
     default:
       break;
