@@ -293,6 +293,22 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
         }
       }
       return $lastResult;
+    case "MELDCARD":
+      switch($lastResult) {
+        case "Left": return Draw($player);
+        case "Meld": {
+          Draw($player);
+          Draw($player);
+          Draw($player);
+          return $lastResult;
+        }
+        case "Right": {
+          Draw($player);
+          Draw($player);
+          return $lastResult;
+        }
+      }
+      return $lastResult;
     default: return "";
   }
 }

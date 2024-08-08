@@ -941,7 +941,9 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1 && CanPlayInstant($phase) && $auras[$index + 3] > 0) return true;
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
   }
-  if (($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
+  if (($cardType == "I" || CanPlayAsInstant($cardID, $index, $from) || IsMeldCardInstant($cardID)) &&
+    CanPlayInstant($phase)
+  ) return true;
   if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID) && $phase != "B") return true;
   if (($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
   if ($cardID == "DYN492a" || $cardID == "EVO410") {

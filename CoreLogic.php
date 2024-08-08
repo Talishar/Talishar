@@ -691,7 +691,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
           if ($results >= 4) {
             AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
-          return 0;  
+          return 0;
       }
     }
   }
@@ -1190,6 +1190,20 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
       break;
   }
   return false;
+}
+
+function IsMeldCardInstant($cardID): bool
+{
+  return match ($cardID) {
+    "ROS018" => MeldCardContainsInstant($cardID),
+    default => false,
+  };
+}
+
+function MeldCardContainsInstant($cardID): bool
+{
+  $types = explode(",", GetAbilityType($cardID));
+  return in_array("I", $types);
 }
 
 function ClassOverride($cardID, $player = "")
@@ -1761,7 +1775,7 @@ function LootAtArsenal($player)
 {
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    if ($arsenal[$i+1] == "DOWN") {
+    if ($arsenal[$i + 1] == "DOWN") {
       RevealCards($arsenal[$i], $player);
     }
   }

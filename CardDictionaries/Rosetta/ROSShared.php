@@ -4,9 +4,9 @@
 function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
-    "ROS007", "ROS008" => "I",
+    "ROS007", "ROS008", "ROS019", "ROS020" => "I",
     "ROS009" => "AA",
-    "ROS019", "ROS020" => "I",
+    "ROS018" => "A,I",
     default => ""
   };
 }
@@ -70,9 +70,21 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       return "";
+    case "ROS018":
+      // AddLayer("TRIGGER", $currentPlayer, "DYN214", "-", "-");
+      PlayMeldCard($currentPlayer, $cardID);
+      return "";
     default:
       return "";
   }
+}
+
+function PlayMeldCard($player, $cardID): void
+{
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose which side to play");
+  AddDecisionQueue("BUTTONINPUT", $player, "Left,Meld,Right");
+  AddDecisionQueue("SHOWMODES", $player, $cardID, 1);
+  AddDecisionQueue("MODAL", $player, "MELDCARD", 1);
 }
 
 function ROSHitEffect($cardID): void
