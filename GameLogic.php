@@ -35,6 +35,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (count($parameters) > 1) $subparam = $parameters[1];
       else $subparam = "";
       switch ($parameter) {
+        case "TRAPS":
+          $rv = GetTrapIndices($player);
+          break;
         case "GETINDICES":
           $rv = GetIndices($subparam);
           break;
@@ -160,6 +163,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "MULTITRAPSBANISH":
           $rv = SearchDiscard($player, subtype: "Trap");
+          break;
+        case "MULTITRAPSHAND":
+          $rv = SearchDeck($player, subtype: "Trap");
           break;
         case "GY":
           $discard = &GetDiscard($player);
