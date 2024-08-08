@@ -1634,7 +1634,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
-    case "ELE215":
+    case "ELE215": case "ROS247":
       DestroyArsenal($target, effectController: $player);
       DiscardHand($target, false);
       break;

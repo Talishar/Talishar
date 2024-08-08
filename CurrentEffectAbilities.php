@@ -1803,7 +1803,7 @@ function BeginEndPhaseEffectTriggers()
   if (!IsImmuneToBloodDebt($mainPlayer) && $numBloodDebt > 0) AddLayer("TRIGGER", $mainPlayer, "BLOODDEBT");
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     switch ($currentTurnEffects[$i]) {
-      case "ELE215-1":
+      case "ELE215-1": case "ROS247-1":
         AddLayer("TRIGGER", $defPlayer, "ELE215", $currentTurnEffects[$i + 1], "-", "-");
         break;
       case "DYN153":
