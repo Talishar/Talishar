@@ -691,7 +691,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
           if ($results >= 4) {
             AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
-          return 0;  
+          return 0;
       }
     }
   }
@@ -1755,6 +1755,16 @@ function LookAtHand($player)
     $cards .= $hand[$i];
   }
   RevealCards($cards, $player);
+}
+
+function LootAtArsenal($player)
+{
+  $arsenal = &GetArsenal($player);
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if ($arsenal[$i + 1] == "DOWN") {
+      RevealCards($arsenal[$i], $player);
+    }
+  }
 }
 
 function GainActionPoints($amount = 1, $player = 0)

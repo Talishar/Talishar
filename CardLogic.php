@@ -398,6 +398,9 @@ function ContinueDecisionQueue($lastResult = "")
         } else if ($cardID == "TRIGGER") {
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
+        } else if ($cardID == "MELDTRIGGER") {
+          ProcessMeldTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
+          ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
           PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, isset($params[3]) ? $params[3] : "-1", isset($params[2]) ? $params[2] : -1);
@@ -458,7 +461,7 @@ function ContinueDecisionQueue($lastResult = "")
   $phase = array_shift($decisionQueue);
   $player = array_shift($decisionQueue);
   $parameter = array_shift($decisionQueue);
-  //WriteLog($phase . " " . $player . " " . $parameter . " " . $lastResult);//Uncomment this to visualize decision queue execution
+  // WriteLog($phase . " " . $player . " " . $parameter . " " . $lastResult);//Uncomment this to visualize decision queue execution
   if (count($dqVars) > 0) {
     if (str_contains($parameter, "{0}")) $parameter = str_replace("{0}", $dqVars[0], $parameter);
     if (str_contains($parameter, "<0>")) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
@@ -1252,6 +1255,22 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
   }
 }
 
+function ProcessMeldTrigger($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-"): void
+{
+  switch ($parameter) {
+    case "ROS018-Right":
+    {
+      ROS018RightAbility($player);
+      break;
+    }
+    case "ROS018-Left":
+    {
+      ROS018LeftAbility($player);
+      break;
+    }
+  }
+}
+
 function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex, $CombatChain;
@@ -1635,6 +1654,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ELE215":
+    case "ROS247":
       DestroyArsenal($target, effectController: $player);
       DiscardHand($target, false);
       break;
@@ -2368,7 +2388,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
       AddDecisionQueue("PLAYAURA", $player, "WTR225-1", 1); // Quicken
       break;
-    case "ROS013": case "ROS014":
+    case "ROS013":
+    case "ROS014":
       DealArcane(1, $target, "ABILITY", $parameter, true);
       break;
     case "ROS033":

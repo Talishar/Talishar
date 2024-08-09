@@ -3,7 +3,7 @@
 function ModalAbilities($player, $card, $lastResult, $index=-1)
 {
   global $combatChain, $defPlayer, $CombatChain, $combatChainState, $CS_ModalAbilityChoosen, $dqVars;
-  SetClassState($player, $CS_ModalAbilityChoosen, $card."-".$lastResult[0]);  
+  SetClassState($player, $CS_ModalAbilityChoosen, $card."-".$lastResult[0]);
   AddDecisionQueue("CURRENTEFFECTAFTERPLAYORACTIVATEABILITY", $player, "<-");
   switch($card)
   {
@@ -33,7 +33,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       for($i = 0; $i < count($lastResult); ++$i) {
         switch($lastResult[$i]) {
           case "Draw_a_card": {
-            Draw($player); 
+            Draw($player);
             break;
           }
           case "Buff_Power": {
@@ -41,7 +41,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
             break;
           }
           case "Go_again": {
-            GiveAttackGoAgain(); 
+            GiveAttackGoAgain();
             break;
           }
         }
@@ -290,6 +290,23 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
             $CombatChain->AttackCard()->ModifyPower(intval($combatChainState[$CCS_WagersThisLink]) + $numNewWagers);
             break;
           default: break;
+        }
+      }
+      return $lastResult;
+    case "MELDCARD":
+      switch($lastResult) {
+        case "Right": {
+          AddLayer("MELDTRIGGER", $player, $index . "-Right");
+          break;
+        }
+        case "Left": {
+          AddLayer("MELDTRIGGER", $player, $index . "-Left");
+          break;
+        }
+        case "Meld": {
+          AddLayer("MELDTRIGGER", $player, $index . "-Left");
+          AddLayer("MELDTRIGGER", $player, $index . "-Right");
+          break;
         }
       }
       return $lastResult;

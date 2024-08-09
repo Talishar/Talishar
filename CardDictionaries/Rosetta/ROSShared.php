@@ -4,9 +4,8 @@
 function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
-    "ROS007", "ROS008" => "I",
+    "ROS007", "ROS008", "ROS019", "ROS020" => "I",
     "ROS009" => "AA",
-    "ROS019", "ROS020" => "I",
     default => ""
   };
 }
@@ -56,6 +55,23 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         BottomDeck($otherPlayer);
       }
       return "";
+    case "ROS247":
+      LookAtHand($otherPlayer);
+      LootAtArsenal($otherPlayer);
+      AddNextTurnEffect($cardID . "-1", $otherPlayer);
+      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
+      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
+      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, 2 . "-", 1);
+      AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+      AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+      return "";
+    case "ROS018":
+      PlayMeldCard($currentPlayer, $cardID);
+      return "";
     default:
       return "";
   }
@@ -78,4 +94,9 @@ function ROSHitEffect($cardID): void
     default:
       break;
   }
+}
+
+function GetTrapIndices($player)
+{
+  return SearchDeck($player, subtype: "Trap");
 }
