@@ -1,5 +1,18 @@
 <?php
 
+function PlayPartMeldAbility($cardId)
+{
+  global $currentPlayer;
+  switch ($cardId) {
+    case "ROS018-Left":
+      ROS018LeftAbility($currentPlayer);
+      return "";
+    case "ROS018-Right":
+      ROS018RightAbility($currentPlayer);
+      return "";
+  }
+}
+
 function IsMeldCard($cardId): bool
 {
   return match ($cardId) {
@@ -37,38 +50,33 @@ function MeldCardAbilityTypes($cardID): string
 
 function PlayMeldCard($player, $cardID): void
 {
+  global $turn;
   if (AreBothPartsPlayable($cardID)) {
-
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose which side to play");
+    AddDecisionQueue("BUTTONINPUT", $player, "Left,Meld,Right");
+    AddDecisionQueue("SHOWMODES", $player, $cardID, 1);
+    AddDecisionQueue("MODAL", $player, "MELDCARD," . $cardID, 1);
+  } elseif (IsPlayable($cardID . "-Right", $turn[0], "HAND")) {
+    PlayPartMeldAbility($cardID . "-Right");
+  } elseif (IsPlayable($cardID . "-Left", $turn[0], "HAND")) {
+    PlayPartMeldAbility($cardID . "-Left");
   }
-  AddDecisionQueue("SETDQCONTEXT", $player, "Choose which side to play");
-  AddDecisionQueue("BUTTONINPUT", $player, "Left,Meld,Right");
-  AddDecisionQueue("SHOWMODES", $player, $cardID, 1);
-  AddDecisionQueue("MODAL", $player, "MELDCARD," . $cardID, 1);
 }
 
 function AreBothPartsPlayable($cardID): bool
 {
-  if (AreBothSidesInstant($cardID)) {
-    return true;
-  } elseif (IsPlayable($cardID, "P", "HAND")) {
-    return true;
-  }
+  global $turn;
+  return IsPlayable($cardID . "-Left", $turn[0], "HAND") &&
+    IsPlayable($cardID . "-Right", $turn[0], "HAND");
 }
 
-function MeldCardContainsInstant($cardID): bool
+function ROS018LeftAbility($player): void
 {
-  $types = explode(",", GetAbilityType($cardID));
-  return in_array("I", $types);
+  DealArcane(4, 2, "PLAYCARD", "ROS018", false, $player);
+  GainActionPoints(-1);
 }
 
-function MeldCardContainsAction($cardID): bool
+function ROS018RightAbility($player): void
 {
-  $types = explode(",", GetAbilityType($cardID));
-  return in_array("A", $types);
-}
-
-function AreBothSidesInstant($cardID): bool
-{
-  $types = explode(",", GetAbilityType($cardID));
-  return $types[0] === "I" && $types[1] === "I";
+  GainHealth(1, $player);
 }

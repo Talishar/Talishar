@@ -1270,12 +1270,12 @@ function ProcessMeldTrigger($player, $parameter, $uniqueID, $target = "-", $addi
   switch ($parameter) {
     case "ROS018-Right":
     {
-      GainHealth(1, $player);
+      ROS018RightAbility($player);
       break;
     }
     case "ROS018-Left":
     {
-      DealArcane(4, 2, "PLAYCARD", $params[0], false, $player, resolvedTarget: $target);
+      ROS018LeftAbility($player);
       break;
     }
   }
