@@ -40,6 +40,7 @@ include "CardDictionaries/FirstStrike/TERShared.php";
 include "CardDictionaries/PartTheMistveil/MSTShared.php";
 include "CardDictionaries/ArmoryDecks/AAZShared.php";
 include "CardDictionaries/Rosetta/ROSShared.php";
+include "MeldCardLogic.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
 include "GeneratedCode/DatabaseGeneratedCardDictionaries.php";
@@ -56,6 +57,14 @@ $CID_TekloLegs = "LGS189";
 function CardType($cardID)
 {
   if (!$cardID) return "";
+
+  if (IsMeldCard($cardID)) {
+    return MeldCardAbilityTypes($cardID);
+  }
+  if (IsPartOfMeldCard($cardID)) {
+    return  MeldCardPartAbilityTypes($cardID);
+  }
+
   if ($cardID == "HVY096") return "W,E";
   $set = CardSet($cardID);
   if ($set != "ROG" && $set != "DUM") {
@@ -941,8 +950,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1 && CanPlayInstant($phase) && $auras[$index + 3] > 0) return true;
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
   }
-  if (($cardType == "I" || CanPlayAsInstant($cardID, $index, $from) || IsMeldCardInstant($cardID)) &&
-    CanPlayInstant($phase)
+  if (($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)
   ) return true;
   if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID) && $phase != "B") return true;
   if (($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
@@ -972,9 +980,14 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
         return false;
       }
       return true;
-    default:
-      return false;
   }
+
+  if (IsMeldCard($cardID)) {
+    return IsPlayable($cardID . "-Right", $phase, $from) ||
+      IsPlayable($cardID . "-Left", $phase, $from);
+  }
+
+  return false;
 }
 
 function IsBlockRestricted($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "")

@@ -1192,20 +1192,6 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
   return false;
 }
 
-function IsMeldCardInstant($cardID): bool
-{
-  return match ($cardID) {
-    "ROS018" => MeldCardContainsInstant($cardID),
-    default => false,
-  };
-}
-
-function MeldCardContainsInstant($cardID): bool
-{
-  $types = explode(",", GetAbilityType($cardID));
-  return in_array("I", $types);
-}
-
 function ClassOverride($cardID, $player = "")
 {
   global $currentTurnEffects;

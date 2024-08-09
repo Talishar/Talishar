@@ -1273,7 +1273,8 @@ function ProcessMeldTrigger($player, $parameter, $uniqueID, $target = "-", $addi
       GainHealth(1, $player);
       break;
     }
-    case "ROS018-Left": {
+    case "ROS018-Left":
+    {
       DealArcane(4, 2, "PLAYCARD", $params[0], false, $player, resolvedTarget: $target);
       break;
     }
@@ -1662,7 +1663,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
-    case "ELE215": case "ROS247":
+    case "ELE215":
+    case "ROS247":
       DestroyArsenal($target, effectController: $player);
       DiscardHand($target, false);
       break;
@@ -2396,7 +2398,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
       AddDecisionQueue("PLAYAURA", $player, "WTR225-1", 1); // Quicken
       break;
-    case "ROS013": case "ROS014":
+    case "ROS013":
+    case "ROS014":
       DealArcane(1, $target, "ABILITY", $parameter, true);
       break;
     case "ROS033":
@@ -2633,14 +2636,6 @@ function ModifiedAttackValue($cardID, $player, $from, $source = "")
   }
   $attack += ItemsAttackModifiers($cardID, $player, $from);
   return $attack;
-}
-
-function PlayMeldCard($player, $cardID): void
-{
-  AddDecisionQueue("SETDQCONTEXT", $player, "Choose which side to play");
-  AddDecisionQueue("BUTTONINPUT", $player, "Left,Meld,Right");
-  AddDecisionQueue("SHOWMODES", $player, $cardID, 1);
-  AddDecisionQueue("MODAL", $player, "MELDCARD," . $cardID, 1);
 }
 
 function Intimidate($player = "")
