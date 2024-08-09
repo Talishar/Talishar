@@ -1257,16 +1257,6 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 
 function ProcessMeldTrigger($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-"): void
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex, $CombatChain;
-  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
-  global $CS_DamagePrevention;
-  $items = &GetItems($player);
-  $auras = &GetAuras($player);
-  $params = explode("-", $parameter);
-  $parameter = ShiyanaCharacter($parameter);
-  $EffectContext = $params[0];
-  $otherPlayer = ($player == 1 ? 2 : 1);
-
   switch ($parameter) {
     case "ROS018-Right":
     {
