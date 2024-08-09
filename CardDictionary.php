@@ -59,7 +59,6 @@ function CardType($cardID)
   if (!$cardID) return "";
 
   if (IsMeldCard($cardID)) {
-    writelog("CardType -> CARDID = " . $cardID);
     return MeldCardAbilityTypes($cardID);
   }
   if (IsPartOfMeldCard($cardID)) {
@@ -842,7 +841,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
   global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer;
   global $CombatChain;
-  writelog("Hemos llegado hasta aquí 1 " . $cardID);
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
   $myArsenal = &GetArsenal($player);
@@ -854,7 +852,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $discard = &GetDiscard($currentPlayer);
   $restriction = "";
   $cardType = CardType($cardID);
-  writelog("Card Type is " . $cardType);
   $subtype = CardSubType($cardID);
   $abilityType = GetAbilityType($cardID, $index, $from);
   $abilityTypes = GetAbilityTypes($cardID, $index, $from);
@@ -881,7 +878,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $restriction = "Frozen";
     return false;
   }
-  writelog("Hemos llegado hasta aquí 4 " . $cardID);
   if ($from == "PLAY" && DelimStringContains($subtype, "Ally") && $phase != "B" && isset($myAllies[$index + 3]) && $myAllies[$index + 3] == "1") {
     $restriction = "Frozen";
     return false;
@@ -904,7 +900,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       }
     }
   }
-  writelog("Hemos llegado hasta aquí 10 " . $cardID);
   if ($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player)) || $cardID == "OUT184" || HasAmbush($cardID))) return false;
   if ($phase == "B" || $phase == "D") {
     if ($cardType == "AA") {
@@ -935,7 +930,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if ($from != "ARS") return false;
     if (!SubtypeContains($character[CharacterPieces()], "Bow") && !SubtypeContains($character[CharacterPieces() * 2], "Bow")) return false;
   }
-  writelog("Hemos llegado hasta aquí 15 " . $cardID);
   if (SearchCurrentTurnEffects("ARC044", $player) && !$isStaticType && $from != "ARS") return false;
   if (SearchCurrentTurnEffects("ARC043", $player)) {
     if (($cardType == "A" || $cardType == "AA") && !str_contains($abilityTypes, "I") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
@@ -956,7 +950,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1 && CanPlayInstant($phase) && $auras[$index + 3] > 0) return true;
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
   }
-  writelog("Hemos llegado hasta aquí 20 " . $cardID . " and phase is " . $phase);
   if (($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)
   ) return true;
   if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID) && $phase != "B") return true;
@@ -973,7 +966,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     }
     return false;
   }
-  writelog("Hemos llegado hasta aquí 25 " . $cardID);
   switch ($cardType) {
     case "A":
       return $phase == "M";
@@ -990,7 +982,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       return true;
   }
 
-  writelog("Hemos llegado hasta aquí 30 " . $cardID);
   if (IsMeldCard($cardID)) {
     return IsPlayable($cardID . "-Right", $phase, $from) ||
       IsPlayable($cardID . "-Left", $phase, $from);
