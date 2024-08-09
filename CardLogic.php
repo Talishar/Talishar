@@ -398,6 +398,9 @@ function ContinueDecisionQueue($lastResult = "")
         } else if ($cardID == "TRIGGER") {
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
+        } else if ($cardID == "MELDTRIGGER") {
+          ProcessMeldTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
+          ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
           PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, isset($params[3]) ? $params[3] : "-1", isset($params[2]) ? $params[2] : -1);
@@ -458,7 +461,7 @@ function ContinueDecisionQueue($lastResult = "")
   $phase = array_shift($decisionQueue);
   $player = array_shift($decisionQueue);
   $parameter = array_shift($decisionQueue);
-  //WriteLog($phase . " " . $player . " " . $parameter . " " . $lastResult);//Uncomment this to visualize decision queue execution
+  // WriteLog($phase . " " . $player . " " . $parameter . " " . $lastResult);//Uncomment this to visualize decision queue execution
   if (count($dqVars) > 0) {
     if (str_contains($parameter, "{0}")) $parameter = str_replace("{0}", $dqVars[0], $parameter);
     if (str_contains($parameter, "<0>")) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
@@ -1249,6 +1252,31 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
       break;
     default:
       break;
+  }
+}
+
+function ProcessMeldTrigger($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-"): void
+{
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex, $CombatChain;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
+  global $CS_DamagePrevention;
+  $items = &GetItems($player);
+  $auras = &GetAuras($player);
+  $params = explode("-", $parameter);
+  $parameter = ShiyanaCharacter($parameter);
+  $EffectContext = $params[0];
+  $otherPlayer = ($player == 1 ? 2 : 1);
+
+  switch ($parameter) {
+    case "ROS018-Right":
+    {
+      GainHealth(1, $player);
+      break;
+    }
+    case "ROS018-Left": {
+      DealArcane(4, 2, "PLAYCARD", $params[0], false, $player, resolvedTarget: $target);
+      break;
+    }
   }
 }
 
@@ -2605,6 +2633,14 @@ function ModifiedAttackValue($cardID, $player, $from, $source = "")
   }
   $attack += ItemsAttackModifiers($cardID, $player, $from);
   return $attack;
+}
+
+function PlayMeldCard($player, $cardID): void
+{
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose which side to play");
+  AddDecisionQueue("BUTTONINPUT", $player, "Left,Meld,Right");
+  AddDecisionQueue("SHOWMODES", $player, $cardID, 1);
+  AddDecisionQueue("MODAL", $player, "MELDCARD," . $cardID, 1);
 }
 
 function Intimidate($player = "")

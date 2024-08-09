@@ -71,20 +71,11 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       return "";
     case "ROS018":
-      // AddLayer("TRIGGER", $currentPlayer, "DYN214", "-", "-");
       PlayMeldCard($currentPlayer, $cardID);
       return "";
     default:
       return "";
   }
-}
-
-function PlayMeldCard($player, $cardID): void
-{
-  AddDecisionQueue("SETDQCONTEXT", $player, "Choose which side to play");
-  AddDecisionQueue("BUTTONINPUT", $player, "Left,Meld,Right");
-  AddDecisionQueue("SHOWMODES", $player, $cardID, 1);
-  AddDecisionQueue("MODAL", $player, "MELDCARD", 1);
 }
 
 function ROSHitEffect($cardID): void
