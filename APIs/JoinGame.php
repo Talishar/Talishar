@@ -94,6 +94,14 @@ include "../CardDictionary.php";
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
+$joinerName = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "Player 2");
+if((($p1uid == "zeni" || $p1uid == "rkhalid890") && $joinerName == "starmorgs") || ($p1uid == "starmorgs" && ($joinerName == "zeni" || $joinerName == "rkhalid890"))) {
+  $response->error = "Unable to join this game.";
+  WriteGameFile();
+  echo (json_encode($response));
+  exit;
+}
+
 if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
   if ($gameStatus >= $MGS_GameStarted) {
     $response->gameStarted = true;
@@ -699,7 +707,7 @@ function IsCardBanned($cardID, $format, $character)
   $set = substr($cardID, 0, 3);
   if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R")) return true;
   if ($format == "clash") return !isClashLegal($cardID, $character);
-  
+
   //Ban spoiler cards in non-open-format
   if(($format != "openformatcc" && $format != "openformatblitz") && $set == "ROS" && $cardID != "ROS008" && $cardID != "ROS009" && $cardID != "ROS092" && $cardID != "ROS093" && $cardID != "ROS094") return true; // Launch 20th September
 
