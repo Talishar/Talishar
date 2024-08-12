@@ -24,6 +24,7 @@ if ($targetAuthKey != "" && $authKey != $targetAuthKey) exit;
 
 $uid = "-";
 if (isset($_SESSION['useruid'])) $uid = $_SESSION['useruid'];
+if($uid == "starmorgs") exit;
 $displayName = ($uid != "-" ? $uid : "Player " . $playerID);
 
 $chatText = "";
