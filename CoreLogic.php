@@ -1757,7 +1757,7 @@ function LookAtHand($player)
   RevealCards($cards, $player);
 }
 
-function LootAtArsenal($player)
+function LookAtArsenal($player)
 {
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {

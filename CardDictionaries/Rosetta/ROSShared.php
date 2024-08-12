@@ -58,7 +58,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS247":
       LookAtHand($otherPlayer);
-      LootAtArsenal($otherPlayer);
+      LookAtArsenal($otherPlayer);
       AddNextTurnEffect($cardID . "-1", $otherPlayer);
       MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
       MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
