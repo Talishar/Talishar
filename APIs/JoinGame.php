@@ -95,7 +95,7 @@ include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
 $joinerName = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "Player 2");
-if((($p1uid == "zeni" || $p1uid == "rkhalid890") && $joinerName == "starmorgs") || ($p1uid == "starmorgs" && ($joinerName == "zeni" || $joinerName == "rkhalid890"))) {
+if(($playerID == 3 && $joinerName == "starmorgs") || (($p1uid == "zeni" || $p1uid == "rkhalid890") && $joinerName == "starmorgs") || ($p1uid == "starmorgs" && ($joinerName == "zeni" || $joinerName == "rkhalid890"))) {
   $response->error = "Unable to join this game.";
   WriteGameFile();
   echo (json_encode($response));
