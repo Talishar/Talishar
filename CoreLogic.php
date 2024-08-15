@@ -1757,6 +1757,16 @@ function LookAtHand($player)
   RevealCards($cards, $player);
 }
 
+function LookAtArsenal($player)
+{
+  $arsenal = &GetArsenal($player);
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if ($arsenal[$i+1] == "DOWN") {
+      RevealCards($arsenal[$i], $player);
+    }
+  }
+}
+
 function GainActionPoints($amount = 1, $player = 0)
 {
   global $actionPoints, $mainPlayer, $currentPlayer;

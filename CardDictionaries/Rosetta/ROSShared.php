@@ -56,6 +56,20 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         BottomDeck($otherPlayer);
       }
       return "";
+    case "ROS247":
+      LookAtHand($otherPlayer);
+      LookAtArsenal($otherPlayer);
+      AddNextTurnEffect($cardID . "-1", $otherPlayer);
+      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
+      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
+      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, 2 . "-", 1);
+      AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+      AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+      return "";
     default:
       return "";
   }
@@ -108,4 +122,9 @@ function ROSHitEffect($cardID): void
     default:
       break;
   }
+}
+
+function GetTrapIndices($player)
+{
+  return SearchDeck($player, subtype: "Trap");
 }
