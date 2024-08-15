@@ -180,6 +180,8 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       $aurasArray = explode(",", $illusionistAuras);
       if (count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
+    case "ROS161":
+      PlayAura("ARC112", $player, 1);
     default:
       break;
   }
@@ -534,6 +536,9 @@ function AuraStartTurnAbilities()
       case "MST145":
         $AurasArray = explode(",", SearchAura($mainPlayer, class: "ILLUSIONIST"));
         if (count($AurasArray) > 1) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "ROS161":
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
       default:
         break;
