@@ -186,11 +186,14 @@ function AuraLeavesPlay($player, $index, $uniqueID)
     case "ROS210":
       PlayAura("DYN244", $player);
       break;
+    case "ROS230":
+      GainHealth(1, $player);
+      break;
     case "ROS226":
       AddDecisionQueue("FINDINDICES", $player, "HAND");
       AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
-      AddDecisionQueue("DISCARDCARD", $player, "HAND-".$player, 1);
+      AddDecisionQueue("DISCARDCARD", $player, "HAND-" . $player, 1);
       AddDecisionQueue("DRAW", $player, "-", 0);
       break;
     default:
@@ -357,6 +360,10 @@ function AuraStartTurnAbilities()
       case "UPR220":
       case "DYN217":
       case "ROS033":
+      case "ROS230":
+      case "ROS210":
+      case "ROS226":
+      case "ROS161" :
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       //These are all start of turn events without priority
@@ -514,6 +521,7 @@ function AuraStartTurnAbilities()
       case "ROS161":
       case "ROS210":
       case "ROS226":
+      case "ROS230":
       case "EVO243":
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
