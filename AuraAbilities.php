@@ -182,8 +182,17 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       break;
     case "ROS161":
       PlayAura("ARC112", $player);
+      break;
     case "ROS210":
       PlayAura("DYN244", $player);
+      break;
+    case "ROS226":
+      AddDecisionQueue("FINDINDICES", $player, "HAND");
+      AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+      AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
+      AddDecisionQueue("DISCARDCARD", $player, "HAND-".$player, 1);
+      AddDecisionQueue("DRAW", $player, "-", 0);
+      break;
     default:
       break;
   }
@@ -504,6 +513,7 @@ function AuraStartTurnAbilities()
         break;
       case "ROS161":
       case "ROS210":
+      case "ROS226":
       case "EVO243":
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
