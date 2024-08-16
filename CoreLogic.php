@@ -93,7 +93,10 @@ function AddAttack(&$totalAttack, $amount)
   $attackID = $CombatChain->AttackCard()->ID();
   if (PowerCantBeModified($attackID)) return;
   if ($amount > 0 && $attackID == "OUT100") $amount += 1;
-  if ($amount > 0 && SearchCurrentTurnEffects("TER019", $currentPlayer)) $amount += 1;
+  if ($amount > 0 && SearchCurrentTurnEffects("TER019", $currentPlayer)){
+    $num_thrives_active = CountCurrentTurnEffects("TER019", $currentPlayer); //thrives stack so get all the active effects before applying bonus
+    $amount += $num_thrives_active;
+  } 
   if ($amount > 0) {
     SearchCurrentTurnEffects("TER017-INACTIVE", $currentPlayer, false, false, true);
     SearchCurrentTurnEffects("TER024-INACTIVE", $currentPlayer, false, false, true);
