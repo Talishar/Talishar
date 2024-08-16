@@ -180,6 +180,35 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       $aurasArray = explode(",", $illusionistAuras);
       if (count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
+    case "ROS133":
+      $deck = new Deck($player);
+      if ($deck->Reveal()) {
+        if (CardType($deck->Top()) == "AA") {
+          AddPlayerHand($deck->Top(), $player, "DECK");
+        }
+      }
+      break;
+    case "ROS161":
+      PlayAura("ARC112", $player);
+      break;
+    case "ROS182":
+      $deck = new Deck($player);
+      $cardID = $deck->Top();
+      $mod = (CardType($cardID) == "A" ? "INST" : "-");
+      BanishCardForPlayer($cardID, $player, "DECK", $mod);
+    case "ROS210":
+      PlayAura("DYN244", $player);
+      break;
+    case "ROS230":
+      GainHealth(1, $player);
+      break;
+    case "ROS226":
+      AddDecisionQueue("FINDINDICES", $player, "HAND");
+      AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+      AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
+      AddDecisionQueue("DISCARDCARD", $player, "HAND-" . $player, 1);
+      AddDecisionQueue("DRAW", $player, "-", 0);
+      break;
     default:
       break;
   }
@@ -344,6 +373,12 @@ function AuraStartTurnAbilities()
       case "UPR220":
       case "DYN217":
       case "ROS033":
+      case "ROS133" :
+      case "ROS161" :
+      case "ROS182" :
+      case "ROS210":
+      case "ROS226":
+      case "ROS230":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       //These are all start of turn events without priority
@@ -498,6 +533,12 @@ function AuraStartTurnAbilities()
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
         break;
+      case "ROS133":
+      case "ROS161":
+      case "ROS182":
+      case "ROS210":
+      case "ROS226":
+      case "ROS230":
       case "EVO243":
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;

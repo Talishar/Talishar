@@ -677,6 +677,10 @@ function HasGoAgain($cardID): bool|int
     case "TER017":
     case "TER019":
     case "TER024":
+    case "ROS133":
+    case "ROS161":
+    case "ROS226":
+    case "ROS230":
       return true;
   }
 
@@ -2430,6 +2434,7 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "AKO") return AKOAbilityHasGoAgain($cardID);
   else if ($set == "AAZ") return AAZAbilityHasGoAgain($cardID);
   else if ($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
+  else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "RVD004":
       return true;
@@ -2625,71 +2630,17 @@ function CharacterDefaultActiveState($cardID)
 }
 
 //Hold priority for triggers (2 = Always hold, 1 = Hold, 0 = Don't Hold)
-function AuraDefaultHoldTriggerState($cardID)
+function AuraDefaultHoldTriggerState($cardID): int
 {
-  switch ($cardID) {
-    case "WTR046":
-    case "WTR047":
-    case "WTR054":
-    case "WTR055":
-    case "WTR056":
-    case "WTR069":
-    case "WTR070":
-    case "WTR071":
-    case "WTR072":
-    case "WTR073":
-    case "WTR074":
-    case "WTR075":
-      return 0;
-    case "ARC112":
-      return 1;
-    case "CRU028":
-    case "CRU029":
-    case "CRU030":
-    case "CRU031":
-    case "CRU038":
-    case "CRU039":
-    case "CRU040":
-    case "CRU075":
-    case "CRU144":
-      return 0;
-    case "MON186":
-      return 0;
-    case "ELE025":
-    case "ELE026":
-    case "ELE027":
-    case "ELE028":
-    case "ELE029":
-    case "ELE030":
-    case "ELE206":
-    case "ELE207":
-    case "ELE208":
-    case "ELE109":
-    case "ELE110":
-    case "ELE111":
-      return 0;
-    case "EVR107":
-    case "EVR108":
-    case "EVR109":
-    case "EVR131":
-    case "EVR132":
-    case "EVR133":
-      return 0;
-    case "UPR190":
-    case "UPR218":
-    case "UPR219":
-    case "UPR220":
-      return 0;
-    case "DYN217":
-      return 0;
-    case "DTD233":
-      return 0;
-    case "DYN246":
-    case "DTD235":
-      return 1;
-    default:
-      return 2;
-  }
+  return match ($cardID) {
+    "WTR046", "WTR047", "WTR054", "WTR055", "WTR056", "WTR069", "WTR070", "WTR071", "WTR072", "WTR073", "WTR074",
+    "WTR075", "DTD233", "DYN217", "UPR190", "UPR218", "UPR219", "UPR220", "EVR107", "EVR108", "EVR109", "EVR131",
+    "EVR132", "EVR133", "ELE025", "ELE026", "ELE027", "ELE028", "ELE029", "ELE030", "ELE206", "ELE207", "ELE208",
+    "ELE109", "ELE110", "ELE111", "CRU028", "CRU029", "CRU030", "CRU031", "CRU038", "CRU039", "CRU040", "CRU075",
+    "CRU144", "MON186" => 0,
+    "ARC112", "DYN246", "DTD235" => 1,
+    default => 2
+  };
 }
 
 function ItemDefaultHoldTriggerState($cardID)
@@ -3275,91 +3226,46 @@ function PlayableFromGraveyard($cardID)
   }
 }
 
-function RequiresDieRoll($cardID, $from, $player)
+function RequiresDieRoll($cardID, $from, $player): bool
 {
   global $turn;
   if (GetDieRoll($player) > 0) return false;
   if ($turn[0] == "B") return false;
   $type = CardType($cardID);
   if ($type == "AA" && (GetResolvedAbilityType($cardID) == "" || GetResolvedAbilityType($cardID) == "AA") && AttackValue($cardID) >= 6 && (SearchCharacterActive($player, "CRU002") || SearchCurrentTurnEffects("CRU002-SHIYANA", $player))) return true;
-  switch ($cardID) {
-    case "WTR004":
-    case "WTR005":
-    case "WTR010":
-      return true;
-    case "WTR162":
-      return $from == "PLAY";
-    case "CRU009":
-      return true;
-    case "EVR004":
-      return true;
-    case "EVR014":
-    case "EVR015":
-    case "EVR016":
-      return true;
-    case "HVY009":
-      return true;
-  }
-  return false;
+  return match ($cardID) {
+    "WTR162" => $from == "PLAY",
+    "WTR004", "WTR005", "WTR010", "CRU009", "EVR004", "EVR014", "EVR015", "EVR016", "HVY009" => true,
+    default => false
+  };
 }
 
-function SpellVoidAmount($cardID, $player)
+function SpellVoidAmount($cardID, $player): int
 {
   if ($cardID == "ARC112" && SearchCurrentTurnEffects("DYN171", $player)) return 1;
-  switch ($cardID) {
-    case "ELE173":
-      return 2;
-    case "MON061":
-      return 2;
-    case "MON090":
-      return 1;
-    case "MON188":
-      return 2;
-    case "MON302":
-      return 1;
-    case "MON400":
-      return 1;
-    case "MON401":
-      return 1;
-    case "MON402":
-      return 1;
-    case "DYN236":
-    case "DYN237":
-    case "DYN238":
-    case "DYN239":
-      return 1;
-    case "DYN246":
-      return 1;
-    default:
-      return 0;
-  }
+  return match ($cardID) {
+    "ELE173", "MON188", "MON061" => 2,
+    "MON090", "MON302", "MON400", "MON401", "MON402", "DYN246", "DYN236", "DYN237", "DYN238", "DYN239" => 1,
+    default => 0
+  };
 }
 
-function IsSpecialization($cardID)
+function IsSpecialization($cardID): bool
 {
   return GeneratedIsSpecialization($cardID) == "true";
 }
 
-function Is1H($cardID)
+function Is1H($cardID): bool|int
 {
   return GeneratedIs1H($cardID);
 }
 
-function AbilityPlayableFromCombatChain($cardID)
+function AbilityPlayableFromCombatChain($cardID): bool
 {
-  switch ($cardID) {
-    case "MON245":
-    case "MON281":
-    case "MON282":
-    case "MON283":
-    case "ELE195":
-    case "ELE196":
-    case "ELE197":
-    case "EVR157":
-      return true;
-    default:
-      return false;
-  }
+  return match ($cardID) {
+    "MON245", "MON281", "MON282", "MON283", "ELE195", "ELE196", "ELE197", "EVR157" => true,
+    default => false
+  };
 }
 
 function CardCaresAboutPitch($cardID): bool

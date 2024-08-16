@@ -4,9 +4,8 @@
 function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
-    "ROS007", "ROS008" => "I",
+    "ROS007", "ROS008", "ROS019", "ROS020" => "I",
     "ROS009" => "AA",
-    "ROS019", "ROS020" => "I",
     default => ""
   };
 }
