@@ -184,9 +184,10 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       $deck = new Deck($player);
       if ($deck->Reveal()) {
         if (CardType($deck->Top()) == "AA") {
-          Draw($player);
+          AddPlayerHand($deck->Top(), $player, "DECK");
         }
       }
+      break;
     case "ROS161":
       PlayAura("ARC112", $player);
       break;
@@ -203,7 +204,7 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       break;
     case "ROS226":
       AddDecisionQueue("FINDINDICES", $player, "HAND");
-      AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+      AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
       AddDecisionQueue("DISCARDCARD", $player, "HAND-" . $player, 1);
       AddDecisionQueue("DRAW", $player, "-", 0);
