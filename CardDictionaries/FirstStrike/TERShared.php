@@ -62,7 +62,6 @@ function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "TER020":
     case "TER026":
     case "TER019":
-      // Curious if multiple thrives stack. If so this will need to be reworked a little.
       AddCurrentTurnEffect($cardID, 1);
       AddCurrentTurnEffect($cardID, 2); // I think because of the way this effect is evaluated, both players need to "know" about it in order for it to work properly. See EVR090.
       return "";
