@@ -190,6 +190,11 @@ function AuraLeavesPlay($player, $index, $uniqueID)
     case "ROS161":
       PlayAura("ARC112", $player);
       break;
+    case "ROS182":
+      $deck = new Deck($player);
+      $cardID = $deck->Top();
+      $mod = (CardType($cardID) == "A" ? "INST" : "-");
+      BanishCardForPlayer($cardID, $player, "DECK", $mod);
     case "ROS210":
       PlayAura("DYN244", $player);
       break;
@@ -369,6 +374,7 @@ function AuraStartTurnAbilities()
       case "ROS033":
       case "ROS133" :
       case "ROS161" :
+      case "ROS182" :
       case "ROS210":
       case "ROS226":
       case "ROS230":
@@ -528,6 +534,7 @@ function AuraStartTurnAbilities()
         break;
       case "ROS133":
       case "ROS161":
+      case "ROS182":
       case "ROS210":
       case "ROS226":
       case "ROS230":

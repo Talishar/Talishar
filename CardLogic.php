@@ -1786,6 +1786,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "UPR220":
     case "ROS133" :
     case "ROS161" :
+    case "ROS182" :
     case "ROS210":
     case "ROS226":
     case "ROS230":
