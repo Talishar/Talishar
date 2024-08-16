@@ -180,6 +180,13 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       $aurasArray = explode(",", $illusionistAuras);
       if (count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
+    case "ROS133":
+      $deck = new Deck($player);
+      if ($deck->Reveal()) {
+        if (CardType($deck->Top()) == "AA") {
+          Draw($player);
+        }
+      }
     case "ROS161":
       PlayAura("ARC112", $player);
       break;
@@ -360,10 +367,11 @@ function AuraStartTurnAbilities()
       case "UPR220":
       case "DYN217":
       case "ROS033":
-      case "ROS230":
+      case "ROS133" :
+      case "ROS161" :
       case "ROS210":
       case "ROS226":
-      case "ROS161" :
+      case "ROS230":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       //These are all start of turn events without priority
@@ -518,6 +526,7 @@ function AuraStartTurnAbilities()
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
         break;
+      case "ROS133":
       case "ROS161":
       case "ROS210":
       case "ROS226":

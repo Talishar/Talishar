@@ -1784,10 +1784,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "UPR218":
     case "UPR219":
     case "UPR220":
-    case "ROS230":
+    case "ROS133" :
+    case "ROS161" :
     case "ROS210":
     case "ROS226":
-    case "ROS161" :
+    case "ROS230":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "UPR406":
