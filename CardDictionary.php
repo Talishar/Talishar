@@ -2434,7 +2434,7 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "AKO") return AKOAbilityHasGoAgain($cardID);
   else if ($set == "AAZ") return AAZAbilityHasGoAgain($cardID);
   else if ($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
-  else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
+  //else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "RVD004":
       return true;
