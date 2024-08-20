@@ -1395,12 +1395,12 @@ function SearchLayersForCardID($cardID)
   return -1;
 }
 
-function GetPlayerNumEquipment($player)
+function GetPlayerNumEquipment($player, $face="UP")
 {
   $characters = &GetPlayerCharacter($player);
   $count = 0;
   for($i = 0; $i < count($characters); $i += CharacterPieces()) {
-    if(TypeContains($characters[$i], "E", $player) && $characters[$i+1] != 0 && $characters[$i+12] != "DOWN") ++$count;
+    if(TypeContains($characters[$i], "E", $player) && $characters[$i+1] != 0 && $characters[$i+12] == $face) ++$count;
   }
   return $count;
 }
