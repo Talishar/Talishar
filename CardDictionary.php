@@ -1846,6 +1846,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return (count($myHand) + count($myArsenal)) < 2;
     case "MST236":
       return $discard->NumCards() < 3;
+    case "MST238":
+      return GetPlayerNumEquipment($player, "DOWN") <= 0;
     case "ROS007":
     case "ROS008":
       return GetClassState($player, $CS_NumLightningPlayed) == 0;
