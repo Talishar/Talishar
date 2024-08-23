@@ -87,16 +87,16 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
   }
 }
 
-function AddAttack(&$totalAttack, $amount)
+function AddAttack(&$totalAttack, $amount): void
 {
   global $CombatChain, $currentPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   if (PowerCantBeModified($attackID)) return;
   if ($amount > 0 && $attackID == "OUT100") $amount += 1;
-  if ($amount > 0 && SearchCurrentTurnEffects("TER019", $currentPlayer)){
+  if ($amount > 0 && SearchCurrentTurnEffects("TER019", $currentPlayer)) {
     $num_thrives_active = CountCurrentTurnEffects("TER019", $currentPlayer); //thrives stack so get all the active effects before applying bonus
     $amount += $num_thrives_active;
-  } 
+  }
   if ($amount > 0) {
     SearchCurrentTurnEffects("TER017-INACTIVE", $currentPlayer, false, false, true);
     SearchCurrentTurnEffects("TER024-INACTIVE", $currentPlayer, false, false, true);
@@ -694,7 +694,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
           if ($results >= 4) {
             AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
-          return 0;  
+          return 0;
       }
     }
   }
@@ -1764,7 +1764,7 @@ function LookAtArsenal($player)
 {
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    if ($arsenal[$i+1] == "DOWN") {
+    if ($arsenal[$i + 1] == "DOWN") {
       RevealCards($arsenal[$i], $player);
     }
   }
