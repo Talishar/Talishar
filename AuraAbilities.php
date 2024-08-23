@@ -196,6 +196,7 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       $cardID = $deck->Top();
       $mod = (CardType($cardID) == "A" ? "INST" : "-");
       BanishCardForPlayer($cardID, $player, "DECK", $mod);
+      $deck->Remove(0);
       break;
     case "ROS210":
       PlayAura("DYN244", $player);
