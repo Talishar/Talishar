@@ -428,7 +428,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "HVY250":
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the card that on top of your deck.", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here are the top " . ($resourcesPaid + 1) . " cards of your deck.", 1);
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));
       AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
       AddDecisionQueue("LOOKTOPDECK", $currentPlayer, "-", 1);

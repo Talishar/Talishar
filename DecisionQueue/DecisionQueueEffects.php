@@ -717,6 +717,15 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         RemoveGraveyard($player, $index);
       }
       return $lastResult;
+    case "SILVERTHETIPADDARSENAL":
+      $log = "";
+      if($lastResult != "") {
+        AddArsenal($lastResult, $player, "DECK", "UP");
+        $log .= CardLink($lastResult, $lastResult);
+        return $lastResult;
+      }
+      if ($log != "") WriteLog($log . " added to arsenal");
+      return $lastResult;
     default: return "";
   }
 }
