@@ -84,7 +84,7 @@ function EVOAbilityCost($cardID): int
 {
   global $currentPlayer;
   return match ($cardID) {
-    "EVO009" => (EvoUpgradeAmount($currentPlayer) == 1 ? 3 : EvoUpgradeAmount($currentPlayer) >= 2) ? 1 : 0,
+    "EVO009" => (EvoUpgradeAmount($currentPlayer) == 1 ? 3 : ((EvoUpgradeAmount($currentPlayer) >= 2) ? 1 : 0)),
     "EVO007", "EVO410", "EVO008" => 3,
     "EVO004", "EVO083", "EVO082", "EVO235", "EVO247", "EVO081", "EVO005" => 2,
     "EVO017", "EVO016", "EVO015", "EVO014", "EVO006" => 1,
