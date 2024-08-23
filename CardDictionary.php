@@ -3298,50 +3298,68 @@ function WardAmount($cardID, $player, $index = -1)
   global $mainPlayer;
   $auras = &GetAuras($player);
   switch ($cardID) {
+    case "DYN217":
+    case "DYN214":
+    case "DYN213":
+    case "DYN220":
+    case "DYN219":
+    case "DYN218":
+    case "DYN223":
+    case "DYN222":
+    case "DYN221":
+    case "EVO244":
+    case "MST030":
+    case "MST029":
+    case "MST042":
+    case "MST045":
+    case "MST151":
+    case "MST157":
+    case "MST156":
+    case "MST155":
     case "MON104":
+    case "ROS251":
       return 1;
-    case "UPR218":
-      return 4;
-    case "UPR219":
-      return 3;
+    case "DTD217":
+    case "MST041":
+    case "MST044":
+    case "MST133":
+    case "MST139":
+    case "MST138":
+    case "MST137":
+    case "MST142":
+    case "MST145":
+    case "MST148":
+    case "MST147":
+    case "MST146":
+    case "MST150":
     case "UPR220":
       return 2;
-    case "DYN213":
-    case "DYN214":
-    case "DYN217":
-      return 1;
+    case "MST040":
+    case "MST043":
+    case "MST141":
+    case "MST144":
+    case "MST149":
+    case "UPR219":
+      return 3;
     case "DYN612":
+    case "DTD412":
+    case "DTD411":
+    case "DTD410":
+    case "DTD409":
+    case "DTD408":
+    case "DTD407":
+    case "DTD406":
+    case "DTD405":
+    case "MST028":
+    case "MST140":
+    case "MST143":
+    case "UPR218":
       return 4;
     case "DTD004":
-      return SearchCurrentTurnEffects("DTD004-1", $player);
-    case "DTD217":
-      return 2;
-    case "DYN218":
-    case "DYN219":
-    case "DYN220":
-      return 1;
-    case "DYN221":
-    case "DYN222":
-    case "DYN223":
-      return 1;
-    case "DTD405":
-    case "DTD406":
-    case "DTD407":
-    case "DTD408"://Angels
-    case "DTD409":
-    case "DTD410":
-    case "DTD411":
-    case "DTD412":
-      return 4;
-    case "EVO244":
-      return 1;
+      if (SearchCurrentTurnEffects("DTD004-1", $player)) return 1;
+      else return 0;
     case "MST027":
       return SearchCurrentTurnEffects("MERIDIANWARD", $player) ? 3 : 0;
-    case "MST028":
-      return 4;
-    case "MST029":
-    case "MST030":
-      return 1;
     case "MST031":
       return $auras[$index + 3];
     case "MST033":
@@ -3355,54 +3373,10 @@ function WardAmount($cardID, $player, $index = -1)
     case "MST039":
       if (SearchPitchForColor($player, 3) > 0) return 2;
       else return 1;
-    case "MST040":
-      return 3;
-    case "MST041":
-      return 2;
-    case "MST042":
-      return 1;
-    case "MST043":
-      return 3;
-    case "MST044":
-      return 2;
-    case "MST045":
-      return 1;
     case "MST131":
       return 10;
     case "MST132":
       return $player == $mainPlayer ? 6 : 1;
-    case "MST133":
-      return 2;
-    case "MST137":
-    case "MST138":
-    case "MST139":
-      return 2;
-    case "MST140":
-      return 4;
-    case "MST141":
-      return 3;
-    case "MST142":
-      return 2;
-    case "MST143":
-      return 4;
-    case "MST144":
-      return 3;
-    case "MST145":
-      return 2;
-    case "MST146":
-    case "MST147":
-    case "MST148":
-      return 2;
-    case "MST149":
-      return 3;
-    case "MST150":
-      return 2;
-    case "MST151":
-      return 1;
-    case "MST155":
-    case "MST156":
-    case "MST157":
-      return 1;
     default:
       return 0;
   }
@@ -3440,6 +3414,7 @@ function HasWard($cardID, $player)
     case "DTD410":
     case "DTD411":
     case "DTD412":
+    case "ROS251":
       return true;
     case "EVO093":
     case "EVO094":
