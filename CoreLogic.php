@@ -1787,6 +1787,7 @@ function AddCharacterUses($player, $index, $numToAdd)
 
 function HaveUnblockedEquip($player)
 {
+  $restriction = ""; // This just needs to exist cause IsBlockRestricted uses a reference op on it.
   $char = &GetPlayerCharacter($player);
   for ($i = CharacterPieces(); $i < count($char); $i += CharacterPieces()) {
     if ($char[$i + 1] == 0) continue;//If broken
@@ -1794,6 +1795,7 @@ function HaveUnblockedEquip($player)
     if ($char[$i + 12] == "DOWN") continue; //Face-down
     if (!TypeContains($char[$i], "E", $player)) continue;
     if (BlockValue($char[$i]) == -1) continue;
+    if (IsBlockRestricted($char[$i], $restriction, $player)) continue; //If restricted via something like stasis cell
     return true;
   }
   return false;

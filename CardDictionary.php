@@ -866,7 +866,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if (TypeContains($cardID, "E", $player) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
   if ($phase == "B") {
     if (TypeContains($cardID, "E", $player) && $character[$index + 6] == 1) return false;
-    if (IsBlockRestricted($cardID, $phase, $from, $index, $restriction, $player)) return false;
+    if (IsBlockRestricted($cardID, $restriction, $player)) return false;
   }
   if ($phase != "B" && $from == "CHAR" && $character[$index + 1] != "2") return false;
   if ($from == "CHAR" && $phase != "B" && $character[$index + 8] == "1") {
@@ -979,7 +979,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
 }
 
-function IsBlockRestricted($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "")
+function IsBlockRestricted($cardID, &$restriction = null, $player = "")
 {
   global $CombatChain, $mainPlayer, $CS_NumCardsDrawn, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
   if (IsEquipment($cardID, $player) && !CanBlockWithEquipment()) {
