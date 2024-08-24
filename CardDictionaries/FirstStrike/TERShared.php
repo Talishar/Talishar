@@ -35,9 +35,11 @@ function TERCombatEffectActive($cardID): bool
 
 function TEREffectAttackModifier($cardID): int
 {
+  global $currentPlayer;
+
   return match ($cardID) {
-    "TER017" => 3,
-    "TER024" => 2,
+    "TER017" => SearchCurrentTurnEffects("TER019", $currentPlayer) ? 2 : 3,
+    "TER024" => SearchCurrentTurnEffects("TER019", $currentPlayer) ? 1 : 2,
     "TER002", "TER012", "TER016", "TER006" => 1,
     default => 0
   };

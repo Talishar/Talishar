@@ -87,16 +87,16 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
   }
 }
 
-function AddAttack(&$totalAttack, $amount)
+function AddAttack(&$totalAttack, $amount): void
 {
   global $CombatChain, $currentPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   if (PowerCantBeModified($attackID)) return;
   if ($amount > 0 && $attackID == "OUT100") $amount += 1;
-  if ($amount > 0 && SearchCurrentTurnEffects("TER019", $currentPlayer)){
+  if ($amount > 0 && SearchCurrentTurnEffects("TER019", $currentPlayer)) {
     $num_thrives_active = CountCurrentTurnEffects("TER019", $currentPlayer); //thrives stack so get all the active effects before applying bonus
     $amount += $num_thrives_active;
-  } 
+  }
   if ($amount > 0) {
     SearchCurrentTurnEffects("TER017-INACTIVE", $currentPlayer, false, false, true);
     SearchCurrentTurnEffects("TER024-INACTIVE", $currentPlayer, false, false, true);
@@ -694,7 +694,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
           if ($results >= 4) {
             AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
-          return 0;  
+          return 0;
       }
     }
   }
@@ -1167,6 +1167,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
   if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST155-INST", $currentPlayer) && CardCost($cardID) <= 2) return true;
   if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST156-INST", $currentPlayer) && CardCost($cardID) <= 1) return true;
   if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST157-INST", $currentPlayer) && CardCost($cardID) <= 0) return true;
+  if (DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("ROS251", $currentPlayer)) return true;
   $isStaticType = IsStaticType($cardType, $from, $cardID);
   $abilityType = "-";
   if ($isStaticType) $abilityType = GetAbilityType($cardID, $index, $from);
@@ -1764,7 +1765,7 @@ function LookAtArsenal($player)
 {
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    if ($arsenal[$i+1] == "DOWN") {
+    if ($arsenal[$i + 1] == "DOWN") {
       RevealCards($arsenal[$i], $player);
     }
   }
@@ -2657,6 +2658,9 @@ function WardPoppedAbility($player, $cardID)
     AddDecisionQueue("NOPASS", $player, "-");
     AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
     AddDecisionQueue("PLAYAURA", $player, "DYN244-1", 1);
+  }
+  if ($cardID == "ROS251") {
+    AddCurrentTurnEffect("ROS251", $player);
   }
 }
 
