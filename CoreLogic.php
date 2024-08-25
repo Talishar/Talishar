@@ -1557,6 +1557,8 @@ function DoesAttackHaveGoAgain()
     case "AUR024":
     case "ROS009":
       return GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0;
+    case "ROS245":
+      return ComboActive($attackID);
     default:
       return false;
   }

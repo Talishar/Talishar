@@ -2778,6 +2778,8 @@ function HasCombo($cardID)
     case "MST177":
     case "MST178":
       return true;
+    case "ROS245":
+      return true;
     default:
       return false;
   }
@@ -2922,6 +2924,9 @@ function ComboActive($cardID = "")
       case "MST177":
       case "MST178":
         if ($lastAttackName == "Crouching Tiger") return true;
+        break;
+      case "ROS245":
+        if ($lastAttackName == "Surging Strike") return true;
         break;
       default:
         break;
