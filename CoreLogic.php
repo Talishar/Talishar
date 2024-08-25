@@ -1071,8 +1071,8 @@ function RollDie($player, $fromDQ = false, $subsequent = false, $reroll = false)
   $otherPlayerHasGamblersGloves = HasGamblersGloves($otherPlayer);
   if (($playerHasGamblersGloves || $otherPlayerHasGamblersGloves) && !$reroll) {
     if ($fromDQ && !$subsequent) PrependDecisionQueue("AFTERDIEROLL", $player, "-");
-    if ($playerHasGamblersGloves) AddLayer("TRIGGER", $player, "CRU179", $player, $fromDQ);
-    if ($otherPlayerHasGamblersGloves) AddLayer("TRIGGER", $otherPlayer, "CRU179", $player, $fromDQ);
+    if ($playerHasGamblersGloves) GamblersGlovesReroll($player, $player); // reroll your own
+    if ($otherPlayerHasGamblersGloves) GamblersGlovesReroll($otherPlayer, $player); //reroll ops
     if (!$fromDQ && !$subsequent) AddDecisionQueue("AFTERDIEROLL", $player, "-");
   } else {
     AfterDieRoll($player);
