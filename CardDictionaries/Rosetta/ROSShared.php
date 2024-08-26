@@ -19,6 +19,23 @@ function ROSAbilityCost($cardID): int
   };
 }
 
+function ROSEffectAttackModifier($cardID): int
+{
+  return match ($cardID) {
+    "ROS248" => 3,
+    default => 0,
+  };
+}
+
+function ROSCombatEffectActive($cardID, $attackID): bool|string
+{
+  global $mainPlayer;
+  return match ($cardID) {
+    "ROS248" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
+    default => "",
+  };
+}
+
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer;
@@ -69,6 +86,8 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       return "";
+    case "ROS248":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
     default:
       return "";
   }
