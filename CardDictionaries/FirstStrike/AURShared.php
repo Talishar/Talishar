@@ -21,7 +21,7 @@ function AUREffectAttackModifier($cardID): int
 
 function AURCombatEffectActive($cardID, $attackID): bool|string
 {
-    global $mainPlayer;
+  global $mainPlayer;
   return match ($cardID) {
     "AUR014", "AUR021" => TalentContainsAny($attackID, "LIGHTNING,ELEMENTAL", $mainPlayer),
     "AUR022", "AUR025" => true,
