@@ -54,6 +54,11 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS008":
       PlayAura("ELE110", $currentPlayer);
       return "";
+    case "ROS016":
+      GainHealth(1, $currentPlayer);
+      GainHealth(1, $currentPlayer);
+      GainHealth(1, $currentPlayer);
+      return "";
     case "ROS019":
     case "ROS020":
       Draw($currentPlayer);
@@ -61,15 +66,17 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS033":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "ROS016":
-      GainHealth(1, $currentPlayer);
-      GainHealth(1, $currentPlayer);
-      GainHealth(1, $currentPlayer);
-      return "";
     case "ROS031":
       if (Decompose($currentPlayer, 2, 1)) {
         BottomDeck($currentPlayer);
         BottomDeck($otherPlayer);
+      }
+      return "";
+    case "ROS055":
+    case "ROS056":
+    case "ROS057":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        GainHealth(2, $currentPlayer);
       }
       return "";
     case "ROS247":
