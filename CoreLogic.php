@@ -688,13 +688,16 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
           if ($results >= 8) {
             AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
+          break;
         case "ROS014":
           // Now we need to check that we banished 4 earth cards.
           $results = SearchCount(SearchMultiZone($player, "MYBANISH:TALENT=EARTH"));
           if ($results >= 4) {
             AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
-          return 0;
+          break;
+        default:
+          break;
       }
     }
   }
