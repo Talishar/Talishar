@@ -404,6 +404,11 @@ function CardCost($cardID, $from = "-")
     case "MST501":
     case "MST502":
       return -1;
+    case "ROS055":
+    case "ROS056":
+    case "ROS057":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
+      else return 3;
     default:
       break;
   }
@@ -681,6 +686,7 @@ function HasGoAgain($cardID): bool|int
     case "ROS161":
     case "ROS226":
     case "ROS230":
+    case "ROS248":
       return true;
   }
 
@@ -749,6 +755,10 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-")
       return "I,AA";
     case "MST133":
       return "I,AA";
+    case "ROS055":
+    case "ROS056":
+    case "ROS057":
+      return "I,AA";
     default:
       return "";
   }
@@ -793,6 +803,12 @@ function GetAbilityNames($cardID, $index = -1, $from = "-")
       } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0 && $auras[$index + 1] == 2) {
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
+      return $names;
+    case "ROS055":
+    case "ROS056":
+    case "ROS057":
+      $names = "Ability";
+      if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Attack";
       return $names;
     default:
       return "";
@@ -1909,6 +1925,10 @@ function GoesOnCombatChain($phase, $cardID, $from)
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     case "MST133":
       return GetResolvedAbilityType($cardID, $from) == "AA";
+    case "ROS055":
+    case "ROS056":
+    case "ROS057":
+      return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     default:
       break;
   }
@@ -2778,6 +2798,8 @@ function HasCombo($cardID)
     case "MST177":
     case "MST178":
       return true;
+    case "ROS245":
+      return true;
     default:
       return false;
   }
@@ -2922,6 +2944,9 @@ function ComboActive($cardID = "")
       case "MST177":
       case "MST178":
         if ($lastAttackName == "Crouching Tiger") return true;
+        break;
+      case "ROS245":
+        if ($lastAttackName == "Surging Strike") return true;
         break;
       default:
         break;

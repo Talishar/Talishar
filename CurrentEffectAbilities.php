@@ -416,6 +416,7 @@ function EffectAttackModifier($cardID)
   else if ($set == "AAZ") return AAZEffectAttackModifier($cardID);
   else if ($set == "TER") return TEREffectAttackModifier($cardID);
   else if ($set == "AUR") return AUREffectAttackModifier($cardID);
+  else if ($set == "ROS") return ROSEffectAttackModifier($cardID);
   return 0;
 }
 
@@ -639,6 +640,12 @@ function OnAttackEffects($attack)
             Draw($mainPlayer);
             $remove = true;
           }
+        case "ROS248":
+          if (IsCombatEffectActive($currentTurnEffects[$i])){
+            CacheCombatResult();
+            if (IsWeaponGreaterThanTwiceBasePower()) GiveAttackGoAgain(); // borrowing ideas from merciless battleaxe (DYN068) and shift the tide of battle (HVY102)
+          }
+          break;
         default:
           break;
       }
@@ -1564,6 +1571,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "AAZ") return AAZCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "TER") return TERCombatEffectActive($cardID);
   else if ($set == "AUR") return AURCombatEffectActive($cardID, $cardToCheck);
+  else if ($set == "ROS") return ROSCombatEffectActive($cardID, $cardToCheck);
 
   switch ($cardID) {
     case "LGS180":

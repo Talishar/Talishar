@@ -688,13 +688,16 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
           if ($results >= 8) {
             AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
+          break;
         case "ROS014":
           // Now we need to check that we banished 4 earth cards.
           $results = SearchCount(SearchMultiZone($player, "MYBANISH:TALENT=EARTH"));
           if ($results >= 4) {
             AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
-          return 0;
+          break;
+        default:
+          break;
       }
     }
   }
@@ -1071,8 +1074,8 @@ function RollDie($player, $fromDQ = false, $subsequent = false, $reroll = false)
   $otherPlayerHasGamblersGloves = HasGamblersGloves($otherPlayer);
   if (($playerHasGamblersGloves || $otherPlayerHasGamblersGloves) && !$reroll) {
     if ($fromDQ && !$subsequent) PrependDecisionQueue("AFTERDIEROLL", $player, "-");
-    if ($playerHasGamblersGloves) AddLayer("TRIGGER", $player, "CRU179", $player, $fromDQ);
-    if ($otherPlayerHasGamblersGloves) AddLayer("TRIGGER", $otherPlayer, "CRU179", $player, $fromDQ);
+    if ($playerHasGamblersGloves) GamblersGlovesReroll($player, $player); // reroll your own
+    if ($otherPlayerHasGamblersGloves) GamblersGlovesReroll($otherPlayer, $player); //reroll ops
     if (!$fromDQ && !$subsequent) AddDecisionQueue("AFTERDIEROLL", $player, "-");
   } else {
     AfterDieRoll($player);
@@ -1190,6 +1193,10 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "MST135":
     case "MST136":
       return SearchAuras("MON104", $currentPlayer);
+    case "ROS055":
+    case "ROS056":
+    case "ROS057":
+      return $from == "HAND";
     default:
       break;
   }
@@ -1557,6 +1564,8 @@ function DoesAttackHaveGoAgain()
     case "AUR024":
     case "ROS009":
       return GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0;
+    case "ROS245":
+      return ComboActive($attackID);
     default:
       return false;
   }
