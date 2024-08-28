@@ -72,7 +72,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
   global $mainPlayer, $defPlayer, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
   global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated;
-  global $combatChain, $CS_Transcended, $CS_NumBluePlayed, $CS_NumLightningPlayed;
+  global $combatChain, $CS_Transcended, $CS_NumBluePlayed, $CS_NumLightningPlayed, $CS_DamageTaken;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
   switch ($cardID) {
     case "WTR003":
@@ -410,6 +410,10 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 2 : 0);
     case "ROS031":
       return SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:TALENT=EARTH")) >= 4 ? 4 : 0;
+    case "ROS101":
+    case "ROS102":
+    case "ROS103":
+      return (GetClassState($defPlayer, $CS_DamageTaken)) > 0 ? 1 : 0;
     default:
       return 0;
   }

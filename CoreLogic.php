@@ -1398,7 +1398,7 @@ function DoesAttackHaveGoAgain()
   global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_Num6PowDisc;
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
   global $CS_NumItemsDestroyed, $CS_PlayIndex, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
-  global $CS_NumLightningPlayed;
+  global $CS_NumLightningPlayed, $CS_DamageTaken;
   if (!$CombatChain->HasCurrentLink()) return false;
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
@@ -1564,6 +1564,10 @@ function DoesAttackHaveGoAgain()
     case "AUR024":
     case "ROS009":
       return GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0;
+    case "ROS101":
+    case "ROS102":
+    case "ROS103":
+      return GetClassState($defPlayer, $CS_DamageTaken) > 0;
     case "ROS245":
       return ComboActive($attackID);
     default:
