@@ -2665,6 +2665,12 @@ function PayAdditionalCosts($cardID, $from)
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
       MZMoveCard($currentPlayer, "MYHAND:type=I", "MYDISCARD," . $currentPlayer);
       break;
+    case "ROS035":
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
+      AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
+      AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+      break;
     default:
       break;
   }

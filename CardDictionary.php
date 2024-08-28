@@ -1870,6 +1870,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ROS019":
     case "ROS020":
       return SearchCount(SearchMultiZone($player, "MYHAND:type=I")) == 0;
+    case "ROS035":
+      return $from == "ARS" || ArsenalEmpty($player);
     case "ASB004":
       return count($mySoul) == 0;
     case "AAZ005":

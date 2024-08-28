@@ -38,7 +38,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool|string
 
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer;
+  global $currentPlayer, $CS_DamagePrevention;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 
   switch ($cardID) {
@@ -72,6 +72,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         BottomDeck($otherPlayer);
       }
       return "";
+    case "ROS035":
+      IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
+      return "Seeds of Tomorrow is preventing the next 5 damage.";
     case "ROS055":
     case "ROS056":
     case "ROS057":
