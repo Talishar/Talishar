@@ -402,10 +402,12 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return NumAttackReactionsPlayed() > 0 ? 1 : 0;
     case "MST191":
       return CachedNumActionBlocked() > 0 ? 2 : 0;
-    case "ROS009":
     case "AUR007":
     case "AUR015":
+    case "ROS009":
       return GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0;
+    case "ROS003":
+      return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 2 : 0);
     case "ROS031":
       return SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:TALENT=EARTH")) >= 4 ? 4 : 0;
     default:
