@@ -908,6 +908,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "GREATERTHANPASS":
       if ($lastResult > $parameter) return "PASS";
       return $lastResult;
+    case "REVERTGAMESTATEIFNULL":
+      if ($lastResult == ""){
+        WriteLog(implode(" ", explode("_", $parameter)), highlight: true);
+        RevertGamestate();
+      }
+      return $lastResult;
     case "EQUIPDEFENSE":
       $char = &GetPlayerCharacter($player);
       $defense = BlockValue($char[$lastResult]) + $char[$lastResult + 4];
@@ -2227,6 +2233,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $param = explode(",", $parameter);
       GainHealth($param[0], $player, true, false);
       return $lastResult;
+    case "GETCARDSFORDECOMPOSE":
+      $rv = SearchMultizone($player, $parameter); // I want multizone to return a blank string if no results so I built this
+      return $rv;
     default:
       return "NOTSTATIC";
   }

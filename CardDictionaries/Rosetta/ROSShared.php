@@ -22,6 +22,7 @@ function ROSAbilityCost($cardID): int
 function ROSEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
+    "ROS052", "ROS053", "ROS054" => 2,
     "ROS248" => 3,
     default => 0,
   };
@@ -31,6 +32,8 @@ function ROSCombatEffectActive($cardID, $attackID): bool|string
 {
   global $mainPlayer;
   return match ($cardID) {
+    "ROS052", "ROS053", "ROS054" => true,
+    "ROS042", "ROS043", "ROS044" => true,
     "ROS248" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
     default => "",
   };
@@ -67,14 +70,26 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS031":
-      if (Decompose($currentPlayer, 2, 1)) {
-        BottomDeck($currentPlayer);
-        BottomDeck($otherPlayer);
-      }
+      Decompose($currentPlayer, 2, 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "FELLINGOFTHECROWN", 1);
       return "";
     case "ROS035":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
       return "Seeds of Tomorrow is preventing the next 5 damage.";
+    case "ROS042":
+    case "ROS043":
+    case "ROS044":
+      Decompose($currentPlayer, 2, 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "ROOTBOUNDCARAPACE", 1);
+      return "";
+    case "ROS052":
+    case "ROS053":
+    case "ROS054":
+      Decompose($currentPlayer, 2, 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CADAVEROUSTILLING", 1);
+      return "";
     case "ROS055":
     case "ROS056":
     case "ROS057":
@@ -98,6 +113,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS248":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     default:
       return "";
   }

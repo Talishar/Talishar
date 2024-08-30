@@ -351,7 +351,7 @@
    * decompose that may have different requirements in the number of earth banishes and action
    * banishes.
    * 
-   * This function returns true if the decompose conditions were met and cards were banished, and false otherwise.
+   * The result of "NOPASS" should be used to add the bonus effects. SPECIFICCARD dq events can be added right after calling decompose to run if the decompose succeeded.
    */
   function Decompose($player, $earthBanishes, $actionBanishes) {
     $totalBanishes = $earthBanishes + $actionBanishes;
@@ -374,25 +374,28 @@
 
     // This is a MAY ability.
     if($countInDiscard >= $totalBanishes && $earthCountInDiscard >= $earthBanishes) {
+
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_Decompose");
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+
       // Earth Banishes
       for($i = 0; $i < $earthBanishes; $i++) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:talent=EARTH", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
-        AddDecisionQueue("MZREMOVE", $player, "-", 1);
-      }
-      
-      // This is not a MAY ability.
-      for($i = 0; $i < $actionBanishes; $i++) {
-        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:type=A&MYDISCARD:type=AA", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($earthBanishes - $i) . " earth card(s) to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
       }
-
-      return true;
+      
+      // Action banishes.
+      for($i = 0; $i < $actionBanishes; $i++) {
+        AddDecisionQueue("GETCARDSFORDECOMPOSE", $player, "MYDISCARD:type=A&MYDISCARD:type=AA", 1); // Modified MULTIZONEINDICES so if there are no actions it can be sent to the next dq and it will revert gamestate. Can't use "PASS" because YESNO "PASS" result is already present.
+        AddDecisionQueue("REVERTGAMESTATEIFNULL", $player, "There aren't any more action cards! Try selecting different earth cards.", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($actionBanishes - $i) . " action card(s) to banish", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      }
     }
-
-    return false;
   }
   
