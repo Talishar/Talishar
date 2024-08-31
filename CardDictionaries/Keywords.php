@@ -13,7 +13,9 @@
       case "EVO087": case "EVO088": case "EVO089":
       case "EVO090": case "EVO091": case "EVO092":
       case "EVO093": case "EVO094": case "EVO095":
-      case "EVO096": case "EVO097": case "EVO098": return true;
+      case "EVO096": case "EVO097": case "EVO098": 
+      case "AIO026":
+        return true;
       default: return false;
     }
   }

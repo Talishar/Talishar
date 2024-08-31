@@ -4,6 +4,7 @@ function AIOAbilityType($cardID, $index = -1, $from = "-"): string
 {
   return match ($cardID) {
     "AIO006" => "A",
+    "AIO026" => "A",
     default => ""
   };
 }
@@ -33,7 +34,9 @@ function AIOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if(ClassContains($banished, "MECHANOLOGIST", $currentPlayer)) GainActionPoints(1, $currentPlayer);
       }
       return "";
-
+    case "AIO026":
+      if ($from == "PLAY") Draw($currentPlayer);
+      return "";
     default:
       return "";
   }

@@ -2437,6 +2437,8 @@ function ETASteamCounters($cardID)
     case "EVO097":
     case "EVO098":
       return 1;
+    case "AIO026":
+      return 2;
     default:
       return 0;
   }
