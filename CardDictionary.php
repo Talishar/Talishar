@@ -733,6 +733,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "ROS") return ROSAbilityType($cardID, $index);
   else if ($set == "ASB") return ASBAbilityType($cardID, $index);
   else if ($set == "TER") return TERAbilityType($cardID);
+  else if ($set == "AIO") return AIOAbilityType($cardID, $index, $from);
   else if ($cardID == "HER117") return "I";
 }
 
@@ -2465,6 +2466,7 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "AAZ") return AAZAbilityHasGoAgain($cardID);
   else if ($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   //else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
+  else if ($set == "AIO") return AIOAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "RVD004":
       return true;
