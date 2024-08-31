@@ -1312,7 +1312,7 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
   return DelimStringContains($cardSubtype, $subtype);
 }
 
-function CardNameContains($cardID, $name, $player = "", $partial = false)
+function CardNameContains($cardID, $name, $player = "", $partial = false) // This isn't actually a contains operation. It's an equals unless you turn partial to true. 
 {
   $cardName = NameOverride($cardID, $player);
   if ($partial) {
