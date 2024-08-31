@@ -361,6 +361,7 @@ function PlayerTargetedAbility($player, $card, $lastResult)
 function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
   global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext;
+  $otherPlayer = ($player == 1) ? 2 : 1;
   switch($card)
   {
     case "RIGHTEOUSCLEANSING":
@@ -725,6 +726,14 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         return $lastResult;
       }
       if ($log != "") WriteLog($log . " added to arsenal");
+      return $lastResult;
+    case "FELLINGOFTHECROWN":
+      BottomDeck($player);
+      BottomDeck($otherPlayer);
+      return $lastResult;
+    case "ROOTBOUNDCARAPACE":
+    case "CADAVEROUSTILLING":
+      AddCurrentTurnEffect($lastResult, $player);
       return $lastResult;
     default: return "";
   }

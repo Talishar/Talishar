@@ -118,6 +118,7 @@
       case "EVR150": return 4;
       case "EVR151": return 3;
       case "EVR152": return 2;
+      case "EVR157-BUFF": return 1;
       case "EVR160": return IsHeroAttackTarget() ? -1 : 0;
       case "EVR161-2": return 2;
       case "EVR170-2": return 3;
@@ -172,6 +173,7 @@
       case "EVR170-1": case "EVR171-1": case "EVR172-1": return CardType($attackID) == "AA";
       case "EVR170-2": case "EVR171-2": case "EVR172-2": return CardType($attackID) == "AA";
       case "EVR186": return true;
+      case "EVR157-BUFF": return true;
       default: return false;
     }
   }
@@ -393,7 +395,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "EVR157":
-        if($from == "PLAY") $CombatChain->AttackCard()->ModifyPower(1);
+        if($from == "PLAY") AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer, "PLAY");
         return "";
       case "EVR158":
         PutItemIntoPlayForPlayer("EVR195", $currentPlayer, 0, intval($additionalCosts));

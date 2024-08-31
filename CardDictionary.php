@@ -683,6 +683,12 @@ function HasGoAgain($cardID): bool|int
     case "TER019":
     case "TER024":
     case "ROS133":
+    case "ROS152":
+    case "ROS153":
+    case "ROS154":
+    case "ROS155":
+    case "ROS156":
+    case "ROS157":
     case "ROS161":
     case "ROS226":
     case "ROS230":
@@ -1870,6 +1876,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ROS019":
     case "ROS020":
       return SearchCount(SearchMultiZone($player, "MYHAND:type=I")) == 0;
+    case "ROS035":
+      return $from == "ARS" || ArsenalEmpty($player);
     case "ASB004":
       return count($mySoul) == 0;
     case "AAZ005":

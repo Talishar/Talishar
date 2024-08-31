@@ -470,6 +470,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     AuraDamageTakenAbilities($player, $damage);
     ItemDamageTakenAbilities($player, $damage);
     CharacterDamageTakenAbilities($player, $damage);
+    AuraDamageDealtAbilities($otherPlayer, $damage);
     CharacterDealDamageAbilities($otherPlayer, $damage);
     if (SearchAuras("MON013", $otherPlayer)) {
       LoseHealth(CountAura("MON013", $otherPlayer), $player);
@@ -1312,7 +1313,7 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
   return DelimStringContains($cardSubtype, $subtype);
 }
 
-function CardNameContains($cardID, $name, $player = "", $partial = false)
+function CardNameContains($cardID, $name, $player = "", $partial = false) // This isn't actually a contains operation. It's an equals unless you turn partial to true. 
 {
   $cardName = NameOverride($cardID, $player);
   if ($partial) {
@@ -1398,7 +1399,7 @@ function DoesAttackHaveGoAgain()
   global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_Num6PowDisc;
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
   global $CS_NumItemsDestroyed, $CS_PlayIndex, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
-  global $CS_NumLightningPlayed;
+  global $CS_NumLightningPlayed, $CS_DamageTaken, $CCS_NumInstantsPlayedByAttackingPlayer;
   if (!$CombatChain->HasCurrentLink()) return false;
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
@@ -1564,6 +1565,17 @@ function DoesAttackHaveGoAgain()
     case "AUR024":
     case "ROS009":
       return GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0;
+    case "ROS089":
+    case "ROS090":
+    case "ROS091":
+      if(isset($combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer])){ // the first time this is checked in a chain it isn't set but the rest of the time it can be checked.
+        return $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] > 0;
+      }
+      else return false;
+    case "ROS101":
+    case "ROS102":
+    case "ROS103":
+      return GetClassState($defPlayer, $CS_DamageTaken) > 0;
     case "ROS245":
       return ComboActive($attackID);
     default:

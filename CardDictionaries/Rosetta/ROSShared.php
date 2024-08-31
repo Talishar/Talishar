@@ -1,44 +1,80 @@
 <?php
 
-
+/**
+ * Defines the type of a particular card's non-play ablity. For example: Fyendal's Spring Tunic's ablity is an instant so we would return "I"
+ * Other types include "AR" (Attack Reaction), "A" (Action), "AA" (Attack Action).
+ * This function is meant to handle cards from the Rosetta set.
+ *
+ * @param string $cardID - an id that maps to a FaB card
+ * @param integer $index
+ * @return string - the type that defines when the corresponding ability may be played
+ */
 function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
-    "ROS007", "ROS008", "ROS019", "ROS020" => "I",
-    "ROS009" => "AA",
+    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021" => "I",
+    "ROS003", "ROS009" => "AA",
     default => ""
   };
 }
 
+/**
+ * Defines the resource cost of a particular card's non-play ablity. For example: Star Fall's (ROS009) ability cost's 1 resource to activate.
+ * Novel additional costs (ie. Destroying Gold) is handled by PayAddtionalCosts().
+ * This function is meant to handle cards from the Rosetta set.
+ *
+ * @param string $cardID - an id that maps to a FaB card
+ * @return integer the number of resources which must be paid for the ability
+ */
 function ROSAbilityCost($cardID): int
 {
+  global $currentPlayer;
   return match ($cardID) {
-    "ROS007", "ROS008" => 2,
+    "ROS003", "ROS007", "ROS008" => 2,
     "ROS009" => 1,
+    "ROS021" => HasAuraWithSigilInName($currentPlayer) ? 0 : 1,
     default => 0
   };
 }
 
+/**
+ * If an active effect would add attack value to current or future attack, this defies how much attack value it will add.
+ * This function is meant to handle cards from the Rosetta set.
+ * 
+ * @param string $cardID - an id that maps to a FaB card
+ * @return integer the number of attack value that will be added
+ */
 function ROSEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
+    "ROS052", "ROS053", "ROS054" => 2,
     "ROS248" => 3,
     default => 0,
   };
 }
 
+/**
+ * Defines if an combat effect should activate given certain characteristics of the board state.
+ * This function is meant to handle cards from the Rosetta set.
+ *
+ * @param string $cardID - the id effect that is being evaluate
+ * @param string $attackID - the id of the card that is doing tha actual attack
+ * @return boolean true if the effect is active and should be applied, false otherwise
+ */
 function ROSCombatEffectActive($cardID, $attackID): bool|string
 {
   global $mainPlayer;
   return match ($cardID) {
+    "ROS052", "ROS053", "ROS054" => true,
+    "ROS042", "ROS043", "ROS044" => true,
     "ROS248" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
-    default => "",
+    default => false,
   };
 }
 
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer;
+  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 
   switch ($cardID) {
@@ -63,20 +99,50 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS020":
       Draw($currentPlayer);
       return "";
+    case "ROS021":
+      $ampAmmount = GetClassState($currentPlayer, $CS_NumLightningPlayed);
+      AddCurrentTurnEffect($cardID . "," . $ampAmmount, $currentPlayer, "ABILITY");
+      return "Volzar is amping " . $ampAmmount;
     case "ROS033":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS031":
-      if (Decompose($currentPlayer, 2, 1)) {
-        BottomDeck($currentPlayer);
-        BottomDeck($otherPlayer);
-      }
+      Decompose($currentPlayer, 2, 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "FELLINGOFTHECROWN", 1);
+      return "";
+    case "ROS035":
+      IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
+      return "Seeds of Tomorrow is preventing the next 5 damage.";
+    case "ROS042":
+    case "ROS043":
+    case "ROS044":
+      Decompose($currentPlayer, 2, 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "ROOTBOUNDCARAPACE", 1);
+      return "";
+    case "ROS052":
+    case "ROS053":
+    case "ROS054":
+      Decompose($currentPlayer, 2, 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CADAVEROUSTILLING", 1);
       return "";
     case "ROS055":
     case "ROS056":
     case "ROS057":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
         GainHealth(2, $currentPlayer);
+      }
+      return "";
+    case "ROS155":
+    case "ROS156":
+    case "ROS157":
+      $numRunechantsCreated = match ($cardID) {"ROS155" => 3, "ROS156" => 2, "ROS157" => 1};
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      for($i = 0; $i < $numRunechantsCreated; ++$i){
+        AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
       }
       return "";
     case "ROS247":
@@ -95,6 +161,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS248":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     default:
       return "";
   }
@@ -152,4 +219,20 @@ function ROSHitEffect($cardID): void
 function GetTrapIndices($player)
 {
   return SearchDeck($player, subtype: "Trap");
+}
+
+/**
+ * Volzar needs to know if you control an aura with "Sigil" in its name
+ *
+ * @param integer $player - presumably the current player, the one who has activated volzar
+ * @return boolean true if a aura with sigil is found, false if no aura contains the name sigil
+ */
+function HasAuraWithSigilInName($player)
+{
+  $auras = &GetAuras($player);
+  for($i=0; $i<count($auras); $i+=AuraPieces())
+  {
+    if(CardNameContains($auras[$i], "Sigil", $player, partial: true)) return true;
+  }
+  return false;
 }
