@@ -163,6 +163,7 @@ function HasBoost($cardID, $player)
     case "EVO210": case "EVO211": case "EVO212":
     case "EVO213": case "EVO214": case "EVO215":
     case "EVO216": case "EVO217": case "EVO218":
+    case "AIO009":
       return true;
     default: return false;
   }
@@ -228,6 +229,12 @@ function OnBoostedEffects($player, $boosted)
     case "EVO177": case "EVO178": case "EVO179":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to get a steam counter", 1);
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=ARC036");
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
+      break;
+    case "AIO009":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item with cranked to get a steam counter", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:hasCrank=true");
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
       break;
