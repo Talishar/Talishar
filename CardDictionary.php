@@ -2213,6 +2213,7 @@ function HasTemper($cardID)
     case "HVY100":
     case "HVY648":
     case "AKO004":
+    case "AIO003":
       return true;
     default:
       return false;

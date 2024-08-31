@@ -817,6 +817,7 @@ function OnBlockResolveEffects($cardID = "")
       case "ASB005":
       case "ASB006":
       case "TER027":
+      case "AIO003":
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "HVY008":

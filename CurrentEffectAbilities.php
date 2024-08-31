@@ -498,6 +498,8 @@ function EffectBlockModifier($cardID, $index, $from)
     case "ROS043":
     case "ROS044":
       return 1;
+    case "AIO003":
+      return 1;
     default:
       return 0;
   }
