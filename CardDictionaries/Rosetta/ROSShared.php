@@ -97,6 +97,17 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         GainHealth(2, $currentPlayer);
       }
       return "";
+    case "ROS155":
+    case "ROS156":
+    case "ROS157":
+      $numRuneChantsCreated = match ($cardID) {"ROS155" => 3, "ROS156" => 2, "ROS157" => 1};
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      for($i = 0; $i < $numRuneChantsCreated; ++$i){
+        AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
+      }
+      return "";
     case "ROS247":
       LookAtHand($otherPlayer);
       LookAtArsenal($otherPlayer);
