@@ -470,6 +470,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     AuraDamageTakenAbilities($player, $damage);
     ItemDamageTakenAbilities($player, $damage);
     CharacterDamageTakenAbilities($player, $damage);
+    AuraDamageDealtAbilities($otherPlayer, $damage);
     CharacterDealDamageAbilities($otherPlayer, $damage);
     if (SearchAuras("MON013", $otherPlayer)) {
       LoseHealth(CountAura("MON013", $otherPlayer), $player);

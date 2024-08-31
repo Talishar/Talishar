@@ -142,6 +142,7 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
 
 function AuraLeavesPlay($player, $index, $uniqueID)
 {
+  global $mainPlayer;
   $auras = &GetAuras($player);
   $cardID = $auras[$index];
   $uniqueID = $auras[$index + 6];
@@ -186,6 +187,13 @@ function AuraLeavesPlay($player, $index, $uniqueID)
         if (CardType($deck->Top()) == "AA") {
           AddPlayerHand($deck->Top(), $player, "DECK");
         }
+      }
+      break;
+    case "ROS152":
+    case "ROS153":
+    case "ROS154":
+      if($mainPlayer == $player) { // main player is the attacking player, these being equal would mean that it is "your turn" to Arcane Cussing
+        AddLayer("TRIGGER", $player, $cardID);
       }
       break;
     case "ROS161":
@@ -833,9 +841,29 @@ function AuraDamageTakenAbilities($player, $damage)
       case "ARC106":
       case "ARC107":
       case "ARC108":
+      case "EVR023":
+      case "ROS152":
+      case "ROS153":
+      case "ROS154":
         $remove = 1;
         break;
-      case "EVR023":
+      default:
+        break;
+    }
+    if ($remove) DestroyAura($player, $i);
+  }
+  return $damage;
+}
+
+function AuraDamageDealtAbilities($player, $damage)
+{
+  $auras = &GetAuras($player);
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    $remove = 0;
+    switch ($auras[$i]) {
+      case "ROS152":
+      case "ROS153":
+      case "ROS154":
         $remove = 1;
         break;
       default:
