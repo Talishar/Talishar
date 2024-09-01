@@ -918,6 +918,11 @@ function AuraPlayAbilities($attackID, $from = "")
       case "MON157":
         DimenxxionalCrossroadsPassive($attackID, $from);
         break;
+      case "ELE110":
+        if ($cardType == "AA") {
+          AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+        }
+        break;
       case "EVR143":
         if ($auras[$i + 5] > 0 && CardType($attackID) == "AA" && ClassContains($attackID, "ILLUSIONIST", $currentPlayer) && GetClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks) <= 1) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack +2");
@@ -958,11 +963,6 @@ function AuraAttackAbilities($attackID)
   $attackType = CardType($attackID);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     switch ($auras[$i]) {
-      case "ELE110":
-        if ($attackType == "AA") {
-          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
-        }
-        break;
       case "ELE226":
         if ($attackType == "AA") {
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
