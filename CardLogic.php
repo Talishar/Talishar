@@ -870,12 +870,15 @@ function AddOnHitTrigger($cardID): void
     case "MST174":
     case "MST175":
     case "MST233":
-    case "ROS082":
-    case "ROS083":
-    case "ROS084":
     case "ROS036":
     case "ROS037":
     case "ROS038":
+    case "ROS082":
+    case "ROS083":
+    case "ROS084":
+    case "ROS121":
+    case "ROS122":
+    case "ROS123":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "CRU054":

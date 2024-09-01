@@ -149,6 +149,14 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         return CardLink($cardID, $cardID) . " is preventing the next 2 damage.";
       }
       return "";
+    case "ROS121":
+    case "ROS122":
+    case "ROS123":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
+      return "";
     case "ROS155":
     case "ROS156":
     case "ROS157":
@@ -186,15 +194,23 @@ function ROSHitEffect($cardID): void
 {
   global $currentPlayer, $defPlayer;
   switch ($cardID) {
+    case "ROS036":
+    case "ROS037":
+    case "ROS038":
+      PlayAura("ELE109", $currentPlayer);
+      break;
     case "ROS082":
     case "ROS083":
     case "ROS084":
       PlayAura("ELE110", $currentPlayer);
       break;
-    case "ROS036":
-    case "ROS037":
-    case "ROS038":
-      PlayAura("ELE109", $currentPlayer);
+    case "ROS121":
+    case "ROS122":
+    case "ROS123":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
       break;
     case "ROS220":
       if (ArsenalHasFaceDownCard($defPlayer)) {
