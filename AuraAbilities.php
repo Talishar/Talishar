@@ -330,6 +330,7 @@ function AuraCostModifier($cardID = "")
 
 // CR 2.1 - 4.2.1. Players do not get priority during the Start Phase.
 // CR 2.1 - 4.3.1. The “beginning of the action phase” event occurs and abilities that trigger at the beginning of the action phase are triggered.
+// TODO: Maybe split these out into seperate functions for ease of understanding and futureproofing if there are more complicated start/action phase start procedures.
 function AuraStartTurnAbilities()
 {
   global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
@@ -383,9 +384,12 @@ function AuraStartTurnAbilities()
       case "UPR220":
       case "DYN217":
       case "ROS033":
-      case "ROS133" :
-      case "ROS161" :
-      case "ROS182" :
+      case "ROS061":
+      case "ROS062":
+      case "ROS063":
+      case "ROS133":
+      case "ROS161":
+      case "ROS182":
       case "ROS210":
       case "ROS226":
       case "ROS230":
