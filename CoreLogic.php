@@ -628,6 +628,12 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
           $remove = 1;
         }
         break;
+      case "ROS015": // So technically this procks if you deal damage to yourself but this would need to be refactored in order to make that work. Until someone has this happen, lets just leave it as so.
+        if ($source != "ELE111" && $type == "ARCANE") {
+          PlayAura("ELE109", $currentTurnEffects[$i + 1], 1);
+          $remove = 1;
+        }
+        break;
       default:
         break;
     }

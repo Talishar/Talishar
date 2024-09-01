@@ -13,6 +13,7 @@ function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
     "ROS007", "ROS008", "ROS019", "ROS020", "ROS021" => "I",
+    "ROS015" => "A",
     "ROS003", "ROS009" => "AA",
     default => ""
   };
@@ -24,17 +25,31 @@ function ROSAbilityType($cardID, $index = -1): string
  * This function is meant to handle cards from the Rosetta set.
  *
  * @param string $cardID - an id that maps to a FaB card
- * @return integer the number of resources which must be paid for the ability
+ * @return integer - the number of resources which must be paid for the ability
  */
 function ROSAbilityCost($cardID): int
 {
   global $currentPlayer;
   return match ($cardID) {
+    "ROS015" => 3,
     "ROS003", "ROS007", "ROS008" => 2,
     "ROS009" => 1,
     "ROS021" => HasAuraWithSigilInName($currentPlayer) ? 0 : 1,
     default => 0
   };
+}/**
+ * Sub function for AbilityHasGoAgain that will indicate whether or not a cards sub ability has go again
+ * This function is meant to handle cards from the Rosetta set.
+ *
+ * @param string $cardID - an id that maps to a FaB card
+ * @return boolean - true if the ability should have go again and false if not
+ */
+function ROSAbilityHasGoAgain($cardID): bool
+{
+  switch($cardID) {
+    case "ROS015": return true;
+    default: return false;
+  }
 }
 
 /**
@@ -42,7 +57,7 @@ function ROSAbilityCost($cardID): int
  * This function is meant to handle cards from the Rosetta set.
  * 
  * @param string $cardID - an id that maps to a FaB card
- * @return integer the number of attack value that will be added
+ * @return integer - the number of attack value that will be added
  */
 function ROSEffectAttackModifier($cardID): int
 {
@@ -60,9 +75,9 @@ function ROSEffectAttackModifier($cardID): int
  *
  * @param string $cardID - the id effect that is being evaluate
  * @param string $attackID - the id of the card that is doing tha actual attack
- * @return boolean true if the effect is active and should be applied, false otherwise
+ * @return bool - true if the effect is active and should be applied, false otherwise
  */
-function ROSCombatEffectActive($cardID, $attackID): bool|string
+function ROSCombatEffectActive($cardID, $attackID): bool
 {
   global $mainPlayer;
   return match ($cardID) {
@@ -73,6 +88,17 @@ function ROSCombatEffectActive($cardID, $attackID): bool|string
   };
 }
 
+/**
+ * Defines the on resolution effects of cards and abilities
+ * This function is meant to handle cards from the Rosetta set.
+ *
+ * @param string $cardID - the id effect that is being evaluate
+ * @param string $from - caps string that indicates where an effect is coming from PLAY/ABLITY are common values
+ * @param string $resourcesPaid - the number of resources that are paid into the effect. useful for cards with variable costs.
+ * @param string $target - for when a card has multiple possble targets
+ * @param string $additionalCosts - list of cards that is defined by a broader context usually to give a bonus effect (brutes discarding a card then checkin if the card is a 6 is a common use case)
+ * @return string - a log message that will be displayed upon resolution
+ */
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed;
@@ -91,6 +117,12 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS008":
       PlayAura("ELE110", $currentPlayer);
       return "";
+    case "ROS015":
+      AddCurrentTurnEffect($cardID . "-AMP", $currentPlayer, from: "ABILITY");
+      if(SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != ""){
+        AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
+      }
+      return CardLink($cardID, $cardID) . " is amping 1";
     case "ROS016":
       GainHealth(1, $currentPlayer);
       GainHealth(1, $currentPlayer);
@@ -103,7 +135,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS021":
       $ampAmmount = GetClassState($currentPlayer, $CS_NumLightningPlayed);
       AddCurrentTurnEffect($cardID . "," . $ampAmmount, $currentPlayer, "ABILITY");
-      return "Volzar is amping " . $ampAmmount;
+      return CardLink($cardID, $cardID) . " is amping " . $ampAmmount;
     case "ROS033":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
@@ -261,7 +293,7 @@ function GetTrapIndices($player)
  * Volzar needs to know if you control an aura with "Sigil" in its name
  *
  * @param integer $player - presumably the current player, the one who has activated volzar
- * @return boolean true if a aura with sigil is found, false if no aura contains the name sigil
+ * @return boolean - true if a aura with sigil is found, false if no aura contains the name sigil
  */
 function HasAuraWithSigilInName($player)
 {
