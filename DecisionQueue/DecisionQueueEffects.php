@@ -735,6 +735,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "CADAVEROUSTILLING":
       AddCurrentTurnEffect($lastResult, $player);
       return $lastResult;
+    case "SUMMERSFALL":
+      MZMoveCard($player, "THEIRAURAS", "THEIRBOTDECK", may: true, DQContext: "Choose an aura");
+      return $lastResult;
     default: return "";
   }
 }

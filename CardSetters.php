@@ -160,8 +160,13 @@ function TurnBanishFaceDown($player, $index)
 
 function AddBottomDeck($cardID, $player, $from)
 {
+  if(TypeContains($cardID, "T", $player)) { // 'T' type indicates the card is a token
+    WriteLog(CardLink($cardID, $cardID) . " is a token. So instead of going to the bottom of the deck, it ceases to exist.");
+  }
+  else {
   $deck = &GetDeck($player);
   array_push($deck, $cardID);
+  }
 }
 
 function AddTopDeck($cardID, $player, $from, $deckIndexModifier = 0)

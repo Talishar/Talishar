@@ -113,6 +113,12 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS035":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
       return "Seeds of Tomorrow is preventing the next 5 damage.";
+    case "ROS039":
+    case "ROS040":
+    case "ROS041":
+      Decompose($currentPlayer, 2, 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SUMMERSFALL", 1);
+      return "";
     case "ROS042":
     case "ROS043":
     case "ROS044":
