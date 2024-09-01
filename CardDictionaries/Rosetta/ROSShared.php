@@ -47,8 +47,9 @@ function ROSAbilityCost($cardID): int
 function ROSEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
-    "ROS052", "ROS053", "ROS054" => 2,
-    "ROS248" => 3,
+    "ROS066" => 1,
+    "ROS052", "ROS053", "ROS054", "ROS065" => 2,
+    "ROS064", "ROS248" => 3,
     default => 0,
   };
 }
@@ -65,8 +66,8 @@ function ROSCombatEffectActive($cardID, $attackID): bool|string
 {
   global $mainPlayer;
   return match ($cardID) {
-    "ROS052", "ROS053", "ROS054" => true,
-    "ROS042", "ROS043", "ROS044" => true,
+    "ROS042", "ROS043", "ROS044", "ROS052", "ROS053", "ROS054" => true,
+    "ROS064", "ROS065", "ROS066" => true,
     "ROS248" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
     default => false,
   };

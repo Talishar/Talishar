@@ -2374,6 +2374,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DestroyAuraUniqueID($player, $uniqueID);
       GainHealth($numHealthPointsGained, $player);
       break;
+    case "ROS064":
+    case "ROS065":
+    case "ROS066":
+      DestroyAuraUniqueID($player, $uniqueID);
+      AddCurrentTurnEffect($parameter, $player, "PLAY");
+      break;
     case "ROS077":
       Draw($player);
       break;
