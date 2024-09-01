@@ -157,6 +157,11 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
       return "";
+    case "ROS143":
+    case "ROS144":
+    case "ROS145":
+      PlayAura("ARC112", $currentPlayer);
+      return "";
     case "ROS155":
     case "ROS156":
     case "ROS157":
