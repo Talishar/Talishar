@@ -1579,6 +1579,10 @@ function DoesAttackHaveGoAgain()
     case "ROS102":
     case "ROS103":
       return GetClassState($defPlayer, $CS_DamageTaken) > 0;
+    case "ROS149":
+    case "ROS150":
+    case "ROS151":
+      return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "ROS245":
       return ComboActive($attackID);
     default:
