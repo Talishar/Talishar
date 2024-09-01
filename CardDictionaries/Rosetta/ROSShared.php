@@ -113,7 +113,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS035":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
-      return "Seeds of Tomorrow is preventing the next 5 damage.";
+      return CardLink($cardID, $cardID) . " is preventing the next 5 damage.";
     case "ROS039":
     case "ROS040":
     case "ROS041":
@@ -139,6 +139,14 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS057":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
         GainHealth(2, $currentPlayer);
+      }
+      return "";
+    case "ROS104":
+    case "ROS105":
+    case "ROS106":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
+        return CardLink($cardID, $cardID) . " is preventing the next 2 damage.";
       }
       return "";
     case "ROS155":

@@ -1197,6 +1197,9 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "ROS055":
     case "ROS056":
     case "ROS057":
+    case "ROS104":
+    case "ROS105":
+    case "ROS106":
       return $from == "HAND";
     default:
       break;

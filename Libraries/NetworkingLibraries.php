@@ -1905,6 +1905,9 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "ROS055":
     case "ROS056":
     case "ROS057":
+    case "ROS104":
+    case "ROS105":
+    case "ROS106":
       $names = GetAbilityNames($cardID, $index);
       if (SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);

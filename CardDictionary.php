@@ -409,6 +409,11 @@ function CardCost($cardID, $from = "-")
     case "ROS057":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
       else return 3;
+    case "ROS104":
+    case "ROS105":
+    case "ROS106":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
+      else return 1;
     default:
       break;
   }
@@ -771,6 +776,9 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-")
     case "ROS055":
     case "ROS056":
     case "ROS057":
+    case "ROS104":
+    case "ROS105":
+    case "ROS106":
       return "I,AA";
     default:
       return "";
@@ -820,6 +828,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-")
     case "ROS055":
     case "ROS056":
     case "ROS057":
+    case "ROS104":
+    case "ROS105":
+    case "ROS106":
       $names = "Ability";
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Attack";
       return $names;
@@ -1943,6 +1954,9 @@ function GoesOnCombatChain($phase, $cardID, $from)
     case "ROS055":
     case "ROS056":
     case "ROS057":
+    case "ROS104":
+    case "ROS105":
+    case "ROS106":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     default:
       break;
