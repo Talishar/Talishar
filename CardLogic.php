@@ -2386,6 +2386,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS077":
       Draw($player);
       break;
+    case "ROS130":
+    case "ROS131":
+    case "ROS132":
+      // this is the only place that it will destroy if there are no counters. may need to refactor if anything ever can remove counters arbitrarly.
+      $index = SearchAurasForUniqueID($uniqueID, $player);
+      if ($index == -1) break;
+      $auras = &GetAuras($player);
+      --$auras[$index + 2];
+      PlayAura("ARC112", $player);
+      if ($auras[$index + 2] == 0) DestroyAuraUniqueID($player, $uniqueID);
+      break;
     case "ROS152":
     case "ROS153":
     case "ROS154":
@@ -2737,6 +2748,9 @@ function HasVerseCounters($cardID)
     case "EVR107":
     case "EVR108":
     case "EVR109":
+    case "ROS130":
+    case "ROS131":
+    case "ROS132":
       return true;
     default:
       return false;

@@ -65,6 +65,9 @@ function AuraNumUses($cardID)
     case "EVR143":
     case "UPR005":
     case "ROS077":
+    case "ROS130":
+    case "ROS131":
+    case "ROS132":
       return 1;
     case "DTD081":
       return 1;
@@ -236,10 +239,13 @@ function AuraPlayCounters($cardID)
     case "CRU075":
       return 1;
     case "EVR107":
+    case "ROS130":
       return 3;
     case "EVR108":
+    case "ROS131":
       return 2;
     case "EVR109":
+    case "ROS132":
       return 1;
     case "UPR140":
       return 3;
@@ -1002,6 +1008,14 @@ function AuraAttackAbilities($attackID)
           --$auras[$i + 5];
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
         }
+        break;
+      case "ROS130":
+      case "ROS131":
+      case "ROS132":
+        if ($attackType == "AA" && $auras[$i + 5] > 0) {  
+          --$auras[$i + 5];
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+        }     
         break;
       default:
         break;
