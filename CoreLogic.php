@@ -414,7 +414,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   $dqVars[0] = $damage;
   if ($type == "COMBAT") $dqState[6] = $damage;
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
-  if ($damage > 0) AddDamagePreventionSelection($player, $damage, $preventable);
+  if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable);
   if ($source == "ARC112") {
     SearchCurrentTurnEffects("DTD134", $otherPlayer, true);
     SearchCurrentTurnEffects("DTD133", $otherPlayer, true);
@@ -438,12 +438,12 @@ function ResetAuraStatus($player)
   }
 }
 
-function AddDamagePreventionSelection($player, $damage, $preventable)
+function AddDamagePreventionSelection($player, $damage, $type, $preventable)
 {
-  PrependDecisionQueue("PROCESSDAMAGEPREVENTION", $player, $damage . "-" . $preventable, 1);
+  PrependDecisionQueue("PROCESSDAMAGEPREVENTION", $player, $damage . "-" . $preventable . "-" . $type, 1);
   PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to prevent damage: " . $damage . " damage left", 1);
-  PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION");
+  PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION," . $type);
 }
 
 function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
@@ -2089,19 +2089,20 @@ function BaseAttackModifiers($attackID, $attackValue)
   return $attackValue;
 }
 
-function GetDamagePreventionIndices($player)
+function GetDamagePreventionIndices($player, $type)
 {
   $rv = "";
+
   $auras = &GetAuras($player);
   $indices = "";
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if (AuraDamagePreventionAmount($player, $i) > 0 || HasWard($auras[$i], $player)) {
+    if (AuraDamagePreventionAmount($player, $i, $type) > 0 || HasWard($auras[$i], $player)) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
     }
   }
-
   $mzIndices = SearchMultiZoneFormat($indices, "MYAURAS");
+
   $char = &GetPlayerCharacter($player);
   $indices = "";
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
@@ -2110,7 +2111,6 @@ function GetDamagePreventionIndices($player)
       $indices .= $i;
     }
   }
-
   $indices = SearchMultiZoneFormat($indices, "MYCHAR");
   $mzIndices = CombineSearches($mzIndices, $indices);
 

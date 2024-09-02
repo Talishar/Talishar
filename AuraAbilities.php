@@ -181,6 +181,12 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       $aurasArray = explode(",", $illusionistAuras);
       if (count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
+    case "ROS045":
+      PlayAura("ELE109", $player);
+      break;
+    case "ROS088":
+      PlayAura("ELE110", $player);
+      break;
     case "ROS133":
       $deck = new Deck($player);
       if ($deck->Reveal()) {
@@ -740,10 +746,11 @@ function AuraEndTurnCleanup()
   for ($i = 0; $i < count($auras); $i += AuraPieces()) $auras[$i + 5] = AuraNumUses($auras[$i]);
 }
 
-function AuraDamagePreventionAmount($player, $index, $damage = 0, $active = false, &$cancelRemove = false)
+function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active = false, &$cancelRemove = false)
 {
   $auras = &GetAuras($player);
   if (HasWard($auras[$index], $player)) return WardAmount($auras[$index], $player, $index);
+  if (HasArcaneShelter($auras[$index]) && $type == "ARCANE") return ArcaneShelterAmount($auras[$index]);
   switch ($auras[$index]) {
     case "ARC167":
       return 4;
@@ -774,10 +781,10 @@ function AuraDamagePreventionAmount($player, $index, $damage = 0, $active = fals
 }
 
 //This function is for effects that prevent damage and DO destroy themselves
-function AuraTakeDamageAbility($player, $index, $damage, $preventable)
+function AuraTakeDamageAbility($player, $index, $damage, $preventable, $type)
 {
   $cancelRemove = false;
-  if ($preventable) $damage -= AuraDamagePreventionAmount($player, $index, $damage, true, $cancelRemove);
+  if ($preventable) $damage -= AuraDamagePreventionAmount($player, $index, $type, $damage, true, $cancelRemove);
   if (!$cancelRemove) DestroyAura($player, $index);
   return $damage;
 }
