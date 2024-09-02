@@ -62,9 +62,9 @@ function ROSAbilityHasGoAgain($cardID): bool
 function ROSEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
-    "ROS066" => 1,
-    "ROS052", "ROS053", "ROS054", "ROS065" => 2,
-    "ROS064", "ROS248" => 3,
+    "ROS066", "ROS129" => 1,
+    "ROS052", "ROS053", "ROS054", "ROS065", "ROS128" => 2,
+    "ROS064", "ROS127", "ROS248" => 3,
     default => 0,
   };
 }
@@ -79,10 +79,11 @@ function ROSEffectAttackModifier($cardID): int
  */
 function ROSCombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer;
+  global $mainPlayer, $CombatChain;
   return match ($cardID) {
     "ROS042", "ROS043", "ROS044", "ROS052", "ROS053", "ROS054" => true,
     "ROS064", "ROS065", "ROS066" => true,
+    "ROS127", "ROS128", "ROS129" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "ROS248" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
     default => false,
   };
@@ -188,6 +189,18 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
+      return "";
+    case "ROS127":
+    case "ROS128":
+    case "ROS129":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYAURAS", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $otherPlayer, "-", 1);
       return "";
     case "ROS143":
     case "ROS144":
