@@ -585,6 +585,9 @@ function IsBanned($cardID, $format)
         case "CRU077": case "CRU079": case "CRU080": // Kassai, Cintari Sellsword | Cintari Saber
         case "CRU046": case "CRU050": // Ira, Crimson Haze | Edge of Autumn
         case "DYN009": //Berserk
+        case "ARC002": case "ARC003": // Dash | Teklo Plasma Pistol
+        case "ELE063": case "ELE222": // Briar | Rosetta Thorn
+        case "MST047": case "MST159": // Zen | Tiger Taming Khakkara
           return true;
         default:
           return false;
