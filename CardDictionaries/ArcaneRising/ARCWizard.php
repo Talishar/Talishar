@@ -595,7 +595,7 @@
         break;
       case "ROS189": case "ROS190": case "ROS191":
         WriteLog("Surge active, returning a sigil from graveyard to hand");
-        MZMoveCard($player, "MYDISCARD:nameIncludes=Sigil", "MYHAND", may:true);
+        MZMoveCard($player, "MYDISCARD:isAuraSigil", "MYHAND", may:true);
         break;
       case "ROS198": case "ROS199": case "ROS200":
         WriteLog("Surge active, gainting 2 resources");

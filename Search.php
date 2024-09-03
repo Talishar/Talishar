@@ -280,12 +280,12 @@ function SearchDiscardByName($player, $name)
   return $cardList;
 }
 
-function SearchDiscardByNameIncludes($player, $subname)
+function SearchDiscardForSigil($player)
 {
   $discard = &GetDiscard($player);
   $cardList = "";
   for($i = 0; $i < count($discard); $i += DeckPieces()) {
-    if(str_contains(CardName($discard[$i]), $subname)) {
+    if(str_contains(CardName($discard[$i]), "Sigil") and DelimStringContains(CardSubtype($discard[$i]), "Aura")) {
       if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
@@ -1093,7 +1093,7 @@ function SearchMultizone($player, $searches)
     $faceDown = false;
     $hasAttackCounters = false;
     $arcaneDamage = -1;
-    $nameIncludes = false;
+    $isAuraSigil = false;
     if(count($searchArr) > 1) //Means there are conditions
     {
       $conditions = explode(";", $searchArr[1]);
@@ -1242,11 +1242,10 @@ function SearchMultizone($player, $searches)
             if(substr($rv, -1) == ",") $rv = substr($rv, 0, -1);
             $isSameName = true;
             break;
-          case "nameIncludes":
-            $subname = $condition[1];
+          case "isAuraSigil":
             switch($zone)
             {
-              case "MYDISCARD": $searchResult = SearchDiscardByNameIncludes($player, $subname); break;
+              case "MYDISCARD": $searchResult = SearchDiscardForSigil($player); break;
               default: break;
             }
             if($rv != "") $rv = $rv . ",";
@@ -1331,6 +1330,8 @@ function SearchMultizone($player, $searches)
           break;
       }
     }
+    WriteLog($searchResult);
+    WriteLog($zone);
     $searchResult = SearchMultiZoneFormat($searchResult, $zone);
     $rv = CombineSearches($rv, $searchResult);
   }
