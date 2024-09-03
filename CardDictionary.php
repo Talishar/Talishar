@@ -694,6 +694,9 @@ function HasGoAgain($cardID): bool|int
     case "ROS226":
     case "ROS230":
     case "ROS248":
+    case "ROS130":
+    case "ROS131":
+    case "ROS132":
       return true;
   }
 
@@ -2674,7 +2677,7 @@ function AuraDefaultHoldTriggerState($cardID): int
     "WTR075", "DTD233", "DYN217", "UPR190", "UPR218", "UPR219", "UPR220", "EVR107", "EVR108", "EVR109", "EVR131",
     "EVR132", "EVR133", "ELE025", "ELE026", "ELE027", "ELE028", "ELE029", "ELE030", "ELE206", "ELE207", "ELE208",
     "ELE109", "ELE110", "ELE111", "CRU028", "CRU029", "CRU030", "CRU031", "CRU038", "CRU039", "CRU040", "CRU075",
-    "CRU144", "MON186" => 0,
+    "CRU144", "MON186", "ROS130", "ROS131", "ROS132" => 0,
     "ARC112", "DYN246", "DTD235" => 1,
     default => 2
   };

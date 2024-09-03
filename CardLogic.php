@@ -2373,8 +2373,21 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS152":
     case "ROS153":
     case "ROS154":
-      $numRunechantsCreated = match ($parameter) {"ROS152" => 3, "ROS153" => 2, "ROS154" => 1}; 
+      $numRunechantsCreated = match ($parameter) {"ROS152" => 3, "ROS153" => 2, "ROS154" => 1};
       PlayAura("ARC112", $player, $numRunechantsCreated);
+      break;
+    case "ROS130":
+    case "ROS131":
+    case "ROS132":
+      //malefic incantation trigger
+      $index = SearchAurasForUniqueID($uniqueID, $player);
+      if ($index == -1) break;
+      $auras = &GetAuras($player);
+      --$auras[$index + 2];
+      PlayAura("ARC112", $player);
+      if ($auras[$index + 2] == 0) DestroyAuraUniqueID($player, $uniqueID);
+      break;
+      //reduce counters
       break;
     case "TER006":
       $index = FindCharacterIndex($mainPlayer, "TER006");
@@ -2721,6 +2734,9 @@ function HasVerseCounters($cardID)
     case "EVR107":
     case "EVR108":
     case "EVR109":
+    case "ROS130":
+    case "ROS131":
+    case "ROS132":
       return true;
     default:
       return false;

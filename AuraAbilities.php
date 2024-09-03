@@ -229,11 +229,11 @@ function AuraPlayCounters($cardID)
   switch ($cardID) {
     case "CRU075":
       return 1;
-    case "EVR107":
+    case "EVR107": case "ROS130":
       return 3;
-    case "EVR108":
+    case "EVR108": case "ROS131":
       return 2;
-    case "EVR109":
+    case "EVR109": case "ROS132":
       return 1;
     case "UPR140":
       return 3;
@@ -963,9 +963,18 @@ function AuraAttackAbilities($attackID)
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
         }
         break;
-      case "ELE226":
+      case "ROS130": case "ROS131": case "ROS132": //malefic incantation trigger
         if ($attackType == "AA") {
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+        }
+        break;
+      break;
+      case "ELE226":
+        if ($attackType == "AA") {
+          if ($auras[$i + 5] > 0) {
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+          --$auras[$i + 5];
+          }
         }
         break;
       case "EVR140":
