@@ -103,34 +103,34 @@ function SearchCardList($list, $player, $type = "", $subtype = "", $maxCost = -1
 
 
 function SearchInner(
-  &$array, 
-  $player, 
-  $zone, 
-  $count, 
-  $type, 
-  $subtype, 
-  $maxCost, 
-  $minCost, 
-  $class, 
-  $talents, 
-  $bloodDebtOnly, 
-  $phantasmOnly, 
-  $pitch, 
-  $specOnly, 
-  $maxAttack, 
-  $maxDef, 
-  $frozenOnly, 
-  $hasNegCounters, 
-  $hasEnergyCounters, 
-  $comboOnly, 
-  $minAttack, 
-  $hasCrank = false, 
-  $hasSteamCounter = false, 
-  $getDistinctCardNames = false, 
-  $is1h = false, 
-  $hasWard = false, 
-  $hasAttackCounters = false, 
-  $faceUp = false, 
+  &$array,
+  $player,
+  $zone,
+  $count,
+  $type,
+  $subtype,
+  $maxCost,
+  $minCost,
+  $class,
+  $talents,
+  $bloodDebtOnly,
+  $phantasmOnly,
+  $pitch,
+  $specOnly,
+  $maxAttack,
+  $maxDef,
+  $frozenOnly,
+  $hasNegCounters,
+  $hasEnergyCounters,
+  $comboOnly,
+  $minAttack,
+  $hasCrank = false,
+  $hasSteamCounter = false,
+  $getDistinctCardNames = false,
+  $is1h = false,
+  $hasWard = false,
+  $hasAttackCounters = false,
+  $faceUp = false,
   $faceDown = false,
   $arcaneDamage = -1
   ) {
@@ -273,6 +273,19 @@ function SearchDiscardByName($player, $name)
   if(SearchCurrentTurnEffects("OUT183", $player)) return $cardList;
   for($i = 0; $i < count($discard); $i += DeckPieces()) {
     if(CardName($discard[$i]) == $name) {
+      if($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
+    }
+  }
+  return $cardList;
+}
+
+function SearchDiscardByNameIncludes($player, $subname)
+{
+  $discard = &GetDiscard($player);
+  $cardList = "";
+  for($i = 0; $i < count($discard); $i += DeckPieces()) {
+    if(str_contains(CardName($discard[$i]), $subname)) {
       if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
@@ -688,8 +701,8 @@ function GetEquipmentIndices($player, $maxBlock = -1, $minBlock = -1, $onCombatC
   $character = &GetPlayerCharacter($player);
   $indices = "";
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i + 1] != 0 
-    && CardType($character[$i]) == "E" 
+    if ($character[$i + 1] != 0
+    && CardType($character[$i]) == "E"
     && (($minBlock == -1 && $maxBlock == -1) || (BlockValue($character[$i]) + $character[$i + 4] <= $maxBlock && BlockValue($character[$i]) >= $minBlock))
     && ($onCombatChain == false || $character[$i + 6] > 0)
     && $character[$i + 12] != "DOWN") {
@@ -1080,6 +1093,7 @@ function SearchMultizone($player, $searches)
     $faceDown = false;
     $hasAttackCounters = false;
     $arcaneDamage = -1;
+    $nameIncludes = false;
     if(count($searchArr) > 1) //Means there are conditions
     {
       $conditions = explode(";", $searchArr[1]);
@@ -1209,6 +1223,7 @@ function SearchMultizone($player, $searches)
             break;
           case "isSameName":
             $name = CardName($condition[1]);
+
             switch($zone)
             {
               case "MYDECK": $searchResult = SearchDeckByName($player, $name); break;
@@ -1226,6 +1241,18 @@ function SearchMultizone($player, $searches)
             $rv = $rv . SearchMultiZoneFormat($searchResult, $zone);
             if(substr($rv, -1) == ",") $rv = substr($rv, 0, -1);
             $isSameName = true;
+            break;
+          case "nameIncludes":
+            $subname = $condition[1];
+            switch($zone)
+            {
+              case "MYDISCARD": $searchResult = SearchDiscardByNameIncludes($player, $subname); break;
+              default: break;
+            }
+            if($rv != "") $rv = $rv . ",";
+            $rv = $rv . SearchMultiZoneFormat($searchResult, $zone);
+            if(substr($rv, -1) == ",") $rv = substr($rv, 0, -1);
+            $nameIncludes = true;
             break;
           case "is1h":
             $is1h = $condition[1];
@@ -1252,7 +1279,7 @@ function SearchMultizone($player, $searches)
     }
     $searchPlayer = (substr($zone, 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1));
     $searchResult = "";
-    if(!$isCardID && !$isSameName)
+    if(!$isCardID && !$isSameName && !$nameIncludes)
     {
       switch ($zone) {
         case "MYDECK": case "THEIRDECK":
@@ -1268,7 +1295,7 @@ function SearchMultizone($player, $searches)
           $searchResult = SearchArsenal($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, $faceUp, $faceDown);
           break;
         case "MYAURAS": case "THEIRAURAS":
-          $searchResult = SearchAura($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasWard, $hasAttackCounters);
+          $searchResult = SearchAura($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasWard, $hasAttackCounter);
           break;
         case "MYCHAR": case "THEIRCHAR":
           $searchResult = SearchCharacter($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, $is1h, $faceUp, $faceDown);

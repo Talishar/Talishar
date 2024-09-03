@@ -235,6 +235,11 @@
       case "DYN197": case "DYN198": case "DYN199": return 0;//Aether Quickening
       case "DYN203": case "DYN204": case "DYN205": return 0;//Prognosticate
       case "DYN206": case "DYN207": case "DYN208": return 0;//Sap
+      case "ROS207": case "ROS208": case "ROS209": return 0;//Trailblazing Aether
+      case "ROS176": case "ROS177": case "ROS178": return 0;//Pop the Bubble
+      case "ROS189": case "ROS190": case "ROS191": return 0;//Etchings of Arcana
+      case "ROS198": case "ROS199": case "ROS200": return 0;//Overflow the Aetherwell
+      case "ROS201": case "ROS202": case "ROS203": return 0;//Perennial Aetherbloom
       case "HVY252": return 1;
       default: return -1;
     }
@@ -305,6 +310,11 @@
           $modifier += $effectArr[1];
           $remove = true;
           break;
+        case "ROS186": case "ROS187": case "ROS188":
+          if($currentTurnEffects[$i+1] != $player) break;
+          $modifier += $effectArr[1];
+          $remove = true;
+          break;
         case "ROS033":
           if($currentTurnEffects[$i+1] != $player) break;
           $modifier += 3;
@@ -319,7 +329,7 @@
 
   function ArcaneDamage($cardID)
   {
-    //Blaze - Replacement effects aren't considered when evaluating how much an effect does so Emeritus Scolding (blu) would require 2 counters. 
+    //Blaze - Replacement effects aren't considered when evaluating how much an effect does so Emeritus Scolding (blu) would require 2 counters.
     global $mainPlayer, $currentPlayer, $CS_ArcaneDamageTaken, $resourcesPaid;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
@@ -354,6 +364,9 @@
       case "DYN199": case "DYN204": case "DYN207": return 2;
       case "DYN205": case "DYN208": return 1;
       case "HVY252": return 1;
+      case "ROS207": case "ROS176": case "ROS189": case "ROS198": case "ROS201": return 3;
+      case "ROS208": case "ROS177": case "ROS190": case "ROS199": case "ROS202": return 2;
+      case "ROS209": case "ROS178": case "ROS191": case "ROS200": case "ROS203": return 1;
       default: return -1;
     }
   }
@@ -404,7 +417,11 @@
       case "DYN203": case "DYN204": case "DYN205":
       case "DYN206": case "DYN207": case "DYN208":
         return true;
-      case "HVY252": 
+      case "HVY252":
+        return true;
+      case "ROS207": case "ROS176": case "ROS189": case "ROS198": case "ROS201": return True;
+      case "ROS208": case "ROS177": case "ROS190": case "ROS199": case "ROS202": return True;
+      case "ROS209": case "ROS178": case "ROS191": case "ROS200": case "ROS203": return True;
         return true;
       default: return false;
     }
@@ -558,7 +575,7 @@
         PlayAura("DYN244", $player);
         WriteLog(CardLink($cardID, $cardID) . " created a " . CardLink("DYN244", "DYN244") . " token");
         break;
-      case "DYN197": case "DYN198": case "DYN199":
+      case "DYN197": case "DYN198": case "DYN199": case "ROS207": case "ROS208": case "ROS209":
         if(CurrentEffectPreventsGoAgain() || $player != $mainPlayer) break;
         GainActionPoints();
         WriteLog(CardLink($cardID, $cardID) . " gained go again");
@@ -573,6 +590,16 @@
         AddDecisionQueue("MZOP", $player, "GETCARDINDEX", 1);
         AddDecisionQueue("REMOVECOUNTER", $targetPlayer, $cardID, 1);
         break;
+      case "ROS176": case "ROS177": case "ROS178":
+        MZChooseAndDestroy($player, "THEIRAURAS");
+        break;
+      case "ROS189": case "ROS190": case "ROS191":
+        WriteLog("Surge active, returning a sigil from graveyard to hand");
+        MZMoveCard($player, "MYDISCARD:nameIncludes=Sigil", "MYHAND", may:true);
+        break;
+      case "ROS198": case "ROS199": case "ROS200":
+        WriteLog("Surge active, gainting 2 resources");
+        GainResources($player, 2);
       default: break;
     }
   }

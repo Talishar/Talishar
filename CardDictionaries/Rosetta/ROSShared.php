@@ -40,7 +40,7 @@ function ROSAbilityCost($cardID): int
 /**
  * If an active effect would add attack value to current or future attack, this defies how much attack value it will add.
  * This function is meant to handle cards from the Rosetta set.
- * 
+ *
  * @param string $cardID - an id that maps to a FaB card
  * @return integer the number of attack value that will be added
  */
@@ -161,6 +161,21 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS248":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "ROS207": case "ROS208": case "ROS209":
+    case "ROS176": case "ROS177": case "ROS178":
+    case "ROS189": case "ROS190": case "ROS191":
+    case "ROS198": case "ROS199": case "ROS200":
+    case "ROS201": case "ROS202": case "ROS203":
+      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      return "";
+    case "ROS055":
+    case "ROS056":
+    case "ROS057":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        AddCurrentTurnEffect($cardID . "," . 1, $currentPlayer, "ABILITY");
+        return "Arcane Twinning is amping 1";
+      }
       return "";
     default:
       return "";
