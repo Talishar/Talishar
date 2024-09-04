@@ -615,7 +615,6 @@ function IsBanned($cardID, $format)
         case "ELE006": // Awakening
         case "ELE031": case "ELE034":// Lexi, Livewire | Voltaire, Strike Twice
         case "ELE062": case "ELE222": // Briar, Warden of Thorns | Rosetta Thorn
-        case "ELE114": // Pulse of Isenloft
         case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
         case "ELE223": // Duskblade
         case "EVR017": // Bravo, Star of the Show
