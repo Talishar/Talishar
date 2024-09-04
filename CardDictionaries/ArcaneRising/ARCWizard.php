@@ -367,6 +367,9 @@
       case "ROS207": case "ROS176": case "ROS189": case "ROS198": case "ROS201": return 3;
       case "ROS208": case "ROS177": case "ROS190": case "ROS199": case "ROS202": return 2;
       case "ROS209": case "ROS178": case "ROS191": case "ROS200": case "ROS203": return 1;
+      case "ROS173": return 3;
+      case "ROS174": return 2;
+      case "ROS175": return 1;
       default: return -1;
     }
   }
@@ -419,10 +422,10 @@
         return true;
       case "HVY252":
         return true;
-      case "ROS207": case "ROS176": case "ROS189": case "ROS198": case "ROS201": return True;
-      case "ROS208": case "ROS177": case "ROS190": case "ROS199": case "ROS202": return True;
-      case "ROS209": case "ROS178": case "ROS191": case "ROS200": case "ROS203": return True;
-        return true;
+      case "ROS207": case "ROS176": case "ROS189": case "ROS198": case "ROS201": return true;
+      case "ROS208": case "ROS177": case "ROS190": case "ROS199": case "ROS202": return true;
+      case "ROS209": case "ROS178": case "ROS191": case "ROS200": case "ROS203": return true;
+      case "ROS173": case "ROS174": case "ROS175": return true;
       default: return false;
     }
   }
@@ -595,11 +598,30 @@
         break;
       case "ROS189": case "ROS190": case "ROS191":
         WriteLog("Surge active, returning a sigil from graveyard to hand");
-        MZMoveCard($player, "MYDISCARD:isAuraSigil", "MYHAND", may:true);
+        MZMoveCard($player, "MYDISCARD:subtype=Aura;nameIncludes=Sigil", "MYHAND", may:true);
         break;
       case "ROS198": case "ROS199": case "ROS200":
         WriteLog("Surge active, gainting 2 resources");
         GainResources($player, 2);
+      case "ROS201": case "ROS202": case "ROS203": //perennial aetherbloom
+        WriteLog("Surge active, returning to the bottom of the deck");
+        AddBottomDeck($cardID, $player, "STACK"); //create a copy on the bottom
+        $discard = &GetDiscard($player);
+        array_pop($discard); array_pop($discard); //it will always be the top card in discard
+      case "ROS173": case "ROS174": case "ROS175":
+        WriteLog("Surge Active, returning sigils to the deck");
+        $auras = &GetAuras($player);
+        for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()){
+          WriteLog($i . "-" . $auras[$i]);
+          $auraName = CardName($auras[$i]);
+          if (DelimStringContains($auraName, "Sigil", partial:true)){
+            AddBottomDeck($auras[$i], $player, "STACK");
+            for ($j = 0; $j < AuraPieces(); $j++){
+              unset($auras[$i+$j]);
+            }
+          }
+        }
+        AddDecisionQueue("SHUFFLEDECK", $player, "-");
       default: break;
     }
   }

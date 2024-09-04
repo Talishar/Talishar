@@ -177,6 +177,12 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         return "Arcane Twinning is amping 1";
       }
       return "";
+    case "ROS173":
+    case "ROS174":
+    case "ROS175":
+      $sigils = SearchAura($currentPlayer, nameIncludes: "Sigil");
+      $numSigils = count(explode(",", $sigils));
+      DealArcane(ArcaneDamage($cardID) + $numSigils, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
     default:
       return "";
   }

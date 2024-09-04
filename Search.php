@@ -29,10 +29,10 @@ function SearchPitch($player, $type = "", $subtype = "", $maxCost = -1, $minCost
   return SearchInner($searchPitch, $player, "PITCH", PitchPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter);
 }
 
-function SearchDiscard($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $getDistinctCardNames = false)
+function SearchDiscard($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $nameIncludes = "", $getDistinctCardNames = false)
 {
   $discard = &GetDiscard($player);
-  return SearchInner($discard, $player, "DISCARD", DiscardPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, $getDistinctCardNames);
+  return SearchInner($discard, $player, "DISCARD", DiscardPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, $nameIncludes, $getDistinctCardNames);
 }
 
 function SearchBanish($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false)
@@ -53,10 +53,10 @@ function SearchArsenal($player, $type = "", $subtype = "", $maxCost = -1, $minCo
   return SearchInner($arsenal, $player, "ARS", ArsenalPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, faceUp:$faceUp, faceDown:$faceDown);
 }
 
-function SearchAura($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasWard = false, $hasAttackCounters = false)
+function SearchAura($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasWard = false, $hasAttackCounters = false,  $nameIncludes = "")
 {
   $auras = &GetAuras($player);
-  return SearchInner($auras, $player, "AURAS", AuraPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, hasWard:$hasWard, hasAttackCounters:$hasAttackCounters);
+  return SearchInner($auras, $player, "AURAS", AuraPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, hasWard:$hasWard, hasAttackCounters:$hasAttackCounters, nameIncludes:$nameIncludes);
 }
 
 function SearchItems($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false)
@@ -126,6 +126,7 @@ function SearchInner(
   $minAttack,
   $hasCrank = false,
   $hasSteamCounter = false,
+  $nameIncludes = "",
   $getDistinctCardNames = false,
   $is1h = false,
   $hasWard = false,
@@ -174,6 +175,7 @@ function SearchInner(
           if($faceDown && $array[$i+12] != "DOWN") continue;
         }
         if($hasAttackCounters && !HasAttackCounters($zone, $array, $i)) continue;
+        if($nameIncludes!="" && !DelimStringContains(CardName($cardID), $nameIncludes, partial:true)) continue;
         if($cardList != "") $cardList = $cardList . ",";
         $cardList = $cardList . ($getDistinctCardNames ? GamestateSanitize(CardName($cardID)) : $i);
       }
@@ -273,19 +275,6 @@ function SearchDiscardByName($player, $name)
   if(SearchCurrentTurnEffects("OUT183", $player)) return $cardList;
   for($i = 0; $i < count($discard); $i += DeckPieces()) {
     if(CardName($discard[$i]) == $name) {
-      if($cardList != "") $cardList = $cardList . ",";
-      $cardList = $cardList . $i;
-    }
-  }
-  return $cardList;
-}
-
-function SearchDiscardForSigil($player)
-{
-  $discard = &GetDiscard($player);
-  $cardList = "";
-  for($i = 0; $i < count($discard); $i += DeckPieces()) {
-    if(str_contains(CardName($discard[$i]), "Sigil") and DelimStringContains(CardSubtype($discard[$i]), "Aura")) {
       if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
@@ -1070,6 +1059,7 @@ function SearchMultizone($player, $searches)
     $minCost = -1;
     $class = "";
     $talent = "";
+    $nameIncludes = "";
     $bloodDebtOnly = false;
     $phantasmOnly = false;
     $pitch = -1;
@@ -1093,7 +1083,6 @@ function SearchMultizone($player, $searches)
     $faceDown = false;
     $hasAttackCounters = false;
     $arcaneDamage = -1;
-    $isAuraSigil = false;
     if(count($searchArr) > 1) //Means there are conditions
     {
       $conditions = explode(";", $searchArr[1]);
@@ -1117,6 +1106,9 @@ function SearchMultizone($player, $searches)
             break;
           case "talent":
             $talent = $condition[1];
+            break;
+          case "nameIncludes":
+            $nameIncludes = $condition[1];
             break;
           case "bloodDebtOnly":
             $bloodDebtOnly = $condition[1];
@@ -1242,17 +1234,6 @@ function SearchMultizone($player, $searches)
             if(substr($rv, -1) == ",") $rv = substr($rv, 0, -1);
             $isSameName = true;
             break;
-          case "isAuraSigil":
-            switch($zone)
-            {
-              case "MYDISCARD": $searchResult = SearchDiscardForSigil($player); break;
-              default: break;
-            }
-            if($rv != "") $rv = $rv . ",";
-            $rv = $rv . SearchMultiZoneFormat($searchResult, $zone);
-            if(substr($rv, -1) == ",") $rv = substr($rv, 0, -1);
-            $nameIncludes = true;
-            break;
           case "is1h":
             $is1h = $condition[1];
             break;
@@ -1278,7 +1259,7 @@ function SearchMultizone($player, $searches)
     }
     $searchPlayer = (substr($zone, 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1));
     $searchResult = "";
-    if(!$isCardID && !$isSameName && !$nameIncludes)
+    if(!$isCardID && !$isSameName)
     {
       switch ($zone) {
         case "MYDECK": case "THEIRDECK":
@@ -1288,7 +1269,7 @@ function SearchMultizone($player, $searches)
           $searchResult = SearchHand($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, arcaneDamage:$arcaneDamage);
           break;
         case "MYDISCARD": case "THEIRDISCARD":
-          $searchResult = SearchDiscard($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank);
+          $searchResult = SearchDiscard($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, nameIncludes:$nameIncludes);
           break;
         case "MYARS": case "THEIRARS":
           $searchResult = SearchArsenal($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, $faceUp, $faceDown);
@@ -1330,8 +1311,6 @@ function SearchMultizone($player, $searches)
           break;
       }
     }
-    WriteLog($searchResult);
-    WriteLog($zone);
     $searchResult = SearchMultiZoneFormat($searchResult, $zone);
     $rv = CombineSearches($rv, $searchResult);
   }
