@@ -612,13 +612,10 @@
         WriteLog("Surge Active, returning sigils to the deck");
         $auras = &GetAuras($player);
         for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()){
-          WriteLog($i . "-" . $auras[$i]);
           $auraName = CardName($auras[$i]);
           if (DelimStringContains($auraName, "Sigil", partial:true)){
             AddBottomDeck($auras[$i], $player, "STACK");
-            for ($j = 0; $j < AuraPieces(); $j++){
-              unset($auras[$i+$j]);
-            }
+            RemoveAura($player, $i, $auras[$i+4]);
           }
         }
         AddDecisionQueue("SHUFFLEDECK", $player, "-");
