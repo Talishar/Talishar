@@ -568,8 +568,7 @@ function IsBanned($cardID, $format)
       switch ($cardID) {
         case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
         case "WTR152": // Heartened Cross Strap
-        case "ARC076": case "ARC077": // Viserai
-        case "ARC129": case "ARC130": case "ARC131": // Stir The Aetherwinds
+        case "ARC076": case "ARC077": // Viserai | Nebula Blade
         case "ELE006": // Awakening
         case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
         case "ELE223": // Duskblade
@@ -578,16 +577,26 @@ function IsBanned($cardID, $format)
         case "MON154": case "MON155": // Chane | Galaxxi Black
         case "MON239": // Stubby Hammers
         case "EVR037": // Mask of Pouncing Lynx
-        case "EVR123": // Aether Wildfire
         case "UPR103": case "EVR120": case "EVR121": // Iyslander | Kraken's Aethervein
         case "ELE002": case "ELE003": // Oldhim | Winter's Wail
         case "ARC114": case "ARC115": case "CRU159": // Kano | Crucible of Aetherweave
-        case "CRU077": case "CRU079": case "CRU080": // Kassai, Cintari Sellsword | Cintari Saber
+        case "CRU077": // Kassai, Cintari Sellsword
         case "CRU046": case "CRU050": // Ira, Crimson Haze | Edge of Autumn
         case "DYN009": //Berserk
+        case "ELE115": // Crown of Seeds
+        case "EVR123": // Aether Wildfire
+        case "ARC132": case "ARC133": case "ARC134": // Aether Flare
         case "ARC002": case "ARC003": // Dash | Teklo Plasma Pistol
         case "ELE063": case "ELE222": // Briar | Rosetta Thorn
         case "MST047": case "MST159": // Zen | Tiger Taming Khakkara
+        case "ARC160": // Art of War
+        case "OUT056": case "OUT057": case "OUT058": // Bonds of Ancestry
+        case "CRU188": // Cash In
+        case "MST080": // Orihon of Mystic Tenets
+        case "ARC122": // Tome of Aetherwind
+        case "MON022": // Tome of Divinity
+        case "WTR160": // Tome of Fyendal
+        case "UPR089": // Tome of Firebrand
           return true;
         default:
           return false;
@@ -613,7 +622,16 @@ function IsBanned($cardID, $format)
         case "UPR001": case "UPR003": // Dromai, Ash Artist | Storm of Sandikai
         case "UPR102": case "EVR121": // Iyslander, Stormbind | Kraken's Aethervein
         case "DYN009": //Berserk
-        case "ELE115": // Crown of Seeds    
+        case "ELE115": // Crown of Seeds
+        case "OUT057": case "OUT058": // Bonds of Ancestry (B) (Y)
+        case "ARC160": // Art of War
+        case "OUT056": // Bonds of Ancestry (R)
+        case "CRU188": // Cash In
+        case "MST080": // Orihon of Mystic Tenets
+        case "ARC122": // Tome of Aetherwind
+        case "MON022": // Tome of Divinity
+        case "WTR160": // Tome of Fyendal
+        case "UPR089": // Tome of Firebrand
           return true;
         default:
           return false;
@@ -622,6 +640,8 @@ function IsBanned($cardID, $format)
       switch ($cardID) {
         case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
         case "MON266": case "MON267": case "MON268": // Belittle
+        case "ELE172": // Amulet of Ice
+        case "MON239": // Stubby Hammers
           return true;
         default:
           return false;
