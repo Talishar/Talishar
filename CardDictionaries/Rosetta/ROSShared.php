@@ -162,20 +162,12 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS248":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "ROS207": case "ROS208": case "ROS209":
     case "ROS176": case "ROS177": case "ROS178":
     case "ROS189": case "ROS190": case "ROS191":
     case "ROS198": case "ROS199": case "ROS200":
     case "ROS201": case "ROS202": case "ROS203":
+    case "ROS207": case "ROS208": case "ROS209":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-      return "";
-    case "ROS055":
-    case "ROS056":
-    case "ROS057":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        AddCurrentTurnEffect($cardID . "," . 1, $currentPlayer, "ABILITY");
-        return "Arcane Twinning is amping 1";
-      }
       return "";
     case "ROS173":
     case "ROS174":
@@ -183,6 +175,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $sigils = SearchAura($currentPlayer, nameIncludes: "Sigil");
       $numSigils = count(explode(",", $sigils));
       DealArcane(ArcaneDamage($cardID) + $numSigils, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      return "";
     default:
       return "";
   }
