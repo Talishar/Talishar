@@ -292,6 +292,13 @@ function ROSHitEffect($cardID): void
       AddDecisionQueue("MZBANISH", $currentPlayer, "THEIRARS", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       break;
+    case "ROS243":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRBANISH:isIntimidated=true");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an intimidated card to put into the graveyard (The cards were intimated in left to right order)", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $currentPlayer, "THEIRDISCARD", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "THEIRBANISH", 1);
+      break;
     default:
       break;
   }
@@ -300,6 +307,23 @@ function ROSHitEffect($cardID): void
 function GetTrapIndices($player)
 {
   return SearchDeck($player, subtype: "Trap");
+}
+
+/**
+ * Splatter Skull is going to use this list to destroy an opponent's card.
+ *
+ * @return array a list of indices of cards that are flagged as intimidated.
+ */
+function GetIntimidatedCards($player)
+{
+  $rv = "";
+  $banish = &GetBanish($player);
+  for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+    if ($banish[$i + 1] == "INT") {
+      if ($rv == "") $rv .= $i;
+      else $rv .= "," . $i;
+    }
+  }
 }
 
 /**

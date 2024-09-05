@@ -8,7 +8,7 @@ function SearchDeck($player, $type = "", $subtype = "", $maxCost = -1, $minCost 
     return "";
   }
   $deck = &GetDeck($player);
-  return SearchInner($deck, $player, "DECK", DeckPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter);
+  return SearchInner($deck, $player, "DECK", DeckPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank,  $hasSteamCounter);
 }
 
 function SearchHand($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $arcaneDamage=-1)
@@ -35,10 +35,10 @@ function SearchDiscard($player, $type = "", $subtype = "", $maxCost = -1, $minCo
   return SearchInner($discard, $player, "DISCARD", DiscardPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, $getDistinctCardNames);
 }
 
-function SearchBanish($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false)
+function SearchBanish($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $isIntimidated = false,)
 {
   $banish = &GetBanish($player);
-  return SearchInner($banish, $player, "BANISH", BanishPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter);
+  return SearchInner($banish, $player, "BANISH", BanishPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, isIntimidated: $isIntimidated);
 }
 
 function SearchCombatChainLink($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false)
@@ -132,13 +132,14 @@ function SearchInner(
   $hasAttackCounters = false, 
   $faceUp = false, 
   $faceDown = false,
+  $isIntimidated = false,
   $arcaneDamage = -1
   ) {
   $cardList = "";
   if (!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
   for ($i = 0; $i < count($array); $i += $count) {
     if($zone == "CHAR" && ($array[$i+1] == 0 || $array[$i+12] == "DOWN") && !$faceDown) continue;
-    if($zone == "BANISH" && ($array[$i+1] == "INT" || $array[$i+1] == "NTINT" || $array[$i+1] == "FACEDOWN")) continue;
+    if($zone == "BANISH" && ($array[$i+1] == "INT" || $array[$i+1] == "NTINT" || $array[$i+1] == "FACEDOWN") && !$isIntimidated) continue;
     $cardID = $array[$i];
     if(!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
       if(($type == "" || CardType($cardID) == $type || ($type == "C" && CardType($cardID) == "D"))
@@ -172,6 +173,9 @@ function SearchInner(
         if($zone == "CHAR"){
           if($faceUp && $array[$i+12] != "UP") continue;
           if($faceDown && $array[$i+12] != "DOWN") continue;
+        }
+        if($isIntimidated){
+          if($array[$i+1] != "INT") continue;
         }
         if($hasAttackCounters && !HasAttackCounters($zone, $array, $i)) continue;
         if($cardList != "") $cardList = $cardList . ",";
@@ -1079,6 +1083,7 @@ function SearchMultizone($player, $searches)
     $faceUp = false;
     $faceDown = false;
     $hasAttackCounters = false;
+    $isIntimidated = false;
     $arcaneDamage = -1;
     if(count($searchArr) > 1) //Means there are conditions
     {
@@ -1142,6 +1147,9 @@ function SearchMultizone($player, $searches)
             break;
           case "hasSteamCounter":
             $hasSteamCounter = $condition[1];
+            break;
+          case "isIntimidated":
+            $isIntimidated = $condition[1];
             break;
           case "cardID":
             $cards = explode(",", $condition[1]);
@@ -1283,7 +1291,7 @@ function SearchMultizone($player, $searches)
           $searchResult = SearchPermanents($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank);
           break;
         case "MYBANISH": case "THEIRBANISH":
-          $searchResult = SearchBanish($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank);
+          $searchResult = SearchBanish($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, isIntimidated: $isIntimidated);
           break;
         case "MYPITCH": case "THEIRPITCH":
           $searchResult = SearchPitch($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank);
