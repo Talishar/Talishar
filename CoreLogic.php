@@ -414,7 +414,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   $dqVars[0] = $damage;
   if ($type == "COMBAT") $dqState[6] = $damage;
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
-  if ($damage > 0) AddDamagePreventionSelection($player, $damage, $preventable);
+  if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable);
   if ($source == "ARC112") {
     SearchCurrentTurnEffects("DTD134", $otherPlayer, true);
     SearchCurrentTurnEffects("DTD133", $otherPlayer, true);
@@ -438,12 +438,12 @@ function ResetAuraStatus($player)
   }
 }
 
-function AddDamagePreventionSelection($player, $damage, $preventable)
+function AddDamagePreventionSelection($player, $damage, $type, $preventable)
 {
-  PrependDecisionQueue("PROCESSDAMAGEPREVENTION", $player, $damage . "-" . $preventable, 1);
+  PrependDecisionQueue("PROCESSDAMAGEPREVENTION", $player, $damage . "-" . $preventable . "-" . $type, 1);
   PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to prevent damage: " . $damage . " damage left", 1);
-  PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION");
+  PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION," . $type);
 }
 
 function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
@@ -625,6 +625,12 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
       case "HVY102":
         if (IsHeroAttackTarget()) {
           PlayAura("HVY240", $otherPlayer); //Agility
+          $remove = 1;
+        }
+        break;
+      case "ROS015": // So technically this procks if you deal damage to yourself but this would need to be refactored in order to make that work. Until someone has this happen, lets just leave it as so.
+        if ($source != "ELE111" && $type == "ARCANE") {
+          PlayAura("ELE109", $currentTurnEffects[$i + 1], 1);
           $remove = 1;
         }
         break;
@@ -1197,6 +1203,9 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "ROS055":
     case "ROS056":
     case "ROS057":
+    case "ROS104":
+    case "ROS105":
+    case "ROS106":
       return $from == "HAND";
     default:
       break;
@@ -1576,6 +1585,10 @@ function DoesAttackHaveGoAgain()
     case "ROS102":
     case "ROS103":
       return GetClassState($defPlayer, $CS_DamageTaken) > 0;
+    case "ROS149":
+    case "ROS150":
+    case "ROS151":
+      return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "ROS245":
       return ComboActive($attackID);
     default:
@@ -2076,19 +2089,20 @@ function BaseAttackModifiers($attackID, $attackValue)
   return $attackValue;
 }
 
-function GetDamagePreventionIndices($player)
+function GetDamagePreventionIndices($player, $type)
 {
   $rv = "";
+
   $auras = &GetAuras($player);
   $indices = "";
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if (AuraDamagePreventionAmount($player, $i) > 0 || HasWard($auras[$i], $player)) {
+    if (AuraDamagePreventionAmount($player, $i, $type) > 0 || HasWard($auras[$i], $player)) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
     }
   }
-
   $mzIndices = SearchMultiZoneFormat($indices, "MYAURAS");
+
   $char = &GetPlayerCharacter($player);
   $indices = "";
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
@@ -2097,7 +2111,6 @@ function GetDamagePreventionIndices($player)
       $indices .= $i;
     }
   }
-
   $indices = SearchMultiZoneFormat($indices, "MYCHAR");
   $mzIndices = CombineSearches($mzIndices, $indices);
 

@@ -65,6 +65,9 @@ function AuraNumUses($cardID)
     case "EVR143":
     case "UPR005":
     case "ROS077":
+    case "ROS130":
+    case "ROS131":
+    case "ROS132":
       return 1;
     case "DTD081":
       return 1;
@@ -181,6 +184,12 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       $aurasArray = explode(",", $illusionistAuras);
       if (count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
+    case "ROS045":
+      PlayAura("ELE109", $player);
+      break;
+    case "ROS088":
+      PlayAura("ELE110", $player);
+      break;
     case "ROS133":
       $deck = new Deck($player);
       if ($deck->Reveal()) {
@@ -230,10 +239,13 @@ function AuraPlayCounters($cardID)
     case "CRU075":
       return 1;
     case "EVR107":
+    case "ROS130":
       return 3;
     case "EVR108":
+    case "ROS131":
       return 2;
     case "EVR109":
+    case "ROS132":
       return 1;
     case "UPR140":
       return 3;
@@ -330,6 +342,7 @@ function AuraCostModifier($cardID = "")
 
 // CR 2.1 - 4.2.1. Players do not get priority during the Start Phase.
 // CR 2.1 - 4.3.1. The “beginning of the action phase” event occurs and abilities that trigger at the beginning of the action phase are triggered.
+// TODO: Maybe split these out into seperate functions for ease of understanding and futureproofing if there are more complicated start/action phase start procedures.
 function AuraStartTurnAbilities()
 {
   global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
@@ -383,9 +396,15 @@ function AuraStartTurnAbilities()
       case "UPR220":
       case "DYN217":
       case "ROS033":
-      case "ROS133" :
-      case "ROS161" :
-      case "ROS182" :
+      case "ROS061":
+      case "ROS062":
+      case "ROS063":
+      case "ROS064":
+      case "ROS065":
+      case "ROS066":
+      case "ROS133":
+      case "ROS161":
+      case "ROS182":
       case "ROS210":
       case "ROS226":
       case "ROS230":
@@ -733,10 +752,11 @@ function AuraEndTurnCleanup()
   for ($i = 0; $i < count($auras); $i += AuraPieces()) $auras[$i + 5] = AuraNumUses($auras[$i]);
 }
 
-function AuraDamagePreventionAmount($player, $index, $damage = 0, $active = false, &$cancelRemove = false)
+function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active = false, &$cancelRemove = false)
 {
   $auras = &GetAuras($player);
   if (HasWard($auras[$index], $player)) return WardAmount($auras[$index], $player, $index);
+  if (HasArcaneShelter($auras[$index]) && $type == "ARCANE") return ArcaneShelterAmount($auras[$index]);
   switch ($auras[$index]) {
     case "ARC167":
       return 4;
@@ -767,10 +787,10 @@ function AuraDamagePreventionAmount($player, $index, $damage = 0, $active = fals
 }
 
 //This function is for effects that prevent damage and DO destroy themselves
-function AuraTakeDamageAbility($player, $index, $damage, $preventable)
+function AuraTakeDamageAbility($player, $index, $damage, $preventable, $type)
 {
   $cancelRemove = false;
-  if ($preventable) $damage -= AuraDamagePreventionAmount($player, $index, $damage, true, $cancelRemove);
+  if ($preventable) $damage -= AuraDamagePreventionAmount($player, $index, $type, $damage, true, $cancelRemove);
   if (!$cancelRemove) DestroyAura($player, $index);
   return $damage;
 }
@@ -918,6 +938,11 @@ function AuraPlayAbilities($attackID, $from = "")
       case "MON157":
         DimenxxionalCrossroadsPassive($attackID, $from);
         break;
+      case "ELE110":
+        if ($cardType == "AA") {
+          AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+        }
+        break;
       case "EVR143":
         if ($auras[$i + 5] > 0 && CardType($attackID) == "AA" && ClassContains($attackID, "ILLUSIONIST", $currentPlayer) && GetClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks) <= 1) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack +2");
@@ -958,11 +983,6 @@ function AuraAttackAbilities($attackID)
   $attackType = CardType($attackID);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     switch ($auras[$i]) {
-      case "ELE110":
-        if ($attackType == "AA") {
-          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
-        }
-        break;
       case "ELE226":
         if ($attackType == "AA") {
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
@@ -988,6 +1008,14 @@ function AuraAttackAbilities($attackID)
           --$auras[$i + 5];
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
         }
+        break;
+      case "ROS130":
+      case "ROS131":
+      case "ROS132":
+        if ($attackType == "AA" && $auras[$i + 5] > 0) {  
+          --$auras[$i + 5];
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+        }     
         break;
       default:
         break;

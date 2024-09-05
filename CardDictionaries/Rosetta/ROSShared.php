@@ -13,6 +13,7 @@ function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
     "ROS007", "ROS008", "ROS019", "ROS020", "ROS021" => "I",
+    "ROS015" => "A",
     "ROS003", "ROS009" => "AA",
     default => ""
   };
@@ -24,17 +25,31 @@ function ROSAbilityType($cardID, $index = -1): string
  * This function is meant to handle cards from the Rosetta set.
  *
  * @param string $cardID - an id that maps to a FaB card
- * @return integer the number of resources which must be paid for the ability
+ * @return integer - the number of resources which must be paid for the ability
  */
 function ROSAbilityCost($cardID): int
 {
   global $currentPlayer;
   return match ($cardID) {
+    "ROS015" => 3,
     "ROS003", "ROS007", "ROS008" => 2,
     "ROS009" => 1,
     "ROS021" => HasAuraWithSigilInName($currentPlayer) ? 0 : 1,
     default => 0
   };
+}/**
+ * Sub function for AbilityHasGoAgain that will indicate whether or not a cards sub ability has go again
+ * This function is meant to handle cards from the Rosetta set.
+ *
+ * @param string $cardID - an id that maps to a FaB card
+ * @return boolean - true if the ability should have go again and false if not
+ */
+function ROSAbilityHasGoAgain($cardID): bool
+{
+  switch($cardID) {
+    case "ROS015": return true;
+    default: return false;
+  }
 }
 
 /**
@@ -42,13 +57,14 @@ function ROSAbilityCost($cardID): int
  * This function is meant to handle cards from the Rosetta set.
  * 
  * @param string $cardID - an id that maps to a FaB card
- * @return integer the number of attack value that will be added
+ * @return integer - the number of attack value that will be added
  */
 function ROSEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
-    "ROS052", "ROS053", "ROS054" => 2,
-    "ROS248" => 3,
+    "ROS066", "ROS129" => 1,
+    "ROS052", "ROS053", "ROS054", "ROS065", "ROS128" => 2,
+    "ROS064", "ROS127", "ROS248" => 3,
     default => 0,
   };
 }
@@ -59,19 +75,31 @@ function ROSEffectAttackModifier($cardID): int
  *
  * @param string $cardID - the id effect that is being evaluate
  * @param string $attackID - the id of the card that is doing tha actual attack
- * @return boolean true if the effect is active and should be applied, false otherwise
+ * @return bool - true if the effect is active and should be applied, false otherwise
  */
-function ROSCombatEffectActive($cardID, $attackID): bool|string
+function ROSCombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer;
+  global $mainPlayer, $CombatChain;
   return match ($cardID) {
-    "ROS052", "ROS053", "ROS054" => true,
-    "ROS042", "ROS043", "ROS044" => true,
+    "ROS042", "ROS043", "ROS044", "ROS052", "ROS053", "ROS054" => true,
+    "ROS064", "ROS065", "ROS066" => true,
+    "ROS127", "ROS128", "ROS129" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "ROS248" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
     default => false,
   };
 }
 
+/**
+ * Defines the on resolution effects of cards and abilities
+ * This function is meant to handle cards from the Rosetta set.
+ *
+ * @param string $cardID - the id effect that is being evaluate
+ * @param string $from - caps string that indicates where an effect is coming from PLAY/ABLITY are common values
+ * @param string $resourcesPaid - the number of resources that are paid into the effect. useful for cards with variable costs.
+ * @param string $target - for when a card has multiple possble targets
+ * @param string $additionalCosts - list of cards that is defined by a broader context usually to give a bonus effect (brutes discarding a card then checkin if the card is a 6 is a common use case)
+ * @return string - a log message that will be displayed upon resolution
+ */
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed;
@@ -90,6 +118,12 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS008":
       PlayAura("ELE110", $currentPlayer);
       return "";
+    case "ROS015":
+      AddCurrentTurnEffect($cardID . "-AMP", $currentPlayer, from: "ABILITY");
+      if(SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != ""){
+        AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
+      }
+      return CardLink($cardID, $cardID) . " is amping 1";
     case "ROS016":
       GainHealth(1, $currentPlayer);
       GainHealth(1, $currentPlayer);
@@ -102,7 +136,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS021":
       $ampAmmount = GetClassState($currentPlayer, $CS_NumLightningPlayed);
       AddCurrentTurnEffect($cardID . "," . $ampAmmount, $currentPlayer, "ABILITY");
-      return "Volzar is amping " . $ampAmmount;
+      return CardLink($cardID, $cardID) . " is amping " . $ampAmmount;
     case "ROS033":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
@@ -112,7 +146,13 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS035":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
-      return "Seeds of Tomorrow is preventing the next 5 damage.";
+      return CardLink($cardID, $cardID) . " is preventing the next 5 damage.";
+    case "ROS039":
+    case "ROS040":
+    case "ROS041":
+      Decompose($currentPlayer, 2, 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SUMMERSFALL", 1);
+      return "";
     case "ROS042":
     case "ROS043":
     case "ROS044":
@@ -133,6 +173,39 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
         GainHealth(2, $currentPlayer);
       }
+      return "";
+    case "ROS104":
+    case "ROS105":
+    case "ROS106":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
+        return CardLink($cardID, $cardID) . " is preventing the next 2 damage.";
+      }
+      return "";
+    case "ROS121":
+    case "ROS122":
+    case "ROS123":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
+      return "";
+    case "ROS127":
+    case "ROS128":
+    case "ROS129":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYAURAS", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $otherPlayer, "-", 1);
+      return "";
+    case "ROS143":
+    case "ROS144":
+    case "ROS145":
+      PlayAura("ARC112", $currentPlayer);
       return "";
     case "ROS155":
     case "ROS156":
@@ -171,15 +244,23 @@ function ROSHitEffect($cardID): void
 {
   global $currentPlayer, $defPlayer;
   switch ($cardID) {
+    case "ROS036":
+    case "ROS037":
+    case "ROS038":
+      PlayAura("ELE109", $currentPlayer);
+      break;
     case "ROS082":
     case "ROS083":
     case "ROS084":
       PlayAura("ELE110", $currentPlayer);
       break;
-    case "ROS036":
-    case "ROS037":
-    case "ROS038":
-      PlayAura("ELE109", $currentPlayer);
+    case "ROS121":
+    case "ROS122":
+    case "ROS123":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
       break;
     case "ROS220":
       if (ArsenalHasFaceDownCard($defPlayer)) {
@@ -211,6 +292,13 @@ function ROSHitEffect($cardID): void
       AddDecisionQueue("MZBANISH", $currentPlayer, "THEIRARS", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       break;
+    case "ROS243":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRBANISH:isIntimidated=true");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an intimidated card to put into the graveyard (The cards were intimated in left to right order)", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $currentPlayer, "THEIRDISCARD", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "THEIRBANISH", 1);
+      break;
     default:
       break;
   }
@@ -222,10 +310,27 @@ function GetTrapIndices($player)
 }
 
 /**
+ * Splatter Skull is going to use this list to destroy an opponent's card.
+ *
+ * @return array a list of indices of cards that are flagged as intimidated.
+ */
+function GetIntimidatedCards($player)
+{
+  $rv = "";
+  $banish = &GetBanish($player);
+  for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+    if ($banish[$i + 1] == "INT") {
+      if ($rv == "") $rv .= $i;
+      else $rv .= "," . $i;
+    }
+  }
+}
+
+/**
  * Volzar needs to know if you control an aura with "Sigil" in its name
  *
  * @param integer $player - presumably the current player, the one who has activated volzar
- * @return boolean true if a aura with sigil is found, false if no aura contains the name sigil
+ * @return boolean - true if a aura with sigil is found, false if no aura contains the name sigil
  */
 function HasAuraWithSigilInName($player)
 {

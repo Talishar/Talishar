@@ -414,6 +414,10 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "ROS102":
     case "ROS103":
       return (GetClassState($defPlayer, $CS_DamageTaken)) > 0 ? 1 : 0;
+    case "ROS140":
+    case "ROS141":
+    case "ROS142":
+      return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 2 : 0);
     case "AIO009":
       return (GetClassState($mainPlayer, $CS_NumCranked)) > 0 ? 1 : 0;
     default:
@@ -1210,7 +1214,7 @@ function IsDominateActive()
 
 function IsOverpowerActive()
 {
-  global $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $CS_Num6PowBan, $CS_NumItemsDestroyed;
+  global $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $CS_Num6PowBan, $CS_NumItemsDestroyed, $CS_NumAuras;
   if (count($combatChain) == 0) return false;
   if (SearchItemsForCard("EVO096", $mainPlayer) != "" && CardType($combatChain[0]) == "AA" && ClassContains($combatChain[0], "MECHANOLOGIST", $mainPlayer)) {
     return true;
@@ -1262,6 +1266,12 @@ function IsOverpowerActive()
       return HasIncreasedAttack();
     case "HVY208":
       return CountItem("DYN243", $defPlayer) > 0;
+    case "ROS124":
+    case "ROS125":
+    case "ROS126":
+      return GetClassState($mainPlayer, $CS_NumAuras) > 0;
+    default:
+      break;
   }
   return false;
 }

@@ -1193,6 +1193,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $action = IsPlayable($card, $turn[0], "BANISH", $index, player:$otherPlayer) ? 14 : 0;
         $borderColor = CardBorderColor($card, "BANISH", $action > 0, $mod);
         if($borderColor == 7) $label = "Playable";
+        if ($source[$index + 1] == "INT" || $source[$index + 1] == "NTINT" || $source[$index + 1] == "FACEDOWN") $card = "CardBack";
       }
       else if (substr($option[0], 0, 2) == "MY") $borderColor = 1;
       else if (substr($option[0], 0, 5) == "THEIR") $borderColor = 2;

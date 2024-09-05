@@ -870,12 +870,15 @@ function AddOnHitTrigger($cardID): void
     case "MST174":
     case "MST175":
     case "MST233":
-    case "ROS082":
-    case "ROS083":
-    case "ROS084":
     case "ROS036":
     case "ROS037":
     case "ROS038":
+    case "ROS082":
+    case "ROS083":
+    case "ROS084":
+    case "ROS121":
+    case "ROS122":
+    case "ROS123":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "CRU054":
@@ -923,6 +926,7 @@ function AddOnHitTrigger($cardID): void
     case "ROS220":
     case "ROS221":
     case "ROS222":
+    case "ROS243":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     default:
@@ -2367,8 +2371,32 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS033":
       AddCurrentTurnEffect($parameter, $player);
       break;
+    case "ROS061":
+    case "ROS062":
+    case "ROS063":
+      $numHealthPointsGained = match ($parameter) {"ROS061" => 3, "ROS062" => 2, "ROS063" => 1}; 
+      DestroyAuraUniqueID($player, $uniqueID);
+      GainHealth($numHealthPointsGained, $player);
+      break;
+    case "ROS064":
+    case "ROS065":
+    case "ROS066":
+      DestroyAuraUniqueID($player, $uniqueID);
+      AddCurrentTurnEffect($parameter, $player, "PLAY");
+      break;
     case "ROS077":
       Draw($player);
+      break;
+    case "ROS130":
+    case "ROS131":
+    case "ROS132":
+      // this is the only place that it will destroy if there are no counters. may need to refactor if anything ever can remove counters arbitrarly.
+      $index = SearchAurasForUniqueID($uniqueID, $player);
+      if ($index == -1) break;
+      $auras = &GetAuras($player);
+      --$auras[$index + 2];
+      PlayAura("ARC112", $player);
+      if ($auras[$index + 2] == 0) DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ROS152":
     case "ROS153":
@@ -2721,6 +2749,9 @@ function HasVerseCounters($cardID)
     case "EVR107":
     case "EVR108":
     case "EVR109":
+    case "ROS130":
+    case "ROS131":
+    case "ROS132":
       return true;
     default:
       return false;

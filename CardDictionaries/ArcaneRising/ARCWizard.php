@@ -300,6 +300,11 @@
           $modifier += 1;
           $remove = true;
           break;
+        case "ROS015-AMP":
+          if($currentTurnEffects[$i+1] != $player) break;
+          $modifier += 1;
+          $remove = true;
+          break;
         case "ROS021":
           if($currentTurnEffects[$i+1] != $player) break;
           $modifier += $effectArr[1];

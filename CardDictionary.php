@@ -410,6 +410,11 @@ function CardCost($cardID, $from = "-")
     case "ROS057":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
       else return 3;
+    case "ROS104":
+    case "ROS105":
+    case "ROS106":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
+      else return 1;
     default:
       break;
   }
@@ -683,6 +688,18 @@ function HasGoAgain($cardID): bool|int
     case "TER017":
     case "TER019":
     case "TER024":
+    case "ROS061":
+    case "ROS062":
+    case "ROS063":
+    case "ROS064":
+    case "ROS065":
+    case "ROS066":
+    case "ROS127":
+    case "ROS128":
+    case "ROS129":
+    case "ROS130":
+    case "ROS131":
+    case "ROS132":
     case "ROS133":
     case "ROS152":
     case "ROS153":
@@ -766,6 +783,9 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-")
     case "ROS055":
     case "ROS056":
     case "ROS057":
+    case "ROS104":
+    case "ROS105":
+    case "ROS106":
       return "I,AA";
     default:
       return "";
@@ -815,6 +835,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-")
     case "ROS055":
     case "ROS056":
     case "ROS057":
+    case "ROS104":
+    case "ROS105":
+    case "ROS106":
       $names = "Ability";
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Attack";
       return $names;
@@ -1938,6 +1961,9 @@ function GoesOnCombatChain($phase, $cardID, $from)
     case "ROS055":
     case "ROS056":
     case "ROS057":
+    case "ROS104":
+    case "ROS105":
+    case "ROS106":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     default:
       break;
@@ -2467,6 +2493,7 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "TCC") return TCCAbilityHasGoAgain($cardID);
   else if ($set == "EVO") return EVOAbilityHasGoAgain($cardID);
   else if ($set == "HVY") return HVYAbilityHasGoAgain($cardID);
+  else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
   else if ($set == "AKO") return AKOAbilityHasGoAgain($cardID);
   else if ($set == "AAZ") return AAZAbilityHasGoAgain($cardID);
   else if ($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
@@ -3316,7 +3343,7 @@ function CardCaresAboutPitch($cardID): bool
   return match ($cardID) {
     "ELE001", "ELE002", "ELE003", "DYN172", "DYN173", "DYN174", "DYN176", "DYN177", "DYN178", "DYN182", "DYN183",
     "DYN184", "DYN185", "DYN186", "DYN187", "MST008", "MST031", "MST052", "MST076", "MST078", "MST079", "MST080",
-    "TER002", "TER008", "TER014", "TER012", "TER016", "TER018", "TER025", "TER011", "TER015" => true,
+    "TER002", "TER008", "TER014", "TER012", "TER016", "TER018", "TER025", "TER011", "TER015", "ROS015" => true,
     default => false
   };
 }
@@ -3509,6 +3536,34 @@ function HasWard($cardID, $player)
     default:
       return false;
   }
+}
+
+/**
+ * Defines how much arcane damage prevention a card with Arcane Shelter will apply
+ *
+ * @param string $cardID - an id that maps to a FaB card
+ * @return int - the number of arcane damage this will prevent
+ */
+function ArcaneShelterAmount($cardID)
+{
+  return match ($cardID) {
+    "ROS045", "ROS088" => 1,
+    default => 0
+  };
+}
+
+/**
+ * A new keyword in Rosetta. Acts like ward where it must prevent damage but it only works on arcane.
+ *
+ * @param string $cardID - an id that maps to a FaB card
+ * @return boolean - true if the given card has the arcane shelter keyword and false if not
+ */
+function HasArcaneShelter($cardID): bool
+{
+  return match ($cardID) {
+    "ROS045", "ROS088" => true,
+    default => false
+  };
 }
 
 function HasDominate($cardID)

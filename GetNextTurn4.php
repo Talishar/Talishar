@@ -900,6 +900,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $card = $source[$index];
       } else $card = $option[1];
 
+      if ($option[0] == "THEIRBANISH") {
+        if ($source[$index + 1] == "INT" || $source[$index + 1] == "NTINT" || $source[$index + 1] == "FACEDOWN") $card = "CardBack";
+      }
+
       if ($option[0] == "LAYER" && $card == "TRIGGER") $card = $source[$index + 2];
       $playerBorderColor = 0;
 

@@ -45,7 +45,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = GetArcaneTargetIndices($player, $subparam);
           break;
         case "DAMAGEPREVENTION":
-          $rv = GetDamagePreventionIndices($player);
+          $rv = GetDamagePreventionIndices($player, $subparam);
           break;
         case "DAMAGEPREVENTIONTARGET":
           $rv = GetDamagePreventionTargetIndices();
@@ -1864,7 +1864,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("-", $parameter);
       switch ($mzIndex[0]) {
         case "MYAURAS":
-          $damage = AuraTakeDamageAbility($player, intval($mzIndex[1]), $params[0], $params[1]);
+          $damage = AuraTakeDamageAbility($player, intval($mzIndex[1]), $params[0], $params[1], $params[2]);
           break;
         case "MYCHAR":
           $damage = CharacterTakeDamageAbility($player, intval($mzIndex[1]), $params[0], $params[1]);
@@ -1881,7 +1881,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($damage < 0) $damage = 0;
       $dqVars[0] = $damage;
       $dqState[6] = $damage;
-      if ($damage > 0) AddDamagePreventionSelection($player, $damage, $params[1]);
+      if ($damage > 0) AddDamagePreventionSelection($player, $damage, $params[2], $params[1]);
       return $damage;
     case "EQUIPCARD":
       if (str_contains($parameter, "-")) {
