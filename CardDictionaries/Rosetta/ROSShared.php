@@ -20,8 +20,8 @@ function ROSAbilityType($cardID, $index = -1): string
 }
 
 /**
- * Defines the resource cost of a particular card's non-play ablity. For example: Star Fall's (ROS009) ability cost's 1 resource to activate.
- * Novel additional costs (ie. Destroying Gold) is handled by PayAddtionalCosts().
+ * Defines the resource cost of a particular card's non-play ability. For example: Star Fall's (ROS009) ability cost's 1 resource to activate.
+ * Novel additional costs (ie. Destroying Gold) is handled by PayAdditionalCosts().
  * This function is meant to handle cards from the Rosetta set.
  *
  * @param string $cardID - an id that maps to a FaB card
@@ -37,7 +37,9 @@ function ROSAbilityCost($cardID): int
     "ROS021" => HasAuraWithSigilInName($currentPlayer) ? 0 : 1,
     default => 0
   };
-}/**
+}
+
+/**
  * Sub function for AbilityHasGoAgain that will indicate whether or not a cards sub ability has go again
  * This function is meant to handle cards from the Rosetta set.
  *
@@ -46,9 +48,11 @@ function ROSAbilityCost($cardID): int
  */
 function ROSAbilityHasGoAgain($cardID): bool
 {
-  switch($cardID) {
-    case "ROS015": return true;
-    default: return false;
+  switch ($cardID) {
+    case "ROS015":
+      return true;
+    default:
+      return false;
   }
 }
 
@@ -120,7 +124,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS015":
       AddCurrentTurnEffect($cardID . "-AMP", $currentPlayer, from: "ABILITY");
-      if(SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != ""){
+      if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") {
         AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
       }
       return CardLink($cardID, $cardID) . " is amping 1";
@@ -137,6 +141,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $ampAmmount = GetClassState($currentPlayer, $CS_NumLightningPlayed);
       AddCurrentTurnEffect($cardID . "," . $ampAmmount, $currentPlayer, "ABILITY");
       return CardLink($cardID, $cardID) . " is amping " . $ampAmmount;
+    case "ROS248":
     case "ROS033":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
@@ -210,11 +215,15 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS155":
     case "ROS156":
     case "ROS157":
-      $numRunechantsCreated = match ($cardID) {"ROS155" => 3, "ROS156" => 2, "ROS157" => 1};
+      $numRunechantsCreated = match ($cardID) {
+        "ROS155" => 3,
+        "ROS156" => 2,
+        "ROS157" => 1
+      };
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      for($i = 0; $i < $numRunechantsCreated; ++$i){
+      for ($i = 0; $i < $numRunechantsCreated; ++$i) {
         AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
       }
       return "";
@@ -232,14 +241,21 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       return "";
-    case "ROS248":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "ROS176": case "ROS177": case "ROS178":
-    case "ROS189": case "ROS190": case "ROS191":
-    case "ROS198": case "ROS199": case "ROS200":
-    case "ROS201": case "ROS202": case "ROS203":
-    case "ROS207": case "ROS208": case "ROS209":
+    case "ROS176":
+    case "ROS177":
+    case "ROS178":
+    case "ROS189":
+    case "ROS190":
+    case "ROS191":
+    case "ROS198":
+    case "ROS199":
+    case "ROS200":
+    case "ROS201":
+    case "ROS202":
+    case "ROS203":
+    case "ROS207":
+    case "ROS208":
+    case "ROS209":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     case "ROS173":
@@ -248,6 +264,21 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $sigils = SearchAura($currentPlayer, nameIncludes: "Sigil");
       $numSigils = count(explode(",", $sigils));
       DealArcane(ArcaneDamage($cardID) + $numSigils, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      return "";
+    case "ROS223":
+    case "ROS224":
+    case "ROS225":
+      $baseLife = match ($cardID) {
+        "ROS223" => 2,
+        "ROS224" => 1,
+        "ROS225" => 0
+      };
+      $cardsInGraveyard = SearchCount(CombineThreeSearches(
+        SearchDiscardForCard(1, "ROS223"),
+        SearchDiscardForCard(1, "ROS224"),
+        SearchDiscardForCard(1, "ROS225")
+      ));
+      GainHealth($cardsInGraveyard + $baseLife, $currentPlayer);
       return "";
     default:
       return "";
@@ -349,9 +380,8 @@ function GetIntimidatedCards($player)
 function HasAuraWithSigilInName($player)
 {
   $auras = &GetAuras($player);
-  for($i=0; $i<count($auras); $i+=AuraPieces())
-  {
-    if(CardNameContains($auras[$i], "Sigil", $player, partial: true)) return true;
+  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+    if (CardNameContains($auras[$i], "Sigil", $player, partial: true)) return true;
   }
   return false;
 }
