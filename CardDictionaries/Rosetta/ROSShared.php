@@ -179,6 +179,13 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         GainHealth(2, $currentPlayer);
       }
       return "";
+    case "ROS204":
+    case "ROS205":
+    case "ROS206":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        AddCurrentTurnEffect("ROS204-AMP", $currentPlayer, from: "ABILITY");
+      }
+      return "";
     case "ROS104":
     case "ROS105":
     case "ROS106":
