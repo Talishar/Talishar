@@ -55,7 +55,7 @@ function ROSAbilityHasGoAgain($cardID): bool
 /**
  * If an active effect would add attack value to current or future attack, this defies how much attack value it will add.
  * This function is meant to handle cards from the Rosetta set.
- * 
+ *
  * @param string $cardID - an id that maps to a FaB card
  * @return integer - the number of attack value that will be added
  */
@@ -234,6 +234,20 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS248":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "ROS176": case "ROS177": case "ROS178":
+    case "ROS189": case "ROS190": case "ROS191":
+    case "ROS198": case "ROS199": case "ROS200":
+    case "ROS201": case "ROS202": case "ROS203":
+    case "ROS207": case "ROS208": case "ROS209":
+      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      return "";
+    case "ROS173":
+    case "ROS174":
+    case "ROS175":
+      $sigils = SearchAura($currentPlayer, nameIncludes: "Sigil");
+      $numSigils = count(explode(",", $sigils));
+      DealArcane(ArcaneDamage($cardID) + $numSigils, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     default:
       return "";

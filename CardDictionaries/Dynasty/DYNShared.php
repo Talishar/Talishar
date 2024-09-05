@@ -542,9 +542,9 @@ function DYNHitEffect($cardID, $from, $attackID)
         MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, true);
       }
       break;
-    case "DYN121": if(IsHeroAttackTarget() && IsRoyal($defPlayer)) 
+    case "DYN121": if(IsHeroAttackTarget() && IsRoyal($defPlayer))
       {
-        PlayerLoseHealth($defPlayer, GetHealth($defPlayer)); 
+        PlayerLoseHealth($defPlayer, GetHealth($defPlayer));
       }
       break;
     case "DYN122":
@@ -574,9 +574,9 @@ function DYNHitEffect($cardID, $from, $attackID)
         AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
       }
       break;
-    case "DYN162": case "DYN163": case "DYN164": 
+    case "DYN162": case "DYN163": case "DYN164":
       if(HasAimCounter() && IsHeroAttackTarget()) {
-        MZChooseAndDestroy($mainPlayer, "THEIRARS"); 
+        MZChooseAndDestroy($mainPlayer, "THEIRARS");
         break;
       }
     default: break;
@@ -599,6 +599,12 @@ function HasSurge($cardID)
   switch($cardID) {
     case "DYN194": case "DYN195": case "DYN197": case "DYN198": case "DYN199":
     case "DYN203": case "DYN204": case "DYN205": case "DYN206": case "DYN207": case "DYN208":
+    case "ROS173": case "ROS174": case "ROS175":
+    case "ROS176": case "ROS177": case "ROS178":
+    case "ROS189": case "ROS190": case "ROS191":
+    case "ROS198": case "ROS199": case "ROS200":
+    case "ROS201": case "ROS202": case "ROS203":
+    case "ROS207": case "ROS208": case "ROS209":
       return true;
     default: return false;
   }
