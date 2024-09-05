@@ -12,7 +12,7 @@
 function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
-    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021" => "I",
+    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213" => "I",
     "ROS015" => "A",
     "ROS003", "ROS009" => "AA",
     default => ""
@@ -280,9 +280,13 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       ));
       GainHealth($cardsInGraveyard + $baseLife, $currentPlayer);
       return "";
+    case "ROS213":
+      IncrementClassState($currentPlayer, $CS_DamagePrevention);
+      break;
     default:
       return "";
   }
+  return "";
 }
 
 function ROSHitEffect($cardID): void

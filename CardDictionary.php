@@ -1542,6 +1542,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE234":
       return count($myHand) == 0;
     case "ELE236":
+    case "ROS213":
       return !HasTakenDamage($player);
     case "EVR054":
       return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) || Is1H($CombatChain->AttackCard()->ID());
