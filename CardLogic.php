@@ -1781,7 +1781,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS210":
     case "ROS226":
     case "ROS230":
-      WriteLog($parameter);
       DestroyAuraUniqueID($player, $uniqueID); //destroy sigils at start of action phase
       break;
     case "UPR406":
