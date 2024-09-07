@@ -906,7 +906,8 @@ function ProcessSurge($cardID, $player, $target)
     case "ROS173":
     case "ROS174":
     case "ROS175":
-      WriteLog("Surge Active, returning sigils to the deck");
+      WriteLog("Surge Active, gaining 1 life and returning sigils to the deck");
+      GainHealth(1, $player);
       $auras = &GetAuras($player);
       for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
         $auraName = CardName($auras[$i]);
