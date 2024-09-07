@@ -66,9 +66,9 @@ function ROSAbilityHasGoAgain($cardID): bool
 function ROSEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
-    "ROS066", "ROS129" => 1,
-    "ROS052", "ROS053", "ROS054", "ROS065", "ROS128" => 2,
-    "ROS064", "ROS127", "ROS248" => 3,
+    "ROS066", "ROS112", "ROS129" => 1,
+    "ROS052", "ROS053", "ROS054", "ROS065", "ROS111", "ROS128" => 2,
+    "ROS064", "ROS110", "ROS127", "ROS248" => 3,
     default => 0,
   };
 }
@@ -87,6 +87,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
   return match ($cardID) {
     "ROS042", "ROS043", "ROS044", "ROS052", "ROS053", "ROS054" => true,
     "ROS064", "ROS065", "ROS066" => true,
+    "ROS110", "ROS111", "ROS112" => CardType($attackID) == "AA" && CardCost($attackID) <= 1,
     "ROS127", "ROS128", "ROS129" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "ROS248" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
     default => false,
@@ -179,6 +180,34 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         GainHealth(2, $currentPlayer);
       }
       return "";
+    case "ROS067": //fertile ground red
+      $earthCountInBanish = SearchCount(SearchBanish($currentPlayer, talent: "EARTH"));
+      WriteLog($earthCountInBanish . " earth cards in banish");
+      if ($earthCountInBanish >= 4){
+        GainHealth(5, $currentPlayer);
+      }
+      else{
+        GainHealth(2, $currentPlayer);
+      }
+      return "";
+    case "ROS068": //fertile ground yellow
+      $earthCountInBanish = SearchCount(SearchBanish($currentPlayer, talent: "EARTH"));
+      if ($earthCountInBanish >= 4){
+        GainHealth(4, $currentPlayer);
+      }
+      else{
+        GainHealth(2, $currentPlayer);
+      }
+      return "";
+    case "ROS069": //fertile ground blue
+      $earthCountInBanish = SearchCount(SearchBanish($currentPlayer, talent: "EARTH"));
+      if ($earthCountInBanish >= 4){
+        GainHealth(3, $currentPlayer);
+      }
+      else{
+        GainHealth(2, $currentPlayer);
+      }
+      return "";
     case "ROS204":
     case "ROS205":
     case "ROS206":
@@ -193,6 +222,11 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
         return CardLink($cardID, $cardID) . " is preventing the next 2 damage.";
       }
+      return "";
+    case "ROS110":
+    case "ROS111":
+    case "ROS112":
+      AddCurrentTurnEffect($cardID, $currentPlayer); //electrostatic dicharge
       return "";
     case "ROS121":
     case "ROS122":
