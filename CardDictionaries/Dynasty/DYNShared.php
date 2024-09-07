@@ -599,9 +599,12 @@ function HasSurge($cardID)
   switch($cardID) {
     case "DYN194": case "DYN195": case "DYN197": case "DYN198": case "DYN199":
     case "DYN203": case "DYN204": case "DYN205": case "DYN206": case "DYN207": case "DYN208":
+    case "ROS166"://destructive aethertide
+    case "ROS167"://eternal inferno
     case "ROS173": case "ROS174": case "ROS175":
     case "ROS176": case "ROS177": case "ROS178":
     case "ROS189": case "ROS190": case "ROS191":
+    case "ROS195": case "ROS196": case "ROS197"://open the floodgates
     case "ROS198": case "ROS199": case "ROS200":
     case "ROS201": case "ROS202": case "ROS203":
     case "ROS207": case "ROS208": case "ROS209":

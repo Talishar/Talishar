@@ -208,6 +208,11 @@ function AuraLeavesPlay($player, $index, $uniqueID)
     case "ROS161":
       PlayAura("ARC112", $player);
       break;
+    case "ROS168"://Sigil of aether
+      //arcane damage to any target, if damaged, amp 1
+      //AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+      DealArcane(1, 2, "STATIC", "ROS168", false, $player);
+      break;
     case "ROS182":
       $deck = new Deck($player);
       $cardID = $deck->Top();
@@ -404,6 +409,7 @@ function AuraStartTurnAbilities()
       case "ROS066":
       case "ROS133":
       case "ROS161":
+      case "ROS168"://sigil of aether
       case "ROS182":
       case "ROS210":
       case "ROS226":
@@ -564,6 +570,7 @@ function AuraStartTurnAbilities()
         break;
       case "ROS133":
       case "ROS161":
+      case "ROS168"://sigil of aether
       case "ROS182":
       case "ROS210":
       case "ROS226":
@@ -1012,10 +1019,10 @@ function AuraAttackAbilities($attackID)
       case "ROS130":
       case "ROS131":
       case "ROS132":
-        if ($attackType == "AA" && $auras[$i + 5] > 0) {  
+        if ($attackType == "AA" && $auras[$i + 5] > 0) {
           --$auras[$i + 5];
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
-        }     
+        }
         break;
       default:
         break;

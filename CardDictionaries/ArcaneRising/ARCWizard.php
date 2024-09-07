@@ -338,6 +338,10 @@ function PlayRequiresTarget($cardID)
     case "DYN207":
     case "DYN208":
       return 0;//Sap
+    case "ROS166"://destructive aethertide
+      return 2;
+    case "ROS167"://eternal inferno
+      return 2;
     case "ROS176":
     case "ROS177":
     case "ROS178":
@@ -346,6 +350,10 @@ function PlayRequiresTarget($cardID)
     case "ROS190":
     case "ROS191":
       return 0;//Etchings of Arcana
+    case "ROS195":
+    case "ROS196":
+    case "ROS197":
+      return 0;//open the floodgates
     case "ROS198":
     case "ROS199":
     case "ROS200":
@@ -420,6 +428,8 @@ function CurrentEffectArcaneModifier($source, $player): int|string
         }
         break;
       case "ROS015-AMP":
+      case "ROS078"://High Voltage
+      case "ROS168"://sigil of aether? CHECK THIS
       case "ROS204-AMP":
       case "MST234":
         if ($currentTurnEffects[$i + 1] != $player) break;
@@ -459,16 +469,16 @@ function ArcaneDamage($cardID): int
   return match ($cardID) {
     "ARC147", "EVR134", "UPR105", "UPR133", "UPR110", "UPR113", "DYN195" => 5,
     "ARC126", "ARC141", "ARC148", "CRU171", "EVR125", "EVR123", "EVR135", "UPR170", "UPR134", "UPR127", "UPR122",
-    "UPR111", "UPR114", "DYN197", "ROS204" => 4,
+    "UPR111", "UPR114", "DYN197", "ROS167", "ROS204" => 4,
     "ARC119", "ARC121", "ARC127", "ARC132", "ARC138", "ARC142", "ARC144", "ARC149", "EVR126", "EVR136", "DYN198",
     "DYN203", "DYN206", "CRU162", "CRU168", "CRU172", "CRU174", "UPR173", "UPR171", "UPR135", "UPR130", "UPR128",
-    "UPR123", "UPR112", "UPR115", "UPR104", "UPR119", "ROS176", "ROS189", "ROS198", "ROS201", "ROS207", "ROS173",
+    "UPR123", "UPR112", "UPR115", "UPR104", "UPR119", "ROS176", "ROS189", "ROS195", "ROS198", "ROS201", "ROS207", "ROS173",
     "ROS205" => 3,
     "ARC120", "CRU169", "CRU173", "CRU175", "EVR127", "UPR174", "UPR172", "UPR131", "UPR129", "UPR124", "UPR120",
-    "DYN194", "DYN199", "DYN204", "DYN207", "ROS177", "ROS190", "ROS199", "ROS202", "ROS208", "ROS174", "ARC128",
+    "DYN194", "DYN199", "DYN204", "DYN207", "ROS177", "ROS190", "ROS196", "ROS199", "ROS202", "ROS208", "ROS174", "ARC128",
     "ARC133", "ARC139", "ARC143", "ARC145", "ROS206" => 2,
     "ARC134", "ARC140", "ARC146", "CRU170", "CRU176", "UPR175", "UPR179", "UPR180", "UPR181", "UPR132", "UPR121",
-    "DYN205", "DYN208", "HVY252", "ROS178", "ROS191", "ROS200", "ROS203", "ROS209", "ROS175" => 1,
+    "DYN205", "DYN208", "HVY252", "ROS166", "ROS178", "ROS191", "ROS197", "ROS200", "ROS203", "ROS209", "ROS175" => 1,
     "EVR124" => 0,
     default => -1,
   };
@@ -577,6 +587,8 @@ function ActionsThatDoArcaneDamage($cardID)
       return true;
     case "HVY252":
       return true;
+    case "ROS166":
+    case "ROS167":
     case "ROS173":
     case "ROS174":
     case "ROS175":
@@ -586,6 +598,9 @@ function ActionsThatDoArcaneDamage($cardID)
     case "ROS189":
     case "ROS190":
     case "ROS191":
+    case "ROS195":
+    case "ROS196":
+    case "ROS197":
     case "ROS198":
     case "ROS199":
     case "ROS200":
@@ -735,6 +750,10 @@ function ArcaneBarrierChoices($playerID, $max)
         ++$barrierArray[1];
         $total += 1;
         break;
+      case "ROS071":
+        ++$barrierArray[1];
+        $total += 1;
+        break;
       case "ROS246":
         ++$barrierArray[1];
         $total += 1;
@@ -827,6 +846,9 @@ function ArcaneHitEffect($player, $source, $target, $damage)
         AddDecisionQueue("PLAYAURA", MZPlayerID($player, $target), "ELE111-1", 1);
       }
       break;
+    case "ROS168":
+      CurrentEffectArcaneModifier($source, $player);//CHECK THIS
+      break;
     default:
       break;
   }
@@ -879,6 +901,18 @@ function ProcessSurge($cardID, $player, $target)
       AddDecisionQueue("MZOP", $player, "GETCARDINDEX", 1);
       AddDecisionQueue("REMOVECOUNTER", $targetPlayer, $cardID, 1);
       break;
+    case "ROS166"://destructive aethertide
+      if (MZIsPlayer($target)){
+        WriteLog("Surge Active, destroying a card in opponents arsenal");
+        MZChooseAndDestroy($player, "THEIRARS");
+      }
+      break;
+    case "ROS167"://eternal inferno
+      //
+      // AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:cardID=ROS167", 1)
+      BanishCardForPlayer("ROS167", $player, "MYDISCARD", "PLAY,", "ROS167");
+      // RemoveGraveyard($player, "ROS167")//I don't know if this is necessary
+      break;
     case "ROS176":
     case "ROS177":
     case "ROS178":
@@ -889,6 +923,12 @@ function ProcessSurge($cardID, $player, $target)
     case "ROS191":
       WriteLog("Surge active, returning a sigil from graveyard to hand");
       MZMoveCard($player, "MYDISCARD:subtype=Aura;nameIncludes=Sigil", "MYHAND", may: true);
+      break;
+    case "ROS195":
+    case "ROS196":
+    case "ROS197":
+      WriteLog("Surge active, drawing 2 cards");
+      Draw($player); Draw($player);
       break;
     case "ROS198":
     case "ROS199":

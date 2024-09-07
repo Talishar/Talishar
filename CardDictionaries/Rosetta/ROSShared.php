@@ -15,6 +15,7 @@ function ROSAbilityType($cardID, $index = -1): string
     "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213" => "I",
     "ROS015" => "A",
     "ROS003", "ROS009" => "AA",
+    "ROS071", "ROS163" => "I",
     default => ""
   };
 }
@@ -35,6 +36,7 @@ function ROSAbilityCost($cardID): int
     "ROS003", "ROS007", "ROS008" => 2,
     "ROS009" => 1,
     "ROS021" => HasAuraWithSigilInName($currentPlayer) ? 0 : 1,
+    "ROS071" => 1,
     default => 0
   };
 }
@@ -107,6 +109,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed;
+  global $combatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 
   switch ($cardID) {
@@ -179,6 +182,19 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         GainHealth(2, $currentPlayer);
       }
       return "";
+    case "ROS071"://Lightning greaves
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      SetClassState($currentPlayer, $CS_LightningGreaves, 1);
+      return "";
+    case "ROS075"://Eclectic Magnetism
+      // WriteLog(CardName($combatChain[0]) . "is the active chain link");
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      SetClassState($currentPlayer, $CS_NextNAAInstantEclecticMag, 1);
+      //turn it off when the chain link ends?
+      return "";
+    case "ROS078"://High Voltage
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "ROS204":
     case "ROS205":
     case "ROS206":
@@ -248,12 +264,17 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       return "";
+    case "ROS166"://destructive aethertide
+    case "ROS167"://eternal inferno
     case "ROS176":
     case "ROS177":
     case "ROS178":
     case "ROS189":
     case "ROS190":
     case "ROS191":
+    case "ROS195":
+    case "ROS196":
+    case "ROS197"://open the floodgates
     case "ROS198":
     case "ROS199":
     case "ROS200":

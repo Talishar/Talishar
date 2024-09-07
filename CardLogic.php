@@ -1772,9 +1772,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "UPR218":
     case "UPR219":
     case "UPR220":
-    case "ROS133" :
-    case "ROS161" :
-    case "ROS182" :
+    case "ROS133":
+    case "ROS161":
+    case "ROS168"://sigil of aether
+    case "ROS182":
     case "ROS210":
     case "ROS226":
     case "ROS230":
@@ -2374,7 +2375,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS061":
     case "ROS062":
     case "ROS063":
-      $numHealthPointsGained = match ($parameter) {"ROS061" => 3, "ROS062" => 2, "ROS063" => 1}; 
+      $numHealthPointsGained = match ($parameter) {"ROS061" => 3, "ROS062" => 2, "ROS063" => 1};
       DestroyAuraUniqueID($player, $uniqueID);
       GainHealth($numHealthPointsGained, $player);
       break;
