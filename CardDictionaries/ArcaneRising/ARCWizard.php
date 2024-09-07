@@ -446,6 +446,11 @@ function CurrentEffectArcaneModifier($source, $player): int|string
         $modifier += 3;
         $remove = true;
         break;
+      case "ROS163":
+        if ($currentTurnEffects[$i + 1] != $player) break;
+        $modifier += 1;
+        $remove = true;
+        break;
       case "ROS186":
       case "ROS187":
       case "ROS188":

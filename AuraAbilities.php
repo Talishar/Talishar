@@ -146,6 +146,7 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
 function AuraLeavesPlay($player, $index, $uniqueID)
 {
   global $mainPlayer;
+  global $CS_AmpWhenSigilLeaves
   $auras = &GetAuras($player);
   $cardID = $auras[$index];
   $uniqueID = $auras[$index + 6];
@@ -235,6 +236,9 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       break;
     default:
       break;
+  }
+  if ($CS_AmpWhenSigilLeaves == 1 && DelimStringContains(CardName($cardID), "Sigil", partial: true)){
+    AddCurrentTurnEffect("ROS163", $currentPlayer);//amp for aether bindings
   }
 }
 

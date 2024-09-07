@@ -185,6 +185,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS071"://Lightning greaves
       AddCurrentTurnEffect($cardID, $currentPlayer);
       SetClassState($currentPlayer, $CS_LightningGreaves, 1);
+
       return "";
     case "ROS075"://Eclectic Magnetism
       // WriteLog(CardName($combatChain[0]) . "is the active chain link");
@@ -249,6 +250,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       for ($i = 0; $i < $numRunechantsCreated; ++$i) {
         AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
       }
+      return "";
+    case "ROS163":
+      SetClassState($currentPlayer, $CS_AmpWhenSigilLeaves, 1);
       return "";
     case "ROS247":
       LookAtHand($otherPlayer);
