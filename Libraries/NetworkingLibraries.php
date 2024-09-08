@@ -1453,7 +1453,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $lastPlayed, $CS_PlayIndex, $CS_NumBluePlayed;
   global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumLightningPlayed;
   global $CS_PlayedAsInstant, $mainPlayer, $EffectContext, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAttacks, $CCS_NumInstantsPlayedByAttackingPlayer;
-  global $CS_LastTwoActions;
+  global $CS_ActionsPlayedThisTurn;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $resources = &GetResources($currentPlayer);
   $pitch = &GetPitch($currentPlayer);
@@ -1584,15 +1584,16 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         ResetCombatChainState();
       }
     } else {
-      WriteLog("before update " . GetClassState($currentPlayer, $CS_NamesOfCardsPlayed));
       if (GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
       else SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) . "," . $cardID);
-      WriteLog("after update " . GetClassState($currentPlayer, $CS_NamesOfCardsPlayed));
       if ($cardType == 'A' || $cardType == 'AA'){
-        WriteLog("before update " . GetClassState($currentPlayer, $CS_ActionsPlayedThisTurn));
         if (GetClassState($currentPlayer, $CS_ActionsPlayedThisTurn) == "-") SetClassState($currentPlayer, $CS_ActionsPlayedThisTurn, $cardID);
         else SetClassState($currentPlayer, $CS_ActionsPlayedThisTurn, GetClassState($currentPlayer, $CS_ActionsPlayedThisTurn) . "," . $cardID);
-        WriteLog("after update " . GetClassState($currentPlayer, $CS_ActionsPlayedThisTurn));
+      }
+      $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayedThisTurn));
+      if ($cardID == "ROS074" && count($actionsPlayed) > 1 && TalentContains($actionsPlayed[1], "LIGHTNING")) GiveAttackGoAgain();
+      if ($cardType == "AA"){
+        if (count($actionsPlayed) > 2 && TalentContains($actionsPlayed[2], "LIGHTNING") && $actionsPlayed[1] == "ROS074") GiveAttackGoAgain();
       }
       if ($cardType == "A" && !$canPlayAsInstant) {
         ResetCombatChainState();
