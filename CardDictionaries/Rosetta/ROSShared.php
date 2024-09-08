@@ -12,7 +12,7 @@
 function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
-    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213" => "I",
+    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213", "ROS164" => "I",
     "ROS015", "ROS115", "ROS116" => "A",
     "ROS003", "ROS009" => "AA",
     default => ""
@@ -294,6 +294,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       AddDecisionQueue("GAINRESOURCES", $currentPlayer, "1", 1);
+      return "";
+    case "ROS164":
+      GainResources($currentPlayer, 1);
       return "";
     default:
       return "";

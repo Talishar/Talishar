@@ -1899,6 +1899,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !ArsenalHasFaceDownArrowCard($player);
     case "AAZ007":
       return !HasAimCounter();
+    case "ROS164":
+      return !HasAuraWithSigilInName($currentPlayer);
     default:
       return false;
   }
