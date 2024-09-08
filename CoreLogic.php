@@ -1965,7 +1965,7 @@ function ResolveGoAgain($cardID, $player, $from)
 {
   global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer;
   global $CS_ActionsPlayedThisTurn;
-  WriteLog("Checking if " . $cardID . " has go again");
+  WriteLog("Checking if " . $cardID . " has go again " . CardType($cardID));//DEBUG
   $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayedThisTurn));
   $cardType = CardType($cardID);
   $goAgainPrevented = CurrentEffectPreventsGoAgain();
@@ -1982,7 +1982,7 @@ function ResolveGoAgain($cardID, $player, $from)
     if ($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if ($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
     if ($cardID == "ROS074" && count($actionsPlayed) > 1 && TalentContains($actionsPlayed[1], "LIGHTNING")){
-      WriteLog("Heree");
+      WriteLog("Heree");//DEBUG
       $hasGoAgain = true;
     }
     if ($cardType == "A" || $cardType == "AA"){
