@@ -13,7 +13,7 @@
       case "EVO087": case "EVO088": case "EVO089":
       case "EVO090": case "EVO091": case "EVO092":
       case "EVO093": case "EVO094": case "EVO095":
-      case "EVO096": case "EVO097": case "EVO098": 
+      case "EVO096": case "EVO097": case "EVO098":
       case "AIO026":
         return true;
       default: return false;
@@ -352,7 +352,7 @@
    * Decompose is a keyword added in ROS. This function is meant to support future instances of
    * decompose that may have different requirements in the number of earth banishes and action
    * banishes.
-   * 
+   *
    * The result of "NOPASS" should be used to add the bonus effects. SPECIFICCARD dq events can be added right after calling decompose to run if the decompose succeeded.
    */
   function Decompose($player, $earthBanishes, $actionBanishes) {
@@ -362,16 +362,16 @@
     $countInDiscard = SearchCount(
       SearchRemoveDuplicates(
         CombineSearches(
-          SearchDiscard($player, talent: "EARTH"), 
+          SearchDiscard($player, talent: "EARTH"),
           CombineSearches(
-            SearchDiscard($player, "A"), 
+            SearchDiscard($player, "A"),
             SearchDiscard($player
             , "AA"))
           )
         )
       );
-    
-    // Must have the minimum # of earth cards too. 
+
+    // Must have the minimum # of earth cards too.
     $earthCountInDiscard = SearchCount(SearchDiscard($player, talent: "EARTH"));
 
     // This is a MAY ability.
@@ -388,7 +388,7 @@
         AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
       }
-      
+
       // Action banishes.
       for($i = 0; $i < $actionBanishes; $i++) {
         AddDecisionQueue("GETCARDSFORDECOMPOSE", $player, "MYDISCARD:type=A&MYDISCARD:type=AA", 1); // Modified MULTIZONEINDICES so if there are no actions it can be sent to the next dq and it will revert gamestate. Can't use "PASS" because YESNO "PASS" result is already present.
@@ -398,6 +398,9 @@
         AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
       }
+      return true;
+    }
+    else {
+      return false;
     }
   }
-  

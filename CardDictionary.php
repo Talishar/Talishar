@@ -1871,6 +1871,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST134":
     case "MST135":
     case "MST136":
+    case "ROS115":
       $auras = &GetAuras($player);
       return Count($auras) <= 0;
     case "MST162":
@@ -1898,6 +1899,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !ArsenalHasFaceDownArrowCard($player);
     case "AAZ007":
       return !HasAimCounter();
+    case "ROS164":
+      return !HasAuraWithSigilInName($currentPlayer);
     default:
       return false;
   }
@@ -2103,6 +2106,9 @@ function HasBladeBreak($cardID)
       return true;
     default:
       return false;
+    case "ROS029":
+    case "ROS072":
+      return true;
   }
 }
 
@@ -2490,7 +2496,7 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "AKO") return AKOAbilityHasGoAgain($cardID);
   else if ($set == "AAZ") return AAZAbilityHasGoAgain($cardID);
   else if ($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
-  //else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
+  else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
   else if ($set == "AIO") return AIOAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "RVD004":

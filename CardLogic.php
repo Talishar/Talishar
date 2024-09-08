@@ -1772,13 +1772,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "UPR218":
     case "UPR219":
     case "UPR220":
-    case "ROS133" :
-    case "ROS161" :
-    case "ROS182" :
+    case "ROS022":
+    case "ROS070":
+    case "ROS113":
+    case "ROS133":
+    case "ROS161":
+    case "ROS182":
     case "ROS210":
     case "ROS226":
     case "ROS230":
-      DestroyAuraUniqueID($player, $uniqueID);
+      DestroyAuraUniqueID($player, $uniqueID); //destroy sigils at start of action phase
       break;
     case "UPR406":
       $deck = new Deck($player);
@@ -2374,7 +2377,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS061":
     case "ROS062":
     case "ROS063":
-      $numHealthPointsGained = match ($parameter) {"ROS061" => 3, "ROS062" => 2, "ROS063" => 1}; 
+      $numHealthPointsGained = match ($parameter) {"ROS061" => 3, "ROS062" => 2, "ROS063" => 1};
       DestroyAuraUniqueID($player, $uniqueID);
       GainHealth($numHealthPointsGained, $player);
       break;
@@ -2383,6 +2386,18 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS066":
       DestroyAuraUniqueID($player, $uniqueID);
       AddCurrentTurnEffect($parameter, $player, "PLAY");
+      break;
+    case "ROS072": //flash of brilliance
+      $hand = SearchHand($player, talent: "LIGHTNING");
+      if (count(explode(",", $hand)) > 1) {
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_discard_a_lightning_card");
+        AddDecisionQueue("NOPASS", $player, "-", 1);
+        AddDecisionQueue("FINDINDICES", $player, "HAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a lightning card from your hand to discard.", 1);
+        MZMoveCard($player, "MYHAND:talent=LIGHTNING", "MYDISCARD", isReveal:true, isSubsequent:true);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Return an Aura to your hand.", 1);
+        MZMoveCard($player, "MYAURAS", "MYHAND", isReveal:true, isSubsequent:true);
+      }
       break;
     case "ROS077":
       Draw($player);

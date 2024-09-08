@@ -184,10 +184,19 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       $aurasArray = explode(",", $illusionistAuras);
       if (count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
+    case "ROS022": //sigil of brilliance
+      AddDecisionQueue("DRAW", $player, "-", 0);
+      break;
     case "ROS045":
       PlayAura("ELE109", $player);
       break;
+    case "ROS070": //sigil of earth
+      PlayAura("ELE109", $player);
+      break;
     case "ROS088":
+      PlayAura("ELE110", $player);
+      break;
+    case "ROS113": //sigil of lightning
       PlayAura("ELE110", $player);
       break;
     case "ROS133":
@@ -395,6 +404,7 @@ function AuraStartTurnAbilities()
       case "UPR219":
       case "UPR220":
       case "DYN217":
+      case "ROS022":
       case "ROS033":
       case "ROS061":
       case "ROS062":
@@ -402,6 +412,8 @@ function AuraStartTurnAbilities()
       case "ROS064":
       case "ROS065":
       case "ROS066":
+      case "ROS070":
+      case "ROS113":
       case "ROS133":
       case "ROS161":
       case "ROS182":
@@ -562,6 +574,9 @@ function AuraStartTurnAbilities()
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
         break;
+      case "ROS022":
+      case "ROS070":
+      case "ROS113":
       case "ROS133":
       case "ROS161":
       case "ROS182":
@@ -1012,10 +1027,10 @@ function AuraAttackAbilities($attackID)
       case "ROS130":
       case "ROS131":
       case "ROS132":
-        if ($attackType == "AA" && $auras[$i + 5] > 0) {  
+        if ($attackType == "AA" && $auras[$i + 5] > 0) {
           --$auras[$i + 5];
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
-        }     
+        }
         break;
       default:
         break;

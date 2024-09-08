@@ -12,8 +12,8 @@
 function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
-    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213" => "I",
-    "ROS015" => "A",
+    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213", "ROS164" => "I",
+    "ROS015", "ROS115", "ROS116", "ROS165" => "A",
     "ROS003", "ROS009" => "AA",
     default => ""
   };
@@ -48,12 +48,10 @@ function ROSAbilityCost($cardID): int
  */
 function ROSAbilityHasGoAgain($cardID): bool
 {
-  switch ($cardID) {
-    case "ROS015":
-      return true;
-    default:
-      return false;
-  }
+  return match ($cardID) {
+    "ROS015", "ROS115", "ROS116", "ROS165" => true,
+    default => false,
+  };
 }
 
 /**
@@ -66,9 +64,9 @@ function ROSAbilityHasGoAgain($cardID): bool
 function ROSEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
-    "ROS066", "ROS129" => 1,
-    "ROS052", "ROS053", "ROS054", "ROS065", "ROS128" => 2,
-    "ROS064", "ROS127", "ROS248" => 3,
+    "ROS066", "ROS112", "ROS129" => 1,
+    "ROS052", "ROS053", "ROS054", "ROS065", "ROS111", "ROS128" => 2,
+    "ROS064", "ROS110", "ROS127", "ROS248" => 3,
     default => 0,
   };
 }
@@ -87,8 +85,10 @@ function ROSCombatEffectActive($cardID, $attackID): bool
   return match ($cardID) {
     "ROS042", "ROS043", "ROS044", "ROS052", "ROS053", "ROS054" => true,
     "ROS064", "ROS065", "ROS066" => true,
+    "ROS110", "ROS111", "ROS112" => CardType($attackID) == "AA" && CardCost($attackID) <= 1,
     "ROS127", "ROS128", "ROS129" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "ROS248" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
+    "ROS049", "ROS050", "ROS051" => true, //blossoming decay
     default => false,
   };
 }
@@ -143,11 +143,14 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return CardLink($cardID, $cardID) . " is amping " . $ampAmmount;
     case "ROS248":
     case "ROS033":
+    case "ROS165":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS031":
-      Decompose($currentPlayer, 2, 1);
-      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "FELLINGOFTHECROWN", 1);
+      $decomposed = Decompose($currentPlayer, 2, 1);
+      if ($decomposed){
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "FELLINGOFTHECROWN", 1);
+      }
       return "";
     case "ROS035":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
@@ -155,27 +158,70 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS039":
     case "ROS040":
     case "ROS041":
-      Decompose($currentPlayer, 2, 1);
-      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SUMMERSFALL", 1);
+      $decomposed = Decompose($currentPlayer, 2, 1);
+      if ($decomposed) {
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SUMMERSFALL", 1);
+      }
       return "";
     case "ROS042":
     case "ROS043":
     case "ROS044":
-      Decompose($currentPlayer, 2, 1);
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "ROOTBOUNDCARAPACE", 1);
+      $decomposed = Decompose($currentPlayer, 2, 1);
+      if ($decomposed) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "ROOTBOUNDCARAPACE", 1);
+      }
+      return "";
+    case "ROS049":
+    case "ROS050":
+    case "ROS051":
+      $decomposed = Decompose($currentPlayer, 2, 1);
+      if ($decomposed) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "BLOSSOMINGDECAY", 1);
+      }
       return "";
     case "ROS052":
     case "ROS053":
     case "ROS054":
-      Decompose($currentPlayer, 2, 1);
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CADAVEROUSTILLING", 1);
+      $decomposed = Decompose($currentPlayer, 2, 1);
+      if ($decomposed) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CADAVEROUSTILLING", 1);
+      }
       return "";
     case "ROS055":
     case "ROS056":
     case "ROS057":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        GainHealth(2, $currentPlayer);
+      }
+      return "";
+    case "ROS067": //fertile ground red
+      $earthCountInBanish = SearchCount(SearchBanish($currentPlayer, talent: "EARTH"));
+      WriteLog($earthCountInBanish . " earth cards in banish");
+      if ($earthCountInBanish >= 4){
+        GainHealth(5, $currentPlayer);
+      }
+      else{
+        GainHealth(2, $currentPlayer);
+      }
+      return "";
+    case "ROS068": //fertile ground yellow
+      $earthCountInBanish = SearchCount(SearchBanish($currentPlayer, talent: "EARTH"));
+      if ($earthCountInBanish >= 4){
+        GainHealth(4, $currentPlayer);
+      }
+      else{
+        GainHealth(2, $currentPlayer);
+      }
+      return "";
+    case "ROS069": //fertile ground blue
+      $earthCountInBanish = SearchCount(SearchBanish($currentPlayer, talent: "EARTH"));
+      if ($earthCountInBanish >= 4){
+        GainHealth(3, $currentPlayer);
+      }
+      else{
         GainHealth(2, $currentPlayer);
       }
       return "";
@@ -193,6 +239,11 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
         return CardLink($cardID, $cardID) . " is preventing the next 2 damage.";
       }
+      return "";
+    case "ROS110":
+    case "ROS111":
+    case "ROS112":
+      AddCurrentTurnEffect($cardID, $currentPlayer); //electrostatic dicharge
       return "";
     case "ROS121":
     case "ROS122":
@@ -217,6 +268,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS143":
     case "ROS144":
     case "ROS145":
+    case "ROS116":
       PlayAura("ARC112", $currentPlayer);
       return "";
     case "ROS155":
@@ -289,11 +341,19 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS213":
       IncrementClassState($currentPlayer, $CS_DamagePrevention);
-      break;
+      return "";
+    case "ROS115":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("GAINRESOURCES", $currentPlayer, "1", 1);
+      return "";
+    case "ROS164":
+      GainResources($currentPlayer, 1);
+      return "";
     default:
       return "";
   }
-  return "";
 }
 
 function ROSHitEffect($cardID): void

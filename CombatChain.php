@@ -543,6 +543,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "MST163":
       if (GetClassState($defPlayer, $CS_NumCrouchingTigerCreatedThisTurn) > 0) $blockModifier += 3;
       break;
+    case "ROS029": //helm of lignum vitae
+      if (SearchCount(SearchBanish($defPlayer, talent: "EARTH"))) $blockModifier += 1;
+      break;
     default:
       break;
   }
@@ -822,6 +825,7 @@ function OnBlockResolveEffects($cardID = "")
       case "ASB006":
       case "TER027":
       case "AIO003":
+      case "ROS072"://flash of brilliance
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "HVY008":
