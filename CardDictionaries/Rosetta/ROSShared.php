@@ -13,7 +13,7 @@ function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
     "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213" => "I",
-    "ROS015", "ROS115" => "A",
+    "ROS015", "ROS115", "ROS116" => "A",
     "ROS003", "ROS009" => "AA",
     default => ""
   };
@@ -48,12 +48,10 @@ function ROSAbilityCost($cardID): int
  */
 function ROSAbilityHasGoAgain($cardID): bool
 {
-  switch ($cardID) {
-    case "ROS015":
-      return true;
-    default:
-      return false;
-  }
+  return match ($cardID) {
+    "ROS015", "ROS115", "ROS116" => true,
+    default => false,
+  };
 }
 
 /**
@@ -217,6 +215,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS143":
     case "ROS144":
     case "ROS145":
+    case "ROS116":
       PlayAura("ARC112", $currentPlayer);
       return "";
     case "ROS155":

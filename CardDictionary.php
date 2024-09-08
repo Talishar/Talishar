@@ -716,7 +716,6 @@ function HasGoAgain($cardID): bool|int
     case "ROS226":
     case "ROS230":
     case "ROS248":
-    case "ROS115":
       return true;
   }
 
@@ -2492,7 +2491,7 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "AKO") return AKOAbilityHasGoAgain($cardID);
   else if ($set == "AAZ") return AAZAbilityHasGoAgain($cardID);
   else if ($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
-  //else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
+  else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
   else if ($set == "AIO") return AIOAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "RVD004":
