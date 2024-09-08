@@ -2374,7 +2374,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS061":
     case "ROS062":
     case "ROS063":
-      $numHealthPointsGained = match ($parameter) {"ROS061" => 3, "ROS062" => 2, "ROS063" => 1}; 
+      $numHealthPointsGained = match ($parameter) {"ROS061" => 3, "ROS062" => 2, "ROS063" => 1};
       DestroyAuraUniqueID($player, $uniqueID);
       GainHealth($numHealthPointsGained, $player);
       break;
@@ -2383,6 +2383,18 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS066":
       DestroyAuraUniqueID($player, $uniqueID);
       AddCurrentTurnEffect($parameter, $player, "PLAY");
+      break;
+    case "ROS072": //flash of brilliance
+      $hand = SearchHand($player, talent: "LIGHTNING");
+      if (count(explode(",", $hand)) > 1) {
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_discard_a_lightning_card");
+        AddDecisionQueue("NOPASS", $player, "-", 1);
+        AddDecisionQueue("FINDINDICES", $player, "HAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a lightning card from your hand to discard.", 1);
+        MZMoveCard($player, "MYHAND:talent=LIGHTNING", "MYDISCARD", isReveal:true, isSubsequent:true);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Return an Aura to your hand.", 1);
+        MZMoveCard($player, "MYAURAS", "MYHAND", isReveal:true, isSubsequent:true);
+      }
       break;
     case "ROS077":
       Draw($player);
