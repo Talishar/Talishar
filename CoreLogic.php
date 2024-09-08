@@ -1964,6 +1964,8 @@ function EndTurnPitchHandling($player)
 function ResolveGoAgain($cardID, $player, $from)
 {
   global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer;
+  // global $CS_ActionsPlayedThisTurn;
+  // $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayedThisTurn));
   $cardType = CardType($cardID);
   $goAgainPrevented = CurrentEffectPreventsGoAgain();
   if (IsStaticType($cardType, $from, $cardID)) {
@@ -1978,6 +1980,13 @@ function ResolveGoAgain($cardID, $player, $from)
     if ($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
     if ($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if ($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
+    // if ($cardID == "ROS074" && count($actionsPlayed) > 1 && TalentContains($actionsPlayed[1], "LIGHTNING")){
+    //   WriteLog("Heree");
+    //   $hasGoAgain = true;
+    // }
+    // if ($cardType == "A" || $cardType == "AA"){
+    //   if (count($actionsPlayed) > 2 && TalentContains($actionsPlayed[2], "LIGHTNING") && $actionsPlayed[1] == "ROS074") $hasGoAgain = true;
+    // }
   }
   if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) ++$actionPoints;
 }
@@ -2429,6 +2438,7 @@ function ClearGameFiles($gameName)
 function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
 {
   global $currentPlayer, $layers, $CS_NumCrouchingTigerPlayedThisTurn, $currentTurnEffects;
+  $cardType = CardType($cardID);
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);

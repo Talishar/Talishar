@@ -90,7 +90,7 @@ function AuraPieces()
 //5 - My Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
 //6 - Opponent Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
 //7 - Frozen (1 = yes, 0 = no)
-//8 - Modalities (eg. Micro-Processor) 
+//8 - Modalities (eg. Micro-Processor)
 //9 - Where it's played from
 function ItemPieces()
 {
@@ -318,6 +318,7 @@ $CS_Transcended = 78;
 $CS_NumCrouchingTigerCreatedThisTurn = 79;
 $CS_NumBlueDefended = 80;
 $CS_NumLightningPlayed = 81;
+$CS_ActionsPlayedThisTurn = 82;//Used for Current Funnel ROS074
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -370,7 +371,7 @@ function ResetCombatChainState()
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
   global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
-  global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer; 
+  global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer;
   if(count($chainLinks) > 0) WriteLog("The combat chain was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;
@@ -529,6 +530,7 @@ function ResetMainClassState()
   global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain, $CS_NumContractsCompleted, $CS_HitsWithSword, $CS_NumCardsDrawn;
   global $CS_LifeLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrouchingTigerPlayedThisTurn, $CS_NumClashesWon;
   global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks;
+  global $CS_ActionsPlayedThisTurn;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -611,6 +613,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumCrouchingTigerCreatedThisTurn] = 0;
   $mainClassState[$CS_NumBlueDefended] = 0;
   $mainClassState[$CS_NumLightningPlayed] = 0;
+  $mainClassState[$CS_ActionsPlayedThisTurn] = "-";
 }
 
 function ResetCardPlayed($cardID)
