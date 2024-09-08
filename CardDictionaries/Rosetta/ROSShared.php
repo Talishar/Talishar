@@ -13,7 +13,7 @@ function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
     "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213", "ROS164" => "I",
-    "ROS015", "ROS115", "ROS116" => "A",
+    "ROS015", "ROS115", "ROS116", "ROS165" => "A",
     "ROS003", "ROS009" => "AA",
     default => ""
   };
@@ -49,7 +49,7 @@ function ROSAbilityCost($cardID): int
 function ROSAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
-    "ROS015", "ROS115", "ROS116" => true,
+    "ROS015", "ROS115", "ROS116", "ROS165" => true,
     default => false,
   };
 }
@@ -141,6 +141,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return CardLink($cardID, $cardID) . " is amping " . $ampAmmount;
     case "ROS248":
     case "ROS033":
+    case "ROS165":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS031":
