@@ -13,7 +13,7 @@ function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
     "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213" => "I",
-    "ROS015" => "A",
+    "ROS015", "ROS115" => "A",
     "ROS003", "ROS009" => "AA",
     default => ""
   };
@@ -289,11 +289,16 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS213":
       IncrementClassState($currentPlayer, $CS_DamagePrevention);
-      break;
+      return "";
+    case "ROS115":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("GAINRESOURCES", $currentPlayer, "1", 1);
+      return "";
     default:
       return "";
   }
-  return "";
 }
 
 function ROSHitEffect($cardID): void
