@@ -12,8 +12,8 @@
 function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
-    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213" => "I",
-    "ROS015" => "A",
+    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213", "ROS164" => "I",
+    "ROS015", "ROS115", "ROS116", "ROS165" => "A",
     "ROS003", "ROS009" => "AA",
     default => ""
   };
@@ -48,12 +48,10 @@ function ROSAbilityCost($cardID): int
  */
 function ROSAbilityHasGoAgain($cardID): bool
 {
-  switch ($cardID) {
-    case "ROS015":
-      return true;
-    default:
-      return false;
-  }
+  return match ($cardID) {
+    "ROS015", "ROS115", "ROS116", "ROS165" => true,
+    default => false,
+  };
 }
 
 /**
@@ -145,6 +143,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return CardLink($cardID, $cardID) . " is amping " . $ampAmmount;
     case "ROS248":
     case "ROS033":
+    case "ROS165":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS031":
@@ -269,6 +268,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS143":
     case "ROS144":
     case "ROS145":
+    case "ROS116":
       PlayAura("ARC112", $currentPlayer);
       return "";
     case "ROS155":
@@ -341,11 +341,19 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS213":
       IncrementClassState($currentPlayer, $CS_DamagePrevention);
-      break;
+      return "";
+    case "ROS115":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("GAINRESOURCES", $currentPlayer, "1", 1);
+      return "";
+    case "ROS164":
+      GainResources($currentPlayer, 1);
+      return "";
     default:
       return "";
   }
-  return "";
 }
 
 function ROSHitEffect($cardID): void
