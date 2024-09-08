@@ -432,6 +432,7 @@ function CurrentEffectArcaneModifier($source, $player): int|string
       case "ROS168"://sigil of aether? CHECK THIS
       case "ROS204-AMP":
       case "MST234":
+      case "ROS165":
         if ($currentTurnEffects[$i + 1] != $player) break;
         $modifier += 1;
         $remove = true;
@@ -951,7 +952,8 @@ function ProcessSurge($cardID, $player, $target)
     case "ROS173":
     case "ROS174":
     case "ROS175":
-      WriteLog("Surge Active, returning sigils to the deck");
+      WriteLog("Surge Active, gaining 1 life and returning sigils to the deck");
+      GainHealth(1, $player);
       $auras = &GetAuras($player);
       for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
         $auraName = CardName($auras[$i]);

@@ -91,7 +91,7 @@ function MZRemove($player, $lastResult)
         $lastResult = RemoveHand($otherPlayer, $mzIndex[1]);
         break;
       case "MYAURAS":
-        $lastResult = RemoveAura($otherPlayer, $mzIndex[1], $mzIndex[1] + 6);
+        $lastResult = RemoveAura($player, $mzIndex[1], $mzIndex[1] + 6);
         break;
       case "THEIRAURAS":
         $lastResult = RemoveAura($otherPlayer, $mzIndex[1], $mzIndex[1] + 6);
