@@ -1904,6 +1904,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !ArsenalHasFaceDownArrowCard($player);
     case "AAZ007":
       return !HasAimCounter();
+    case "ROS030":
+      return SearchCount(SearchBanish($player, talent: "EARTH")) < 4;
     case "ROS073":
       return GetClassState($player, $CS_NumInstantPlayed) == 0;
     case "ROS212": case "ROS213": case "ROS214":
