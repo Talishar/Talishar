@@ -421,6 +421,7 @@ function CurrentEffectArcaneModifier($source, $player): int|string
         break;
       case "ROS000":
       case "ROS015-AMP":
+      case "ROS078":
       case "ROS204-AMP":
       case "MST234":
       case "ROS165":

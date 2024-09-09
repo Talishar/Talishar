@@ -225,6 +225,10 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         GainHealth(2, $currentPlayer);
       }
       return "";
+    case "ROS078":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      Writelog(CardLink($cardID, $cardID) . " is amping 1");
+      return "";
     case "ROS079":
     case "ROS080":
     case "ROS081":

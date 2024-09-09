@@ -2369,7 +2369,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("PLAYAURA", $player, "WTR225-1", 1); // Quicken
       break;
     case "ROS000":
-      AddCurrentTurnEffect($parameter, $player, "PLAY");
+      AddCurrentTurnEffect($parameter, $player);
       Writelog(CardLink($parameter, $parameter) . " is amping 1");
       break;
     case "ROS013": case "ROS014":
