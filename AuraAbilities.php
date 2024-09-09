@@ -146,7 +146,6 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
 function AuraLeavesPlay($player, $index, $uniqueID)
 {
   global $mainPlayer;
-  global $CS_AmpWhenSigilLeaves;
   $auras = &GetAuras($player);
   $cardID = $auras[$index];
   $uniqueID = $auras[$index + 6];

@@ -2410,10 +2410,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         MZMoveCard($player, "MYAURAS", "MYHAND", isReveal:true, isSubsequent:true);
       }
       break;
-    case "ROS075":
-      WriteLog("HERE");
-      // $combatChainState[$CCS_CanPlayAsInstantEclectic] = 1;
-      break;
     case "ROS077":
       Draw($player);
       break;
