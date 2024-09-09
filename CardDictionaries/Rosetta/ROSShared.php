@@ -370,6 +370,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS164":
       GainResources($currentPlayer, 1);
       return "";
+    case "ROS244":
+      if (IsHeroAttackTarget()) AskWager($cardID);
+      return "";
     case "ROS249":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
