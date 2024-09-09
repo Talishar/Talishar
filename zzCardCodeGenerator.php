@@ -74,7 +74,7 @@
         if($set == "LSS" && $cardNumber != 004) continue;
         if($set == "LGS" && $cardNumber < 176) continue;
         if($set == "LGS" && $cardNumber > 178) continue;
-        if($set == "HER" && $cardNumber != 117 && $cardNumber != 100) continue;
+        if($set == "HER" && $cardNumber != 117 && $cardNumber != 100 && $cardNumber != 123) continue;
         if($set == "FAB" && $cardNumber < 300) continue;
         if(isset($cardArray[$i]->printings[0]->double_sided_card_info) && !$cardArray[$i]->printings[0]->double_sided_card_info[0]->is_front && $cardArray[$i]->printings[0]->rarity != "T") { $cardNumber += 400; $cardID = $set . $cardNumber; }
         else {
