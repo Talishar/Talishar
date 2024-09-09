@@ -145,11 +145,14 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $ampAmount = GetClassState($currentPlayer, $CS_NumLightningPlayed);
       AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "ABILITY");
       return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
+    case "ROS120":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
+      return "";
     case "ROS248":
     case "ROS033":
     case "ROS165":
     case "ROS118":
-    case "ROS120":
     case "ROS119":
     case "ROS169":
       AddCurrentTurnEffect($cardID, $currentPlayer);

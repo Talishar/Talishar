@@ -396,9 +396,11 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
       }
     }
     if ($damage <= $classState[$CS_DamagePrevention]) {
+      CheckIfHauntingRenditionIsActive($player);
       $classState[$CS_DamagePrevention] -= $damage;
       $damage = 0;
     } else {
+      CheckIfHauntingRenditionIsActive($player);
       $damage -= $classState[$CS_DamagePrevention];
       $classState[$CS_DamagePrevention] = 0;
     }
@@ -421,6 +423,13 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   }
   ResetAuraStatus($player);
   return $damage;
+}
+
+function CheckIfHauntingRenditionIsActive($player): void
+{
+  if (SearchCurrentTurnEffects("ROS120", $player, true)) {
+    PlayAura("ARC112", $player); // Runechant
+  }
 }
 
 
@@ -1587,10 +1596,9 @@ function DoesAttackHaveGoAgain()
     case "ROS089":
     case "ROS090":
     case "ROS091":
-      if(isset($combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer])){ // the first time this is checked in a chain it isn't set but the rest of the time it can be checked.
+      if (isset($combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer])) { // the first time this is checked in a chain it isn't set but the rest of the time it can be checked.
         return $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] > 0;
-      }
-      else return false;
+      } else return false;
     case "ROS101":
     case "ROS102":
     case "ROS103":
@@ -1969,7 +1977,7 @@ function EndTurnPitchHandling($player)
 function ResolveGoAgain($cardID, $player, $from)
 {
   global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer;
-  
+
   $cardType = CardType($cardID);
   $goAgainPrevented = CurrentEffectPreventsGoAgain();
   if (IsStaticType($cardType, $from, $cardID)) {
