@@ -386,6 +386,9 @@ function CardCost($cardID, $from = "-")
     case "HVY165":
     case "HVY186":
     case "HVY187":
+    case "ROS057":
+    case "ROS056":
+    case "ROS055":
     case "HVY188":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
       else return 3;
@@ -405,19 +408,12 @@ function CardCost($cardID, $from = "-")
     case "MST501":
     case "MST502":
       return -1;
-    case "ROS055":
-    case "ROS056":
-    case "ROS057":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
-      else return 3;
     case "ROS204":
     case "ROS205":
-    case "ROS206":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
-      else return 1;
-    case "ROS104":
-    case "ROS105":
     case "ROS106":
+    case "ROS105":
+    case "ROS104":
+    case "ROS206":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
       else return 1;
     default:
@@ -765,7 +761,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($cardID == "HER117") return "I";
 }
 
-function GetAbilityTypes($cardID, $index = -1, $from = "-")
+function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 {
   global $currentPlayer, $CS_PlayIndex;
   if ($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
@@ -775,11 +771,12 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-")
     "HVY143", "HVY144", "HVY145", "HVY163", "HVY164", "HVY165", "HVY186", "HVY187", "HVY188", "MST133", "ROS106",
     "ROS105", "ROS104", "ROS057", "ROS056", "ROS055", "HVY209" => "I,AA",
     "ROS186", "ROS187", "ROS188", "ROS204", "ROS205", "ROS206" => "I,A",
+    "ROS120", "ROS169" => "B,I",
     default => "",
   };
 }
 
-function GetAbilityNames($cardID, $index = -1, $from = "-")
+function GetAbilityNames($cardID, $index = -1, $from = "-"): string
 {
   global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $CS_PlayIndex, $CS_NumActionsPlayed;
   $character = &GetPlayerCharacter($currentPlayer);
@@ -807,10 +804,18 @@ function GetAbilityNames($cardID, $index = -1, $from = "-")
     case "HVY186":
     case "HVY187":
     case "HVY188":
+    case "ROS106":
+    case "ROS105":
+    case "ROS104":
+    case "ROS057":
+    case "ROS056":
+    case "ROS055":
     case "HVY209":
       $names = "Ability";
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Attack";
       return $names;
+    case "ROS120": case "ROS169":
+      return "Ability";
     case "MST133":
       if ($auras[$index + 3] > 0) $names = "Instant";
       if (SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
@@ -818,15 +823,6 @@ function GetAbilityNames($cardID, $index = -1, $from = "-")
       } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0 && $auras[$index + 1] == 2) {
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
-      return $names;
-    case "ROS055":
-    case "ROS056":
-    case "ROS057":
-    case "ROS104":
-    case "ROS105":
-    case "ROS106":
-      $names = "Ability";
-      if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Attack";
       return $names;
     case "ROS186":
     case "ROS187":
@@ -855,8 +851,14 @@ function GetAbilityIndex($cardID, $index, $abilityName)
 function GetResolvedAbilityType($cardID, $from = "-")
 {
   global $currentPlayer, $CS_AbilityIndex;
+
+  WriteLog("Card ID is " . $cardID);
+  WriteLog("currentplayer is " . $currentPlayer);
+  WriteLog("cs_abilityIndex is " . $CS_AbilityIndex);
   $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
+  WriteLog("abilityIndex is " . $abilityIndex);
   $abilityTypes = GetAbilityTypes($cardID, from: $from);
+  WriteLog("abilityTypes are " . $abilityTypes);
   if ($abilityTypes == "" || $abilityIndex == "-") return GetAbilityType($cardID, -1, $from);
   $abilityTypes = explode(",", $abilityTypes);
   if (isset($abilityTypes[$abilityIndex])) {
@@ -864,7 +866,7 @@ function GetResolvedAbilityType($cardID, $from = "-")
   } else return "";
 }
 
-function GetResolvedAbilityName($cardID, $from = "-")
+function GetResolvedAbilityName($cardID, $from = "-"): string
 {
   global $currentPlayer, $CS_AbilityIndex;
   $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
@@ -874,7 +876,7 @@ function GetResolvedAbilityName($cardID, $from = "-")
   return $abilityNames[$abilityIndex];
 }
 
-function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "", $pitchRestriction = "")
+function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "", $pitchRestriction = ""): bool
 {
   global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
   global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer;
@@ -1910,13 +1912,15 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return SearchCount(SearchBanish($player, talent: "EARTH")) < 4;
     case "ROS073":
       return GetClassState($player, $CS_NumInstantPlayed) == 0;
-    case "ROS212": case "ROS213": case "ROS214":
+    case "ROS212":
+    case "ROS213":
+    case "ROS214":
       return !HasTakenDamage($player);
     case "ROS164":
       return !HasAuraWithSigilInName($currentPlayer);
     case "AIO026":
-      if ($from == "PLAY") return $myItems[$index + 2] != 2; 
-      else return false;  
+      if ($from == "PLAY") return $myItems[$index + 2] != 2;
+      else return false;
     default:
       return false;
   }
@@ -1962,17 +1966,16 @@ function GoesOnCombatChain($phase, $cardID, $from)
     case "HVY186":
     case "HVY187":
     case "HVY188":
+    case "ROS106":
+    case "ROS105":
+    case "ROS104":
+    case "ROS057":
+    case "ROS056":
+    case "ROS055":
     case "HVY209":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     case "MST133":
       return GetResolvedAbilityType($cardID, $from) == "AA";
-    case "ROS055":
-    case "ROS056":
-    case "ROS057":
-    case "ROS104":
-    case "ROS105":
-    case "ROS106":
-      return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     default:
       break;
   }

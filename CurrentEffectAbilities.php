@@ -1115,6 +1115,20 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           }
           $remove = true;
           break;
+        case "ROS120":
+          if ($preventable) {
+            $damage -= 2;
+            PlayAura("ARC112", $player); // Runechant
+          }
+          $remove = true;
+          break;
+        case "ROS169":
+          if ($preventable) {
+            $damage -= 2;
+            PlayAura("DYN244", $player); // Ponder
+          }
+          $remove = true;
+          break;
         default:
           break;
       }

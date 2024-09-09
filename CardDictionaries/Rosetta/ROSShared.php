@@ -9,13 +9,13 @@
  * @param integer $index
  * @return string - the type that defines when the corresponding ability may be played
  */
-function ROSAbilityType($cardID, $index = -1): string
+function ROSAbilityType($cardID): string
 {
   return match ($cardID) {
-    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS030", "ROS071", "ROS073", "ROS164", "ROS212", "ROS213", "ROS214", "ROS249", "ROS250" => "I",
+    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS030", "ROS071", "ROS073", "ROS164", "ROS212", "ROS213",
+    "ROS214", "ROS249", "ROS250", "ROS163" => "I",
     "ROS015", "ROS115", "ROS116", "ROS165" => "A",
     "ROS003", "ROS009" => "AA",
-    "ROS163" => "I",
     default => ""
   };
 }
@@ -149,7 +149,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS033":
     case "ROS165":
     case "ROS118":
+    case "ROS120":
     case "ROS119":
+    case "ROS169":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS030":
@@ -212,7 +214,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         GainHealth(2, $currentPlayer);
       }
       return "";
-
     case "ROS067": //fertile ground red
       $earthCountInBanish = SearchCount(SearchBanish($currentPlayer, talent: "EARTH"));
       WriteLog($earthCountInBanish . " earth cards in banish");
@@ -348,7 +349,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       };
       AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "PLAY");
       return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
-    case "ROS166":
     case "ROS166"://destructive aethertide
     case "ROS167"://eternal inferno
     case "ROS176":

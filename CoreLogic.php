@@ -1195,25 +1195,26 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "HVY186":
     case "HVY187":
     case "HVY188":
+    case "ROS206":
+    case "ROS205":
+    case "ROS204":
+    case "ROS188":
+    case "ROS187":
+    case "ROS186":
+    case "ROS106":
+    case "ROS105":
+    case "ROS104":
+    case "ROS057":
+    case "ROS056":
+    case "ROS055":
     case "HVY209":
+    case "ROS120":
+    case "ROS169":
       return $from == "HAND";
     case "MST134":
     case "MST135":
     case "MST136":
       return SearchAuras("MON104", $currentPlayer);
-    case "ROS055":
-    case "ROS056":
-    case "ROS057":
-    case "ROS104":
-    case "ROS105":
-    case "ROS106":
-    case "ROS186":
-    case "ROS187":
-    case "ROS188":
-    case "ROS204":
-    case "ROS205":
-    case "ROS206":
-      return $from == "HAND";
     case "ROS119":
       return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0;
     default:
