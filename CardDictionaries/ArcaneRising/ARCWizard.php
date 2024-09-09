@@ -992,6 +992,7 @@ function ProcessSurge($cardID, $player, $target)
       for ($i == 0; $i < DiscardPieces(); $i++){
         array_pop($discard);
       }
+      break;
     case "ROS173":
     case "ROS174":
     case "ROS175":
