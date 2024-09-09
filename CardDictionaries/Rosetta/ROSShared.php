@@ -244,13 +244,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS073":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
-    // case "ROS074":
-    //   $actionsPlayed = explode(",", GetClassState($currentPlayer, $CS_ActionsPlayed));
-    //   if (count($actionsPlayed) > 1 && TalentContains($actionsPlayed[1], "LIGHTNING")){
-    //     GiveAttackGoAgain();
-    //     AddCurrentTurnEffect($cardID, $currentPlayer);
-    //   }
-    //   return ""; REMOVE
     case "ROS078":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       Writelog(CardLink($cardID, $cardID) . " is amping 1");
