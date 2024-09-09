@@ -25,7 +25,7 @@ function AIOCombatEffectActive($cardID, $attackID): bool
 
 function AIOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer;
+  global $currentPlayer, $CS_PlayIndex;
   switch ($cardID) {
     case "AIO006":
       $deck = new Deck($currentPlayer);
@@ -35,7 +35,9 @@ function AIOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "AIO026":
-      if ($from == "PLAY") Draw($currentPlayer);
+      if ($from == "PLAY") {
+        Draw($currentPlayer);
+      }
       return "";
     default:
       return "";

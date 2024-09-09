@@ -1912,6 +1912,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !HasTakenDamage($player);
     case "ROS164":
       return !HasAuraWithSigilInName($currentPlayer);
+    case "AIO026":
+      if ($from == "PLAY") return $myItems[$index + 2] != 2; 
+      else return false;  
     default:
       return false;
   }

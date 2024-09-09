@@ -140,6 +140,11 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       --$items[$index + 1];
       if ($items[$index + 1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
       break;
+    case "AIO026":
+      if ($from == "PLAY") {
+        $items[$index + 2] = 1;
+      }
+      break;
     default:
       break;
   }
