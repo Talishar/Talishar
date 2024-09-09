@@ -412,6 +412,10 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:TALENT=EARTH")) >= 4 ? 4 : 0;
     case "ROS032":
       return SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:TALENT=EARTH")) >= 4 ? 4 : 0;
+    case "ROS058":
+    case "ROS059":
+    case "ROS060":
+      return SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:TALENT=EARTH")) >= 4 ? 4 : 0;
     case "ROS101":
     case "ROS102":
     case "ROS103":
