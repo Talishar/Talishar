@@ -89,6 +89,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
     "ROS110", "ROS111", "ROS112" => CardType($attackID) == "AA" && CardCost($attackID) <= 1,
     "ROS127", "ROS128", "ROS129", "ROS119" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "ROS118" => CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer),
+    "ROS010" => $from != "PLAY" && (TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "A", $mainPlayer)), //Arc Lightning giving next action go again
     "ROS248" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
     "ROS049", "ROS050", "ROS051" => true, //blossoming decay
     default => false,
