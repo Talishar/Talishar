@@ -2445,15 +2445,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $parameter, 1);
       break;
     case "AIO003":
-      AddDecisionQueue("DECKCARDS", $mainPlayer, "0");
-      AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_a_card_of_your_deck", 1);
-      AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-      AddDecisionQueue("PARAMDELIMTOARRAY", $mainPlayer, "0", 1);
-      AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "0", 1);
-      AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,-", 1);
-      AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
-      AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was banished.", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "AIO003", 1);
+      AddDecisionQueue("DECKCARDS", $defPlayer, "0");
+      AddDecisionQueue("YESNO", $defPlayer, "if_you_want_to_banish_a_card_of_your_deck", 1);
+      AddDecisionQueue("NOPASS", $defPlayer, "-", 1);
+      AddDecisionQueue("PARAMDELIMTOARRAY", $defPlayer, "0", 1);
+      AddDecisionQueue("MULTIREMOVEDECK", $defPlayer, "0", 1);
+      AddDecisionQueue("MULTIBANISH", $defPlayer, "DECK,-", 1);
+      AddDecisionQueue("SETDQVAR", $defPlayer, "0", 1);
+      AddDecisionQueue("WRITELOG", $defPlayer, "<0> was banished.", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $defPlayer, "AIO003", 1);
       break;
     default:
       break;
