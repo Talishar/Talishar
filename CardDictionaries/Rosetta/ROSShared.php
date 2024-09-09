@@ -155,6 +155,12 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "FELLINGOFTHECROWN", 1);
       }
       return "";
+    case "ROS032":
+      $decomposed = Decompose($currentPlayer, 2, 1);
+      if ($decomposed){
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "PLOWUNDER", 1);
+      }
+      return "";
     case "ROS035":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
       return CardLink($cardID, $cardID) . " is preventing the next 5 damage.";
