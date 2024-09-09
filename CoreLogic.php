@@ -1138,7 +1138,6 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
   global $mainPlayer, $CS_PlayedAsInstant, $CS_NumCharged, $CS_LifeLost, $CS_NumAddedToSoul;
   global $combatChainState;
-  // WriteLog("combat chain state " . $combatChainState[$CCS_CanPlayAsInstantEclectic]);//debug
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
