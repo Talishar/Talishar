@@ -1031,7 +1031,7 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
   }
 }
 
-function AddEffectHitTrigger($cardID) // Effects that gives effect to the attack (keywords "attack gains/gets")
+function AddEffectHitTrigger($cardID): void // Effects that gives effect to the attack (keywords "attack gains/gets")
 {
   global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers;
   $effects = explode(',', $cardID);
