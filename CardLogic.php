@@ -2411,6 +2411,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS077":
       Draw($player);
       break;
+    case "ROS114":
+      PummelHit($otherPlayer);
+      Draw($player);
+      break;
     case "ROS130":
     case "ROS131":
     case "ROS132":

@@ -2115,6 +2115,7 @@ function HasBladeBreak($cardID)
       return false;
     case "ROS029":
     case "ROS072":
+    case "ROS114":
       return true;
   }
 }

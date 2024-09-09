@@ -867,6 +867,24 @@ function OnBlockResolveEffects($cardID = "")
       case "MST205":
         if (NumCardsBlocking() <= 1) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
+      case "ROS114":
+        $conditionsMet = 0;
+        for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
+          if (CardType($combatChain[$j]) == "AA") {
+            ++$conditionsMet; 
+            break;
+          }
+        }
+        for ($k = CombatChainPieces(); $k < count($combatChain); $k += CombatChainPieces()) {
+          if (CardType($combatChain[$k]) == "A") {
+            ++$conditionsMet; 
+            break;
+          }
+        }
+        if ($conditionsMet == 2) {
+          AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        }
+        break;
       default:
         break;
     }
