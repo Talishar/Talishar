@@ -12,7 +12,7 @@
 function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
-    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213", "ROS164", "ROS249", "ROS250" => "I",
+    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS164", "ROS212", "ROS213", "ROS214", "ROS249", "ROS250" => "I",
     "ROS015", "ROS115", "ROS116", "ROS165" => "A",
     "ROS003", "ROS009" => "AA",
     default => ""
@@ -305,20 +305,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       };
       AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "PLAY");
       return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
-    case "ROS247":
-      LookAtHand($otherPlayer);
-      LookAtArsenal($otherPlayer);
-      AddNextTurnEffect($cardID . "-1", $otherPlayer);
-      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
-      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
-      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, 2 . "-", 1);
-      AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
-      return "";
     case "ROS176":
     case "ROS177":
     case "ROS178":
@@ -336,13 +322,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS209":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
-    case "ROS173":
-    case "ROS174":
-    case "ROS175":
-      $sigils = SearchAura($currentPlayer, nameIncludes: "Sigil");
-      $numSigils = count(explode(",", $sigils));
-      DealArcane(ArcaneDamage($cardID) + $numSigils, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-      return "";
     case "ROS223":
     case "ROS224":
     case "ROS225":
@@ -358,9 +337,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       ));
       GainHealth($cardsInGraveyard + $baseLife, $currentPlayer);
       return "";
-    case "ROS213":
-      IncrementClassState($currentPlayer, $CS_DamagePrevention);
-      return "";
     case "ROS115":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -369,6 +345,16 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS164":
       GainResources($currentPlayer, 1);
+      return "";
+    case "ROS173":
+    case "ROS174":
+    case "ROS175":
+      $sigils = SearchAura($currentPlayer, nameIncludes: "Sigil");
+      $numSigils = count(explode(",", $sigils));
+      DealArcane(ArcaneDamage($cardID) + $numSigils, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      return "";
+    case "ROS212": case "ROS213": case "ROS214":
+      IncrementClassState($currentPlayer, $CS_DamagePrevention);
       return "";
     case "ROS231": 
     case "ROS232": 
@@ -388,6 +374,20 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS244":
       if (IsHeroAttackTarget()) AskWager($cardID);
       return "";
+    case "ROS247":
+      LookAtHand($otherPlayer);
+      LookAtArsenal($otherPlayer);
+      AddNextTurnEffect($cardID . "-1", $otherPlayer);
+      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
+      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
+      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, 2 . "-", 1);
+      AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+      AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+      return "";  
     case "ROS249":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";

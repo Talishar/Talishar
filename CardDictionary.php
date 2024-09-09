@@ -1533,7 +1533,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE234":
       return count($myHand) == 0;
     case "ELE236":
-    case "ROS213":
       return !HasTakenDamage($player);
     case "EVR054":
       return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) || Is1H($CombatChain->AttackCard()->ID());
@@ -1902,6 +1901,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !ArsenalHasFaceDownArrowCard($player);
     case "AAZ007":
       return !HasAimCounter();
+    case "ROS212": case "ROS213": case "ROS214":
+      return !HasTakenDamage($player);
     case "ROS164":
       return !HasAuraWithSigilInName($currentPlayer);
     default:
