@@ -500,7 +500,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         if($i == 0) $cards .= "and ";
         $cards .= CardLink($cardID, $cardID);
       }
-      WriteLog("Remembrance shuffled " . $cards);
+      WriteLog("The following cards where shuffled: " . $cards);
       return "1";
     case "QUIVEROFABYSSALDEPTH":
       $cards = "";
@@ -730,6 +730,16 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "FELLINGOFTHECROWN":
       BottomDeck($player);
       BottomDeck($otherPlayer);
+      return $lastResult;
+    case "PLOWUNDER":
+      AddDecisionQueue("FINDINDICES", $player, "ARSENAL");
+      AddDecisionQueue("CHOOSEARSENAL", $player, "<-", 1);
+      AddDecisionQueue("REMOVEARSENAL", $player, "-", 1);
+      AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "ARSENAL");
+      AddDecisionQueue("CHOOSEARSENAL", $otherPlayer, "<-", 1);
+      AddDecisionQueue("REMOVEARSENAL", $otherPlayer, "-", 1);
+      AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
       return $lastResult;
     case "BLOSSOMINGDECAY":
       GainHealth(1, $player);

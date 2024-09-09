@@ -1209,6 +1209,9 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "ROS104":
     case "ROS105":
     case "ROS106":
+    case "ROS186":
+    case "ROS187":
+    case "ROS188":
     case "ROS204":
     case "ROS205":
     case "ROS206":
@@ -1980,6 +1983,7 @@ function ResolveGoAgain($cardID, $player, $from)
     if ($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
     if ($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if ($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
+    if ($cardType == "I") $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from);
   }
   if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) ++$actionPoints;
 }

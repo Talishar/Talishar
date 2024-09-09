@@ -1240,6 +1240,24 @@ function CurrentEffectAfterPlayOrActivateAbility()
   return false;
 }
 
+function CurrentEffectGrantsInstantGoAgain($cardID, $from)
+{
+  global $currentTurnEffects, $currentPlayer;
+  $hasGoAgain = false;
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    if ($currentTurnEffects[$i + 1] == $currentPlayer) {
+      switch ($currentTurnEffects[$i]) {
+        case "ROS071": 
+          $hasGoAgain = true;
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  return $hasGoAgain;
+}
+
 function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer;

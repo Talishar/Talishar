@@ -410,10 +410,20 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 2 : 0);
     case "ROS031":
       return SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:TALENT=EARTH")) >= 4 ? 4 : 0;
+    case "ROS032":
+      return SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:TALENT=EARTH")) >= 4 ? 4 : 0;
+    case "ROS058":
+    case "ROS059":
+    case "ROS060":
+      return SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:TALENT=EARTH")) >= 4 ? 4 : 0;
     case "ROS101":
     case "ROS102":
     case "ROS103":
       return (GetClassState($defPlayer, $CS_DamageTaken)) > 0 ? 1 : 0;
+    case "ROS134":
+    case "ROS135":
+    case "ROS136":
+      return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0 ? 2 : 0;
     case "ROS140":
     case "ROS141":
     case "ROS142":
@@ -825,6 +835,7 @@ function OnBlockResolveEffects($cardID = "")
       case "ASB006":
       case "TER027":
       case "AIO003":
+      case "ROS028":
       case "ROS072"://flash of brilliance
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
@@ -855,6 +866,24 @@ function OnBlockResolveEffects($cardID = "")
       case "MST204":
       case "MST205":
         if (NumCardsBlocking() <= 1) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
+      case "ROS114":
+        $conditionsMet = 0;
+        for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
+          if (CardType($combatChain[$j]) == "AA") {
+            ++$conditionsMet; 
+            break;
+          }
+        }
+        for ($k = CombatChainPieces(); $k < count($combatChain); $k += CombatChainPieces()) {
+          if (CardType($combatChain[$k]) == "A") {
+            ++$conditionsMet; 
+            break;
+          }
+        }
+        if ($conditionsMet == 2) {
+          AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        }
         break;
       default:
         break;

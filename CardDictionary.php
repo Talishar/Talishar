@@ -770,9 +770,9 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-")
   return match ($cardID) {
     "ARC003", "TCC050", "CRU101" => "A,AA",
     "OUT093" => "I,I",
-    "ROS204", "ROS205", "ROS206" => "I,A",
     "HVY143", "HVY144", "HVY145", "HVY163", "HVY164", "HVY165", "HVY186", "HVY187", "HVY188", "MST133", "ROS106",
     "ROS105", "ROS104", "ROS057", "ROS056", "ROS055", "HVY209" => "I,AA",
+    "ROS186", "ROS187", "ROS188", "ROS204", "ROS205", "ROS206" => "I,A",
     default => "",
   };
 }
@@ -826,6 +826,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-")
       $names = "Ability";
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Attack";
       return $names;
+    case "ROS186":
+    case "ROS187":
+    case "ROS188":
     case "ROS204":
     case "ROS205":
     case "ROS206":
@@ -1280,7 +1283,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBaseAttack, $chainLinks;
+  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBaseAttack, $chainLinks, $CS_NumInstantPlayed;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -1533,7 +1536,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE234":
       return count($myHand) == 0;
     case "ELE236":
-    case "ROS213":
       return !HasTakenDamage($player);
     case "EVR054":
       return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) || Is1H($CombatChain->AttackCard()->ID());
@@ -1902,6 +1904,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !ArsenalHasFaceDownArrowCard($player);
     case "AAZ007":
       return !HasAimCounter();
+    case "ROS030":
+      return SearchCount(SearchBanish($player, talent: "EARTH")) < 4;
+    case "ROS073":
+      return GetClassState($player, $CS_NumInstantPlayed) == 0;
+    case "ROS212": case "ROS213": case "ROS214":
+      return !HasTakenDamage($player);
     case "ROS164":
       return !HasAuraWithSigilInName($currentPlayer);
     default:
@@ -1960,10 +1968,6 @@ function GoesOnCombatChain($phase, $cardID, $from)
     case "ROS105":
     case "ROS106":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
-    case "ROS204":
-    case "ROS205":
-    case "ROS206":
-      return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "A";
     default:
       break;
   }
@@ -2111,6 +2115,7 @@ function HasBladeBreak($cardID)
       return false;
     case "ROS029":
     case "ROS072":
+    case "ROS114":
       return true;
   }
 }
@@ -2194,6 +2199,8 @@ function HasBattleworn($cardID)
       return true;
     case "ROS163"://Aether Bindings
       return true;
+    case "ROS071":
+      return true;
     default:
       return false;
   }
@@ -2246,6 +2253,8 @@ function HasTemper($cardID)
     case "HVY648":
     case "AKO004":
     case "AIO003":
+      return true;
+    case "ROS028":
       return true;
     default:
       return false;
