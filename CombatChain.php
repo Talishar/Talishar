@@ -888,6 +888,9 @@ function OnBlockResolveEffects($cardID = "")
           AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         }
         break;
+      case "ROS217":
+        AddNextTurnEffect($defendingCard, $defPlayer);
+        return "";    
       default:
         break;
     }

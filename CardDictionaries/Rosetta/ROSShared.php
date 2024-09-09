@@ -379,6 +379,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       }
       return "";
+    case "ROS217":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "ROS223":
     case "ROS224":
     case "ROS225":

@@ -1538,7 +1538,6 @@ function CurrentEffectPreventsDraw($player, $isMainPhase)
 function CurrentEffectIntellectModifier()
 {
   global $currentTurnEffects, $mainPlayer;
-  $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
   $intellectModifier = 0;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
@@ -1556,6 +1555,10 @@ function CurrentEffectIntellectModifier()
         case "HVY009":
           $characters = GetPlayerCharacter($mainPlayer);
           $intellectModifier -= CharacterIntellect($characters[0]) - substr($currentTurnEffects[$i], -1);
+          break;
+        case "ROS217":
+          $intellectModifier -= 2;
+          break;
         default:
           break;
       }
