@@ -311,6 +311,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS189":
     case "ROS190":
     case "ROS191":
+    case "ROS195":
+    case "ROS196":
+    case "ROS197":
     case "ROS198":
     case "ROS199":
     case "ROS200":

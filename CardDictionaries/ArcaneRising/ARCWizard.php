@@ -346,6 +346,10 @@ function PlayRequiresTarget($cardID)
     case "ROS190":
     case "ROS191":
       return 0;//Etchings of Arcana
+    case "ROS195": 
+    case "ROS196": 
+    case "ROS197":
+      return 0; //Open the Flood Gates
     case "ROS198":
     case "ROS199":
     case "ROS200":
@@ -468,13 +472,13 @@ function ArcaneDamage($cardID): int
     "UPR111", "UPR114", "DYN197", "ROS204" => 4,
     "ARC119", "ARC121", "ARC127", "ARC132", "ARC138", "ARC142", "ARC144", "ARC149", "EVR126", "EVR136", "DYN198",
     "DYN203", "DYN206", "CRU162", "CRU168", "CRU172", "CRU174", "UPR173", "UPR171", "UPR135", "UPR130", "UPR128",
-    "UPR123", "UPR112", "UPR115", "UPR104", "UPR119", "ROS176", "ROS189", "ROS198", "ROS201", "ROS207", "ROS173",
+    "UPR123", "UPR112", "UPR115", "UPR104", "UPR119", "ROS176", "ROS189", "ROS195", "ROS198", "ROS201", "ROS207", "ROS173",
     "ROS205" => 3,
     "ARC120", "CRU169", "CRU173", "CRU175", "EVR127", "UPR174", "UPR172", "UPR131", "UPR129", "UPR124", "UPR120",
-    "DYN194", "DYN199", "DYN204", "DYN207", "ROS177", "ROS190", "ROS199", "ROS202", "ROS208", "ROS174", "ARC128",
+    "DYN194", "DYN199", "DYN204", "DYN207", "ROS177", "ROS190", "ROS196", "ROS199", "ROS202", "ROS208", "ROS174", "ARC128",
     "ARC133", "ARC139", "ARC143", "ARC145", "ROS206" => 2,
     "ARC134", "ARC140", "ARC146", "CRU170", "CRU176", "UPR175", "UPR179", "UPR180", "UPR181", "UPR132", "UPR121",
-    "DYN205", "DYN208", "HVY252", "ROS178", "ROS191", "ROS200", "ROS203", "ROS209", "ROS175" => 1,
+    "DYN205", "DYN208", "HVY252", "ROS178", "ROS191", "ROS197", "ROS200", "ROS203", "ROS209", "ROS175" => 1,
     "EVR124" => 0,
     default => -1,
   };
@@ -592,6 +596,9 @@ function ActionsThatDoArcaneDamage($cardID)
     case "ROS189":
     case "ROS190":
     case "ROS191":
+    case "ROS195":
+    case "ROS196":
+    case "ROS197":
     case "ROS198":
     case "ROS199":
     case "ROS200":
@@ -917,11 +924,19 @@ function ProcessSurge($cardID, $player, $target)
       WriteLog("Surge active, returning a sigil from graveyard to hand");
       MZMoveCard($player, "MYDISCARD:subtype=Aura;nameIncludes=Sigil", "MYHAND", may: true);
       break;
+    case "ROS195": 
+    case "ROS196": 
+    case "ROS197":
+      WriteLog("Surge active, drawing 2 cards");
+      Draw($player);
+      Draw($player);
+      break;
     case "ROS198":
     case "ROS199":
     case "ROS200":
       WriteLog("Surge active, gaining 2 resources");
       GainResources($player, 2);
+      break;
     case "ROS201":
     case "ROS202":
     case "ROS203": //perennial aetherbloom
@@ -930,6 +945,7 @@ function ProcessSurge($cardID, $player, $target)
       $discard = &GetDiscard($player);
       array_pop($discard);
       array_pop($discard); //it will always be the top card in discard
+      break;
     case "ROS173":
     case "ROS174":
     case "ROS175":
@@ -944,6 +960,7 @@ function ProcessSurge($cardID, $player, $target)
         }
       }
       AddDecisionQueue("SHUFFLEDECK", $player, "-");
+      break;
     case "ROS207":
     case "ROS208":
     case "ROS209":
