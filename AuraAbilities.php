@@ -995,6 +995,14 @@ function AuraPlayAbilities($attackID, $from = "")
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], $cardType, "-", $auras[$i + 6]);
         }
         break;
+      case "ROS130":
+      case "ROS131":
+      case "ROS132":
+        if ($cardType == "AA" && $auras[$i + 5] > 0) {
+          --$auras[$i + 5];
+          AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+        }
+        break;
       default:
         break;
     }
@@ -1031,14 +1039,6 @@ function AuraAttackAbilities($attackID)
         break;
       case "UPR005":
         if ($auras[$i + 5] > 0 && DelimStringContains(CardSubType($attackID), "Dragon")) {
-          --$auras[$i + 5];
-          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
-        }
-        break;
-      case "ROS130":
-      case "ROS131":
-      case "ROS132":
-        if ($attackType == "AA" && $auras[$i + 5] > 0) {
           --$auras[$i + 5];
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
         }

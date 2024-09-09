@@ -237,6 +237,7 @@
   function ResolveWagers() {
     global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $currentTurnEffects, $EffectContext, $combatChain;
     $wonWager = $combatChainState[$CCS_DamageDealt] > 0 ? $mainPlayer : $defPlayer;
+    $lostWager = $wonWager == $mainPlayer ? $defPlayer : $mainPlayer;
     $numWagersWon = 0;
     $amount = 1;
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
@@ -307,6 +308,11 @@
           case "HVY235": case "HVY236": case "HVY237":
             RemoveCurrentTurnEffect($i);
             PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
+            break;
+          case "ROS244":
+            RemoveCurrentTurnEffect($i);
+            Draw($wonWager);
+            PummelHit($lostWager);
             break;
           default:
             $hasWager = false;

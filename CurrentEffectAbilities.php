@@ -837,6 +837,12 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "ASB004":
           if (PitchValue($cardID) == 2) $costModifier -= 1;
           break;
+        case "ROS249":
+          if (SubtypeContains($cardID, "Aura") && $from != "PLAY") {
+            $costModifier -= 2;
+            $remove = true;
+          }
+          break;
         default:
           break;
       }

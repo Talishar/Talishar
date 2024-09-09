@@ -218,6 +218,9 @@ function MZAddZone($player, $parameter, $lastResult)
         PlayAura($cardIDs[$i], $player);
         PlayAbility($cardIDs[$i], "-", 0);
         break;
+      case "THEIRHAND":
+        AddPlayerHand($cardIDs[$i], $otherPlayer, "-");
+        break;
       default:
         break;
     }

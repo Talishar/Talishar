@@ -427,6 +427,7 @@ function CurrentEffectArcaneModifier($source, $player): int|string
           $remove = true;
         }
         break;
+      case "ROS000":
       case "ROS015-AMP":
       case "ROS078"://High Voltage
       case "ROS168"://sigil of aether? CHECK THIS
@@ -455,6 +456,9 @@ function CurrentEffectArcaneModifier($source, $player): int|string
       case "ROS186":
       case "ROS187":
       case "ROS188":
+      case "ROS192":
+      case "ROS193":
+      case "ROS194":
         if ($currentTurnEffects[$i + 1] != $player) break;
         $modifier += $effectArr[1];
         $remove = true;
@@ -760,7 +764,28 @@ function ArcaneBarrierChoices($playerID, $max)
         ++$barrierArray[1];
         $total += 1;
         break;
+      case "ROS239":
+        ++$barrierArray[1];
+        $total += 1;
+        break;
+      case "ROS240":
+        ++$barrierArray[1];
+        $total += 1;
+        break;
+      case "ROS241":
+        ++$barrierArray[1];
+        $total += 1;
+        break;
+      case "ROS242":
+        ++$barrierArray[1];
+        $total += 1;
+        break;
       case "ROS246":
+        ++$barrierArray[1];
+        $total += 1;
+        break;
+      case "ROS249":
+      case "ROS250":
         ++$barrierArray[1];
         $total += 1;
         break;

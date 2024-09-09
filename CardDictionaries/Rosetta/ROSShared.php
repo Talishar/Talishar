@@ -12,7 +12,7 @@
 function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
-    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213", "ROS164" => "I",
+    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213", "ROS164", "ROS249", "ROS250" => "I",
     "ROS015", "ROS115", "ROS116", "ROS165" => "A",
     "ROS003", "ROS009" => "AA",
     "ROS071", "ROS163" => "I",
@@ -33,8 +33,8 @@ function ROSAbilityCost($cardID): int
   global $currentPlayer;
   return match ($cardID) {
     "ROS015" => 3,
-    "ROS003", "ROS007", "ROS008" => 2,
-    "ROS009" => 1,
+    "ROS003", "ROS007", "ROS008", "ROS249" => 2,
+    "ROS009", "ROS250" => 1,
     "ROS021" => HasAuraWithSigilInName($currentPlayer) ? 0 : 1,
     "ROS071" => 1,
     default => 0
@@ -108,6 +108,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
  */
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
+  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed;
   global $combatChainState;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -141,9 +142,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       Draw($currentPlayer);
       return "";
     case "ROS021":
-      $ampAmmount = GetClassState($currentPlayer, $CS_NumLightningPlayed);
-      AddCurrentTurnEffect($cardID . "," . $ampAmmount, $currentPlayer, "ABILITY");
-      return CardLink($cardID, $cardID) . " is amping " . $ampAmmount;
+      $ampAmount = GetClassState($currentPlayer, $CS_NumLightningPlayed);
+      AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "ABILITY");
+      return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
     case "ROS248":
     case "ROS033":
     case "ROS165":
@@ -236,8 +237,14 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS075"://Eclectic Magnetism
       // $combatChainState[$CCS_CanPlayAsInstantEclectic] = 1;
       return "";
-    case "ROS078"://High Voltage
+    case "ROS078":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      Writelog(CardLink($cardID, $cardID) . " is amping 1");
+      return "";
+    case "ROS079":
+    case "ROS080":
+    case "ROS081":
+      $combatChainState[$CCS_NextInstantBouncesAura] = 1;
       return "";
     case "ROS204":
     case "ROS205":
@@ -303,6 +310,16 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS163":
       SetClassState($currentPlayer, $CS_AmpWhenSigilLeaves, 1);
       return "";
+    case "ROS192":
+    case "ROS193":
+    case "ROS194":
+      $ampAmount = match ($cardID) {
+        "ROS192" => 3,
+        "ROS193" => 2,
+        "ROS194" => 1
+      };
+      AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "PLAY");
+      return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
     case "ROS247":
       LookAtHand($otherPlayer);
       LookAtArsenal($otherPlayer);
@@ -373,6 +390,33 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS164":
       GainResources($currentPlayer, 1);
       return "";
+    case "ROS231": 
+    case "ROS232": 
+    case "ROS233":
+      if(GetClassState($currentPlayer, $CS_ArcaneDamageTaken) > 0){
+        $HealthGain = match ($cardID) {
+          "ROS231" => 4,
+          "ROS232" => 3,
+          "ROS233" => 2
+        };
+        GainHealth($HealthGain, $currentPlayer);
+      }
+      else {
+        GainHealth(1, $currentPlayer);
+      }
+      return "";
+    case "ROS244":
+      if (IsHeroAttackTarget()) AskWager($cardID);
+      return "";
+    case "ROS249":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "ROS250":
+      PlayAura("MON104", $currentPlayer, 1);
+      return "";
+    case "ROS252":
+      PutPermanentIntoPlay($currentPlayer, $cardID);
+      return "";  
     default:
       return "";
   }

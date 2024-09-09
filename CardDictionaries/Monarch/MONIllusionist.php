@@ -129,6 +129,7 @@
         else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN004") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Nekria")) return true;
         else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "EVO246") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Cromai")) return true;
         else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "MST235") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Miragai")) return true;  
+        else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "ROS252") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Ouvia")) return true;
       }
     }
     return HasPhantasm($attackID);
