@@ -556,6 +556,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "ROS029": //helm of lignum vitae
       if (SearchCount(SearchBanish($defPlayer, talent: "EARTH"))) $blockModifier += 1;
       break;
+    case "AIO003":
+      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 1;
+      break;
     default:
       break;
   }

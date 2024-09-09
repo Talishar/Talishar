@@ -927,6 +927,7 @@ function AddOnHitTrigger($cardID): void
     case "ROS221":
     case "ROS222":
     case "ROS243":
+    case "ROS117":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     default:
@@ -1031,7 +1032,7 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
   }
 }
 
-function AddEffectHitTrigger($cardID) // Effects that gives effect to the attack (keywords "attack gains/gets")
+function AddEffectHitTrigger($cardID): void // Effects that gives effect to the attack (keywords "attack gains/gets")
 {
   global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers;
   $effects = explode(',', $cardID);
@@ -1122,6 +1123,7 @@ function AddEffectHitTrigger($cardID) // Effects that gives effect to the attack
     case "HVY091":
     case "HVY136":
     case "HVY099":
+    case "ROS119":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     case "MST105-HIT":

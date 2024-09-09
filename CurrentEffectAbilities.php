@@ -49,6 +49,15 @@ function EffectHitEffect($cardID, $from)
         PlayAura("ARC112", $mainPlayer, $amount);
       }
       break;
+    case "ROS119":
+      if (ClassContains($attackID, "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND," . $mainPlayer, 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      }
+      break;
     case "CRU084-2":
       PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2);
       break;
@@ -1111,6 +1120,13 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           }
           $remove = true;
           break;
+        case "ROS169":
+          if ($preventable) {
+            $damage -= 2;
+            PlayAura("DYN244", $player); // Ponder
+          }
+          $remove = true;
+          break;
         default:
           break;
       }
@@ -1334,7 +1350,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
 
 function CurrentEffectGrantsGoAgain()
 {
-  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused;
+  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused, $CS_NumAuras;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
@@ -1446,6 +1462,8 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "AAZ007":
           return true;
+        case "ROS118":
+          return GetClassState($mainPlayer, $CS_NumAuras) >= 1;
         default:
           break;
       }

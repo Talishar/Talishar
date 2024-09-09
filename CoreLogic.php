@@ -396,9 +396,11 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
       }
     }
     if ($damage <= $classState[$CS_DamagePrevention]) {
+      CheckIfHauntingRenditionIsActive($player);
       $classState[$CS_DamagePrevention] -= $damage;
       $damage = 0;
     } else {
+      CheckIfHauntingRenditionIsActive($player);
       $damage -= $classState[$CS_DamagePrevention];
       $classState[$CS_DamagePrevention] = 0;
     }
@@ -421,6 +423,13 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   }
   ResetAuraStatus($player);
   return $damage;
+}
+
+function CheckIfHauntingRenditionIsActive($player): void
+{
+  if (SearchCurrentTurnEffects("ROS120", $player, true)) {
+    PlayAura("ARC112", $player); // Runechant
+  }
 }
 
 
@@ -1195,25 +1204,28 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "HVY186":
     case "HVY187":
     case "HVY188":
+    case "ROS206":
+    case "ROS205":
+    case "ROS204":
+    case "ROS188":
+    case "ROS187":
+    case "ROS186":
+    case "ROS106":
+    case "ROS105":
+    case "ROS104":
+    case "ROS057":
+    case "ROS056":
+    case "ROS055":
     case "HVY209":
+    case "ROS120":
+    case "ROS169":
       return $from == "HAND";
     case "MST134":
     case "MST135":
     case "MST136":
       return SearchAuras("MON104", $currentPlayer);
-    case "ROS055":
-    case "ROS056":
-    case "ROS057":
-    case "ROS104":
-    case "ROS105":
-    case "ROS106":
-    case "ROS186":
-    case "ROS187":
-    case "ROS188":
-    case "ROS204":
-    case "ROS205":
-    case "ROS206":
-      return $from == "HAND";
+    case "ROS119":
+      return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0;
     default:
       break;
   }
@@ -1593,10 +1605,9 @@ function DoesAttackHaveGoAgain()
     case "ROS089":
     case "ROS090":
     case "ROS091":
-      if(isset($combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer])){ // the first time this is checked in a chain it isn't set but the rest of the time it can be checked.
+      if (isset($combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer])) { // the first time this is checked in a chain it isn't set but the rest of the time it can be checked.
         return $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] > 0;
-      }
-      else return false;
+      } else return false;
     case "ROS101":
     case "ROS102":
     case "ROS103":
@@ -1975,7 +1986,6 @@ function EndTurnPitchHandling($player)
 function ResolveGoAgain($cardID, $player, $from)
 {
   global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer, $CS_ActionsPlayed;
-  
   $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed));
   $cardType = CardType($cardID);
   $goAgainPrevented = CurrentEffectPreventsGoAgain();

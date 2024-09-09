@@ -134,9 +134,6 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     GainHealth(1, $otherPlayer);
     return $rv;
   }
-  if($banishedBy == "AIO003" && ClassContains($cardID, "MECHANOLOGIST ", $player)) {
-    AddCurrentTurnEffect("AIO003", $otherPlayer, "DECK");
-  }
   return $rv;
 }
 
