@@ -12,7 +12,7 @@
 function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
-    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213", "ROS164", "ROS250" => "I",
+    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213", "ROS164", "ROS249", "ROS250" => "I",
     "ROS015", "ROS115", "ROS116", "ROS165" => "A",
     "ROS003", "ROS009" => "AA",
     default => ""
@@ -32,7 +32,7 @@ function ROSAbilityCost($cardID): int
   global $currentPlayer;
   return match ($cardID) {
     "ROS015" => 3,
-    "ROS003", "ROS007", "ROS008" => 2,
+    "ROS003", "ROS007", "ROS008", "ROS249" => 2,
     "ROS009", "ROS250" => 1,
     "ROS021" => HasAuraWithSigilInName($currentPlayer) ? 0 : 1,
     default => 0
@@ -369,6 +369,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS164":
       GainResources($currentPlayer, 1);
+      return "";
+    case "ROS249":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS250":
       PlayAura("MON104", $currentPlayer, 1);
