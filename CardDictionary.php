@@ -1042,6 +1042,7 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "")
       return true;
     }
   };
+  if(SubtypeContains($cardID, "Aura", $player) && !CanBlockWithAura()) return true;
   switch ($cardID) {
     case "HVY198":
       return GetClassState($mainPlayer, $CS_NumCardsDrawn) == 0;
@@ -1069,6 +1070,17 @@ function CanBlockWithEquipment()
     case "EVO207":
     case "EVO208":
     case "EVO209":
+      return false;
+    default:
+      return true;
+  }
+}
+
+function CanBlockWithAura()
+{
+  global $CombatChain;
+  switch ($CombatChain->AttackCard()->ID()) {
+    case "ROS216":
       return false;
     default:
       return true;

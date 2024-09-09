@@ -923,11 +923,12 @@ function AddOnHitTrigger($cardID): void
     case "AAZ016":
     case "AUR012":
     case "AUR019":
+    case "ROS117":
+    case "ROS216":
     case "ROS220":
     case "ROS221":
     case "ROS222":
     case "ROS243":
-    case "ROS117":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     default:
