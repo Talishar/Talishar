@@ -1415,7 +1415,7 @@ function DoesAttackHaveGoAgain()
   global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_Num6PowDisc;
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
   global $CS_NumItemsDestroyed, $CS_PlayIndex, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
-  global $CS_NumLightningPlayed, $CS_DamageTaken, $CCS_NumInstantsPlayedByAttackingPlayer;
+  global $CS_NumLightningPlayed, $CS_DamageTaken, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed;
   if (!$CombatChain->HasCurrentLink()) return false;
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
@@ -1433,6 +1433,8 @@ function DoesAttackHaveGoAgain()
 
   //Grant go Again
   $auras = &GetAuras($mainPlayer);
+  $actionsPlayed = explode(",", GetClassState($mainPlayer, $CS_ActionsPlayed));
+  $numActions = count($actionsPlayed);
   if (ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
     if (SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if ($isAura && SearchCharacterForCard($mainPlayer, "MON088")) return true;
@@ -1447,6 +1449,9 @@ function DoesAttackHaveGoAgain()
   if (SearchItemsForCard("EVO097", $mainPlayer) != "" && $attackType == "AA" && ClassContains($CombatChain->AttackCard()->ID(), "MECHANOLOGIST", $mainPlayer)) return true;
   if (SearchCurrentTurnEffectsForCycle("HVY127", "HVY128", "HVY129", $mainPlayer) && ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) && NumAttacksBlocking() > 0) return true;
   if (SearchCurrentTurnEffects("MST094", $mainPlayer) && PitchValue($CombatChain->AttackCard()->ID()) == 3 && $CombatChain->AttackCard()->From() != "PLAY") return true;
+  //the last action in numActions is going to be the current chain link
+  //so we want the second to last to be current funnel, and 3rd to last to be lightning
+  if (count($actionsPlayed) > 2 && $actionsPlayed[$numActions-2] == "ROS074" && TalentContains($actionsPlayed[$numActions-3], "LIGHTNING")) return true;
   $mainPitch = &GetPitch($mainPlayer);
   switch ($attackID) {
     case "WTR078":
@@ -1581,6 +1586,10 @@ function DoesAttackHaveGoAgain()
     case "AUR024":
     case "ROS009":
       return GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0;
+    case "ROS074":
+      //the last action in numActions is going to be the current chain link
+      //so we want the second to last
+      return count($actionsPlayed) > 1 && TalentContains($actionsPlayed[$numActions-2], "LIGHTNING");
     case "ROS089":
     case "ROS090":
     case "ROS091":
@@ -1965,10 +1974,12 @@ function EndTurnPitchHandling($player)
 
 function ResolveGoAgain($cardID, $player, $from)
 {
-  global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer;
+  global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer, $CS_ActionsPlayed;
   
+  $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed));
   $cardType = CardType($cardID);
   $goAgainPrevented = CurrentEffectPreventsGoAgain();
+  WriteLog("processing go again for  " . $cardID);
   if (IsStaticType($cardType, $from, $cardID)) {
     $hasGoAgain = AbilityHasGoAgain($cardID);
     if (!$hasGoAgain && GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from);
@@ -1978,6 +1989,8 @@ function ResolveGoAgain($cardID, $player, $from)
       $hasGoAgain = true;
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
     }
+    
+    if (count($actionsPlayed) > 2 && TalentContains($actionsPlayed[2], "LIGHTNING") && $actionsPlayed[1] == "ROS074") $hasGoAgain = true;
     if ($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
     if ($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if ($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
