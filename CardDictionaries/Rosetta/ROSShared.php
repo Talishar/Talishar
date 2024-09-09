@@ -149,6 +149,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS033":
     case "ROS165":
     case "ROS118":
+    case "ROS119":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS030":
@@ -445,9 +446,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
-      return "";  
-    case "ROS249":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS250":
       PlayAura("MON104", $currentPlayer, 1);

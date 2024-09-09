@@ -1122,6 +1122,7 @@ function AddEffectHitTrigger($cardID) // Effects that gives effect to the attack
     case "HVY091":
     case "HVY136":
     case "HVY099":
+    case "ROS119":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     case "MST105-HIT":

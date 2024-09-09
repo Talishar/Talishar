@@ -49,6 +49,15 @@ function EffectHitEffect($cardID, $from)
         PlayAura("ARC112", $mainPlayer, $amount);
       }
       break;
+    case "ROS119":
+      if (ClassContains($attackID, "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND," . $mainPlayer, 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      }
+      break;
     case "CRU084-2":
       PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2);
       break;

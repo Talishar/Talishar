@@ -1214,6 +1214,8 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "ROS205":
     case "ROS206":
       return $from == "HAND";
+    case "ROS119":
+      return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0;
     default:
       break;
   }
