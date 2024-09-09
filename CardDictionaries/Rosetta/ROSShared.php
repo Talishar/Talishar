@@ -12,7 +12,7 @@
 function ROSAbilityType($cardID, $index = -1): string
 {
   return match ($cardID) {
-    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS030", "ROS073", "ROS164", "ROS212", "ROS213", "ROS214", "ROS249", "ROS250" => "I",
+    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS030", "ROS071", "ROS073", "ROS164", "ROS212", "ROS213", "ROS214", "ROS249", "ROS250" => "I",
     "ROS015", "ROS115", "ROS116", "ROS165" => "A",
     "ROS003", "ROS009" => "AA",
     default => ""
@@ -33,7 +33,7 @@ function ROSAbilityCost($cardID): int
   return match ($cardID) {
     "ROS015" => 3,
     "ROS003", "ROS007", "ROS008", "ROS249" => 2,
-    "ROS009", "ROS250" => 1,
+    "ROS009", "ROS071", "ROS250" => 1,
     "ROS021" => HasAuraWithSigilInName($currentPlayer) ? 0 : 1,
     default => 0
   };
@@ -233,6 +233,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       else{
         GainHealth(2, $currentPlayer);
       }
+      return "";
+    case "ROS071":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS073":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);

@@ -763,6 +763,10 @@ function ArcaneBarrierChoices($playerID, $max)
         ++$barrierArray[1];
         $total += 1;
         break;
+      case "ROS071":
+        ++$barrierArray[1];
+        $total += 1;
+        break;
       case "ROS239":
         ++$barrierArray[1];
         $total += 1;

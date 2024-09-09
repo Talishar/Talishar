@@ -2196,6 +2196,8 @@ function HasBattleworn($cardID)
       return true;
     case "AIO006":
       return true;
+    case "ROS071":
+      return true;
     default:
       return false;
   }
