@@ -217,6 +217,10 @@ function AuraLeavesPlay($player, $index, $uniqueID)
     case "ROS161":
       PlayAura("ARC112", $player);
       break;
+    case "ROS168"://Sigil of aether
+      //arcane damage to any target, if damaged, amp 1
+      DealArcane(1, 2, "STATIC", "ROS168", false, $player);
+      break;
     case "ROS182":
       $deck = new Deck($player);
       $cardID = $deck->Top();
@@ -239,6 +243,10 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       break;
     default:
       break;
+  }
+  if (SearchCurrentTurnEffects("ROS163", $player) && DelimStringContains(CardName($cardID), "Sigil", partial: true)){
+    WriteLog(CardLink("ROS163", "ROS163") . " is amping 1");
+    AddCurrentTurnEffect("ROS163-AMP", $player);//amp for aether bindings
   }
 }
 
@@ -416,6 +424,7 @@ function AuraStartTurnAbilities()
       case "ROS113":
       case "ROS133":
       case "ROS161":
+      case "ROS168"://sigil of aether
       case "ROS182":
       case "ROS210":
       case "ROS226":
@@ -574,6 +583,16 @@ function AuraStartTurnAbilities()
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
         break;
+      case "ROS022":
+      case "ROS070":
+      case "ROS113":
+      case "ROS133":
+      case "ROS161":
+      case "ROS168"://sigil of aether
+      case "ROS182":
+      case "ROS210":
+      case "ROS226":
+      case "ROS230":
       case "EVO243":
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;

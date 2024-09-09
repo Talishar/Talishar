@@ -1772,11 +1772,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "UPR218":
     case "UPR219":
     case "UPR220":
+    case "ROS133":
     case "ROS022":
     case "ROS070":
     case "ROS113":
     case "ROS133":
     case "ROS161":
+    case "ROS168"://sigil of aether
     case "ROS182":
     case "ROS210":
     case "ROS226":

@@ -15,6 +15,7 @@ function ROSAbilityType($cardID, $index = -1): string
     "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS030", "ROS071", "ROS073", "ROS164", "ROS212", "ROS213", "ROS214", "ROS249", "ROS250" => "I",
     "ROS015", "ROS115", "ROS116", "ROS165" => "A",
     "ROS003", "ROS009" => "AA",
+    "ROS163" => "I",
     default => ""
   };
 }
@@ -107,6 +108,8 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
+  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed;
+  global $combatChainState;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 
   switch ($cardID) {
@@ -206,6 +209,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         GainHealth(2, $currentPlayer);
       }
       return "";
+
     case "ROS067": //fertile ground red
       $earthCountInBanish = SearchCount(SearchBanish($currentPlayer, talent: "EARTH"));
       WriteLog($earthCountInBanish . " earth cards in banish");
@@ -303,6 +307,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
       }
       return "";
+    case "ROS163":
+      AddCurrentTurnEffect("ROS163", $currentPlayer);
+      return "";
     case "ROS179":
     case "ROS180":
     case "ROS181":
@@ -339,6 +346,8 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "PLAY");
       return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
     case "ROS166":
+    case "ROS166"://destructive aethertide
+    case "ROS167"://eternal inferno
     case "ROS176":
     case "ROS177":
     case "ROS178":
@@ -347,7 +356,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS191":
     case "ROS195":
     case "ROS196":
-    case "ROS197":
+    case "ROS197"://open the floodgates
     case "ROS198":
     case "ROS199":
     case "ROS200":

@@ -340,6 +340,8 @@ function PlayRequiresTarget($cardID)
       return 0;//Sap
     case "ROS166":
       return 2;//Destructive Aethertide
+    case "ROS167"://eternal inferno
+      return 2;
     case "ROS176":
     case "ROS177":
     case "ROS178":
@@ -431,6 +433,8 @@ function CurrentEffectArcaneModifier($source, $player): int|string
         break;
       case "ROS000":
       case "ROS015-AMP":
+      case "ROS168"://sigil of aether
+      case "ROS204-AMP":
       case "ROS078":
       case "ROS186":
       case "ROS187":
@@ -452,6 +456,11 @@ function CurrentEffectArcaneModifier($source, $player): int|string
       case "ROS033":
         if ($currentTurnEffects[$i + 1] != $player) break;
         $modifier += 3;
+        $remove = true;
+        break;
+      case "ROS163-AMP":
+        if ($currentTurnEffects[$i + 1] != $player) break;
+        $modifier += 1;
         $remove = true;
         break;
       case "ROS186":
@@ -480,7 +489,7 @@ function ArcaneDamage($cardID): int
   return match ($cardID) {
     "ARC147", "EVR134", "UPR105", "UPR133", "UPR110", "UPR113", "DYN195" => 5,
     "ARC126", "ARC141", "ARC148", "CRU171", "EVR125", "EVR123", "EVR135", "UPR170", "UPR134", "UPR127", "UPR122",
-    "UPR111", "UPR114", "DYN197", "ROS204" => 4,
+    "UPR111", "UPR114", "DYN197", "ROS167", "ROS204" => 4,
     "ARC119", "ARC121", "ARC127", "ARC132", "ARC138", "ARC142", "ARC144", "ARC149", "EVR126", "EVR136", "DYN198",
     "DYN203", "DYN206", "CRU162", "CRU168", "CRU172", "CRU174", "UPR173", "UPR171", "UPR135", "UPR130", "UPR128",
     "UPR123", "UPR112", "UPR115", "UPR104", "UPR119", "ROS176", "ROS186", "ROS189", "ROS195", "ROS198", "ROS201", "ROS207", "ROS173",
@@ -599,6 +608,7 @@ function ActionsThatDoArcaneDamage($cardID)
     case "HVY252":
       return true;
     case "ROS166":
+    case "ROS167":
     case "ROS173":
     case "ROS174":
     case "ROS175":
@@ -880,6 +890,10 @@ function ArcaneHitEffect($player, $source, $target, $damage)
         AddDecisionQueue("PLAYAURA", MZPlayerID($player, $target), "ELE111-1", 1);
       }
       break;
+    case "ROS168":
+      AddCurrentTurnEffect($source, $player);
+      Writelog(CardLink($source, $cardID) . " is amping 1");
+      break;
     default:
       break;
   }
@@ -937,6 +951,14 @@ function ProcessSurge($cardID, $player, $target)
         MZChooseAndDestroy($player, "THEIRARS");
       }
       break;
+      case "ROS167"://eternal inferno
+        BanishCardForPlayer("ROS167", $player, "MYDISCARD", "TT", "ROS167");
+        $discard = &GetDiscard($player);
+        for ($i == 0; $i < DiscardPieces(); $i++){
+          array_pop($discard);
+        }
+        $banish = GetBanish($player);
+        break;
     case "ROS176":
     case "ROS177":
     case "ROS178":
@@ -967,8 +989,9 @@ function ProcessSurge($cardID, $player, $target)
       WriteLog("Surge active, returning to the bottom of the deck");
       AddBottomDeck($cardID, $player, "STACK"); //create a copy on the bottom
       $discard = &GetDiscard($player);
-      array_pop($discard);
-      array_pop($discard); //it will always be the top card in discard
+      for ($i == 0; $i < DiscardPieces(); $i++){
+        array_pop($discard);
+      }
       break;
     case "ROS173":
     case "ROS174":
