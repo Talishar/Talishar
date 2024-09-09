@@ -309,8 +309,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS163":
       AddCurrentTurnEffect("ROS163", $currentPlayer);
-      WriteLog("setting effect " . SearchCurrentTurnEffects("ROS163", $currentPlayer));
-      // SetClassState($currentPlayer, $CS_AmpWhenSigilLeaves, 1);
       return "";
     case "ROS179":
     case "ROS180":
