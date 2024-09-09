@@ -106,7 +106,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
  */
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState;
+  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 
   switch ($cardID) {
@@ -369,6 +369,21 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS164":
       GainResources($currentPlayer, 1);
+      return "";
+    case "ROS231": 
+    case "ROS232": 
+    case "ROS233":
+      if(GetClassState($currentPlayer, $CS_ArcaneDamageTaken) > 0){
+        $HealthGain = match ($cardID) {
+          "ROS231" => 4,
+          "ROS232" => 3,
+          "ROS233" => 2
+        };
+        GainHealth($HealthGain, $currentPlayer);
+      }
+      else {
+        GainHealth(1, $currentPlayer);
+      }
       return "";
     case "ROS244":
       if (IsHeroAttackTarget()) AskWager($cardID);
