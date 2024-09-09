@@ -106,7 +106,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
  */
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed;
+  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 
   switch ($cardID) {
@@ -224,6 +224,11 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       else{
         GainHealth(2, $currentPlayer);
       }
+      return "";
+    case "ROS079":
+    case "ROS080":
+    case "ROS081":
+      $combatChainState[$CCS_NextInstantBouncesAura] = 1;
       return "";
     case "ROS204":
     case "ROS205":

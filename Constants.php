@@ -359,6 +359,7 @@ $CCS_WagersThisLink = 35;
 $CCS_PhantasmThisLink = 36;
 $CCS_RequiredNegCounterEquipmentBlock = 37;
 $CCS_NumInstantsPlayedByAttackingPlayer = 38;
+$CCS_NextInstantBouncesAura = 39;
 //Deprecated
 //$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsOnChainClose instead
 
@@ -371,6 +372,8 @@ function ResetCombatChainState()
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
   global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer; 
+  global $CCS_NextInstantBouncesAura;
+
   if(count($chainLinks) > 0) WriteLog("The combat chain was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;
@@ -407,6 +410,7 @@ function ResetCombatChainState()
   $combatChainState[$CCS_PhantasmThisLink] = 0;
   $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = 0;
   $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] = 0;
+  $combatChainState[$CCS_NextInstantBouncesAura] = 0;
   for($i = 0; $i < count($chainLinks); ++$i) {
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j + 2] != "1") continue;
@@ -477,6 +481,8 @@ function ResetChainLinkState()
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
   global $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate, $CCS_WagersThisLink, $CCS_PhantasmThisLink, $CCS_NumInstantsPlayedByAttackingPlayer;
+  global $CCS_NextInstantBouncesAura;
+
   WriteLog("The chain link was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;
@@ -511,6 +517,7 @@ function ResetChainLinkState()
   $combatChainState[$CCS_PhantasmThisLink] = 0;
   $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = 0;
   $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] = 0;
+  $combatChainState[$CCS_NextInstantBouncesAura] = 0;
   UnsetChainLinkBanish();
 }
 
