@@ -90,7 +90,7 @@ function AuraPieces()
 //5 - My Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
 //6 - Opponent Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
 //7 - Frozen (1 = yes, 0 = no)
-//8 - Modalities (eg. Micro-Processor) 
+//8 - Modalities (eg. Micro-Processor)
 //9 - Where it's played from
 function ItemPieces()
 {
@@ -624,7 +624,7 @@ function ResetMainClassState()
 
 function ResetCardPlayed($cardID)
 {
-  global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
+  global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $combatChainState;
   $type = CardType($cardID);
   if($type == "A" && ClassContains($cardID, "WIZARD", $currentPlayer)) SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 0);
   if($type == "A") SetClassState($currentPlayer, $CS_NextNAAInstant, 0);
