@@ -109,7 +109,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
-  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed;
+  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CS_ActionsPlayed;
   global $combatChainState;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 

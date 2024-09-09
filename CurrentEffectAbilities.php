@@ -426,7 +426,12 @@ function EffectAttackModifier($cardID)
   else if ($set == "TER") return TEREffectAttackModifier($cardID);
   else if ($set == "AUR") return AUREffectAttackModifier($cardID);
   else if ($set == "ROS") return ROSEffectAttackModifier($cardID);
-  return 0;
+  switch ($cardID) {
+    case "HER123":
+      return 1;
+    default:
+      return 0;
+  }
 }
 
 function EffectHasBlockModifier($cardID)
@@ -1626,6 +1631,8 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
       return DTDCombatEffectActive($cardID, $cardToCheck);
     case "LGS181":
       return DTDCombatEffectActive($cardID, $cardToCheck);
+    case "HER123":
+      return true;
     default:
       return;
   }

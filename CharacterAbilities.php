@@ -1203,6 +1203,7 @@ function CharacterPlayCardAbilities($cardID, $from)
         break;
       case "CRU046":
       case "ROGUE008":
+      case "HER123":
         if (GetClassState($currentPlayer, $CS_NumAttacks) == 2) {
           AddCurrentTurnEffect($characterID, $currentPlayer);
           $character[$i + 1] = 1;
