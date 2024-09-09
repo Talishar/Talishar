@@ -952,13 +952,12 @@ function ProcessSurge($cardID, $player, $target)
       }
       break;
       case "ROS167"://eternal inferno
-        BanishCardForPlayer("ROS167", $player, "MYDISCARD", "TCC", "ROS167");
+        BanishCardForPlayer("ROS167", $player, "MYDISCARD", "TT", "ROS167");
         $discard = &GetDiscard($player);
         for ($i == 0; $i < DiscardPieces(); $i++){
           array_pop($discard);
         }
         $banish = GetBanish($player);
-        WriteLog($banish[count($banish)-2]);
         break;
     case "ROS176":
     case "ROS177":
