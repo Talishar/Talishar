@@ -770,9 +770,9 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-")
   return match ($cardID) {
     "ARC003", "TCC050", "CRU101" => "A,AA",
     "OUT093" => "I,I",
-    "ROS204", "ROS205", "ROS206" => "I,A",
     "HVY143", "HVY144", "HVY145", "HVY163", "HVY164", "HVY165", "HVY186", "HVY187", "HVY188", "MST133", "ROS106",
     "ROS105", "ROS104", "ROS057", "ROS056", "ROS055", "HVY209" => "I,AA",
+    "ROS186", "ROS187", "ROS188", "ROS204", "ROS205", "ROS206" => "I,A",
     default => "",
   };
 }
@@ -826,6 +826,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-")
       $names = "Ability";
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Attack";
       return $names;
+    case "ROS186":
+    case "ROS187":
+    case "ROS188":
     case "ROS204":
     case "ROS205":
     case "ROS206":
@@ -1961,10 +1964,6 @@ function GoesOnCombatChain($phase, $cardID, $from)
     case "ROS105":
     case "ROS106":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
-    case "ROS204":
-    case "ROS205":
-    case "ROS206":
-      return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "A";
     default:
       break;
   }

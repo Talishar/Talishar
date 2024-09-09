@@ -207,5 +207,3 @@ function HVYHitEffect($cardID)
       break;
   }
 }
-
-?>

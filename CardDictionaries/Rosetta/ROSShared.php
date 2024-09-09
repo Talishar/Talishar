@@ -234,13 +234,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS081":
       $combatChainState[$CCS_NextInstantBouncesAura] = 1;
       return "";
-    case "ROS204":
-    case "ROS205":
-    case "ROS206":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        AddCurrentTurnEffect("ROS204-AMP", $currentPlayer, from: "ABILITY");
-      }
-      return "";
     case "ROS104":
     case "ROS105":
     case "ROS106":
@@ -295,6 +288,16 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
       }
       return "";
+    case "ROS186":
+    case "ROS187":
+    case "ROS188":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
+      }
+      else {
+        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      }
+      return "";
     case "ROS192":
     case "ROS193":
     case "ROS194":
@@ -324,6 +327,16 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS208":
     case "ROS209":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      return "";
+    case "ROS204":
+    case "ROS205":
+    case "ROS206":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
+      }
+      else {
+        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      }
       return "";
     case "ROS223":
     case "ROS224":
