@@ -106,7 +106,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
  */
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed;
+  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 
   switch ($cardID) {
@@ -138,9 +138,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       Draw($currentPlayer);
       return "";
     case "ROS021":
-      $ampAmmount = GetClassState($currentPlayer, $CS_NumLightningPlayed);
-      AddCurrentTurnEffect($cardID . "," . $ampAmmount, $currentPlayer, "ABILITY");
-      return CardLink($cardID, $cardID) . " is amping " . $ampAmmount;
+      $ampAmount = GetClassState($currentPlayer, $CS_NumLightningPlayed);
+      AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "ABILITY");
+      return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
     case "ROS248":
     case "ROS033":
     case "ROS165":
@@ -225,6 +225,11 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         GainHealth(2, $currentPlayer);
       }
       return "";
+    case "ROS079":
+    case "ROS080":
+    case "ROS081":
+      $combatChainState[$CCS_NextInstantBouncesAura] = 1;
+      return "";
     case "ROS204":
     case "ROS205":
     case "ROS206":
@@ -286,6 +291,16 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
       }
       return "";
+    case "ROS192":
+    case "ROS193":
+    case "ROS194":
+      $ampAmount = match ($cardID) {
+        "ROS192" => 3,
+        "ROS193" => 2,
+        "ROS194" => 1
+      };
+      AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "PLAY");
+      return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
     case "ROS247":
       LookAtHand($otherPlayer);
       LookAtArsenal($otherPlayer);
