@@ -2375,6 +2375,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS013": case "ROS014":
       DealArcane(1, $target, "ABILITY", $parameter, true);
       break;
+    case "ROS028":
+      if(SearchCount(SearchBanish($player, talent: "EARTH")) >= 4){
+        PlayAura("ELE109", $player);
+      }
+      break;
     case "ROS033":
       AddCurrentTurnEffect($parameter, $player);
       break;
