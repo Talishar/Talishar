@@ -246,7 +246,7 @@ function AuraLeavesPlay($player, $index, $uniqueID)
     default:
       break;
   }
-  if ($CS_AmpWhenSigilLeaves == 1 && DelimStringContains(CardName($cardID), "Sigil", partial: true)){
+  if (GetClassState($CS_AmpWhenSigilLeaves) && DelimStringContains(CardName($cardID), "Sigil", partial: true)){
     AddCurrentTurnEffect("ROS163", $currentPlayer);//amp for aether bindings
   }
 }

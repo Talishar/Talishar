@@ -1137,7 +1137,8 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
   global $mainPlayer, $CS_PlayedAsInstant, $CS_NumCharged, $CS_LifeLost, $CS_NumAddedToSoul;
-  global $CS_NextNAAInstantEclecticMag, $combatChain;
+  global $combatChainState
+  // WriteLog("combat chain state " . $combatChainState[$CCS_CanPlayAsInstantEclectic]);//debug
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
@@ -1146,7 +1147,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
   if ($cardType == "A" && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) && ClassContains($cardID, "WIZARD", $currentPlayer)) return true;
   if (GetClassState($currentPlayer, $CS_NumWizardNonAttack) && ($cardID == "CRU174" || $cardID == "CRU175" || $cardID == "CRU176")) return true;
   if ($currentPlayer != $mainPlayer && ($cardID == "CRU165" || $cardID == "CRU166" || $cardID == "CRU167")) return true;
-  if ($cardType == "A" && $CS_NextNAAInstantEclecticMag && $combatChain[0] == "ROS075") return true;//eclectic magnetism
+  // if ($cardType == "A" && $combatChainState[$CCS_CanPlayAsInstantEclectic]) return true;
   if ($cardType == "A" && GetClassState($currentPlayer, $CS_NextNAAInstant)) return true;
   if ($cardType == "C" || $cardType == "E" || $cardType == "W") {
     if ($index == -1) $index = GetClassState($currentPlayer, $CS_CharacterIndex);

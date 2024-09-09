@@ -109,7 +109,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed;
-  global $combatChain;
+  global $combatChainState;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 
   switch ($cardID) {
@@ -232,13 +232,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS071"://Lightning greaves
       AddCurrentTurnEffect($cardID, $currentPlayer);
       SetClassState($currentPlayer, $CS_LightningGreaves, 1);
-
       return "";
     case "ROS075"://Eclectic Magnetism
-      // WriteLog(CardName($combatChain[0]) . "is the active chain link");
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      SetClassState($currentPlayer, $CS_NextNAAInstantEclecticMag, 1);
-      //turn it off when the chain link ends?
+      // $combatChainState[$CCS_CanPlayAsInstantEclectic] = 1;
       return "";
     case "ROS078"://High Voltage
       AddCurrentTurnEffect($cardID, $currentPlayer);

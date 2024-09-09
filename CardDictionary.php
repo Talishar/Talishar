@@ -648,7 +648,7 @@ function AttackValue($cardID)
 
 function HasGoAgain($cardID): bool|int
 {
-  global $CS_LightningGreaves;
+  global $CS_LightningGreaves, $currentPlayer;
   $set = CardSet($cardID);
 
   switch ($cardID) {// can be deleted after the database is updated
@@ -720,7 +720,7 @@ function HasGoAgain($cardID): bool|int
       return true;
   }
 
-  if ($CS_LightningGreaves == 1 && CardType($cardID) == 'INSTANT') return true;
+  if (GetClassState($currentPlayer, $CS_LightningGreaves) && CardType($cardID) == 'INSTANT') return true;
   if ($set == "ROG") return ROGUEHasGoAgain($cardID);
   else return GeneratedGoAgain($cardID);
 }
