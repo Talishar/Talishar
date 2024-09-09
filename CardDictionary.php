@@ -852,13 +852,8 @@ function GetResolvedAbilityType($cardID, $from = "-")
 {
   global $currentPlayer, $CS_AbilityIndex;
 
-  WriteLog("Card ID is " . $cardID);
-  WriteLog("currentplayer is " . $currentPlayer);
-  WriteLog("cs_abilityIndex is " . $CS_AbilityIndex);
   $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
-  WriteLog("abilityIndex is " . $abilityIndex);
   $abilityTypes = GetAbilityTypes($cardID, from: $from);
-  WriteLog("abilityTypes are " . $abilityTypes);
   if ($abilityTypes == "" || $abilityIndex == "-") return GetAbilityType($cardID, -1, $from);
   $abilityTypes = explode(",", $abilityTypes);
   if (isset($abilityTypes[$abilityIndex])) {
