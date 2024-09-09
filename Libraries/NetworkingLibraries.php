@@ -1636,7 +1636,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (($CombatChain->HasCurrentLink()) && $from != "EQUIP" && $from != "PLAY" && $playType == "I" && GetResolvedAbilityType($cardID, $from) != "I" && $mainPlayer == $currentPlayer) {
       ++$combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer];
       if ($combatChainState[$CCS_NextInstantBouncesAura] == 1) {
-        MZMoveCard($currentPlayer, "THEIRAURAS:maxCost=1&THEIRAURAS:type=T,", "THEIRHAND", may: true, DQContext: "Choose an aura");
+        MZMoveCard($currentPlayer, "THEIRAURAS:maxCost=1&THEIRAURAS:type=T,", "THEIRHAND", may: true, DQContext: "Choose an aura to return to the opponent's hand");
         $combatChainState[$CCS_NextInstantBouncesAura] = 0;
       }
     } 
