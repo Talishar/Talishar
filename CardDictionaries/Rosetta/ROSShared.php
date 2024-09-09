@@ -366,6 +366,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS164":
       GainResources($currentPlayer, 1);
       return "";
+    case "ROS252":
+      PutPermanentIntoPlay($currentPlayer, $cardID);
+      return "";  
     default:
       return "";
   }
