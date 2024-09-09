@@ -288,6 +288,21 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
       }
       return "";
+    case "ROS179":
+    case "ROS180":
+    case "ROS181":
+      $numCardsShuffled = match ($cardID) {
+        "ROS179" => 3,
+        "ROS180" => 2,
+        "ROS181" => 1
+      };
+      $actions = SearchDiscard($currentPlayer, "A");
+      PlayAura("DYN244", $currentPlayer);
+      if($actions == "") return "";
+      AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, $numCardsShuffled . "-" . $actions);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "REMEMBRANCE", 1);
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+      return "";
     case "ROS186":
     case "ROS187":
     case "ROS188":

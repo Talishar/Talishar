@@ -500,7 +500,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         if($i == 0) $cards .= "and ";
         $cards .= CardLink($cardID, $cardID);
       }
-      WriteLog("Remembrance shuffled " . $cards);
+      WriteLog("The following cards where shuffled: " . $cards);
       return "1";
     case "QUIVEROFABYSSALDEPTH":
       $cards = "";
