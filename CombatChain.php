@@ -414,6 +414,10 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "ROS102":
     case "ROS103":
       return (GetClassState($defPlayer, $CS_DamageTaken)) > 0 ? 1 : 0;
+    case "ROS134":
+    case "ROS135":
+    case "ROS136":
+      return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0 ? 2 : 0;
     case "ROS140":
     case "ROS141":
     case "ROS142":
