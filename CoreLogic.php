@@ -2561,6 +2561,7 @@ function PitchAbility($cardID)
     case "CRU000":
     case "OUT000":
     case "DTD000":
+    case "ROS000":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "EVO000": // Technically wrong, it should be a trigger, but since we can't reorder those it works better gameplay-wise to not have that one as a trigger

@@ -419,6 +419,7 @@ function CurrentEffectArcaneModifier($source, $player): int|string
           $remove = true;
         }
         break;
+      case "ROS000":
       case "ROS015-AMP":
       case "ROS204-AMP":
       case "MST234":
