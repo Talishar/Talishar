@@ -220,7 +220,6 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       break;
     case "ROS168"://Sigil of aether
       //arcane damage to any target, if damaged, amp 1
-      //AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
       DealArcane(1, 2, "STATIC", "ROS168", false, $player);
       break;
     case "ROS182":
@@ -246,8 +245,9 @@ function AuraLeavesPlay($player, $index, $uniqueID)
     default:
       break;
   }
-  if (GetClassState($CS_AmpWhenSigilLeaves) && DelimStringContains(CardName($cardID), "Sigil", partial: true)){
-    AddCurrentTurnEffect("ROS163", $currentPlayer);//amp for aether bindings
+  if (SearchCurrentTurnEffects("ROS163", $player) && DelimStringContains(CardName($cardID), "Sigil", partial: true)){
+    WriteLog(CardLink("ROS163", "ROS163") . " is amping 1");
+    AddCurrentTurnEffect("ROS163-AMP", $player);//amp for aether bindings
   }
 }
 

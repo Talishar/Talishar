@@ -1137,7 +1137,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
   global $mainPlayer, $CS_PlayedAsInstant, $CS_NumCharged, $CS_LifeLost, $CS_NumAddedToSoul;
-  global $combatChainState
+  global $combatChainState;
   // WriteLog("combat chain state " . $combatChainState[$CCS_CanPlayAsInstantEclectic]);//debug
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
@@ -1965,9 +1965,7 @@ function EndTurnPitchHandling($player)
 function ResolveGoAgain($cardID, $player, $from)
 {
   global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer;
-  global $CS_ActionsPlayedThisTurn;
-  WriteLog("Checking if " . $cardID . " has go again " . CardType($cardID));//DEBUG
-  $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayedThisTurn));
+  
   $cardType = CardType($cardID);
   $goAgainPrevented = CurrentEffectPreventsGoAgain();
   if (IsStaticType($cardType, $from, $cardID)) {
@@ -1982,13 +1980,6 @@ function ResolveGoAgain($cardID, $player, $from)
     if ($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
     if ($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if ($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
-    if ($cardID == "ROS074" && count($actionsPlayed) > 1 && TalentContains($actionsPlayed[1], "LIGHTNING")){
-      WriteLog("Heree");//DEBUG
-      $hasGoAgain = true;
-    }
-    if ($cardType == "A" || $cardType == "AA"){
-      if (count($actionsPlayed) > 2 && TalentContains($actionsPlayed[2], "LIGHTNING") && $actionsPlayed[1] == "ROS074") $hasGoAgain = true;
-    }
   }
   if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) ++$actionPoints;
 }

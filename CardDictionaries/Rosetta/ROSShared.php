@@ -15,7 +15,7 @@ function ROSAbilityType($cardID, $index = -1): string
     "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS213", "ROS164", "ROS249", "ROS250" => "I",
     "ROS015", "ROS115", "ROS116", "ROS165" => "A",
     "ROS003", "ROS009" => "AA",
-    "ROS071", "ROS163" => "I",
+    "ROS163" => "I",
     default => ""
   };
 }
@@ -36,7 +36,6 @@ function ROSAbilityCost($cardID): int
     "ROS003", "ROS007", "ROS008", "ROS249" => 2,
     "ROS009", "ROS250" => 1,
     "ROS021" => HasAuraWithSigilInName($currentPlayer) ? 0 : 1,
-    "ROS071" => 1,
     default => 0
   };
 }
@@ -230,10 +229,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         GainHealth(2, $currentPlayer);
       }
       return "";
-    case "ROS071"://Lightning greaves
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      SetClassState($currentPlayer, $CS_LightningGreaves, 1);
-      return "";
     case "ROS075"://Eclectic Magnetism
       // $combatChainState[$CCS_CanPlayAsInstantEclectic] = 1;
       return "";
@@ -308,7 +303,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "ROS163":
-      SetClassState($currentPlayer, $CS_AmpWhenSigilLeaves, 1);
+      AddCurrentTurnEffect("ROS163", $currentPlayer);
+      WriteLog("setting effect " . SearchCurrentTurnEffects("ROS163", $currentPlayer));
+      // SetClassState($currentPlayer, $CS_AmpWhenSigilLeaves, 1);
       return "";
     case "ROS192":
     case "ROS193":

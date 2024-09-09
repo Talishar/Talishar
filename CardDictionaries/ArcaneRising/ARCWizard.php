@@ -430,7 +430,7 @@ function CurrentEffectArcaneModifier($source, $player): int|string
       case "ROS000":
       case "ROS015-AMP":
       case "ROS078"://High Voltage
-      case "ROS168"://sigil of aether? CHECK THIS
+      case "ROS168"://sigil of aether
       case "ROS204-AMP":
       case "MST234":
       case "ROS165":
@@ -448,7 +448,7 @@ function CurrentEffectArcaneModifier($source, $player): int|string
         $modifier += 3;
         $remove = true;
         break;
-      case "ROS163":
+      case "ROS163-AMP":
         if ($currentTurnEffects[$i + 1] != $player) break;
         $modifier += 1;
         $remove = true;
@@ -760,10 +760,6 @@ function ArcaneBarrierChoices($playerID, $max)
         ++$barrierArray[1];
         $total += 1;
         break;
-      case "ROS071":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
       case "ROS239":
         ++$barrierArray[1];
         $total += 1;
@@ -878,7 +874,8 @@ function ArcaneHitEffect($player, $source, $target, $damage)
       }
       break;
     case "ROS168":
-      CurrentEffectArcaneModifier($source, $player);//CHECK THIS
+      AddCurrentTurnEffect($source, $player);
+      Writelog(CardLink($source, $cardID) . " is amping 1");
       break;
     default:
       break;
@@ -939,10 +936,13 @@ function ProcessSurge($cardID, $player, $target)
       }
       break;
     case "ROS167"://eternal inferno
-      //
-      // AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:cardID=ROS167", 1)
-      BanishCardForPlayer("ROS167", $player, "MYDISCARD", "PLAY,", "ROS167");
-      // RemoveGraveyard($player, "ROS167")//I don't know if this is necessary
+      BanishCardForPlayer("ROS167", $player, "MYDISCARD", "TCC", "ROS167");
+      $discard = &GetDiscard($player);
+      for ($i == 0; $i < DiscardPieces(); $i++){
+        array_pop($discard);
+      }
+      $banish = GetBanish($player);
+      WriteLog($banish[count($banish)-2]);
       break;
     case "ROS176":
     case "ROS177":
@@ -972,8 +972,9 @@ function ProcessSurge($cardID, $player, $target)
       WriteLog("Surge active, returning to the bottom of the deck");
       AddBottomDeck($cardID, $player, "STACK"); //create a copy on the bottom
       $discard = &GetDiscard($player);
-      array_pop($discard);
-      array_pop($discard); //it will always be the top card in discard
+      for ($i == 0; $i < DiscardPieces(); $i++){
+        array_pop($discard);
+      }
     case "ROS173":
     case "ROS174":
     case "ROS175":

@@ -946,7 +946,6 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "AAZ006":
     case "AAZ007":
     case "AIO006":
-    case "ROS071":
     case "ROS163":
     case "ROS213":
     case "ROS115":
