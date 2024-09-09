@@ -108,7 +108,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
-  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed;
+  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CS_ActionsPlayed;
   global $combatChainState;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 
@@ -243,7 +243,14 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS073":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
-      return "";  
+      return "";
+    // case "ROS074":
+    //   $actionsPlayed = explode(",", GetClassState($currentPlayer, $CS_ActionsPlayed));
+    //   if (count($actionsPlayed) > 1 && TalentContains($actionsPlayed[1], "LIGHTNING")){
+    //     GiveAttackGoAgain();
+    //     AddCurrentTurnEffect($cardID, $currentPlayer);
+    //   }
+    //   return ""; REMOVE
     case "ROS078":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       Writelog(CardLink($cardID, $cardID) . " is amping 1");
