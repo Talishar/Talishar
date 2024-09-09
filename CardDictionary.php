@@ -700,6 +700,7 @@ function HasGoAgain($cardID): bool|int
     case "ROS065":
     case "ROS066":
     case "ROS127":
+    case "ROS118":
     case "ROS128":
     case "ROS129":
     case "ROS130":
@@ -2529,7 +2530,7 @@ function DoesEffectGrantOverpower($cardID): bool
 {
   $cardID = ShiyanaCharacter($cardID);
   return match ($cardID) {
-    "HVY045", "HVY046", "HVY059", "HVY213", "HVY214", "HVY215", "TER011", "TER015" => true,
+    "HVY045", "HVY046", "HVY059", "HVY213", "HVY214", "HVY215", "TER011", "TER015", "ROS118" => true,
     default => false,
   };
 }

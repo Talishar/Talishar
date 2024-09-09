@@ -88,6 +88,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
     "ROS064", "ROS065", "ROS066" => true,
     "ROS110", "ROS111", "ROS112" => CardType($attackID) == "AA" && CardCost($attackID) <= 1,
     "ROS127", "ROS128", "ROS129" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
+    "ROS118" => CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "ROS248" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
     "ROS049", "ROS050", "ROS051" => true, //blossoming decay
     default => false,
@@ -147,6 +148,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS248":
     case "ROS033":
     case "ROS165":
+    case "ROS118":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS030":
