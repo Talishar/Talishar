@@ -599,6 +599,7 @@ function HasSurge($cardID)
   switch($cardID) {
     case "DYN194": case "DYN195": case "DYN197": case "DYN198": case "DYN199":
     case "DYN203": case "DYN204": case "DYN205": case "DYN206": case "DYN207": case "DYN208":
+    case "ROS166":
     case "ROS173": case "ROS174": case "ROS175":
     case "ROS176": case "ROS177": case "ROS178":
     case "ROS189": case "ROS190": case "ROS191":

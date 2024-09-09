@@ -624,5 +624,3 @@
       default: return;
     }
   }
-
-?>

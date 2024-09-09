@@ -323,6 +323,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       };
       AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "PLAY");
       return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
+    case "ROS166":
     case "ROS176":
     case "ROS177":
     case "ROS178":

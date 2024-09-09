@@ -338,6 +338,8 @@ function PlayRequiresTarget($cardID)
     case "DYN207":
     case "DYN208":
       return 0;//Sap
+    case "ROS166":
+      return 2;//Destructive Aethertide
     case "ROS176":
     case "ROS177":
     case "ROS178":
@@ -487,7 +489,7 @@ function ArcaneDamage($cardID): int
     "DYN194", "DYN199", "DYN204", "DYN207", "ROS177", "ROS187", "ROS190", "ROS196", "ROS199", "ROS202", "ROS208", "ROS174", "ARC128",
     "ARC133", "ARC139", "ARC143", "ARC145", "ROS206" => 2,
     "ARC134", "ARC140", "ARC146", "CRU170", "CRU176", "UPR175", "UPR179", "UPR180", "UPR181", "UPR132", "UPR121",
-    "DYN205", "DYN208", "HVY252", "ROS178", "ROS188", "ROS191", "ROS197", "ROS200", "ROS203", "ROS209", "ROS175" => 1,
+    "DYN205", "DYN208", "HVY252", "ROS166", "ROS178", "ROS188", "ROS191", "ROS197", "ROS200", "ROS203", "ROS209", "ROS175" => 1,
     "EVR124" => 0,
     default => -1,
   };
@@ -596,6 +598,7 @@ function ActionsThatDoArcaneDamage($cardID)
       return true;
     case "HVY252":
       return true;
+    case "ROS166":
     case "ROS173":
     case "ROS174":
     case "ROS175":
@@ -924,6 +927,11 @@ function ProcessSurge($cardID, $player, $target)
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZOP", $player, "GETCARDINDEX", 1);
       AddDecisionQueue("REMOVECOUNTER", $targetPlayer, $cardID, 1);
+      break;
+    case "ROS166":
+      if (MZIsPlayer($target)) {
+        MZChooseAndDestroy($player, "THEIRARS");
+      }
       break;
     case "ROS176":
     case "ROS177":
