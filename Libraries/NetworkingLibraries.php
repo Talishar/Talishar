@@ -1622,7 +1622,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if (EffectPlayCardRestricted($cardID, $playType, true)) return;
     if ($playType == "A" || $playType == "AA") {
-      if (!$canPlayAsInstant || GetResolvedAbilityType($cardID, $from) == "AA") --$actionPoints;
+      if (!$canPlayAsInstant || GetResolvedAbilityType($cardID, $from) == "AA" || (GetResolvedAbilityType($cardID, $from) == "A" && GetResolvedAbilityName($cardID, $from) == "Action")) {
+        --$actionPoints;
+      }
       if ($cardType == "A" && $abilityType == "") {
         IncrementClassState($currentPlayer, $CS_NumNonAttackCards);
         if (ClassContains($cardID, "WIZARD", $currentPlayer)) {
