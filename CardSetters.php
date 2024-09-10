@@ -254,7 +254,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
   array_push($arsenal, GetUniqueId($cardID, $player)); //Unique ID
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($facing == "UP") {
-    if ($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player))) {
+    if ($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetResolvedAbilityType($EffectContext, $from) == "A")) {
       WriteLog("Gained 1 action point from " . CardLink($cardID, $cardID));
       if ($player == $mainPlayer) GainActionPoints(1);
     }
