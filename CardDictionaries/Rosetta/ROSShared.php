@@ -417,7 +417,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("ADDDISCARD", $currentPlayer, "DECK", 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-      AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
+      AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was chosen.", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       return "";
     case "ROS231":
