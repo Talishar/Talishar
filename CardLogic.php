@@ -2660,7 +2660,7 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
 
 function ModifiedAttackValue($cardID, $player, $from, $source = "")
 {
-  global $combatChainState, $CS_Num6PowBan;
+  global $CS_Num6PowBan;
   if ($cardID == "") return -1;
   $attack = AttackValue($cardID);
   if ($cardID == "MON191") return SearchPitchForNumCosts($player) * 2;

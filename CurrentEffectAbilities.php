@@ -828,7 +828,16 @@ function CurrentEffectCostModifiers($cardID, $from)
           }
           break;
         case "AKO004":
-          if (CardType($cardID) == "AA" && ModifiedAttackValue($cardID, $currentPlayer, $from) >= 6) $costModifier -= 1;
+          $attack = 0;
+          for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+            if (IsCombatEffectActive($currentTurnEffects[$i], $cardID)) {
+              if ($currentTurnEffects[$i + 1] == $currentPlayer) {
+                $attack += EffectAttackModifier($currentTurnEffects[$i]);
+              }
+            }
+          }  
+          $attack += ModifiedAttackValue($cardID, $currentPlayer, $from);
+          if (CardType($cardID) == "AA" && $attack >= 6) $costModifier -= 1;
           break;
         case "MST229":
           if (CardType($cardID) == "AA") {
@@ -1603,7 +1612,7 @@ function CurrentEffectEndTurnAbilities()
 
 function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = false)
 {
-  global $CombatChain, $currentPlayer;
+  global $CombatChain;
   if (!$CombatChain->HasCurrentLink() && $SpectraTarget) return;
   if ($cardID == "AIM") return true;
   $cardID = ShiyanaCharacter($cardID);
