@@ -248,7 +248,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS110":
     case "ROS111":
     case "ROS112":
-      AddCurrentTurnEffect($cardID, $currentPlayer); //electrostatic dicharge
+      AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       return "";
     case "ROS115":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
