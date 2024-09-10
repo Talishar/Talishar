@@ -129,7 +129,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS010":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      AddCurrentTurnEffect("ROS010" . "-GOAGAIN", $currentPlayer);
+      AddCurrentTurnEffect($cardID . "-GOAGAIN", $currentPlayer);
       return "";
     case "ROS015":
       AddCurrentTurnEffect($cardID . "-AMP", $currentPlayer, from: "ABILITY");
