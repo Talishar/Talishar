@@ -772,7 +772,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "OUT093" => "I,I",
     "HVY143", "HVY144", "HVY145", "HVY163", "HVY164", "HVY165", "HVY186", "HVY187", "HVY188", "MST133", "ROS106",
     "ROS105", "ROS104", "ROS057", "ROS056", "ROS055", "HVY209" => "I,AA",
-    "ROS186", "ROS187", "ROS188", "ROS204", "ROS205", "ROS206" => "I,A",
+    "ROS170", "ROS171", "ROS172", "ROS186", "ROS187", "ROS188", "ROS204", "ROS205", "ROS206" => "I,A",
     "ROS120", "ROS169" => "B,I",
     default => "",
   };
@@ -826,6 +826,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
       return $names;
+    case "ROS170":
+    case "ROS171":
+    case "ROS172":
     case "ROS186":
     case "ROS187":
     case "ROS188":

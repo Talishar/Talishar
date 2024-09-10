@@ -315,6 +315,15 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS169":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "ROS170":
+    case "ROS171":
+    case "ROS172":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
+      } else {
+        DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
+      }
+      return "";
     case "ROS173":
     case "ROS174":
     case "ROS175":
@@ -343,7 +352,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
         AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
       } else {
-        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+        DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
       }
       return "";
     case "ROS192":

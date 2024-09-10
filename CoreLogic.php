@@ -1214,6 +1214,9 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "ROS106":
     case "ROS120":
     case "ROS169":
+    case "ROS170":
+    case "ROS171":
+    case "ROS172":
     case "ROS186":
     case "ROS187":
     case "ROS188":

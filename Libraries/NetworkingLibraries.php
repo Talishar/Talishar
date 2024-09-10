@@ -1979,6 +1979,9 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("ADDCURRENTEFFECTLASTRESULT", $currentPlayer, "HER117-", 1);
       AddDecisionQueue("BLAZEPAYCOST", $currentPlayer, "<-", 1);
       return "";
+    case "ROS170":
+    case "ROS171":
+    case "ROS172":
     case "ROS186":
     case "ROS187":
     case "ROS188":
