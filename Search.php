@@ -447,8 +447,7 @@ function FindCharacterIndex($player, $cardID)
   $index = -1;
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
     if ($character[$i] == $cardID) {
-      if ($character[$i + 1] == 0) return $index;
-      else return $i;
+      if ($character[$i + 1] != 0) return $i;
     }
   }
   return $index;
