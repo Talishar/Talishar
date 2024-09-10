@@ -1650,6 +1650,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), "Ability");
       SetClassState($player, $CS_AbilityIndex, $index);
       return $lastResult;
+    case "SETABILITYTYPEACTION":
+      $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), "Action");
+      SetClassState($player, $CS_AbilityIndex, $index);
+      return $lastResult;
     case "MZSTARTTURNABILITY":
       MZStartTurnAbility($player, $lastResult);
       return "";

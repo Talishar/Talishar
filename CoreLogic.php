@@ -1205,21 +1205,21 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "HVY186":
     case "HVY187":
     case "HVY188":
-    case "ROS206":
-    case "ROS205":
-    case "ROS204":
-    case "ROS188":
-    case "ROS187":
-    case "ROS186":
-    case "ROS106":
-    case "ROS105":
-    case "ROS104":
-    case "ROS057":
-    case "ROS056":
-    case "ROS055":
     case "HVY209":
+    case "ROS055":
+    case "ROS056":
+    case "ROS057":
+    case "ROS104":
+    case "ROS105":
+    case "ROS106":
     case "ROS120":
     case "ROS169":
+    case "ROS186":
+    case "ROS187":
+    case "ROS188":
+    case "ROS204":
+    case "ROS205":
+    case "ROS206":
       return $from == "HAND";
     case "MST134":
     case "MST135":
@@ -1609,10 +1609,6 @@ function DoesAttackHaveGoAgain()
       if (isset($combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer])) { // the first time this is checked in a chain it isn't set but the rest of the time it can be checked.
         return $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] > 0;
       } else return false;
-    case "ROS101":
-    case "ROS102":
-    case "ROS103":
-      return GetClassState($defPlayer, $CS_DamageTaken) > 0;
     case "ROS149":
     case "ROS150":
     case "ROS151":

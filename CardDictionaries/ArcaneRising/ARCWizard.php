@@ -349,7 +349,7 @@ function PlayRequiresTarget($cardID)
     case "ROS186":
     case "ROS187":
     case "ROS188":
-      return 2;//Arcane Twining
+      return (GetResolvedAbilityType($cardID, "HAND")=="A") ? 2 : -1;//Arcane Twining
     case "ROS189":
     case "ROS190":
     case "ROS191":

@@ -508,10 +508,6 @@ function EffectBlockModifier($cardID, $index, $from)
       return $CombatChain->Card($index)->ID() == $cardID && PlayerHasLessHealth($defPlayer) ? 1 : 0;
     case "MST085":
       return SearchPitchForColor($mainPlayer, 3);
-    case "ROS042":
-    case "ROS043":
-    case "ROS044":
-      return 1;
     case "AIO003":
       return 1;
     default:

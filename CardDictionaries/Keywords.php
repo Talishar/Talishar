@@ -355,14 +355,14 @@
   }
 
   /**
-   * Decompose is a keyword added in ROS. This function is meant to support future instances of
-   * decompose that may have different requirements in the number of earth banishes and action
-   * banishes.
+   * Decompose is a keyword added in ROS. Per LSS decompose gives you an option to banishes 2 earth and 1 action card for a bonus effect
    *
    * The result of "NOPASS" should be used to add the bonus effects. SPECIFICCARD dq events can be added right after calling decompose to run if the decompose succeeded.
    */
-  function Decompose($player, $earthBanishes, $actionBanishes) {
-    $totalBanishes = $earthBanishes + $actionBanishes;
+  function Decompose($player, $specificCardDQ) {
+    $totalBanishes = 3;
+    $actionBanishes = 1;
+    $earthBanishes = 2; 
 
     // Only perform the action if we have the minimum # of cards that meet the requirement for total banishes.
     $countInDiscard = SearchCount(
@@ -404,9 +404,8 @@
         AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
       }
-      return true;
+      AddDecisionQueue("SPECIFICCARD", $player, $specificCardDQ, 1);
+      return "";
     }
-    else {
-      return false;
-    }
+    return "Decompose was not possible.";
   }

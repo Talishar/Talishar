@@ -360,7 +360,7 @@ function PlayerTargetedAbility($player, $card, $lastResult)
 
 function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
-  global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext;
+  global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex;
   $otherPlayer = ($player == 1) ? 2 : 1;
   switch($card)
   {
@@ -745,8 +745,12 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       GainHealth(1, $player);
       return $lastResult;
     case "ROOTBOUNDCARAPACE":
+      $index = GetClassState($player, $CS_PlayCCIndex);
+      $CombatChain->Card($index)->ModifyDefense(1);
+      return $lastResult;
     case "CADAVEROUSTILLING":
-      AddCurrentTurnEffect($lastResult, $player);
+      $index = GetClassState($player, $CS_PlayCCIndex);
+      $CombatChain->Card($index)->ModifyPower(2);
       return $lastResult;
     case "SUMMERSFALL":
       MZMoveCard($player, "THEIRAURAS", "THEIRBOTDECK", may: true, DQContext: "Choose an aura");
