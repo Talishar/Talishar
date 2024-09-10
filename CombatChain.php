@@ -554,7 +554,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       if (GetClassState($defPlayer, $CS_NumCrouchingTigerCreatedThisTurn) > 0) $blockModifier += 3;
       break;
     case "ROS029": //helm of lignum vitae
-      if (SearchCount(SearchBanish($defPlayer, talent: "EARTH"))) $blockModifier += 1;
+      if (SearchCount(SearchBanish($defPlayer, talent: "EARTH")) >= 4) $blockModifier += 1;
       break;
     case "AIO003":
       if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 1;

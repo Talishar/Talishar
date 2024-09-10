@@ -66,7 +66,7 @@ function ROSEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
     "ROS066", "ROS112", "ROS129" => 1,
-    "ROS052", "ROS053", "ROS054", "ROS065", "ROS111", "ROS128" => 2,
+    "ROS065", "ROS111", "ROS128" => 2,
     "ROS064", "ROS110", "ROS127", "ROS248" => 3,
     default => 0,
   };
@@ -84,14 +84,12 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 {
   global $mainPlayer, $CombatChain;
   return match ($cardID) {
-    "ROS042", "ROS043", "ROS044", "ROS052", "ROS053", "ROS054" => true,
     "ROS064", "ROS065", "ROS066" => true,
     "ROS110", "ROS111", "ROS112" => CardType($attackID) == "AA" && CardCost($attackID) <= 1,
     "ROS127", "ROS128", "ROS129", "ROS119" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "ROS118" => CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "ROS010-GOAGAIN" => $from != "PLAY" && (TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "A", $mainPlayer)), //Arc Lightning giving next action go again
     "ROS248" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
-    "ROS049", "ROS050", "ROS051" => true, //blossoming decay
     default => false,
   };
 }
@@ -110,7 +108,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
-  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CS_ActionsPlayed;
+  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CS_ActionsPlayed, $CCS_EclecticMag, $CS_DamageTaken;
   global $combatChainState;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 
@@ -150,32 +148,17 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $ampAmount = GetClassState($currentPlayer, $CS_NumLightningPlayed);
       AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "ABILITY");
       return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
-    case "ROS120":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
-      return "";
-    case "ROS248":
-    case "ROS033":
-    case "ROS165":
-    case "ROS118":
-    case "ROS119":
-    case "ROS169":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
     case "ROS030":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
     case "ROS031":
-      $decomposed = Decompose($currentPlayer, 2, 1);
-      if ($decomposed) {
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "FELLINGOFTHECROWN", 1);
-      }
-      return "";
+      $rv = Decompose($currentPlayer, "FELLINGOFTHECROWN");
+      return $rv;
     case "ROS032":
-      $decomposed = Decompose($currentPlayer, 2, 1);
-      if ($decomposed) {
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "PLOWUNDER", 1);
-      }
+      $rv = Decompose($currentPlayer, "PLOWUNDER");
+      return $rv;
+    case "ROS033":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS035":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
@@ -183,38 +166,23 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS039":
     case "ROS040":
     case "ROS041":
-      $decomposed = Decompose($currentPlayer, 2, 1);
-      if ($decomposed) {
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SUMMERSFALL", 1);
-      }
-      return "";
+      $rv = Decompose($currentPlayer, "SUMMERSFALL");
+      return $rv;
     case "ROS042":
     case "ROS043":
     case "ROS044":
-      $decomposed = Decompose($currentPlayer, 2, 1);
-      if ($decomposed) {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "ROOTBOUNDCARAPACE", 1);
-      }
-      return "";
+      $rv = Decompose($currentPlayer, "ROOTBOUNDCARAPACE");
+      return $rv;
     case "ROS049":
     case "ROS050":
     case "ROS051":
-      $decomposed = Decompose($currentPlayer, 2, 1);
-      if ($decomposed) {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "BLOSSOMINGDECAY", 1);
-      }
-      return "";
+      $rv = Decompose($currentPlayer, "BLOSSOMINGDECAY");
+      return $rv;
     case "ROS052":
     case "ROS053":
     case "ROS054":
-      $decomposed = Decompose($currentPlayer, 2, 1);
-      if ($decomposed) {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CADAVEROUSTILLING", 1);
-      }
-      return "";
+      $rv = Decompose($currentPlayer, "CADAVEROUSTILLING");
+      return $rv;
     case "ROS055":
     case "ROS056":
     case "ROS057":
@@ -253,6 +221,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS073":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
+    case "ROS075":
+      $combatChainState[$CCS_EclecticMag] = 1;
+      return "";
     case "ROS078":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       Writelog(CardLink($cardID, $cardID) . " is amping 1");
@@ -262,6 +233,10 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS081":
       $combatChainState[$CCS_NextInstantBouncesAura] = 1;
       return "";
+    case "ROS101":
+    case "ROS102":
+    case "ROS103":
+      if (GetClassState($otherPlayer, $CS_DamageTaken) > 0) GiveAttackGoAgain();
     case "ROS104":
     case "ROS105":
     case "ROS106":
@@ -274,6 +249,20 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS111":
     case "ROS112":
       AddCurrentTurnEffect($cardID, $currentPlayer); //electrostatic dicharge
+      return "";
+    case "ROS115":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("GAINRESOURCES", $currentPlayer, "1", 1);
+      return "";
+    case "ROS118":
+    case "ROS119":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "ROS120":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
     case "ROS121":
     case "ROS122":
@@ -318,6 +307,22 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS163":
       AddCurrentTurnEffect("ROS163", $currentPlayer);
+      return "";
+    case "ROS164":
+      GainResources($currentPlayer, 1);
+      return "";
+    case "ROS165":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "ROS169":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "ROS173":
+    case "ROS174":
+    case "ROS175":
+      $sigils = SearchAura($currentPlayer, nameIncludes: "Sigil");
+      $numSigils = count(explode(",", $sigils));
+      DealArcane(ArcaneDamage($cardID) + $numSigils, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     case "ROS179":
     case "ROS180":
@@ -402,22 +407,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       ));
       GainHealth($cardsInGraveyard + $baseLife, $currentPlayer);
       return "";
-    case "ROS115":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      AddDecisionQueue("GAINRESOURCES", $currentPlayer, "1", 1);
-      return "";
-    case "ROS164":
-      GainResources($currentPlayer, 1);
-      return "";
-    case "ROS173":
-    case "ROS174":
-    case "ROS175":
-      $sigils = SearchAura($currentPlayer, nameIncludes: "Sigil");
-      $numSigils = count(explode(",", $sigils));
-      DealArcane(ArcaneDamage($cardID) + $numSigils, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-      return "";
     case "ROS212":
     case "ROS213":
     case "ROS214":
@@ -453,6 +442,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+      return "";
+    case "ROS248":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS250":
       PlayAura("MON104", $currentPlayer, 1);
@@ -546,23 +538,6 @@ function ROSHitEffect($cardID): void
 function GetTrapIndices($player)
 {
   return SearchDeck($player, subtype: "Trap");
-}
-
-/**
- * Splatter Skull is going to use this list to destroy an opponent's card.
- *
- * @return array a list of indices of cards that are flagged as intimidated.
- */
-function GetIntimidatedCards($player)
-{
-  $rv = "";
-  $banish = &GetBanish($player);
-  for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
-    if ($banish[$i + 1] == "INT") {
-      if ($rv == "") $rv .= $i;
-      else $rv .= "," . $i;
-    }
-  }
 }
 
 /**

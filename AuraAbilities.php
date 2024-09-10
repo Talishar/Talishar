@@ -583,16 +583,6 @@ function AuraStartTurnAbilities()
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
         break;
-      case "ROS022":
-      case "ROS070":
-      case "ROS113":
-      case "ROS133":
-      case "ROS161":
-      case "ROS168"://sigil of aether
-      case "ROS182":
-      case "ROS210":
-      case "ROS226":
-      case "ROS230":
       case "EVO243":
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;

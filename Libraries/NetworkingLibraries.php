@@ -1621,7 +1621,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if (EffectPlayCardRestricted($cardID, $playType, true)) return;
     if ($playType == "A" || $playType == "AA") {
-      if (!$canPlayAsInstant || GetResolvedAbilityType($cardID, $from) == "AA") --$actionPoints;
+      if (!$canPlayAsInstant || GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A") --$actionPoints;
       if ($cardType == "A" && $abilityType == "") {
         IncrementClassState($currentPlayer, $CS_NumNonAttackCards);
         if (ClassContains($cardID, "WIZARD", $currentPlayer)) {
@@ -1980,6 +1980,8 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       $names = GetAbilityNames($cardID, $index);
       if (SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
+      } elseif ($from != "HAND"){
+        AddDecisionQueue("SETABILITYTYPEACTION", $currentPlayer, $cardID);
       } else{
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or the action");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);

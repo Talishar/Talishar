@@ -50,7 +50,7 @@ function EffectHitEffect($cardID, $from)
       }
       break;
     case "ROS119":
-      if (ClassContains($attackID, "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
+      if (CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
@@ -508,10 +508,6 @@ function EffectBlockModifier($cardID, $index, $from)
       return $CombatChain->Card($index)->ID() == $cardID && PlayerHasLessHealth($defPlayer) ? 1 : 0;
     case "MST085":
       return SearchPitchForColor($mainPlayer, 3);
-    case "ROS042":
-    case "ROS043":
-    case "ROS044":
-      return 1;
     case "AIO003":
       return 1;
     default:
@@ -1160,7 +1156,7 @@ function CurrentEffectAttackAbility()
           else if ($currentTurnEffects[$i] == "MON184") $maxCost = 1;
           else $maxCost = 0;
           if ($attackType == "AA" && CardCost($attackID) <= $maxCost) {
-            WriteLog("Seeds of Agony dealt 1 damage.");
+            WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " dealt 1 damage.");
             DealArcane(1, 0, "PLAYCARD", $currentTurnEffects[$i], true);
             $remove = true;
           }

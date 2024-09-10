@@ -349,7 +349,7 @@ function PlayRequiresTarget($cardID)
     case "ROS186":
     case "ROS187":
     case "ROS188":
-      return 2;//Arcane Twining
+      return (GetResolvedAbilityType($cardID, "HAND")=="A") ? 2 : -1;//Arcane Twining
     case "ROS189":
     case "ROS190":
     case "ROS191":
@@ -463,9 +463,6 @@ function CurrentEffectArcaneModifier($source, $player): int|string
         $modifier += 1;
         $remove = true;
         break;
-      case "ROS186":
-      case "ROS187":
-      case "ROS188":
       case "ROS192":
       case "ROS193":
       case "ROS194":
@@ -892,7 +889,7 @@ function ArcaneHitEffect($player, $source, $target, $damage)
       break;
     case "ROS168":
       AddCurrentTurnEffect($source, $player);
-      Writelog(CardLink($source, $cardID) . " is amping 1");
+      Writelog(CardLink($source, $source) . " is amping 1");
       break;
     default:
       break;
@@ -954,7 +951,7 @@ function ProcessSurge($cardID, $player, $target)
       case "ROS167"://eternal inferno
         BanishCardForPlayer("ROS167", $player, "MYDISCARD", "TT", "ROS167");
         $discard = &GetDiscard($player);
-        for ($i == 0; $i < DiscardPieces(); $i++){
+        for($i = 0; $i < DiscardPieces(); $i++){
           array_pop($discard);
         }
         $banish = GetBanish($player);
@@ -989,7 +986,7 @@ function ProcessSurge($cardID, $player, $target)
       WriteLog("Surge active, returning to the bottom of the deck");
       AddBottomDeck($cardID, $player, "STACK"); //create a copy on the bottom
       $discard = &GetDiscard($player);
-      for ($i == 0; $i < DiscardPieces(); $i++){
+      for($i = 0; $i < DiscardPieces(); $i++){
         array_pop($discard);
       }
       break;

@@ -108,6 +108,7 @@ function CardSubType($cardID, $uniqueID = -1)
       if ($effectArr[0] != "EVO013" && $effectArr[0] != "ROS246") continue;
       $effectArr = explode(",", $effectArr[1]);
       if ($effectArr[0] != $uniqueID) continue;
+      if($effectArr[1] == "Base") return $effectArr[2];
       return $effectArr[1];
     }
     return "";
@@ -755,7 +756,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "MST") return MSTAbilityType($cardID, $index, $from);
   else if ($set == "AAZ") return AAZAbilityType($cardID, $index, $from);
   else if ($set == "ROG") return ROGUEAbilityType($cardID, $index);
-  else if ($set == "ROS") return ROSAbilityType($cardID, $index);
+  else if ($set == "ROS") return ROSAbilityType($cardID);
   else if ($set == "ASB") return ASBAbilityType($cardID, $index);
   else if ($set == "TER") return TERAbilityType($cardID);
   else if ($set == "AIO") return AIOAbilityType($cardID, $index, $from);
