@@ -1330,10 +1330,14 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
           }
           break;
         case "MST094":
-          if (ColorContains($cardID, 3, $currentPlayer) && (TypeContains($cardID, "AA", $currentPlayer) || TypeContains($cardID, "A", $currentPlayer))) {
+          if (ColorContains($cardID, 3, $currentPlayer)) {
             $hasGoAgain = true;
             if ($cardID != $turnEffects[0]) $remove = true;
           }
+          break;
+        case "ROS010-GOAGAIN":
+          $hasGoAgain = true;
+          if ($cardID != $turnEffects[0]) $remove = true;
           break;
         default:
           break;
@@ -1457,6 +1461,8 @@ function CurrentEffectGrantsGoAgain()
         case "ROGUE710-GA":
           return true;
         case "AAZ007":
+          return true;
+        case "ROS010-GOAGAIN":
           return true;
         case "ROS118":
           return GetClassState($mainPlayer, $CS_NumAuras) >= 1;

@@ -86,8 +86,9 @@ function ROSCombatEffectActive($cardID, $attackID): bool
   return match ($cardID) {
     "ROS064", "ROS065", "ROS066" => true,
     "ROS110", "ROS111", "ROS112" => CardType($attackID) == "AA" && CardCost($attackID) <= 1,
-    "ROS127", "ROS128", "ROS129" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
-    "ROS118", "ROS119" => CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer),
+    "ROS127", "ROS128", "ROS129", "ROS119" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
+    "ROS118" => CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer),
+    "ROS010-GOAGAIN" => $from != "PLAY" && (TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "A", $mainPlayer)), //Arc Lightning giving next action go again
     "ROS248" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
     default => false,
   };
@@ -123,6 +124,10 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS007":
     case "ROS008":
       PlayAura("ELE110", $currentPlayer);
+      return "";
+    case "ROS010":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffect($cardID . "-GOAGAIN", $currentPlayer);
       return "";
     case "ROS015":
       AddCurrentTurnEffect($cardID . "-AMP", $currentPlayer, from: "ABILITY");
