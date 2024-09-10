@@ -722,16 +722,26 @@ function IsCardBanned($cardID, $format, $character)
   switch($format) {
     case "blitz": case "compblitz":
       switch($cardID) {
+        case "WTR160": //Tome of Fyendal
         case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
+        case "ARC002": //Dash
+        case "ARC003": //Teklo Plasma Pistol
         case "ARC076": case "ARC077": // Viserai | Nebula Black
+        case "ARC122": //Tome of Aetherwind
+        case "ARC160": // Art of War
         case "ELE006": // Awakening
+        case "ELE063": //Briar
         case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
+        case "ELE222": //Rosetta
         case "ELE223": // Duskblade
         case "WTR152": // Heartened Cross Strap
-        case "CRU174": case "CRU175": case "CRU176": // Snapback
-        case "MON239": // Stubby Hammers
         case "CRU141": // Bloodsheath Skeleta
+        case "CRU174": case "CRU175": case "CRU176": // Snapback
+        case "CRU188": // Cash In
+        case "MON065": //Tome of Divinity
+        case "MON239": // Stubby Hammers
         case "EVR037": // Mask of the Pouncing Lynx
+        case "UPR089": // Tome of Firebrand
         case "UPR103": case "EVR120": case "EVR121": // Iyslander | Kraken's Aethervein
         case "ELE002": case "ELE003": // Oldhim | Winter's Wail
         case "MON154": case "MON155": // Chane | Galaxxi Black
@@ -739,30 +749,42 @@ function IsCardBanned($cardID, $format, $character)
         case "CRU077":// Kassai, Cintari Sellsword
         case "CRU046": case "CRU050": // Ira, Crimson Haze | Edge of Autumn
         case "DYN009": //Berserk
+        case "OUT056": case "OUT057": case "OUT058": //Bonds of Ancestry
+        case "MST047": //Zen
+        case "MST080": //Orihon of Mystic Tenets
+        case "MST159": //Tiger Taming Khakkara
           return true;
         default: return false;
       }
     case "cc": case "compcc":
       switch($cardID) {
+        case "WTR160": //Tome of Fyendal
+        case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
+        case "ARC122": //Tome of Aetherwind
+        case "ARC160": // Art of War
+        case "ARC170": case "ARC171": case "ARC172": // Plunder Run
+        case "CRU141": // Bloodsheath Skeleta
+        case "CRU188": // Cash In    
         case "MON001": case "MON003": // Prism Sculptor of Arc Light | Luminaris
-        case "EVR017": // Bravo, Star of the Show
+        case "MON065": //Tome of Divinity
         case "MON153": case "MON155": // Chane, Bound by Shadow | Galaxxi Black
+        case "MON239": // Stubby Hammers
+        case "MON266": case "MON267": case "MON268": // Belittle    
         case "ELE006": // Awakening
         case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
-        case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
         case "ELE223":  // Duskblade
-        case "ARC170": case "ARC171": case "ARC172": // Plunder Run
-        case "MON239": // Stubby Hammers
-        case "MON266": case "MON267": case "MON268": // Belittle
-        case "CRU141": // Bloodsheath Skeleta
         case "ELE114": // Pulse of Isenloft
+        case "ELE115": // Crown of Seeds
         case "ELE031": case "ELE034": // Lexi, Livewire | Voltaire, Strike Twice
         case "ELE062": case "ELE222": // Briar, Warden of Thorns | Rosetta Thorn
         case "ELE001": case "ELE003": // Oldhim, Grandfather of Eternity | Winter's Wail
+        case "EVR017": // Bravo, Star of the Show
         case "UPR001": case "UPR003": // Dromai, Ash Artist | Storm of Sandikai
+        case "UPR089": // Tome of Firebrand
         case "UPR102": case "EVR121": // Iyslander, Stormbind | Kraken's Aethervein
         case "DYN009": //Berserk
-        case "ELE115": // Crown of Seeds
+        case "OUT056": case "OUT057": case "OUT058": //Bonds of Ancestry
+        case "MST080": //Orihon of Mystic Tenets
           return true;
         default: return false;
       }
