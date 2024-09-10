@@ -532,13 +532,16 @@ function ROSHitEffect($cardID): void
       AddDecisionQueue("MZREMOVE", $currentPlayer, "THEIRBANISH", 1);
       break;
     case "ROS117":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
-      AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
-      AddDecisionQueue("REMOVEMYHAND", $defPlayer, "-", 1);
-      AddDecisionQueue("DISCARDCARD", $defPlayer, "HAND-".$defPlayer, 1);
+      $myAuras = &GetAuras($currentPlayer);
+      if (count($myAuras) > 0) {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+        AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEMYHAND", $defPlayer, "-", 1);
+        AddDecisionQueue("DISCARDCARD", $defPlayer, "HAND-".$defPlayer, 1);
+      }
       break;
     case "ROS216":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS");
