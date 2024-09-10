@@ -927,39 +927,39 @@ function AuraLoseHealthAbilities($player, $amount)
   return $amount;
 }
 
-function AuraPlayAbilities($attackID, $from = "")
+function AuraPlayAbilities($cardID, $from = "")
 {
   global $currentPlayer, $CS_NumIllusionistActionCardAttacks;
   $auras = &GetAuras($currentPlayer);
-  $cardType = CardType($attackID);
-  $cardSubType = CardSubType($attackID);
+  $cardType = CardType($cardID);
+  $cardSubType = CardSubType($cardID);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
       case "WTR225":
-        if (($cardType == "AA" && (GetResolvedAbilityType($attackID) == "" || GetResolvedAbilityType($attackID) == "AA"))
-          || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && (GetResolvedAbilityType($attackID) == "" || GetResolvedAbilityType($attackID) == "AA"))
-          || (TypeContains($attackID, "W") && GetResolvedAbilityType($attackID) == "AA" && $from == "EQUIP")) {
+        if (($cardType == "AA" && (GetResolvedAbilityType($cardID) == "" || GetResolvedAbilityType($cardID) == "AA"))
+          || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && (GetResolvedAbilityType($cardID) == "" || GetResolvedAbilityType($cardID) == "AA"))
+          || (TypeContains($cardID, "W") && GetResolvedAbilityType($cardID) == "AA" && $from == "EQUIP")) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack go again");
           GiveAttackGoAgain();
           $remove = 1;
         }
         break;
       case "ARC112":
-        if (($cardType == "AA" && GetResolvedAbilityType($attackID) != "I") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY") || ((TypeContains($attackID, "W", $currentPlayer) && GetResolvedAbilityType($attackID) == "AA")) && GetResolvedAbilityType($attackID) != "I") {
+        if (($cardType == "AA" && GetResolvedAbilityType($cardID) != "I") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY") || ((TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) == "AA")) && GetResolvedAbilityType($cardID) != "I") {
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], $cardType, "-", $auras[$i + 6]);
         }
         break;
       case "MON157":
-        DimenxxionalCrossroadsPassive($attackID, $from);
+        DimenxxionalCrossroadsPassive($cardID, $from);
         break;
       case "ELE110":
-        if ($cardType == "AA") {
-          AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+        if ($cardType == "AA" && GetResolvedAbilityType($cardID) != "I") {
+          AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", $cardID, $auras[$i + 6]);
         }
         break;
       case "EVR143":
-        if ($auras[$i + 5] > 0 && CardType($attackID) == "AA" && ClassContains($attackID, "ILLUSIONIST", $currentPlayer) && GetClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks) <= 1) {
+        if ($auras[$i + 5] > 0 && CardType($cardID) == "AA" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && GetClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks) <= 1) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack +2");
           --$auras[$i + 5];
           AddCurrentTurnEffect("EVR143", $currentPlayer, true);
@@ -971,9 +971,9 @@ function AuraPlayAbilities($attackID, $from = "")
         }
         break;
       case "DTD232":
-        if ($cardType == "AA" && (GetResolvedAbilityType($attackID, $from) == "" || GetResolvedAbilityType($attackID, $from) == "AA")
+        if ($cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA")
           || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY")
-          || ((TypeContains($attackID, "W", $currentPlayer) && GetResolvedAbilityType($attackID) != "A")) && GetResolvedAbilityType($attackID) != "I") {
+          || ((TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "A")) && GetResolvedAbilityType($cardID) != "I") {
           AddCurrentTurnEffect("DTD232", $currentPlayer);
           $remove = 1;
         }
@@ -989,7 +989,7 @@ function AuraPlayAbilities($attackID, $from = "")
       case "ROS132":
         if ($cardType == "AA" && $auras[$i + 5] > 0) {
           --$auras[$i + 5];
-          AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+          AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", $cardID, $auras[$i + 6]);
         }
         break;
       default:
