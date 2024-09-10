@@ -1608,10 +1608,6 @@ function DoesAttackHaveGoAgain()
       if (isset($combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer])) { // the first time this is checked in a chain it isn't set but the rest of the time it can be checked.
         return $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] > 0;
       } else return false;
-    case "ROS101":
-    case "ROS102":
-    case "ROS103":
-      return GetClassState($defPlayer, $CS_DamageTaken) > 0;
     case "ROS149":
     case "ROS150":
     case "ROS151":
