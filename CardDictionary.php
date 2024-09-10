@@ -754,7 +754,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "MST") return MSTAbilityType($cardID, $index, $from);
   else if ($set == "AAZ") return AAZAbilityType($cardID, $index, $from);
   else if ($set == "ROG") return ROGUEAbilityType($cardID, $index);
-  else if ($set == "ROS") return ROSAbilityType($cardID, $index);
+  else if ($set == "ROS") return ROSAbilityType($cardID);
   else if ($set == "ASB") return ASBAbilityType($cardID, $index);
   else if ($set == "TER") return TERAbilityType($cardID);
   else if ($set == "AIO") return AIOAbilityType($cardID, $index, $from);
