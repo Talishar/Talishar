@@ -143,18 +143,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $ampAmount = GetClassState($currentPlayer, $CS_NumLightningPlayed);
       AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "ABILITY");
       return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
-    case "ROS120":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
-      return "";
-    case "ROS248":
-    case "ROS033":
-    case "ROS165":
-    case "ROS118":
-    case "ROS119":
-    case "ROS169":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
     case "ROS030":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
@@ -164,6 +152,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS032":
       $rv = Decompose($currentPlayer, "PLOWUNDER");
       return $rv;
+    case "ROS033":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "ROS035":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
       return CardLink($cardID, $cardID) . " is preventing the next 5 damage.";
@@ -254,6 +245,20 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS112":
       AddCurrentTurnEffect($cardID, $currentPlayer); //electrostatic dicharge
       return "";
+    case "ROS115":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      AddDecisionQueue("GAINRESOURCES", $currentPlayer, "1", 1);
+      return "";
+    case "ROS118":
+    case "ROS119":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "ROS120":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
+      return "";
     case "ROS121":
     case "ROS122":
     case "ROS123":
@@ -297,6 +302,22 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS163":
       AddCurrentTurnEffect("ROS163", $currentPlayer);
+      return "";
+    case "ROS164":
+      GainResources($currentPlayer, 1);
+      return "";
+    case "ROS165":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "ROS169":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "ROS173":
+    case "ROS174":
+    case "ROS175":
+      $sigils = SearchAura($currentPlayer, nameIncludes: "Sigil");
+      $numSigils = count(explode(",", $sigils));
+      DealArcane(ArcaneDamage($cardID) + $numSigils, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     case "ROS179":
     case "ROS180":
@@ -381,22 +402,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       ));
       GainHealth($cardsInGraveyard + $baseLife, $currentPlayer);
       return "";
-    case "ROS115":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      AddDecisionQueue("GAINRESOURCES", $currentPlayer, "1", 1);
-      return "";
-    case "ROS164":
-      GainResources($currentPlayer, 1);
-      return "";
-    case "ROS173":
-    case "ROS174":
-    case "ROS175":
-      $sigils = SearchAura($currentPlayer, nameIncludes: "Sigil");
-      $numSigils = count(explode(",", $sigils));
-      DealArcane(ArcaneDamage($cardID) + $numSigils, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-      return "";
     case "ROS212":
     case "ROS213":
     case "ROS214":
@@ -432,6 +437,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+      return "";
+    case "ROS248":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS250":
       PlayAura("MON104", $currentPlayer, 1);
