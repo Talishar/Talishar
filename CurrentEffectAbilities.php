@@ -1156,7 +1156,7 @@ function CurrentEffectAttackAbility()
           else if ($currentTurnEffects[$i] == "MON184") $maxCost = 1;
           else $maxCost = 0;
           if ($attackType == "AA" && CardCost($attackID) <= $maxCost) {
-            WriteLog("Seeds of Agony dealt 1 damage.");
+            WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " dealt 1 damage.");
             DealArcane(1, 0, "PLAYCARD", $currentTurnEffects[$i], true);
             $remove = true;
           }

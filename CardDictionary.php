@@ -108,6 +108,7 @@ function CardSubType($cardID, $uniqueID = -1)
       if ($effectArr[0] != "EVO013" && $effectArr[0] != "ROS246") continue;
       $effectArr = explode(",", $effectArr[1]);
       if ($effectArr[0] != $uniqueID) continue;
+      if($effectArr[1] == "Base") return $effectArr[2];
       return $effectArr[1];
     }
     return "";
