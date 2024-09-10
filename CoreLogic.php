@@ -1989,7 +1989,6 @@ function ResolveGoAgain($cardID, $player, $from)
   $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed));
   $cardType = CardType($cardID);
   $goAgainPrevented = CurrentEffectPreventsGoAgain();
-  WriteLog("processing go again for  " . $cardID);
   if (IsStaticType($cardType, $from, $cardID)) {
     $hasGoAgain = AbilityHasGoAgain($cardID);
     if (!$hasGoAgain && GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from);

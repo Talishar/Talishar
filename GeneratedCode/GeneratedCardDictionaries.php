@@ -2125,6 +2125,8 @@ case "7":
 return "I";
 case "2":
 return "E";
+case "8":
+return "I";
 case "1":
 return "E";
 case "0":
@@ -13209,6 +13211,8 @@ case "7":
 return -1;
 case "2":
 return 1;
+case "8":
+return -1;
 case "1":
 return 1;
 case "0":
@@ -13231,14 +13235,14 @@ case "7":
 return -1;
 case "9":
 return 2;
-case "8":
-return -1;
 case "2":
 return 2;
 case "3":
 return 2;
 case "4":
 return 2;
+case "8":
+return -1;
 default: return 3;
 }
 case "4":
@@ -20421,6 +20425,8 @@ case "2":
 return "Flash of Brilliance";
 case "6":
 return "Gone in a Flash";
+case "8":
+return "High Voltage";
 case "1":
 return "Lightning Greaves";
 case "0":
@@ -20443,14 +20449,14 @@ case "7":
 return "Electromagnetic Somersault";
 case "9":
 return "Flittering Charge";
-case "8":
-return "High Voltage";
 case "2":
 return "Lightning Form";
 case "3":
 return "Lightning Form";
 case "4":
 return "Lightning Form";
+case "8":
+return "Sigil of Conductivity";
 default: return "";
 }
 case "5":
@@ -29213,11 +29219,11 @@ case "6":
 return 2;
 case "7":
 return 3;
-case "8":
-return 3;
 case "3":
 return 2;
 case "4":
+return 3;
+case "8":
 return 3;
 default: return 1;
 }
@@ -29247,6 +29253,8 @@ case "4":
 return 3;
 case "2":
 return 0;
+case "8":
+return 3;
 case "1":
 return 0;
 case "0":
@@ -42485,6 +42493,12 @@ case "6":
 return "Aura";
 default: return "";
 }
+case "8":
+switch($cardID[5]) {
+case "8":
+return "Aura";
+default: return "";
+}
 case "4":
 switch($cardID[5]) {
 case "5":
@@ -47063,6 +47077,8 @@ case "5":
 return "M";
 case "6":
 return "M";
+case "8":
+return "M";
 case "1":
 return "L";
 default: return "C";
@@ -47079,13 +47095,13 @@ case "6":
 return "R";
 case "7":
 return "R";
-case "8":
-return "M";
 case "2":
 return "R";
 case "3":
 return "R";
 case "4":
+return "R";
+case "8":
 return "R";
 default: return "C";
 }
@@ -61656,6 +61672,8 @@ case "2":
 return "LIGHTNING";
 case "6":
 return "LIGHTNING";
+case "8":
+return "LIGHTNING";
 case "1":
 return "LIGHTNING";
 case "0":
@@ -61678,13 +61696,13 @@ case "7":
 return "LIGHTNING";
 case "9":
 return "LIGHTNING";
-case "8":
-return "LIGHTNING";
 case "2":
 return "LIGHTNING";
 case "3":
 return "LIGHTNING";
 case "4":
+return "LIGHTNING";
+case "8":
 return "LIGHTNING";
 default: return "NONE";
 }
@@ -63629,7 +63647,7 @@ case "CRU108": return "false";
 case "EVR164": return "false";
 case "EVR165": return "false";
 case "EVR166": return "false";
-case "ROS088": return "false";
+case "ROS078": return "false";
 case "MST014": return "false";
 case "MST015": return "false";
 case "MST016": return "false";
@@ -64934,6 +64952,7 @@ case "UPR198": return "false";
 case "UPR199": return "false";
 case "ROS168": return "false";
 case "ROS022": return "true";
+case "ROS088": return "false";
 case "ROS226": return "false";
 case "ROS161": return "false";
 case "ROS070": return "false";
