@@ -710,6 +710,8 @@ function IsCardBanned($cardID, $format, $character)
 
   //Ban spoiler cards in non-open-format
   if(($format != "openformatcc" && $format != "openformatblitz") && $set == "ROS" && $cardID != "ROS008" && $cardID != "ROS009" && $cardID != "ROS092" && $cardID != "ROS093" && $cardID != "ROS094") return true; // Launch 20th September
+  if($format != "openformatcc" && $cardID == "HER123") return true; // IRA Hero CC Launch 2nd November
+  if(($format != "openformatcc" && $format != "openformatblitz") && $set == "AIO") return true; // Dash Armory Deck Launch 18th November
 
   switch ($cardID) { //Special Use Promos
     case "JDG002": case "JDG004": case "JDG005": case "JDG008": case "JDG010": case "JDG019": case "JDG024": case "JDG025":
