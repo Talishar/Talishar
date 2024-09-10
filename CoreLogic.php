@@ -2004,7 +2004,12 @@ function ResolveGoAgain($cardID, $player, $from)
     if ($cardType == "I") $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from);
   }
   if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) {
-    if(SearchCurrentTurnEffects("ROS010", $player)) AddLayer("TRIGGER", $player, "ROS010");
+    if(SearchCurrentTurnEffects("ROS010", $player)) {
+      $count = CountCurrentTurnEffects("ROS010", $player);
+      for ($i=0; $i < $count; $i++) { 
+        AddLayer("TRIGGER", $player, "ROS010");
+      }
+    }
     ++$actionPoints;
   }}
 

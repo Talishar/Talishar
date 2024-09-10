@@ -1128,7 +1128,12 @@ function FinalizeChainLink($chainClosed = false)
   UpdateGameState($currentPlayer);
   BuildMainPlayerGameState();
   if (DoesAttackHaveGoAgain() && !$chainClosed) {
-    if(SearchCurrentTurnEffects("ROS010", $currentPlayer)) AddLayer("TRIGGER", $currentPlayer, "ROS010");
+    if(SearchCurrentTurnEffects("ROS010", $currentPlayer)) {
+      $count = CountCurrentTurnEffects("ROS010", $currentPlayer);
+      for ($i=0; $i < $count; $i++) { 
+        AddLayer("TRIGGER", $currentPlayer, "ROS010");
+      }
+    }
     GainActionPoints(1, $mainPlayer);
     if ($combatChain[0] == "DVR002" && SearchCharacterActive($mainPlayer, "DVR001")) DoriQuicksilverProdigyEffect();
     if (TypeContains($combatChain[0], "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) == "-") SetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain, $combatChain[0]);
