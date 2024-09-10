@@ -1067,7 +1067,7 @@ function AuraHitEffects($attackID)
   }
 }
 
-function AuraDamageEffects($source)
+function AuraDamageEffects($source, $player, $target)
 {
   global $mainPlayer;
   $auras = &GetAuras($mainPlayer);
@@ -1075,7 +1075,7 @@ function AuraDamageEffects($source)
     $remove = 0;
     switch ($auras[$i]) {
       case "ROS077":
-        if ($auras[$i + 5] > 0 && isHeroAttackTarget()) {
+        if ($auras[$i + 5] > 0 && MZIsPlayer($target)) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " draws a card");
           --$auras[$i + 5];
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $source, $auras[$i + 6]);
