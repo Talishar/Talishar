@@ -41,7 +41,6 @@
   GenerateFunction($cardArray, $handler, "CardClass", "cardClass", "NONE");
   GenerateFunction($cardArray, $handler, "CardTalent", "cardTalent", "NONE");
   GenerateFunction($cardArray, $handler, "IsSpecialization", "specialization", "", true);
-  GenerateFunction($cardArray, $handler, "GoAgain", "goagain", "false");
 
   fwrite($handler, "?>");
 
@@ -54,8 +53,8 @@
     $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "LGS", "HER", "FAB", "TCC", "EVO", "HVY", "MST", "AKO", "ASB", "ROS", "AAZ", "TER", "AUR", "AIO"];
     $isString = true;
     $isBool = false;
-    if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "1H" || $propertyName == "goagain") $isString = false;
-    if($propertyName == "1H" || $propertyName == "specialization" || $propertyName == "goagain") $isBool = true;
+    if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "1H") $isString = false;
+    if($propertyName == "1H" || $propertyName == "specialization") $isBool = true;
     fwrite($handler, "if(\$cardID !== null && strlen(\$cardID) < 6) return " . ($isString ? "\"\"" : "0") . ";\r\n");
     fwrite($handler, "if(is_int(\$cardID)) return " . ($isString ? "\"\"" : "0") . ";\r\n");
     if($sparse) fwrite($handler, "switch(\$cardID) {\r\n");
