@@ -700,14 +700,14 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
       switch ($char[$i]) {
         case "ROS013":
           // Now we need to check that we banished 8 earth cards.
-          $results = SearchCount(SearchMultiZone($player, "MYBANISH:TALENT=EARTH"));
+          $results = SearchCount(SearchMultiZone($player, "MYBANISH:talent=EARTH"));
           if ($results >= 8) {
             AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
           break;
         case "ROS014":
           // Now we need to check that we banished 4 earth cards.
-          $results = SearchCount(SearchMultiZone($player, "MYBANISH:TALENT=EARTH"));
+          $results = SearchCount(SearchMultiZone($player, "MYBANISH:talent=EARTH"));
           if ($results >= 4) {
             AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
