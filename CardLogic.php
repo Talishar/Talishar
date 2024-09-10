@@ -2377,7 +2377,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       Writelog(CardLink($parameter, $parameter) . " is amping 1");
       break;
     case "ROS010":
-      DealArcane(1, 0, "PLAYCARD", $combatchain[0]);
+      DealArcane(1, 2, "PLAYCARD", "ROS010");
       break;
     case "ROS013": case "ROS014":
       DealArcane(1, $target, "ABILITY", $parameter, true);
