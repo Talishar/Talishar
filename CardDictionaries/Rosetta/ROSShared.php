@@ -544,23 +544,6 @@ function GetTrapIndices($player)
 }
 
 /**
- * Splatter Skull is going to use this list to destroy an opponent's card.
- *
- * @return array a list of indices of cards that are flagged as intimidated.
- */
-function GetIntimidatedCards($player)
-{
-  $rv = "";
-  $banish = &GetBanish($player);
-  for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
-    if ($banish[$i + 1] == "INT") {
-      if ($rv == "") $rv .= $i;
-      else $rv .= "," . $i;
-    }
-  }
-}
-
-/**
  * Volzar needs to know if you control an aura with "Sigil" in its name
  *
  * @param integer $player - presumably the current player, the one who has activated volzar
