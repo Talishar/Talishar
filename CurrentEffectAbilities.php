@@ -1337,7 +1337,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
           break;
         case "ROS010-GOAGAIN":
           $hasGoAgain = true;
-          if ($cardID != $turnEffects[0]) $remove = true;
+          if ($cardID != "ROS010") $remove = true;
           break;
         default:
           break;

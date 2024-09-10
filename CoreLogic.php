@@ -1427,8 +1427,8 @@ function DoesAttackHaveGoAgain()
 {
   global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_Num6PowDisc;
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
-  global $CS_NumItemsDestroyed, $CS_PlayIndex, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
-  global $CS_NumLightningPlayed, $CS_DamageTaken, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed;
+  global $CS_NumItemsDestroyed, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
+  global $CS_NumLightningPlayed, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed;
   if (!$CombatChain->HasCurrentLink()) return false;
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
@@ -2003,8 +2003,10 @@ function ResolveGoAgain($cardID, $player, $from)
     if ($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
     if ($cardType == "I") $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from);
   }
-  if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) ++$actionPoints;
-}
+  if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) {
+    if(SearchCurrentTurnEffects("ROS010", $player)) AddLayer("TRIGGER", $player, $cardID);
+    ++$actionPoints;
+  }}
 
 function PitchDeck($player, $index)
 {
