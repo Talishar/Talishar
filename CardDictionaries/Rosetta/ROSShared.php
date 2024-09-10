@@ -412,6 +412,13 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS214":
       IncrementClassState($currentPlayer, $CS_DamagePrevention);
       return "";
+    case "ROS218":
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");
+      AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("ADDDISCARD", $currentPlayer, "DECK", 1);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+      AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
+      return "";
     case "ROS231":
     case "ROS232":
     case "ROS233":
