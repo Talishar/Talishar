@@ -66,7 +66,7 @@ function ROSEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
     "ROS066", "ROS112", "ROS129" => 1,
-    "ROS052", "ROS053", "ROS054", "ROS065", "ROS111", "ROS128" => 2,
+    "ROS065", "ROS111", "ROS128" => 2,
     "ROS064", "ROS110", "ROS127", "ROS248" => 3,
     default => 0,
   };
@@ -84,13 +84,11 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 {
   global $mainPlayer, $CombatChain;
   return match ($cardID) {
-    "ROS042", "ROS043", "ROS044", "ROS052", "ROS053", "ROS054" => true,
     "ROS064", "ROS065", "ROS066" => true,
     "ROS110", "ROS111", "ROS112" => CardType($attackID) == "AA" && CardCost($attackID) <= 1,
     "ROS127", "ROS128", "ROS129", "ROS119" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "ROS118" => CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "ROS248" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
-    "ROS049", "ROS050", "ROS051" => true, //blossoming decay
     default => false,
   };
 }
@@ -161,55 +159,34 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
     case "ROS031":
-      $decomposed = Decompose($currentPlayer, 2, 1);
-      if ($decomposed) {
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "FELLINGOFTHECROWN", 1);
-      }
-      return "";
+      $rv = Decompose($currentPlayer, "FELLINGOFTHECROWN");
+      return $rv;
     case "ROS032":
-      $decomposed = Decompose($currentPlayer, 2, 1);
-      if ($decomposed) {
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "PLOWUNDER", 1);
-      }
-      return "";
+      $rv = Decompose($currentPlayer, "PLOWUNDER");
+      return $rv;
     case "ROS035":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
       return CardLink($cardID, $cardID) . " is preventing the next 5 damage.";
     case "ROS039":
     case "ROS040":
     case "ROS041":
-      $decomposed = Decompose($currentPlayer, 2, 1);
-      if ($decomposed) {
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SUMMERSFALL", 1);
-      }
-      return "";
+      $rv = Decompose($currentPlayer, "SUMMERSFALL");
+      return $rv;
     case "ROS042":
     case "ROS043":
     case "ROS044":
-      $decomposed = Decompose($currentPlayer, 2, 1);
-      if ($decomposed) {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "ROOTBOUNDCARAPACE", 1);
-      }
-      return "";
+      $rv = Decompose($currentPlayer, "ROOTBOUNDCARAPACE");
+      return $rv;
     case "ROS049":
     case "ROS050":
     case "ROS051":
-      $decomposed = Decompose($currentPlayer, 2, 1);
-      if ($decomposed) {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "BLOSSOMINGDECAY", 1);
-      }
-      return "";
+      $rv = Decompose($currentPlayer, "BLOSSOMINGDECAY");
+      return $rv;
     case "ROS052":
     case "ROS053":
     case "ROS054":
-      $decomposed = Decompose($currentPlayer, 2, 1);
-      if ($decomposed) {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CADAVEROUSTILLING", 1);
-      }
-      return "";
+      $rv = Decompose($currentPlayer, "CADAVEROUSTILLING");
+      return $rv;
     case "ROS055":
     case "ROS056":
     case "ROS057":
