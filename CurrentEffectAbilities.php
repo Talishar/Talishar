@@ -1467,6 +1467,8 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "AAZ007":
           return true;
+        case "ROS010":
+          return true;
         case "ROS118":
           return GetClassState($mainPlayer, $CS_NumAuras) >= 1;
         default:
