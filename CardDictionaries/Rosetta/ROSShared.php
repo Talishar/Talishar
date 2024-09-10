@@ -301,9 +301,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      for ($i = 0; $i < $numRunechantsCreated; ++$i) {
-        AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
-      }
+      AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112-3", 1);
       return "";
     case "ROS163":
       AddCurrentTurnEffect("ROS163", $currentPlayer);
