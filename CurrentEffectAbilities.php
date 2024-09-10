@@ -1339,7 +1339,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
             if ($cardID != $turnEffects[0]) $remove = true;
           }
           break;
-        case "ROS010":
+        case "ROS010" . "-GOAGAIN":
           $hasGoAgain = true;
           if ($cardID != $turnEffects[0]) $remove = true;
           }
@@ -1467,7 +1467,7 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "AAZ007":
           return true;
-        case "ROS010":
+        case "ROS010" . "-GOAGAIN":
           return true;
         case "ROS118":
           return GetClassState($mainPlayer, $CS_NumAuras) >= 1;
