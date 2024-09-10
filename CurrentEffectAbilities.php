@@ -50,7 +50,7 @@ function EffectHitEffect($cardID, $from)
       }
       break;
     case "ROS119":
-      if (ClassContains($attackID, "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
+      if (CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
