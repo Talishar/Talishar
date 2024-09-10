@@ -57,7 +57,7 @@ function EffectHitEffect($cardID, $from)
         AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND," . $mainPlayer, 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
-      break;
+      return 1;
     case "CRU084-2":
       PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2);
       break;
@@ -1814,6 +1814,8 @@ function IsCombatEffectPersistent($cardID)
     case "AAZ004":
       return true;
     case "TER019":
+      return true;
+    case "ROS119":
       return true;
     //Roguelike
     case "ROGUE018":
