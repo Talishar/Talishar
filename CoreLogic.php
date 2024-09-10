@@ -1461,7 +1461,7 @@ function DoesAttackHaveGoAgain()
   if (SearchItemsForCard("EVO097", $mainPlayer) != "" && $attackType == "AA" && ClassContains($CombatChain->AttackCard()->ID(), "MECHANOLOGIST", $mainPlayer)) return true;
   if (SearchCurrentTurnEffectsForCycle("HVY127", "HVY128", "HVY129", $mainPlayer) && ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) && NumAttacksBlocking() > 0) return true;
   if (SearchCurrentTurnEffects("MST094", $mainPlayer) && PitchValue($CombatChain->AttackCard()->ID()) == 3 && $CombatChain->AttackCard()->From() != "PLAY") return true;
-  if (SearchCurrentTurnEffects("MST094", $mainPlayer) && $CombatChain->AttackCard()->From() != "PLAY") return true;
+  if (SearchCurrentTurnEffects("ROS010-GOAGAIN", $mainPlayer) && $CombatChain->AttackCard()->From() != "PLAY") return true;
   //the last action in numActions is going to be the current chain link
   //so we want the second to last to be current funnel, and 3rd to last to be lightning
   if (count($actionsPlayed) > 2 && $actionsPlayed[$numActions-2] == "ROS074" && TalentContains($actionsPlayed[$numActions-3], "LIGHTNING")) return true;
