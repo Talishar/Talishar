@@ -1963,10 +1963,15 @@ function EffectDefenderAttackModifiers($cardID)
   return $mod;
 }
 
-function EffectAttackRestricted($cardID, $type, $revertNeeded = false)
+function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false)
 {
-  global $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBaseAttack;
+  global $mainPlayer, $currentTurnEffects;
   $mainChar = &GetPlayerCharacter($mainPlayer);
+  $attackValue = AttackValue($cardID);
+  $hasNoAbilityTypes = GetAbilityTypes($cardID, from: $from) == "";
+  $resolvedAbilityType = GetResolvedAbilityType($cardID);
+  $abilityType = GetAbilityType($cardID, from: $from);
+
   if ($mainChar[0] == "DUMMY") return false;
   $restrictedBy = "";
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
@@ -1975,10 +1980,12 @@ function EffectAttackRestricted($cardID, $type, $revertNeeded = false)
       $effectID = $effectArr[0];
       switch ($effectID) {
         case "DTD203":
-          if (AttackValue($cardID) <= $effectArr[1] && (TypeContains($cardID, "AA", $mainPlayer) || GetResolvedAbilityType($cardID) == "AA") && (GetAbilityTypes($cardID) == "" || GetResolvedAbilityType($cardID) == "AA")) $restrictedBy = "DTD203";
+          if ($attackValue <= $effectArr[1] && ($type == "AA" || $resolvedAbilityType == "AA" || $abilityType == "AA") && ($hasNoAbilityTypes || $resolvedAbilityType == "AA")) {
+              $restrictedBy = "DTD203";
+          }
           break;
         case "WarmongersPeace":
-          if ($type == "AA" || (TypeContains($cardID, "W", $mainPlayer) && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230";
+          if ($type == "AA" || (TypeContains($cardID, "W", $mainPlayer) && $resolvedAbilityType != "I")) $restrictedBy = "DTD230";
           break;
         default:
           break;

@@ -1345,7 +1345,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     $restriction = true;
     return true;
   }
-  if (EffectAttackRestricted($cardID, $type) != "" && $currentPlayer == $mainPlayer) {
+  if (EffectAttackRestricted($cardID, $type, $from) != "" && $currentPlayer == $mainPlayer) {
     $restriction = true;
     return true;
   }

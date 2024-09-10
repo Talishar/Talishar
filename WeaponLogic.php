@@ -52,9 +52,3 @@ function ApplyEffectToEachWeapon($effectID)
     if (CardType($character[$i]) == "W") AddCharacterEffect($currentPlayer, $i, $effectID);
   }
 }
-
-function IsAuraWeapon($cardID, $player, $from)
-{
-  if ((SearchCharacterForCard($player, "MON003") || SearchCharacterForCard($player, "MON088") || SearchCharacterForCard($player, "DTD216") || SearchCharacterForCard($player, "MST130")) && DelimStringContains(CardSubType($cardID), "Aura") && $from == "PLAY") return true;
-  else return false;
-}
