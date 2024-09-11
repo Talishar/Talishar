@@ -559,10 +559,10 @@ function BlockValue($cardID)
 {
   global $defPlayer;
   if (!$cardID) return "";
-  if ($cardID == "MST146" || $cardID == "MST147" || $cardID == "MST148") return 3; //Temporary block value. Can be deleted after database update
   $set = CardSet($cardID);
   if ($cardID == "MON191") return SearchPitchForNumCosts($defPlayer) * 2;
-  else if ($cardID == "EVR138") return FractalReplicationStats("Block");
+  if ($cardID == "EVR138") return FractalReplicationStats("Block");
+  if ($cardID == "ROS211") return SearchCount(SearchMultiZone($defPlayer, "MYCHAR:type=E;nameIncludes=Arcanite"));
   if ($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if ($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $cardID != "EVO410" && $cardID != "EVO410b")) return GeneratedBlockValue($cardID);
@@ -2362,6 +2362,7 @@ function HasGuardwell($cardID)
 {
   switch ($cardID) {
     case "HVY195":
+    case "ROS211":
       return true;
     default:
       return false;
@@ -2797,6 +2798,8 @@ function CharacterDefaultActiveState($cardID)
       return 1;
     case "AUR005":
     case "TER006":
+      return 1;
+    case "ROS211":
       return 1;
     default:
       return 2;
@@ -3423,6 +3426,7 @@ function SpellVoidAmount($cardID, $player): int
 {
   if ($cardID == "ARC112" && SearchCurrentTurnEffects("DYN171", $player)) return 1;
   return match ($cardID) {
+    "ROS211" => SearchCount(SearchMultiZone($player, "MYCHAR:type=E;nameIncludes=Arcanite")),
     "ELE173", "MON188", "MON061" => 2,
     "MON090", "MON302", "MON400", "MON401", "MON402", "DYN246", "DYN236", "DYN237", "DYN238", "DYN239" => 1,
     "ROS239", "ROS240", "ROS241", "ROS242" => 0,
