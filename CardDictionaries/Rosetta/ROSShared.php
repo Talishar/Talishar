@@ -425,9 +425,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS224":
     case "ROS225":
       $baseLife = match ($cardID) {
-        "ROS223" => 2,
-        "ROS224" => 1,
-        "ROS225" => 0
+        "ROS223" => 3,
+        "ROS224" => 2,
+        "ROS225" => 1
       };
       $cardsInGraveyard = SearchCount(CombineThreeSearches(
         SearchDiscardForCard(1, "ROS223"),
