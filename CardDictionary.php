@@ -730,82 +730,6 @@ function HasGoAgain($cardID): bool|int
       return true;
   }
   $set = CardSet($cardID);
-
-  switch ($cardID) {// can be deleted after the database is updated
-    case "MST003":
-    case "MST052":
-    case "MST054":
-    case "MST055":
-    case "MST056":
-    case "MST057":
-    case "MST058":
-    case "MST059":
-    case "MST060":
-    case "MST061":
-    case "MST062":
-    case "MST063":
-    case "MST064":
-    case "MST065":
-    case "MST092":
-    case "MST093":
-    case "MST094":
-    case "MST152":
-    case "MST153":
-    case "MST154":
-    case "MST159":
-    case "MST173":
-    case "MST174":
-    case "MST175":
-    case "MST185":
-    case "MST186":
-    case "MST187":
-    case "MST193":
-    case "MST212":
-    case "MST213":
-    case "MST214":
-    case "AAZ024":
-    case "ROS016":
-    case "ROS033":
-    case "ROS092":
-    case "ROS093":
-    case "ROS094":
-    case "AUR014":
-    case "AUR021":
-    case "TER017":
-    case "TER019":
-    case "TER024":
-    case "ROS010":
-    case "ROS061":
-    case "ROS062":
-    case "ROS063":
-    case "ROS064":
-    case "ROS065":
-    case "ROS066":
-    case "ROS127":
-    case "ROS118":
-    case "ROS119":
-    case "ROS128":
-    case "ROS129":
-    case "ROS130":
-    case "ROS131":
-    case "ROS132":
-    case "ROS133":
-    case "ROS152":
-    case "ROS153":
-    case "ROS154":
-    case "ROS155":
-    case "ROS156":
-    case "ROS157":
-    case "ROS161":
-    case "ROS192":
-    case "ROS193":
-    case "ROS194":
-    case "ROS226":
-    case "ROS230":
-    case "ROS248":
-      return true;
-  }
-
   if ($set == "ROG") return ROGUEHasGoAgain($cardID);
   else return GeneratedGoAgain($cardID);
 }
@@ -2008,6 +1932,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return SearchCount(SearchBanish($player, talent: "EARTH")) < 4;
     case "ROS073":
       return GetClassState($player, $CS_NumInstantPlayed) == 0;
+    case "ROS085":
+    case "ROS086":
+    case "ROS087":
+      return !$CombatChain->HasCurrentLink();
     case "ROS212":
     case "ROS213":
     case "ROS214":

@@ -878,7 +878,7 @@ function FindDefCharacter($cardID)
 
 function ChainLinkResolvedEffects()
 {
-  global $combatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain;
+  global $combatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
   $allies = GetAllies($mainPlayer);
   if ($CombatChain->HasCurrentLink()) {
     if ($combatChain[0] == "MON245" && !ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
@@ -898,6 +898,23 @@ function ChainLinkResolvedEffects()
   }
   if (IsAllyAttacking() && isset($allies[$combatChainState[$CCS_WeaponIndex] + 2]) && $allies[$combatChainState[$CCS_WeaponIndex] + 2] <= 0) {
     DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
+  }
+
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $currentEffect = explode("-", $currentTurnEffects[$i]);
+    switch ($currentEffect[0]) {
+      case "ROS085":
+      case "ROS086":
+      case "ROS087":
+        AddPlayerHand($currentEffect[1], $currentTurnEffects[$i+1], "CC");
+        WriteLog(GetCombatChainIndex($currentEffect[1], $currentTurnEffects[$i+1]));
+        if(GetCombatChainIndex($currentEffect[1], $currentTurnEffects[$i+1]) == 0) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+        $CombatChain->Remove(GetCombatChainIndex($currentEffect[1], $currentTurnEffects[$i+1]));
+        RemoveCurrentTurnEffect($i);
+        break;
+      default:
+        break;
+    }
   }
 }
 
