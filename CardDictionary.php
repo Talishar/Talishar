@@ -409,14 +409,19 @@ function CardCost($cardID, $from = "-")
     case "MST501":
     case "MST502":
       return -1;
-    case "ROS204":
-    case "ROS205":
     case "ROS106":
     case "ROS105":
     case "ROS104":
-    case "ROS206":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
       else return 1;
+    case "ROS170":
+    case "ROS171":
+    case "ROS172":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
+    case "ROS204":
+    case "ROS205":
+    case "ROS206":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
     default:
       break;
   }
