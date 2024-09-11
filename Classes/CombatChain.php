@@ -78,7 +78,7 @@ class ChainCard {
     }
 
     function From() {
-      return $this->chain[$this->index+2];
+      return isset($this->chain[$this->index+1]) ? $this->chain[$this->index+2] : null;
     }
 
     function ResourcesPaid() {

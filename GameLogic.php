@@ -2254,7 +2254,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "GONEINAFLASH":
       AddPlayerHand($combatChain[0], $mainPlayer, "CC");
       $CombatChain->Remove(0);
-      CloseCombatChain(true);
       return $lastResult;
     default:
       return "NOTSTATIC";

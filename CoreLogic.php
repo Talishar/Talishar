@@ -1449,7 +1449,6 @@ function DoesAttackHaveGoAgain()
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
   global $CS_NumItemsDestroyed, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
   global $CS_NumLightningPlayed, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed;
-  if (!$CombatChain->HasCurrentLink()) return false;
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
   $attackSubtype = CardSubType($attackID);

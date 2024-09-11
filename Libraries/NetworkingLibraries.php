@@ -1126,7 +1126,7 @@ function FinalizeChainLink($chainClosed = false)
 {
   global $turn, $actionPoints, $combatChain, $mainPlayer, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
-  global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CombatChain;
+  global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CombatChain, $CCS_CurrentAttackGainedGoAgain;
   UpdateGameState($currentPlayer);
   BuildMainPlayerGameState();
   if (DoesAttackHaveGoAgain() && !$chainClosed) {
