@@ -312,7 +312,7 @@ function AuraDestroyAbility($player, $index, $isToken)
   }
 }
 
-function RemoveAura($player, $index, $uniqueID)
+function RemoveAura($player, $index, $uniqueID = "")
 {
   AuraLeavesPlay($player, $index, $uniqueID);
   $auras = &GetAuras($player);

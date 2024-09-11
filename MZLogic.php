@@ -276,6 +276,40 @@ function MZGainControl($player, $target)
   }
 }
 
+/**
+ * Returns a card to its owners hand from a given zone
+ *
+ * @param int $player the player that perp
+ * @param string $lastResult - an array of results from a previous mz query to parse
+ * @param boolean $allArsenal - whether arsenal effects should effect all arsenal pieces, not currently implemented for use with arsenal but will probably help in the future
+ * @return string a new last result to pass to a possible next mz action
+ */
+function MZBounce($player, $lastResult, $allArsenal = true)
+{
+  $lastResultArr = explode(",", $lastResult);
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
+    $mzIndex = explode("-", $lastResultArr[$i]);
+    switch ($mzIndex[0]) {
+      case "MYAURAS":
+        $auras = &GetAuras($player);
+        $cardID = $auras[$mzIndex[1]];
+        $lastResult = RemoveAura($player, $mzIndex[1]);
+        AddPlayerHand($cardID, $player, "-");
+        break;
+      case "THEIRAURAS":
+        $auras = &GetAuras($otherPlayer);
+        $cardID = $auras[$mzIndex[1]];
+        $lastResult = RemoveAura($otherPlayer, $mzIndex[1]);
+        AddPlayerHand($cardID, $otherPlayer, "-");
+        break;
+      default:
+        break;
+    }
+  }
+  return $lastResult;
+}
+
 function MZFreeze($target)
 {
   global $currentPlayer;
@@ -429,6 +463,15 @@ function MZChooseAndBanish($player, $search, $fromMod, $may = false)
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
+}
+
+function MZChooseAndBounce($player, $search, $may = false, $context = "")
+{
+  AddDecisionQueue("MULTIZONEINDICES", $player, $search);
+  if ($context != "") AddDecisionQueue("SETDQCONTEXT", $player, $context);
+  if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+  else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  AddDecisionQueue("MZBOUNCE", $player, "-", 1);
 }
 
 function MZLastIndex($player, $zone)
