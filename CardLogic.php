@@ -2826,6 +2826,7 @@ function HasFlowCounters($cardID)
     case "ELE175":
     case "UPR138":
     case "ROS033":
+    case "ROS077":
       return true;
     default:
       return false;
