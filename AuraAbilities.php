@@ -988,7 +988,7 @@ function AuraPlayAbilities($cardID, $from = "")
       case "ROS130":
       case "ROS131":
       case "ROS132":
-        if ($cardType == "AA" && $auras[$i + 5] > 0) {
+        if ($cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA") && $auras[$i + 5] > 0) {
           --$auras[$i + 5];
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", $cardID, $auras[$i + 6]);
         }
