@@ -773,8 +773,6 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
 
 function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 {
-  global $currentPlayer, $CS_PlayIndex;
-  if ($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
   return match ($cardID) {
     "ARC003", "TCC050", "CRU101" => "A,AA",
     "OUT093" => "I,I",
@@ -788,7 +786,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 
 function GetAbilityNames($cardID, $index = -1, $from = "-"): string
 {
-  global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $CS_PlayIndex, $CS_NumActionsPlayed;
+  global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $CS_PlayIndex, $CS_NumActionsPlayed, $CS_NextWizardNAAInstant;
   $character = &GetPlayerCharacter($currentPlayer);
   $auras = &GetAuras($currentPlayer);
   $names = "";
@@ -844,7 +842,8 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "ROS205":
     case "ROS206":
       $names = "Ability";
-      if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Action";
+      if (GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) $names .= ",Action";
+      elseif ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Action";
       return $names;
     default:
       return "";

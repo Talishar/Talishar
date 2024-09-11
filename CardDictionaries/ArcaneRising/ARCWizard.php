@@ -438,7 +438,6 @@ function CurrentEffectArcaneModifier($source, $player): int|string
       case "ROS000":
       case "ROS015-AMP":
       case "ROS168"://sigil of aether
-      case "ROS204-AMP":
       case "ROS078":
       case "ROS170":
       case "ROS171":
@@ -488,8 +487,6 @@ function CurrentEffectArcaneModifier($source, $player): int|string
 function ArcaneDamage($cardID): int
 {
   //Blaze - Replacement effects aren't considered when evaluating how much an effect does so Emeritus Scolding (blu) would require 2 counters.
-  global $mainPlayer, $currentPlayer, $CS_ArcaneDamageTaken, $resourcesPaid;
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   return match ($cardID) {
     "ARC147", "EVR134", "UPR105", "UPR133", "UPR110", "UPR113", "DYN195" => 5,
     "ARC126", "ARC141", "ARC148", "CRU171", "EVR125", "EVR123", "EVR135", "UPR170", "UPR134", "UPR127", "UPR122",

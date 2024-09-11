@@ -1632,7 +1632,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
       CombatChainPlayAbility($cardID);
       ItemPlayAbilities($cardID, $from);
-      ResetCardPlayed($cardID);
     }
     if (EffectPlayCardRestricted($cardID, $playType, true)) return;
     if ($playType == "A" || $playType == "AA") {
@@ -1662,6 +1661,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
     } 
     PayAdditionalCosts($cardID, $from);
+    ResetCardPlayed($cardID);
   }
   if ($turn[0] == "B" && $cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
   if ($from == "BANISH") {
