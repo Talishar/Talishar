@@ -64,7 +64,6 @@ function AuraNumUses($cardID)
     case "EVR142":
     case "EVR143":
     case "UPR005":
-    case "ROS077":
     case "ROS130":
     case "ROS131":
     case "ROS132":
@@ -815,10 +814,11 @@ function AuraTakeDamageAbility($player, $index, $damage, $preventable, $type)
 //These are applied first and not prompted (which would be annoying because of course you want to do this before consuming something)
 function AuraTakeDamageAbilities($player, $damage, $type, $source)
 {
+  global $CS_DamageDealt;
   $auras = &GetAuras($player);
-  $otherPlayer = $player == 1 ? 1 : 2;
+  $otherPlayer = $player == 1 ? 2 : 1;
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
-  $preventable = CanDamageBePrevented($otherPlayer, $damage, $type, $source);
+  $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     if ($damage <= 0) {
       $damage = 0;
@@ -864,6 +864,22 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
         break;
     }
   }
+
+
+  $otherAuras = &GetAuras($otherPlayer);
+  for ($i = count($otherAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    switch ($otherAuras[$i]) {
+      case "ROS077":
+        if (GetClassState($otherPlayer, $CS_DamageDealt) <= 0 && $damage > 0) {
+          WriteLog(CardLink($otherAuras[$i], $otherAuras[$i]) . " draws a card");
+          AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], "-", $source, $otherAuras[$i + 6]);
+        }
+        break;    
+      default:
+        break;
+    }
+  }
+
   return $damage;
 }
 
@@ -1052,34 +1068,6 @@ function AuraHitEffects($attackID)
       case "ARC108":
         if ($attackType == "AA") {
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
-        }
-        break;
-      case "ROS077":
-        if ($auras[$i + 5] > 0 && isHeroAttackTarget()) {
-          WriteLog(CardLink($auras[$i], $auras[$i]) . " draws a card");
-          --$auras[$i + 5];
-          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
-        }
-        break;
-      default:
-        break;
-    }
-    if ($remove == 1) DestroyAura($mainPlayer, $i);
-  }
-}
-
-function AuraDamageEffects($source, $player, $target)
-{
-  global $mainPlayer;
-  $auras = &GetAuras($mainPlayer);
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    $remove = 0;
-    switch ($auras[$i]) {
-      case "ROS077":
-        if ($auras[$i + 5] > 0 && MZIsPlayer($target)) {
-          WriteLog(CardLink($auras[$i], $auras[$i]) . " draws a card");
-          --$auras[$i + 5];
-          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $source, $auras[$i + 6]);
         }
         break;
       default:

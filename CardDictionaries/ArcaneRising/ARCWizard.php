@@ -910,7 +910,6 @@ function ArcaneHitEffect($player, $source, $target, $damage)
   if (HasSurge($source) && $damage > ArcaneDamage($source)) {
     ProcessSurge($source, $player, $target);
   }
-  AuraDamageEffects($source, $player, $target);
 }
 
 function ProcessSurge($cardID, $player, $target)
