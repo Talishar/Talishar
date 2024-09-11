@@ -18,7 +18,7 @@ function &GetMZZone($player, $zone)
   else if ($zone == "SOUL" || $zone == "MYSOUL" || $zone == "THEIRSOUL") $rv = &GetSoul($player);
   else if ($zone == "ITEMS" || $zone == "MYITEMS" || $zone == "THEIRITEMS") $rv = &GetItems($player);
   else if ($zone == "LAYER") return $layers;
-  else if ($zone == "CC") return $combatChain;
+  else if ($zone == "CC" || $zone == "COMBATCHAINLINK") return $combatChain;
   return $rv;
 }
 

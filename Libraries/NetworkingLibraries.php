@@ -974,7 +974,7 @@ function NuuStaticAbility($banishedBy)
 
 function ChainLinkBeginResolutionEffects()
 {
-  global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex, $CID_BloodRotPox, $CS_Transcended;
+  global $combatChain, $CombatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex, $CID_BloodRotPox, $CS_Transcended, $currentTurnEffects;
   if (TypeContains($combatChain[0], "W", $mainPlayer)) {
     $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
     $index = $combatChainState[$CCS_WeaponIndex];
@@ -1001,6 +1001,21 @@ function ChainLinkBeginResolutionEffects()
             break;
         }
       }
+    }
+  }
+
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $currentEffect = explode("-", $currentTurnEffects[$i]);
+    switch ($currentEffect[0]) {
+      case "ROS085":
+      case "ROS086":
+      case "ROS087":
+        AddPlayerHand($currentEffect[1], $currentTurnEffects[$i+1], "CC");
+        $CombatChain->Remove(GetCombatChainIndex($currentEffect[1], $currentTurnEffects[$i+1]));
+        RemoveCurrentTurnEffect($i);
+        break;
+      default:
+        break;
     }
   }
   switch ($combatChain[0]) {
@@ -1058,6 +1073,7 @@ function ResolveChainLink()
     DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
     AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
   }
+  
   ProcessDecisionQueue();
 }
 

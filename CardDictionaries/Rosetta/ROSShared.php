@@ -233,6 +233,33 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS081":
       $combatChainState[$CCS_NextInstantBouncesAura] = 1;
       return "";
+    case "ROS085":
+    case "ROS086":
+    case "ROS087":
+      $minCost = match ($cardID) {
+        "ROS085" => 0,
+        "ROS086" => 1,
+        "ROS087" => 2
+      };
+      $options = SearchCombatChainLink($currentPlayer, "AA", minCost: $minCost);
+      if($options != "") {
+        $max = count(explode(",", $options));
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:type=AA;minCost=".$minCost);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("MZSETDQVAR", $currentPlayer, "1", 1);
+        AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "{1} was chosen.", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID . "-{1}", 1);
+        if($max > 1) {
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:type=AA;minCost=".$minCost);
+          AddDecisionQueue("REMOVEPREVIOUSCHOICES", $currentPlayer, "{0}", 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZSETDQVAR", $currentPlayer, "1", 1);
+          AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "{1} was chosen.", 1);
+          AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID . "-{1}", 1);  
+        }
+      }
+      return "";
     case "ROS101":
     case "ROS102":
     case "ROS103":
@@ -293,11 +320,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS155":
     case "ROS156":
     case "ROS157":
-      $numRunechantsCreated = match ($cardID) {
-        "ROS155" => 3,
-        "ROS156" => 2,
-        "ROS157" => 1
-      };
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS&COMBATCHAINLINK:subtype=Aura");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);

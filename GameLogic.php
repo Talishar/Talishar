@@ -826,6 +826,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "WRITELOG":
       WriteLog(implode(" ", explode("_", $parameter)));
       return $lastResult;
+    case "WRITELOGCARDLINK":
+      $params = explode("_", $parameter);
+      Writelog(CardLink($params[0], $params[0]) . " was choosen");
+      return $lastResult;  
     case "WRITELOGLASTRESULT":
       WriteLog("<b>" . $lastResult . "<b> was selected.");
       return $lastResult;
@@ -2242,6 +2246,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "GETCARDSFORDECOMPOSE":
       $rv = SearchMultizone($player, $parameter); // I want multizone to return a blank string if no results so I built this
       return $rv;
+    case "REMOVEPREVIOUSCHOICES":
+      $lastResult = str_replace($parameter, "", $lastResult);
+      $lastResult = trim($lastResult, ",");
+      $lastResult = rtrim($lastResult, ",");
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }
