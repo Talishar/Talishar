@@ -1598,6 +1598,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
+    if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "ROS076" && CardType($cardID) == "I" && $currentPlayer == $mainPlayer) {
+      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "HAND";
+    } 
     if (IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
