@@ -2,6 +2,7 @@
 
 function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = true)
 {
+  global $CombatChain;
   $lastResultArr = explode(",", $lastResult);
   $otherPlayer = ($player == 1 ? 2 : 1);
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
@@ -45,6 +46,9 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         break;
       case "LANDMARK":
         $lastResult = DestroyLandmark($mzIndex[1]);
+        break;
+      case "COMBATCHAINLINK":
+        $lastResult = $CombatChain->Remove($mzIndex[1]);
         break;
       default:
         break;

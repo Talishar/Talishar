@@ -418,10 +418,12 @@ function CardCost($cardID, $from = "-")
     case "ROS171":
     case "ROS172":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
+      break;
     case "ROS204":
     case "ROS205":
     case "ROS206":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
+      break;
     default:
       break;
   }

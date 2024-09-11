@@ -298,7 +298,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         "ROS156" => 2,
         "ROS157" => 1
       };
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS&COMBATCHAINLINK:subtype=Aura");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112-3", 1);
