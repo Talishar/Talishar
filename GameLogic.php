@@ -1680,6 +1680,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return MZAddZone($player, $parameter, $lastResult);
     case "MZREVEAL":
       return MZReveal($player, $parameter, $lastResult);
+    case "MZBOUNCE":
+      return MZBounce($player, $lastResult);
     case "MZSWITCHPLAYER":
       return MZSwitchPlayer($lastResult);
     case "GAINRESOURCES":
