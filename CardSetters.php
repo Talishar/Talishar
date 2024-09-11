@@ -18,12 +18,11 @@ function BanishCardForPlayer($cardID, $player, $from, $modifier = "-", $banished
 
 function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $from = "", $banishedBy = "")
 {
-  global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer, $combatChain, $EffectContext;
+  global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer, $CS_NumEarthBanished, $EffectContext;
   $rv = -1;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
   $character = &GetPlayerCharacter($player);
-  $items = &GetItems($player);
   $characterID = ShiyanaCharacter($character[0]);
   AddEvent("BANISH", ($modifier == "INT" || $modifier == "NTINT" || $modifier == "UZURI" ? "CardBack" : $cardID));
   //Effects that change the modifier
@@ -64,6 +63,9 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
       AddLayer("TRIGGER", $player, $character[$index]);
     }
   }
+  if(TalentContains($cardID, "EARTH", $player)) {
+    ++$classState[$CS_NumEarthBanished];
+  }
   if (TypeContains($cardID, "E", $player)) {
     $charIndex = FindCharacterIndex($player, $cardID);
     if ($charIndex == -1) {
@@ -96,7 +98,6 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     return $rv;
   }
   if ($banishedBy == "MST109" || $banishedBy == "MST110" || $banishedBy == "MST111" && count($banish) / BanishPieces() >= 2) {
-    $indexArray = array_keys($banish, "Source-" . $banishedBy);
     $count = count($banish) - BanishPieces();
     $pitchValues = [];
     for ($i = $count; $i >= 0; $i--) {

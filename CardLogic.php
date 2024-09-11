@@ -1264,8 +1264,8 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CS_PlayIndex, $CombatChain;
-  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $totalBlock, $totalAttack, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
   global $CS_DamagePrevention;
   $items = &GetItems($player);
   $auras = &GetAuras($player);
@@ -2389,6 +2389,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "ROS033":
       AddCurrentTurnEffect($parameter, $player);
+      break;
+    case "ROS034":
+      PlayAura("ELE109", $player);
+      if(GetClassState($player, $CS_NumEarthBanished) == 0) DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ROS061":
     case "ROS062":

@@ -650,6 +650,7 @@ function AuraBeginEndPhaseTriggers()
       case "OUT234":
       case "OUT235":
       case "OUT236":
+      case "ROS034":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       default:
