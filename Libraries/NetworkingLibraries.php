@@ -1585,7 +1585,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
     if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "ROS076" && CardType($cardID) == "I" && $currentPlayer == $mainPlayer) {
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "HAND";
+      if(SearchCurrentTurnEffects("ROS076", $mainPlayer, true)) {
+        AddDecisionQueue("YESNO", $mainPlayer, "if you want to return ".CardLink("ROS076", "ROS076")." to your hand?");
+        AddDecisionQueue("NOPASS", $mainPlayer, "-");
+        AddDecisionQueue("GONEINAFLASH", $mainPlayer, "-", 1);
+      }
     } 
     if (IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);

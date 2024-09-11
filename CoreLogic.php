@@ -907,7 +907,6 @@ function ChainLinkResolvedEffects()
       case "ROS086":
       case "ROS087":
         AddPlayerHand($currentEffect[1], $currentTurnEffects[$i+1], "CC");
-        WriteLog(GetCombatChainIndex($currentEffect[1], $currentTurnEffects[$i+1]));
         if(GetCombatChainIndex($currentEffect[1], $currentTurnEffects[$i+1]) == 0) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
         $CombatChain->Remove(GetCombatChainIndex($currentEffect[1], $currentTurnEffects[$i+1]));
         RemoveCurrentTurnEffect($i);

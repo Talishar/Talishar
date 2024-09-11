@@ -224,6 +224,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS075":
       $combatChainState[$CCS_EclecticMag] = 1;
       return "";
+    case "ROS076":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "ROS078":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       Writelog(CardLink($cardID, $cardID) . " is amping 1");
