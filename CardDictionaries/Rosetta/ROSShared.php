@@ -429,12 +429,8 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         "ROS224" => 2,
         "ROS225" => 1
       };
-      $cardsInGraveyard = SearchCount(CombineThreeSearches(
-        SearchDiscardForCard(1, "ROS223"),
-        SearchDiscardForCard(1, "ROS224"),
-        SearchDiscardForCard(1, "ROS225")
-      ));
-      GainHealth($cardsInGraveyard + $baseLife, $currentPlayer);
+      $cardsInGraveyard = SearchCount(SearchDiscardForCard($currentPlayer, "ROS223", "ROS224", "ROS225"))-1; //-1 so it doesn't count itself as the card on Talishar goes in the graveyard before it finish resolving
+      GainHealth($cardsInGraveyard + $baseLife, $currentPlayer); 
       return "";
     case "ROS212":
     case "ROS213":
