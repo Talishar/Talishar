@@ -1337,9 +1337,10 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
     }
   }
   if ($cardID == "ROS246") {
+    if($subtype == "Base") return true;
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
       $effect = explode(",", $currentTurnEffects[$i]);
-      if ($effect[0] == "ROS246-" . $uniqueID) return $effect[1];
+        if ($effect[0] == "ROS246-" . $uniqueID) return DelimStringContains($currentTurnEffects[$i], $subtype);
     }
   }
   return DelimStringContains($cardSubtype, $subtype);
@@ -2769,7 +2770,7 @@ function EvoHandling($cardID, $player, $from)
   else if (SubtypeContains($cardID, "Arms")) $slot = "Arms";
   else if (SubtypeContains($cardID, "Legs")) $slot = "Legs";
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-    if (SubtypeContains($char[$i], $slot)) {
+    if (SubtypeContains($char[$i], $slot, uniqueID:$char[$i + 11])) {
       if (SubtypeContains($char[$i], "Base") && $char[$i + 1] != 0) {
         $CombatChain->Remove(GetCombatChainIndex($char[$i], $player));
         CharacterAddSubcard($player, $i, $char[$i]);
