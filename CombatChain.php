@@ -879,7 +879,7 @@ function OnBlockResolveEffects($cardID = "")
           }
         }
         for ($k = CombatChainPieces(); $k < count($combatChain); $k += CombatChainPieces()) {
-          if (CardType($combatChain[$k]) == "A") {
+          if (DelimStringContains(CardType($combatChain[$k]), "A")) {
             ++$conditionsMet; 
             break;
           }
