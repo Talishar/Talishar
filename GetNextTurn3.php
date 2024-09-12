@@ -401,6 +401,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $response->opponentBloodDebtCount = SearchCount(SearchBanish($otherPlayer, "", "", -1, -1, "", "", true));
     $response->isOpponentBloodDebtImmune = IsImmuneToBloodDebt($otherPlayer);
   }
+  if ($theirCharacter[0] == "ROS001" || $theirCharacter[0] == "ROS002" || $theirCharacter[0] == "ROS013" || $theirCharacter[0] == "ROS014") {
+    $response->opponentEarthCount = SearchCount(SearchBanish($otherPlayer, talent:"EARTH"));
+  }
 
   //Now display their character and equipment
   $numWeapons = 0;
@@ -554,6 +557,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (TalentContains($myCharacter[0], "SHADOW")) {
     $response->myBloodDebtCount = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
     $response->amIBloodDebtImmune = IsImmuneToBloodDebt($playerID);
+  }
+  if ($myCharacter[0] == "ROS001" || $myCharacter[0] == "ROS002" || $myCharacter[0] == "ROS013" || $myCharacter[0] == "ROS014") {
+    $response->myEarthCount = SearchCount(SearchBanish($playerID, talent:"EARTH"));
   }
 
   //Now display my character and equipment
