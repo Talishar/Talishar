@@ -1140,7 +1140,6 @@ function FinalizeChainLink($chainClosed = false)
     if ($combatChain[0] == "DVR002" && SearchCharacterActive($mainPlayer, "DVR001")) DoriQuicksilverProdigyEffect();
     if (TypeContains($combatChain[0], "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) == "-") SetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain, $combatChain[0]);
   }
-  ChainLinkResolvedEffects();
   array_push($chainLinks, array());
   $CLIndex = count($chainLinks) - 1;
   for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
@@ -1200,6 +1199,7 @@ function FinalizeChainLink($chainClosed = false)
   //Clean up combat effects that were used and are one-time
   CleanUpCombatEffects();
   CopyCurrentTurnEffectsFromCombat();
+  ChainLinkResolvedEffects();
 
   //Don't change state until the end, in case it changes what effects are active
   if ($CombatChain->HasCurrentLink()) {

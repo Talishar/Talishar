@@ -1616,7 +1616,7 @@ function CurrentEffectEndTurnAbilities()
 function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = false)
 {
   global $CombatChain;
-  if (!$CombatChain->HasCurrentLink() && $SpectraTarget) return;
+  if ($SpectraTarget) return;
   if ($cardID == "AIM") return true;
   $cardID = ShiyanaCharacter($cardID);
   if ($defendingCard == "") $cardToCheck = $CombatChain->AttackCard()->ID();

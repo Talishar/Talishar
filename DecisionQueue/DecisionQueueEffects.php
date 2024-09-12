@@ -772,7 +772,7 @@ function PitchCard($player, $search="MYHAND:pitch=1&MYHAND:pitch=2&MYHAND:pitch=
 }
 
 function MeldCards($player, $cardID, $lastResult){
-  global $CS_NextNAACardGoAgain, $CS_HealthGained, $CS_ArcaneDamageDealt;
+  global $CS_NextNAACardGoAgain, $CS_HealthGained, $CS_ArcaneDamageDealt, $mainPlayer;
   $lastIndex = 0;
   if($lastResult == "Both") {
     $names = explode(" // ", CardName($cardID));
