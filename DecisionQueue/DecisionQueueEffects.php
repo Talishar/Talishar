@@ -772,14 +772,16 @@ function PitchCard($player, $search="MYHAND:pitch=1&MYHAND:pitch=2&MYHAND:pitch=
 }
 
 function MeldCards($player, $cardID, $lastResult){
-  global $CS_NextNAACardGoAgain, $CS_HealthGained, $CS_ArcaneDamageDealt, $mainPlayer;
-  $lastIndex = 0;
+  global $CS_NextNAACardGoAgain, $CS_HealthGained, $CS_ArcaneDamageDealt;
+
+  $indices = 0;
   if($lastResult == "Both") {
     $names = explode(" // ", CardName($cardID));
-    $lastIndex = 1;
+    $indices = 1;
   }
-  else $names[] = $lastResult;
-  for ($i=$lastIndex; $i >= 0 ; --$i) { 
+  else $names[] = implode(" ", explode("_", $lastResult));
+
+  for ($i=$indices; $i >= 0 ; --$i) { 
     switch ($names[$i]) {
       case "Life":
         GainHealth(1, $player);
