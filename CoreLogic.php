@@ -1173,7 +1173,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
   if (GetClassState($currentPlayer, $CS_NumWizardNonAttack) && ($cardID == "CRU174" || $cardID == "CRU175" || $cardID == "CRU176")) return true;
   if ($currentPlayer != $mainPlayer && ($cardID == "CRU165" || $cardID == "CRU166" || $cardID == "CRU167")) return true;
   if (DelimStringContains($cardType, "A") && GetClassState($currentPlayer, $CS_NextNAAInstant)) return true;
-  if (DelimStringContains($cardType, "A") && $combatChainState[$CCS_EclecticMag]) return true;
+  if (DelimStringContains($cardType, "A") && $combatChainState[$CCS_EclecticMag] && $currentPlayer == $mainPlayer) return true;
   if ($cardType == "C" || $cardType == "E" || $cardType == "W") {
     if ($index == -1) $index = GetClassState($currentPlayer, $CS_CharacterIndex);
     if (SearchCharacterEffects($currentPlayer, $index, "INSTANT")) return true;
