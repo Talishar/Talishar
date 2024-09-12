@@ -4,6 +4,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
 {
   global $CS_NumAuras, $EffectContext, $defPlayer;
   $otherPlayer = ($player == 1 ? 2 : 1);
+  if ($effectController == "-") $effectController = $player;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
   if (DelimStringContains(CardSubType($cardID), "Affliction")) {
     $otherPlayer = $player;
