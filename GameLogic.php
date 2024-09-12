@@ -281,7 +281,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($parameter == "False") PutItemIntoPlayForPlayer($lastResult, $player, mainPhase: $parameter);
         else PutItemIntoPlayForPlayer($lastResult, $player, ($parameter != "-" ? $parameter : 0));
       } else if (DelimStringContains($subtype, "Aura")) {
-        PlayAura($lastResult, $player, $parameter);
+        PlayAura($lastResult, $player, effectController:$parameter);
         PlayAbility($lastResult, "-", 0);
       }
       return $lastResult;
