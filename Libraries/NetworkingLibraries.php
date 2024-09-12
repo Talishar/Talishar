@@ -1272,6 +1272,7 @@ function EndStep()
   $turn[0] = "ENDPHASE";
   AddLayer("ENDPHASE", $mainPlayer, "-");
   AuraBeginEndPhaseTriggers();
+  OpponentsAuraBeginEndPhaseTriggers();
   BeginEndPhaseEffectTriggers();
   UndoIntimidate(1);
   UndoIntimidate(2);
@@ -2045,6 +2046,7 @@ function GetTargetOfAttack($cardID = "")
       $combatChainState[$CCS_AttackTarget] = "THEIRCHAR-0";
     }
   }
+  AddDecisionQueue("TRUCE", $mainPlayer, "-");
 }
 
 function PayAbilityAdditionalCosts($cardID, $index)
@@ -2923,7 +2925,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function ProcessAttackTarget()
 {
-  global $defPlayer;
+  global $defPlayer, $mainPlayer;
   $target = explode("-", GetAttackTarget());
   if ($target[0] == "THEIRAURAS") {
     $auras = &GetAuras($defPlayer);
