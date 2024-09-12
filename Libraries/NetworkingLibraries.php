@@ -1462,7 +1462,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $lastPlayed, $CS_PlayIndex, $CS_NumBluePlayed;
   global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumLightningPlayed;
   global $CS_PlayedAsInstant, $mainPlayer, $EffectContext, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAttacks, $CCS_NumInstantsPlayedByAttackingPlayer;
-  global $CCS_NextInstantBouncesAura, $CS_ActionsPlayed;
+  global $CCS_NextInstantBouncesAura, $CS_ActionsPlayed, $CS_AdditionalCosts;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $resources = &GetResources($currentPlayer);
@@ -1505,6 +1505,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if ($dynCostResolved >= 0) {
       SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
       $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
+      if(HasMeld($cardID) && GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") $baseCost += $baseCost;
       if (!$playingCard) $resources[1] += $dynCostResolved;
       else {
         $isAlternativeCostPaid = IsAlternativeCostPaid($cardID, $from);
@@ -1603,18 +1604,18 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     } else {
       if (GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
       else SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) . "," . $cardID);
-      if ($cardType == "A" || $cardType == "AA"){
+      if (DelimStringContains($cardType, "A") || $cardType == "AA"){
         if (GetClassState($currentPlayer, $CS_ActionsPlayed) == "-") SetClassState($currentPlayer, $CS_ActionsPlayed, $cardID);
         else SetClassState($currentPlayer, $CS_ActionsPlayed, GetClassState($currentPlayer, $CS_ActionsPlayed) . "," . $cardID);
       }
-      if ($cardType == "A" && !$canPlayAsInstant) {
+      if (DelimStringContains($cardType, "A") && !$canPlayAsInstant) {
         ResetCombatChainState();
       }
       $remorselessCount = CountCurrentTurnEffects("CRU123-DMG", $playerID);
-      if (($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID, from: $from) == "") {
+      if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID, from: $from) == "") {
         WriteLog("Player " . $playerID . " lost " . $remorselessCount . " life to " . CardLink("CRU123", "CRU123"));
         LoseHealth($remorselessCount, $playerID);
-      } elseif (($cardType == "A" || $cardType == "AA") && $remorselessCount > 0 && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A")) {
+      } elseif ((DelimStringContains($cardType, "A") || $cardType == "AA") && $remorselessCount > 0 && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A")) {
         WriteLog("Player " . $playerID . " lost " . $remorselessCount . " life to " . CardLink("CRU123", "CRU123"));
         LoseHealth($remorselessCount, $playerID);
       }
@@ -1639,7 +1640,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if (!$canPlayAsInstant || GetResolvedAbilityType($cardID, $from) == "AA" || (GetResolvedAbilityType($cardID, $from) == "A" && GetResolvedAbilityName($cardID, $from) == "Action")) {
         --$actionPoints;
       }
-      if ($cardType == "A" && $abilityType == "") {
+      if (DelimStringContains($cardType, "A") && $abilityType == "") {
         IncrementClassState($currentPlayer, $CS_NumNonAttackCards);
         if (ClassContains($cardID, "WIZARD", $currentPlayer)) {
           IncrementClassState($currentPlayer, $CS_NumWizardNonAttack);
@@ -1840,7 +1841,7 @@ function GetLayerTarget($cardID)
 
 function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
 {
-  global $currentPlayer, $CS_NumActionsPlayed, $CS_PlayIndex, $CS_AdditionalCosts;
+  global $currentPlayer, $CS_NumActionsPlayed, $CS_AdditionalCosts, $turn;
   if (IsStaticType(CardType($cardID), $from, $cardID)) {
     $names = GetAbilityNames($cardID, $index);
     if ($names != "") {
@@ -1849,6 +1850,17 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
       AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
     }
+  }
+  if(HasMeld($cardID)) {
+    $names = explode(" // ", CardName($cardID));
+    $option = "Both,".$names[0].",".$names[1];
+    if(DelimStringContains(CardType($cardID), "A") && $turn[0] != "M") {
+      $option = $names[1];
+    }
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which halves to activate");
+    AddDecisionQueue("BUTTONINPUT", $currentPlayer, $option);
+    AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+    AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
   }
   switch ($cardID) {
     case "WTR081":

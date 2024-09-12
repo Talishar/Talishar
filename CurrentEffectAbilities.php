@@ -510,6 +510,9 @@ function EffectBlockModifier($cardID, $index, $from)
       return SearchPitchForColor($mainPlayer, 3);
     case "AIO003":
       return 1;
+    case "ROS012":
+      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 4, "ATTACKHIT");
+      return 1;
     default:
       return 0;
   }
@@ -1190,21 +1193,21 @@ function CurrentEffectPlayAbility($cardID, $from)
       switch ($currentTurnEffects[$i]) {
         case "ARC209":
           $cardType = CardType($cardID);
-          if (($cardType == "A" || $cardType == "AA") && $cost >= 0) {
+          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 0) {
             ++$actionPoints;
             $remove = true;
           }
           break;
         case "ARC210":
           $cardType = CardType($cardID);
-          if (($cardType == "A" || $cardType == "AA") && $cost >= 1) {
+          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 1) {
             ++$actionPoints;
             $remove = true;
           }
           break;
         case "ARC211":
           $cardType = CardType($cardID);
-          if (($cardType == "A" || $cardType == "AA") && $cost >= 2) {
+          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 2) {
             ++$actionPoints;
             $remove = true;
           }
@@ -1815,6 +1818,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "TER019":
       return true;
+    case "ROS012":
     case "ROS119":
       return true;
     //Roguelike

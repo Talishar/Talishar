@@ -999,7 +999,7 @@ function AuraPlayAbilities($cardID, $from = "")
         }
         break;
       case "ELE175":
-        if ($cardType == "A" || $cardType == "AA") {
+        if (DelimStringContains($cardType, "A") || $cardType == "AA") {
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], $cardType, "-", $auras[$i + 6]);
         }
         break;
@@ -1012,7 +1012,7 @@ function AuraPlayAbilities($cardID, $from = "")
         }
         break;
       case "DTD233":
-        if ($cardType == "A" && $from != "PLAY") {
+        if (DelimStringContains($cardType, "A") && $from != "PLAY") {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the next non-attack action card go again");
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], $cardType, "-", $auras[$i + 6]);
         }
