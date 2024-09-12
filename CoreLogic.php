@@ -2001,7 +2001,7 @@ function EndTurnPitchHandling($player)
   }
 }
 
-function ResolveGoAgain($cardID, $player, $from)
+function ResolveGoAgain($cardID, $player, $from="")
 {
   global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer, $CS_ActionsPlayed;
   $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed));
@@ -2012,7 +2012,7 @@ function ResolveGoAgain($cardID, $player, $from)
     if (!$hasGoAgain && GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from);
   } else {
     $hasGoAgain = HasGoAgain($cardID);
-    if (GetClassState($player, $CS_NextNAACardGoAgain) && DelimStringContains($cardType, "A")) {
+    if ((GetClassState($player, $CS_NextNAACardGoAgain) && DelimStringContains($cardType, "A")) || $from == "MELD") {
       $hasGoAgain = true;
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
     }
@@ -2021,7 +2021,7 @@ function ResolveGoAgain($cardID, $player, $from)
     if ($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
     if (DelimStringContains($cardType, "A")) $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if (DelimStringContains($cardType, "A") && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
-    if (DelimStringContains($cardType, "I")) $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from);
+    if (DelimStringContains($cardType, "I")) $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
   }
   if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) {
     if(SearchCurrentTurnEffects("ROS010", $player)) {

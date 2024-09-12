@@ -789,7 +789,7 @@ function MeldCards($player, $cardID, $lastResult){
       case "Arcane Seeds":
         PlayAura("ARC112", $player);
         PlayAura("ARC112", $player);
-        SetClassState($player, $CS_NextNAACardGoAgain, 1);
+        ResolveGoAgain($cardID, $player, "MELD");
         break;
       case "Shock":
         DealArcane(1, 2, "PLAYCARD", $cardID, false, $player);
@@ -810,6 +810,7 @@ function MeldCards($player, $cardID, $lastResult){
         break;
       case "Burn Up":
         AddCurrentTurnEffect($cardID, $player);
+        ResolveGoAgain($cardID, $player, "MELD");
         break;
       case "Rampant Growth":
         $ampAmount = GetClassState($player, $CS_HealthGained);
@@ -827,6 +828,9 @@ function MeldCards($player, $cardID, $lastResult){
         break;
       case "Comet Storm":
         DealArcane(5, 2, "PLAYCARD", $cardID, false, $player);
+        break;
+      case "Regrowth":
+        ResolveGoAgain($cardID, $player, "MELD");
         break;
       default:
         break;
