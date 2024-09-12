@@ -1068,14 +1068,14 @@ function CharacterTriggerInGraveyard($cardID)
   }
 }
 
-function CharacterModifiesPlayAura($player, $isToken)
+function CharacterModifiesPlayAura($player, $isToken, $effectController)
 {
   $char = &GetPlayerCharacter($player);
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
     if (intval($char[$i + 1]) < 2) continue;
     switch ($char[$i]) {
       case "ROS001":
-        if (!$isToken) return 0;
+        if (!$isToken || ($effectController != $player)) return 0;
         // Now we need to check that we banished 8 earth cards.
         $results = SearchCount(SearchMultiZone($player, "MYBANISH:talent=EARTH"));
         if ($results >= 8) {

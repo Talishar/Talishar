@@ -388,13 +388,13 @@ function OUTAbilityCost($cardID)
           MZMoveCard($otherPlayer, "MYHAND", "MYARS,HAND,DOWN", silent:true);
         }
         PlayAura("DYN244", $currentPlayer);//Ponder
-        PlayAura($CID_BloodRotPox, $otherPlayer);
+        PlayAura($CID_BloodRotPox, $otherPlayer, effectController: $currentPlayer);
         return "";
       case "OUT160":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         CodexOfFrailty($currentPlayer);
         PlayAura("DYN244", $currentPlayer);
-        PlayAura($CID_Frailty, $otherPlayer);
+        PlayAura($CID_Frailty, $otherPlayer, effectController: $currentPlayer);
         return "";
       case "OUT161":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -411,7 +411,7 @@ function OUTAbilityCost($cardID)
           PummelHit($otherPlayer);
         }
         PlayAura("DYN244", $currentPlayer);
-        PlayAura($CID_Inertia, $otherPlayer);
+        PlayAura($CID_Inertia, $otherPlayer, effectController: $currentPlayer);
         return "";
       case "OUT165": case "OUT166": case "OUT167":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -456,9 +456,9 @@ function OUTAbilityCost($cardID)
         AddCurrentTurnEffect($cardID . "_2", $currentPlayer);
         return "";
       case "OUT192": case "OUT193": case "OUT194":
-        if(SearchAuras($CID_Frailty, $currentPlayer)) PlayAura($CID_Frailty, $defPlayer);
-        if(SearchAuras($CID_BloodRotPox, $currentPlayer)) PlayAura($CID_BloodRotPox, $defPlayer);
-        if(SearchAuras($CID_Inertia, $currentPlayer)) PlayAura($CID_Inertia, $defPlayer);
+        if(SearchAuras($CID_Frailty, $currentPlayer)) PlayAura($CID_Frailty, $defPlayer, effectController: $currentPlayer);
+        if(SearchAuras($CID_BloodRotPox, $currentPlayer)) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $currentPlayer);
+        if(SearchAuras($CID_Inertia, $currentPlayer)) PlayAura($CID_Inertia, $defPlayer, effectController: $currentPlayer);
         return "";
       case "OUT195": case "OUT196": case "OUT197":
         if(DelimStringContains($additionalCosts, "BANISH1ATTACK"))
@@ -492,7 +492,7 @@ function OUTAbilityCost($cardID)
 
   function OUTHitEffect($cardID, $from)
   {
-    global $mainPlayer, $defPlayer, $combatChain, $chainLinks, $chainLinkSummary;
+    global $mainPlayer, $defPlayer, $chainLinks, $chainLinkSummary;
     global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
     global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     switch ($cardID)
@@ -536,13 +536,13 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT024": case "OUT025": case "OUT026":
-        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT036": case "OUT037": case "OUT038":
-        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT039": case "OUT040": case "OUT041":
-        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT051":
         $char = &GetPlayerCharacter($defPlayer);
@@ -610,13 +610,13 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT118": case "OUT119": case "OUT120":
-        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT124": case "OUT125": case "OUT126":
-        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT136": case "OUT137": case "OUT138":
-        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT142":
         $numDaggerHits = 0;
@@ -634,7 +634,7 @@ function OUTAbilityCost($cardID)
         if(IsHeroAttackTarget())
         {
           AddDecisionQueue("CHOOSECARD", $mainPlayer, $CID_BloodRotPox . "," . $CID_Frailty . "," . $CID_Inertia);
-          AddDecisionQueue("PUTPLAY", $defPlayer, "-", 1);
+          AddDecisionQueue("PUTPLAY", $defPlayer, $mainPlayer, 1);
         }
         break;
       case "OUT183":

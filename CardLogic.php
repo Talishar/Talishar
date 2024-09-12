@@ -1952,7 +1952,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           break;
       }
       WriteLog(CardLink("OUT000", "OUT000") . " created a " . CardLink($auraCreated, $auraCreated));
-      PlayAura($auraCreated, $otherPlayer);
+      PlayAura($auraCreated, $otherPlayer, effectController: $player);
       break;
     case "OUT091":
     case "OUT092":
@@ -2014,15 +2014,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if (!IsAllyAttacking()) TrapTriggered($parameter);
       break;
     case "OUT171":
-      PlayAura($CID_BloodRotPox, $mainPlayer);
+      PlayAura($CID_BloodRotPox, $mainPlayer, effectController: $defPlayer);
       TrapTriggered($parameter);
       break;
     case "OUT172":
-      PlayAura($CID_Frailty, $mainPlayer);
+      PlayAura($CID_Frailty, $mainPlayer, effectController: $defPlayer);
       TrapTriggered($parameter);
       break;
     case "OUT173":
-      PlayAura($CID_Inertia, $mainPlayer);
+      PlayAura($CID_Inertia, $mainPlayer, effectController: $defPlayer);
       TrapTriggered($parameter);
       break;
     case "OUT174":

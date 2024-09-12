@@ -256,13 +256,13 @@ function EffectHitEffect($cardID, $from)
       }
       break;
     case "OUT021":
-      if (IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+      if (IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer);
       break;
     case "OUT022":
-      if (IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+      if (IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer, effectController: $mainPlayer);
       break;
     case "OUT023":
-      if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+      if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer);
       break;
     case "OUT105":
       if (IsHeroAttackTarget() && HasAimCounter()) {
@@ -273,13 +273,13 @@ function EffectHitEffect($cardID, $from)
       }
       break;
     case "OUT112":
-      if (IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+      if (IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer);
       break;
     case "OUT113":
-      if (IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+      if (IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer, effectController: $mainPlayer);
       break;
     case "OUT114":
-      if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+      if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer);
       break;
     case "OUT140":
       WriteLog("Mask of Shifting Perspectives lets you sink a card");
@@ -309,7 +309,7 @@ function EffectHitEffect($cardID, $from)
     case "OUT158":
       if (IsHeroAttackTarget()) {
         AddDecisionQueue("CHOOSECARD", $mainPlayer, $CID_BloodRotPox . "," . $CID_Frailty . "," . $CID_Inertia);
-        AddDecisionQueue("PUTPLAY", $defPlayer, "-", 1);
+        AddDecisionQueue("PUTPLAY", $defPlayer, $mainPlayer, 1);
       }
       break;
     case "OUT165":
