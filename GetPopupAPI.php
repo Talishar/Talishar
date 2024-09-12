@@ -189,7 +189,7 @@ function ChainLinkObject($link)
     {
       $attackValue = AttackValue($chainLinks[$link][$i]) + $chainLinks[$link][$i + 4];
     }
-    elseif ($chainLinks[$link][$i + 1] == $mainPlayer && (CardType($chainLinks[$link][$i]) == "AR" || CardType($chainLinks[$link][$i]) == "I"))
+    elseif ($chainLinks[$link][$i + 1] == $mainPlayer && (CardType($chainLinks[$link][$i]) == "AR" || DelimStringContains(CardType($chainLinks[$link][$i]), "I")))
     {
       $attackValue = AttackModifier($chainLinks[$link][$i]);
     }

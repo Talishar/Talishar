@@ -1583,10 +1583,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   PlayerMacrosCardPlayed();
   //We've paid resources, now pay action points if applicable
   if ($playingCard) {
-    $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
+    $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from) || (DelimStringContains($cardType, "I") && $turn[0] != "M");
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
-    if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "ROS076" && CardType($cardID) == "I" && $currentPlayer == $mainPlayer) {
+    if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "ROS076" && DelimStringContains(CardType($cardID), "I") && $currentPlayer == $mainPlayer) {
       if(SearchCurrentTurnEffects("ROS076", $mainPlayer, true)) {
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to return ".CardLink("ROS076", "ROS076")." to your hand?");
         AddDecisionQueue("NOPASS", $mainPlayer, "-");
@@ -1598,7 +1598,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $abilityType = $playType;
       PayAbilityAdditionalCosts($cardID, $index);
       ActivateAbilityEffects();
-      if (GetResolvedAbilityType($cardID, $from) == "A" && !CanPlayAsInstant($cardID, $index, $from)) {
+      if (GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
         ResetCombatChainState();
       }
     } else {
@@ -1636,7 +1636,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       ItemPlayAbilities($cardID, $from);
     }
     if (EffectPlayCardRestricted($cardID, $playType, true)) return;
-    if ($playType == "A" || $playType == "AA") {
+    if (DelimStringContains($playType, "A") || $playType == "AA") {
       if (!$canPlayAsInstant || GetResolvedAbilityType($cardID, $from) == "AA" || (GetResolvedAbilityType($cardID, $from) == "A" && GetResolvedAbilityName($cardID, $from) == "Action")) {
         --$actionPoints;
       }
@@ -1655,7 +1655,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (TalentContains($cardID, "LIGHTNING", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") {
       IncrementClassState($currentPlayer, $CS_NumLightningPlayed);
     }
-    if (($CombatChain->HasCurrentLink()) && $from != "EQUIP" && $from != "PLAY" && $playType == "I" && GetResolvedAbilityType($cardID, $from) != "I" && $mainPlayer == $currentPlayer) {
+    if (($CombatChain->HasCurrentLink()) && $from != "EQUIP" && $from != "PLAY" && DelimStringContains($playType, "I") && GetResolvedAbilityType($cardID, $from) != "I" && $mainPlayer == $currentPlayer) {
       ++$combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer];
       if ($combatChainState[$CCS_NextInstantBouncesAura] == 1) {
         MZChooseAndBounce($currentPlayer, "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T", may: true, context: "Choose an aura to return to its controller's hand");

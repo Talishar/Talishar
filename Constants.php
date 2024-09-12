@@ -422,7 +422,7 @@ function ResetCombatChainState()
       if($chainLinks[$i][$j + 2] != "1") continue;
       CombatChainCloseAbilities($chainLinks[$i][$j + 1], $chainLinks[$i][$j], $i);
       $cardType = CardType($chainLinks[$i][$j]);
-      if($cardType != "AA" && $cardType != "DR" && $cardType != "AR" && $cardType != "A" && $cardType != "B" && $cardType != "I") {
+      if($cardType != "AA" && $cardType != "DR" && $cardType != "AR" && $cardType != "A" && $cardType != "B" && !DelimStringContains($cardType, "I")) {
         if(!SubtypeContains($chainLinks[$i][$j], "Evo")) continue;
         if($chainLinks[$i][$j+3] != "HAND" && BlockValue($chainLinks[$i][$j]) >= 0) continue;
       }      if(CardType($chainLinks[$i][$j]) == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
