@@ -396,6 +396,9 @@ function EffectHitEffect($cardID, $from)
     case "AAZ004":
       Draw($mainPlayer);
       break;
+    case "ROS012":
+      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 4, "ATTACKHIT");
+      return 1;
     default:
       break;
   }
@@ -509,9 +512,6 @@ function EffectBlockModifier($cardID, $index, $from)
     case "MST085":
       return SearchPitchForColor($mainPlayer, 3);
     case "AIO003":
-      return 1;
-    case "ROS012":
-      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 4, "ATTACKHIT");
       return 1;
     default:
       return 0;
