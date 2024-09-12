@@ -2443,6 +2443,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $numRunechantsCreated = match ($parameter) {"ROS152" => 3, "ROS153" => 2, "ROS154" => 1};
       PlayAura("ARC112", $player, $numRunechantsCreated);
       break;
+    case "ROS219-1":
+      WriteLog("Congrats! You didn't kill eachother!");
+      DestroyAuraUniqueID($defPlayer, $uniqueID);
+      GainHealth(3, $defPlayer);
+      GainHealth(3, $mainPlayer);
+      break;
+    case "ROS219-2":
+      DestroyAuraUniqueID($defPlayer, $uniqueID);
+      Draw($defPlayer, false);
+      break;
     case "TER006":
       $index = FindCharacterIndex($mainPlayer, "TER006");
       AddDecisionQueue("YESNO", $mainPlayer, "to_destroy_Hard_Knuckle");

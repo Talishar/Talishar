@@ -448,6 +448,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was chosen.", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       return "";
+    case "ROS219":
+      AddNextTurnEffect($cardID, $currentPlayer);
+      return "";
     case "ROS231":
     case "ROS232":
     case "ROS233":

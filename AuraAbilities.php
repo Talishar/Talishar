@@ -659,6 +659,22 @@ function AuraBeginEndPhaseTriggers()
   $auras = array_values($auras);
 }
 
+function OpponentsAuraBeginEndPhaseTriggers()
+{
+  global $defPlayer;
+  $auras = &GetAuras($defPlayer);
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    switch ($auras[$i]) {
+      case "ROS219":
+        AddLayer("TRIGGER", $defPlayer, "ROS219-1", uniqueID: $auras[$i + 6]);
+        break;
+      default:
+        break;
+    }
+  }
+  $auras = array_values($auras);
+}
+
 function AuraBeginEndPhaseAbilities()
 {
   global $mainPlayer;

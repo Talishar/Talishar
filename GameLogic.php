@@ -2255,6 +2255,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddPlayerHand($combatChain[0], $mainPlayer, "CC");
       $CombatChain->Remove(0);
       return $lastResult;
+    case "TRUCE":
+      if (SearchCurrentTurnEffects("ROS219", $defPlayer, remove: true)){
+        $theirAuras = &GetAuras($defPlayer);
+        for ($i = count($theirAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+          switch ($theirAuras[$i]) {
+            case "ROS219":
+              AddLayer("TRIGGER", $defPlayer, "ROS219-2", uniqueID: $theirAuras[$i + 6]);
+              break;
+            default:
+              break;
+          }
+        }
+      }
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }
