@@ -1841,7 +1841,7 @@ function GetLayerTarget($cardID)
 
 function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
 {
-  global $currentPlayer, $CS_NumActionsPlayed, $CS_AdditionalCosts, $turn, $combatChainState, $CCS_EclecticMag;
+  global $currentPlayer, $CS_NumActionsPlayed, $CS_AdditionalCosts, $turn, $combatChainState, $CCS_EclecticMag, $CS_NextWizardNAAInstant;
   if (IsStaticType(CardType($cardID), $from, $cardID)) {
     $names = GetAbilityNames($cardID, $index);
     if ($names != "") {
@@ -1854,7 +1854,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   if(HasMeld($cardID)) {
     $names = explode(" // ", CardName($cardID));
     $option = "Both,".$names[0].",".$names[1];
-    if(DelimStringContains(CardType($cardID), "A") && $turn[0] != "M" && !$combatChainState[$CCS_EclecticMag]) {
+    if(DelimStringContains(CardType($cardID), "A") && $turn[0] != "M" && !$combatChainState[$CCS_EclecticMag] && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0) {
       $option = $names[1];
     }
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which halves to activate");
