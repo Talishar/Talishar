@@ -456,6 +456,8 @@ function EffectArcaneBonus($cardID)
     case "CRU172":
     case "CRU173":
       return 1;
+    case "DYN192":
+      return intval($modifier);
     case "DYN200":
       return 3;
     case "DYN201":

@@ -428,13 +428,6 @@ function CurrentEffectArcaneModifier($source, $player): int|string
         $cardType = CardType($source);
         if (DelimStringContains($cardType, "A") || $cardType == "AA") $modifier += $effectArr[1];
         break;
-      case "DYN192":
-        if (ActionsThatDoArcaneDamage($source) || ActionsThatDoXArcaneDamage($source)) {
-          if ($currentTurnEffects[$i + 1] != $player) break;
-          $modifier += $effectArr[1];
-          $remove = true;
-        }
-        break;
       case "ROS017":
         if ($currentTurnEffects[$i + 1] != $player) break;
         $modifier += $effectArr[1];
