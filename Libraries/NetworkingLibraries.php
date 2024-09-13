@@ -1059,7 +1059,7 @@ function ResolveChainLink()
     DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
     AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
   }
-
+  
   ProcessDecisionQueue();
 }
 
@@ -1130,9 +1130,9 @@ function FinalizeChainLink($chainClosed = false)
   UpdateGameState($currentPlayer);
   BuildMainPlayerGameState();
   if (DoesAttackHaveGoAgain() && !$chainClosed) {
-    if (SearchCurrentTurnEffects("ROS010", $currentPlayer)) {
+    if(SearchCurrentTurnEffects("ROS010", $currentPlayer)) {
       $count = CountCurrentTurnEffects("ROS010", $currentPlayer);
-      for ($i = 0; $i < $count; $i++) {
+      for ($i=0; $i < $count; $i++) { 
         AddLayer("TRIGGER", $currentPlayer, "ROS010");
       }
     }
@@ -1505,7 +1505,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if ($dynCostResolved >= 0) {
       SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
       $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
-      if (HasMeld($cardID) && GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") $baseCost += $baseCost;
+      if(HasMeld($cardID) && GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") $baseCost += $baseCost;
       if (!$playingCard) $resources[1] += $dynCostResolved;
       else {
         $isAlternativeCostPaid = IsAlternativeCostPaid($cardID, $from);
@@ -1586,13 +1586,13 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from) || (DelimStringContains($cardType, "I") && $turn[0] != "M");
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
-    if ($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "ROS076" && DelimStringContains(CardType($cardID), "I") && $currentPlayer == $mainPlayer) {
-      if (SearchCurrentTurnEffects("ROS076", $mainPlayer, true)) {
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to return " . CardLink("ROS076", "ROS076") . " to your hand?");
+    if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "ROS076" && DelimStringContains(CardType($cardID), "I") && $currentPlayer == $mainPlayer) {
+      if(SearchCurrentTurnEffects("ROS076", $mainPlayer, true)) {
+        AddDecisionQueue("YESNO", $mainPlayer, "if you want to return ".CardLink("ROS076", "ROS076")." to your hand?");
         AddDecisionQueue("NOPASS", $mainPlayer, "-");
         AddDecisionQueue("GONEINAFLASH", $mainPlayer, "-", 1);
       }
-    }
+    } 
     if (IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
@@ -1604,7 +1604,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     } else {
       if (GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
       else SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) . "," . $cardID);
-      if (DelimStringContains($cardType, "A") || $cardType == "AA") {
+      if (DelimStringContains($cardType, "A") || $cardType == "AA"){
         if (GetClassState($currentPlayer, $CS_ActionsPlayed) == "-") SetClassState($currentPlayer, $CS_ActionsPlayed, $cardID);
         else SetClassState($currentPlayer, $CS_ActionsPlayed, GetClassState($currentPlayer, $CS_ActionsPlayed) . "," . $cardID);
       }
@@ -1664,7 +1664,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         MZChooseAndBounce($currentPlayer, "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T", may: true, context: "Choose an aura to return to its controller's hand");
         $combatChainState[$CCS_NextInstantBouncesAura] = 0;
       }
-    }
+    } 
     PayAdditionalCosts($cardID, $from);
     ResetCardPlayed($cardID);
   }
@@ -1854,10 +1854,10 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
     }
   }
-  if (HasMeld($cardID)) {
+  if(HasMeld($cardID)) {
     $names = explode(" // ", CardName($cardID));
-    $option = "Both," . $names[0] . "," . $names[1];
-    if (DelimStringContains(CardType($cardID), "A") && $turn[0] != "M" && !$combatChainState[$CCS_EclecticMag] && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0) {
+    $option = "Both,".$names[0].",".$names[1];
+    if(DelimStringContains(CardType($cardID), "A") && $turn[0] != "M" && !$combatChainState[$CCS_EclecticMag] && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0) {
       $option = $names[1];
     }
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which halves to activate");

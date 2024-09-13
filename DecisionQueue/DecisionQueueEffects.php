@@ -792,7 +792,7 @@ function MeldCards($player, $cardID, $lastResult){
         ResolveGoAgain($cardID, $player, "MELD");
         break;
       case "Shock":
-        DealArcane(1, 2, "PLAYCARD", $cardID, false, $player, meldSide: "RIGHT");
+        DealArcane(1, 2, "PLAYCARD", $cardID, false, $player);
         break;
       case "Thistle Bloom":
         PlayAura("ARC112", $player, GetClassState($player, $CS_HealthGained));
@@ -827,7 +827,7 @@ function MeldCards($player, $cardID, $lastResult){
         AddDecisionQueue("NEGATE", $player, "<-", 1);
         break;
       case "Comet Storm":
-        DealArcane(5, 2, "PLAYCARD", $cardID, false, $player, meldSide: "LEFT");
+        DealArcane(5, 2, "PLAYCARD", $cardID, false, $player);
         break;
       case "Regrowth":
         ResolveGoAgain($cardID, $player, "MELD");

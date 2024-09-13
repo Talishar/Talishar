@@ -156,17 +156,9 @@ function ARCWizardHitEffect($cardID)
 //2: Any Target
 //3: Their Hero + Their Allies
 //4: My Hero only (For afflictions)
-function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $fromQueue = false, $player = 0, $mayAbility = false, $limitDuplicates = false, $skipHitEffect = false, $resolvedTarget = "", $nbArcaneInstance = 1, $isPassable = 0, $meldSide = "-")
+function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $fromQueue = false, $player = 0, $mayAbility = false, $limitDuplicates = false, $skipHitEffect = false, $resolvedTarget = "", $nbArcaneInstance = 1, $isPassable = 0)
 {
   global $currentPlayer, $CS_ArcaneTargetsSelected;
-  $meldCardName = "-";
-  if ($meldSide != "-") {
-    $meldNames = explode(" // ", CardName($source));
-    $meldCardName = match ($meldSide) {
-      "LEFT" => $meldNames[0],
-      "RIGHT" => $meldNames[1]
-    };
-  }
   if ($player == 0) $player = $currentPlayer;
   if ($damage > 0) {
     $damage += CurrentEffectArcaneModifier($source, $player) * $nbArcaneInstance;
@@ -183,16 +175,9 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
         PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $resolvedTarget);
       } else {
         PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        if ($mayAbility) {
-          PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-        } else {
-          PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        }
-        if ($meldCardName == "-") {
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", ($isPassable ? 1 : 0));
-        } else {
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for " . $meldCardName, ($isPassable ? 1 : 0));
-        }
+        if ($mayAbility) PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        else PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
         PrependDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
         PrependDecisionQueue("SETDQVAR", $currentPlayer, "0");
         PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
@@ -204,16 +189,9 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source, ($isPassable ? 1 : 0));
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", ($isPassable ? 1 : 0));
         AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target, ($isPassable ? 1 : 0));
-        if ($meldCardName == "-") {
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", ($isPassable ? 1 : 0));
-        } else {
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for " . $meldCardName, ($isPassable ? 1 : 0));
-        }
-        if ($mayAbility) {
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-        } else {
-          AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        }
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", ($isPassable ? 1 : 0));
+        if ($mayAbility) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       }
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
@@ -380,8 +358,8 @@ function PlayRequiresTarget($cardID)
     case "ROS190":
     case "ROS191":
       return 0;//Etchings of Arcana
-    case "ROS195":
-    case "ROS196":
+    case "ROS195": 
+    case "ROS196": 
     case "ROS197":
       return 0; //Open the Flood Gates
     case "ROS198":
@@ -985,14 +963,14 @@ function ProcessSurge($cardID, $player, $target)
         MZChooseAndDestroy($player, "THEIRARS");
       }
       break;
-    case "ROS167"://eternal inferno
-      BanishCardForPlayer("ROS167", $player, "MYDISCARD", "TT", "ROS167");
-      $discard = &GetDiscard($player);
-      for ($i = 0; $i < DiscardPieces(); $i++) {
-        array_pop($discard);
-      }
-      $banish = GetBanish($player);
-      break;
+      case "ROS167"://eternal inferno
+        BanishCardForPlayer("ROS167", $player, "MYDISCARD", "TT", "ROS167");
+        $discard = &GetDiscard($player);
+        for($i = 0; $i < DiscardPieces(); $i++){
+          array_pop($discard);
+        }
+        $banish = GetBanish($player);
+        break;
     case "ROS176":
     case "ROS177":
     case "ROS178":
@@ -1004,8 +982,8 @@ function ProcessSurge($cardID, $player, $target)
       WriteLog("Surge active, returning a sigil from graveyard to hand");
       MZMoveCard($player, "MYDISCARD:subtype=Aura;nameIncludes=Sigil", "MYHAND", may: true);
       break;
-    case "ROS195":
-    case "ROS196":
+    case "ROS195": 
+    case "ROS196": 
     case "ROS197":
       WriteLog("Surge active, drawing 2 cards");
       Draw($player);
@@ -1023,7 +1001,7 @@ function ProcessSurge($cardID, $player, $target)
       WriteLog("Surge active, returning to the bottom of the deck");
       AddBottomDeck($cardID, $player, "STACK"); //create a copy on the bottom
       $discard = &GetDiscard($player);
-      for ($i = 0; $i < DiscardPieces(); $i++) {
+      for($i = 0; $i < DiscardPieces(); $i++){
         array_pop($discard);
       }
       break;
