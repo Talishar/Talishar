@@ -1582,7 +1582,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   PlayerMacrosCardPlayed();
   //We've paid resources, now pay action points if applicable
   if ($playingCard) {
-    $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from) || (DelimStringContains($cardType, "I") && $turn[0] != "M");
+    $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from) || DelimStringContains($cardType, "I");
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
     if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "ROS076" && DelimStringContains(CardType($cardID), "I") && $currentPlayer == $mainPlayer) {
