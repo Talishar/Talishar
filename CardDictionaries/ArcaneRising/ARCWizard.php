@@ -1011,14 +1011,16 @@ function ProcessSurge($cardID, $player, $target)
       WriteLog("Surge Active, gaining 1 life and returning sigils to the deck");
       GainHealth(1, $player);
       $auras = &GetAuras($player);
+      $sigilFound = false;
       for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
         $auraName = CardName($auras[$i]);
         if (DelimStringContains($auraName, "Sigil", partial: true)) {
           AddBottomDeck($auras[$i], $player, "STACK");
           RemoveAura($player, $i, $auras[$i + 4]);
+          $sigilFound = true;
         }
       }
-      AddDecisionQueue("SHUFFLEDECK", $player, "-");
+      if($sigilFound)AddDecisionQueue("SHUFFLEDECK", $player, "-");
       break;
     case "ROS207":
     case "ROS208":
