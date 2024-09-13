@@ -697,7 +697,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
   if ($player == $mainPlayer) {
     $char = &GetPlayerCharacter($player);
     for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-      if (intval($char[$i + 1]) < 2) continue;
+      if (intval($char[$i + 1]) != 2) continue;
       switch ($char[$i]) {
         case "ROS013":
           // Now we need to check that we banished 8 earth cards.

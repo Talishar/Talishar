@@ -1072,7 +1072,7 @@ function CharacterModifiesPlayAura($player, $isToken, $effectController)
 {
   $char = &GetPlayerCharacter($player);
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-    if (intval($char[$i + 1]) < 2) continue;
+    if (intval($char[$i + 1]) != 2) continue;
     switch ($char[$i]) {
       case "ROS001":
         if (!$isToken || ($effectController != $player)) return 0;
