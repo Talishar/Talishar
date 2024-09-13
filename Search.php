@@ -975,6 +975,15 @@ function GetCombatChainIndex($cardID, $player)
   return -1;
 }
 
+function GetCombatChainCardIDIndex($cardID)
+{
+  global $combatChain;
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if ($combatChain[$i] == $cardID) return $i;
+  }
+  return -1;
+}
+
 function GetAuraIndex($cardID, $player)
 {
   $auras = &GetAuras($player);
