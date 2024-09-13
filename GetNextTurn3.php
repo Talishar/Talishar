@@ -308,14 +308,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $layerObject = new stdClass;
   $layerContents = array();
   for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
-    $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" ? $layers[$i + 2] : $layers[$i]);
+    $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" || $layers[$i] == "MELD" ? $layers[$i + 2] : $layers[$i]);
     array_push($layerContents, JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]));
   }
   $reorderableLayers = array();
   $numReorderable = 0;
   for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
     $layer = new stdClass();
-    $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" ? $layers[$i + 2] : $layers[$i]);
+    $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" || $layers[$i] == "MELD" ? $layers[$i + 2] : $layers[$i]);
     $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]);
     $layer->layerID = $i;
     $layer->isReorderable = $playerID == $mainPlayer && $i <= $dqState[8] && ($i > 0 || $numReorderable > 0);
@@ -1192,7 +1192,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
       $index = intval($option[1]);
       $card = ($option[0] != "CARDID") ? $source[$index] : $option[1];
-      if ($option[0] == "LAYER" && $card == "TRIGGER") $card = $source[$index + 2];
+      if ($option[0] == "LAYER" && ($card == "TRIGGER" || $layers[$i] == "MELD")) $card = $source[$index + 2];
 
       if ($option[0] == "THEIRBANISH") {
         $mod = explode("-", $theirBanish[$index + 1])[0];

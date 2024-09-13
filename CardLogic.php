@@ -398,6 +398,9 @@ function ContinueDecisionQueue($lastResult = "")
         } else if ($cardID == "TRIGGER") {
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
+        } else if ($cardID == "MELD") {
+          ProcessMeld($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
+          ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
           PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, isset($params[3]) ? $params[3] : "-1", isset($params[2]) ? $params[2] : -1);
@@ -2892,4 +2895,56 @@ function IsHeroActive($player)
   $char = &GetPlayerCharacter($player);
   if ($char[1] == 2) return true;
   return false;
+}
+
+function ProcessMeld($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
+{
+  global $CS_ArcaneDamageDealt, $CS_HealthGained;
+  switch ($$parameter) {
+    case "ROS005":
+      PlayAura("ARC112", $player, GetClassState($player, $CS_HealthGained));
+      break;
+    case "ROS006":
+      PlayAura("ARC112", $player);
+      PlayAura("ARC112", $player);
+      ResolveGoAgain($parameter, $player, "MELD");
+      break;
+    case "ROS011":
+      $arcaneDamageDealt = GetClassState($player, $CS_ArcaneDamageDealt);
+      AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRAURAS:minCost=0;maxCost=" . $arcaneDamageDealt . "&MYAURAS:minCost=0;maxCost=" . $arcaneDamageDealt, 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+      for($i=0; $i<$arcaneDamageDealt; ++$i) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRAURAS:type=T&MYAURAS:type=T");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $player, "-", 1);
+      }
+      break;
+    case "ROS012":
+      AddCurrentTurnEffect($parameter, $player);
+      ResolveGoAgain($parameter, $player, "MELD");
+      break;
+    case "ROS017":
+      $ampAmount = GetClassState($player, $CS_HealthGained);
+      AddCurrentTurnEffect($parameter . "," . $ampAmount, $player, "ABILITY");
+      WriteLog(CardLink($parameter, $parameter) . " is amping " . $ampAmount);
+      break;
+    case "ROS018":
+      DealArcane(4, 2, "PLAYCARD", $parameter, false, $player);
+      break;
+    case "ROS023":
+      $arcaneDamageDealt = GetClassState($player, $CS_ArcaneDamageDealt);
+      AddDecisionQueue("MULTIZONEINDICES", $player, "LAYER:type=I;minCost=0;maxCost=".$arcaneDamageDealt-1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("NEGATE", $player, "<-", 1);
+      break;
+    case "ROS024":
+      DealArcane(5, 2, "PLAYCARD", $parameter, false, $player);
+      break;
+    case "ROS253":
+      ResolveGoAgain($parameter, $player, "MELD");
+      break;
+    default:
+      break;
+  }
 }
