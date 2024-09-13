@@ -82,7 +82,7 @@ function ROSEffectAttackModifier($cardID): int
  */
 function ROSCombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer, $CombatChain;
+  global $mainPlayer;
   return match ($cardID) {
     "ROS064", "ROS065", "ROS066", "ROS012" => true,
     "ROS110", "ROS111", "ROS112" => CardType($attackID) == "AA" && CardCost($attackID) <= 1,

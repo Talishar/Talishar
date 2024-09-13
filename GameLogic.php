@@ -2257,6 +2257,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $lastResult = rtrim($lastResult, ",");
       return $lastResult;
     case "GONEINAFLASH":
+      CleanUpCombatEffects();
       AddPlayerHand($combatChain[0], $mainPlayer, "CC");
       $CombatChain->Remove(0);
       return $lastResult;
