@@ -753,7 +753,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $CombatChain->Card($index)->ModifyPower(2);
       return $lastResult;
     case "SUMMERSFALL":
-      MZMoveCard($player, "THEIRAURAS", "THEIRBOTDECK", may: true, DQContext: "Choose an aura");
+      MZChooseAndBottom($player, "THEIRAURAS&MYAURAS", may: true, context: "Choose an aura to send to the bottom of its owners deck");
       return $lastResult;
     default: return "";
   }

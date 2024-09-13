@@ -1689,6 +1689,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return MZReveal($player, $parameter, $lastResult);
     case "MZBOUNCE":
       return MZBounce($player, $lastResult);
+    case "MZBOTTOM":
+      return MZBottom($player, $lastResult);
     case "MZSWITCHPLAYER":
       return MZSwitchPlayer($lastResult);
     case "GAINRESOURCES":
@@ -2274,6 +2276,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "NEGATE":
       NegateLayer($lastResult);
+      return $lastResult;
+    case "VERDANCE":
+      DealArcane(1, 3, "ABILITY", $parameter, true);
       return $lastResult;
     default:
       return "NOTSTATIC";

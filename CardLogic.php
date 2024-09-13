@@ -2381,7 +2381,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DealArcane(1, 2, "PLAYCARD", "ROS010");
       break;
     case "ROS013": case "ROS014":
-      DealArcane(1, $target, "ABILITY", $parameter, true);
+      AddDecisionQueue("YESNO", $player, "if you want Verdance to deal arcane damage");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("VERDANCE", $player, $parameter, 1);
       break;
     case "ROS028":
       if(SearchCount(SearchBanish($player, talent: "EARTH")) >= 4){
