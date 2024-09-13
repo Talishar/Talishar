@@ -21,6 +21,8 @@ $compCCLinks = "";
 $otherFormatsLinks = "";
 $openformatccLinks = "";
 $openformatblitzLinks = "";
+$openformatllccLinks = "";
+$openformatllblitzLinks = "";
 $reactFE = "https://fe.talishar.net/game/play";
 
 $isShadowBanned = false;
@@ -102,6 +104,8 @@ if ($handle = opendir($path)) {
       else if($format == "clash") $formatName = "Clash";
       else if($format == "llcc") $formatName = "Living Legend CC";
       else if($format == "llblitz") $formatName = "Living Legend Blitz";
+      else if($format == "openformatllcc") $formatName = "Open Format Living Legend CC";
+      else if($format == "openformatllblitz") $formatName = "Open Format Living Legend Blitz";
 
       $link = "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
       $link .= "<center><table style='left:40%;'><tr><td style='vertical-align:middle;'>";
