@@ -881,28 +881,15 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
         break;
     }
   }
-
-
-  $otherAuras = &GetAuras($otherPlayer);
-  for ($i = count($otherAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    switch ($otherAuras[$i]) {
-      case "ROS077":
-        if (GetClassState($otherPlayer, $CS_DamageDealt) <= 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) <= 0 && $damage > 0) {
-          WriteLog(CardLink($otherAuras[$i], $otherAuras[$i]) . " draws a card");
-          AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], "-", $source, $otherAuras[$i + 6]);
-        }
-        break;    
-      default:
-        break;
-    }
-  }
-
   return $damage;
 }
 
 
 function AuraDamageTakenAbilities($player, $damage)
 {
+  global $CS_DamageDealt, $CS_ArcaneDamageDealt;
+  $otherPlayer = $player == 1 ? 2 : 1;
+
   $auras = &GetAuras($player);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
@@ -921,6 +908,21 @@ function AuraDamageTakenAbilities($player, $damage)
     }
     if ($remove) DestroyAura($player, $i);
   }
+  
+  $otherAuras = &GetAuras($otherPlayer);
+  for ($i = count($otherAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    switch ($otherAuras[$i]) {
+      case "ROS077":
+        if (GetClassState($otherPlayer, $CS_DamageDealt) <= 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) <= 0 && $damage > 0) {
+          WriteLog(CardLink($otherAuras[$i], $otherAuras[$i]) . " draws a card");
+          AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
+        }
+        break;    
+      default:
+        break;
+    }
+  }
+  
   return $damage;
 }
 
