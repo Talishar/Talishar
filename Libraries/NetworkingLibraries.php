@@ -2062,7 +2062,7 @@ function GetTargetOfAttack($cardID = "")
       $combatChainState[$CCS_AttackTarget] = "THEIRCHAR-0";
     }
   }
-  if(SearchAurasForCard("ROS219", $defPlayer)) AddDecisionQueue("TRUCE", $mainPlayer, "-");
+  AddDecisionQueue("TRUCE", $mainPlayer, "-");
 }
 
 function PayAbilityAdditionalCosts($cardID, $index)
