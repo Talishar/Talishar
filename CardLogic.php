@@ -2928,7 +2928,7 @@ function ProcessMeld($player, $parameter, $uniqueID = "-", $target = "-", $addit
       WriteLog(CardLink($parameter, $parameter) . " is amping " . $ampAmount);
       break;
     case "ROS018":
-      DealArcane(4, 2, "PLAYCARD", $parameter, false, $player);
+      DealArcane(4, 2, "PLAYCARD", $parameter, true, $player);
       break;
     case "ROS023":
       AddDecisionQueue("MULTIZONEINDICES", $player, "LAYER:type=I;minCost=0;maxCost=".GetClassState($player, $CS_ArcaneDamageDealt)-1);
@@ -2936,7 +2936,7 @@ function ProcessMeld($player, $parameter, $uniqueID = "-", $target = "-", $addit
       AddDecisionQueue("NEGATE", $player, "<-", 1);
       break;
     case "ROS024":
-      DealArcane(5, 2, "PLAYCARD", $parameter, false, $player);
+      DealArcane(5, 2, "PLAYCARD", $parameter, true, $player);
       break;
     case "ROS253":
       ResolveGoAgain($parameter, $player, "MELD");
