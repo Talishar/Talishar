@@ -281,7 +281,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($parameter == "False") PutItemIntoPlayForPlayer($lastResult, $player, mainPhase: $parameter);
         else PutItemIntoPlayForPlayer($lastResult, $player, ($parameter != "-" ? $parameter : 0));
       } else if (DelimStringContains($subtype, "Aura")) {
-        PlayAura($lastResult, $player, effectController:$parameter);
+        PlayAura($lastResult, $player, effectController: $parameter);
         PlayAbility($lastResult, "-", 0);
       }
       return $lastResult;
@@ -829,7 +829,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "WRITELOGCARDLINK":
       $params = explode("_", $parameter);
       Writelog(CardLink($params[0], $params[0]) . " was choosen");
-      return $lastResult;  
+      return $lastResult;
     case "WRITELOGLASTRESULT":
       WriteLog("<b>" . $lastResult . "<b> was selected.");
       return $lastResult;
@@ -913,7 +913,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($lastResult > $parameter) return "PASS";
       return $lastResult;
     case "REVERTGAMESTATEIFNULL":
-      if ($lastResult == ""){
+      if ($lastResult == "") {
         WriteLog(implode(" ", explode("_", $parameter)), highlight: true);
         RevertGamestate();
       }
@@ -1572,7 +1572,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "DECDQVARIFNOTPASS":
       if ($lastResult != "PASS") $dqVars[$parameter] = intval($dqVars[$parameter]) - 1;
-      return $lastResult;   
+      return $lastResult;
     case "DIVIDE":
       return floor($lastResult / $parameter);
     case "DQVARPASSIFSET":
@@ -1636,7 +1636,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode(",", $parameter);
       return ModalAbilities($player, $params[0], $lastResult, isset($params[1]) ? $params[1] : -1);
     case "MELD":
-      MeldCards($player, $parameter, $lastResult); 
+      MeldCards($player, $parameter, $lastResult);
       return $lastResult;
     case "SCOUR":
       WriteLog("Scour deals " . $parameter . " arcane damage");
@@ -2261,7 +2261,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $CombatChain->Remove(0);
       return $lastResult;
     case "TRUCE":
-      if (SearchCurrentTurnEffects("ROS219", $defPlayer, remove: true)){
+      if (SearchCurrentTurnEffects("ROS219", $defPlayer, remove: true)) {
         $theirAuras = &GetAuras($defPlayer);
         for ($i = count($theirAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
           switch ($theirAuras[$i]) {
