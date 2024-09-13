@@ -1644,7 +1644,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       ) {
           --$actionPoints;
       }
-      if (DelimStringContains($cardType, "A") && $abilityType == "") {
+      if (DelimStringContains($cardType, "A") && $abilityType == "" && GetResolvedAbilityType($cardID, $from) != "I") {
         IncrementClassState($currentPlayer, $CS_NumNonAttackCards);
         if (ClassContains($cardID, "WIZARD", $currentPlayer)) {
           IncrementClassState($currentPlayer, $CS_NumWizardNonAttack);
