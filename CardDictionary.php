@@ -3884,19 +3884,10 @@ function HasAttackLayer()
   return false;
 }
 
-function HasMeld($cardID){
-  switch ($cardID) {
-    case "ROS005":
-    case "ROS006":
-    case "ROS011":
-    case "ROS012":
-    case "ROS017":
-    case "ROS018":
-    case "ROS023":
-    case "ROS024":
-    case "ROS253":
-      return true;
-    default:
-      return false;
-  }  
+function HasMeld($cardID): bool
+{
+  return match ($cardID) {
+    "ROS005", "ROS006", "ROS011", "ROS012", "ROS017", "ROS018", "ROS023", "ROS024", "ROS253" => true,
+    default => false
+  };
 }
