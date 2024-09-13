@@ -3381,7 +3381,7 @@ function SpellVoidAmount($cardID, $player): int
     "ROS211" => SearchCount(SearchMultiZone($player, "MYCHAR:type=E;nameIncludes=Arcanite")),
     "ELE173", "MON188", "MON061" => 2,
     "MON090", "MON302", "MON400", "MON401", "MON402", "DYN246", "DYN236", "DYN237", "DYN238", "DYN239" => 1,
-    "ROS239", "ROS240", "ROS241", "ROS242" => 0,
+    "ROS239", "ROS240", "ROS241", "ROS242" => 1,
     default => 0
   };
 }
