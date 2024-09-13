@@ -519,8 +519,9 @@ function ActionsThatDoXArcaneDamage($cardID)
   }
 }
 
-function ActionsThatDoArcaneDamage($cardID)
+function ActionsThatDoArcaneDamage($cardID, $playerID)
 {
+  global $CS_AdditionalCosts;
   switch ($cardID) {
     case "ARC119":
     case "ARC120":
@@ -610,6 +611,11 @@ function ActionsThatDoArcaneDamage($cardID)
       return true;
     case "HVY252":
       return true;
+    case "ROS011":
+    case "ROS012":
+    case "ROS018":
+    case "ROS024":
+    case "ROS023":
     case "ROS166":
     case "ROS167":
     case "ROS170":
@@ -642,6 +648,7 @@ function ActionsThatDoArcaneDamage($cardID)
     case "ROS204":
     case "ROS205":
     case "ROS206":
+    case "ROS253":
       return true;
     default:
       return false;
