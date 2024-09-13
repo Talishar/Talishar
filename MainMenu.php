@@ -120,9 +120,11 @@ if ($canSeeQueue) {
   echo ("<option value='cc' " . ($defaultFormat == 0 ? " selected" : "") . ">Classic Constructed</option>");
   echo ("<option value='compcc'" . ($defaultFormat == 1 ? " selected" : "") . ">Competitive CC</option>");
   echo ("<option value='commoner'" . ($defaultFormat == 5 ? " selected" : "") . ">Commoner</option>");
-  echo ("<option value='clash'" . ($defaultFormat == 6 ? " selected" : "") . ">Clash</option>");
+  echo ("<option value='clash'" . ($defaultFormat == -1 ? " selected" : "") . ">Clash</option>");
   echo ("<option value='llcc'" . ($defaultFormat == 8 ? " selected" : "") . ">Living Legend CC</option>");
   echo ("<option value='llblitz'" . ($defaultFormat == 9 ? " selected" : "") . ">Living Legend Blitz</option>");
+  echo ("<option value='openformatllcc'" . ($defaultFormat == 11 ? " selected" : "") . ">Open Format Living Legend CC</option>");
+  echo ("<option value='openformatllblitz'" . ($defaultFormat == 12 ? " selected" : "") . ">Open Format Living Legend Blitz</option>");
 }
 echo ("<option value='openformatcc'" . ($defaultFormat == 4 ? " selected" : "") . ">Open Format</option>");
 echo ("</select>");

@@ -472,7 +472,9 @@ function FormatCode($format)
     case "llcc": return 8;
     case "llblitz": return 9;
     case "openformatblitz": return 10;
-    case "clash": return 11;
+    case "clash": return -1;
+    case "openformatllcc": return 11;
+    case "openformatllblitz": return 12;
     default: return -1;
   }
 }
@@ -492,7 +494,9 @@ function FormatName($formatCode)
     case 8: return "llcc";
     case 9: return "llblitz";
     case 10: return "openformatblitz";
-    case 11: return "clash";
+    case -1: return "clash";
+    case 11: return "openformatllcc";
+    case 12: return "openformatllblitz";
     default: return "-";
   }
 }
