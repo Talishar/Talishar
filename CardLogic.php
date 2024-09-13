@@ -2415,12 +2415,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "ROS072": //flash of brilliance
       $hand = SearchHand($player, talent: "LIGHTNING");
-      if (count(explode(",", $hand)) > 1) {
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_discard_a_lightning_card");
-        AddDecisionQueue("NOPASS", $player, "-", 1);
+      if (count(explode(",", $hand)) > 0) {
         AddDecisionQueue("FINDINDICES", $player, "HAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a lightning card from your hand to discard.", 1);
-        MZMoveCard($player, "MYHAND:talent=LIGHTNING", "MYDISCARD", isReveal:true, isSubsequent:true);
+        MZMoveCard($player, "MYHAND:talent=LIGHTNING", "MYDISCARD", may:true, isReveal:true, isSubsequent:true);
         AddDecisionQueue("SETDQCONTEXT", $player, "Return an Aura to your hand.", 1);
         MZMoveCard($player, "MYAURAS", "MYHAND", isReveal:true, isSubsequent:true);
       }
