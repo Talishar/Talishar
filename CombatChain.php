@@ -664,7 +664,6 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       if (!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
   }
-  WriteLog("Blocked from hand: " . $blockedFromHand);
   if ($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "ELE174", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer))) {
     AddLayer("TRIGGER", $mainPlayer, "ELE174");
   }
