@@ -2789,7 +2789,7 @@ function ItemDefaultHoldTriggerState($cardID)
 function IsCharacterActive($player, $index)
 {
   $character = &GetPlayerCharacter($player);
-  return $character[$index + 9] == "1";
+  return $character[$index + 9] == "1" || $character[$index + 9] == "2";
 }
 
 function HasReprise($cardID)
