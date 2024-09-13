@@ -2931,8 +2931,7 @@ function ProcessMeld($player, $parameter, $uniqueID = "-", $target = "-", $addit
       DealArcane(4, 2, "PLAYCARD", $parameter, false, $player);
       break;
     case "ROS023":
-      $arcaneDamageDealt = GetClassState($player, $CS_ArcaneDamageDealt);
-      AddDecisionQueue("MULTIZONEINDICES", $player, "LAYER:type=I;minCost=0;maxCost=".$arcaneDamageDealt-1);
+      AddDecisionQueue("MULTIZONEINDICES", $player, "LAYER:type=I;minCost=0;maxCost=".GetClassState($player, $CS_ArcaneDamageDealt)-1);
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("NEGATE", $player, "<-", 1);
       break;

@@ -593,7 +593,14 @@ function PlayBlockModifier($cardID)
 
 function OnDefenseReactionResolveEffects($from, $cardID)
 {
-  global $currentTurnEffects, $mainPlayer, $defPlayer, $combatChain;
+  global $currentTurnEffects, $mainPlayer, $defPlayer, $combatChain, $CS_NumBlueDefended;
+  $blockedFromHand = 0;
+  for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+    if(DelimStringContains(CardType($combatChain[$i]), "DR")) {
+      if (ColorContains($combatChain[$i], 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
+      if ($combatChain[$i + 2] == "HAND") ++$blockedFromHand;
+    }
+  }
   switch ($combatChain[0]) {
     case "CRU051":
     case "CRU052":
@@ -656,6 +663,10 @@ function OnDefenseReactionResolveEffects($from, $cardID)
     case "OUT173":
       if (!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
+  }
+  WriteLog("Blocked from hand: " . $blockedFromHand);
+  if ($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "ELE174", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer))) {
+    AddLayer("TRIGGER", $mainPlayer, "ELE174");
   }
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = false;
