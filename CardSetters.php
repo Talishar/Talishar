@@ -530,7 +530,7 @@ function ConsumeArcaneBonus($player)
   $totalBonus = 0;
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = 0;
-    if ($currentTurnEffects[$i + 1] == $player && $currentTurnEffects[$i + 2] == $uniqueID) {
+    if ($currentTurnEffects[$i + 1] == $player && ($currentTurnEffects[$i + 2] == $uniqueID || DelimStringContains($uniqueID, "MELD", true))) {
       $bonus = EffectArcaneBonus($currentTurnEffects[$i]);
       if ($bonus > 0) {
         $totalBonus += $bonus;
