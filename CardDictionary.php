@@ -2748,6 +2748,10 @@ function CharacterDefaultActiveState($cardID)
     case "TER006":
       return 1;
     case "ROS211":
+    case "ROS239":
+    case "ROS240":
+    case "ROS241":
+    case "ROS242":
       return 1;
     default:
       return 2;

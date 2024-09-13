@@ -459,9 +459,6 @@ function CurrentEffectArcaneModifier($source, $player): int|string
       case "ROS015-AMP":
       case "ROS168"://sigil of aether
       case "ROS078":
-      case "ROS170":
-      case "ROS171":
-      case "ROS172":
       case "ROS186":
       case "ROS187":
       case "ROS188":
@@ -474,6 +471,7 @@ function CurrentEffectArcaneModifier($source, $player): int|string
         $modifier += 1;
         $remove = true;
         break;
+
       case "ROS021":
         if ($currentTurnEffects[$i + 1] != $player) break;
         $modifier += $effectArr[1];
@@ -488,6 +486,12 @@ function CurrentEffectArcaneModifier($source, $player): int|string
         if ($currentTurnEffects[$i + 1] != $player) break;
         $modifier += 1;
         $remove = true;
+        break;
+      case "ROS170":
+      case "ROS171":
+      case "ROS172":
+        if ($currentTurnEffects[$i + 1] != $player) break;
+        $modifier += 1;
         break;
       case "ROS192":
       case "ROS193":
@@ -537,8 +541,9 @@ function ActionsThatDoXArcaneDamage($cardID)
   }
 }
 
-function ActionsThatDoArcaneDamage($cardID)
+function ActionsThatDoArcaneDamage($cardID, $playerID)
 {
+  global $CS_AdditionalCosts;
   switch ($cardID) {
     case "ARC119":
     case "ARC120":
@@ -628,6 +633,11 @@ function ActionsThatDoArcaneDamage($cardID)
       return true;
     case "HVY252":
       return true;
+    case "ROS011":
+    case "ROS012":
+    case "ROS018":
+    case "ROS024":
+    case "ROS023":
     case "ROS166":
     case "ROS167":
     case "ROS170":
@@ -660,6 +670,7 @@ function ActionsThatDoArcaneDamage($cardID)
     case "ROS204":
     case "ROS205":
     case "ROS206":
+    case "ROS253":
       return true;
     default:
       return false;

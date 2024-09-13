@@ -1002,7 +1002,7 @@ function AuraPlayAbilities($cardID, $from = "")
         }
         break;
       case "ELE175":
-        if (DelimStringContains($cardType, "A") || $cardType == "AA") {
+        if ((DelimStringContains($cardType, "A") || $cardType == "AA") && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A")) {
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], $cardType, "-", $auras[$i + 6]);
         }
         break;

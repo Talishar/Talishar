@@ -1479,7 +1479,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-");
       SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
-      if (ActionsThatDoArcaneDamage($cardID) || ActionsThatDoXArcaneDamage($cardID)) AssignArcaneBonus($currentPlayer);
+      if (ActionsThatDoArcaneDamage($cardID, $currentPlayer) || ActionsThatDoXArcaneDamage($cardID)) AssignArcaneBonus($currentPlayer);
       else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
     }
     //CR 5.1.2 Announce (CR 2.0)
@@ -1638,7 +1638,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (EffectPlayCardRestricted($cardID, $playType, true)) return;
     if (DelimStringContains($playType, "A") || $playType == "AA") {
       if (!$canPlayAsInstant || GetResolvedAbilityType($cardID, $from) == "AA" || (GetResolvedAbilityType($cardID, $from) == "A" && GetResolvedAbilityName($cardID, $from) == "Action")) {
-        --$actionPoints;
+        if(GetClassState($currentPlayer, $CS_AdditionalCosts) != "Shock" && GetClassState($currentPlayer, $CS_AdditionalCosts) != "Life") //Meld Card Only instant side
+        {
+          --$actionPoints;
+        }
       }
       if (DelimStringContains($cardType, "A") && $abilityType == "") {
         IncrementClassState($currentPlayer, $CS_NumNonAttackCards);
@@ -2013,12 +2016,12 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       $names = GetAbilityNames($cardID, $index);
       if (SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
-      } elseif ($from != "HAND") {
-        AddDecisionQueue("SETABILITYTYPEACTION", $currentPlayer, $cardID);
-      } else {
+      } elseif ($names != "" && $from == "HAND"){
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or the action");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
         AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
+      } else{
+        AddDecisionQueue("SETABILITYTYPEACTION", $currentPlayer, $cardID);
       }
       break;
     default:
