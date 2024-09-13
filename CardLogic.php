@@ -1023,6 +1023,7 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
     case "OUT188_1":
     case "AAZ004":
     case "DTD229-HIT":
+    case "ROS012":
     case "ROS119":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
@@ -1951,7 +1952,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           break;
       }
       WriteLog(CardLink("OUT000", "OUT000") . " created a " . CardLink($auraCreated, $auraCreated));
-      PlayAura($auraCreated, $otherPlayer);
+      PlayAura($auraCreated, $otherPlayer, effectController: $player);
       break;
     case "OUT091":
     case "OUT092":
@@ -2013,15 +2014,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if (!IsAllyAttacking()) TrapTriggered($parameter);
       break;
     case "OUT171":
-      PlayAura($CID_BloodRotPox, $mainPlayer);
+      PlayAura($CID_BloodRotPox, $mainPlayer, effectController: $defPlayer);
       TrapTriggered($parameter);
       break;
     case "OUT172":
-      PlayAura($CID_Frailty, $mainPlayer);
+      PlayAura($CID_Frailty, $mainPlayer, effectController: $defPlayer);
       TrapTriggered($parameter);
       break;
     case "OUT173":
-      PlayAura($CID_Inertia, $mainPlayer);
+      PlayAura($CID_Inertia, $mainPlayer, effectController: $defPlayer);
       TrapTriggered($parameter);
       break;
     case "OUT174":
@@ -2380,7 +2381,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DealArcane(1, 2, "PLAYCARD", "ROS010");
       break;
     case "ROS013": case "ROS014":
-      DealArcane(1, $target, "ABILITY", $parameter, true);
+      AddDecisionQueue("YESNO", $player, "if you want " . CardLink($parameter, $parameter) . " to deal arcane damage");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("VERDANCE", $player, $parameter, 1);
       break;
     case "ROS028":
       if(SearchCount(SearchBanish($player, talent: "EARTH")) >= 4){

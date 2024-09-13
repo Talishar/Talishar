@@ -450,7 +450,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     $countScramblePulse += CountCurrentTurnEffects("DYN097", $mainPlayer);
     $blockModifier -= 1 * $countScramblePulse;
   }
-  if (SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
+  if (SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || DelimStringContains($cardType, "A")) && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
   if (SearchCurrentTurnEffects("EVO146", $defPlayer) && SubtypeContains($cardID, "Evo", $defPlayer) && ($from == "EQUIP" || $from == "CC")) $blockModifier += CountCurrentTurnEffects("EVO146", $defPlayer);
   $defAuras = &GetAuras($defPlayer);
   $attackID = $CombatChain->AttackCard()->ID();
@@ -459,7 +459,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     if ($defAuras[$i] == "WTR073" && CardCost($cardID) >= 3) $blockModifier += 3;
     if ($defAuras[$i] == "WTR074" && CardCost($cardID) >= 3) $blockModifier += 2;
     if ($defAuras[$i] == "WTR046" && $cardType == "E") $blockModifier += 1;
-    if ($defAuras[$i] == "ELE109" && $cardType == "A") $blockModifier += 1;
+    if ($defAuras[$i] == "ELE109" && DelimStringContains($cardType, "A")) $blockModifier += 1;
     if ($defAuras[$i] == "HVY068" && $cardType == "AA") $blockModifier += 3;
     if ($defAuras[$i] == "HVY069" && $cardType == "AA") $blockModifier += 2;
     if ($defAuras[$i] == "HVY070" && $cardType == "AA") $blockModifier += 1;
@@ -879,7 +879,7 @@ function OnBlockResolveEffects($cardID = "")
           }
         }
         for ($k = CombatChainPieces(); $k < count($combatChain); $k += CombatChainPieces()) {
-          if (CardType($combatChain[$k]) == "A") {
+          if (DelimStringContains(CardType($combatChain[$k]), "A")) {
             ++$conditionsMet; 
             break;
           }
@@ -1042,7 +1042,7 @@ function OnBlockEffects($index, $from)
           break;
         case "OUT007":
         case "OUT008":
-          if ($cardType == "A") $chainCard->ModifyDefense(-1);
+          if (DelimStringContains($cardType, "A")) $chainCard->ModifyDefense(-1);
           if (intval(substr($chainCard->ID(), 3, 3)) > 400 && $chainCard->ID() != "EVO410b") {
             $set = substr($chainCard->ID(), 0, 3);
             $number = intval(substr($chainCard->ID(), 3, 3)) - 400;
@@ -1058,7 +1058,7 @@ function OnBlockEffects($index, $from)
           if ($cardType == "E" || DelimStringContains($cardSubtype, "Evo")) $chainCard->ModifyDefense(-1);
           break;
         case $Card_BlockBanner:
-          if ($cardType == "A" || $cardType == "AA") {
+          if (DelimStringContains($cardType, "A") || $cardType == "AA") {
             $chainCard->ModifyDefense(1);
             $remove = true;
           }
@@ -1329,7 +1329,7 @@ function IsFusionActive()
 
 function CombatChainClosedTriggers()
 {
-  global $chainLinks, $mainPlayer, $defPlayer, $CS_LifeLost;
+  global $chainLinks, $mainPlayer, $defPlayer, $CS_HealthLost;
   for ($i = 0; $i < count($chainLinks); ++$i) {
     for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if ($chainLinks[$i][$j + 1] != $mainPlayer) continue;
@@ -1342,19 +1342,19 @@ function CombatChainClosedTriggers()
           }
           break;
         case "DTD137":
-          if (GetClassState($mainPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($mainPlayer, "MYHAND", "ARS,-");
-          if (GetClassState($defPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($defPlayer, "MYHAND", "ARS,-");
+          if (GetClassState($mainPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($mainPlayer, "MYHAND", "ARS,-");
+          if (GetClassState($defPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($defPlayer, "MYHAND", "ARS,-");
           break;
         case "DTD138":
-          if (GetClassState($mainPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($mainPlayer, "MYARS", "ARS,-");
-          if (GetClassState($defPlayer, $CS_LifeLost) > 0) MZChooseAndBanish($defPlayer, "MYARS", "ARS,-");
+          if (GetClassState($mainPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($mainPlayer, "MYARS", "ARS,-");
+          if (GetClassState($defPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($defPlayer, "MYARS", "ARS,-");
           break;
         case "DTD139":
-          if (GetClassState($mainPlayer, $CS_LifeLost) > 0) {
+          if (GetClassState($mainPlayer, $CS_HealthLost) > 0) {
             $deck = new Deck($mainPlayer);
             $deck->BanishTop();
           }
-          if (GetClassState($defPlayer, $CS_LifeLost) > 0) {
+          if (GetClassState($defPlayer, $CS_HealthLost) > 0) {
             $deck = new Deck($defPlayer);
             $deck->BanishTop();
           }
@@ -1363,22 +1363,22 @@ function CombatChainClosedTriggers()
         case "DTD147":
         case "DTD148":
           $numRunechant = 0;
-          if (GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numRunechant;
-          if (GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numRunechant;
+          if (GetClassState($mainPlayer, $CS_HealthLost) > 0) ++$numRunechant;
+          if (GetClassState($defPlayer, $CS_HealthLost) > 0) ++$numRunechant;
           if ($numRunechant > 0) PlayAura("ARC112", $mainPlayer, $numRunechant);
           break;
         case "DTD143":
         case "DTD144":
         case "DTD145":
           $numLife = 0;
-          if (GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numLife;
-          if (GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numLife;
+          if (GetClassState($mainPlayer, $CS_HealthLost) > 0) ++$numLife;
+          if (GetClassState($defPlayer, $CS_HealthLost) > 0) ++$numLife;
           if ($numLife > 0) GainHealth($numLife, $mainPlayer);
           break;
         case "MST237":
           $numEloquence = 0;
-          if (GetClassState($mainPlayer, $CS_LifeLost) > 0) ++$numEloquence;
-          if (GetClassState($defPlayer, $CS_LifeLost) > 0) ++$numEloquence;
+          if (GetClassState($mainPlayer, $CS_HealthLost) > 0) ++$numEloquence;
+          if (GetClassState($defPlayer, $CS_HealthLost) > 0) ++$numEloquence;
           if ($numEloquence > 0) PlayAura("DTD233", $mainPlayer);
           break;
         default:

@@ -302,7 +302,7 @@ $CS_PlayedAsInstant = 62; //If the card was played as an instant -- some things 
 $CS_AnotherWeaponGainedGoAgain = 63;
 $CS_NumContractsCompleted = 64;
 $CS_HitsWithSword = 65;
-$CS_LifeLost = 66;
+$CS_HealthLost = 66;
 $CS_NumCranked = 67;
 $CS_NumItemsDestroyed = 68;
 $CS_NumCrouchingTigerPlayedThisTurn = 69;
@@ -321,6 +321,7 @@ $CS_NumLightningPlayed = 81;
 $CS_NumInstantPlayed = 82;
 $CS_ActionsPlayed = 83;
 $CS_NumEarthBanished = 84;
+$CS_HealthGained = 85;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -421,7 +422,7 @@ function ResetCombatChainState()
       if($chainLinks[$i][$j + 2] != "1") continue;
       CombatChainCloseAbilities($chainLinks[$i][$j + 1], $chainLinks[$i][$j], $i);
       $cardType = CardType($chainLinks[$i][$j]);
-      if($cardType != "AA" && $cardType != "DR" && $cardType != "AR" && $cardType != "A" && $cardType != "B" && $cardType != "I") {
+      if($cardType != "AA" && $cardType != "DR" && $cardType != "AR" && $cardType != "A" && $cardType != "B" && !DelimStringContains($cardType, "I")) {
         if(!SubtypeContains($chainLinks[$i][$j], "Evo")) continue;
         if($chainLinks[$i][$j+3] != "HAND" && BlockValue($chainLinks[$i][$j]) >= 0) continue;
       }      if(CardType($chainLinks[$i][$j]) == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
@@ -540,9 +541,9 @@ function ResetMainClassState()
   global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
   global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks, $CS_ArcaneDamageDealt, $CS_LayerPlayIndex, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumBoostPlayed;
   global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain, $CS_NumContractsCompleted, $CS_HitsWithSword, $CS_NumCardsDrawn;
-  global $CS_LifeLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrouchingTigerPlayedThisTurn, $CS_NumClashesWon;
+  global $CS_HealthLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrouchingTigerPlayedThisTurn, $CS_NumClashesWon;
   global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CS_NumInstantPlayed;
-  global $CS_ActionsPlayed, $CS_NumEarthBanished;
+  global $CS_ActionsPlayed, $CS_NumEarthBanished, $CS_HealthGained;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -609,7 +610,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumContractsCompleted] = 0;
   $mainClassState[$CS_HitsWithSword] = 0;
   $mainClassState[$CS_NumCardsDrawn] = 0;
-  $mainClassState[$CS_LifeLost] = 0;
+  $mainClassState[$CS_HealthLost] = 0;
   $mainClassState[$CS_NumCranked] = 0;
   $mainClassState[$CS_NumItemsDestroyed] = 0;
   $mainClassState[$CS_NumCrouchingTigerPlayedThisTurn] = 0;
@@ -628,6 +629,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumInstantPlayed] = 0;
   $mainClassState[$CS_ActionsPlayed] = "-";
   $mainClassState[$CS_NumEarthBanished] = 0;
+  $mainClassState[$CS_HealthGained] = 0;
 }
 
 function ResetCardPlayed($cardID)

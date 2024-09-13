@@ -281,7 +281,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($parameter == "False") PutItemIntoPlayForPlayer($lastResult, $player, mainPhase: $parameter);
         else PutItemIntoPlayForPlayer($lastResult, $player, ($parameter != "-" ? $parameter : 0));
       } else if (DelimStringContains($subtype, "Aura")) {
-        PlayAura($lastResult, $player);
+        PlayAura($lastResult, $player, effectController:$parameter);
         PlayAbility($lastResult, "-", 0);
       }
       return $lastResult;
@@ -1025,7 +1025,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $AAIndices = "";
       for ($i = 0; $i < count($cards); ++$i) {
         $cardType = CardType($cards[$i]);
-        if ($cardType == "A") ++$numNAA;
+        if (DelimStringContains($cardType, "A")) ++$numNAA;
         else if ($cardType == "AA") {
           ++$numAA;
           if ($AAIndices != "") $AAIndices .= ",";
@@ -1588,7 +1588,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($cardType == "AA") {
         WriteLog(CardLink("EVR156", "EVR156") . " gained go again");
         GiveAttackGoAgain();
-      } else if ($cardType == "A") {
+      } else if (DelimStringContains($cardType, "A")) {
         WriteLog(CardLink("EVR156", "EVR156") . " draw a card");
         Draw($player);
       } else WriteLog(CardLink("EVR156", "EVR156") . "... did not hit the mark");
@@ -1635,6 +1635,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MODAL":
       $params = explode(",", $parameter);
       return ModalAbilities($player, $params[0], $lastResult, isset($params[1]) ? $params[1] : -1);
+    case "MELD":
+      MeldCards($player, $parameter, $lastResult); 
+      return $lastResult;
     case "SCOUR":
       WriteLog("Scour deals " . $parameter . " arcane damage");
       DealArcane($parameter, 0, "PLAYCARD", "EVR124", true, $player, resolvedTarget: ($player == 1 ? 2 : 1));
@@ -1686,6 +1689,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return MZReveal($player, $parameter, $lastResult);
     case "MZBOUNCE":
       return MZBounce($player, $lastResult);
+    case "MZBOTTOM":
+      return MZBottom($player, $lastResult);
     case "MZSWITCHPLAYER":
       return MZSwitchPlayer($lastResult);
     case "GAINRESOURCES":
@@ -2268,6 +2273,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
         }
       }
+      return $lastResult;
+    case "NEGATE":
+      NegateLayer($lastResult);
+      return $lastResult;
+    case "VERDANCE":
+      DealArcane(1, 3, "ABILITY", $parameter, true);
       return $lastResult;
     default:
       return "NOTSTATIC";

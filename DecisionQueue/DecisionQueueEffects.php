@@ -753,7 +753,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $CombatChain->Card($index)->ModifyPower(2);
       return $lastResult;
     case "SUMMERSFALL":
-      MZMoveCard($player, "THEIRAURAS", "THEIRBOTDECK", may: true, DQContext: "Choose an aura");
+      MZChooseAndBottom($player, "THEIRAURAS&MYAURAS", may: true, context: "Choose an aura to send to the bottom of its owners deck");
       return $lastResult;
     default: return "";
   }
@@ -769,4 +769,71 @@ function PitchCard($player, $search="MYHAND:pitch=1&MYHAND:pitch=2&MYHAND:pitch=
   PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to pitch", 1);
   PrependDecisionQueue("MZOP", $player, "GETCARDINDICES", 1);
   PrependDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
+}
+
+function MeldCards($player, $cardID, $lastResult){
+  global $CS_NextNAACardGoAgain, $CS_HealthGained, $CS_ArcaneDamageDealt;
+
+  $indices = 0;
+  if($lastResult == "Both") {
+    $names = explode(" // ", CardName($cardID));
+    $indices = 1;
+  }
+  else $names[] = implode(" ", explode("_", $lastResult));
+
+  for ($i=$indices; $i >= 0 ; --$i) { 
+    switch ($names[$i]) {
+      case "Life":
+        GainHealth(1, $player);
+        break;
+      case "Arcane Seeds":
+        PlayAura("ARC112", $player);
+        PlayAura("ARC112", $player);
+        ResolveGoAgain($cardID, $player, "MELD");
+        break;
+      case "Shock":
+        DealArcane(1, 2, "PLAYCARD", $cardID, false, $player);
+        break;
+      case "Thistle Bloom":
+        PlayAura("ARC112", $player, GetClassState($player, $CS_HealthGained));
+        break;
+      case "Vaporize":
+        $arcaneDamageDealt = GetClassState($player, $CS_ArcaneDamageDealt);
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRAURAS:minCost=0;maxCost=" . $arcaneDamageDealt . "&MYAURAS:minCost=0;maxCost=" . $arcaneDamageDealt, 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $player, "-", 1);
+        for($i=0; $i<$arcaneDamageDealt; ++$i) {
+          AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRAURAS:type=T&MYAURAS:type=T");
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+          AddDecisionQueue("MZDESTROY", $player, "-", 1);
+        }
+        break;
+      case "Burn Up":
+        AddCurrentTurnEffect($cardID, $player);
+        ResolveGoAgain($cardID, $player, "MELD");
+        break;
+      case "Rampant Growth":
+        $ampAmount = GetClassState($player, $CS_HealthGained);
+        AddCurrentTurnEffect($cardID . "," . $ampAmount, $player, "ABILITY");
+        WriteLog(CardLink($cardID, $cardID) . " is amping " . $ampAmount);
+        break;
+      case "Pulsing Aether":
+        DealArcane(4, 2, "PLAYCARD", $cardID, false, $player);
+        break;
+      case "Null":
+        $arcaneDamageDealt = GetClassState($player, $CS_ArcaneDamageDealt);
+        AddDecisionQueue("MULTIZONEINDICES", $player, "LAYER:type=I;minCost=0;maxCost=".$arcaneDamageDealt-1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("NEGATE", $player, "<-", 1);
+        break;
+      case "Comet Storm":
+        DealArcane(5, 2, "PLAYCARD", $cardID, false, $player);
+        break;
+      case "Regrowth":
+        ResolveGoAgain($cardID, $player, "MELD");
+        break;
+      default:
+        break;
+    }
+  }
 }

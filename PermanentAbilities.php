@@ -416,7 +416,7 @@ function PermanentPlayAbilities($attackID, $from="")
         }
         break;
       case "ROGUE528":
-        if($cardType == "A") ++$actionPoints;
+        if(DelimStringContains($cardType, "A")) ++$actionPoints;
         break;
 
       case "ROGUE607":

@@ -331,7 +331,7 @@ function ArsenalPlayCardAbilities($cardID)
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
     switch ($arsenal[$i]) {
       case "MON407":
-        if ($arsenal[$i + 1] == "UP" && $cardType == "A") LordSutcliffeAbility($currentPlayer, $i);
+        if ($arsenal[$i + 1] == "UP" && DelimStringContains($cardType, "A")) LordSutcliffeAbility($currentPlayer, $i);
         break;
       default:
         break;
@@ -673,7 +673,7 @@ function LoseHealth($amount, $player)
 
 function GainHealth($amount, $player, $silent = false, $preventable = true)
 {
-  global $mainPlayer;
+  global $mainPlayer, $CS_HealthGained;
   $otherPlayer = ($player == 1 ? 2 : 1);
   $health = &GetHealth($player);
   $otherHealth = &GetHealth($otherPlayer);
@@ -691,6 +691,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
     return false;
   }
   if (!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
+  IncrementClassState($player, $CS_HealthGained, $amount);
   $health += $amount;
 
   if ($player == $mainPlayer) {
@@ -722,11 +723,11 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
 
 function PlayerLoseHealth($player, $amount)
 {
-  global $CS_LifeLost;
+  global $CS_HealthLost;
   $health = &GetHealth($player);
   $amount = AuraLoseHealthAbilities($player, $amount);
   $health -= $amount;
-  IncrementClassState($player, $CS_LifeLost, $amount);
+  IncrementClassState($player, $CS_HealthLost, $amount);
   if ($health <= 0) {
     PlayerWon(($player == 1 ? 2 : 1));
   }
@@ -1161,18 +1162,18 @@ function ClearDieRoll($player)
 function CanPlayAsInstant($cardID, $index = -1, $from = "")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
-  global $mainPlayer, $CS_PlayedAsInstant, $CS_NumCharged, $CS_LifeLost, $CS_NumAddedToSoul;
+  global $mainPlayer, $CS_PlayedAsInstant, $CS_NumCharged, $CS_HealthLost, $CS_NumAddedToSoul;
   global $combatChainState, $CCS_EclecticMag;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
   if (CardNameContains($cardID, "Lumina Ascension", $currentPlayer) && SearchItemsForCard("DYN066", $currentPlayer) != "") return true;
-  if ($cardType == "A" && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) && ClassContains($cardID, "WIZARD", $currentPlayer)) return true;
+  if (DelimStringContains($cardType, "A") && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) && ClassContains($cardID, "WIZARD", $currentPlayer)) return true;
   if (GetClassState($currentPlayer, $CS_NumWizardNonAttack) && ($cardID == "CRU174" || $cardID == "CRU175" || $cardID == "CRU176")) return true;
   if ($currentPlayer != $mainPlayer && ($cardID == "CRU165" || $cardID == "CRU166" || $cardID == "CRU167")) return true;
-  if ($cardType == "A" && GetClassState($currentPlayer, $CS_NextNAAInstant)) return true;
-  if ($cardType == "A" && $combatChainState[$CCS_EclecticMag]) return true;
+  if (DelimStringContains($cardType, "A") && GetClassState($currentPlayer, $CS_NextNAAInstant)) return true;
+  if (DelimStringContains($cardType, "A") && $combatChainState[$CCS_EclecticMag] && $currentPlayer == $mainPlayer) return true;
   if ($cardType == "C" || $cardType == "E" || $cardType == "W") {
     if ($index == -1) $index = GetClassState($currentPlayer, $CS_CharacterIndex);
     if (SearchCharacterEffects($currentPlayer, $index, "INSTANT")) return true;
@@ -1181,7 +1182,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     $banish = GetBanish($currentPlayer);
     if ($index < count($banish)) {
       $mod = explode("-", $banish[$index + 1])[0];
-      if (($cardType == "I" && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212" || $mod == "MST236")) || $mod == "INST" || $mod == "ARC119") return true;
+      if ((DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212" || $mod == "MST236")) || $mod == "INST" || $mod == "ARC119") return true;
     }
   }
   if (GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
@@ -1193,14 +1194,14 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     return GetClassState($currentPlayer, $CS_NumAddedToSoul);
   } else if ($cardID == "CRU143") {
     return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0;
-  } else if ($cardID == "DTD140") return GetClassState($currentPlayer, $CS_LifeLost) > 0 || GetClassState($otherPlayer, $CS_LifeLost) > 0;
-  else if ($cardID == "DTD141") return GetClassState($currentPlayer, $CS_LifeLost) > 0 || GetClassState($otherPlayer, $CS_LifeLost) > 0;
+  } else if ($cardID == "DTD140") return GetClassState($currentPlayer, $CS_HealthLost) > 0 || GetClassState($otherPlayer, $CS_HealthLost) > 0;
+  else if ($cardID == "DTD141") return GetClassState($currentPlayer, $CS_HealthLost) > 0 || GetClassState($otherPlayer, $CS_HealthLost) > 0;
   if (SearchCurrentTurnEffects("MST027", $currentPlayer) && SubtypeContains($cardID, "Aura", $currentPlayer) && $from != "PLAY") return true;
   if (SubtypeContains($cardID, "Evo")) {
     if (SearchCurrentTurnEffects("EVO007", $currentPlayer) || SearchCurrentTurnEffects("EVO008", $currentPlayer)) return true;
     if (SearchCurrentTurnEffects("EVO129", $currentPlayer) || SearchCurrentTurnEffects("EVO130", $currentPlayer) || SearchCurrentTurnEffects("EVO131", $currentPlayer)) return true;
   }
-  if ($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && ColorContains($cardID, 3, $currentPlayer) && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0])))) return true;
+  if ($from == "ARS" && DelimStringContains($cardType, "A") && $currentPlayer != $mainPlayer && ColorContains($cardID, 3, $currentPlayer) && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0])))) return true;
   if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST155-INST", $currentPlayer) && CardCost($cardID) <= 2) return true;
   if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST156-INST", $currentPlayer) && CardCost($cardID) <= 1) return true;
   if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST157-INST", $currentPlayer) && CardCost($cardID) <= 0) return true;
@@ -2000,7 +2001,7 @@ function EndTurnPitchHandling($player)
   }
 }
 
-function ResolveGoAgain($cardID, $player, $from)
+function ResolveGoAgain($cardID, $player, $from="")
 {
   global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer, $CS_ActionsPlayed;
   $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed));
@@ -2011,16 +2012,16 @@ function ResolveGoAgain($cardID, $player, $from)
     if (!$hasGoAgain && GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from);
   } else {
     $hasGoAgain = HasGoAgain($cardID);
-    if (GetClassState($player, $CS_NextNAACardGoAgain) && $cardType == "A") {
+    if ((GetClassState($player, $CS_NextNAACardGoAgain) && DelimStringContains($cardType, "A")) || $from == "MELD") {
       $hasGoAgain = true;
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
     }
     $numActionsPlayed = count($actionsPlayed);
     if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING") && $actionsPlayed[$numActionsPlayed-2] == "ROS074") $hasGoAgain = true;
     if ($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
-    if ($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
-    if ($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
-    if ($cardType == "I") $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from);
+    if (DelimStringContains($cardType, "A")) $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
+    if (DelimStringContains($cardType, "A") && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
+    if (DelimStringContains($cardType, "I")) $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
   }
   if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) {
     if(SearchCurrentTurnEffects("ROS010", $player)) {
@@ -2496,6 +2497,11 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
     FuseAbility($cardID, $currentPlayer, $additionalCosts);
   }
   if (IsCardNamed($currentPlayer, $cardID, "Crouching Tiger")) IncrementClassState($currentPlayer, $CS_NumCrouchingTigerPlayedThisTurn);
+  if (HasMeld($cardID)) {
+    AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
+    AddDecisionQueue("MELD", $currentPlayer, $cardID, 1);
+    return "";
+  }
   if ($set == "WTR") return WTRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if ($set == "ARC") {
     switch ($class) {
@@ -2708,7 +2714,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true)
   if (SearchCharacterActive($player, "EVR020")) {
     if ($EffectContext != "-") {
       $cardType = CardType($EffectContext);
-      if ($cardType == "A" || $cardType == "AA") PlayAura("WTR075", $player);
+      if (DelimStringContains($cardType, "A") || $cardType == "AA") PlayAura("WTR075", $player);
     }
   }
   if ($mainPhase && SearchCharacterActive($otherPlayer, "ROGUE026")) {

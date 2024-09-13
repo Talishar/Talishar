@@ -57,7 +57,19 @@ $CID_TekloLegs = "LGS189";
 function CardType($cardID)
 {
   if (!$cardID) return "";
-  if ($cardID == "HVY096") return "W,E";
+  switch ($cardID) {
+    case "HVY096":
+      return "W,E";
+    case "ROS005":
+    case "ROS006":
+    case "ROS012":
+    case "ROS018":
+    case "ROS024":
+    case "ROS253":
+      return "A,I";
+    default:
+      break;
+  }
   $set = CardSet($cardID);
   if ($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
@@ -424,6 +436,8 @@ function CardCost($cardID, $from = "-")
     case "ROS206":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
       break;
+    case "ROS219": 
+      return 2;
     default:
       break;
   }
@@ -941,7 +955,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       if (CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "CRU047") || SearchCurrentTurnEffects("CRU047-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "CRU047") || SearchCharacterActive($mainPlayer, "CRU097")) && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
     }
     if (CachedOverpowerActive() && CachedNumActionBlocked() >= 1) {
-      if ($cardType == "A" || $cardType == "AA") return false;
+      if (DelimStringContains($cardType, "A") || $cardType == "AA") return false;
       if (SubtypeContains($cardID, "Evo") && $cardID != "EVO410b" && $cardID != "DYN492b") {
         if (CardType(GetCardIDBeforeTransform($cardID)) == "A") return false;
       }
@@ -979,16 +993,16 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if (SearchCurrentTurnEffects("ARC044", $player) && !$isStaticType && $from != "ARS") return false;
   if (SearchCurrentTurnEffects("ARC043", $player)) {
-    if (($cardType == "A" || $cardType == "AA") && !str_contains($abilityTypes, "I") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
+    if ((DelimStringContains($cardType, "A") || $cardType == "AA") && !str_contains($abilityTypes, "I") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
     if (str_contains($abilityTypes, "I") && ($from == "BANISH" || $from == "THEIRBANISH")) return false;
   }
-  if (SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "A" && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
+  if (SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && DelimStringContains($cardType, "A") && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
   if (SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
-  if ($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "MON245" && $player == $defPlayer && ($abilityType == "I" || $cardType == "I")) {
+  if ($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "MON245" && $player == $defPlayer && ($abilityType == "I" || DelimStringContains($cardType, "I"))) {
     $restriction = "Exude Confidance";
     return false;
   }
-  if (SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && ($abilityType == "I" || $cardType == "I")) {
+  if (SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && ($abilityType == "I" || DelimStringContains($cardType, "I"))) {
     $restriction = "Exude Confidance";
     return false;
   }
@@ -997,9 +1011,9 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1 && CanPlayInstant($phase) && $auras[$index + 3] > 0) return true;
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
   }
-  if (($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
+  if ((DelimStringContains($cardType, "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
   if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID) && $phase != "B") return true;
-  if (($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
+  if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $actionPoints < 1) return false;
   if ($cardID == "DYN492a" || $cardID == "EVO410") {
     if (($phase == "M" && $mainPlayer == $currentPlayer)) {
       $charIndex = FindCharacterIndex($currentPlayer, $cardID);
@@ -1963,7 +1977,7 @@ function IsDefenseReactionPlayable($cardID, $from)
 function IsAction($cardID)
 {
   $cardType = CardType($cardID);
-  if ($cardType == "A" || $cardType == "AA") return true;
+  if (DelimStringContains($cardType, "A") || $cardType == "AA") return true;
   $abilityType = GetAbilityType($cardID);
   if ($abilityType == "A" || $abilityType == "AA") return true;
   return false;
@@ -1972,7 +1986,7 @@ function IsAction($cardID)
 function IsActionCard($cardID)
 {
   $cardType = CardType($cardID);
-  if ($cardType == "A" || $cardType == "AA") return true;
+  if (DelimStringContains($cardType, "A") || $cardType == "AA") return true;
   return false;
 }
 
@@ -2006,8 +2020,8 @@ function GoesOnCombatChain($phase, $cardID, $from)
   else if ($phase == "M" && $cardID == "MON192" && $from == "BANISH") $cardType = GetResolvedAbilityType($cardID, $from);
   else $cardType = CardType($cardID);
   if ($phase == "B" && count($layers) == 0) return true; //Anything you play during these combat phases would go on the chain
-  if ($cardType == "I") return false; //Instants as yet never go on the combat chain
-  if (($phase == "A" || $phase == "D") && $cardType == "A") return false; //Non-attacks played as instants never go on combat chain
+  if (DelimStringContains($cardType, "I")) return false; //Instants as yet never go on the combat chain
+  if (($phase == "A" || $phase == "D") && DelimStringContains($cardType, "A")) return false; //Non-attacks played as instants never go on combat chain
   if ($cardType == "AR") return true; // Technically wrong, AR goes to the graveyard instead of remaining on the active chain link. CR 2.4.0 - 8.1.2b
   if ($cardType == "DR") return true;
   if (($phase == "M" || $phase == "ATTACKWITHIT") && $cardType == "AA") return true; //If it's an attack action, it goes on the chain
@@ -2734,6 +2748,10 @@ function CharacterDefaultActiveState($cardID)
     case "TER006":
       return 1;
     case "ROS211":
+    case "ROS239":
+    case "ROS240":
+    case "ROS241":
+    case "ROS242":
       return 1;
     default:
       return 2;
@@ -3863,9 +3881,28 @@ function HasAttackLayer()
   if (count($layers) == 0) return false;//If there's no attack, and no layers, nothing to do
   $layerIndex = count($layers) - LayerPieces();//Only the earliest layer can be an attack
   $layerID = $layers[$layerIndex];
+  $parameters = explode("|", $layers[$layerIndex+2]);
   if (strlen($layerID) != 6) return false;//Game phase, not a card - sorta hacky
   $layerType = CardType($layerID);
   if ($layerType == "AA" || $layerType == "W") return true;//It's an attack
   if (GetResolvedAbilityType($layers[$layerIndex]) == "AA") return true;
+  if ($parameters[0] == "PLAY" && DelimStringContains(CardSubType($layerID), "Aura")) return true;
   return false;
+}
+
+function HasMeld($cardID){
+  switch ($cardID) {
+    case "ROS005":
+    case "ROS006":
+    case "ROS011":
+    case "ROS012":
+    case "ROS017":
+    case "ROS018":
+    case "ROS023":
+    case "ROS024":
+    case "ROS253":
+      return true;
+    default:
+      return false;
+  }  
 }

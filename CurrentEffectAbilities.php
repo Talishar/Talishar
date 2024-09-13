@@ -256,13 +256,13 @@ function EffectHitEffect($cardID, $from)
       }
       break;
     case "OUT021":
-      if (IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+      if (IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer);
       break;
     case "OUT022":
-      if (IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+      if (IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer, effectController: $mainPlayer);
       break;
     case "OUT023":
-      if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+      if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer);
       break;
     case "OUT105":
       if (IsHeroAttackTarget() && HasAimCounter()) {
@@ -273,13 +273,13 @@ function EffectHitEffect($cardID, $from)
       }
       break;
     case "OUT112":
-      if (IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+      if (IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer);
       break;
     case "OUT113":
-      if (IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+      if (IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer, effectController: $mainPlayer);
       break;
     case "OUT114":
-      if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+      if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer);
       break;
     case "OUT140":
       WriteLog("Mask of Shifting Perspectives lets you sink a card");
@@ -309,7 +309,7 @@ function EffectHitEffect($cardID, $from)
     case "OUT158":
       if (IsHeroAttackTarget()) {
         AddDecisionQueue("CHOOSECARD", $mainPlayer, $CID_BloodRotPox . "," . $CID_Frailty . "," . $CID_Inertia);
-        AddDecisionQueue("PUTPLAY", $defPlayer, "-", 1);
+        AddDecisionQueue("PUTPLAY", $defPlayer, $mainPlayer, 1);
       }
       break;
     case "OUT165":
@@ -396,6 +396,9 @@ function EffectHitEffect($cardID, $from)
     case "AAZ004":
       Draw($mainPlayer);
       break;
+    case "ROS012":
+      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 4, "ATTACKHIT");
+      return 1;
     default:
       break;
   }
@@ -1190,21 +1193,21 @@ function CurrentEffectPlayAbility($cardID, $from)
       switch ($currentTurnEffects[$i]) {
         case "ARC209":
           $cardType = CardType($cardID);
-          if (($cardType == "A" || $cardType == "AA") && $cost >= 0) {
+          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 0) {
             ++$actionPoints;
             $remove = true;
           }
           break;
         case "ARC210":
           $cardType = CardType($cardID);
-          if (($cardType == "A" || $cardType == "AA") && $cost >= 1) {
+          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 1) {
             ++$actionPoints;
             $remove = true;
           }
           break;
         case "ARC211":
           $cardType = CardType($cardID);
-          if (($cardType == "A" || $cardType == "AA") && $cost >= 2) {
+          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 2) {
             ++$actionPoints;
             $remove = true;
           }
@@ -1613,7 +1616,7 @@ function CurrentEffectEndTurnAbilities()
 function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = false)
 {
   global $CombatChain;
-  if (!$CombatChain->HasCurrentLink() && $SpectraTarget) return;
+  if ($SpectraTarget) return;
   if ($cardID == "AIM") return true;
   $cardID = ShiyanaCharacter($cardID);
   if ($defendingCard == "") $cardToCheck = $CombatChain->AttackCard()->ID();
@@ -1815,6 +1818,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "TER019":
       return true;
+    case "ROS012":
     case "ROS119":
       return true;
     //Roguelike
