@@ -1471,8 +1471,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $layerPriority[0] = ShouldHoldPriority(1);
   $layerPriority[1] = ShouldHoldPriority(2);
   $cardType = CardType($cardID);
-  $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
-
+  $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);  
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
     if ($playingCard) {
@@ -2061,7 +2060,7 @@ function GetTargetOfAttack($cardID = "")
       $combatChainState[$CCS_AttackTarget] = "THEIRCHAR-0";
     }
   }
-  AddDecisionQueue("TRUCE", $mainPlayer, "-");
+  if(SearchAurasForCard("ROS219", $defPlayer)) AddDecisionQueue("TRUCE", $mainPlayer, "-");
 }
 
 function PayAbilityAdditionalCosts($cardID, $index)
