@@ -437,9 +437,6 @@ function CurrentEffectArcaneModifier($source, $player): int|string
       case "ROS015-AMP":
       case "ROS168"://sigil of aether
       case "ROS078":
-      case "ROS170":
-      case "ROS171":
-      case "ROS172":
       case "ROS186":
       case "ROS187":
       case "ROS188":
@@ -452,6 +449,7 @@ function CurrentEffectArcaneModifier($source, $player): int|string
         $modifier += 1;
         $remove = true;
         break;
+
       case "ROS021":
         if ($currentTurnEffects[$i + 1] != $player) break;
         $modifier += $effectArr[1];
@@ -466,6 +464,12 @@ function CurrentEffectArcaneModifier($source, $player): int|string
         if ($currentTurnEffects[$i + 1] != $player) break;
         $modifier += 1;
         $remove = true;
+        break;
+      case "ROS170":
+      case "ROS171":
+      case "ROS172":
+        if ($currentTurnEffects[$i + 1] != $player) break;
+        $modifier += 1;
         break;
       case "ROS192":
       case "ROS193":
