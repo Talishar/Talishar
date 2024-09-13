@@ -782,11 +782,14 @@ function MeldCards($player, $cardID, $lastResult){
       case "Life":
         GainHealth(1, $player);
         break;
-      case "Shock":
+      case "Shock": 
         DealArcane(1, 2, "PLAYCARD", $cardID, false, $player);
         break;
       default:
-        break;
-      }
+        if($lastResult != "Both") {
+          ProcessMeld($player, $cardID);
+        }
+      break;
+    }
   }
 }

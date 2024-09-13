@@ -2897,10 +2897,10 @@ function IsHeroActive($player)
   return false;
 }
 
-function ProcessMeld($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
+function ProcessMeld($player, $parameter, $uniqueID = "-", $target = "-", $additionalCosts = "-", $from = "-")
 {
   global $CS_ArcaneDamageDealt, $CS_HealthGained;
-  switch ($$parameter) {
+  switch ($parameter) {
     case "ROS005":
       PlayAura("ARC112", $player, GetClassState($player, $CS_HealthGained));
       break;
