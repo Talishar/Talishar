@@ -160,6 +160,7 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
 {
   global $currentPlayer, $CS_ArcaneTargetsSelected;
   if ($player == 0) $player = $currentPlayer;
+  $otherPlayer = $player == 1 ? 2 : 1;
   if ($damage > 0) {
     $damage += CurrentEffectArcaneModifier($source, $player) * $nbArcaneInstance;
     if ($type != "PLAYCARD") WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage.");
@@ -172,32 +173,37 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
       if (!$skipHitEffect) PrependDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
       PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
       if ($resolvedTarget != "") {
-        PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $resolvedTarget);
+        PrependDecisionQueue("PASSPARAMETER", $player, $resolvedTarget);
       } else {
-        PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        PrependDecisionQueue("SETDQVAR", $player, "0", 1);
         if ($mayAbility) PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         else PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
         PrependDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
-        PrependDecisionQueue("SETDQVAR", $currentPlayer, "0");
-        PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
+        PrependDecisionQueue("SETDQVAR", $player, "0");
+        PrependDecisionQueue("PASSPARAMETER", $player, $source);
       }
     } else {
       if ($resolvedTarget != "") {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $resolvedTarget, ($isPassable ? 1 : 0));
+        AddDecisionQueue("PASSPARAMETER", $player, $resolvedTarget, ($isPassable ? 1 : 0));
       } else {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source, ($isPassable ? 1 : 0));
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", ($isPassable ? 1 : 0));
+        AddDecisionQueue("PASSPARAMETER", $player, $source, ($isPassable ? 1 : 0));
+        AddDecisionQueue("SETDQVAR", $player, "0", ($isPassable ? 1 : 0));
         AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target, ($isPassable ? 1 : 0));
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", ($isPassable ? 1 : 0));
+        $allies = GetAllies($player);
+        $theirAllies = GetAllies($otherPlayer);
         if(ShouldAutotargetOpponent($player) && $target == 0) {
+          AddDecisionQueue("PASSPARAMETER", $player, "THERICHAR-0", 1);
+        }
+        elseif (ShouldAutotargetOpponent($player) && ($target == 2 || $target == 3) && count($allies) <= 0 && count($theirAllies) <= 0) {
           AddDecisionQueue("PASSPARAMETER", $player, "THERICHAR-0", 1);
         }
         else{
           if ($mayAbility) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
           else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         }
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("SETDQVAR", $player, "0", 1);
       }
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
       if (!$skipHitEffect) AddDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
