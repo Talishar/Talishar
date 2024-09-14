@@ -2028,7 +2028,6 @@ function ResolveGoAgain($cardID, $player, $from="")
       $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain || HasGoAgain($cardID);
     }
     elseif ($from == "MELD"){
-      WriteLog("HERE");
       $hasGoAgain = $hasGoAgain || HasGoAgain($cardID);
     }
   }
