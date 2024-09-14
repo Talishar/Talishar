@@ -2028,9 +2028,10 @@ function ResolveGoAgain($cardID, $player, $from="")
       $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
     }
     elseif ($from == "MELD" && GetClassState($player, $CS_AdditionalCosts) == "Both"){
-      $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
+      $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain || HasGoAgain($cardID);
     }
     elseif ($from == "MELD"){
+      WriteLog("HERE");
       $hasGoAgain = $hasGoAgain || HasGoAgain($cardID);
     }
   }
