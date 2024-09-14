@@ -1013,6 +1013,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddCurrentTurnEffect("CRU126", $player);
       }
       return 1;
+    case "GREATERTHAN0ORPASS":
+      return $lastResult > 0 ? $lastResult : "PASS";
     case "ATTACKMODIFIER":
       $amount = intval($parameter);
       $combatChain[5] += $amount;

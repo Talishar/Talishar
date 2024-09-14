@@ -402,8 +402,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN192":
       DealArcane(1, 1, "ABILITY", $cardID, resolvedTarget: $target);
-      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "DYN192-");
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
+      AddDecisionQueue("GREATERTHAN0ORPASS", $currentPlayer, "");
+      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "DYN192-", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-", 1);
       return "";
     case "DYN193":
       PlayerOpt($currentPlayer, 1, false);
