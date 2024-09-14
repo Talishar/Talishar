@@ -1193,8 +1193,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DoQuell($target, $damage);
       PrependDecisionQueue("INCDQVAR", $target, "1", 1);
       PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
-      PrependDecisionQueue("ARCANECHOSEN", $target, "-", 1, 1);
-      PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1, 1);
+      PrependDecisionQueue("ARCANECHOSEN", $target, "-", 1);
+      PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1);
       PrependDecisionQueue("SETDQVAR", $target, "0", 1);
       PrependDecisionQueue("PASSPARAMETER", $target, $damage . "-" . $source, 1);
       PrependDecisionQueue("SETDQVAR", $target, "1", 1);

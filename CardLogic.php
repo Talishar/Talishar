@@ -466,7 +466,6 @@ function ContinueDecisionQueue($lastResult = "")
   if (count($dqVars) > 1) $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
   $subsequent = array_shift($decisionQueue);
   $makeCheckpoint = array_shift($decisionQueue);
-  if($phase == "CHOOSEARCANE") $makeCheckpoint = 0;
   $turn[0] = $phase;
   $turn[1] = $player;
   $currentPlayer = $player;
