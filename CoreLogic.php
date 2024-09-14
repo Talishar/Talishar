@@ -2012,7 +2012,6 @@ function ResolveGoAgain($cardID, $player, $from="")
     if (!$hasGoAgain && GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from);
   } else {
     $hasGoAgain = HasMeld($cardID) ? 0 : HasGoAgain($cardID);
-    WriteLog($hasGoAgain . " " . $cardID . " " . GetClassState($player, $CS_AdditionalCosts));
     if ((GetClassState($player, $CS_NextNAACardGoAgain) && (DelimStringContains($cardType, "A") || $from == "MELD"))) {
       $hasGoAgain = true;
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
