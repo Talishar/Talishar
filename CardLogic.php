@@ -327,7 +327,6 @@ function ContinueDecisionQueue($lastResult = "")
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer;
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
-    if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
     else if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
     }
     if (count($decisionQueue) == 0 && count($layers) > 0) {
@@ -374,7 +373,6 @@ function ContinueDecisionQueue($lastResult = "")
         SetClassState($player, $CS_ResolvingLayerUniqueID, $layerUniqueID);
         $params = explode("|", $parameter);
         if ($currentPlayer != $player) {
-          if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
           $currentPlayer = $player;
           $otherPlayer = $currentPlayer == 1 ? 2 : 1;
           BuildMyGamestate($currentPlayer);
@@ -479,7 +477,6 @@ function ContinueDecisionQueue($lastResult = "")
     if ($phase != "SETDQCONTEXT") $dqState[4] = "-"; //Clear out context for static states -- context only persists for one choice
     ContinueDecisionQueue($return);
   } else {
-    if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
   }
 }
 

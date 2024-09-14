@@ -329,10 +329,6 @@ function UpdateGameStateInner()
   }
 }
 
-function UpdateMainPlayerGameState()
-{
-}
-
 function UpdateMainPlayerGameStateInner()
 {
   global $mainPlayerGamestateStillBuilt, $mpgBuiltFor;
