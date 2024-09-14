@@ -687,7 +687,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
     return;
   }
   if ((SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140") && $preventable) && $health > $otherHealth) {
-    WriteLog("Reaping Blade prevented player " . $player . " from gaining " . $amount . " life");
+    WriteLog(CardLink("CRU140", "CRU140") . " prevented Player " . $player . " from gaining " . $amount . " life");
     return false;
   }
   if (!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
