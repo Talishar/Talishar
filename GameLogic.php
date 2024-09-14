@@ -28,7 +28,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   $rv = "";
   switch ($phase) {
     case "FINDINDICES":
-      UpdateGameState($currentPlayer);
       BuildMainPlayerGamestate();
       $parameters = explode(",", $parameter);
       $parameter = $parameters[0];

@@ -247,10 +247,6 @@ function BuildMainPlayerGameState()
   $mainPlayerGamestateStillBuilt = 1;
 }
 
-function UpdateGameState($activePlayer)
-{
-}
-
 function UpdateGameStateInner()
 {
   global $myStateBuiltFor;

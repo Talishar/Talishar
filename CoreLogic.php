@@ -7,7 +7,6 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
 {
   global $CombatChain, $mainPlayer, $currentTurnEffects, $playerID, $combatChainState, $CCS_LinkBaseAttack, $CCS_WeaponIndex;
   global $CCS_WeaponIndex;
-  UpdateGameState($playerID);
   BuildMainPlayerGameState();
   $attackType = CardType($CombatChain->AttackCard()->ID());
   $canGainAttack = CanGainAttack($CombatChain->AttackCard()->ID());

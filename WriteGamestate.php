@@ -1,7 +1,5 @@
 <?php
 
-UpdateGameState($playerID);
-
 if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
 $handler = fopen($filename, "w");
 

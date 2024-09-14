@@ -329,7 +329,6 @@ function ContinueDecisionQueue($lastResult = "")
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
     else if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
-      UpdateGameState($currentPlayer);
     }
     if (count($decisionQueue) == 0 && count($layers) > 0) {
       $priorityHeld = 0;
@@ -376,7 +375,6 @@ function ContinueDecisionQueue($lastResult = "")
         $params = explode("|", $parameter);
         if ($currentPlayer != $player) {
           if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
-          else UpdateGameState($currentPlayer);
           $currentPlayer = $player;
           $otherPlayer = $currentPlayer == 1 ? 2 : 1;
           BuildMyGamestate($currentPlayer);
@@ -2495,7 +2493,6 @@ function GetDQHelpText()
 function FinalizeAction()
 {
   global $currentPlayer, $mainPlayer, $actionPoints, $turn, $combatChain, $defPlayer, $makeBlockBackup, $mainPlayerGamestateStillBuilt;
-  if (!$mainPlayerGamestateStillBuilt) UpdateGameState(1);
   BuildMainPlayerGamestate();
   if ($turn[0] == "M") {
     if (count($combatChain) > 0) //Means we initiated a chain link

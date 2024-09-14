@@ -162,8 +162,6 @@ if (!IsGameOver()) {
 
 //Now write out the game state
 if (!$skipWriteGamestate) {
-  //if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGamestate();
-  //else UpdateGameState(1);
   if(!IsModeAsync($mode))
   {
     SetCachePiece($gameName, 12, "0");
