@@ -724,6 +724,7 @@ function IsCardBanned($cardID, $format, $character)
   switch($format) {
     case "blitz": case "compblitz":
       switch($cardID) {
+        case "WTR002": //Rhinar
         case "WTR160": //Tome of Fyendal
         case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
         case "ARC002": //Dash
