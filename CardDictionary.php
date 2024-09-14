@@ -3906,3 +3906,13 @@ function HasMeld($cardID){
       return false;
   }  
 }
+
+Function IsMeldInstantName($term){
+  switch ($term) {
+      case "Shock":
+      case "Life":
+      return true;
+    default:
+      return false;
+  }  
+}
