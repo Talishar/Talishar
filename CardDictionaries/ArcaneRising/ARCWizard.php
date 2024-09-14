@@ -190,8 +190,13 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", ($isPassable ? 1 : 0));
         AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target, ($isPassable ? 1 : 0));
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", ($isPassable ? 1 : 0));
-        if ($mayAbility) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-        else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        if(ShouldAutotargetOpponent($player) && $target == 0) {
+          AddDecisionQueue("PASSPARAMETER", $player, "THERICHAR-0", 1);
+        }
+        else{
+          if ($mayAbility) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+          else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        }
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       }
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
