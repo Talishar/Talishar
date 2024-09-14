@@ -2024,7 +2024,7 @@ function ResolveGoAgain($cardID, $player, $from="")
     if (DelimStringContains($cardType, "I") && $from != "MELD" && (IsMeldInstantName(GetClassState($player, $CS_AdditionalCosts)) || GetClassState($player, $CS_AdditionalCosts) == "Both")) $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
   }
   if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) {
-    if(SearchCurrentTurnEffects("ROS010", $player)) {
+    if(SearchCurrentTurnEffects("ROS010", $player) && !IsMeldInstantName(GetClassState($player, $CS_AdditionalCosts)) && (GetClassState($player, $CS_AdditionalCosts) != "Both" || $from == "MELD")) {
       $count = CountCurrentTurnEffects("ROS010", $player);
       for ($i=0; $i < $count; $i++) { 
         AddLayer("TRIGGER", $player, "ROS010");
