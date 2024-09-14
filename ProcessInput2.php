@@ -8,7 +8,7 @@ include "GameTerms.php";
 include "HostFiles/Redirector.php";
 include "Libraries/SHMOPLibraries.php";
 include "Libraries/StatFunctions.php";
-include "Libraries/UILibraries.php";
+include "Libraries/UILibraries2.php";
 include "Libraries/PlayerSettings.php";
 include "Libraries/NetworkingLibraries.php";
 include "AI/CombatDummy.php";
