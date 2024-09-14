@@ -78,6 +78,7 @@ function HasPlayableCard($player, $phase)
   global $CombatChain;
   $restriction = "";
   $character = &GetPlayerCharacter($player);
+  $otherPlayer = $player == 1 ? 2 : 1;
   for($i=0; $i<count($character); $i+=CharacterPieces()) {
     if($character[$i+1] == 2 && IsPlayable($character[$i], $phase, "CHAR", $i, $restriction, $player)) return true;
   }
@@ -99,6 +100,10 @@ function HasPlayableCard($player, $phase)
   $banish = &GetBanish($player);
   for($i=0; $i<count($banish); $i+=BanishPieces()) {
     if(IsPlayable($banish[$i], $phase, "BANISH", $i, $restriction, $player)) return true;
+  }
+  $theirBanish = &GetBanish($otherPlayer);
+  for($i=0; $i<count($theirBanish); $i+=BanishPieces()) {
+    if(IsPlayable($theirBanish[$i], $phase, "THEIRBANISH", $i, $restriction, $player)) return true;
   }
   $auras = &GetItems($player);
   for($i=0; $i<count($auras); $i+=AuraPieces()) {
