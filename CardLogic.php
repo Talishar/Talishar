@@ -327,7 +327,7 @@ function ContinueDecisionQueue($lastResult = "")
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer;
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
-    else if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
+    if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
     }
     if (count($decisionQueue) == 0 && count($layers) > 0) {
       $priorityHeld = 0;
