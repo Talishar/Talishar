@@ -3084,7 +3084,7 @@ function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController
     case "GY":
       if (DelimStringContains(CardSubType($cardID), "Affliction")) $player = $otherPlayer;
       if ($from == "CC") break; //Things that would go to the GY stay on till the chain is closing and the close step.
-      if ($from == "CHAINCLOSING") $from == "CC";
+      if ($from == "CHAINCLOSING") $from = "CC";
       AddGraveyard($cardID, $player, $from, $effectController);
       break;
     case "SOUL":
