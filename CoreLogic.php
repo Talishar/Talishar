@@ -1053,8 +1053,8 @@ function NumActionsBlocking()
     $chainCard = $CombatChain->Card($i, cardNumber: true);
     if ($chainCard->PlayerID() == $defPlayer) {
       $type = CardType($chainCard->ID());
-      if ($type == "A" || $type == "AA") ++$num;
-      if ($type == "E") {
+      if (DelimStringContains($type, "A") || $type == "AA") ++$num;
+      if (DelimStringContains($type, "E")) {
         if (SubtypeContains($chainCard->ID(), "Evo" && $chainCard->ID() != "EVO410b" && $chainCard->ID() != "DYN492b")) {
           if (CardType(GetCardIDBeforeTransform($chainCard->ID())) == "A") ++$num;
         }
