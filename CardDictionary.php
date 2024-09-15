@@ -859,11 +859,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "ROS204":
     case "ROS205":
     case "ROS206":
-      $names = "";
-      if($from == "HAND") $names = "Ability";
-      if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) $names .= ",Action";
+      $names = "Ability";
+      if (GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) $names .= ",Action";
       elseif ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Action";
-      elseif ($names == "") $names = "Action";
       return $names;
     default:
       return "";

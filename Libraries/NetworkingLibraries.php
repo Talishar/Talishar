@@ -1507,7 +1507,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
 
       //CR 5.1.4. Declare Modes and Targets
       //CR 5.1.4a Declare targets for resolution abilities
-      if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) GetLayerTarget($cardID, $from);
+      if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) GetLayerTarget($cardID);
       //CR 5.1.4b Declare target of attack
       if ($turn[0] == "M" && $actionPoints > 0) AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from);
       if ($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
@@ -1670,14 +1670,14 @@ function PlayCardSkipCosts($cardID, $from)
   if (($turn[0] == "M" || $turn[0] == "ATTACKWITHIT") && $cardType == "AA") GetTargetOfAttack($cardID);
   if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
     if (HasBoost($cardID, $currentPlayer) && $cardID != "EVO142") Boost($cardID);
-    GetLayerTarget($cardID, $from);
+    GetLayerTarget($cardID);
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
   }
   PlayCardEffect($cardID, $from, "Skipped");
 }
 
-function GetLayerTarget($cardID, $from)
+function GetLayerTarget($cardID)
 {
   global $currentPlayer;
   switch ($cardID) {
@@ -1794,7 +1794,7 @@ function GetLayerTarget($cardID, $from)
     default:
       break;
   }
-  $targetType = PlayRequiresTarget($cardID, $from);
+  $targetType = PlayRequiresTarget($cardID);
   if ($targetType != -1) {
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID);
     AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
