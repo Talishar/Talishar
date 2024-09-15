@@ -1138,6 +1138,7 @@ function FinalizeChainLink($chainClosed = false)
     if (TypeContains($combatChain[0], "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) == "-") SetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain, $combatChain[0]);
   }
   
+  ResolveWagers();
   //Clean up combat effects that were used and are one-time
   CleanUpCombatEffects();
   CopyCurrentTurnEffectsFromCombat();
@@ -1171,8 +1172,6 @@ function FinalizeChainLink($chainClosed = false)
   array_push($chainLinkSummary, $numHitsOnLink);
   array_push($chainLinkSummary, CurrentEffectBaseAttackSet());
   array_push($chainLinkSummary, GetClassState($mainPlayer, $CS_ModalAbilityChoosen));
-
-  ResolveWagers();
 
   //Don't change state until the end, in case it changes what effects are active
   if ($CombatChain->HasCurrentLink()) {
