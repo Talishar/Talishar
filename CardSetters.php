@@ -718,19 +718,7 @@ function NegateLayer($MZIndex, $goesWhere = "GY")
     unset($layers[$i]);
   }
   $layers = array_values($layers);
-  switch ($goesWhere) {
-    case "GY":
-      AddGraveyard($cardID, $player, "LAYER", $otherPlayer);
-      break;
-    case "HAND":
-      AddPlayerHand($cardID, $player, "LAYER");
-      break;
-    case "THEIRHAND":
-      AddPlayerHand($cardID, $otherPlayer, "LAYER");
-      break;
-    default:
-      break;
-  }
+  ResolveGoesWhere($goesWhere, $cardID, $player, "LAYER", $otherPlayer);
 }
 
 function AddAdditionalCost($player, $value)

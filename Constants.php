@@ -429,29 +429,7 @@ function ResetCombatChainState()
       else {
         if(CardType($chainLinks[$i][$j]) == "T") continue;//Don't need to add to anywhere if it's a token
         $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
-        switch($goesWhere) {
-          case "GY":
-            AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CC");
-            break;
-          case "BOTDECK":
-            AddBottomDeck($chainLinks[$i][$j], $mainPlayer, "CC");
-            break;
-          case "HAND":
-            AddPlayerHand($chainLinks[$i][$j], $mainPlayer, "CC");
-            break;
-          case "SOUL":
-            AddSoul($chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CC");
-            break;
-          case "THEIRDISCARD":
-            $otherPlayer = $chainLinks[$i][$j + 1] == 1 ? 2 : 1;
-            AddGraveyard($chainLinks[$i][$j], $otherPlayer, "CC");
-            break;
-          case "THEIRBOTDECK":
-            $otherPlayer = $chainLinks[$i][$j + 1] == 1 ? 2 : 1;
-            AddBottomDeck($chainLinks[$i][$j], $otherPlayer, "CC");
-            break;
-          default: break;
-        }
+        ResolveGoesWhere($goesWhere, $chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CHAINCLOSING");
       }
     }
   }

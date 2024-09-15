@@ -1144,32 +1144,8 @@ function FinalizeChainLink($chainClosed = false)
     if ($cardType != "W" || $cardType != "E" || $cardType != "C") {
       $params = explode(",", GoesWhereAfterResolving($combatChain[$i - 1], "COMBATCHAIN", $combatChain[$i]));
       $goesWhere = $params[0];
-      $modifier = (count($params) > 1 ? $params[1] : "NA");
       if ($i == 1 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "GY") $goesWhere = $combatChainState[$CCS_GoesWhereAfterLinkResolves];
-      switch ($goesWhere) {
-        case "BOTDECK":
-          AddBottomDeck($combatChain[$i - 1], $combatChain[$i], "CC");
-          break;
-        case "HAND":
-          AddPlayerHand($combatChain[$i - 1], $combatChain[$i], "CC");
-          break;
-        case "THEIRHAND":
-          AddPlayerHand($combatChain[$i - 1], ($combatChain[$i] == 1 ? 2 : 1), "CC");
-          break;
-        case "SOUL":
-          AddSoul($combatChain[$i - 1], $combatChain[$i], "CC");
-          break;
-        case "GY": //Things that would go to the GY stay on till the end of the chain
-          break;
-        case "BANISH":
-          BanishCardForPlayer($combatChain[$i - 1], $combatChain[$i], "CC", $modifier);
-          break;
-        case "THEIRBOTDECK":
-          AddBottomDeck($combatChain[$i - 1], ($combatChain[$i] == 1 ? 2 : 1), "CC");
-          break;
-        default:
-          break;
-      }
+      ResolveGoesWhere($goesWhere, $combatChain[$i - 1], $combatChain[$i], "CC");
     }
     array_push($chainLinks[$CLIndex], $combatChain[$i - 1]); //Card ID
     array_push($chainLinks[$CLIndex], $combatChain[$i]); //Player ID
@@ -2790,31 +2766,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if ($isSpectraTarget) {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
       if (CardType(($cardID) !== "T")) { //Don't need to add to anywhere if it's a token
-        switch ($goesWhere) {
-          case "BOTDECK":
-            AddBottomDeck($cardID, $currentPlayer, $from);
-            break;
-          case "HAND":
-            AddPlayerHand($cardID, $currentPlayer, $from);
-            break;
-          case "GY":
-            AddGraveyard($cardID, $currentPlayer, $from);
-            break;
-          case "SOUL":
-            AddSoul($cardID, $currentPlayer, $from);
-            break;
-          case "BANISH":
-            BanishCardForPlayer($cardID, $currentPlayer, $from, "NA");
-            break;
-          case "THEIRDISCARD":
-            AddGraveyard($cardID, $otherPlayer, $from);
-            break;
-          case "THEIRBOTDECK":
-            AddBottomDeck($cardID, $otherPlayer, $from);
-            break;
-          default:
-            break;
-        }
+        ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, $from);
       }
     }
     if ($index == 0 || $isSpectraTarget) {
@@ -2855,6 +2807,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
   } else if ($from != "PLAY" && $from != "EQUIP") {
+    WriteLog("here");
     $cardSubtype = CardSubType($cardID);
     if (DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer, from: $from, additionalCosts: $additionalCosts);
     else if (DelimStringContains($cardSubtype, "Item")) PutItemIntoPlayForPlayer($cardID, $currentPlayer, from: $from);
@@ -2863,37 +2816,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     else if (DelimStringContains($cardSubtype, "Evo")) EvoHandling($cardID, $currentPlayer, $from);
     else if ($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W") {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
-      switch ($goesWhere) {
-        case "BOTDECK":
-          AddBottomDeck($cardID, $currentPlayer, $from);
-          break;
-        case "HAND":
-          AddPlayerHand($cardID, $currentPlayer, $from);
-          break;
-        case "THEIRHAND":
-          AddPlayerHand($cardID, $otherPlayer, $from);
-          break;
-        case "GY":
-          AddGraveyard($cardID, $currentPlayer, $from);
-          break;
-        case "SOUL":
-          AddSoul($cardID, $currentPlayer, $from);
-          break;
-        case "BANISH":
-          BanishCardForPlayer($cardID, $currentPlayer, $from, "NA");
-          break;
-        case "THEIRBANISH":
-          BanishCardForPlayer($cardID, $otherPlayer, $from, "NA");
-          break;
-        case "THEIRDISCARD":
-          AddGraveyard($cardID, $otherPlayer, $from);
-          break;
-        case "THEIRBOTDECK":
-          AddBottomDeck($cardID, $otherPlayer, $from);
-          break;
-        default:
-          break;
-      }
+      ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, $from);
     }
   }
   //Resolve Effects

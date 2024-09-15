@@ -3068,3 +3068,43 @@ function MentorTrigger($player, $index, $specificCard = "")
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
   AddDecisionQueue("SHUFFLEDECK", $player, "-");
 }
+
+function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController = "")
+{
+  if($effectController == "") $effectController = $player;
+  $otherPlayer = $player == 1 ? 2 : 1;
+  switch ($goesWhere) {
+    case "BOTDECK":
+      AddBottomDeck($cardID, $player, $from);
+      break;
+    case "HAND":
+      AddPlayerHand($cardID, $player, $from);
+      break;
+    case "GY":
+      if (DelimStringContains(CardSubType($cardID), "Affliction")) $player = $otherPlayer;
+      if ($from == "CC") break; //Things that would go to the GY stay on till the chain is closing and the close step.
+      if ($from == "CHAINCLOSING") $from == "CC";
+      AddGraveyard($cardID, $player, $from, $effectController);
+      break;
+    case "SOUL":
+      AddSoul($cardID, $player, $from);
+      break;
+    case "BANISH":
+      BanishCardForPlayer($cardID, $player, $from, "NA");
+      break;
+    case "THEIRHAND":
+      AddPlayerHand($cardID, $otherPlayer, $from);
+      break;
+    case "THEIRBANISH":
+      BanishCardForPlayer($cardID, $otherPlayer, $from, "NA");
+      break;
+    case "THEIRDISCARD":
+      AddGraveyard($cardID, $otherPlayer, $from, $effectController);
+      break;
+    case "THEIRBOTDECK":
+      AddBottomDeck($cardID, $otherPlayer, $from);
+      break;
+    default:
+      break;
+  } 
+}

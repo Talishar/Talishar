@@ -126,21 +126,7 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
   }
   if (HasWard($cardID, $player) && !$isToken) WardPoppedAbility($player, $cardID);
   if (CardType($cardID) == "T" || $isToken) return;//Don't need to add to anywhere if it's a token
-  $otherPlayer = $player == 1 ? 2 : 1;
-  switch ($goesWhere) {
-    case "GY":
-      if (DelimStringContains(CardSubType($cardID), "Affliction")) $player = ($player == 1 ? 2 : 1);
-      AddGraveyard($cardID, $player, "PLAY", $player);
-      break;
-    case "THEIRDISCARD":
-      AddGraveyard($cardID, $otherPlayer, "PLAY", $player);
-      break;
-    case "BANISH":
-      BanishCardForPlayer($cardID, $player, "PLAY", "NA");
-      break;
-    default:
-      break;
-  }
+  ResolveGoesWhere($goesWhere, $cardID, $player, "PLAY");
 }
 
 function AuraLeavesPlay($player, $index, $uniqueID)

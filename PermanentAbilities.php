@@ -53,19 +53,7 @@ function PermanentDestroyed($player, $cardID, $isToken = false)
   }
   $goesWhere = GoesWhereAfterResolving($cardID);
   if (CardType($cardID) == "T" || $isToken) return; //Don't need to add to anywhere if it's a token
-  switch ($goesWhere) {
-    case "GY":
-      AddGraveyard($cardID, $player, "PLAY");
-      break;
-    case "SOUL":
-      AddSoul($cardID, $player, "PLAY");
-      break;
-    case "BANISH":
-      BanishCardForPlayer($cardID, $player, "PLAY", "NA");
-      break;
-    default:
-      break;
-  }
+  ResolveGoesWhere($goesWhere, $cardID, $player, "PLAY");
 }
 
 function PermanentBeginEndPhaseEffects()
