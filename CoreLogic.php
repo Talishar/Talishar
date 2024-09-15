@@ -674,7 +674,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
   $health = &GetHealth($player);
   $otherHealth = &GetHealth($otherPlayer);
   if ((SearchCurrentTurnEffects("DTD231", 1, remove: true) || SearchCurrentTurnEffects("DTD231", 2, remove: true)) && $preventable) {
-    WriteLog("<span style='color:green;'>Somebody poisoned the water hole</span>");
+    WriteLog("<span style='color:green;'>🧪 Somebody poisoned the water hole.</span>");
     LoseHealth($amount, $player);
     return false;
   }

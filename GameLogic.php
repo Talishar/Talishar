@@ -2248,7 +2248,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "GAINLIFE":
       $param = explode(",", $parameter);
-      GainHealth($param[0], $player, true, false);
+      GainHealth($param[0], $player);
       return $lastResult;
     case "GETCARDSFORDECOMPOSE":
       $rv = SearchMultizone($player, $parameter); // I want multizone to return a blank string if no results so I built this
