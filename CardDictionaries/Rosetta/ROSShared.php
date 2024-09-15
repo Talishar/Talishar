@@ -116,6 +116,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS004":
       $xVal = $resourcesPaid / 2;
       for ($i = 0; $i <= $xVal; $i++) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which aura to create:");
         AddDecisionQueue("CHOOSECARD", $currentPlayer, "ARC112" . "," . "ELE109");
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
       }
@@ -343,7 +344,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS170":
     case "ROS171":
     case "ROS172":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") {
         AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
       } else {
         DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
@@ -374,7 +375,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS186":
     case "ROS187":
     case "ROS188":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") {
         AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
       } else {
         DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
@@ -407,19 +408,21 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS201":
     case "ROS202":
     case "ROS203":
-    case "ROS207":
-    case "ROS208":
-    case "ROS209":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     case "ROS204":
     case "ROS205":
     case "ROS206":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") {
         AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
       } else {
         DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       }
+      return "";
+    case "ROS207":
+    case "ROS208":
+    case "ROS209":
+      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     case "ROS217":
       AddCurrentTurnEffect($cardID, $currentPlayer);
