@@ -3070,7 +3070,7 @@ function MentorTrigger($player, $index, $specificCard = "")
   AddDecisionQueue("SHUFFLEDECK", $player, "-");
 }
 
-function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController = "")
+function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController = "", $modifier = "NA")
 {
   if($effectController == "") $effectController = $player;
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -3091,13 +3091,13 @@ function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController
       AddSoul($cardID, $player, $from);
       break;
     case "BANISH":
-      BanishCardForPlayer($cardID, $player, $from, "NA");
+      BanishCardForPlayer($cardID, $player, $from, $modifier);
       break;
     case "THEIRHAND":
       AddPlayerHand($cardID, $otherPlayer, $from);
       break;
     case "THEIRBANISH":
-      BanishCardForPlayer($cardID, $otherPlayer, $from, "NA");
+      BanishCardForPlayer($cardID, $otherPlayer, $from, $modifier);
       break;
     case "THEIRDISCARD":
       AddGraveyard($cardID, $otherPlayer, $from, $effectController);
