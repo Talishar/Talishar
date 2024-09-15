@@ -962,7 +962,7 @@ function NuuStaticAbility($banishedBy)
         $index = FindCharacterIndex($defPlayer, $combatChain[$card]);
         DestroyCharacter($defPlayer, $index, wasBanished: true);
       }
-      if ($cardType === "A" || $cardType === "AA") {
+      if (DelimStringContains($cardType, "A") || $cardType === "AA") {
         WriteLog(CardLink($combatChain[$card], $combatChain[$card]) . " was banished");
         BanishCardForPlayer($combatChain[$card], $defPlayer, "CC", "Source-" . $banishedBy, $banishedBy);
         $index = GetCombatChainIndex($combatChain[$card], $defPlayer);
