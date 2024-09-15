@@ -1947,10 +1947,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return SearchCount(SearchBanish($player, talent: "EARTH")) < 4;
     case "ROS073":
       return GetClassState($player, $CS_NumInstantPlayed) <= 0;
-    case "ROS085":
-    case "ROS086":
-    case "ROS087":
-      return !$CombatChain->HasCurrentLink();
     case "ROS212":
     case "ROS213":
     case "ROS214":
