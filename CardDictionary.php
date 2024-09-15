@@ -399,12 +399,15 @@ function CardCost($cardID, $from = "-")
     case "HVY165":
     case "HVY186":
     case "HVY187":
+    case "ROS057":
+    case "ROS056":
+    case "ROS055":
     case "HVY188":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
-      return 3;
+      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
+      else return 3;
     case "HVY209":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
-      return 2;
+      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
+      else return 2;
     case "MST400":
     case "MST410":
     case "MST432":
@@ -418,16 +421,11 @@ function CardCost($cardID, $from = "-")
     case "MST501":
     case "MST502":
       return -1;
-    case "ROS055":
-    case "ROS056":
-    case "ROS057":
-      if(GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
-      return 3;
     case "ROS106":
     case "ROS105":
     case "ROS104":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
-      return 1;
+      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
+      else return 1;
     case "ROS170":
     case "ROS171":
     case "ROS172":
