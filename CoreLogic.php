@@ -903,10 +903,11 @@ function ChainLinkResolvedEffects()
       case "ROS085":
       case "ROS086":
       case "ROS087":
-        $combatChainIndex = GetCombatChainCardIDIndex($currentEffect[1]);
-        AddPlayerHand($currentEffect[1], $combatChain[$combatChainIndex+1], "CC");
+        $index = GetCombatChainIndex($currentEffect[1], $currentTurnEffects[$i+1]);
+        if($index == -1) $index = GetCombatChainCardIDIndex($currentEffect[1]);
+        AddPlayerHand($currentEffect[1], $combatChain[$index+1], "CC");
         if(GetCombatChainIndex($currentEffect[1], $currentTurnEffects[$i+1]) == 0) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
-        $CombatChain->Remove($combatChainIndex);
+        $CombatChain->Remove($index);
         RemoveCurrentTurnEffect($i);
         break;
       default:
