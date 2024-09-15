@@ -2257,6 +2257,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $lastResult = str_replace($parameter, "", $lastResult);
       $lastResult = trim($lastResult, ",");
       $lastResult = rtrim($lastResult, ",");
+      $lastResult = str_replace(",,", ",", $lastResult);
       return $lastResult;
     case "GONEINAFLASH":
       CleanUpCombatEffects();
