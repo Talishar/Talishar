@@ -2890,9 +2890,9 @@ function IsHeroActive($player)
   return false;
 }
 
-function ProcessMeld($player, $parameter, $uniqueID = "-", $target = "-", $additionalCosts = "-", $from = "-")
+function ProcessMeld($player, $parameter)
 {
-  global $CS_ArcaneDamageDealt, $CS_HealthGained;
+  global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts;
   switch ($parameter) {
     case "ROS005":
       PlayAura("ARC112", $player, GetClassState($player, $CS_HealthGained));
@@ -2937,4 +2937,5 @@ function ProcessMeld($player, $parameter, $uniqueID = "-", $target = "-", $addit
       break;
   }
   ResolveGoAgain($parameter, $player, "MELD");
+  if(GetClassState($player, $CS_AdditionalCosts) == "Both") ResolveGoesWhere("GY", $parameter, $player, "MELD"); //Only needs to be handled specifically here when playing both side of a Meld card
 }

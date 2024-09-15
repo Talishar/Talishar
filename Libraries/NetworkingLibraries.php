@@ -2807,7 +2807,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
   } else if ($from != "PLAY" && $from != "EQUIP") {
-    WriteLog("here");
     $cardSubtype = CardSubType($cardID);
     if (DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer, from: $from, additionalCosts: $additionalCosts);
     else if (DelimStringContains($cardSubtype, "Item")) PutItemIntoPlayForPlayer($cardID, $currentPlayer, from: $from);
