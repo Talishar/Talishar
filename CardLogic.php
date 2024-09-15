@@ -2420,6 +2420,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       break;
     case "ROS077":
+      WriteLog(CardLink($parameter, $parameter) . " draws a card");
       Draw($player);
       break;
     case "ROS114":

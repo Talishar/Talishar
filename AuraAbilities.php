@@ -65,11 +65,11 @@ function AuraNumUses($cardID)
     case "EVR142":
     case "EVR143":
     case "UPR005":
+    case "DTD081":
+    case "ROS077":
     case "ROS130":
     case "ROS131":
     case "ROS132":
-      return 1;
-    case "DTD081":
       return 1;
     default:
       return 0;
@@ -817,9 +817,7 @@ function AuraTakeDamageAbility($player, $index, $damage, $preventable, $type)
 //These are applied first and not prompted (which would be annoying because of course you want to do this before consuming something)
 function AuraTakeDamageAbilities($player, $damage, $type, $source)
 {
-  global $CS_DamageDealt, $CS_ArcaneDamageDealt;
   $auras = &GetAuras($player);
-  $otherPlayer = $player == 1 ? 2 : 1;
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
@@ -899,8 +897,8 @@ function AuraDamageTakenAbilities($player, $damage)
   for ($i = count($otherAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     switch ($otherAuras[$i]) {
       case "ROS077":
-        if (GetClassState($otherPlayer, $CS_DamageDealt) <= 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) <= 0 && $damage > 0) {
-          WriteLog(CardLink($otherAuras[$i], $otherAuras[$i]) . " draws a card");
+        if (GetClassState($otherPlayer, $CS_DamageDealt) <= 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) <= 0 && $damage > 0 && $otherAuras[$i + 5] > 0) {
+          $otherAuras[$i + 5] -= 1;
           AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
         }
         break;    
