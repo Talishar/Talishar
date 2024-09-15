@@ -2896,6 +2896,7 @@ function ProcessMeld($player, $parameter, $uniqueID = "-", $target = "-", $addit
   switch ($parameter) {
     case "ROS005":
       PlayAura("ARC112", $player, GetClassState($player, $CS_HealthGained));
+      ResolveGoAgain($parameter, $player, "MELD");
       break;
     case "ROS006":
       PlayAura("ARC112", $player);
@@ -2912,6 +2913,7 @@ function ProcessMeld($player, $parameter, $uniqueID = "-", $target = "-", $addit
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZDESTROY", $player, "-", 1);
       }
+      ResolveGoAgain($parameter, $player, "MELD");
       break;
     case "ROS012":
       AddCurrentTurnEffect($parameter, $player);
@@ -2921,17 +2923,21 @@ function ProcessMeld($player, $parameter, $uniqueID = "-", $target = "-", $addit
       $ampAmount = GetClassState($player, $CS_HealthGained);
       AddCurrentTurnEffect($parameter . "," . $ampAmount, $player, "ABILITY");
       WriteLog(CardLink($parameter, $parameter) . " is amping " . $ampAmount);
+      ResolveGoAgain($parameter, $player, "MELD");
       break;
     case "ROS018":
       DealArcane(4, 2, "PLAYCARD", $parameter, true, $player);
+      ResolveGoAgain($parameter, $player, "MELD");
       break;
     case "ROS023":
       AddDecisionQueue("MULTIZONEINDICES", $player, "LAYER:type=I;minCost=0;maxCost=".GetClassState($player, $CS_ArcaneDamageDealt)-1);
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("NEGATE", $player, "<-", 1);
+      ResolveGoAgain($parameter, $player, "MELD");
       break;
     case "ROS024":
       DealArcane(5, 2, "PLAYCARD", $parameter, true, $player);
+      ResolveGoAgain($parameter, $player, "MELD");
       break;
     case "ROS253":
       ResolveGoAgain($parameter, $player, "MELD");

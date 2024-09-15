@@ -2008,8 +2008,8 @@ function ResolveGoAgain($cardID, $player, $from="")
     $hasGoAgain = AbilityHasGoAgain($cardID);
     if (!$hasGoAgain && GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from);
   } else {
-    $hasGoAgain = HasGoAgain($cardID);
-    if ((GetClassState($player, $CS_NextNAACardGoAgain) && DelimStringContains($cardType, "A")) || $from == "MELD") {
+    $hasGoAgain = HasMeld($cardID) ? 0 : HasGoAgain($cardID);
+    if (GetClassState($player, $CS_NextNAACardGoAgain) && (DelimStringContains($cardType, "A") || $from == "MELD")) {
       $hasGoAgain = true;
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
     }
@@ -2018,8 +2018,18 @@ function ResolveGoAgain($cardID, $player, $from="")
     if ($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
     if (DelimStringContains($cardType, "A")) $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if (DelimStringContains($cardType, "A") && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
-    if (DelimStringContains($cardType, "I") && !HasMeld($cardID)) $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
-    elseif (DelimStringContains($cardType, "I") && $from != "MELD" && (IsMeldInstantName(GetClassState($player, $CS_AdditionalCosts)) || GetClassState($player, $CS_AdditionalCosts) == "Both")) $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
+    if (DelimStringContains($cardType, "I") && !HasMeld($cardID)){
+      $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
+    }
+    elseif (DelimStringContains($cardType, "I") && $from != "MELD" && IsMeldInstantName(GetClassState($player, $CS_AdditionalCosts))){
+      $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
+    }
+    elseif ($from == "MELD" && GetClassState($player, $CS_AdditionalCosts) == "Both"){
+      $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain || HasGoAgain($cardID);
+    }
+    elseif ($from == "MELD"){
+      $hasGoAgain = $hasGoAgain || HasGoAgain($cardID);
+    }
   }
   if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) {
     if(SearchCurrentTurnEffects("ROS010", $player) && !IsMeldInstantName(GetClassState($player, $CS_AdditionalCosts)) && (GetClassState($player, $CS_AdditionalCosts) != "Both" || $from == "MELD")) {
