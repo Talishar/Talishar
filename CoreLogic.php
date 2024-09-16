@@ -906,7 +906,6 @@ function ChainLinkResolvedEffects()
         $index = GetCombatChainIndex($currentEffect[1], $currentTurnEffects[$i+1]);
         if($index == -1) $index = GetCombatChainCardIDIndex($currentEffect[1]);
         AddPlayerHand($currentEffect[1], $combatChain[$index+1], "CC");
-        if(GetCombatChainIndex($currentEffect[1], $currentTurnEffects[$i+1]) == 0) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
         $CombatChain->Remove($index);
         RemoveCurrentTurnEffect($i);
         break;
