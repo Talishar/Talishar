@@ -43,7 +43,3 @@ include_once 'MenuBar.php';
   }
   ?>
 </section>
-
-<?php
-include_once 'Disclaimer.php';
-?>

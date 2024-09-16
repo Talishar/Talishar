@@ -1,14 +1,4 @@
 <?php
-
-/*  Terra First Strike Deck METHODS
-  // Ability Type
-  // Ability Cost
-  // Combat Effect active
-  // Effect Attack Modifier
-  // Play Ability
-  // Hit Effect
-*/
-
 function TERAbilityType($cardID): string
 {
   return match ($cardID) {

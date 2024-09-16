@@ -37,7 +37,3 @@ require 'MenuBar.php';
     </section>
   </div>
 </main>
-
-<?php
-require 'Disclaimer.php';
-?>

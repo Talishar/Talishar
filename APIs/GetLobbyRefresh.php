@@ -44,7 +44,7 @@ if ($lastUpdate > 10000000) $lastUpdate = 0;
 
 include "../WriteLog.php";
 include "../HostFiles/Redirector.php";
-include "../Libraries/UILibraries2.php";
+include "../Libraries/UILibraries.php";
 include "../Libraries/SHMOPLibraries.php";
 
 $currentTime = round(microtime(true) * 1000);

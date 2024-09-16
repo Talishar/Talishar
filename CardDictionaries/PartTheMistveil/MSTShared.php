@@ -1,14 +1,4 @@
 <?php
-
-/*  PART THE MISTVEIL METHODS
-  // Ability Type
-  // Ability Cost
-  // Combat Effect active
-  // Effect Attack Modifier
-  // Play Ability
-  // Hit Effect
-*/
-
 function MSTAbilityType($cardID, $index = -1, $from = "-"): string
 {
   return match ($cardID) {

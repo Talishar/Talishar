@@ -45,7 +45,4 @@ include_once "./APIKeys/APIKeys.php";
 
   }
 
-
-
-include_once 'Disclaimer.php'
 ?>

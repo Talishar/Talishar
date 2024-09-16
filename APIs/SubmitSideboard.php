@@ -8,7 +8,7 @@ include "../GameLogic.php";
 include "../GameTerms.php";
 include "../Libraries/StatFunctions.php";
 include "../Libraries/PlayerSettings.php";
-include "../Libraries/UILibraries2.php";
+include "../Libraries/UILibraries.php";
 include "../AI/CombatDummy.php";
 include_once "../includes/dbh.inc.php";
 include_once "../includes/functions.inc.php";

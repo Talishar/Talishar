@@ -190,8 +190,6 @@ function PermanentStartTurnAbilities()
   $defPermanents = &GetPermanents($defPlayer);
   $character = &GetPlayerCharacter($mainPlayer);
   $hand = &GetHand($mainPlayer);
-  /*WriteLog("size of hand = " . count($hand));
-  WriteLog("hand[0] = " . $hand[0]);*/
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
     switch ($permanents[$i]) {
@@ -205,9 +203,7 @@ function PermanentStartTurnAbilities()
       case "ROGUE504":
         for($j = 0; $j < count($character)-1; ++$j)
         {
-          //if(CardType($character[$j]) == "W") WriteLog("Found " . $character[$j]);
           if(CardType($character[$j]) == "W") $character[$j + 3] += 1;
-          //WriteLog("character[" . $j . "] = " . $character[$j]);
         }
         break;
       case "ROGUE505":
@@ -275,7 +271,6 @@ function PermanentStartTurnAbilities()
         $indexChoices = [];
         for($j = count($character) - CharacterPieces(); $j >= 0; $j -= CharacterPieces())
         {
-          //WriteLog("Checking" . $character[$j] . "->" . $character[$j+1]);
           if($character[$j+1] == 0) array_push($indexChoices, $j);
         }
         if(count($indexChoices) != 0) $character[$indexChoices[rand(0, count($indexChoices)-1)]+1] = 2;

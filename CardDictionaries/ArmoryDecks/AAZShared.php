@@ -1,14 +1,4 @@
 <?php
-
-/*  Azalea Armory Deck METHODS
-  // Ability Type
-  // Ability Has Goi Again
-  // Combat Effect active
-  // Effect Attack Modifier
-  // Play Ability
-  // Hit Effect
-*/
-
 function AAZAbilityType($cardID, $index = -1, $from = "-"): string
 {
   return match ($cardID) {
