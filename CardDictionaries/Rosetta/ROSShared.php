@@ -12,7 +12,8 @@
 function ROSAbilityType($cardID): string
 {
   return match ($cardID) {
-    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS030", "ROS071", "ROS073", "ROS164", "ROS212", "ROS213",
+    "ROS007", "ROS008", "ROS019", "ROS020", "ROS021", "ROS027",
+    "ROS030", "ROS071", "ROS073", "ROS164", "ROS212", "ROS213",
     "ROS214", "ROS249", "ROS250", "ROS163" => "I",
     "ROS015", "ROS115", "ROS116", "ROS165" => "A",
     "ROS003", "ROS009" => "AA",
@@ -33,7 +34,7 @@ function ROSAbilityCost($cardID): int
   global $currentPlayer;
   return match ($cardID) {
     "ROS015" => 3,
-    "ROS003", "ROS007", "ROS008", "ROS249" => 2,
+    "ROS003", "ROS007", "ROS008", "ROS027", "ROS249" => 2,
     "ROS009", "ROS071", "ROS250" => 1,
     "ROS021" => HasAuraWithSigilInName($currentPlayer) ? 0 : 1,
     default => 0
@@ -109,7 +110,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CS_ActionsPlayed, $CCS_EclecticMag, $CS_DamageTaken;
-  global $combatChainState;
+  global $combatChainState, $CS_PlayIndex;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 
   switch ($cardID) {
@@ -149,6 +150,10 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $ampAmount = GetClassState($currentPlayer, $CS_NumLightningPlayed);
       AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "ABILITY");
       return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
+    case "ROS027":
+      if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard($currentPlayer, $target));
+      AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
+      return "";
     case "ROS030":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";

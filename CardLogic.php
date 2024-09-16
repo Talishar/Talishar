@@ -2925,14 +2925,19 @@ function ProcessMeld($player, $parameter)
       DealArcane(4, 2, "PLAYCARD", $parameter, true, $player);
       break;
     case "ROS023":
-      AddDecisionQueue("MULTIZONEINDICES", $player, "LAYER:type=I;minCost=0;maxCost=".GetClassState($player, $CS_ArcaneDamageDealt)-1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("NEGATE", $player, "<-", 1);
+      if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "LAYER:type=I;minCost=0;maxCost=".GetClassState($player, $CS_ArcaneDamageDealt)-1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("NEGATE", $player, "<-", 1);
+      }
       break;
     case "ROS024":
       DealArcane(5, 2, "PLAYCARD", $parameter, true, $player);
       break;
     case "ROS253":
+      if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) {
+        MZMoveCard($player, "MYDISCARD:type=AA;minCost=0;maxCost=" . GetClassState($player, $CS_ArcaneDamageDealt)-1, "MYHAND", DQContext: "Choose an attack action card with cost less than " . GetClassState($player, $CS_ArcaneDamageDealt)-1);
+      }
       break;
     default:
       break;

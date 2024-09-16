@@ -106,9 +106,8 @@
         if($from == "ARS") Draw($currentPlayer);
         return "";
       case "UPR183":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        $char = &GetPlayerCharacter($currentPlayer);
-        $char[GetClassState($currentPlayer, $CS_PlayIndex)+7] = 1;
+        if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard($currentPlayer, $target));
+        AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         return "";
       case "UPR191": case "UPR192": case "UPR193":
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay to buff Flex", 1);
