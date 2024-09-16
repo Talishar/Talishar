@@ -56,7 +56,7 @@ function MSTCombatEffectActive($cardID, $attackID): bool
 
 function MSTEffectAttackModifier($cardID): int
 {
-  global $mainPlayer, $CS_Transcended, $combatChain;
+  global $mainPlayer;
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
   return match ($cardID) {

@@ -1137,6 +1137,16 @@ function FinalizeChainLink($chainClosed = false)
     if ($combatChain[0] == "DVR002" && SearchCharacterActive($mainPlayer, "DVR001")) DoriQuicksilverProdigyEffect();
     if (TypeContains($combatChain[0], "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) == "-") SetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain, $combatChain[0]);
   }
+  array_push($chainLinkSummary, $combatChainState[$CCS_DamageDealt]);
+  array_push($chainLinkSummary, $combatChainState[$CCS_LinkTotalAttack]);
+  array_push($chainLinkSummary, TalentOverride(isset($combatChain[0]) ? $combatChain[0] : "", $mainPlayer));
+  array_push($chainLinkSummary, ClassOverride(isset($combatChain[0]) ? $combatChain[0] : "", $mainPlayer));
+  array_push($chainLinkSummary, SerializeCurrentAttackNames());
+  $numHitsOnLink = ($combatChainState[$CCS_DamageDealt] > 0 ? 1 : 0);
+  $numHitsOnLink += intval($combatChainState[$CCS_HitThisLink]);
+  array_push($chainLinkSummary, $numHitsOnLink);
+  array_push($chainLinkSummary, CurrentEffectBaseAttackSet());
+  array_push($chainLinkSummary, GetClassState($mainPlayer, $CS_ModalAbilityChoosen));
   
   ResolveWagers();
   //Clean up combat effects that were used and are one-time
@@ -1161,17 +1171,6 @@ function FinalizeChainLink($chainClosed = false)
     array_push($chainLinks[$CLIndex], $combatChain[$i + 4]); //Attack Modifier
     array_push($chainLinks[$CLIndex], $combatChain[$i + 5]); //Defense Modifier
   }
-
-  array_push($chainLinkSummary, $combatChainState[$CCS_DamageDealt]);
-  array_push($chainLinkSummary, $combatChainState[$CCS_LinkTotalAttack]);
-  array_push($chainLinkSummary, TalentOverride(isset($combatChain[0]) ? $combatChain[0] : "", $mainPlayer));
-  array_push($chainLinkSummary, ClassOverride(isset($combatChain[0]) ? $combatChain[0] : "", $mainPlayer));
-  array_push($chainLinkSummary, SerializeCurrentAttackNames());
-  $numHitsOnLink = ($combatChainState[$CCS_DamageDealt] > 0 ? 1 : 0);
-  $numHitsOnLink += intval($combatChainState[$CCS_HitThisLink]);
-  array_push($chainLinkSummary, $numHitsOnLink);
-  array_push($chainLinkSummary, CurrentEffectBaseAttackSet());
-  array_push($chainLinkSummary, GetClassState($mainPlayer, $CS_ModalAbilityChoosen));
 
   //Don't change state until the end, in case it changes what effects are active
   if ($CombatChain->HasCurrentLink()) {
@@ -1199,6 +1198,7 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
   $effectsToRemove = [];
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $effectArr = explode(",", $currentTurnEffects[$i]);
+    WriteLog($effectArr[0] . "-". IsCombatEffectActive($effectArr[0], $isSpectraTarget) . "-". IsCombatEffectLimited($i) . "-". IsCombatEffectPersistent($effectArr[0]));
     if (IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0])) {
       if ($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
       --$currentTurnEffects[$i + 3];
