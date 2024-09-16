@@ -584,7 +584,7 @@
           {
             $id = $hand[$i];
             $cardType = CardType($id);
-            if($cardType != "A" && $cardType != "AA")
+            if(!DelimStringContains($cardType, "A") && $cardType != "AA")
             {
               AddGraveyard($id, $defPlayer, "HAND");
               unset($hand[$i]);
