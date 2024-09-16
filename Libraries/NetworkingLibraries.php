@@ -1011,7 +1011,7 @@ function ChainLinkBeginResolutionEffects()
       for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
         if ($combatChain[$i + 1] != $defPlayer || $combatChain[$i + 2] != "HAND") continue;
         WriteLog(CardLink($combatChain[0], $combatChain[0]) . " creates a Bloodrot Pox from being blocked from hand.");
-        PlayAura($CID_BloodRotPox, $defPlayer);
+        PlayAura($CID_BloodRotPox, $defPlayer, effectController:$mainPlayer);
         break;
       }
       break;
