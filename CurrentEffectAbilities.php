@@ -1143,7 +1143,6 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
               $currentTurnEffects[$i + 3] -= $sourceDamage;
             }
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
-            if ($source == "ARC112" || $source == "UPR042") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
           }
           break;
         case "ROS169":
@@ -1900,13 +1899,10 @@ function BeginEndPhaseEffects()
         }
         break;
       case "ROS027-1":
-        $attackCharIndex = FindCharacterIndex($mainPlayer, "ROS027");
-        $defendCharIndex = FindCharacterIndex($defPlayer, "ROS027");
-        if ($attackCharIndex > -1) {
-          DestroyCharacter($mainPlayer, $attackCharIndex);
-        } elseif ($defendCharIndex > -1) {
-          DestroyCharacter($defPlayer, $defendCharIndex);
-        }
+        $player = $currentTurnEffects[$i+1];
+        $sanctuaryIndex = GetItemIndex("ROS027", $player);
+        DestroyItemForPlayer($player, $sanctuaryIndex);
+        break;
       default:
         break;
     }

@@ -152,7 +152,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
     case "ROS027":
       if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard($currentPlayer, $target));
-      AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
+      if(!SearchCurrentTurnEffects($cardID . "-1", $currentPlayer)) AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
       return "";
     case "ROS030":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);

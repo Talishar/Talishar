@@ -21412,7 +21412,7 @@ return "Clarity Potion";
 case "3":
 return "Healing Potion";
 case "5":
-return "Potion of Deja Vu";
+return "Potion of Déjà Vu";
 case "6":
 return "Potion of Ironhide";
 case "7":
@@ -35773,6 +35773,8 @@ case "5":
 return -1;
 case "7":
 return 3;
+case "9":
+return 2;
 default: return 0;
 }
 case "5":

@@ -210,7 +210,7 @@ if ($decklink != "") {
   $weapon2 = "";
   $weaponSideboard = "";
   $totalCards = 0;
-  $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY", "MST", "AKO", "ASB"];
+  $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY", "MST", "AKO", "ASB", "ROS", "AAZ", "TER", "AUR", "AIO"];
   if (is_countable($cards)) {
     for ($i = 0; $i < count($cards); ++$i) {
       $count = $cards[$i]->{'total'};
@@ -366,7 +366,7 @@ if ($decklink != "") {
         $totalCards += $numMainBoard + $numSideboard;
       }
 
-      if (IsCardBanned($id, $format, $character)) {
+      if (IsCardBanned($id, $format, $character) && $format != "draft") {
         if ($bannedCard != "") $bannedCard .= ", ";
         $bannedCard .= CardName($id);
       }
@@ -382,13 +382,6 @@ if ($decklink != "") {
   if($unsupportedCards != "") {
     $response->error = "⚠️ The following cards are not yet supported: " . $unsupportedCards;
     echo (json_encode($response));
-    exit;
-  }
-
-  if(($format == "sealed" || $format == "draft") && substr($decklink, 0, 9) != "DRAFTFAB-") {
-    //Currently must use draft fab for sealed/draft
-    $response->error = "You must use a DraftFaB deck for " . $format . ".";
-    echo json_encode($response);
     exit;
   }
 

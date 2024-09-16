@@ -1,7 +1,8 @@
 <?php
 
-//include "ParseGamestate.php";
-//include "WriteLog.php";
+include "HostFiles/Redirector.php";
+include_once "./AccountFiles/AccountSessionAPI.php";
+
 
 array_push($layerPriority, ShouldHoldPriority(1));
 array_push($layerPriority, ShouldHoldPriority(2));
@@ -12,6 +13,8 @@ $p1H = &GetHealth(1);
 $p2H = &GetHealth(2);
 $p1H = CharacterHealth($p1Char[0]);
 $p2H = CharacterHealth($p2Char[0]);
+$format = is_numeric($format) ? FormatName($format) : $format;
+
 if ($p1StartingHealth != "") $p1H = $p1StartingHealth;
 
 $fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
@@ -112,6 +115,14 @@ if (SearchCharacterForCard(1, "HVY047") || SearchCharacterForCard(1, "HVY048")) 
 }
 if (SearchCharacterForCard(2, "HVY047") || SearchCharacterForCard(2, "HVY048")) {
   AddDecisionQueue("ADDCURRENTEFFECT", 2, $p2Char[0] . "-1", 1);
+}
+
+//Aria Sanctuary for Rosseta Limited
+if($format == "draft"){
+  AddDecisionQueue("PASSPARAMETER", 1, "ROS027");
+  AddDecisionQueue("PUTPLAY", 1, "-");
+  AddDecisionQueue("PASSPARAMETER", 2, "ROS027");
+  AddDecisionQueue("PUTPLAY", 2, "-");
 }
 
 InventoryStartGameAbilities(1);
