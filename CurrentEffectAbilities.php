@@ -1145,13 +1145,6 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
           }
           break;
-        case "ROS169":
-          if ($preventable) {
-            $damage -= 2;
-            PlayAura("DYN244", $player); // Ponder
-          }
-          $remove = true;
-          break;
         default:
           break;
       }
