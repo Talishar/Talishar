@@ -67,6 +67,8 @@ function CardType($cardID)
     case "ROS024":
     case "ROS253":
       return "A,I";
+    case "ROS027":
+      return "T";
     default:
       break;
   }
@@ -113,6 +115,12 @@ function CardType($cardID)
 function CardSubType($cardID, $uniqueID = -1)
 {
   if (!$cardID) return "";
+  switch ($cardID) {
+    case "ROS027":
+      return "Item";
+    default:
+      break;
+  }
   if ($uniqueID > -1 && IsModular($cardID)) {
     global $currentTurnEffects;
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
@@ -2683,6 +2691,8 @@ function CharacterNumUsesPerTurn($cardID)
     case "MST001":
     case "MST002":
     case "MST238":
+      return 999;
+    case "ROS027":
       return 999;
     default:
       return 1;

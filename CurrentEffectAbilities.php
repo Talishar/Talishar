@@ -1128,6 +1128,10 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           }
           $remove = true;
           break;
+        case "ROS027":
+          if ($preventable) $damage -= 1;
+          $remove = true;
+          break;
         case "ROS169":
           if ($preventable) {
             $damage -= 2;
