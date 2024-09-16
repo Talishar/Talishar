@@ -523,7 +523,7 @@
     $deck = new Deck($mainPlayer);
     if(!ArsenalFull($mainPlayer) && !$deck->Empty()) {
       $type = CardType($deck->Top());
-      if($deck->Reveal() && ($type == "A" || $type == "AA")) {
+      if($deck->Reveal() && (DelimStringContains($type, "A") || $type == "AA")) {
         AddArsenal($deck->Top(remove:true), $mainPlayer, "DECK", "DOWN");
       }
     }

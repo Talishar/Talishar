@@ -1316,7 +1316,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for ($i = 0; $i < count($cards); ++$i) {
         $type = CardType($cards[$i]);
         if ($type == "AA") ++$numAA;
-        else if ($type == "A") ++$numNAA;
+        else if (DelimStringContains($type, "A")) ++$numNAA;
         if ($i >= 1) $message .= ", ";
         if ($i != 0 && $i == count($cards) - 1) $message .= "and ";
         $message .= CardLink($cards[$i], $cards[$i]);

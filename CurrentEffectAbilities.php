@@ -2069,7 +2069,7 @@ function EffectPlayCardRestricted($cardID, $type, $revertNeeded = false)
           if (CardType($cardID) != "W" && GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "DTD226";
           break;
         case "WarmongersWar":
-          if ($type == "A" && CardType($cardID) != "W") $restrictedBy = "DTD230";
+          if (DelimStringContains($type, "A") && CardType($cardID) != "W") $restrictedBy = "DTD230";
           break;
         case "WarmongersPeace":
           // !str_contains(GetAbilityTypes($cardID), "I") should allow discarding attack actions for instant abilities under peace

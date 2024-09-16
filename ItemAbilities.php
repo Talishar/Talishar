@@ -457,7 +457,7 @@ function ItemBlockModifier($cardID)
           $typeEvo = CardType("EVO0" . $number);
         }
         $attackID = $CombatChain->AttackCard()->ID();
-        if (($type == "A" || $type == "AA" || $typeEvo == "A") && CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) --$blockModifier;
+        if ((DelimStringContains($type, "A") || $type == "AA" || $typeEvo == "A") && CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) --$blockModifier;
         break;
       default:
         break;
