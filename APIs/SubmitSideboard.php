@@ -61,8 +61,6 @@ if(isset($submission->arms) && $submission->arms != "") $character .= " " . $sub
 if(isset($submission->legs) && $submission->legs != "") $character .= " " . $submission->legs;
 if(isset($submission->offhand) && $submission->offhand != "") $character .= " " . $submission->offhand;
 $deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
-//TODO: parse inventory
-
 
 $playerDeck = $submission->deck;
 $deckCount = count($playerDeck);

@@ -123,8 +123,5 @@ ob_end_clean();
 $gameStatus = $MGS_GameStarted;
 WriteGameFile();
 
-if(isset($gameUIPath)) header("Location: " . $gameUIPath . "?gameName=$gameName&playerID=$playerID");
-else header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=$playerID");
-
 exit;
 

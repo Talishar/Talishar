@@ -280,14 +280,6 @@ function MZGainControl($player, $target)
   }
 }
 
-/**
- * Returns a card to its owners hand from a given zone, switches behavior 
- *
- * @param int $player the player who decided the card to bounce
- * @param string $lastResult - an array of results from a previous mz query to parse
- * @param boolean $allArsenal - whether arsenal effects should effect all arsenal pieces, not currently implemented for use with arsenal but will probably help in the future
- * @return string a new last result to pass to a possible next mz action
- */
 function MZBounce($player, $lastResult, $allArsenal = true)
 {
   $lastResultArr = explode(",", $lastResult);
@@ -314,14 +306,6 @@ function MZBounce($player, $lastResult, $allArsenal = true)
   return $lastResult;
 }
 
-/**
- * Returns a card to the bottom of it's owner decks switches behavior based on starting zone
- *
- * @param int $player the player who decided the card to bottom
- * @param string $lastResult - an array of results from a previous mz query to parse
- * @param boolean $allArsenal - whether arsenal effects should effect all arsenal pieces, not currently implemented for use with arsenal but will probably help in the future
- * @return string a new last result to pass to a possible next mz action
- */
 function MZBottom($player, $lastResult, $allArsenal = true)
 {
   $lastResultArr = explode(",", $lastResult);

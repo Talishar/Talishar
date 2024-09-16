@@ -3615,12 +3615,6 @@ function HasWard($cardID, $player)
   }
 }
 
-/**
- * Defines how much arcane damage prevention a card with Arcane Shelter will apply
- *
- * @param string $cardID - an id that maps to a FaB card
- * @return int - the number of arcane damage this will prevent
- */
 function ArcaneShelterAmount($cardID)
 {
   return match ($cardID) {
@@ -3629,12 +3623,6 @@ function ArcaneShelterAmount($cardID)
   };
 }
 
-/**
- * A new keyword in Rosetta. Acts like ward where it must prevent damage but it only works on arcane.
- *
- * @param string $cardID - an id that maps to a FaB card
- * @return boolean - true if the given card has the arcane shelter keyword and false if not
- */
 function HasArcaneShelter($cardID): bool
 {
   return match ($cardID) {

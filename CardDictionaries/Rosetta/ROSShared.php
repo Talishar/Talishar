@@ -1,14 +1,5 @@
 <?php
 
-/**
- * Defines the type of a particular card's non-play ablity. For example: Fyendal's Spring Tunic's ablity is an instant so we would return "I"
- * Other types include "AR" (Attack Reaction), "A" (Action), "AA" (Attack Action).
- * This function is meant to handle cards from the Rosetta set.
- *
- * @param string $cardID - an id that maps to a FaB card
- * @param integer $index
- * @return string - the type that defines when the corresponding ability may be played
- */
 function ROSAbilityType($cardID): string
 {
   return match ($cardID) {
@@ -21,14 +12,6 @@ function ROSAbilityType($cardID): string
   };
 }
 
-/**
- * Defines the resource cost of a particular card's non-play ability. For example: Star Fall's (ROS009) ability cost's 1 resource to activate.
- * Novel additional costs (ie. Destroying Gold) is handled by PayAdditionalCosts().
- * This function is meant to handle cards from the Rosetta set.
- *
- * @param string $cardID - an id that maps to a FaB card
- * @return integer - the number of resources which must be paid for the ability
- */
 function ROSAbilityCost($cardID): int
 {
   global $currentPlayer;
@@ -41,13 +24,6 @@ function ROSAbilityCost($cardID): int
   };
 }
 
-/**
- * Sub function for AbilityHasGoAgain that will indicate whether or not a cards sub ability has go again
- * This function is meant to handle cards from the Rosetta set.
- *
- * @param string $cardID - an id that maps to a FaB card
- * @return boolean - true if the ability should have go again and false if not
- */
 function ROSAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
@@ -56,13 +32,6 @@ function ROSAbilityHasGoAgain($cardID): bool
   };
 }
 
-/**
- * If an active effect would add attack value to current or future attack, this defies how much attack value it will add.
- * This function is meant to handle cards from the Rosetta set.
- *
- * @param string $cardID - an id that maps to a FaB card
- * @return integer - the number of attack value that will be added
- */
 function ROSEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
@@ -73,14 +42,6 @@ function ROSEffectAttackModifier($cardID): int
   };
 }
 
-/**
- * Defines if an combat effect should activate given certain characteristics of the board state.
- * This function is meant to handle cards from the Rosetta set.
- *
- * @param string $cardID - the id effect that is being evaluate
- * @param string $attackID - the id of the card that is doing tha actual attack
- * @return bool - true if the effect is active and should be applied, false otherwise
- */
 function ROSCombatEffectActive($cardID, $attackID): bool
 {
   global $mainPlayer;
@@ -95,17 +56,6 @@ function ROSCombatEffectActive($cardID, $attackID): bool
   };
 }
 
-/**
- * Defines the on resolution effects of cards and abilities
- * This function is meant to handle cards from the Rosetta set.
- *
- * @param string $cardID - the id effect that is being evaluate
- * @param string $from - caps string that indicates where an effect is coming from PLAY/ABLITY are common values
- * @param string $resourcesPaid - the number of resources that are paid into the effect. useful for cards with variable costs.
- * @param string $target - for when a card has multiple possble targets
- * @param string $additionalCosts - list of cards that is defined by a broader context usually to give a bonus effect (brutes discarding a card then checkin if the card is a 6 is a common use case)
- * @return string - a log message that will be displayed upon resolution
- */
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
@@ -590,12 +540,6 @@ function GetTrapIndices($player)
   return SearchDeck($player, subtype: "Trap");
 }
 
-/**
- * Volzar needs to know if you control an aura with "Sigil" in its name
- *
- * @param integer $player - presumably the current player, the one who has activated volzar
- * @return boolean - true if a aura with sigil is found, false if no aura contains the name sigil
- */
 function HasAuraWithSigilInName($player)
 {
   $auras = &GetAuras($player);
