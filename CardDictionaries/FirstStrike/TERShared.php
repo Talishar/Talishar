@@ -44,7 +44,7 @@ function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "TER002":
       if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "TER004":
+    case "TER005":
       GainResources($currentPlayer, 1);
       return "";
     case "TER008": case "TER014":
