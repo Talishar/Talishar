@@ -846,12 +846,6 @@ function IsModeAllowedForSpectators($mode)
   }
 }
 
-function ExitProcessInput()
-{
-  global $playerID, $redirectPath, $gameName;
-  exit;
-}
-
 function PitchHasCard($cardID)
 {
   global $currentPlayer;
@@ -900,7 +894,7 @@ function PassInput($autopass = true)
   } else {
     if ($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed");
     else WriteLog("Player " . $currentPlayer . " passed");
-    if (Pass($turn, $currentPlayer, $currentPlayer)) {
+    if (Pass($turn, $currentPlayer)) {
       if ($turn[0] == "M") {
         BeginTurnPass();
       } else PassTurn();
@@ -908,7 +902,7 @@ function PassInput($autopass = true)
   }
 }
 
-function Pass(&$turn, $playerID, &$currentPlayer)
+function Pass(&$turn, &$currentPlayer)
 {
   global $mainPlayer, $defPlayer;
   if ($turn[0] == "M" || $turn[0] == "ARS") {
@@ -974,7 +968,7 @@ function NuuStaticAbility($banishedBy)
 
 function ChainLinkBeginResolutionEffects()
 {
-  global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex, $CID_BloodRotPox, $CS_Transcended, $currentTurnEffects;
+  global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex, $CID_BloodRotPox, $CS_Transcended;
   if (TypeContains($combatChain[0], "W", $mainPlayer)) {
     $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
     $index = $combatChainState[$CCS_WeaponIndex];
@@ -1057,7 +1051,6 @@ function ResolveChainLink()
     DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
     AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
   }
-  
   ProcessDecisionQueue();
 }
 
@@ -1225,7 +1218,7 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
 
 function BeginTurnPass()
 {
-  global $mainPlayer, $defPlayer, $decisionQueue, $layers;
+  global $mainPlayer, $layers;
   ResetCombatChainState(); // The combat chain must be closed prior to the turn ending. The close step is outlined in 7.8 - specifically: CR 2.1 - 7.8.7. Fifth and finally, the Close Step ends, and the Action Phase continues. The Action Phase will always continue after the combat chain is closed - so there is another round of priority windows
 
   // Only attempt to end turn if no triggers remain on stack
@@ -1333,8 +1326,8 @@ function PassTurn()
 
 function FinalizeTurn()
 {
-  global $currentPlayer, $currentTurn, $playerID, $turn, $combatChain, $actionPoints, $mainPlayer, $defPlayer, $currentTurnEffects, $nextTurnEffects;
-  global $mainHand, $defHand, $mainDeck, $mainItems, $defItems, $defDeck, $mainCharacter, $defCharacter, $mainResources, $defResources;
+  global $currentPlayer, $currentTurn, $turn, $combatChain, $actionPoints, $mainPlayer, $defPlayer, $currentTurnEffects, $nextTurnEffects;
+  global $mainHand, $defHand, $currentTurnEffectsFromCombat, $mainCharacter, $defCharacter, $mainResources, $defResources;
   global $mainAuras, $firstPlayer, $lastPlayed, $layerPriority, $EffectContext;
   global $MakeStartTurnBackup;
   $EffectContext = "-";
@@ -1399,6 +1392,7 @@ function FinalizeTurn()
   $turn[3] = "";
   $actionPoints = 1;
   $combatChain = [];
+  $currentTurnEffectsFromCombat = [];
   $currentTurnEffects = [];
   for ($i = count($nextTurnEffects) - NextTurnPieces(); $i >= 0; $i -= NextTurnPieces()) {
     if ($nextTurnEffects[$i + 4] == 1) {
@@ -1427,7 +1421,7 @@ function FinalizeTurn()
 
 function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID = -1)
 {
-  global $playerID, $turn, $currentPlayer, $actionPoints, $layers, $dqState, $CombatChain;
+  global $playerID, $turn, $currentPlayer, $actionPoints, $layers, $CombatChain;
   global $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $lastPlayed, $CS_PlayIndex, $CS_NumBluePlayed;
   global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumLightningPlayed;
@@ -1502,7 +1496,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
       }
-
       //CR 5.1.4. Declare Modes and Targets
       //CR 5.1.4a Declare targets for resolution abilities
       if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) GetLayerTarget($cardID, $from);
@@ -2735,10 +2728,11 @@ function PayAdditionalCosts($cardID, $from)
 function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1)
 {
   global $turn, $combatChain, $currentPlayer, $mainPlayer, $defPlayer, $combatChainState, $CCS_AttackPlayedFrom, $CS_PlayIndex;
-  global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex, $CS_NumAttacks, $CCS_LinkBaseAttack;
+  global $CS_CharacterIndex, $CS_PlayCCIndex, $CCS_LinkBaseAttack;
   global $CCS_WeaponIndex, $EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
-  global $CS_NumDragonAttacks, $CS_NumAttackCards, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks, $CCS_IsBoosted;
+  global $CS_NumDragonAttacks, $CS_NumAttackCards, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
   global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts;
+
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   if ($additionalCosts == "-" || $additionalCosts == "") $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
   if ($layerIndex > -1) SetClassState($currentPlayer, $CS_PlayIndex, $layerIndex);
@@ -2872,7 +2866,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function ProcessAttackTarget()
 {
-  global $defPlayer, $mainPlayer;
+  global $defPlayer;
   $target = explode("-", GetAttackTarget());
   if ($target[0] == "THEIRAURAS") {
     $auras = &GetAuras($defPlayer);

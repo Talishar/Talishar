@@ -98,12 +98,12 @@ if(!IsReplay()) {
     if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
   }
   if ($playerID != 3 && $authKey != $targetAuth) { echo("Invalid auth key"); exit; }
-  if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
+  if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;;
   if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
     $currentTime = round(microtime(true) * 1000);
     SetCachePiece($gameName, 2, $currentTime);
     SetCachePiece($gameName, 3, $currentTime);
-    ExitProcessInput();
+    exit;;
   }
 }
 
@@ -178,4 +178,4 @@ if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
 GamestateUpdated($gameName);
 
-ExitProcessInput();
+exit;;

@@ -505,7 +505,6 @@ function AssignArcaneBonus($playerID)
 function ClearNextCardArcaneBuffs($player, $playedCard = "", $from = "")
 {
   global $currentTurnEffects;
-  $layerIndex = 0;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     $remove = 0;
     if ($currentTurnEffects[$i + 1] == $player) {

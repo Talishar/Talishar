@@ -915,7 +915,7 @@ function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
 
 function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable)
 {
-  global $currentPlayer, $currentTurnEffects, $CS_Transcended;
+  global $currentTurnEffects;
   $otherPlayer = ($player == 1 ? 2 : 1);
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0 && $damage > 0; $i -= CurrentTurnEffectPieces()) {
     $remove = false;
