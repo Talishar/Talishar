@@ -2568,7 +2568,7 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "AIO") return AIOAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "RVD004":
-      return true;
+    case "TER005":
     case "DVR004":
       return true;
     default:

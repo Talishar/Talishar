@@ -3,6 +3,7 @@ function TERAbilityType($cardID): string
 {
   return match ($cardID) {
     "TER002" => "AA",
+    "TER005" => "A",
     default => ""
   };
 }
@@ -11,6 +12,7 @@ function TERAbilityCost($cardID): int
 {
   return match ($cardID) {
     "TER002" => 3,
+    "TER005" => 0,
     default => 0
   };
 }
@@ -41,6 +43,9 @@ function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   switch ($cardID) {
     case "TER002":
       if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "TER004":
+      GainResources($currentPlayer, 1);
       return "";
     case "TER008": case "TER014":
       if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") PlayAura("HVY241", $currentPlayer); //Might
