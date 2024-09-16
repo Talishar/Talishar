@@ -1198,7 +1198,6 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
   $effectsToRemove = [];
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $effectArr = explode(",", $currentTurnEffects[$i]);
-    WriteLog($effectArr[0] . "-". IsCombatEffectActive($effectArr[0], $isSpectraTarget) . "-". IsCombatEffectLimited($i) . "-". IsCombatEffectPersistent($effectArr[0]));
     if (IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0])) {
       if ($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
       --$currentTurnEffects[$i + 3];
