@@ -46,7 +46,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 {
   global $mainPlayer;
   return match ($cardID) {
-    "ROS064", "ROS065", "ROS066", "ROS012" => true,
+    "ROS064", "ROS065", "ROS066", "ROS012", "ROS076" => true,
     "ROS110", "ROS111", "ROS112" => CardType($attackID) == "AA" && CardCost($attackID) <= 1,
     "ROS127", "ROS128", "ROS129", "ROS119" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "ROS118" => CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer),
