@@ -58,10 +58,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv;
           break;
         case "ARC121":
-          $rv = SearchDeck($player, "", "", $lastResult, -1, "WIZARD");
+          $rv = SearchDeck($player, "", "", $lastResult, 0, "WIZARD");
           break;
         case "CRU143":
-          $rv = SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE");
+          $rv = SearchDiscard($player, "AA", class:"RUNEBLADE");
           break;
         case "DECK":
           $rv = SearchDeck($player);
