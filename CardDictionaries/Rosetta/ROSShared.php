@@ -569,7 +569,7 @@ function ROSHitEffect($cardID): void
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND", 1);
         AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $defPlayer, "-", 1);
         AddDecisionQueue("DISCARDCARD", $defPlayer, "HAND-".$defPlayer, 1);
