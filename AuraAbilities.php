@@ -196,7 +196,7 @@ function AuraLeavesPlay($player, $index, $uniqueID)
     case "ROS152":
     case "ROS153":
     case "ROS154":
-      if ($mainPlayer == $player) { // main player is the attacking player, these being equal would mean that it is "your turn" to Arcane Cussing
+      if($mainPlayer == $player) { // main player is the attacking player, these being equal would mean that it is "your turn" to Arcane Cussing
         AddLayer("TRIGGER", $player, $cardID);
       }
       break;
@@ -230,7 +230,7 @@ function AuraLeavesPlay($player, $index, $uniqueID)
     default:
       break;
   }
-  if (SearchCurrentTurnEffects("ROS163", $player) && DelimStringContains(CardName($cardID), "Sigil", partial: true)) {
+  if (SearchCurrentTurnEffects("ROS163", $player) && DelimStringContains(CardName($cardID), "Sigil", partial: true)){
     WriteLog(CardLink("ROS163", "ROS163") . " is amping 1");
     AddCurrentTurnEffect("ROS163-AMP", $player);//amp for aether bindings
   }
@@ -871,6 +871,9 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
 
 function AuraDamageTakenAbilities($player, $damage)
 {
+  global $CS_DamageDealt, $CS_ArcaneDamageDealt;
+  $otherPlayer = $player == 1 ? 2 : 1;
+
   $auras = &GetAuras($player);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
@@ -889,9 +892,21 @@ function AuraDamageTakenAbilities($player, $damage)
     }
     if ($remove) DestroyAura($player, $i);
   }
-
-  CheckOtherAuras($player, $damage);
-
+  
+  $otherAuras = &GetAuras($otherPlayer);
+  for ($i = count($otherAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    switch ($otherAuras[$i]) {
+      case "ROS077":
+        if (GetClassState($otherPlayer, $CS_DamageDealt) <= 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) <= 0 && $damage > 0 && $otherAuras[$i + 5] > 0) {
+          $otherAuras[$i + 5] -= 1;
+          AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
+        }
+        break;    
+      default:
+        break;
+    }
+  }
+  
   return $damage;
 }
 
@@ -911,30 +926,7 @@ function AuraDamageDealtAbilities($player, $damage)
     }
     if ($remove) DestroyAura($player, $i);
   }
-
-  CheckOtherAuras($player, $damage);
-
   return $damage;
-}
-
-function CheckOtherAuras($player, $damage): void
-{
-  global $CS_DamageDealt, $CS_ArcaneDamageDealt;
-  $otherPlayer = $player == 1 ? 2 : 1;
-
-  $otherAuras = &GetAuras($otherPlayer);
-  for ($i = count($otherAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    switch ($otherAuras[$i]) {
-      case "ROS077":
-        if (GetClassState($otherPlayer, $CS_DamageDealt) <= 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) <= 0 && $damage > 0 && $otherAuras[$i + 5] > 0) {
-          $otherAuras[$i + 5] -= 1;
-          AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
-        }
-        break;
-      default:
-        break;
-    }
-  }
 }
 
 function AuraLoseHealthAbilities($player, $amount)
