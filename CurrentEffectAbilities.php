@@ -961,8 +961,15 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           $remove = true;
           break;
         case "UPR183":
-          if ($preventable) $damage -= 1;
-          $remove = true;
+          if ($source == $currentTurnEffects[$i + 2]) {
+            if ($preventable) {
+              $sourceDamage = $damage;
+              $damage -= $currentTurnEffects[$i + 3];
+              $currentTurnEffects[$i + 3] -= $sourceDamage;
+            }
+            if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
+            if ($source == "ARC112" || $source == "UPR042") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
+          }
           break;
         case "UPR221":
         case "UPR222":
@@ -1129,8 +1136,15 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           $remove = true;
           break;
         case "ROS027":
-          if ($preventable) $damage -= 1;
-          $remove = true;
+          if ($source == $currentTurnEffects[$i + 2]) {
+            if ($preventable) {
+              $sourceDamage = $damage;
+              $damage -= $currentTurnEffects[$i + 3];
+              $currentTurnEffects[$i + 3] -= $sourceDamage;
+            }
+            if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
+            if ($source == "ARC112" || $source == "UPR042") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
+          }
           break;
         case "ROS169":
           if ($preventable) {
@@ -1863,6 +1877,14 @@ function BeginEndPhaseEffects()
           DestroyAllThisAura($currentTurnEffects[$i + 1], "ARC112");
         }
         break;
+      case "UPR183-1":
+        $attackCharIndex = FindCharacterIndex($mainPlayer, "UPR183");
+        $defendCharIndex = FindCharacterIndex($defPlayer, "UPR183");
+        if ($attackCharIndex > -1) {
+          DestroyCharacter($mainPlayer, $attackCharIndex);
+        } elseif ($defendCharIndex > -1) {
+          DestroyCharacter($defPlayer, $defendCharIndex);
+        }
       case "UPR200":
       case "UPR201":
       case "UPR202":
@@ -1877,6 +1899,14 @@ function BeginEndPhaseEffects()
           DestroyCharacter($defPlayer, $defendCharIndex);
         }
         break;
+      case "ROS027-1":
+        $attackCharIndex = FindCharacterIndex($mainPlayer, "ROS027");
+        $defendCharIndex = FindCharacterIndex($defPlayer, "ROS027");
+        if ($attackCharIndex > -1) {
+          DestroyCharacter($mainPlayer, $attackCharIndex);
+        } elseif ($defendCharIndex > -1) {
+          DestroyCharacter($defPlayer, $defendCharIndex);
+        }
       default:
         break;
     }
