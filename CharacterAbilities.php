@@ -493,7 +493,7 @@ function MainCharacterHitTrigger()
         break;
       case "ELE062":
       case "ELE063":
-        if (IsHeroAttackTarget() && CardType($attackID) == "AA" && !SearchAuras("ELE109", $mainPlayer)) {
+        if (IsHeroAttackTarget() && DelimStringContains(CardType($attackID), "AA") && !SearchAuras("ELE109", $mainPlayer)) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
@@ -1260,7 +1260,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         break;
       case "ELE062":
       case "ELE063":
-        if (CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2 && $from != "PLAY") {
+        if (DelimStringContains(CardType($cardID), "A") && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2 && $from != "PLAY") {
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
