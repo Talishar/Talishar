@@ -60,7 +60,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CS_ActionsPlayed, $CCS_EclecticMag, $CS_DamageTaken;
-  global $combatChainState, $CS_PlayIndex;
+  global $combatChainState, $turn;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 
   switch ($cardID) {
@@ -201,7 +201,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         "ROS087" => 2
       };
       $options = SearchCombatChainLink($currentPlayer, "AA", minCost: $minCost);
-      if($options != "") {
+      if($options != "" && SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
         $max = count(explode(",", $options));
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:type=AA;minCost=".$minCost);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);

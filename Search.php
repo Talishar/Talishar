@@ -1483,6 +1483,15 @@ function SearchLayersForCardID($cardID)
   return -1;
 }
 
+function SearchLayersForPhase($phase)
+{
+  global $layers;
+  for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+    if ($layers[$i] == $phase) return $i;
+  }
+  return -1;
+}
+
 function GetPlayerNumEquipment($player, $face = "UP")
 {
   $characters = &GetPlayerCharacter($player);
