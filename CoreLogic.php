@@ -381,7 +381,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   if ($preventable) {
     if ($damage > 0) $damage = CurrentEffectPreventDamagePrevention($player, $type, $damage, $source);
-    if (ConsumeDamagePrevention($player)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
+    if (ConsumeDamagePrevention($player)) return 0;//I damage can be prevented outright, don't use up your limited damage prevention
     if ($type == "ARCANE") {
       if ($damage <= $classState[$CS_ArcaneDamagePrevention]) {
         $classState[$CS_ArcaneDamagePrevention] -= $damage;
@@ -392,11 +392,11 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
       }
     }
     if ($damage <= $classState[$CS_DamagePrevention]) {
-      CheckIfHauntingRenditionIsActive($player);
+      CheckIfPreventionEffectIsActive($player);
       $classState[$CS_DamagePrevention] -= $damage;
       $damage = 0;
     } else {
-      CheckIfHauntingRenditionIsActive($player);
+      CheckIfPreventionEffectIsActive($player);
       $damage -= $classState[$CS_DamagePrevention];
       $classState[$CS_DamagePrevention] = 0;
     }
@@ -421,10 +421,13 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   return $damage;
 }
 
-function CheckIfHauntingRenditionIsActive($player): void
+function CheckIfPreventionEffectIsActive($player): void
 {
   if (SearchCurrentTurnEffects("ROS120", $player, true)) {
     PlayAura("ARC112", $player); // Runechant
+  }
+  if (SearchCurrentTurnEffects("ROS169", $player, true)) {
+    PlayAura("DYN244", $player); // Ponder
   }
 }
 
