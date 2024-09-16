@@ -2372,10 +2372,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
       AddDecisionQueue("PLAYAURA", $player, "WTR225-1", 1); // Quicken
       break;
-    case "ROS000":
-      AddCurrentTurnEffect($parameter, $player);
-      Writelog(CardLink($parameter, $parameter) . " is amping 1");
-      break;
     case "ROS010":
       DealArcane(1, 2, "PLAYCARD", "ROS010");
       break;
