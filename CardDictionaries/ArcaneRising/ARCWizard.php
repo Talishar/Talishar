@@ -356,7 +356,7 @@ function PlayRequiresTarget($cardID, $from)
     case "ROS170":
     case "ROS171":
     case "ROS172":
-      return (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") ? -1 : 2; //Chorus of Amphitheater
+      return (GetResolvedAbilityType($cardID, "HAND") == "A") ? 2 : -1; //Chorus of Amphitheater
     case "ROS176":
     case "ROS177":
     case "ROS178":
@@ -364,7 +364,7 @@ function PlayRequiresTarget($cardID, $from)
     case "ROS186":
     case "ROS187":
     case "ROS188":
-      return (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") ? -1 : 2; //Arcane Twining
+      return (GetResolvedAbilityType($cardID, "HAND") == "A") ? 2 : -1; //Arcane Twining
     case "ROS189":
     case "ROS190":
     case "ROS191":
