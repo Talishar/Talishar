@@ -78,7 +78,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     GainHealth(1, $otherPlayer);
     return $rv;
   }
-  if ($banishedBy == "MST104" && (CardType($cardID) == "A" || CardType($cardID) == "AA")) {
+  if ($banishedBy == "MST104" && (DelimStringContains(CardType($cardID), "A") || CardType($cardID) == "AA")) {
     GainHealth(1, $otherPlayer);
     return $rv;
   }
