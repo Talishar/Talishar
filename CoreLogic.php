@@ -1200,9 +1200,9 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     if (SearchCurrentTurnEffects("EVO129", $currentPlayer) || SearchCurrentTurnEffects("EVO130", $currentPlayer) || SearchCurrentTurnEffects("EVO131", $currentPlayer)) return true;
   }
   if ($from == "ARS" && DelimStringContains($cardType, "A") && $currentPlayer != $mainPlayer && ColorContains($cardID, 3, $currentPlayer) && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0])))) return true;
-  if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST155-INST", $currentPlayer) && CardCost($cardID) <= 2) return true;
-  if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST156-INST", $currentPlayer) && CardCost($cardID) <= 1) return true;
-  if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST157-INST", $currentPlayer) && CardCost($cardID) <= 0) return true;
+  if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST155-INST", $currentPlayer) && CardCost($cardID, $from) <= 2) return true;
+  if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST156-INST", $currentPlayer) && CardCost($cardID, $from) <= 1) return true;
+  if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST157-INST", $currentPlayer) && CardCost($cardID, $from) <= 0) return true;
   if (DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("ROS251", $currentPlayer)) return true;
   $isStaticType = IsStaticType($cardType, $from, $cardID);
   $abilityType = "-";
@@ -2340,7 +2340,7 @@ function IsAlternativeCostPaid($cardID, $from)
       if ($remove) RemoveCurrentTurnEffect($i);
     }
   }
-  if ($from == "BANISH" && SearchAuras("ARC112", $currentPlayer) > 0 && HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer)) >= CardCost($cardID)) {
+  if ($from == "BANISH" && SearchAuras("ARC112", $currentPlayer) > 0 && HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $currentPlayer)) >= CardCost($cardID, $from)) {
     $combatChainState[$CCS_WasRuneGate] = 1;
     return true;
   }

@@ -24,13 +24,13 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   }
   if ($cardID == "MST031") SearchCardList($additionalCosts, $player, subtype: "Chi") != "" ? $numAttackCounters += 4 : $numAttackCounters += 2;
   if ($cardID == "MST043" || $cardID == "MST044" || $cardID == "MST045") $numAttackCounters += SearchPitchForColor($player, 3) > 0 ? 1 : 0;
-  if (ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST155", $player, true) && CardCost($cardID) <= 2 && CardCost($cardID) > -1) {
+  if (ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST155", $player, true) && CardCost($cardID, $from) <= 2 && CardCost($cardID, $from) > -1) {
     ++$numAttackCounters;
   }
-  if (ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST156", $player, true) && CardCost($cardID) <= 1 && CardCost($cardID) > -1) {
+  if (ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST156", $player, true) && CardCost($cardID, $from) <= 1 && CardCost($cardID, $from) > -1) {
     ++$numAttackCounters;
   }
-  if (ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST157", $player, true) && CardCost($cardID) <= 0 && CardCost($cardID) > -1) {
+  if (ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("MST157", $player, true) && CardCost($cardID, $from) <= 0 && CardCost($cardID, $from) > -1) {
     ++$numAttackCounters;
   }
 

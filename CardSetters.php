@@ -31,7 +31,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     if ($modifier != "INT") $modifier = "DTD564";
   }
   //Do effects that change where it goes, or banish it if not
-  if ($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
+  if ($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID, $from) == "Item" && CardCost($cardID, $from) <= 2) {
     $character = &GetPlayerCharacter($player);
     AddLayer("TRIGGER", $player, $character[0], $cardID);
   }

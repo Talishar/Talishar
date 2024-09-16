@@ -670,7 +670,7 @@ function CharacterCostModifier($cardID, $from, $cost)
         break;
       case "EVO001":
       case "EVO002":
-        if ($from == "DECK" && SubtypeContains($cardID, "Item", $currentPlayer) && CardCost($cardID) < 2) ++$modifier;
+        if ($from == "DECK" && SubtypeContains($cardID, "Item", $currentPlayer) && CardCost($cardID, $from) < 2) ++$modifier;
         break;
       case "HVY090":
       case "HVY091":
@@ -1227,7 +1227,7 @@ function CharacterPlayCardAbilities($cardID, $from)
     switch ($characterID) {
       case "ROGUE026":
         if (CardType($cardID) != "W" && CardType($cardID) != "E") {
-          $generatedAmount = CardCost($cardID);
+          $generatedAmount = CardCost($cardID, $from);
           if ($generatedAmount < 1) $generatedAmount = 1;
           for ($j = 0; $j < $generatedAmount; ++$j) {
             PutItemIntoPlayForPlayer("DYN243", $currentPlayer, effectController: $currentPlayer);

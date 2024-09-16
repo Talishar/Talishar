@@ -1203,7 +1203,7 @@ function CurrentEffectPlayAbility($cardID, $from)
   global $currentTurnEffects, $currentPlayer, $actionPoints, $CS_LastDynCost;
 
   if (DynamicCost($cardID) != "") $cost = GetClassState($currentPlayer, $CS_LastDynCost);
-  else $cost = CardCost($cardID);
+  else $cost = CardCost($cardID, $from);
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {

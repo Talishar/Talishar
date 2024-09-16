@@ -392,7 +392,7 @@ function CardTalent($cardID)
 }
 
 //Minimum cost of the card
-function CardCost($cardID, $from = "-")
+function CardCost($cardID, $from="-")
 {
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
@@ -411,11 +411,11 @@ function CardCost($cardID, $from = "-")
     case "ROS056":
     case "ROS055":
     case "HVY188":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
-      else return 3;
+      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
+      return 3;
     case "HVY209":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
-      else return 2;
+      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
+      return 2;
     case "MST400":
     case "MST410":
     case "MST432":
@@ -432,20 +432,18 @@ function CardCost($cardID, $from = "-")
     case "ROS106":
     case "ROS105":
     case "ROS104":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from != "CC") return 0;
-      else return 1;
+      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
+      return 1;
     case "ROS170":
     case "ROS171":
     case "ROS172":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
-      break;
+      return 2;
     case "ROS204":
     case "ROS205":
     case "ROS206":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
-      break;
-    case "ROS219": 
-      return 2;
+      return 1;
     default:
       break;
   }
@@ -801,8 +799,8 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
   return match ($cardID) {
     "ARC003", "TCC050", "CRU101" => "A,AA",
     "OUT093" => "I,I",
-    "HVY143", "HVY144", "HVY145", "HVY163", "HVY164", "HVY165", "HVY186", "HVY187", "HVY188", "MST133", "ROS106",
-    "ROS105", "ROS104", "ROS057", "ROS056", "ROS055", "HVY209" => "I,AA",
+    "HVY143", "HVY144", "HVY145", "HVY163", "HVY164", "HVY165", "HVY186", "HVY187", "HVY188", "MST133", 
+    "ROS104", "ROS105", "ROS106", "ROS055", "ROS056", "ROS057", "HVY209" => "I,AA",
     "ROS170", "ROS171", "ROS172", "ROS186", "ROS187", "ROS188", "ROS204", "ROS205", "ROS206" => "I,A",
     "ROS120", "ROS169" => "B,I",
     default => "",
@@ -837,12 +835,12 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "HVY186":
     case "HVY187":
     case "HVY188":
-    case "ROS106":
-    case "ROS105":
     case "ROS104":
-    case "ROS057":
-    case "ROS056":
+    case "ROS105":
+    case "ROS106":
     case "ROS055":
+    case "ROS056":
+    case "ROS057":
     case "HVY209":
       $names = "Ability";
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0){
@@ -943,7 +941,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $banishCard = $theirBanish->Card($index);
     if (!(PlayableFromOtherPlayerBanish($banishCard->ID(), $banishCard->Modifier()))) return false;
   } else if ($from == "GY" && !PlayableFromGraveyard($cardID)) return false;
-  if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "EVO001" && $character[0] != "EVO002" || CardCost($cardID) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
+  if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "EVO001" && $character[0] != "EVO002" || CardCost($cardID, $from) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if (TypeContains($cardID, "E", $player) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
   if ($phase == "B") {
     if (TypeContains($cardID, "E", $player) && $character[$index + 6] == 1) return false;
@@ -984,7 +982,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     }
     if ($CombatChain->AttackCard()->ID() == "DYN121" && $phase == "B" && SearchBanishForCardName($player, $cardID) > -1) return false;
     $resourceMin = $combatChainState[$CCS_ResourceCostDefenseMin];
-    if ($resourceMin > -1 && CardCost($cardID) < $resourceMin && $cardType != "E") return false;
+    if ($resourceMin > -1 && CardCost($cardID, $from) < $resourceMin && $cardType != "E") return false;
     if ($combatChainState[$CCS_CardTypeDefenseRequirement] == "Attack_Action" && $cardType != "AA") return false;
     if ($combatChainState[$CCS_CardTypeDefenseRequirement] == "Non-attack_Action" && $cardType != "A") return false;
   }
@@ -1313,7 +1311,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
       }
     }
   }
-  if (SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0) {
+  if (SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID, $from) == 0) {
     $restrictedBy = "ELE035";
     return true;
   }
@@ -1361,7 +1359,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     $restriction = "ELE036";
     return true;
   }
-  if (SearchCurrentTurnEffects("ELE035-3", $player) && CardCost($cardID) == 0 && !IsStaticType(CardType($cardID), $from, $cardID)) {
+  if (SearchCurrentTurnEffects("ELE035-3", $player) && CardCost($cardID, $from) == 0 && !IsStaticType(CardType($cardID), $from, $cardID)) {
     $restriction = "ELE035";
     return true;
   }
@@ -3258,7 +3256,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   if ($mod == "INT" || $mod == "NTINT" || $mod == "FACEDOWN") return false;
   if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
   if ($mod == "MST236" && SearchCurrentTurnEffects("MST236-3", $player) && CardType($cardID) != "E") return true;
-  if (HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $player, false)) >= CardCost($cardID)) return true;
+  if (HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $player, false)) >= CardCost($cardID, "BANISH")) return true;
   $char = &GetPlayerCharacter($player);
   if (SubtypeContains($cardID, "Evo") && ($char[0] == "TCC001" || $char[0] == "EVO007" || $char[0] == "EVO008") && $char[1] < 3) return true;
   if (!$nonLimitedOnly && $char[0] == "DTD564" && SearchCurrentTurnEffects("DTD564", $player) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;

@@ -455,9 +455,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   $defAuras = &GetAuras($defPlayer);
   $attackID = $CombatChain->AttackCard()->ID();
   for ($i = 0; $i < count($defAuras); $i += AuraPieces()) {
-    if ($defAuras[$i] == "WTR072" && CardCost($cardID) >= 3) $blockModifier += 4;
-    if ($defAuras[$i] == "WTR073" && CardCost($cardID) >= 3) $blockModifier += 3;
-    if ($defAuras[$i] == "WTR074" && CardCost($cardID) >= 3) $blockModifier += 2;
+    if ($defAuras[$i] == "WTR072" && CardCost($cardID, $from) >= 3) $blockModifier += 4;
+    if ($defAuras[$i] == "WTR073" && CardCost($cardID, $from) >= 3) $blockModifier += 3;
+    if ($defAuras[$i] == "WTR074" && CardCost($cardID, $from) >= 3) $blockModifier += 2;
     if ($defAuras[$i] == "WTR046" && $cardType == "E") $blockModifier += 1;
     if ($defAuras[$i] == "ELE109" && DelimStringContains($cardType, "A")) $blockModifier += 1;
     if ($defAuras[$i] == "HVY068" && $cardType == "AA") $blockModifier += 3;

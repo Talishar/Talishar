@@ -1474,7 +1474,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   if ($turn[0] != "P") {
     if ($dynCostResolved >= 0) {
       SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
-      $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
+      $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID, $from) + SelfCostModifier($cardID, $from)));
       if(HasMeld($cardID) && GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") $baseCost += $baseCost;
       if (!$playingCard) $resources[1] += $dynCostResolved;
       else {
@@ -1589,13 +1589,13 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         LoseHealth($remorselessCount, $playerID);
       }
       if (CardNameContains($cardID, "Moon Wish", $currentPlayer)) AddCurrentTurnEffect("ARC185-GA", $currentPlayer);
-      if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains(CardSubType($cardID), "Aura") && CardCost($cardID) <= 2 && SearchCurrentTurnEffects("MST155-INST", $currentPlayer, true)) {
+      if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains(CardSubType($cardID), "Aura") && CardCost($cardID, $from) <= 2 && SearchCurrentTurnEffects("MST155-INST", $currentPlayer, true)) {
         AddCurrentTurnEffect("MST155", $currentPlayer);
       }
-      if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains(CardSubType($cardID), "Aura") && CardCost($cardID) <= 1 && SearchCurrentTurnEffects("MST156-INST", $currentPlayer, true)) {
+      if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains(CardSubType($cardID), "Aura") && CardCost($cardID, $from) <= 1 && SearchCurrentTurnEffects("MST156-INST", $currentPlayer, true)) {
         AddCurrentTurnEffect("MST156", $currentPlayer);
       }
-      if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains(CardSubType($cardID), "Aura") && CardCost($cardID) <= 0 && SearchCurrentTurnEffects("MST157-INST", $currentPlayer, true)) {
+      if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains(CardSubType($cardID), "Aura") && CardCost($cardID, $from) <= 0 && SearchCurrentTurnEffects("MST157-INST", $currentPlayer, true)) {
         AddCurrentTurnEffect("MST157", $currentPlayer);
       }
       if (DelimStringContains(CardSubType($cardID), "Aura")) {

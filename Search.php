@@ -146,8 +146,8 @@ function SearchInner(
     if (!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
       if (($type == "" || DelimStringContains(CardType($cardID), $type) || ($type == "C" && CardType($cardID) == "D"))
         && ($subtype == "" || DelimStringContains(CardSubType($cardID), $subtype))
-        && ($maxCost == -1 || CardCost($cardID) <= $maxCost)
-        && ($minCost == -1 || CardCost($cardID) >= $minCost)
+        && ($maxCost == -1 || CardCost($cardID, $zone) <= $maxCost)
+        && ($minCost == -1 || CardCost($cardID, $zone) >= $minCost)
         && ($class == "" || ClassContains($cardID, $class, $player))
         && (count($talents) == 0 || TalentContainsAny($cardID, implode(",", $talents), $player))
         && ($pitch == -1 || ColorContains($cardID, $pitch, $player))
