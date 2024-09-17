@@ -319,8 +319,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS173":
     case "ROS174":
     case "ROS175":
+      $numSigils = 0;
       $sigils = SearchAura($currentPlayer, nameIncludes: "Sigil");
-      $numSigils = count(explode(",", $sigils));
+      if($sigils != "") $numSigils = count(explode(",", $sigils));
       DealArcane(ArcaneDamage($cardID) + $numSigils, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     case "ROS179":
