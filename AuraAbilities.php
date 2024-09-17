@@ -210,7 +210,7 @@ function AuraLeavesPlay($player, $index, $uniqueID)
     case "ROS182":
       $deck = new Deck($player);
       $cardID = $deck->Top();
-      $mod = (CardType($cardID) == "A" ? "INST" : "-");
+      $mod = (DelimStringContains(CardType($cardID), "A") ? "INST" : "-");
       BanishCardForPlayer($cardID, $player, "DECK", $mod);
       $deck->Remove(0);
       break;
