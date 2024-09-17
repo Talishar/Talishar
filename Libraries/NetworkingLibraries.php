@@ -1834,11 +1834,13 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   if(HasMeld($cardID)) {
     $names = explode(" // ", CardName($cardID));
     $option = "Both,".$names[0].",".$names[1];
-    if(!$combatChainState[$CCS_EclecticMag] 
+    
+    if(CardType($cardID) != "I" 
+    && !$combatChainState[$CCS_EclecticMag] 
     && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0 
     && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
-    && $actionPoints < 1 && DelimStringContains(CardType($cardID), "A")
-    || ($turn[0] != "M" && DelimStringContains(CardType($cardID), "A"))
+    && $actionPoints < 1 
+    && $turn[0] != "M" 
     ){
       $option = $names[1];
     }
