@@ -1542,6 +1542,23 @@ function RemoveCardSameNames($player, $stringCardsIndex, $zone)
   return $uniqueNameIndex;
 }
 
+function RemoveDuplicateCards($player, $stringCardsIndex, $zone)
+{
+  if ($stringCardsIndex == "") return "";
+  $indexToCheck = explode(',', $stringCardsIndex);
+  $newString = "";
+  $uniqueNameIndex = "";
+  for ($i = 0; $i < count($indexToCheck); $i++) {
+    if ($newString != "") $newString .= ",";
+    if (!str_contains($newString, $zone[$indexToCheck[$i]])) {
+      $newString .= $zone[$indexToCheck[$i]];
+      if ($uniqueNameIndex != "") $uniqueNameIndex .= ",";
+      $uniqueNameIndex .= $indexToCheck[$i];
+    }
+  }
+  return $uniqueNameIndex;
+}
+
 function SearchSoulForIndex($cardID, $player)
 {
   $souls = &GetSoul($player);

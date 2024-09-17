@@ -158,7 +158,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "MULTIACTIONSBANISH":
           $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A"));
-          $rv = RemoveCardSameNames($player, $index, GetBanish($player));
+          $rv = RemoveDuplicateCards($player, $index, GetBanish($player));
           break;
         case "MULTITRAPSBANISH":
           $rv = SearchDiscard($player, subtype: "Trap");

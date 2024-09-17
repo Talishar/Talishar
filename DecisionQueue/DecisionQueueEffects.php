@@ -602,11 +602,19 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       if(ClassContains($lastResult, "ILLUSIONIST", $player)) PlayAura("MON104", $player);
       return 1;
     case "SPOILEDSKULL":
-      $rand = GetRandom(0, count($lastResult) - 1);
       $banish = new Banish($player);
-      $card = $banish->Card($lastResult[$rand]);
-      $card->SetModifier("TT");
-      WriteLog("You may play " . CardLink($card->ID(), $card->ID()) . " this turn");
+      $index = implode(",", $lastResult);
+      $cleanIndexes = RemoveCardSameNames($player, $index, GetBanish($player));
+      if(count(explode(",", $cleanIndexes)) < 3) {
+        WriteLog("You selected cards that have the same name. Reverting gamestate prior to that effect.", highlight: true);
+        RevertGamestate();
+      }
+      else {
+        $rand = GetRandom(0, count($lastResult) - 1);
+        $card = $banish->Card($lastResult[$rand]);
+        $card->SetModifier("TT");
+        WriteLog("You may play " . CardLink($card->ID(), $card->ID()) . " this turn");  
+      }
       return $lastResult;
     case "ALLURINGINDUCEMENT":
       global $combatChain, $combatChainState, $CCS_LinkBaseAttack;
