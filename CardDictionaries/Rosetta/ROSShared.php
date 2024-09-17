@@ -284,10 +284,15 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS155":
     case "ROS156":
     case "ROS157":
+      $numRunechants = match ($cardID) {
+        "ROS155" => 3,
+        "ROS156" => 2,
+        "ROS157" => 1
+      };
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS&COMBATCHAINLINK:subtype=Aura");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112-3", 1);
+      AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112-" . $numRunechants, 1);
       return "";
     case "ROS163":
       AddCurrentTurnEffect("ROS163", $currentPlayer);
