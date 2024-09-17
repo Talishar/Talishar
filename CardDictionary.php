@@ -3884,7 +3884,7 @@ function HasAttackLayer()
   $parameters = explode("|", $layers[$layerIndex+2]);
   if (strlen($layerID) != 6) return false;//Game phase, not a card - sorta hacky
   $layerType = CardType($layerID);
-  if ($layerType == "AA" || $layerType == "W") return true;//It's an attack
+  if ($layerType == "AA") return true; //It's an attack
   if (GetResolvedAbilityType($layers[$layerIndex]) == "AA") return true;
   if ($parameters[0] == "PLAY" && DelimStringContains(CardSubType($layerID), "Aura")) return true;
   return false;
