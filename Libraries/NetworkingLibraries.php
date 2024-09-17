@@ -1837,7 +1837,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     if(!$combatChainState[$CCS_EclecticMag] 
     && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0 
     && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
-    && $actionPoints < 1
+    && $actionPoints < 1 && DelimStringContains(CardType($cardID), "A")
     || ($turn[0] != "M" && DelimStringContains(CardType($cardID), "A"))
     ){
       $option = $names[1];
