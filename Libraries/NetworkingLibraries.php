@@ -1838,7 +1838,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0 
     && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
     && $actionPoints < 1
-    || $turn[0] != "M"
+    || ($turn[0] != "M" && DelimStringContains(CardType($cardID), "A"))
     ){
       $option = $names[1];
     }
