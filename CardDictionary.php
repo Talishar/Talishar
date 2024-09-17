@@ -1154,6 +1154,8 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       case "MST102":
         if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
         else return "THEIRDISCARD";
+      case "ROS027":
+        return "-";
       default:
         return "THEIRDISCARD";
     }
