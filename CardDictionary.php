@@ -68,7 +68,7 @@ function CardType($cardID)
     case "ROS253":
       return "A,I";
     case "ROS027":
-      return "T";
+      return "A";
     default:
       break;
   }
