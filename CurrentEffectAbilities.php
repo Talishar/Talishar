@@ -1894,7 +1894,7 @@ function BeginEndPhaseEffects()
       case "ROS027-1":
         $player = $currentTurnEffects[$i+1];
         $sanctuaryIndex = GetItemIndex("ROS027", $player);
-        DestroyItemForPlayer($player, $sanctuaryIndex);
+        DestroyItemForPlayer($player, $sanctuaryIndex, true);
         break;
       default:
         break;

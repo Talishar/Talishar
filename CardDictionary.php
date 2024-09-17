@@ -68,7 +68,7 @@ function CardType($cardID)
     case "ROS253":
       return "A,I";
     case "ROS027":
-      return "A";
+      return "Macro";
     default:
       break;
   }
@@ -116,7 +116,7 @@ function CardSubType($cardID, $uniqueID = -1)
 {
   if (!$cardID) return "";
   switch ($cardID) {
-    case "ROS027":
+    case "ROS027"://Technically false, but helps with Rosetta Limited
       return "Item";
     default:
       break;
@@ -1051,6 +1051,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
         return false;
       }
       return true;
+    case "Macro":
+      return $phase == "M";
     default:
       return false;
   }
@@ -1154,8 +1156,6 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       case "MST102":
         if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
         else return "THEIRDISCARD";
-      case "ROS027":
-        return "-";
       default:
         return "THEIRDISCARD";
     }

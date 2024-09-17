@@ -2786,7 +2786,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if (!$skipDRResolution && !$isSpectraTarget && $target != "") $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
     if ($isSpectraTarget) {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
-      if (CardType(($cardID) !== "T")) { //Don't need to add to anywhere if it's a token
+      if (CardType(($cardID) != "T") && CardType(($cardID) != "Macro") ) { //Don't need to add to anywhere if it's a token
         ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, $from);
       }
     }
@@ -2834,7 +2834,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     else if ($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer, $from);
     else if (DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID, from: $from);
     else if (DelimStringContains($cardSubtype, "Evo")) EvoHandling($cardID, $currentPlayer, $from);
-    else if ($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W") {
+    else if ($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W" && $definedCardType != "Macro") {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
       ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, $from);
     }

@@ -427,7 +427,7 @@ function ResetCombatChainState()
         if($chainLinks[$i][$j+3] != "HAND" && BlockValue($chainLinks[$i][$j]) >= 0) continue;
       }      if(CardType($chainLinks[$i][$j]) == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
       else {
-        if(CardType($chainLinks[$i][$j]) == "T") continue;//Don't need to add to anywhere if it's a token
+        if(CardType($chainLinks[$i][$j]) == "T" || CardType($chainLinks[$i][$j]) == "Macro") continue;//Don't need to add to anywhere if it's a token
         $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
         ResolveGoesWhere($goesWhere, $chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CHAINCLOSING");
       }
