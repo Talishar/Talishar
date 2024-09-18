@@ -17,8 +17,8 @@ function ROSAbilityCost($cardID): int
   global $currentPlayer;
   return match ($cardID) {
     "ROS015" => 3,
-    "ROS003", "ROS007", "ROS008", "ROS027", "ROS249" => 2,
-    "ROS009", "ROS071", "ROS250" => 1,
+    "ROS003", "ROS007", "ROS008", "ROS027" => 2,
+    "ROS009", "ROS071", "ROS249", "ROS250" => 1,
     "ROS021" => HasAuraWithSigilInName($currentPlayer) ? 0 : 1,
     default => 0
   };
