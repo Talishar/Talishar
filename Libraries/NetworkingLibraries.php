@@ -2766,6 +2766,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
     if (count($combatChain) == 0 && (DelimStringContains($definedCardType, "DR") || DelimStringContains($definedCardType, "AR"))) {
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because the combat chain closed.");
+      ContinueDecisionQueue();
       return;
     }
     if ($definedCardType == "DR" && $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1) {

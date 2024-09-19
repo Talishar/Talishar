@@ -324,7 +324,7 @@ function IsGamePhase($phase)
 //Must be called with the my/their context
 function ContinueDecisionQueue($lastResult = "")
 {
-  global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
+  global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer;
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
@@ -455,10 +455,10 @@ function ContinueDecisionQueue($lastResult = "")
     }
     return;
   }
-  $phase = array_shift($decisionQueue);
+  $phase = array_shift($decisionQueue); 
   $player = array_shift($decisionQueue);
   $parameter = array_shift($decisionQueue);
-  //WriteLog($phase . " " . $player . " " . $parameter . " " . $lastResult);//Uncomment this to visualize decision queue execution
+  WriteLog($phase . " " . $player . " " . $parameter . " " . $lastResult);//Uncomment this to visualize decision queue execution
   if (count($dqVars) > 0) {
     if (str_contains($parameter, "{0}")) $parameter = str_replace("{0}", $dqVars[0], $parameter);
     if (str_contains($parameter, "<0>")) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);

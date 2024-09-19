@@ -3,9 +3,7 @@
 function initializePlayerState($handler, $deckHandler, $player)
 {
   global $p1IsPatron, $p2IsPatron, $p1IsChallengeActive, $p2IsChallengeActive, $p1id, $p2id;
-  global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_PassDRStep, $SET_AutotargetArcane;
-  global $SET_ColorblindMode, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_IsPatron;
-  global $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_Language, $p1Inventory, $p2Inventory;
+  global $SET_Mute, $SET_IsPatron, $p1Inventory, $p2Inventory;
   $charEquip = GetArray($deckHandler);
   $deckCards = GetArray($deckHandler);
   $inventory = GetArray($deckHandler);
@@ -89,9 +87,7 @@ function initializePlayerState($handler, $deckHandler, $player)
 
 function SettingDefaultValue($setting, $hero)
 {
-  global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_PassDRStep, $SET_AutotargetArcane;
-  global $SET_ColorblindMode, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_IsPatron;
-  global $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_Language, $SET_Playmat;
+  global $SET_TryUI2, $SET_AutotargetArcane, $SET_Playmat;
   switch($setting)
   {
     case $SET_TryUI2: return "1";
