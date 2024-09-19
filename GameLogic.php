@@ -1160,8 +1160,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $parameters[0];
       $source = $parameters[1];
       $type = $parameters[2];
+      $sourceType = CardType($source);
       if ($type == "PLAYCARD") {
         $damage += ConsumeArcaneBonus($player);
+        if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("ELE065", $player);
         WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage");
       }
       if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
@@ -1183,8 +1185,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
       $target = $targetPlayer;
-      $sourceType = CardType($source);
-      if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("ELE065", $player);
       $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
       PrependDecisionQueue("TAKEARCANE", $target, $damage . "-" . $source . "-" . $player);
       PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
