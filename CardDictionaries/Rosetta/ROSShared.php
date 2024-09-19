@@ -442,14 +442,14 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       LookAtHand($otherPlayer);
       LookAtArsenal($otherPlayer);
       AddNextTurnEffect($cardID . "-1", $otherPlayer);
-      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
-      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
-      MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true);
+      for ($i=0; $i < 3; $i++) { 
+        MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true, DQContext:"Choose traps from your deck to add to your hand:");
+      }
       AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, 2 . "-", 1);
-      AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
+      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, 2 . "-");
+      AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-");
+      AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-");
+      AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-");
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       return "";
     case "ROS248":
