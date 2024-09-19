@@ -1095,7 +1095,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("This card was charged: " . CardLink($lastResult, $lastResult));
       IncrementClassState($player, $CS_NumCharged);
       LogPlayCardStats($player, $lastResult, "HAND", "CHARGE");
-      if (SearchCharacterActive($player, "DTD047") && GetClassState($otherPlayer, $CS_DamageDealt) <= 0) AddCurrentTurnEffect("DTD047", $player);
+      if (SearchCharacterActive($player, "DTD047") && GetClassState($otherPlayer, $CS_DamageDealt) <= 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) <= 0) AddCurrentTurnEffect("DTD047", $player);
       global $CCS_AttackNumCharged;
       if (CardType($EffectContext) == "AA") ++$combatChainState[$CCS_AttackNumCharged];
       return $lastResult;

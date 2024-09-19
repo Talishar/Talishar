@@ -1100,14 +1100,14 @@ function CharacterModifiesPlayAura($player, $isToken, $effectController)
 
 function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
 {
-  global $CS_NumCharged, $CS_DamageDealt;
+  global $CS_NumCharged;
   $char = &GetPlayerCharacter($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   for ($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
     if ($char[$i + 1] == 0) continue;
     switch ($char[$i]) {
       case "DTD047":
-        if ($damage > 0 && $preventable && $char[$i + 5] > 0 && GetClassState($player, $CS_NumCharged) > 0 && GetClassState($otherPlayer, $CS_DamageDealt) <= 0) {
+        if ($damage > 0 && $preventable && $char[$i + 5] > 0 && GetClassState($player, $CS_NumCharged) > 0) {
           --$damage;
           --$char[$i + 5];
           SearchCurrentTurnEffects("DTD047", $player, true);
