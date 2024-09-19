@@ -392,7 +392,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
       }
     }
     if ($damage > 0) {
-      CheckIfPreventionEffectIsActive($player);
+      CheckIfPreventionEffectIsActive($player, $damage);
       if($damage <= $classState[$CS_DamagePrevention]) {
         $classState[$CS_DamagePrevention] -= $damage;
         $damage = 0;
@@ -422,13 +422,27 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   return $damage;
 }
 
-function CheckIfPreventionEffectIsActive($player): void
+function CheckIfPreventionEffectIsActive($player, $damage): void
 {
-  if (SearchCurrentTurnEffects("ROS120", $player, true)) {
-    PlayAura("ARC112", $player); // Runechant
-  }
-  if (SearchCurrentTurnEffects("ROS169", $player, true)) {
-    PlayAura("DYN244", $player); // Ponder
+  global $currentTurnEffects;
+  WriteLog($damage);
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    $remove = 0;
+    switch ($currentTurnEffects[$i]) {
+      case "ROS120":
+        if($damage > 0) PlayAura("ARC112", $player); // Runechant
+        $damage -= 2;
+        $remove = 1;
+        break;
+      case "ROS169":
+        if($damage > 0) PlayAura("DYN244", $player); // Ponder
+        $damage -= 2;
+        $remove = 1;
+        break;
+      default:
+        break;
+    }
+    if ($remove == 1) RemoveCurrentTurnEffect($i);
   }
 }
 
