@@ -391,14 +391,15 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
         $classState[$CS_ArcaneDamagePrevention] = 0;
       }
     }
-    if ($damage <= $classState[$CS_DamagePrevention]) {
+    if ($damage > 0) {
       CheckIfPreventionEffectIsActive($player);
-      $classState[$CS_DamagePrevention] -= $damage;
-      $damage = 0;
-    } else {
-      CheckIfPreventionEffectIsActive($player);
+      if($damage <= $classState[$CS_DamagePrevention]) {
+        $classState[$CS_DamagePrevention] -= $damage;
+        $damage = 0;
+      } else {
       $damage -= $classState[$CS_DamagePrevention];
       $classState[$CS_DamagePrevention] = 0;
+      }
     }
   }
   //else: CR 2.0 6.4.10h If damage is not prevented, damage prevention effects are not consumed
