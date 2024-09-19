@@ -1270,6 +1270,9 @@ function UndoIntimidate($player)
     if ($banish[$i + 1] == "NOFEAR" && SearchLayersForCardID("HVY016") == -1) {
       AddLayer("TRIGGER", $player, "HVY016", "-");
     }
+    if ($banish[$i + 1] == "STONERAIN" && SearchLayersForCardID("AAZ016") == -1) {
+      AddLayer("TRIGGER", $player, "AAZ016", "-");
+    }
   }
 }
 

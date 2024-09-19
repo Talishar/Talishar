@@ -318,7 +318,7 @@ function GetTheirBanishForDisplay($playerID)
   $TheirCardBack = GetCardBack($playerID == 1 ? 2 : 1);
   $banish = array();
   for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
-    if ($theirBanish[$i + 1] == "INT" || $theirBanish[$i + 1] == "NTINT" || $theirBanish[$i + 1] == "UZURI") array_push($banish, $TheirCardBack);
+    if ($theirBanish[$i + 1] == "INT" || $theirBanish[$i + 1] == "UZURI" || $theirBanish[$i + 1] == "NTSTONERAIN" || $theirBanish[$i + 1] == "STONERAIN") array_push($banish, $TheirCardBack);
     else array_push($banish, $theirBanish[$i]);
   }
   return $banish;
@@ -330,7 +330,7 @@ function GetMyBanishForDisplay($playerID)
   $myCardBack = GetCardBack($playerID == 1 ? 1 : 2);
   $banish = array();
   for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
-    if ($myBanish[$i + 1] == "INT" || $myBanish[$i + 1] == "NTINT" || $myBanish[$i + 1] == "UZURI") array_push($banish, $myCardBack);
+    if ($myBanish[$i + 1] == "INT" || $myBanish[$i + 1] == "UZURI" || $myBanish[$i + 1] == "NTSTONERAIN" || $myBanish[$i + 1] == "STONERAIN") array_push($banish, $myCardBack);
     else array_push($banish, $myBanish[$i]);
   }
   return $banish;

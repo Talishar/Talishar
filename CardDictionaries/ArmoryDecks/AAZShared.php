@@ -79,13 +79,11 @@ function AAZHitEffect($cardID): void
   global $defPlayer;
   switch ($cardID) {
     case "AAZ016":
-      if (IsHeroAttackTarget() && HasAimCounter()) {
-        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
-        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card to banish", 1);
-        AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
-        AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,NTINT," . $cardID, 1);
-      }
+      AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card to banish", 1);
+      AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
+      AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,NTSTONERAIN," . $cardID, 1);
       break;
   }
 }

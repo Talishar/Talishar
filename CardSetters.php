@@ -1,6 +1,6 @@
 <?php
 
-function BanishCardForPlayer($cardID, $player, $from, $modifier = "-", $banishedBy = "")
+function BanishCardForPlayer($cardID, $player, $from, $mod = "-", $banishedBy = "")
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myBanish, $theirBanish, $mainBanish, $defBanish;
@@ -8,15 +8,15 @@ function BanishCardForPlayer($cardID, $player, $from, $modifier = "-", $banished
   global $myStateBuiltFor, $CS_NumCrouchingTigerCreatedThisTurn;
   if (CardNameContains($cardID, "Crouching Tiger", $player)) IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn);
   if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $modifier, $player, $from, $banishedBy);
-    else return BanishCard($defBanish, $defClassState, $cardID, $modifier, $player, $from, $banishedBy);
+    if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $mod, $player, $from, $banishedBy);
+    else return BanishCard($defBanish, $defClassState, $cardID, $mod, $player, $from, $banishedBy);
   } else {
-    if ($player == $myStateBuiltFor) return BanishCard($myBanish, $myClassState, $cardID, $modifier, $player, $from, $banishedBy);
-    else return BanishCard($theirBanish, $theirClassState, $cardID, $modifier, $player, $from, $banishedBy);
+    if ($player == $myStateBuiltFor) return BanishCard($myBanish, $myClassState, $cardID, $mod, $player, $from, $banishedBy);
+    else return BanishCard($theirBanish, $theirClassState, $cardID, $mod, $player, $from, $banishedBy);
   }
 }
 
-function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $from = "", $banishedBy = "")
+function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from = "", $banishedBy = "")
 {
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer, $CS_NumEarthBanished, $EffectContext;
   $rv = -1;
@@ -24,11 +24,11 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   $otherPlayer = $player == 1 ? 2 : 1;
   $character = &GetPlayerCharacter($player);
   $characterID = ShiyanaCharacter($character[0]);
-  AddEvent("BANISH", ($modifier == "INT" || $modifier == "NTINT" || $modifier == "UZURI" ? "CardBack" : $cardID));
+  AddEvent("BANISH", ($mod == "INT" || $mod == "UZURI" || $mod == "NTSTONERAIN" || $mod == "STONERAIN" ? "CardBack" : $cardID));
   //Effects that change the modifier
   if ($characterID == "DTD564" && $character[1] < 3) {
     AddLayer("TRIGGER", $player, $characterID);
-    if ($modifier != "INT") $modifier = "DTD564";
+    if ($mod != "INT") $mod = "DTD564";
   }
   //Do effects that change where it goes, or banish it if not
   if ($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID, $from) == "Item" && CardCost($cardID, $from) <= 2) {
@@ -38,18 +38,18 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   if (CardType($cardID) != "T") { //If you banish a token, the token ceases to exist.
     $rv = count($banish);
     array_push($banish, $cardID);
-    array_push($banish, $modifier);
+    array_push($banish, $mod);
     array_push($banish, GetUniqueId($cardID, $player));
   }
   ++$classState[$CS_CardsBanished];
-  if ($modifier == "INT" || $modifier == "NTINT") return $rv;
+  if ($mod == "INT" || $mod == "NTSTONERAIN" || $mod == "STONERAIN") return $rv;
   //Do additional effects
-  if ($cardID == "DTD109" && $from == "HAND" && $modifier != "DTD564" && ($modifier != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
-  if (($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player))) {
+  if ($cardID == "DTD109" && $from == "HAND" && $mod != "DTD564" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
+  if (($mod == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player))) {
     WriteLog("Gained 1 action point from banishing " . CardLink($cardID, $cardID));
     ++$actionPoints;
   }
-  if (($modifier == "BOOST" && $from == "DECK") && ($cardID == "DYN101" || $cardID == "DYN102" || $cardID == "DYN103")) {
+  if (($mod == "BOOST" && $from == "DECK") && ($cardID == "DYN101" || $cardID == "DYN102" || $cardID == "DYN103")) {
     WriteLog(CardLink($cardID, $cardID) . " was banished to pay a boost cost. Put a counter on a Hyper Drive you control.");
     AddLayer("TRIGGER", $player, $cardID);
   }

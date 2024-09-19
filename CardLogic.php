@@ -919,7 +919,6 @@ function AddOnHitTrigger($cardID): void
     case "MST206":
     case "MST207":
     case "MST208":
-    case "AAZ016":
     case "AUR012":
     case "AUR019":
     case "ROS117":
@@ -929,6 +928,9 @@ function AddOnHitTrigger($cardID): void
     case "ROS222":
     case "ROS243":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
+      break;
+    case "AAZ016":
+      if (IsHeroAttackTarget() && HasAimCounter()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     default:
       break;
@@ -2346,6 +2348,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "MST205":
       AddCurrentTurnEffect($parameter, $player, "CC");
       IncrementClassState($player, $CS_DamagePrevention, 1);
+      break;
+    case "AAZ016":
+      $banish = &GetBanish($player);
+      $hand = &GetHand($player);
+      for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+        if ($banish[$i + 1] == "STONERAIN") {
+          array_push($hand, $banish[$i]);
+          RemoveBanish($player, $i);
+        }
+      }
       break;
     case "ASB003":
       Charge();

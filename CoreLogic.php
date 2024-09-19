@@ -798,6 +798,9 @@ function ReplaceBanishModifier($player, $oldMod, $newMod)
   $banish->UnsetModifier($oldMod, $newMod);
 }
 
+//TT = This Turn
+//NT = Next Turn
+//INT = Intimidated
 function UnsetTurnBanish()
 {
   global $defPlayer, $mainPlayer;
@@ -817,7 +820,7 @@ function UnsetTurnBanish()
   $p2Banish->UnsetModifier("REMOVEGRAVEYARD");
   UnsetCombatChainBanish();
   ReplaceBanishModifier($defPlayer, "NT", "TT");
-  ReplaceBanishModifier($defPlayer, "NTINT", "INT");
+  ReplaceBanishModifier($defPlayer, "NTSTONERAIN", "STONERAIN");
   ReplaceBanishModifier($mainPlayer, "NTFromOtherPlayer", "TTFromOtherPlayer");
 }
 
