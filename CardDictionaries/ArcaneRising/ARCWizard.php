@@ -156,7 +156,7 @@ function ARCWizardHitEffect($cardID)
 //2: Any Target
 //3: Their Hero + Their Allies
 //4: My Hero only (For afflictions)
-function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $fromQueue = false, $player = 0, $mayAbility = false, $limitDuplicates = false, $skipHitEffect = false, $resolvedTarget = "", $nbArcaneInstance = 1, $isPassable = 0)
+function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $fromQueue = false, $player = 0, $mayAbility = false, $limitDuplicates = false, $skipHitEffect = false, $resolvedTarget = "-", $nbArcaneInstance = 1, $isPassable = 0)
 {
   global $currentPlayer, $CS_ArcaneTargetsSelected;
   if ($player == 0) $player = $currentPlayer;
@@ -184,7 +184,7 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
         PrependDecisionQueue("PASSPARAMETER", $player, $source);
       }
     } else {
-      if ($resolvedTarget != "") {
+      if ($resolvedTarget != "-") {
         AddDecisionQueue("PASSPARAMETER", $player, $resolvedTarget, ($isPassable ? 1 : 0));
       } else {
         AddDecisionQueue("PASSPARAMETER", $player, $source, ($isPassable ? 1 : 0));
