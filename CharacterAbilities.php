@@ -169,8 +169,7 @@ function CharacterStartTurnAbility($index)
       if (CountItem("EVR195", $mainPlayer) >= 2 && $discardIndex != "") {
         AddDecisionQueue("COUNTITEM", $mainPlayer, "EVR195");
         AddDecisionQueue("LESSTHANPASS", $mainPlayer, "2");
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to pay 2 silver to equip " . CardLink($char->cardID, $char->cardID) . "?", 1);
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_and_equip_" . CardLink($char->cardID, $char->cardID), 1);
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_2_".Cardlink("EVR195", "EVR195")."_and_equip_" . CardLink($char->cardID, $char->cardID), 1);
         AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "EVR195-2", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $mainPlayer, "<-", 1);
@@ -307,7 +306,7 @@ function DefCharacterStartTurnAbilities()
       case "EVR086":
         if (PlayerHasLessHealth($mainPlayer)) {
           AddDecisionQueue("CHARREADYORPASS", $defPlayer, $i);
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_draw_a_card_and_give_your_opponent_a_silver.", 1);
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_draw_a_card_and_give_your_opponent_a_".CardLink("EVR195","EVR195").".", 1);
           AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
           AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $defPlayer, "EVR195", 1);

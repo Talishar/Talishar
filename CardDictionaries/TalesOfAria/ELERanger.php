@@ -182,7 +182,6 @@
   function PayOrDiscard($player, $amount, $fromDQ=true, $passable=false)
   {
     $targetHand = &GetHand($player);
-    $otherPlayer = ($player == 1 ? 2 : 1);
     if (count($targetHand) > 0) {
       if ($fromDQ) {
         PummelHit($player, passable:true, fromDQ:true);
@@ -191,9 +190,9 @@
         PrependDecisionQueue("PASSPARAMETER", $player, $amount, 1);
         PrependDecisionQueue("NOPASS", $player, "-", ($passable ? 1 : 0), 1);
         PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding", ($passable ? 1 : 0), 1);
-        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " to avoid discarding");
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay $amount to avoid discarding");
       } else {
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " to avoid discarding");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay $amount to avoid discarding");
         AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding", ($passable ? 1 : 0), 1);
         AddDecisionQueue("NOPASS", $player, "-", ($passable ? 1 : 0), 1);
         AddDecisionQueue("PASSPARAMETER", $player, $amount, 1);

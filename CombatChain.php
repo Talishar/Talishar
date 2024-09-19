@@ -748,7 +748,7 @@ function OnBlockResolveEffects($cardID = "")
         break;
       case "AUR022":
       case "AUR025":
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_buff_Spark_Spray", 0, 1);
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_buff_".CardLink($cardID, $cardID), 0, 1);
         AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);

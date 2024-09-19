@@ -651,7 +651,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $otherPlayer = ($playerID == 1 ? 2 : 1);
       $char = &GetPlayerCharacter($otherPlayer);
       if ($char[0] != "DUMMY") {
-        AddDecisionQueue("YESNO", $otherPlayer, "if you want a Quick Rematch?");
+        AddDecisionQueue("YESNO", $otherPlayer, "if you want a <b>Quick Rematch</b>?");
         AddDecisionQueue("NOPASS", $otherPlayer, "-", 1);
         AddDecisionQueue("QUICKREMATCH", $otherPlayer, "-", 1);
         AddDecisionQueue("OVER", $playerID, "-");
@@ -679,7 +679,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($isSimulation) return;
       if ($turn[0] != "OVER") break;
       $otherPlayer = ($playerID == 1 ? 2 : 1);
-      AddDecisionQueue("YESNO", $otherPlayer, "if you want a Rematch?");
+      AddDecisionQueue("YESNO", $otherPlayer, "if you want a <b>Rematch</b>?");
       AddDecisionQueue("REMATCH", $otherPlayer, "-", 1);
       ProcessDecisionQueue();
       break;

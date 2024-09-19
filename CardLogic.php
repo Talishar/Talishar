@@ -1148,19 +1148,19 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       break;
     case "WTR117":
       $index = FindCharacterIndex($player, $cardID);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Refraction_Bolters_to_get_Go_Again");
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($cardID, $cardID)."_to_get_Go_Again");
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, "MYCHAR-$index", 1);
       AddDecisionQueue("MZDESTROY", $player, "-", 1);
       AddDecisionQueue("OP", $player, "GIVEATTACKGOAGAIN", 1);
-      AddDecisionQueue("WRITELOG", $player, "Refraction Bolters was destroyed", 1);
+      AddDecisionQueue("WRITELOG", $player, Cardlink($cardID, $cardID)." was destroyed", 1);
       break;
     case "WTR079":
       Draw($player);
       break;
     case "ARC152":
       $index = FindCharacterIndex($player, $cardID);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Vest_of_the_First_Fist_to_gain_2_resources");
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($cardID, $cardID)."_to_gain_2_resources");
       AddDecisionQueue("NOPASS", $player, "");
       AddDecisionQueue("PASSPARAMETER", $player, "MYCHAR-" . $index, 1);
       AddDecisionQueue("MZDESTROY", $player, "-", 1);
@@ -1168,7 +1168,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       break;
     case "CRU053":
       $index = FindCharacterIndex($player, $cardID);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Breeze_Rider_Boots");
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($cardID, $cardID));
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
@@ -1180,7 +1180,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       break;
     case "EVR037":
       $index = FindCharacterIndex($player, $cardID);
-      AddDecisionQueue("YESNO", $player, "to_destroy_Mask_of_the_Pouncing_Lynx");
+      AddDecisionQueue("YESNO", $player, "to_destroy_".Cardlink($cardID, $cardID));
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
@@ -1206,12 +1206,12 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       break;
     case "AUR005":
       $index = FindCharacterIndex($player, $cardID);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Aether_Crackers_to_deal_one_arcane");
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($cardID, $cardID)."_to_deal_one_arcane");
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("DEALARCANE", $player, "1" . "-" . "AUR005" . "-" . "TRIGGER", 1);
-      AddDecisionQueue("WRITELOG", $player, "Aether Crackers was destroyed", 1);
+      AddDecisionQueue("WRITELOG", $player, Cardlink($cardID, $cardID) . " were destroyed", 1);
       break;
     default:
       break;
@@ -1348,15 +1348,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "WTR079":
       Draw($player);
-      break;
-    case "WTR117":
-      $index = FindCharacterIndex($player, $parameter);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Refraction_Bolters");
-      AddDecisionQueue("NOPASS", $player, "-", 1);
-      AddDecisionQueue("PASSPARAMETER", $player, "MYCHAR-$index", 1);
-      AddDecisionQueue("MZDESTROY", $player, "-", 1);
-      AddDecisionQueue("OP", $player, "GIVEATTACKGOAGAIN", 1);
-      AddDecisionQueue("WRITELOG", $player, "Refraction Bolters was destroyed", 1);
       break;
     case "WTR119":
       Draw($mainPlayer);
@@ -1506,7 +1497,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           $numBloodDebt -= ($health - 13);
           $health = 13;
           if (SearchInventoryForCard($mainPlayer, "DTD164") != "") {
-            AddDecisionQueue("YESNO", $mainPlayer, "if you want to transform into Levia Consumed");
+            AddDecisionQueue("YESNO", $mainPlayer, "if you want to transform into ".CardLink("DTD564", "DTD564"));
             AddDecisionQueue("NOPASS", $mainPlayer, "-");
             AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numBloodDebt, 1);
             AddDecisionQueue("TRANSFORMHERO", $mainPlayer, "DTD564", 1);
@@ -1545,12 +1536,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "MON122":
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("CHARREADYORPASS", $player, $index);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Hooves_of_the_Shadowbeast_to_gain_an_action_point", 1);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($parameter, $parameter)."_to_gain_an_action_point", 1);
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
-      AddDecisionQueue("WRITELOG", $player, "Gained_an_action_point_from_Hooves_of_the_Shadowbeast", 1);
+      AddDecisionQueue("WRITELOG", $player, "Gained_an_action_point_from_".Cardlink($parameter, $parameter), 1);
       break;
     case "MON186":
       $deck = new Deck($player);
@@ -1602,7 +1593,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "ELE174":
       $index = FindCharacterIndex($player, $parameter);
-      AddDecisionQueue("YESNO", $player, "destroy_mark_of_lightning_to_have_the_attack_deal_1_damage");
+      AddDecisionQueue("YESNO", $player, "destroy_".Cardlink($parameter, $parameter)."_to_have_the_attack_deal_1_damage");
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
@@ -1646,8 +1637,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "EVR071":
       $index = SearchItemsForUniqueID($uniqueID, $player);
       if ($items[$index + 1] > 0) {
-        AddDecisionQueue("SETDQCONTEXT", $player, "Do you want to remove a Steam Counter from " . CardLink($items[$index], $items[$index]) . " and keep it in play?", 1);
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($items[$index], $items[$index]), 1);
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($items[$index], $items[$index]) . "_and_keep_it_in_play?", 1);
         AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $player, $index, 1);
       } else {
         DestroyItemForPlayer($player, $index);
@@ -1831,7 +1821,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "DYN006":
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("CHARREADYORPASS", $player, $index);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Beaten_Trackers_to_gain_an_action_point", 1);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($parameter, $parameter)."_to_gain_an_action_point", 1);
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
@@ -1867,7 +1857,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "DYN102":
     case "DYN103":
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=ARC036");
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to get a steam counter", 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a ".Cardlink("EVO234", "EVO234")." to get a steam counter", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
       break;
@@ -1894,7 +1884,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "DTD133":
     case "DTD134":
-      AddDecisionQueue("YESNO", $player, "if you want to pay 1 life for Vynnset");
+      AddDecisionQueue("YESNO", $player, "if you want to pay 1 life for " . CardLink($parameter, $parameter), 1);
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
       AddDecisionQueue("OP", $player, "LOSEHEALTH", 1);
@@ -2297,15 +2287,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "AKO005":
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("CHARREADYORPASS", $player, $index);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Hiden_Tanner_to_gain_2_Might tokens", 1);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($parameter, $parameter)."_to_gain_2_".CardLink("HVY241", "HVY241")."_tokens", 1);
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("PLAYAURA", $player, "HVY241-2", 1);
-      AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_2_Might_tokens_from_" . CardLink("AKO005", "AKO005"), 1);
+      AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_2_".Cardlink("HVY241", "HVY241")."_tokens_from_" . CardLink("AKO005", "AKO005"), 1);
       break;
     case "MST027":
-      AddDecisionQueue("YESNO", $player, "if you want " . CardLink("MST027", "MST027") . " to gain Ward 3");
+      AddDecisionQueue("YESNO", $player, "if_you_want_" . CardLink("MST027", "MST027") . "_to_gain_Ward_3");
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("ADDCURRENTEFFECT", $player, "MERIDIANWARD", 1);
       break;
@@ -2454,7 +2444,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "TER006":
       $index = FindCharacterIndex($mainPlayer, "TER006");
-      AddDecisionQueue("YESNO", $mainPlayer, "to_destroy_Hard_Knuckle");
+      AddDecisionQueue("YESNO", $mainPlayer, "to_destroy_".Cardlink($parameter, $parameter));
       AddDecisionQueue("NOPASS", $mainPlayer, "-");
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
@@ -2710,7 +2700,7 @@ function Intimidate($player = "")
 
 function GamblersGlovesReroll($player, $target){
   $gamblersGlovesIndex = FindCharacterIndex($player, "CRU179");
-  AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result");
+  AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink("CRU179", "CRU179")."_to_reroll_the_result");
   AddDecisionQueue("NOPASS", $player, "-");
   AddDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
   AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);

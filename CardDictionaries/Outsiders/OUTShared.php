@@ -576,7 +576,7 @@ function OUTAbilityCost($cardID)
         $resources = &GetResources($mainPlayer);
         if(Count($hand) > 0 || $resources[0] > 0)
         {
-          AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give this a name", 0, 1);
+          AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give ".CardLink($cardID, $cardID)." a name", 0, 1);
           AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
           AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);

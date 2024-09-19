@@ -542,8 +542,7 @@ function AuraStartTurnAbilities()
         break;
       case "DTD170":
         if ($auras[$i + 2] > 0) {
-          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to remove a Doom Counter from " . CardLink($auras[$i], $auras[$i]) . " and keep it in play?");
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_Doom_Counter_and_keep_" . CardLink($auras[$i], $auras[$i]));
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_Doom_Counter_and_keep_" . CardLink($auras[$i], $auras[$i]) . "_and_keep_it_in_play?");
           AddDecisionQueue("REMOVECOUNTERAURAORDESTROY", $mainPlayer, $auras[$i + 6]);
         } else {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " was destroyed");

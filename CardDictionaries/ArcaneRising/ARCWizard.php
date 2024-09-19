@@ -10,16 +10,16 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with Kano?");
-      AddDecisionQueue("YESNO", $currentPlayer, "whether to banish a card with Kano", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with ". CardLink($cardID, $cardID)."?");
+      AddDecisionQueue("YESNO", $currentPlayer, "whether to banish a card with ". CardLink($cardID, $cardID), 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
       AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}");
       AddDecisionQueue("NONECARDTYPEORPASS", $currentPlayer, "A");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Kano shows the top of your deck is <0>");
-      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with Kano", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID)." shows the top of your deck is <0>");
+      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with ". CardLink($cardID, $cardID), 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       return "";
     case "ARC115":
@@ -43,7 +43,7 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
       AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
       AddDecisionQueue("ALLCARDCLASSORPASS", $currentPlayer, "WIZARD", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to banish <1> with Sonic Boom", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to banish <1> with ".CardLink($cardID, $cardID), 1);
       AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_banish_the_card", 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
@@ -52,8 +52,8 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("ELSE", $currentPlayer, "-");
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
       AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sonic Boom shows the top of your deck is <1>", 1);
-      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with Sonic Boom", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID)." shows the top of your deck is <1>", 1);
+      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with ".CardLink($cardID, $cardID), 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       return "";
     case "ARC120":

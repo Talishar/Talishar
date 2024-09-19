@@ -243,7 +243,7 @@ function ArsenalStartTurnAbilities()
       case "DVR007":
       case "RVD007":
         if ($arsenal[$i + 1] == "DOWN") {
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_turn_your_mentor_face_up");
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_turn_".CardLink($arsenal[$i], $arsenal[$i])."_face_up");
           AddDecisionQueue("NOPASS", $mainPlayer, "-");
           AddDecisionQueue("TURNARSENALFACEUP", $mainPlayer, $i, 1);
         }
@@ -425,7 +425,6 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
 function CheckIfPreventionEffectIsActive($player, $damage): void
 {
   global $currentTurnEffects;
-  WriteLog($damage);
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = 0;
     switch ($currentTurnEffects[$i]) {
@@ -2781,7 +2780,7 @@ function WardPoppedAbility($player, $cardID)
     WriteLog("Player " . $player . " gained 1 resource from " . CardLink("DYN213", "DYN213"));
   }
   if (SearchCharacterActive($player, "DTD217", setInactive: true) || $cardID == "DTD217") {
-    AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_create_a_ponder");
+    AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_create_a_".CardLink("DYN244", "DYN244"));
     AddDecisionQueue("NOPASS", $player, "-");
     AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
     AddDecisionQueue("PLAYAURA", $player, "DYN244-1", 1);

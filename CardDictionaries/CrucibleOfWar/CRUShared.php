@@ -236,7 +236,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "AR", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with Unified Decree?");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with ".CardLink($cardID, $cardID)."?");
         AddDecisionQueue("YESNO", $currentPlayer, "whether to banish the card", 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
