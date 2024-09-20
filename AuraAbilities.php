@@ -345,9 +345,218 @@ function AuraCostModifier($cardID = "")
 
 // CR 2.1 - 4.2.1. Players do not get priority during the Start Phase.
 // CR 2.1 - 4.3.1. The “beginning of the action phase” event occurs and abilities that trigger at the beginning of the action phase are triggered.
-// TODO: Maybe split these out into seperate functions for ease of understanding and futureproofing if there are more complicated start/action phase start procedures.
 function AuraStartTurnAbilities()
 {
+  global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
+  $auras = &GetAuras($mainPlayer);
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $EffectContext = $auras[$i];
+    switch ($auras[$i]) {
+    //These are all start of turn events without priority
+    case "MON006":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to put in your hero's soul for Genesis");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      AddDecisionQueue("SPECIFICCARD", $mainPlayer, "GENESIS", 1);
+      break;
+    case "DYN013":
+    case "DYN014":
+    case "DYN015":
+      if ($auras[$i] == "DYN013") $amount = 3;
+      else if ($auras[$i] == "DYN014") $amount = 2;
+      else $amount = 1;
+      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "DYN029":
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      $hand = &GetHand($mainPlayer);
+      if (count($hand) == 0) {
+        Draw($mainPlayer, false);
+      }
+      if (PlayerHasLessHealth($mainPlayer)) {
+        GainHealth(2, $mainPlayer);
+      }
+      if (SearchCount(SearchCharacter($mainPlayer, type: "E")) < SearchCount(SearchCharacter($defPlayer, type: "E"))) {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=E;hasNegCounters=true");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment to remove a -1 defense counter", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $mainPlayer, "GETCARDINDEX", 1);
+        AddDecisionQueue("MODDEFCOUNTER", $mainPlayer, "1", 1);
+      }
+      break;
+    case "DYN033":
+    case "DYN034":
+    case "DYN035":
+      if ($auras[$i] == "DYN033") $amount = 3;
+      else if ($auras[$i] == "DYN034") $amount = 2;
+      else $amount = 1;
+      GainHealth($amount, $mainPlayer);
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "DYN048":
+      AddPlayerHand("DYN065", $mainPlayer, "-");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "DYN053":
+    case "DYN054":
+    case "DYN055":
+      if ($auras[$i] == "DYN053") $amount = 3;
+      else if ($auras[$i] == "DYN054") $amount = 2;
+      else $amount = 1;
+      $index = BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
+      $banish = new Banish($mainPlayer);
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, $banish->Card($index)->UniqueID());
+      AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $auras[$i] . ",BANISH");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "DYN073":
+    case "DYN074":
+    case "DYN075":
+      if ($auras[$i] == "DYN073") $amount = 3;
+      else if ($auras[$i] == "DYN074") $amount = 2;
+      else $amount = 1;
+      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "DYN098":
+    case "DYN099":
+    case "DYN100":
+      if ($auras[$i] == "DYN098") $amount = 3;
+      else if ($auras[$i] == "DYN099") $amount = 2;
+      else $amount = 1;
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      $searchHyper = CombineSearches(SearchDiscardForCard($mainPlayer, "ARC036", "DYN111", "DYN112"), SearchBanishForCardMulti($mainPlayer, "ARC036", "DYN111", "DYN112"));
+      $countHyper = count(explode(",", $searchHyper));
+      if ($amount > $countHyper) $amount = $countHyper;
+      for ($i = 0; $i < $amount; ++$i) {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:cardID=ARC036;cardID=DYN111;cardID=DYN112&MYBANISH:cardID=ARC036;cardID=DYN111;cardID=DYN112");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to put into play");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+        AddDecisionQueue("MZOP", $mainPlayer, "GETCARDID", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{0}", 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        AddDecisionQueue("PUTPLAY", $mainPlayer, "False", 1);
+      }
+      break;
+    case "DYN159":
+    case "DYN160":
+    case "DYN161":
+      if ($auras[$i] == "DYN159") $amount = 3;
+      else if ($auras[$i] == "DYN160") $amount = 2;
+      else $amount = 1;
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      PlayerOpt($mainPlayer, $amount);
+      AddDecisionQueue("SPECIFICCARD", $mainPlayer, "BLESSINGOFFOCUS", 1);
+      break;
+    case "DYN179":
+    case "DYN180":
+    case "DYN181":
+      if ($auras[$i] == "DYN179") $amount = 3;
+      else if ($auras[$i] == "DYN180") $amount = 2;
+      else $amount = 1;
+      PlayAura("ARC112", $mainPlayer, $amount, true);
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "DYN200":
+    case "DYN201":
+    case "DYN202":
+      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "DYN218":
+    case "DYN219":
+    case "DYN220":
+      if ($auras[$i] == "DYN218") $amount = 3;
+      else if ($auras[$i] == "DYN219") $amount = 2;
+      else $amount = 1;
+      PlayAura("MON104", $mainPlayer, $amount);
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "DTD170":
+      if ($auras[$i + 2] > 0) {
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_Doom_Counter_and_keep_" . CardLink($auras[$i], $auras[$i]) . "_and_keep_it_in_play?");
+        AddDecisionQueue("REMOVECOUNTERAURAORDESTROY", $mainPlayer, $auras[$i + 6]);
+      } else {
+        WriteLog(CardLink($auras[$i], $auras[$i]) . " was destroyed");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      }
+      break;
+    case "TCC037":
+    case "TCC038":
+    case "TCC042":
+    case "TCC043":
+      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "TCC105":
+    case "HVY241": //Might
+      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      IncrementClassState($mainPlayer, $CS_NumMightDestroyed, 1);
+      break;
+    case "TCC107":
+    case "HVY242": //Vigor
+      GainResources($mainPlayer, 1);
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
+      break;
+    case "EVO243":
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "HVY068":
+    case "HVY069":
+    case "HVY070":
+      WriteLog("Resolving " . CardLink($auras[$i], $auras[$i]) . " ability");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      Draw($mainPlayer);
+      MZMoveCard($mainPlayer, "MYHAND", "MYTOPDECK", silent: true);
+      break;
+    case "HVY083":
+    case "HVY084":
+    case "HVY085":
+      AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "HVY086":
+    case "HVY087":
+    case "HVY088":
+      AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "HVY240": //Agility
+      if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      IncrementClassState($mainPlayer, $CS_NumAgilityDestroyed, 1);
+      break;
+    case "MST133":
+      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY", $auras[$i + 6]);
+      break;
+    case "MST143":
+    case "MST144":
+    case "MST145":
+      $AurasArray = explode(",", SearchAura($mainPlayer, class: "ILLUSIONIST"));
+      if (count($AurasArray) > 1) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    default:
+      break;
+    }
+  }
+  $defPlayerAuras = &GetAuras($defPlayer);
+  for ($i = count($defPlayerAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    $EffectContext = $defPlayerAuras[$i];
+    switch ($defPlayerAuras[$i]) {
+      case "MST133":
+        AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY", $defPlayerAuras[$i + 6]);
+      default:
+        break;
+    }
+  }
+}
+
+function AuraBeginningActionPhaseAbilities(){
   global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
@@ -410,217 +619,18 @@ function AuraStartTurnAbilities()
       case "ROS113":
       case "ROS133":
       case "ROS161":
-      case "ROS168"://sigil of aether
+      case "ROS168":// Sigil of aether
       case "ROS182":
       case "ROS210":
       case "ROS226":
       case "ROS230":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
-      //These are all start of turn events without priority
-      case "MON006":
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND");
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to put in your hero's soul for Genesis");
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "GENESIS", 1);
-        break;
-      case "DYN013":
-      case "DYN014":
-      case "DYN015":
-        if ($auras[$i] == "DYN013") $amount = 3;
-        else if ($auras[$i] == "DYN014") $amount = 2;
-        else $amount = 1;
-        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
-      case "DYN029":
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        $hand = &GetHand($mainPlayer);
-        if (count($hand) == 0) {
-          Draw($mainPlayer, false);
-        }
-        if (PlayerHasLessHealth($mainPlayer)) {
-          GainHealth(2, $mainPlayer);
-        }
-        if (SearchCount(SearchCharacter($mainPlayer, type: "E")) < SearchCount(SearchCharacter($defPlayer, type: "E"))) {
-          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=E;hasNegCounters=true");
-          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment to remove a -1 defense counter", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MZOP", $mainPlayer, "GETCARDINDEX", 1);
-          AddDecisionQueue("MODDEFCOUNTER", $mainPlayer, "1", 1);
-        }
-        break;
-      case "DYN033":
-      case "DYN034":
-      case "DYN035":
-        if ($auras[$i] == "DYN033") $amount = 3;
-        else if ($auras[$i] == "DYN034") $amount = 2;
-        else $amount = 1;
-        GainHealth($amount, $mainPlayer);
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
-      case "DYN048":
-        AddPlayerHand("DYN065", $mainPlayer, "-");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
-      case "DYN053":
-      case "DYN054":
-      case "DYN055":
-        if ($auras[$i] == "DYN053") $amount = 3;
-        else if ($auras[$i] == "DYN054") $amount = 2;
-        else $amount = 1;
-        $index = BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
-        $banish = new Banish($mainPlayer);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $banish->Card($index)->UniqueID());
-        AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $auras[$i] . ",BANISH");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
-      case "DYN073":
-      case "DYN074":
-      case "DYN075":
-        if ($auras[$i] == "DYN073") $amount = 3;
-        else if ($auras[$i] == "DYN074") $amount = 2;
-        else $amount = 1;
-        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
-      case "DYN098":
-      case "DYN099":
-      case "DYN100":
-        if ($auras[$i] == "DYN098") $amount = 3;
-        else if ($auras[$i] == "DYN099") $amount = 2;
-        else $amount = 1;
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        $searchHyper = CombineSearches(SearchDiscardForCard($mainPlayer, "ARC036", "DYN111", "DYN112"), SearchBanishForCardMulti($mainPlayer, "ARC036", "DYN111", "DYN112"));
-        $countHyper = count(explode(",", $searchHyper));
-        if ($amount > $countHyper) $amount = $countHyper;
-        for ($i = 0; $i < $amount; ++$i) {
-          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:cardID=ARC036;cardID=DYN111;cardID=DYN112&MYBANISH:cardID=ARC036;cardID=DYN111;cardID=DYN112");
-          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to put into play");
-          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
-          AddDecisionQueue("MZOP", $mainPlayer, "GETCARDID", 1);
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{0}", 1);
-          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-          AddDecisionQueue("PUTPLAY", $mainPlayer, "False", 1);
-        }
-        break;
-      case "DYN159":
-      case "DYN160":
-      case "DYN161":
-        if ($auras[$i] == "DYN159") $amount = 3;
-        else if ($auras[$i] == "DYN160") $amount = 2;
-        else $amount = 1;
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        PlayerOpt($mainPlayer, $amount);
-        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "BLESSINGOFFOCUS", 1);
-        break;
-      case "DYN179":
-      case "DYN180":
-      case "DYN181":
-        if ($auras[$i] == "DYN179") $amount = 3;
-        else if ($auras[$i] == "DYN180") $amount = 2;
-        else $amount = 1;
-        PlayAura("ARC112", $mainPlayer, $amount, true);
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
-      case "DYN200":
-      case "DYN201":
-      case "DYN202":
-        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
-      case "DYN218":
-      case "DYN219":
-      case "DYN220":
-        if ($auras[$i] == "DYN218") $amount = 3;
-        else if ($auras[$i] == "DYN219") $amount = 2;
-        else $amount = 1;
-        PlayAura("MON104", $mainPlayer, $amount);
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
-      case "DTD170":
-        if ($auras[$i + 2] > 0) {
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_Doom_Counter_and_keep_" . CardLink($auras[$i], $auras[$i]) . "_and_keep_it_in_play?");
-          AddDecisionQueue("REMOVECOUNTERAURAORDESTROY", $mainPlayer, $auras[$i + 6]);
-        } else {
-          WriteLog(CardLink($auras[$i], $auras[$i]) . " was destroyed");
-          DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        }
-        break;
-      case "TCC037":
-      case "TCC038":
-      case "TCC042":
-      case "TCC043":
-        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
-      case "TCC105":
-      case "HVY241": //Might
-        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        IncrementClassState($mainPlayer, $CS_NumMightDestroyed, 1);
-        break;
-      case "TCC107":
-      case "HVY242": //Vigor
-        GainResources($mainPlayer, 1);
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
-        break;
-      case "EVO243":
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
-      case "HVY068":
-      case "HVY069":
-      case "HVY070":
-        WriteLog("Resolving " . CardLink($auras[$i], $auras[$i]) . " ability");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        Draw($mainPlayer);
-        MZMoveCard($mainPlayer, "MYHAND", "MYTOPDECK", silent: true);
-        break;
-      case "HVY083":
-      case "HVY084":
-      case "HVY085":
-        AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
-      case "HVY086":
-      case "HVY087":
-      case "HVY088":
-        AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
-      case "HVY240": //Agility
-        if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        IncrementClassState($mainPlayer, $CS_NumAgilityDestroyed, 1);
-        break;
-      case "MST133":
-        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY", $auras[$i + 6]);
-        break;
-      case "MST143":
-      case "MST144":
-      case "MST145":
-        $AurasArray = explode(",", SearchAura($mainPlayer, class: "ILLUSIONIST"));
-        if (count($AurasArray) > 1) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
       default:
         break;
+      }
     }
-  }
-  $defPlayerAuras = &GetAuras($defPlayer);
-  for ($i = count($defPlayerAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    $EffectContext = $defPlayerAuras[$i];
-    switch ($defPlayerAuras[$i]) {
-      case "MST133":
-        AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY", $defPlayerAuras[$i + 6]);
-      default:
-        break;
-    }
-  }
 }
-
 
 function AuraBeginEndPhaseTriggers()
 {

@@ -178,6 +178,9 @@ function StartTurnAbilities()
   PermanentStartTurnAbilities();
   AllyStartTurnAbilities($mainPlayer);
   LandmarkStartTurnAbilities();
+
+  AuraBeginningActionPhaseAbilities();
+
   $mainItems = &GetItems($mainPlayer);
   for ($i = count($mainItems) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
     $mainItems[$i + 2] = "2";

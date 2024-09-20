@@ -2445,7 +2445,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       PlayAura("ARC112", $player, $numRunechantsCreated);
       break;
     case "ROS219-1":
-      WriteLog("Congrats! You didn't kill eachother!");
+      WriteLog("Congrats! You didn't kill each other!🤝");
       DestroyAuraUniqueID($defPlayer, $uniqueID);
       GainHealth(3, $defPlayer);
       GainHealth(3, $mainPlayer);
