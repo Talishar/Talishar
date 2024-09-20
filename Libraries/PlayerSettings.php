@@ -533,6 +533,7 @@ function isTeamCupofTCG($userID)
       return true;
     default: break;
   }
+  return false;
 }
 
 function IsTeamFABChaos($userID)
