@@ -103,16 +103,6 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
         break;
     }
   }
-  switch ($cardID) {
-    case "DYN072":
-      $char = &GetPlayerCharacter($player);
-      for ($j = 0; $j < count($char); $j += CharacterPieces()) {
-        if (CardSubType($char[$j]) == "Sword") $char[$j + 3] = 0;
-      }
-      break;
-    default:
-      break;
-  }
   $goesWhere = GoesWhereAfterResolving($cardID, $from);
   $numMercifulRetribution = SearchCount(SearchAurasForCard("MON012", $player)) + ($cardID == "MON012" ? 1 : 0);
   if ($numMercifulRetribution > 0 && TalentContains($cardID, "LIGHT", $player)) {
@@ -137,6 +127,12 @@ function AuraLeavesPlay($player, $index, $uniqueID)
   $uniqueID = $auras[$index + 6];
   $otherPlayer = ($player == 1 ? 2 : 1);
   switch ($cardID) {
+    case "DYN072":
+      $char = &GetPlayerCharacter($player);
+      for ($j = 0; $j < count($char); $j += CharacterPieces()) {
+        if (CardSubType($char[$j]) == "Sword") $char[$j + 3] = 0;
+      }
+      break;
     case "DYN221":
     case "DYN222":
     case "DYN223":
