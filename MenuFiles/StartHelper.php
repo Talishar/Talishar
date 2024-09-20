@@ -9,7 +9,6 @@ function initializePlayerState($handler, $deckHandler, $player)
   $inventory = GetArray($deckHandler);
   if($player == 1) $p1Inventory = $inventory;
   else $p2Inventory = $inventory;
-  $deckSize = count($deckCards);
   fwrite($handler, "\r\n"); //Hand
 
   if($player == 1) $p1IsChallengeActive = "0";
