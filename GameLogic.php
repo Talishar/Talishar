@@ -1650,6 +1650,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), $lastResult);
       SetClassState($player, $CS_AbilityIndex, $index);
       $names = explode(",", GetAbilityNames($parameter, GetClassState($player, $CS_CharacterIndex)));
+      if($names[$index] == "-") $names[$index] = "Ability";
       WriteLog(implode(" ", explode("_", $names[$index])) . " was chosen.");
       return $lastResult;
     case "SETABILITYTYPEATTACK":

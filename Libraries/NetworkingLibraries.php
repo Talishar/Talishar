@@ -1826,7 +1826,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   global $currentPlayer, $CS_NumActionsPlayed, $CS_AdditionalCosts, $turn, $combatChainState, $CCS_EclecticMag, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
   global $actionPoints, $mainPlayer;
   if (IsStaticType(CardType($cardID), $from, $cardID)) {
-    $names = GetAbilityNames($cardID, $index);
+    $names = GetAbilityNames($cardID, $index, $from);
     if ($names != "") {
       $names = str_replace("-,", "", $names);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which ability to activate");
@@ -1941,7 +1941,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "ROS104":
     case "ROS105":
     case "ROS106":
-      $names = GetAbilityNames($cardID, $index);
+      $names = GetAbilityNames($cardID, $index, $from);
       if (SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
       } elseif ($names != "" && $from == "HAND") {
@@ -2001,7 +2001,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "ROS204":
     case "ROS205":
     case "ROS206":
-      $names = GetAbilityNames($cardID, $index);
+      $names = GetAbilityNames($cardID, $index, $from);
       if (SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
       } elseif ($names != "" && $from == "HAND"){

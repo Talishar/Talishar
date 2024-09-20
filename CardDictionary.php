@@ -869,6 +869,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       $names = "Ability";
       if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) $names .= ",Action";
       elseif ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Action";
+      if($from != "HAND") $names = "-,Action";
       return $names;
     default:
       return "";
@@ -902,7 +903,7 @@ function GetResolvedAbilityName($cardID, $from = "-"): string
 {
   global $currentPlayer, $CS_AbilityIndex;
   $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
-  $abilityNames = GetAbilityNames($cardID);
+  $abilityNames = GetAbilityNames($cardID, -1, $from);
   if ($abilityNames == "" || $abilityIndex == "-") return "";
   $abilityNames = explode(",", $abilityNames);
   return $abilityNames[$abilityIndex];
