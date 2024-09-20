@@ -176,6 +176,7 @@ function GetCardBack($player)
     case 84: return "CBTideBreakers";
     case 85: return "CBCD1";
     case 86: return "CBCD2";
+    case 87: return "CBCupofTCG";
     default: return "CardBack";
   }
 }
@@ -520,6 +521,18 @@ function IsTeamSunflowerSamurai($userID)
     default: break;
   }
   return false;
+}
+
+function isTeamCupofTCG($userID)
+{
+  switch($userID) {
+    case "Cody1304":
+    case "Glem":
+    case "parallaxdream":
+    case "2birds1stone":
+      return true;
+    default: break;
+  }
 }
 
 function IsTeamFABChaos($userID)
