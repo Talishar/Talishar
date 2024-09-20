@@ -444,7 +444,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("EVR186", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ROGUE802", $defPlayer);
-  if ($cardType == "E" && (SearchCurrentTurnEffects("DYN095", $mainPlayer) || SearchCurrentTurnEffects("DYN096", $mainPlayer) || SearchCurrentTurnEffects("DYN097", $mainPlayer))) {
+  if ((DelimStringContains($cardType, "E") || SubtypeContains($cardID, "Evo")) && (SearchCurrentTurnEffects("DYN095", $mainPlayer) || SearchCurrentTurnEffects("DYN096", $mainPlayer) || SearchCurrentTurnEffects("DYN097", $mainPlayer))) {
     $countScramblePulse = 0 + CountCurrentTurnEffects("DYN095", $mainPlayer);
     $countScramblePulse += CountCurrentTurnEffects("DYN096", $mainPlayer);
     $countScramblePulse += CountCurrentTurnEffects("DYN097", $mainPlayer);
