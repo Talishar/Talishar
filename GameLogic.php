@@ -24,7 +24,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $redirectPath, $playerID, $gameName, $currentPlayer, $combatChain, $CombatChain, $defPlayer, $combatChainState, $EffectContext, $chainLinks;
   global $CS_NumCharged, $otherPlayer, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
-  global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup, $chainLinkSummary;
+  global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
+  global $CCS_GoesWhereAfterLinkResolves;
   $rv = "";
   switch ($phase) {
     case "FINDINDICES":
@@ -2262,7 +2263,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "GONEINAFLASH":
       CleanUpCombatEffects();
       AddPlayerHand($combatChain[0], $mainPlayer, "CC");
-      $CombatChain->Remove(0);
+      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
       return $lastResult;
     case "TRUCE":
       if (SearchCurrentTurnEffects("ROS219", $defPlayer, remove: true)){

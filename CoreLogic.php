@@ -1474,6 +1474,7 @@ function DoesAttackHaveGoAgain()
   $attackType = CardType($attackID);
   $attackSubtype = CardSubType($attackID);
   $isAura = DelimStringContains(CardSubtype($attackID), "Aura");
+
   //Prevention Natural Go Again
   if (CurrentEffectPreventsGoAgain()) return false;
   if (SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false;

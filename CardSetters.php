@@ -353,7 +353,7 @@ function DestroyArsenal($player, $index = -1, $effectController = "", $allArsena
 
 function AddSoul($cardID, $player, $from, $isMainPhase = true)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt, $combatChain;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt, $combatChain;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   AddEvent("SOUL", $cardID);
   global $CS_NumAddedToSoul, $CS_NumYellowPutSoul;
