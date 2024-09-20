@@ -170,12 +170,14 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       AddDecisionQueue("DRAW", $player, "-", 0);
       break;
     case "ROS045":
+      WriteLog(CardLink($cardID, $cardID) . " created an " . CardLink("ELE109", "ELE109"));
       PlayAura("ELE109", $player);
       break;
     case "ROS070": //sigil of earth
       PlayAura("ELE109", $player);
       break;
     case "ROS088":
+      WriteLog(CardLink($cardID, $cardID) . " created an " . CardLink("ELE110", "ELE110"));
       PlayAura("ELE110", $player);
       break;
     case "ROS113": //sigil of lightning
@@ -813,7 +815,13 @@ function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active
 function AuraTakeDamageAbility($player, $index, $damage, $preventable, $type)
 {
   $cancelRemove = false;
-  if ($preventable) $damage -= AuraDamagePreventionAmount($player, $index, $type, $damage, true, $cancelRemove);
+  $preventionAmount = 0;
+  $auras = &GetAuras($player);
+  if ($preventable) {
+    $preventionAmount = AuraDamagePreventionAmount($player, $index, $type, $damage, true, $cancelRemove);
+    $damage -= $preventionAmount;
+    if($preventionAmount > 0) WriteLog(CardLink($auras[$index], $auras[$index]) . " was destroyed and prevented " . $preventionAmount . " damage.");
+  }
   if (!$cancelRemove) DestroyAura($player, $index);
   return $damage;
 }

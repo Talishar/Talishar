@@ -1845,13 +1845,13 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
       && ($actionPoints < 1 || $currentPlayer != $mainPlayer)
       && $turn[0] !== "M"
-  ) {
-      $option = $names[1];
-  }
-  AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which halves to activate");
-  AddDecisionQueue("BUTTONINPUT", $currentPlayer, $option);
-  AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-  AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+    ) {
+        $option = $names[1];
+    }
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which halves to activate");
+    AddDecisionQueue("BUTTONINPUT", $currentPlayer, $option);
+    AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+    AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
   }
   switch ($cardID) {
     case "WTR081":
