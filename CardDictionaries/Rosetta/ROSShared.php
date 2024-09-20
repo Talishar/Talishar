@@ -59,8 +59,8 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
-  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CS_ActionsPlayed, $CCS_EclecticMag, $CS_DamageTaken;
-  global $combatChainState, $turn;
+  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_EclecticMag, $CS_DamageTaken;
+  global $combatChainState;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 
   switch ($cardID) {
@@ -453,6 +453,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       return "";
     case "ROS248":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "ROS249":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS250":
