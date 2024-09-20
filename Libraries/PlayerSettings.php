@@ -472,7 +472,6 @@ function IsTeamEmperorsRome($userID)
 function IsTeamTalishar($userID)
 {
   switch($userID) {
-    case "PvtVoid":
     case "HelpMeJace2":
     case "RainyDays":
     case "Ragnell":
@@ -530,6 +529,7 @@ function isTeamCupofTCG($userID)
     case "Glem":
     case "parallaxdream":
     case "2birds1stone":
+    case "PvtVoid":
       return true;
     default: break;
   }
