@@ -59,7 +59,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
-  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_EclecticMag, $CS_DamageDealt;
+  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_EclecticMag, $CS_DamageDealt, $CS_ArcaneDamageDealt;
   global $combatChainState;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 
@@ -227,7 +227,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS101":
     case "ROS102":
     case "ROS103":
-      if (GetClassState($currentPlayer, $CS_DamageDealt) > 0) GiveAttackGoAgain();
+      if (GetClassState($currentPlayer, $CS_DamageDealt) + GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0) GiveAttackGoAgain();
     case "ROS104":
     case "ROS105":
     case "ROS106":
