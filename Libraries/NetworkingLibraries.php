@@ -1824,7 +1824,7 @@ function GetLayerTarget($cardID, $from)
 function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
 {
   global $currentPlayer, $CS_NumActionsPlayed, $CS_AdditionalCosts, $turn, $combatChainState, $CCS_EclecticMag, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
-  global $actionPoints;
+  global $actionPoints, $mainPlayer;
   if (IsStaticType(CardType($cardID), $from, $cardID)) {
     $names = GetAbilityNames($cardID, $index);
     if ($names != "") {
@@ -1838,19 +1838,20 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     $names = explode(" // ", CardName($cardID));
     $option = "Both,".$names[0].",".$names[1];
     
-    if(CardType($cardID) != "I" 
-    && !$combatChainState[$CCS_EclecticMag] 
-    && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0 
-    && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
-    && $actionPoints < 1 
-    && $turn[0] != "M" 
-    ){
+    if (
+      CardType($cardID) != "I"
+      && !$combatChainState[$CCS_EclecticMag]
+      && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0
+      && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
+      && ($actionPoints < 1 || $currentPlayer != $mainPlayer)
+      && $turn[0] !== "M"
+  ) {
       $option = $names[1];
-    }
-    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which halves to activate");
-    AddDecisionQueue("BUTTONINPUT", $currentPlayer, $option);
-    AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-    AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+  }
+  AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which halves to activate");
+  AddDecisionQueue("BUTTONINPUT", $currentPlayer, $option);
+  AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+  AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
   }
   switch ($cardID) {
     case "WTR081":
