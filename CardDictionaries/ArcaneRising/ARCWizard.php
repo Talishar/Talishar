@@ -156,13 +156,13 @@ function ARCWizardHitEffect($cardID)
 //2: Any Target
 //3: Their Hero + Their Allies
 //4: My Hero only (For afflictions)
-function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $fromQueue = false, $player = 0, $mayAbility = false, $limitDuplicates = false, $skipHitEffect = false, $resolvedTarget = "-", $nbArcaneInstance = 1, $isPassable = 0)
+function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $fromQueue = false, $player = 0, $mayAbility = false, $limitDuplicates = false, $skipHitEffect = false, $resolvedTarget = "-", $nbArcaneInstance = 1, $isPassable = 0, $meldState = "-")
 {
   global $currentPlayer, $CS_ArcaneTargetsSelected;
   if ($player == 0) $player = $currentPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($damage > 0) {
-    $damage += CurrentEffectArcaneModifier($source, $player) * $nbArcaneInstance;
+    $damage += CurrentEffectArcaneModifier($source, $player, meldState: $meldState) * $nbArcaneInstance;
     if ($type != "PLAYCARD") WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage.");
     if ($fromQueue) {
       if (!$limitDuplicates) {
@@ -427,7 +427,7 @@ function GetArcaneTargetIndices($player, $target): string
   return implode(",", $targets);
 }
 
-function CurrentEffectArcaneModifier($source, $player): int|string
+function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|string
 {
   global $currentTurnEffects;
   $modifier = 0;
@@ -437,7 +437,8 @@ function CurrentEffectArcaneModifier($source, $player): int|string
     switch ($effectArr[0]) {
       case "EVR123":
         $cardType = CardType($source);
-        if (DelimStringContains($cardType, "A") || $cardType == "AA") $modifier += $effectArr[1];
+        if ((DelimStringContains($cardType, "A") || $cardType == "AA")
+          && (!HasMeld($source) || DelimStringContains($meldState, "A"))) $modifier += $effectArr[1];
         break;
       case "ROS017":
         if ($currentTurnEffects[$i + 1] != $player) break;

@@ -2932,7 +2932,7 @@ function ProcessMeld($player, $parameter)
       }
       break;
     case "ROS024":
-      DealArcane(5, 2, "PLAYCARD", $parameter, true, $player);
+      DealArcane(5, 2, "PLAYCARD", $parameter, true, $player, meldState: "A");
       break;
     case "ROS253":
       if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) {
