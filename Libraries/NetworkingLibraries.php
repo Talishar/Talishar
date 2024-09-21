@@ -1840,11 +1840,12 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     
     if (
       CardType($cardID) != "I"
-      && !$combatChainState[$CCS_EclecticMag]
+      && (!$combatChainState[$CCS_EclecticMag]
       && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0
       && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
       && ($actionPoints < 1 || $currentPlayer != $mainPlayer)
       && $turn[0] !== "M"
+      || SearchCurrentTurnEffects("WarmongersWar", $currentPlayer))
     ) {
         $option = $names[1];
     }
