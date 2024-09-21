@@ -1847,7 +1847,6 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       && $turn[0] !== "M"
       || SearchCurrentTurnEffects("WarmongersWar", $currentPlayer))
     ) {
-        WriteLog("HERE " . CardType($cardID));
         $option = $names[1];
     }
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which halves to activate");
