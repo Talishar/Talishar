@@ -1840,12 +1840,14 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     
     if (
       CardType($cardID) != "I"
-      && !$combatChainState[$CCS_EclecticMag]
+      && (!$combatChainState[$CCS_EclecticMag]
       && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0
       && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
       && ($actionPoints < 1 || $currentPlayer != $mainPlayer)
       && $turn[0] !== "M"
+      || SearchCurrentTurnEffects("WarmongersWar", $currentPlayer))
     ) {
+        WriteLog("HERE " . CardType($cardID));
         $option = $names[1];
     }
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which halves to activate");
