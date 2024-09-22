@@ -88,17 +88,17 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
 
 function AddAttack(&$totalAttack, $amount): void
 {
-  global $CombatChain, $currentPlayer;
+  global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   if (PowerCantBeModified($attackID)) return;
   if ($amount > 0 && $attackID == "OUT100") $amount += 1;
-  if ($amount > 0 && SearchCurrentTurnEffects("TER019", $currentPlayer)) {
-    $num_thrives_active = CountCurrentTurnEffects("TER019", $currentPlayer); //thrives stack so get all the active effects before applying bonus
+  if ($amount > 0 && SearchCurrentTurnEffects("TER019", $mainPlayer)) {
+    $num_thrives_active = CountCurrentTurnEffects("TER019", $mainPlayer); //thrives stack so get all the active effects before applying bonus
     $amount += $num_thrives_active;
   }
   if ($amount > 0) {
-    SearchCurrentTurnEffects("TER017-INACTIVE", $currentPlayer, false, false, true);
-    SearchCurrentTurnEffects("TER024-INACTIVE", $currentPlayer, false, false, true);
+    SearchCurrentTurnEffects("TER017-INACTIVE", $mainPlayer, false, false, true);
+    SearchCurrentTurnEffects("TER024-INACTIVE", $mainPlayer, false, false, true);
   }
   if ($amount > 0 && ($attackID == "OUT065" || $attackID == "OUT066" || $attackID == "OUT067") && ComboActive()) $amount += 1;
   if ($amount > 0) $amount += PermanentAddAttackAbilities();
