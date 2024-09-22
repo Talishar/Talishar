@@ -994,7 +994,7 @@ function AddTowerEffectTrigger($cardID)
 
 function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
 {
-  global $mainPlayer, $combatChain, $defPlayer;
+  global $mainPlayer, $defPlayer, $CombatChain;
   if (SearchCurrentTurnEffects("MST079-HITPREVENTION", $defPlayer)) return false;
   $effects = explode(',', $cardID);
   switch ($effects[0]) {
@@ -1025,11 +1025,15 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
     case "AAZ004":
     case "DTD229-HIT":
     case "ROS012":
-    case "ROS119":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     case "ELE066-HIT":
       AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");
+      break;
+    case "ROS119":
+      if (CardType($CombatChain->AttackCard()->ID()) == "AA" && ClassContains($CombatChain->AttackCard()->ID(), "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
+        AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      }
       break;
     default:
       break;
