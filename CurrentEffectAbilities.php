@@ -395,7 +395,7 @@ function EffectHitEffect($cardID, $from)
       Draw($mainPlayer);
       break;
     case "ROS012":
-      if (IsHeroAttackTarget()) DealArcane(4, 0, "ATTACKHIT", $cardID, true, $mainPlayer);
+      if (IsHeroAttackTarget()) DealArcane(4, 0, "PLAYCARD", $cardID, true, $mainPlayer);
       return 1;
     default:
       break;
