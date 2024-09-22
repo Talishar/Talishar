@@ -73,9 +73,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
       CharacterBanishEffect($cardID, $player);
     } else DestroyCharacter($player, $charIndex, wasBanished: true);
   }
-  if ($banishedBy != "" && $player != $mainPlayer){
-    CheckContracts($banishedBy, $cardID);
-  }
+  if ($banishedBy != "" && $player != $mainPlayer) CheckContracts($mainPlayer, $cardID);
   if ($banishedBy == "DTD193" && TalentContains($cardID, "LIGHT", $player)) {
     GainHealth(1, $otherPlayer);
     return $rv;
