@@ -61,7 +61,6 @@ function DTDAbilityHasGoAgain($cardID)
 
 function DTDEffectAttackModifier($cardID)
 {
-  global $mainPlayer;
   $params = explode(",", $cardID);
   $dashArr = explode(",", $cardID);
   $cardID = $params[0];
@@ -117,7 +116,7 @@ function DTDEffectAttackModifier($cardID)
 function DTDCombatEffectActive($cardID, $attackID)
 {
   global $combatChainState, $mainPlayer, $combatChainState, $CCS_AttackNumCharged, $CombatChain;
-  global $Card_LifeBanner, $Card_ResourceBanner, $CCS_WasRuneGate, $CS_CharacterIndex;
+  global $Card_LifeBanner, $Card_ResourceBanner, $CCS_WasRuneGate;
   $params = explode(",", $cardID);
   $dashArr = explode(",", $cardID);
   $cardID = $params[0];

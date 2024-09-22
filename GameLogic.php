@@ -25,7 +25,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_NumCharged, $otherPlayer, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
-  global $CCS_GoesWhereAfterLinkResolves;
+  global $CCS_GoesWhereAfterLinkResolves, $CCS_AttackNumCharged, $layers;
   $rv = "";
   switch ($phase) {
     case "FINDINDICES":
@@ -1097,8 +1097,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       IncrementClassState($player, $CS_NumCharged);
       LogPlayCardStats($player, $lastResult, "HAND", "CHARGE");
       if (SearchCharacterActive($player, "DTD047") && GetClassState($otherPlayer, $CS_DamageDealt) <= 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) <= 0) AddCurrentTurnEffect("DTD047", $player);
-      global $CCS_AttackNumCharged;
-      if (CardType($EffectContext) == "AA") ++$combatChainState[$CCS_AttackNumCharged];
+      if (CardType($EffectContext) == "AA" || CardType($layers[0]) == "AA") ++$combatChainState[$CCS_AttackNumCharged];
       return $lastResult;
     case "DEALDAMAGE":
       $target = (is_array($lastResult) ? $lastResult : explode("-", $lastResult));
