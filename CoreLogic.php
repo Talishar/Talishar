@@ -482,7 +482,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
       $characterID = ShiyanaCharacter($otherCharacter[0]);
       DamageDealtAbilities($player, $damage, $type, $source);
-      if ($source == "MON229") AddNextTurnEffect("MON229", $player);
+      if ($source == "MON229" && !SearchNextTurnEffects("MON229", $player)) AddNextTurnEffect("MON229", $player);
       if (($characterID == "ELE062" || $characterID == "ELE063") && $type == "ARCANE" && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) {
         PlayAura("ELE109", $otherPlayer);
       }

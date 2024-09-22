@@ -116,6 +116,16 @@ function CurrentTurnPieces()
 //2 - Applies to Unique ID
 //3 - Number of uses remaining
 //4 - Number of turns before it takes effect
+function NextTurnEffectsPieces()
+{
+  return 4;
+}
+
+//0 - Effect ID
+//1 - Player ID
+//2 - Applies to Unique ID
+//3 - Number of uses remaining
+//4 - Number of turns before it takes effect
 function NextTurnPieces()
 {
   return 5;
