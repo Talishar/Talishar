@@ -1483,7 +1483,7 @@ function DoesAttackHaveGoAgain()
   $isAura = DelimStringContains(CardSubtype($attackID), "Aura");
 
   //Prevention Natural Go Again
-  if (CurrentEffectPreventsGoAgain()) return false;
+  if (CurrentEffectPreventsGoAgain($attackID, "CC")) return false;
   if (SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false;
 
   //Natural Go Again
@@ -2034,7 +2034,7 @@ function ResolveGoAgain($cardID, $player, $from="")
   global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer, $CS_ActionsPlayed, $CS_AdditionalCosts;
   $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed));
   $cardType = CardType($cardID);
-  $goAgainPrevented = CurrentEffectPreventsGoAgain();
+  $goAgainPrevented = CurrentEffectPreventsGoAgain($cardID, $from);
   if (IsStaticType($cardType, $from, $cardID)) {
     $hasGoAgain = AbilityHasGoAgain($cardID);
     if (!$hasGoAgain && GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from);

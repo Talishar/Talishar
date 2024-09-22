@@ -952,7 +952,7 @@ function ProcessSurge($cardID, $player, $target)
     case "DYN197":
     case "DYN198":
     case "DYN199":
-      if (CurrentEffectPreventsGoAgain() || $player != $mainPlayer) break;
+      if (CurrentEffectPreventsGoAgain($cardID) || $player != $mainPlayer) break;
       GainActionPoints();
       WriteLog(CardLink($cardID, $cardID) . " gained go again");
       break;
@@ -1037,7 +1037,7 @@ function ProcessSurge($cardID, $player, $target)
     case "ROS207":
     case "ROS208":
     case "ROS209":
-      if (CurrentEffectPreventsGoAgain() || $player != $mainPlayer) break;
+      if (CurrentEffectPreventsGoAgain($cardID) || $player != $mainPlayer) break;
       GainActionPoints();
       WriteLog(CardLink($cardID, $cardID) . " gained go again");
       break;

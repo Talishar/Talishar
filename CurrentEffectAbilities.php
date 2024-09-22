@@ -1496,15 +1496,22 @@ function CurrentEffectGrantsGoAgain()
   return false;
 }
 
-function CurrentEffectPreventsGoAgain()
+function CurrentEffectPreventsGoAgain($cardID, $from="-")
 {
-  global $currentTurnEffects, $mainPlayer;
+  global $currentTurnEffects, $mainPlayer, $CS_AdditionalCosts;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "WTR044":
-          return true;
+          if(HasMeld($cardID) && !IsMeldInstantName(GetClassState($mainPlayer, $CS_AdditionalCosts))
+          || DelimStringContains(CardType($cardID), "AA") 
+          || DelimStringContains(CardType($cardID), "A") 
+          || GetResolvedAbilityType($cardID, $from) == "AA"
+          || GetResolvedAbilityType($cardID, $from) == "A" ){
+            return true;
+          }
+          break;
         default:
           break;
       }
