@@ -787,14 +787,16 @@ function MeldCards($player, $cardID, $lastResult){
   else $names[] = implode(" ", explode("_", $lastResult));
   if($lastResult == "Both") {
     AddLayer("MELD", $player, $cardID);
+    $meldState = CardType($cardID);
   }
+  else $meldState = "I";
   for ($i=count($names)-1; $i >= 0 ; --$i) { 
     switch ($names[$i]) {
       case "Life":
         GainHealth(1, $player);
         break;
       case "Shock": 
-        DealArcane(1, 2, "PLAYCARD", $cardID, false, $player);
+        DealArcane(1, 2, "PLAYCARD", $cardID, false, $player, meldState: $meldState);
         break;
       default:
         if($lastResult != "Both") {
