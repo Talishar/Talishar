@@ -25,7 +25,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_NumCharged, $otherPlayer, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
-  global $CCS_GoesWhereAfterLinkResolves, $CCS_AttackNumCharged, $layers;
+  global $CCS_GoesWhereAfterLinkResolves, $CCS_AttackNumCharged, $layers, $CS_DamageDealt;
   $rv = "";
   switch ($phase) {
     case "FINDINDICES":
@@ -1124,6 +1124,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $damage;
     case "TAKEDAMAGE":
+      $otherPlayer = ($player == 1 ? 2 : 1);
       $params = explode("-", $parameter);
       $damage = intval($params[0]);
       $source = (count($params) > 1 ? $params[1] : "-");
@@ -1132,6 +1133,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage -= intval($lastResult);
       $damage = DealDamageAsync($player, $damage, $type, $source);
       if ($type == "COMBAT") $dqState[6] = $damage;
+      else (SetClassState($otherPlayer, $CS_DamageDealt, GetClassState($otherPlayer, $CS_DamageDealt) + $damage));
       Writelog("Player $player took $damage damage from " . Cardlink($source, $source));
       return $damage;
     case "AFTERQUELL":
