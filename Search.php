@@ -456,7 +456,7 @@ function FindCharacterIndex($player, $cardID)
 function FindCurrentTurnEffectIndex($player, $cardID)
 {
   global $currentTurnEffects;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $player && $currentTurnEffects[$i] == $cardID) {
       return $i;
     }

@@ -431,7 +431,7 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|st
 {
   global $currentTurnEffects;
   $modifier = 0;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     $effectArr = explode(",", $currentTurnEffects[$i]);
     switch ($effectArr[0]) {
@@ -853,7 +853,7 @@ function ArcaneBarrierChoices($playerID, $max)
         break;
     }
   }
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     switch ($currentTurnEffects[$i]) {
       case "ARC017":
         ++$barrierArray[2];

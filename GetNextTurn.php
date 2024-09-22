@@ -902,7 +902,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $opponentEffects = array();
   $friendlyEffects = "";
   $BorderColor = NULL;
-  for ($i = 0; $i + CurrentTurnPieces() - 1 < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+  for ($i = 0; $i + CurrentTurnEffectsPieces() - 1 < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
     $cardID = explode("_", $cardID)[0];

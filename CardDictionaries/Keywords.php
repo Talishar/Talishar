@@ -242,7 +242,7 @@
     $amount = 1;
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
     if(SearchCurrentTurnEffects("HVY176", $wonWager)) $amount += CountCurrentTurnEffects("HVY176", $wonWager);
-    for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    for($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
       $hasWager = true;
       if(isset($currentTurnEffects[$i])) {
         switch($currentTurnEffects[$i]) {

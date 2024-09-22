@@ -78,7 +78,7 @@ function ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)
 function CardIsPitchable($storedPriorityNode)
 {
   global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID, $turn;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "ELE035": return CardCost($storedPriorityNode[0]) != 0;
@@ -183,7 +183,7 @@ function RogEffectCostMod($cardID)
   global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID;
   $from = "-"; //I currently don't want to figure out how "from" works, so I'm just gonna do this and hope for the best. If something breaks, we'll fix it.
   $costModifier = 0;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "WTR060":
@@ -255,7 +255,7 @@ function RogEffectCostMod($cardID)
 function CardIsPrevented($cardID)
 {
   global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID, $turn;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "CRU032":

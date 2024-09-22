@@ -106,7 +106,7 @@ function PitchPieces()
 //1 - Player ID
 //2 - Applies to Unique ID
 //3 - Number of uses remaining
-function CurrentTurnPieces()
+function CurrentTurnEffectsPieces()
 {
   return 4;
 }

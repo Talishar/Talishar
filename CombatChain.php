@@ -665,7 +665,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
   if ($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "ELE174", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer))) {
     AddLayer("TRIGGER", $mainPlayer, "ELE174");
   }
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $defPlayer) {
       switch ($currentTurnEffects[$i]) {
@@ -906,7 +906,7 @@ function OnBlockResolveEffects($cardID = "")
   if ($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "ELE174", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer))) {
     AddLayer("TRIGGER", $mainPlayer, "ELE174");
   }
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $defPlayer) {
       switch ($currentTurnEffects[$i]) {
@@ -1016,7 +1016,7 @@ function OnBlockEffects($index, $from)
   $cardType = CardType($chainCard->ID());
   $cardSubtype = CardSubType($chainCard->ID());
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {

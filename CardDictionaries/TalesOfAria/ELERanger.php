@@ -263,7 +263,7 @@
   {
     global $currentTurnEffects;
     $costModifier = 0;
-    for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
+    for($i=count($currentTurnEffects)-CurrentTurnEffectsPieces(); $i>=0; $i-=CurrentTurnEffectsPieces())
     {
       $remove = 0;
       if($player == $currentTurnEffects[$i+1]) {

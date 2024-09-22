@@ -37,7 +37,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
     }
   }
   //Now check current turn effects
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       if ($currentTurnEffects[$i + 1] == $mainPlayer) {
         $attack = EffectAttackModifier($currentTurnEffects[$i]);
@@ -118,7 +118,7 @@ function BlockingCardDefense($index)
     $charIndex = isset($combatChain[$index + 8]) ? SearchCharacterForUniqueID($combatChain[$index + 8], $defPlayer) : null;
     $defense += $defCharacter[$charIndex + 4];
   }
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       if ($currentTurnEffects[$i + 1] == $defPlayer) {
         $defense += EffectBlockModifier($currentTurnEffects[$i], $index, $from);
@@ -428,7 +428,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
 function CheckIfPreventionEffectIsActive($player, $damage): void
 {
   global $currentTurnEffects;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = 0;
     switch ($currentTurnEffects[$i]) {
       case "ROS120":
@@ -589,7 +589,7 @@ function CurrentEffectDamageModifiers($player, $source, $type)
 {
   global $currentTurnEffects;
   $modifier = 0;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = 0;
     switch ($currentTurnEffects[$i]) {
       case "ELE059":
@@ -615,7 +615,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
   global $currentTurnEffects, $EffectContext;
   $otherPlayer = ($target == 1 ? 2 : 1);
   if (CardType($source) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $target) {
       continue;
     }
@@ -920,7 +920,7 @@ function ChainLinkResolvedEffects()
     DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
   }
 
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $currentEffect = explode("-", $currentTurnEffects[$i]);
     switch ($currentEffect[0]) {
       case "ROS085":
@@ -1375,14 +1375,14 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
   global $currentTurnEffects;
   $cardSubtype = CardSubtype($cardID);
   if ($cardID == "EVO013") {
-    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       $effect = explode(",", $currentTurnEffects[$i]);
       if ($effect[0] == "EVO013-" . $uniqueID) return $effect[1];
     }
   }
   if ($cardID == "ROS246") {
     if($subtype == "Base") return true;
-    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       $effect = explode(",", $currentTurnEffects[$i]);
         if ($effect[0] == "ROS246-" . $uniqueID) return DelimStringContains($currentTurnEffects[$i], $subtype);
     }
@@ -2357,7 +2357,7 @@ function IsAlternativeCostPaid($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer, $combatChainState, $CCS_WasRuneGate;
   $isAlternativeCostPaid = false;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
@@ -3080,7 +3080,7 @@ function CanOnlyTargetHeroes($cardID)
 function NonHitEffects($cardID)
 {
   global $mainPlayer, $defPlayer, $currentTurnEffects;
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "HVY012":

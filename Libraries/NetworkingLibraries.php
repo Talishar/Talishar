@@ -1081,7 +1081,7 @@ function ResolveCombatDamage($damageDone)
           if (CachedTotalAttack() >= 13) AddTowerEffectTrigger($combatChain[$i]);
         }
       }
-      for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+      for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
         if (IsCombatEffectActive($currentTurnEffects[$i])) {
           if ($currentTurnEffects[$i + 1] == $mainPlayer) {
             AddEffectHitTrigger($currentTurnEffects[$i]); // Effects that gives effect to the attack
@@ -1096,7 +1096,7 @@ function ResolveCombatDamage($damageDone)
       ItemHitTrigger($combatChain[0]);
       AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
     }
-    for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
       if ($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
       if (IsCombatEffectActive($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
         AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
@@ -1189,7 +1189,7 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
 {
   global $currentTurnEffects, $combatChainState, $CCS_DamageDealt, $combatChain;
   $effectsToRemove = [];
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $effectArr = explode(",", $currentTurnEffects[$i]);
     if (IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0])) {
       if ($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
@@ -1400,7 +1400,7 @@ function FinalizeTurn()
   for ($i = count($nextTurnEffects) - NextTurnPieces(); $i >= 0; $i -= NextTurnPieces()) {
     if ($nextTurnEffects[$i + 4] == 1) {
       for ($j = 0; $j < NextTurnPieces(); ++$j) {
-        if ($j < CurrentTurnPieces()) array_push($currentTurnEffects, $nextTurnEffects[$i + $j]);
+        if ($j < CurrentTurnEffectsPieces()) array_push($currentTurnEffects, $nextTurnEffects[$i + $j]);
         unset($nextTurnEffects[$i + $j]);
       }
     } else --$nextTurnEffects[$i + 4];

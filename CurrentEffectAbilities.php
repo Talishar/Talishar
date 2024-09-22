@@ -521,7 +521,7 @@ function EffectBlockModifier($cardID, $index, $from)
 function RemoveEffectsOnChainClose()
 {
   global $currentTurnEffects;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     $effectArr = explode("-", $currentTurnEffects[$i]);
     $effectArr2 = explode(",", $effectArr[0]);
@@ -580,7 +580,7 @@ function OnAttackEffects($attack)
 {
   global $currentTurnEffects, $mainPlayer, $defPlayer;
   $attackType = CardType($attack);
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
@@ -677,7 +677,7 @@ function CurrentEffectBaseAttackSet()
 {
   global $currentPlayer, $currentTurnEffects;
   $mod = -1;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer && IsCombatEffectActive($currentTurnEffects[$i])) {
       switch ($currentTurnEffects[$i]) {
         case "UPR155":
@@ -701,7 +701,7 @@ function CurrentEffectCostModifiers($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID;
   $costModifier = 0;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
@@ -832,7 +832,7 @@ function CurrentEffectCostModifiers($cardID, $from)
           break;
         case "AKO004":
           $attack = 0;
-          for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+          for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
             if (IsCombatEffectActive($currentTurnEffects[$i], $cardID)) {
               if ($currentTurnEffects[$i + 1] == $currentPlayer) {
                 $attack += EffectAttackModifier($currentTurnEffects[$i]);
@@ -1161,7 +1161,7 @@ function CurrentEffectAttackAbility()
   if (!$CombatChain->HasCurrentLink()) return;
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
@@ -1197,7 +1197,7 @@ function CurrentEffectPlayAbility($cardID, $from)
 
   if (DynamicCost($cardID) != "") $cost = GetClassState($currentPlayer, $CS_LastDynCost);
   else $cost = CardCost($cardID, $from);
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
@@ -1234,7 +1234,7 @@ function CurrentEffectPlayAbility($cardID, $from)
 function CurrentEffectPlayOrActivateAbility($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $remove = false;
       $effectArr = explode(",", $currentTurnEffects[$i]);
@@ -1260,7 +1260,7 @@ function CurrentEffectPlayOrActivateAbility($cardID, $from)
 function CurrentEffectAfterPlayOrActivateAbility()
 {
   global $currentTurnEffects, $currentPlayer;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $remove = false;
       $effectArr = explode(",", $currentTurnEffects[$i]);
@@ -1283,7 +1283,7 @@ function CurrentEffectGrantsInstantGoAgain($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer;
   $hasGoAgain = false;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "ROS071": 
@@ -1301,7 +1301,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer;
   $hasGoAgain = false;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       if (strlen($currentTurnEffects[$i]) > 6) $turnEffects = explode(",", $currentTurnEffects[$i]);
@@ -1601,7 +1601,7 @@ function CurrentEffectIntellectModifier()
 function CurrentEffectEndTurnAbilities()
 {
   global $currentTurnEffects, $mainPlayer;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     $cardID = substr($currentTurnEffects[$i], 0, 6);
     if (SearchCurrentTurnEffects($cardID . "-UNDER", $currentTurnEffects[$i + 1])) {
@@ -1867,7 +1867,7 @@ function IsCombatEffectPersistent($cardID)
 function BeginEndPhaseEffects()
 {
   global $currentTurnEffects, $mainPlayer, $EffectContext, $defPlayer;
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     $EffectContext = $currentTurnEffects[$i];
     switch ($currentTurnEffects[$i]) {
       case "EVR106":
@@ -1914,7 +1914,7 @@ function BeginEndPhaseEffectTriggers()
   global $currentTurnEffects, $mainPlayer, $defPlayer;
   $numBloodDebt = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
   if (!IsImmuneToBloodDebt($mainPlayer) && $numBloodDebt > 0) AddLayer("TRIGGER", $mainPlayer, "BLOODDEBT");
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     switch ($currentTurnEffects[$i]) {
       case "ELE215-1": case "ROS247-1":
         AddLayer("TRIGGER", $defPlayer, "ELE215", $currentTurnEffects[$i + 1], "-", "-");
@@ -1931,7 +1931,7 @@ function BeginEndPhaseEffectTriggers()
 function ActivateAbilityEffects()
 {
   global $currentPlayer, $currentTurnEffects;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
@@ -1974,7 +1974,7 @@ function EffectDefenderAttackModifiers($cardID)
 {
   $mod = 0;
   global $defPlayer, $currentTurnEffects;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $defPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardID)) {
       switch ($currentTurnEffects[$i]) {
@@ -2008,7 +2008,7 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false)
 
   if ($mainChar[0] == "DUMMY") return false;
   $restrictedBy = "";
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
@@ -2037,7 +2037,7 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false)
 function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase)
 {
   global $currentTurnEffects, $currentPlayer, $turn;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
@@ -2057,7 +2057,7 @@ function EffectPlayCardRestricted($cardID, $type, $revertNeeded = false)
 {
   global $currentTurnEffects, $currentPlayer;
   $restrictedBy = "";
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];

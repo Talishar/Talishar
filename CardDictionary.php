@@ -123,7 +123,7 @@ function CardSubType($cardID, $uniqueID = -1)
   }
   if ($uniqueID > -1 && IsModular($cardID)) {
     global $currentTurnEffects;
-    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       $effectArr = explode("-", $currentTurnEffects[$i]);
       if ($effectArr[0] != "EVO013" && $effectArr[0] != "ROS246") continue;
       $effectArr = explode(",", $effectArr[1]);
@@ -1265,7 +1265,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
 function GoesWhereEffectsModifier($cardID, $from, $player)
 {
   global $currentTurnEffects;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $effectID = substr($currentTurnEffects[$i], 0, 6);
     if ($currentTurnEffects[$i + 1] == $player) {
       switch ($effectID) {
@@ -1297,7 +1297,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
 {
   global $playerID, $currentTurnEffects;
   $resources = &GetResources($playerID);
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $playerID) {
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];

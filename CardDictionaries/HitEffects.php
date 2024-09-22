@@ -147,7 +147,7 @@ function HVYHitEffect($cardID)
   global $mainPlayer, $defPlayer, $currentTurnEffects;;
   switch ($cardID) {
     case "HVY012":
-      for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+      for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
         if ($currentTurnEffects[$i] == $cardID) {
           RemoveCurrentTurnEffect($i);
           break;

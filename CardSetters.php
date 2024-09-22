@@ -479,7 +479,7 @@ function AssignArcaneBonus($playerID)
 {
   global $currentTurnEffects, $layers;
   $layerIndex = 0;
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $playerID && EffectArcaneBonus($currentTurnEffects[$i]) > 0) {
       $skip = intval($currentTurnEffects[$i + 2]) != -1;
       switch ($currentTurnEffects[$i]) {
@@ -507,7 +507,7 @@ function AssignArcaneBonus($playerID)
 function ClearNextCardArcaneBuffs($player, $playedCard = "", $from = "")
 {
   global $currentTurnEffects;
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     $remove = 0;
     if ($currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
@@ -529,7 +529,7 @@ function ConsumeArcaneBonus($player)
   global $currentTurnEffects, $CS_ResolvingLayerUniqueID;
   $uniqueID = GetClassState($player, $CS_ResolvingLayerUniqueID);
   $totalBonus = 0;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = 0;
     if ($currentTurnEffects[$i + 1] == $player && ($currentTurnEffects[$i + 2] == $uniqueID || DelimStringContains($uniqueID, "MELD", true))) {
       $bonus = EffectArcaneBonus($currentTurnEffects[$i]);

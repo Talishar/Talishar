@@ -369,7 +369,7 @@ function CharacterBanishEffect($cardID, $player)
     case "DYN089":
       global $currentTurnEffects;
       $effectsCount = count($currentTurnEffects);
-      $effectPieces = CurrentTurnPieces();
+      $effectPieces = CurrentTurnEffectsPieces();
       for ($i = 0; $i < $effectsCount; $i += $effectPieces) {
         if ($currentTurnEffects[$i] == "DYN089-UNDER") {
           RemoveCurrentTurnEffect($i);
