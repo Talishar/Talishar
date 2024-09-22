@@ -2675,7 +2675,7 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
 function ModifiedAttackValue($cardID, $player, $from, $source = "")
 {
   global $CS_Num6PowBan;
-  if ($cardID == "") return -1;
+  if ($cardID == "") return 0;
   $attack = AttackValue($cardID);
   if ($cardID == "MON191") return SearchPitchForNumCosts($player) * 2;
   else if ($cardID == "EVR138") return FractalReplicationStats("Attack");
