@@ -327,8 +327,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "DTD098":
     case "DTD099":
       return (SearchPitchForColor($mainPlayer, 2) > 0 ? 2 : 0);
-    case "DTD107":
-      return GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
     case "DTD121":
     case "DTD122":
     case "DTD123":

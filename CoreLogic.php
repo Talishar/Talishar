@@ -2159,7 +2159,7 @@ function CanRevealCards($player)
 
 function BaseAttackModifiers($attackID, $attackValue)
 {
-  global $currentTurnEffects, $mainPlayer;
+  global $currentTurnEffects, $mainPlayer, $CS_Num6PowBan;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
     if (!IsCombatEffectActive($currentTurnEffects[$i])) continue;
@@ -2176,6 +2176,13 @@ function BaseAttackModifiers($attackID, $attackValue)
       default:
         break;
     }
+  }
+  switch ($attackID) {
+    case "DTD107":
+      $attackValue = GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
+      break;
+    default:
+      break;
   }
   return $attackValue;
 }
