@@ -2620,7 +2620,6 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
         if (!$deck->Empty()) if (ColorContains($deck->BanishTop(), PitchValue($cardID), $currentPlayer)) PlayAura("ARC112", $currentPlayer, 1, true);
         return "";
       case "HER117":
-        $character = &GetPlayerCharacter($currentPlayer);
         $index = SearchCurrentTurnEffectsForIndex("HER117", $currentPlayer);
         $dynCost = explode("-", $currentTurnEffects[$index]);
         MZMoveCard($currentPlayer, "MYHAND:type=A;class=WIZARD;arcaneDamage=" . $dynCost[1], "MYBANISH,HAND,INST," . $cardID);

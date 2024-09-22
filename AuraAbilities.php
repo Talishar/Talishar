@@ -284,10 +284,10 @@ function AuraDestroyAbility($player, $index, $isToken)
   global $EffectContext;
   $auras = &GetAuras($player);
   $cardID = $auras[$index];
-  $EffectContext = $cardID;
   switch ($cardID) {
     case "EVR141":
       if (!$isToken && $auras[$index + 5] > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
+        $EffectContext = $cardID;
         --$auras[$index + 5];
         PlayAura("MON104", $player);
       }

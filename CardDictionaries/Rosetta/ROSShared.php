@@ -62,7 +62,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_EclecticMag, $CS_DamageDealt, $CS_ArcaneDamageDealt;
   global $combatChainState;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-
   switch ($cardID) {
     case "ROS004":
       $xVal = $resourcesPaid / 2;
