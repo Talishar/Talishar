@@ -1108,9 +1108,10 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
     switch ($char[$i]) {
       case "DTD047":
         if ($damage > 0 && $preventable && $char[$i + 5] > 0 && GetClassState($player, $CS_NumCharged) > 0) {
-          --$damage;
-          --$char[$i + 5];
-          SearchCurrentTurnEffects("DTD047", $player, true);
+          if(SearchCurrentTurnEffects("DTD047", $player, true)){
+            --$damage;
+            --$char[$i + 5];
+          }
         }
         break;
       case "DTD165":
