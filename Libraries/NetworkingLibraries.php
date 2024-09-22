@@ -1837,8 +1837,9 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   if(HasMeld($cardID)) {
     $names = explode(" // ", CardName($cardID));
     $option = "Both,".$names[0].",".$names[1];
-    
-    if (
+    if (SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
+      $option = $names[1];
+    } elseif (
       CardType($cardID) != "I"
       && (!$combatChainState[$CCS_EclecticMag]
       && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0
