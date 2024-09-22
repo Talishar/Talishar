@@ -898,7 +898,7 @@ function FindDefCharacter($cardID)
 
 function ChainLinkResolvedEffects()
 {
-  global $combatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
+  global $combatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain, $CCS_GoesWhereAfterLinkResolves, $defPlayer;
   $allies = GetAllies($mainPlayer);
   if ($CombatChain->HasCurrentLink()) {
     if ($combatChain[0] == "MON245" && !ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
@@ -930,6 +930,10 @@ function ChainLinkResolvedEffects()
         if($index == -1) $index = GetCombatChainCardIDIndex($currentEffect[1]);
         if($combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-")
         {
+          AddPlayerHand($currentEffect[1], $combatChain[$index+1], "CC");
+          $CombatChain->Remove($index);
+        }
+        else if($currentTurnEffects[$i+1] == $defPlayer) {
           AddPlayerHand($currentEffect[1], $combatChain[$index+1], "CC");
           $CombatChain->Remove($index);
         }
