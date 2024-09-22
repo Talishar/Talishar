@@ -98,7 +98,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card to banish", 1);
       AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-      AddDecisionQueue("BANISHCARD", $otherPlayer, "HAND,-," . $cardID, 1);
+      AddDecisionQueue("BANISHCARD", $otherPlayer, "HAND,-,", 1);
       return "";
     case "MST006":
       AddPlayerHand("MST023", $currentPlayer, $cardID); //Fang Strike

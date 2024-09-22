@@ -391,7 +391,7 @@
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:talent=EARTH", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($earthBanishes - $i) . " earth card(s) to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
+        AddDecisionQueue("MZBANISH", $player, "GY,-,", 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
       }
 
@@ -401,7 +401,7 @@
         AddDecisionQueue("REVERTGAMESTATEIFNULL", $player, "There aren't any more action cards! Try selecting different earth cards.", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($actionBanishes - $i) . " action card(s) to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
+        AddDecisionQueue("MZBANISH", $player, "GY,-,", 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
       }
       AddDecisionQueue("SPECIFICCARD", $player, $specificCardDQ, 1);
