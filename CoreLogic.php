@@ -430,6 +430,7 @@ function CheckIfPreventionEffectIsActive($player, $damage): void
   global $currentTurnEffects;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = 0;
+    if($currentTurnEffects[$i+1] != $player) continue;
     switch ($currentTurnEffects[$i]) {
       case "ROS120":
         if($damage > 0) PlayAura("ARC112", $player); // Runechant
