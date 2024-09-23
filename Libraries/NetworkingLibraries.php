@@ -2389,6 +2389,13 @@ function PayAdditionalCosts($cardID, $from)
     case "ELE115":
       FaceDownArsenalBotDeck($currentPlayer);
       break;
+    case "ELE116":
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=I;talent=EARTH&MYDISCARD:type=A;talent=EARTH&MYDISCARD:type=AA;talent=EARTH");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose Earth action card or Earth instant card");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+        break;
     case "ELE118":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
       AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
