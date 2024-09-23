@@ -1928,6 +1928,14 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MST134":
     case "MST135":
     case "MST136":
+      $haveauraward = 0;
+      $auras = &GetAuras($player);
+      foreach ($auras as &$aura) {
+        if (HasWard($aura, $player)){
+          $haveauraward = +1;
+        } 
+       }
+      return $haveauraward<=0;
     case "ROS115":
       $auras = &GetAuras($player);
       return Count($auras) <= 0;
