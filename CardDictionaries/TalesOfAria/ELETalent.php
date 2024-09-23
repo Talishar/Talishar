@@ -41,7 +41,14 @@
         AddDecisionQueue("ADDCLASSSTATE", $currentPlayer, $CS_DamagePrevention . "-1", 1);
         return "";
       case "ELE116":
-        MZMoveCard($currentPlayer, "MYDISCARD:type=I;talent=EARTH&MYDISCARD:type=A;talent=EARTH&MYDISCARD:type=AA;talent=EARTH", "MYHAND");
+        $params = explode("-", $target);
+        $index = SearchdiscardForUniqueID($params[1], $currentPlayer);
+        if ($index != -1) {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDISCARD-" . $index, 1);
+          AddDecisionQueue("MZADDZONE", $currentPlayer, "MYHAND", 1);
+        } else {
+          WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+        }
         return "";
       case "ELE118":
         Draw($currentPlayer);
