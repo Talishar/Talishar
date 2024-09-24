@@ -913,7 +913,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
 {
   global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
   global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer;
-  global $CombatChain;
+  global $CombatChain, $combatChain;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
   $myArsenal = &GetArsenal($player);
@@ -1010,9 +1010,21 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if (SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && DelimStringContains($cardType, "A") && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
   if (SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
-  if ($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "MON245" && $player == $defPlayer && ($abilityType == "I" || DelimStringContains($cardType, "I"))) {
+  if ($CombatChain->HasCurrentLink()
+    && $CombatChain->AttackCard()->ID() == "MON245"
+    && $player == $defPlayer
+    && ($abilityType == "I" || DelimStringContains($cardType, "I"))) {
     $restriction = "Exude Confidance";
-    return false;
+    $exudeAttack = AttackValue("MON245");
+    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+      if (DelimStringContains(CardType($combatChain[$i]), "AA")) {
+        $attackValue = AttackValue($combatChain[$i]);
+        if ($attackValue + $combatChain[$i + 5] >= $exudeAttack + $combatChain[5]) {
+          $restriction = "";
+        }
+      }
+    }
+    if ($restriction == "Exude Confidance") return false;
   }
   if (SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && ($abilityType == "I" || DelimStringContains($cardType, "I"))) {
     $restriction = "Exude Confidance";
