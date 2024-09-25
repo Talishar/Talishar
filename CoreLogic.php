@@ -1385,7 +1385,7 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
     if($subtype == "Base") return true;
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       $effect = explode(",", $currentTurnEffects[$i]);
-        if ($effect[0] == "ROS246-" . $uniqueID) return DelimStringContains($currentTurnEffects[$i], $subtype);
+      if ($effect[0] == "ROS246-" . $uniqueID) return $effect[2];
     }
   }
   return DelimStringContains($cardSubtype, $subtype);

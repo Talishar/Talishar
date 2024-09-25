@@ -576,7 +576,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $char[11] = GetUniqueId("EVO410", $currentPlayer);
       $mechropotentIndex = 0; // we pushed it, so should be the last element
       for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
-        if ($char[$i] != "EVO410") {
+        if ($char[$i] != "EVO410" && $char[$i] != "NONE00") {
           EvoTransformAbility("EVO410", $char[$i], $currentPlayer);
           RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $mechropotentIndex);
         }

@@ -703,7 +703,7 @@ function EquipEquipment($player, $card, $slot = "")
   $replaced = 0;
   //Replace the first destroyed weapon; if none you can't re-equip
   for ($i = CharacterPieces(); $i < count($char) && !$replaced; $i += CharacterPieces()) {
-    if (SubtypeContains($char[$i], $slot, $player)) {
+    if (SubtypeContains($char[$i], $slot, $player, $uniqueID)) {
       $char[$i] = $card;
       $char[$i + 1] = 2;
       $char[$i + 2] = 0;
