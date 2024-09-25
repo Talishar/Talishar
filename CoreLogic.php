@@ -689,7 +689,7 @@ function LoseHealth($amount, $player)
 
 function GainHealth($amount, $player, $silent = false, $preventable = true)
 {
-  global $mainPlayer, $CS_HealthGained;
+  global $mainPlayer, $CS_HealthGained, $TurnStats_DamageDealt;
   $otherPlayer = ($player == 1 ? 2 : 1);
   $health = &GetHealth($player);
   $otherHealth = &GetHealth($otherPlayer);
@@ -709,6 +709,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
   if (!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
   IncrementClassState($player, $CS_HealthGained, $amount);
   $health += $amount;
+  LogHealthGainedStats($player, $amount);
 
   if ($player == $mainPlayer) {
     $char = &GetPlayerCharacter($player);
@@ -2065,7 +2066,7 @@ function ResolveGoAgain($cardID, $player, $from="")
   if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) {
     if(SearchCurrentTurnEffects("ROS010", $player) && !IsMeldInstantName(GetClassState($player, $CS_AdditionalCosts)) && (GetClassState($player, $CS_AdditionalCosts) != "Both" || $from == "MELD")) {
       $count = CountCurrentTurnEffects("ROS010", $player);
-      for ($i=0; $i < $count; $i++) { 
+      for ($i=0; $i < $count; $i++) {
         AddLayer("TRIGGER", $player, "ROS010");
       }
     }
@@ -3146,5 +3147,5 @@ function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController
       break;
     default:
       break;
-  } 
+  }
 }

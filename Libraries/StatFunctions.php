@@ -8,7 +8,7 @@ function CardStatPieces()
 
 function TurnStatPieces()
 {
-  return 12;
+  return 13;
 }
 
 $CardStats_TimesPlayed = 1;
@@ -32,6 +32,7 @@ $TurnStats_ResourcesLeft = 7;
 $TurnStats_CardsLeft = 8;
 $TurnStats_DamageBlocked = 9;
 $TurnStats_Overblock = 10;
+$TurnStats_LifeGained = 11;
 
 function LogPlayCardStats($player, $cardID, $from, $type="")
 {
@@ -87,6 +88,15 @@ function LogDamageStats($player, $damageThreatened, $damageDealt)
   if(count($damagerStats) <= $baseIndex) StatsStartTurn();
   $damagerStats[$baseIndex + $TurnStats_DamageThreatened] += $damageThreatened;
   $damagerStats[$baseIndex + $TurnStats_DamageDealt] += $damageDealt;
+}
+
+function LogHealthGainedStats($player, $healthGained)
+{
+  global $currentTurn, $TurnStats_HealthGained;
+  $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  $healerStats = &GetTurnStats($player == 1 ? 2 : 1);
+  if(count($healerStats) <= $baseIndex) StatsStartTurn();
+  $healerStats[$baseIndex + $TurnStats_HealthGained] += $healthGained;
 }
 
 function LogCombatResolutionStats($damageThreatened, $damageBlocked)
