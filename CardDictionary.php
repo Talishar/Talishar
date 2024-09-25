@@ -70,7 +70,7 @@ function CardType($cardID)
       if(function_exists("GetClassState")) {
         if(GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") return "A,I";
         elseif (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "I";
-        elseif (IsMeldLeftSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "A";  
+        elseif (IsMeldActionName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "A";  
       }
       return "A,I";
     case "ROS027":
@@ -402,9 +402,8 @@ function CardTalent($cardID)
     case "ROS017":
     case "ROS018":
       if(function_exists("GetClassState")) {
-        if(GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") return "EARTH";
-        elseif (IsMeldRightSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "EARTH";
-        return "NONE";
+        if(IsMeldLeftSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
+        return "EARTH";
       }
       return "EARTH";
     case "ROS011":
@@ -412,9 +411,8 @@ function CardTalent($cardID)
     case "ROS023":
     case "ROS024":
       if(function_exists("GetClassState")) {
-        if(GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") return "LIGHTNING";
-        elseif (IsMeldRightSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "LIGHTNING";
-        return "NONE";        
+        if(IsMeldLeftSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
+        return "LIGHTNING";        
       }
       return "LIGHTNING";
     case "ROS253":
@@ -4002,7 +4000,7 @@ Function IsMeldInstantName($term){
   switch ($term) {
       case "Shock":
       case "Life":
-      case "Rampant Growth":
+      case "Rampant_Growth":
       case "Null":
       case "Vaporize":
       return true;
@@ -4010,6 +4008,21 @@ Function IsMeldInstantName($term){
       return false;
   }  
 }
+
+Function IsMeldActionName($term){
+  switch ($term) {
+      case "Pulsing_Aether":
+      case "Arcane_Seeds":
+      case "Comet_Storm":
+      case "Thistle_Bloom":
+      case "Burn_Up":
+      case "Regrowth":
+      return true;
+    default:
+      return false;
+  }  
+}
+
 
 Function IsMeldRightSideName($term){
   switch ($term) {
@@ -4029,6 +4042,9 @@ Function IsMeldLeftSideName($term){
       case "Thistle_Bloom":
       case "Burn_Up":
       case "Regrowth":
+      case "Null":
+      case "Rampant_Growth":
+      case "Vaporize":
       return true;
     default:
       return false;
