@@ -178,12 +178,12 @@ function MZAddZone($player, $parameter, $lastResult)
       case "MYBANISH":
         if (count($params) < 4) array_push($params, $player);
         BanishCardForPlayer($cardIDs[$i], $player, $params[1], $params[2], isset($params[3]) ? $params[3] : "-");
-        WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished");
+        WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished.");
         break;
       case "THEIRBANISH":
         if (count($params) < 4) array_push($params, $player);
         BanishCardForPlayer($cardIDs[$i], $otherPlayer, $params[1], isset($params[2]) ? $params[2] : "-", isset($params[3]) ? $params[3] : "-");
-        WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished");
+        WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished.");
         break;
       case "MYHAND":
         AddPlayerHand($cardIDs[$i], $player, "-");
@@ -263,7 +263,7 @@ function MZBanish($player, $parameter, $lastResult)
     $banishedBy = count($params) > 2 ? $params[2] : "";
     BanishCardForPlayer($zone[$mzIndex[1]], $cardOwner, $params[0], $modifier, $banishedBy);
   }
-  if (count($params) <= 3) WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished");
+  if (count($params) <= 3) WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
   return $lastResult;
 }
 

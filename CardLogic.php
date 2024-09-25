@@ -1194,7 +1194,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
       AddDecisionQueue("MULTIBANISH", $player, "DECK,TT", 1);
       AddDecisionQueue("SETDQVAR", $player, "0", 1);
-      AddDecisionQueue("WRITELOG", $player, "<0> was banished", 1);
+      AddDecisionQueue("WRITELOG", $player, "<0> was banished.", 1);
       AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
       break;
     case "HVY097":

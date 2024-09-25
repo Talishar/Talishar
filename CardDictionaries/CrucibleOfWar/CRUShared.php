@@ -243,7 +243,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,TCC", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
       }
       return "";
     case "CRU084":

@@ -533,7 +533,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $mod = (CardType($cards[0]) == "A" ? "INST" : "-");
       for($i = 0; $i < count($cards); ++$i) {
         $index = BanishCardForPlayer($cards[$i], $player, "DECK", $mod);
-        WriteLog(CardLink($cards[$i], $cards[$i]) . " was banished");
+        WriteLog(CardLink($cards[$i], $cards[$i]) . " was banished.");
         if($mzIndices != "") $mzIndices .= ",";
         $mzIndices .= "BANISH-" . $index;
       }
@@ -715,7 +715,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $discard = GetDiscard($player);
       $cardList = [];
       for($i=2; $i>=0; $i--) {
-        WriteLog(CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]) . " was banished");
+        WriteLog(CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]) . " was banished.");
         BanishCardForPlayer($discard[$lastResult[$i]], $player, "GY", "FACEDOWN", "MST233");
         array_push($cardList, $discard[$lastResult[$i]]);
       }

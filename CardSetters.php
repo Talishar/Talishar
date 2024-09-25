@@ -45,8 +45,11 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   if ($mod == "INT" || $mod == "NTSTONERAIN" || $mod == "STONERAIN") return $rv;
   //Do additional effects
   if ($cardID == "DTD109" && $from == "HAND" && $mod != "DTD564" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
-  if (($mod == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player))) {
-    WriteLog("Gained 1 action point from banishing " . CardLink($cardID, $cardID));
+  if (($mod == "BOOST" || $from == "DECK") 
+  && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178") 
+  && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetAbilityType($EffectContext) != "")
+  && $player == $mainPlayer) {
+    WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID, $cardID).".");
     ++$actionPoints;
   }
   if (($mod == "BOOST" && $from == "DECK") && ($cardID == "DYN101" || $cardID == "DYN102" || $cardID == "DYN103")) {
@@ -55,7 +58,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   }
   if (ModifiedAttackValue($cardID, $player, $from, source: $banishedBy) >= 6) {
     if ($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer && ($characterID == "MON119" || $characterID == "MON120") && $character[1] == 2) { // Levia
-      WriteLog(CardLink($characterID, $characterID) . " banished a card with 6+ power, and won't lose life from Blood Debt this turn");
+      WriteLog(CardLink($characterID, $characterID) . " banished a card with 6+ power, and won't lose life from Blood Debt this turn.");
     }
     ++$classState[$CS_Num6PowBan];
     $index = FindCharacterIndex($player, "MON122");
@@ -256,9 +259,10 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($facing == "UP") {
     if ($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetResolvedAbilityType($EffectContext, $from) == "A")) {
-      WriteLog("Gained 1 action point from " . CardLink($cardID, $cardID));
-      if ($player == $mainPlayer) GainActionPoints(1);
-    }
+      if ($player == $mainPlayer) {
+        WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID, $cardID).".");
+        GainActionPoints(1);
+      }    }
     if ($from == "DECK" && CardSubType($cardID) == "Arrow" && SearchCharacterActive($player, "OUT097")) {
       AddLayer("TRIGGER", $player, "OUT097", "-", "-", -1);
     }
@@ -607,8 +611,10 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
   global $myStateBuiltFor, $CS_CardsEnteredGY, $EffectContext;
   if ($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player))) {
-    WriteLog("Gained 1 action point from " . CardLink($cardID, $cardID));
-    if ($player == $mainPlayer) GainActionPoints(1);
+    if ($player == $mainPlayer) {
+      WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID, $cardID).".");
+      GainActionPoints(1);
+    }
   }
   //Code for EVO400+ going to GY, then Scrapped and it makes them unplayable.
   if ($from == "CHAR") {

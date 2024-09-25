@@ -2087,7 +2087,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           break;
       }
-      WriteLog(CardLink($lastResult, $lastResult) . " was banished");
+      WriteLog(CardLink($lastResult, $lastResult) . " was banished.");
       return $lastResult;
     case "POWDERKEG":
       $index = FindCharacterIndex($defPlayer, $lastResult);
