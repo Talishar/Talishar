@@ -2,7 +2,7 @@
 
   function ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
   {
-    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_DamagePrevention, $combatChain, $layers;
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $CS_DamagePrevention, $combatChain, $layers;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
@@ -48,6 +48,7 @@
           AddDecisionQueue("MZADDZONE", $currentPlayer, "MYHAND", 1);
         } else {
           WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+          return "FAILED";
         }
         return "";
       case "ELE118":
@@ -73,11 +74,20 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "ELE140": case "ELE141": case "ELE142":
-        if($cardID == "ELE140") $minCost = 0;
-        else if($cardID == "ELE141") $minCost = 1;
-        else $minCost = 2;
-        MZMoveCard($currentPlayer, "MYDISCARD:type=A;talent=EARTH,ELEMENTAL;minCost=" . $minCost . "&MYDISCARD:type=AA;talent=EARTH,ELEMENTAL;minCost=" . $minCost, "MYBOTDECK");
-        if($from == "ARS") AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+        $params = explode("-", $target);
+        $index = SearchdiscardForUniqueID($params[1], $currentPlayer);
+        if ($index != -1) {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDISCARD-" . $index, 1);
+          AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+          if($from == "ARS") AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+          ResolveGoesWhere("BANISH", $cardID, $currentPlayer, $from);
+        } 
+        else {
+          WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+          ResolveGoesWhere("GY", $cardID, $currentPlayer, $from);
+          return "FAILED";
+        }
         return "";
       case "ELE143":
         if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);

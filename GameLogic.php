@@ -1415,7 +1415,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SHOWSELECTEDTARGET":
       $targetPlayer = (substr($lastResult, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player);
-      WriteLog("Targeting: " . GetMZCardLink($targetPlayer, $lastResult));
+      WriteLog("Player " . $targetPlayer . " targeted: " . GetMZCardLink($targetPlayer, $lastResult));
       return $lastResult;
     case "MULTIZONEFORMAT":
       return SearchMultizoneFormat($lastResult, $parameter);
@@ -2117,7 +2117,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("!", $parameter);
       $target = GetMZCard($mainPlayer, $params[1] . "-" . $lastResult);
       AddCurrentTurnEffect($params[0] . $target, GetMZCard($mainPlayer, $params[1] . "-" . $lastResult + 1), (count($params) > 1 ? $params[1] : ""));
-      WriteLog(CardLink("EVR181", "EVR181") . " targetted " . CardLink($target, $target));
+      WriteLog(CardLink("EVR181", "EVR181") . " targeted " . CardLink($target, $target));
       return $lastResult;
     case "FABRICATE":
       $char = &GetPlayerCharacter($currentPlayer);

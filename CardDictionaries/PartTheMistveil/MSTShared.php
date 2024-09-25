@@ -400,6 +400,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST497," . $from);
       } else {
         WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect and this card does not transcend.");
+        return "FAILED";
       }
       return "";
     case "MST098":
@@ -416,6 +417,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST499," . $from);
       } else {
         WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect and this card does not transcend.");
+        return "FAILED";
       }
       return "";
     case "MST100":

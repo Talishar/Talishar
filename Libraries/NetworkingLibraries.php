@@ -1698,6 +1698,18 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
+    case "ELE140":
+    case "ELE141":
+    case "ELE142":
+      if($cardID == "ELE140") $minCost = 0;
+      else if($cardID == "ELE141") $minCost = 1;
+      else $minCost = 2;
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=A;talent=EARTH,ELEMENTAL;minCost=" . $minCost . "&MYDISCARD:type=AA;talent=EARTH,ELEMENTAL;minCost=" . $minCost);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target action card");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      break;
     case "ELE183":
     case "ELE184":
     case "ELE185":
@@ -2872,9 +2884,12 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($definedCardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
     }
     CurrentEffectAfterPlayOrActivateAbility();
-    if ($from != "EQUIP" && $from != "PLAY") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
-    else if ($from == "EQUIP" || $from == "PLAY") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
-    if (!$openedChain) ResolveGoAgain($cardID, $currentPlayer, $from);
+    if($playText != "FAILED")
+    {
+      if ($from != "EQUIP" && $from != "PLAY") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
+      else if ($from == "EQUIP" || $from == "PLAY") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
+      if (!$openedChain) ResolveGoAgain($cardID, $currentPlayer, $from);
+    }
     CopyCurrentTurnEffectsFromAfterResolveEffects();
     CacheCombatResult();
     if (!$isBlock) ProcessAllMirage();

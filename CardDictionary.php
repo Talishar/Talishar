@@ -1218,7 +1218,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
     case "ELE140":
     case "ELE141":
     case "ELE142":
-      return "BANISH";
+      return "-";
     case "MON066":
     case "MON067":
     case "MON068":

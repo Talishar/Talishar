@@ -1120,8 +1120,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "LAYER") $source = $layers;
       else if ($option[0] == "MYHAND") $source = $myHand;
       else if ($option[0] == "THEIRHAND") $source = $theirHand;
-      else if ($option[0] == "MYDISCARD") $source = $myDiscard;
-      else if ($option[0] == "THEIRDISCARD") $source = $theirDiscard;
+      else if ($option[0] == "MYDISCARD" || $option[0] == "MYDISCARDUID") $source = $myDiscard;
+      else if ($option[0] == "THEIRDISCARD" || $option[0] == "THEIRDISCARDUID") $source = $theirDiscard;
       else if ($option[0] == "MYBANISH") $source = $myBanish;
       else if ($option[0] == "THEIRBANISH") $source = $theirBanish;
       else if ($option[0] == "MYALLY") $source = $myAllies;
@@ -1168,11 +1168,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $countLayers = count($layers);
         for ($j=0; $j < $countLayers; $j += LayerPieces()) { 
             $target = $option[0]."-".$option[1];
-            $cardID = GetMZCard($currentPlayer, $target); //CRU123
-            if($cardID == GetMZCard($layers[$j + 1], $layers[$j + 3])) {
-                $label = "Targetted";
-                continue;
+            $cardID = GetMZCard($currentPlayer, $target);
+            $params = explode("-", $layers[$j + 3]);
+            $uniqueIDIndex = SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
+            if($uniqueIDIndex != -1 && $cardID == $source[$uniqueIDIndex]) {
+              $label = "Targeted";
+              continue;
             }
+          /* if($cardID == GetMZCard($layers[$j + 1], $layers[$j + 3])) {
+                $label = "Targeted";
+                continue;
+            } */
         }   
       }
 
