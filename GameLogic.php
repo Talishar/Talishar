@@ -1131,6 +1131,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $type = (count($params) > 2 ? $params[2] : "-");
       if (!CanDamageBePrevented($player, $damage, "DAMAGE", $source)) $lastResult = 0;
       $damage -= intval($lastResult);
+      $damage += CurrentEffectDamageModifiers($player, $source, $type);
       $damage = DealDamageAsync($player, $damage, $type, $source);
       if ($type == "COMBAT") $dqState[6] = $damage;
       else (SetClassState($otherPlayer, $CS_DamageDealt, GetClassState($otherPlayer, $CS_DamageDealt) + $damage));
@@ -1166,6 +1167,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $sourceType = CardType($source);
       if ($type == "PLAYCARD") {
         $damage += ConsumeArcaneBonus($player);
+        $damage += CurrentEffectDamageModifiers($player, $source, $type);
         if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("ELE065", $player);
         WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage");
       }

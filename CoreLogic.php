@@ -479,7 +479,6 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($damage > 0) {
     if ($source != "NA") {
-      $damage += CurrentEffectDamageModifiers($player, $source, $type);
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
       $characterID = ShiyanaCharacter($otherCharacter[0]);
       DamageDealtAbilities($player, $damage, $type, $source);
