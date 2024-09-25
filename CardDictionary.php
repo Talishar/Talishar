@@ -67,9 +67,11 @@ function CardType($cardID)
     case "ROS018":
     case "ROS024":
     case "ROS253":
-      if(GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") return "A,I";
-      elseif (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "I";
-      elseif (IsMeldLeftSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "A";
+      if(function_exists("GetClassState")) {
+        if(GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") return "A,I";
+        elseif (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "I";
+        elseif (IsMeldLeftSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "A";  
+      }
       return "A,I";
     case "ROS027":
       return "Macro";
@@ -337,16 +339,22 @@ function CardClass($cardID)
     case "ROS006":
     case "ROS011":
     case "ROS012":
-      if (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
+      if(function_exists("GetClassState")) {
+        if (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
+      }
       return "RUNEBLADE";
     case "ROS017":
     case "ROS018":
     case "ROS023":
     case "ROS024":
-      if (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
+      if(function_exists("GetClassState")) {
+        if (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
+      }
       return "WIZARD";
     case "ROS253":
-      if (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
+      if(function_exists("GetClassState")) {
+        if (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
+      }
       return "RUNEBLADE";
     default:
       break;
@@ -393,19 +401,27 @@ function CardTalent($cardID)
     case "ROS006":
     case "ROS017":
     case "ROS018":
-      if(GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") return "EARTH";
-      elseif (IsMeldRightSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "EARTH";
-      return "NONE";
+      if(function_exists("GetClassState")) {
+        if(GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") return "EARTH";
+        elseif (IsMeldRightSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "EARTH";
+        return "NONE";
+      }
+      return "EARTH";
     case "ROS011":
     case "ROS012":
     case "ROS023":
     case "ROS024":
-      if(GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") return "LIGHTNING";
-      elseif (IsMeldRightSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "LIGHTNING";
-      return "NONE";
+      if(function_exists("GetClassState")) {
+        if(GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") return "LIGHTNING";
+        elseif (IsMeldRightSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "LIGHTNING";
+        return "NONE";        
+      }
+      return "LIGHTNING";
     case "ROS253":
-      if (IsMeldRightSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "LIGHTNING";
-      elseif (IsMeldLeftSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "EARTH";
+      if(function_exists("GetClassState")) {
+        if (IsMeldRightSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "LIGHTNING";
+        elseif (IsMeldLeftSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "EARTH";
+      }
       return "EARTH,LIGHTNING";
     default:
       break;
