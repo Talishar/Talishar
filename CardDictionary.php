@@ -56,6 +56,7 @@ $CID_TekloLegs = "LGS189";
 
 function CardType($cardID)
 {
+  global $CS_AdditionalCosts, $currentPlayer;
   if (!$cardID) return "";
   switch ($cardID) {
     case "HVY096":
@@ -66,6 +67,9 @@ function CardType($cardID)
     case "ROS018":
     case "ROS024":
     case "ROS253":
+      if(GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") return "A,I";
+      elseif (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "I";
+      elseif (IsMeldLeftSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "A";
       return "A,I";
     case "ROS027":
       return "Macro";
@@ -326,7 +330,27 @@ function CardSet($cardID)
 
 function CardClass($cardID)
 {
+  global $currentPlayer, $CS_AdditionalCosts;
   if (!$cardID) return "";
+  switch ($cardID) {
+    case "ROS005":
+    case "ROS006":
+    case "ROS011":
+    case "ROS012":
+      if (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
+      return "RUNEBLADE";
+    case "ROS017":
+    case "ROS018":
+    case "ROS023":
+    case "ROS024":
+      if (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
+      return "WIZARD";
+    case "ROS253":
+      if (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
+      return "RUNEBLADE";
+    default:
+      break;
+  }
   $number = intval(substr($cardID, 3));
   if ($number >= 400) {
     $set = substr($cardID, 0, 3);
@@ -362,6 +386,30 @@ function CardClass($cardID)
 
 function CardTalent($cardID)
 {
+  global $currentPlayer, $CS_AdditionalCosts;
+  if (!$cardID) return "";
+  switch ($cardID) {
+    case "ROS005":
+    case "ROS006":
+    case "ROS017":
+    case "ROS018":
+      if(GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") return "EARTH";
+      elseif (IsMeldRightSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "EARTH";
+      return "NONE";
+    case "ROS011":
+    case "ROS012":
+    case "ROS023":
+    case "ROS024":
+      if(GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") return "LIGHTNING";
+      elseif (IsMeldRightSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "LIGHTNING";
+      return "NONE";
+    case "ROS253":
+      if (IsMeldRightSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "LIGHTNING";
+      elseif (IsMeldLeftSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "EARTH";
+      return "EARTH,LIGHTNING";
+    default:
+      break;
+  }
   $set = substr($cardID, 0, 3);
   if ($set == "ROG") return ROGUECardTalent($cardID);
   $number = intval(substr($cardID, 3));
@@ -3938,6 +3986,33 @@ Function IsMeldInstantName($term){
   switch ($term) {
       case "Shock":
       case "Life":
+      case "Rampant Growth":
+      case "Null":
+      case "Vaporize":
+      return true;
+    default:
+      return false;
+  }  
+}
+
+Function IsMeldRightSideName($term){
+  switch ($term) {
+      case "Shock":
+      case "Life":
+      return true;
+    default:
+      return false;
+  }  
+}
+
+Function IsMeldLeftSideName($term){
+  switch ($term) {
+      case "Pulsing_Aether":
+      case "Arcane_Seeds":
+      case "Comet_Storm":
+      case "Thistle_Bloom":
+      case "Burn_Up":
+      case "Regrowth":
       return true;
     default:
       return false;

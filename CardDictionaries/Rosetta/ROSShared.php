@@ -97,8 +97,10 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS021":
       $ampAmount = GetClassState($currentPlayer, $CS_NumLightningPlayed);
-      AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "ABILITY");
-      return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
+      if($ampAmount > 0) {
+        AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "ABILITY");
+      }
+      return CardLink($cardID, $cardID) . " is amping " . $ampAmount .".";
     case "ROS027":
       if($from == "HAND") {
         PutItemIntoPlayForPlayer("ROS027", $otherPlayer); //Work around for player to put it in play themselves (Mostly for Blitz LSS precons)

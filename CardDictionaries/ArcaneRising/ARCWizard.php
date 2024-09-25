@@ -461,7 +461,6 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|st
         $modifier += 1;
         $remove = true;
         break;
-
       case "ROS021":
         if ($currentTurnEffects[$i + 1] != $player) break;
         $modifier += $effectArr[1];
