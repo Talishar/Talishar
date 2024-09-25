@@ -1558,6 +1558,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE032":
     case "ELE115":
       return !ArsenalHasFaceDownCard($player);
+    case "ELE116":
+      $found = CombineSearches(SearchDiscard($player, "AA", talent: "EARTH"), SearchDiscard($player, "A", talent: "EARTH"));
+      $found = CombineSearches(SearchDiscard($player, "I", talent: "EARTH"), $found);
+      return $found == "";
     case "ELE118":
       return $from == "ARS" || ArsenalEmpty($player);
     case "ELE125":
