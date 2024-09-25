@@ -163,7 +163,10 @@ function HVYHitEffect($cardID)
     case "HVY072":
     case "HVY073":
       if (IsHeroAttackTarget() && HasIncreasedAttack()) {
-        MZChooseAndDestroy($mainPlayer, "THEIRARS");
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card you want to destroy from their arsenal", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $mainPlayer, false, 1);
       }
       break;
     case "HVY074":

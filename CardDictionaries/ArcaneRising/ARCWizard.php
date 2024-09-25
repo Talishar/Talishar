@@ -972,17 +972,19 @@ function ProcessSurge($cardID, $player, $target)
       break;
     case "ROS166":
       if (MZIsPlayer($target)) {
-        MZChooseAndDestroy($player, "THEIRARS");
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card you want to destroy from their arsenal", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $player, false, 1);
+        }
+      break;
+    case "ROS167"://eternal inferno
+      BanishCardForPlayer("ROS167", $player, "MYDISCARD", "TT", "ROS167");
+      $discard = &GetDiscard($player);
+      for($i = 0; $i < DiscardPieces(); $i++){
+        array_pop($discard);
       }
       break;
-      case "ROS167"://eternal inferno
-        BanishCardForPlayer("ROS167", $player, "MYDISCARD", "TT", "ROS167");
-        $discard = &GetDiscard($player);
-        for($i = 0; $i < DiscardPieces(); $i++){
-          array_pop($discard);
-        }
-        $banish = GetBanish($player);
-        break;
     case "ROS176":
     case "ROS177":
     case "ROS178":
