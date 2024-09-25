@@ -2884,7 +2884,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($definedCardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
     }
     CurrentEffectAfterPlayOrActivateAbility();
-    if($playText != "FAILED")
+    if($playText != "FAILED") //Meaning that the layer failed and does not resolve.
     {
       if ($from != "EQUIP" && $from != "PLAY") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
       else if ($from == "EQUIP" || $from == "PLAY") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);

@@ -2287,6 +2287,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "VERDANCE":
       DealArcane(1, 3, "ABILITY", $parameter, true);
       return $lastResult;
+    case "TRIGGER":
+      AddLayer("TRIGGER", $player, $parameter);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

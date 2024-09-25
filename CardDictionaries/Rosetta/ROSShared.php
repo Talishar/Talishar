@@ -112,37 +112,48 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
     case "ROS031":
-      $rv = Decompose($currentPlayer, "FELLINGOFTHECROWN");
-      return $rv;
     case "ROS032":
-      $rv = Decompose($currentPlayer, "PLOWUNDER");
-      return $rv;
+    case "ROS039":
+    case "ROS040":
+    case "ROS041":
+    case "ROS042":
+    case "ROS043":
+    case "ROS044":
+    case "ROS049":
+    case "ROS050":
+    case "ROS051":
+    case "ROS052":
+    case "ROS053":
+    case "ROS054":
+      $totalBanishes = 3;
+      $earthBanishes = 2; 
+      // Only perform the action if we have the minimum # of cards that meet the requirement for total banishes.
+      $countInDiscard = SearchCount(
+        SearchRemoveDuplicates(
+          CombineSearches(
+            SearchDiscard($currentPlayer, talent: "EARTH"),
+            CombineSearches(
+              SearchDiscard($currentPlayer, "A"),
+              SearchDiscard($currentPlayer
+              , "AA"))
+            )
+          )
+        );
+      // Must have the minimum # of earth cards too.
+      $earthCountInDiscard = SearchCount(SearchDiscard($currentPlayer, talent: "EARTH"));
+      // This is a MAY ability.
+      if($countInDiscard >= $totalBanishes && $earthCountInDiscard >= $earthBanishes) {
+        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_Decompose");
+        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+        AddDecisionQueue("TRIGGER", $currentPlayer, $cardID, 1);
+      }
+      return "";
     case "ROS033":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ROS035":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
       return CardLink($cardID, $cardID) . " is preventing the next 5 damage.";
-    case "ROS039":
-    case "ROS040":
-    case "ROS041":
-      $rv = Decompose($currentPlayer, "SUMMERSFALL");
-      return $rv;
-    case "ROS042":
-    case "ROS043":
-    case "ROS044":
-      $rv = Decompose($currentPlayer, "ROOTBOUNDCARAPACE");
-      return $rv;
-    case "ROS049":
-    case "ROS050":
-    case "ROS051":
-      $rv = Decompose($currentPlayer, "BLOSSOMINGDECAY");
-      return $rv;
-    case "ROS052":
-    case "ROS053":
-    case "ROS054":
-      $rv = Decompose($currentPlayer, "CADAVEROUSTILLING");
-      return $rv;
     case "ROS055":
     case "ROS056":
     case "ROS057":

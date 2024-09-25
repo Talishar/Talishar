@@ -2393,6 +2393,32 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         PlayAura("ELE109", $player);
       }
       break;
+    case "ROS031":
+      Decompose($player, "FELLINGOFTHECROWN");
+      break;
+    case "ROS032":
+      Decompose($player, "PLOWUNDER");
+      break;
+    case "ROS039":
+    case "ROS040":
+    case "ROS041":
+      Decompose($player, "SUMMERSFALL");
+      break;
+    case "ROS042":
+    case "ROS043":
+    case "ROS044":
+      Decompose($player, "ROOTBOUNDCARAPACE");
+      break;
+    case "ROS049":
+    case "ROS050":
+    case "ROS051":
+      Decompose($player, "BLOSSOMINGDECAY");
+      break;
+    case "ROS052":
+    case "ROS053":
+    case "ROS054":
+      Decompose($player, "CADAVEROUSTILLING");
+      break;
     case "ROS033":
       AddCurrentTurnEffect($parameter, $player);
       break;

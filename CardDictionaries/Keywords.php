@@ -360,32 +360,8 @@
    * The result of "NOPASS" should be used to add the bonus effects. SPECIFICCARD dq events can be added right after calling decompose to run if the decompose succeeded.
    */
   function Decompose($player, $specificCardDQ) {
-    $totalBanishes = 3;
     $actionBanishes = 1;
     $earthBanishes = 2; 
-
-    // Only perform the action if we have the minimum # of cards that meet the requirement for total banishes.
-    $countInDiscard = SearchCount(
-      SearchRemoveDuplicates(
-        CombineSearches(
-          SearchDiscard($player, talent: "EARTH"),
-          CombineSearches(
-            SearchDiscard($player, "A"),
-            SearchDiscard($player
-            , "AA"))
-          )
-        )
-      );
-
-    // Must have the minimum # of earth cards too.
-    $earthCountInDiscard = SearchCount(SearchDiscard($player, talent: "EARTH"));
-
-    // This is a MAY ability.
-    if($countInDiscard >= $totalBanishes && $earthCountInDiscard >= $earthBanishes) {
-
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_Decompose");
-      AddDecisionQueue("NOPASS", $player, "-", 1);
-
       // Earth Banishes
       for($i = 0; $i < $earthBanishes; $i++) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:talent=EARTH", 1);
@@ -406,6 +382,4 @@
       }
       AddDecisionQueue("SPECIFICCARD", $player, $specificCardDQ, 1);
       return "";
-    }
-    return "Decompose was not possible.";
   }
