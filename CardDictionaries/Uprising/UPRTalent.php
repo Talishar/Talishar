@@ -199,7 +199,8 @@
         if(IsHeroAttackTarget()) {
           $hand = &GetHand($defPlayer);
           LoseHealth(count($hand)/HandPieces(), $defPlayer);
-        }
+          WriteLog("Player $defPlayer loses " . count($hand)/HandPieces() . " health");
+        } 
         break;
       default: break;
     }
