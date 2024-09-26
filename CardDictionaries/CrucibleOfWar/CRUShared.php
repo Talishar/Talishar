@@ -360,10 +360,17 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddLayer("TRIGGER", $currentPlayer, $cardID);
       return "";
     case "CRU143":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-      AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
-      AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,TT", 1);
+      $params = explode("-", $target);
+      $index = SearchdiscardForUniqueID($params[1], $currentPlayer);
+      if ($index != -1) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDISCARD-" . $index, 1);
+        AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,GY,TT", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      } 
+      else {
+        WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+        return "FAILED";
+      }
       return "";
     case "CRU144":
       PlayAura("ARC112", $currentPlayer, 4);

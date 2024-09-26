@@ -1147,6 +1147,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $atkCounters = 0;
       $steamCounters = 0;
       $borderColor = 0;
+      $uniqueIDIndex = -1;
       $label = "";
 
       if (($option[0] == "THEIRALLY" || $option[0] == "THEIRAURAS") && $option[1] == $combatChainState[$CCS_WeaponIndex] && $otherPlayer == $mainPlayer) $label = "Attacking";
@@ -1170,7 +1171,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
             $target = $option[0]."-".$option[1];
             $cardID = GetMZCard($currentPlayer, $target);
             $params = explode("-", $layers[$j + 3]);
-            $uniqueIDIndex = SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
+            if(isset($params[1])) $uniqueIDIndex = SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
             if($uniqueIDIndex != -1 && $cardID == $source[$uniqueIDIndex]) {
               $label = "Targeted";
               continue;
