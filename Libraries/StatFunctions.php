@@ -92,11 +92,11 @@ function LogDamageStats($player, $damageThreatened, $damageDealt)
 
 function LogHealthGainedStats($player, $healthGained)
 {
-  global $currentTurn, $TurnStats_HealthGained;
+  global $currentTurn, $TurnStats_LifeGained;
   $baseIndex = ($currentTurn-1) * TurnStatPieces();
   $healerStats = &GetTurnStats($player);
   if(count($healerStats) <= $baseIndex) StatsStartTurn();
-  $healerStats[$baseIndex + $TurnStats_HealthGained] += $healthGained;
+  $healerStats[$baseIndex + $TurnStats_LifeGained] += $healthGained;
 }
 
 function LogCombatResolutionStats($damageThreatened, $damageBlocked)
