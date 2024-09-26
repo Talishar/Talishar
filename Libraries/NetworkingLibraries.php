@@ -1789,6 +1789,18 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
+    case "DTD088":
+    case "DTD089":
+    case "DTD090":
+      if($cardID == "DTD088") $targetPitch = 1;
+      else if($cardID == "DTD089") $targetPitch = 2;
+      else if($cardID == "DTD090") $targetPitch = 3;
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:pitch=" . $targetPitch . "&MYAURAS:pitch=" . $targetPitch);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target aura");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      break;
     case "MST097":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target card");

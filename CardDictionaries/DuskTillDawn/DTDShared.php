@@ -274,10 +274,24 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD086": GainHealth(2, $currentPlayer); break;
     case "DTD087": GainHealth(1, $currentPlayer); break;
     case "DTD088": case "DTD089": case "DTD090"://Cleansing Light
-      if($cardID == "DTD088") $targetPitch = 1;
-      else if($cardID == "DTD089") $targetPitch = 2;
-      else if($cardID == "DTD090") $targetPitch = 3;
-      MZChooseAndDestroy($currentPlayer, "THEIRAURAS:pitch=" . $targetPitch . "&MYAURAS:pitch=" . $targetPitch);
+      $params = explode("-", $target);
+      if(substr($params[0], 0, 5) != "THEIR") {
+        $zone = "MYAURAS-";
+        $player = $currentPlayer;
+      }
+      else {
+        $zone = "THEIRAURAS-";
+        $player = $otherPlayer;
+      }
+      $index = SearchAurasForUniqueID($params[1], $player);
+      if ($index != -1) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $zone . $index, 1);
+        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      } 
+      else {
+        WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+        return "FAILED";
+      }
       return "";
     case "DTD091": case "DTD092": case "DTD093":
       if(SearchPitchForColor($currentPlayer, 2) > 0) GiveAttackGoAgain();

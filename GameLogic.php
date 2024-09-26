@@ -1409,6 +1409,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $discard = GetDiscard($player);
         $target = "MYDISCARDUID-" . $discard[$targetArr[1] + 1];
       }
+      if ($targetArr[0] == "THEIRAURAS") {
+        $auras = GetAuras($otherPlayer);
+        $target = "THEIRAURASUID-" . $auras[$targetArr[1] + 6];
+      }
+      if ($targetArr[0] == "MYAURAS") {
+        $auras = GetAuras($player);
+        $target = "MYAURASUID-" . $auras[$targetArr[1] + 6];
+      }
       for ($i = 0; $i < count($layers); $i += LayerPieces()) {
         if ($layers[$i] == $parameter && $layers[$i + 3] == "-") {
           $layers[$i + 3] = $target;
