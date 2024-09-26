@@ -483,8 +483,24 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $amount = 3;
       if ($cardID == "MST135") $amount = 2;
       else if ($cardID == "MST136") $amount = 1;
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $target, 1);
-      AddDecisionQueue("MZADDCOUNTERS", $currentPlayer, $amount, 1);
+      $params = explode("-", $target);
+      if(substr($params[0], 0, 5) != "THEIR") {
+        $zone = "MYAURAS-";
+        $player = $currentPlayer;
+      }
+      else {
+        $zone = "THEIRAURAS-";
+        $player = $otherPlayer;
+      }
+      $index = SearchAurasForUniqueID($params[1], $player);
+      if ($index != -1) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $zone . $index, 1);
+        AddDecisionQueue("MZADDCOUNTERS", $currentPlayer, $amount, 1);
+      }
+      else {
+        WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+        return "FAILED";
+      }
       return "";
     case "MST146":
     case "MST147":
