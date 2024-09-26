@@ -1371,7 +1371,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
 {
   global $playerID, $currentTurnEffects;
   $resources = &GetResources($playerID);
-  if(PitchValue($cardID) < 0) return true; //Can't pitch mentor or landmark
+  if(PitchValue($cardID) <= 0) return true; //Can't pitch mentors or landmarks
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $playerID) {
       $effectArr = explode(",", $currentTurnEffects[$i]);
