@@ -765,7 +765,7 @@ function OnBlockResolveEffects($cardID = "")
     if (($blockedFromHand >= 2 && $combatChain[$i + 2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i + 2] != "HAND")) UnityEffect($combatChain[$i]);
     if (HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
     if (SearchCurrentTurnEffects("HVY104", $mainPlayer && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("HVY104") == -1)) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);
-    $defendingCard = $combatChain[$i];
+    $defendingCard = $combatChain[$i];    
     if ($cardID != "") { //Code for when a card is pulled as a defending card on the chain
       $defendingCard = $cardID;
       $i = count($combatChain);
@@ -898,7 +898,7 @@ function OnBlockResolveEffects($cardID = "")
         break;
       case "ROS217":
         AddNextTurnEffect($defendingCard, $defPlayer);
-        return "";    
+        break;
       default:
         break;
     }
