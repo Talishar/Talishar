@@ -689,7 +689,7 @@ function LoseHealth($amount, $player)
 
 function GainHealth($amount, $player, $silent = false, $preventable = true)
 {
-  global $mainPlayer, $CS_HealthGained, $TurnStats_DamageDealt;
+  global $mainPlayer, $CS_HealthGained;
   $otherPlayer = ($player == 1 ? 2 : 1);
   $health = &GetHealth($player);
   $otherHealth = &GetHealth($otherPlayer);

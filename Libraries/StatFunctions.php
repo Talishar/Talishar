@@ -94,7 +94,7 @@ function LogHealthGainedStats($player, $healthGained)
 {
   global $currentTurn, $TurnStats_HealthGained;
   $baseIndex = ($currentTurn-1) * TurnStatPieces();
-  $healerStats = &GetTurnStats($player == 1 ? 2 : 1);
+  $healerStats = &GetTurnStats($player);
   if(count($healerStats) <= $baseIndex) StatsStartTurn();
   $healerStats[$baseIndex + $TurnStats_HealthGained] += $healthGained;
 }
