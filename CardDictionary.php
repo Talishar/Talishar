@@ -607,7 +607,7 @@ function PitchValue($cardID)
 {
   if (!$cardID) return "";
   $set = CardSet($cardID);
-  if (CardType($cardID) == "M") return 0;
+  if (CardType($cardID) == "M" || CardSubType($cardID) == "Landmark") return -1;
   $number = intval(substr($cardID, 3));
   if ($number > 400) {
     switch ($cardID) {
@@ -1371,6 +1371,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
 {
   global $playerID, $currentTurnEffects;
   $resources = &GetResources($playerID);
+  if(PitchValue($cardID) < 0) return true; //Can't pitch mentor or landmark
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $playerID) {
       $effectArr = explode(",", $currentTurnEffects[$i]);
