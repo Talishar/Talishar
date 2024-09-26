@@ -2952,7 +2952,7 @@ function ProcessMeld($player, $parameter)
       WriteLog(CardLink($parameter, $parameter) . " is amping " . $ampAmount);
       break;
     case "ROS018":
-      DealArcane(4, 2, "PLAYCARD", $parameter, true, $player);
+      DealArcane(4, 2, "PLAYCARD", $parameter, player:$player);
       break;
     case "ROS023":
       if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) {
@@ -2964,7 +2964,7 @@ function ProcessMeld($player, $parameter)
     case "ROS024":
       $meldState = (GetClassState($player, $CS_AdditionalCosts) == "Both") ? "I,A" : "A";
       WriteLog("meld state of action side " . $meldState);
-      DealArcane(5, 2, "PLAYCARD", $parameter, true, $player, meldState: $meldState);
+      DealArcane(5, 2, "PLAYCARD", $parameter, player:$player, meldState: $meldState);
       break;
     case "ROS253":
       if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) {

@@ -141,8 +141,8 @@
       case "ELE059": case "ELE060": case "ELE061": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE065": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE066": AddCurrentTurnEffect($cardID, $player); break;
-      case "ELE070": case "ELE071": case "ELE072": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
-      case "ELE073": case "ELE074": case "ELE075": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
+      case "ELE070": case "ELE071": case "ELE072": DealArcane(1, 0, "PLAYCARD", $cardID); break;
+      case "ELE073": case "ELE074": case "ELE075": DealArcane(1, 0, "PLAYCARD", $cardID); break;
       case "ELE076": case "ELE077": case "ELE078": SetClassState($player, $CS_NextNAAInstant, 1); break;
       case "ELE079": case "ELE080": case "ELE081":
         PrependDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
@@ -154,9 +154,9 @@
         break;
       case "ELE082": case "ELE083": case "ELE084": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE085": case "ELE086": case "ELE087": AddCurrentTurnEffect($cardID . "-FUSE", $player); break;
-      case "ELE088": DealArcane(3, 0, "PLAYCARD", $cardID, true); break;//Assumed
-      case "ELE089": DealArcane(2, 0, "PLAYCARD", $cardID, true); break;//Assumed
-      case "ELE090": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
+      case "ELE088": DealArcane(3, 0, "PLAYCARD", $cardID); break;
+      case "ELE089": DealArcane(2, 0, "PLAYCARD", $cardID); break;
+      case "ELE090": DealArcane(1, 0, "PLAYCARD", $cardID); break;
       case "ELE091":
         if(DelimStringContains($element, "LIGHTNING")) AddCurrentTurnEffect($cardID . "-GA", $player);
         if(DelimStringContains($element, "EARTH")) AddCurrentTurnEffect($cardID . "-BUFF", $player);
