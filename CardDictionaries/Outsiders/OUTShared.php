@@ -806,8 +806,11 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("OK", $player, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "{1}");
     AddDecisionQueue("NOTEQUALPASS", $player, "ELSE");
-    AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's top deck", 1);
-    if($showHand) AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "-", 1);
+    if($showHand) {
+      AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's hand:", 1);
+      AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "-", 1);
+    }
+    else AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's top deck", 1);
     AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
     AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
     AddDecisionQueue("SETDQCONTEXT", $otherPlayer, CardName($source) . " shows the top of their deck is <1>", 1);

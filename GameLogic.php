@@ -822,7 +822,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($cards != "") $cards .= ", ";
         $cards .= CardLink($hand[$i], $hand[$i]);
       }
-      WriteLog($cards . " are shown");
+      WriteLog("$cards .");
       return $lastResult;
     case "WRITELOG":
       WriteLog(implode(" ", explode("_", $parameter)));
