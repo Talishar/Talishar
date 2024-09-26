@@ -411,6 +411,7 @@ function MainCharacterEndTurnAbilities()
       case "DTD224":
       case "DTD225":
         if ($mainCharacter[$i + 1] == 0) break; //Do not add negative counters if destroyed
+        if ($mainCharacter[$i + 12] != "UP") break;
         --$mainCharacter[$i + 4];
         break;
       case "ROGUE018":
