@@ -191,6 +191,7 @@ function StartTurnAbilities()
   for ($i = 0; $i < count($defItems); $i += ItemPieces()) {
     $defItems[$i + 2] = "2";
     $defItems[$i + 3] = ItemUses($defItems[$i]);
+    $defItems[$i + 7] = "0";//Reset Frozen
   }
   $defCharacter = &GetPlayerCharacter($defPlayer);
   for ($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
