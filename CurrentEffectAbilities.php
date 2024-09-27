@@ -1297,7 +1297,7 @@ function CurrentEffectGrantsInstantGoAgain($cardID, $from)
 
 function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
 {
-  global $currentTurnEffects, $currentPlayer;
+  global $currentTurnEffects, $currentPlayer, $CS_AdditionalCosts;
   $hasGoAgain = false;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
@@ -1356,8 +1356,10 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
           }
           break;
         case "ROS010-GOAGAIN":
-          $hasGoAgain = true;
-          if ($cardID != "ROS010") $remove = true;
+          if(SearchCurrentTurnEffects("ROS010", $currentPlayer) && !IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) && (GetClassState($currentPlayer, $CS_AdditionalCosts) != "Both" || $from == "MELD")) {
+            $hasGoAgain = true;
+            if ($cardID != "ROS010") $remove = true;
+          }
           break;
         default:
           break;
