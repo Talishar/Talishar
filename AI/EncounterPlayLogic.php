@@ -77,7 +77,7 @@ function ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)
 
 function CardIsPitchable($storedPriorityNode)
 {
-  global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID, $turn;
+  global $currentTurnEffects, $currentPlayer;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
@@ -254,7 +254,7 @@ function RogEffectCostMod($cardID)
 
 function CardIsPrevented($cardID)
 {
-  global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID, $turn;
+  global $currentTurnEffects, $currentPlayer;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {

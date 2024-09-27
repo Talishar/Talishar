@@ -149,7 +149,7 @@ function SearchInner(
         && ($maxCost == -1 || CardCost($cardID, $zone) <= $maxCost)
         && ($minCost == -1 || CardCost($cardID, $zone) >= $minCost)
         && ($class == "" || ClassContains($cardID, $class, $player))
-        && (count($talents) == 0 || TalentContainsAny($cardID, implode(",", $talents), $player))
+        && (count($talents) == 0 || TalentContainsAny($cardID, implode(",", $talents), $player, $zone))
         && ($pitch == -1 || ColorContains($cardID, $pitch, $player))
         && ($maxAttack == -1 || ModifiedAttackValue($cardID, $player, $zone) <= $maxAttack)
         && ($minAttack == -1 || ModifiedAttackValue($cardID, $player, $zone) >= $minAttack)

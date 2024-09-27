@@ -1403,7 +1403,7 @@ function CardNameContains($cardID, $name, $player = "", $partial = false) // Thi
   return DelimStringContains($cardName, $name, $partial);
 }
 
-function TalentOverride($cardID, $player = "")
+function TalentOverride($cardID, $player = "", $zone="-")
 {
   global $currentTurnEffects;
   $cardTalent = "";
@@ -1427,7 +1427,7 @@ function TalentOverride($cardID, $player = "")
   }
   if (!SearchCurrentTurnEffects("UPR187", $player)) { //Erase Face
     if ($cardTalent != "") $cardTalent .= ",";
-    $cardTalent .= CardTalent($cardID);
+    $cardTalent .= CardTalent($cardID, $zone);
   }
   if ($cardTalent == "") return "NONE";
   return $cardTalent;
@@ -1440,9 +1440,9 @@ function TalentContains($cardID, $talent, $player = "")
 }
 
 //talents = comma delimited list of talents to check
-function TalentContainsAny($cardID, $talents, $player = "")
+function TalentContainsAny($cardID, $talents, $player = "", $zone="-")
 {
-  $cardTalent = TalentOverride($cardID, $player);
+  $cardTalent = TalentOverride($cardID, $player, $zone);
   //Loop over current turn effects to find modifiers
   $talentArr = explode(",", $talents);
   for ($i = 0; $i < count($talentArr); ++$i) {

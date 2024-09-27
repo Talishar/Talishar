@@ -392,7 +392,7 @@ function CardClass($cardID)
   return GeneratedCardClass($cardID);
 }
 
-function CardTalent($cardID)
+function CardTalent($cardID, $from="-")
 {
   global $currentPlayer, $CS_AdditionalCosts;
   if (!$cardID) return "";
@@ -401,7 +401,7 @@ function CardTalent($cardID)
     case "ROS006":
     case "ROS017":
     case "ROS018":
-      if(function_exists("GetClassState")) {
+      if(function_exists("GetClassState") && $from == "-") {
         if(IsMeldLeftSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
         return "EARTH";
       }
