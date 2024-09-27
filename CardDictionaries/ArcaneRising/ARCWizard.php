@@ -427,6 +427,94 @@ function GetArcaneTargetIndices($player, $target): string
   return implode(",", $targets);
 }
 
+//Visual used for current effect only
+//!Effects are never removed from here
+function ArcaneModifierAmount($source, $player) 
+{
+  global $currentTurnEffects;
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+    $effectArr = explode(",", $currentTurnEffects[$i]);
+    if ($currentTurnEffects[$i + 1] != $player || $source != $effectArr[0]) continue;
+    switch ($effectArr[0]) {
+      case "ARC115":
+        return 1;
+      case "ARC122":
+        return 1;
+      case "ARC123":
+      case "ARC124":
+      case "ARC125":
+        return 2;
+      case "ARC129":
+        return 3;
+      case "ARC130":
+        return 2;
+      case "ARC131":
+        return 1;
+      case "ARC132":
+      case "ARC133":
+      case "ARC134":
+        return $effectArr[1];
+      case "CRU161":
+        return 1;
+      case "CRU165":
+      case "CRU166":
+      case "CRU167":
+        return 1;
+      case "CRU171":
+      case "CRU172":
+      case "CRU173":
+        return 1;
+      case "DYN192":
+        return $effectArr[1];
+      case "DYN200":
+        return 3;
+      case "DYN201":
+        return 2;
+      case "DYN202":
+        return 1;
+      case "DYN209":
+      case "DYN210":
+      case "DYN211":
+        return 1;  
+      case "EVR123":
+        return $effectArr[1];
+      case "ROS017":
+        return $effectArr[1];
+      case "ROS000":
+      case "ROS015-AMP":
+      case "ROS168"://sigil of aether
+      case "ROS078":
+      case "ROS186":
+      case "ROS187":
+      case "ROS188":
+      case "ROS204":
+      case "ROS205":
+      case "ROS206":
+      case "MST234":
+      case "ROS165":
+        return 1;
+      case "ROS021":
+        return $effectArr[1];
+      case "ROS033":
+        return 3;
+      case "ROS163-AMP":
+        return 1;
+      case "ROS170":
+      case "ROS171":
+      case "ROS172":
+        return 1;
+      case "ROS192":
+      case "ROS193":
+      case "ROS194":
+        return $effectArr[1];
+        break;
+      default:
+        break;
+    }
+  }
+  return 0;
+}
+
 function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|string
 {
   global $currentTurnEffects;
@@ -532,7 +620,6 @@ function ActionsThatDoXArcaneDamage($cardID)
 
 function ActionsThatDoArcaneDamage($cardID, $playerID)
 {
-  global $CS_AdditionalCosts;
   switch ($cardID) {
     case "ARC119":
     case "ARC120":

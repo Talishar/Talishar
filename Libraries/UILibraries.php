@@ -57,7 +57,8 @@ function JSONRenderedCard(
   $frostCounters = NULL,
   $balanceCounters = NULL,
   $bindCounters = NULL,
-  $lightningPlayed = NULL
+  $lightningPlayed = NULL,
+  $showAmpAmount = false
 ) {
   global $playerID, $CS_NumLightningPlayed;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -153,14 +154,27 @@ function JSONRenderedCard(
       $countersMap->counters = 0;
     } 
   }
-  if($cardNumber == "ROS021" && GetClassState($playerID, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
-    $countersMap->lightning = GetClassState($playerID, $CS_NumLightningPlayed);
-    $countersMap->counters = 0;
+  //Volzar Amp icon
+  if($controller != NULL){
+    if($cardNumber == "ROS021" && $controller == $playerID && GetClassState($playerID, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
+      $countersMap->lightning = GetClassState($playerID, $CS_NumLightningPlayed);
+      $countersMap->counters = 0;
+    }
+    if($cardNumber == "ROS021" && $controller == $otherPlayer && GetClassState($otherPlayer, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
+      $countersMap->lightning = GetClassState($otherPlayer, $CS_NumLightningPlayed);
+      $countersMap->counters = 0;
+    }
   }
-  if($cardNumber == "ROS021" && GetClassState($otherPlayer, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
-    $countersMap->lightning = GetClassState($otherPlayer, $CS_NumLightningPlayed);
+
+  //Current Turn Effects amp amount
+  if(ArcaneModifierAmount($cardNumber, $playerID) > 0 && $showAmpAmount == "Effect") {
+    $countersMap->amp = ArcaneModifierAmount($cardNumber, $playerID);
     $countersMap->counters = 0;
-  }
+  } 
+  if(ArcaneModifierAmount($cardNumber, $otherPlayer) > 0 && $showAmpAmount == "Effect") {
+    $countersMap->amp = ArcaneModifierAmount($cardNumber, $otherPlayer);
+    $countersMap->counters = 0;
+  } 
 
   if($isSpectator) $gem = NULL;
   if($subcard != NULL) {

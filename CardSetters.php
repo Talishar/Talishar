@@ -426,12 +426,12 @@ function RemoveSoul($player, $index)
   return $cardID;
 }
 
-function EffectArcaneBonus($cardID)
+function EffectArcaneBonus($source)
 {
-  $idArr = explode("-", $cardID);
-  $cardID = $idArr[0];
+  $idArr = explode(",", $source);
+  $source = $idArr[0];
   $modifier = (count($idArr) > 1 ? $idArr[1] : 0);
-  switch ($cardID) {
+  switch ($source) {
     case "ARC115":
       return 1;
     case "ARC122":
