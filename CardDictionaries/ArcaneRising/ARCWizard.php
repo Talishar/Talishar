@@ -518,13 +518,10 @@ function ArcaneDamage($cardID): int
   };
 }
 
-function ActionsThatDoXArcaneDamage($cardID, $playerID)
+function ActionsThatDoXArcaneDamage($cardID)
 {
-  global $CS_ArcaneDamageTaken;
-  $otherPlayer = ($playerID == 1 ? 2 : 1);
   switch ($cardID) {
     case "ARC118":
-      return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0;
     case "EVR124":
     case "UPR109":
       return true;
