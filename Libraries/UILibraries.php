@@ -56,7 +56,8 @@ function JSONRenderedCard(
   $flowCounters = NULL,
   $frostCounters = NULL,
   $balanceCounters = NULL,
-  $bindCounters = NULL
+  $bindCounters = NULL,
+  $lightningPlayed = NULL
 ) {
   global $playerID, $CS_NumLightningPlayed;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -152,11 +153,11 @@ function JSONRenderedCard(
       $countersMap->counters = 0;
     } 
   }
-  if($cardNumber == "ROS021" && GetClassState($playerID, $CS_NumLightningPlayed) > 0) {
+  if($cardNumber == "ROS021" && GetClassState($playerID, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
     $countersMap->lightning = GetClassState($playerID, $CS_NumLightningPlayed);
     $countersMap->counters = 0;
   }
-  if($cardNumber == "ROS021" && GetClassState($otherPlayer, $CS_NumLightningPlayed) > 0) {
+  if($cardNumber == "ROS021" && GetClassState($otherPlayer, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
     $countersMap->lightning = GetClassState($otherPlayer, $CS_NumLightningPlayed);
     $countersMap->counters = 0;
   }

@@ -316,7 +316,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
     $layer = new stdClass();
     $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" || $layers[$i] == "MELD" ? $layers[$i + 2] : $layers[$i]);
-    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]);
+    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP");
     $layer->layerID = $i;
     $layer->isReorderable = $playerID == $mainPlayer && $i <= $dqState[8] && ($i > 0 || $numReorderable > 0);
     if ($layer->isReorderable) ++$numReorderable;
