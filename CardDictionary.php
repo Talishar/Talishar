@@ -871,7 +871,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 
 function GetAbilityNames($cardID, $index = -1, $from = "-"): string
 {
-  global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $CS_PlayIndex, $CS_NumActionsPlayed, $CS_NextWizardNAAInstant;
+  global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $CS_PlayIndex, $CS_NumActionsPlayed, $CS_NextWizardNAAInstant, $combatChainState, $CCS_EclecticMag;
   $character = &GetPlayerCharacter($currentPlayer);
   $auras = &GetAuras($currentPlayer);
   $names = "";
@@ -930,7 +930,8 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "ROS206":
       $names = "Ability";
       if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) $names .= ",Action";
-      elseif ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Action";
+      elseif($combatChainState[$CCS_EclecticMag]) $names .= ",Action";
+      elseif($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Action";
       if($from != "HAND") $names = "-,Action";
       return $names;
     default:
