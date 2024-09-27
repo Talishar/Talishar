@@ -412,6 +412,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return ($filteredIndices != "" ? $filteredIndices : "PASS");
     case "SIFT":
       $numCards = SearchCount($lastResult);
+      WriteLog("<b>$numCards cards</b> were put at the bottom of the deck.");
       for ($i = 0; $i < $numCards; ++$i) {
         Draw($player);
       }
