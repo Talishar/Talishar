@@ -382,6 +382,36 @@ function CharacterBanishEffect($cardID, $player)
   }
 }
 
+function MainCharacterBeginEndPhaseAbilities()
+{
+  global $mainPlayer, $defPlayer;
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
+    $characterID = ShiyanaCharacter($mainCharacter[$i]);
+    switch ($characterID) {
+      case "TER001":
+        if ($mainCharacter[$i + 1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
+        TerraEndPhaseAbility($characterID, $mainPlayer);
+        break;
+      default:
+        break;
+    }
+  }
+
+  $defCharacter = &GetPlayerCharacter($defPlayer);
+  for ($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
+    $characterID = ShiyanaCharacter($defCharacter[$i]);
+    switch ($characterID) {
+      case "TER001":
+        if ($defCharacter[$i + 1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
+        TerraEndPhaseAbility($characterID, $defPlayer);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
 function MainCharacterEndTurnAbilities()
 {
   global $mainClassState, $CS_HitsWDawnblade, $CS_AtksWWeapon, $mainPlayer, $CS_NumNonAttackCards, $defPlayer;
@@ -416,23 +446,6 @@ function MainCharacterEndTurnAbilities()
         break;
       case "ROGUE018":
         PlayAura("ELE109", $mainPlayer);
-        break;
-      case "TER001":
-        if ($mainCharacter[$i + 1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
-        TerraEndPhaseAbility($characterID, $mainPlayer);
-        break;
-      default:
-        break;
-    }
-  }
-
-  $defCharacter = &GetPlayerCharacter($defPlayer);
-  for ($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
-    $characterID = ShiyanaCharacter($defCharacter[$i]);
-    switch ($characterID) {
-      case "TER001":
-        if ($defCharacter[$i + 1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
-        TerraEndPhaseAbility($characterID, $defPlayer);
         break;
       default:
         break;
