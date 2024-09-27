@@ -2507,6 +2507,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("WRITELOG", $defPlayer, "<0> was banished.", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $defPlayer, "AIO003", 1);
       break;
+    case "JDG024":
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=C&THEIRCHAR:type=C", 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose which hero win the clash", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("BRUTUS", $player, $target, 1);
+      break;
     default:
       break;
   }

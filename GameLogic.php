@@ -2042,6 +2042,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($winner > 0) {
         WonClashAbility($winner, $params[0], $params[1]);
       }
+      else {
+        $char = GetPlayerCharacter($mainPlayer);
+        $defChar = GetPlayerCharacter($defPlayer);
+        if ($char[0] == "JDG024") {
+          AddLayer("TRIGGER", $mainPlayer, $char[0], $parameter);
+        } 
+        elseif ($defChar[0] == "JDG024") {
+          AddLayer("TRIGGER", $defPlayer, $defChar[0], $parameter);
+        }
+      }
       if ($params[0] == "HVY061") {
         $p1Deck = new Deck(1);
         $p1Deck->AddBottom($p1Deck->Top(remove: true));
@@ -2299,6 +2309,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "TRIGGER":
       AddLayer("TRIGGER", $player, $parameter);
+      return $lastResult;
+    case "BRUTUS":
+      $otherPlayer = $player == 1 ? 2 : 1;
+      if($lastResult == "MYCHAR-0") $dqVars[0] = $player;
+      else $dqVars[0] = $otherPlayer;
+      AddDecisionQueue("WONCLASH", $player, $parameter);
       return $lastResult;
     default:
       return "NOTSTATIC";

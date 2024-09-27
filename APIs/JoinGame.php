@@ -684,6 +684,12 @@ function GetAltCardID($cardID)
 function isClashLegal($cardID, $character) {
   $set = substr($cardID, 0, 3);
   $number = intval(substr($cardID, 3, 3));
+  switch ($cardID) { //Special Use Promos
+    case "JDG001": case "JDG003": case "JDG006": case "JDG010": case "JDG010": case "JDG019": case "JDG024": case "JDG025":
+      return true;
+      default:
+      break;
+    }
   switch (CardType($cardID)) {
     case "C": case "M": case "W":
       return true;
@@ -705,13 +711,16 @@ function IsCardBanned($cardID, $format, $character)
   if(($format != "openformatcc" && $format != "openformatllcc") && $cardID == "HER123") return true; // IRA Hero CC Launch 2nd November
   if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") && $set == "AIO") return true; // Dash Armory Deck Launch 18th November
 
-  switch ($cardID) { //Special Use Promos
-    case "JDG002": case "JDG004": case "JDG005": case "JDG008": case "JDG010": case "JDG019": case "JDG024": case "JDG025":
-    case "LSS001": case "LSS002": case "LSS003": case "LSS004": case "LSS005": case "LSS006": case "LSS007": case "LSS008":
-    case "FAB094":
-    case "LGS099":
-    case "HER101":
-      return true;
+  if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") {
+    switch ($cardID) { //Special Use Promos
+      case "JDG001": case "JDG002": case "JDG003": case "JDG004": case "JDG005": case "JDG006": case "JDG008": case "JDG010": 
+      case "JDG019": case "JDG024": case "JDG025":
+      case "LSS001": case "LSS002": case "LSS003": case "LSS004": case "LSS005": case "LSS006": case "LSS007": case "LSS008":
+      case "FAB094":
+      case "LGS099":
+      case "HER101":
+        return true;
+    }
   }
   switch($format) {
     case "blitz": case "compblitz":
