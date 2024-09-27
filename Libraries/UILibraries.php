@@ -58,8 +58,9 @@ function JSONRenderedCard(
   $balanceCounters = NULL,
   $bindCounters = NULL
 ) {
-  global $playerID;
+  global $playerID, $CS_NumLightningPlayed;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
+  $otherPlayer = ($playerID == 1 ? 2 : 1);
 
   $counters = property_exists($countersMap, 'counters') ? $countersMap->counters : $counters;
   if($counters != NULL) $countersMap->counters = $counters;
@@ -150,6 +151,14 @@ function JSONRenderedCard(
       $countersMap->aim = $countersMap->counters;
       $countersMap->counters = 0;
     } 
+  }
+  if($cardNumber == "ROS021" && GetClassState($playerID, $CS_NumLightningPlayed) > 0) {
+    $countersMap->lightning = GetClassState($playerID, $CS_NumLightningPlayed);
+    $countersMap->counters = 0;
+  }
+  if($cardNumber == "ROS021" && GetClassState($otherPlayer, $CS_NumLightningPlayed) > 0) {
+    $countersMap->lightning = GetClassState($otherPlayer, $CS_NumLightningPlayed);
+    $countersMap->counters = 0;
   }
 
   if($isSpectator) $gem = NULL;
