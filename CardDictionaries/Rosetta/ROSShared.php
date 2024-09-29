@@ -60,7 +60,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_EclecticMag, $CS_DamageDealt, $CS_ArcaneDamageDealt;
-  global $combatChainState;
+  global $combatChainState, $phase;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "ROS004":
@@ -238,6 +238,10 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS085":
     case "ROS086":
     case "ROS087":
+      if (SearchLayersForPhase("FINALIZECHAINLINK") != -1)
+      {
+        WriteLog("<b><span style=color:009DDF>Playing Electromagnetic Somersault is legal at this time, but playing it after damage will have no effect</span></b>");
+      }
       $minCost = match ($cardID) {
         "ROS085" => 0,
         "ROS086" => 1,
