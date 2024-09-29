@@ -1893,7 +1893,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "TCC011":
       return EvoUpgradeAmount($player) == 0;//Restricted if no EVOs
     case "TCC079":
-      return HitsInCombatChain() < 3;
+      return HitsInCombatChain() < 3 || $player != $mainPlayer;
     case "TCC080":
       return GetClassState($player, $CS_NumCrouchingTigerPlayedThisTurn) == 0;
     case "EVO003":
