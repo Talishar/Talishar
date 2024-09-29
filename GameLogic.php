@@ -1422,7 +1422,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $layers[$i + 3] = $target;
         }
       }
-      return $lastResult;
+      return $target;
     case "SHOWSELECTEDTARGET":
       $targetPlayer = (substr($lastResult, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player);
       WriteLog("Player " . $targetPlayer . " targeted: " . GetMZCardLink($targetPlayer, $lastResult));
@@ -2116,9 +2116,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DestroyItemForPlayer($player, SearchItemForIndex("DYN094", $player));
       return $lastResult;
     case "ADDTRIGGER":
-      $param = explode(",", $parameter);
-      AddLayer("TRIGGER", $player, $param[0], isset($param[1]) ? $param[1] : "-");
-      return $lastResult;
+      $params = explode(",", $parameter);
+      if (count($params) < 2) $target = $lastResult;
+      else $target = $params[1];
+      AddLayer("TRIGGER", $player, $params[0], $target);
+      return $lastResult;  
     case "UNDERCURRENTDESIRES":
       if ($lastResult == "") {
         WriteLog("No cards were selected, " . CardLink("MST010", "MST010") . " did not banish any cards");
@@ -2306,9 +2308,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "VERDANCE":
       DealArcane(1, 3, "ABILITY", $parameter, true);
-      return $lastResult;
-    case "TRIGGER":
-      AddLayer("TRIGGER", $player, $parameter);
       return $lastResult;
     case "BRUTUS":
       $otherPlayer = $player == 1 ? 2 : 1;
