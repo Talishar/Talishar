@@ -410,7 +410,7 @@ function CardTalent($cardID, $from="-")
     case "ROS012":
     case "ROS023":
     case "ROS024":
-      if(function_exists("GetClassState")) {
+      if(function_exists("GetClassState") && $from == "-") {
         if(IsMeldLeftSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
         return "LIGHTNING";        
       }
