@@ -2411,7 +2411,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $index = SearchAurasForUniqueID($params[1], $player);
         $zone = "MY";
       }
-      if($index >= 0) {
+      if($target == "NONE") {
+        Decompose($player, "SUMMERSFALL", $target);
+      }
+      elseif($index >= 0) {
         Decompose($player, "SUMMERSFALL", $zone . "AURAS-" . $index);
       }
       else {

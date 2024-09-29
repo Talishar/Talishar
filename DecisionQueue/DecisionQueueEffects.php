@@ -766,8 +766,11 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $CombatChain->Card($index)->ModifyPower(2);
       return $lastResult;
     case "SUMMERSFALL":
-      AddDecisionQueue("PASSPARAMETER", $player, $params[1] . "-" . $params[2]);
-      AddDecisionQueue("MZBOTTOM", $player, "-", 1);
+      if($params[1] != "NONE")
+      {
+        AddDecisionQueue("PASSPARAMETER", $player, $params[1] . "-" . $params[2]);
+        AddDecisionQueue("MZBOTTOM", $player, "-", 1);
+      }
       return $lastResult;
     default: return "";
   }
