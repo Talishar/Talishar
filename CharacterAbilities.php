@@ -815,7 +815,7 @@ function ShiyanaCharacter($cardID, $player = "")
 
 function EquipPayAdditionalCosts($cardIndex, $from)
 {
-  global $currentPlayer, $CS_AdditionalCosts, $currentTurnEffects;
+  global $currentPlayer;
   $character = &GetPlayerCharacter($currentPlayer);
   $cardID = $character[$cardIndex];
   $cardID = ShiyanaCharacter($cardID);
