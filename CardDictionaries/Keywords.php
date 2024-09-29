@@ -359,7 +359,7 @@
    *
    * The result of "NOPASS" should be used to add the bonus effects. SPECIFICCARD dq events can be added right after calling decompose to run if the decompose succeeded.
    */
-  function Decompose($player, $specificCardDQ) {
+  function Decompose($player, $specificCardDQ, $target = "") {
     $actionBanishes = 1;
     $earthBanishes = 2; 
       // Earth Banishes
@@ -380,6 +380,6 @@
         AddDecisionQueue("MZBANISH", $player, "GY,-", 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
       }
-      AddDecisionQueue("SPECIFICCARD", $player, $specificCardDQ, 1);
+      AddDecisionQueue("SPECIFICCARD", $player, $specificCardDQ . "-" . $target, 1);
       return "";
   }

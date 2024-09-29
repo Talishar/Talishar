@@ -2403,9 +2403,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS040":
     case "ROS041":
       $params = explode("-", $target);
-      $index = SearchAurasForUniqueID($params[1], $player);
+      $zone = substr($params[0], 0, 5);
+      if($zone == "THEIR") {
+        $index = SearchAurasForUniqueID($params[1], $otherPlayer);
+      }
+      else {
+        $index = SearchAurasForUniqueID($params[1], $player);
+        $zone = "MY";
+      }
       if($index >= 0) {
-        Decompose($player, "SUMMERSFALL");
+        Decompose($player, "SUMMERSFALL", $zone . "AURAS-" . $index);
       }
       else {
         WriteLog(CardLink($parameter, $parameter) . " layer fails as there are no remaining targets for the targeted effect.");

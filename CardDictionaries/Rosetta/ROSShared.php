@@ -176,7 +176,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($countInDiscard >= $totalBanishes && $earthCountInDiscard >= $earthBanishes) {
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_Decompose");
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS&THEIRAURAS", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS&MYAURAS", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target aura", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);

@@ -362,7 +362,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
   global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex;
   $otherPlayer = ($player == 1) ? 2 : 1;
-  switch($card)
+  $params = explode("-", $card);
+  switch($params[0])
   {
     case "RIGHTEOUSCLEANSING":
       $numBanished = SearchCount($lastResult);
@@ -765,12 +766,13 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $CombatChain->Card($index)->ModifyPower(2);
       return $lastResult;
     case "SUMMERSFALL":
-      MZChooseAndBottom($player, "THEIRAURAS&MYAURAS", may: true, context: "Choose an aura to send to the bottom of its owners deck");
+      AddDecisionQueue("PASSPARAMETER", $player, $params[1] . "-" . $params[2]);
+      AddDecisionQueue("MZBOTTOM", $player, "-", 1);
       return $lastResult;
     default: return "";
   }
-}
 
+}
 function PitchCard($player, $search="MYHAND:pitch=1&MYHAND:pitch=2&MYHAND:pitch=3", $skipGain=false)
 {
   if(!$skipGain) PrependDecisionQueue("GAINPITCHVALUE", $player, "-", 1);
