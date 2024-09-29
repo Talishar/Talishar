@@ -1880,7 +1880,6 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0
       && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
       && ($actionPoints < 1 || $currentPlayer != $mainPlayer || $turn[0] == "INSTANT")
-      && $turn[0] !== "M"
       || SearchCurrentTurnEffects("WarmongersWar", $currentPlayer))
     ) {
         $option = $names[1];
