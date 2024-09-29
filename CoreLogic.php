@@ -382,6 +382,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   $otherPlayer = $player == 1 ? 2 : 1;
   $damage = $damage > 0 ? $damage : 0;
   $damageThreatened = $damage;
+  $origDamage = $damage;
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   if ($preventable) {
     if ($damage > 0) $damage = CurrentEffectPreventDamagePrevention($player, $type, $damage, $source);
@@ -423,6 +424,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
     SearchCurrentTurnEffects("DTD133", $otherPlayer, true);
   }
   ResetAuraStatus($player);
+  if($damage < $origDamage) LogDamagePreventedStats($player, $origDamage - $damage);
   return $damage;
 }
 
