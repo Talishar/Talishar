@@ -1005,12 +1005,12 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   } else if ($from == "GY" && !PlayableFromGraveyard($cardID)) return false;
   if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "EVO001" && $character[0] != "EVO002" || CardCost($cardID, $from) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if (TypeContains($cardID, "E", $player) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
-  if (TypeContains($cardID, "E", $player) && GetCharacterGemState($player, $cardID) == 0) return false;
   if ($phase == "B") {
     if (TypeContains($cardID, "E", $player) && $character[$index + 6] == 1) return false;
     if (IsBlockRestricted($cardID, $restriction, $player)) return false;
   }
   if ($phase != "B" && $from == "CHAR" && $character[$index + 1] != "2") return false;
+  if ($phase != "B" && TypeContains($cardID, "E", $player) && GetCharacterGemState($player, $cardID) == 0) return false;
   if ($from == "CHAR" && $phase != "B" && $character[$index + 8] == "1") {
     $restriction = "Frozen";
     return false;
