@@ -1270,7 +1270,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $layers;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
   global $CS_DamagePrevention;
   $items = &GetItems($player);
@@ -2402,7 +2402,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS039":
     case "ROS040":
     case "ROS041":
-      Decompose($player, "SUMMERSFALL");
+      $params = explode("-", $target);
+      $index = SearchAurasForUniqueID($params[1], $player);
+      if($index >= 0) {
+        Decompose($player, "SUMMERSFALL");
+      }
+      else {
+        WriteLog(CardLink($parameter, $parameter) . " layer fails as there are no remaining targets for the targeted effect.");
+      }
       break;
     case "ROS042":
     case "ROS043":

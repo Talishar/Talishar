@@ -115,9 +115,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS031":
     case "ROS032":
-    case "ROS039":
-    case "ROS040":
-    case "ROS041":
     case "ROS042":
     case "ROS043":
     case "ROS044":
@@ -156,6 +153,37 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS035":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
       return CardLink($cardID, $cardID) . " is preventing the next 5 damage.";
+    case "ROS039":
+    case "ROS040":
+    case "ROS041":
+      $totalBanishes = 3;
+      $earthBanishes = 2; 
+      // Only perform the action if we have the minimum # of cards that meet the requirement for total banishes.
+      $countInDiscard = SearchCount(
+        SearchRemoveDuplicates(
+          CombineSearches(
+            SearchDiscard($currentPlayer, talent: "EARTH"),
+            CombineSearches(
+              SearchDiscard($currentPlayer, "A"),
+              SearchDiscard($currentPlayer
+              , "AA"))
+            )
+          )
+        );
+      // Must have the minimum # of earth cards too.
+      $earthCountInDiscard = SearchCount(SearchDiscard($currentPlayer, talent: "EARTH"));
+      // This is a MAY ability.
+      if($countInDiscard >= $totalBanishes && $earthCountInDiscard >= $earthBanishes) {
+        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_Decompose");
+        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS&THEIRAURAS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target aura", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("ADDTRIGGER", $currentPlayer, $cardID, 1);
+      }
+      return "";
     case "ROS055":
     case "ROS056":
     case "ROS057":
