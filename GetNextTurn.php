@@ -1014,7 +1014,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     for ($i = 0; $i < count($options); ++$i) {
       array_push($playerInputButtons, CreateButtonAPI($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i]), "24px"));
     }
-    if($vars[1] == "ARC112")
+    if(isset($vars[1]) && $vars[1] == "ARC112")
     {
       array_push($playerInputButtons, CreateButtonAPI($playerID, "Skip All Runechants", 105, "Skip All Runechants", "24px"));
     }
