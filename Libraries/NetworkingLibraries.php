@@ -4,7 +4,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $redirectPath, $CS_PlayedAsInstant;
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState;
-  global $roguelikeGameID;
+  global $roguelikeGameID, $CS_SkipAllRunechants;
   $otherPlayer = ($playerID == 1 ? 2 : 1);
   switch ($mode) {
     case 0:
@@ -548,8 +548,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $zone[$index + $offset] = ($zone[$index + $offset] == "1" ? "0" : "1");
       break;
     case 105: //Skip all runechants
-      global $CS_SkipAllRunechants;
-      IncrementClassState($playerID, $CS_SkipAllRunechants, 1);
+      SetClassState($playerID, $CS_SkipAllRunechants, 1);
       break;
     case 10000: //Undo
       $format = GetCachePiece($gameName, 13);

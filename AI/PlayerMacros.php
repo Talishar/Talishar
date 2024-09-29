@@ -17,12 +17,7 @@ function ProcessMacros()
       $lastPhase = $turn[0];
       $somethingChanged = false;
 
-      if($layers[2] == "ARC112" && GetClassState($defPlayer, $CS_SkipAllRunechants) == 1) { $somethingChanged = true; ContinueDecisionQueue("0"); }
-      else if ($layers[2] != "ARC112" && GetClassState($defPlayer, $CS_SkipAllRunechants) == 1) { 
-        $somethingChanged = true; 
-        ContinueDecisionQueue("0"); 
-        SetClassState($defPlayer, $CS_SkipAllRunechants, 0); 
-      }
+
 
       if($turn[0] == "A" && ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }
       else if($turn[0] == "D" && ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
@@ -66,6 +61,13 @@ function ProcessMacros()
           CacheCombatResult();
           if(CachedTotalAttack() <= 1) { $somethingChanged = true; PassInput(); }
         }
+      }
+
+      if($layers[2] == "ARC112" && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { $somethingChanged = true; ContinueDecisionQueue("0"); }
+      else if ($layers[2] != "ARC112" && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
+        $somethingChanged = true; 
+        ContinueDecisionQueue("0"); 
+        SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
       }
     }
   }

@@ -1016,7 +1016,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
     if(isset($vars[1]) && $vars[1] == "ARC112")
     {
-      array_push($playerInputButtons, CreateButtonAPI($playerID, "Skip All Runechants", 105, "Skip All Runechants", "24px"));
+      array_push($playerInputButtons, CreateButtonAPI($playerID, "Skip All Runechants", 105, 0, "24px"));
     }
     $playerInputPopup->popup = CreatePopupAPI("BUTTONINPUT", [], 0, 1, $caption . GetPhaseHelptext(), 1, "");
   }
