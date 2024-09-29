@@ -332,6 +332,7 @@ $CS_NumInstantPlayed = 82;
 $CS_ActionsPlayed = 83;
 $CS_NumEarthBanished = 84;
 $CS_HealthGained = 85;
+$CS_SkipAllRunechants = 86;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -531,7 +532,7 @@ function ResetMainClassState()
   global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain, $CS_NumContractsCompleted, $CS_HitsWithSword, $CS_NumCardsDrawn;
   global $CS_HealthLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrouchingTigerPlayedThisTurn, $CS_NumClashesWon;
   global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CS_NumInstantPlayed;
-  global $CS_ActionsPlayed, $CS_NumEarthBanished, $CS_HealthGained;
+  global $CS_ActionsPlayed, $CS_NumEarthBanished, $CS_HealthGained, $CS_SkipAllRunechants;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -618,6 +619,7 @@ function ResetMainClassState()
   $mainClassState[$CS_ActionsPlayed] = "-";
   $mainClassState[$CS_NumEarthBanished] = 0;
   $mainClassState[$CS_HealthGained] = 0;
+  $mainClassState[$CS_SkipAllRunechants] = 0;
 }
 
 function ResetCardPlayed($cardID)

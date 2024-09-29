@@ -2,7 +2,7 @@
 
 function ProcessMacros()
 {
-  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass;
+  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants, $defPlayer;
   $somethingChanged = true;
   $lastPhase = $turn[0];
   for($i=0; $i<$numPass; ++$i)
@@ -16,6 +16,14 @@ function ProcessMacros()
       if($lastPhase != $turn[0]) $i = 0;
       $lastPhase = $turn[0];
       $somethingChanged = false;
+
+      if($layers[2] == "ARC112" && GetClassState($defPlayer, $CS_SkipAllRunechants) == 1) { $somethingChanged = true; ContinueDecisionQueue("0"); }
+      else if ($layers[2] != "ARC112" && GetClassState($defPlayer, $CS_SkipAllRunechants) == 1) { 
+        $somethingChanged = true; 
+        ContinueDecisionQueue("0"); 
+        SetClassState($defPlayer, $CS_SkipAllRunechants, 0); 
+      }
+
       if($turn[0] == "A" && ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }
       else if($turn[0] == "D" && ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
       else if(($turn[0] == "B") && IsAllyAttackTarget()) { $somethingChanged = true; PassInput(); }
