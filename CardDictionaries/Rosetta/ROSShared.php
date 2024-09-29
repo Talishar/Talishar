@@ -144,7 +144,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($countInDiscard >= $totalBanishes && $earthCountInDiscard >= $earthBanishes) {
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_Decompose");
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-        AddDecisionQueue("TRIGGER", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("ADDTRIGGER", $currentPlayer, $cardID, 1);
       }
       return "";
     case "ROS033":
