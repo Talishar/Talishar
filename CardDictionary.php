@@ -1449,7 +1449,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     $restriction = "EVO073";
     return true;
   } //Can't be activated
-  if (CardType($cardID) == "A" && $from != "PLAY" && GetClassState($player, $CS_NumNonAttackCards) >= 1 && (SearchItemsForCard("EVR071", 1) != "" || SearchItemsForCard("EVR071", 2) != "")) {
+  if (CardType($cardID) == "A" 
+    && $from != "PLAY" 
+    && GetClassState($player, $CS_NumNonAttackCards) >= 1 
+    && (SearchItemsForCard("EVR071", 1) != "" || SearchItemsForCard("EVR071", 2) != "") 
+    && (GetAbilityTypes($cardID) == "" || !DelimStringContains(GetAbilityTypes($cardID), "I"))
+    ){
     $restriction = "EVR071";
     return true;
   }
