@@ -60,8 +60,19 @@ function ProcessMacros()
         }
       }
 
-      if($layers[2] == "ARC112" && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { $somethingChanged = true; ContinueDecisionQueue("0"); }
-      else if ($layers[2] != "ARC112" && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); }
+      if(($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
+        $somethingChanged = true; 
+        SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
+      }
+      else if ($layers[2] == "ARC112" && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
+        $somethingChanged = true; 
+        ContinueDecisionQueue("0"); 
+      }
+      else if (GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
+        $somethingChanged = true; 
+        ContinueDecisionQueue("0"); 
+        SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
+      }
     }
   }
 }
