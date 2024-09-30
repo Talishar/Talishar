@@ -2317,16 +2317,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SUMMERSFALL":
       $params = explode(",", $parameter);
-      $myAuras = GetAuras($currentPlayer);
-      $theirAuras = GetAuras($otherPlayer);
-      $numAuras = count($myAuras) + count($theirAuras);
-      if($numAuras <= 0 || $lastResult == "PASS") {
-        AddDecisionQueue("ADDTRIGGER", $currentPlayer, $parameter);
-      }
-      else {
-        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $params[0], 1);
-        AddDecisionQueue("ADDTRIGGER", $currentPlayer, $params[0], 1);
+      if($dqVars[0] == "YES") {
+        if($lastResult == "PASS") {
+          AddDecisionQueue("ADDTRIGGER", $currentPlayer, $parameter);
+        }
+        else {
+          AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+          AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $params[0], 1);
+          AddDecisionQueue("ADDTRIGGER", $currentPlayer, $params[0], 1);
+        }
       }
       return $lastResult;
     default:
