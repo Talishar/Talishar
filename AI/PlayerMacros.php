@@ -69,8 +69,6 @@ function ProcessMacros()
         ContinueDecisionQueue("0"); 
       }
       else if (GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
-        $somethingChanged = true; 
-        ContinueDecisionQueue("0"); 
         SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
       }
     }
