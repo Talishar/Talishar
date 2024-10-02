@@ -325,15 +325,25 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($parameter > 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $parameter . " power");
       else if ($parameter < 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets " . $parameter . " power");
       return $lastResult;
-    case "COMBATCHAINDEFENSEMODIFIER":
-      if ($parameter < 0) {
-        $defense = BlockingCardDefense($lastResult);
-        if ($parameter < $defense * -1) $parameter = $defense * -1;
-      }
-      $combatChain[$lastResult + 6] += $parameter;
-      if ($parameter > 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $parameter . " defense");
-      else if ($parameter < 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets " . $parameter . " defense");
-      return $lastResult;
+      case "COMBATCHAINDEFENSEMODIFIER":
+        if ($parameter < 0) {
+          $defense = BlockingCardDefense($lastResult);
+          if ($parameter < $defense * -1) $parameter = $defense * -1;
+        }
+        $combatChain[$lastResult + 6] += $parameter;
+        switch ($combatChain[0]) {
+          case "CRU051":
+          case "CRU052":
+          EvaluateCombatChain($totalAttack, $totalBlock);
+          for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+            if ($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
+              AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+            }
+          }
+        }
+        if ($parameter > 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $parameter . " defense");
+        else if ($parameter < 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets " . $parameter . " defense");
+        return $lastResult;
     case "HALVEBASEDEFENSE":
       $combatChain[$lastResult + 6] -= floor(BlockValue($combatChain[$lastResult]) / 2);
       return $lastResult;
