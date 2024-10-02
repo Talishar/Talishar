@@ -331,6 +331,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($parameter < $defense * -1) $parameter = $defense * -1;
       }
       $combatChain[$lastResult + 6] += $parameter;
+      switch ($combatChain[0]) {
+        case "CRU051":
+        case "CRU052":
+        EvaluateCombatChain($totalAttack, $totalBlock);
+        for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+          if ($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
+            AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+          }
+        }
+      }
       if ($parameter > 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $parameter . " defense");
       else if ($parameter < 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets " . $parameter . " defense");
       return $lastResult;
@@ -405,7 +415,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDMYPITCH":
       $pitch = &GetPitch($player);
-      WriteLog("Player " . $player . " pitched " . CardLink($lastResult, $lastResult));
+      WriteLog("Player " . $player . " pitched " . CardLink($lastResult, $lastResult)); 
       array_push($pitch, $lastResult);
       return $lastResult;
     case "PITCHABILITY":
@@ -822,7 +832,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($cards != "") $cards .= ", ";
         $cards .= CardLink($hand[$i], $hand[$i]);
       }
-      WriteLog("$cards .");
+      WriteLog($cards . " are shown");
       return $lastResult;
     case "WRITELOG":
       WriteLog(implode(" ", explode("_", $parameter)));
@@ -830,7 +840,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "WRITELOGCARDLINK":
       $params = explode("_", $parameter);
       Writelog(CardLink($params[0], $params[0]) . " was choosen");
-      return $lastResult;
+      return $lastResult;  
     case "WRITELOGLASTRESULT":
       WriteLog("<b>" . $lastResult . "<b> was selected.");
       return $lastResult;
@@ -1131,7 +1141,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $type = (count($params) > 2 ? $params[2] : "-");
       if (!CanDamageBePrevented($player, $damage, "DAMAGE", $source)) $lastResult = 0;
       $damage -= intval($lastResult);
-      $damage += CurrentEffectDamageModifiers($player, $source, $type);
       $damage = DealDamageAsync($player, $damage, $type, $source);
       if ($type == "COMBAT") $dqState[6] = $damage;
       else (SetClassState($otherPlayer, $CS_DamageDealt, GetClassState($otherPlayer, $CS_DamageDealt) + $damage));
@@ -1167,7 +1176,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $sourceType = CardType($source);
       if ($type == "PLAYCARD") {
         $damage += ConsumeArcaneBonus($player);
-        $damage += CurrentEffectDamageModifiers($player, $source, $type);
         if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("ELE065", $player);
         WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage");
       }
@@ -1219,7 +1227,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             SetClassState($player, $CS_AlluvionUsed, 1);
           }
         }
-        LogDamagePreventedStats($player, $lastResult);
       }
       return $lastResult;
     case "TAKEARCANE":
@@ -1297,7 +1304,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $resources[0] += PitchValue($lastResult);
       return $lastResult;
     case "BUFFARCANE":
-      AddCurrentTurnEffect($parameter . "," . $lastResult, $player);
+      AddCurrentTurnEffect($parameter . "-" . $lastResult, $player);
       return $lastResult;
     case "BUFFARCANEPREVLAYER":
       global $layers;
@@ -1410,23 +1417,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $discard = GetDiscard($player);
         $target = "MYDISCARDUID-" . $discard[$targetArr[1] + 1];
       }
-      if ($targetArr[0] == "THEIRAURAS") {
-        $auras = GetAuras($otherPlayer);
-        $target = "THEIRAURASUID-" . $auras[$targetArr[1] + 6];
-      }
-      if ($targetArr[0] == "MYAURAS") {
-        $auras = GetAuras($player);
-        $target = "MYAURASUID-" . $auras[$targetArr[1] + 6];
-      }
       for ($i = 0; $i < count($layers); $i += LayerPieces()) {
         if ($layers[$i] == $parameter && $layers[$i + 3] == "-") {
           $layers[$i + 3] = $target;
         }
       }
-      return $target;
+      return $lastResult;
     case "SHOWSELECTEDTARGET":
       $targetPlayer = (substr($lastResult, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player);
-      WriteLog("Player " . $targetPlayer . " targeted: " . GetMZCardLink($targetPlayer, $lastResult));
+      WriteLog("Targeting: " . GetMZCardLink($targetPlayer, $lastResult));
       return $lastResult;
     case "MULTIZONEFORMAT":
       return SearchMultizoneFormat($lastResult, $parameter);
@@ -1587,7 +1586,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "DECDQVARIFNOTPASS":
       if ($lastResult != "PASS") $dqVars[$parameter] = intval($dqVars[$parameter]) - 1;
-      return $lastResult;
+      return $lastResult;   
     case "DIVIDE":
       return floor($lastResult / $parameter);
     case "DQVARPASSIFSET":
@@ -1651,7 +1650,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode(",", $parameter);
       return ModalAbilities($player, $params[0], $lastResult, isset($params[1]) ? $params[1] : -1);
     case "MELD":
-      MeldCards($player, $parameter, $lastResult);
+      MeldCards($player, $parameter, $lastResult); 
       return $lastResult;
     case "SCOUR":
       WriteLog("Scour deals " . $parameter . " arcane damage");
@@ -2043,16 +2042,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($winner > 0) {
         WonClashAbility($winner, $params[0], $params[1]);
       }
-      else {
-        $char = GetPlayerCharacter($mainPlayer);
-        $defChar = GetPlayerCharacter($defPlayer);
-        if ($char[0] == "JDG024") {
-          AddLayer("TRIGGER", $mainPlayer, $char[0], $parameter);
-        }
-        elseif ($defChar[0] == "JDG024") {
-          AddLayer("TRIGGER", $defPlayer, $defChar[0], $parameter);
-        }
-      }
       if ($params[0] == "HVY061") {
         $p1Deck = new Deck(1);
         $p1Deck->AddBottom($p1Deck->Top(remove: true));
@@ -2108,7 +2097,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           break;
       }
-      WriteLog(CardLink($lastResult, $lastResult) . " was banished.");
+      WriteLog(CardLink($lastResult, $lastResult) . " was banished");
       return $lastResult;
     case "POWDERKEG":
       $index = FindCharacterIndex($defPlayer, $lastResult);
@@ -2117,11 +2106,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DestroyItemForPlayer($player, SearchItemForIndex("DYN094", $player));
       return $lastResult;
     case "ADDTRIGGER":
-      $params = explode(",", $parameter);
-      if (count($params) < 2) $target = $lastResult;
-      else $target = $params[1];
-      AddLayer("TRIGGER", $player, $params[0], $target);
-      return $lastResult;  
+      $param = explode(",", $parameter);
+      AddLayer("TRIGGER", $player, $param[0], isset($param[1]) ? $param[1] : "-");
+      return $lastResult;
     case "UNDERCURRENTDESIRES":
       if ($lastResult == "") {
         WriteLog("No cards were selected, " . CardLink("MST010", "MST010") . " did not banish any cards");
@@ -2140,7 +2127,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("!", $parameter);
       $target = GetMZCard($mainPlayer, $params[1] . "-" . $lastResult);
       AddCurrentTurnEffect($params[0] . $target, GetMZCard($mainPlayer, $params[1] . "-" . $lastResult + 1), (count($params) > 1 ? $params[1] : ""));
-      WriteLog(CardLink("EVR181", "EVR181") . " targeted " . CardLink($target, $target));
+      WriteLog(CardLink("EVR181", "EVR181") . " targetted " . CardLink($target, $target));
       return $lastResult;
     case "FABRICATE":
       $char = &GetPlayerCharacter($currentPlayer);
@@ -2309,25 +2296,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "VERDANCE":
       DealArcane(1, 3, "ABILITY", $parameter, true);
-      return $lastResult;
-    case "BRUTUS":
-      $otherPlayer = $player == 1 ? 2 : 1;
-      if($lastResult == "MYCHAR-0") $dqVars[0] = $player;
-      else $dqVars[0] = $otherPlayer;
-      AddDecisionQueue("WONCLASH", $player, $parameter);
-      return $lastResult;
-    case "SUMMERSFALL":
-      $params = explode(",", $parameter);
-      if($dqVars[0] == "YES") {
-        if($lastResult == "PASS") {
-          AddDecisionQueue("ADDTRIGGER", $currentPlayer, $parameter);
-        }
-        else {
-          AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-          AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $params[0], 1);
-          AddDecisionQueue("ADDTRIGGER", $currentPlayer, $params[0], 1);
-        }
-      }
       return $lastResult;
     default:
       return "NOTSTATIC";
