@@ -405,7 +405,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDMYPITCH":
       $pitch = &GetPitch($player);
-      WriteLog("Player " . $player . " pitched " . CardLink($lastResult, $lastResult)); 
+      WriteLog("Player " . $player . " pitched " . CardLink($lastResult, $lastResult));
       array_push($pitch, $lastResult);
       return $lastResult;
     case "PITCHABILITY":
@@ -830,7 +830,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "WRITELOGCARDLINK":
       $params = explode("_", $parameter);
       Writelog(CardLink($params[0], $params[0]) . " was choosen");
-      return $lastResult;  
+      return $lastResult;
     case "WRITELOGLASTRESULT":
       WriteLog("<b>" . $lastResult . "<b> was selected.");
       return $lastResult;
@@ -1219,6 +1219,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             SetClassState($player, $CS_AlluvionUsed, 1);
           }
         }
+        LogDamagePreventedStats($player, $lastResult);
       }
       return $lastResult;
     case "TAKEARCANE":
@@ -1586,7 +1587,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "DECDQVARIFNOTPASS":
       if ($lastResult != "PASS") $dqVars[$parameter] = intval($dqVars[$parameter]) - 1;
-      return $lastResult;   
+      return $lastResult;
     case "DIVIDE":
       return floor($lastResult / $parameter);
     case "DQVARPASSIFSET":
@@ -1650,7 +1651,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode(",", $parameter);
       return ModalAbilities($player, $params[0], $lastResult, isset($params[1]) ? $params[1] : -1);
     case "MELD":
-      MeldCards($player, $parameter, $lastResult); 
+      MeldCards($player, $parameter, $lastResult);
       return $lastResult;
     case "SCOUR":
       WriteLog("Scour deals " . $parameter . " arcane damage");
@@ -2047,7 +2048,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $defChar = GetPlayerCharacter($defPlayer);
         if ($char[0] == "JDG024") {
           AddLayer("TRIGGER", $mainPlayer, $char[0], $parameter);
-        } 
+        }
         elseif ($defChar[0] == "JDG024") {
           AddLayer("TRIGGER", $defPlayer, $defChar[0], $parameter);
         }

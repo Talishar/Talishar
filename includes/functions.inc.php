@@ -502,7 +502,8 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$deck["averageDamageThreatenedPerCard"] = round($totalDamageThreatened / $totalOffensiveCards, 2);
 	$deck["averageResourcesUsedPerTurn"] = round($totalResourcesUsed / $numTurns, 2);
 	$deck["averageCardsLeftOverPerTurn"] = round($totalCardsLeft / $numTurns, 2);
-	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked + (IsPatron($player) ? $totalLifeGained : 0)) / $numTurns, 2);
+	$deck["averageCombatValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2);
+	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked + $totalLifeGained + $totalDamagePrevented) / $numTurns, 2);
 
 	if($includeFullLog) $deck["fullLog"] = IsPatron($player) ? implode("<BR>", explode("\r\n", file_get_contents("./Games/" . $gameID . "/fullGamelog.txt"))) : "";
 
