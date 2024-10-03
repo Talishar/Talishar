@@ -80,7 +80,10 @@
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDISCARD-" . $index, 1);
           AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-          if($from == "ARS") AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+          if($from == "ARS") {
+            AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+            WriteLog(CardLink($cardID, $cardID) . " draw a card.");
+          }
           ResolveGoesWhere("BANISH", $cardID, $currentPlayer, $from);
         } 
         else {
@@ -124,7 +127,10 @@
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
         AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
-        if($from == "ARS") Draw($currentPlayer);
+        if($from == "ARS") {
+          Draw($currentPlayer);
+          WriteLog(CardLink($cardID, $cardID) . " draw a card.");
+        }
         return "";
       case "ELE169": case "ELE170": case "ELE171": 
         if($cardID == "ELE169") $pay = 3;
@@ -173,7 +179,10 @@
         return "";
       case "ELE198": case "ELE199": case "ELE200":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        if($from == "ARS") Draw($currentPlayer);
+        if($from == "ARS") {
+          Draw($currentPlayer);
+          WriteLog(CardLink($cardID, $cardID) . " draw a card.");
+        }
         return "";
       case "ELE201":
         if($from == "PLAY") {
