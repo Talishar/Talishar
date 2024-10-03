@@ -2299,6 +2299,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       CleanUpCombatEffects();
       AddPlayerHand($combatChain[0], $mainPlayer, "CC");
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+      CloseCombatChain();
       return $lastResult;
     case "TRUCE":
       if (SearchCurrentTurnEffects("ROS219", $defPlayer, remove: true)){
