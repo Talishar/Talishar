@@ -2818,6 +2818,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
     if ((in_array("FINALIZECHAINLINK", $layers) || count($combatChain) == 0) && (DelimStringContains($definedCardType, "DR") || DelimStringContains($definedCardType, "AR"))) {
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because the combat chain closed.");
+      AddGraveyard($cardID, $currentPlayer, $from, $currentPlayer);
       ContinueDecisionQueue();
       return;
     }
