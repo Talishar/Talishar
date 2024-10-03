@@ -2049,7 +2049,7 @@ function ResolveGoAgain($cardID, $player, $from="")
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
     }
     $numActionsPlayed = count($actionsPlayed);
-    if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING") && $actionsPlayed[$numActionsPlayed-2] == "ROS074") $hasGoAgain = true;
+    if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING") && $actionsPlayed[$numActionsPlayed-2] == "ROS074" && DelimStringContains($cardType, "A")) $hasGoAgain = true;
     if ($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
     if (DelimStringContains($cardType, "A")) $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if (DelimStringContains($cardType, "A") && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
