@@ -1608,8 +1608,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if (EffectPlayCardRestricted($cardID, $playType, true)) return;
     if (DelimStringContains($playType, "A") || $playType == "AA") {
-      if (!$canPlayAsInstant || GetResolvedAbilityType($cardID, $from) == "AA" || (GetResolvedAbilityType($cardID, $from) == "A" && GetResolvedAbilityName($cardID, $from) == "Action" && $canPlayAsInstant)) {
-        if(!IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) //Meld Card Only instant side
+      if (!$canPlayAsInstant) {
+        if(!IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) //Meld Card Only instant side
+        || (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A" || GetResolvedAbilityName($cardID, $from) == "Action")) 
         {
           --$actionPoints;
         }
