@@ -396,7 +396,7 @@ function ContinueDecisionQueue($lastResult = "")
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
         } else if ($cardID == "MELD") {
-          ProcessMeld($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
+          ProcessMeld($player, $parameter);
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
