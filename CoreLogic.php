@@ -415,9 +415,10 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   $damage = ItemTakeDamageAbilities($player, $damage, $type, $source);
   $damage = CharacterTakeDamageAbilities($player, $damage, $type, $preventable);
   if ($damage == 1 && $preventable && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
+  if ($damage > 0) $damage += CurrentEffectDamageModifiers($player, $source, $type);
   $dqVars[0] = $damage;
   if ($type == "COMBAT") $dqState[6] = $damage;
-  PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
+  PrependDecisionQueue("FINALIZEDAMAGE", $player, $damage . "," . $type . "," . $source);
   if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable);
   if ($source == "ARC112") {
     SearchCurrentTurnEffects("DTD134", $otherPlayer, true);
