@@ -521,7 +521,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $response->playerDeckCount = count($myDeck);
   $playerHero = ShiyanaCharacter($myCharacter[0], $playerID);
-  if($playerID < 3 && count($myDeck) > 0 && $myCharacter[1] < 3 && ($playerHero == "EVO002" || $playerHero == "EVO001") && $turn[0] != "OPT" && $turn[0] != "CHOOSETOPOPPONENT" && $turn[0] != "DOCRANK") {
+  if($playerID < 3 && count($myDeck) > 0 && $myCharacter[1] < 3 && ($playerHero == "EVO002" || $playerHero == "EVO001") && $turn[0] != "OPT" && $turn[0] != "P" && $turn[0] != "CHOOSETOPOPPONENT" && $turn[0] != "DOCRANK") {
     $playable = $playerID == $currentPlayer && IsPlayable($myDeck[0], $turn[0], "DECK", 0);
     $response->playerDeckCard = JSONRenderedCard($myDeck[0], action:($playable ? 35 : 0), actionDataOverride:strval(0), borderColor: ($playable ? 6 : 0), controller:$playerID);
   }
