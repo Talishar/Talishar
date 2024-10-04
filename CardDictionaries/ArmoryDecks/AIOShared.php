@@ -4,7 +4,7 @@ function AIOAbilityType($cardID, $index = -1, $from = "-"): string
 {
   return match ($cardID) {
     "AIO006" => "A",
-    "AIO005" => "A",
+    "AIO004" => "A",
     "AIO026" => "A",
     default => ""
   };
@@ -35,7 +35,7 @@ function AIOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if(ClassContains($banished, "MECHANOLOGIST", $currentPlayer)) GainActionPoints(1, $currentPlayer);
       }
       return "";
-    case "AIO005":
+    case "AIO004":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       GainActionPoints(1, $currentPlayer);
       return "";

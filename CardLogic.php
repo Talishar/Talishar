@@ -2525,11 +2525,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("ADDCURRENTEFFECT", $defPlayer, "AIO003", 1);
       break;
     case "AIO005":
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
-        AddDecisionQueue("BUTTONINPUT", $player, "0,1");
-        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-        AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
-        AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "1", 1); 
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
+      AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $player, $parameter, 1);
+      break;
     case "JDG024":
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=C&THEIRCHAR:type=C", 1);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose which hero win the clash", 1);
