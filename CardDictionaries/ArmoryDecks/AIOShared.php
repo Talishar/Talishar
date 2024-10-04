@@ -13,6 +13,7 @@ function AIOAbilityType($cardID, $index = -1, $from = "-"): string
 function AIOAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
+    "AIO004"  => true,
     default => false
   };
 }
