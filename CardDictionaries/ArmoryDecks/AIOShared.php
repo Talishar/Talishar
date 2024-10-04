@@ -24,6 +24,14 @@ function AIOCombatEffectActive($cardID, $attackID): bool
   };
 }
 
+function AIOAbilityCost($cardID): int
+{
+  return match ($cardID) {
+    "AIO004"  => 1,
+    default => 0
+  };
+}
+
 function AIOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_PlayIndex;

@@ -554,6 +554,7 @@ function AbilityCost($cardID)
   else if ($set == "ROG") return ROGUEAbilityCost($cardID);
   else if ($set == "ROS") return ROSAbilityCost($cardID);
   else if ($set == "TER") return TERAbilityCost($cardID);
+  else if ($set == "AIO") return AIOAbilityCost($cardID);
   else if ($cardID == "HER117") return 0;
   return CardCost($cardID);
 }
