@@ -214,7 +214,6 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
   array_unshift($layers, $parameter);
   array_unshift($layers, $player);
   array_unshift($layers, $cardID);
-  // doesn't allow ordering of runechants, but prevents things from breaking
   if ($cardID == "TRIGGER") {
     $orderableIndex = intval($dqState[8]);
     if ($orderableIndex == -1) $dqState[8] = 0;
