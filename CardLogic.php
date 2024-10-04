@@ -276,7 +276,7 @@ function ProcessDecisionQueue()
   ContinueDecisionQueue("");
 }
 
-function CloseDecisionQueue()
+function CloseDecisionQueue($skip=false)
 {
   global $turn, $decisionQueue, $dqState, $combatChain, $currentPlayer, $mainPlayer;
   $dqState[0] = "0";
@@ -287,7 +287,7 @@ function CloseDecisionQueue()
   $dqState[5] = "-"; //Clear Decision queue multizone indices
   $dqState[6] = "0"; //Damage dealt
   $dqState[7] = "0"; //Target
-  $dqState[8] = "-1"; //Orderable index (what layer after which triggers can be reordered)
+  if(!$skip) $dqState[8] = "-1"; //Orderable index (what layer after which triggers can be reordered)
   $decisionQueue = [];
   if (($turn[0] == "D" || $turn[0] == "A") && count($combatChain) == 0) {
     $currentPlayer = $mainPlayer;
@@ -410,7 +410,7 @@ function ContinueDecisionQueue($lastResult = "")
         BuildMyGamestate($currentPlayer);
       }
       $params = explode("|", $decisionQueue[2]);
-      CloseDecisionQueue();
+      CloseDecisionQueue(true);
       if ($params[2] == "") $params[2] = 0;
       if ($turn[0] == "B" && count($layers) == 0) { //If a layer is not created
         PlayCardEffect($params[0], $params[1], $params[2], "-", $params[3], $params[4]);
