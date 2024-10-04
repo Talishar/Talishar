@@ -1245,6 +1245,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
       AddDecisionQueue("SETDQVAR", $player, "0");
       for ($i = 0; $i < 2; ++$i) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS&MYITEMS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to destroy");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZDESTROY", $player, "-");
         AddDecisionQueue("INCDQVARIFNOTPASS", $player, "0");

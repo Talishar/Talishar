@@ -642,7 +642,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "TICKTOCKCLOCK":
-      DamageTrigger($player, $dqVars[0], "DAMAGE", "EVO074");
+      DamageTrigger($player, $dqVars[0]+1, "DAMAGE", "EVO074");
       return $lastResult;
     case "EVOBREAKER":
       if($lastResult == "PASS") {
