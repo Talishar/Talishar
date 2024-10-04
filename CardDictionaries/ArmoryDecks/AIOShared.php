@@ -45,7 +45,6 @@ function AIOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "AIO004":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      GainActionPoints(1, $currentPlayer);
       return "";
     case "AIO026":
       if ($from == "PLAY") {
