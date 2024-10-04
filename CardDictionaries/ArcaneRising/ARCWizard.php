@@ -59,8 +59,8 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
     case "ARC120":
       $arcaneBonus = ConsumeArcaneBonus($currentPlayer);
       $damage = ArcaneDamage($cardID) + $arcaneBonus;
-      DealArcane($damage, 1, "PLAYCARD", $cardID, resolvedTarget: $target);
-      DealArcane($damage, 1, "PLAYCARD", $cardID, resolvedTarget: $target);
+      DealArcane($damage, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      DealArcane($damage, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     case "ARC121":
       DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
