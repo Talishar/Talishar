@@ -124,6 +124,9 @@
     switch($cardID)
     {
       case "HVY050":
+        if($deck->Empty()) {
+          break;
+        }
         if ($playerID == $mainPlayer) DestroyTopCardOpponent($playerID);
         else {
           $character = &GetPlayerCharacter($mainPlayer);

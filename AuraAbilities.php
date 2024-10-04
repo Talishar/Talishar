@@ -188,7 +188,7 @@ function AuraLeavesPlay($player, $index, $uniqueID)
       $deck = new Deck($player);
       if ($deck->Reveal()) {
         if (CardType($deck->Top()) == "AA") {
-          AddPlayerHand($deck->Top(), $player, "DECK");
+          AddPlayerHand($deck->Top(true), $player, "DECK");
         }
       }
       break;

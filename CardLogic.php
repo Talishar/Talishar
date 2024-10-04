@@ -214,7 +214,6 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
   array_unshift($layers, $parameter);
   array_unshift($layers, $player);
   array_unshift($layers, $cardID);
-  // doesn't allow ordering of runechants, but prevents things from breaking
   if ($cardID == "TRIGGER") {
     $orderableIndex = intval($dqState[8]);
     if ($orderableIndex == -1) $dqState[8] = 0;
@@ -277,7 +276,7 @@ function ProcessDecisionQueue()
   ContinueDecisionQueue("");
 }
 
-function CloseDecisionQueue()
+function CloseDecisionQueue($skip=false)
 {
   global $turn, $decisionQueue, $dqState, $combatChain, $currentPlayer, $mainPlayer;
   $dqState[0] = "0";
@@ -288,7 +287,7 @@ function CloseDecisionQueue()
   $dqState[5] = "-"; //Clear Decision queue multizone indices
   $dqState[6] = "0"; //Damage dealt
   $dqState[7] = "0"; //Target
-  $dqState[8] = "-1"; //Orderable index (what layer after which triggers can be reordered)
+  if(!$skip) $dqState[8] = "-1"; //Orderable index (what layer after which triggers can be reordered)
   $decisionQueue = [];
   if (($turn[0] == "D" || $turn[0] == "A") && count($combatChain) == 0) {
     $currentPlayer = $mainPlayer;
@@ -396,7 +395,7 @@ function ContinueDecisionQueue($lastResult = "")
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
         } else if ($cardID == "MELD") {
-          ProcessMeld($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
+          ProcessMeld($player, $parameter, $cardID);
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
@@ -411,7 +410,7 @@ function ContinueDecisionQueue($lastResult = "")
         BuildMyGamestate($currentPlayer);
       }
       $params = explode("|", $decisionQueue[2]);
-      CloseDecisionQueue();
+      CloseDecisionQueue(true);
       if ($params[2] == "") $params[2] = 0;
       if ($turn[0] == "B" && count($layers) == 0) { //If a layer is not created
         PlayCardEffect($params[0], $params[1], $params[2], "-", $params[3], $params[4]);
@@ -1245,6 +1244,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
       AddDecisionQueue("SETDQVAR", $player, "0");
       for ($i = 0; $i < 2; ++$i) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS&MYITEMS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to destroy");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZDESTROY", $player, "-");
         AddDecisionQueue("INCDQVARIFNOTPASS", $player, "0");
@@ -2950,7 +2950,7 @@ function IsHeroActive($player)
   return false;
 }
 
-function ProcessMeld($player, $parameter)
+function ProcessMeld($player, $parameter, $additionalCosts="")
 {
   global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts;
   switch ($parameter) {
@@ -3004,5 +3004,5 @@ function ProcessMeld($player, $parameter)
       break;
   }
   ResolveGoAgain($parameter, $player, "MELD");
-  if(GetClassState($player, $CS_AdditionalCosts) == "Both") ResolveGoesWhere("GY", $parameter, $player, "MELD"); //Only needs to be handled specifically here when playing both side of a Meld card
+  if(GetClassState($player, $CS_AdditionalCosts) == "Both" || $additionalCosts == "MELD") ResolveGoesWhere("GY", $parameter, $player, "MELD"); //Only needs to be handled specifically here when playing both side of a Meld card
 }

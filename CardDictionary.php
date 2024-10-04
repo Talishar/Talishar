@@ -1077,7 +1077,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($CombatChain->HasCurrentLink()
     && $CombatChain->AttackCard()->ID() == "MON245"
     && $player == $defPlayer
-    && ($abilityType == "I" || DelimStringContains($cardType, "I"))) {
+    && ($abilityType == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I"))) {
     $restriction = "Exude Confidance";
     $exudeAttack = AttackValue("MON245");
     for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {

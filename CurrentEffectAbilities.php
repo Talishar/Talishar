@@ -130,18 +130,18 @@ function EffectHitEffect($cardID, $from)
       }
       break;
     case "ELE037-2":
-      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT");
+      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", "ELE037");
       break;
     case "ELE047":
     case "ELE048":
     case "ELE049":
-      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT");
+      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID);
       break;
     case "ELE066-TRIGGER":
       if (HasIncreasedAttack()) Draw($mainPlayer);
       break;
     case "ELE092-BUFF":
-      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 3, "ATTACKHIT");
+      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 3, "ATTACKHIT", $cardID);
       break;
     case "ELE151-HIT":
     case "ELE152-HIT":
@@ -158,12 +158,12 @@ function EffectHitEffect($cardID, $from)
       if (IsHeroAttackTarget()) PlayAura("ELE111", $defPlayer);
       break;
     case "ELE173":
-      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT");
+      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID);
       return 1;
     case "ELE195":
     case "ELE196":
     case "ELE197":
-      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT");
+      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID);
       break;
     case "ELE198":
     case "ELE199":
@@ -172,7 +172,7 @@ function EffectHitEffect($cardID, $from)
         if ($cardID == "ELE198") $damage = 3;
         else if ($cardID == "ELE199") $damage = 2;
         else $damage = 1;
-        DamageTrigger($defPlayer, $damage, "ATTACKHIT");
+        DamageTrigger($defPlayer, $damage, "ATTACKHIT", $cardID);
         return 1;
       }
       break;

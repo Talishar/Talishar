@@ -1608,8 +1608,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if (EffectPlayCardRestricted($cardID, $playType, true)) return;
     if (DelimStringContains($playType, "A") || $playType == "AA") {
-      if (!$canPlayAsInstant || GetResolvedAbilityType($cardID, $from) == "AA" || (GetResolvedAbilityType($cardID, $from) == "A" && GetResolvedAbilityName($cardID, $from) == "Action" && $canPlayAsInstant)) {
-        if(!IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) //Meld Card Only instant side
+      if (!$canPlayAsInstant) {
+        if(!IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) //Meld Card Only instant side
+        || (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A" || GetResolvedAbilityName($cardID, $from) == "Action")) 
         {
           --$actionPoints;
         }
@@ -1863,7 +1864,8 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
 {
   global $currentPlayer, $CS_NumActionsPlayed, $CS_AdditionalCosts, $turn, $combatChainState, $CCS_EclecticMag, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
   global $actionPoints, $mainPlayer;
-  if (IsStaticType(CardType($cardID), $from, $cardID)) {
+  $cardType = CardType($cardID);
+  if (IsStaticType($cardType, $from, $cardID)) {
     $names = GetAbilityNames($cardID, $index, $from);
     if ($names != "") {
       $names = str_replace("-,", "", $names);
@@ -1875,10 +1877,10 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   if(HasMeld($cardID)) {
     $names = explode(" // ", CardName($cardID));
     $option = "Both,".$names[0].",".$names[1];
-    if (SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
+    if (DelimStringContains($cardType, "A") && SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
       $option = $names[1];
     } elseif (
-      CardType($cardID) != "I"
+      $cardType != "I"
       && (!$combatChainState[$CCS_EclecticMag]
       && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0
       && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
@@ -2814,8 +2816,9 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play.");
       return;
     }
-    if (count($combatChain) == 0 && (DelimStringContains($definedCardType, "DR") || DelimStringContains($definedCardType, "AR"))) {
+    if ((in_array("FINALIZECHAINLINK", $layers) || count($combatChain) == 0) && (DelimStringContains($definedCardType, "DR") || DelimStringContains($definedCardType, "AR"))) {
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because the combat chain closed.");
+      AddGraveyard($cardID, $currentPlayer, $from, $currentPlayer);
       ContinueDecisionQueue();
       return;
     }

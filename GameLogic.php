@@ -1141,7 +1141,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $type = (count($params) > 2 ? $params[2] : "-");
       if (!CanDamageBePrevented($player, $damage, "DAMAGE", $source)) $lastResult = 0;
       $damage -= intval($lastResult);
-      $damage += CurrentEffectDamageModifiers($player, $source, $type);
       $damage = DealDamageAsync($player, $damage, $type, $source);
       if ($type == "COMBAT") $dqState[6] = $damage;
       else (SetClassState($otherPlayer, $CS_DamageDealt, GetClassState($otherPlayer, $CS_DamageDealt) + $damage));
@@ -2299,6 +2298,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       CleanUpCombatEffects();
       AddPlayerHand($combatChain[0], $mainPlayer, "CC");
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+      CloseCombatChain();
       return $lastResult;
     case "TRUCE":
       if (SearchCurrentTurnEffects("ROS219", $defPlayer, remove: true)){

@@ -415,9 +415,10 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   $damage = ItemTakeDamageAbilities($player, $damage, $type, $source);
   $damage = CharacterTakeDamageAbilities($player, $damage, $type, $preventable);
   if ($damage == 1 && $preventable && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
+  if ($damage > 0) $damage += CurrentEffectDamageModifiers($player, $source, $type);
   $dqVars[0] = $damage;
   if ($type == "COMBAT") $dqState[6] = $damage;
-  PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
+  PrependDecisionQueue("FINALIZEDAMAGE", $player, $damage . "," . $type . "," . $source);
   if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable);
   if ($source == "ARC112") {
     SearchCurrentTurnEffects("DTD134", $otherPlayer, true);
@@ -1751,8 +1752,10 @@ function AttackDestroyedEffects($attackID)
 function CloseCombatChain($chainClosed = "true")
 {
   global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers;
+
+
   if (count($layers) <= LayerPieces() && isPriorityStep($layers[0])) $layers = [];//In case there's another combat chain related layer like defense step
-  PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
+  if (!in_array("FINALIZECHAINLINK", $layers)) PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
   $combatChainState[$CCS_AttackTarget] = "NA";
@@ -2049,7 +2052,7 @@ function ResolveGoAgain($cardID, $player, $from="")
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
     }
     $numActionsPlayed = count($actionsPlayed);
-    if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING") && $actionsPlayed[$numActionsPlayed-2] == "ROS074") $hasGoAgain = true;
+    if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING") && $actionsPlayed[$numActionsPlayed-2] == "ROS074" && DelimStringContains($cardType, "A")) $hasGoAgain = true;
     if ($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
     if (DelimStringContains($cardType, "A")) $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if (DelimStringContains($cardType, "A") && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;

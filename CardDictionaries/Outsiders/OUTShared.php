@@ -787,7 +787,7 @@ function OUTAbilityCost($cardID)
     $characterID = ShiyanaCharacter($char[0], $defPlayer);
     if($char[1] == 2 && $characterID == "OUT091" || $characterID == "OUT092")
     {
-      DamageTrigger($mainPlayer, 1, "DAMAGE", $characterID);
+      DamageTrigger($mainPlayer, 1, "DAMAGE", $characterID, $cardID);
     }
   }
 

@@ -1203,7 +1203,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
       $index = intval($option[1]);
       $card = ($option[0] != "CARDID") ? $source[$index] : $option[1];
-      if ($option[0] == "LAYER" && ($card == "TRIGGER" || $layers[$i] == "MELD")) $card = $source[$index + 2];
+      if ($option[0] == "LAYER" && ($card == "TRIGGER" || $card == "MELD")) $card = $source[$index + 2];
 
       if ($option[0] == "THEIRBANISH") {
         $mod = explode("-", $theirBanish[$index + 1])[0];
