@@ -595,7 +595,7 @@
           }
           LoseHealth($numDiscarded, $defPlayer);
           RevealCards($cards, $defPlayer);//CanReveal checked earlier
-          WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much life.");
+          if($numDiscarded > 0)WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much life.");
           $hand = array_values($hand);
         }
         break;
