@@ -2403,6 +2403,8 @@ function HasTemper($cardID)
     case "HVY648":
     case "AKO004":
     case "AIO003":
+    case "AIO004":
+    case "AIO005":
       return true;
     case "ROS028":
       return true;
