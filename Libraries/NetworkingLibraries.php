@@ -1607,12 +1607,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       ItemPlayAbilities($cardID, $from);
     }
     if (EffectPlayCardRestricted($cardID, $playType, true)) return;
-    if (DelimStringContains($playType, "A") || $playType == "AA") {
-      if (!$canPlayAsInstant || GetResolvedAbilityType($cardID, $from) == "AA" || (GetResolvedAbilityType($cardID, $from) == "A" && GetResolvedAbilityName($cardID, $from) == "Action" && $canPlayAsInstant)) {
-        if(!IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) //Meld Card Only instant side
-        {
-          --$actionPoints;
-        }
+    if (DelimStringContains($playType, "A") || DelimStringContains($playType, "AA")) {
+      if($from == "BANISH") $mod = GetBanishModifier($index);
+      if(!$canPlayAsInstant) --$actionPoints;
+      elseif(!IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A") && $mod != "INST") {
+        --$actionPoints;
       }
       if (DelimStringContains($cardType, "A") && $abilityType == "" && GetResolvedAbilityType($cardID, $from) != "I") {
         IncrementClassState($currentPlayer, $CS_NumNonAttackCards);

@@ -1191,6 +1191,17 @@ function ClearDieRoll($player)
   return SetClassState($player, $CS_DieRoll, 0);
 }
 
+
+function GetBanishModifier($index)
+{
+  global $currentPlayer;
+    $banish = GetBanish($currentPlayer);
+    if ($index < count($banish)) {
+      return explode("-", $banish[$index + 1])[0];
+    }
+  return "";
+}
+
 function CanPlayAsInstant($cardID, $index = -1, $from = "")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
