@@ -396,7 +396,7 @@ function ContinueDecisionQueue($lastResult = "")
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
         } else if ($cardID == "MELD") {
-          ProcessMeld($player, $parameter);
+          ProcessMeld($player, $parameter, $cardID);
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
@@ -2945,7 +2945,7 @@ function IsHeroActive($player)
   return false;
 }
 
-function ProcessMeld($player, $parameter)
+function ProcessMeld($player, $parameter, $additionalCosts="")
 {
   global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts;
   switch ($parameter) {
@@ -2999,5 +2999,5 @@ function ProcessMeld($player, $parameter)
       break;
   }
   ResolveGoAgain($parameter, $player, "MELD");
-  if(GetClassState($player, $CS_AdditionalCosts) == "Both") ResolveGoesWhere("GY", $parameter, $player, "MELD"); //Only needs to be handled specifically here when playing both side of a Meld card
+  if(GetClassState($player, $CS_AdditionalCosts) == "Both" || $additionalCosts == "MELD") ResolveGoesWhere("GY", $parameter, $player, "MELD"); //Only needs to be handled specifically here when playing both side of a Meld card
 }
