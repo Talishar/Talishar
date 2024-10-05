@@ -106,6 +106,11 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         PutItemIntoPlayForPlayer("ROS027", $otherPlayer); //Work around for player to put it in play themselves (Mostly for Blitz LSS precons)
       }
       else{
+        $params = explode("-", $target);
+        if(str_contains($params[0], "AURAS")) {
+          $index = SearchAurasForUniqueID($params[1], $otherPlayer);
+          $target = "THEIRAURAS-" . $index;
+        }
         if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard($currentPlayer, $target));
         if(!SearchCurrentTurnEffects($cardID . "-1", $currentPlayer)) AddCurrentTurnEffect($cardID . "-1", $currentPlayer);  
       }
