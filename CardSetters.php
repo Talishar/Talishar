@@ -221,7 +221,7 @@ function RemoveDiscard($player, $index)
   return $cardID;
 }
 
-function GainResources($player, $amount)
+function GainResources($amount, $player)
 {
   $resources = &GetResources($player);
   $resources[0] += $amount;
