@@ -193,7 +193,7 @@ function DoBoost($player, $cardID, $boostCount=1)
     if($deck->Empty()) { WriteLog("Could not boost"); return; }
     ItemBoostEffects();
     GainActionPoints(CountCurrentTurnEffects("ARC006", $player), $player);
-    GainResources(CountCurrentTurnEffects("AIO004", $player), $player);
+    GainResources($player, CountCurrentTurnEffects("AIO004", $player));
     $boostedCardID = $deck->Top(remove:true);
     SelfBoostEffects($player, $boostedCardID, $cardID);
     CharacterBoostAbilities($player);
