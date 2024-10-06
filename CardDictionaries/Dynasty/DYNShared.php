@@ -143,6 +143,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN155": return CardSubType($attackID) == "Arrow";
     case "DYN165": case "DYN166": case "DYN167": return true;
     case "DYN168": case "DYN169": case "DYN170": return CardSubType($attackID) == "Arrow";
+    case "DYN173": return true;
     case "DYN176": case "DYN177": case "DYN178": return true;
     case "DYN185-BUFF": case "DYN186-BUFF": case "DYN187-BUFF": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     case "DYN185-HIT": case "DYN186-HIT": case "DYN187-HIT": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
