@@ -510,6 +510,7 @@ function EffectBlockModifier($cardID, $index, $from)
     case "MST085":
       return SearchPitchForColor($mainPlayer, 3);
     case "AIO003":
+    case "AIO005":
       return 1;
     default:
       return 0;

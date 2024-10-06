@@ -556,7 +556,10 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       break;
     case "AIO003":
       if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 1;
-      break;
+        break;
+    case "AIO005":
+      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 1;
+        break;
     default:
       break;
   }
@@ -846,6 +849,7 @@ function OnBlockResolveEffects($cardID = "")
       case "ASB006":
       case "TER027":
       case "AIO003":
+      case "AIO005":
       case "ROS028":
       case "ROS072"://flash of brilliance
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);

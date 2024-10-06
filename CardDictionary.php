@@ -554,6 +554,7 @@ function AbilityCost($cardID)
   else if ($set == "ROG") return ROGUEAbilityCost($cardID);
   else if ($set == "ROS") return ROSAbilityCost($cardID);
   else if ($set == "TER") return TERAbilityCost($cardID);
+  else if ($set == "AIO") return AIOAbilityCost($cardID);
   else if ($cardID == "HER117") return 0;
   return CardCost($cardID);
 }
@@ -812,6 +813,7 @@ function HasGoAgain($cardID): bool|int
     case "ROS230":
     case "ROS248":
     case "ROS253":
+    case "AIO004":
       return true;
   }
   $set = CardSet($cardID);
@@ -2403,6 +2405,8 @@ function HasTemper($cardID)
     case "HVY648":
     case "AKO004":
     case "AIO003":
+    case "AIO004":
+    case "AIO005":
       return true;
     case "ROS028":
       return true;
