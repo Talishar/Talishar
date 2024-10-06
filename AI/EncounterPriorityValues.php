@@ -38,6 +38,7 @@
 
 function GetPriority($cardID, $heroID, $type)
 {
+  global $currentPlayer;
   switch($heroID)
   {
     case "CRU046"://Ira

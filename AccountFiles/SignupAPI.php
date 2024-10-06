@@ -4,10 +4,10 @@
 
   $_POST = json_decode(file_get_contents('php://input'), true);
 
-  $username = $_POST["userId"];
-  $email = $_POST["email"];
-  $pwd = $_POST["password"];
-  $pwdRepeat = $_POST["passwordRepeat"];
+  $username = isset($_POST["userId"]) ? $_POST["userId"] : null;
+  $email = isset($_POST["email"]) ? $_POST["email"] : null;
+  $pwd = isset($_POST["password"]) ? $_POST["password"] : null;
+  $pwdRepeat = isset($_POST["passwordRepeat"]) ? $_POST["passwordRepeat"] : null;
 
   SetHeaders();
 

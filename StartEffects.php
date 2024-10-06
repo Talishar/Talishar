@@ -1,7 +1,7 @@
 <?php
 
 include "HostFiles/Redirector.php";
-include_once "./AccountFiles/AccountSessionAPI.php";
+include_once "AccountFiles/AccountSessionAPI.php";
 
 
 array_push($layerPriority, ShouldHoldPriority(1));
