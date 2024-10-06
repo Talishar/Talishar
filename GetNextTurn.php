@@ -921,7 +921,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i < count($events); $i += EventPieces()) {
     $thisEvent = new stdClass();
     $thisEvent->eventType = $events[$i];
-    $thisEvent->eventValue = $events[$i + 1];
+    $thisEvent->eventValue = isset($events[$i + 1]) ? $events[$i + 1] : null;
     array_push($newEvents->eventArray, $thisEvent);
   }
   $response->newEvents = $newEvents;

@@ -399,7 +399,7 @@ function ContinueDecisionQueue($lastResult = "")
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
-          PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, isset($params[3]) ? $params[3] : "-1", isset($params[2]) ? $params[2] : -1);
+          PlayCardEffect($cardID, $params[0], isset($params[1]) ? $params[1] : 0, $target, $additionalCosts, isset($params[3]) ? $params[3] : "-1", isset($params[2]) ? $params[2] : -1);
           ClearDieRoll($player);
         }
       }
@@ -2405,10 +2405,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $params = explode("-", $target);
       $zone = substr($params[0], 0, 5);
       if($zone == "THEIR") {
-        $index = SearchAurasForUniqueID($params[1], $otherPlayer);
+        $index = SearchAurasForUniqueID(isset($params[1]) ? $params[1] : -1, $otherPlayer);
       }
       else {
-        $index = SearchAurasForUniqueID($params[1], $player);
+        $index = SearchAurasForUniqueID(isset($params[1]) ? $params[1] : -1, $player);
         $zone = "MY";
       }
       if($target == "NONE") {
