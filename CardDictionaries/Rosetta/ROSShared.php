@@ -247,10 +247,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS085":
     case "ROS086":
     case "ROS087":
-      if (SearchLayersForPhase("FINALIZECHAINLINK") != -1)
-      {
-        WriteLog("<b><span style=color:009DDF>Playing Electromagnetic Somersault is legal at this time, but playing it after damage will have no effect</span></b>");
-      }
       $minCost = match ($cardID) {
         "ROS085" => 0,
         "ROS086" => 1,

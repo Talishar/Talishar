@@ -1548,6 +1548,17 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   PlayerMacrosCardPlayed();
   //We've paid resources, now pay action points if applicable
   if ($playingCard) {
+    switch ($cardID) {
+      case "ROS085":
+      case "ROS086":
+      case "ROS087":         
+        if (SearchLayersForPhase("FINALIZECHAINLINK") != -1)
+        {
+          WriteLog("Playing " . CardLink($cardID, $cardID) . " is legal at this time, is legal at this time, but playing it after damage will have no effect.");
+        }
+      default:
+        break;
+    }
     if (ActionsThatDoArcaneDamage($cardID, $currentPlayer) || ActionsThatDoXArcaneDamage($cardID)) {
       if(!HasMeld($cardID) || (GetClassState($currentPlayer, $CS_AdditionalCosts) != "Life" && GetClassState($currentPlayer, $CS_AdditionalCosts) != "Null")) {
         AssignArcaneBonus($currentPlayer);

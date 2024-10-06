@@ -203,6 +203,15 @@ function PrependLayer($cardID, $player, $parameter, $target = "-", $additionalCo
   return count($layers);//How far it is from the end
 }
 
+function PopLayer()
+{
+  global $layers;
+  for ($i=0; $i < LayerPieces(); $i++) { 
+    array_pop($layers);
+  }
+  return count($layers);//How far it is from the end
+}
+
 function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-")
 {
   global $layers, $dqState;
