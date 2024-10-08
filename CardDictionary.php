@@ -1622,9 +1622,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MON303":
     case "MON304":
     case "MON305":
-      $maxCost = 3;
-      if ($cardID == "MON304") $maxCost = 2;
-      elseif ($cardID == "MON305") $maxCost = 1;
+      $maxCost = 2;
+      if ($cardID == "MON304") $maxCost = 1;
+      elseif ($cardID == "MON305") $maxCost = 0;
       return SearchDiscard($player, "AA", "", $maxCost) == "";
     case "ELE031":
     case "ELE032":

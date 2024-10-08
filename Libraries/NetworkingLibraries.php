@@ -1716,9 +1716,9 @@ function GetLayerTarget($cardID, $from)
     case "MON303":
     case "MON304":
     case "MON305":
-      $maxCost = 3;
-      if ($cardID == "MON304") $maxCost = 2;
-      elseif ($cardID == "MON305") $maxCost = 1;
+      $maxCost = 2;
+      if ($cardID == "MON304") $maxCost = 1;
+      elseif ($cardID == "MON305") $maxCost = 0;
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:maxCost=" . $maxCost . ";type=AA");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
