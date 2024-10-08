@@ -1279,7 +1279,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $layers;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
   global $CS_DamagePrevention;
   $items = &GetItems($player);
@@ -2474,6 +2474,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("SETDQCONTEXT", $player, "Return an Aura to your hand.", 1);
         MZMoveCard($player, "MYAURAS", "MYHAND", isReveal:true, isSubsequent:true);
       }
+      break;
+    case "ROS076":
+      CleanUpCombatEffects();
+      AddPlayerHand($combatChain[0], $mainPlayer, "CC");
+      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+      CloseCombatChain();
       break;
     case "ROS077":
       WriteLog(CardLink($parameter, $parameter) . " draws a card");

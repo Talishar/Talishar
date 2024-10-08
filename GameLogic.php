@@ -2295,10 +2295,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $lastResult = str_replace(",,", ",", $lastResult);
       return $lastResult;
     case "GONEINAFLASH":
-      CleanUpCombatEffects();
-      AddPlayerHand($combatChain[0], $mainPlayer, "CC");
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
-      CloseCombatChain();
+      AddLayer("TRIGGER", $player, "ROS076");
       return $lastResult;
     case "TRUCE":
       if (SearchCurrentTurnEffects("ROS219", $defPlayer, remove: true)){
