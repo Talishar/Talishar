@@ -1327,6 +1327,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
       case "EVO001":
       case "EVO002":
         if ($from == "DECK") {
+          --$character[$i + 1];
           --$character[$i + 5];
         }
         break;
