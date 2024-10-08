@@ -1032,12 +1032,16 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
     case "OUT188_1":
     case "AAZ004":
     case "DTD229-HIT":
-    case "ROS012":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     case "ELE066-HIT":
       AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");
       break;
+    case "ROS012":
+      if(IsHeroAttackTarget()) {
+        AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      }
+      break;  
     case "ROS119":
       if (CardType($CombatChain->AttackCard()->ID()) == "AA" && ClassContains($CombatChain->AttackCard()->ID(), "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
