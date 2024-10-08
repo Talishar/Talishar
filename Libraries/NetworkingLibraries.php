@@ -2827,7 +2827,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play.");
       return;
     }
-    if ((in_array("FINALIZECHAINLINK", $layers) || count($combatChain) == 0) && (DelimStringContains($definedCardType, "DR") || DelimStringContains($definedCardType, "AR") || DelimStringContains($definedCardType, "AA"))) {
+    if ((in_array("FINALIZECHAINLINK", $layers) || count($combatChain) == 0) && (DelimStringContains($definedCardType, "DR") || DelimStringContains($definedCardType, "AR"))) {
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because the combat chain closed.");
       AddGraveyard($cardID, $currentPlayer, $from, $currentPlayer);
       ContinueDecisionQueue();
