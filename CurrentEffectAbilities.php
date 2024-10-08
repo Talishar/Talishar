@@ -1488,7 +1488,8 @@ function CurrentEffectGrantsGoAgain()
         case "ROS010-GOAGAIN":
           return true;
         case "ROS118":
-          return GetClassState($mainPlayer, $CS_NumAuras) >= 1;
+          if(GetClassState($mainPlayer, $CS_NumAuras) >= 1) return true;
+          else break;
         default:
           break;
       }
