@@ -235,7 +235,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS074":
       $actionsPlayed = explode(",", GetClassState($currentPlayer, $CS_ActionsPlayed));
       $numActions = count($actionsPlayed);    
-      if (count($actionsPlayed) > 1 && TalentContains($actionsPlayed[$numActions-2], "LIGHTNING")) {
+      if (count($actionsPlayed) > 1 && TalentContains($actionsPlayed[$numActions-2], "LIGHTNING", $currentPlayer)) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       return "";

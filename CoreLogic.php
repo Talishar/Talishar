@@ -1666,7 +1666,7 @@ function DoesAttackHaveGoAgain()
     case "ROS074":
       //the last action in numActions is going to be the current chain link
       //so we want the second to last
-      return count($actionsPlayed) > 1 && TalentContains($actionsPlayed[$numActions-2], "LIGHTNING");
+      return count($actionsPlayed) > 1 && TalentContains($actionsPlayed[$numActions-2], "LIGHTNING", $mainPlayer);
     case "ROS089":
     case "ROS090":
     case "ROS091":
@@ -2063,7 +2063,7 @@ function ResolveGoAgain($cardID, $player, $from="")
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
     }
     $numActionsPlayed = count($actionsPlayed);
-    if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING") && $actionsPlayed[$numActionsPlayed-2] == "ROS074" && DelimStringContains($cardType, "A")) $hasGoAgain = true;
+    if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING", $mainPlayer) && $actionsPlayed[$numActionsPlayed-2] == "ROS074" && DelimStringContains($cardType, "A")) $hasGoAgain = true;
     if ($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
     if (DelimStringContains($cardType, "A")) $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if (DelimStringContains($cardType, "A") && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
