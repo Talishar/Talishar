@@ -44,13 +44,16 @@ function ROSEffectAttackModifier($cardID): int
 
 function ROSCombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer;
+  global $mainPlayer, $CS_ActionsPlayed;
+  $actionsPlayed = explode(",", GetClassState($mainPlayer, $CS_ActionsPlayed));
+  $numActions = count($actionsPlayed);    
   return match ($cardID) {
+    "ROS010-GOAGAIN" => TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "A", $mainPlayer), //Arc Lightning giving next action go again.
     "ROS064", "ROS065", "ROS066", "ROS012", "ROS076" => true,
+    "ROS074" => $actionsPlayed[$numActions-2] == "ROS074" && (TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "AA", $mainPlayer)),
     "ROS110", "ROS111", "ROS112" => CardType($attackID) == "AA" && CardCost($attackID) <= 1,
-    "ROS127", "ROS128", "ROS129", "ROS119" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "ROS118" => CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer),
-    "ROS010-GOAGAIN" => TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "A", $mainPlayer), //Arc Lightning giving next action go again
+    "ROS127", "ROS128", "ROS129", "ROS119" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "ROS248" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
     default => false,
   };
@@ -60,7 +63,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_EclecticMag, $CS_DamageDealt, $CS_ArcaneDamageDealt;
-  global $combatChainState, $phase;
+  global $combatChainState, $CS_ActionsPlayed;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "ROS004":
@@ -228,6 +231,13 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS073":
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
+      return "";
+    case "ROS074":
+      $actionsPlayed = explode(",", GetClassState($currentPlayer, $CS_ActionsPlayed));
+      $numActions = count($actionsPlayed);    
+      if (count($actionsPlayed) > 1 && TalentContains($actionsPlayed[$numActions-2], "LIGHTNING")) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
       return "";
     case "ROS075":
       $combatChainState[$CCS_EclecticMag] = 1;
