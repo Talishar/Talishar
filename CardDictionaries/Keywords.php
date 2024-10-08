@@ -22,11 +22,12 @@
 
   function Crank($player, $index, $mainPhase="True")
   {
+    $items = GetItems($player);
     PrependDecisionQueue("OP", $player, "DOCRANK-MainPhase". $mainPhase, 1);
     PrependDecisionQueue("PASSPARAMETER", $player, $index, 1);
     PrependDecisionQueue("NOPASS", $player, "-");
-    PrependDecisionQueue("DOCRANK", $player, "if you want to Crank");
-    PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to Crank", 1);
+    PrependDecisionQueue("DOCRANK", $player, "-");
+    PrependDecisionQueue("SETDQCONTEXT", $player, "Do you want to Crank your " . CardLink($items[$index], $items[$index]) ."?", 1);
   }
 
   function DoCrank($player, $index, $mainPhase=true)
