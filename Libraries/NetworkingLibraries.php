@@ -2827,7 +2827,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play.");
       return;
     }
-    if ((in_array("FINALIZECHAINLINK", $layers) || count($combatChain) == 0) && (DelimStringContains($definedCardType, "DR") || DelimStringContains($definedCardType, "AR"))) {
+    if ((in_array("FINALIZECHAINLINK", $layers) || count($combatChain) == 0) && (DelimStringContains($definedCardType, "DR") || DelimStringContains($definedCardType, "AR") || DelimStringContains($definedCardType, "AA"))) {
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because the combat chain closed.");
       AddGraveyard($cardID, $currentPlayer, $from, $currentPlayer);
       ContinueDecisionQueue();
@@ -2836,14 +2836,14 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if ($definedCardType == "DR" && $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1) {
       $discard = new Discard($currentPlayer);
       $discard->Add($cardID, "LAYER");
-      WriteLog(CardLink($cardID, $cardID) . " does not resolve because dominate is active and there is already a card defending from hand.");
+      WriteLog(CardLink($cardID, $cardID) . " fail to resolve because dominate is active and there is already a card defending from hand.");
       $skipDRResolution = true;
     }
     if (!$isBlock && CardType($cardID) == "AR") {
       if (substr($from, 0, 5) == "THEIR") AddGraveyard($cardID, $otherPlayer, $from, $currentPlayer);
       else AddGraveyard($cardID, $currentPlayer, $from, $currentPlayer);
       if (IsPlayRestricted($cardID, $restriction, $from) && $additionalCosts == "-") {
-        WriteLog(CardLink($cardID, $cardID) . " does not resolve because fail to resolve because the target is no longer a legal target.");
+        WriteLog(CardLink($cardID, $cardID) . " fail to resolve because the target is no longer a legal target.");
         return;
       }
     }
@@ -2923,7 +2923,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($definedCardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
     }
     CurrentEffectAfterPlayOrActivateAbility();
-    if($playText != "FAILED") //Meaning that the layer failed and does not resolve.
+    if($playText != "FAILED") //Meaning that the layer hasn't failed and resolve.
     {
       if ($from != "EQUIP" && $from != "PLAY") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
       else if ($from == "EQUIP" || $from == "PLAY") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
@@ -2953,6 +2953,7 @@ function ProcessAttackTarget()
       return true;
     }
   }
+  if($target[0] == "NA") return true; //Means the target is not legal anymore
   return false;
 }
 

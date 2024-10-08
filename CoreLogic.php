@@ -2543,8 +2543,7 @@ function ClearGameFiles($gameName)
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
 {
-  global $currentPlayer, $layers, $CS_NumCrouchingTigerPlayedThisTurn, $currentTurnEffects;
-  $cardType = CardType($cardID);
+  global $currentPlayer, $CS_NumCrouchingTigerPlayedThisTurn, $currentTurnEffects;
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
