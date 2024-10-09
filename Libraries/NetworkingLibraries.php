@@ -1888,6 +1888,8 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   if(HasMeld($cardID)) {
     $names = explode(" // ", CardName($cardID));
     $option = "Both,".$names[0].",".$names[1];
+
+
     if (DelimStringContains($cardType, "A") && SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
       $option = $names[1];
     } elseif (
@@ -1895,7 +1897,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       && (!$combatChainState[$CCS_EclecticMag]
       && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0
       && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
-      && ($actionPoints < 1 || $currentPlayer != $mainPlayer || $turn[0] == "INSTANT")
+      && ($actionPoints < 1 || $currentPlayer != $mainPlayer || $turn[0] == "INSTANT" || $turn[0] == "A")
       || SearchCurrentTurnEffects("WarmongersWar", $currentPlayer))
     ) {
         $option = $names[1];
