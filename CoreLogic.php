@@ -912,8 +912,8 @@ function ChainLinkResolvedEffects()
       case "CRU052":
         EvaluateCombatChain($totalAttack, $totalBlock);
         for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-          if (!($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack)) {
-            UndestroyCurrentWeapon();
+          if ($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
+            DestroyCurrentWeapon();
           }
         }
         break;
@@ -1682,14 +1682,6 @@ function DoesAttackHaveGoAgain()
     default:
       return false;
   }
-}
-
-function UndestroyCurrentWeapon()
-{
-  global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
-  $index = $combatChainState[$CCS_WeaponIndex];
-  $char = &GetPlayerCharacter($mainPlayer);
-  $char[$index + 7] = "0";
 }
 
 function DestroyCurrentWeapon()
