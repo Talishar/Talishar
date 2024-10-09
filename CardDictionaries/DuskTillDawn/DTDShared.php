@@ -651,6 +651,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
   $health = &GetHealth($player);
   $health = DemiHeroHealth($cardID);
   $banish = new Banish($player);
+  CurrentEffectIntellectModifier(true); ///When you transformm, You are no longer that hero, therefore your intellect reset 🐝
   switch($cardID)
   {
     case "DTD164":

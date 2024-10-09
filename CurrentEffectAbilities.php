@@ -1568,36 +1568,33 @@ function CurrentEffectPreventsDraw($player, $isMainPhase)
   return false;
 }
 
-function CurrentEffectIntellectModifier()
+function CurrentEffectIntellectModifier($remove = false)
 {
-  global $currentTurnEffects, $mainPlayer;
-  $intellectModifier = 0;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
-    if ($currentTurnEffects[$i + 1] == $mainPlayer) {
-      $cardID = substr($currentTurnEffects[$i], 0, 6);
-      switch ($cardID) {
-        case "WTR042":
-        case "ARC161":
-        case "CRU028":
-        case "MON000":
-        case "MON246":
-        case "EVO026":
-        case "EVO426":
-          $intellectModifier += 1;
-          break;
-        case "HVY009":
-          $characters = GetPlayerCharacter($mainPlayer);
-          $intellectModifier -= CharacterIntellect($characters[0]) - substr($currentTurnEffects[$i], -1);
-          break;
-        case "ROS217":
-          $intellectModifier -= 2;
-          break;
-        default:
-          break;
-      }
+    global $currentTurnEffects, $mainPlayer;
+    $intellectModifier = 0;
+    $characters = GetPlayerCharacter($mainPlayer);
+    for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+        if ($currentTurnEffects[$i + 1] == $mainPlayer) {
+            $cardID = substr($currentTurnEffects[$i], 0, 6);
+            $effectIntellectModifiers = [
+                "WTR042" => 1,
+                "ARC161" => 1,
+                "CRU028" => 1,
+                "MON000" => 1,
+                "MON246" => 1,
+                "EVO026" => 1,
+                "EVO426" => 1,
+                "HVY009" => CharacterIntellect($characters[0]) - substr($currentTurnEffects[$i], -1),
+                "ROS217" => -2,
+            ];
+            // Check if the card ID has a corresponding modifier
+            if (isset($effectIntellectModifiers[$cardID])) {
+                if ($remove) RemoveCurrentTurnEffect($i); // Handle transformations (Blasmophet, Dishonor, etc) restarting Intellect
+                else $intellectModifier += $effectIntellectModifiers[$cardID];
+            }
+        }
     }
-  }
-  return $intellectModifier;
+    return $intellectModifier;
 }
 
 function CurrentEffectEndTurnAbilities()
