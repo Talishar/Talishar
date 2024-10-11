@@ -2303,7 +2303,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         for ($i = count($theirAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
           switch ($theirAuras[$i]) {
             case "ROS219":
-              AddLayer("TRIGGER", $defPlayer, "ROS219-2", uniqueID: $theirAuras[$i + 6]);
+              AddLayer("TRIGGER", $defPlayer, $theirAuras[$i], "ROS219-2", uniqueID: $theirAuras[$i + 6]);
               break;
             default:
               break;

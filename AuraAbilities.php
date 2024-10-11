@@ -661,7 +661,7 @@ function OpponentsAuraBeginEndPhaseTriggers()
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     switch ($auras[$i]) {
       case "ROS219":
-        AddLayer("TRIGGER", $defPlayer, "ROS219-1", uniqueID: $auras[$i + 6]);
+        AddLayer("TRIGGER", $defPlayer, $auras[$i], "ROS219-1", uniqueID: $auras[$i + 6]);
         break;
       default:
         break;
