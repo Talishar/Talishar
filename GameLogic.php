@@ -89,7 +89,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "HAND":
           $hand = &GetHand($player);
-          $rv = GetIndices(count($hand));
+          $rv = GetIndices(count($hand), 0, HandPieces());
           break;
         //This one requires CHOOSEMULTIZONECANCEL
         case "HANDPITCH":
@@ -104,7 +104,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MULTIHAND":
           $hand = &GetHand($player);
           if (count($hand) == 0) $rv = "";
-          else $rv = count($hand) . "-" . GetIndices(count($hand));
+          else $rv = count($hand) . "-" . GetIndices(count($hand), 0, HandPieces());
           break;
         case "MULTIBANISH":
           $banish = new Banish($player);
@@ -169,7 +169,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "GY":
           $discard = &GetDiscard($player);
-          $rv = GetIndices(count($discard));
+          $rv = GetIndices(count($discard), 0, DiscardPieces());
           break;
         case "WEAPON":
           $rv = WeaponIndices($player, $player, $subparam);
@@ -181,7 +181,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "MON033-1":
           $soul = &GetSoul($player);
-          $rv = GetIndices(count($soul), 1);
+          $rv = GetIndices(count($soul), 1, SoulPieces());
           break;
         case "MON033-2":
           $rv = CombineSearches(SearchDeck($player, "A", "", $lastResult), SearchDeck($player, "AA", "", $lastResult));
