@@ -376,6 +376,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       array_push($opponentDeckArr, JSONRenderedCard($theirDeck[$i]));
     }
   }
+  $theirBlessingsCount = SearchCount(SearchDiscardForCard($otherPlayer, "ROS223", "ROS224", "ROS225"));
+  if ($theirBlessingsCount > 0) {
+    $response->opponentBlessingsCount = $theirBlessingsCount;
+  }
   $response->opponentDeck = $opponentDeckArr;
 
   $response->opponentCardBack = JSONRenderedCard($TheirCardBack);
@@ -504,11 +508,16 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //My soul count
   $response->playerSoulCount = count($mySoul);
 
+  //my discard
   $playerDiscardArr = array();
   for($i = 0; $i < count($myDiscard); $i += DiscardPieces()) {
     $action = $currentPlayer == $playerID && PlayableFromGraveyard($myDiscard[$i]) && IsPlayable($myDiscard[$i], $turn[0], "GY", $i) ? 36 : 0;
     $border = CardBorderColor($myDiscard[$i], "GY", ($action == 36));
     array_push($playerDiscardArr, JSONRenderedCard($myDiscard[$i], action: $action, borderColor: $border, actionDataOverride: strval($i)));
+  }
+  $myBlessingsCount = SearchCount(SearchDiscardForCard($playerID, "ROS223", "ROS224", "ROS225"));
+  if ($myBlessingsCount > 0) {
+    $response->myBlessingsCount = $myBlessingsCount;
   }
   $response->playerDiscard = $playerDiscardArr;
 
