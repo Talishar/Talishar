@@ -2857,7 +2857,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, $from);
       }
     }
-    if ($index == 0 || $isSpectraTarget) {
+    if ($index <= 0 || $isSpectraTarget) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
       $combatChainState[$CCS_AttackPlayedFrom] = $from;
       $chainClosed = ProcessAttackTarget();
