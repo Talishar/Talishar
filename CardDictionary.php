@@ -1464,7 +1464,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     $restriction = "UPR415";
     return true;
   }
-  if (EffectPlayCardRestricted($cardID, $type) != "") {
+  if (EffectPlayCardRestricted($cardID, $type, $from) != "") {
     $restriction = true;
     return true;
   }

@@ -2067,7 +2067,7 @@ function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase
   return $restriction != "";
 }
 
-function EffectPlayCardRestricted($cardID, $type, $revertNeeded = false)
+function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false)
 {
   global $currentTurnEffects, $currentPlayer;
   $restrictedBy = "";
@@ -2080,7 +2080,7 @@ function EffectPlayCardRestricted($cardID, $type, $revertNeeded = false)
           if (GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) $restrictedBy = "ARC162";
           break;
         case "DTD226":
-          if (CardType($cardID) != "W" && GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "DTD226";
+          if ($from != "PLAY" && $from != "CHAR" && GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "DTD226";
           break;
         case "WarmongersWar":
           // warmongers processing for meld cards handled in AddPrePitchDecisionQueue

@@ -1617,7 +1617,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       CombatChainPlayAbility($cardID);
       ItemPlayAbilities($cardID, $from);
     }
-    if (EffectPlayCardRestricted($cardID, $playType, true)) return;
+    if (EffectPlayCardRestricted($cardID, $playType, $from, true)) return;
     if (DelimStringContains($playType, "A") || DelimStringContains($playType, "AA")) {
       if($from == "BANISH") $mod = GetBanishModifier($index);
       if(!$canPlayAsInstant) --$actionPoints;
