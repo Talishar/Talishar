@@ -751,7 +751,7 @@ function MSTHitEffect($cardID, $from): void
         AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from your hand to discard.", 1);
         AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $defPlayer, "-", 1);
-        AddDecisionQueue("DISCARDCARD", $defPlayer, "HAND-" . $defPlayer, 1);
+        AddDecisionQueue("DISCARDCARD", $defPlayer, "HAND-" . $mainPlayer, 1);
       }
       break;
     case "MST192":
