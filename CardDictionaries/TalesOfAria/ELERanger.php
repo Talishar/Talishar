@@ -9,7 +9,7 @@
     {
       case "ELE031": case "ELE032":
         if(DelimStringContains($additionalCosts, "LIGHTNING")) { $rv .= "The next attack gains go again."; AddCurrentTurnEffect("ELE031-1", $currentPlayer); }
-        if(DelimStringContains($additionalCosts, "ICE")) { if($rv != "") $rv .= " "; $rv .= "The opponent gets a Frostbite."; PlayAura("ELE111", $otherPlayer); }
+        if(DelimStringContains($additionalCosts, "ICE")) { if($rv != "") $rv .= " "; $rv .= "The opponent gets a Frostbite."; PlayAura("ELE111", $otherPlayer, effectController: $currentPlayer); }
         return $rv;
       case "ELE033":
         LoadArrow($currentPlayer);
@@ -125,7 +125,7 @@
       case "ELE016": case "ELE017": case "ELE018": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE019": case "ELE020": case "ELE021": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE022": case "ELE023": case "ELE024": AddCurrentTurnEffect($cardID, $player); break;
-      case "ELE025": case "ELE026": case "ELE027": PlayAura("ELE111", $otherPlayer); break;
+      case "ELE025": case "ELE026": case "ELE027": PlayAura("ELE111", $otherPlayer, effectController: $player); break;
       case "ELE028": case "ELE029": case "ELE030": PlayAura("WTR075", $player); break;
       case "ELE035": AddCurrentTurnEffect($cardID . "-2", $player); break;
       case "ELE038": case "ELE039": case "ELE040": AddCurrentTurnEffect($cardID, $otherPlayer); break;

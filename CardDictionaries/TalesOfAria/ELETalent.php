@@ -100,7 +100,7 @@
         AddCurrentTurnEffect($cardID, $otherPlayer);
         return "";
       case "ELE145":
-        PlayAura("ELE111", $otherPlayer);
+        PlayAura("ELE111", $otherPlayer, effectController: $currentPlayer);
         return "";
       case "ELE147":
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_to_pay_2_or_you_lose_and_can't_gain_go_again");
@@ -220,7 +220,7 @@
         if(IsHeroAttackTarget()) PayOrDiscard($defPlayer, 2);
         break;
       case "ELE157": case "ELE158": case "ELE159":
-        if(IsHeroAttackTarget()) PlayAura("ELE111", $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura("ELE111", $defPlayer, effectController: $mainPlayer);
         break;
       default: break;
     }

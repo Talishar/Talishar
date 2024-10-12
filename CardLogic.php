@@ -1688,7 +1688,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "EVR120":
     case "UPR102":
     case "UPR103":
-      PlayAura("ELE111", $otherPlayer);
+      PlayAura("ELE111", $otherPlayer, effectController: $player);
       break;
     case "EVR131":
     case "EVR132":

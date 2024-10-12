@@ -45,12 +45,12 @@
 
   function ELEGuardianHitEffect($cardID)
   {
-    global $defPlayer, $combatChainState, $CCS_AttackFused;
+    global $defPlayer, $mainPlayer, $combatChainState, $CCS_AttackFused;
     switch($cardID)
     {
       case "ELE003":
         if(IsHeroAttackTarget()) {
-          PlayAura("ELE111", $defPlayer);
+          PlayAura("ELE111", $defPlayer, effectController: $mainPlayer);
         }
         break;
       case "ELE004":
