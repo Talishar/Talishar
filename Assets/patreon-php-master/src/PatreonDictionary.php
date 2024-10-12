@@ -349,7 +349,7 @@ enum PatreonCampaign : string
       case "14": return "82,83";
       case "15": return "84";
       case "16": return "87";
-      case "7198186": return "1,2,3,4,5,6,7,8";
+      case "7198186": return "1,2,3,4,5,6,7,8,82,83";
       case "7579026": return "9";
       case "7329070": return "10,11,12,13,14,15,16";
       case "1787491": return "17,18,19,20";
@@ -379,7 +379,7 @@ enum PatreonCampaign : string
       case "279086": return "56";
       case "11184392": return "63";
       case "11481720": return "65";
-      case "9408649": return "1,2,3,4,5,6,7,8";
+      case "9408649": return "1,2,3,4,5,6,7,8,82,83";
       case "9734205": return "68,69";
       case "9574942": return "71";
       case "11561507": return "72";
@@ -394,6 +394,3 @@ enum PatreonCampaign : string
     }
   }
 }
-
-
-?>
