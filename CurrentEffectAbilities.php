@@ -587,7 +587,7 @@ function OnAttackEffects($attack)
         case "ELE086":
         case "ELE087":
           if ($attackType == "AA") {
-            DealArcane(1, 0, "PLAYCARD", $attack, true);
+            AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $attack);
             $remove = true;
           }
           break;

@@ -1585,6 +1585,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $player, 2, 1);
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
+    case "ELE004":
+      for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) if ($combatChain[$i] == $player) PlayAura("ELE111", $player);
+      break;
     case "ELE025":
     case "ELE026":
     case "ELE027":
@@ -1601,8 +1604,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ELE063":
       PlayAura("ELE110", $player);
       break;
-    case "ELE004":
-      for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) if ($combatChain[$i] == $player) PlayAura("ELE111", $player);
+    case "ELE085":
+    case "ELE086":
+    case "ELE087":
+      DealArcane(1, 0, "PLAYCARD", $target, true);
       break;
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
