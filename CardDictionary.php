@@ -201,7 +201,7 @@ function CharacterHealth($cardID)
   if ($set != "ROG" && $set != "DUM") return GeneratedCharacterHealth($cardID);
   switch ($cardID) {
     case "DUMMY":
-      return 200000;
+      return 9999;
     case "ROGUE001":
       return 6;
     case "ROGUE003":

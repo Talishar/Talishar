@@ -710,9 +710,10 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
     WriteLog(CardLink("CRU140", "CRU140") . " prevented Player " . $player . " from gaining " . $amount . " life");
     return false;
   }
-  if (!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
+  $p2Char = &GetPlayerCharacter(2);//Use only for single player for the dummy to be "invincible"
+  if (!$silent && $p2Char[0] != "DUMMY") WriteLog("Player " . $player . " gained " . $amount . " life");
   IncrementClassState($player, $CS_HealthGained, $amount);
-  $health += $amount;
+  if($p2Char[0] != "DUMMY") $health += $amount;
   LogHealthGainedStats($player, $amount);
 
   if ($player == $mainPlayer) {
@@ -745,9 +746,10 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
 function PlayerLoseHealth($player, $amount)
 {
   global $CS_HealthLost;
+  $p2Char = &GetPlayerCharacter(2);//Use only for single player for the dummy to be "invincible"
   $health = &GetHealth($player);
   $amount = AuraLoseHealthAbilities($player, $amount);
-  $health -= $amount;
+  if($p2Char[0] != "DUMMY") $health -= $amount;
   IncrementClassState($player, $CS_HealthLost, $amount);
   if ($health <= 0) {
     PlayerWon(($player == 1 ? 2 : 1));
