@@ -51,6 +51,16 @@ if (CardSet($p2Char[0]) == "ROG") {
   ROGUEPowerStart();
 }
 
+//Dummy - Single Player
+if ($p2Char[0] == "DUMMY") {
+  $cards = ["CRU109", "ARC029", "ARC022", "EVR070", "ARC010", "ARC026"];
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
+}
+
 //CR 2.0 4.1.5b Meta-static abilities affecting deck composition
 //Dash
 $p1IsDash = $p1Char[0] == "ARC001" || $p1Char[0] == "ARC002";
