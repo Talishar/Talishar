@@ -496,7 +496,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
         PummelHit();
       }
     }
-    AuraDamageTakenAbilities($player, $damage);
+    AuraDamageTakenAbilities($player, $damage, $source);
     ItemDamageTakenAbilities($player, $damage);
     CharacterDamageTakenAbilities($player, $damage);
     AuraDamageDealtAbilities($otherPlayer, $damage);
@@ -2483,7 +2483,7 @@ function HasAttackName($name)
 
 function HitEffectsArePrevented($cardID)
 {
-  global $combatChainState, $CCS_ChainLinkHitEffectsPrevented, $mainPlayer, $layers, $defPlayer;
+  global $combatChainState, $CCS_ChainLinkHitEffectsPrevented, $mainPlayer, $defPlayer;
   if (CardType($cardID) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return true;
   if (SearchCurrentTurnEffects("MST079-HITPREVENTION", $defPlayer)) return true;
   if ($combatChainState[$CCS_ChainLinkHitEffectsPrevented]) SearchCurrentTurnEffects("OUT108", $mainPlayer, true);
