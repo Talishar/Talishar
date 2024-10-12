@@ -1626,6 +1626,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       && (GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST")) {
         --$actionPoints;
       }
+      elseif(GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST" && GetAbilityNames($cardID, from: $from) != "") {
+        --$actionPoints;
+      }
       if (DelimStringContains($cardType, "A") && $abilityType == "" && GetResolvedAbilityType($cardID, $from) != "I") {
         IncrementClassState($currentPlayer, $CS_NumNonAttackCards);
         if (ClassContains($cardID, "WIZARD", $currentPlayer)) {
