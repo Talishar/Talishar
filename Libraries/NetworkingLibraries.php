@@ -1623,7 +1623,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if(!$canPlayAsInstant) --$actionPoints;
       elseif(GetResolvedAbilityType($cardID, $from) == "AA") --$actionPoints;
       elseif(!$canPlayAsInstant && !IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) 
-      || (GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST")) {
+      && (GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST")) {
         --$actionPoints;
       }
       if (DelimStringContains($cardType, "A") && $abilityType == "" && GetResolvedAbilityType($cardID, $from) != "I") {
