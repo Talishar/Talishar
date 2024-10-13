@@ -289,7 +289,7 @@ function AuraDestroyAbility($player, $index, $isToken)
       if (!$isToken && $auras[$index + 5] > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
         $EffectContext = $cardID;
         --$auras[$index + 5];
-        PlayAura("MON104", $player);
+        AddLayer("TRIGGER", $player, $auras[$index], "-", "-", $auras[$index + 6]);
       }
       break;
     default:
