@@ -401,7 +401,6 @@ function ContinueDecisionQueue($lastResult = "")
           $turn[0] = "A";
           $currentPlayer = $mainPlayer;
           BeginningReactionStepEffects();
-          ProcessDecisionQueue();
         } else if ($cardID == "TRIGGER") {
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
