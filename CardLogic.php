@@ -400,6 +400,8 @@ function ContinueDecisionQueue($lastResult = "")
         } else if ($cardID == "DEFENDSTEP") {
           $turn[0] = "A";
           $currentPlayer = $mainPlayer;
+          BeginningReactionStepEffects();
+          ProcessDecisionQueue();
         } else if ($cardID == "TRIGGER") {
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
@@ -1285,7 +1287,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
-  global $CS_DamagePrevention;
+  global $CS_DamagePrevention, $chainLinks;
   $items = &GetItems($player);
   $auras = &GetAuras($player);
   $parameter = ShiyanaCharacter($parameter);
@@ -1971,6 +1973,32 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       WriteLog(CardLink("OUT000", "OUT000") . " created a " . CardLink($auraCreated, $auraCreated));
       PlayAura($auraCreated, $otherPlayer, effectController: $player);
+      break;
+    case "OUT050":
+      $cardsToBanish = array();
+      for ($i = 0; $i < count($chainLinks); $i++) {
+        if (count($chainLinks[$i]) == ChainLinksPieces()) continue;
+        $defendingCards = GetDefendingCardsFromCombatChainLink($chainLinks[$i], $defPlayer);
+        if (count($defendingCards) > 0) {
+          $randomIndex = GetRandom(0, count($defendingCards) - 1);
+          array_push($cardsToBanish, $defendingCards[$randomIndex]);
+        }
+      }
+      $defendingCards = GetChainLinkCards($defPlayer);
+      if ($defendingCards != "") {
+        $defendingCards = explode(",", $defendingCards);
+        $randomIndex = GetRandom(0, count($defendingCards) - 1);
+        AddDecisionQueue("PASSPARAMETER", $defPlayer, $defendingCards[$randomIndex]);
+        AddDecisionQueue("REMOVECOMBATCHAIN", $defPlayer, "-", 1);
+        array_push($cardsToBanish, $combatChain[$defendingCards[$randomIndex]]);
+      }
+      for ($i = 0; $i < count($cardsToBanish); $i++)
+        BanishCardForPlayer($cardsToBanish[$i], $defPlayer, "CC");
+      for ($i = 0; $i < count($cardsToBanish); $i++) {
+        AddDecisionQueue("PASSPARAMETER", $defPlayer, $cardsToBanish[$i]);
+        AddDecisionQueue("REMOVECOMBATCHAIN", $defPlayer, "-", 1);
+        AddDecisionQueue("MULTIBANISH", $defPlayer, "CC,-", 1);
+      }
       break;
     case "OUT091":
     case "OUT092":

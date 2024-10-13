@@ -192,7 +192,6 @@
     }
     else {
       $turn[0] = "A";
-      $currentPlayer = $mainPlayer;
       for($i=count($layers)-LayerPieces(); $i >= 0; $i-=LayerPieces())
       {
         if($layers[$i] == "DEFENDSTEP" || ($layers[$i] == "LAYER" && $layers[$i+2] == "PHANTASM"))

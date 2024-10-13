@@ -913,7 +913,6 @@ function Pass(&$turn, &$currentPlayer)
   } else if ($turn[0] == "B") {
     AddLayer("DEFENDSTEP", $mainPlayer, "-");
     OnBlockResolveEffects();
-    BeginningReactionStepEffects();
     ProcessDecisionQueue();
   } else if ($turn[0] == "A") {
     if (count($turn) >= 3 && $turn[2] == "D") {

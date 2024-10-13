@@ -955,35 +955,12 @@ function GetDefendingCardsFromCombatChainLink($chainLink, $defPlayer)
 
 function BeginningReactionStepEffects()
 {
-  global $combatChain, $defPlayer, $chainLinks, $CombatChain;
+  global $combatChain, $mainPlayer, $CombatChain;
   if (!$CombatChain->HasCurrentLink()) return "";
   switch ($combatChain[0]) {
     case "OUT050":
       if (ComboActive()) {
-        $cardsToBanish = array();
-        for ($i = 0; $i < count($chainLinks); $i++) {
-          if (count($chainLinks[$i]) == ChainLinksPieces()) continue;
-          $defendingCards = GetDefendingCardsFromCombatChainLink($chainLinks[$i], $defPlayer);
-          if (count($defendingCards) > 0) {
-            $randomIndex = GetRandom(0, count($defendingCards) - 1);
-            array_push($cardsToBanish, $defendingCards[$randomIndex]);
-          }
-        }
-        $defendingCards = GetChainLinkCards($defPlayer);
-        if ($defendingCards != "") {
-          $defendingCards = explode(",", $defendingCards);
-          $randomIndex = GetRandom(0, count($defendingCards) - 1);
-          AddDecisionQueue("PASSPARAMETER", $defPlayer, $defendingCards[$randomIndex]);
-          AddDecisionQueue("REMOVECOMBATCHAIN", $defPlayer, "-", 1);
-          array_push($cardsToBanish, $combatChain[$defendingCards[$randomIndex]]);
-        }
-        for ($i = 0; $i < count($cardsToBanish); $i++)
-          BanishCardForPlayer($cardsToBanish[$i], $defPlayer, "CC");
-        for ($i = 0; $i < count($cardsToBanish); $i++) {
-          AddDecisionQueue("PASSPARAMETER", $defPlayer, $cardsToBanish[$i]);
-          AddDecisionQueue("REMOVECOMBATCHAIN", $defPlayer, "-", 1);
-          AddDecisionQueue("MULTIBANISH", $defPlayer, "CC,-", 1);
-        }
+        AddLayer("TRIGGER", $mainPlayer, "OUT050");
       }
   }
 }
