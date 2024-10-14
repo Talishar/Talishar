@@ -1634,7 +1634,7 @@ function CurrentEffectEndTurnAbilities()
           $remove = true;
         }
         break;
-      case "EVO013": case "ROS246":
+      case "EVO013": case "ROS246": case "ELE111":
         AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i + 1]);
         break;
       default:
@@ -2135,6 +2135,7 @@ function AdministrativeEffect($effectID)
   switch ($cardID) {
     case "EVO013":
     case "ROS246":
+    case "ELE111":
       return true;
     default:
       return false;
