@@ -2527,6 +2527,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       WriteLog(CardLink($parameter, $parameter) . " draws a card");
       Draw($player);
       break;
+    case "ROS079":
+    case "ROS080":
+    case "ROS081":
+      MZChooseAndBounce($mainPlayer, "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T", may: true, context: "Choose an aura to return to its controller's hand");
+      break;
     case "ROS114":
       PummelHit($otherPlayer);
       Draw($player);
