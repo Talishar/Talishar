@@ -423,10 +423,20 @@ function SearchCharacterForCard($player, $cardID)
 
 function SearchCharacterAliveSubtype($player, $subtype)
 {
-  global $combatChain;
+  global $combatChain, $currentTurnEffects;
   $character = &GetPlayerCharacter($player);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i + 1] != 0 && subtypecontains($character[$i], $subtype, $player)) return true;
+    if ($character[$i + 1] != 0 && subtypecontains($character[$i], $subtype, $player)) {
+      return true;
+    }
+    if ($character[$i] == "ELE111") {
+      $slot = "";
+      for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectsPieces()) {
+        $effect = explode(",", $currentTurnEffects[$j]);
+        if ($effect[0] == "ELE111-" . $character[$i + 11]) $slot = $effect[1];
+      }
+      if ($subtype == $slot) return true;
+    }
   }
   return false;
 }

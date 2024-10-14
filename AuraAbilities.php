@@ -722,6 +722,25 @@ function AuraBeginEndPhaseAbilities()
     if ($remove == 1) DestroyAura($mainPlayer, $i);
   }
   $auras = array_values($auras);
+  // check auras in the equip slot
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  for ($i = count($mainCharacter) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
+    $remove = 0;
+    switch ($mainCharacter[$i]) {
+      case "ELE111":
+        FrostHexEndTurnAbility($mainPlayer);
+        $remove = 1;
+        break;
+      default:
+        break;
+      }
+    if ($remove == 1){
+      $uniqueID = $mainCharacter[$i + 11];
+      $index = SearchCharacterForUniqueID($uniqueID, $mainPlayer);
+      RemoveCharacter($mainPlayer, $index);
+    }
+  }
+  $mainCharacter = array_values($mainCharacter);
 }
 
 function ChannelTalent($index, $talent)

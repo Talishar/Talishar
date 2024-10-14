@@ -697,6 +697,10 @@ function CharacterCostModifier($cardID, $from, $cost)
       case "MST026":
         if (CardNameContains($cardID, "Spectral Shield", $currentPlayer) && GetClassState($currentPlayer, $CS_NumSpectralShieldAttacks) == 0) --$modifier;
         break;
+      case "ELE111": //Jarl's frostbites
+        $modifier += 1;
+        AddLayer("TRIGGER", $currentPlayer, "ELE111", "-", "EQUIP", $char[$i + 11]);
+        break;
       default:
         break;
     }
@@ -752,6 +756,7 @@ function EquipEquipment($player, $card, $slot = "")
   }
   if ($card == "EVO013") AddCurrentTurnEffect("EVO013-" . $uniqueID . "," . $slot, $player);
   if ($card == "ROS246") AddCurrentTurnEffect("ROS246-" . $uniqueID . ",Base," . $slot, $player);
+  if ($card == "ELE111") AddCurrentTurnEffect("ELE111-" . $uniqueID . "," . $slot, $player);
 }
 
 function EquipWeapon($player, $card)
@@ -1329,6 +1334,11 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         if ($from == "DECK") {
           --$character[$i + 1];
           --$character[$i + 5];
+        }
+        break;
+      case "AJV001":
+        if (TalentContains($cardID, "ICE", $currentPlayer)) {
+          AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
       case "ROGUE017":
