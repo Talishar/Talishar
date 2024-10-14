@@ -2601,8 +2601,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("BRUTUS", $player, $target, 1);
       break;
-    // case "AJV001":
-    case "ELE001":
+    case "AJV001":
       AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $otherPlayer, "-");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose an exposed equipment zone to frostbite", 1);
       AddDecisionQueue("BUTTONINPUT", $player, "<-", 1);
