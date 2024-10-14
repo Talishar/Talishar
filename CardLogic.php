@@ -1619,9 +1619,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       GiveAttackGoAgain();
       DestroyAuraUniqueID($player, $uniqueID);
       break;
-    case "ELE111":
-      DestroyAuraUniqueID($player, $uniqueID);
-      break;
+      case "ELE111":
+        DestroyAuraUniqueID($player, $uniqueID);
+        if ($additionalCosts == "EQUIP") {
+          $index = SearchCharacterForUniqueID($uniqueID, $player);
+          RemoveCharacter($player, $index);
+        }
+        else DestroyAuraUniqueID($player, $uniqueID);
+        break;
     case "ELE174":
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("YESNO", $player, "destroy_".Cardlink($parameter, $parameter)."_to_have_the_attack_deal_1_damage");
@@ -2595,6 +2600,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose which hero win the clash", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("BRUTUS", $player, $target, 1);
+      break;
+    // case "AJV001":
+    case "ELE001":
+      AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $otherPlayer, "-");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose an exposed equipment zone to frostbite", 1);
+      AddDecisionQueue("BUTTONINPUT", $player, "<-", 1);
+      AddDecisionQueue("FROSTEXPOSED", $otherPlayer, "<-", 1);
       break;
     default:
       break;

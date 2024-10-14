@@ -3937,6 +3937,7 @@ function IsModular($cardID)
   switch ($cardID) {
     case "EVO013":
     case "ROS246":
+    case "ELE111": //frostbites for Jarl
       return true;
     default:
       return false;
