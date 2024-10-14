@@ -203,15 +203,6 @@ function PrependLayer($cardID, $player, $parameter, $target = "-", $additionalCo
   return count($layers);//How far it is from the end
 }
 
-function PopLayer()
-{
-  global $layers;
-  for ($i=0; $i < LayerPieces(); $i++) { 
-    array_pop($layers);
-  }
-  return count($layers);//How far it is from the end
-}
-
 function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-")
 {
   global $layers, $dqState;
@@ -223,6 +214,7 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
   array_unshift($layers, $parameter);
   array_unshift($layers, $player);
   array_unshift($layers, $cardID);
+  // doesn't allow ordering of runechants, but prevents things from breaking
   if ($cardID == "TRIGGER") {
     $orderableIndex = intval($dqState[8]);
     if ($orderableIndex == -1) $dqState[8] = 0;
@@ -285,7 +277,7 @@ function ProcessDecisionQueue()
   ContinueDecisionQueue("");
 }
 
-function CloseDecisionQueue($skip=false)
+function CloseDecisionQueue()
 {
   global $turn, $decisionQueue, $dqState, $combatChain, $currentPlayer, $mainPlayer;
   $dqState[0] = "0";
@@ -296,7 +288,7 @@ function CloseDecisionQueue($skip=false)
   $dqState[5] = "-"; //Clear Decision queue multizone indices
   $dqState[6] = "0"; //Damage dealt
   $dqState[7] = "0"; //Target
-  if(!$skip) $dqState[8] = "-1"; //Orderable index (what layer after which triggers can be reordered)
+  $dqState[8] = "-1"; //Orderable index (what layer after which triggers can be reordered)
   $decisionQueue = [];
   if (($turn[0] == "D" || $turn[0] == "A") && count($combatChain) == 0) {
     $currentPlayer = $mainPlayer;
@@ -400,17 +392,15 @@ function ContinueDecisionQueue($lastResult = "")
         } else if ($cardID == "DEFENDSTEP") {
           $turn[0] = "A";
           $currentPlayer = $mainPlayer;
-          BeginningReactionStepEffects();
-          ProcessDecisionQueue();
         } else if ($cardID == "TRIGGER") {
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
         } else if ($cardID == "MELD") {
-          ProcessMeld($player, $parameter, $cardID);
+          ProcessMeld($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
-          PlayCardEffect($cardID, $params[0], isset($params[1]) ? $params[1] : 0, $target, $additionalCosts, isset($params[3]) ? $params[3] : "-1", isset($params[2]) ? $params[2] : -1);
+          PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, isset($params[3]) ? $params[3] : "-1", isset($params[2]) ? $params[2] : -1);
           ClearDieRoll($player);
         }
       }
@@ -421,7 +411,7 @@ function ContinueDecisionQueue($lastResult = "")
         BuildMyGamestate($currentPlayer);
       }
       $params = explode("|", $decisionQueue[2]);
-      CloseDecisionQueue(true);
+      CloseDecisionQueue();
       if ($params[2] == "") $params[2] = 0;
       if ($turn[0] == "B" && count($layers) == 0) { //If a layer is not created
         PlayCardEffect($params[0], $params[1], $params[2], "-", $params[3], $params[4]);
@@ -1034,16 +1024,12 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
     case "OUT188_1":
     case "AAZ004":
     case "DTD229-HIT":
+    case "ROS012":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     case "ELE066-HIT":
       AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");
       break;
-    case "ROS012":
-      if(IsHeroAttackTarget()) {
-        AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
-      }
-      break;  
     case "ROS119":
       if (CardType($CombatChain->AttackCard()->ID()) == "AA" && ClassContains($CombatChain->AttackCard()->ID(), "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
@@ -1259,7 +1245,6 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
       AddDecisionQueue("SETDQVAR", $player, "0");
       for ($i = 0; $i < 2; ++$i) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS&MYITEMS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to destroy");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZDESTROY", $player, "-");
         AddDecisionQueue("INCDQVARIFNOTPASS", $player, "0");
@@ -1285,9 +1270,9 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $layers;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
-  global $CS_DamagePrevention, $chainLinks;
+  global $CS_DamagePrevention;
   $items = &GetItems($player);
   $auras = &GetAuras($player);
   $parameter = ShiyanaCharacter($parameter);
@@ -1434,12 +1419,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "CRU051":
     case "CRU052":
-      EvaluateCombatChain($totalAttack, $totalBlock);
-      for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-        if ($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
-          DestroyCurrentWeapon();
-        }
-      }
+      DestroyCurrentWeapon();
       break;
     case "CRU075":
       $index = SearchAurasForUniqueID($uniqueID, $player);
@@ -1587,9 +1567,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $player, 2, 1);
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
-    case "ELE004":
-      for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) if ($combatChain[$i] == $player) PlayAura("ELE111", $player);
-      break;
     case "ELE025":
     case "ELE026":
     case "ELE027":
@@ -1606,10 +1583,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ELE063":
       PlayAura("ELE110", $player);
       break;
-    case "ELE085":
-    case "ELE086":
-    case "ELE087":
-      DealArcane(1, 0, "PLAYCARD", $target, true);
+    case "ELE004":
+      for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) if ($combatChain[$i] == $player) PlayAura("ELE111", $player);
       break;
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
@@ -1620,7 +1595,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ELE111":
-      DestroyAuraUniqueID($player, $uniqueID);
+      if ($additionalCosts == "EQUIP") {
+        $index = SearchCharacterForUniqueID($uniqueID, $player);
+        RemoveCharacter($player, $index);
+      }
+      else DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ELE174":
       $index = FindCharacterIndex($player, $parameter);
@@ -1690,7 +1669,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "EVR120":
     case "UPR102":
     case "UPR103":
-      PlayAura("ELE111", $otherPlayer, effectController: $player);
+      PlayAura("ELE111", $otherPlayer);
       break;
     case "EVR131":
     case "EVR132":
@@ -1973,32 +1952,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       WriteLog(CardLink("OUT000", "OUT000") . " created a " . CardLink($auraCreated, $auraCreated));
       PlayAura($auraCreated, $otherPlayer, effectController: $player);
-      break;
-    case "OUT050":
-      $cardsToBanish = array();
-      for ($i = 0; $i < count($chainLinks); $i++) {
-        if (count($chainLinks[$i]) == ChainLinksPieces()) continue;
-        $defendingCards = GetDefendingCardsFromCombatChainLink($chainLinks[$i], $defPlayer);
-        if (count($defendingCards) > 0) {
-          $randomIndex = GetRandom(0, count($defendingCards) - 1);
-          array_push($cardsToBanish, $defendingCards[$randomIndex]);
-        }
-      }
-      $defendingCards = GetChainLinkCards($defPlayer);
-      if ($defendingCards != "") {
-        $defendingCards = explode(",", $defendingCards);
-        $randomIndex = GetRandom(0, count($defendingCards) - 1);
-        AddDecisionQueue("PASSPARAMETER", $defPlayer, $defendingCards[$randomIndex]);
-        AddDecisionQueue("REMOVECOMBATCHAIN", $defPlayer, "-", 1);
-        array_push($cardsToBanish, $combatChain[$defendingCards[$randomIndex]]);
-      }
-      for ($i = 0; $i < count($cardsToBanish); $i++)
-        BanishCardForPlayer($cardsToBanish[$i], $defPlayer, "CC");
-      for ($i = 0; $i < count($cardsToBanish); $i++) {
-        AddDecisionQueue("PASSPARAMETER", $defPlayer, $cardsToBanish[$i]);
-        AddDecisionQueue("REMOVECOMBATCHAIN", $defPlayer, "-", 1);
-        AddDecisionQueue("MULTIBANISH", $defPlayer, "CC,-", 1);
-      }
       break;
     case "OUT091":
     case "OUT092":
@@ -2456,10 +2409,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $params = explode("-", $target);
       $zone = substr($params[0], 0, 5);
       if($zone == "THEIR") {
-        $index = SearchAurasForUniqueID(isset($params[1]) ? $params[1] : -1, $otherPlayer);
+        $index = SearchAurasForUniqueID($params[1], $otherPlayer);
       }
       else {
-        $index = SearchAurasForUniqueID(isset($params[1]) ? $params[1] : -1, $player);
+        $index = SearchAurasForUniqueID($params[1], $player);
         $zone = "MY";
       }
       if($target == "NONE") {
@@ -2517,12 +2470,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         MZMoveCard($player, "MYAURAS", "MYHAND", isReveal:true, isSubsequent:true);
       }
       break;
-    case "ROS076":
-      CleanUpCombatEffects();
-      AddPlayerHand($combatChain[0], $mainPlayer, "CC");
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
-      CloseCombatChain();
-      break;
     case "ROS077":
       WriteLog(CardLink($parameter, $parameter) . " draws a card");
       Draw($player);
@@ -2548,17 +2495,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $numRunechantsCreated = match ($parameter) {"ROS152" => 3, "ROS153" => 2, "ROS154" => 1};
       PlayAura("ARC112", $player, $numRunechantsCreated);
       break;
-    case "ROS219":
-      if($target == "ROS219-1") {
+    case "ROS219-1":
       WriteLog("Congrats! You didn't kill each other!🤝");
       DestroyAuraUniqueID($defPlayer, $uniqueID);
       GainHealth(3, $defPlayer);
       GainHealth(3, $mainPlayer);
-      }
-      else {
-        DestroyAuraUniqueID($defPlayer, $uniqueID);
-        Draw($defPlayer, false);
-      }
+      break;
+    case "ROS219-2":
+      DestroyAuraUniqueID($defPlayer, $uniqueID);
+      Draw($defPlayer, false);
       break;
     case "TER006":
       $index = FindCharacterIndex($mainPlayer, "TER006");
@@ -2583,18 +2528,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("WRITELOG", $defPlayer, "<0> was banished.", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $defPlayer, "AIO003", 1);
       break;
-    case "AIO005":
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
-      AddDecisionQueue("BUTTONINPUT", $player, "0,1");
-      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $player, $parameter, 1);
-      break;
     case "JDG024":
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=C&THEIRCHAR:type=C", 1);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose which hero win the clash", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("BRUTUS", $player, $target, 1);
+      break;
+    case "AJV001":
+      AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $otherPlayer, "-");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose an exposed equipment zone to frostbite", 1);
+      AddDecisionQueue("BUTTONINPUT", $player, "<-", 1);
+      AddDecisionQueue("FROSTEXPOSED", $otherPlayer, "<-", 1);
       break;
     default:
       break;
@@ -3010,7 +2954,7 @@ function IsHeroActive($player)
   return false;
 }
 
-function ProcessMeld($player, $parameter, $additionalCosts="")
+function ProcessMeld($player, $parameter)
 {
   global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts;
   switch ($parameter) {
@@ -3064,5 +3008,5 @@ function ProcessMeld($player, $parameter, $additionalCosts="")
       break;
   }
   ResolveGoAgain($parameter, $player, "MELD");
-  if(GetClassState($player, $CS_AdditionalCosts) == "Both" || $additionalCosts == "MELD") ResolveGoesWhere("GY", $parameter, $player, "MELD"); //Only needs to be handled specifically here when playing both side of a Meld card
+  if(GetClassState($player, $CS_AdditionalCosts) == "Both") ResolveGoesWhere("GY", $parameter, $player, "MELD"); //Only needs to be handled specifically here when playing both side of a Meld card
 }
