@@ -435,7 +435,6 @@ function SearchCharacterAliveSubtype($player, $subtype)
         $effect = explode(",", $currentTurnEffects[$j]);
         if ($effect[0] == "ELE111-" . $character[$i + 11]) $slot = $effect[1];
       }
-      WriteLog($slot . "-" . $subtype);
       if ($subtype == $slot) return true;
     }
   }
