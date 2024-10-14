@@ -1336,8 +1336,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           --$character[$i + 5];
         }
         break;
-      // case "AJV001":
-      case "ELE001":
+      case "AJV001":
         if (TalentContains($cardID, "ICE", $currentPlayer)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
