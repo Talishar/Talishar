@@ -842,6 +842,7 @@ function OnBlockResolveEffects($cardID = "")
       case "AIO005":
       case "ROS028":
       case "ROS072"://flash of brilliance
+      case "AJV013"://Unforgiving Unforgetting
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "HVY008":
