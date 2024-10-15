@@ -1503,6 +1503,12 @@ case "3":
 return "B";
 default: return "AA";
 }
+case "0":
+switch($cardID[5]) {
+case "1":
+return "C";
+default: return "AA";
+}
 default: return "AA";
 }
 default: return "AA";
@@ -54520,6 +54526,12 @@ case "V":
 switch($cardID[3]) {
 case "0":
 switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "1":
+return "GUARDIAN";
+default: return "NONE";
+}
 case "1":
 switch($cardID[5]) {
 case "1":
@@ -63988,6 +64000,12 @@ case "7":
 return "ICE";
 case "8":
 return "ICE,EARTH";
+default: return "NONE";
+}
+case "0":
+switch($cardID[5]) {
+case "1":
+return "ELEMENTAL";
 default: return "NONE";
 }
 default: return "NONE";
