@@ -226,7 +226,7 @@ function EffectHitEffect($cardID, $from)
       }
       break;
     case "DYN028":
-      Mangle();
+      if(IsHeroAttackTarget()) Mangle();
       break;
     case "DYN071":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRALLY", 1);
