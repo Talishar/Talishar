@@ -535,6 +535,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "FREEZE":
           MZFreeze($lastResult);
           break;
+        case "LOWERDEF":
+          MZLowerDef($lastResult);
+          break;
         case "GAINCONTROL":
           MZGainControl($player, $lastResult);
           break;
@@ -1715,7 +1718,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MZBOUNCE":
       return MZBounce($player, $lastResult);
     case "MZBOTTOM":
-      return MZBottom($player, $lastResult);
+      return MZBottom($player, $lastResult);     
     case "MZSWITCHPLAYER":
       return MZSwitchPlayer($lastResult);
     case "GAINRESOURCES":
