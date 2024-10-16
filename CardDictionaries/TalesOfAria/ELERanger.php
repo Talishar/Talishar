@@ -179,12 +179,12 @@
     }
   }
 
-  function PayOrDiscard($player, $amount, $fromDQ=true, $passable=false)
+  function PayOrDiscard($player, $amount, $fromDQ=false, $passable=false)
   {
     $targetHand = &GetHand($player);
     if (count($targetHand) > 0) {
       if ($fromDQ) {
-        PummelHit($player, passable:true, fromDQ:true);
+        PummelHit($player, $passable, fromDQ:true);
         PrependDecisionQueue("ELSE", $player, "-");
         PrependDecisionQueue("PAYRESOURCES", $player, "-", 1);
         PrependDecisionQueue("PASSPARAMETER", $player, $amount, 1);
@@ -198,7 +198,7 @@
         AddDecisionQueue("PASSPARAMETER", $player, $amount, 1);
         AddDecisionQueue("PAYRESOURCES", $player, "-", 1);
         AddDecisionQueue("ELSE", $player, "-");
-        PummelHit($player, passable:true, fromDQ:false);
+        PummelHit($player, $passable, fromDQ:false);
       }
     }
   }
