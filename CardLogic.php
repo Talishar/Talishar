@@ -2612,6 +2612,19 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("BUTTONINPUT", $player, "<-", 1);
       AddDecisionQueue("FROSTEXPOSED", $otherPlayer, "<-", 1);
       break;
+    case "AJV013":
+      if(!IsAllyAttacking() && SearchCharacter($otherPlayer, hasNegCounters: true) != "") {
+        $search = "MYDECK:cardID=CRU026";
+        $fromMod = "Deck,NT"; //pull it out of the deck, playable "Next Turn"
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_banish_a_mangle");
+        AddDecisionQueue("NOPASS", $player, "-");
+        AddDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $player, 1);
+      }
+      break;
     default:
       break;
   }
