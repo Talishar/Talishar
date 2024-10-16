@@ -643,7 +643,6 @@ function AddOnHitTrigger($cardID): void
     case "ELE209":
     case "ELE210":
     case "ELE211":
-    case "ELE005":
     case "ELE006":
     case "ELE205":
     case "ELE206":
@@ -1085,6 +1084,7 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
     case "MON299":
     case "MON300":
     case "MON301":
+    case "ELE005":
     case "ELE019":
     case "ELE020":
     case "ELE021":

@@ -58,21 +58,7 @@
           AddCurrentTurnEffect($cardID . "-HIT", $defPlayer);
           AddNextTurnEffect($cardID . "-HIT", $defPlayer);
         }
-        break;
-      case "ELE005":
-        if (IsHeroAttackTarget()) {
-          $hand = &GetHand($defPlayer);
-          $cards = "";
-          for ($i = 0; $i < 2 && count($hand) > 0; ++$i) {
-            $index = GetRandom() % count($hand);
-            if ($cards != "") $cards .= ",";
-            $cards .= $hand[$index];
-            unset($hand[$index]);
-            $hand = array_values($hand);
-          }
-          if ($cards != "") AddDecisionQueue("CHOOSEBOTTOM", $defPlayer, $cards);
-        }
-        break;    
+        break; 
       case "ELE013": case "ELE014": case "ELE015":
         if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) AddNextTurnEffect($cardID, $defPlayer);
         break;
