@@ -1890,9 +1890,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   }
   if(HasMeld($cardID)) {
     $names = explode(" // ", CardName($cardID));
-    $option = "Both,".$names[0].",".$names[1];
-
-
+    $option = $names[0].",".$names[1].",Both";
     if (DelimStringContains($cardType, "A") && SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
       $option = $names[1];
     } elseif (
