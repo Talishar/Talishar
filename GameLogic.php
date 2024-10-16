@@ -723,6 +723,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDBOTDECK":
       $deck = new Deck($player);
       $deck->AddBottom($lastResult);
+      if($parameter != "Skip") WriteLog("⤵️A card was put on the bottom of the deck.");
       return $lastResult;
     case "ADDTOPDECK":
       $deck = new Deck($player);

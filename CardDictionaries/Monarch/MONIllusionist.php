@@ -22,7 +22,7 @@
           AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
           AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
           AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was put on the bottom of the deck.", 1);
-          AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+          AddDecisionQueue("ADDBOTDECK", $otherPlayer, "Skip", 1);
           AddDecisionQueue("DRAW", $otherPlayer, "-");
         }
         return "";

@@ -42,7 +42,6 @@ function BottomDeck($player = "", $mayAbility = false, $shouldDraw = false)
   else AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
   AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
   AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
-  AddDecisionQueue("WRITELOG", $player, "A card was put on the bottom of the deck", 1);
   if ($shouldDraw) AddDecisionQueue("DRAW", $player, "-", 1);
 }
 
@@ -1913,7 +1912,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("WRITELOG", $player, "<b>Arakni</b> sunk the top card", 1);
       AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
       AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
-      AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+      AddDecisionQueue("ADDBOTDECK", $otherPlayer, "Skip", 1);
       AddDecisionQueue("ELSE", $player, "-");
       AddDecisionQueue("WRITELOG", $player, "<b>Arakni</b> left the top card there", 1);
       break;
