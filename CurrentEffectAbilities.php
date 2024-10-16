@@ -93,20 +93,6 @@ function EffectHitEffect($cardID, $from)
       if (substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
       else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
       break;
-    case "ELE005":
-      if (IsHeroAttackTarget()) {
-        $hand = &GetHand($defPlayer);
-        $cards = "";
-        for ($i = 0; $i < 2 && count($hand) > 0; ++$i) {
-          $index = GetRandom() % count($hand);
-          if ($cards != "") $cards .= ",";
-          $cards .= $hand[$index];
-          unset($hand[$index]);
-          $hand = array_values($hand);
-        }
-        if ($cards != "") AddDecisionQueue("CHOOSEBOTTOM", $defPlayer, $cards);
-      }
-      break;
     case "ELE019":
     case "ELE020":
     case "ELE021":
