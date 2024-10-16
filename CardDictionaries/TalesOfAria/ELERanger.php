@@ -184,7 +184,11 @@
     $targetHand = &GetHand($player);
     if (count($targetHand) > 0) {
       if ($fromDQ) {
-        PummelHit($player, passable:true, fromDQ:true);
+        PrependDecisionQueue("DISCARDCARD", $player, "HAND", 1);
+        PrependDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+        PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "HAND", 1);
         PrependDecisionQueue("ELSE", $player, "-");
         PrependDecisionQueue("PAYRESOURCES", $player, "-", 1);
         PrependDecisionQueue("PASSPARAMETER", $player, $amount, 1);
@@ -198,7 +202,12 @@
         AddDecisionQueue("PASSPARAMETER", $player, $amount, 1);
         AddDecisionQueue("PAYRESOURCES", $player, "-", 1);
         AddDecisionQueue("ELSE", $player, "-");
-        PummelHit($player, passable:true, fromDQ:false);
+        AddDecisionQueue("FINDINDICES", $player, "HAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard", 1);
+        AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+        AddDecisionQueue("DISCARDCARD", $player, "HAND", 1);
+        PummelHit($player, $passable=true, fromDQ:false);
       }
     }
   }

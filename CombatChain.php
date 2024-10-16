@@ -842,6 +842,7 @@ function OnBlockResolveEffects($cardID = "")
       case "AIO005":
       case "ROS028":
       case "ROS072"://flash of brilliance
+      case "AJV013"://Unforgiving Unforgetting
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "HVY008":
@@ -998,7 +999,7 @@ function OnBlockEffects($index, $from)
           $remove = true;
           break;
         case "ELE004":
-          if ($cardType == "DR") PlayAura("ELE111", $currentPlayer);
+          if ($cardType == "DR") PlayAura("ELE111", $currentPlayer, effectController: $otherPlayer);
           break;
         case "DYN042":
         case "DYN043":

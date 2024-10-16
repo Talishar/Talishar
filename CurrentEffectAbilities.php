@@ -106,7 +106,7 @@ function EffectHitEffect($cardID, $from)
         }
         if ($cards != "") AddDecisionQueue("CHOOSEBOTTOM", $defPlayer, $cards);
       }
-      break;
+      break;   
     case "ELE019":
     case "ELE020":
     case "ELE021":
@@ -226,7 +226,7 @@ function EffectHitEffect($cardID, $from)
       }
       break;
     case "DYN028":
-      Mangle();
+      if(IsHeroAttackTarget()) Mangle();
       break;
     case "DYN071":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRALLY", 1);
@@ -1945,14 +1945,14 @@ function BeginEndPhaseEffectTriggers()
 
 function ActivateAbilityEffects()
 {
-  global $currentPlayer, $currentTurnEffects;
+  global $currentPlayer, $currentTurnEffects, $mainPlayer;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "ELE004-HIT":
           WriteLog(CardLink("ELE004", "ELE004") . " created a frostbite");
-          PlayAura("ELE111", $currentPlayer);
+          PlayAura("ELE111", $currentPlayer, effectController:$mainPlayer);
           break;
         default:
           break;

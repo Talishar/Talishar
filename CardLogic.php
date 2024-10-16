@@ -42,7 +42,6 @@ function BottomDeck($player = "", $mayAbility = false, $shouldDraw = false)
   else AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
   AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
   AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
-  AddDecisionQueue("WRITELOG", $player, "A card was put on the bottom of the deck", 1);
   if ($shouldDraw) AddDecisionQueue("DRAW", $player, "-", 1);
 }
 
@@ -644,7 +643,6 @@ function AddOnHitTrigger($cardID): void
     case "ELE209":
     case "ELE210":
     case "ELE211":
-    case "ELE005":
     case "ELE006":
     case "ELE205":
     case "ELE206":
@@ -1588,7 +1586,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
     case "ELE004":
-      for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) if ($combatChain[$i] == $player) PlayAura("ELE111", $player);
+      for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) if ($combatChain[$i] == $player) PlayAura("ELE111", $player, effectController: $mainPlayer);
       break;
     case "ELE025":
     case "ELE026":
@@ -1663,7 +1661,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
       break;
     case "EVR018":
-      PlayAura("ELE111", $player);
+      PlayAura("ELE111", $player, effectController: $defPlayer);
       break;
     case "EVR069":
       $index = SearchItemsForUniqueID($uniqueID, $player);
@@ -1757,7 +1755,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if ($parameter == "UPR141") $numFrostbite = 4;
       else if ($parameter == "UPR142") $numFrostbite = 3;
       else $numFrostbite = 2;
-      PlayAura("ELE111", $target, $numFrostbite);
+      PlayAura("ELE111", $target, $numFrostbite, effectController: $player);
       break;
     case "UPR176":
     case "UPR177":
@@ -1914,7 +1912,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("WRITELOG", $player, "<b>Arakni</b> sunk the top card", 1);
       AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
       AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
-      AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+      AddDecisionQueue("ADDBOTDECK", $otherPlayer, "Skip", 1);
       AddDecisionQueue("ELSE", $player, "-");
       AddDecisionQueue("WRITELOG", $player, "<b>Arakni</b> left the top card there", 1);
       break;
@@ -2129,7 +2127,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $deck = new Deck($player);
       WriteLog("Processing the end of turn effect of Inertia.");
       for ($i = 0; $i < count(GetArsenal($player)) + count(GetHand($player)); $i++) {
-        BottomDeckMultizone($player, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add to the bottom of your deck");
+        BottomDeckMultizone($player, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add on the bottom of your deck");
       }
       AddDecisionQueue("WRITELOG", $player, ("The cards and arsenal of Player " . $player . " was put on the bottom of their deck."));
       DestroyAuraUniqueID($player, $uniqueID);
@@ -2611,6 +2609,19 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose an exposed equipment zone to frostbite", 1);
       AddDecisionQueue("BUTTONINPUT", $player, "<-", 1);
       AddDecisionQueue("FROSTEXPOSED", $otherPlayer, "<-", 1);
+      break;
+    case "AJV013":
+      if(!IsAllyAttacking() && SearchCharacter($otherPlayer, hasNegCounters: true) != "") {
+        $search = "MYDECK:cardID=CRU026";
+        $fromMod = "Deck,NT"; //pull it out of the deck, playable "Next Turn"
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_banish_a_mangle");
+        AddDecisionQueue("NOPASS", $player, "-");
+        AddDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $player, 1);
+      }
       break;
     case "AJV018": // Pop Crumble to Eternity and add Dominate to the next attack.
       AddCurrentTurnEffect($parameter, $player);

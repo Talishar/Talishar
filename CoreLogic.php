@@ -511,7 +511,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     CurrentEffectDamageEffects($player, $source, $type, $damage);
   }
   if ($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer) && IsHeroAttackTarget()) {
-    for ($i = 0; $i < $damage; ++$i) PlayAura("ELE111", $player);
+    for ($i = 0; $i < $damage; ++$i) PlayAura("ELE111", $player, effectController:$otherPlayer);
   }
   LogDamageStats($player, $damageThreatened, $damage);
   PlayerLoseHealth($player, $damage);
@@ -604,7 +604,7 @@ function CurrentEffectDamageModifiers($player, $source, $type)
       case "ELE186":
       case "ELE187":
       case "ELE188":
-        if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $player)) ++$modifier;
+        if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $player) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
         break;
       default:
         break;
@@ -631,7 +631,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
       case "ELE045":
       case "ELE046":
         if (IsHeroAttackTarget() && CardType($source) == "AA")
-          PlayAura("ELE111", $target);
+          PlayAura("ELE111", $target, effectController:$otherPlayer);
         break;
       case "ELE050":
       case "ELE051":
@@ -647,7 +647,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
       case "UPR107":
       case "UPR108":
         if ((IsHeroAttackTarget() || (IsHeroAttackTarget() == "" && $source != "ELE111")) && $type == "ARCANE") {
-          PlayAura("ELE111", $target, $damage);
+          PlayAura("ELE111", $target, $damage, effectController:$otherPlayer);
           $remove = 1;
         }
         break;

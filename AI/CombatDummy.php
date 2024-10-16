@@ -42,6 +42,10 @@ function CombatDummyAI()
         }
         else PassInput();
       }
+      elseif($turn[0] == "CHOOSEBOTTOM"){
+        $options = explode(",", $turn[2]);
+        ContinueDecisionQueue($options[0]);//Just pick the first option
+      }
       else
       {
         PassInput();

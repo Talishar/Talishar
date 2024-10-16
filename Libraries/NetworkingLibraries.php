@@ -1619,14 +1619,16 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (EffectPlayCardRestricted($cardID, $playType, $from, true)) return;
     if (DelimStringContains($playType, "A") || DelimStringContains($playType, "AA")) {
       if($from == "BANISH") $mod = GetBanishModifier($index);
-      if(!$canPlayAsInstant) --$actionPoints;
-      elseif(GetResolvedAbilityType($cardID, $from) == "AA") --$actionPoints;
-      elseif(!$canPlayAsInstant && !IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) 
-      && (GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST")) {
-        --$actionPoints;
-      }
-      elseif(GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST" && GetAbilityNames($cardID, from: $from) != "") {
-        --$actionPoints;
+      if ($actionPoints > 0) {
+        if(!$canPlayAsInstant) --$actionPoints;
+        elseif(GetResolvedAbilityType($cardID, $from) == "AA") --$actionPoints;
+        elseif(!$canPlayAsInstant && !IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) 
+        && (GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST")) {
+          --$actionPoints;
+        }
+        elseif(GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST" && GetAbilityNames($cardID, from: $from) != "") {
+          --$actionPoints;
+        }
       }
       if (DelimStringContains($cardType, "A") && $abilityType == "" && GetResolvedAbilityType($cardID, $from) != "I") {
         IncrementClassState($currentPlayer, $CS_NumNonAttackCards);
@@ -1685,10 +1687,7 @@ function PlayCardSkipCosts($cardID, $from)
   GetTargetOfAttack($cardID); // Not sure why this is needed (2x GetTargetOfAttack), but it works....
   if (($turn[0] == "M" || $turn[0] == "ATTACKWITHIT") && $cardType == "AA") GetTargetOfAttack($cardID);
   if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
-    if (HasBoost($cardID, $currentPlayer) && $cardID != "EVO142") Boost($cardID);
     GetLayerTarget($cardID, $from);
-    MainCharacterPlayCardAbilities($cardID, $from);
-    AuraPlayAbilities($cardID, $from);
   }
   PlayCardEffect($cardID, $from, "Skipped");
 }
@@ -1890,9 +1889,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   }
   if(HasMeld($cardID)) {
     $names = explode(" // ", CardName($cardID));
-    $option = "Both,".$names[0].",".$names[1];
-
-
+    $option = $names[0].",".$names[1].",Both";
     if (DelimStringContains($cardType, "A") && SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
       $option = $names[1];
     } elseif (
@@ -2563,7 +2560,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("WRITELOG", $currentPlayer, "Paid extra resource to throw a dagger", 1);
       break;
     case "OUT157":
-      BottomDeckMultizone($currentPlayer, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add to the bottom of your deck");
+      BottomDeckMultizone($currentPlayer, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add on the bottom of your deck");
       break;
     case "OUT195":
     case "OUT196":

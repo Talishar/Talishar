@@ -308,7 +308,6 @@ function PlayerTargetedAbility($player, $card, $lastResult)
       AddDecisionQueue("DQPAYORDISCARD", $target, "1");
       return "";
     case "WINTERSBITE":
-      WriteLog($params[1]);
       AddDecisionQueue("DQPAYORDISCARD", $target, $params[1]);
       return "";
     case "IMPERIALWARHORN":

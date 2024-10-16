@@ -58,7 +58,7 @@
           AddCurrentTurnEffect($cardID . "-HIT", $defPlayer);
           AddNextTurnEffect($cardID . "-HIT", $defPlayer);
         }
-        break;
+        break; 
       case "ELE013": case "ELE014": case "ELE015":
         if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) AddNextTurnEffect($cardID, $defPlayer);
         break;
