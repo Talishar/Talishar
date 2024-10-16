@@ -1619,14 +1619,16 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (EffectPlayCardRestricted($cardID, $playType, $from, true)) return;
     if (DelimStringContains($playType, "A") || DelimStringContains($playType, "AA")) {
       if($from == "BANISH") $mod = GetBanishModifier($index);
-      if(!$canPlayAsInstant) --$actionPoints;
-      elseif(GetResolvedAbilityType($cardID, $from) == "AA") --$actionPoints;
-      elseif(!$canPlayAsInstant && !IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) 
-      && (GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST")) {
-        --$actionPoints;
-      }
-      elseif(GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST" && GetAbilityNames($cardID, from: $from) != "") {
-        --$actionPoints;
+      if ($actionPoints > 0) {
+        if(!$canPlayAsInstant) --$actionPoints;
+        elseif(GetResolvedAbilityType($cardID, $from) == "AA") --$actionPoints;
+        elseif(!$canPlayAsInstant && !IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) 
+        && (GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST")) {
+          --$actionPoints;
+        }
+        elseif(GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST" && GetAbilityNames($cardID, from: $from) != "") {
+          --$actionPoints;
+        }
       }
       if (DelimStringContains($cardType, "A") && $abilityType == "" && GetResolvedAbilityType($cardID, $from) != "I") {
         IncrementClassState($currentPlayer, $CS_NumNonAttackCards);

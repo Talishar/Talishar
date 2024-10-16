@@ -401,7 +401,6 @@ function PermanentPlayAbilities($attackID, $from="")
       case "ROGUE528":
         if(DelimStringContains($cardType, "A")) ++$actionPoints;
         break;
-
       case "ROGUE607":
         if($cardType != "A" && $cardType != "AA") AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
