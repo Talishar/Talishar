@@ -604,7 +604,7 @@ function CurrentEffectDamageModifiers($player, $source, $type)
       case "ELE186":
       case "ELE187":
       case "ELE188":
-        if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $player)) ++$modifier;
+        if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $player) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
         break;
       default:
         break;
