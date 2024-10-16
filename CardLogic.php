@@ -1587,7 +1587,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
     case "ELE004":
-      for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) if ($combatChain[$i] == $player) PlayAura("ELE111", $player);
+      for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) if ($combatChain[$i] == $player) PlayAura("ELE111", $player, effectController: $mainPlayer);
       break;
     case "ELE025":
     case "ELE026":
@@ -1662,7 +1662,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
       break;
     case "EVR018":
-      PlayAura("ELE111", $player);
+      PlayAura("ELE111", $player, effectController: $defPlayer);
       break;
     case "EVR069":
       $index = SearchItemsForUniqueID($uniqueID, $player);
@@ -1756,7 +1756,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if ($parameter == "UPR141") $numFrostbite = 4;
       else if ($parameter == "UPR142") $numFrostbite = 3;
       else $numFrostbite = 2;
-      PlayAura("ELE111", $target, $numFrostbite);
+      PlayAura("ELE111", $target, $numFrostbite, effectController: $player);
       break;
     case "UPR176":
     case "UPR177":

@@ -89,7 +89,7 @@
         if($cardID == "UPR144") $numFrostbites = 3;
         else if($cardID == "UPR145") $numFrostbites = 2;
         else $numFrostbites = 1;
-        PlayAura("ELE111", ($currentPlayer == 1 ? 2 : 1), $numFrostbites);
+        PlayAura("ELE111", ($currentPlayer == 1 ? 2 : 1), $numFrostbites, effectController: $currentPlayer);
         return "";
       case "UPR147": case "UPR148": case "UPR149":
         if($cardID == "UPR147") $cost = 3;

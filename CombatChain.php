@@ -999,7 +999,7 @@ function OnBlockEffects($index, $from)
           $remove = true;
           break;
         case "ELE004":
-          if ($cardType == "DR") PlayAura("ELE111", $currentPlayer);
+          if ($cardType == "DR") PlayAura("ELE111", $currentPlayer, effectController: $otherPlayer);
           break;
         case "DYN042":
         case "DYN043":
