@@ -440,7 +440,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") {
         AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
       } else {
-        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+        DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
       }
       return "";
     case "ROS207":
