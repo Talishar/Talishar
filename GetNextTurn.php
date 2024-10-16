@@ -965,6 +965,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // is the player the active player (is it their turn?)
   $response->amIActivePlayer = ($turn[1] == $playerID) ? true : false;
 
+  // who's turn it is
+  $response->turnPlayer = $mainPlayer;
+
   //Turn number
   $response->turnNo = $currentTurn;
 
