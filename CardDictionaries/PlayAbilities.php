@@ -178,7 +178,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $hand = &GetHand($currentPlayer);
         $arsenal = GetArsenal($currentPlayer);
         if (count($hand) + count($arsenal) == 1) {
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the card that goes to the bottom of your deck.", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the card that goes on the bottom of your deck.", 1);
           AddDecisionQueue("OK", $currentPlayer, "-");
         }
         if (count($hand) + count($arsenal) > 0) MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK", silent: true);

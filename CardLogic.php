@@ -2127,7 +2127,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $deck = new Deck($player);
       WriteLog("Processing the end of turn effect of Inertia.");
       for ($i = 0; $i < count(GetArsenal($player)) + count(GetHand($player)); $i++) {
-        BottomDeckMultizone($player, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add to the bottom of your deck");
+        BottomDeckMultizone($player, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add on the bottom of your deck");
       }
       AddDecisionQueue("WRITELOG", $player, ("The cards and arsenal of Player " . $player . " was put on the bottom of their deck."));
       DestroyAuraUniqueID($player, $uniqueID);

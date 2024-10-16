@@ -2561,7 +2561,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("WRITELOG", $currentPlayer, "Paid extra resource to throw a dagger", 1);
       break;
     case "OUT157":
-      BottomDeckMultizone($currentPlayer, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add to the bottom of your deck");
+      BottomDeckMultizone($currentPlayer, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add on the bottom of your deck");
       break;
     case "OUT195":
     case "OUT196":

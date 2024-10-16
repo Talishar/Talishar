@@ -1098,7 +1098,7 @@ function ProcessSurge($cardID, $player, $target)
     case "ROS201":
     case "ROS202":
     case "ROS203": //perennial aetherbloom
-      WriteLog("Surge active, returning to the bottom of the deck");
+      WriteLog("Surge active, returning on the bottom of the deck");
       AddBottomDeck($cardID, $player, "STACK"); //create a copy on the bottom
       $discard = &GetDiscard($player);
       for($i = 0; $i < DiscardPieces(); $i++){
