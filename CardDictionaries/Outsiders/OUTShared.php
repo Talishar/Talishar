@@ -184,8 +184,7 @@ function OUTAbilityCost($cardID)
         if(substr($CombatChain->AttackCard()->From(), 0, 5) != "THEIR") $deck = new Deck($currentPlayer);
         else $deck = new Deck($otherPlayer);
         $deck->AddBottom($combatChain[0], "CC");
-        AttackReplaced();
-        $combatChain[0] = $card->ID();
+        AttackReplaced($card->ID());
         $combatChainState[$CCS_LinkBaseAttack] = ModifiedAttackValue($combatChain[0], $currentPlayer, "CC", source:"");
         $card->Remove();
         return "";
