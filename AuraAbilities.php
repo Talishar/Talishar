@@ -346,7 +346,7 @@ function AuraCostModifier($cardID = "")
 // CR 2.1 - 4.3.1. The “beginning of the action phase” event occurs and abilities that trigger at the beginning of the action phase are triggered.
 function AuraStartTurnAbilities()
 {
-  global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
+  global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed,$currentTurnEffects;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
   $EffectContext = $auras[$i];
@@ -538,27 +538,7 @@ function AuraStartTurnAbilities()
     case "MST145":
       $AurasArray = explode(",", SearchAura($mainPlayer, class: "ILLUSIONIST"));
       if (count($AurasArray) > 1) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "AJV017": // Channel Mount Isen
-      global $currentTurnEffects;
-      $character = &GetPlayerCharacter($mainPlayer);
-      $eqFrostbiteCount = 0;
-      for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-        if ($character[$i] == "ELE111") {
-          $slot = "";
-          for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectsPieces()) {
-            $effect = explode(",", $currentTurnEffects[$j]);
-            if ($effect[0] == "ELE111-" . $character[$i + 11]) {
-              $slot = $effect[1];
-              if ($slot == "Arms" || $slot == "Legs" || $slot == "Head" || $slot == "Chest") { // Only count these Frostbites if they are in an equipment slot.
-                $eqFrostbiteCount += 1;
-              }
-            }
-          }
-        }
-      }
-      LoseHealth($eqFrostbiteCount, $mainPlayer);
-      WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " health due to Channel Mount Isen.");              
+      break;             
     default:
       break;
     }
@@ -570,7 +550,6 @@ function AuraStartTurnAbilities()
       case "MST133":
         AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY", $defPlayerAuras[$i + 6]);
       case "AJV017": // Channel Mount Isen
-        global $currentTurnEffects;
         $character = &GetPlayerCharacter($mainPlayer);
         $eqFrostbiteCount = 0;
         for ($i = 0; $i < count($character); $i += CharacterPieces()) {
@@ -588,7 +567,7 @@ function AuraStartTurnAbilities()
           }
         }
         LoseHealth($eqFrostbiteCount, $mainPlayer);
-        WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " health due to Channel Mount Isen.");      
+        WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("AJV017", "AJV017") .".");      
       default:
         break;
     }
