@@ -710,7 +710,6 @@ function IsCardBanned($cardID, $format, $character)
 
   //Ban spoiler cards in non-open-format
   if(($format != "openformatcc" && $format != "openformatllcc") && $cardID == "HER123") return true; // IRA Hero CC Launch 2nd November
-  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") && $set == "AIO") return true; // Dash Armory Deck Launch 18th October
   if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") && $set == "AJV") return true; // Jarl Armory Deck Launch 29th November
 
   if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") {
