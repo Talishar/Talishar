@@ -177,6 +177,7 @@ function GetCardBack($player)
     case 85: return "CBCD1";
     case 86: return "CBCD2";
     case 87: return "CBCupofTCG";
+    case 88: return "CBScowlingFleshBag";
     default: return "CardBack";
   }
 }
@@ -529,6 +530,17 @@ function isTeamCupofTCG($userID)
     case "Glem":
     case "parallaxdream":
     case "2birds1stone":
+    case "PvtVoid":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
+function isTeamScowlingFleshBag($userID)
+{
+  switch($userID) {
+    case "ScowlingFleshBag":
     case "PvtVoid":
       return true;
     default: break;
