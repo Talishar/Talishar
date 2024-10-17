@@ -558,7 +558,7 @@ function AuraStartTurnAbilities()
         }
       }
       LoseHealth($eqFrostbiteCount, $mainPlayer);
-      WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " health due to Channel Mount Isen."); 
+      WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("AJV017", "AJV017") .".");      
       break;          
     default:
       break;
