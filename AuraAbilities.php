@@ -538,7 +538,28 @@ function AuraStartTurnAbilities()
     case "MST145":
       $AurasArray = explode(",", SearchAura($mainPlayer, class: "ILLUSIONIST"));
       if (count($AurasArray) > 1) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;             
+      break;    
+    case "AJV017": // Channel Mount Isen
+      global $currentTurnEffects;
+      $character = &GetPlayerCharacter($mainPlayer);
+      $eqFrostbiteCount = 0;
+      for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+        if ($character[$i] == "ELE111") {
+          $slot = "";
+          for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectsPieces()) {
+            $effect = explode(",", $currentTurnEffects[$j]);
+            if ($effect[0] == "ELE111-" . $character[$i + 11]) {
+              $slot = $effect[1];
+              if ($slot == "Arms" || $slot == "Legs" || $slot == "Head" || $slot == "Chest") { // Only count these Frostbites if they are in an equipment slot.
+                $eqFrostbiteCount += 1;
+              }
+            }
+          }
+        }
+      }
+      LoseHealth($eqFrostbiteCount, $mainPlayer);
+      WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " health due to Channel Mount Isen."); 
+      break;          
     default:
       break;
     }
