@@ -58,7 +58,7 @@ $CID_TekloLegs = "LGS189";
 function CardType($cardID)
 {
   global $CS_AdditionalCosts, $currentPlayer;
-  if (!$cardID) return "";
+  if (!$cardID || $cardID == "TRIGGER") return "";
   switch ($cardID) {
     case "HVY096":
       return "W,E";
