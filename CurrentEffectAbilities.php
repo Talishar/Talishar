@@ -1674,6 +1674,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "AUR") return AURCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "ROS") return ROSCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "AIO") return AIOCombatEffectActive($cardID, $cardToCheck);
+  else if ($set == "AJV") return AJVCombatEffectActive($cardID, $cardToCheck);
   switch ($cardID) {
     case "LGS180":
       return DTDCombatEffectActive($cardID, $cardToCheck);

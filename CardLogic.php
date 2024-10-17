@@ -1429,7 +1429,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "CRU040":
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
-      break;
+      break;  
     case "CRU051":
     case "CRU052":
       EvaluateCombatChain($totalAttack, $totalBlock);
@@ -2623,6 +2623,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("SHUFFLEDECK", $player, 1);
       }
       break;
+    case "AJV018": // Pop Crumble to Eternity and add Dominate to the next attack.
+      AddCurrentTurnEffect($parameter, $player);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
     default:
       break;
   }
@@ -2983,6 +2987,7 @@ function HasFlowCounters($cardID)
     case "UPR138":
     case "ROS033":
     case "ROS077":
+    case "AJV017":
       return true;
     default:
       return false;
