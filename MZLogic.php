@@ -360,24 +360,6 @@ function MZFreeze($target)
   }
 }
 
-function MZLowerDef($target)
-{
-  global $currentPlayer;
-  $pieces = explode("-", $target);
-  $player = (substr($pieces[0], 0, 2) == "MY" ? $currentPlayer : ($currentPlayer == 1 ? 2 : 1));
-  $character = &GetPlayerCharacter($player);
-  $zone = &GetMZZone($player, $pieces[0]);
-  switch ($pieces[0]) {
-    case "THEIRCHAR":
-    case "MYCHAR":
-      $zone[$pieces[1] + 4] = intval($zone[$pieces[1] + 4]) - 1;
-      WriteLog(CardLink($zone[$pieces[1]], $zone[$pieces[1]]) . " gets a -1 counter.");      
-      break;
-    default:
-      break;
-  }
-}
-
 function IsFrozenMZ(&$array, $zone, $i)
 {
   $offset = FrozenOffsetMZ($zone);

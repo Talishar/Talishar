@@ -535,9 +535,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "FREEZE":
           MZFreeze($lastResult);
           break;
-        case "LOWERDEF":
-          MZLowerDef($lastResult);
-          break;
         case "GAINCONTROL":
           MZGainControl($player, $lastResult);
           break;
@@ -1562,9 +1559,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MODDEFCOUNTER":
       if ($lastResult == "") return $lastResult;
+      if (substr($lastResult, 0, 5) == "THEIR") {
+        $index = explode("-", $lastResult)[1];
+        $player = $player == 1 ? 2 : 1;
+      }
+      elseif(substr($lastResult, 0, 5) == "MY") {
+        $index = explode("-", $lastResult)[1];
+      }
+      else $index = $lastResult;
       $character = &GetPlayerCharacter($player);
-      $character[$lastResult + 4] = intval($character[$lastResult + 4]) + $parameter;
-      if ($parameter < 0) WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " gets a -1 counter.");
+      $character[$index + 4] = intval($character[$index + 4]) + $parameter;
+      if ($parameter < 0) WriteLog(CardLink($character[$index], $character[$index]) . " gets a -1 counter.");
       return $lastResult;
     case "REMOVECOUNTER":
       $character = &GetPlayerCharacter($player);
