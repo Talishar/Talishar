@@ -1563,8 +1563,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if(!HasMeld($cardID) || (GetClassState($currentPlayer, $CS_AdditionalCosts) != "Life" && GetClassState($currentPlayer, $CS_AdditionalCosts) != "Null")) {
         AssignArcaneBonus($currentPlayer);
       }
+      else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
     } 
-    else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
     $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from) || (DelimStringContains($cardType, "I") && $turn[0] != "M");
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
