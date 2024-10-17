@@ -1349,6 +1349,12 @@ function GoesWhereEffectsModifier($cardID, $from, $player)
     $effectID = substr($currentTurnEffects[$i], 0, 6);
     if ($currentTurnEffects[$i + 1] == $player) {
       switch ($effectID) {
+        case "ELE064":
+          if ($from == "BANISH" && SearchCurrentTurnEffectsForUniqueID($cardID) != -1) {
+            RemoveCurrentTurnEffect($i);
+            return "BANISH";
+          }
+          break;
         case "EVR181":
           $effectArr = explode("-", $currentTurnEffects[$i]);
           if ($cardID == $effectArr[1]) {
@@ -3360,7 +3366,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   if ($player == "") $player = $currentPlayer;
   $mod = explode("-", $mod)[0];
   if ($mod == "INT" || $mod == "FACEDOWN" || $mod == "NTSTONERAIN" || $mod == "STONERAIN") return false;
-  if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
+  if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119" || $mod == "ELE064") return true;
   if ($mod == "MST236" && SearchCurrentTurnEffects("MST236-3", $player) && CardType($cardID) != "E") return true;
   if (HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $player, false)) >= CardCost($cardID, "BANISH")) return true;
   $char = &GetPlayerCharacter($player);

@@ -641,7 +641,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
         break;
       case "ELE064":
         if ($source == "ELE064" && (IsHeroAttackTarget() || $type != "COMBAT"))
-          MZMoveCard(($target == 1 ? 2 : 1), "MYDISCARD:type=A", "MYBANISH,GY,INST", may: true);
+          MZMoveCard(($target == 1 ? 2 : 1), "MYDISCARD:type=A", "MYBANISH,GY,ELE064", may: true);
         break;
       case "UPR106":
       case "UPR107":
@@ -818,6 +818,7 @@ function UnsetTurnBanish()
   $p1Banish->UnsetModifier("TT");
   $p1Banish->UnsetModifier("INST");
   $p1Banish->UnsetModifier("ARC119");
+  $p1Banish->UnsetModifier("ELE064");
   $p1Banish->UnsetModifier("TTFromOtherPlayer");
   $p1Banish->UnsetModifier("MST236");
   $p1Banish->UnsetModifier("REMOVEGRAVEYARD");
@@ -825,6 +826,7 @@ function UnsetTurnBanish()
   $p2Banish->UnsetModifier("TT");
   $p2Banish->UnsetModifier("INST");
   $p2Banish->UnsetModifier("ARC119");
+  $p2Banish->UnsetModifier("ELE064");
   $p2Banish->UnsetModifier("TTFromOtherPlayer");
   $p2Banish->UnsetModifier("MST236");
   $p2Banish->UnsetModifier("REMOVEGRAVEYARD");
@@ -1227,7 +1229,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     $banish = GetBanish($currentPlayer);
     if ($index < count($banish)) {
       $mod = explode("-", $banish[$index + 1])[0];
-      if ((DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212" || $mod == "MST236")) || $mod == "INST" || $mod == "ARC119") return true;
+      if ((DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212" || $mod == "MST236")) || $mod == "INST" || $mod == "ARC119" || $mod == "ELE064") return true;
     }
   }
   if (GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
