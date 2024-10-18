@@ -1177,7 +1177,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $sourceType = CardType($source);
       if ($type == "PLAYCARD") {
         $damage += ConsumeArcaneBonus($player);
-        $damage += CurrentEffectDamageModifiers($player, $source, $type);
         if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("ELE065", $player);
         WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage");
       }
