@@ -1618,12 +1618,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DestroyAuraUniqueID($player, $uniqueID);
       break;
       case "ELE111":
-        DestroyAuraUniqueID($player, $uniqueID);
-        if ($additionalCosts == "EQUIP") {
-          $index = SearchCharacterForUniqueID($uniqueID, $player);
-          RemoveCharacter($player, $index);
-        }
-        else DestroyAuraUniqueID($player, $uniqueID);
+        $location = $additionalCosts == "EQUIP" ? "EQUIP" : "AURAS";
+        DestroyAuraUniqueID($player, $uniqueID, $location);
         break;
     case "ELE174":
       $index = FindCharacterIndex($player, $parameter);
