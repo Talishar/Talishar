@@ -441,6 +441,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
     if(IsGameOver()) $theirCharacter[$i + 12] = "UP";
     if ($theirCharacter[$i + 12] == "UP" || $playerID == 3 && IsCasterMode() || IsGameOver()) {
+      if($theirCharacter[$i + 1] > 0) { //Don't show broken equipment cards as they are in the graveyard
       array_push($characterContents, JSONRenderedCard(
         $theirChar,
         borderColor: $border,
@@ -459,6 +460,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         numUses: $theirCharacter[$i + 5],
         subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10]
         ));
+      }
     } else {
       array_push($characterContents, JSONRenderedCard(
           $TheirCardBack,
@@ -614,29 +616,31 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $MyCardBack)); //CardID
     }
     else{
-      array_push($myCharData, JSONRenderedCard(
-        $myChar, //CardID
-        $currentPlayer == $playerID && $playable ? 3 : 0,
-        $myCharacter[$i + 1] != 2 ? 1 : 0, //Overlay
-        $border,
-        $myCharacter[$i + 1] != 0 ? $counters : 0, //Counters
-        strval($i), //Action Data Override
-        0, //Life Counters
-        $myCharacter[$i + 4], //Def Counters
-        $atkCounters,
-        $playerID,
-        $type,
-        $sType,
-        $restriction,
-        $myCharacter[$i + 1] == 0, //Status
-        $myCharacter[$i + 6] == 1, //On Chain
-        $myCharacter[$i + 8] == 1, //Frozen
-        $gem,
-        label: $label,
-        facing: $myCharacter[$i + 12],
-        numUses: $myCharacter[$i + 5], //Number of Uses
-        subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
-
+      if($myCharacter[$i + 1] > 0) { //Don't show broken equipment cards as they are in the graveyard
+        array_push($myCharData, JSONRenderedCard(
+          $myChar, //CardID
+          $currentPlayer == $playerID && $playable ? 3 : 0,
+          $myCharacter[$i + 1] != 2 ? 1 : 0, //Overlay
+          $border,
+          $myCharacter[$i + 1] != 0 ? $counters : 0, //Counters
+          strval($i), //Action Data Override
+          0, //Life Counters
+          $myCharacter[$i + 4], //Def Counters
+          $atkCounters,
+          $playerID,
+          $type,
+          $sType,
+          $restriction,
+          $myCharacter[$i + 1] == 0, //Status
+          $myCharacter[$i + 6] == 1, //On Chain
+          $myCharacter[$i + 8] == 1, //Frozen
+          $gem,
+          label: $label,
+          facing: $myCharacter[$i + 12],
+          numUses: $myCharacter[$i + 5], //Number of Uses
+          subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10]));
+  
+      }
     }
   }
   $response->playerEquipment = $myCharData;
