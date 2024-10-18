@@ -4069,8 +4069,27 @@ Function IsMeldLeftSideName($term){
       case "Null":
       case "Rampant_Growth":
       case "Vaporize":
+        return true;
+      default:
+        return false;
+  }  
+}
+
+function HasEssenceOfEarth($cardID){
+  switch ($cardID) {
+    case "ELE001":
+    case "ELE002":
+    case "ELE062":
+    case "ELE063":
+    case "EVR017":
+    case "ROS001":
+    case "ROS002":
+    case "ROS013":
+    case "ROS014":
+    case "TER001":
+    case "AJV001": 
       return true;
     default:
       return false;
-  }  
+  }
 }
