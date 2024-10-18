@@ -2614,13 +2614,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if(!IsAllyAttacking() && SearchCharacter($otherPlayer, hasNegCounters: true) != "") {
         $search = "MYDECK:cardID=CRU026";
         $fromMod = "Deck,NT"; //pull it out of the deck, playable "Next Turn"
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_banish_a_".CardLink("CRU026", "CRU026"));
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_search_for_a_".CardLink("CRU026", "CRU026") ."_and_banish_it");
         AddDecisionQueue("NOPASS", $player, "-");
         AddDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $player, 1);
+        AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
       }
       break;
     case "AJV018": // Pop Crumble to Eternity and add Dominate to the next attack.
