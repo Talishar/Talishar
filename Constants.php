@@ -377,7 +377,7 @@ $CCS_NumInstantsPlayedByAttackingPlayer = 38;
 $CCS_NextInstantBouncesAura = 39;
 $CCS_EclecticMag = 40;
 //Deprecated
-//$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsOnChainClose instead
+//$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsFromCombatChain instead
 
 function ResetCombatChainState()
 {
@@ -448,7 +448,7 @@ function ResetCombatChainState()
   CombatChainClosedTriggers();
   CombatChainClosedCharacterEffects();
   CombatChainClosedMainCharacterEffects();
-  RemoveEffectsOnChainClose();
+  RemoveEffectsFromCombatChain();
   $defCharacter = &GetPlayerCharacter($defPlayer);
   for($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
     $defCharacter[$i + 6] = 0;

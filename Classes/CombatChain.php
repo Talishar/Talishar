@@ -33,6 +33,7 @@ class CombatChain {
     if($cardNumber) $index = $index * CombatChainPieces();
     if($index < 0 || $index >= count($this->chain)) return "";
     $cardID = $this->chain[$index];
+    RemoveEffectsFromCombatChain($cardID);
     for($i = CombatChainPieces() - 1; $i >= 0; --$i) unset($this->chain[$index+$i]);
     $this->chain = array_values($this->chain);
     return $cardID;

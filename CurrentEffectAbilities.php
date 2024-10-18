@@ -517,14 +517,19 @@ function EffectBlockModifier($cardID, $index, $from)
   }
 }
 
-function RemoveEffectsOnChainClose()
+function RemoveEffectsFromCombatChain($cardID = "")
 {
   global $currentTurnEffects;
+  $searchedEffect = "";
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
-    $effectArr = explode("-", $currentTurnEffects[$i]);
-    $effectArr2 = explode(",", $effectArr[0]);
-    switch ($effectArr2[0]) {
+    if($cardID == "") {
+      $effectArr = explode("-", $currentTurnEffects[$i]);
+      $effectArr2 = explode(",", $effectArr[0]);
+      $searchedEffect = $effectArr2[0];  
+    }
+    else $searchedEffect = $cardID;
+    switch ($searchedEffect) {
       case "CRU106":
       case "CRU107":
       case "CRU108": //High Speed Impact
