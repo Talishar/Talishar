@@ -535,7 +535,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   else $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
   $playerDeckArr = array();
-  if(IsGameOver()) {
+  $response->playerDeckPopup = false;
+  if(IsGameOver() || ($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE" && substr($turn[2], 0, 6) === "MYDECK") || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSEDECK" || $turn[0] == "MULTICHOOSEDECK") {
     for($i=0; $i<count($myDeck); $i+=DeckPieces()) {
       array_push($playerDeckArr, JSONRenderedCard($myDeck[$i]));
     }
@@ -1126,6 +1127,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $maxCount = 0;
     $minCount = 0;
     $countOffset = 0;
+    $subtitles = "";
     for ($i = 0; $i < count($options); ++$i) {
       $option = explode("-", $options[$i]);
       if ($option[0] == "MYAURAS") $source = $myAuras;
@@ -1268,6 +1270,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       //Show Steam Counters on items
       $steamCounters = ($option[0] == "THEIRITEMS" || $option[0] == "MYITEMS") ? ($option[0] == "THEIRITEMS" ? $theirItems[$index + 1] : $myItems[$index + 1]) : null;
 
+      if(substr($turn[2], 0, 6) === "MYDECK"){
+        $subtitles = "(You can click your deck to see its content during this card resolution)";
+      }
+
       if ($maxCount < 2)
         array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, atkCounters: $atkCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters));
       else
@@ -1284,17 +1290,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $playerInputPopup->choiceOptions = $choiceOptions;
     }
 
-    $playerInputPopup->popup = CreatePopupAPI("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, cardsArray: $cardsMultiZone);
+    $playerInputPopup->popup = CreatePopupAPI("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, additionalComments: $subtitles,cardsArray: $cardsMultiZone);
   }
 
   if (($turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSEDECK") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
-    $playerInputPopup->popup = ChoosePopup($myDeck, $turn[2], 11, "Choose a card from your deck");
+    $playerInputPopup->popup = ChoosePopup($myDeck, $turn[2], 11, "Choose a card from your deck", DeckPieces(), "(You can click your deck to see its content during this card resolution)");
   }
 
   if (($turn[0] == "MAYCHOOSETHEIRDECK" || $turn[0] == "CHOOSETHEIRDECK") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
-    $playerInputPopup->popup = ChoosePopup($theirDeck, $turn[2], 11, "Choose a card from your opponent deck");
+    $playerInputPopup->popup = ChoosePopup($theirDeck, $turn[2], 11, "Choose a card from your opponent deck", DeckPieces());
   }
 
   if ($turn[0] == "CHOOSEBANISH" && $turn[1] == $playerID) {
@@ -1362,6 +1368,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $maxNumber = intval($params[0]);
     $minNumber = count($params) > 2 ? intval($params[2]) : 0;
     $title = "Choose " . ($minNumber > 0 ? $maxNumber : "up to " . $maxNumber ) . " card" . ($maxNumber > 1 ? "s." : ".");
+    $subtitles = "";
+
+    if($turn[0] == "MULTICHOOSEDECK"){
+      $subtitles = "(You can click your deck to see its content during this card resolution)";
+    }
 
     if(GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
     else $caption = $title;
@@ -1394,7 +1405,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         else if ($turn[0] == "MULTICHOOSEITEMS") array_push($cardsArray, JSONRenderedCard($myItems[$options[$i]], overlay:$myItems[$options[$i]+2] != 2 ? 'disabled' : 'none', counters: $myItems[$options[$i]+1], actionDataOverride: $i));
         else if ($turn[0] == "MULTICHOOSESUBCARDS") array_push($cardsArray, JSONRenderedCard($options[$i], actionDataOverride: $i));
       }
-      $playerInputPopup->popup = CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, cardsArray: $cardsArray);
+      $playerInputPopup->popup = CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, additionalComments: $subtitles, cardsArray: $cardsArray);
     }
   }
 
@@ -1457,7 +1468,7 @@ function PlayableCardBorderColor($cardID)
   return 0;
 }
 
-function ChoosePopup($zone, $options, $mode, $caption = "", $zoneSize = 1)
+function ChoosePopup($zone, $options, $mode, $caption = "", $zoneSize = 1, $additionalComments = "")
 {
   $options = explode(",", $options);
   $cardList = array();
@@ -1466,7 +1477,7 @@ function ChoosePopup($zone, $options, $mode, $caption = "", $zoneSize = 1)
     array_push($cardList, JSONRenderedCard($zone[$options[$i]], action: $mode, actionDataOverride: strval($options[$i])));
   }
 
-  return CreatePopupAPI("CHOOSEZONE", [], 0, 1, $caption, 1, "", cardsArray: $cardList);
+  return CreatePopupAPI("CHOOSEZONE", [], 0, 1, $caption, 1, "", additionalComments: $additionalComments, cardsArray: $cardList);
 }
 
 function ItemOverlay($item, $isReady, $numUses)
