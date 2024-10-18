@@ -329,13 +329,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   // their hand contents
   $theirHandContents = array();
-  $theirBanish = GetBanish($otherPlayer);
   for ($i=0; $i < count($theirBanish); $i += BanishPieces()) {
     if (PlayableFromBanish($theirBanish[$i], $theirBanish[$i+1], player:$otherPlayer)) {
       array_push($theirHandContents, JSONRenderedCard($theirBanish[$i], borderColor:7));
     }
   }
-  $myBanish = GetBanish($playerID);
   for ($i=0; $i < count($myBanish); $i += BanishPieces()) {
     if(PlayableFromOtherPlayerBanish($myBanish[$i], $myBanish[$i+1], $otherPlayer)) {
       array_push($theirHandContents, JSONRenderedCard($myBanish[$i], borderColor:7));
@@ -385,7 +383,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->opponentCardBack = JSONRenderedCard($TheirCardBack);
 
   //Their Banish
-  $theirBanish = GetBanish($otherPlayer);
   $opponentBanishArr = array();
   for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
     $overlay = 0;
