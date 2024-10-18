@@ -1879,6 +1879,8 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   global $currentPlayer, $CS_NumActionsPlayed, $CS_AdditionalCosts, $turn, $combatChainState, $CCS_EclecticMag, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
   global $actionPoints, $mainPlayer;
   $cardType = CardType($cardID);
+  $mod = "";
+  if($from == "BANISH") $mod = GetBanishModifier($index);
   if (IsStaticType($cardType, $from, $cardID)) {
     $names = GetAbilityNames($cardID, $index, $from);
     if ($names != "") {
@@ -1894,7 +1896,8 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     if (DelimStringContains($cardType, "A") && SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
       $option = $names[1];
     } elseif (
-      $cardType != "I"
+      $mod != "INST" && $mod != "ELE064" 
+      && $cardType != "I"
       && (!$combatChainState[$CCS_EclecticMag]
       && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0
       && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
