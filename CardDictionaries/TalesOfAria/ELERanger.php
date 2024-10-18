@@ -79,7 +79,7 @@
       $element = $elementArray[$i];
       $subsequent = ($i > 0 && !$isAndOrFuse) ? 1 : 0;
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:talent=" . $element, $subsequent);
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to fuse", 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose which ".ucfirst($element)." card to reaveal for Fusion", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
       AddDecisionQueue("REVEALCARDS", $player, "-", 1);
