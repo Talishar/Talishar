@@ -344,7 +344,7 @@ $CCS_WasRuneGate = 5;
 $CCS_HitsWithWeapon = 6;
 $CCS_GoesWhereAfterLinkResolves = 7;
 $CCS_AttackPlayedFrom = 8;
-//9 does not exist
+$CCS_WagersThisLink = 9;
 $CCS_ChainLinkHitEffectsPrevented = 10;
 $CCS_NumBoosted = 11;
 $CCS_NextBoostBuff = 12;//Deprecated -- use $CCS_IsBoosted now.

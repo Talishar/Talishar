@@ -1230,8 +1230,10 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
   if ($from == "BANISH") {
     $banish = GetBanish($currentPlayer);
     if ($index < count($banish)) {
-      $mod = explode("-", $banish[$index + 1])[0];
-      if ((DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212" || $mod == "MST236")) || $mod == "INST" || $mod == "ARC119" || $mod == "ELE064") return true;
+      if ($banish[$index + 1] !== null) {
+        $mod = explode("-", $banish[$index + 1])[0];
+        if ((DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212" || $mod == "MST236")) || $mod == "INST" || $mod == "ARC119" || $mod == "ELE064") return true;
+      }
     }
   }
   if (GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
