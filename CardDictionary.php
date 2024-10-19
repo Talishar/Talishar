@@ -567,7 +567,7 @@ function DynamicCost($cardID)
     case "WTR051":
     case "WTR052":
     case "WTR053":
-      return "0,4";
+      return "2,6";
     case "ARC009":
       return "0,2,4,6,8,10,12";
     case "MON231":
