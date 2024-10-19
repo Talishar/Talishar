@@ -344,46 +344,40 @@ $CCS_WasRuneGate = 5;
 $CCS_HitsWithWeapon = 6;
 $CCS_GoesWhereAfterLinkResolves = 7;
 $CCS_AttackPlayedFrom = 8;
-//9 does not exist
+$CCS_WagersThisLink = 9;
 $CCS_ChainLinkHitEffectsPrevented = 10;
 $CCS_NumBoosted = 11;
-$CCS_NextBoostBuff = 12;//Deprecated -- use $CCS_IsBoosted now.
-$CCS_AttackFused = 13;
-$CCS_AttackTotalDamage = 14;//Deprecated -- use chain link summary instead, it has all of them
-$CCS_NumChainLinks = 15;//Deprecated -- use NumChainLinks() instead
-$CCS_AttackTarget = 16;
-$CCS_LinkTotalAttack = 17;
-$CCS_LinkBaseAttack = 18;
-$CCS_BaseAttackDefenseMax = 19;
-$CCS_ResourceCostDefenseMin = 20;
-$CCS_CardTypeDefenseRequirement = 21;
-$CCS_CachedTotalAttack = 22;
-$CCS_CachedTotalBlock = 23;
-$CCS_CombatDamageReplaced = 24; //CR 6.5.3, CR 6.5.4 (CR 2.0)
-$CCS_AttackUniqueID = 25;
-$CCS_RequiredEquipmentBlock = 26;
-$CCS_CachedDominateActive = 27;
-$CCS_CachedNumBlockedFromHand = 28; //Deprecated by 6/22/23 Rules Bulletin
-$CCS_IsBoosted = 29;
-$CCS_AttackTargetUID = 30;
-$CCS_CachedOverpowerActive = 31;
-$CSS_CachedNumActionBlocked = 32;
-$CCS_CachedNumDefendedFromHand = 33;
-$CCS_HitThisLink = 34;
-$CCS_WagersThisLink = 35;
-$CCS_PhantasmThisLink = 36;
-$CCS_RequiredNegCounterEquipmentBlock = 37;
-$CCS_NumInstantsPlayedByAttackingPlayer = 38;
-$CCS_NextInstantBouncesAura = 39;
-$CCS_EclecticMag = 40;
-//Deprecated
-//$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsFromCombatChain instead
+$CCS_AttackFused = 12;
+$CCS_AttackTarget = 13;
+$CCS_LinkTotalAttack = 14;
+$CCS_LinkBaseAttack = 15;
+$CCS_BaseAttackDefenseMax = 16;
+$CCS_ResourceCostDefenseMin = 17;
+$CCS_CardTypeDefenseRequirement = 18;
+$CCS_CachedTotalAttack = 19;
+$CCS_CachedTotalBlock = 20;
+$CCS_CombatDamageReplaced = 21; //CR 6.5.3, CR 6.5.4 (CR 2.0)
+$CCS_AttackUniqueID = 22;
+$CCS_RequiredEquipmentBlock = 23;
+$CCS_CachedDominateActive = 24;
+$CCS_IsBoosted = 25;
+$CCS_AttackTargetUID = 26;
+$CCS_CachedOverpowerActive = 27;
+$CSS_CachedNumActionBlocked = 28;
+$CCS_CachedNumDefendedFromHand = 29;
+$CCS_HitThisLink = 30;
+$CCS_WagersThisLink = 31;
+$CCS_PhantasmThisLink = 32;
+$CCS_RequiredNegCounterEquipmentBlock = 33;
+$CCS_NumInstantsPlayedByAttackingPlayer = 34;
+$CCS_NextInstantBouncesAura = 35;
+$CCS_EclecticMag = 36;
 
 function ResetCombatChainState()
 {
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt;
   global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_WagersThisLink, $CCS_ChainLinkHitEffectsPrevented;
-  global $CCS_NumBoosted, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget, $CCS_WasRuneGate, $CCS_PhantasmThisLink;
+  global $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget, $CCS_WasRuneGate, $CCS_PhantasmThisLink;
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
   global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
@@ -391,18 +385,19 @@ function ResetCombatChainState()
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag;
 
   if(count($chainLinks) > 0) WriteLog("The combat chain was closed.");
+
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;
   $combatChainState[$CCS_HasAimCounter] = 0;
+  $combatChainState[$CCS_AttackNumCharged] = 0;
   $combatChainState[$CCS_DamageDealt] = 0;
   $combatChainState[$CCS_WasRuneGate] = 0;
-  $combatChainState[$CCS_AttackNumCharged] = 0;
   $combatChainState[$CCS_HitsWithWeapon] = 0;
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
   $combatChainState[$CCS_AttackPlayedFrom] = "NA";
   $combatChainState[$CCS_WagersThisLink] = 0;
   $combatChainState[$CCS_ChainLinkHitEffectsPrevented] = 0;
-  $combatChainState[$CCS_NumBoosted] = 0;
+  $combatChainState[$CCS_AttackFused] = 0;
   $combatChainState[$CCS_AttackFused] = 0;
   $combatChainState[$CCS_AttackTotalDamage] = 0;
   $combatChainState[$CCS_AttackTarget] = "NA";
