@@ -35,88 +35,88 @@ function TypeToPlay($phase)
     case "ARS":
       return "a card to add to arsenal";
     case "PDECK":
-      return "a card from the pitch zone";
+      return "a card from the pitch zone:";
     case "OPT":
-      return "a card to add to the deck top or bottom";
+      return "a card to add to the deck top or bottom:";
     case "CHOOSETOP": case "CHOOSETOPOPPONENT":
-      return "a card to add to the top of the deck";
+      return "a card to add to the top of the deck:";
     case "CHOOSEDECK": case "CHOOSETHEIRDECK":
-      return "a card from deck";
+      return "a card from deck:";
     case "MAYCHOOSEDECK":
-      return "a card from deck";
+      return "a card from deck:";
     case "HANDTOPBOTTOM":
-      return "a card from hand";
+      return "a card from hand:";
     case "CHOOSEBOTTOM":
-      return "a card to put on the bottom of the deck";
+      return "a card to put on the bottom of the deck:";
     case "CHOOSECOMBATCHAIN":
-      return "a card from the chain link";
+      return "a card from the chain link:";
     case "CHOOSECHARACTER":
-      return "a card";
+      return "a card:";
     case "CHOOSETHEIRCHARACTER":
-      return "a card";
+      return "a card:";
     case "MAYCHOOSEHAND":
     case "CHOOSEHAND": 
     case "CHOOSETHEIRHAND":
     case "CHOOSEHANDCANCEL":
       return "a card from hand";
     case "BUTTONINPUT":
-      return "a button";
+      return "a button:";
     case "BUTTONINPUTNOPASS":
-      return "a button";
+      return "a button:";
     case "MAYCHOOSEDISCARD":
-      return "cards from the graveyard";
+      return "cards from the graveyard:";
     case "CHOOSEDISCARDCANCEL":
-      return "cards from the graveyard";
+      return "cards from the graveyard:";
     case "CHOOSEDISCARD":
-      return "cards from the graveyard";
+      return "cards from the graveyard:";
     case "MULTICHOOSEDISCARD":
-      return "cards from the graveyard";
+      return "cards from the graveyard:";
     case "MULTICHOOSEHAND":
-      return "cards from hand";
+      return "cards from hand:";
     case "MAYMULTICHOOSEHAND":
-      return "cards from hand";
+      return "cards from hand:";
     case "MULTICHOOSEDECK":
-      return "cards from deck";
+      return "cards from deck:";
     case "MULTICHOOSEBANISH":
-      return "cards from banish";
+      return "cards from banish:";
     case "YESNO":
-      return str_replace("_", " ", $turn[2]);
+      return str_replace("_", " ", $turn[2]).":";
     case "OK":
-      return str_replace("_", " ", $turn[2]);  
+      return str_replace("_", " ", $turn[2]) .":";  
     case "MULTICHOOSETEXT":
-      return " options";
+      return " options:";
     case "MAYMULTICHOOSETEXT":
-      return " options";
+      return " options:";
     case "CHOOSEARCANE":
-      return "an amount to pitch to arcane barrier";
+      return "an amount to pitch to arcane barrier:";
     case "MAYCHOOSEARSENAL":
-      return "a card from arsenal";
+      return "a card from arsenal:";
     case "CHOOSEARSENAL":
-      return "a card from arsenal";
+      return "a card from arsenal:";
     case "CHOOSEARSENALCANCEL":
-      return "a card from arsenal";
+      return "a card from arsenal:";
     case "CHOOSEMULTIZONE":
-      return "a card";
+      return "a card:";
     case "MAYCHOOSEMULTIZONE":
-      return "a card";
+      return "a card:";
     case "CHOOSEBANISH":
-      return "a card from banish";
+      return "a card from banish:";
     case "INSTANT":
-      return "an instant";
+      return "an instant:";
     case "ENDPHASE":
-      return "an order for triggers";
+      return "an order for triggers:";
     case "CHOOSEFIRSTPLAYER":
-      return "who will be the first player";
+      return "who will be the first player:";
     case "MAYCHOOSETHEIRDISCARD":
-      return "a card from their graveyard";
+      return "a card from their graveyard:";
     case "CHOOSEMYAURA":
-      return " an aura";
+      return " an aura:";
     case "DYNPITCH":
-      return "how much you wish to pay";
+      return "how much you wish to pay:";
     case "CHOOSEMYSOUL": case "MAYCHOOSEMYSOUL":
-      return "a card from soul";
+      return "a card from soul:";
     case "INPUTCARDNAME":
-      return "a card name";
+      return "a card name:";
   }
 }
 

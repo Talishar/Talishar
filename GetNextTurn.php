@@ -1045,7 +1045,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     for ($i = 0; $i < count($myPitch); $i += 1) {
       array_push($pitchingCards, JSONRenderedCard($myPitch[$i], action: 6, actionDataOverride: $myPitch[$i]));
     }
-    $playerInputPopup->popup = CreatePopupAPI("PITCH", [], 0, 1, "Choose a card from your pitch zone to put on the bottom of your deck", 1, cardsArray: $pitchingCards);
+    $playerInputPopup->popup = CreatePopupAPI("PITCH", [], 0, 1, "Choose a card from your pitch zone to put on the bottom of your deck:", 1, cardsArray: $pitchingCards);
   }
 
   if ($turn[0] == "DYNPITCH" && $turn[1] == $playerID) {
@@ -1286,28 +1286,28 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (($turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSEDECK") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose a card from your deck";
+    else $caption = "Choose a card from your deck:";
     $playerInputPopup->popup = ChoosePopup($myDeck, $turn[2], 11, $caption, DeckPieces(), "(You can click your deck to see its content during this card resolution)");
   }
 
   if (($turn[0] == "MAYCHOOSETHEIRDECK" || $turn[0] == "CHOOSETHEIRDECK") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose a card from your opponent deck";
+    else $caption = "Choose a card from your opponent deck:";
     $playerInputPopup->popup = ChoosePopup($theirDeck, $turn[2], 11, $caption, DeckPieces());
   }
 
   if ($turn[0] == "CHOOSEBANISH" && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose a card from your banish";
+    else $caption = "Choose a card from your banish:";
     $playerInputPopup->popup = ChoosePopup($myBanish, $turn[2], 16, $caption, BanishPieces());
   }
 
   if (($turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "CHOOSEARSENAL" || $turn[0] == "CHOOSEARSENALCANCEL") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose a card from your arsenal";
+    else $caption = "Choose a card from your arsenal:";
     $playerInputPopup->popup = ChoosePopup($myArsenal, $turn[2], 16, $caption, ArsenalPieces());
   }
 
@@ -1320,49 +1320,49 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (($turn[0] == "CHOOSETHEIRHAND") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose a card from your opponent's hand";
+    else $caption = "Choose a card from your opponent's hand:";
     $playerInputPopup->popup = ChoosePopup($theirHand, $turn[2], 16, $caption);
   }
 
   if (($turn[0] == "CHOOSEMYAURA") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose one of your auras";
+    else $caption = "Choose one of your auras:";
     $playerInputPopup->popup = ChoosePopup($myAuras, $turn[2], 16, $caption);
   }
 
   if (($turn[0] == "CHOOSEDISCARD" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose a card from your graveyard";
+    else $caption = "Choose a card from your graveyard:";
     $playerInputPopup->popup = ChoosePopup($myDiscard, $turn[2], 16, $caption);
   }
 
   if (($turn[0] == "MAYCHOOSETHEIRDISCARD") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose a card from your opponent's graveyard";
+    else $caption = "Choose a card from your opponent's graveyard:";
     $playerInputPopup->popup = ChoosePopup($theirDiscard, $turn[2], 16, $caption);
   }
 
   if (($turn[0] == "CHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSECOMBATCHAIN") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption =  "Choose a card from the combat chain";
-    $playerInputPopup->popup = ChoosePopup($combatChain, $turn[2], 16, "Choose a card from the combat chain", CombatChainPieces());
+    else $caption =  "Choose a card from the combat chain:";
+    $playerInputPopup->popup = ChoosePopup($combatChain, $turn[2], 16, $caption, CombatChainPieces());
   }
 
   if ($turn[0] == "CHOOSECHARACTER" && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose a card from your character/equipment";
-    $playerInputPopup->popup = ChoosePopup($myCharacter, $turn[2], 16, "Choose a card from your character/equipment", CharacterPieces());
+    else $caption = "Choose a card from your character/equipment:";
+    $playerInputPopup->popup = ChoosePopup($myCharacter, $turn[2], 16, $caption, CharacterPieces());
   }
 
   if ($turn[0] == "CHOOSETHEIRCHARACTER" && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose a card from your opponent character/equipment";
+    else $caption = "Choose a card from your opponent character/equipment:";
     $playerInputPopup->popup = ChoosePopup($theirCharacter, $turn[2], 16, $caption, CharacterPieces());
   }
 
@@ -1376,7 +1376,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $options = explode(",", $params[1]);
     $maxNumber = intval($params[0]);
     $minNumber = count($params) > 2 ? intval($params[2]) : 0;
-    $title = "Choose " . ($minNumber > 0 ? $maxNumber : "up to " . $maxNumber ) . " card" . ($maxNumber > 1 ? "s." : ".");
+    $title = "Choose " . ($minNumber > 0 ? $maxNumber : "up to " . $maxNumber ) . " card" . ($maxNumber > 1 ? "s:" : ":");
     $subtitles = "";
 
     if($turn[0] == "MULTICHOOSEDECK"){
@@ -1449,7 +1449,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (($turn[0] == "CHOOSEMYSOUL" || $turn[0] == "MAYCHOOSEMYSOUL") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
-    else $caption = "Choose one of your soul";
+    else $caption = "Choose one of your soul:";
     $playerInputPopup->popup = ChoosePopup($mySoul, $turn[2], 16, $caption, SoulPieces());
   }
 
