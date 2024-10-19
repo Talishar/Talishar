@@ -63,7 +63,7 @@ function ProcessMacros()
         $somethingChanged = true; 
         SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
       }
-      else if (isset($layers[2]) && $layers[2] == "ARC112" && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
+      else if (!IsGameOver() && isset($layers[2]) && $layers[2] == "ARC112" && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
         $somethingChanged = true; 
         ContinueDecisionQueue("0"); 
       }
