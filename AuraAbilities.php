@@ -84,21 +84,17 @@ function TokenCopyAura($player, $index)
   PlayAbility($auras[$index], "TRIGGER", 0);
 }
 
-function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND", $location = "AURAS")
+function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
 {
   global $EffectContext;
-  $auras = &GetAurasLocation($player, $location);
-  $auraConstants = AuraLocationConstants($location);
-  $pieces = $auraConstants[0];
-  $uniqueIDIndex = $auraConstants[1];
-  $numUsesIndex = $auraConstants[2];
-  for ($i = 0; $i < count($auras); $i += $pieces) {
+  $auras = &GetAuras($player);
+  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
     $EffectContext = $auras[$i];
     switch ($auras[$i]) {
       case "EVR141":
-        if (!$isToken && $auras[$i + $numUsesIndex] > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
-          --$auras[$i + $numUsesIndex];
-          AddLayer("TRIGGER", $player, $auras[$i], "-", "-", $auras[$i + $uniqueIDIndex]);
+        if (!$isToken && $auras[$i + 5] > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
+          --$auras[$i + 5];
+          AddLayer("TRIGGER", $player, $auras[$i], "-", "-", $auras[$i + 6]);
         }
         break;
       case "EVO244":
@@ -310,14 +306,19 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS")
 {
   global $combatChainState, $CCS_WeaponIndex, $combatChain, $mainPlayer;
   $auras = &GetAurasLocation($player, $location);
-  $isToken = $auras[$index + 4] == 1;
+  if ($location == "EQUIP") {
+    $isToken = true;
+  }
+  else {
+    $isToken = $auras[$index + 4] == 1;
+  }
   if ($uniqueID != "") {
     $index = $location == "AURAS" ? SearchAurasForUniqueID($uniqueID, $player) : SearchCharacterForUniqueID($uniqueID, $player);
   }
   AuraDestroyAbility($player, $index, $isToken, $location);
   $from = $location == "AURAS" ? $auras[$index + 9] : "EQUIPMENT";
   $cardID = RemoveAura($player, $index, $uniqueID, $location);
-  AuraDestroyed($player, $cardID, $isToken, $from, $location);
+  AuraDestroyed($player, $cardID, $isToken, $from);
   // Refreshes the aura index with the Unique ID in case of aura destruction
   if (isset($combatChain[0]) && DelimStringContains(CardSubtype($combatChain[0]), "Aura") && $player == $mainPlayer) {
     $combatChainState[$CCS_WeaponIndex] = SearchAurasForUniqueID($combatChain[8], $player);
@@ -348,18 +349,21 @@ function AuraDestroyAbility($player, $index, $isToken, $location = "AURAS")
 
 function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS")
 {
-  AuraLeavesPlay($player, $index, $uniqueID);
-  $auras = &GetAurasLocation($player, $location);
-  $auraConstants = AuraLocationConstants($location);
-  $pieces = $auraConstants[0];
-  $cardID = $auras[$index];
+  AuraLeavesPlay($player, $index, $uniqueID, $location);
   if ($location == "AURAS") {
-    for ($i = $index + $pieces - 1; $i >= $index; --$i) {
+    $auras = &GetAuras($player);
+    $cardID = $auras[$index];
+    for ($i = $index + AuraPieces() - 1; $i >= $index; --$i) {
       unset($auras[$i]);
     }
     $auras = array_values($auras);
   }
-  elseif ($location == "EQUIP") RemoveCharacter($player, $index);
+  elseif ($location == "EQUIP") {
+    $character = &GetPlayerCharacter($player);
+    $cardID = $character[$index];
+    RemoveCharacter($player, $index);
+    $character = array_values($character);
+  }
   if (IsSpecificAuraAttacking($player, $index) || (IsSpecificAuraAttackTarget($player, $index, $uniqueID))) {
     CloseCombatChain();
   }
