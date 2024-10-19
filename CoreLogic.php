@@ -1227,15 +1227,13 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     if ($index == -1) $index = GetClassState($currentPlayer, $CS_CharacterIndex);
     if (SearchCharacterEffects($currentPlayer, $index, "INSTANT")) return true;
   }
-if ($from == "BANISH") {
-  $banish = GetBanish($currentPlayer);
-  if ($index < count($banish)) {
-    if ($banish[$index + 1] !== null) {
+  if ($from == "BANISH") {
+    $banish = GetBanish($currentPlayer);
+    if ($index < count($banish)) {
       $mod = explode("-", $banish[$index + 1])[0];
       if ((DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212" || $mod == "MST236")) || $mod == "INST" || $mod == "ARC119" || $mod == "ELE064") return true;
     }
   }
-}
   if (GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
   if ($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") {
     return PlayerHasFused($currentPlayer);
