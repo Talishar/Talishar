@@ -64,13 +64,13 @@ function TypeToPlay($phase)
     case "BUTTONINPUTNOPASS":
       return "a button";
     case "MAYCHOOSEDISCARD":
-      return "cards from discard";
+      return "cards from the graveyard";
     case "CHOOSEDISCARDCANCEL":
-      return "cards from discard";
+      return "cards from the graveyard";
     case "CHOOSEDISCARD":
-      return "cards from discard";
+      return "cards from the graveyard";
     case "MULTICHOOSEDISCARD":
-      return "cards from discard";
+      return "cards from the graveyard";
     case "MULTICHOOSEHAND":
       return "cards from hand";
     case "MAYMULTICHOOSEHAND":

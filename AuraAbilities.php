@@ -354,7 +354,7 @@ function AuraStartTurnAbilities()
     //These are all start of turn events without priority
     case "MON006":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND");
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to put in your hero's soul for Genesis");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to put in your hero's soul for " . CardLink($auras[$i], $auras[$i]));
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       AddDecisionQueue("SPECIFICCARD", $mainPlayer, "GENESIS", 1);

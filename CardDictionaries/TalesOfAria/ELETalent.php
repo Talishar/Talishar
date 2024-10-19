@@ -246,6 +246,7 @@
       $otherPlayer = $player == 1 ? 2 : 1;
       PrependDecisionQueue("MODDEFCOUNTER", $otherPlayer, "-1", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to put a -1 counter:", 1);
       PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
   }
 
@@ -254,13 +255,13 @@
       $otherPlayer = $player == 1 ? 2 : 1;
       PrependDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to destroy", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to destroy:", 1);
       PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP0", 1);
-      PrependDecisionQueue("WRITELOG", $player, "Player $otherPlayer declined_to_pay_for_Exposed_to_the_Elements.", 1);
+      PrependDecisionQueue("WRITELOG", $player, "Player $otherPlayer declined_to_pay_for_".CardLink("ELE093", "ELE093").".", 1);
       PrependDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
       PrependDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
-      PrependDecisionQueue("BUTTONINPUT", $otherPlayer, "0,2", 0, 1);
-      PrependDecisionQueue("SETDQCONTEXT", $otherPlayer, "Pay_2_to_prevent_an_equipment_from_being_destroyed");
+      PrependDecisionQueue("BUTTONINPUT", $otherPlayer, "0,2", 0);
+      PrependDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose_if_you_want_to_pay_2_to_prevent_an_equipment_with_0_defense_from_being_destroyed.");
   }
 
   function KorshemRevealAbility($player)

@@ -2036,7 +2036,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddGraveyard($topDeck, $mainPlayer, "DECK");
       $numName = SearchCount(SearchMultizone($mainPlayer, "MYDISCARD:isSameName=" . $topDeck));
       LoseHealth($numName, $mainPlayer);
-      WriteLog(Cardlink($topDeck, $topDeck) . " put into discard. Player $mainPlayer lost $numName life");
+      WriteLog(Cardlink($topDeck, $topDeck) . " was put in the graveyard. Player $mainPlayer lost $numName life");
       TrapTriggered($parameter);
       break;
     case "OUT106":
