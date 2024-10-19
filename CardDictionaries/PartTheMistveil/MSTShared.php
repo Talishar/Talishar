@@ -673,7 +673,7 @@ function MSTHitEffect($cardID, $from): void
       AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES," . $count);
       AddDecisionQueue("DECKCARDS", $defPlayer, "<-", 1);
       AddDecisionQueue("LOOKTOPDECK", $defPlayer, "-", 1);
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($cardID, $cardID) . " shows the your opponents deck are:", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($cardID, $cardID) . " shows the your opponents deck are", 1);
       AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $mainPlayer, "<-", 1);
       AddDecisionQueue("SHUFFLEDECK", $defPlayer, "-");
       break;

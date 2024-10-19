@@ -432,7 +432,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));
       AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
       AddDecisionQueue("LOOKTOPDECK", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top cards of your deck are:", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top cards of your deck are", 1);
       AddDecisionQueue("MULTISHOWCARDSDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));
       AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);

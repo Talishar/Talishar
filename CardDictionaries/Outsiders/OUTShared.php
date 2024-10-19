@@ -806,7 +806,7 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("PASSPARAMETER", $player, "{1}");
     AddDecisionQueue("NOTEQUALPASS", $player, "ELSE");
     if($showHand) {
-      AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's hand:", 1);
+      AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's hand", 1);
       AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "-", 1);
     }
     else AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's top deck", 1);

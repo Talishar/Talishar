@@ -29,7 +29,7 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "2-", 1);
         AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "<-", 1);
-        AddDecisionQueue("WRITELOG", $currentPlayer, "Cards returned:", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "Cards returned", 1);
         AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "1", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
         return "";
@@ -246,7 +246,7 @@
       $otherPlayer = $player == 1 ? 2 : 1;
       PrependDecisionQueue("MODDEFCOUNTER", $otherPlayer, "-1", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to put a -1 counter:", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to put a -1 counter", 1);
       PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
   }
 
@@ -255,7 +255,7 @@
       $otherPlayer = $player == 1 ? 2 : 1;
       PrependDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to destroy:", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to destroy", 1);
       PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP0", 1);
       PrependDecisionQueue("WRITELOG", $player, "Player $otherPlayer declined_to_pay_for_".CardLink("ELE093", "ELE093").".", 1);
       PrependDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
