@@ -832,8 +832,7 @@ function AuraBeginEndPhaseAbilities()
       }
     if ($remove == 1){
       $uniqueID = $mainCharacter[$i + 11];
-      $index = SearchCharacterForUniqueID($uniqueID, $mainPlayer);
-      RemoveCharacter($mainPlayer, $index);
+      DestroyAuraUniqueID($mainPlayer, $uniqueID, "EQUIP");
     }
   }
   $mainCharacter = array_values($mainCharacter);
