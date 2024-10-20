@@ -2858,7 +2858,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if (!$skipDRResolution && !$isSpectraTarget && $target != "") $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
     if ($isSpectraTarget) {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
-      if (CardType(($cardID) != "T") && CardType(($cardID) != "Macro") ) { //Don't need to add to anywhere if it's a token
+      if(CardType($cardID) != "T" && CardType($cardID) != "Macro") { //Don't need to add to anywhere if it's a token
         ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, $from);
       }
     }
