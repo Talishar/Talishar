@@ -1617,10 +1617,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       GiveAttackGoAgain();
       DestroyAuraUniqueID($player, $uniqueID);
       break;
-      case "ELE111":
-        $location = $additionalCosts == "EQUIP" ? "EQUIP" : "AURAS";
-        DestroyAuraUniqueID($player, $uniqueID, $location);
-        break;
+    case "ELE111":
+      $location = $additionalCosts == "EQUIP" ? "EQUIP" : "AURAS";
+      DestroyAuraUniqueID($player, $uniqueID, $location);
+      break;
     case "ELE174":
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("YESNO", $player, "destroy_".Cardlink($parameter, $parameter)."_to_have_the_attack_deal_1_damage");
