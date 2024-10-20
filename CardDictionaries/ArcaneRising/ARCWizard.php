@@ -429,12 +429,11 @@ function GetArcaneTargetIndices($player, $target): string
 
 //Visual used for current effect only
 //!Effects are never removed from here
-function ArcaneModifierAmount($source, $player) 
+function ArcaneModifierAmount($source, $player, $index) 
 {
   global $currentTurnEffects;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
-    $effectArr = explode(",", $currentTurnEffects[$i]);
-    if ($currentTurnEffects[$i + 1] != $player || $source != $effectArr[0]) continue;
+    $effectArr = explode(",", $currentTurnEffects[$index]);
+    if ($currentTurnEffects[$index + 1] != $player || $source != $effectArr[0]) return 0;
     switch ($effectArr[0]) {
       case "ARC115":
         return 1;
@@ -511,7 +510,6 @@ function ArcaneModifierAmount($source, $player)
       default:
         break;
     }
-  }
   return 0;
 }
 

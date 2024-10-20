@@ -920,8 +920,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if(AdministrativeEffect($cardID)) continue; //Don't show useless administrative effect
     $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
     $BorderColor = ($isFriendly ? "blue" : "red");
-    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) array_push($playerEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, lightningPlayed:"SKIP", showAmpAmount:"Effect"));
-    else array_push($opponentEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, lightningPlayed:"SKIP", showAmpAmount:"Effect"));
+    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) array_push($playerEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
+    else array_push($opponentEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
   }
   $response->opponentEffects = $opponentEffects;
   $response->playerEffects = $playerEffects;

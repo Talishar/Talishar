@@ -167,15 +167,18 @@ function JSONRenderedCard(
   }
 
   //Current Turn Effects amp amount
-  if(ArcaneModifierAmount($cardNumber, $playerID) > 0 && $showAmpAmount == "Effect") {
-    $countersMap->amp = ArcaneModifierAmount($cardNumber, $playerID);
-    $countersMap->counters = 0;
-  } 
-  if(ArcaneModifierAmount($cardNumber, $otherPlayer) > 0 && $showAmpAmount == "Effect") {
-    $countersMap->amp = ArcaneModifierAmount($cardNumber, $otherPlayer);
-    $countersMap->counters = 0;
-  } 
-
+  if(substr($showAmpAmount, 0, 6) == "Effect") {
+    $index = explode("-", $showAmpAmount)[1];
+    if(ArcaneModifierAmount($cardNumber, $playerID, $index) > 0) {
+      $countersMap->amp = ArcaneModifierAmount($cardNumber, $playerID, $index);
+      $countersMap->counters = 0;
+    } 
+    if(ArcaneModifierAmount($cardNumber, $otherPlayer, $index) > 0) {
+      $countersMap->amp = ArcaneModifierAmount($cardNumber, $otherPlayer, $index);
+      $countersMap->counters = 0;
+    }   
+  }
+  
   if($isSpectator) $gem = NULL;
   if($subcard != NULL) {
     $subcard = explode(',', $subcard);
