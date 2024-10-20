@@ -369,7 +369,7 @@
       // Earth Banishes
       for($i = 0; $i < $earthBanishes; $i++) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:talent=EARTH", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($earthBanishes - $i) . " earth card(s) to banish", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($earthBanishes - $i) . " Earth card(s) to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZBANISH", $player, "GY,-", 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
@@ -378,7 +378,7 @@
       // Action banishes.
       for($i = 0; $i < $actionBanishes; $i++) {
         AddDecisionQueue("GETCARDSFORDECOMPOSE", $player, "MYDISCARD:type=A&MYDISCARD:type=AA", 1); // Modified MULTIZONEINDICES so if there are no actions it can be sent to the next dq and it will revert gamestate. Can't use "PASS" because YESNO "PASS" result is already present.
-        AddDecisionQueue("REVERTGAMESTATEIFNULL", $player, "There aren't any more action cards! Try selecting different earth cards.", 1);
+        AddDecisionQueue("REVERTGAMESTATEIFNULL", $player, "There aren't any more action cards! Try selecting different Earth cards.", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($actionBanishes - $i) . " action card(s) to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZBANISH", $player, "GY,-", 1);
