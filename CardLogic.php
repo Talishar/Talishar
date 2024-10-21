@@ -2552,6 +2552,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $numRunechantsCreated = match ($parameter) {"ROS152" => 3, "ROS153" => 2, "ROS154" => 1};
       PlayAura("ARC112", $player, $numRunechantsCreated);
       break;
+    case "ROS168"://Sigil of aether
+      DealArcane(1, 2, "STATIC", "ROS168", false, $player);
+      break;
     case "ROS219":
       if($target == "ROS219-1") {
       WriteLog("Congrats! You didn't kill each other!🤝");

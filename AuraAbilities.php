@@ -205,8 +205,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
       PlayAura("ARC112", $player);
       break;
     case "ROS168"://Sigil of aether
-      //arcane damage to any target, if damaged, amp 1
-      DealArcane(1, 2, "STATIC", "ROS168", false, $player);
+      AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
     case "ROS182":
       $deck = new Deck($player);

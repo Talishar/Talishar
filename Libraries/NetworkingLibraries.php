@@ -1226,7 +1226,7 @@ function BeginTurnPass()
 
   // Only attempt to end turn if no triggers remain on stack
   if (count($layers) == 0 || $layers[0] != 'TRIGGER') {
-    WriteLog("Main player passed priority; attempting to end turn");
+    WriteLog("Main player passed priority. Attempting to end turn.");
     AddLayer("ENDTURN", $mainPlayer, "-");
   }
 
