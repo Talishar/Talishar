@@ -1758,8 +1758,9 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "UPR169":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "LAYER:type:A");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "LAYER:type=A");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "UPR004": //Invocations must target Ash
