@@ -576,7 +576,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
       default:
         break;
     }
-    if ($remove) RemoveCurrentTurnEffect($i);
+    if ($remove && SearchCurrentTurnEffectsForIndex($searchedEffect, $currentTurnEffects[$i + 1]) != -1) RemoveCurrentTurnEffect($i);
   }
 }
 
