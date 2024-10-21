@@ -205,7 +205,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
       PlayAura("ARC112", $player);
       break;
     case "ROS168"://Sigil of aether
-      AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
+      AddLayer("TRIGGER", $player, $cardID, "-", "Arcane", $uniqueID);
       break;
     case "ROS182":
       $deck = new Deck($player);

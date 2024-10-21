@@ -1800,7 +1800,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS113":
     case "ROS133":
     case "ROS161":
-    case "ROS168"://sigil of aether
     case "ROS182":
     case "ROS210":
     case "ROS226":
@@ -2553,7 +2552,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       PlayAura("ARC112", $player, $numRunechantsCreated);
       break;
     case "ROS168"://Sigil of aether
-      DealArcane(1, 2, "STATIC", "ROS168", false, $player);
+      if($additionalCosts == "Arcane") DealArcane(1, 2, "STATIC", "ROS168", false, $player);
+      else DestroyAuraUniqueID($player, $uniqueID); //destroy sigils at start of action phase
       break;
     case "ROS219":
       if($target == "ROS219-1") {
