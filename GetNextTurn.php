@@ -969,6 +969,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->turnPlayer = $mainPlayer;
   //Turn number
   $response->turnNo = $currentTurn;
+  //Clock
+  $response->clock = $p1TotalTime + $p2TotalTime;
 
   $playerPrompt = new StdClass();
   $promptButtons = array();
