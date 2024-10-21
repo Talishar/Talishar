@@ -1008,7 +1008,7 @@ function CombatChainClosedCharacterEffects()
       switch ($chainLinks[$i][$j]) {
         case "MON089":
           if (!DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST") && $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] >= 6) {
-            $character[FindCharacterIndex($defPlayer, "MON089") + 1] = 0;
+            DestroyCharacter($defPlayer, FindCharacterIndex($defPlayer, "MON089"));
           }
           break;
         case "MON241":
