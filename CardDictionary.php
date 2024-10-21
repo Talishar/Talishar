@@ -2906,7 +2906,7 @@ function ItemDefaultHoldTriggerState($cardID)
     case "EVR071":
       return 1;
     default:
-      return 0;
+      return 2;
   }
 }
 
