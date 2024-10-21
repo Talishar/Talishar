@@ -881,40 +881,41 @@ function CurrentEffectCostModifiers($cardID, $from)
 function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
 {
   global $currentTurnEffects;
+  $preventionModifier = $damage;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
         case "OUT174":
           if ($type != "COMBAT") break;
-          $damage += 1;
+          $preventionModifier += 1;
           $remove = true;
           break;
         case "MST137":
           if (PitchValue($source) == 1) {
-            $damage = 0;
+            $preventionModifier -= $damage;
             RemoveCurrentTurnEffect($i);
           }
-          return $damage;
+          return $preventionModifier;
         case "MST138":
           if (PitchValue($source) == 2) {
-            $damage = 0;
+            $preventionModifier -= $damage;
             RemoveCurrentTurnEffect($i);
           }
-          return $damage;
+          return $preventionModifier;
         case "MST139":
           if (PitchValue($source) == 3) {
-            $damage = 0;
+            $preventionModifier -= $damage;
             RemoveCurrentTurnEffect($i);
           }
-          return $damage;
+          return $preventionModifier;
         default:
           break;
       }
     }
     if ($remove) RemoveCurrentTurnEffect($i);
   }
-  return $damage;
+  return $preventionModifier;
 }
 
 function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable)

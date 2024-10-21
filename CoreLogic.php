@@ -381,7 +381,6 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   if ($type == "COMBAT" || $type == "ATTACKHIT") $source = $combatChain[0];
   $otherPlayer = $player == 1 ? 2 : 1;
   $damage = $damage > 0 ? $damage : 0;
-  $damageThreatened = $damage;
   $origDamage = $damage;
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   if ($preventable) {
