@@ -1189,7 +1189,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
             $target = $option[0]."-".$option[1];
             $cardID = GetMZCard($currentPlayer, $target);
             $params = explode("-", $layers[$j + 3]);
-            if(isset($params[1])) $uniqueIDIndex = SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
+            if(isset($params[1])) {
+              if($option[0] == "MYDISCARD") $uniqueIDIndex = SearchDiscardForUniqueID($params[1], $currentPlayer);
+              else $uniqueIDIndex = SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
+            }
             if($uniqueIDIndex != -1 && $cardID == $source[$uniqueIDIndex]) {
               $label = "Targeted";
               continue;
