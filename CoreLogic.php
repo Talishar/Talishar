@@ -406,7 +406,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
       }
     }
   }
-  if ($damage < $origDamage && $type == "COMBAT" && SearchCurrentTurnEffects("OUT174", $player)) {
+  if (($damage < $origDamage || GetDamagePreventionIndices($player, $type) != "") && $type == "COMBAT" && SearchCurrentTurnEffects("OUT174", $player)) {
     $damage += 1;
     RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForIndex("OUT174", $player));
   } 
