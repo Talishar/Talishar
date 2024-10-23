@@ -144,7 +144,7 @@ function SearchInner(
     if ($zone == "BANISH" && ($array[$i + 1] == "INT" || $array[$i + 1] == "FACEDOWN" || $array[$i + 1] == "NTSTONERAIN" || $array[$i + 1] == "STONERAIN") && !$isIntimidated) continue;
     $cardID = $array[$i];
     if (!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
-      if (($type == "" || DelimStringContains(CardType($cardID), $type) || ($type == "C" && CardType($cardID) == "D"))
+      if (($type == "" || DelimStringContains(CardType($cardID, $zone), $type) || ($type == "C" && CardType($cardID) == "D"))
         && ($subtype == "" || DelimStringContains(CardSubType($cardID), $subtype))
         && ($maxCost == -1 || CardCost($cardID, $zone) <= $maxCost)
         && ($minCost == -1 || CardCost($cardID, $zone) >= $minCost)

@@ -55,7 +55,7 @@ $CID_TekloChest = "LGS187";
 $CID_TekloArms = "LGS188";
 $CID_TekloLegs = "LGS189";
 
-function CardType($cardID)
+function CardType($cardID, $from="")
 {
   global $CS_AdditionalCosts, $currentPlayer;
   if (!$cardID || $cardID == "TRIGGER") return "";
@@ -68,6 +68,7 @@ function CardType($cardID)
     case "ROS018":
     case "ROS024":
     case "ROS253":
+      if($from == "DECK" || $from == "DISCARD" || $from == "BANISH") return "A,I";
       if(function_exists("GetClassState")) {
         if(GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") return "A,I";
         elseif (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "I";
