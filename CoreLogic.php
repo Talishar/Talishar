@@ -406,6 +406,10 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
       }
     }
   }
+  if ($damage < $origDamage && $type == "COMBAT" && SearchCurrentTurnEffects("OUT174", $player)) {
+    $damage += 1;
+    RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForIndex("OUT174", $player));
+  } 
   //else: CR 2.0 6.4.10h If damage is not prevented, damage prevention effects are not consumed
   $damage = $damage > 0 ? $damage : 0;
   $damage = CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable);

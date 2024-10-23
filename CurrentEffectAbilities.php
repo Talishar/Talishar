@@ -885,11 +885,6 @@ function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
-        case "OUT174":
-          if ($type != "COMBAT") break;
-          $damage += 1;
-          $remove = true;
-          break;
         case "MST137":
           if (PitchValue($source) == 1) {
             $damage = 0;
