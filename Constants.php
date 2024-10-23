@@ -428,6 +428,7 @@ function ResetCombatChainState()
   $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] = 0;
   $combatChainState[$CCS_NextInstantBouncesAura] = 0;
   $combatChainState[$CCS_EclecticMag] = 0;
+  
   for($i = 0; $i < count($chainLinks); ++$i) {
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j + 2] != "1") continue;
