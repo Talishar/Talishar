@@ -1362,7 +1362,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
             if ($cardID != $turnEffects[0]) $remove = true;
           }
           break;
-        case "ROS010-GOAGAIN": case "ROS074":
+        case "ROS010-GOAGAIN":
           if(SearchCurrentTurnEffects("ROS010", $currentPlayer) && !IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) && (GetClassState($currentPlayer, $CS_AdditionalCosts) != "Both" || $from == "MELD")) {
             $hasGoAgain = true;
             if ($cardID != "ROS010") $remove = true;

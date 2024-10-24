@@ -233,7 +233,7 @@ function MZStartTurnIndices()
       case "EVO235":
         $emptyEquipmentSlots = explode(",", FindEmptyEquipmentSlots($mainPlayer));
         $discardIndex = SearchDiscardForCard($mainPlayer, $graveyard[$i]);
-        $foundSlot = in_array(CardSubType($graveyard[$i]), $emptyEquipmentSlots);      
+        $foundSlot = in_array(CardSubType($graveyard[$i]), $emptyEquipmentSlots);
         if (CountItem("EVR195", $mainPlayer) >= 2 && $discardIndex != "" && $foundSlot) {
           AddDecisionQueue("COUNTITEM", $mainPlayer, "EVR195");
           AddDecisionQueue("LESSTHANPASS", $mainPlayer, "2");
@@ -2103,7 +2103,7 @@ function ResolveGoAgain($cardID, $player, $from="")
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
     }
     $numActionsPlayed = count($actionsPlayed);
-    if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING", $mainPlayer) && $actionsPlayed[$numActionsPlayed-2] == "ROS074" && DelimStringContains($cardType, "A")) $hasGoAgain = true;
+    if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING", $mainPlayer) && SearchCurrentTurnEffects("ROS074", $mainPlayer) && $actionsPlayed[$numActionsPlayed-2] == "ROS074" && DelimStringContains($cardType, "A")) $hasGoAgain = true;
     if ($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
     if (DelimStringContains($cardType, "A")) $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if (DelimStringContains($cardType, "A") && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
