@@ -23,6 +23,7 @@
   function Crank($player, $index, $mainPhase="True")
   {
     $items = GetItems($player);
+    PrependDecisionQueue("PASSPARAMETER", $player, "{0}");
     PrependDecisionQueue("OP", $player, "DOCRANK-MainPhase". $mainPhase, 1);
     PrependDecisionQueue("PASSPARAMETER", $player, $index, 1);
     PrependDecisionQueue("NOPASS", $player, "-");

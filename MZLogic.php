@@ -462,9 +462,9 @@ function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $
   if ($DQContext != "") AddDecisionQueue("SETDQCONTEXT", $player, $DQContext);
   if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  AddDecisionQueue("SETDQVAR", $player, "0", 1);
   if ($where != "") AddDecisionQueue("MZADDZONE", $player, $where, 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
-  AddDecisionQueue("SETDQVAR", $player, "0", 1);
   if ($silent) ;
   else if ($isReveal) AddDecisionQueue("REVEALCARDS", $player, "-", 1);
   else AddDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
