@@ -1452,7 +1452,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     $restriction = "ELE035";
     return true;
   }
-  if (SearchCurrentTurnEffects("DYN240-" . str_replace(' ', '_', CardName($cardID)), $player)) {
+  if (SearchCurrentTurnEffects("DYN240-" . GamestateSanitize(CardName($cardID)), $player)) {
     $restriction = "DYN240";
     return true;
   } //Can't be played

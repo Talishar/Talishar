@@ -789,7 +789,7 @@ function PitchCard($player, $search="MYHAND:pitch=1&MYHAND:pitch=2&MYHAND:pitch=
 
 function MeldCards($player, $cardID, $lastResult){
   if($lastResult == "Both") $names = explode(" // ", CardName($cardID));
-  else $names[] = implode(" ", explode("_", $lastResult));
+  else $names[] = GamestateUnsanitize($lastResult);
   if($lastResult == "Both") {
     AddLayer("MELD", $player, $cardID);
     $meldState = CardType($cardID);

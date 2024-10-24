@@ -807,7 +807,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for ($i = 0; $i < count($modes); ++$i) {
         if ($text != "") $text .= ", ";
         if ($i > 0 && $i == count($modes) - 1) $text .= " and ";
-        $text .= implode(" ", explode("_", $modes[$i]));
+        $text .= GamestateUnsanitize($modes[$i]);
       }
       if ($text == "") $text = "None";
       WriteLog("Selected mode" . (count($modes) > 1 ? "s" : "") . " for " . CardLink($parameter, $parameter) . (count($modes) > 1 ? " are" : " is") . ": " . $text);
@@ -836,7 +836,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("$cards .");
       return $lastResult;
     case "WRITELOG":
-      WriteLog(implode(" ", explode("_", $parameter)));
+      WriteLog(GamestateUnsanitize($parameter));
       return $lastResult;
     case "WRITELOGCARDLINK":
       $params = explode("_", $parameter);
@@ -926,7 +926,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "REVERTGAMESTATEIFNULL":
       if ($lastResult == ""){
-        WriteLog(implode(" ", explode("_", $parameter)), highlight: true);
+        WriteLog(GamestateUnsanitize($parameter), highlight: true);
         RevertGamestate();
       }
       return $lastResult;
@@ -1680,7 +1680,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       SetClassState($player, $CS_AbilityIndex, $index);
       $names = explode(",", GetAbilityNames($parameter, GetClassState($player, $CS_CharacterIndex)));
       if($names[$index] == "-") $names[$index] = "Ability";
-      WriteLog(implode(" ", explode("_", $names[$index])) . " was chosen.");
+      WriteLog(GamestateUnsanitize($names[$index]) . " was chosen.");
       return $lastResult;
     case "SETABILITYTYPEATTACK":
       $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), "Attack");

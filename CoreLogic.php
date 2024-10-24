@@ -1315,7 +1315,7 @@ function ClassOverride($cardID, $player = "")
   if (HasUniversal($cardID)) { //Universal
     $cardClass = CardClass($mainCharacter[0]);
   }
-  if (SearchCurrentTurnEffects("DYN215-" . str_replace(' ', '_', CardName($cardID)), $player)) { //Phantasmal Symbiosis
+  if (SearchCurrentTurnEffects("DYN215-" . GamestateSanitize(CardName($cardID)), $player)) { //Phantasmal Symbiosis
     if ($cardClass != "") $cardClass .= ",";
     $cardClass .= "ILLUSIONIST";
   }
