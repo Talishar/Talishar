@@ -1457,8 +1457,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $player, "<-", 1);
       break;
     case "CRU099":
+      $index = SearchBanishForCard($player, $target);
+      if($index == -1) break;
       PutItemIntoPlayForPlayer($target, $player);
-      RemoveBanish($player, SearchBanishForCard($player, $target));
+      RemoveBanish($player, $index);
       break;
     case "CRU102":
       AddDecisionQueue("DRAW", $player, "-", 1);

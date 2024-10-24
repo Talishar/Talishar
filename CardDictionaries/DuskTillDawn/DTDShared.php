@@ -185,6 +185,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DTD006":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRBANISH&MYBANISH");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to turn face-down");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "TURNBANISHFACEDOWN", 1);
       return "";

@@ -143,6 +143,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
 function RemoveBanish($player, $index)
 {
   $banish = &GetBanish($player);
+  if($index == -1) return "";
   $cardID = $banish[$index];
   for ($i = $index + BanishPieces() - 1; $i >= $index; --$i) {
     unset($banish[$i]);
