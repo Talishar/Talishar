@@ -627,6 +627,7 @@ function AuraStartTurnAbilities()
     switch ($defPlayerAuras[$i]) {
       case "MST133":
         AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY", $defPlayerAuras[$i + 6]);
+        break;
       case "AJV017": // Channel Mount Isen
         $character = &GetPlayerCharacter($mainPlayer);
         $eqFrostbiteCount = 0;
