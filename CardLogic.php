@@ -2581,7 +2581,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "AIO003":
       AddDecisionQueue("DECKCARDS", $defPlayer, "0");
-      AddDecisionQueue("YESNO", $defPlayer, "if_you_want_to_banish_a_card_of_your_deck", 1);
+      AddDecisionQueue("YESNO", $defPlayer, "if_you_want_to_banish_the_top_card_of_your_deck_with_" . CardLink($parameter, $parameter), 1);
       AddDecisionQueue("NOPASS", $defPlayer, "-", 1);
       AddDecisionQueue("PARAMDELIMTOARRAY", $defPlayer, "0", 1);
       AddDecisionQueue("MULTIREMOVEDECK", $defPlayer, "0", 1);

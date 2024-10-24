@@ -406,7 +406,11 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
       }
     }
   }
-  if (($damage < $origDamage || GetDamagePreventionIndices($player, $type) != "") && $type == "COMBAT" && SearchCurrentTurnEffects("OUT174", $player)) {
+  EvaluateCombatChain($totalAttack, $totalBlock);
+  if ($damage < $origDamage 
+  || (GetDamagePreventionIndices($player, $type) != "" && $totalAttack > $totalBlock) 
+  && $type == "COMBAT" 
+  && SearchCurrentTurnEffects("OUT174", $player)) {
     $damage += 1;
     RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForIndex("OUT174", $player));
   } 
