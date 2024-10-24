@@ -1934,6 +1934,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVO435":
     case "EVO436":
     case "EVO437":
+    case "EVO446":
+    case "EVO447":
+    case "EVO448":
+    case "EVO449":
       return !EvoHasUnderCard($currentPlayer, $index);
     case "HVY055":
       return CountItem("DYN243", $currentPlayer) <= 0;
