@@ -2854,6 +2854,10 @@ function CharacterDefaultActiveState($cardID)
       return 0;
     case "DYN006":
       return 1;
+    case "OUT095":
+    case "OUT096":
+    case "OUT098":
+      return 1;
     case "DTD165":
     case "DTD166":
     case "DTD167":
