@@ -129,7 +129,6 @@ function CharacterStartTurnAbility($index)
   $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $char = new Character($mainPlayer, $index);
   $character = GetPlayerCharacter($mainPlayer);
-  if ($char->status == 0 && !CharacterTriggerInGraveyard($char->cardID)) return;
   if ($char->status == 1 || $char->status == 3) return;
   $cardID = $char->cardID;
   if ($index == 0) $cardID = ShiyanaCharacter($cardID);
@@ -159,24 +158,6 @@ function CharacterStartTurnAbility($index)
       if (CountAura("WTR075", $mainPlayer) >= 3) {
         WriteLog(CardLink($char->cardID, $char->cardID) . " gives Crush attacks Dominate this turn");
         AddCurrentTurnEffect("EVR019", $mainPlayer);
-      }
-      break;
-    case "DYN117":
-    case "DYN118":
-    case "OUT011":
-    case "EVO235":
-      $discardIndex = SearchDiscardForCard($mainPlayer, $char->cardID);
-      if (CountItem("EVR195", $mainPlayer) >= 2 && $discardIndex != "") {
-        AddDecisionQueue("COUNTITEM", $mainPlayer, "EVR195");
-        AddDecisionQueue("LESSTHANPASS", $mainPlayer, "2");
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_2_".Cardlink("EVR195", "EVR195")."_and_equip_" . CardLink($char->cardID, $char->cardID), 1);
-        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "EVR195-2", 1);
-        AddDecisionQueue("FINDANDDESTROYITEM", $mainPlayer, "<-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYCHAR-" . $index, 1);
-        AddDecisionQueue("MZUNDESTROY", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYDISCARD-" . $discardIndex, 1);
-        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
       break;
     case "DTD564":
@@ -1070,21 +1051,6 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used
       break;
-  }
-}
-
-function CharacterTriggerInGraveyard($cardID)
-{
-  switch ($cardID) {
-    case "DYN117":
-    case "DYN118":
-      return true;
-    case "OUT011":
-      return true;
-    case "EVO235":
-      return true;
-    default:
-      return false;
   }
 }
 

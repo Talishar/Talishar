@@ -602,7 +602,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to equip");
         AddDecisionQueue("CHOOSECARD", $currentPlayer, "<-");
         AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-INVENTORY");
-        AddDecisionQueue("EQUIPCARD", $currentPlayer, "<-");
+        AddDecisionQueue("EQUIPCARDINVENTORY", $currentPlayer, "<-");
       }
       return "";
     case "MST227":

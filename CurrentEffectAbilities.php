@@ -301,7 +301,7 @@ function EffectHitEffect($cardID, $from)
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a dagger to equip");
         AddDecisionQueue("CHOOSECARD", $mainPlayer, $weapons);
         AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-INVENTORY");
-        AddDecisionQueue("EQUIPCARD", $mainPlayer, "<-");
+        AddDecisionQueue("EQUIPCARDINVENTORY", $mainPlayer, "<-");
       }
       break;
     case "OUT158":

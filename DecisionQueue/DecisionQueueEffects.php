@@ -158,7 +158,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
             AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Proto card to equip", 1);
             AddDecisionQueue("CHOOSECARD", $player, "<-", 1);
             AddDecisionQueue("APPENDLASTRESULT", $player, "-INVENTORY", 1);
-            AddDecisionQueue("EQUIPCARD", $player, "<-", 1);
+            AddDecisionQueue("EQUIPCARDINVENTORY", $player, "<-", 1);
             break;
           case "Evo_permanents_get_+1_block":
             AddCurrentTurnEffect("EVO146", $player);

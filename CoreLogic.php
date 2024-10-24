@@ -220,18 +220,51 @@ function MZStartTurnMayAbilities()
 function MZStartTurnIndices()
 {
   global $mainPlayer;
-  $mainDiscard = &GetDiscard($mainPlayer);
+  $graveyard = &GetDiscard($mainPlayer);
   $cards = "";
-  for ($i = 0; $i < count($mainDiscard); $i += DiscardPieces()) {
-    switch ($mainDiscard[$i]) {
+  for ($i = 0; $i < count($graveyard); $i += DiscardPieces()) {
+    switch ($graveyard[$i]) {
       case "UPR086":
         if (ThawIndices($mainPlayer) != "") $cards = CombineSearches($cards, SearchMultiZoneFormat($i, "MYDISCARD"));
+        break;
+      case "DYN117":
+      case "DYN118":
+      case "OUT011":
+      case "EVO235":
+        $emptyEquipmentSlots = explode(",", FindEmptyEquipmentSlots($mainPlayer));
+        $discardIndex = SearchDiscardForCard($mainPlayer, $graveyard[$i]);
+        $foundSlot = in_array(CardSubType($graveyard[$i]), $emptyEquipmentSlots);      
+        if (CountItem("EVR195", $mainPlayer) >= 2 && $discardIndex != "" && $foundSlot) {
+          AddDecisionQueue("COUNTITEM", $mainPlayer, "EVR195");
+          AddDecisionQueue("LESSTHANPASS", $mainPlayer, "2");
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_2_".Cardlink("EVR195", "EVR195")."_and_equip_" . CardLink($graveyard[$i], $graveyard[$i]), 1);
+          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "EVR195-2", 1);
+          AddDecisionQueue("FINDANDDESTROYITEM", $mainPlayer, "<-", 1);
+          AddDecisionQueue("EQUIPCARD", $mainPlayer, $graveyard[$i]."-".CardSubType($graveyard[$i]), 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYDISCARD-" . $discardIndex, 1);
+          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        }
         break;
       default:
         break;
     }
   }
   return $cards;
+}
+
+function FindEmptyEquipmentSlots($player)
+{
+  $character = &GetPlayerCharacter($player);
+  $available = array_filter(["Head", "Chest", "Arms", "Legs"], function ($slot) use ($character) {
+    for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+      $subtype = CardSubType($character[$i], $character[$i + 11]);
+      $status = $character[$i + 1];
+      if (DelimStringContains($subtype, $slot) && $status != 0) return false;
+    }
+    return true;
+  });
+  return empty($available) ? "" : implode(",", $available);
 }
 
 function ArsenalStartTurnAbilities()

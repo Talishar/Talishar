@@ -25,7 +25,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_NumCharged, $otherPlayer, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
-  global $CCS_GoesWhereAfterLinkResolves, $CCS_AttackNumCharged, $layers, $CS_DamageDealt;
+  global $CCS_AttackNumCharged, $layers, $CS_DamageDealt;
   $rv = "";
   switch ($phase) {
     case "FINDINDICES":
@@ -137,9 +137,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "EQUIP1":
           $rv = GetEquipmentIndices($player, 1, 0);
-          break;
-        case "EQUIPCARD":
-          $rv = FindCharacterIndex($player, $subparam);
           break;
         case "EQUIPONCC":
           $rv = GetEquipmentIndices($player, onCombatChain: true);
@@ -1931,7 +1928,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $dqState[6] = $damage;
       if ($damage > 0) AddDamagePreventionSelection($player, $damage, $params[2], $params[1]);
       return $damage;
-    case "EQUIPCARD":
+    case "EQUIPCARDINVENTORY":
       if (str_contains($parameter, "-")) {
         $from = explode('-', $parameter)[1];
         $parameter = explode('-', $parameter)[0];
@@ -1944,8 +1941,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (CardType($parameter) == "W") EquipWeapon($player, $parameter);
       else EquipEquipment($player, $parameter);
       return "";
-    case "FROSTEXPOSED":
-      EquipEquipment($player, "ELE111", $parameter);
+    case "EQUIPCARD":
+      $params = explode('-', $parameter);
+      EquipEquipment($player, $params[0], $params[1]);
       return "";
     case "ROGUEMIRRORGAMESTART":
       $deck = &GetDeck($player);
