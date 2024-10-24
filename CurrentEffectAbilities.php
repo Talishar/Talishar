@@ -983,6 +983,12 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
             if ($source == "ARC112" || $source == "UPR042") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
           }
           break;
+        case "OUT174":
+          if ($type == "COMBAT" && SearchCurrentTurnEffects("OUT174", $player)) {
+            $damage += 1;
+            $remove = true;
+          } 
+          break;
         case "OUT175":
         case "OUT176":
         case "OUT177":
