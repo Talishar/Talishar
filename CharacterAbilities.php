@@ -129,7 +129,7 @@ function CharacterStartTurnAbility($index)
   $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $char = new Character($mainPlayer, $index);
   $character = GetPlayerCharacter($mainPlayer);
-  if ($char->status == 1 || $char->status == 3) return;
+  if ($char->status != 2) return;
   $cardID = $char->cardID;
   if ($index == 0) $cardID = ShiyanaCharacter($cardID);
   switch ($cardID) {
