@@ -111,7 +111,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       }
       break;
     case "CRU105":
-      if ($from == "PLAY" && $items[$index + 1] > 0) {
+      if ($from == "PLAY" && $items[$index + 1] > 0 && $items[$index + 2] == 2) {
         $items[$index + 1] -= 1;
         AddAdditionalCost($currentPlayer, "PAID");
       }

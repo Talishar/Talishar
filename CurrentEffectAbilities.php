@@ -1695,7 +1695,6 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
 
 function IsCombatEffectPersistent($cardID)
 {
-  global $currentPlayer;
   global $Card_LifeBanner, $Card_ResourceBanner;
   $effectArr = explode(",", $cardID);
   $cardID = ShiyanaCharacter($effectArr[0]);
