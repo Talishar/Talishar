@@ -2024,7 +2024,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $numDraw = count($hand) - 1;
       DiscardHand($mainPlayer);
       for ($i = 0; $i < $numDraw; ++$i) Draw($mainPlayer);
-      WriteLog("Attacker discarded their hand and drew $numDraw cards");
+      if ($numDraw > 0) WriteLog("Player $mainPlayer discarded their hand and drew $numDraw cards");
+      else WriteLog("Player $mainPlayer discarded their hand.");
       TrapTriggered($parameter);
       break;
     case "OUT104":
