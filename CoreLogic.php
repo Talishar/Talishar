@@ -2920,7 +2920,7 @@ function EvoHandling($cardID, $player, $from)
       } else {
         if (substr($from, 0, 5) != "THEIR") AddGraveyard($cardID, $player, "HAND", $player);
         else AddGraveyard($cardID, $otherPlayer, "GRAVEYARD", $player);
-        WriteLog("<b>*ERR0R* // No base of that type equipped //</b>");
+        WriteLog("<b>🚫 *ERR0R* // No base of that type equipped //</b>");
       }
       break;
     }
