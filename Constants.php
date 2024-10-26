@@ -630,9 +630,14 @@ function ResetCardPlayed($cardID)
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $combatChainState, $CCS_EclecticMag;
   $type = CardType($cardID);
-  if(DelimStringContains($type, "A") && ClassContains($cardID, "WIZARD", $currentPlayer)) SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 0);
-  if(DelimStringContains($type, "A")) SetClassState($currentPlayer, $CS_NextNAAInstant, 0);
-  if(DelimStringContains($type, "A")) $combatChainState[$CCS_EclecticMag] = 0;
+  if(DelimStringContains($type, "A") && ClassContains($cardID, "WIZARD", $currentPlayer) && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "")) {
+    SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 0);
+    //Section below helps with visualization and removing used effects
+    SearchCurrentTurnEffects("ARC116", $currentPlayer, true);
+    SearchCurrentTurnEffects("CRU162", $currentPlayer, true);
+  }
+  if(DelimStringContains($type, "A") && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "")) SetClassState($currentPlayer, $CS_NextNAAInstant, 0);
+  if(DelimStringContains($type, "A") && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "")) $combatChainState[$CCS_EclecticMag] = 0;
 }
 
 function ResetCharacterEffects()

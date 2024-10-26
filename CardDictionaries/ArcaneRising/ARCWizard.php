@@ -26,6 +26,7 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ARC116":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
       return "";
     case "ARC117":
