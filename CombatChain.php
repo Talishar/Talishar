@@ -71,14 +71,12 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 {
   global $mainPlayer, $defPlayer, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
-  global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated;
+  global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated;
   global $combatChain, $CS_Transcended, $CS_NumBluePlayed, $CS_NumLightningPlayed, $CS_DamageDealt, $CS_NumCranked, $CS_ArcaneDamageDealt;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
   switch ($cardID) {
     case "WTR003":
       return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
-    case "WTR040":
-      return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? 2 : 0;
     case "WTR080":
       return 1;
     case "WTR081":
@@ -215,8 +213,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "ELE135":
     case "ELE136":
       return $from == "ARS" ? 1 : 0;
-    case "ELE202":
-      return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 1 ? 1 : 0;
     case "EVR038":
       return (ComboActive() ? 3 : 0);
     case "EVR040":
@@ -337,8 +333,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "TCC013":
     case "TCC024":
       return EvoUpgradeAmount($mainPlayer);
-    case "TCC028":
-      return SearchPitchForCard($mainPlayer, "TCC048") > -1 ? 1 : 0;
     case "EVO009":
       return EvoUpgradeAmount($mainPlayer) >= 4;
     case "EVO054":
@@ -356,8 +350,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "EVO214":
     case "EVO215":
       return NumEquipBlock();
-    case "HVY006":
-      return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0;
     case "HVY013":
       $hand = &GetHand($defPlayer);
       return $combatChain[0] == "HVY013" && count($hand) == 0 ? 3 : 0;
@@ -365,8 +357,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HVY018":
     case "HVY019":
       return GetClassState($mainPlayer, $CS_HaveIntimidated) > 0 ? 2 : 0;
-    case "HVY049":
-      return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 1 : 0;
     case "HVY112":
       return 3;
     case "HVY113":
@@ -402,8 +392,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "AUR015":
     case "ROS009":
       return GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0;
-    case "ROS003":
-      return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 2 : 0);
     case "ROS031":
       return SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:talent=EARTH")) >= 4 ? 4 : 0;
     case "ROS032":

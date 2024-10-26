@@ -717,14 +717,20 @@ function BlockValue($cardID)
 
 function AttackValue($cardID)
 {
-  global $mainPlayer, $currentPlayer, $CS_NumNonAttackCards;
+  global $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn;
   if (!$cardID) return "";
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
-  if($cardID == "ARC077") {
-      return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0 ? 4 : 1;
-  }
+
+  //Only weapon that gains power, NOT on their attack
+  if ($cardID == "WTR040") return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? 6 : 4;
+  if ($cardID == "ARC077") return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0 ? 4 : 1;
+  if ($cardID == "ELE202") return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 1 ? 4 : 3;
+  if ($cardID == "TCC028") return SearchPitchForCard($mainPlayer, "TCC048") > -1 ? 4 : 3;
+  if ($cardID == "HVY006") return GetClassState($mainPlayer, $CS_Num6PowDisc) >= 0 ? 4 : 3;
+  if ($cardID == "HVY049") return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 4 : 3;
+  if ($cardID == "ROS003") return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 4 : 2);
   if ($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {
     if (SearchCharacterForCard($mainPlayer, "MON003")) return 1;
     if (SearchCharacterForCard($mainPlayer, "MON088")) return 4;
