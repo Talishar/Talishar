@@ -141,8 +141,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "WTR177":
     case "WTR178":
       return NumCardsNonEquipBlocking() < 2 ? 1 : 0;
-    case "ARC077":
-      return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0 ? 3 : 0;
     case "ARC188":
     case "ARC189":
     case "ARC190":

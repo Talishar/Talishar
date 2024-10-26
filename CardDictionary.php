@@ -705,11 +705,14 @@ function BlockValue($cardID)
 
 function AttackValue($cardID)
 {
-  global $combatChainState, $CCS_NumBoosted, $mainPlayer, $currentPlayer;
+  global $mainPlayer, $currentPlayer, $CS_NumNonAttackCards;
   if (!$cardID) return "";
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
+  if($cardID == "ARC077") {
+      return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0 ? 4 : 1;
+  }
   if ($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {
     if (SearchCharacterForCard($mainPlayer, "MON003")) return 1;
     if (SearchCharacterForCard($mainPlayer, "MON088")) return 4;

@@ -1222,7 +1222,7 @@ function AuraHitEffects($attackID)
 
 function AuraAttackModifiers($index, &$attackModifiers)
 {
-  global $CombatChain, $combatChainState, $CCS_AttackPlayedFrom, $combatChain;
+  global $CombatChain, $combatChainState, $CCS_AttackPlayedFrom;
   global $CID_Frailty;
   $chainCard = $CombatChain->Card($index);
   $modifier = 0;
