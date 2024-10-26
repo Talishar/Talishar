@@ -418,6 +418,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   $damage = $damage > 0 ? $damage : 0;
   $origDamage = $damage;
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
+  if ($damage > 0) $damage += CurrentEffectDamageModifiers($player, $source, $type);
   if ($preventable) {
     if ($damage > 0) $damage = CurrentEffectPreventDamagePrevention($player, $type, $damage, $source);
     if (ConsumeDamagePrevention($player)) return 0;//I damage can be prevented outright, don't use up your limited damage prevention
@@ -449,7 +450,6 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   $damage = ItemTakeDamageAbilities($player, $damage, $type, $source);
   $damage = CharacterTakeDamageAbilities($player, $damage, $type, $preventable);
   if ($damage == 1 && $preventable && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
-  if ($damage > 0) $damage += CurrentEffectDamageModifiers($player, $source, $type);
   $dqVars[0] = $damage;
   if ($type == "COMBAT") $dqState[6] = $damage;
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damage . "," . $type . "," . $source);
