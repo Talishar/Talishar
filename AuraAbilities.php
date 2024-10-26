@@ -1220,7 +1220,7 @@ function AuraHitEffects($attackID)
   }
 }
 
-function AuraAttackModifiers($index, &$attackModifiers)
+function AuraAttackModifiers($index, &$attackModifiers, $onBlock=false)
 {
   global $CombatChain, $combatChainState, $CCS_AttackPlayedFrom;
   global $CID_Frailty;
@@ -1228,24 +1228,26 @@ function AuraAttackModifiers($index, &$attackModifiers)
   $modifier = 0;
   $player = $chainCard->PlayerID();
   $myAuras = &GetAuras($player);
-  for ($i = 0; $i < count($myAuras); $i += AuraPieces()) {
-    switch ($myAuras[$i]) {
-      case "ELE117":
-        if (CardType($chainCard->ID()) == "AA") {
-          $modifier += 3;
-          array_push($attackModifiers, $myAuras[$i]);
-          array_push($attackModifiers, 3);
-        }
-        break;
-      case $CID_Frailty:
-        if ($index == 0 && (IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS")) {
-          $modifier -= 1;
-          array_push($attackModifiers, $myAuras[$i]);
-          array_push($attackModifiers, -1);
-        }
-        break;
-      default:
-        break;
+  if (!$onBlock) {//This codeblock was counting CMH twice on block
+    for ($i = 0; $i < count($myAuras); $i += AuraPieces()) {
+      switch ($myAuras[$i]) {
+        case "ELE117":
+          if (CardType($chainCard->ID()) == "AA") {
+            $modifier += 3;
+            array_push($attackModifiers, $myAuras[$i]);
+            array_push($attackModifiers, 3);
+          }
+          break;
+        case $CID_Frailty:
+          if ($index == 0 && (IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS")) {
+            $modifier -= 1;
+            array_push($attackModifiers, $myAuras[$i]);
+            array_push($attackModifiers, -1);
+          }
+          break;
+        default:
+          break;
+      }
     }
   }
   $theirAuras = &GetAuras($player == 1 ? 2 : 1);

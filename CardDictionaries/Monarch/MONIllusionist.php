@@ -151,7 +151,7 @@
     if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
     if(PowerCantBeModified($card->ID())) return AttackValue($card->ID()) >= 6;
     $attackValue = ModifiedAttackValue($card->ID(), $defPlayer, "CC", source:$card->ID());
-    $attackValue += AuraAttackModifiers($index, $attackModifiers);
+    $attackValue += AuraAttackModifiers($index, $attackModifiers, onBlock: true);
     $attackValue += $card->AttackValue();//Combat chain attack modifier
     return $attackValue >= 6;
   }
