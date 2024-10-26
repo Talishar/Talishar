@@ -572,7 +572,10 @@ function DynamicCost($cardID)
     case "ARC009":
       return "0,2,4,6,8,10,12";
     case "MON231":
-      return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40";
+      if(SearchCurrentTurnEffects("CRU141-NAA", $currentPlayer) || SearchCurrentTurnEffects("CRU141-AA", $currentPlayer)) {
+        return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110";
+      }
+      return "0,2,4,6,8,10,12,14,16,18,20";
     case "EVR022":
       return "0,1,2,3,4,5,6,7,8,9,10,11,12";
     case "EVR124":
@@ -584,23 +587,32 @@ function DynamicCost($cardID)
     case "EVO140":
       return "0,2,4,6,8,10,12,14,16,18,20";
     case "EVO143":
-      return "0,3,6,9,12,15,18";
+      return "0,3,6,9,12,15,18,21,24,27,30";
     case "EVO145":
-      return "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20";
-    case "EVO238":
-      return "0,1,2,3,4,5,6,7,8,9,10,11,12";
-    case "EVO242":
       return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40";
+    case "EVO238":
+      return "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15";
+    case "EVO242":
+      if(SearchCurrentTurnEffects("CRU141-NAA", $currentPlayer) || SearchCurrentTurnEffects("CRU141-AA", $currentPlayer)) {
+        return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110";
+      }
+      return "0,2,4,6,8,10,12,14,16,18,20";
     case "HVY103":
-      return "0,1,2,3,4,5,6,7,8,9,10,11,12";
+      return "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15";
     case "HVY250":
       return "0,1,2,3,4,5,6,7,8,9,10,11,12";
     case "HVY251":
-      return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40";
+      if(SearchCurrentTurnEffects("CRU141-NAA", $currentPlayer) || SearchCurrentTurnEffects("CRU141-AA", $currentPlayer)) {
+        return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110";
+      }
+      return "0,2,4,6,8,10,12,14,16,18,20";
     case "MST227":
       return GetIndices(SearchCount(SearchItemsByName($currentPlayer, "Hyper Driver")) + 1);
     case "ROS004":
-      return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40";
+      if(SearchCurrentTurnEffects("CRU141-NAA", $currentPlayer) || SearchCurrentTurnEffects("CRU141-AA", $currentPlayer)) {
+        return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110";
+      }
+      return "0,2,4,6,8,10,12,14,16,18,20";
     default:
       return "";
   }
