@@ -514,7 +514,6 @@ function MZMayChooseAndLowerDef($player, $search, $may = false, $context = "")
   if ($may) WriteLog("Adding MAY choose MZ DQ.");
   if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  WriteLog("Adding multizone LOWERDEF DQ.");
   AddDecisionQueue("MZOP", $player, "LOWERDEF", 1);
 }
 

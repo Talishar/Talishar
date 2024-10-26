@@ -425,6 +425,7 @@ function SteamCounterLogic($item, $playerID, $uniqueID)
       }
     }
   }
+  if(SearchCurrentTurnEffects("EVO000-".$item, $playerID, true)) $counters += 1;
   return $counters;
 }
 

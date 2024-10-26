@@ -1803,7 +1803,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "MYARS":
             $arsenal = &GetArsenal($currentPlayer);
             $arsenal[$mzIndex[1] + 3] = 1;
-            WriteLog(CardLink($arsenal[$mzIndex[1]], $arsenal[$mzIndex[1]]) . " gained an aim counter");
+            WriteLog(CardLink($arsenal[$mzIndex[1]], $arsenal[$mzIndex[1]]) . " gained an aim counter.");
             AddCurrentTurnEffect($params[0], $currentPlayer, "HAND", $arsenal[$mzIndex[1] + 5]);
             break;
           default:
@@ -1821,12 +1821,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "MYITEMS":
             $items = &GetItems($player);
             $items[$mzIndex[1] + 1] += 1;
-            WriteLog(CardLink($items[$mzIndex[1]], $items[$mzIndex[1]]) . " gained a steam counter");
+            WriteLog(CardLink($items[$mzIndex[1]], $items[$mzIndex[1]]) . " gained a steam counter.");
             break;
           case "MYARS":
             $arsenal = &GetArsenal($currentPlayer);
             $arsenal[$mzIndex[1] + 3] = 1;
-            WriteLog(CardLink($arsenal[$mzIndex[1]], $arsenal[$mzIndex[1]]) . " gained an aim counter");
+            WriteLog(CardLink($arsenal[$mzIndex[1]], $arsenal[$mzIndex[1]]) . " gained an aim counter.");
+            break;
+          case "LAYER":
+            AddCurrentTurnEffect($params[0]."-".GetMZCard($currentPlayer, $lastResultArr[$i]), $currentPlayer, "LAYER");
+            WriteLog(GetMZCardLink($currentPlayer, $lastResultArr[$i]) . " gained a steam counter.");
             break;
           default:
             break;
@@ -1841,7 +1845,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "MYITEMS":
             $items = &GetItems($player);
             $items[$mzIndex[1] + 1] += $parameter;
-            WriteLog(CardLink($items[$mzIndex[1]], $items[$mzIndex[1]]) . " gained a steam counter");
+            WriteLog(CardLink($items[$mzIndex[1]], $items[$mzIndex[1]]) . " gained a steam counter.");
             break;
         }
       }
