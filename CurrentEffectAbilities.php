@@ -2142,9 +2142,13 @@ function AdministrativeEffect($effectID)
 {
   $cardID = substr($effectID, 0, 6);
   switch ($cardID) {
-    case "EVO013":
-    case "ROS246":
     case "ELE111":
+    case "OUT093-Load":
+    case "OUT093-Aim":
+    case "EVO013":
+    case "HVY254-1":
+    case "HVY254-2":
+    case "ROS246":
       return true;
     default:
       return false;

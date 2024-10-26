@@ -79,7 +79,7 @@ function HVYEffectAttackModifier($cardID): int|string
 
 function HVYCombatEffectActive($cardID, $attackID)
 {
-  global $mainPlayer, $combatChainState, $CombatChain;
+  global $mainPlayer, $CombatChain;
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
   return match ($cardID) {

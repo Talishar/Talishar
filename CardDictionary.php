@@ -904,6 +904,8 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       if ($character[$index + 2] > 0) $rv .= ",Attack";
       return $rv;
     case "OUT093":
+      if(!SearchCurrentTurnEffects("OUT093-Load", $currentPlayer)) return "Aim";
+      if(!SearchCurrentTurnEffects("OUT093-Aim", $currentPlayer)) return "Load";
       return "Load,Aim";
     case "TCC050":
       if ($index == -1) return "";

@@ -218,6 +218,10 @@ function CharacterStartTurnAbility($index)
     case "HVY048":
       if (!SearchCurrentTurnEffects($cardID . "-1", $mainPlayer) && $character[1] < 3) AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
       break;
+    case "OUT093":
+      AddCurrentTurnEffect("OUT093-Load", $mainPlayer);
+      AddCurrentTurnEffect("OUT093-Aim", $mainPlayer);
+      break;
     case "HVY254":
       AddCurrentTurnEffect("HVY254-1", $mainPlayer);
       AddCurrentTurnEffect("HVY254-2", $mainPlayer);

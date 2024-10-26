@@ -251,6 +251,7 @@ function OUTAbilityCost($cardID)
         return "";
       case "OUT093":
         $abilityName = GetResolvedAbilityName($cardID);
+        SearchCurrentTurnEffects("OUT093-".$abilityName, $currentPlayer, true);
         if($abilityName == "Load") LoadArrow($currentPlayer);
         else if($abilityName == "Aim") {
           $arsenalFaceDown = ArsenalFaceDownCard($currentPlayer);
