@@ -1,6 +1,7 @@
 <?php
+$body = json_decode(file_get_contents('php://input'), true);
 
-if (isset($_POST['block-user-submit'])) {
+if (isset($body['block-user-submit'])) {
     session_start();
     if (!isset($_SESSION['userid'])) {
         header('Location: ./MainMenu.php');
@@ -25,7 +26,8 @@ if (isset($_POST['block-user-submit'])) {
         mysqli_stmt_bind_param($stmt, "s", $userToBlock);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
-        if (!$row = mysqli_fetch_assoc($result)) {
+        $row = $result->fetch_assoc();
+        if (!$row) {
             echo "The user you are trying to block could not be found in the database.";
             exit();
         } else {
@@ -37,51 +39,16 @@ if (isset($_POST['block-user-submit'])) {
             } else {
                 mysqli_stmt_bind_param($stmt, "ss", $_SESSION['userid'], $row['usersId']);
                 mysqli_stmt_execute($stmt);
-                echo "You have successfully blocked " . $userToBlock . ".";
-                exit();
+                if (mysqli_stmt_affected_rows($stmt) > 0) {
+                    echo "You have successfully blocked " . $userToBlock . ".";
+                    mysqli_stmt_close($stmt);
+                    mysqli_close($conn);
+                } else {
+                    echo "Error inserting data into blocklist table.";
+                }
             }
         }
     }
-
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
 }
-?>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Block User</title>
-</head>
-<body>
-    <form className="form-resetpwd" id="block-user-form">
-        <input type="text" name="userToBlock" placeholder="User to block" />
-        <button type="submit" name="block-user-submit">Block</button>
-        <p id="block-user-message"></p>
-    </form>
-
-    <script>
-        const form = document.getElementById('block-user-form');
-        const messageElement = document.getElementById('block-user-message');
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const userInput = document.querySelector('input[name="userToBlock"]').value;
-            const formData = new FormData();
-            formData.append('userToBlock', userInput);
-
-            fetch('includes/BlockUser.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then((response) => response.text())
-            .then((message) => {
-                messageElement.innerText = message;
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-        });
-    </script>
-</body>
-</html>
