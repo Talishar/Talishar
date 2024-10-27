@@ -5,7 +5,7 @@ include "CardGetters.php";
 
 function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = [])
 {
-  global $CombatChain, $mainPlayer, $currentTurnEffects, $playerID, $combatChainState, $CCS_LinkBaseAttack, $CCS_WeaponIndex;
+  global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBaseAttack, $CCS_WeaponIndex;
   global $CCS_WeaponIndex;
   BuildMainPlayerGameState();
   $attackType = CardType($CombatChain->AttackCard()->ID());
@@ -18,7 +18,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
       $combatChainState[$CCS_LinkBaseAttack] = WardAmount($chainCard->ID(), $mainPlayer, $combatChainState[$CCS_WeaponIndex]);
     }
     if ($chainCard->PlayerID() == $mainPlayer) {
-      if ($i == 0) $attack = $combatChainState[$CCS_LinkBaseAttack];
+      if ($i == 0 && $attackType != "W") $attack = $combatChainState[$CCS_LinkBaseAttack];
       else $attack = AttackValue($chainCard->ID());
       if ($canGainAttack || $i == 0 || $attack < 0) {
         array_push($attackModifiers, $chainCard->ID());
