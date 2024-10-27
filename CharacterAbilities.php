@@ -298,6 +298,10 @@ function DefCharacterStartTurnAbilities()
           AddDecisionQueue("PUTPLAY", $defPlayer, "0", 1);
         }
         break;
+      case "OUT093":
+        AddCurrentTurnEffect("OUT093-Load", $defPlayer);
+        AddCurrentTurnEffect("OUT093-Aim", $defPlayer);
+        break;
       case "DTD564":
         $character = GetPlayerCharacter($defPlayer);
         if ($character[1] < 3) {
