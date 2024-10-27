@@ -211,7 +211,7 @@ function DoBoost($player, $cardID, $boostCount=1)
     }
     if (!$skipBanish) BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
     $grantsGA = ClassContains($boostedCardID, "MECHANOLOGIST", $player);
-    WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again");
+    WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "gets" : "doesn't get") . " go again.");
     IncrementClassState($player, $CS_NumBoosted);
     ++$combatChainState[$CCS_NumBoosted];
     $combatChainState[$CCS_IsBoosted] = 1;

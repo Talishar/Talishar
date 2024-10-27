@@ -17,6 +17,7 @@
         return "";
       case "MON091":
         if(!IsAllyAttackTarget()) {
+          AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "<-", 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);

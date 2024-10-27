@@ -830,7 +830,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($cards != "") $cards .= ", ";
         $cards .= CardLink($hand[$i], $hand[$i]);
       }
-      WriteLog("$cards .");
+      WriteLog("Hand content: $cards.");
       return $lastResult;
     case "WRITELOG":
       WriteLog(GamestateUnsanitize($parameter));
