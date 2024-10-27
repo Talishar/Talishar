@@ -917,7 +917,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
     $cardID = explode("_", $cardID)[0];
-    if(AdministrativeEffect($cardID)) continue; //Don't show useless administrative effect
+    if(AdministrativeEffect($cardID) || $cardID == "HVY254-1" || $cardID == "HVY254-2") continue; //Don't show useless administrative effect
     $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
     $BorderColor = ($isFriendly ? "blue" : "red");
     if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) array_push($playerEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));

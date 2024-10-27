@@ -2145,7 +2145,6 @@ function AdministrativeEffect($effectID)
     case "ELE111":
     case "OUT093":
     case "EVO013":
-    case "HVY254":
     case "ROS246":
       return true;
     default:
