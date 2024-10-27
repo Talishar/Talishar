@@ -561,7 +561,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "DTD052"://Spirit of War
       case "TCC086":
       case "TCC094"://Growl
-      case "HVY256"://Coercive Tendency
+      case "HVY246"://Coercive Tendency
       case "MST159": //Tiger Taming
       case "MST161"://Chase the Tail
       case "MST185":
