@@ -2089,7 +2089,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false)
           if (GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) $restrictedBy = "ARC162";
           break;
         case "DTD226":
-          if ($from != "PLAY" && $from != "CHAR" && GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "DTD226";
+          if ($from != "PLAY" && !IsStaticType(CardType($cardID)) && GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "DTD226";
           break;
         case "WarmongersWar":
           // warmongers processing for meld cards handled in AddPrePitchDecisionQueue
