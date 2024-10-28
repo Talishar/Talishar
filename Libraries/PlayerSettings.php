@@ -178,6 +178,13 @@ function GetCardBack($player)
     case 86: return "CBCD2";
     case 87: return "CBCupofTCG";
     case 88: return "CBScowlingFleshBag";
+    case 89: return "CBDazzyfizzle";
+    case 90: return "CBDazzyfizzle1";
+    case 91: return "CBDazzyfizzle2";
+    case 92: return "CBDazzyfizzle3";
+    case 93: return "CBDazzyfizzle4";
+    case 94: return "CBDazzyfizzle5";
+    case 95: return "CBDazzyfizzle6";
     default: return "CardBack";
   }
 }
@@ -603,6 +610,16 @@ function IsTeamRighteousGaming($userID)
     case "PvtVoid":
       return true;
     default: break;
+}
+  function isTeamDazzyfizzle($userID)
+{
+  switch($userID) {
+    case "dazzyfizzle":
+    case "PvtVoid":
+      return true;
+    default: break;
+  }
+  return false;
 }
 return false;
 }
