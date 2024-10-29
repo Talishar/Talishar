@@ -611,15 +611,6 @@ function IsTeamRighteousGaming($userID)
       return true;
     default: break;
 }
-  function isTeamDazzyfizzle($userID)
-{
-  switch($userID) {
-    case "dazzyfizzle":
-    case "PvtVoid":
-      return true;
-    default: break;
-  }
-  return false;
-}
+
 return false;
 }
