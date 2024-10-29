@@ -541,10 +541,10 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       if (SearchCount(SearchBanish($defPlayer, talent: "EARTH")) >= 4) $blockModifier += 1;
       break;
     case "AIO003":
-      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 1;
+      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
         break;
     case "AIO005":
-      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 1;
+      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
         break;
     default:
       break;
