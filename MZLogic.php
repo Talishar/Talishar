@@ -317,12 +317,18 @@ function MZBottom($player, $lastResult, $allArsenal = true)
         $auras = &GetAuras($player);
         $cardID = $auras[$mzIndex[1]];
         $lastResult = RemoveAura($player, $mzIndex[1]);
+        if (DelimStringContains(CardSubType($cardID), "Affliction")) {
+          $player = ($player == 1 ? 2 : 1);
+        }
         AddBottomDeck($cardID, $player, "-");
         break;
       case "THEIRAURAS":
         $auras = &GetAuras($otherPlayer);
         $cardID = $auras[$mzIndex[1]];
         $lastResult = RemoveAura($otherPlayer, $mzIndex[1]);
+        if (DelimStringContains(CardSubType($cardID), "Affliction")) {
+          $otherPlayer = ($otherPlayer == 1 ? 2 : 1);
+        }
         AddBottomDeck($cardID, $otherPlayer, "-");
         break;
       default:
