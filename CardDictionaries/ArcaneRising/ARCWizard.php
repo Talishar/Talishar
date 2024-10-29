@@ -276,8 +276,6 @@ function PlayRequiresTarget($cardID, $from)
       return 0;//Snapback
     case "EVR123":
       return 1;//Aether Wildfire
-    case "EVR124":
-      return 0;//Scour
     case "EVR125":
     case "EVR126":
     case "EVR127":

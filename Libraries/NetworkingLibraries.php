@@ -1757,6 +1757,19 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
+    case "EVR124":
+      global $CS_LastDynCost;
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+      AddDecisionQueue("GETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
+      AddDecisionQueue("SETSCOURDQVAR", $currentPlayer, "1");
+      AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,{1}", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero for <0>", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);  
+      break;
     case "UPR169":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "LAYER:type=A");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);

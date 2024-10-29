@@ -1583,6 +1583,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $dqState[6] = $damage;
       }
       return FinalizeDamage($player, $damage, $damageThreatened, $params[1], $params[2]);
+    case "SETSCOURDQVAR":
+      $targetType = 0;
+      $myCount = SearchCount(SearchAura($currentPlayer, "", "", 0, 0));
+      $otherPlayerCount = SearchCount(SearchAura(($currentPlayer == 1 ? 2 : 1), "", "", 0, 0));
+      if($lastResult > $myCount) {
+        $targetType = 1;
+      } 
+      elseif ($lastResult > $otherPlayerCount) {
+        $targetType = 4;
+      }
+      WriteLog($lastResult . " " . $targetType . " " . $myCount . " " . $otherPlayerCount);
+      $dqVars[$parameter] = $targetType;
+      return $lastResult;
     case "SETDQVAR":
       $dqVars[$parameter] = $lastResult;
       return $lastResult;
@@ -1668,8 +1681,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       MeldCards($player, $parameter, $lastResult);
       return $lastResult;
     case "SCOUR":
-      WriteLog("Scour deals " . $parameter . " arcane damage");
-      DealArcane($parameter, 0, "PLAYCARD", "EVR124", true, $player, resolvedTarget: ($player == 1 ? 2 : 1));
+      $params = explode(",", $parameter);
+      if($params[1] == "MY") $target = 4;
+      else $target = 1;
+      DealArcane($params[0], $target, "PLAYCARD", "EVR124");
       return "";
     case "SETABILITYTYPE":
       $lastPlayed[2] = $lastResult;

@@ -353,12 +353,15 @@
         }
         return "";
       case "EVR124":
+        $targetPlayer = substr($target, 0, 5) == "THEIR";
+        $parameter = $targetPlayer ? "THEIRAURAS:maxCost=0" : "MYAURAS:maxCost=0";
         for($i=0; $i<$resourcesPaid; ++$i) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:maxCost=0");
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $parameter);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . $resourcesPaid-$i . " aura(s) to destroy", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         }
-        AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid);
+        AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid.",".$targetPlayer, 1);
         return "";
       case "EVR125": case "EVR126": case "EVR127":
         $oppTurn = $currentPlayer != $mainPlayer;
