@@ -628,16 +628,25 @@ function ResetMainClassState()
 
 function ResetCardPlayed($cardID)
 {
-  global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $combatChainState, $CCS_EclecticMag;
+  global $currentPlayer, $mainPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $combatChainState, $CCS_EclecticMag;
   $type = CardType($cardID);
-  if(DelimStringContains($type, "A") && ClassContains($cardID, "WIZARD", $currentPlayer) && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "")) {
+  $effectRemoved = false;
+  if(DelimStringContains($type, "A") && ClassContains($cardID, "WIZARD", $currentPlayer) && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "") && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 1) {
     SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 0);
     //Section below helps with visualization and removing used effects
     SearchCurrentTurnEffects("ARC116", $currentPlayer, true);
     SearchCurrentTurnEffects("CRU162", $currentPlayer, true);
+    $effectRemoved = true;
   }
-  if(DelimStringContains($type, "A") && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "")) SetClassState($currentPlayer, $CS_NextNAAInstant, 0);
-  if(DelimStringContains($type, "A") && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "")) $combatChainState[$CCS_EclecticMag] = 0;
+  if(DelimStringContains($type, "A") && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "") && GetClassState($currentPlayer, $CS_NextNAAInstant) == 1) {
+    SetClassState($currentPlayer, $CS_NextNAAInstant, 0);
+    $effectRemoved = true;
+  }
+  //You may use this effect on any one non-attack action card this chain link, not just the next non-attack action card you play this chain link.
+  if(!$effectRemoved && DelimStringContains($type, "A") && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "")) {
+    SearchCurrentTurnEffects("ROS075", $mainPlayer, true);
+    $combatChainState[$CCS_EclecticMag] = 0;
+  }
 }
 
 function ResetCharacterEffects()

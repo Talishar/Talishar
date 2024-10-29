@@ -51,6 +51,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
     "ROS010-GOAGAIN" => TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "A", $mainPlayer), //Arc Lightning giving next action go again.
     "ROS064", "ROS065", "ROS066", "ROS012", "ROS076" => true,
     "ROS074" => $actionsPlayed[$numActions-2] == "ROS074" && $actionsPlayed[$numActions-1] != "ROS074" && (TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "AA", $mainPlayer)),
+    "ROS075" => true,
     "ROS110", "ROS111", "ROS112" => CardType($attackID) == "AA" && CardCost($attackID) <= 1,
     "ROS118" => CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "ROS127", "ROS128", "ROS129", "ROS119" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
@@ -240,6 +241,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "ROS075":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       $combatChainState[$CCS_EclecticMag] = 1;
       return "";
     case "ROS076":
