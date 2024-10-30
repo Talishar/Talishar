@@ -727,7 +727,7 @@ function EquipEquipment($player, $card, $slot = "")
       $replaced = 1;
     }
   }
-  if ($replaced || IsModular($card)) {
+  if (!$replaced) {
     $insertIndex = count($char);
     array_splice($char, $insertIndex, 0, $card);
     array_splice($char, $insertIndex + 1, 0, 2);
