@@ -2907,16 +2907,35 @@ function EvoHandling($cardID, $player, $from)
       if (SubtypeContains($char[$i], "Base") && $char[$i + 1] != 0) {
         $CombatChain->Remove(GetCombatChainIndex($char[$i], $player));
         CharacterAddSubcard($player, $i, $char[$i]);
+        WriteLog("EquipEquipment: Replacing " . $cardID . " in slot: " . $slot . " | " . SubtypeContains($char[$i], $slot, $player, $char[$i + 11]));
         $fromCardID = $char[$i];
-        $char[$i + 2] = 0;//Reset counters
-        $char[$i + 4] = 0;//Reset defense counters
-        $char[$i + 6] = 0;//Not on chain anymore
         $char[$i] = substr($cardID, 0, 3) . (intval(substr($cardID, 3, 3)) + 400);
+        $char[$i + 2] = 0;//Reset counters
+        $char[$i + 3] = 0;
+        $char[$i + 4] = 0;//Reset defense counters
+        $char[$i + 5] = 1;
+        $char[$i + 6] = 0;//Not on chain anymore
         $char[$i + 7] = 0;//Should not be flagged for destruction
         $char[$i + 8] = 0;//Should not be frozen
         $char[$i + 9] = CharacterDefaultActiveState($char[$i]);
+        $char[$i + 10] = "-";
+        $char[$i + 12] = HasCloaked($char[$i], $player);
         $dqVars[1] = $i;
         EvoTransformAbility($char[$i], $fromCardID, $player);
+        $insertIndex = count($char);
+        array_splice($char, $insertIndex, 0, $char[$i]);
+        array_splice($char, $insertIndex + 1, 0, 2);
+        array_splice($char, $insertIndex + 2, 0, 0);
+        array_splice($char, $insertIndex + 3, 0, 0);
+        array_splice($char, $insertIndex + 4, 0, 0);
+        array_splice($char, $insertIndex + 5, 0, 1);
+        array_splice($char, $insertIndex + 6, 0, 0);
+        array_splice($char, $insertIndex + 7, 0, 0);
+        array_splice($char, $insertIndex + 8, 0, 0);
+        array_splice($char, $insertIndex + 9, 0, CharacterDefaultActiveState($char[$i]));
+        array_splice($char, $insertIndex + 10, 0, "-");
+        array_splice($char, $insertIndex + 11, 0, $char[$i + 11]);
+        array_splice($char, $insertIndex + 12, 0, HasCloaked($char[$i], $player));
       } else {
         if (substr($from, 0, 5) != "THEIR") AddGraveyard($cardID, $player, "HAND", $player);
         else AddGraveyard($cardID, $otherPlayer, "GRAVEYARD", $player);
@@ -2924,6 +2943,7 @@ function EvoHandling($cardID, $player, $from)
       }
       break;
     }
+  
   }
 }
 
