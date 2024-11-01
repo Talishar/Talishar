@@ -709,8 +709,8 @@ function IsCardBanned($cardID, $format, $character)
   if ($format == "clash") return !isClashLegal($cardID, $character);
 
   //Ban spoiler cards in non-open-format
-  if(($format != "openformatcc" && $format != "openformatllcc") && $cardID == "HER123") return true; // IRA Hero CC Launch 2nd November
   if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") && $set == "AJV") return true; // Jarl Armory Deck Launch 29th November
+  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") && $set == "HNT") return true; // The Hunted Launch 31st January
 
   if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") {
     switch ($cardID) { //Special Use Promos
