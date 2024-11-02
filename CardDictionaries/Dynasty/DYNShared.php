@@ -689,10 +689,9 @@ function CheckMarked($player) //fill this in when we know more about marking
 function CheckHitContract($contractType, $otherPlayer)
 {
   $otherchar = &GetPlayerCharacter($otherPlayer);
-  $otherHero = CardName($otherchar[0]);
   switch($contractType) {
-    case "HITMARKEDFANG": return CheckMarked($otherPlayer) & DelimStringContains($otherHero, "Fang");
-    case "HITMARKEDCINDRA": return CheckMarked($otherPlayer) & DelimStringContains($otherHero, "Cindra");
+    case "HITMARKEDFANG": return CheckMarked($otherPlayer) & CardNameContains($otherchar[0], "Fang");
+    case "HITMARKEDCINDRA": return CheckMarked($otherPlayer) & CardNameContains($otherchar[0], "Cindra");
     default: return false;
   }
 }
