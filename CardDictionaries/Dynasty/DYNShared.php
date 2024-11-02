@@ -632,6 +632,8 @@ function ContractType($cardID)
     case "DYN142": case "DYN143": case "DYN144": return "GOAGAIN";
     case "DYN145": case "DYN146": case "DYN147": return "NAA";
     case "EVO236": return "NONACTION";
+    case "HNT030": return "HITMARKEDFANG";
+    case "HNT031": return "HITMARKEDCINDRA";
     default: return "";
   }
 }
@@ -655,7 +657,42 @@ function ContractCompleted($player, $cardID)
     case "EVO236":
       PutItemIntoPlayForPlayer("EVR195", $player);
       break;
+    case "HNT030": case "HNT031":
+      Draw($player);
+      break;
     default: break;
+  }
+}
+
+function CheckHitContracts($mainPlayer, $otherPlayer)
+{
+  global $CombatChain, $chainLinks;
+  for($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $chainCard = $CombatChain->Card($i, cardNumber:true);
+    $contractType = ContractType($chainCard->ID());
+    if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainCard->ID());
+  }
+  for($i = 0; $i < count($chainLinks); ++$i) {
+    for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+      if($chainLinks[$i][$j+2] == 0) continue;
+      $contractType = ContractType($chainLinks[$i][$j]);
+      if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainLinks[$i][$j]);
+    }
+  }
+}
+
+function CheckMarked($player) //fill this in when we know more about marking
+{
+  return false;
+}
+
+function CheckHitContract($contractType, $otherPlayer)
+{
+  $otherchar = &GetPlayerCharacter($otherPlayer);
+  switch($contractType) {
+    case "HITMARKEDFANG": return CheckMarked($otherPlayer) & CardNameContains($otherchar[0], "Fang");
+    case "HITMARKEDCINDRA": return CheckMarked($otherPlayer) & CardNameContains($otherchar[0], "Cindra");
+    default: return false;
   }
 }
 

@@ -1082,6 +1082,10 @@ function ResolveCombatDamage($damageDone)
           AddOnHitTrigger($combatChain[$i]);
           if ($damageDone >= 4) AddCrushEffectTrigger($combatChain[$i]);
           if (CachedTotalAttack() >= 13) AddTowerEffectTrigger($combatChain[$i]);
+          if (IsHeroAttackTarget()) {
+            $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+            CheckHitContracts($mainPlayer, $otherPlayer);
+          }
         }
       }
       for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
