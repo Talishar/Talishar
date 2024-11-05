@@ -1078,7 +1078,7 @@ function CharacterModifiesPlayAura($player, $isToken, $effectController)
         }
         return 0;
       case "ROS002":
-        if (!$isToken) return 0;
+        if (!$isToken || ($effectController != $player)) return 0;
         // Now we need to check that we banished 4 earth cards.
         $results = SearchCount(SearchMultiZone($player, "MYBANISH:talent=EARTH"));
         if ($results >= 4) {
