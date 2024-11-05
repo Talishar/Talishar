@@ -120,6 +120,67 @@ function CardType($cardID, $from="")
   }
 }
 
+function CardTypeExtended($cardID, $from="") // used to handle evos
+{
+  switch ($cardID) {
+    case "EVO026"://steel soul
+    case "EVO027":
+    case "EVO028":
+    case "EVO029":
+    case "EVO426":
+    case "EVO427":
+    case "EVO428":
+    case "EVO429":
+    case "EVO046"://yellow 2 blocks
+    case "EVO047":
+    case "EVO048":
+    case "EVO049":
+    case "EVO446":
+    case "EVO447":
+    case "EVO448":
+    case "EVO449":
+    case "EVO034"://yellow 3 blocks
+    case "EVO035":
+    case "EVO036":
+    case "EVO037":
+    case "EVO434":
+    case "EVO435":
+    case "EVO436":
+    case "EVO437":
+    case "HVY248"://evo magneto
+    case "HVY648":
+      return "A,E";
+    case "EVO030"://breakers
+    case "EVO031":
+    case "EVO032":
+    case "EVO033":
+    case "EVO430":
+    case "EVO431":
+    case "EVO432":
+    case "EVO433":
+    case "EVO050"://yellow 0 blocks
+    case "EVO051":
+    case "EVO052":
+    case "EVO053":
+    case "EVO450":
+    case "EVO451":
+    case "EVO452":
+    case "EVO453":
+    case "MST228"://AB evos
+    case "MST229":
+    case "MST230":
+    case "MST231":
+    case "MST628":
+    case "MST629":
+    case "MST630":
+    case "MST631":
+      return "I,E";
+    default:
+      break;
+  }
+  return CardType($cardID, $from);
+}
+
 function CardSubType($cardID, $uniqueID = -1)
 {
   if (!$cardID) return "";
