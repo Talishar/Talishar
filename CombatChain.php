@@ -911,7 +911,6 @@ function OnBlockResolveEffects($cardID = "")
         case "OUT010":
           $count = ModifyBlockForType("E", 0);
           $remove = $count > 0;
-          WriteLog("HERE " . $count);
           break;
         default:
           break;
