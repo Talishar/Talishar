@@ -4,6 +4,7 @@ function AJVAbilityType($cardID): string
 {
   return match ($cardID) {
     "AJV002" => "AA",
+    "AJV006" => "A",
     default => ""
   };
 }
@@ -12,6 +13,7 @@ function AJVAbilityCost($cardID)
 {
   return match ($cardID) {
     "AJV002" => 6,
+    "AJV006" => 2,
     default => 0
   };
 }
@@ -20,6 +22,9 @@ function AJVPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer;
   switch ($cardID) {
+    case "AJV006":
+      if(SearchCardList($additionalCosts, $currentPlayer, talent:"EARTH") != "") AddCurrentTurnEffect("AJV006-E", $currentPlayer);
+      if(SearchCardList($additionalCosts, $currentPlayer, talent:"ICE") != "") AddCurrentTurnEffect("AJV006-I", $currentPlayer);
     case "AJV018":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=E&MYCHAR:type=E");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an equipment to add a -1 defense counter", 1);
@@ -41,8 +46,11 @@ function AJVPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 function AJVCombatEffectActive($cardID, $attackID)
 {
 switch($cardID) {
-    case "AJV018": return true;
     case "AJV002": return true;
+    // case "AJV006": return CardNameContains($attackID, "Mangle");//check if I need to do this or the next 2 line
+    case "AJV006-E": return CardNameContains($attackID, "Mangle");
+    case "AJV006-I": return CardNameContains($attackID, "Mangle");
+    case "AJV018": return true;
     default: return false;
 }
 }
@@ -59,6 +67,24 @@ function AJVHitEffect($cardID) {
     default:
       break;
   }
+}
+
+function AJVAbilityHasGoAgain($cardID) {
+  switch($cardID)
+  {
+    case "AJV006":
+      return true;
+    default:
+      return false;
+  }
+}
+
+function ROSEffectAttackModifier($cardID): int
+{
+  return match ($cardID) {
+    "AJV006-E" => 2,
+    default => 0,
+  };
 }
 
 function FrostbiteExposed($otherPlayer, $player) {

@@ -1858,6 +1858,9 @@ function IsCombatEffectPersistent($cardID)
     case "ROS012":
     case "ROS119":
       return true;
+    case "AJV006-E":
+    case "AJV006-I":
+      return true;
     //Roguelike
     case "ROGUE018":
     case "ROGUE601":

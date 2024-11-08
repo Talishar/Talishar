@@ -2448,6 +2448,8 @@ function HasTemper($cardID)
     case "AIO004":
     case "AIO005":
       return true;
+    case "AJV006":
+      return true;
     case "ROS028":
       return true;
     default:
@@ -2707,6 +2709,7 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
   else if ($set == "AIO") return AIOAbilityHasGoAgain($cardID);
+  else if ($set == "AJV") return AJVAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "RVD004":
     case "TER005":
@@ -2803,6 +2806,8 @@ function DoesEffectGrantDominate($cardID): bool
     case "MST233":
       return true;
     case "AAZ016":
+      return true;
+    case "AJV006-I":
       return true;
     default:
       return false;
