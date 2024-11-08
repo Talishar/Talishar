@@ -26,6 +26,13 @@ function AJVPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MODDEFCOUNTER", $currentPlayer, "-1", 1);
       return "";
+    case "AJV020":
+      if (DelimStringContains($additionalCosts, "ICE")) {
+        Mangle();
+      }
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      FrostbiteExposed($otherPlayer, $currentPlayer);
+      return "";
     default:
       return "";
   }
