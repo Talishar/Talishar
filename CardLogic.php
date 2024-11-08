@@ -2608,11 +2608,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("BRUTUS", $player, $target, 1);
       break;
     case "AJV001":
-      AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $otherPlayer, "-");
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose an exposed equipment zone to " . CardLink("ELE111", "ELE111"), 1);
-      AddDecisionQueue("BUTTONINPUT", $player, "<-", 1);
-      AddDecisionQueue("SETDQVAR", $player, "0", 1);
-      AddDecisionQueue("EQUIPCARD", $otherPlayer, "ELE111-{0}", 1);
+      FrostBiteExposed($otherPlayer, $player);
       break;
     case "AJV013":
       if(!IsAllyAttacking() && SearchCharacter($otherPlayer, hasNegCounters: true) != "") {

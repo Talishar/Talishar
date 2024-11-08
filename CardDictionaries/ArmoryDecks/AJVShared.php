@@ -41,16 +41,25 @@ switch($cardID) {
 }
 
 function AJVHitEffect($cardID) {
+  global $currentPlayer, $defPlayer;
   switch($cardID)
   {
     case "AJV002":
       if(IsHeroAttackTarget()) {
-        PlayAura("ELE111", $defPlayer, effectController: $mainPlayer);
+        FrostbiteExposed($defPlayer, $currentPlayer);
       }
       break;
     default:
       break;
   }
+}
+
+function FrostbiteExposed($otherPlayer, $player) {
+  AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $otherPlayer, "-");
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose an exposed equipment zone to " . CardLink("ELE111", "ELE111"), 1);
+  AddDecisionQueue("BUTTONINPUT", $player, "<-", 1);
+  AddDecisionQueue("SETDQVAR", $player, "0", 1);
+  AddDecisionQueue("EQUIPCARD", $otherPlayer, "ELE111-{0}", 1);
 }
 
 function CheckHeavy($player) {
