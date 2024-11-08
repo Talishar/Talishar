@@ -557,6 +557,7 @@ function AbilityCost($cardID)
   else if ($set == "ROS") return ROSAbilityCost($cardID);
   else if ($set == "TER") return TERAbilityCost($cardID);
   else if ($set == "AIO") return AIOAbilityCost($cardID);
+  else if ($set == "AJV") return AJVAbilityCost($cardID);
   else if ($cardID == "HER117") return 0;
   return CardCost($cardID);
 }
@@ -881,6 +882,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "ASB") return ASBAbilityType($cardID, $index);
   else if ($set == "TER") return TERAbilityType($cardID);
   else if ($set == "AIO") return AIOAbilityType($cardID, $index, $from);
+  else if ($set == "AJV") return AJVAbilityType($cardID);
   else if ($cardID == "HER117") return "I";
 }
 
