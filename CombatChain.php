@@ -736,16 +736,37 @@ function OnBlockResolveEffects($cardID = "")
     }
   }
   $blockedFromHand = 0;
+  $blockedWithIce = 0;
+  $blockedWithEarth = 0;
+  $blockedWithAura = 0;
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if (ColorContains($combatChain[$i], 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
     if ($combatChain[$i + 2] == "HAND") ++$blockedFromHand;
+    if (TalentContains($combatChain[$i], "ICE", $defPlayer)) ++$blockedWithIce;
+    if (TalentContains($combatChain[$i], "EARTH", $defPlayer)) ++$blockedWithEarth;
+    if (SubtypeContains($combatChain[$i], "Aura", $defPlayer)) ++$blockedWithAura;
   }
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if (($blockedFromHand >= 2 && $combatChain[$i + 2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i + 2] != "HAND")) UnityEffect($combatChain[$i]);
     if($cardID == "" && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
     elseif($cardID != "" && $combatChain[$i] == $cardID && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
     if (SearchCurrentTurnEffects("HVY104", $mainPlayer && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("HVY104") == -1)) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);
-    $defendingCard = $combatChain[$i];    
+    $defendingCard = $combatChain[$i];
+    switch ($defendingCard) {//code for Jarl's armor
+      case "AJV004":
+        sub = TalentContains($defendingCard, "ICE", $defPlayer) ? 1 : 0; //necessary for a fringe case where the helm but not the other blocking card loses its talent
+        if ($blockedWithIce - sub > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
+      case "AJV005":
+        sub = TalentContains($defendingCard, "EARTH", $defPlayer) ? 1 : 0; //necessary for a fringe case where the chest but not the other blocking card loses its talent
+        if ($blockedWithEarth - sub > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
+      case "AJV004":
+        if ($blockedWithAura > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
+      default:
+        break;
+    }
     if ($cardID != "") { //Code for when a card is pulled as a defending card on the chain
       $defendingCard = $cardID;
       $i = count($combatChain);
