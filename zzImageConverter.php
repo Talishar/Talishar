@@ -6,8 +6,8 @@ function CheckImage($cardID, $isDuplicate=false)
   $number = substr($cardID, 3);
   $filename = "./WebpImages/" . $cardID . ".webp";
   $filenameNew = "./New Cards/" . $cardID . ".webp";
-  $cardImagesUploadedFolder = "../Card-Images/media/uploaded/public/cardimages/english/" . $cardID . ".webp"; // !! Card-Images/ to be changed for your own folder name
-  $cardImagesMissingFolder = "../Card-Images/media/missing/cardimages/english/" . $cardID . ".webp"; // !! Card-Images/ to be changed for your own folder name
+  $cardImagesUploadedFolder = "../CardImages/media/uploaded/public/cardimages/english/" . $cardID . ".webp"; // !! Card-Images/ to be changed for your own folder name
+  $cardImagesMissingFolder = "../CardImages/media/missing/cardimages/english/" . $cardID . ".webp"; // !! Card-Images/ to be changed for your own folder name
   if(!file_exists($filename) || !file_exists($cardImagesUploadedFolder))
   {
     //$imageURL = "https://fabrary.net/images/cards/" . $cardID . ".webp";
