@@ -1503,10 +1503,22 @@ case "3":
 return "B";
 default: return "AA";
 }
+case "2":
+switch($cardID[5]) {
+case "0":
+return "A";
+default: return "AA";
+}
 case "0":
 switch($cardID[5]) {
+case "6":
+return "E";
 case "1":
 return "C";
+case "7":
+return "E";
+case "2":
+return "W";
 default: return "AA";
 }
 default: return "AA";
@@ -9119,6 +9131,12 @@ case "1":
 return 8;
 default: return 0;
 }
+case "0":
+switch($cardID[5]) {
+case "2":
+return 4;
+default: return 0;
+}
 default: return 0;
 }
 default: return 0;
@@ -13237,8 +13255,18 @@ case "0":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
+case "6":
+return 2;
 case "1":
 return -1;
+case "4":
+return 1;
+case "7":
+return 1;
+case "2":
+return -1;
+case "5":
+return 2;
 default: return 3;
 }
 case "1":
@@ -20377,10 +20405,26 @@ case "3":
 return "Unforgetting Unforgiving";
 default: return "";
 }
+case "2":
+switch($cardID[5]) {
+case "0":
+return "Frozen to Death";
+default: return "";
+}
 case "0":
 switch($cardID[5]) {
+case "6":
+return "Gauntlets of the Boreal Domain";
 case "1":
 return "Jarl Vetreiđi";
+case "4":
+return "Ollin Ice Cap";
+case "7":
+return "Root-Bound Trunks";
+case "2":
+return "Summit, the Unforgiving";
+case "5":
+return "Tectonic Crust";
 default: return "";
 }
 default: return "";
@@ -29697,9 +29741,25 @@ case "8":
 return 3;
 default: return 1;
 }
+case "2":
+switch($cardID[5]) {
+case "0":
+return 3;
+default: return 1;
+}
 case "0":
 switch($cardID[5]) {
+case "6":
+return 0;
 case "1":
+return 0;
+case "4":
+return 0;
+case "7":
+return 0;
+case "2":
+return 0;
+case "5":
 return 0;
 default: return 1;
 }
@@ -37255,9 +37315,25 @@ case "V":
 switch($cardID[3]) {
 case "0":
 switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "0":
+return 3;
+default: return 0;
+}
 case "0":
 switch($cardID[5]) {
+case "6":
+return -1;
 case "1":
+return -1;
+case "4":
+return -1;
+case "7":
+return -1;
+case "2":
+return -1;
+case "5":
 return -1;
 default: return 0;
 }
@@ -44073,6 +44149,20 @@ case "3":
 return "Block";
 default: return "";
 }
+case "0":
+switch($cardID[5]) {
+case "6":
+return "Arms";
+case "4":
+return "Ice Guardian Equipment - Head";
+case "7":
+return "Legs";
+case "2":
+return "Polearm";
+case "5":
+return "Earth Guardian Equipment - Chest";
+default: return "";
+}
 default: return "";
 }
 default: return "";
@@ -48527,9 +48617,25 @@ case "3":
 return "M";
 default: return "C";
 }
+case "2":
+switch($cardID[5]) {
+case "0":
+return "M";
+default: return "C";
+}
 case "0":
 switch($cardID[5]) {
+case "6":
+return "L";
 case "1":
+return "M";
+case "4":
+return "M";
+case "7":
+return "M";
+case "2":
+return "M";
+case "5":
 return "M";
 default: return "C";
 }
@@ -52977,6 +53083,7 @@ case "DTD210": return true;
 case "DYN115": return true;
 case "DYN116": return true;
 case "OUT004": return true;
+case "AJV002": return true;
 case "ELE202": return true;
 case "ELE003": return true;
 case "CRU051": return true;
@@ -55072,9 +55179,21 @@ case "V":
 switch($cardID[3]) {
 case "0":
 switch($cardID[4]) {
+case "2":
+switch($cardID[5]) {
+case "0":
+return "GUARDIAN";
+default: return "NONE";
+}
 case "0":
 switch($cardID[5]) {
+case "6":
+return "GUARDIAN";
 case "1":
+return "GUARDIAN";
+case "7":
+return "GUARDIAN";
+case "2":
 return "GUARDIAN";
 default: return "NONE";
 }
@@ -64620,10 +64739,22 @@ case "8":
 return "ICE,EARTH";
 default: return "NONE";
 }
+case "2":
+switch($cardID[5]) {
+case "0":
+return "ICE";
+default: return "NONE";
+}
 case "0":
 switch($cardID[5]) {
+case "6":
+return "EARTH,ICE";
 case "1":
 return "ELEMENTAL";
+case "7":
+return "EARTH";
+case "2":
+return "EARTH,ICE";
 default: return "NONE";
 }
 default: return "NONE";
@@ -66193,6 +66324,7 @@ case "UPR150": return "false";
 case "UPR130": return "false";
 case "UPR131": return "false";
 case "UPR132": return "false";
+case "AJV020": return "false";
 case "ROS055": return "false";
 case "ROS056": return "false";
 case "ROS057": return "false";
@@ -66229,6 +66361,7 @@ case "EVO223": return "false";
 case "EVO224": return "false";
 case "HVY135": return "false";
 case "HVY053": return "false";
+case "AJV006": return "false";
 case "JDG005": return "false";
 case "CRU163": return "false";
 case "MON006": return "false";
@@ -66992,6 +67125,7 @@ case "DTD142": return "true";
 case "MON013": return "false";
 case "ELE002": return "false";
 case "ELE001": return "false";
+case "AJV004": return "false";
 case "HVY093": return "false";
 case "HVY092": return "false";
 case "DVR019": return "false";
@@ -67526,6 +67660,7 @@ case "WTR003": return "false";
 case "UPR078": return "false";
 case "UPR079": return "false";
 case "UPR080": return "false";
+case "AJV007": return "false";
 case "ROS042": return "false";
 case "ROS043": return "false";
 case "ROS044": return "false";
@@ -68112,6 +68247,7 @@ case "ROS041": return "false";
 case "ELE125": return "false";
 case "ELE126": return "false";
 case "ELE127": return "false";
+case "AJV002": return "false";
 case "ARC212": return "false";
 case "ARC213": return "false";
 case "ARC214": return "false";
@@ -68190,6 +68326,7 @@ case "DTD191": return "false";
 case "DTD192": return "false";
 case "DYN046": return "false";
 case "TCC081": return "false";
+case "AJV005": return "false";
 case "WTR041": return "false";
 case "EVO238": return "false";
 case "EVO020": return "false";
