@@ -25,6 +25,7 @@ function AJVPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "AJV006":
       if(SearchCardList($additionalCosts, $currentPlayer, talent:"EARTH") != "") AddCurrentTurnEffect("AJV006-E", $currentPlayer);
       if(SearchCardList($additionalCosts, $currentPlayer, talent:"ICE") != "") AddCurrentTurnEffect("AJV006-I", $currentPlayer);
+      return "";
     case "AJV018":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=E&MYCHAR:type=E");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an equipment to add a -1 defense counter", 1);
@@ -79,7 +80,7 @@ function AJVAbilityHasGoAgain($cardID) {
   }
 }
 
-function ROSEffectAttackModifier($cardID): int
+function AJVEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
     "AJV006-E" => 2,
@@ -87,7 +88,7 @@ function ROSEffectAttackModifier($cardID): int
   };
 }
 
-function FrostbiteExposed($otherPlayer, $player) {
+function FrostbiteExposed($otherPlayer, $player, $may=false) {
   AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $otherPlayer, "-");
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose an exposed equipment zone to " . CardLink("ELE111", "ELE111"), 1);
   AddDecisionQueue("BUTTONINPUT", $player, "<-", 1);
@@ -96,8 +97,10 @@ function FrostbiteExposed($otherPlayer, $player) {
 }
 
 function CheckHeavy($player) {
-  $numWeapons = count(explode(",", SearchCharacter($player, type:"W")));
-  $numOffHands = count(explode(",", SearchCharacter($player, subtype:"Off-Hand")));
+  $weapons = SearchCharacter($player, type:"W");
+  $numWeapons = $weapons != "" ? count(explode(",", $weapons)) : 0;
+  $offHands = SearchCharacter($player, subtype:"Off-Hand");
+  $numOffHands = $offHands != "" ? count(explode(",", $offHands)) : 0;
   return $numWeapons + $numOffHands == 1;
 }
 

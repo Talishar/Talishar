@@ -427,6 +427,7 @@ function EffectAttackModifier($cardID)
   else if ($set == "TER") return TEREffectAttackModifier($cardID);
   else if ($set == "AUR") return AUREffectAttackModifier($cardID);
   else if ($set == "ROS") return ROSEffectAttackModifier($cardID);
+  else if ($set == "AJV") return AJVEffectAttackModifier($cardID);
   switch ($cardID) {
     case "HER123":
       return 1;
