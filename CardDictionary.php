@@ -120,6 +120,67 @@ function CardType($cardID, $from="")
   }
 }
 
+function CardTypeExtended($cardID, $from="") // used to handle evos
+{
+  switch ($cardID) {
+    case "EVO026"://steel soul
+    case "EVO027":
+    case "EVO028":
+    case "EVO029":
+    case "EVO426":
+    case "EVO427":
+    case "EVO428":
+    case "EVO429":
+    case "EVO046"://yellow 2 blocks
+    case "EVO047":
+    case "EVO048":
+    case "EVO049":
+    case "EVO446":
+    case "EVO447":
+    case "EVO448":
+    case "EVO449":
+    case "EVO034"://yellow 3 blocks
+    case "EVO035":
+    case "EVO036":
+    case "EVO037":
+    case "EVO434":
+    case "EVO435":
+    case "EVO436":
+    case "EVO437":
+    case "HVY248"://evo magneto
+    case "HVY648":
+      return "A,E";
+    case "EVO030"://breakers
+    case "EVO031":
+    case "EVO032":
+    case "EVO033":
+    case "EVO430":
+    case "EVO431":
+    case "EVO432":
+    case "EVO433":
+    case "EVO050"://yellow 0 blocks
+    case "EVO051":
+    case "EVO052":
+    case "EVO053":
+    case "EVO450":
+    case "EVO451":
+    case "EVO452":
+    case "EVO453":
+    case "MST228"://AB evos
+    case "MST229":
+    case "MST230":
+    case "MST231":
+    case "MST628":
+    case "MST629":
+    case "MST630":
+    case "MST631":
+      return "I,E";
+    default:
+      break;
+  }
+  return CardType($cardID, $from);
+}
+
 function CardSubType($cardID, $uniqueID = -1)
 {
   if (!$cardID) return "";
@@ -557,6 +618,7 @@ function AbilityCost($cardID)
   else if ($set == "ROS") return ROSAbilityCost($cardID);
   else if ($set == "TER") return TERAbilityCost($cardID);
   else if ($set == "AIO") return AIOAbilityCost($cardID);
+  else if ($set == "AJV") return AJVAbilityCost($cardID);
   else if ($cardID == "HER117") return 0;
   return CardCost($cardID);
 }
@@ -881,6 +943,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "ASB") return ASBAbilityType($cardID, $index);
   else if ($set == "TER") return TERAbilityType($cardID);
   else if ($set == "AIO") return AIOAbilityType($cardID, $index, $from);
+  else if ($set == "AJV") return AJVAbilityType($cardID);
   else if ($cardID == "HER117") return "I";
 }
 
@@ -2449,6 +2512,8 @@ function HasTemper($cardID)
     case "AIO004":
     case "AIO005":
       return true;
+    case "AJV006":
+      return true;
     case "ROS028":
       return true;
     case "AJV005":
@@ -2710,6 +2775,7 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
   else if ($set == "AIO") return AIOAbilityHasGoAgain($cardID);
+  else if ($set == "AJV") return AJVAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "RVD004":
     case "TER005":
@@ -2806,6 +2872,8 @@ function DoesEffectGrantDominate($cardID): bool
     case "MST233":
       return true;
     case "AAZ016":
+      return true;
+    case "AJV006-I":
       return true;
     default:
       return false;
@@ -3574,7 +3642,7 @@ function CardCaresAboutPitch($cardID): bool
   return match ($cardID) {
     "ELE001", "ELE002", "ELE003", "DYN172", "DYN173", "DYN174", "DYN176", "DYN177", "DYN178", "DYN182", "DYN183",
     "DYN184", "DYN185", "DYN186", "DYN187", "MST008", "MST031", "MST052", "MST076", "MST078", "MST079", "MST080",
-    "TER002", "TER008", "TER014", "TER012", "TER016", "TER018", "TER025", "TER011", "TER015", "ROS015" => true,
+    "TER002", "TER008", "TER014", "TER012", "TER016", "TER018", "TER025", "TER011", "TER015", "ROS015", "AJV006" => true,
     default => false
   };
 }

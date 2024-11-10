@@ -264,6 +264,7 @@
       case "UPR116": case "UPR117": case "UPR118": return "ICE";
       case "UPR119": case "UPR120": case "UPR121": return "ICE";
       case "UPR122": case "UPR123": case "UPR124": return "ICE";
+      case "AJV020": return "ICE";
       default: return "";
     }
   }
