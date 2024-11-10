@@ -427,6 +427,7 @@ function EffectAttackModifier($cardID)
   else if ($set == "TER") return TEREffectAttackModifier($cardID);
   else if ($set == "AUR") return AUREffectAttackModifier($cardID);
   else if ($set == "ROS") return ROSEffectAttackModifier($cardID);
+  else if ($set == "AJV") return AJVEffectAttackModifier($cardID);
   switch ($cardID) {
     case "HER123":
       return 1;
@@ -1857,6 +1858,9 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "ROS012":
     case "ROS119":
+      return true;
+    case "AJV006-E":
+    case "AJV006-I":
       return true;
     //Roguelike
     case "ROGUE018":

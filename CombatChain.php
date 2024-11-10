@@ -64,6 +64,7 @@ function ProcessHitEffect($cardID, $from = "-")
   else if ($set == "AAZ") return AAZHitEffect($cardID);
   else if ($set == "AUR") return AURHitEffect($cardID);
   else if ($set == "ROS") return ROSHitEffect($cardID);
+  else if ($set == "AJV") return AJVHitEffect($cardID);
   else return -1;
 }
 
@@ -414,6 +415,8 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 2 : 0);
     case "AIO009":
       return (GetClassState($mainPlayer, $CS_NumCranked)) > 0 ? 1 : 0;
+    case "AJV002":
+      return (CheckHeavy($mainPlayer)) ? 2 : 0;
     default:
       return 0;
   }
