@@ -765,7 +765,6 @@ function OnBlockResolveEffects($cardID = "")
         if ($blockedWithEarth - $sub > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "AJV007":
-        WriteLog("HERE " . $blockedWithAura);
         if ($blockedWithAura > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       default:
