@@ -755,9 +755,9 @@ function IsCardBanned($cardID, $format, $character)
         case "CRU046": case "CRU050": // Ira, Crimson Haze | Edge of Autumn
         case "DYN009": //Berserk
         case "OUT056": case "OUT057": case "OUT058": //Bonds of Ancestry
-        case "MST047": //Zen
         case "MST080": //Orihon of Mystic Tenets
         case "MST159": //Tiger Taming Khakkara
+        case "MON266": case "MON267": case "MON268": //belittle 
           return true;
         default: return false;
       }
@@ -790,6 +790,8 @@ function IsCardBanned($cardID, $format, $character)
         case "DYN009": //Berserk
         case "OUT056": case "OUT057": case "OUT058": //Bonds of Ancestry
         case "MST080": //Orihon of Mystic Tenets
+        case "ARC006": //High Octane
+        case "ROS225": //Count Your Blessings Blue
           return true;
         default: return false;
       }
@@ -797,6 +799,7 @@ function IsCardBanned($cardID, $format, $character)
       switch($cardID) {
         case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
         case "MON266": case "MON267": case "MON268": // Belittle
+        case "MON230": //Aether Ironweave
           return true;
         default: return false;
       }
