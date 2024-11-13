@@ -758,7 +758,7 @@ function OnBlockResolveEffects($cardID = "")
     switch ($defendingCard) {//code for Jarl's armor
       case "AJV004":
         $sub = TalentContains($defendingCard, "ICE", $defPlayer) ? 1 : 0; //necessary for a fringe case where the helm but not the other blocking card loses its talent
-        if ($blockedWithIce - $sub > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        if ($blockedWithIce - $sub > 0) AddLayer("TRIGGER", $mainPlayer, $defendingCard, $i);
         break;
       case "AJV005":
         $sub = TalentContains($defendingCard, "EARTH", $defPlayer) == true ? 1 : 0; //necessary for a fringe case where the chest but not the other blocking card loses its talent
