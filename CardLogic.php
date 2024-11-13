@@ -2627,6 +2627,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "AJV004":
+      //check how this works with allies
+      PlayAura("ELE111", $player, effectController: $defPlayer);
+      break;
+    case "AJV005":
+      PlayAura("WTR075", $defPlayer, effectController: $defPlayer);
+      break;
+    case "AJV007":
+      PlayAura("ELE109", $defPlayer, effectController: $defPlayer);
+      break;
     default:
       break;
   }

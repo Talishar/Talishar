@@ -2364,12 +2364,15 @@ function HasBladeBreak($cardID)
     case "ASB005":
     case "ASB006":
       return true;
-    default:
-      return false;
     case "ROS029":
     case "ROS072":
     case "ROS114":
       return true;
+    case "AJV004":
+    case "AJV007":
+      return true;
+    default:
+      return false;
   }
 }
 
@@ -2512,6 +2515,8 @@ function HasTemper($cardID)
     case "AJV006":
       return true;
     case "ROS028":
+      return true;
+    case "AJV005":
       return true;
     default:
       return false;
