@@ -231,8 +231,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
       break;
   }
   if (SearchCurrentTurnEffects("ROS163", $player) && DelimStringContains(CardName($cardID), "Sigil", partial: true)){
-    WriteLog(CardLink("ROS163", "ROS163") . " is amping 1");
-    AddCurrentTurnEffect("ROS163-AMP", $player);//amp for aether bindings
+    AddLayer("TRIGGER", $player, "ROS163");
   }
 }
 
