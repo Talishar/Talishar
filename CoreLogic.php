@@ -2902,8 +2902,9 @@ function EvoHandling($cardID, $player, $from)
   else if (SubtypeContains($cardID, "Chest")) $slot = "Chest";
   else if (SubtypeContains($cardID, "Arms")) $slot = "Arms";
   else if (SubtypeContains($cardID, "Legs")) $slot = "Legs";
+  $replaced = 0;
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-    if (SubtypeContains($char[$i], $slot, uniqueID:$char[$i + 11])) {
+    if (!$replaced && SubtypeContains($char[$i], $slot, uniqueID:$char[$i + 11])) {
       if (SubtypeContains($char[$i], "Base") && $char[$i + 1] != 0) {
         $CombatChain->Remove(GetCombatChainIndex($char[$i], $player));
         CharacterAddSubcard($player, $i, $char[$i]);
@@ -2917,13 +2918,14 @@ function EvoHandling($cardID, $player, $from)
         $char[$i + 9] = CharacterDefaultActiveState($char[$i]);
         $dqVars[1] = $i;
         EvoTransformAbility($char[$i], $fromCardID, $player);
-      } else {
-        if (substr($from, 0, 5) != "THEIR") AddGraveyard($cardID, $player, "HAND", $player);
-        else AddGraveyard($cardID, $otherPlayer, "GRAVEYARD", $player);
-        WriteLog("<b>🚫 *ERR0R* // No base of that type equipped //</b>");
+        $replaced = 1;
       }
-      break;
     }
+  }
+  if (!$replaced) {
+    if (substr($from, 0, 5) != "THEIR") AddGraveyard($cardID, $player, "HAND", $player);
+    else AddGraveyard($cardID, $otherPlayer, "GRAVEYARD", $player);
+    WriteLog("<b>🚫 *ERR0R* // No base of that type equipped //</b>");
   }
 }
 
