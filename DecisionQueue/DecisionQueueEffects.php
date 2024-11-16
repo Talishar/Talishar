@@ -805,7 +805,7 @@ function MeldCards($player, $cardID, $lastResult){
         break;
       default:
         if($lastResult != "Both") {
-          ProcessMeld($player, $cardID);
+          ProcessMeld($player, $cardID, additionalCosts:$lastResult);
         }
       break;
     }

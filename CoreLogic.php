@@ -2089,7 +2089,7 @@ function EndTurnPitchHandling($player)
   }
 }
 
-function ResolveGoAgain($cardID, $player, $from="")
+function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
 {
   global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer, $CS_ActionsPlayed, $CS_AdditionalCosts;
   $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed));
@@ -2112,13 +2112,16 @@ function ResolveGoAgain($cardID, $player, $from="")
     if (DelimStringContains($cardType, "I") && !HasMeld($cardID)){
       $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
     }
-    elseif (DelimStringContains($cardType, "I") && $from != "MELD" && IsMeldInstantName(GetClassState($player, $CS_AdditionalCosts))){
+    elseif (DelimStringContains($cardType, "I") && $from != "MELD" && IsMeldInstantName($additionalCosts)){
+      // handles case of only right side
       $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
     }
-    elseif ($from == "MELD" && GetClassState($player, $CS_AdditionalCosts) == "Both"){
+    elseif ($from == "MELD" && $additionalCosts == "MELD"){
+      // handles case of left side resolving after melding
       $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain || HasGoAgain($cardID);
     }
     elseif ($from == "MELD"){
+      // handles case of only left side
       $hasGoAgain = $hasGoAgain || HasGoAgain($cardID);
     }
   }
