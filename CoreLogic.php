@@ -2797,7 +2797,7 @@ function UnityEffect($cardID)
   }
 }
 
-function Draw($player, $mainPhase = true, $fromCardEffect = true)
+function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource = "-")
 {
   global $EffectContext, $mainPlayer, $CS_NumCardsDrawn;
   $otherPlayer = ($player == 1 ? 2 : 1);
@@ -2827,8 +2827,9 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true)
   }
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "EVR019") || (SearchCurrentTurnEffects("EVR019-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "CRU097")))) PlayAura("WTR075", $otherPlayer);
   if (SearchCharacterActive($player, "EVR020")) {
-    if ($EffectContext != "-") {
-      $cardType = CardType($EffectContext);
+    $context = $effectSource != "-" ? $effectSource : $EffectContext;
+    if ($context != "-") {
+      $cardType = CardType($context);
       if (DelimStringContains($cardType, "A") || $cardType == "AA") PlayAura("WTR075", $player);
     }
   }

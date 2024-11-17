@@ -564,9 +564,10 @@ function AuraStartTurnAbilities()
     case "HVY068":
     case "HVY069":
     case "HVY070":
+      $effectSource = $auras[$i];
       WriteLog("Resolving " . CardLink($auras[$i], $auras[$i]) . " ability");
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      Draw($mainPlayer);
+      Draw($mainPlayer, effectSource: $effectSource);
       MZMoveCard($mainPlayer, "MYHAND", "MYTOPDECK", silent: true);
       break;
     case "HVY083":
