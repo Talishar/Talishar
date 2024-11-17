@@ -2952,7 +2952,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     {
       if ($from != "EQUIP" && $from != "PLAY") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
       else if ($from == "EQUIP" || $from == "PLAY") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
-      if (!$openedChain) ResolveGoAgain($cardID, $currentPlayer, $from);
+      if (!$openedChain) ResolveGoAgain($cardID, $currentPlayer, $from, additionalCosts: $additionalCosts);
     }
     CopyCurrentTurnEffectsFromAfterResolveEffects();
     CacheCombatResult();

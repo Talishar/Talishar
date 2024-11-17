@@ -231,8 +231,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
       break;
   }
   if (SearchCurrentTurnEffects("ROS163", $player) && DelimStringContains(CardName($cardID), "Sigil", partial: true)){
-    WriteLog(CardLink("ROS163", "ROS163") . " is amping 1");
-    AddCurrentTurnEffect("ROS163-AMP", $player);//amp for aether bindings
+    AddLayer("TRIGGER", $player, "ROS163");
   }
 }
 
@@ -565,9 +564,10 @@ function AuraStartTurnAbilities()
     case "HVY068":
     case "HVY069":
     case "HVY070":
+      $effectSource = $auras[$i];
       WriteLog("Resolving " . CardLink($auras[$i], $auras[$i]) . " ability");
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      Draw($mainPlayer);
+      Draw($mainPlayer, effectSource: $effectSource);
       MZMoveCard($mainPlayer, "MYHAND", "MYTOPDECK", silent: true);
       break;
     case "HVY083":
