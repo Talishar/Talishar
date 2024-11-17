@@ -3054,6 +3054,7 @@ function IsHeroActive($player)
 
 function ProcessMeld($player, $parameter, $additionalCosts="")
 {
+  // handles running the left side of meld cards
   global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts;
   switch ($parameter) {
     case "ROS005":
@@ -3105,6 +3106,6 @@ function ProcessMeld($player, $parameter, $additionalCosts="")
     default:
       break;
   }
-  ResolveGoAgain($parameter, $player, "MELD");
+  ResolveGoAgain($parameter, $player, "MELD", additionalCosts: $additionalCosts);
   if(GetClassState($player, $CS_AdditionalCosts) == "Both" || $additionalCosts == "MELD") ResolveGoesWhere("GY", $parameter, $player, "MELD"); //Only needs to be handled specifically here when playing both side of a Meld card
 }
