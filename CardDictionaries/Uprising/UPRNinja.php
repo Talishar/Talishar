@@ -6,11 +6,6 @@
     switch($cardID)
     {
       case "UPR044": case "UPR045":
-        $char = &GetPlayerCharacter($currentPlayer);
-        WriteLog("char has " . count($char) . " things in it");
-        for ($i = 0; $i < count($char); $i+=CharacterPieces()) {
-          WriteLog($char[$i]);
-        }
         if(SearchCurrentTurnEffects("OUT183", $currentPlayer)) return "";
         MZMoveCard($currentPlayer, "MYDISCARD:isSameName=UPR101", "MYHAND");
         return "";
