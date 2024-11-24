@@ -41,8 +41,15 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
+    case "HNT031":
+    case "HNT030":
+      if (CheckMarked($currentPlayer)) {
+        WriteLog("Uh oh, I am marked");
+      }
+      else WriteLog("Not marked");
     case "HNT165":
       $otherchar = &GetPlayerCharacter($otherPlayer);
+      WriteLog("char has: " . count($otherchar) . " things");
       MarkHero($otherPlayer);
       if (CardNameContains($otherchar[0], "Arakni")) {
         GainResources($currentPlayer, 1);
@@ -55,5 +62,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function MarkHero($player): string
 {
+  $character = &GetPlayerCharacter($player);
+  $character[13] = 1;
   return "";
+}
+
+function CheckMarked($player): bool
+{
+  $character = &GetPlayerCharacter($player);
+  return $character[13] == 1;
 }

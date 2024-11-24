@@ -58,7 +58,8 @@ function JSONRenderedCard(
   $balanceCounters = NULL,
   $bindCounters = NULL,
   $lightningPlayed = NULL,
-  $showAmpAmount = false
+  $showAmpAmount = false,
+  $marked = 0
 ) {
   global $playerID, $CS_NumLightningPlayed;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);

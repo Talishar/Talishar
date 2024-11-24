@@ -42,6 +42,7 @@ include "CardDictionaries/ArmoryDecks/AAZShared.php";
 include "CardDictionaries/Rosetta/ROSShared.php";
 include "CardDictionaries/ArmoryDecks/AIOShared.php";
 include "CardDictionaries/ArmoryDecks/AJVShared.php";
+include "CardDictionaries/Hunted/HNTShared.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
 include "GeneratedCode/DatabaseGeneratedCardDictionaries.php";

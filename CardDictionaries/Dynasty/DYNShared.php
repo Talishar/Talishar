@@ -681,11 +681,6 @@ function CheckHitContracts($mainPlayer, $otherPlayer)
   }
 }
 
-function CheckMarked($player) //fill this in when we know more about marking
-{
-  return false;
-}
-
 function CheckHitContract($contractType, $otherPlayer)
 {
   $otherchar = &GetPlayerCharacter($otherPlayer);
