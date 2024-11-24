@@ -619,6 +619,7 @@ function AbilityCost($cardID)
   else if ($set == "TER") return TERAbilityCost($cardID);
   else if ($set == "AIO") return AIOAbilityCost($cardID);
   else if ($set == "AJV") return AJVAbilityCost($cardID);
+  else if ($set == "HNT") return HNTAbilityCost($cardID);
   else if ($cardID == "HER117") return 0;
   return CardCost($cardID);
 }
@@ -944,6 +945,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "TER") return TERAbilityType($cardID);
   else if ($set == "AIO") return AIOAbilityType($cardID, $index, $from);
   else if ($set == "AJV") return AJVAbilityType($cardID);
+  else if ($set == "HNT") return HNTAbilityType($cardID);
   else if ($cardID == "HER117") return "I";
 }
 
@@ -2769,13 +2771,13 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "TCC") return TCCAbilityHasGoAgain($cardID);
   else if ($set == "EVO") return EVOAbilityHasGoAgain($cardID);
   else if ($set == "HVY") return HVYAbilityHasGoAgain($cardID);
-  else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
   else if ($set == "AKO") return AKOAbilityHasGoAgain($cardID);
   else if ($set == "AAZ") return AAZAbilityHasGoAgain($cardID);
   else if ($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
   else if ($set == "AIO") return AIOAbilityHasGoAgain($cardID);
   else if ($set == "AJV") return AJVAbilityHasGoAgain($cardID);
+  else if ($set == "HNT") return HNTAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "RVD004":
     case "TER005":
