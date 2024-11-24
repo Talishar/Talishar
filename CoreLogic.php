@@ -2089,7 +2089,7 @@ function EndTurnPitchHandling($player)
   }
 }
 
-function ResolveGoAgain($cardID, $player, $from="")
+function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
 {
   global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer, $CS_ActionsPlayed, $CS_AdditionalCosts;
   $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed));
@@ -2112,13 +2112,16 @@ function ResolveGoAgain($cardID, $player, $from="")
     if (DelimStringContains($cardType, "I") && !HasMeld($cardID)){
       $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
     }
-    elseif (DelimStringContains($cardType, "I") && $from != "MELD" && IsMeldInstantName(GetClassState($player, $CS_AdditionalCosts))){
+    elseif (DelimStringContains($cardType, "I") && $from != "MELD" && IsMeldInstantName($additionalCosts)){
+      // handles case of only right side
       $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
     }
-    elseif ($from == "MELD" && GetClassState($player, $CS_AdditionalCosts) == "Both"){
+    elseif ($from == "MELD" && $additionalCosts == "MELD"){
+      // handles case of left side resolving after melding
       $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain || HasGoAgain($cardID);
     }
     elseif ($from == "MELD"){
+      // handles case of only left side
       $hasGoAgain = $hasGoAgain || HasGoAgain($cardID);
     }
   }
@@ -2795,7 +2798,7 @@ function UnityEffect($cardID)
   }
 }
 
-function Draw($player, $mainPhase = true, $fromCardEffect = true)
+function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource = "-")
 {
   global $EffectContext, $mainPlayer, $CS_NumCardsDrawn;
   $otherPlayer = ($player == 1 ? 2 : 1);
@@ -2825,8 +2828,9 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true)
   }
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "EVR019") || (SearchCurrentTurnEffects("EVR019-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "CRU097")))) PlayAura("WTR075", $otherPlayer);
   if (SearchCharacterActive($player, "EVR020")) {
-    if ($EffectContext != "-") {
-      $cardType = CardType($EffectContext);
+    $context = $effectSource != "-" ? $effectSource : $EffectContext;
+    if ($context != "-") {
+      $cardType = CardType($context);
       if (DelimStringContains($cardType, "A") || $cardType == "AA") PlayAura("WTR075", $player);
     }
   }
@@ -2903,8 +2907,9 @@ function EvoHandling($cardID, $player, $from)
   else if (SubtypeContains($cardID, "Chest")) $slot = "Chest";
   else if (SubtypeContains($cardID, "Arms")) $slot = "Arms";
   else if (SubtypeContains($cardID, "Legs")) $slot = "Legs";
+  $replaced = 0;
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-    if (SubtypeContains($char[$i], $slot, uniqueID:$char[$i + 11])) {
+    if (!$replaced && SubtypeContains($char[$i], $slot, uniqueID:$char[$i + 11])) {
       if (SubtypeContains($char[$i], "Base") && $char[$i + 1] != 0) {
         $CombatChain->Remove(GetCombatChainIndex($char[$i], $player));
         CharacterAddSubcard($player, $i, $char[$i]);
@@ -2918,13 +2923,14 @@ function EvoHandling($cardID, $player, $from)
         $char[$i + 9] = CharacterDefaultActiveState($char[$i]);
         $dqVars[1] = $i;
         EvoTransformAbility($char[$i], $fromCardID, $player);
-      } else {
-        if (substr($from, 0, 5) != "THEIR") AddGraveyard($cardID, $player, "HAND", $player);
-        else AddGraveyard($cardID, $otherPlayer, "GRAVEYARD", $player);
-        WriteLog("<b>🚫 *ERR0R* // No base of that type equipped //</b>");
+        $replaced = 1;
       }
-      break;
     }
+  }
+  if (!$replaced) {
+    if (substr($from, 0, 5) != "THEIR") AddGraveyard($cardID, $player, "HAND", $player);
+    else AddGraveyard($cardID, $otherPlayer, "GRAVEYARD", $player);
+    WriteLog("<b>🚫 *ERR0R* // No base of that type equipped //</b>");
   }
 }
 

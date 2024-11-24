@@ -2555,6 +2555,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $numRunechantsCreated = match ($parameter) {"ROS152" => 3, "ROS153" => 2, "ROS154" => 1};
       PlayAura("ARC112", $player, $numRunechantsCreated);
       break;
+    case "ROS163":
+      WriteLog(CardLink("ROS163", "ROS163") . " is amping 1");
+      AddCurrentTurnEffect("ROS163-AMP", $player);//amp for aether bindings
     case "ROS168"://Sigil of aether
       if($additionalCosts == "Arcane") DealArcane(1, 2, "STATIC", "ROS168", false, $player);
       else DestroyAuraUniqueID($player, $uniqueID); //destroy sigils at start of action phase
@@ -3054,6 +3057,7 @@ function IsHeroActive($player)
 
 function ProcessMeld($player, $parameter, $additionalCosts="")
 {
+  // handles running the left side of meld cards
   global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts;
   switch ($parameter) {
     case "ROS005":
@@ -3105,6 +3109,6 @@ function ProcessMeld($player, $parameter, $additionalCosts="")
     default:
       break;
   }
-  ResolveGoAgain($parameter, $player, "MELD");
+  ResolveGoAgain($parameter, $player, "MELD", additionalCosts: $additionalCosts);
   if(GetClassState($player, $CS_AdditionalCosts) == "Both" || $additionalCosts == "MELD") ResolveGoesWhere("GY", $parameter, $player, "MELD"); //Only needs to be handled specifically here when playing both side of a Meld card
 }

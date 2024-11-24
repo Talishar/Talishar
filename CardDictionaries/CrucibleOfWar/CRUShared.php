@@ -201,7 +201,6 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "<-", 1);
         AddDecisionQueue("MULTIADDHAND", $mainPlayer, "-", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "CRU055", 1);
-        $rv = "Reveals the top card of your deck and puts it in your hand if it has combo";
       }
       return $rv;
     case "CRU056":

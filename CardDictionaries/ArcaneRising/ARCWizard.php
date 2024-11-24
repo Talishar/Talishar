@@ -123,6 +123,7 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:type=A;class=WIZARD;maxCost={1}", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish or pass", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZBANISH", $currentPlayer, "HAND,INST," . $currentPlayer, 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
