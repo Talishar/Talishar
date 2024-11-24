@@ -1086,6 +1086,7 @@ function ResolveCombatDamage($damageDone)
             $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
             CheckHitContracts($mainPlayer, $otherPlayer);
           }
+          
         }
       }
       for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
