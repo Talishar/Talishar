@@ -1103,10 +1103,12 @@ function ResolveCombatDamage($damageDone)
       ItemHitTrigger($combatChain[0]);
       AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
     }
-    $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-    if (CheckMarked($otherPlayer)) {
-      WriteLog($otherPlayer . " loses their mark");
-      RemoveMark($otherPlayer);
+    if (IsHeroAttackTarget()) {
+      $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+      if (CheckMarked($otherPlayer)) {
+        WriteLog($otherPlayer . " loses their mark");
+        RemoveMark($otherPlayer);
+      }
     }
     for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
       if ($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
