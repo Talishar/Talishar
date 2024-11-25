@@ -642,8 +642,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           facing: $myCharacter[$i + 12],
           numUses: $myCharacter[$i + 5], //Number of Uses
           subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10],
-          marked: $theirCharacter[$i + 13]));
-  
+          marked: $myCharacter[$i + 13]));
       }
     }
   }
