@@ -694,6 +694,10 @@ function CharacterCostModifier($cardID, $from, $cost)
         $modifier += 1;
         AddLayer("TRIGGER", $currentPlayer, "ELE111", "-", "EQUIP", $char[$i + 11]);
         break;
+      case "HNT098":
+      case "HNT099": // Fang
+        $fealties = SearchAurasForCard("HNT167", $currentPlayer);
+        if (SubtypeContains($cardID, "Dagger") && count(explode(",", $fealties)) >= 3) --$modifier;
       default:
         break;
     }
