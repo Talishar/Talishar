@@ -1674,7 +1674,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if (TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") {
       IncrementClassState($currentPlayer, $CS_NumDraconicPlayed);
-      WriteLog(GetClassState($currentPlayer, $CS_NumDraconicPlayed) . " draconic cards have been played");
       if (!TypeContains($cardID, "AA")) SearchCurrentTurnEffects("HNT167", $currentPlayer, remove:true);
     }
     if(DelimStringContains($cardType, "I")) {
