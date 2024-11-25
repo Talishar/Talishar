@@ -78,6 +78,8 @@ function CardType($cardID, $from="")
       return "A,I";
     case "ROS027":
       return "Macro";
+    case "AJV002":
+      return "W";
     default:
       break;
   }
