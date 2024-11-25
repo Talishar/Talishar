@@ -1085,7 +1085,7 @@ function ResolveCombatDamage($damageDone)
           if (IsHeroAttackTarget()) {
             $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
             $mainChar = &GetPlayerCharacter($mainPlayer);
-            if (($mainChar[0] == "HNT054" || $mainChar[0] == "HNT055") && CheckMarked($otherPlayer)){
+            if (($mainChar[0] == "HNT054" || $mainChar[0] == "HNT055" || $mainChar[0] == "HNT098" || $mainChar[0] == "HNT099") && CheckMarked($otherPlayer)){
               {
                 AddLayer("TRIGGER", $mainPlayer, $mainChar[0]);
               }

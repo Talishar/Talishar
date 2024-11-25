@@ -2642,6 +2642,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "HNT054":
     case "HNT055":
+    case "HNT098":
+    case "HNT099"://Fang and Cindra
       PlayAura("HNT167", $mainPlayer);
       IncrementClassState($mainPlayer, $CS_FealtyCreated);
     case "HNT167":
