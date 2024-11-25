@@ -648,6 +648,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
   $char[7] = 0;
   $char[8] = 0;
   $char[9] = CharacterDefaultActiveState($cardID);
+  $char[13] = 0;
   AddEvent("HERO_TRANSFORM", $cardID);
   $health = &GetHealth($player);
   $health = DemiHeroHealth($cardID);
