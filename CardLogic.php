@@ -2643,7 +2643,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "HNT054":
     case "HNT055":
       PlayAura("HNT167", $mainPlayer);
-      IncrementClassState($mainPlayer, $CS_FealtyPlayed);
+      IncrementClassState($mainPlayer, $CS_FealtyCreated);
     case "HNT167":
       DestroyAuraUniqueID($player, $uniqueID);
     default:

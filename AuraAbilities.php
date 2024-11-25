@@ -732,7 +732,7 @@ function AuraBeginningActionPhaseAbilities(){
 
 function AuraBeginEndPhaseTriggers()
 {
-  global $mainPlayer, $CS_FealtyPlayed, $CS_NumDraconicPlayed;
+  global $mainPlayer, $CS_FealtyCreated, $CS_NumDraconicPlayed;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     switch ($auras[$i]) {
@@ -747,7 +747,7 @@ function AuraBeginEndPhaseTriggers()
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "HNT167":
-        $fealtySurvives = GetClassState($mainPlayer, $CS_FealtyPlayed) + GetClassState($mainPlayer, $CS_NumDraconicPlayed);
+        $fealtySurvives = GetClassState($mainPlayer, $CS_FealtyCreated) + GetClassState($mainPlayer, $CS_NumDraconicPlayed);
         if (!$fealtySurvives) {
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
