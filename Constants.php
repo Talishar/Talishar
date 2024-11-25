@@ -40,9 +40,10 @@ function DiscardPieces()
 //10 - Subcards , delimited
 //11 - Unique ID
 //12 - Face up/down
+//13 - Marked (1 = yes, 0 = no)
 function CharacterPieces()
 {
-  return 13;
+  return 14;
 }
 
 //0 - Card ID

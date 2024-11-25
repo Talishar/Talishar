@@ -29,6 +29,7 @@ class Character
   public $subCards = "";
   public $uniqueID = 0;
   public $facing = "UP";
+  public $marked = 0;
 
 
   private $player = null;
@@ -53,6 +54,7 @@ class Character
     $this->subCards = $array[$index + 10];
     $this->uniqueID = $array[$index + 11];
     $this->facing = $array[$index + 12];
+    $this->marked = $array[$index + 13];
   }
 
   public function Finished()
@@ -71,6 +73,7 @@ class Character
     $array[$this->arrIndex + 10] = $this->subCards;
     $array[$this->arrIndex + 11] = $this->uniqueID;
     $array[$this->arrIndex + 12] = $this->facing;
+    $array[$this->arrIndex + 13] = $this->marked;
   }
 }
 
@@ -91,6 +94,7 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   array_push($char, "-");
   array_push($char, GetUniqueId($cardID, $player));
   array_push($char, HasCloaked($cardID, $player));
+  array_push($char, 0);
   return $index;
 }
 
@@ -724,6 +728,7 @@ function EquipEquipment($player, $card, $slot = "")
       $char[$i + 10] = "-";
       $char[$i + 11] = $uniqueID;
       $char[$i + 12] = HasCloaked($card, $player);
+      $char[$i + 13] = 0;
       $replaced = 1;
     }
   }
@@ -742,6 +747,7 @@ function EquipEquipment($player, $card, $slot = "")
     array_splice($char, $insertIndex + 10, 0, "-");
     array_splice($char, $insertIndex + 11, 0, $uniqueID);
     array_splice($char, $insertIndex + 12, 0, HasCloaked($card, $player));
+    array_splice($char, $insertIndex + 13, 0, 0);
   }
   if ($card == "EVO013") AddCurrentTurnEffect("EVO013-" . $uniqueID . "," . $slot, $player);
   if ($card == "ROS246") AddCurrentTurnEffect("ROS246-" . $uniqueID . ",Base," . $slot, $player);
@@ -772,6 +778,7 @@ function EquipWeapon($player, $card)
         $char[$i + 10] = "-";
         $char[$i + 11] = GetUniqueId($card, $player);
         $char[$i + 12] = HasCloaked($card, $player);
+        $char[$i + 13] = 0;
         $replaced = 1;
       } else if (Is1H($char[$i])) ++$numHands;
       else $numHands += 2;
@@ -792,6 +799,7 @@ function EquipWeapon($player, $card)
     array_splice($char, $insertIndex + 10, 0, "-");
     array_splice($char, $insertIndex + 11, 0, GetUniqueId($card, $player));
     array_splice($char, $insertIndex + 12, 0, HasCloaked($card, $player));
+    array_splice($char, $insertIndex + 13, 0, 0);
   }
 }
 

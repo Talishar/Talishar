@@ -428,6 +428,7 @@ function EffectAttackModifier($cardID)
   else if ($set == "AUR") return AUREffectAttackModifier($cardID);
   else if ($set == "ROS") return ROSEffectAttackModifier($cardID);
   else if ($set == "AJV") return AJVEffectAttackModifier($cardID);
+  else if ($set == "HNT") return HNTEffectAttackModifier($cardID);
   switch ($cardID) {
     case "HER123":
       return 1;
@@ -1682,6 +1683,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "ROS") return ROSCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "AIO") return AIOCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "AJV") return AJVCombatEffectActive($cardID, $cardToCheck);
+  else if ($set == "HNT") return HNTCombatEffectActive($cardID, $cardToCheck);
   switch ($cardID) {
     case "LGS180":
       return DTDCombatEffectActive($cardID, $cardToCheck);
