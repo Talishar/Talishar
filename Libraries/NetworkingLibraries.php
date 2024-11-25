@@ -1084,6 +1084,12 @@ function ResolveCombatDamage($damageDone)
           if (CachedTotalAttack() >= 13) AddTowerEffectTrigger($combatChain[$i]);
           if (IsHeroAttackTarget()) {
             $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+            $mainChar = &GetPlayerCharacter($mainPlayer);
+            if (($mainChar[0] == "HNT054" || $mainChar[0] == "HNT055") && CheckMarked($otherPlayer)){
+              {
+                AddLayer("TRIGGER", $mainPlayer, $mainChar[0]);
+              }
+            }
             CheckHitContracts($mainPlayer, $otherPlayer);
           }
           
@@ -1445,6 +1451,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumLightningPlayed;
   global $CS_PlayedAsInstant, $mainPlayer, $EffectContext, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAttacks, $CCS_NumInstantsPlayedByAttackingPlayer;
   global $CCS_NextInstantBouncesAura, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumInstantPlayed;
+  global $CS_NumDraconicPlayed, $currentTurnEffects;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $resources = &GetResources($currentPlayer);
@@ -1658,6 +1665,17 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (ColorContains($cardID, 3, $currentPlayer) && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") IncrementClassState($currentPlayer, $CS_NumBluePlayed);
     if (TalentContains($cardID, "LIGHTNING", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") {
       IncrementClassState($currentPlayer, $CS_NumLightningPlayed);
+    }
+    if (TypeContains($cardID, "W")) { // We'll need to add cases for Allies and Emperor Attacking
+      $index = SearchCurrentTurnEffectsForIndex("HNT167", $currentPlayer);
+      if ($index != -1) {
+        ++$currentTurnEffects[$index + 3];
+      }
+    }
+    if (TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") {
+      IncrementClassState($currentPlayer, $CS_NumDraconicPlayed);
+      WriteLog(GetClassState($currentPlayer, $CS_NumDraconicPlayed) . " draconic cards have been played");
+      if (!TypeContains($cardID, "AA")) SearchCurrentTurnEffects("HNT167", $currentPlayer, remove:true);
     }
     if(DelimStringContains($cardType, "I")) {
       if(!HasMeld($cardID)) IncrementClassState($currentPlayer, $CS_NumInstantPlayed);

@@ -1467,11 +1467,17 @@ function TalentOverride($cardID, $player = "", $zone="-")
     $talentToAdd = "";
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i + 1] != $player) continue;
+    WriteLog("Checking " . $currentTurnEffects[$i]);
     switch ($currentTurnEffects[$i]) {
       case "UPR060":
       case "UPR061":
       case "UPR062":
         $talentToAdd = "DRACONIC"; //Brand of Cinderclaw
+      case "HNT167": //Fealty
+        if (!TypeContains($cardID, "W")) { // We'll need to add cases for Allies and Emperor Attacking
+          $talentToAdd = "DRACONIC";
+          WriteLog("HERE " . $cardID);
+        }
       default:
         break;
     }

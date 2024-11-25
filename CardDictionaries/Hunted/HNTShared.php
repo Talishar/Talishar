@@ -38,6 +38,7 @@ function HNTEffectAttackModifier($cardID): int
 function HNTCombatEffectActive($cardID, $attackID): bool
 {
   return match ($cardID) {
+    "HNT167" => true,
     default => false,
   };
 }
@@ -51,12 +52,17 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT055":
       RecurDagger($currentPlayer, 0);
       RecurDagger($currentPlayer, 1);
+      break;
     case "HNT165":
       $otherchar = &GetPlayerCharacter($otherPlayer);
       MarkHero($otherPlayer);
       if (CardNameContains($otherchar[0], "Arakni")) {
         GainResources($currentPlayer, 1);
       }
+      break;
+    case "HNT167":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     default:
       break;
   }
@@ -88,10 +94,10 @@ function RecurDagger($player, $mode) //$mode == 0 for left, and 1 for right
   $weapons = "";
   $char = &GetPlayerCharacter($player);
   $graveyard = &GetDiscard($player);
-  if ($char[CharacterPieces() * $mode + 1] == 0) { //Only Equip if there is a broken weapon/off-hand
+  if ($char[CharacterPieces() * ($mode + 1) + 1] == 0) { //Only Equip if there is a broken weapon/off-hand
     foreach ($graveyard as $cardID) {
       if (TypeContains($cardID, "W", $player) && SubtypeContains($cardID, "Dagger")) {
-        if (TalentContains($cardID, "DRACONIC")) {
+        if (true) {//(TalentContains($cardID, "DRACONIC")) { FOR TESTING ONLY
           if ($weapons != "") $weapons .= ",";
           $weapons .= $cardID;
         }
@@ -103,7 +109,6 @@ function RecurDagger($player, $mode) //$mode == 0 for left, and 1 for right
     }
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip");
     AddDecisionQueue("CHOOSECARD", $player, $weapons);
-    AddDecisionQueue("APPENDLASTRESULT", $player, "-DISCARD");
-    AddDecisionQueue("EQUIPCARDINVENTORY", $player, "<-");
+    AddDecisionQueue("EQUIPCARDGRAVEYARD", $player, "<-");
   }
 }
