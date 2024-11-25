@@ -2640,6 +2640,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "AJV007":
       PlayAura("ELE109", $defPlayer, effectController: $defPlayer);
       break;
+    case "HNT054":
+    case "HNT055":
+      PlayAura("HNT167", $mainPlayer);
+      IncrementClassState($mainPlayer, $CS_FealtyPlayed);
+    case "HNT167":
+      DestroyAuraUniqueID($player, $uniqueID);
     default:
       break;
   }

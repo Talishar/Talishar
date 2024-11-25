@@ -732,7 +732,7 @@ function AuraBeginningActionPhaseAbilities(){
 
 function AuraBeginEndPhaseTriggers()
 {
-  global $mainPlayer;
+  global $mainPlayer, $CS_FealtyPlayed, $CS_NumDraconicPlayed;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     switch ($auras[$i]) {
@@ -746,6 +746,11 @@ function AuraBeginEndPhaseTriggers()
       case "ROS034":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
+      case "HNT167":
+        $fealtySurvives = GetClassState($mainPlayer, $CS_FealtyPlayed) + GetClassState($mainPlayer, $CS_NumDraconicPlayed);
+        if (!$fealtySurvives) {
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        }
       default:
         break;
     }
@@ -1358,6 +1363,8 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
         $auras[$index + 1] = 1;
       }
       break;
+    case "HNT167":
+      DestroyAura($currentPlayer, $index);
     default:
       break;
   }
