@@ -1911,6 +1911,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "ONHITEFFECT":
       ProcessHitEffect($lastResult, $parameter);
+      //handling flick knives and mark
+      $currentChar = &GetPlayerCharacter($currentPlayer);
+      if (CheckMarked($defPlayer)) {
+        if ($currentChar[0] == "HNT054" || $currentChar[0] == "HNT054") {
+          AddLayer("TRIGGER", $mainPlayer, $currentChar[0]);
+        }
+        RemoveMark($defPlayer);
+      }
       return $parameter;
     case "AWAKEN":
       $mzArr = explode("-", $parameter);
@@ -1957,6 +1965,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($indexToRemove !== false) unset($inventory[$indexToRemove]);
         }
       }
+      if (CardType($parameter) == "W") EquipWeapon($player, $parameter);
+      else EquipEquipment($player, $parameter);
+      return "";
+    case "EQUIPCARDGRAVEYARD":
+      $index = SearchGetFirstIndex(SearchMultizone($currentPlayer, "MYDISCARD:cardID=" . $parameter));
+      RemoveGraveyard($currentPlayer, $index);
       if (CardType($parameter) == "W") EquipWeapon($player, $parameter);
       else EquipEquipment($player, $parameter);
       return "";
