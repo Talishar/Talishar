@@ -97,7 +97,7 @@ function RecurDagger($player, $mode) //$mode == 0 for left, and 1 for right
   if ($char[CharacterPieces() * ($mode + 1) + 1] == 0) { //Only Equip if there is a broken weapon/off-hand
     foreach ($graveyard as $cardID) {
       if (TypeContains($cardID, "W", $player) && SubtypeContains($cardID, "Dagger")) {
-        if (true) {//(TalentContains($cardID, "DRACONIC")) { FOR TESTING ONLY
+        if (TalentContains($cardID, "DRACONIC")) {
           if ($weapons != "") $weapons .= ",";
           $weapons .= $cardID;
         }
