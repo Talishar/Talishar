@@ -809,8 +809,7 @@ function AttackValue($cardID)
   else if ($cardID == "DYN216") return CountAura("MON104", $currentPlayer);
   if ($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
-    if ($number < 400 || ($set != "MON" && $set != "DYN")) 
-    if($cardID == "AJV002") return 4; //temp fix
+    if ($number < 400 || ($set != "MON" && $set != "DYN"))
     return GeneratedAttackValue($cardID);
   }
   if ($set == "ROG") return ROGUEAttackValue($cardID);
