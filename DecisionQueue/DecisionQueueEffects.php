@@ -800,8 +800,9 @@ function MeldCards($player, $cardID, $lastResult){
       case "Life":
         GainHealth(1, $player);
         break;
-      case "Shock": 
-        DealArcane(1, 2, "PLAYCARD", $cardID, false, $player, meldState: $meldState);
+      case "Shock":
+        $type = count($names) > 1 && IsDoubleArcane($cardID) ? "ARCANESHOCK" : "PLAYCARD";
+        DealArcane(1, 2, $type, $cardID, false, $player, meldState: $meldState);
         break;
       default:
         if($lastResult != "Both") {

@@ -1177,6 +1177,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("ELE065", $player);
         WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage");
       }
+      if ($type == "ARCANESHOCK") {
+        $damage += ConsumeArcaneBonus($player, noRemove: true);
+        if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("ELE065", $player);
+        WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage");
+      }
       if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
         $allies = &GetAllies($targetPlayer);
         if ($allies[$target[1] + 6] > 0) {
