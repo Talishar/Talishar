@@ -1369,8 +1369,10 @@ case "4":
 return "E";
 case "7":
 return "E";
-case "2":
+case "3":
 return "E";
+case "2":
+return "W";
 case "5":
 return "E";
 default: return "AA";
@@ -8957,6 +8959,8 @@ case "8":
 return 8;
 case "9":
 return 7;
+case "2":
+return 4;
 default: return 0;
 }
 default: return 0;
@@ -13109,8 +13113,10 @@ case "4":
 return 1;
 case "7":
 return 1;
-case "2":
+case "3":
 return 2;
+case "2":
+return -1;
 case "5":
 return 2;
 default: return 3;
@@ -20209,8 +20215,10 @@ case "4":
 return "Ollin Ice Cap";
 case "7":
 return "Root-Bound Trunks";
-case "2":
+case "3":
 return "Steelbraid Buckler";
+case "2":
+return "Summit, the Unforgiving";
 case "5":
 return "Tectonic Crust";
 default: return "";
@@ -29615,6 +29623,8 @@ case "4":
 return 0;
 case "7":
 return 0;
+case "3":
+return 0;
 case "2":
 return 0;
 case "5":
@@ -37213,6 +37223,8 @@ case "4":
 return -1;
 case "7":
 return -1;
+case "3":
+return -1;
 case "2":
 return -1;
 case "5":
@@ -44067,8 +44079,10 @@ case "4":
 return "Head";
 case "7":
 return "Legs";
-case "2":
+case "3":
 return "Off-Hand";
+case "2":
+return "Polearm";
 case "5":
 return "Chest";
 default: return "";
@@ -48691,8 +48705,10 @@ case "4":
 return "M";
 case "7":
 return "M";
-case "2":
+case "3":
 return "R";
+case "2":
+return "M";
 case "5":
 return "M";
 default: return "C";
@@ -53121,11 +53137,11 @@ case "DTD210": return true;
 case "DYN115": return true;
 case "DYN116": return true;
 case "OUT004": return true;
+case "AJV002": return true;
 case "ELE202": return true;
 case "ELE003": return true;
 case "CRU051": return true;
 case "CRU052": return true;
-case "AJV002": return true;
 default: return false;}
 }
 
@@ -55228,6 +55244,8 @@ return "GUARDIAN";
 case "4":
 return "GUARDIAN";
 case "7":
+return "GUARDIAN";
+case "3":
 return "GUARDIAN";
 case "2":
 return "GUARDIAN";
@@ -64329,6 +64347,8 @@ case "4":
 return "ICE";
 case "7":
 return "EARTH";
+case "2":
+return "EARTH,ICE";
 case "5":
 return "EARTH";
 default: return "NONE";
@@ -68250,7 +68270,7 @@ case "WTR126": return "false";
 case "WTR127": return "false";
 case "WTR128": return "false";
 case "WTR119": return "true";
-case "AJV002": return "false";
+case "AJV003": return "false";
 case "DYN027": return "false";
 case "ELE226": return "false";
 case "ARC129": return "false";
@@ -68304,6 +68324,7 @@ case "ROS041": return "false";
 case "ELE125": return "false";
 case "ELE126": return "false";
 case "ELE127": return "false";
+case "AJV002": return "false";
 case "ARC212": return "false";
 case "ARC213": return "false";
 case "ARC214": return "false";
