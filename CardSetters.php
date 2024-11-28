@@ -526,7 +526,7 @@ function ClearNextCardArcaneBuffs($player, $playedCard = "", $from = "")
   }
 }
 
-function ConsumeArcaneBonus($player)
+function ConsumeArcaneBonus($player, $noRemove = false)
 {
   global $currentTurnEffects, $CS_ResolvingLayerUniqueID;
   $uniqueID = GetClassState($player, $CS_ResolvingLayerUniqueID);
@@ -537,7 +537,7 @@ function ConsumeArcaneBonus($player)
       $bonus = EffectArcaneBonus($currentTurnEffects[$i]);
       if ($bonus > 0) {
         $totalBonus += $bonus;
-        $remove = 1;
+        if (!$noRemove) $remove = 1;
       }
     }
     if ($remove == 1) RemoveCurrentTurnEffect($i);

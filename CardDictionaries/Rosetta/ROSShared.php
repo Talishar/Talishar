@@ -629,3 +629,11 @@ function HasAuraWithSigilInName($player)
   }
   return false;
 }
+
+function IsDoubleArcane($cardID): bool //checks for cards that can shock, but not use up arcane buffs on the shock
+{
+  return match ($cardID) {
+    "ROS024" => true,
+    default => false,
+  };
+}
