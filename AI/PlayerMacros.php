@@ -60,7 +60,7 @@ function ProcessMacros()
           if(CachedTotalAttack() <= 1) { $somethingChanged = true; PassInput(); }
         }
       }
-      if(($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
+      if(!IsGameOver() && ($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
         $somethingChanged = true; 
         SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
       }

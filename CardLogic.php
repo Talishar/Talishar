@@ -456,7 +456,7 @@ function ContinueDecisionQueue($lastResult = "")
       if ($parameter != "-") $damageDone = $parameter;
       else $damageDone = $dqState[6];
       CloseDecisionQueue();
-      ResolveCombatDamage($damageDone);
+      if(!IsGameOver()) ResolveCombatDamage($damageDone);
     } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "PASSTURN") {
       CloseDecisionQueue();
       PassTurn();
