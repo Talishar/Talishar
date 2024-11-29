@@ -341,7 +341,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "HVY212":
       LookAtTopCard($currentPlayer, $cardID, showHand: true);
-      if ($from == "ARS") Draw($currentPlayer);
+      if ($from == "ARS") AddDecisionQueue("DRAW", $currentPlayer, "-");
       return "";
     case "HVY213":
     case "HVY214":
