@@ -1193,7 +1193,7 @@ function CurrentEffectAttackAbility()
           else $maxCost = 0;
           if ($attackType == "AA" && CardCost($attackID) <= $maxCost) {
             WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " dealt 1 damage.");
-            DealArcane(1, 0, "PLAYCARD", $currentTurnEffects[$i], true);
+            DealArcane(1, 0, "PLAYCARD", $currentTurnEffects[$i], true, $mainPlayer);
             $remove = true;
           }
           break;
