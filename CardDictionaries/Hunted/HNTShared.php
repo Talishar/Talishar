@@ -37,7 +37,9 @@ function HNTEffectAttackModifier($cardID): int
 
 function HNTCombatEffectActive($cardID, $attackID): bool
 {
+  global $mainPlayer;
   return match ($cardID) {
+    "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT116" => true,
     "HNT167" => true,
     default => false,
@@ -46,13 +48,18 @@ function HNTCombatEffectActive($cardID, $attackID): bool
 
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $mainPlayer;
+  global $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT054":
     case "HNT055":
       RecurDagger($currentPlayer, 0);
       RecurDagger($currentPlayer, 1);
+      break;
+    case "HNT071":
+      if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
       break;
     case "HNT116":
       AddCurrentTurnEffect($cardID, $currentPlayer);

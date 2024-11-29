@@ -159,6 +159,8 @@ function CurrentTurnEffectUses($cardID)
       return 3;
     case "UPR223":
       return 2;
+    case "HNT071":
+      return 4; //Technically 3, but it sees and counts itself. We put 4 so it affects the next 3 Draconic cards
     default:
       return 1;
   }
@@ -1285,7 +1287,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
-  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished, $CS_FealtyCreated;
   global $CS_DamagePrevention, $chainLinks;
   $items = &GetItems($player);
   $auras = &GetAuras($player);

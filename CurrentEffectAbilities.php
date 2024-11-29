@@ -871,6 +871,13 @@ function CurrentEffectCostModifiers($cardID, $from)
             $remove = true;
           }
           break;
+        case "HNT071":
+          if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
+            $costModifier -= 1;
+            --$currentTurnEffects[$i + 3];
+            if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
+          }
+          break;
         default:
           break;
       }

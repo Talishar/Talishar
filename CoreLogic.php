@@ -1726,6 +1726,8 @@ function DoesAttackHaveGoAgain()
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "ROS245":
       return ComboActive($attackID);
+    case "HNT071":
+      return SearchCurrentTurnEffects("HNT071", $mainPlayer);
     default:
       return false;
   }
