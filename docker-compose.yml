@@ -22,7 +22,7 @@ services:
       REDIS_ENABLED: true
       DOMAIN: "localhost"
   mysql-server:
-    image: mysql:latest
+    image: mysql:lts
     restart: always
     environment:
       PHP_FPM_CLEAR_ENV: "no"
