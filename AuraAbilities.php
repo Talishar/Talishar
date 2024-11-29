@@ -402,7 +402,7 @@ function AuraCostModifier($cardID = "")
 // CR 2.1 - 4.3.1. The “beginning of the action phase” event occurs and abilities that trigger at the beginning of the action phase are triggered.
 function AuraStartTurnAbilities()
 {
-  global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed,$currentTurnEffects;
+  global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $currentTurnEffects;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
   $EffectContext = $auras[$i];
@@ -597,7 +597,6 @@ function AuraStartTurnAbilities()
       if (count($AurasArray) > 1) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;    
     case "AJV017": // Channel Mount Isen
-      global $currentTurnEffects;
       $character = &GetPlayerCharacter($mainPlayer);
       $eqFrostbiteCount = 0;
       for ($i = 0; $i < count($character); $i += CharacterPieces()) {
@@ -628,7 +627,7 @@ function AuraStartTurnAbilities()
       case "MST133":
         AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY", $defPlayerAuras[$i + 6]);
         break;
-      case "AJV017": // Channel Mount Isen
+      case "AJV017": // Channel Mount Isen        
         $character = &GetPlayerCharacter($mainPlayer);
         $eqFrostbiteCount = 0;
         for ($i = 0; $i < count($character); $i += CharacterPieces()) {
@@ -646,7 +645,8 @@ function AuraStartTurnAbilities()
           }
         }
         LoseHealth($eqFrostbiteCount, $mainPlayer);
-        WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("AJV017", "AJV017") .".");      
+        WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("AJV017", "AJV017") .".");
+        break;     
       default:
         break;
     }
