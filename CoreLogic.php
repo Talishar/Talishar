@@ -404,6 +404,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   if ($source == "ARC112" && (SearchCurrentTurnEffects("DTD134", $otherPlayer) || SearchCurrentTurnEffects("DTD133", $otherPlayer))) return false;
   if (SearchCurrentTurnEffects("UPR158", $otherPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("DTD208", $mainPlayer)) return false;
+  if ($type == "COMBAT" && SearchCurrentTurnEffects("HNT116", $mainPlayer)) return false;
   if ($source == "DYN005" || $source == "OUT030" || $source == "OUT031" || $source == "OUT032" || $source == "OUT121" || $source == "OUT122" || $source == "OUT123") return false;
   if (($source == "MST127" || $source == "MST128" || $source == "MST129") && NumAttackReactionsPlayed() > 0) return false;
   return true;

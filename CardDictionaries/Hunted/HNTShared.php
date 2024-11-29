@@ -38,6 +38,7 @@ function HNTEffectAttackModifier($cardID): int
 function HNTCombatEffectActive($cardID, $attackID): bool
 {
   return match ($cardID) {
+    "HNT116" => true,
     "HNT167" => true,
     default => false,
   };
@@ -52,6 +53,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT055":
       RecurDagger($currentPlayer, 0);
       RecurDagger($currentPlayer, 1);
+      break;
+    case "HNT116":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT165":
       $otherchar = &GetPlayerCharacter($otherPlayer);

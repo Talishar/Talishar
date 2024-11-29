@@ -2172,6 +2172,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "AIO026":
       if ($from == "PLAY") return $myItems[$index + 2] != 2;
       else return false;
+    case "HNT116":
+      return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     default:
       return false;
   }
