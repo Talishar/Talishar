@@ -786,7 +786,7 @@ function PlayerLoseHealth($player, $amount)
   $amount = AuraLoseHealthAbilities($player, $amount);
   if($p2Char[0] != "DUMMY" || $player == 1) $health -= $amount;
   IncrementClassState($player, $CS_HealthLost, $amount);
-  if ($health <= 0) {
+  if ($health <= 0 && !IsGameOver()) {
     PlayerWon(($player == 1 ? 2 : 1));
   }
 }
@@ -800,14 +800,16 @@ function IsGameOver()
 function PlayerWon($playerID)
 {
   //NOTE: These globals might appear to be unused. It's because they're written by ParseGamefile.
-  global $winner, $turn, $gameName, $p1id, $p2id, $p1uid, $p2uid, $p1IsChallengeActive, $p2IsChallengeActive, $conceded, $currentTurn;
-  global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID;
+  global $winner, $turn, $gameName, $p1uid, $p2uid;
+  global $inGameStatus, $GameStatus_Over;
   if ($turn[0] == "OVER") return;
   include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
   if ($playerID == 1 && $p1uid != "") WriteLog("Player 1 (" . $p1uid . ") won! 🎉", $playerID);
   else if ($playerID == 2 && $p2uid != "") WriteLog("Player 2 (" . $p2uid . ") won! 🎉", $playerID);
-  else WriteLog("Player " . $winner . " won! 🎉");
+  else WriteLog("Player " . $winner . " won! 🎉");  
+  SetClassState(1, $CS_SkipAllRunechants, 0); 
+  SetClassState(2, $CS_SkipAllRunechants, 0);
   $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
   SetCachePiece($gameName, 14, 99);//$MGS_GameOver
