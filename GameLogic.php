@@ -1437,7 +1437,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $target;
     case "SHOWSELECTEDTARGET":
       $targetPlayer = (substr($lastResult, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player);
-      WriteLog("Player " . $targetPlayer . " targeted: " . GetMZCardLink($targetPlayer, $lastResult));
+      WriteLog("Player " . $targetPlayer . " targeted " . GetMZCardLink($targetPlayer, $lastResult));
       return $lastResult;
     case "MULTIZONEFORMAT":
       return SearchMultizoneFormat($lastResult, $parameter);
