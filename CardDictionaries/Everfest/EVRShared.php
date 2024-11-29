@@ -29,7 +29,6 @@
 
   function EVRAbilityType($cardID, $index=-1, $from="")
   {
-    global $currentPlayer, $mainPlayer, $defPlayer;
     switch($cardID)
     {
       case "EVR053": return "AR";
@@ -42,18 +41,25 @@
       case "EVR157": 
         if($from == "PLAY") return "I";
         else return "AA";
-      case "EVR173": case "EVR174": case "EVR175": return "I";
-      case "EVR176": return "AR";
-      case "EVR177": return "I";
-      case "EVR178": return "DR";
-      case "EVR179": return "I";
-      case "EVR180": return "I";
-      case "EVR181": return "I";
-      case "EVR182": return "I";
+      case "EVR176": 
+      if($from == "PLAY") return "AR";
+      else return "A";
+      case "EVR177":
+        if($from == "PLAY") return "I";
+        else return "A";
+      case "EVR178":       
+        if($from == "PLAY") return "DR";
+        else return "A";
+      case "EVR179": 
+      case "EVR180": 
+      case "EVR181": 
+      case "EVR182": 
+        if($from == "PLAY") return "I";
+        else return "A";
       case "EVR183": return "A";
-      case "EVR184": case "EVR185": case "EVR186": return "I";
-      case "EVR187": return "I";
-      case "EVR190": return "I";
+      case "EVR184": case "EVR185": case "EVR186": case "EVR187": 
+        if($from == "PLAY") return "I";
+        else return "A";
       case "EVR195": return "A";
       default: return "";
     }
@@ -112,6 +118,7 @@
       case "EVR150": return 4;
       case "EVR151": return 3;
       case "EVR152": return 2;
+      case "EVR157-BUFF": return 1;
       case "EVR160": return IsHeroAttackTarget() ? -1 : 0;
       case "EVR161-2": return 2;
       case "EVR170-2": return 3;
@@ -166,6 +173,7 @@
       case "EVR170-1": case "EVR171-1": case "EVR172-1": return CardType($attackID) == "AA";
       case "EVR170-2": case "EVR171-2": case "EVR172-2": return CardType($attackID) == "AA";
       case "EVR186": return true;
+      case "EVR157-BUFF": return true;
       default: return false;
     }
   }
@@ -173,7 +181,7 @@
   function EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $CombatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_NumBoosted;
-    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $mainPlayer, $CCS_RequiredEquipmentBlock;
+    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $mainPlayer, $CCS_RequiredEquipmentBlock, $CS_DamagePrevention;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $rv = "";
     switch($cardID)
@@ -345,12 +353,15 @@
         }
         return "";
       case "EVR124":
+        $targetPlayer = substr($target, 0, 5) == "THEIR";
+        $parameter = $targetPlayer ? "THEIRAURAS:maxCost=0" : "MYAURAS:maxCost=0";
         for($i=0; $i<$resourcesPaid; ++$i) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:maxCost=0");
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $parameter);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . $resourcesPaid-$i . " aura(s) to destroy", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         }
-        AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid);
+        AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid.",".$targetPlayer, 1);
         return "";
       case "EVR125": case "EVR126": case "EVR127":
         $oppTurn = $currentPlayer != $mainPlayer;
@@ -387,11 +398,15 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "EVR157":
-        if($from == "PLAY") $CombatChain->AttackCard()->ModifyPower(1);
+        if($from == "PLAY") AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer, "PLAY");
         return "";
       case "EVR158":
-        WriteLog($additionalCosts);
         PutItemIntoPlayForPlayer("EVR195", $currentPlayer, 0, intval($additionalCosts));
+        return "";
+      case "EVR159":
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "KNICKKNACK");
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");  
         return "";
       case "EVR160":
         Draw(1);
@@ -464,7 +479,10 @@
         if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer, $from);
         return "";
       case "EVR180":
-        if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer, $from);
+        if($from == "PLAY") {
+          AddCurrentTurnEffect($cardID, $currentPlayer, $from);
+          IncrementClassState($currentPlayer, $CS_DamagePrevention, 1);
+        }
         return "";
       case "EVR181":
         if($from == "PLAY") {
@@ -546,17 +564,11 @@
           $deck = new Deck($mainPlayer);
           for($i=0; $i<count($chainLinks); ++$i)
           {
-            $attackID = $chainLinks[$i][0];
-            if($chainLinks[$i][2] == "1")
+            $listOfNames = $chainLinkSummary[$i*ChainLinkSummaryPieces()+4];
+            if($chainLinks[$i][2] == "1" && GamestateUnsanitize($listOfNames) == "Hundred Winds")
             {
-              $index = count($chainLinkSummary) - (ChainLinkSummaryPieces() * $i + 1) + 4;
-              $stringToExplode = isset($chainLinkSummary[$index]) ? $chainLinkSummary[$index] : null;
-              $lastAttackNames = is_string($stringToExplode) ? explode(",", $stringToExplode) : [];
-              for($i=0; $i<count($lastAttackNames); ++$i)
-              {
-                $chainLinks[$i][2] = "0";
-                $deck->AddBottom($attackID, "CC");
-              }
+              $chainLinks[$i][2] = "0";
+              $deck->AddBottom($chainLinks[$i][0], "CC");
             }
           }
           AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
@@ -575,7 +587,7 @@
           {
             $id = $hand[$i];
             $cardType = CardType($id);
-            if($cardType != "A" && $cardType != "AA")
+            if(!DelimStringContains($cardType, "A") && $cardType != "AA")
             {
               AddGraveyard($id, $defPlayer, "HAND");
               unset($hand[$i]);
@@ -586,7 +598,7 @@
           }
           LoseHealth($numDiscarded, $defPlayer);
           RevealCards($cards, $defPlayer);//CanReveal checked earlier
-          WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much life.");
+          if($numDiscarded > 0)WriteLog(CardLink("EVR088", "EVR088") . " discarded " . $numDiscarded . " and caused the defending player to lose that much life.");
           $hand = array_values($hand);
         }
         break;
@@ -774,7 +786,7 @@
     switch($stat) {
       case "Attack": return $highestAttack;
       case "Block": return $highestBlock;
-      case "Phantasm": return $hasPhantasm;
+      case "HasPhantasm": return $hasPhantasm;
       case "GoAgain": return $hasGoAgain;
       default: return 0;
     }
@@ -785,7 +797,11 @@
     $character = &GetPlayerCharacter($player);
     $indices = "";
     for($i=0; $i<count($character); $i+=CharacterPieces()) {
-      if($character[$i+6] == 1 && $character[$i+1] != 0 && (CardType($character[$i]) == "E" || DelimStringContains(CardSubType($character[$i]), "Evo")) && (BlockValue($character[$i]) - $character[$i+4]) < $pendingDamage)
+      if($character[$i+6] == 1 
+      && $character[$i+1] != 0 
+      && $character[$i+12] != "DOWN"
+      && (CardType($character[$i]) == "E" || DelimStringContains(CardSubType($character[$i]), "Evo")) 
+      && (BlockValue($character[$i]) - $character[$i+4]) < $pendingDamage)
       {
         if($indices != "") $indices .= ",";
         $indices .= $i;
@@ -823,12 +839,17 @@
   {
     global $CS_NamesOfCardsPlayed;
     if($from == "PLAY") {
-      $names = explode(",", GetClassState($player, $CS_NamesOfCardsPlayed));
-      foreach(array_count_values($names) as $name => $count) {
-        if($count > 1) return false;
+      if(GetClassState($player, $CS_NamesOfCardsPlayed) == "-") return true;
+      $cardsPlayed = explode(",", GetClassState($player, $CS_NamesOfCardsPlayed));
+      $cardCount = count($cardsPlayed);
+      for($i=0; $i<$cardCount; ++$i) {
+        for($j=0; $j < $cardCount; ++$j) { 
+          if($i == $j) continue;
+          if(CardNameContains($cardsPlayed[$j], CardName($cardsPlayed[$i]), $player)) {
+            return false;
+          }
+        }
       }
-      return true;
     }
-    return false;
+    return true;
   }
-?>

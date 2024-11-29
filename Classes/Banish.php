@@ -48,6 +48,7 @@ class Banish {
       $modArr = explode("-", $this->banish[$i+1]);
       $cardModifier = $modArr[0];
       if($cardModifier == $modifier) $this->banish[$i+1] = $newMod;
+      if($cardModifier == "Source" && $modifier == "TCL") $this->banish[$i+1] = $newMod;
     }
   }
 }

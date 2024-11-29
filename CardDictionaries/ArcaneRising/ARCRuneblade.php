@@ -31,7 +31,7 @@
         $cards = explode(",", $deck->Top(amount:2));
         $type1 = CardType($cards[0]);
         $type2 = CardType($cards[1]);
-        if(($type1 == "AA" && $type2 == "A") || ($type2 == "AA" && $type1 == "A")) {
+        if((DelimStringContains($type1, "AA") && DelimStringContains($type2, "A")) || (DelimStringContains($type2, "AA") && DelimStringContains($type1, "A"))) {
           $deck->Top(remove:true, amount:2);
           AddPlayerHand($cards[0], $currentPlayer, "HAND");
           AddPlayerHand($cards[1], $currentPlayer, "HAND");
@@ -88,7 +88,9 @@
   {
     global $currentPlayer, $CS_NumNonAttackCards;
     $target = CardType($cardID) == "A" ? 1 : 0;
-    if(ClassContains($cardID, "RUNEBLADE", $currentPlayer) && GetClassState($currentPlayer, $CS_NumNonAttackCards) > $target) PlayAura("ARC112", $currentPlayer);
+    if(ClassContains($cardID, "RUNEBLADE", $currentPlayer) && GetClassState($currentPlayer, $CS_NumNonAttackCards) > $target) {
+      PlayAura("ARC112", $currentPlayer);
+    }
   }
 
 ?>

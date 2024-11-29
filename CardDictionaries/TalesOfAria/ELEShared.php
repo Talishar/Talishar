@@ -32,15 +32,21 @@
       case "ELE033": case "ELE034": return "I";
       case "ELE115": return "I";
       case "ELE116": return "I";
-      case "ELE143": return "I";
+      case "ELE143": 
+        if($from == "PLAY") return "I";
+        else return "A";
       case "ELE144": return "A";
       case "ELE145": return "A";
-      case "ELE172": return "I";
+      case "ELE172": 
+        if($from == "PLAY") return "I";
+        else return "A";
       case "ELE173": return "I";
       case "ELE195": case "ELE196": case "ELE197": 
         if($from == "PLAY") return "I";
         else return "AA";
-      case "ELE201": return "I";
+      case "ELE201": 
+        if($from == "PLAY") return "I";
+        else return "A";
       case "ELE202": return "AA";
       case "ELE214": return "I";
       case "ELE222": case "ELE223": return "AA";
@@ -174,7 +180,7 @@
       case "ELE177": return CardCost($attackID) >= 0;
       case "ELE178": return CardCost($attackID) >= 1;
       case "ELE179": return CardCost($attackID) >= 2;
-      case "ELE180": case "ELE181": case "ELE182": return TalentContainsAny($attackID, "LIGHTNING,ELEMENTAL",$mainPlayer);
+      case "ELE180": case "ELE181": case "ELE182": return TalentContainsAny($attackID, "LIGHTNING,ELEMENTAL",$mainPlayer) && CardType($attackID) == "AA";
       case "ELE183": case "ELE184": case "ELE185": return true;
       case "ELE195": case "ELE196": case "ELE197": return true;
       case "ELE198": case "ELE199": case "ELE200": return CardType($attackID) == "AA";

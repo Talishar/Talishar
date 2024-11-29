@@ -92,7 +92,7 @@
     $discard = new Discard($player);
     if($discard->Empty()) return "";
     $rv = ($discard->NumCards() == 1 ? "1" : "2") . "-";
-    $rv .= GetIndices($discard->NumCards());
+    $rv .= GetIndices($discard->NumCards()*DiscardPieces(), 0, DiscardPieces());
     return $rv;
   }
 
@@ -101,7 +101,7 @@
     global $currentPlayer, $CS_NumAttackCards, $CS_NumNonAttackCards;
     if($from != "BANISH") return;
     $type = CardType($cardID);
-    if(($type == "AA" && GetClassState($currentPlayer, $CS_NumAttackCards) == 0) || $type == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 1)
+    if(($type == "AA" && GetClassState($currentPlayer, $CS_NumAttackCards) == 0) || DelimStringContains($type, "A") && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 1)
     {
       DealArcane(1, 0, "PLAYCARD", "MON157");
     }

@@ -61,7 +61,6 @@ function DTDAbilityHasGoAgain($cardID)
 
 function DTDEffectAttackModifier($cardID)
 {
-  global $mainPlayer;
   $params = explode(",", $cardID);
   $dashArr = explode(",", $cardID);
   $cardID = $params[0];
@@ -117,7 +116,7 @@ function DTDEffectAttackModifier($cardID)
 function DTDCombatEffectActive($cardID, $attackID)
 {
   global $combatChainState, $mainPlayer, $combatChainState, $CCS_AttackNumCharged, $CombatChain;
-  global $Card_LifeBanner, $Card_ResourceBanner, $CCS_WasRuneGate, $CS_CharacterIndex;
+  global $Card_LifeBanner, $Card_ResourceBanner, $CCS_WasRuneGate;
   $params = explode(",", $cardID);
   $dashArr = explode(",", $cardID);
   $cardID = $params[0];
@@ -185,7 +184,8 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PlayAura("DYN244", $currentPlayer);
       return "";
     case "DTD006":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRBANISH");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRBANISH&MYBANISH");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to turn face-down");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "TURNBANISHFACEDOWN", 1);
       return "";
@@ -275,10 +275,24 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD086": GainHealth(2, $currentPlayer); break;
     case "DTD087": GainHealth(1, $currentPlayer); break;
     case "DTD088": case "DTD089": case "DTD090"://Cleansing Light
-      if($cardID == "DTD088") $targetPitch = 1;
-      else if($cardID == "DTD089") $targetPitch = 2;
-      else if($cardID == "DTD090") $targetPitch = 3;
-      MZChooseAndDestroy($currentPlayer, "THEIRAURAS:pitch=" . $targetPitch . "&MYAURAS:pitch=" . $targetPitch);
+      $params = explode("-", $target);
+      if(substr($params[0], 0, 5) != "THEIR") {
+        $zone = "MYAURAS-";
+        $player = $currentPlayer;
+      }
+      else {
+        $zone = "THEIRAURAS-";
+        $player = $otherPlayer;
+      }
+      $index = SearchAurasForUniqueID($params[1], $player);
+      if ($index != -1) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $zone . $index, 1);
+        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      } 
+      else {
+        WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+        return "FAILED";
+      }
       return "";
     case "DTD091": case "DTD092": case "DTD093":
       if(SearchPitchForColor($currentPlayer, 2) > 0) GiveAttackGoAgain();
@@ -292,6 +306,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DTD106":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIACTIONSBANISH");
       AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "3-", 1);
+      AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-3", 1);
       AddDecisionQueue("MULTICHOOSEBANISH", $currentPlayer, "<-", 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SPOILEDSKULL", 1);
       return "";
@@ -528,7 +543,7 @@ function DTDHitEffect($cardID)
       if(IsHeroAttackTarget()) {
         AddDecisionQueue("INPUTCARDNAME", $mainPlayer, "-");
         AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
-        AddDecisionQueue("WRITELOG", $mainPlayer, "<b>{0}</b> was chosen");
+        AddDecisionQueue("WRITELOG", $mainPlayer, "<b>📣{0}</b> was chosen");
         AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $defPlayer, "DTD226,{0}");
       }
       break;
@@ -633,10 +648,12 @@ function ResolveTransformHero($player, $cardID, $parameter)
   $char[7] = 0;
   $char[8] = 0;
   $char[9] = CharacterDefaultActiveState($cardID);
+  $char[13] = 0;
   AddEvent("HERO_TRANSFORM", $cardID);
   $health = &GetHealth($player);
   $health = DemiHeroHealth($cardID);
   $banish = new Banish($player);
+  CurrentEffectIntellectModifier(true); ///When you transformm, You are no longer that hero, therefore your intellect reset 🐝
   switch($cardID)
   {
     case "DTD164":

@@ -1,287 +1,365 @@
 <?php
 
-  function BackgroundColor($darkMode)
-  {
-    if($darkMode) return "rgba(20, 20, 20, 0.7)";
-    else return "rgba(255, 255, 255, 0.7)";
-  }
+use JetBrains\PhpStorm\Language;
 
-  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0,$counters=0,$actionDataOverride="",$id="",$rotate=false)
-  {//
-    global $playerID, $gameName, $darkMode;
-    if($darkMode == null) $darkMode = false;
-    $fileExt = ".png";
-    if($cardNumber == "ENDSTEP" || $cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN")
-    {
-      $folder = str_replace("CardImages", "Images", $folder);
+require_once("CoreLibraries.php");
+
+$isReactFE = false;
+
+//0 Card number = card ID (e.g. WTR000 = Heart of Fyendal)
+//1 action = (ProcessInput mode)
+//2 overlay = 0 is none, 1 is grayed out/disabled
+//3 borderColor = Border Color
+//4 Counters = number of counters
+//5 actionDataOverride = The value to give to ProcessInput
+//6 lifeCounters = Number of life counters
+//7 defCounters = Number of defense counters
+//8 atkCounters = Number of attack counters
+//9 controller = Player that controls it
+//10 type = card type
+//11 sType = card subtype
+//12 restriction = something preventing the card from being played (or "" if nothing)
+//13 isBroken = 1 if card is destroyed
+//14 onChain = 1 if card is on combat chain (mostly for equipment)
+//15 isFrozen = 1 if frozen
+//16 shows gem = (0, 1, 2) (0 off, 1 active, 2 inactive)
+function JSONRenderedCard(
+  $cardNumber,
+  $action = NULL,
+  $overlay = NULL,
+  $borderColor = NULL,
+  $counters = NULL, // deprecated
+  $actionDataOverride = NULL,
+  $lifeCounters = NULL, // deprecated
+  $defCounters = NULL, // deprecated
+  $atkCounters = NULL, // deprecated
+  $controller = NULL,
+  $type = NULL,
+  $sType = NULL,
+  $restriction = NULL,
+  $isBroken = NULL,
+  $onChain = NULL,
+  $isFrozen = NULL,
+  $gem = NULL,
+  $countersMap = new stdClass(), // new object for counters
+  $label = NULL,
+  $facing = NULL,
+  $numUses = NULL,
+  $subcard = NULL,
+  $steamCounters = NULL,
+  $energyCounters = NULL,
+  $hauntCounters = NULL,
+  $verseCounters = NULL,
+  $doomCounters = NULL,
+  $lessonCounters = NULL,
+  $rustCounters = NULL,
+  $flowCounters = NULL,
+  $frostCounters = NULL,
+  $balanceCounters = NULL,
+  $bindCounters = NULL,
+  $lightningPlayed = NULL,
+  $showAmpAmount = false,
+  $marked = NULL
+) {
+  global $playerID, $CS_NumLightningPlayed;
+  $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
+  $otherPlayer = ($playerID == 1 ? 2 : 1);
+
+  $counters = property_exists($countersMap, 'counters') ? $countersMap->counters : $counters;
+  if($counters != NULL) $countersMap->counters = $counters;
+  $lifeCounters = property_exists($countersMap, 'life') ? $countersMap->life : $lifeCounters;
+  if($lifeCounters != NULL) $countersMap->life = $lifeCounters;
+  $defCounters = property_exists($countersMap, 'defence') ? $countersMap->defence : $defCounters;
+  if($defCounters != NULL) $countersMap->defence = $defCounters;
+  $atkCounters = property_exists($countersMap, 'attack') ? $atkCounters->attack : $atkCounters;
+  if($atkCounters != NULL) $countersMap->attack = $atkCounters;
+  $steamCounters = property_exists($countersMap, 'steam') ? $steamCounters->steam : $steamCounters;
+  if($steamCounters != NULL) $countersMap->steam = $steamCounters;
+  $energyCounters = property_exists($countersMap, 'energy') ? $energyCounters->energy : $energyCounters;
+  if($energyCounters != NULL) $countersMap->steam = $steamCounters;
+  $hauntCounters = property_exists($countersMap, 'haunt') ? $hauntCounters->haunt : $hauntCounters;
+  if($hauntCounters != NULL) $countersMap->energy = $energyCounters;
+  $verseCounters = property_exists($countersMap, 'verse') ? $verseCounters->verse : $verseCounters;
+  if($verseCounters != NULL) $countersMap->verse = $verseCounters;
+  $doomCounters = property_exists($countersMap, 'doom') ? $doomCounters->doom : $doomCounters;
+  if($doomCounters != NULL) $countersMap->doom = $doomCounters;
+  $lessonCounters = property_exists($countersMap, 'lesson') ? $lessonCounters->lesson : $lessonCounters;
+  if($lessonCounters != NULL) $countersMap->lesson = $lessonCounters;
+  $rustCounters = property_exists($countersMap, 'rust') ? $rustCounters->rust : $rustCounters;
+  if($rustCounters != NULL) $countersMap->rust = $rustCounters;
+  $flowCounters = property_exists($countersMap, 'flow') ? $flowCounters->flow : $flowCounters;
+  if($flowCounters != NULL) $countersMap->flow = $flowCounters;
+  $frostCounters = property_exists($countersMap, 'frost') ? $frostCounters->frost : $frostCounters;
+  if($frostCounters != NULL) $countersMap->frost = $frostCounters;
+  $balanceCounters = property_exists($countersMap, 'balance') ? $balanceCounters->balance : $balanceCounters;
+  if($balanceCounters != NULL) $countersMap->balance = $balanceCounters;
+  $bindCounters = property_exists($countersMap, 'bind') ? $bindCounters->bind : $bindCounters;
+  if($bindCounters != NULL) $countersMap->bind = $bindCounters;
+
+  if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
+    $class = CardClass($cardNumber);
+    $type = CardType($cardNumber);
+    $subtype = CardSubType($cardNumber);
+    if ($class == "MECHANOLOGIST" && ($subtype == "Item" || CardType($cardNumber) == "W")) {
+      $countersMap->steam = $countersMap->counters;
+      $countersMap->counters = 0;
+    } 
+    else if(IsEnergyCounters($cardNumber)){
+      $countersMap->energy = $countersMap->counters;
+      $countersMap->counters = 0;
+    } 
+    else if(HasHauntCounters($cardNumber)){
+      $countersMap->haunt = $countersMap->counters;
+      $countersMap->counters = 0;
+    } 
+    else if(HasVerseCounters($cardNumber)){
+      $countersMap->verse = $countersMap->counters;
+      $countersMap->counters = 0;
+    } 
+    else if(HasDoomCounters($cardNumber)) {
+      $countersMap->doom = $countersMap->counters;
+      $countersMap->counters = 0;
     }
-    else if(mb_strpos($folder, "CardImages") !== false)
-    {
-      $folder = str_replace("CardImages", "WebpImages", $folder);
-      $fileExt = ".webp";
+    else if ($type == "M") {
+      $countersMap->lesson = $countersMap->counters;
+      $countersMap->counters = 0;
+    } 
+    else if(HasRustCounters($cardNumber)) {
+      $countersMap->rust = $countersMap->counters;
+      $countersMap->counters = 0;
     }
-    $actionData = $actionDataOverride != "" ? $actionDataOverride : $cardNumber;
-    //Enforce 375x523 aspect ratio as exported (.71)
-    $margin = "margin:0px;";
-    if($borderColor != -1) $margin = $borderColor > 0 ? "margin:2px;" : "margin:5px;";
-    $rv = "<a style='" . $margin . " position:relative; display:inline-block;'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " href=\"./ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$action&cardID=" . $actionData . "\" " : "") . ">";
-    $border = $borderColor > 0 ? "border-radius:20px; border:3px solid " . BorderColorMap($borderColor) . ";" : "";
-    if($rotate == false) { $height = $maxHeight; $width = ($maxHeight * .71); }
-    else { $height = ($maxHeight * .71); $width = $maxHeight; }
-    $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folder . "/" . $cardNumber . $fileExt . "' />";
-    $rv .= "<div " . ($id != "" ? "id='".$id."-ovr' ":"") . "style='visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
-    if($counters != 0) $rv .= "<div style='top:45%; left:45%; position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . "; font-size:30px;'>" . $counters . "</div>";
-    $rv .= "</a>";
-    return $rv;
-  }
-
-  function BorderColorMap($code)
-  {
-    switch($code)
-    {
-      case 1: return "DeepSkyBlue";
-      case 2: return "red";
-      case 3: return "yellow";
-      case 4: return "Gray";
-      case 5: return "Tan";
-      case 6: return "chartreuse";
+    else if(HasFlowCounters($cardNumber)) {
+      $countersMap->flow = $countersMap->counters;
+      $countersMap->counters = 0;
     }
-  }
-
-  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="", $tooltip="")
-  {
-    global $gameName;
-    if($image != "")
-    {
-      $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">";
+    else if(HasFrostCounters($cardNumber)) {
+      $countersMap->frost = $countersMap->counters;
+      $countersMap->counters = 0;
     }
-    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . "onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">" . $caption . "</button>";
-    return $rv;
-  }
-
-  function ProcessInputLink($player, $mode, $input, $event='onmousedown')
-  {
-    global $gameName;
-    return " " . $event . "='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\");'";
-  }
-
-  function CreateForm($playerID, $caption, $mode, $count)
-  {
-    global $gameName;
-    $rv = "<form action='./ProcessInput.php'>";
-    $rv .= "<input type='submit' value='" . $caption . "'>";
-    $rv .= "<input type='hidden' id='gameName' name='gameName' value='" . $gameName . "'>";
-    $rv .= "<input type='hidden' id='playerID' name='playerID' value='" . $playerID . "'>";
-    $rv .= "<input type='hidden' id='mode' name='mode' value='" . $mode . "'>";
-    $rv .= "<input type='hidden' id='chkCount' name='chkCount' value='" . $count . "'>";
-    return $rv;
-  }
-
-  //input = ?
-  //value = ?
-  //immediateSubmitMode = If set, add onchange event to submit immediately instead of form submit
-  //defaultChecked = Will be checked by default if true
-  //label = label to display
-  function CreateCheckbox($input, $value, $immediateSubmitMode=-1, $defaultChecked=false, $label="")
-  {
-    global $playerID;
-    $submitLink = "";
-    $check = "";
-    if($immediateSubmitMode != -1) $submitLink = ProcessInputLink($playerID, $immediateSubmitMode, $input, "onchange");
-    if($defaultChecked) $check = " checked='checked'";
-    $rv = "<input type='checkbox' " . $submitLink . " id='chk" . $input . "' name='chk" . $input . "' value='" . $value . "' " . $check . ">";
-    $rv .= "<label for='chk" . $input . "'>" . $label . "</label>";
-    return $rv;
-  }
-
-  function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./", $big=false)
-  {
-    global $combatChain, $darkMode;
-    if($darkMode == null) $darkMode = false;
-    $top = "50%"; $left = "20%"; $width = "60%"; $height = "40%";
-    if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; }
-    $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; z-index:10; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";" . ($defaultState == 0 ? " display:none;" : "") . "'>";
-    if($title != "") $rv .= "<h1>" . $title . "</h1>";
-    if($canClose == 1) $rv .= "<div style='position:absolute; cursor:pointer; top:0px; right:0px; font-size:48px; color:red; border:2px solid black;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>X</div>";
-    for($i=0; $i<count($fromArr); $i += $arrElements)
-    {
-      $rv .= Card($fromArr[$i], $path . "CardImages", 150, 0, 1);
+    else if(HasBalanceCounters($cardNumber)) {
+      $countersMap->balance = $countersMap->counters;
+      $countersMap->counters = 0;
     }
-    $rv .= $customInput;
-    $rv .= "</div>";
-    return $rv;
-  }
-
-  function CardStatsUI($player)
-  {
-    $rv = "<div id='cardStats' style='background-color: rgba(255,255,255,0.80); z-index:100; position: absolute; top:120px; left: 50px; right: 250px; bottom:50px;'>";
-    $rv .= CardStats($player);
-    $rv .= "</div>";
-    return $rv;
-  }
-
-  function CardStats($player)
-  {
-    global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $firstPlayer;
-    global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked;
-    $cardStats = &GetCardStats($player);
-    $rv = "<div style='float:left;'>";
-    $rv .= "<h2>Card Play Stats</h2>";
-    $rv .= "<table><tr><td>Card ID</td><td>Times Played</td><td>Times Blocked</td><td>Times Pitched</td></tr>";
-    for($i=0; $i<count($cardStats); $i+=CardStatPieces())
-    {
-      $pitch = PitchValue($cardStats[$i]);
-      $timesPlayed = $cardStats[$i+1];
-      $playStyle = "";
-      if($pitch == 3 && $timesPlayed > 1) $playStyle = "font-weight: bold; color:red;";
-      else if($pitch == 3 && $timesPlayed > 0) $playStyle = "font-weight: bold; color:gold;";
-      else if($pitch == 2 && $timesPlayed > 4) $playStyle = "font-weight: bold; color:red;";
-      else if($pitch == 2 && $timesPlayed > 2) $playStyle = "font-weight: bold; color:gold;";
-      $timesPitched = $cardStats[$i+3];
-      $pitchStyle = "";
-      if($pitch == 1 && $timesPitched > 1) $pitchStyle = "font-weight: bold; color:red;";
-      else if($pitch == 1 && $timesPitched > 0) $pitchStyle = "font-weight: bold; color:gold;";
-      else if($pitch == 2 && $timesPitched > 4) $pitchStyle = "font-weight: bold; color:red;";
-      else if($pitch == 2 && $timesPitched > 2) $pitchStyle = "font-weight: bold; color:gold;";
-      $rv .= "<tr><td>" . CardLink($cardStats[$i], $cardStats[$i]) . "</td><td style='" . $playStyle . "'>" . $timesPlayed . "</td><td>" . $cardStats[$i+2] . "</td><td style='" . $pitchStyle . "'>" . $timesPitched . "</td></tr>";
+    else if(HasBindCounters($cardNumber)) {
+      $countersMap->bind = $countersMap->counters;
+      $countersMap->counters = 0;
     }
-    $rv .= "</table>";
-    $rv .= "</div>";
-    $turnStats = &GetTurnStats($player);
-    $rv .= "<div style='float:left;'>";
-    $rv .= "<h2>Turn Stats</h2>";
-    if($player == $firstPlayer) $rv .= "<i>First turn omitted for first player.</i><br>";
-    //Damage stats
-    $totalDamageThreatened = 0;
-    $totalDamageDealt = 0;
-    $totalResourcesUsed = 0;
-    $totalCardsLeft = 0;
-    $totalDefensiveCards = 0;
-    $totalBlocked = 0;
-    $numTurns = 0;
-    $start = ($player == $firstPlayer ? TurnStatPieces() : 0);//Skip first turn for first player
-    if(count($turnStats) > 0)
-    {
-      for($i=$start; $i<count($turnStats); $i+=TurnStatPieces())
-      {
-        $totalDamageThreatened += $turnStats[$i + $TurnStats_DamageThreatened];
-        $totalDamageDealt += $turnStats[$i + $TurnStats_DamageDealt];
-        $totalResourcesUsed += $turnStats[$i + $TurnStats_ResourcesUsed];
-        $totalCardsLeft += $turnStats[$i + $TurnStats_CardsLeft];
-        $totalDefensiveCards += ($turnStats[$i+$TurnStats_CardsPlayedDefense] + $turnStats[$i+$TurnStats_CardsBlocked]);
-        $totalBlocked += $turnStats[$i+$TurnStats_DamageBlocked];
-        ++$numTurns;
+    else if ($type == "E") {
+      if (EquipmentsUsingSteamCounter($cardNumber)) {
+        $countersMap->steam = $countersMap->counters;
+        $countersMap->counters = 0;
       }
-    }
-    if($numTurns > 0)
-    {
-      $rv .= "Total Damage Threatened: " . $totalDamageThreatened . "<br>";
-      $rv .= "Total Damage Dealt: " . $totalDamageDealt . "<br>";
-      $rv .= "Average Damage Threatened per turn: " . round($totalDamageThreatened/$numTurns, 2) . "<br>";
-      $rv .= "Average Damage Dealt per turn: " . round($totalDamageDealt/$numTurns, 2) . "<br>";
-      $totalOffensiveCards = 4*$numTurns - $totalDefensiveCards;
-      if($totalOffensiveCards > 0) $rv .= "Average damage threatened per offensive card: " . round($totalDamageThreatened/$totalOffensiveCards, 2) . "<br>";
-      $rv .= "Average Resources Used per turn: " . round($totalResourcesUsed/$numTurns, 2) . "<br>";
-      $rv .= "Average Cards Left Over per turn: " . round($totalCardsLeft/$numTurns, 2) . "<br>";
-      $rv .= "Average Value per turn (Damage threatened + block): " . round(($totalDamageThreatened + $totalBlocked)/$numTurns, 2) . "<br>";
-      //Cards per turn stats
-      $rv .= "<table><tr><td>Turn Number</td><td>Cards Played</td><td>Cards Blocked</td><td>Cards Pitched</td><td>Resources Used</td><td>Cards Left</td></tr>";
-      for($i=0; $i<count($turnStats); $i+=TurnStatPieces())
-      {
-        $rv .= "<tr><td>" . (($i / TurnStatPieces()) + 1) . "</td><td>" . ($turnStats[$i+$TurnStats_CardsPlayedOffense] + $turnStats[$i+$TurnStats_CardsPlayedDefense]) . "</td><td>" . $turnStats[$i+$TurnStats_CardsBlocked] . "</td><td>" . $turnStats[$i+$TurnStats_CardsPitched] . "</td><td>" . $turnStats[$i+$TurnStats_ResourcesUsed] . "</td><td>" . $turnStats[$i+$TurnStats_CardsLeft] . "</td></tr>";
-      }
-      $rv .= "</table>";
-    }
-    $rv .= "</div>";
-    return $rv;
+    } 
+    else if ($subtype == "Arrow") {
+      $countersMap->aim = $countersMap->counters;
+      $countersMap->counters = 0;
+    } 
   }
-
-  function AttackModifiers($attackModifiers)
-  {
-    $rv = "";
-    for($i=0; $i<count($attackModifiers); $i += 2)
-    {
-      $idArr = explode("-", $attackModifiers[$i]);
-      $cardID = $idArr[0];
-      $bonus = $attackModifiers[$i+1];
-      if($bonus == 0) continue;
-      $cardLink = CardLink($cardID, $cardID);
-      $rv .= ($cardLink != "" ? $cardLink : $cardID) . " gives " . ($bonus > 0 ? "+" : "") . $bonus . "<BR>";
+  //Volzar Amp icon
+  if($controller != NULL){
+    if($cardNumber == "ROS021" && $controller == $playerID && GetClassState($playerID, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
+      $countersMap->lightning = GetClassState($playerID, $CS_NumLightningPlayed);
+      $countersMap->counters = 0;
     }
-    return $rv;
-  }
-
-  function PitchColor($pitch)
-  {
-    switch($pitch)
-    {
-      case 1: return "red";
-      case 2: return "GoldenRod";
-      case 3: return "blue";
-      default: return "LightSlateGrey";
+    if($cardNumber == "ROS021" && $controller == $otherPlayer && GetClassState($otherPlayer, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
+      $countersMap->lightning = GetClassState($otherPlayer, $CS_NumLightningPlayed);
+      $countersMap->counters = 0;
     }
   }
 
-  function BanishUI($from="")
-  {
-    global $turn, $currentPlayer, $playerID, $cardSize;
-    $rv = "";
-    $size = ($from == "HAND" ? $cardSize : 180);
-    $banish = GetBanish($playerID);
-    for($i=0; $i<count($banish); $i+=BanishPieces()) {
-      $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
-      $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
-      $mod = explode("-", $banish[$i+1])[0];
-      if($mod == "INT") $rv .= Card($banish[$i], "CardImages", $size, 0, 1, 1);//Display intimidated cards grayed out and unplayable
-      else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119")
-        $rv .= Card($banish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
-      else if($from != "HAND")
-      {
-        if(PlayableFromBanish($banish[$i], $banish[$i+1]) || AbilityPlayableFromBanish($banish[$i]))
-          $rv .= Card($banish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));
-        else
-          $rv .= Card($banish[$i], "CardImages", $size, 0, 1, 0, $border);
-      }
-    }
-    return $rv;
+  //Current Turn Effects amp amount
+  if(substr($showAmpAmount, 0, 6) == "Effect") {
+    $index = explode("-", $showAmpAmount)[1];
+    if(ArcaneModifierAmount($cardNumber, $playerID, $index) > 0) {
+      $countersMap->amp = ArcaneModifierAmount($cardNumber, $playerID, $index);
+      $countersMap->counters = 0;
+    } 
+    if(ArcaneModifierAmount($cardNumber, $otherPlayer, $index) > 0) {
+      $countersMap->amp = ArcaneModifierAmount($cardNumber, $otherPlayer, $index);
+      $countersMap->counters = 0;
+    }   
+  }
+  
+  if($isSpectator) $gem = NULL;
+  if($subcard != NULL) {
+    $subcard = explode(',', $subcard);
   }
 
-  function CardBorderColor($cardID, $from, $isPlayable)
-  {
-    global $playerID, $currentPlayer, $turn;
-    if($playerID != $currentPlayer) return 0;
-    if($turn[0] == "B") return ($isPlayable ? 6 : 0);
-    if($from == "BANISH")
-    {
-      if($isPlayable || PlayableFromBanish($cardID)) return 4;
-      if(HasBloodDebt($cardID)) return 2;
-      if($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
-      if($isPlayable && ComboActive($cardID)) return 5;
-      return 0;
-    }
-    if($isPlayable && ComboActive($cardID)) return 3;
-    if($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
-    else if($isPlayable) return 6;
+  $card = new stdClass();
+
+  if($gem !== NULL) $card->gem = $gem;
+  if($cardNumber !== NULL) $card->cardNumber = $cardNumber;
+  if($action !== NULL) $card->action = $action;
+  if($overlay !== NULL) $card->overlay = $overlay;
+  if($borderColor !== NULL) $card->borderColor = $borderColor;
+  if($counters !== NULL) $card->counters = $counters;
+  if($actionDataOverride !== NULL) $card->actionDataOverride = $actionDataOverride;
+  if($lifeCounters !== NULL) $card->lifeCounters = $lifeCounters;
+  if($defCounters !== NULL) $card->defCounters = $defCounters;
+  if($atkCounters !== NULL) $card->atkCounters = $atkCounters;
+  if($steamCounters !== NULL) $card->steamCounters = $steamCounters;
+  if($controller !== NULL) $card->controller = $controller;
+  if($type !== NULL) $card->type = $type;
+  if($sType !== NULL) $card->sType = $sType;
+  if($restriction !== NULL) $card->restriction = $restriction;
+  if($isBroken !== NULL) $card->isBroken = $isBroken;
+  if($onChain !== NULL) $card->onChain = $onChain;
+  if($isFrozen !== NULL) $card->isFrozen = $isFrozen;
+  if($countersMap != json_decode('{}')) $card->countersMap = $countersMap;
+  if($label !== NULL) $card->label = $label;
+  if($facing !== NULL) $card->facing = $facing;
+  if($numUses !== NULL) $card->numUses = $numUses;
+  if($subcard !== NULL) $card->subcards = $subcard;
+  if($marked !== NULL) $card->marked = $marked;
+  return $card;
+}
+
+function CreateButtonAPI($playerID, $caption, $mode, $input, $size = null, $image = null, $tooltip = null, $fullRefresh = false, $fullReload = false, $prompt = null)
+{
+  $button = new stdClass();
+  $button->mode = $mode;
+  $button->buttonInput = $input;
+  $button->fullRefresh = $fullRefresh;
+  $button->prompt = $prompt;
+  $button->imgURL = $image;
+  $button->tooltip = $tooltip;
+  $button->caption = $caption;
+  $button->sizeOverride = $size;
+  $button->fullReload = $fullReload;
+  return $button;
+}
+
+function ProcessInputLink($player, $mode, $input, $event = 'onmousedown', $fullRefresh = false, $prompt = "")
+{
+  $jsCode = "SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh . ");";
+  // If a prompt is given, surround the code with a "confirm()" call
+  if ($prompt != "")
+    $jsCode = "if (confirm(\"" . $prompt . "\")) { " . $jsCode . " }";
+
+  return " " . $event . "='" . $jsCode . "'";
+}
+
+function CreateCheckboxAPI($input, $value, $immediateSubmitMode = -1, $defaultChecked = false, $label = "&nbsp;", $fullRefresh = false)
+{
+  $option = new stdClass();
+  global $playerID;
+  $submitLink = "";
+  if ($immediateSubmitMode != -1) $submitLink = ProcessInputLink($playerID, $immediateSubmitMode, $input, "onchange", $fullRefresh);
+  $option->submitLink = $submitLink;
+  $option->input = $input;
+  $option->value = $value;
+  $option->check = $defaultChecked;
+  $option->label = $label;
+  return $option;
+}
+
+function CreatePopupAPI($id, $fromArr, $canClose, $defaultState = 0, $title = "", $arrElements = 1, $customInput = "", $path = "./", $big = false, $overCombatChain = false, $additionalComments = "", $size = 0, $cardsArray = [])
+{
+  $result = new stdClass();
+  $result->size = $size;
+  $result->big = $big;
+  $result->overCombatChain = $overCombatChain;
+  $result->id = $id;
+  $result->title = $title;
+  $result->canClose = $canClose;
+  $result->additionalComments = $additionalComments;
+  $cards = array();
+  for ($i = 0; $i < count($fromArr); $i += $arrElements) {
+    array_push($cards, JSONRenderedCard($fromArr[$i]));
+  }
+  if (count($cardsArray) > 0) {
+    $cards = $cardsArray;
+  }
+  $result->cards = $cards;
+  $result->customInput = $customInput;
+  return $result;
+}
+
+function CardBorderColor($cardID, $from, $isPlayable, $mod = "-")
+{
+  global $turn;
+  if ($turn[0] == "B") return ($isPlayable ? 6 : 0);
+  if ($from == "BANISH") {
+    if ($isPlayable || PlayableFromBanish($cardID, $mod)) return 7;
+    if (HasBloodDebt($cardID)) return 2;
+    if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
+    if ($isPlayable && ComboActive($cardID)) return 5;
+    if ($isPlayable && HasRupture($cardID) && RuptureActive(true)) return 5;
     return 0;
   }
-
-  function CardLink($caption, $cardNumber)
-  {
-    global $playerID;
-    //$file = "'./" . "CardImages" . "/" . $cardNumber . ".png'";
-    $name = CardName($cardNumber);
-    if($name == "") return "";
-    $pitchValue = PitchValue($cardNumber);
-    $pitchText = "";
-    switch($pitchValue)
-    {
-      case 3: $color = "#009DDF"; $pitchText = " (3)"; break;
-      case 2: $color = "GoldenRod"; $pitchText = " (2)"; break;
-      case 1: $color = "#AF1518"; $pitchText = " (1)"; break;
-      default: $color = "DimGray"; break;
-    }
-    if(function_exists("IsColorblindMode") && !IsColorblindMode($playerID)) $pitchText = "";
-    //$file = "'./" . "BigCardImages" . "/" . $cardNumber . ".png'";
-    $file = "'./" . "WebpImages" . "/" . $cardNumber . ".webp'";
-    return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . $pitchText . "</span></b>";
+  if ($from == "GY") {
+    if ($isPlayable || PlayableFromGraveyard($cardID)) return 7;
+    return 0;
   }
+  if ($isPlayable && ComboActive($cardID)) return 3;
+  if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
+  if ($isPlayable && HasRupture($cardID) && RuptureActive(true, (CardType($cardID) != "AA"))) return 3;
+  else if ($isPlayable) return 6;
+  return 0;
+}
+
+function CardLink($caption, $cardNumber, $recordMenu = false)
+{
+  global $darkMode, $playerID, $isReactFE;
+  if ($isReactFE) {
+    return "{{" . $cardNumber . "|" . CardName($cardNumber) . "|" . PitchValue($cardNumber) . "}}";
+  }
+
+  $name = CardName($cardNumber);
+  if ($name == "") return "";
+  $pitchValue = PitchValue($cardNumber);
+  $pitchText = "";
+  if ($recordMenu) {
+    $color = "#DDD";
+  } else {
+    switch ($pitchValue) {
+      case 3:
+        $color = "#009DDF";
+        $pitchText = " (3)";
+        break;
+      case 2:
+        $color = "GoldenRod";
+        $pitchText = " (2)";
+        break;
+      case 1:
+        $color = "#AF1518";
+        $pitchText = " (1)";
+        break;
+      default:
+        if ($darkMode) {
+          $color = "#1a1a1a";
+          break;
+        } else {
+          $color = "#888";
+          break;
+        }
+    }
+  }
+  if (function_exists("IsColorblindMode") && !IsColorblindMode($playerID)) $pitchText = "";
+  $file = "'./" . "WebpImages" . "/" . $cardNumber . ".webp'";
+  return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . $pitchText . "</span></b>";
+}
+
+function GetTheirBanishForDisplay($playerID)
+{
+  global $theirBanish;
+  $TheirCardBack = GetCardBack($playerID == 1 ? 2 : 1);
+  $banish = array();
+  for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
+    if ($theirBanish[$i + 1] == "INT" || $theirBanish[$i + 1] == "UZURI" || $theirBanish[$i + 1] == "NTSTONERAIN" || $theirBanish[$i + 1] == "STONERAIN") array_push($banish, $TheirCardBack);
+    else array_push($banish, $theirBanish[$i]);
+  }
+  return $banish;
+}
+
+function GetMyBanishForDisplay($playerID)
+{
+  global $myBanish;
+  $myCardBack = GetCardBack($playerID == 1 ? 1 : 2);
+  $banish = array();
+  for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
+    if ($myBanish[$i + 1] == "INT" || $myBanish[$i + 1] == "UZURI" || $myBanish[$i + 1] == "NTSTONERAIN" || $myBanish[$i + 1] == "STONERAIN") array_push($banish, $myCardBack);
+    else array_push($banish, $myBanish[$i]);
+  }
+  return $banish;
+}

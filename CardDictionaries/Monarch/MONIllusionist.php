@@ -17,12 +17,13 @@
         return "";
       case "MON091":
         if(!IsAllyAttackTarget()) {
+          AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "<-", 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
           AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-          AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was put at the bottom of the deck.", 1);
-          AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+          AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was put on the bottom of the deck.", 1);
+          AddDecisionQueue("ADDBOTDECK", $otherPlayer, "Skip", 1);
           AddDecisionQueue("DRAW", $otherPlayer, "-");
         }
         return "";
@@ -129,6 +130,7 @@
         else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN004") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Nekria")) return true;
         else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "EVO246") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Cromai")) return true;
         else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "MST235") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Miragai")) return true;  
+        else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "ROS252") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Ouvia")) return true;
       }
     }
     return HasPhantasm($attackID);
@@ -150,7 +152,7 @@
     if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
     if(PowerCantBeModified($card->ID())) return AttackValue($card->ID()) >= 6;
     $attackValue = ModifiedAttackValue($card->ID(), $defPlayer, "CC", source:$card->ID());
-    $attackValue += AuraAttackModifiers($index, $attackModifiers);
+    $attackValue += AuraAttackModifiers($index, $attackModifiers, onBlock: true);
     $attackValue += $card->AttackValue();//Combat chain attack modifier
     return $attackValue >= 6;
   }

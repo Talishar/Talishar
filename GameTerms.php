@@ -38,7 +38,7 @@ function TypeToPlay($phase)
       return "a card from the pitch zone";
     case "OPT":
       return "a card to add to the deck top or bottom";
-    case "CHOOSETOPOPPONENT":
+    case "CHOOSETOP": case "CHOOSETOPOPPONENT":
       return "a card to add to the top of the deck";
     case "CHOOSEDECK": case "CHOOSETHEIRDECK":
       return "a card from deck";
@@ -55,9 +55,8 @@ function TypeToPlay($phase)
     case "CHOOSETHEIRCHARACTER":
       return "a card";
     case "MAYCHOOSEHAND":
-      return "a card from hand";
-    case "CHOOSEHAND":
-      return "a card from hand";
+    case "CHOOSEHAND": 
+    case "CHOOSETHEIRHAND":
     case "CHOOSEHANDCANCEL":
       return "a card from hand";
     case "BUTTONINPUT":
@@ -65,13 +64,13 @@ function TypeToPlay($phase)
     case "BUTTONINPUTNOPASS":
       return "a button";
     case "MAYCHOOSEDISCARD":
-      return "cards from discard";
+      return "cards from the graveyard";
     case "CHOOSEDISCARDCANCEL":
-      return "cards from discard";
+      return "cards from the graveyard";
     case "CHOOSEDISCARD":
-      return "cards from discard";
+      return "cards from the graveyard";
     case "MULTICHOOSEDISCARD":
-      return "cards from discard";
+      return "cards from the graveyard";
     case "MULTICHOOSEHAND":
       return "cards from hand";
     case "MAYMULTICHOOSEHAND":
@@ -104,7 +103,7 @@ function TypeToPlay($phase)
       return "a card from banish";
     case "INSTANT":
       return "an instant";
-    case "END":
+    case "ENDPHASE":
       return "an order for triggers";
     case "CHOOSEFIRSTPLAYER":
       return "who will be the first player";
@@ -134,15 +133,4 @@ function PlayTerm($phase, $from="", $cardID="")
     default:
       return "played";
   }
-}
-
-function CardTypeName($cardType)
-{
-  /*
-    switch($cardType)
-    {
-      case "A": return "Action";
-      case "AR"
-    }
-*/
 }

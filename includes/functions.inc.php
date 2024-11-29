@@ -395,10 +395,10 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
 
 function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)
 {
-	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer;
+	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer, $CardStats_TimesKatsuDiscard;
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked;
-	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $TurnStats_ResourcesLeft;
-	global $p1TotalTime, $p2TotalTime;
+	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $TurnStats_ResourcesLeft, $TurnStats_LifeGained;
+	global $p1TotalTime, $p2TotalTime, $TurnStats_DamagePrevented;
 	$DeckLink = explode("/", $DeckLink);
 	$DeckLink = $DeckLink[count($DeckLink) - 1];
 	$deckAfterSB = explode("\r\n", $deckAfterSB);
@@ -440,6 +440,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 				$deck["cardResults"][$j]["pitched"] = $cardStats[$i + $CardStats_TimesPitched];
 				$deck["cardResults"][$j]["hits"] = $cardStats[$i + $CardStats_TimesHit];
 				$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesCharged];
+				$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesKatsuDiscard];
 				break;
 			}
 		}
@@ -453,8 +454,12 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$deck["turnResults"][$i]["resourcesUsed"] = $turnStats[$i + $TurnStats_ResourcesUsed];
 		$deck["turnResults"][$i]["resourcesLeft"] = $turnStats[$i + $TurnStats_ResourcesLeft];
 		$deck["turnResults"][$i]["cardsLeft"] = $turnStats[$i + $TurnStats_CardsLeft];
+		$deck["turnResults"][$i]["damageThreatened"] = $turnStats[$i + $TurnStats_DamageThreatened];
 		$deck["turnResults"][$i]["damageDealt"] = $turnStats[$i + $TurnStats_DamageDealt];
+		$deck["turnResults"][$i]["damageBlocked"] = $turnStats[$i + $TurnStats_DamageBlocked];
+		$deck["turnResults"][$i]["damagePrevented"] = $turnStats[$i + $TurnStats_DamagePrevented];
 		$deck["turnResults"][$i]["damageTaken"] = $otherPlayerTurnStats[$i + $TurnStats_DamageDealt];
+		$deck["turnResults"][$i]["lifeGained"] = $turnStats[$i + $TurnStats_LifeGained];
 	}
 
 	$time = ($player == 1 ? $p1TotalTime : $p2TotalTime);
@@ -470,6 +475,8 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$totalCardsLeft = 0;
 	$totalDefensiveCards = 0;
 	$totalBlocked = 0;
+	$totalLifeGained = 0;
+	$totalDamagePrevented = 0;
 	$numTurns = 0;
 	$start = ($player == $firstPlayer ? TurnStatPieces() : 0);
 	for($i = $start; $i < count($turnStats); $i += TurnStatPieces()) {
@@ -479,6 +486,8 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$totalCardsLeft += $turnStats[$i + $TurnStats_CardsLeft];
 		$totalDefensiveCards += ($turnStats[$i + $TurnStats_CardsPlayedDefense] + $turnStats[$i + $TurnStats_CardsBlocked]); //TODO: Separate out pitch for offense and defense
 		$totalBlocked += $turnStats[$i + $TurnStats_DamageBlocked];
+		$totalLifeGained += $turnStats[$i + $TurnStats_LifeGained];
+		$totalDamagePrevented += $turnStats[$i + $TurnStats_DamagePrevented];
 		++$numTurns;
 	}
 
@@ -488,12 +497,15 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 
 	$deck["totalDamageThreatened"] = $totalDamageThreatened;
 	$deck["totalDamageDealt"] = $totalDamageDealt;
+	$deck["totalLifeGained"] = $totalLifeGained;
+	$deck["totalDamagePrevented"] = $totalDamagePrevented;
 	$deck["averageDamageThreatenedPerTurn"] = round($totalDamageThreatened / $numTurns, 2);
 	$deck["averageDamageDealtPerTurn"] = round($totalDamageDealt / $numTurns, 2);
 	$deck["averageDamageThreatenedPerCard"] = round($totalDamageThreatened / $totalOffensiveCards, 2);
 	$deck["averageResourcesUsedPerTurn"] = round($totalResourcesUsed / $numTurns, 2);
 	$deck["averageCardsLeftOverPerTurn"] = round($totalCardsLeft / $numTurns, 2);
-	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2);
+	$deck["averageCombatValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2);
+	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked + $totalLifeGained + $totalDamagePrevented) / $numTurns, 2);
 
 	if($includeFullLog) $deck["fullLog"] = IsPatron($player) ? implode("<BR>", explode("\r\n", file_get_contents("./Games/" . $gameID . "/fullGamelog.txt"))) : "";
 

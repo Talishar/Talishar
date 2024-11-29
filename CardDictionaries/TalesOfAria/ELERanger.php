@@ -9,7 +9,7 @@
     {
       case "ELE031": case "ELE032":
         if(DelimStringContains($additionalCosts, "LIGHTNING")) { $rv .= "The next attack gains go again."; AddCurrentTurnEffect("ELE031-1", $currentPlayer); }
-        if(DelimStringContains($additionalCosts, "ICE")) { if($rv != "") $rv .= " "; $rv .= "The opponent gets a Frostbite."; PlayAura("ELE111", $otherPlayer); }
+        if(DelimStringContains($additionalCosts, "ICE")) { if($rv != "") $rv .= " "; $rv .= "The opponent gets a Frostbite."; PlayAura("ELE111", $otherPlayer, effectController: $currentPlayer); }
         return $rv;
       case "ELE033":
         LoadArrow($currentPlayer);
@@ -59,7 +59,7 @@
     switch($cardID)
     {
       case "ELE036":
-        if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) DamageTrigger($defPlayer, NumEquipment($defPlayer), "ATTACKHIT");
+        if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) DamageTrigger($defPlayer, NumEquipment($defPlayer), "ATTACKHIT", $cardID);
         break;
       case "ELE216": case "ELE217": case "ELE218":
         if(HasIncreasedAttack()) Reload($mainPlayer);
@@ -79,7 +79,7 @@
       $element = $elementArray[$i];
       $subsequent = ($i > 0 && !$isAndOrFuse) ? 1 : 0;
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:talent=" . $element, $subsequent);
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to fuse", 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose which ". ucfirst(strtolower($element))." card to reveal for Fusion", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
       AddDecisionQueue("REVEALCARDS", $player, "-", 1);
@@ -125,7 +125,7 @@
       case "ELE016": case "ELE017": case "ELE018": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE019": case "ELE020": case "ELE021": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE022": case "ELE023": case "ELE024": AddCurrentTurnEffect($cardID, $player); break;
-      case "ELE025": case "ELE026": case "ELE027": PlayAura("ELE111", $otherPlayer); break;
+      case "ELE025": case "ELE026": case "ELE027": PlayAura("ELE111", $otherPlayer, effectController: $player); break;
       case "ELE028": case "ELE029": case "ELE030": PlayAura("WTR075", $player); break;
       case "ELE035": AddCurrentTurnEffect($cardID . "-2", $player); break;
       case "ELE038": case "ELE039": case "ELE040": AddCurrentTurnEffect($cardID, $otherPlayer); break;
@@ -141,8 +141,8 @@
       case "ELE059": case "ELE060": case "ELE061": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE065": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE066": AddCurrentTurnEffect($cardID, $player); break;
-      case "ELE070": case "ELE071": case "ELE072": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
-      case "ELE073": case "ELE074": case "ELE075": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
+      case "ELE070": case "ELE071": case "ELE072": DealArcane(1, 0, "PLAYCARD", $cardID); break;
+      case "ELE073": case "ELE074": case "ELE075": DealArcane(1, 0, "PLAYCARD", $cardID); break;
       case "ELE076": case "ELE077": case "ELE078": SetClassState($player, $CS_NextNAAInstant, 1); break;
       case "ELE079": case "ELE080": case "ELE081":
         PrependDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
@@ -154,9 +154,9 @@
         break;
       case "ELE082": case "ELE083": case "ELE084": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE085": case "ELE086": case "ELE087": AddCurrentTurnEffect($cardID . "-FUSE", $player); break;
-      case "ELE088": DealArcane(3, 0, "PLAYCARD", $cardID, true); break;//Assumed
-      case "ELE089": DealArcane(2, 0, "PLAYCARD", $cardID, true); break;//Assumed
-      case "ELE090": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
+      case "ELE088": DealArcane(3, 0, "PLAYCARD", $cardID); break;
+      case "ELE089": DealArcane(2, 0, "PLAYCARD", $cardID); break;
+      case "ELE090": DealArcane(1, 0, "PLAYCARD", $cardID); break;
       case "ELE091":
         if(DelimStringContains($element, "LIGHTNING")) AddCurrentTurnEffect($cardID . "-GA", $player);
         if(DelimStringContains($element, "EARTH")) AddCurrentTurnEffect($cardID . "-BUFF", $player);
@@ -182,24 +182,32 @@
   function PayOrDiscard($player, $amount, $fromDQ=true, $passable=false)
   {
     $targetHand = &GetHand($player);
-    $otherPlayer = ($player == 1 ? 2 : 1);
     if (count($targetHand) > 0) {
       if ($fromDQ) {
-        PummelHit($player, passable:true, fromDQ:true);
+        PrependDecisionQueue("DISCARDCARD", $player, "HAND", 1);
+        PrependDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+        PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "HAND", 1);
         PrependDecisionQueue("ELSE", $player, "-");
         PrependDecisionQueue("PAYRESOURCES", $player, "-", 1);
         PrependDecisionQueue("PASSPARAMETER", $player, $amount, 1);
         PrependDecisionQueue("NOPASS", $player, "-", ($passable ? 1 : 0), 1);
         PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding", ($passable ? 1 : 0), 1);
-        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " to avoid discarding");
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay $amount to avoid discarding");
       } else {
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " to avoid discarding");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay $amount to avoid discarding");
         AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding", ($passable ? 1 : 0), 1);
         AddDecisionQueue("NOPASS", $player, "-", ($passable ? 1 : 0), 1);
         AddDecisionQueue("PASSPARAMETER", $player, $amount, 1);
         AddDecisionQueue("PAYRESOURCES", $player, "-", 1);
         AddDecisionQueue("ELSE", $player, "-");
-        PummelHit($player, passable:true, fromDQ:false);
+        AddDecisionQueue("FINDINDICES", $player, "HAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard", 1);
+        AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+        AddDecisionQueue("DISCARDCARD", $player, "HAND", 1);
+        PummelHit($player, $passable=true, fromDQ:false);
       }
     }
   }
@@ -256,6 +264,7 @@
       case "UPR116": case "UPR117": case "UPR118": return "ICE";
       case "UPR119": case "UPR120": case "UPR121": return "ICE";
       case "UPR122": case "UPR123": case "UPR124": return "ICE";
+      case "AJV020": return "ICE";
       default: return "";
     }
   }
@@ -264,7 +273,7 @@
   {
     global $currentTurnEffects;
     $costModifier = 0;
-    for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
+    for($i=count($currentTurnEffects)-CurrentTurnEffectsPieces(); $i>=0; $i-=CurrentTurnEffectsPieces())
     {
       $remove = 0;
       if($player == $currentTurnEffects[$i+1]) {

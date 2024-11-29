@@ -8,12 +8,12 @@ include "Libraries/SHMOPLibraries.php";
 session_start();
 
 if (!isset($_SESSION["useruid"])) {
-  echo ("Please login to view this page.");
+  echo("Please login to view this page.");
   exit;
 }
 $useruid = $_SESSION["useruid"];
-if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "LaustinSpayce" && $useruid != "Star_Seraph" && $useruid != "Tower" && $useruid != "PvtVoid") {
-  echo ("You must log in to use this page.");
+if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "LaustinSpayce" && $useruid != "bavverst" && $useruid != "Star_Seraph" && $useruid != "Tower" && $useruid != "PvtVoid") {
+  echo("You must log in to use this page.");
   exit;
 }
 

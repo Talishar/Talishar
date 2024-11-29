@@ -16,7 +16,7 @@
     }
   }
 
-  function WTRAbilityType($cardID, $index=-1)
+  function WTRAbilityType($cardID, $index=-1, $from="")
   {
     switch($cardID)
     {
@@ -36,7 +36,9 @@
       case "WTR154": return "AR";
       case "WTR153": return "A";
       case "WTR162": return "A";
-      case "WTR170": return "I";
+      case "WTR170": 
+        if($from == "PLAY") return "I";
+        else return "A";
       case "WTR171": case "WTR172": return "A";
       default: return "";
     }
@@ -95,7 +97,7 @@
       case "WTR161": return 4;
       case "WTR162": return 2;
       case "WTR171": return 2;
-      case "WTR185": return 1;
+      case "WTR185": case "WTR186": case "WTR187": return 1;
       case "WTR200": case "WTR201": case "WTR202": return 1;
       case "WTR206": return 4;
       case "WTR207": return 3;
@@ -139,7 +141,7 @@
       case "WTR161": return true;
       case "WTR162": return true;
       case "WTR171": return true;
-      case "WTR185": return true;
+      case "WTR185": case "WTR186": case "WTR187": return true;
       case "WTR197": case "WTR198": case "WTR199": return true;
       case "WTR200": case "WTR201": case "WTR202": return true;
       case "WTR206": case "WTR207": case "WTR208": return true;
@@ -152,8 +154,7 @@
 
   function WTRPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $mainPlayer, $currentPlayer, $defPlayer;
-    global $CS_DamagePrevention;
+    global $mainPlayer, $currentPlayer, $defPlayer, $CS_DamagePrevention;
     $rv = "";
     switch($cardID) {
       case "WTR054": case "WTR055": case "WTR056": if(SearchCount(SearchPitch($currentPlayer, minCost:3)) > 0) Draw($currentPlayer); return "";
@@ -169,21 +170,21 @@
         Intimidate();
         return "";
       case "WTR007":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
+          AddCurrentTurnEffect($cardID."-GOAGAIN", $currentPlayer);
           Draw($currentPlayer);
           Draw($currentPlayer);
-          if(!CurrentEffectPreventsGoAgain()) GainActionPoints(1, $currentPlayer);
+          ResolveGoAgain($cardID, $currentPlayer, $from);
           $rv = "Draws 2 cards and gains go again";
         }
-        AddCurrentTurnEffect($cardID, $currentPlayer);
         return $rv;
       case "WTR008":
-        $damaged = false;
         if(IsAllyAttacking()) {
           return "<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>";
         }
         else if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
-          WriteLog("Deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID);
+          WriteLog(Cardlink($cardID, $cardID) . " deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID);
         }
         return "";
       case "WTR009":
@@ -267,8 +268,8 @@
         $options = GetChainLinkCards($defPlayer, "", "E,C", exclCardSubTypes:"Evo");
         if(RepriseActive() && $options != "") {
           AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $mainPlayer, $options);
+          AddDecisionQueue("ADDHANDOWNER", $defPlayer, "-", 1);
           AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-", 1);
-          AddDecisionQueue("ADDHAND", $defPlayer, "-", 1);
         }
         return "";
       case "WTR121":
@@ -485,6 +486,7 @@
   {
     global $mainPlayer;
     $hand = &GetHand($mainPlayer);
+    $char = &GetPlayerCharacter($mainPlayer);
     if($context == "") $context = "to_use_Katsu's_ability";
     if(count($hand) > 0)
     {
@@ -499,6 +501,7 @@
       AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBANISH,DECK,TT", 1);
       AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
+      if($context == "to_use_Katsu's_ability")AddDecisionQueue("LOGPLAYCARDSTATS", $mainPlayer, $char[0].",HAND,KATSUDISCARD", 1);
     }
   }
 
@@ -520,7 +523,7 @@
     $deck = new Deck($mainPlayer);
     if(!ArsenalFull($mainPlayer) && !$deck->Empty()) {
       $type = CardType($deck->Top());
-      if($deck->Reveal() && ($type == "A" || $type == "AA")) {
+      if($deck->Reveal() && (DelimStringContains($type, "A") || $type == "AA")) {
         AddArsenal($deck->Top(remove:true), $mainPlayer, "DECK", "DOWN");
       }
     }
@@ -568,7 +571,7 @@
         break;
       case "WTR048": case "WTR049": case "WTR050":
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put at the bottom of the deck", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put on the bottom of the deck", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZADDZONE", $mainPlayer, "THEIRBOTDECK", 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
@@ -621,5 +624,3 @@
       default: return;
     }
   }
-
-?>

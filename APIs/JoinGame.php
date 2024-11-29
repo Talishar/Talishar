@@ -94,6 +94,14 @@ include "../CardDictionary.php";
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
+$joinerName = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "Player 2");
+if(($playerID == 3 && $joinerName == "starmorgs") || (($p1uid == "zeni" || $p1uid == "rkhalid890") && $joinerName == "starmorgs") || ($p1uid == "starmorgs" && ($joinerName == "zeni" || $joinerName == "rkhalid890"))) {
+  $response->error = "Unable to join this game.";
+  WriteGameFile();
+  echo (json_encode($response));
+  exit;
+}
+
 if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
   if ($gameStatus >= $MGS_GameStarted) {
     $response->gameStarted = true;
@@ -202,7 +210,7 @@ if ($decklink != "") {
   $weapon2 = "";
   $weaponSideboard = "";
   $totalCards = 0;
-  $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY", "MST", "AKO", "ASB"];
+  $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY", "MST", "AKO", "ASB", "ROS", "AAZ", "TER", "AUR", "AIO", "AJV", "HNT"];
   if (is_countable($cards)) {
     for ($i = 0; $i < count($cards); ++$i) {
       $count = $cards[$i]->{'total'};
@@ -358,7 +366,7 @@ if ($decklink != "") {
         $totalCards += $numMainBoard + $numSideboard;
       }
 
-      if (IsCardBanned($id, $format, $character)) {
+      if (IsCardBanned($id, $format, $character) && $format != "draft") {
         if ($bannedCard != "") $bannedCard .= ", ";
         $bannedCard .= CardName($id);
       }
@@ -374,13 +382,6 @@ if ($decklink != "") {
   if($unsupportedCards != "") {
     $response->error = "⚠️ The following cards are not yet supported: " . $unsupportedCards;
     echo (json_encode($response));
-    exit;
-  }
-
-  if(($format == "sealed" || $format == "draft") && substr($decklink, 0, 9) != "DRAFTFAB-") {
-    //Currently must use draft fab for sealed/draft
-    $response->error = "You must use a DraftFaB deck for " . $format . ".";
-    echo json_encode($response);
     exit;
   }
 
@@ -675,6 +676,8 @@ function GetAltCardID($cardID)
     case "TCC005": return "EVO024";
     case "TCC006": return "EVO025";
     case "DRO026": return "WTR173";
+    case "AUR002": return "ROS009";
+    case "JDG032": return "AIO004";
   }
   return $cardID;
 }
@@ -682,6 +685,12 @@ function GetAltCardID($cardID)
 function isClashLegal($cardID, $character) {
   $set = substr($cardID, 0, 3);
   $number = intval(substr($cardID, 3, 3));
+  switch ($cardID) { //Special Use Promos
+    case "JDG001": case "JDG003": case "JDG006": case "JDG010": case "JDG010": case "JDG019": case "JDG024": case "JDG025":
+      return true;
+      default:
+      break;
+    }
   switch (CardType($cardID)) {
     case "C": case "M": case "W":
       return true;
@@ -698,30 +707,46 @@ function IsCardBanned($cardID, $format, $character)
   $set = substr($cardID, 0, 3);
   if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R")) return true;
   if ($format == "clash") return !isClashLegal($cardID, $character);
+
   //Ban spoiler cards in non-open-format
-  if(($format != "openformatcc" && $format != "openformatblitz") && $set == "MST" && $cardID != "MST205") return true; // Launch 31st May
-  if(($format != "openformatcc" && $format != "openformatblitz") && ($set == "ASB")) return true; // Launch 12th July
-  switch ($cardID) { //Special Use Promos
-    case "JDG002": case "JDG004": case "JDG005": case "JDG008": case "JDG010": case "JDG019": case "JDG024": case "JDG025":
-    case "LSS001": case "LSS002": case "LSS003": case "LSS004": case "LSS005": case "LSS006": case "LSS007": case "LSS008":
-    case "FAB094":
-    case "LGS099":
-    case "HER101":
-      return true;
+  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") && $set == "AJV") return true; // Jarl Armory Deck Launch 29th November
+  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") && $set == "HNT") return true; // The Hunted Launch 31st January
+
+  if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") {
+    switch ($cardID) { //Special Use Promos
+      case "JDG001": case "JDG002": case "JDG003": case "JDG004": case "JDG005": case "JDG006": case "JDG008": case "JDG010": 
+      case "JDG019": case "JDG024": case "JDG025":
+      case "LSS001": case "LSS002": case "LSS003": case "LSS004": case "LSS005": case "LSS006": case "LSS007": case "LSS008":
+      case "FAB094":
+      case "LGS099":
+      case "HER101":
+        return true;
+    }
   }
   switch($format) {
     case "blitz": case "compblitz":
       switch($cardID) {
+        case "WTR002": //Rhinar
+        case "WTR160": //Tome of Fyendal
         case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
+        case "ARC002": //Dash
+        case "ARC003": //Teklo Plasma Pistol
         case "ARC076": case "ARC077": // Viserai | Nebula Black
+        case "ARC122": //Tome of Aetherwind
+        case "ARC160": // Art of War
         case "ELE006": // Awakening
+        case "ELE063": //Briar
         case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
+        case "ELE222": //Rosetta
         case "ELE223": // Duskblade
         case "WTR152": // Heartened Cross Strap
-        case "CRU174": case "CRU175": case "CRU176": // Snapback
-        case "MON239": // Stubby Hammers
         case "CRU141": // Bloodsheath Skeleta
+        case "CRU174": case "CRU175": case "CRU176": // Snapback
+        case "CRU188": // Cash In
+        case "MON065": //Tome of Divinity
+        case "MON239": // Stubby Hammers
         case "EVR037": // Mask of the Pouncing Lynx
+        case "UPR089": // Tome of Firebrand
         case "UPR103": case "EVR120": case "EVR121": // Iyslander | Kraken's Aethervein
         case "ELE002": case "ELE003": // Oldhim | Winter's Wail
         case "MON154": case "MON155": // Chane | Galaxxi Black
@@ -729,30 +754,43 @@ function IsCardBanned($cardID, $format, $character)
         case "CRU077":// Kassai, Cintari Sellsword
         case "CRU046": case "CRU050": // Ira, Crimson Haze | Edge of Autumn
         case "DYN009": //Berserk
+        case "OUT056": case "OUT057": case "OUT058": //Bonds of Ancestry
+        case "MST080": //Orihon of Mystic Tenets
+        case "MON266": case "MON267": case "MON268": //belittle 
           return true;
         default: return false;
       }
     case "cc": case "compcc":
       switch($cardID) {
+        case "WTR160": //Tome of Fyendal
+        case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
+        case "ARC122": //Tome of Aetherwind
+        case "ARC160": // Art of War
+        case "ARC170": case "ARC171": case "ARC172": // Plunder Run
+        case "CRU141": // Bloodsheath Skeleta
+        case "CRU188": // Cash In    
         case "MON001": case "MON003": // Prism Sculptor of Arc Light | Luminaris
-        case "EVR017": // Bravo, Star of the Show
+        case "MON065": //Tome of Divinity
         case "MON153": case "MON155": // Chane, Bound by Shadow | Galaxxi Black
+        case "MON239": // Stubby Hammers
+        case "MON266": case "MON267": case "MON268": // Belittle    
         case "ELE006": // Awakening
         case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
-        case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
         case "ELE223":  // Duskblade
-        case "ARC170": case "ARC171": case "ARC172": // Plunder Run
-        case "MON239": // Stubby Hammers
-        case "MON266": case "MON267": case "MON268": // Belittle
-        case "CRU141": // Bloodsheath Skeleta
         case "ELE114": // Pulse of Isenloft
+        case "ELE115": // Crown of Seeds
         case "ELE031": case "ELE034": // Lexi, Livewire | Voltaire, Strike Twice
         case "ELE062": case "ELE222": // Briar, Warden of Thorns | Rosetta Thorn
         case "ELE001": case "ELE003": // Oldhim, Grandfather of Eternity | Winter's Wail
+        case "EVR017": // Bravo, Star of the Show
         case "UPR001": case "UPR003": // Dromai, Ash Artist | Storm of Sandikai
+        case "UPR089": // Tome of Firebrand
         case "UPR102": case "EVR121": // Iyslander, Stormbind | Kraken's Aethervein
         case "DYN009": //Berserk
-        case "ELE115": // Crown of Seeds
+        case "OUT056": case "OUT057": case "OUT058": //Bonds of Ancestry
+        case "MST080": //Orihon of Mystic Tenets
+        case "ARC006": //High Octane
+        case "ROS225": //Count Your Blessings Blue
           return true;
         default: return false;
       }
@@ -760,8 +798,14 @@ function IsCardBanned($cardID, $format, $character)
       switch($cardID) {
         case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
         case "MON266": case "MON267": case "MON268": // Belittle
+        case "MON230": //Aether Ironweave
           return true;
         default: return false;
+      }
+    case "llcc":
+      switch($cardID) {
+        case "EVR121": //Kraken's Aethervein
+          return true;
       }
     default: return false;
   }

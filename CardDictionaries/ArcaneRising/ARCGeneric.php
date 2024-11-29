@@ -26,7 +26,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
     case "ARC162":
       AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
+      AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
       AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", ($currentPlayer == 1 ? 2 : 1), "ARC162,{0}");
       return "";
     case "ARC164": case "ARC165": case "ARC166":

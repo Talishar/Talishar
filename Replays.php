@@ -62,7 +62,3 @@ if(!file_exists($path))
   }
    ?>
 </section>
-
-<?php
-include_once 'Disclaimer.php'
-?>

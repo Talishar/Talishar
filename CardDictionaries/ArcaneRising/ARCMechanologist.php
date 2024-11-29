@@ -91,12 +91,14 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       $rv = "";
       return $rv;
     case "ARC037":
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      $items = &GetItems($currentPlayer);
-      if($index != -1) {
-        PlayerOpt($currentPlayer, 1);
-        --$items[$index+1];
-        if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
+      if($from == "PLAY") {
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        $items = &GetItems($currentPlayer);
+        if($index != -1) {
+          PlayerOpt($currentPlayer, 1);
+          --$items[$index+1];
+          if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
+        }
       }
       return $rv;
     default: return "";
@@ -161,6 +163,7 @@ function HasBoost($cardID, $player)
     case "EVO210": case "EVO211": case "EVO212":
     case "EVO213": case "EVO214": case "EVO215":
     case "EVO216": case "EVO217": case "EVO218":
+    case "AIO009":
       return true;
     default: return false;
   }
@@ -169,20 +172,28 @@ function HasBoost($cardID, $player)
 function Boost($cardID)
 {
   global $currentPlayer;
-  AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_boost");
-  AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-  AddDecisionQueue("OP", $currentPlayer, "BOOST-".$cardID, 1);
+  if(SearchCurrentTurnEffects("MST231", $currentPlayer, true) && HasBoost($cardID, $currentPlayer)) {
+      $amountBoostChoices = "0,1,2";
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many times you want to activate boost on " . CardLink($cardID, $cardID));
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, $amountBoostChoices);
+      AddDecisionQueue("OP", $currentPlayer, "BOOST-".$cardID, 1);
+  } else {
+    AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_boost");
+    AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+    AddDecisionQueue("OP", $currentPlayer, "BOOST-".$cardID, 1);
+  }
 }
 
 function DoBoost($player, $cardID, $boostCount=1)
 {
-  global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $charSubCards;
+  global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
   $deck = new Deck($player);
   $isGoAgainGranted = false;
   for ($i = 0; $i < $boostCount; $i++) {
     if($deck->Empty()) { WriteLog("Could not boost"); return; }
     ItemBoostEffects();
     GainActionPoints(CountCurrentTurnEffects("ARC006", $player), $player);
+    GainResources($player, CountCurrentTurnEffects("AIO004", $player));
     $boostedCardID = $deck->Top(remove:true);
     SelfBoostEffects($player, $boostedCardID, $cardID);
     CharacterBoostAbilities($player);
@@ -200,7 +211,7 @@ function DoBoost($player, $cardID, $boostCount=1)
     }
     if (!$skipBanish) BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
     $grantsGA = ClassContains($boostedCardID, "MECHANOLOGIST", $player);
-    WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again");
+    WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "gets" : "doesn't get") . " go again.");
     IncrementClassState($player, $CS_NumBoosted);
     ++$combatChainState[$CCS_NumBoosted];
     $combatChainState[$CCS_IsBoosted] = 1;
@@ -219,6 +230,12 @@ function OnBoostedEffects($player, $boosted)
     case "EVO177": case "EVO178": case "EVO179":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to get a steam counter", 1);
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=ARC036");
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
+      break;
+    case "AIO009":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item with cranked to get a steam counter", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:hasCrank=true");
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
       break;
@@ -245,7 +262,10 @@ function ItemBoostEffects()
     switch($items[$i]) {
       case "ARC036":
       case "DYN110": case "DYN111": case "DYN112": case "EVO234":
-        if($items[$i+2] == 2) AddLayer("TRIGGER", $currentPlayer, $items[$i], $i, "-", $items[$i + 4]);
+        if($items[$i+2] == 2) {
+          AddLayer("TRIGGER", $currentPlayer, $items[$i], $i, "-", $items[$i + 4]);
+          $items[$i+2] = 1;
+        }
         break;
       case "EVR072":
         if($items[$i+2] == 2) {

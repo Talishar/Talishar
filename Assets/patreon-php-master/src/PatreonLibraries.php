@@ -72,7 +72,7 @@ function PatreonLogin($access_token, $silent=true, $debugMode=false)
     }
     echo("<h4>Not seeing something you expect to see?</h4>");
     echo("<h4>1. Check your patreon page to make sure it's listed in your currently supported campaigns</h4>");
-    echo("<h4>2. Reach out on our discord server!</h4>");
+    echo("<h4>2. Reach out on our Discord server!</h4>");
   }
   return $output;
 }

@@ -1,18 +1,21 @@
 <?php
 
 function LoadUserData($username) {
-	$conn = GetLocalMySQLConnection();
-  $sql = "SELECT * FROM users WHERE usersUid = ?";
-	$stmt = mysqli_stmt_init($conn);
-	if (!mysqli_stmt_prepare($stmt, $sql)) {
-	 	return NULL;
+	try {
+		$conn = GetLocalMySQLConnection();
+	  $sql = "SELECT * FROM users WHERE usersUid = ?";
+		$stmt = mysqli_stmt_init($conn);
+		if (!mysqli_stmt_prepare($stmt, $sql)) {
+		 	return NULL;
+		}
+		mysqli_stmt_bind_param($stmt, "s", $username);
+		mysqli_stmt_execute($stmt);
+		$result = mysqli_stmt_get_result($stmt);
+	  $row = mysqli_fetch_assoc($result);
+		mysqli_stmt_close($stmt);
+		mysqli_close($conn);
 	}
-	mysqli_stmt_bind_param($stmt, "s", $username);
-	mysqli_stmt_execute($stmt);
-	$result = mysqli_stmt_get_result($stmt);
-  $row = mysqli_fetch_assoc($result);
-	mysqli_stmt_close($stmt);
-	mysqli_close($conn);
+	catch (\Exception $e) { }
 
   return $row;
 }

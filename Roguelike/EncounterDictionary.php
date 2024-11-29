@@ -34,7 +34,7 @@ function EncounterDescription()
     case 9:
       return GetCrossroadsDescription();
     case 11:
-      return "Thank you for playing Blackjack's Tavern! We have a lot more in the works that we can't wait to show off. If you're interested in helping with future updates, join the Talishar discord!";
+      return "Thank you for playing Blackjack's Tavern! We have a lot more in the works that we can't wait to show off. If you're interested in helping with future updates, join the Talishar Discord!";
 
     case 101:
       if($encounter->subphase == "BeforeFight") return "You're attacked by a Woottonhog.";
@@ -49,7 +49,7 @@ function EncounterDescription()
       if($encounter->subphase == "BeforeFight") return "You're attacked by a Shock Striker.";
       else if($encounter->subphase == "AfterFight") return "You defeated the Shock Striker.";
     case 105:
-      if($encounter->subphase == "BeforeFight") return "You've finished the game (so far!). If you'd like to help out with adding new encounters/classes, check out our discord! The code is open source and can be found here: https://github.com/Talishar/Talishar/tree/main/Roguelike";
+      if($encounter->subphase == "BeforeFight") return "You've finished the game (so far!). If you'd like to help out with adding new encounters/classes, check out our Discord! The code is open source and can be found here: https://github.com/Talishar/Talishar/tree/main/Roguelike";
       else if($encounter->subphase == "AfterFight") return "You defeated the group of bandits.";
     case 106:
       if($encounter->subphase == "BeforeFight") return "You turn to find another way, only to see someone has been following. They knock an arrow, ready to fight.";

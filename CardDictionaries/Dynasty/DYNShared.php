@@ -143,6 +143,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN155": return CardSubType($attackID) == "Arrow";
     case "DYN165": case "DYN166": case "DYN167": return true;
     case "DYN168": case "DYN169": case "DYN170": return CardSubType($attackID) == "Arrow";
+    case "DYN173": return true;
     case "DYN176": case "DYN177": case "DYN178": return true;
     case "DYN185-BUFF": case "DYN186-BUFF": case "DYN187-BUFF": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     case "DYN185-HIT": case "DYN186-HIT": case "DYN187-HIT": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
@@ -183,7 +184,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
           AddDecisionQueue("MZDISCARD", $otherPlayer, "HAND,".$currentPlayer, 1);
           AddDecisionQueue("MZREMOVE", $otherPlayer, "-", 1);
           AddDecisionQueue("ELSE", $otherPlayer, "-");
-          AddDecisionQueue("TAKEDAMAGE", $otherPlayer, 1, 1);
+          AddDecisionQueue("TAKEDAMAGE", $otherPlayer, "1-".$cardID, 1);
         }
       }
       return "";
@@ -322,7 +323,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want sink <0>", 1);
       AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_sink_the_opponent's_card", 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-      AddDecisionQueue("WRITELOG", $currentPlayer, "Sunk the top card", 1);
       AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
       AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
       AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
@@ -402,8 +402,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN192":
       DealArcane(1, 1, "ABILITY", $cardID, resolvedTarget: $target);
-      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "DYN192,");
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
+      AddDecisionQueue("GREATERTHAN0ORPASS", $currentPlayer, "");
+      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "DYN192,", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-", 1);
       return "";
     case "DYN193":
       PlayerOpt($currentPlayer, 1, false);
@@ -417,7 +418,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN215":
       AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
+      AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "DYN215-{0}");
       AddDecisionQueue("ADDCURRENTEFFECT", $otherPlayer, "DYN215-{0}");
       return "";
@@ -431,7 +432,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       else $maxCost = 1;
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:maxCost=" . $maxCost);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZBANISH", $currentPlayer, "AURAS,DYN221-" . $uniqueID . "," . $currentPlayer, 1);
+      AddDecisionQueue("MZBANISH", $currentPlayer, "AURAS," . $cardID . "-" . $uniqueID, 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       return "";
     case "DYN224": case "DYN225": case "DYN226":
@@ -460,7 +461,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         }
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
+        AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
         AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $otherPlayer, "DYN240-{0}");
       }
       return $rv;
@@ -542,9 +543,9 @@ function DYNHitEffect($cardID, $from, $attackID)
         MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, true);
       }
       break;
-    case "DYN121": if(IsHeroAttackTarget() && IsRoyal($defPlayer)) 
+    case "DYN121": if(IsHeroAttackTarget() && IsRoyal($defPlayer))
       {
-        PlayerLoseHealth($defPlayer, GetHealth($defPlayer)); 
+        PlayerLoseHealth($defPlayer, GetHealth($defPlayer));
       }
       break;
     case "DYN122":
@@ -574,11 +575,14 @@ function DYNHitEffect($cardID, $from, $attackID)
         AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
       }
       break;
-    case "DYN162": case "DYN163": case "DYN164": 
+    case "DYN162": case "DYN163": case "DYN164":
       if(HasAimCounter() && IsHeroAttackTarget()) {
-        MZChooseAndDestroy($mainPlayer, "THEIRARS"); 
-        break;
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card you want to destroy from their arsenal", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $mainPlayer, false, 1);
       }
+      break;  
     default: break;
   }
 }
@@ -599,6 +603,15 @@ function HasSurge($cardID)
   switch($cardID) {
     case "DYN194": case "DYN195": case "DYN197": case "DYN198": case "DYN199":
     case "DYN203": case "DYN204": case "DYN205": case "DYN206": case "DYN207": case "DYN208":
+    case "ROS166"://destructive aethertide
+    case "ROS167"://eternal inferno
+    case "ROS173": case "ROS174": case "ROS175":
+    case "ROS176": case "ROS177": case "ROS178":
+    case "ROS189": case "ROS190": case "ROS191":
+    case "ROS195": case "ROS196": case "ROS197"://open the floodgates
+    case "ROS198": case "ROS199": case "ROS200":
+    case "ROS201": case "ROS202": case "ROS203":
+    case "ROS207": case "ROS208": case "ROS209":
       return true;
     default: return false;
   }
@@ -619,6 +632,8 @@ function ContractType($cardID)
     case "DYN142": case "DYN143": case "DYN144": return "GOAGAIN";
     case "DYN145": case "DYN146": case "DYN147": return "NAA";
     case "EVO236": return "NONACTION";
+    case "HNT030": return "HITMARKEDFANG";
+    case "HNT031": return "HITMARKEDCINDRA";
     default: return "";
   }
 }
@@ -642,7 +657,37 @@ function ContractCompleted($player, $cardID)
     case "EVO236":
       PutItemIntoPlayForPlayer("EVR195", $player);
       break;
+    case "HNT030": case "HNT031":
+      Draw($player);
+      break;
     default: break;
+  }
+}
+
+function CheckHitContracts($mainPlayer, $otherPlayer)
+{
+  global $CombatChain, $chainLinks;
+  for($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $chainCard = $CombatChain->Card($i, cardNumber:true);
+    $contractType = ContractType($chainCard->ID());
+    if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainCard->ID());
+  }
+  for($i = 0; $i < count($chainLinks); ++$i) {
+    for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+      if($chainLinks[$i][$j+2] == 0) continue;
+      $contractType = ContractType($chainLinks[$i][$j]);
+      if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainLinks[$i][$j]);
+    }
+  }
+}
+
+function CheckHitContract($contractType, $otherPlayer)
+{
+  $otherchar = &GetPlayerCharacter($otherPlayer);
+  switch($contractType) {
+    case "HITMARKEDFANG": return CheckMarked($otherPlayer) & CardNameContains($otherchar[0], "Fang");
+    case "HITMARKEDCINDRA": return CheckMarked($otherPlayer) & CardNameContains($otherchar[0], "Cindra");
+    default: return false;
   }
 }
 

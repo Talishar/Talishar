@@ -16,7 +16,7 @@ ob_start();
 include "./Libraries/SHMOPLibraries.php";
 include "./ParseGamestate.php";
 include "./GameLogic.php";
-include "./Libraries/UILibraries2.php";
+include "./Libraries/UILibraries.php";
 include "./Libraries/StatFunctions.php";
 include "./Libraries/PlayerSettings.php";
 include_once 'Assets/patreon-php-master/src/PatreonDictionary.php';
@@ -77,31 +77,6 @@ switch ($popupType) {
     if($turn[0] == "OVER") SetCachePiece($gameName, 14, 99);//$MGS_GameOver
     echo(SerializeGameResult($playerID, "", file_get_contents("./Games/" . $gameName . "/p" . $playerID . "Deck.txt"), $gameName, includeFullLog:true));
     exit;
-  case "menuPopup":
-    /*
-    if (IsGameOver()) {
-      if($roguelikeGameID != "")
-      {
-        $content = CreateButton($playerID, "Continue Adventure", 100011, 0, "24px", "", "", false, true);
-      }
-      else
-      {
-        $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
-        if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
-        if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
-        $content .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
-      }
-      $content .= "</div>";
-      $time = ($playerID == 1 ? $p1TotalTime : $p2TotalTime);
-      $totalTime = $p1TotalTime + $p2TotalTime;
-      $content .= "<BR><span class='Time-Span'>Your Play Time: " . intval($time / 60) . "m" . $time % 60 . "s - Game Time: " . intval($totalTime / 60) . "m" . $totalTime % 60 . "s</span>";
-      $content .= CardStats($playerID);
-      echo CreatePopup("OVER", [], 1, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
-    } else {
-      echo (CreatePopup("menuPopup", [], 1, 0, "Main Menu", 1, MainMenuUI(), "./", true));
-    }
-    */
-    break;
   case "mySoulPopup":
     JSONPopup($response, $mySoul, SoulPieces());
     break;
@@ -121,8 +96,6 @@ switch ($popupType) {
     $popupIndex = intval(($chainLinkIndex ?? $params[1]));
     $response = ChainLinkObject($popupIndex);
     $response->TotalDamageDealt = $chainLinkSummary[$popupIndex * ChainLinkSummaryPieces()];
-    //TODO
-    //echo (CreatePopup("chainLinkPopup-" . $params[1], [], 1, 0, "Summary Chain Link " . $params[1] + 1, 1, ChainLinkPopup($params[1]), "./", false, false, "Total Damage Dealt: " . $chainLinkSummary[$params[1] * ChainLinkSummaryPieces()]));
     break;
   case "mySettings":
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs;
@@ -189,7 +162,7 @@ function ChainLinkObject($link)
     {
       $attackValue = AttackValue($chainLinks[$link][$i]) + $chainLinks[$link][$i + 4];
     }
-    elseif ($chainLinks[$link][$i + 1] == $mainPlayer && (CardType($chainLinks[$link][$i]) == "AR" || CardType($chainLinks[$link][$i]) == "I"))
+    elseif ($chainLinks[$link][$i + 1] == $mainPlayer && (CardType($chainLinks[$link][$i]) == "AR" || DelimStringContains(CardType($chainLinks[$link][$i]), "I")))
     {
       $attackValue = AttackModifier($chainLinks[$link][$i]);
     }

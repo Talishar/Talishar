@@ -54,10 +54,10 @@
       case "MON238": return "I";
       case "MON239": case "MON240": return "A";
       case "MON245": 
-        if($from == "PLAY" && $currentPlayer == $defPlayer) return "I";
+        if($from == "PLAY") return "I";
         else return "AA";
       case "MON281": case "MON282": case "MON283": 
-        if($from == "PLAY" && $currentPlayer == $defPlayer) return "I";
+        if($from == "PLAY") return "I";
         else return "AA";
       default: return "";
     }
@@ -192,5 +192,3 @@
       default: return false;
     }
   }
-
-?>

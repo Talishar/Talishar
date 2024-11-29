@@ -6,7 +6,7 @@ include "Libraries/SHMOPLibraries.php";
 
 $gameName = $_GET["gameName"];
 if (!IsGameNameValid($gameName)) {
-  echo ("Invalid game name.");
+  echo("Invalid game name.");
   exit;
 }
 $playerID = $_GET["playerID"];
@@ -19,7 +19,7 @@ include "MenuFiles/WriteGamefile.php";
 
 $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 if ($authKey != $targetAuth) {
-  echo ("Invalid Auth Key");
+  echo("Invalid Auth Key");
   exit;
 }
 

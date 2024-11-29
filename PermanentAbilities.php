@@ -52,20 +52,8 @@ function PermanentDestroyed($player, $cardID, $isToken = false)
     }
   }
   $goesWhere = GoesWhereAfterResolving($cardID);
-  if (CardType($cardID) == "T" || $isToken) return; //Don't need to add to anywhere if it's a token
-  switch ($goesWhere) {
-    case "GY":
-      AddGraveyard($cardID, $player, "PLAY");
-      break;
-    case "SOUL":
-      AddSoul($cardID, $player, "PLAY");
-      break;
-    case "BANISH":
-      BanishCardForPlayer($cardID, $player, "PLAY", "NA");
-      break;
-    default:
-      break;
-  }
+  if (CardType($cardID) == "T" || $isToken || CardType($cardID) == "Macro") return; //Don't need to add to anywhere if it's a token
+  ResolveGoesWhere($goesWhere, $cardID, $player, "PLAY");
 }
 
 function PermanentBeginEndPhaseEffects()
@@ -73,8 +61,6 @@ function PermanentBeginEndPhaseEffects()
   global $mainPlayer, $defPlayer;
 
   $permanents = &GetPermanents($mainPlayer);
-  /*WriteLog("size of zone = " . count($permanents));
-  WriteLog("zone[0] = " . $permanents[0]);*/
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
     switch ($permanents[$i]) {
@@ -86,9 +72,6 @@ function PermanentBeginEndPhaseEffects()
         $deck = &GetDeck($mainPlayer);
         $discard = &GetDiscard($mainPlayer);
         $banish = &GetBanish($mainPlayer);
-        /*WriteLog("size of discard = " . count($discard));
-        WriteLog("discard[0] = " . $discard[0]);
-        WriteLog("discard[1] = " . $discard[1]);*/
         for($i = count($discard)-1; $i >= 0; --$i)
         {
           if(rand(0, 1) == 0) array_push($deck, $discard[$i]);
@@ -98,10 +81,6 @@ function PermanentBeginEndPhaseEffects()
             array_push($banish, "");
             array_push($banish, GetUniqueId());
           }
-          /*WriteLog("banish[0] = " . $banish[0]);
-          WriteLog("banish[1] = " . $banish[1]);
-          WriteLog("banish[2] = " . $banish[2]);*/
-
           unset($discard[$i]);
         }
         $destArr = [];
@@ -160,6 +139,7 @@ function PermanentBeginEndPhaseEffects()
 
 function PermanentTakeDamageAbilities($player, $damage, $type, $source)
 {
+  $char = &GetPlayerCharacter($player);
   $permanents = &GetPermanents($player);
   $otherPlayer = $player == 1 ? 1 : 2;
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
@@ -193,6 +173,7 @@ function PermanentTakeDamageAbilities($player, $damage, $type, $source)
         $index = FindCharacterIndex($player, "DYN213");
         $char[$index + 1] = 1;
         GainResources($player, 1);
+        WriteLog("Player " . $player . " gained 1 resource from " . CardLink("DYN213", "DYN213"));
       }
       DestroyPermanent($player, $i);
     }
@@ -209,8 +190,6 @@ function PermanentStartTurnAbilities()
   $defPermanents = &GetPermanents($defPlayer);
   $character = &GetPlayerCharacter($mainPlayer);
   $hand = &GetHand($mainPlayer);
-  /*WriteLog("size of hand = " . count($hand));
-  WriteLog("hand[0] = " . $hand[0]);*/
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
     switch ($permanents[$i]) {
@@ -224,9 +203,7 @@ function PermanentStartTurnAbilities()
       case "ROGUE504":
         for($j = 0; $j < count($character)-1; ++$j)
         {
-          //if(CardType($character[$j]) == "W") WriteLog("Found " . $character[$j]);
           if(CardType($character[$j]) == "W") $character[$j + 3] += 1;
-          //WriteLog("character[" . $j . "] = " . $character[$j]);
         }
         break;
       case "ROGUE505":
@@ -245,9 +222,6 @@ function PermanentStartTurnAbilities()
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         array_unshift($hand, "DYN065");
         break;
-      /*case "ROGUE511":
-        MayBottomDeckDraw(); // !Undefined Function
-        break; */
       case "ROGUE512": case "ROGUE513":
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
@@ -297,7 +271,6 @@ function PermanentStartTurnAbilities()
         $indexChoices = [];
         for($j = count($character) - CharacterPieces(); $j >= 0; $j -= CharacterPieces())
         {
-          //WriteLog("Checking" . $character[$j] . "->" . $character[$j+1]);
           if($character[$j+1] == 0) array_push($indexChoices, $j);
         }
         if(count($indexChoices) != 0) $character[$indexChoices[rand(0, count($indexChoices)-1)]+1] = 2;
@@ -381,7 +354,7 @@ function PermanentStartTurnAbilities()
         $deck = new Deck($mainPlayer);
         $deck->BanishTop(banishedBy:$mainPlayer, amount:4);
         $deck = &GetDeck($mainPlayer);
-        if(count($deck) < 1) AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        if($deck->RemainingCards() < 1) AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
       case "ROGUE807":
         Draw($mainPlayer);
@@ -426,9 +399,8 @@ function PermanentPlayAbilities($attackID, $from="")
         }
         break;
       case "ROGUE528":
-        if($cardType == "A") ++$actionPoints;
+        if(DelimStringContains($cardType, "A")) ++$actionPoints;
         break;
-
       case "ROGUE607":
         if($cardType != "A" && $cardType != "AA") AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
@@ -487,5 +459,3 @@ function PermanentDrawCardAbilities($player)
     }
   }
 }
-
-?>

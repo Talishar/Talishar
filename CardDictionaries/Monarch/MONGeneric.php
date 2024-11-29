@@ -50,9 +50,19 @@
       case "MON299": case "MON300": case "MON301":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "MON303": MZMoveCard($currentPlayer, "MYDISCARD:type=AA;maxCost=2", "MYTOPDECK"); return;
-      case "MON304": MZMoveCard($currentPlayer, "MYDISCARD:type=AA;maxCost=1", "MYTOPDECK"); return;
-      case "MON305": MZMoveCard($currentPlayer, "MYDISCARD:type=AA;maxCost=0", "MYTOPDECK"); return;
+      case "MON303": case "MON304": case "MON305": 
+        $params = explode("-", $target);
+        $index = SearchdiscardForUniqueID($params[1], $currentPlayer);
+        if($index != -1) {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDISCARD-".$index, 1);
+          AddDecisionQueue("MZADDZONE", $currentPlayer, "MYTOPDECK", 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        }
+        else {
+          WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+          return "FAILED";
+        }
+        return "";
       default: return "";
     }
   }

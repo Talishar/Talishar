@@ -184,8 +184,7 @@ function OUTAbilityCost($cardID)
         if(substr($CombatChain->AttackCard()->From(), 0, 5) != "THEIR") $deck = new Deck($currentPlayer);
         else $deck = new Deck($otherPlayer);
         $deck->AddBottom($combatChain[0], "CC");
-        AttackReplaced();
-        $combatChain[0] = $card->ID();
+        AttackReplaced($card->ID());
         $combatChainState[$CCS_LinkBaseAttack] = ModifiedAttackValue($combatChain[0], $currentPlayer, "CC", source:"");
         $card->Remove();
         return "";
@@ -195,7 +194,7 @@ function OUTAbilityCost($cardID)
       case "OUT014":
         for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
         {
-          if($combatChain[$i+1] == $defPlayer && $combatChain[$i+2] != "PLAY" && CardType($combatChain[$i]) != "C") PlayAura($CID_BloodRotPox, $defPlayer);
+          if($combatChain[$i+1] == $defPlayer && $combatChain[$i+2] != "PLAY" && CardType($combatChain[$i]) != "C") PlayAura($CID_BloodRotPox, $defPlayer, effectController:$mainPlayer);
         }
         return "";
       case "OUT021": case "OUT022": case "OUT023":
@@ -212,14 +211,14 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT049-");
         AddDecisionQueue("ADDCURRENTEFFECTNEXTATTACK", $currentPlayer, "<-");
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
+        AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
         return "";
       case "OUT052":
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "OUT052");
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "OUT052,");
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<b>{0}</b> was chosen");
+        AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
         return "";
       case "OUT055":
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:isSameName=WTR107");
@@ -252,6 +251,7 @@ function OUTAbilityCost($cardID)
         return "";
       case "OUT093":
         $abilityName = GetResolvedAbilityName($cardID);
+        SearchCurrentTurnEffects("OUT093-".$abilityName, $currentPlayer, true);
         if($abilityName == "Load") LoadArrow($currentPlayer);
         else if($abilityName == "Aim") {
           $arsenalFaceDown = ArsenalFaceDownCard($currentPlayer);
@@ -296,70 +296,8 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
         break;
-      case "OUT102":
-        if(!IsAllyAttacking() && HasIncreasedAttack())
-        {
-          AddCurrentTurnEffect($cardID, $mainPlayer);
-          $rv = "Trap triggered and the attack cannot gain power.";
-          TrapTriggered($cardID);
-        }
-        return "";
-      case "OUT103":
-        if(!IsAllyAttacking() && DoesAttackHaveGoAgain())
-        {
-          $hand = &GetHand($mainPlayer);
-          $numDraw = count($hand) - 1;
-          DiscardHand($mainPlayer);
-          for($i=0; $i<$numDraw; ++$i) Draw($mainPlayer);
-          WriteLog("Attacker discarded their hand and drew $numDraw cards");
-          TrapTriggered($cardID);
-        }
-        return "";
-      case "OUT104":
-        if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0)
-        {
-          $deck = new Deck($mainPlayer);
-          $topDeck = $deck->Top(remove:true);
-          AddGraveyard($topDeck, $mainPlayer, "DECK");
-          $numName = SearchCount(SearchMultizone($mainPlayer, "MYDISCARD:isSameName=" . $topDeck));
-          LoseHealth($numName, $mainPlayer);
-          $rv = Cardlink($topDeck, $topDeck) . " put into discard. Player $mainPlayer lost $numName life";
-          TrapTriggered($cardID);
-        }
-        return $rv;
       case "OUT105":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
-      case "OUT106":
-        if(!IsAllyAttacking() && HasIncreasedAttack())
-        {
-          AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIP");
-          AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MODDEFCOUNTER", $mainPlayer, "-1", 1);
-          $rv = "Trap triggered and puts a -1 counter on an equipment";
-          TrapTriggered($cardID);
-        }
-        return "";
-      case "OUT107":
-        if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0)
-        {
-          $deck = new Deck($mainPlayer);
-          for($i=0; $i<2; ++$i)
-          {
-            $cardRemoved = $deck->Top(remove:true);
-            AddGraveyard($cardRemoved, $mainPlayer, "DECK");
-          }
-          TrapTriggered($cardID);
-          $rv = "Milled two cards.";
-        }
-        return $rv;
-      case "OUT108":
-        if(DoesAttackHaveGoAgain())
-        {
-          AddCurrentTurnEffect($cardID, $mainPlayer);
-          WriteLog("Trap triggers and hit effects do not fire.");
-          if(!IsAllyAttacking()) TrapTriggered($cardID);
-        }
         return "";
       case "OUT109": case "OUT110": case "OUT111":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -450,13 +388,13 @@ function OUTAbilityCost($cardID)
           MZMoveCard($otherPlayer, "MYHAND", "MYARS,HAND,DOWN", silent:true);
         }
         PlayAura("DYN244", $currentPlayer);//Ponder
-        PlayAura($CID_BloodRotPox, $otherPlayer);
+        PlayAura($CID_BloodRotPox, $otherPlayer, effectController: $currentPlayer);
         return "";
       case "OUT160":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         CodexOfFrailty($currentPlayer);
         PlayAura("DYN244", $currentPlayer);
-        PlayAura($CID_Frailty, $otherPlayer);
+        PlayAura($CID_Frailty, $otherPlayer, effectController: $currentPlayer);
         return "";
       case "OUT161":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -473,35 +411,11 @@ function OUTAbilityCost($cardID)
           PummelHit($otherPlayer);
         }
         PlayAura("DYN244", $currentPlayer);
-        PlayAura($CID_Inertia, $otherPlayer);
+        PlayAura($CID_Inertia, $otherPlayer, effectController: $currentPlayer);
         return "";
       case "OUT165": case "OUT166": case "OUT167":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Your opponent loses life if your next assassin or ranger attack hits.";
-      case "OUT171":
-        if(!IsAllyAttacking() && NumAttackReactionsPlayed() > 0)
-        {
-          PlayAura($CID_BloodRotPox, $mainPlayer);
-          $rv = "Trap triggered and created a Bloodrot Pox.";
-          TrapTriggered($cardID);
-        }
-        return $rv;
-      case "OUT172":
-        if(!IsAllyAttacking() && DoesAttackHaveGoAgain())
-        {
-          PlayAura($CID_Frailty, $mainPlayer);
-          $rv = "Trap triggered and created a Frailty.";
-          TrapTriggered($cardID);
-        }
-        return $rv;
-      case "OUT173":
-        if(!IsAllyAttacking() && HasIncreasedAttack())
-        {
-          PlayAura($CID_Inertia, $mainPlayer);
-          $rv = "Trap triggered and created an Inertia.";
-          TrapTriggered($cardID);
-        }
-        return $rv;
       case "OUT174":
         AddCurrentTurnEffect($cardID, $defPlayer);
         return "";
@@ -542,9 +456,9 @@ function OUTAbilityCost($cardID)
         AddCurrentTurnEffect($cardID . "_2", $currentPlayer);
         return "";
       case "OUT192": case "OUT193": case "OUT194":
-        if(SearchAuras($CID_Frailty, $currentPlayer)) PlayAura($CID_Frailty, $defPlayer);
-        if(SearchAuras($CID_BloodRotPox, $currentPlayer)) PlayAura($CID_BloodRotPox, $defPlayer);
-        if(SearchAuras($CID_Inertia, $currentPlayer)) PlayAura($CID_Inertia, $defPlayer);
+        if(SearchAuras($CID_Frailty, $currentPlayer)) PlayAura($CID_Frailty, $defPlayer, effectController: $currentPlayer);
+        if(SearchAuras($CID_BloodRotPox, $currentPlayer)) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $currentPlayer);
+        if(SearchAuras($CID_Inertia, $currentPlayer)) PlayAura($CID_Inertia, $defPlayer, effectController: $currentPlayer);
         return "";
       case "OUT195": case "OUT196": case "OUT197":
         if(DelimStringContains($additionalCosts, "BANISH1ATTACK"))
@@ -578,7 +492,7 @@ function OUTAbilityCost($cardID)
 
   function OUTHitEffect($cardID, $from)
   {
-    global $mainPlayer, $defPlayer, $combatChain, $chainLinks, $chainLinkSummary;
+    global $mainPlayer, $defPlayer, $chainLinks, $chainLinkSummary;
     global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
     global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     switch ($cardID)
@@ -622,19 +536,19 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT024": case "OUT025": case "OUT026":
-        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT036": case "OUT037": case "OUT038":
-        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT039": case "OUT040": case "OUT041":
-        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT051":
         $char = &GetPlayerCharacter($defPlayer);
         if(IsHeroAttackTarget() && HasAttackName("Surging Strike") && HasAttackName("Descendent Gustwave") && HasAttackName("Bonds of Ancestry"))
         {
-          if($char[0] == "DUMMY") { $char[1] = 4; WriteLog("Combat Dummies have no honor."); }
+          if($char[0] == "DUMMY") { $char[1] = 4; WriteLog("🤖 Combat Dummies have no honor."); }
           else if($char[1] == 4) WriteLog("🥷 Those who have been dishonored have nothing left to lose.");
           else $char[1] = 4;
         }
@@ -647,8 +561,14 @@ function OUTAbilityCost($cardID)
         break;
       case "OUT062": case "OUT063": case "OUT064":
         if(ComboActive()) {
-          if(substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
-          else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
+          if(substr($from, 0, 5) != "THEIR") {
+            AddBottomDeck($cardID, $mainPlayer, "CC");
+            $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+          }
+          else {
+            AddBottomDeck($cardID, $defPlayer, "CC");
+            $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+          }
         }
         break;
       case "OUT068": case "OUT069": case "OUT070":
@@ -656,7 +576,7 @@ function OUTAbilityCost($cardID)
         $resources = &GetResources($mainPlayer);
         if(Count($hand) > 0 || $resources[0] > 0)
         {
-          AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give this a name", 0, 1);
+          AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give ".CardLink($cardID, $cardID)." a name", 0, 1);
           AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
           AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
@@ -673,7 +593,6 @@ function OUTAbilityCost($cardID)
       case "OUT080": case "OUT081": case "OUT082":
         if(ComboActive() && IsHeroAttackTarget())
         {
-          WriteLog("Deals 2 damage");
           AddDecisionQueue("DEALDAMAGE", $defPlayer, "2-" . $cardID . "-DAMAGE", 1);
         }
         break;
@@ -691,13 +610,13 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT118": case "OUT119": case "OUT120":
-        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT124": case "OUT125": case "OUT126":
-        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT136": case "OUT137": case "OUT138":
-        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT142":
         $numDaggerHits = 0;
@@ -715,7 +634,7 @@ function OUTAbilityCost($cardID)
         if(IsHeroAttackTarget())
         {
           AddDecisionQueue("CHOOSECARD", $mainPlayer, $CID_BloodRotPox . "," . $CID_Frailty . "," . $CID_Inertia);
-          AddDecisionQueue("PUTPLAY", $defPlayer, "-", 1);
+          AddDecisionQueue("PUTPLAY", $defPlayer, $mainPlayer, 1);
         }
         break;
       case "OUT183":
@@ -809,6 +728,7 @@ function OUTAbilityCost($cardID)
       case "MST121": case "MST122": case "MST123": 
       case "MST124": case "MST125": case "MST126":
       case "MST127": case "MST128": case "MST129":
+      case "HNT030": case "HNT031":
         return true;
       default:
         return false;
@@ -868,8 +788,7 @@ function OUTAbilityCost($cardID)
     $characterID = ShiyanaCharacter($char[0], $defPlayer);
     if($char[1] == 2 && $characterID == "OUT091" || $characterID == "OUT092")
     {
-      WriteLog(CardLink($characterID, $characterID) . " deals 1 damage from a trap.");
-      DamageTrigger($mainPlayer, 1, "DAMAGE", $characterID);
+      DamageTrigger($mainPlayer, 1, "DAMAGE", $characterID, $cardID);
     }
   }
 
@@ -888,8 +807,11 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("OK", $player, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "{1}");
     AddDecisionQueue("NOTEQUALPASS", $player, "ELSE");
-    AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's top deck", 1);
-    if($showHand) AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "-", 1);
+    if($showHand) {
+      AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's hand", 1);
+      AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "-", 1);
+    }
+    else AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's top deck", 1);
     AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
     AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
     AddDecisionQueue("SETDQCONTEXT", $otherPlayer, CardName($source) . " shows the top of their deck is <1>", 1);
@@ -901,7 +823,7 @@ function OUTAbilityCost($cardID)
   {
     AddDecisionQueue("PASSPARAMETER", $player, "0,1");
     AddDecisionQueue("MULTIREMOVEDECK", $player, "-");
-    AddDecisionQueue("SETDQCONTEXT", "Choose a card to put back on top", 1);
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put back on top", 1);
     AddDecisionQueue("CHOOSETOP", $player, "<-");
   }
 

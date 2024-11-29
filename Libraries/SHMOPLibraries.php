@@ -36,7 +36,7 @@ function WriteCache($name, $data)
   global $useRedis, $redis;
   //DeleteCache($name);
   if ($name == 0) return;
-  $serData = serialize($data);
+  $serData = trim(serialize(trim($data)));
 
   if ($useRedis) {
     $redis->set($name, $serData);
@@ -45,6 +45,7 @@ function WriteCache($name, $data)
     if ($id == false) {
       exit;
     } else {
+      $serData = str_pad($serData, 128, "\0");
       $rv = shmop_write($id, $serData, 0);
     }
   }
@@ -53,11 +54,12 @@ function WriteCache($name, $data)
 function WriteGamestateCache($name, $data)
 {
   if ($name == 0) return;
-  $serData = serialize($data);
+  $serData = trim(serialize(trim($data)));
   $gsID = shmop_open(GamestateID($name), "c", 0644, 16384);
   if ($gsID == false) {
     exit;
   } else {
+    $serData = str_pad($serData, 16384, "\0");
     $rv = shmop_write($gsID, $serData, 0);
   }
 }
@@ -85,15 +87,15 @@ function ReadCache($name)
 
 function ShmopReadCache($name)
 {
+  // If name is empty just return
+  if (!trim($name)) {
+    return "";
+  }
   @$id = shmop_open($name, "a", 0, 0);
   if (empty($id) || $id == false) {
     return "";
   }
-  $data = shmop_read($id, 0, shmop_size($id));
-  $data = preg_replace_callback('!s:(\d+):"(.*?)";!', function ($match) {
-    return ($match[1] == strlen($match[2])) ? $match[0] : 's:' . strlen($match[2]) . ':"' . $match[2] . '";';
-  }, $data);
-  return $data;
+  return trim(shmop_read($id, 0, shmop_size($id)));
 }
 
 function RedisReadCache($name)

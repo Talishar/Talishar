@@ -26,10 +26,9 @@ $deckbuilderID = TryGet("user", "");
 $roguelikeGameID = TryGet("roguelikeGameID", "");
 $startingHealth = TryGet("startingHealth", "");
 
-if($favoriteDeckLink != 0)
-{
+if ($favoriteDeckLink != 0) {
   $favDeckArr = explode("<fav>", $favoriteDeckLink);
-  if(count($favDeckArr) == 1) $favoriteDeckLink = $favDeckArr[0];
+  if (count($favDeckArr) == 1) $favoriteDeckLink = $favDeckArr[0];
   else {
     $favoriteDeckIndex = $favDeckArr[0];
     $favoriteDeckLink = $favDeckArr[1];
@@ -48,41 +47,38 @@ if (!isset($_SESSION["userid"])) {
 }
 
 $isShadowBanned = false;
-if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
-else if(isset($_SESSION["userid"])) $isShadowBanned = IsBanned($_SESSION["userid"]);
+if (isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
+else if (isset($_SESSION["userid"])) $isShadowBanned = IsBanned($_SESSION["userid"]);
 
-if($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
+if ($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
   //Must be logged in to use matchmaking
   header("Location: MainMenu.php");
   exit;
 }
 
-if(isset($_SESSION["userid"]))
-{
+if (isset($_SESSION["userid"])) {
   //Save game creation settings
-  if(isset($favoriteDeckIndex))
-  {
+  if (isset($favoriteDeckIndex)) {
     ChangeSetting("", $SET_FavoriteDeckIndex, $favoriteDeckIndex, $_SESSION["userid"]);
   }
   ChangeSetting("", $SET_Format, FormatCode($format), $_SESSION["userid"]);
   ChangeSetting("", $SET_GameVisibility, ($visibility == "public" ? 1 : 0), $_SESSION["userid"]);
-  if($deckbuilderID != "")
-  {
-    if(str_contains($decklink, "fabrary")) storeFabraryId($_SESSION["userid"], $deckbuilderID);
-    else if(str_contains($decklink, "fabdb")) storeFabDBId($_SESSION["userid"], $deckbuilderID);
+  if ($deckbuilderID != "") {
+    if (str_contains($decklink, "fabrary")) storeFabraryId($_SESSION["userid"], $deckbuilderID);
+    else if (str_contains($decklink, "fabdb")) storeFabDBId($_SESSION["userid"], $deckbuilderID);
   }
 }
 
 session_write_close();
-if($isShadowBanned) {
-  if($format == "cc" || $format == "openformatcc" || $format == "llcc") $format = "shadowcc";
-  else if($format == "compcc") $format = "shadowcompcc";
-  else if($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz" || $format == "openformatblitz") $format = "shadowblitz";
+if ($isShadowBanned) {
+  if ($format == "cc" || $format == "openformatcc" || $format == "llcc" || $format == "openformatcc") $format = "shadowcc";
+  else if ($format == "compcc") $format = "shadowcompcc";
+  else if ($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz" || $format == "openformatblitz"  || $format == "openformatllblitz") $format = "shadowblitz";
 }
 
 $gameName = GetGameCounter();
 
-if ( (!file_exists("Games/$gameName")) && (mkdir("Games/$gameName", 0700, true)) ){
+if ((!file_exists("Games/$gameName")) && (mkdir("Games/$gameName", 0700, true))) {
 } else {
   print_r("Encountered a problem creating a game. Please return to the main menu and try again");
 }
@@ -95,8 +91,8 @@ if ($deckTestMode != "") {
   $gameStatus = 4; //ReadyToStart
   $p2SideboardSubmitted = "1";
   $opponentDeck = "./Assets/Dummy.txt";
-  $fileName = "./Roguelike/Encounters/".$deckTestMode.".txt";
-  if(file_exists($fileName)) $opponentDeck = $fileName;
+  $fileName = "./Roguelike/Encounters/" . $deckTestMode . ".txt";
+  if (file_exists($fileName)) $opponentDeck = $fileName;
   copy($opponentDeck, "./Games/" . $gameName . "/p2Deck.txt");
 } else {
   $gameStatus = 0; //Initial

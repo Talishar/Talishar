@@ -73,8 +73,8 @@ class Deck {
       $cardID = $this->Remove(0);
       $cardType = CardType($cardID);
       if($modifier == "TCC" && $cardType != "AR" && $cardType != "I" && $cardType != "AA" && !CanPlayAsInstant($cardID)) $modifier = "-";
+      WriteLog(CardLink($cardID, $cardID). " was banished.");
       BanishCardForPlayer($cardID, $this->playerID, "DECK", $modifier, $banishedBy);
-      WriteLog(CardLink($cardID, $cardID). " was banished");
     }
     return $cardID;
   }

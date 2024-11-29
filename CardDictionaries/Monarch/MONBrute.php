@@ -25,7 +25,7 @@
         $card = DiscardRandom();
         if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD&THEIRDISCARD");
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Deadwood Rumbler");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with " . CardLink($cardID, $cardID), 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
@@ -70,11 +70,11 @@
     $BanishedIncludes6 = 0;
     $diabolicOfferingCount = 0;
     for($i = 0; $i < 3; $i++) {
-      $index = GetRandom() % count($discard);
+      $index = GetRandom(0, count($discard)/DiscardPieces()-1) * DiscardPieces();
       if(ModifiedAttackValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) ++$BanishedIncludes6;
-      if($discard[$index] == "DTD107") ++$diabolicOfferingCount;
-      BanishCardForPlayer($discard[$index], $currentPlayer, "DISCARD", $modifier);
-      unset($discard[$index]);
+      elseif($discard[$index] == "DTD107") ++$diabolicOfferingCount;
+      $cardID = RemoveDiscard($currentPlayer, $index);
+      BanishCardForPlayer($cardID, $currentPlayer, "DISCARD", $modifier);
       $discard = array_values($discard);
     }
     if($BanishedIncludes6 > 0) $BanishedIncludes6 += $diabolicOfferingCount;

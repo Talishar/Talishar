@@ -10,7 +10,11 @@
       case "CRU050": case "CRU051": case "CRU052": return 1;
       case "CRU079": case "CRU080": return 1;
       case "CRU101": return (GetResolvedAbilityType($cardID) == "A" ? 2 : 0);
-      case "CRU105": $items = &GetItems($currentPlayer); return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
+      case "CRU105": 
+        $items = &GetItems($currentPlayer); 
+        if ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 2] < 2) return 1;
+        if ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0) return 0;
+        return 1;
       case "CRU118": return 3;
       case "CRU122": return 2;
       case "CRU140": return 1;
@@ -130,6 +134,7 @@
       case "CRU123": return $attackID == "CRU123";
       case "CRU124": return CardSubtype($attackID) == "Arrow";
       case "CRU125": return true;
+      case "CRU126": return true;
       case "CRU135": case "CRU136": case "CRU137": return CardSubtype($attackID) == "Arrow";
       case "CRU135-1": case "CRU136-1": case "CRU137-1": return CardSubtype($attackID) == "Arrow";
       case "CRU145": case "CRU146": case "CRU147": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
@@ -196,7 +201,6 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "<-", 1);
         AddDecisionQueue("MULTIADDHAND", $mainPlayer, "-", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "CRU055", 1);
-        $rv = "Reveals the top card of your deck and puts it in your hand if it has combo";
       }
       return $rv;
     case "CRU056":
@@ -235,14 +239,14 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "AR", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with Unified Decree?");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with ".CardLink($cardID, $cardID)."?");
         AddDecisionQueue("YESNO", $currentPlayer, "whether to banish the card", 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,TCC", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
       }
       return "";
     case "CRU084":
@@ -347,39 +351,6 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       SetClassState($currentPlayer, $CS_NextDamagePrevented, 1);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "CRU126":
-      if(!IsAllyAttacking()) {
-        TrapTriggered($cardID);
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
-        AddDecisionQueue("NOPASS", $otherPlayer, $cardID, 1);
-        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "1", 1);
-        AddDecisionQueue("ELSE", $otherPlayer, "-");
-      }
-      AddDecisionQueue("TRIPWIRETRAP", $otherPlayer, "-", 1);
-      return "";
-    case "CRU127":
-      if(!IsAllyAttacking()) {
-        TrapTriggered($cardID);
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 1, 1);
-        AddDecisionQueue("NOPASS", $otherPlayer, $cardID, 1);
-        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "1", 1);
-        AddDecisionQueue("ELSE", $otherPlayer, "-");
-        AddDecisionQueue("TAKEDAMAGE", $otherPlayer, 2, 1);
-      }
-      return "";
-    case "CRU128":
-      if(!IsAllyAttacking()) {
-        TrapTriggered($cardID);
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
-        AddDecisionQueue("NOPASS", $otherPlayer, $cardID, 1);
-        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "1", 1);
-        AddDecisionQueue("ELSE", $otherPlayer, "-");
-      }
-      AddDecisionQueue("ATTACKMODIFIER", $currentPlayer, "-2", 1);
-      return "";
     case "CRU135": case "CRU136": case "CRU137":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddCurrentTurnEffect($cardID . "-1", ($currentPlayer == 1 ? 2 : 1));
@@ -392,10 +363,17 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddLayer("TRIGGER", $currentPlayer, $cardID);
       return "";
     case "CRU143":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-      AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
-      AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,TT", 1);
+      $params = explode("-", $target);
+      $index = SearchdiscardForUniqueID($params[1], $currentPlayer);
+      if ($index != -1) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDISCARD-" . $index, 1);
+        AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,GY,TT", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      } 
+      else {
+        WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+        return "FAILED";
+      }
       return "";
     case "CRU144":
       PlayAura("ARC112", $currentPlayer, 4);
@@ -420,6 +398,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       DealArcane(2, 0, "ABILITY", $cardID);
       return "";
     case "CRU162":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
       if(GetClassState($currentPlayer, $CS_NumWizardNonAttack) >= 2) {
         DealArcane(3, 1, "PLAYCARD", $cardID, resolvedTarget: $target);
@@ -489,7 +468,7 @@ function CRUHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer, $combatChainState, $CS_ArcaneDamageTaken;
   switch($cardID) {
-    case "CRU054": if(ComboActive()) PlayAura("CRU075", $mainPlayer); break;
+    case "CRU054": PlayAura("CRU075", $mainPlayer); break;
     case "CRU060": case "CRU061": case "CRU062":
       if(ComboActive()) {
         $num = NumAttacksHit()+1;

@@ -1,7 +1,8 @@
 <?php
 
-//include "ParseGamestate.php";
-//include "WriteLog.php";
+include "HostFiles/Redirector.php";
+include_once "AccountFiles/AccountSessionAPI.php";
+
 
 array_push($layerPriority, ShouldHoldPriority(1));
 array_push($layerPriority, ShouldHoldPriority(2));
@@ -12,11 +13,13 @@ $p1H = &GetHealth(1);
 $p2H = &GetHealth(2);
 $p1H = CharacterHealth($p1Char[0]);
 $p2H = CharacterHealth($p2Char[0]);
-if($p1StartingHealth != "") $p1H = $p1StartingHealth;
+$format = is_numeric($format) ? FormatName($format) : $format;
+
+if ($p1StartingHealth != "") $p1H = $p1StartingHealth;
 
 $fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
-if(!file_exists($fullLog)) $fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
-if(file_exists($fullLog)) {
+if (!file_exists($fullLog)) $fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
+if (file_exists($fullLog)) {
   $handler = fopen($fullLog, "w+");
   fwrite($handler, "Player $firstPlayer is the first player and will begin play" . "\r\n");
   fclose($handler);
@@ -30,18 +33,17 @@ StatsStartTurn();
 $MakeStartTurnBackup = false;
 $MakeStartGameBackup = false;
 
-if($p2Char[0] == "DUMMY") {
+if ($p2Char[0] == "DUMMY") {
   SetCachePiece($gameName, 3, "99999999999999");
 }
 
 //roguelike gamemode powers
-if(CardSet($p2Char[0]) == "ROG") {
+if (CardSet($p2Char[0]) == "ROG") {
   $deck = &GetDeck(1);
   $powers = SearchDeck(1, "", "Power");
-  if(strlen($powers) != 0) {
+  if (strlen($powers) != 0) {
     $powersArray = explode(",", $powers);
-    for($i = count($powersArray)-1; $i >= 0; --$i)
-    {
+    for ($i = count($powersArray) - 1; $i >= 0; --$i) {
       PutPermanentIntoPlay(1, $deck[$powersArray[$i]]);
       array_splice($deck, $powersArray[$i], 1);
     }
@@ -49,72 +51,98 @@ if(CardSet($p2Char[0]) == "ROG") {
   ROGUEPowerStart();
 }
 
+//Dummy - Single Player
+if ($p2Char[0] == "DUMMY") {
+  $cards = ["CRU109", "ARC029", "ARC022", "EVR070", "ARC010", "ARC026"];
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
+}
+
 //CR 2.0 4.1.5b Meta-static abilities affecting deck composition
 //Dash
 $p1IsDash = $p1Char[0] == "ARC001" || $p1Char[0] == "ARC002";
 $p2IsDash = $p2Char[0] == "ARC001" || $p2Char[0] == "ARC002";
-if($p1IsDash) {
+if ($p1IsDash) {
   $items = SearchDeck(1, "", "Item", 2, -1, "MECHANOLOGIST");//Player 1, max cost 2
   AddDecisionQueue("CHOOSEDECK", 1, $items);
   AddDecisionQueue("SETDQVAR", 1, "0");
 }
-if($p2IsDash) {
+if ($p2IsDash) {
   $items = SearchDeck(2, "", "Item", 2, -1, "MECHANOLOGIST");//Player 2, max cost 2
   AddDecisionQueue("CHOOSEDECK", 2, $items);
   AddDecisionQueue("SETDQVAR", 2, "1");
 }
 //Actually put the item into play after each has chosen to prevent unfair advantage
-if($p1IsDash) {
+if ($p1IsDash) {
   AddDecisionQueue("PASSPARAMETER", 1, "{0}");
   AddDecisionQueue("PUTPLAY", 1, "-");
 }
-if($p2IsDash) {
+if ($p2IsDash) {
   AddDecisionQueue("PASSPARAMETER", 2, "{1}");
   AddDecisionQueue("PUTPLAY", 2, "-");
 }
 
 //Fai
-if($p1Char[0] == "UPR044" || $p1Char[0] == "UPR045") {
+if ($p1Char[0] == "UPR044" || $p1Char[0] == "UPR045") {
   $cards = SearchDeckForCard(1, "UPR101");
-  if($cards != "") {
-    AddDecisionQueue("CHOOSEDECK", 1, $cards);
+  if ($cards != "") {
+    AddDecisionQueue("MAYCHOOSEDECK", 1, $cards);
     AddDecisionQueue("ADDDISCARD", 1, "DECK", 1);
   }
 }
-if($p2Char[0] == "UPR044" || $p2Char[0] == "UPR045") {
+if ($p2Char[0] == "UPR044" || $p2Char[0] == "UPR045") {
   $cards = SearchDeckForCard(2, "UPR101");
-  if($cards != "") {
-    AddDecisionQueue("CHOOSEDECK", 2, $cards);
+  if ($cards != "") {
+    AddDecisionQueue("MAYCHOOSEDECK", 2, $cards);
     AddDecisionQueue("ADDDISCARD", 2, "DECK", 1);
   }
 }
 
 //Crown of Dominion
-if(SearchCharacterForCard(1, "DYN234")) {
+if (SearchCharacterForCard(1, "DYN234")) {
   AddDecisionQueue("PASSPARAMETER", 1, "DYN243");
   AddDecisionQueue("PUTPLAY", 1, "-");
 }
-if(SearchCharacterForCard(2, "DYN234")) {
+if (SearchCharacterForCard(2, "DYN234")) {
   AddDecisionQueue("PASSPARAMETER", 2, "DYN243");
   AddDecisionQueue("PUTPLAY", 2, "-");
 }
 
 //Seasoned Saviour
-if(($index = FindCharacterIndex(1, "DYN026")) > 0) {
+if (($index = FindCharacterIndex(1, "DYN026")) > 0) {
   $p1Char[$index + 4] = -2;
 }
-if(($index = FindCharacterIndex(2, "DYN026")) > 0) {
+if (($index = FindCharacterIndex(2, "DYN026")) > 0) {
   $p2Char[$index + 4] = -2;
 }
 
-//Victor
-if(SearchCharacterForCard(1, "HVY047") || SearchCharacterForCard(1, "HVY048"))
-{
-  AddDecisionQueue("ADDCURRENTEFFECT", 1, $p1Char[0]."-1", 1);
+//Barbed Castaway
+if (($index = FindCharacterIndex(1, "OUT093")) > 0) {
+  AddCurrentTurnEffect("OUT093-Load", 1);
+  AddCurrentTurnEffect("OUT093-Aim", 1);
 }
-if(SearchCharacterForCard(2, "HVY047") || SearchCharacterForCard(2, "HVY048"))
-{
-  AddDecisionQueue("ADDCURRENTEFFECT", 2, $p2Char[0]."-1", 1);
+if (($index = FindCharacterIndex(2, "OUT093")) > 0) {
+  AddCurrentTurnEffect("OUT093-Load", 2);
+  AddCurrentTurnEffect("OUT093-Aim", 2);
+}
+
+//Victor
+if (SearchCharacterForCard(1, "HVY047") || SearchCharacterForCard(1, "HVY048")) {
+  AddDecisionQueue("ADDCURRENTEFFECT", 1, $p1Char[0] . "-1", 1);
+}
+if (SearchCharacterForCard(2, "HVY047") || SearchCharacterForCard(2, "HVY048")) {
+  AddDecisionQueue("ADDCURRENTEFFECT", 2, $p2Char[0] . "-1", 1);
+}
+
+//Aria Sanctuary for Rosseta Limited
+if($format == "draft"){
+  AddDecisionQueue("PASSPARAMETER", 1, "ROS027");
+  AddDecisionQueue("PUTPLAY", 1, "-");
+  AddDecisionQueue("PASSPARAMETER", 2, "ROS027");
+  AddDecisionQueue("PUTPLAY", 2, "-");
 }
 
 InventoryStartGameAbilities(1);
@@ -126,14 +154,14 @@ EquipWithSteamCounter("EVO015", $p1Char, $p2Char);
 EquipWithSteamCounter("EVO016", $p1Char, $p2Char);
 EquipWithSteamCounter("EVO017", $p1Char, $p2Char);
 
-  //Quickshot Apprentice
-  if ($p2Char[0] == "ROGUE016") {
-    $p2Hand = &GetHand(2);
-    array_unshift($p2Hand, "ARC069");
-  }
+//Quickshot Apprentice
+if ($p2Char[0] == "ROGUE016") {
+  $p2Hand = &GetHand(2);
+  array_unshift($p2Hand, "ARC069");
+}
 if ($p2Char[0] == "ROGUE025") {
   $options = array("ROGUE801", "ROGUE803", "ROGUE805");
-  PutPermanentIntoPlay(0, $options[rand(0, count($options)-1)]);
+  PutPermanentIntoPlay(0, $options[rand(0, count($options) - 1)]);
 }
 
 if ($p2Char[0] == "ROGUE008") {
@@ -154,20 +182,21 @@ CombatDummyAI(); //Only does anything if applicable
 DoGamestateUpdate();
 include "WriteGamestate.php";
 
-if($MakeStartTurnBackup) MakeStartTurnBackup();
-if($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
+if ($MakeStartTurnBackup) MakeStartTurnBackup();
+if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
-function EquipWithSteamCounter($cardID, &$p1Char, &$p2Char) {
-  if(($index = FindCharacterIndex(1, $cardID)) > 0) $p1Char[$index+2] += 1;
-  if(($index = FindCharacterIndex(2, $cardID)) > 0) $p2Char[$index+2] += 1;
+function EquipWithSteamCounter($cardID, &$p1Char, &$p2Char)
+{
+  if (($index = FindCharacterIndex(1, $cardID)) > 0) $p1Char[$index + 2] += 1;
+  if (($index = FindCharacterIndex(2, $cardID)) > 0) $p2Char[$index + 2] += 1;
 }
 
-function InventoryStartGameAbilities($player) {
+function InventoryStartGameAbilities($player)
+{
   global $p1Inventory, $p2Inventory;
   $inventory = $player == 1 ? $p1Inventory : $p2Inventory;
-  for($i=0; $i<count($inventory); $i+=InventoryPieces())
-  {
-    switch($inventory[$i]) {
+  for ($i = 0; $i < count($inventory); $i += InventoryPieces()) {
+    switch ($inventory[$i]) {
       case "DTD164":
         PutPermanentIntoPlay($player, "DTD164");
         array_push($inventory, "DTD564");
@@ -175,12 +204,21 @@ function InventoryStartGameAbilities($player) {
       case "EVO013":
         AddDecisionQueue("LISTEMPTYEQUIPSLOTS", $player, "-");
         AddDecisionQueue("SETDQVAR", $player, "0", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to equip your " . CardLink($inventory[$i], $inventory[$i]) . " (one at a time)", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to equip your " . CardLink($inventory[$i], $inventory[$i]), 1);
         AddDecisionQueue("BUTTONINPUT", $player, "{0},None", 1);
         AddDecisionQueue("MODAL", $player, "ADAPTIVEPLATING", 1);
         AddDecisionQueue("SHOWMODES", $player, "EVO013", 1);
         break;
-      default: break;
+      case "ROS246":
+        AddDecisionQueue("LISTEMPTYEQUIPSLOTS", $player, "-");
+        AddDecisionQueue("SETDQVAR", $player, "0", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to equip your " . CardLink($inventory[$i], $inventory[$i]), 1);
+        AddDecisionQueue("BUTTONINPUT", $player, "{0},None", 1);
+        AddDecisionQueue("MODAL", $player, "ADAPTIVEDISSOLVER", 1);
+        AddDecisionQueue("SHOWMODES", $player, "ROS246", 1);
+        break;
+      default:
+        break;
     }
   }
 }

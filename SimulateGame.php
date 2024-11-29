@@ -83,7 +83,6 @@ for($k=0; $k<count($commands); ++$k)
 
 
   if (!$skipWriteGamestate) {
-      UpdateGameState($playerID);
       WriteGamestate();
     }
 

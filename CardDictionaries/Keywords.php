@@ -13,18 +13,22 @@
       case "EVO087": case "EVO088": case "EVO089":
       case "EVO090": case "EVO091": case "EVO092":
       case "EVO093": case "EVO094": case "EVO095":
-      case "EVO096": case "EVO097": case "EVO098": return true;
+      case "EVO096": case "EVO097": case "EVO098":
+      case "AIO026":
+        return true;
       default: return false;
     }
   }
 
   function Crank($player, $index, $mainPhase="True")
   {
+    $items = GetItems($player);
+    PrependDecisionQueue("PASSPARAMETER", $player, "{0}");
     PrependDecisionQueue("OP", $player, "DOCRANK-MainPhase". $mainPhase, 1);
     PrependDecisionQueue("PASSPARAMETER", $player, $index, 1);
     PrependDecisionQueue("NOPASS", $player, "-");
-    PrependDecisionQueue("DOCRANK", $player, "if you want to Crank");
-    PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to Crank", 1);
+    PrependDecisionQueue("DOCRANK", $player, "-");
+    PrependDecisionQueue("SETDQCONTEXT", $player, "Do you want to Crank your " . CardLink($items[$index], $items[$index]) ."?", 1);
   }
 
   function DoCrank($player, $index, $mainPhase=true)
@@ -122,6 +126,9 @@
     switch($cardID)
     {
       case "HVY050":
+        if($deck->Empty()) {
+          break;
+        }
         if ($playerID == $mainPlayer) DestroyTopCardOpponent($playerID);
         else {
           $character = &GetPlayerCharacter($mainPlayer);
@@ -235,11 +242,12 @@
   function ResolveWagers() {
     global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $currentTurnEffects, $EffectContext, $combatChain;
     $wonWager = $combatChainState[$CCS_DamageDealt] > 0 ? $mainPlayer : $defPlayer;
+    $lostWager = $wonWager == $mainPlayer ? $defPlayer : $mainPlayer;
     $numWagersWon = 0;
     $amount = 1;
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
     if(SearchCurrentTurnEffects("HVY176", $wonWager)) $amount += CountCurrentTurnEffects("HVY176", $wonWager);
-    for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    for($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
       $hasWager = true;
       if(isset($currentTurnEffects[$i])) {
         switch($currentTurnEffects[$i]) {
@@ -306,6 +314,11 @@
             RemoveCurrentTurnEffect($i);
             PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
             break;
+          case "ROS244":
+            RemoveCurrentTurnEffect($i);
+            Draw($wonWager);
+            PummelHit($lostWager);
+            break;
           default:
             $hasWager = false;
             break;
@@ -344,4 +357,34 @@
     }
     if(substr($from, 0, 5) == "THEIR") AddPlayerHand($cardID, $otherplayer, "-");
     else AddPlayerHand($cardID, $player, "-");
+  }
+
+  /**
+   * Decompose is a keyword added in ROS. Per LSS decompose gives you an option to banishes 2 earth and 1 action card for a bonus effect
+   *
+   * The result of "NOPASS" should be used to add the bonus effects. SPECIFICCARD dq events can be added right after calling decompose to run if the decompose succeeded.
+   */
+  function Decompose($player, $specificCardDQ, $target = "") {
+    $actionBanishes = 1;
+    $earthBanishes = 2; 
+      // Earth Banishes
+      for($i = 0; $i < $earthBanishes; $i++) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:talent=EARTH", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($earthBanishes - $i) . " Earth card(s) to banish", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZBANISH", $player, "GY,-", 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      }
+
+      // Action banishes.
+      for($i = 0; $i < $actionBanishes; $i++) {
+        AddDecisionQueue("GETCARDSFORDECOMPOSE", $player, "MYDISCARD:type=A&MYDISCARD:type=AA", 1); // Modified MULTIZONEINDICES so if there are no actions it can be sent to the next dq and it will revert gamestate. Can't use "PASS" because YESNO "PASS" result is already present.
+        AddDecisionQueue("REVERTGAMESTATEIFNULL", $player, "There aren't any more action cards! Try selecting different Earth cards.", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($actionBanishes - $i) . " action card(s) to banish", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZBANISH", $player, "GY,-", 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      }
+      AddDecisionQueue("SPECIFICCARD", $player, $specificCardDQ . "-" . $target, 1);
+      return "";
   }

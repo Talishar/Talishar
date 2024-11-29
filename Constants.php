@@ -20,9 +20,11 @@ function HandPieces()
   return 1;
 }
 
+//0 - Card ID
+//1 - Unique ID
 function DiscardPieces()
 {
-  return 1;
+  return 2;
 }
 
 //0 - Card ID
@@ -38,13 +40,14 @@ function DiscardPieces()
 //10 - Subcards , delimited
 //11 - Unique ID
 //12 - Face up/down
+//13 - Marked (1 = yes, 0 = no)
 function CharacterPieces()
 {
-  return 13;
+  return 14;
 }
 
 //0 - Card ID
-//1 - Mods (INT == Intimidated)
+//1 - Mods (INT == Intimidated) or "FACEDOWN" == Face Down
 //2 - Unique ID?
 function BanishPieces()
 {
@@ -88,7 +91,7 @@ function AuraPieces()
 //5 - My Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
 //6 - Opponent Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
 //7 - Frozen (1 = yes, 0 = no)
-//8 - Modalities (eg. Micro-Processor) 
+//8 - Modalities (eg. Micro-Processor)
 //9 - Where it's played from
 function ItemPieces()
 {
@@ -104,7 +107,17 @@ function PitchPieces()
 //1 - Player ID
 //2 - Applies to Unique ID
 //3 - Number of uses remaining
-function CurrentTurnPieces()
+function CurrentTurnEffectsPieces()
+{
+  return 4;
+}
+
+//0 - Effect ID
+//1 - Player ID
+//2 - Applies to Unique ID
+//3 - Number of uses remaining
+//4 - Number of turns before it takes effect
+function NextTurnEffectsPieces()
 {
   return 4;
 }
@@ -285,7 +298,7 @@ $CS_NumPhantasmAADestroyed = 47;
 $CS_NumLess3PowAAPlayed = 48;
 $CS_AlluvionUsed = 49;
 $CS_MaxQuellUsed = 50;
-$CS_DamageDealt = 51; //Only includes damage dealt by the hero. CR 2.1 8.2.8f If an ally deals damage, the controlling player and their hero are not considered to have dealt damage.
+$CS_DamageDealt = 51; //Only includes damage dealt by the hero to Allies + Hero. CR 2.1 8.2.8f If an ally deals damage, the controlling player and their hero are not considered to have dealt damage.
 $CS_ArcaneTargetsSelected = 52;
 $CS_NumDragonAttacks = 53;
 $CS_NumIllusionistAttacks = 54;
@@ -300,7 +313,7 @@ $CS_PlayedAsInstant = 62; //If the card was played as an instant -- some things 
 $CS_AnotherWeaponGainedGoAgain = 63;
 $CS_NumContractsCompleted = 64;
 $CS_HitsWithSword = 65;
-$CS_LifeLost = 66;
+$CS_HealthLost = 66;
 $CS_NumCranked = 67;
 $CS_NumItemsDestroyed = 68;
 $CS_NumCrouchingTigerPlayedThisTurn = 69;
@@ -314,6 +327,15 @@ $CS_NumSpectralShieldAttacks = 76;
 $CS_NumBluePlayed = 77;
 $CS_Transcended = 78;
 $CS_NumCrouchingTigerCreatedThisTurn = 79;
+$CS_NumBlueDefended = 80;
+$CS_NumLightningPlayed = 81;
+$CS_NumInstantPlayed = 82;
+$CS_ActionsPlayed = 83;
+$CS_NumEarthBanished = 84;
+$CS_HealthGained = 85;
+$CS_SkipAllRunechants = 86;
+$CS_FealtyCreated = 87;
+$CS_NumDraconicPlayed = 88;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -325,7 +347,7 @@ $CCS_WasRuneGate = 5;
 $CCS_HitsWithWeapon = 6;
 $CCS_GoesWhereAfterLinkResolves = 7;
 $CCS_AttackPlayedFrom = 8;
-//9 does not exist
+$CCS_WagersThisLink = 9;
 $CCS_ChainLinkHitEffectsPrevented = 10;
 $CCS_NumBoosted = 11;
 $CCS_NextBoostBuff = 12;//Deprecated -- use $CCS_IsBoosted now.
@@ -354,8 +376,11 @@ $CCS_HitThisLink = 34;
 $CCS_WagersThisLink = 35;
 $CCS_PhantasmThisLink = 36;
 $CCS_RequiredNegCounterEquipmentBlock = 37;
+$CCS_NumInstantsPlayedByAttackingPlayer = 38;
+$CCS_NextInstantBouncesAura = 39;
+$CCS_EclecticMag = 40;
 //Deprecated
-//$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsOnChainClose instead
+//$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsFromCombatChain instead
 
 function ResetCombatChainState()
 {
@@ -365,7 +390,9 @@ function ResetCombatChainState()
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
   global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
-  global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged;
+  global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer; 
+  global $CCS_NextInstantBouncesAura, $CCS_EclecticMag;
+
   if(count($chainLinks) > 0) WriteLog("The combat chain was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;
@@ -401,41 +428,23 @@ function ResetCombatChainState()
   $combatChainState[$CCS_HitThisLink] = 0;
   $combatChainState[$CCS_PhantasmThisLink] = 0;
   $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = 0;
+  $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] = 0;
+  $combatChainState[$CCS_NextInstantBouncesAura] = 0;
+  $combatChainState[$CCS_EclecticMag] = 0;
+  
   for($i = 0; $i < count($chainLinks); ++$i) {
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j + 2] != "1") continue;
       CombatChainCloseAbilities($chainLinks[$i][$j + 1], $chainLinks[$i][$j], $i);
       $cardType = CardType($chainLinks[$i][$j]);
-      if($cardType != "AA" && $cardType != "DR" && $cardType != "AR" && $cardType != "A" && $cardType != "B") {
+      if($cardType != "AA" && $cardType != "DR" && $cardType != "AR" && $cardType != "A" && $cardType != "B" && !DelimStringContains($cardType, "I")) {
         if(!SubtypeContains($chainLinks[$i][$j], "Evo")) continue;
         if($chainLinks[$i][$j+3] != "HAND" && BlockValue($chainLinks[$i][$j]) >= 0) continue;
-      }
-      if(CardType($chainLinks[$i][$j]) == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
+      }      if(CardType($chainLinks[$i][$j]) == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
       else {
+        if(CardType($chainLinks[$i][$j]) == "T" || CardType($chainLinks[$i][$j]) == "Macro") continue;//Don't need to add to anywhere if it's a token
         $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
-        switch($goesWhere) {
-          case "GY":
-            AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CC");
-            break;
-          case "BOTDECK":
-            AddBottomDeck($chainLinks[$i][$j], $mainPlayer, "CC");
-            break;
-          case "HAND":
-            AddPlayerHand($chainLinks[$i][$j], $mainPlayer, "CC");
-            break;
-          case "SOUL":
-            AddSoul($chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CC");
-            break;
-          case "THEIRDISCARD":
-            $otherPlayer = $chainLinks[$i][$j + 1] == 1 ? 2 : 1;
-            AddGraveyard($chainLinks[$i][$j], $otherPlayer, "CC");
-            break;
-          case "THEIRBOTDECK":
-            $otherPlayer = $chainLinks[$i][$j + 1] == 1 ? 2 : 1;
-            AddBottomDeck($chainLinks[$i][$j], $otherPlayer, "CC");
-            break;
-          default: break;
-        }
+        ResolveGoesWhere($goesWhere, $chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CHAINCLOSING");
       }
     }
   }
@@ -443,7 +452,7 @@ function ResetCombatChainState()
   CombatChainClosedTriggers();
   CombatChainClosedCharacterEffects();
   CombatChainClosedMainCharacterEffects();
-  RemoveEffectsOnChainClose();
+  RemoveEffectsFromCombatChain();
   $defCharacter = &GetPlayerCharacter($defPlayer);
   for($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
     $defCharacter[$i + 6] = 0;
@@ -452,14 +461,17 @@ function ResetCombatChainState()
   $chainLinkSummary = [];
 }
 
-function AttackReplaced()
+function AttackReplaced($cardID)
 {
   global $combatChainState;
-  global $CCS_CurrentAttackGainedGoAgain, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBaseAttack;
+  global $CCS_CurrentAttackGainedGoAgain, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBaseAttack, $combatChain;
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
   $combatChainState[$CCS_AttackPlayedFrom] = "BANISH";//Right now only Uzuri can do this
   $combatChainState[$CCS_LinkBaseAttack] = 0;
+  $combatChain[0] = $cardID;
+  $combatChain[5] = 0;//Reset Attack modifiers
+  $combatChain[6] = 0;//Reset Defense modifiers
   CleanUpCombatEffects(true);
 }
 
@@ -470,7 +482,9 @@ function ResetChainLinkState()
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
   global $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
-  global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate, $CCS_WagersThisLink, $CCS_PhantasmThisLink;
+  global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate, $CCS_WagersThisLink, $CCS_PhantasmThisLink, $CCS_NumInstantsPlayedByAttackingPlayer;
+  global $CCS_NextInstantBouncesAura, $CCS_EclecticMag;
+
   WriteLog("The chain link was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;
@@ -504,6 +518,9 @@ function ResetChainLinkState()
   $combatChainState[$CCS_HitThisLink] = 0;
   $combatChainState[$CCS_PhantasmThisLink] = 0;
   $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = 0;
+  $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] = 0;
+  $combatChainState[$CCS_NextInstantBouncesAura] = 0;
+  $combatChainState[$CCS_EclecticMag] = 0;
   UnsetChainLinkBanish();
 }
 
@@ -515,13 +532,14 @@ function ResetMainClassState()
   global $CS_ArcaneDamageTaken, $CS_NextNAAInstant, $CS_NextDamagePrevented, $CS_LastAttack, $CS_PlayCCIndex;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard, $CS_NumAttackCards, $CS_NumPlayedFromBanish;
   global $CS_NumAttacks, $CS_DieRoll, $CS_NumBloodDebtPlayed, $CS_NumWizardNonAttack, $CS_LayerTarget, $CS_NumSwordAttacks;
-  global $CS_HitsWithWeapon, $CS_ArcaneDamagePrevention, $CS_DynCostResolved, $CS_CardsEnteredGY, $CS_Transcended;
-  global $CS_HighestRoll, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_AlluvionUsed, $CS_NumBluePlayed;
+  global $CS_HitsWithWeapon, $CS_ArcaneDamagePrevention, $CS_DynCostResolved, $CS_CardsEnteredGY, $CS_Transcended, $CS_NumBlueDefended;
+  global $CS_HighestRoll, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_AlluvionUsed, $CS_NumBluePlayed, $CS_NumLightningPlayed;
   global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
   global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks, $CS_ArcaneDamageDealt, $CS_LayerPlayIndex, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumBoostPlayed;
   global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain, $CS_NumContractsCompleted, $CS_HitsWithSword, $CS_NumCardsDrawn;
-  global $CS_LifeLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrouchingTigerPlayedThisTurn, $CS_NumClashesWon;
-  global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks;
+  global $CS_HealthLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrouchingTigerPlayedThisTurn, $CS_NumClashesWon;
+  global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CS_NumInstantPlayed;
+  global $CS_ActionsPlayed, $CS_NumEarthBanished, $CS_HealthGained, $CS_SkipAllRunechants, $CS_FealtyCreated, $CS_NumDraconicPlayed;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -588,7 +606,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumContractsCompleted] = 0;
   $mainClassState[$CS_HitsWithSword] = 0;
   $mainClassState[$CS_NumCardsDrawn] = 0;
-  $mainClassState[$CS_LifeLost] = 0;
+  $mainClassState[$CS_HealthLost] = 0;
   $mainClassState[$CS_NumCranked] = 0;
   $mainClassState[$CS_NumItemsDestroyed] = 0;
   $mainClassState[$CS_NumCrouchingTigerPlayedThisTurn] = 0;
@@ -602,14 +620,38 @@ function ResetMainClassState()
   $mainClassState[$CS_NumBluePlayed] = 0;
   $mainClassState[$CS_Transcended] = 0;
   $mainClassState[$CS_NumCrouchingTigerCreatedThisTurn] = 0;
+  $mainClassState[$CS_NumBlueDefended] = 0;
+  $mainClassState[$CS_NumLightningPlayed] = 0;
+  $mainClassState[$CS_NumInstantPlayed] = 0;
+  $mainClassState[$CS_ActionsPlayed] = "-";
+  $mainClassState[$CS_NumEarthBanished] = 0;
+  $mainClassState[$CS_HealthGained] = 0;
+  $mainClassState[$CS_SkipAllRunechants] = 0;
+  $mainClassState[$CS_FealtyCreated] = 0;
+  $mainClassState[$CS_NumDraconicPlayed] = 0;
 }
 
 function ResetCardPlayed($cardID)
 {
-  global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
+  global $currentPlayer, $mainPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $combatChainState, $CCS_EclecticMag;
   $type = CardType($cardID);
-  if($type == "A" && ClassContains($cardID, "WIZARD", $currentPlayer)) SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 0);
-  if($type == "A") SetClassState($currentPlayer, $CS_NextNAAInstant, 0);
+  $effectRemoved = false;
+  if(DelimStringContains($type, "A") && ClassContains($cardID, "WIZARD", $currentPlayer) && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "") && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 1) {
+    SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 0);
+    //Section below helps with visualization and removing used effects
+    SearchCurrentTurnEffects("ARC116", $currentPlayer, true);
+    SearchCurrentTurnEffects("CRU162", $currentPlayer, true);
+    $effectRemoved = true;
+  }
+  if(DelimStringContains($type, "A") && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "") && GetClassState($currentPlayer, $CS_NextNAAInstant) == 1) {
+    SetClassState($currentPlayer, $CS_NextNAAInstant, 0);
+    $effectRemoved = true;
+  }
+  //You may use this effect on any one non-attack action card this chain link, not just the next non-attack action card you play this chain link.
+  if(!$effectRemoved && DelimStringContains($type, "A") && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "")) {
+    SearchCurrentTurnEffects("ROS075", $mainPlayer, true);
+    $combatChainState[$CCS_EclecticMag] = 0;
+  }
 }
 
 function ResetCharacterEffects()

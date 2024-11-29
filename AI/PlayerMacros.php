@@ -2,7 +2,7 @@
 
 function ProcessMacros()
 {
-  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass;
+  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants, $defPlayer;
   $somethingChanged = true;
   $lastPhase = $turn[0];
   for($i=0; $i<$numPass; ++$i)
@@ -21,11 +21,13 @@ function ProcessMacros()
       else if(($turn[0] == "B") && IsAllyAttackTarget()) { $somethingChanged = true; PassInput(); }
       else if($turn[0] == "CHOOSEARCANE" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue("0"); }
       else if($turn[0] == "CHOOSEARSENAL" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+      else if($turn[0] == "CHOOSEHAND" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSEPERMANENT" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSEMYAURA" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSECARDID" && strlen($turn[2]) <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSETHEIRHAND" && strlen($turn[2]) <= 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if((count($decisionQueue) == 0 || $decisionQueue[0] == "INSTANT") && count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDSTEP" && count($layers) < (LayerPieces() * 3)) { $somethingChanged = true; PassInput(); }
+      else if($turn[0] == "CHOOSETOPOPPONENT" && strlen($turn[2]) <= 6) { $somethingChanged = true; ProcessInput($currentPlayer, 29, $turn[2], $turn[2], 0, ""); }
+      else if((count($decisionQueue) == 0 || $decisionQueue[0] == "INSTANT") && count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDPHASE" && count($layers) < (LayerPieces() * 3)) { $somethingChanged = true; PassInput(); }
       else if($turn[0] == "INSTANT" || ($turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer)))
       {
         if(HoldPrioritySetting($currentPlayer) == 0 && !HasPlayableCard($currentPlayer, $turn[0]))
@@ -35,7 +37,7 @@ function ProcessMacros()
         }
         if($turn[0] == "INSTANT" && count($layers) > 0)
         {
-          if($layers[0] == "FINALIZECHAINLINK" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
+          if($layers[0] == "FINALIZECHAINLINK" && HoldPrioritySetting($currentPlayer) != "1" && !HasPlayableCard($currentPlayer, $turn[0])) { $somethingChanged = true; PassInput(); }
           else if($layers[0] == "DEFENDSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
           else if($layers[0] == "ATTACKSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
           else if($layers[5] != "-")//Means there is a unique ID
@@ -58,6 +60,17 @@ function ProcessMacros()
           if(CachedTotalAttack() <= 1) { $somethingChanged = true; PassInput(); }
         }
       }
+      if(($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
+        $somethingChanged = true; 
+        SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
+      }
+      else if (!IsGameOver() && isset($layers[2]) && $layers[2] == "ARC112" && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
+        $somethingChanged = true; 
+        ContinueDecisionQueue("0"); 
+      }
+      else if (GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
+        SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
+      }
     }
   }
 }
@@ -77,6 +90,7 @@ function HasPlayableCard($player, $phase)
   global $CombatChain;
   $restriction = "";
   $character = &GetPlayerCharacter($player);
+  $otherPlayer = $player == 1 ? 2 : 1;
   for($i=0; $i<count($character); $i+=CharacterPieces()) {
     if($character[$i+1] == 2 && IsPlayable($character[$i], $phase, "CHAR", $i, $restriction, $player)) return true;
   }
@@ -98,6 +112,10 @@ function HasPlayableCard($player, $phase)
   $banish = &GetBanish($player);
   for($i=0; $i<count($banish); $i+=BanishPieces()) {
     if(IsPlayable($banish[$i], $phase, "BANISH", $i, $restriction, $player)) return true;
+  }
+  $theirBanish = &GetBanish($otherPlayer);
+  for($i=0; $i<count($theirBanish); $i+=BanishPieces()) {
+    if(IsPlayable($theirBanish[$i], $phase, "THEIRBANISH", $i, $restriction, $player)) return true;
   }
   $auras = &GetItems($player);
   for($i=0; $i<count($auras); $i+=AuraPieces()) {

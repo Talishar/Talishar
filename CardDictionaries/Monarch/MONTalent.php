@@ -109,6 +109,7 @@
       case "MON219":
         $otherPlayer = $currentPlayer == 2 ? 1 : 2;
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:talent=SHADOW");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to banish a shadow card");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
@@ -155,7 +156,7 @@
     global $mainPlayer;
     AddDecisionQueue("DECKCARDS", $mainPlayer, "0");
     AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
-    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose if you want to banish <0> with Shadow Puppetry", 1);
+    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose if you want to banish <0> with ".CardLink("MON193", "MON193"), 1);
     AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_the_card", 1);
     AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
     AddDecisionQueue("PARAMDELIMTOARRAY", $mainPlayer, "0", 1);

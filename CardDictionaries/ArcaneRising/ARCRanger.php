@@ -58,20 +58,23 @@
         if($cardID == "ARC051") $count = 4;
         else if($cardID == "ARC052") $count = 3;
         else $count = 2;
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the top " . $count . " cards of your deck.", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $count);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here are the top " . $count . " cards of your deck.", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("LOOKTOPDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top cards of your deck are:", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top cards of your deck are", 1);
         AddDecisionQueue("MULTISHOWCARDSDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("TOPDECKCHOOSE", $currentPlayer, "1,Arrow", 1);
         AddDecisionQueue("MULTICHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDARSENAL", $currentPlayer, "DECK-UP", 1);
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count-1);
-        AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SILVERTHETIPADDARSENAL", 1); // Adding arsenal via the dq is not staight forward. How brew add.
+        AddDecisionQueue("NULLPASS", $currentPlayer, "-"); // If no card was selected to be added, send a pass
+        AddDecisionQueue("DECDQVAR", $currentPlayer, "0", 1); // If a pass was not sent, decrement the number of cards for the next step. We removed an arrow and therefore only want to touch the top x-1 cards.
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXREMOVE,{0}");
         AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-", 1);
         return "";
       case "ARC054": case "ARC055": case "ARC056":
@@ -109,21 +112,21 @@
     return "";
   }
 
-  function LoadArrow($player, $facing = "UP")
+  function LoadArrow($player, $facing = "UP", $counters = 0)
   {
     if(ArsenalFull($player))
     {
       AddDecisionQueue("PASSPARAMETER", $player, "PASS");//Pass any subsequent load effects
       return "Your arsenal is full, you cannot put an arrow in arsenal";
     }
-    MZMoveCard($player, "MYHAND:subtype=Arrow", "MYARS,HAND," . $facing, may:true, silent:true);
+    MZMoveCard($player, "MYHAND:subtype=Arrow", "MYARS,HAND," . $facing . "," .$counters, may:true, silent:true);
   }
 
   function Reload($player=0)
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
-    if(!ArsenalEmpty($player)) { WriteLog("It does nothing, because your arsenal is not empty"); return; }
+    if(!ArsenalEmpty($player)) { WriteLog("Reload does nothing, because your arsenal is not empty"); return; }
     MZMoveCard($player, "MYHAND", "MYARS,HAND,DOWN", may:true, silent:true);
   }
 

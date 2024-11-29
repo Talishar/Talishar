@@ -13,7 +13,7 @@ function PlayLandmark($cardID, $player, $from="-")
   array_push($landmarks, $from);
 }
 
-function DestroyLandmark($index)
+function DestroyLandmark($index, $skipDestroy=false)
 {
   global $landmarks;
   $cardID = $landmarks[$index];
@@ -22,13 +22,13 @@ function DestroyLandmark($index)
     unset($landmarks[$j]);
   }
   $landmarks = array_values($landmarks);
-  AddGraveyard($cardID, $ownerID, "PLAY");
+  if(!$skipDestroy) AddGraveyard($cardID, $ownerID, "PLAY");
   return $cardID;
 }
 
 function LandmarkBeginEndPhaseAbilities()
 {
-  global $landmarks, $mainPlayer;
+  global $landmarks, $mainPlayer, $CS_NumBluePlayed, $CS_NumBlueDefended;
   for ($i = 0; $i < count($landmarks); ++$i) {
     switch ($landmarks[$i]) {
       case "MON000":
@@ -36,8 +36,33 @@ function LandmarkBeginEndPhaseAbilities()
           AddCurrentTurnEffect("MON000", $mainPlayer);
         }
         break;
+      case "MST000":
+        if(GetClassState($landmarks[$i+1], $CS_NumBluePlayed) > 0 && SearchPitchForColor($landmarks[$i+1], 3) > 0 && GetClassState($landmarks[$i+1], $CS_NumBlueDefended) > 0) {
+          Transcend($landmarks[$i+1], "MST400", $landmarks[$i+2]);
+          DestroyLandmark($i, true);
+        }
+        elseif(GetClassState($landmarks[$i+1], $CS_NumBluePlayed) <= 0 && SearchPitchForColor($landmarks[$i+1], 3) <= 0 && GetClassState($landmarks[$i+1], $CS_NumBlueDefended) <= 0) {
+          DestroyLandmark($i);
+        }
+        break;
       default:
         break;
     }
   }
+}
+
+function LandmarkStartTurnAbilities()
+{
+  global $landmarks, $mainPlayer;
+  for ($i = 0; $i < count($landmarks); ++$i) {
+    switch ($landmarks[$i]) {
+      case "MST000":
+        if($landmarks[$i+1] != $mainPlayer) {
+          AddCurrentTurnEffect($landmarks[$i], $mainPlayer);
+        }
+        break;
+      default:
+        break;
+      }
+    }
 }
