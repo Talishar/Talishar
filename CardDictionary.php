@@ -562,6 +562,10 @@ function CardCost($cardID, $from="-")
     case "ROS104":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
       return 1;
+    case "ROS120":
+    case "ROS169":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
+      return -1;
     case "ROS170":
     case "ROS171":
     case "ROS172":
@@ -1009,7 +1013,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       }
       return $names;
     case "ROS120": case "ROS169":
-      return "Ability";
+      return "Block,Ability";
     case "MST133":
       if ($auras[$index + 3] > 0) $names = "Instant";
       if (SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {

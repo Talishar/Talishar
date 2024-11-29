@@ -2081,7 +2081,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         }
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       }
-      return "";
+      break;
     case "HER117":
       $char = &GetPlayerCharacter($currentPlayer);
       $numCounters = $char[2];
@@ -2093,7 +2093,11 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $costChoices);
       AddDecisionQueue("ADDCURRENTEFFECTLASTRESULT", $currentPlayer, "HER117-", 1);
       AddDecisionQueue("BLAZEPAYCOST", $currentPlayer, "<-", 1);
-      return "";
+      break;
+    case "ROS120":
+    case "ROS169":
+      AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
+      break;
     case "ROS170":
     case "ROS171":
     case "ROS172":
