@@ -261,7 +261,6 @@ function MZBanish($player, $parameter, $lastResult)
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
     $modifier = count($params) > 1 ? $params[1] : "-";
     $banishedBy = count($params) > 2 ? $params[2] : "";
-    WriteLog($params[0] . "-" . $mzIndex[0]);
     if($params[0] == "-") {
       if (strpos($mzIndex[0], "MY") === 0) {
         $params[0] = substr($mzIndex[0], 2);
