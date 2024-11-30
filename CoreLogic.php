@@ -801,14 +801,14 @@ function PlayerWon($playerID)
 {
   //NOTE: These globals might appear to be unused. It's because they're written by ParseGamefile.
   global $winner, $turn, $gameName, $p1uid, $p2uid;
-  global $inGameStatus, $GameStatus_Over;
+  global $inGameStatus, $GameStatus_Over, $CS_SkipAllRunechants;
   if ($turn[0] == "OVER") return;
   include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
   if ($playerID == 1 && $p1uid != "") WriteLog("Player 1 (" . $p1uid . ") won! 🎉", $playerID);
   else if ($playerID == 2 && $p2uid != "") WriteLog("Player 2 (" . $p2uid . ") won! 🎉", $playerID);
-  else WriteLog("Player " . $winner . " won! 🎉");  
-  SetClassState(1, $CS_SkipAllRunechants, 0); 
+  else WriteLog("Player " . $winner . " won! 🎉");
+  SetClassState(1, $CS_SkipAllRunechants, 0);
   SetClassState(2, $CS_SkipAllRunechants, 0);
   $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
