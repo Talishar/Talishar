@@ -399,8 +399,10 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked;
 	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $TurnStats_ResourcesLeft, $TurnStats_LifeGained;
 	global $p1TotalTime, $p2TotalTime, $TurnStats_DamagePrevented;
-	$DeckLink = explode("/", $DeckLink);
-	$DeckLink = $DeckLink[count($DeckLink) - 1];
+	if($DeckLink != "") {
+		$DeckLink = explode("/", $DeckLink);
+		$DeckLink = $DeckLink[count($DeckLink) - 1];
+	}
 	$deckAfterSB = explode("\r\n", $deckAfterSB);
 	if(count($deckAfterSB) == 1) return "";
 	$deckAfterSB = $deckAfterSB[1];
