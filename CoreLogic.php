@@ -1266,7 +1266,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
   }
   if ($from == "BANISH") {
     $banish = GetBanish($currentPlayer);
-    if ($index > 0 && $index < count($banish)) {
+    if ($index > -1 && $index < count($banish)) {
       if ($banish[$index + 1] !== null) {
         $mod = explode("-", $banish[$index + 1])[0];
         if ((DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212" || $mod == "MST236")) || $mod == "INST" || $mod == "ARC119" || $mod == "ELE064") return true;
