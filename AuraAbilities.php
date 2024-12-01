@@ -621,7 +621,6 @@ function AuraStartTurnAbilities()
     }
   }
   $defPlayerAuras = &GetAuras($defPlayer);
-  $defPlayerAuras = array_values($defPlayerAuras);//It seems like there's a bug with things not being removed correctly
   for ($i = count($defPlayerAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $EffectContext = $defPlayerAuras[$i];
     switch ($defPlayerAuras[$i]) {

@@ -245,11 +245,23 @@ function &GetAuras($player)
   global $myAuras, $theirAuras, $mainAuras, $defAuras;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) return $mainAuras;
-    else return $defAuras;
+    if ($player == $mainPlayer) {
+      $mainAuras = array_values($mainAuras);//It seems like there's a bug with things not being removed correctly
+      return $mainAuras;
+    }
+    else {
+      $defAuras = array_values($defAuras);
+      return $defAuras;
+    }
   } else {
-    if ($player == $myStateBuiltFor) return $myAuras;
-    else return $theirAuras;
+    if ($player == $myStateBuiltFor) {
+      $myAuras = array_values($myAuras);
+      return $myAuras;
+    }
+    else {
+      $theirAuras = array_values($theirAuras);
+      return $theirAuras;
+    }
   }
 }
 
