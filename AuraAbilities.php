@@ -405,6 +405,7 @@ function AuraStartTurnAbilities()
   global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $currentTurnEffects;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  if(!isset($auras[$i])) continue;
   $EffectContext = $auras[$i];
     switch ($auras[$i]) {
     //These are all start of turn events without priority
@@ -622,6 +623,7 @@ function AuraStartTurnAbilities()
   }
   $defPlayerAuras = &GetAuras($defPlayer);
   for ($i = count($defPlayerAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    if(!isset($defPlayerAuras[$i])) continue;
     $EffectContext = $defPlayerAuras[$i];
     switch ($defPlayerAuras[$i]) {
       case "MST133":
