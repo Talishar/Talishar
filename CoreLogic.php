@@ -800,8 +800,8 @@ function IsGameOver()
 function PlayerWon($playerID)
 {
   //NOTE: These globals might appear to be unused. It's because they're written by ParseGamefile.
-  global $winner, $turn, $gameName, $p1uid, $p2uid;
-  global $inGameStatus, $GameStatus_Over, $CS_SkipAllRunechants;
+  global $winner, $turn, $gameName, $p1id, $p2id, $p1uid, $p2uid, $p1IsChallengeActive, $p2IsChallengeActive, $conceded, $currentTurn;
+  global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID, $CS_SkipAllRunechants;
   if ($turn[0] == "OVER") return;
   include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
