@@ -595,7 +595,7 @@ function AuraStartTurnAbilities()
     case "MST145":
       $AurasArray = explode(",", SearchAura($mainPlayer, class: "ILLUSIONIST"));
       if (count($AurasArray) > 1) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;    
+      break;
     case "AJV017": // Channel Mount Isen
       $character = &GetPlayerCharacter($mainPlayer);
       $eqFrostbiteCount = 0;
@@ -614,20 +614,21 @@ function AuraStartTurnAbilities()
         }
       }
       LoseHealth($eqFrostbiteCount, $mainPlayer);
-      WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("AJV017", "AJV017") .".");      
-      break;          
+      WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("AJV017", "AJV017") .".");
+      break;
     default:
       break;
     }
   }
   $defPlayerAuras = &GetAuras($defPlayer);
+  $defPlayerAuras = array_values($defPlayerAuras);//It seems like there's a bug with things not being removed correctly
   for ($i = count($defPlayerAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $EffectContext = $defPlayerAuras[$i];
     switch ($defPlayerAuras[$i]) {
       case "MST133":
         AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY", $defPlayerAuras[$i + 6]);
         break;
-      case "AJV017": // Channel Mount Isen        
+      case "AJV017": // Channel Mount Isen
         $character = &GetPlayerCharacter($mainPlayer);
         $eqFrostbiteCount = 0;
         for ($i = 0; $i < count($character); $i += CharacterPieces()) {
@@ -646,7 +647,7 @@ function AuraStartTurnAbilities()
         }
         LoseHealth($eqFrostbiteCount, $mainPlayer);
         WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("AJV017", "AJV017") .".");
-        break;     
+        break;
       default:
         break;
     }
@@ -1046,12 +1047,12 @@ function AuraDamageTakenAbilities($player, $damage, $source)
             AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
           }
         }
-        break;    
+        break;
       default:
         break;
     }
   }
-  
+
   return $damage;
 }
 
