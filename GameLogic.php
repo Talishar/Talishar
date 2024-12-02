@@ -1594,7 +1594,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $otherPlayerCount = SearchCount(SearchAura(($currentPlayer == 1 ? 2 : 1), "", "", 0, 0));
       if($lastResult > $myCount) {
         $targetType = 1;
-      } 
+      }
       elseif ($lastResult > $otherPlayerCount) {
         $targetType = 4;
       }
@@ -1740,7 +1740,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MZBOUNCE":
       return MZBounce($player, $lastResult);
     case "MZBOTTOM":
-      return MZBottom($player, $lastResult);     
+      return MZBottom($player, $lastResult);
     case "MZSWITCHPLAYER":
       return MZSwitchPlayer($lastResult);
     case "GAINRESOURCES":
@@ -2177,7 +2177,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (count($params) < 2) $target = $lastResult;
       else $target = $params[1];
       AddLayer("TRIGGER", $player, $params[0], $target);
-      return $lastResult;  
+      return $lastResult;
     case "UNDERCURRENTDESIRES":
       if ($lastResult == "") {
         WriteLog("No cards were selected, " . CardLink("MST010", "MST010") . " did not banish any cards");
@@ -2240,6 +2240,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return "PASS";
       } else return $equipments;
     case "VISITTHEGOLDENANVIL":
+      $equipments = "";
       $char = &GetPlayerCharacter($currentPlayer);
       $inventory = &GetInventory($currentPlayer);
       foreach ($inventory as $cardID) {
