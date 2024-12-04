@@ -405,7 +405,6 @@ function AuraStartTurnAbilities()
   global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $currentTurnEffects;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-  if(!isset($auras[$i])) continue;
   $EffectContext = $auras[$i];
     switch ($auras[$i]) {
     //These are all start of turn events without priority
@@ -486,7 +485,7 @@ function AuraStartTurnAbilities()
       $searchHyper = CombineSearches(SearchDiscardForCard($mainPlayer, "ARC036", "DYN111", "DYN112"), SearchBanishForCardMulti($mainPlayer, "ARC036", "DYN111", "DYN112"));
       $countHyper = count(explode(",", $searchHyper));
       if ($amount > $countHyper) $amount = $countHyper;
-      for ($i = 0; $i < $amount; ++$i) {
+      for ($j = 0; $j < $amount; ++$j) {
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:cardID=ARC036;cardID=DYN111;cardID=DYN112&MYBANISH:cardID=ARC036;cardID=DYN111;cardID=DYN112");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to put into play");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
@@ -600,12 +599,12 @@ function AuraStartTurnAbilities()
     case "AJV017": // Channel Mount Isen
       $character = &GetPlayerCharacter($mainPlayer);
       $eqFrostbiteCount = 0;
-      for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-        if ($character[$i] == "ELE111") {
+      for ($k = 0; $k < count($character); $k += CharacterPieces()) {
+        if ($character[$k] == "ELE111") {
           $slot = "";
           for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectsPieces()) {
             $effect = explode(",", $currentTurnEffects[$j]);
-            if ($effect[0] == "ELE111-" . $character[$i + 11]) {
+            if ($effect[0] == "ELE111-" . $character[$k + 11]) {
               $slot = $effect[1];
               if ($slot == "Arms" || $slot == "Legs" || $slot == "Head" || $slot == "Chest") { // Only count these Frostbites if they are in an equipment slot.
                 $eqFrostbiteCount += 1;
@@ -623,7 +622,6 @@ function AuraStartTurnAbilities()
   }
   $defPlayerAuras = &GetAuras($defPlayer);
   for ($i = count($defPlayerAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    if(!isset($defPlayerAuras[$i])) continue;
     $EffectContext = $defPlayerAuras[$i];
     switch ($defPlayerAuras[$i]) {
       case "MST133":
@@ -632,12 +630,12 @@ function AuraStartTurnAbilities()
       case "AJV017": // Channel Mount Isen
         $character = &GetPlayerCharacter($mainPlayer);
         $eqFrostbiteCount = 0;
-        for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-          if ($character[$i] == "ELE111") {
+        for ($k = 0; $k < count($character); $k += CharacterPieces()) {
+          if ($character[$k] == "ELE111") {
             $slot = "";
             for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectsPieces()) {
               $effect = explode(",", $currentTurnEffects[$j]);
-              if ($effect[0] == "ELE111-" . $character[$i + 11]) {
+              if ($effect[0] == "ELE111-" . $character[$k + 11]) {
                 $slot = $effect[1];
                 if ($slot == "Arms" || $slot == "Legs" || $slot == "Head" || $slot == "Chest") { // Only count these Frostbites if they are in an equipment slot.
                   $eqFrostbiteCount += 1;
