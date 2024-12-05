@@ -133,6 +133,10 @@ switch ($mode) {
     }
     $layers = $newLayers;
     break;
+  case 106:
+    $cardListTop = $submission->cardListTop;
+    $cardListBottom = $submission->cardListBottom;
+    break;
   case 100011: //Resume adventure (roguelike)
     if($roguelikeGameID == "") {
       $response->error = "Cannot resume adventure - not a roguelike game.";

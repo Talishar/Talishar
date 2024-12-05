@@ -253,7 +253,7 @@ function CreateCheckboxAPI($input, $value, $immediateSubmitMode = -1, $defaultCh
   return $option;
 }
 
-function CreatePopupAPI($id, $fromArr, $canClose, $defaultState = 0, $title = "", $arrElements = 1, $customInput = "", $path = "./", $big = false, $overCombatChain = false, $additionalComments = "", $size = 0, $cardsArray = [])
+function CreatePopupAPI($id, $fromArr, $canClose, $defaultState = 0, $title = "", $arrElements = 1, $customInput = "", $path = "./", $big = false, $overCombatChain = false, $additionalComments = "", $size = 0, $cardsArray = [], $topCards = [], $bottomCards = [] )
 {
   $result = new stdClass();
   $result->size = $size;
@@ -271,6 +271,8 @@ function CreatePopupAPI($id, $fromArr, $canClose, $defaultState = 0, $title = ""
     $cards = $cardsArray;
   }
   $result->cards = $cards;
+  $result->topCards = $topCards;
+  $result->bottomCards = $bottomCards;
   $result->customInput = $customInput;
   return $result;
 }

@@ -1067,17 +1067,27 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->popup = CreatePopupAPI("OK", [], 0, 1, GetPhaseHelptext(), 1, "");
   }
 
-  if (($turn[0] == "OPT" || $turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM" || $turn[0] == "CHOOSECARD") && $turn[1] == $playerID) {
+  if (($turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM" || $turn[0] == "CHOOSECARD") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     $options = explode(",", $turn[2]);
     $optCards = array();
     for ($i = 0; $i < count($options); ++$i) {
       array_push($optCards, JSONRenderedCard($options[$i], action: 0));
-      if ($turn[0] == "CHOOSETOP" || $turn[0] == "OPT") array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 8, $options[$i], "20px"));
-      if ($turn[0] == "CHOOSEBOTTOM" || $turn[0] == "OPT") array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 9, $options[$i], "20px"));
+      if ($turn[0] == "CHOOSETOP") array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 8, $options[$i], "20px"));
+      if ($turn[0] == "CHOOSEBOTTOM") array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 9, $options[$i], "20px"));
       if ($turn[0] == "CHOOSECARD") array_push($playerInputButtons, CreateButtonAPI($playerID, "Choose", 23, $options[$i], "20px"));
     }
     $playerInputPopup->popup = CreatePopupAPI("OPT", [], 0, 1, GetPhaseHelptext(), 1, "", cardsArray: $optCards);
+  }
+
+  if ($turn[0] == "OPT" && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $options = explode(",", $turn[2]);
+    $optCards = array();
+    for ($i = 0; $i < count($options); ++$i) {
+      array_push($optCards, JSONRenderedCard($options[$i], action: 0));
+    }
+    $playerInputPopup->popup = CreatePopupAPI("NEWOPT", [], 0, 1, GetPhaseHelptext(), 1, "", topCards: $optCards, bottomCards: []);
   }
 
   if (($turn[0] == "CHOOSETOPOPPONENT") && $turn[1] == $playerID) { //Use when you have to reorder the top of your opponent library e.g. Righteous Cleansing
