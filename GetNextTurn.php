@@ -1082,12 +1082,24 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   if ($turn[0] == "OPT" && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
-    $options = explode(",", $turn[2]);
-    $optCards = array();
-    for ($i = 0; $i < count($options); ++$i) {
-      array_push($optCards, JSONRenderedCard($options[$i], action: 0));
+    $options = explode(";", $turn[2]);
+    $topOptions = explode(",", $options[0] ?? "");
+    if (count($topOptions) === 1 && $topOptions[0] === "") {
+        $topOptions = [];
     }
-    $playerInputPopup->popup = CreatePopupAPI("NEWOPT", [], 0, 1, GetPhaseHelptext(), 1, "", topCards: $optCards, bottomCards: []);
+    $bottomOptions = explode(",", $options[1] ?? "");
+    if (count($bottomOptions) === 1 && $bottomOptions[0] === "") {
+        $bottomOptions = [];
+    }
+    $topOptCards = array();
+    for ($i = 0; $i < count($topOptions); ++$i) {
+      array_push($topOptCards, JSONRenderedCard($topOptions[$i], action: 0));
+    }
+    $bottomOptCards = array();
+    for ($i = 0; $i < count($bottomOptions); ++$i) {
+      array_push($bottomOptCards, JSONRenderedCard($bottomOptions[$i], action: 0));
+    }
+    $playerInputPopup->popup = CreatePopupAPI("NEWOPT", [], 0, 1, GetPhaseHelptext(), 1, "", topCards: $topOptCards, bottomCards: $bottomOptCards);
   }
 
   if (($turn[0] == "CHOOSETOPOPPONENT") && $turn[1] == $playerID) { //Use when you have to reorder the top of your opponent library e.g. Righteous Cleansing
