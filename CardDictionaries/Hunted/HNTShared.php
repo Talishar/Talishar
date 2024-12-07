@@ -42,6 +42,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT116" => true,
     "HNT167" => true,
+    "HNT249" => true,
     default => false,
   };
 }
@@ -74,6 +75,12 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT167":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT249":
+      AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "HNT249-");
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
+      AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
     default:
       break;
   }

@@ -1730,6 +1730,8 @@ function DoesAttackHaveGoAgain()
       return ComboActive($attackID);
     case "HNT071":
       return SearchCurrentTurnEffects("HNT071", $mainPlayer);
+    case "HNT249":
+      return SearchCurrentTurnEffectsForIndex("HNT249", $mainPlayer) != -1;
     default:
       return false;
   }
