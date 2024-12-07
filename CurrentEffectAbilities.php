@@ -925,30 +925,33 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
 {
   global $currentTurnEffects;
   $otherPlayer = ($player == 1 ? 2 : 1);
+  $vambraceAvailable = SearchCurrentTurnEffects("OUT174", $player) != "";
+  $vambraceRemove = false;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0 && $damage > 0; $i -= CurrentTurnEffectPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $player) {
+      $preventedDamage = 0;
       $effects = explode("-", $currentTurnEffects[$i]);
       switch ($effects[0]) {
         case "ARC035":
-          if ($preventable) $damage -= intval($effects[1]);
+          if ($preventable) $preventedDamage += intval($effects[1]);
           $remove = true;
           break;
         case "CRU041":
           if ($type == "COMBAT") {
-            if ($preventable) $damage -= 3;
+            if ($preventable) $preventedDamage += 3;
             $remove = true;
           }
           break;
         case "CRU042":
           if ($type == "COMBAT") {
-            if ($preventable) $damage -= 2;
+            if ($preventable) $preventedDamage += 2;
             $remove = true;
           }
           break;
         case "CRU043":
           if ($type == "COMBAT") {
-            if ($preventable) $damage -= 1;
+            if ($preventable) $preventedDamage += 1;
             $remove = true;
           }
           break;
@@ -958,8 +961,8 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if ($source == $currentTurnEffects[$i + 2]) {
             if ($preventable) {
               $origDamage = $damage;
-              $damage -= $currentTurnEffects[$i + 3];
-              if ($damage < 0) $damage = 0;
+              $preventedDamage += $currentTurnEffects[$i + 3];
+              if ($preventedDamage > $damage) $preventedDamage = $damage;
               $currentTurnEffects[$i + 3] -= $origDamage;
             }
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
@@ -972,7 +975,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if ($source == $currentTurnEffects[$i + 2]) {
             if ($preventable) {
               $sourceDamage = $damage;
-              $damage -= $currentTurnEffects[$i + 3];
+              $preventedDamage += $currentTurnEffects[$i + 3];
               $currentTurnEffects[$i + 3] -= $sourceDamage;
             }
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
@@ -985,59 +988,55 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if ($source == $currentTurnEffects[$i + 2]) {
             if ($preventable) {
               $sourceDamage = $damage;
-              $damage -= $currentTurnEffects[$i + 3];
+              $preventedDamage += $currentTurnEffects[$i + 3];
               $currentTurnEffects[$i + 3] -= $sourceDamage;
             }
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
             if ($source == "ARC112" || $source == "UPR042") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
           }
           break;
-        case "OUT174":
-          if ($type == "COMBAT" && SearchCurrentTurnEffects("OUT174", $player)) {
-            $damage += 1;
-            $remove = true;
-          } 
-          break;
         case "OUT175":
         case "OUT176":
         case "OUT177":
         case "OUT178":
-          if ($preventable) $damage -= 1;
+          if ($preventable) {
+            $preventedDamage += 1;
+          }
           $remove = true;
           break;
         case "OUT228":
           if ($preventable && $damage <= 3) {
-            $damage = 0;
+            $preventedDamage = $damage;
             $remove = true;
           }
           break;
         case "OUT229":
           if ($preventable && $damage <= 2) {
-            $damage = 0;
+            $preventedDamage = $damage;
             $remove = true;
           }
           break;
         case "OUT230":
           if ($preventable && $damage == 1) {
-            $damage = 0;
+            $preventedDamage = $damage;
             $remove = true;
           }
           break;
         case "OUT231":
           if ($type == "COMBAT") {
-            if ($preventable) $damage -= 4;
+            if ($preventable) $preventedDamage += 4;
             $remove = true;
           }
           break;
         case "OUT232":
           if ($type == "COMBAT") {
-            if ($preventable) $damage -= 3;
+            if ($preventable) $preventedDamage += 3;
             $remove = true;
           }
           break;
         case "OUT233":
           if ($type == "COMBAT") {
-            if ($preventable) $damage -= 2;
+            if ($preventable) $preventedDamage += 2;
             $remove = true;
           }
           break;
@@ -1048,20 +1047,20 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           else if ($effects[0] == "DTD101") $prevention = 3;
           else if ($effects[0] == "DTD102") $prevention = 2;
           if (TalentContains($source, "SHADOW", $otherPlayer)) {
-            if ($preventable) $damage -= 2;
+            if ($preventable) $preventedDamage += $prevention;
             $remove = true;
           }
           break;
         case "TCC058":
-          if ($preventable) $damage -= 3;
+          if ($preventable) $preventedDamage += 3;
           $remove = true;
           break;
         case "TCC062":
-          if ($preventable) $damage -= 2;
+          if ($preventable) $preventedDamage += 2;
           $remove = true;
           break;
         case "TCC075":
-          if ($preventable) $damage -= 1;
+          if ($preventable) $preventedDamage += 1;
           $remove = true;
           break;
         case "EVO087":
@@ -1077,36 +1076,36 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
         case "EVO431":
         case "EVO432":
         case "EVO433": //Equipment
-          if ($preventable) $damage -= intval($effects[1]);
+          if ($preventable) $preventedDamage += intval($effects[1]);
           $remove = true;
           break;
         case "HVY016":
-          if ($preventable) $damage -= 2 + intval($effects[1]);
+          if ($preventable) $preventedDamage += 2 + intval($effects[1]);
           $remove = true;
           break;
         case "HVY140":
           if ($preventable) {
-            $damage -= 2;
+            $preventedDamage += 2;
             PlayAura("HVY241", $player); //Might
           }
           $remove = true;
           break;
         case "HVY160":
           if ($preventable) {
-            $damage -= 2;
+            $preventedDamage += 2;
             PlayAura("HVY240", $player); //Agility
           }
           $remove = true;
           break;
         case "HVY180":
           if ($preventable) {
-            $damage -= 2;
+            $preventedDamage += 2;
             PlayAura("HVY242", $player); //Vigor
           }
           $remove = true;
           break;
         case "HVY197":
-          if ($preventable) $damage -= 2;
+          if ($preventable) $preventedDamage += 2;
           $remove = true;
           break;
         case "AKO019":
@@ -1117,35 +1116,35 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           break;
         case "MST034":
           if ($preventable) {
-            if ($currentTurnEffects[$i] == "MST034-1") $damage -= 3;
-            else $damage -= 5;
+            if ($currentTurnEffects[$i] == "MST034-1") $preventedDamage += 3;
+            else $preventedDamage += 5;
           }
           $remove = true;
           break;
         case "MST035":
           if ($preventable) {
-            if ($currentTurnEffects[$i] == "MST035-1") $damage -= 2;
-            else $damage -= 4;
+            if ($currentTurnEffects[$i] == "MST035-1") $preventedDamage += 2;
+            else $preventedDamage += 4;
           }
           $remove = true;
           break;
         case "MST036":
           if ($preventable) {
-            if ($currentTurnEffects[$i] == "MST036-1") $damage -= 1;
-            else $damage -= 3;
+            if ($currentTurnEffects[$i] == "MST036-1") $preventedDamage += 1;
+            else $preventedDamage += 3;
           }
           $remove = true;
           break;
         case "AUR023":
         case "TER020":
           if ($preventable) {
-            $damage -= 2;
+            $preventedDamage += 2;
           }
           $remove = true;
           break;
         case "TER026":
           if ($preventable) {
-            $damage -= 1;
+            $preventedDamage += 1;
           }
           $remove = true;
           break;
@@ -1153,7 +1152,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if ($source == $currentTurnEffects[$i + 2]) {
             if ($preventable) {
               $sourceDamage = $damage;
-              $damage -= $currentTurnEffects[$i + 3];
+              $preventedDamage += $currentTurnEffects[$i + 3];
               $currentTurnEffects[$i + 3] -= $sourceDamage;
             }
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
@@ -1163,8 +1162,16 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           break;
       }
       if ($remove) RemoveCurrentTurnEffect($i);
+      //apply vambrace only once and only after the first instance of prevention
+      if ($type == "COMBAT" && $vambraceAvailable && $preventedDamage > 0) {
+        $preventedDamage -= 1;
+        $vambraceAvailable = false;
+        $vambraceRemove = true;
+      }
+      $damage -= $preventedDamage;
     }
   }
+  if ($vambraceRemove) SearchCurrentTurnEffects("OUT174", $player, remove:true);
   return $damage;
 }
 
