@@ -889,11 +889,13 @@ function OnBlockResolveEffects($cardID = "")
         if (NumCardsBlocking() <= 1) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "ROS114":
-        $conditionsMet = 0;
-        for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
-          if (CardType($combatChain[$j]) == "AA") {
-            ++$conditionsMet; 
-            break;
+        if (!IsAllyAttacking()) {
+          $conditionsMet = 0;
+          for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
+            if (CardType($combatChain[$j]) == "AA") {
+              ++$conditionsMet; 
+              break;
+            }
           }
         }
         for ($k = CombatChainPieces(); $k < count($combatChain); $k += CombatChainPieces()) {
