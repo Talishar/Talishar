@@ -902,7 +902,7 @@ function OnBlockResolveEffects($cardID = "")
             break;
           }
         }
-        if ($conditionsMet == 2) {
+        if ($conditionsMet == 2 && !IsAllyAttacking()) {
           AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         }
         break;
