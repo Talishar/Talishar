@@ -2000,6 +2000,9 @@ function CurrentEffectNameModifier($effectID, $effectParameter, $player)
     case "DYN065":
       $name = $effectParameter;
       break;
+    case "HNT249":
+      $name = $effectParameter;
+      break;
     default:
       break;
   }
