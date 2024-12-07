@@ -419,6 +419,8 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (CheckHeavy($mainPlayer)) ? 2 : 0;
     case "HNT116":
       return 3;
+    case "HNT249":
+      return (SearchCurrentTurnEffectsForIndex("HNT249", $mainPlayer) != -1 ? 2 : 0);
     default:
       return 0;
   }
@@ -900,7 +902,7 @@ function OnBlockResolveEffects($cardID = "")
             break;
           }
         }
-        if ($conditionsMet == 2) {
+        if ($conditionsMet == 2 && !IsAllyAttacking()) {
           AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         }
         break;
