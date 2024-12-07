@@ -3150,6 +3150,8 @@ function HasCombo($cardID)
       return true;
     case "ROS245":
       return true;
+    case "HNT249"://retrace the past
+      return true;
     default:
       return false;
   }
@@ -3297,6 +3299,9 @@ function ComboActive($cardID = "")
         break;
       case "ROS245":
         if ($lastAttackName == "Surging Strike") return true;
+        break;
+      case "HNT249":
+        if (str_contains($lastAttackName, "Gustwave")) return true;
         break;
       default:
         break;
