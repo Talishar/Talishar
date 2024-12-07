@@ -921,7 +921,7 @@ function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
   return $damage;
 }
 
-function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable, $firstPass=true)
+function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable)
 {
   global $currentTurnEffects;
   $otherPlayer = ($player == 1 ? 2 : 1);
