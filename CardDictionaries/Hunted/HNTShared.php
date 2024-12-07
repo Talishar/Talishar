@@ -79,7 +79,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT252":
       $prevent = SearchArsenal($currentPlayer, subtype:"Arrow", faceUp:true) != "" ? 2 : 1;
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
-      return "Enchanted Quiver reduces your next arcane damage by " . $prevent;
+      return CardLink($cardID, $cardID) . " reduces your next arcane damage by " . $prevent;
     default:
       break;
   }
