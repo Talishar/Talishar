@@ -925,12 +925,12 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
 {
   global $currentTurnEffects;
   $otherPlayer = ($player == 1 ? 2 : 1);
-  $preventedDamage = 0;
   $vambraceAvailable = SearchCurrentTurnEffects("OUT174", $player) != "";
   $vambraceRemove = false;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0 && $damage > 0; $i -= CurrentTurnEffectPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $player) {
+      $preventedDamage = 0;
       $effects = explode("-", $currentTurnEffects[$i]);
       switch ($effects[0]) {
         case "ARC035":
