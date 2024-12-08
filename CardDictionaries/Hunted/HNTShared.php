@@ -78,11 +78,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT249":
-      AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
-      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "HNT249-");
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
-      AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
+      if (ComboActive($cardID)) {
+        AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "HNT249-");
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
+        AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
+      }
       break;
     case "HNT252":
       $prevent = SearchArsenal($currentPlayer, subtype:"Arrow", faceUp:true) != "" ? 2 : 1;
