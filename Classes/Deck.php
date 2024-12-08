@@ -90,4 +90,11 @@ class Deck {
     array_push($this->deck, $cardID);
     return $cardID;
   }
+
+  function Opt($topCardID, $bottomCardID, $from="GY")
+  {
+    $this->deck = array_merge($topCardID, $this->deck);
+    $this->deck = array_merge($this->deck, $bottomCardID);
+    return true;
+  }
 }
