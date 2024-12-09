@@ -43,7 +43,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
   return match ($cardID) {
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT116" => true,
-    "HNT167" => true,
+    "HNT167" => DelimStringContains(CardType($attackID), "AA"),
     "HNT249" => true,
     default => false,
   };
