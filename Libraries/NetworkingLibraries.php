@@ -1666,12 +1666,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (TalentContains($cardID, "LIGHTNING", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") {
       IncrementClassState($currentPlayer, $CS_NumLightningPlayed);
     }
-    if (TypeContains($cardID, "W")) { // We'll need to add cases for Allies and Emperor Attacking
-      $index = SearchCurrentTurnEffectsForIndex("HNT167", $currentPlayer);
-      if ($index != -1) {
-        ++$currentTurnEffects[$index + 3];
-      }
-    }
     if (TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") {
       IncrementClassState($currentPlayer, $CS_NumDraconicPlayed);
       if (!TypeContains($cardID, "AA")) SearchCurrentTurnEffects("HNT167", $currentPlayer, remove:true);
