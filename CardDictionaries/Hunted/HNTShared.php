@@ -40,6 +40,8 @@ function HNTEffectAttackModifier($cardID): int
 function HNTCombatEffectActive($cardID, $attackID): bool
 {
   global $mainPlayer;
+  $dashArr = explode("-", $cardID);
+  $cardID = $dashArr[0];
   return match ($cardID) {
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT116" => true,
