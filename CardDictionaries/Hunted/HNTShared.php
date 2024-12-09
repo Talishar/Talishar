@@ -61,6 +61,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       RecurDagger($currentPlayer, 0);
       RecurDagger($currentPlayer, 1);
       break;
+    case "HNT057":
+      ThrowWeapon("Dagger", $cardID);
+      ThrowWeapon("Dagger", $cardID);
+      break;
     case "HNT071":
       if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
