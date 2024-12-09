@@ -170,12 +170,18 @@ function AllyDamagePrevention($player, $index, $damage, $type = "")
 {
   $allies = &GetAllies($player);
   $cardID = $allies[$index];
+  $preventedDamage = 0;
   $canBePrevented = CanDamageBePrevented($player, $damage, $type);
   switch ($cardID) {
     case "UPR417":
       if ($allies[$index + 6] > 0) {
         if ($damage > 0) --$allies[$index + 6];
-        if ($canBePrevented) $damage -= 3;
+        if ($canBePrevented) $preventedDamage += 3;
+        if ($preventedDamage > 0 && SearchCurrentTurnEffects("OUT174", $player) != "") {
+          $preventedDamage -= 1;
+          SearchCurrentTurnEffects("OUT174", $player, remove:true);
+        }
+        $damage -= $preventedDamage;
         if ($damage < 0) $damage = 0;
       }
       return $damage;
