@@ -434,12 +434,18 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
     }
     if ($damage > 0) {
       CheckIfPreventionEffectIsActive($player, $damage);
-      if($damage <= $classState[$CS_DamagePrevention]) {
-        $classState[$CS_DamagePrevention] -= $damage;
-        $damage = 0;
-      } else {
-      $damage -= $classState[$CS_DamagePrevention];
-      $classState[$CS_DamagePrevention] = 0;
+      if ($classState[$CS_DamagePrevention] > 0) {
+        if($damage <= $classState[$CS_DamagePrevention]) {
+          $classState[$CS_DamagePrevention] -= $damage;
+          $damage = 0;
+        } else {
+          $damage -= $classState[$CS_DamagePrevention];
+          $classState[$CS_DamagePrevention] = 0;
+        }
+        if (SearchCurrentTurnEffects("OUT174", $player) != "") {//vambrace
+          $damage += 1;
+          SearchCurrentTurnEffects("OUT174", $player, remove:true);
+        }
       }
     }
   }
@@ -2272,7 +2278,7 @@ function GetDamagePreventionIndices($player, $type)
   $auras = &GetAuras($player);
   $indices = "";
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if (AuraDamagePreventionAmount($player, $i, $type) > 0 || HasWard($auras[$i], $player)) {
+    if (AuraDamagePreventionAmount($player, $i, $type, check: true) > 0 || HasWard($auras[$i], $player)) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
     }
