@@ -583,6 +583,9 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       PutCharacterIntoPlayForPlayer("EVO410b", $currentPlayer);
       return "";
+    case "EVO013":
+      ModularMove($cardID, $additionalCosts);
+      return "";
     case "EVO014":
       MZMoveCard($mainPlayer, "MYBANISH:class=MECHANOLOGIST;type=AA", "MYTOPDECK", isReveal: true);
       AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
@@ -964,3 +967,13 @@ function PhantomTidemawDestroy($player = -1, $index = -1)
   }
 }
 
+function ModularMove($cardID, $uniqueID)
+{
+  global $currentPlayer;
+  AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $currentPlayer, "-");
+  AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an equipment zone to move " . CardLink($cardID, $cardID) . " to.", 1);
+  AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
+  AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+  AddDecisionQueue("EQUIPCARD", $currentPlayer, $cardID . "-{0}", 1);
+  AddDecisionQueue("REMOVEMODULAR", $currentPlayer, $uniqueID);
+}

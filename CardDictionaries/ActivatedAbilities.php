@@ -104,6 +104,7 @@ function EVOAbilityType($cardID, $index = -1, $from = ""): string
     "EVO007", "EVO017", "EVO016", "EVO015", "EVO014", "EVO437", "EVO436", "EVO435", "EVO434", "EVO449", "EVO448", "EVO447", "EVO446", "EVO008" => "I",
     "EVO073", "EVO076", "EVO247", "EVO070" => "A",
     "EVO235" => "AR",
+    "EVO013" => "A",
     default => ""
   };
 }
