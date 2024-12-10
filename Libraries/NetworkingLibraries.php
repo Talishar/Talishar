@@ -2967,6 +2967,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     $EffectContext = $cardID;
     $playText = "";
     if (!$chainClosed) {
+      if (IsModular($cardID)) $additionalCosts = $uniqueID; //to track which one to remove
       $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       if ($definedCardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
     }

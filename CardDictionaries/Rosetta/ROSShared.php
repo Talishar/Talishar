@@ -8,6 +8,7 @@ function ROSAbilityType($cardID): string
     "ROS214", "ROS249", "ROS250", "ROS163" => "I",
     "ROS015", "ROS115", "ROS116", "ROS165" => "A",
     "ROS003", "ROS009" => "AA",
+    "ROS246" => "A",
     default => ""
   };
 }
@@ -503,6 +504,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ROS244":
       if (IsHeroAttackTarget()) AskWager($cardID);
+      return "";
+    case "ROS246":
+      ModularMove($cardID, $additionalCosts);
       return "";
     case "ROS247":
       LookAtHand($otherPlayer);
