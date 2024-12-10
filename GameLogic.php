@@ -25,7 +25,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_NumCharged, $otherPlayer, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
-  global $CCS_AttackNumCharged, $layers, $CS_DamageDealt;
+  global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects;
   $rv = "";
   switch ($phase) {
     case "FINDINDICES":
@@ -1982,6 +1982,26 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "EQUIPCARD":
       $params = explode('-', $parameter);
       EquipEquipment($player, $params[0], $params[1]);
+      return "";
+    case "REMOVEMODULAR":
+      $character = &GetPlayerCharacter($player);
+      $index = -1;
+      for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+        if ($character[$i + 11] == $parameter) {
+          $index = $i;
+          break;
+        }
+      }
+      RemoveCharacter($player, $index);
+      $effectIndex = -1;
+      for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+        if (DelimStringContains($currentTurnEffects[$i], $parameter, partial:true)) {
+          $effectIndex = $i;
+          break;
+        }
+      }
+      RemoveCurrentTurnEffect($effectIndex);
+      if ($index == -1) WriteLog("Something went horribly wrong, please submit a bug report");
       return "";
     case "ROGUEMIRRORGAMESTART":
       $deck = &GetDeck($player);
