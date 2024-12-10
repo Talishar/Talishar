@@ -59,7 +59,6 @@
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage");
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
-          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
         return "";
       case "UPR136":
