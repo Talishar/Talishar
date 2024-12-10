@@ -44,6 +44,9 @@ function HNTCombatEffectActive($cardID, $attackID): bool
   $cardID = $dashArr[0];
   return match ($cardID) {
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
+    "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
+    "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
+    "HNT076" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT116" => true,
     "HNT167" => DelimStringContains(CardType($attackID), "AA"),
     "HNT249" => true,
@@ -66,6 +69,24 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       ThrowWeapon("Dagger", $cardID);
       break;
     case "HNT071":
+      if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      break;
+    case "HNT074":
+      if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      break;
+    case "HNT075":
+      if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
+      }
+      break;
+    case "HNT076":
       if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
@@ -100,6 +121,24 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
   }
   return "";
+}
+
+function HNTHitEffect($cardID): void
+{
+  global $mainPlayer, $defPlayer;
+  switch ($cardID) {
+    case "HNT074":
+      DestroyArsenal($defPlayer, effectController:$mainPlayer);
+      break;
+    case "HNT076":
+      AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
+      AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
+      break;
+    default:
+      break;
+  }
 }
 
 function MarkHero($player): string
