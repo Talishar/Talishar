@@ -901,18 +901,22 @@ function AuraEndTurnCleanup()
   for ($i = 0; $i < count($auras); $i += AuraPieces()) $auras[$i + 5] = AuraNumUses($auras[$i]);
 }
 
-function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active = false, &$cancelRemove = false)
+function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active = false, &$cancelRemove = false, $check = false)
 {
+  $preventedDamage = 0;
   $auras = &GetAuras($player);
-  if (HasWard($auras[$index], $player)) return WardAmount($auras[$index], $player, $index);
-  if (HasArcaneShelter($auras[$index]) && $type == "ARCANE") return ArcaneShelterAmount($auras[$index]);
+  if (HasWard($auras[$index], $player)) $preventedDamage = WardAmount($auras[$index], $player, $index);
+  elseif (HasArcaneShelter($auras[$index]) && $type == "ARCANE") $preventedDamage = ArcaneShelterAmount($auras[$index]);
   switch ($auras[$index]) {
     case "ARC167":
-      return 4;
+      $preventedDamage = 4;
+      break;
     case "ARC168":
-      return 3;
+      $preventedDamage = 3;
+      break;
     case "ARC169":
-      return 2;
+      $preventedDamage = 2;
+      break;
     case "DTD081":
       $auras = &GetAuras($player);
       if ($active) {
@@ -921,18 +925,23 @@ function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active
           $cancelRemove = count($soul) > 1 ? true : false;
           MZMoveCard($player, "MYSOUL", "MYBANISH,SOUL,-");
           if ($damage > 1) $auras[$index + 5] = 0;
-          return 1;
+          $preventedDamage = 1;
         }
       } else if ($auras[$index + 5] == 1) {
-        return 1;
+        $preventedDamage = 1;
       } else {
         $auras[$index + 5] = 1;
-        return 0;
+        $preventedDamage = 0;
       }
       break;
     default:
       break;
   }
+  if (!$check && SearchCurrentTurnEffects("OUT174", $player) != "" && $preventedDamage > 0) {//vambrace
+    $preventedDamage -= 1;
+    SearchCurrentTurnEffects("OUT174", $player, remove:true);
+  }
+  return $preventedDamage;
 }
 
 //This function is for effects that prevent damage and DO destroy themselves
