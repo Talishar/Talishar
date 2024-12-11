@@ -117,6 +117,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $prevent = SearchArsenal($currentPlayer, subtype:"Arrow", faceUp:true) != "" ? 2 : 1;
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
       return CardLink($cardID, $cardID) . " reduces your next arcane damage by " . $prevent;
+    case "HNT259":
+      MZChooseAndBanish($otherPlayer, "MYHAND", "HAND,-");
+      MZChooseAndBanish($currentPlayer, "MYHAND", "HAND,-");
     default:
       break;
   }
