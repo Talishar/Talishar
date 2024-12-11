@@ -2651,8 +2651,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "HNT099"://Fang and Cindra
       PlayAura("HNT167", $mainPlayer);
       IncrementClassState($mainPlayer, $CS_FealtyCreated);
+      break;
     case "HNT167":
       DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "HNT256":
+      GainHealth(1, $player);
+      break;
     default:
       break;
   }

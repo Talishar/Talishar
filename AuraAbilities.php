@@ -71,6 +71,7 @@ function AuraNumUses($cardID)
     case "ROS130":
     case "ROS131":
     case "ROS132":
+    case "HNT256":
       return 1;
     default:
       return 0;

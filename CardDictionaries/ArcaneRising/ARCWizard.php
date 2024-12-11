@@ -1008,6 +1008,19 @@ function ArcaneHitEffect($player, $source, $target, $damage)
   }
 
   if ($damage > 0 && CardType($source) != "W" && SearchCurrentTurnEffects("UPR125", $player, true)) AddDecisionQueue("OP", MZPlayerID($player, $target), "DESTROYFROZENARSENAL");
+  $auras = &GetAuras($player);
+  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+    switch ($auras[$i]) {
+      case "HNT256":
+        if ($auras[$i+5] > 0) {
+          AddLayer("TRIGGER", $player, $auras[$i]);
+          $auras[$i+5] -= 1;
+        }
+        break;
+      default:
+        break;
+    }
+  }
 
   if (HasSurge($source) && $damage > ArcaneDamage($source)) {
     ProcessSurge($source, $player, $target);
