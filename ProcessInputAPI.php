@@ -133,6 +133,23 @@ switch ($mode) {
     }
     $layers = $newLayers;
     break;
+  case 106: // change opt order
+      $deck = new Deck($playerID);
+      $cardListTop = $submission->cardListTop;
+      $cardListBottom = $submission->cardListBottom;
+      $cardListTopString = implode(",", $cardListTop);
+      $cardListBottomString = implode(",", $cardListBottom);
+      $newOptions = $cardListTopString . ";" . $cardListBottomString;
+      $turn[2] = $newOptions;
+      break;
+    case 107: //submit Opt
+    $deck = new Deck($playerID);
+    $cardListTop = $submission->cardListTop;
+    $cardListBottom = $submission->cardListBottom;
+    $deck->Opt($cardListTop, $cardListBottom);
+    WriteLog("Player " . $playerID . " has put " . count($cardListTop) . " cards on top and " . count($cardListBottom) . " cards on the bottom of their deck.");
+    ContinueDecisionQueue();
+    break;
   case 100011: //Resume adventure (roguelike)
     if($roguelikeGameID == "") {
       $response->error = "Cannot resume adventure - not a roguelike game.";

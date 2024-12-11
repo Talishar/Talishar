@@ -81,7 +81,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 8:
     case 9: //OPT, CHOOSETOP, CHOOSEBOTTOM
-      if ($turn[0] == "OPT" || $turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM") {
+      if ($turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM") {
         $options = explode(",", $turn[2]);
         $found = -1;
         for ($i = 0; $i < count($options); ++$i) {
