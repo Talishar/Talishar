@@ -2836,6 +2836,15 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
       break;
+    case "HNT015":
+      if (SubtypeContains($combatChain[0], "Dagger") && HasStealth($combatChain[0]) && NumCardsBlocking() > 0) $modalities = "Buff_Power,Reduce_Block,Both";
+      elseif (SubtypeContains($combatChain[0], "Dagger")) $modalities = "Buff_Power";
+      else $modalities = "Reduce_Block";
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
     default:
       break;
   }
