@@ -310,11 +310,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if($cardID == "DYN130") $amount = -4;
       else if($cardID == "DYN131") $amount = -3;
       else $amount = -2;
-      $options = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C");
-      if($options != "") {
-        AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, $options);
-        AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $currentPlayer, $amount, 1);
-      }
+      Shred($currentPlayer, $amount);
       return "";
     case "DYN148": case "DYN149": case "DYN150":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -734,4 +730,13 @@ function CheckContract($contractType, $cardBanished)
     case "NONACTION": return !IsActionCard($cardBanished);
     default: return false;
     }
+}
+
+function Shred($currentPlayer, $amount)
+{
+  $options = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C");
+  if($options != "") {
+    AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, $options);
+    AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $currentPlayer, $amount, 1);
+  }
 }

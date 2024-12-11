@@ -4975,9 +4975,9 @@ case "0":
 switch($cardID[4]) {
 case "5":
 switch($cardID[5]) {
-case "4":
-return "C";
 case "5":
+return "C";
+case "4":
 return "C";
 default: return "AA";
 }
@@ -5001,8 +5001,12 @@ case "2":
 switch($cardID[4]) {
 case "5":
 switch($cardID[5]) {
+case "9":
+return "A";
 case "2":
 return "E";
+case "6":
+return "A";
 default: return "AA";
 }
 default: return "AA";
@@ -15721,9 +15725,9 @@ default: return 3;
 }
 case "5":
 switch($cardID[5]) {
-case "4":
-return -1;
 case "5":
+return -1;
+case "4":
 return -1;
 default: return 3;
 }
@@ -24305,10 +24309,10 @@ case "5":
 switch($cardID[5]) {
 case "7":
 return "Blood Runs Deep";
-case "4":
-return "Cindra, Dracai of Retribution";
 case "5":
 return "Cindra";
+case "4":
+return "Cindra, Dracai of Retribution";
 default: return "";
 }
 case "3":
@@ -24339,8 +24343,12 @@ case "2":
 switch($cardID[4]) {
 case "5":
 switch($cardID[5]) {
+case "9":
+return "Cull";
 case "2":
 return "Enchanted Quiver";
+case "6":
+return "Ring of Roses";
 default: return "";
 }
 case "4":
@@ -32835,9 +32843,9 @@ case "0":
 switch($cardID[4]) {
 case "5":
 switch($cardID[5]) {
-case "4":
-return 0;
 case "5":
+return 0;
+case "4":
 return 0;
 default: return 1;
 }
@@ -32857,6 +32865,8 @@ case "5":
 switch($cardID[5]) {
 case "2":
 return 0;
+case "6":
+return 2;
 default: return 1;
 }
 case "4":
@@ -40005,9 +40015,9 @@ case "5":
 switch($cardID[5]) {
 case "7":
 return 2;
-case "4":
-return -1;
 case "5":
+return -1;
+case "4":
 return -1;
 default: return 0;
 }
@@ -45833,10 +45843,10 @@ case "0":
 switch($cardID[4]) {
 case "5":
 switch($cardID[5]) {
-case "4":
-return "Royal";
 case "5":
 return "Royal,Young";
+case "4":
+return "Royal";
 default: return "";
 }
 case "9":
@@ -45855,6 +45865,8 @@ case "5":
 switch($cardID[5]) {
 case "2":
 return "Quiver";
+case "6":
+return "Aura";
 default: return "";
 }
 default: return "";
@@ -51961,10 +51973,10 @@ case "5":
 switch($cardID[5]) {
 case "7":
 return "M";
-case "4":
-return "M";
 case "5":
 return "T";
+case "4":
+return "M";
 default: return "C";
 }
 case "9":
@@ -51981,7 +51993,11 @@ case "2":
 switch($cardID[4]) {
 case "5":
 switch($cardID[5]) {
+case "9":
+return "M";
 case "2":
+return "M";
+case "6":
 return "M";
 default: return "C";
 }
@@ -58765,9 +58781,9 @@ case "5":
 switch($cardID[5]) {
 case "7":
 return "NINJA";
-case "4":
-return "NINJA";
 case "5":
+return "NINJA";
+case "4":
 return "NINJA";
 default: return "NONE";
 }
@@ -58799,8 +58815,12 @@ case "2":
 switch($cardID[4]) {
 case "5":
 switch($cardID[5]) {
+case "9":
+return "RUNEBLADE";
 case "2":
 return "RANGER";
+case "6":
+return "WIZARD";
 default: return "NONE";
 }
 case "4":
@@ -65237,9 +65257,9 @@ case "5":
 switch($cardID[5]) {
 case "7":
 return "DRACONIC";
-case "4":
-return "DRACONIC";
 case "5":
+return "DRACONIC";
+case "4":
 return "DRACONIC";
 default: return "NONE";
 }
@@ -65249,6 +65269,18 @@ case "9":
 return "DRACONIC";
 case "8":
 return "DRACONIC";
+default: return "NONE";
+}
+default: return "NONE";
+}
+case "2":
+switch($cardID[4]) {
+case "5":
+switch($cardID[5]) {
+case "9":
+return "SHADOW";
+case "6":
+return "EARTH";
 default: return "NONE";
 }
 default: return "NONE";
@@ -65961,8 +65993,8 @@ case "CRU167": return "false";
 case "UPR063": return "false";
 case "UPR064": return "false";
 case "UPR065": return "false";
-case "HNT054": return "false";
 case "HNT055": return "false";
+case "HNT054": return "false";
 case "CRU079": return "false";
 case "CRU080": return "false";
 case "HVY094": return "false";
@@ -66144,6 +66176,7 @@ case "CRU032": return "false";
 case "CRU033": return "false";
 case "CRU034": return "false";
 case "DYN173": return "false";
+case "HNT259": return "false";
 case "ROS074": return "false";
 case "OUT201": return "false";
 case "OUT202": return "false";
@@ -68024,6 +68057,7 @@ case "CRU016": return "false";
 case "CRU017": return "false";
 case "AKO023": return "false";
 case "CRU018": return "false";
+case "HNT256": return "true";
 case "MON180": return "false";
 case "MON181": return "false";
 case "MON182": return "false";

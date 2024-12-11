@@ -33,6 +33,7 @@ function HNTAbilityHasGoAgain($cardID): bool
 function HNTEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
+    "HNT015"=> 3,
     default => 0,
   };
 }
@@ -43,6 +44,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   return match ($cardID) {
+    "HNT015" => true,
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
@@ -59,6 +61,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $currentPlayer, $CS_ArcaneDamagePrevention;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
+    case "HNT015":
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
+      AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
     case "HNT054":
     case "HNT055":
       RecurDagger($currentPlayer, 0);
