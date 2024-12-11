@@ -51,18 +51,10 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       switch($lastResult) {
         case "Buff_Power": AddCurrentTurnEffect("HNT015", $player); break;
         case "Reduce_Block":
-          $options = GetChainLinkCards(($player == 1 ? 2 : 1), "", "C");
-          if($options != "") {
-            AddDecisionQueue("CHOOSECOMBATCHAIN", $player, $options);
-            AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, -3, 1);
-          }
+          Shred($player, -3);
           break;
         case "Both":
-          $options = GetChainLinkCards(($player == 1 ? 2 : 1), "", "C");
-          if($options != "") {
-            AddDecisionQueue("CHOOSECOMBATCHAIN", $player, $options);
-            AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, -3, 1);
-          }
+          Shred($player, -3);
           AddCurrentTurnEffect("HNT015", $player); 
           break;
       }
