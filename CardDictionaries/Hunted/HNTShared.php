@@ -123,8 +123,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
       return CardLink($cardID, $cardID) . " reduces your next arcane damage by " . $prevent;
     case "HNT259":
-      MZChooseAndBanish($otherPlayer, "MYHAND", "HAND,-");
       MZChooseAndBanish($currentPlayer, "MYHAND", "HAND,-");
+      MZChooseAndBanish($otherPlayer, "MYHAND", "HAND,-");
     default:
       break;
   }
