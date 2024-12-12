@@ -1290,6 +1290,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0;
   } else if ($cardID == "DTD140") return GetClassState($currentPlayer, $CS_HealthLost) > 0 || GetClassState($otherPlayer, $CS_HealthLost) > 0;
   else if ($cardID == "DTD141") return GetClassState($currentPlayer, $CS_HealthLost) > 0 || GetClassState($otherPlayer, $CS_HealthLost) > 0;
+  else if ($cardID == "HNT259") return GetClassState($currentPlayer, $CS_HealthLost) > 0 || GetClassState($otherPlayer, $CS_HealthLost) > 0;
   if (SearchCurrentTurnEffects("MST027", $currentPlayer) && SubtypeContains($cardID, "Aura", $currentPlayer) && $from != "PLAY") return true;
   if (SubtypeContains($cardID, "Evo")) {
     if (SearchCurrentTurnEffects("EVO007", $currentPlayer) || SearchCurrentTurnEffects("EVO008", $currentPlayer)) return true;

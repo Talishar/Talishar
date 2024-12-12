@@ -3455,7 +3455,8 @@ function HasBloodDebt($cardID)
     case "DTD186":
     case "MST236":
     case "MST237":
-      return true;
+    case "HNT259":
+          return true;
     default:
       return false;
   }
@@ -3571,6 +3572,8 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
     case "DTD178":
     case "DTD179":
     case "DTD180":
+      return true;
+    case "HNT259":
       return true;
     default:
       break;
