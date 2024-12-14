@@ -152,7 +152,8 @@ function HNTHitEffect($cardID): void
 
 function MarkHero($player): string
 {
-  WriteLog($player . " is now marked!");
+  WriteLog("Player " . $player . " is now marked!");
+  AddCurrentTurnEffect("HNT244", $player);
   $character = &GetPlayerCharacter($player);
   $character[13] = 1;
   return "";
