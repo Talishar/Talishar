@@ -651,7 +651,6 @@ function ResetCardPlayed($cardID, $from="-")
   $abilityType = GetResolvedAbilityType($cardID, $from);
   if(!$effectRemoved && DelimStringContains($type, "A") && ($abilityType == "A" || $abilityType == "")) {
     if ($mainPlayer == $currentPlayer) {
-      WriteLog($abilityType);
       SearchCurrentTurnEffects("ROS075", $mainPlayer, true);
       $combatChainState[$CCS_EclecticMag] = 0;
     }
