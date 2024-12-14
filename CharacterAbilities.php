@@ -386,6 +386,10 @@ function MainCharacterBeginEndPhaseAbilities()
         if ($mainCharacter[$i + 1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
         TerraEndPhaseAbility($characterID, $mainPlayer);
         break;
+      case "HNT001":
+      case "HNT002":
+        ChaosTransform($characterID, $mainPlayer);
+        break;
       default:
         break;
     }
@@ -595,7 +599,8 @@ function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs
         break;
       case "HNT001":
       case "HNT002":
-        if (HasStealth($CombatChain->CurrentAttack())) {
+        $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+        if (HasStealth($CombatChain->CurrentAttack()) & CheckMarked($otherPlayer)) {
           $modifier += 1;
           array_push($attackModifiers, $characterID);
           array_push($attackModifiers, 1);

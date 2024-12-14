@@ -210,3 +210,7 @@ function ListDracDaggersGraveyard($player) {
   }
   return $weapons;
 }
+
+function ChaosTransform($charterID, $mainPlayer) {
+  WriteLog("End of turn transform not yet implemented");
+}
