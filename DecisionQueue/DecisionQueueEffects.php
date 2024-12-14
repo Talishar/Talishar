@@ -447,7 +447,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $deck = new Deck($player);
       $modifiedAttack = ModifiedAttackValue($deck->Top(), $player, "DECK", source:"");
       if($deck->Reveal() && $modifiedAttack > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt)) {
-        WriteLog("Even Bigger Than That! drew a card and created a Quicken token");
+        WriteLog(CardLink($params[1], $params[1]) . " draw a card and created a " . CardLink("WTR225", "WTR225") . " token");
         Draw($player);
         PlayAura("WTR225", $player);
       }

@@ -1099,7 +1099,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     for ($i = 0; $i < count($bottomOptions); ++$i) {
       array_push($bottomOptCards, JSONRenderedCard($bottomOptions[$i], action: 0));
     }
-    $playerInputPopup->popup = CreatePopupAPI("NEWOPT", [], 0, 1, "Drag cards to add to the deck top or bottom", 1, "", topCards: $topOptCards, bottomCards: $bottomOptCards);
+    $playerInputPopup->popup = CreatePopupAPI("NEWOPT", [], 0, 1, "Drag cards to add to the top or bottom of the deck", 1, "", topCards: $topOptCards, bottomCards: $bottomOptCards);
   }
 
   if (($turn[0] == "CHOOSETOPOPPONENT") && $turn[1] == $playerID) { //Use when you have to reorder the top of your opponent library e.g. Righteous Cleansing

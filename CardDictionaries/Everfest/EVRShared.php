@@ -463,7 +463,7 @@
         else if($cardID == "EVR174") $opt = 2;
         else if($cardID == "EVR175") $opt = 1;
         PlayerOpt($currentPlayer, $opt);
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVENBIGGERTHANTHAT");
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVENBIGGERTHANTHAT-".$cardID);
         return "";
       case "EVR176":
         if($from == "PLAY") {
