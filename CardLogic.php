@@ -1112,6 +1112,8 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
     case "EVR048-1":
     case "EVR049-1":
     case "EVR161-1":
+    case "EVR162-1":
+    case "EVR163-1":
     case "EVR164":
     case "EVR165":
     case "EVR166":

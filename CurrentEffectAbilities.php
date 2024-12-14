@@ -199,6 +199,8 @@ function EffectHitEffect($cardID, $from)
       PutItemIntoPlayForPlayer("CRU197", $mainPlayer);
       return 1;
     case "EVR161-1":
+    case "EVR162-1":
+    case "EVR163-1":
       GainHealth(2, $mainPlayer);
       break;
     case "EVR164":
@@ -1468,6 +1470,8 @@ function CurrentEffectGrantsGoAgain()
         case "EVR046":
           return true;
         case "EVR161-3":
+        case "EVR162-3":
+        case "EVR163-3":
           return true;
         case "DVR008":
           return true;

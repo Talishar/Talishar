@@ -2456,6 +2456,8 @@ function IsAlternativeCostPaid($cardID, $from)
         case "MON199":
         case "MON257":
         case "EVR161":
+        case "EVR162":
+        case "EVR163":
         case "HVY176-PAID":
         case "MST131":
           $isAlternativeCostPaid = true;

@@ -2015,10 +2015,19 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "EVR161":
     case "EVR162":
     case "EVR163":
+      global $chainLinkSummary;
+      $attackNames = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 4]);
+      for ($i = 0; $i < count($attackNames); ++$i) {
+        $attackName = GamestateUnsanitize($attackNames[$i]);
+        if ($attackName == "Crazy Brew") {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "PASS");
+        }
+      }
       AddDecisionQueue("FINDINDICES", $currentPlayer, "LIFEOFPARTY");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "EVR161", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       break;
     //Windups
     case "HVY143":
