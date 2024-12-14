@@ -617,6 +617,22 @@ function AuraStartTurnAbilities()
       LoseHealth($eqFrostbiteCount, $mainPlayer);
       WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("AJV017", "AJV017") .".");
       break;
+    case "HNT125":
+      if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "HNT126":
+      $character = &GetPlayerCharacter($mainPlayer);
+      $weaponIndex1 = CharacterPieces();
+      $weaponIndex2 = CharacterPieces() * 2;
+      if(SubtypeContains($character[$weaponIndex1], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex1, 1);
+      if(SubtypeContains($character[$weaponIndex2], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex2, 1);
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "HNT127":
+      if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
     default:
       break;
     }

@@ -33,7 +33,8 @@ function HNTAbilityHasGoAgain($cardID): bool
 function HNTEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
-    "HNT015"=> 3,
+    "HNT015" => 3,
+    "HNT127" => 1,
     default => 0,
   };
 }
@@ -50,6 +51,8 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT076" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT116" => true,
+    "HNT125" => CardSubType($attackID) == "Dagger",
+    "HNT127" => CardSubType($attackID) == "Dagger",
     "HNT167" => DelimStringContains(CardType($attackID), "AA"),
     "HNT249" => true,
     default => false,
@@ -158,7 +161,7 @@ function HNTHitEffect($cardID): void
 function MarkHero($player): string
 {
   WriteLog("Player " . $player . " is now marked!");
-  AddCurrentTurnEffect("HNT244", $player);
+  if (!SearchCurrentTurnEffects("HNT244", $player)) AddCurrentTurnEffect("HNT244", $player);
   $character = &GetPlayerCharacter($player);
   $character[13] = 1;
   return "";
@@ -172,6 +175,8 @@ function CheckMarked($player): bool
 
 function RemoveMark($player)
 {
+  $effectIndex = SearchCurrentTurnEffects("HNT244", $player);
+  if ($effectIndex > -1) RemoveCurrentTurnEffect($effectIndex);
   $character = &GetPlayerCharacter($player);
   $character[13] = 0;
 }

@@ -1512,6 +1512,8 @@ function CurrentEffectGrantsGoAgain()
         case "ROS118":
           if(GetClassState($mainPlayer, $CS_NumAuras) >= 1) return true;
           else break;
+        case "HNT125":
+          return true;
         default:
           break;
       }
@@ -1877,6 +1879,9 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "AJV006-E":
     case "AJV006-I":
+      return true;
+    case "HNT125":
+    case "HNT127":
       return true;
     //Roguelike
     case "ROGUE018":

@@ -170,6 +170,9 @@ function StartTurnAbilities()
 {
   global $mainPlayer, $defPlayer;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  $defCharacter = &GetPlayerCharacter($defPlayer);
+  if($mainCharacter[13]) AddCurrentTurnEffect("HNT244", $mainPlayer);  //Marked stays between turns
+  if($defCharacter[13]) AddCurrentTurnEffect("HNT244", $mainPlayer); //Marked stays between turns
   for ($i = count($mainCharacter) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
     CharacterStartTurnAbility($i);
   }

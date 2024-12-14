@@ -911,6 +911,9 @@ function HasGoAgain($cardID): bool|int
     case "ROS253":
     case "AIO004":
     case "AJV017":
+    case "HNT124":
+    case "HNT125":
+    case "HNT126":
       return true;
   }
   $set = CardSet($cardID);
