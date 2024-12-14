@@ -183,24 +183,30 @@ function RemoveMark($player)
 
 function RecurDagger($player, $mode) //$mode == 0 for left, and 1 for right
 {
+  $char = &GetPlayerCharacter($player);
+  if ($char[CharacterPieces() * ($mode + 1) + 1] == 0) { //Only Equip if there is a broken weapon/off-hand
+    AddDecisionQueue("LISTDRACDAGGERGRAVEYARD", $player, "-");
+    AddDecisionQueue("NULLPASS", $player, "-", 1);
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
+    AddDecisionQueue("CHOOSECARD", $player, "<-", 1);
+    AddDecisionQueue("EQUIPCARDGRAVEYARD", $player, "<-", 1);
+  }
+}
+
+function ListDracDaggersGraveyard($player) {
   $weapons = "";
   $char = &GetPlayerCharacter($player);
   $graveyard = &GetDiscard($player);
-  if ($char[CharacterPieces() * ($mode + 1) + 1] == 0) { //Only Equip if there is a broken weapon/off-hand
-    foreach ($graveyard as $cardID) {
-      if (TypeContains($cardID, "W", $player) && SubtypeContains($cardID, "Dagger")) {
-        if (TalentContains($cardID, "DRACONIC")) {
-          if ($weapons != "") $weapons .= ",";
-          $weapons .= $cardID;
-        }
-      };
+  foreach ($graveyard as $cardID) {
+    if (TypeContains($cardID, "W", $player) && SubtypeContains($cardID, "Dagger")) {
+      if (TalentContains($cardID, "")) {
+        if ($weapons != "") $weapons .= ",";
+        $weapons .= $cardID;
+      }
     }
-    if ($weapons == "") {
-      WriteLog("Player " . $player . " doesn't have any dagger in their graveyard");
-      return;
-    }
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip");
-    AddDecisionQueue("CHOOSECARD", $player, $weapons);
-    AddDecisionQueue("EQUIPCARDGRAVEYARD", $player, "<-");
   }
+  if ($weapons == "") {
+    WriteLog("Player " . $player . " doesn't have any dagger in their graveyard");
+  }
+  return $weapons;
 }
