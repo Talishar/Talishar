@@ -516,7 +516,8 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true, DQContext:"Choose traps from your deck to add to your hand:");
       }
       AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, 2 . "-");
+      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "2-");
+      AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-2");
       AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-");
       AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-");
       AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-");
