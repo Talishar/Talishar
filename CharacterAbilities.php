@@ -544,7 +544,7 @@ function MainCharacterHitTrigger()
 
 function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs = false, $player = -1)
 {
-  global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  global $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CombatChain;
   $modifier = 0;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
@@ -588,6 +588,14 @@ function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs
       case "MON029":
       case "MON030":
         if (HaveCharged($mainPlayer) && NumAttacksBlocking() > 0) {
+          $modifier += 1;
+          array_push($attackModifiers, $characterID);
+          array_push($attackModifiers, 1);
+        }
+        break;
+      case "HNT001":
+      case "HNT002":
+        if (HasStealth($CombatChain->CurrentAttack())) {
           $modifier += 1;
           array_push($attackModifiers, $characterID);
           array_push($attackModifiers, 1);
