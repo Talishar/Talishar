@@ -631,7 +631,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumDraconicPlayed] = 0;
 }
 
-function ResetCardPlayed($cardID)
+function ResetCardPlayed($cardID, $from="-")
 {
   global $currentPlayer, $mainPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $combatChainState, $CCS_EclecticMag;
   $type = CardType($cardID);
@@ -648,9 +648,12 @@ function ResetCardPlayed($cardID)
     $effectRemoved = true;
   }
   //You may use this effect on any one non-attack action card this chain link, not just the next non-attack action card you play this chain link.
-  if(!$effectRemoved && DelimStringContains($type, "A") && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "")) {
-    SearchCurrentTurnEffects("ROS075", $mainPlayer, true);
-    $combatChainState[$CCS_EclecticMag] = 0;
+  $abilityType = GetResolvedAbilityType($cardID, $from);
+  if(!$effectRemoved && DelimStringContains($type, "A") && ($abilityType == "A" || $abilityType == "")) {
+    if ($mainPlayer == $currentPlayer) {
+      SearchCurrentTurnEffects("ROS075", $mainPlayer, true);
+      $combatChainState[$CCS_EclecticMag] = 0;
+    }
   }
 }
 
