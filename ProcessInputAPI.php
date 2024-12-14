@@ -143,13 +143,18 @@ switch ($mode) {
       $turn[2] = $newOptions;
       break;
     case 107: //submit Opt
-    $deck = new Deck($playerID);
-    $cardListTop = $submission->cardListTop;
-    $cardListBottom = $submission->cardListBottom;
-    $deck->Opt($cardListTop, $cardListBottom);
-    WriteLog("Player " . $playerID . " has put " . count($cardListTop) . " cards on top and " . count($cardListBottom) . " cards on the bottom of their deck.");
-    ContinueDecisionQueue();
-    break;
+      $deck = new Deck($playerID);
+      $cardListTop = $submission->cardListTop;
+      $cardListBottom = $submission->cardListBottom;
+      $deck->Opt($cardListTop, $cardListBottom);
+
+      $topCount = count($cardListTop);
+      $bottomCount = count($cardListBottom);
+      $topMessage = $topCount . " card" . ($topCount > 1 ? "s" : "") . " on top";
+      $bottomMessage = $bottomCount . " card" . ($bottomCount > 1 ? "s" : "") . " on the bottom";
+      WriteLog("Player " . $playerID . " has put " . $topMessage . " and " . $bottomMessage . " of their deck.");
+      ContinueDecisionQueue();
+      break;
   case 100011: //Resume adventure (roguelike)
     if($roguelikeGameID == "") {
       $response->error = "Cannot resume adventure - not a roguelike game.";
