@@ -100,6 +100,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT116":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT160":
+      if(IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
+        PlayAura("HNT167", $currentPlayer);
+      }
+      break;
     case "HNT165":
       $otherchar = &GetPlayerCharacter($otherPlayer);
       MarkHero($otherPlayer);
