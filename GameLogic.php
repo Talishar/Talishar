@@ -1974,21 +1974,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else EquipEquipment($player, $parameter);
       return "";
     case "LISTDRACDAGGERGRAVEYARD":
-      $weapons = "";
-      $char = &GetPlayerCharacter($player);
-      $graveyard = &GetDiscard($player);
-      foreach ($graveyard as $cardID) {
-        if (TypeContains($cardID, "W", $player) && SubtypeContains($cardID, "Dagger")) {
-          // if (TalentContains($cardID, "")) {
-          if ($weapons != "") $weapons .= ",";
-          $weapons .= $cardID;
-          // }
-        }
-      }
-      if ($weapons == "") {
-        WriteLog("Player " . $player . " doesn't have any dagger in their graveyard");
-      }
-      return $weapons;
+      return ListDracDaggersGraveyard($player);
     case "EQUIPCARDGRAVEYARD":
       $index = SearchGetFirstIndex(SearchMultizone($currentPlayer, "MYDISCARD:cardID=" . $parameter));
       RemoveGraveyard($currentPlayer, $index);
