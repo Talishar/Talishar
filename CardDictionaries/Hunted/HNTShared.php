@@ -3,7 +3,6 @@
 function HNTAbilityType($cardID): string
 {
   return match ($cardID) {
-    "HNT098" => "I",
     "HNT054" => "I",
     "HNT055" => "I",
     "HNT167" => "I",
@@ -72,13 +71,8 @@ function HNTCombatEffectActive($cardID, $attackID): bool
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_ArcaneDamagePrevention;
-  global  $currentTurnEffects;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
-    case "HNT098":
-      for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-        WriteLog($currentTurnEffects[$i]);
-      }
     case "HNT015":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
@@ -163,7 +157,6 @@ function HNTHitEffect($cardID): void
   global $mainPlayer, $defPlayer;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
-  WriteLog("HERE in hits");
   switch ($cardID) {
     case "HNT074":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
