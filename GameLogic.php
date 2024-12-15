@@ -176,7 +176,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MON022":
           $rv = SearchDiscard($player, "", "", -1, -1, "", "", false, true);
           break;
-        case "MON033-1":
+        case "SOULINDICES":
           $soul = &GetSoul($player);
           $rv = GetIndices(count($soul), 1, SoulPieces());
           break;

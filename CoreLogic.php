@@ -410,6 +410,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   if ($type == "COMBAT" && SearchCurrentTurnEffects("HNT116", $mainPlayer)) return false;
   if ($source == "DYN005" || $source == "OUT030" || $source == "OUT031" || $source == "OUT032" || $source == "OUT121" || $source == "OUT122" || $source == "OUT123") return false;
   if (($source == "MST127" || $source == "MST128" || $source == "MST129") && NumAttackReactionsPlayed() > 0) return false;
+  if ($source == "HNT258") return false;
   return true;
 }
 
@@ -1338,6 +1339,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "ROS204":
     case "ROS205":
     case "ROS206":
+    case "HNT258":
       return $from == "HAND";
     case "MST134":
     case "MST135":

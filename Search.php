@@ -545,6 +545,19 @@ function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniq
   return $returnUniqueID ? -1 : false;
 }
 
+function SearchDynamicCurrentTurnEffectsIndex($cardID, $player, $remove = false, $returnUniqueID = false, $lenght = 6)
+{
+  global $currentTurnEffects;
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    if (!isset($currentTurnEffects[$i + 1])) continue;
+    if (substr($currentTurnEffects[$i], 0, $lenght) == $cardID && $currentTurnEffects[$i + 1] == $player) {
+      if ($remove) RemoveCurrentTurnEffect($i);
+      return $returnUniqueID ? $currentTurnEffects[$i + 2] : $i;
+    }
+  }
+  return -1;
+}
+
 function SearchNextTurnEffects($cardID, $player, $remove = false, $returnUniqueID = false, $activate = false)
 {
   global $nextTurnEffects;

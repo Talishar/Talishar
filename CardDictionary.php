@@ -974,6 +974,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "ROS104", "ROS105", "ROS106", "ROS055", "ROS056", "ROS057", "HVY209" => "I,AA",
     "ROS170", "ROS171", "ROS172", "ROS186", "ROS187", "ROS188", "ROS204", "ROS205", "ROS206" => "I,A",
     "ROS120", "ROS169" => "B,I",
+    "HNT258" => "I,AR",
     default => "",
   };
 }
@@ -981,6 +982,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 function GetAbilityNames($cardID, $index = -1, $from = "-"): string
 {
   global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $CS_PlayIndex, $CS_NumActionsPlayed, $CS_NextWizardNAAInstant, $combatChainState, $CCS_EclecticMag;
+  global $defPlayer;
   $character = &GetPlayerCharacter($currentPlayer);
   $auras = &GetAuras($currentPlayer);
   $names = "";
@@ -1044,6 +1046,11 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       elseif($combatChainState[$CCS_EclecticMag]) $names .= ",Action";
       elseif($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Action";
       if($from != "HAND") $names = "-,Action";
+      return $names;
+    case "HNT258":
+      $names = "Ability";
+      if ($from != "HAND") $names = "Attack Reaction";
+      elseif ($currentPlayer == $mainPlayer && count($combatChain) >= 0 && CardNameContains($combatChain[0], "Raydn", $mainPlayer, true)) $names .= ",Attack Reaction";
       return $names;
     default:
       return "";
@@ -2207,6 +2214,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return false;
     case "HNT116":
       return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
+    case "HNT258":
+      return $from != "HAND" && (!$CombatChain->HasCurrentLink() || !CardNameContains($CombatChain->AttackCard()->ID(), "Raydn", $mainPlayer, true));
     default:
       return false;
   }
@@ -2239,9 +2248,9 @@ function IsActionCard($cardID)
   return false;
 }
 
-function GoesOnCombatChain($phase, $cardID, $from)
+function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
 {
-  global $layers;
+  global $layers, $mainPlayer;
   switch ($cardID) {
     case "HVY143":
     case "HVY144":
@@ -2262,6 +2271,8 @@ function GoesOnCombatChain($phase, $cardID, $from)
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     case "MST133":
       return GetResolvedAbilityType($cardID, $from) == "AA";
+    case "HNT258":
+      return $phase == "B" || GetResolvedAbilityType($cardID, $from) == "AR";
     default:
       break;
   }

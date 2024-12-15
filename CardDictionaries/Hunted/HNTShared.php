@@ -37,6 +37,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT015" => 3,
     "HNT102-BUFF" => 2,
     "HNT127" => 1,
+    "HNT258-BUFF" => 2,
     default => 0,
   };
 }
@@ -65,6 +66,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT127" => CardSubType($attackID) == "Dagger",
     "HNT167" => DelimStringContains(CardType($attackID), "AA"),
     "HNT249" => true,
+    "HNT258" => true,
     default => false,
   };
 }
@@ -165,6 +167,17 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $prevent = SearchArsenal($currentPlayer, subtype:"Arrow", faceUp:true) != "" ? 2 : 1;
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
       return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
+    case "HNT258":
+      if (GetResolvedAbilityType($cardID, "HAND") == "AR") {
+        AddCurrentTurnEffect($cardID."-BUFF", $currentPlayer, $from);
+      }
+      else {
+        //TODO: Code the "TARGET" weapon for the damage prevention.
+        AddCurrentTurnEffect($cardID."-DMG-".$additionalCosts, $currentPlayer, $from);
+      }
+      return "";
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     case "HNT259":
       MZChooseAndBanish($currentPlayer, "MYHAND", "HAND,-");
       MZChooseAndBanish($otherPlayer, "MYHAND", "HAND,-");
