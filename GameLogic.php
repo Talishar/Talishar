@@ -1920,7 +1920,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $currentChar = &GetPlayerCharacter($currentPlayer);
       if (CheckMarked($defPlayer)) {
         if ($currentChar[0] == "HNT054" || $currentChar[0] == "HNT055" || $currentChar[0] == "HNT098" || $currentChar[0] == "HNT099") {
-          WriteLog("Flick knives trigger");
           AddLayer("TRIGGER", $mainPlayer, $currentChar[0]);
         }
         RemoveMark($defPlayer);
