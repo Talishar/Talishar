@@ -540,7 +540,7 @@ function MainCharacterHitTrigger()
         break;
     }
     $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-    if (CheckMarked($otherPlayer)) {
+    if (CheckMarked($otherPlayer) & IsHeroAttackTarget()) {
       $characterID = ShiyanaCharacter($mainCharacter[$i], $mainPlayer);
       switch ($characterID) {
         case "HNT054":
