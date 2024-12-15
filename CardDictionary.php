@@ -2182,6 +2182,22 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (HasStealth($CombatChain->AttackCard()->ID()) && NumCardsBlocking() > 0) return false;
       if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) return false;
       return true;
+    case "HNT102":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      // This next line is based on my interpretation of the card. It seems to require you to pick all 3 modes
+      // if you have 3 draconic chain links, and you can't pick the first mode without a dagger attack
+      // this could change with release notes
+      if (NumDraconicChainLinks() > 2 && !SubtypeContains($CombatChain->CurrentAttack(), "Dagger")) return true;
+      if (NumDraconicChainLinks() > 0) {
+        // make sure you have at least one dagger equipped
+        $mainCharacter = &GetPlayerCharacter($mainPlayer);
+        for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
+          if (SubtypeContains($mainCharacter[$i], "Dagger")) return false;
+        }
+        return true;
+      }
+      // you can play it, but it won't do anything
+      return false;
     case "HNT116":
       return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     default:

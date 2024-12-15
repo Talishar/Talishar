@@ -34,6 +34,7 @@ function HNTEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
     "HNT015" => 3,
+    "HNT102-BUFF" => 2,
     "HNT127" => 1,
     default => 0,
   };
@@ -41,9 +42,17 @@ function HNTEffectAttackModifier($cardID): int
 
 function HNTCombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer;
+  global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
+  if ($cardID == "HNT102" & count($dashArr) > 1) {
+    if ($dashArr[1] == "BUFF") return CardSubType($attackID) == "Dagger";
+    if (DelimStringContains($dashArr[1], "MARK", true)) {
+      $id = explode(",", $dashArr[1])[1];
+      $character = &GetPlayerCharacter($mainPlayer);
+      return $character[$combatChainState[$CCS_WeaponIndex] + 11] == $id;
+    }
+  }
   return match ($cardID) {
     "HNT015" => true,
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
@@ -100,6 +109,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       break;
+    case "HNT102":
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
+      AddDecisionQueue("MODAL", $currentPlayer, "LONGWHISKER", 1);
     case "HNT116":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
@@ -143,6 +155,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 function HNTHitEffect($cardID): void
 {
   global $mainPlayer, $defPlayer;
+  $dashArr = explode("-", $cardID);
+  $cardID = $dashArr[0];
   switch ($cardID) {
     case "HNT074":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
