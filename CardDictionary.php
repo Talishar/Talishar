@@ -525,6 +525,8 @@ function CardCost($cardID, $from="-")
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   switch ($cardID) {
+    case "EVR022":
+      return 3;
     case "HVY143":
     case "HVY144":
     case "HVY145":
@@ -573,6 +575,8 @@ function CardCost($cardID, $from="-")
     case "ROS205":
     case "ROS206":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
+      return 1;
+    case "HNT248":
       return 1;
     default:
       break;
@@ -683,6 +687,8 @@ function DynamicCost($cardID)
         return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110";
       }
       return "0,2,4,6,8,10,12,14,16,18,20";
+    case "HNT248":
+      return "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15";  
     default:
       return "";
   }
