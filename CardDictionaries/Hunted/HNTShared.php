@@ -6,6 +6,7 @@ function HNTAbilityType($cardID): string
     "HNT054" => "I",
     "HNT055" => "I",
     "HNT167" => "I",
+    "HNT247" => "I",
     "HNT252" => "I",
     default => ""
   };
@@ -70,7 +71,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
 
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_ArcaneDamagePrevention;
+  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT015":
@@ -133,6 +134,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT246":
       DiscardRandom();
       break;
+    case "HNT247":
+      if(GetClassState($currentPlayer, $CS_NumSeismicSurgeDestroyed) > 0 || SearchAurasForCard("WTR075", $currentPlayer) != "") $prevent = 2;
+      else $prevent = 1;
+      IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
+      return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
     case "HNT249":
       if (ComboActive($cardID)) {
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
@@ -145,7 +151,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT252":
       $prevent = SearchArsenal($currentPlayer, subtype:"Arrow", faceUp:true) != "" ? 2 : 1;
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
-      return CardLink($cardID, $cardID) . " reduces your next arcane damage by " . $prevent;
+      return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
     case "HNT259":
       MZChooseAndBanish($currentPlayer, "MYHAND", "HAND,-");
       MZChooseAndBanish($otherPlayer, "MYHAND", "HAND,-");
