@@ -1082,18 +1082,11 @@ function ResolveCombatDamage($damageDone)
           AddOnHitTrigger($combatChain[$i]);
           if ($damageDone >= 4) AddCrushEffectTrigger($combatChain[$i]);
           if (CachedTotalAttack() >= 13) AddTowerEffectTrigger($combatChain[$i]);
-          if (IsHeroAttackTarget()) {
-            $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-            $mainChar = &GetPlayerCharacter($mainPlayer);
-            if (($mainChar[0] == "HNT054" || $mainChar[0] == "HNT055" || $mainChar[0] == "HNT098" || $mainChar[0] == "HNT099") && CheckMarked($otherPlayer)){
-              {
-                AddLayer("TRIGGER", $mainPlayer, $mainChar[0]);
-              }
-            }
-            CheckHitContracts($mainPlayer, $otherPlayer);
-          }
-          
         }
+      }
+      if (IsHeroAttackTarget()) {
+        $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+        CheckHitContracts($mainPlayer, $otherPlayer);
       }
       for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
         if (IsCombatEffectActive($currentTurnEffects[$i])) {
