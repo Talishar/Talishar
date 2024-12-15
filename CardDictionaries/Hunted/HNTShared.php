@@ -139,6 +139,19 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       else $prevent = 1;
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
       return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
+    case "HNT248":
+      $maxSeismicCount = count(explode(",", SearchAurasForCard("WTR075", $currentPlayer)));
+      for($i=0; $i < $maxSeismicCount; ++$i) {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:minCost=0;maxCost=".$resourcesPaid."&MYAURAS:minCost=0;maxCost=".$resourcesPaid, 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura with cost " . $resourcesPaid . " or less to destroy", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:isCardID=WTR075", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Seismic Surge to destroy or pass", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      }
+      break;
     case "HNT249":
       if (ComboActive($cardID)) {
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
