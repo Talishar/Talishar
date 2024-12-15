@@ -1085,8 +1085,11 @@ function ResolveCombatDamage($damageDone)
           if (IsHeroAttackTarget()) {
             $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
             $mainChar = &GetPlayerCharacter($mainPlayer);
-            if (($mainChar[0] == "HNT054" || $mainChar[0] == "HNT055" || $mainChar[0] == "HNT098" || $mainChar[0] == "HNT099") && CheckMarked($otherPlayer)){
-              {
+            if (CheckMarked($otherPlayer)) {
+              if ($mainChar[0] == "HNT054" || $mainChar[0] == "HNT055" || $mainChar[0] == "HNT098" || $mainChar[0] == "HNT099"){
+                AddLayer("TRIGGER", $mainPlayer, $mainChar[0]);
+              }
+              if (($mainChar[0] == "HNT001" || $mainChar[0] == "HNT002") & HasStealth($combatChain[0])) {
                 AddLayer("TRIGGER", $mainPlayer, $mainChar[0]);
               }
             }

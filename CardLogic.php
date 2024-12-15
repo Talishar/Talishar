@@ -2647,6 +2647,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "AJV007":
       PlayAura("ELE109", $defPlayer, effectController: $defPlayer);
       break;
+    case "HNT001":
+    case "HNT002":
+      GiveAttackGoAgain();
+      break;
     case "HNT054":
     case "HNT055":
     case "HNT098":
