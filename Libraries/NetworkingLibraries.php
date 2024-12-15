@@ -2854,6 +2854,23 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
+    case "HNT102":
+      if (SubtypeContains($combatChain[0], "Dagger")) $modalities = "Buff_Power,Additional_Attack,Mark";
+      else $modalities = "Additional_Attack,Mark";
+      $numModes = min(count(explode(",", $modalities)), NumDraconicChainLinks());
+      if ($numModes > 0) {
+        if ($numModes < 3) {
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $numModes == 1 ? "Choose 1 mode" : "Choose " . $numModes . " modes");
+          AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, $numModes . "-" . $modalities . "-" . $numModes);
+          AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+          AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+        } else {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities);
+          AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
+          AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
+        }
+      }
+      break;
     default:
       break;
   }

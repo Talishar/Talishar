@@ -1157,6 +1157,9 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
     case "MST162-HIT":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
+    case "HNT102-MARK":
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      break;
     default:
       break;
   }

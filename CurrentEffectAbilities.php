@@ -6,6 +6,7 @@ function EffectHitEffect($cardID, $from)
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $CombatChain, $CCS_DamageDealt;
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers;
+  // if (DelimStringContains($cardID, "HNT102", true)) WriteLog($cardID);
   $attackID = $CombatChain->AttackCard()->ID();
   if (CardType($attackID) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   $effectArr = explode(",", $cardID);
@@ -399,6 +400,13 @@ function EffectHitEffect($cardID, $from)
     case "ROS012":
       if (IsHeroAttackTarget()) DealArcane(4, 1, "PLAYCARD", $cardID, false, $mainPlayer);
       return 1;
+    case "HNT102-MARK":
+      $character = &GetPlayerCharacter($mainPlayer);
+      if (IsHeroAttackTarget() && $character[$combatChainState[$CCS_WeaponIndex] + 11] == $effectArr[1]) {
+        MarkHero($defPlayer);
+        return 1;
+      }
+      break;
     default:
       break;
   }
