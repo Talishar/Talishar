@@ -2664,6 +2664,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "HNT167":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "HNT246":
+      DiscardRandom();
+      break;
     case "HNT256":
       GainHealth(1, $player);
       break;

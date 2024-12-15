@@ -130,6 +130,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT167":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT246":
+      DiscardRandom();
+      break;
     case "HNT249":
       if (ComboActive($cardID)) {
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
