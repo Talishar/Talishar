@@ -2417,6 +2417,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "EXTRAATTACK":
+      $ind = explode("-", $parameter)[1];
+      $char = &GetPlayerCharacter($player);
+      $char[$ind+5]++;
+      if ($char[$ind+1] == 1) $char[$ind+1]++;
+      return $lastResult;
+    case "ADDONHITMARK":
+      $ind = explode("-", $parameter)[1];
+      $char = &GetPlayerCharacter($player);
+      AddCurrentTurnEffect("HNT102-MARK" . "," . $char[$ind+11], $player);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

@@ -671,7 +671,7 @@ function AuraStartTurnAbilities()
 }
 
 function AuraBeginningActionPhaseAbilities(){
-  global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
+  global $mainPlayer, $EffectContext, $CS_NumSeismicSurgeDestroyed;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $EffectContext = $auras[$i];
@@ -688,7 +688,6 @@ function AuraBeginningActionPhaseAbilities(){
       case "WTR072":
       case "WTR073":
       case "WTR074":
-      case "WTR075":
       case "ARC162":
       case "CRU028":
       case "CRU029":
@@ -739,6 +738,10 @@ function AuraBeginningActionPhaseAbilities(){
       case "ROS226":
       case "ROS230":
       case "AJV018":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "WTR075":
+        IncrementClassState($mainPlayer, $CS_NumSeismicSurgeDestroyed, 1);
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       default:

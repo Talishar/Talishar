@@ -525,6 +525,8 @@ function CardCost($cardID, $from="-")
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   switch ($cardID) {
+    case "EVR022":
+      return 3;
     case "HVY143":
     case "HVY144":
     case "HVY145":
@@ -573,6 +575,8 @@ function CardCost($cardID, $from="-")
     case "ROS205":
     case "ROS206":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
+      return 1;
+    case "HNT248":
       return 1;
     default:
       break;
@@ -683,6 +687,8 @@ function DynamicCost($cardID)
         return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110";
       }
       return "0,2,4,6,8,10,12,14,16,18,20";
+    case "HNT248":
+      return "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15";  
     default:
       return "";
   }
@@ -909,9 +915,10 @@ function HasGoAgain($cardID): bool|int
     case "ROS253":
     case "AIO004":
     case "AJV017":
-    case "HNT124":
     case "HNT125":
     case "HNT126":
+    case "HNT127":
+    case "HNT248":
       return true;
   }
   $set = CardSet($cardID);
@@ -2182,6 +2189,22 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (HasStealth($CombatChain->AttackCard()->ID()) && NumCardsBlocking() > 0) return false;
       if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) return false;
       return true;
+    case "HNT102":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      // This next line is based on my interpretation of the card. It seems to require you to pick all 3 modes
+      // if you have 3 draconic chain links, and you can't pick the first mode without a dagger attack
+      // this could change with release notes
+      if (NumDraconicChainLinks() > 2 && !SubtypeContains($CombatChain->CurrentAttack(), "Dagger")) return true;
+      if (NumDraconicChainLinks() > 0) {
+        // make sure you have at least one dagger equipped
+        $mainCharacter = &GetPlayerCharacter($mainPlayer);
+        for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
+          if (SubtypeContains($mainCharacter[$i], "Dagger")) return false;
+        }
+        return true;
+      }
+      // you can play it, but it won't do anything
+      return false;
     case "HNT116":
       return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     default:
@@ -2388,6 +2411,8 @@ function HasBladeBreak($cardID)
       return true;
     case "AJV004":
     case "AJV007":
+      return true;
+    case "HNT247":
       return true;
     default:
       return false;

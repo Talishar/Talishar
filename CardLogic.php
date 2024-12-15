@@ -1157,6 +1157,9 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
     case "MST162-HIT":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
+    case "HNT102-MARK":
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      break;
     default:
       break;
   }
@@ -2647,6 +2650,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "AJV007":
       PlayAura("ELE109", $defPlayer, effectController: $defPlayer);
       break;
+    case "HNT001":
+    case "HNT002":
+      GiveAttackGoAgain();
+      break;
     case "HNT054":
     case "HNT055":
     case "HNT098":
@@ -2656,6 +2663,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "HNT167":
       DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "HNT246":
+      DiscardRandom();
       break;
     case "HNT256":
       GainHealth(1, $player);

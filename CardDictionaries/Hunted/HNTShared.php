@@ -6,6 +6,7 @@ function HNTAbilityType($cardID): string
     "HNT054" => "I",
     "HNT055" => "I",
     "HNT167" => "I",
+    "HNT247" => "I",
     "HNT252" => "I",
     default => ""
   };
@@ -34,6 +35,7 @@ function HNTEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
     "HNT015" => 3,
+    "HNT102-BUFF" => 2,
     "HNT127" => 1,
     default => 0,
   };
@@ -41,9 +43,17 @@ function HNTEffectAttackModifier($cardID): int
 
 function HNTCombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer;
+  global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
+  if ($cardID == "HNT102" & count($dashArr) > 1) {
+    if ($dashArr[1] == "BUFF") return CardSubType($attackID) == "Dagger";
+    if (DelimStringContains($dashArr[1], "MARK", true)) {
+      $id = explode(",", $dashArr[1])[1];
+      $character = &GetPlayerCharacter($mainPlayer);
+      return $character[$combatChainState[$CCS_WeaponIndex] + 11] == $id;
+    }
+  }
   return match ($cardID) {
     "HNT015" => true,
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
@@ -61,7 +71,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
 
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_ArcaneDamagePrevention;
+  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT015":
@@ -100,6 +110,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       break;
+    case "HNT102":
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
+      AddDecisionQueue("MODAL", $currentPlayer, "LONGWHISKER", 1);
     case "HNT116":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
@@ -118,6 +131,27 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT167":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT246":
+      DiscardRandom();
+      break;
+    case "HNT247":
+      if(GetClassState($currentPlayer, $CS_NumSeismicSurgeDestroyed) > 0 || SearchAurasForCard("WTR075", $currentPlayer) != "") $prevent = 2;
+      else $prevent = 1;
+      IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
+      return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
+    case "HNT248":
+      $maxSeismicCount = count(explode(",", SearchAurasForCard("WTR075", $currentPlayer)));
+      for($i=0; $i < $maxSeismicCount; ++$i) {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:minCost=0;maxCost=".$resourcesPaid."&MYAURAS:minCost=0;maxCost=".$resourcesPaid, 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura with cost " . $resourcesPaid . " or less to destroy", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:isCardID=WTR075", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Seismic Surge to destroy or pass", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      }
+      break;
     case "HNT249":
       if (ComboActive($cardID)) {
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
@@ -130,7 +164,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT252":
       $prevent = SearchArsenal($currentPlayer, subtype:"Arrow", faceUp:true) != "" ? 2 : 1;
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
-      return CardLink($cardID, $cardID) . " reduces your next arcane damage by " . $prevent;
+      return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
     case "HNT259":
       MZChooseAndBanish($currentPlayer, "MYHAND", "HAND,-");
       MZChooseAndBanish($otherPlayer, "MYHAND", "HAND,-");
@@ -143,6 +177,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 function HNTHitEffect($cardID): void
 {
   global $mainPlayer, $defPlayer;
+  $dashArr = explode("-", $cardID);
+  $cardID = $dashArr[0];
   switch ($cardID) {
     case "HNT074":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
@@ -209,4 +245,8 @@ function ListDracDaggersGraveyard($player) {
     WriteLog("Player " . $player . " doesn't have any dagger in their graveyard");
   }
   return $weapons;
+}
+
+function ChaosTransform($charterID, $mainPlayer) {
+  WriteLog("End of turn transform not yet implemented");
 }

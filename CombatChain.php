@@ -859,6 +859,7 @@ function OnBlockResolveEffects($cardID = "")
       case "ROS028":
       case "ROS072"://flash of brilliance
       case "AJV013"://Unforgiving Unforgetting
+      case "HNT246"://Thick Hide Hunter
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "HVY008":

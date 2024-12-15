@@ -1493,7 +1493,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
           $baseCost = 0;
           AddAdditionalCost($currentPlayer, "ALTERNATIVECOST");
         }
-        $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved + $baseCost : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier($cardID) + CharacterCostModifier($cardID, $from, $baseCost) + BanishCostModifier($from, $index, $baseCost);
+        $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier($cardID) + CharacterCostModifier($cardID, $from, $baseCost) + BanishCostModifier($from, $index, $baseCost);
         if ($isAlternativeCostPaid && $resources[1] > 0) WriteLog("<span style='color:red;'>Alternative costs do not offset additional costs.</span>");
       }
       if ($resources[1] < 0) $resources[1] = 0;
@@ -2846,6 +2846,23 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
+    case "HNT102":
+      if (SubtypeContains($combatChain[0], "Dagger")) $modalities = "Buff_Power,Additional_Attack,Mark";
+      else $modalities = "Additional_Attack,Mark";
+      $numModes = min(count(explode(",", $modalities)), NumDraconicChainLinks());
+      if ($numModes > 0) {
+        if ($numModes < 3) {
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $numModes == 1 ? "Choose 1 mode" : "Choose " . $numModes . " modes");
+          AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, $numModes . "-" . $modalities . "-" . $numModes);
+          AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+          AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+        } else {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities);
+          AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
+          AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
+        }
+      }
       break;
     default:
       break;
