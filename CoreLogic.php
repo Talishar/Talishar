@@ -2352,10 +2352,6 @@ function SelfCostModifier($cardID, $from)
 {
   global $CS_NumCharged, $currentPlayer, $combatChain, $layers, $CS_NumVigorDestroyed, $CS_NumCardsDrawn;
   switch ($cardID) {
-    case "WTR051":
-    case "WTR052":
-    case "WTR053":
-      return -2;
     case "ARC080":
     case "ARC082":
     case "ARC088":
