@@ -1138,13 +1138,14 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
   global $CS_NumCharged;
   $char = &GetPlayerCharacter($player);
   $otherPlayer = $player == 1 ? 2 : 1;
+  $preventedDamage = 0;
   for ($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
     if ($char[$i + 1] == 0) continue;
     switch ($char[$i]) {
       case "DTD047":
         if ($damage > 0 && $preventable && $char[$i + 5] > 0 && GetClassState($player, $CS_NumCharged) > 0) {
           if(SearchCurrentTurnEffects("DTD047", $player, true)){
-            --$damage;
+            ++$preventedDamage;
             --$char[$i + 5];
           }
         }
@@ -1155,7 +1156,7 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
       case "DTD168":
         if ($char[$i + 9] == 0) break;
         if ($damage > 0) {
-          if ($preventable) $damage -= 2;
+          if ($preventable) $preventedDamage += 2;
           BanishCardForPlayer($char[$i], $player, "PLAY");
           DestroyCharacter($player, $i, skipDestroy: true);
         }
@@ -1163,6 +1164,11 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
       default:
         break;
     }
+    if ($preventedDamage > 0 && SearchCurrentTurnEffects("OUT174", $player) != "") {
+      $preventedDamage -= 1;
+      SearchCurrentTurnEffects("OUT174", $player, remove:true);
+    }
+    $damage -= $preventedDamage;
   }
   return $damage > 0 ? $damage : 0;
 }
