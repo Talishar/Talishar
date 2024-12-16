@@ -4961,6 +4961,8 @@ case "1":
 switch($cardID[5]) {
 case "6":
 return "AR";
+case "7":
+return "AR";
 default: return "AA";
 }
 case "0":
@@ -5016,6 +5018,8 @@ return "A";
 case "2":
 return "E";
 case "6":
+return "A";
+case "5":
 return "A";
 case "8":
 return "AR";
@@ -24315,6 +24319,8 @@ case "1":
 switch($cardID[5]) {
 case "6":
 return "Jagged Edge";
+case "7":
+return "Provoke";
 default: return "";
 }
 case "0":
@@ -24393,6 +24399,8 @@ case "2":
 return "Enchanted Quiver";
 case "6":
 return "Ring of Roses";
+case "5":
+return "Spur Locked";
 case "8":
 return "War Cry of Bellona";
 default: return "";
@@ -32889,6 +32897,12 @@ case "7":
 return 0;
 default: return 1;
 }
+case "1":
+switch($cardID[5]) {
+case "7":
+return 3;
+default: return 1;
+}
 default: return 1;
 }
 case "0":
@@ -32929,6 +32943,8 @@ case "2":
 return 0;
 case "6":
 return 2;
+case "5":
+return 3;
 case "8":
 return 2;
 default: return 1;
@@ -40149,6 +40165,8 @@ case "1":
 switch($cardID[5]) {
 case "6":
 return 1;
+case "7":
+return 1;
 default: return 0;
 }
 default: return 0;
@@ -45959,6 +45977,8 @@ case "2":
 return "Quiver";
 case "6":
 return "Aura";
+case "5":
+return "Chaos";
 default: return "";
 }
 case "4":
@@ -52044,6 +52064,8 @@ case "1":
 switch($cardID[5]) {
 case "6":
 return "M";
+case "7":
+return "M";
 default: return "C";
 }
 case "0":
@@ -52107,6 +52129,8 @@ return "M";
 case "2":
 return "M";
 case "6":
+return "M";
+case "5":
 return "M";
 case "8":
 return "M";
@@ -58869,6 +58893,8 @@ default: return "NONE";
 case "1":
 switch($cardID[5]) {
 case "6":
+return "WARRIOR";
+case "7":
 return "WARRIOR";
 default: return "NONE";
 }
@@ -67963,6 +67989,7 @@ case "EVO022": return "false";
 case "TCC003": return "false";
 case "EVO025": return "false";
 case "TCC006": return "false";
+case "HNT117": return "false";
 case "OUT033": return "false";
 case "OUT034": return "false";
 case "OUT035": return "false";
@@ -68758,6 +68785,7 @@ case "CRU187": return "false";
 case "EVO192": return "false";
 case "EVO193": return "false";
 case "EVO194": return "false";
+case "HNT255": return "false";
 case "HER100": return "false";
 case "OUT142": return "false";
 case "HVY068": return "false";
