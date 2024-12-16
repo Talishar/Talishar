@@ -1225,6 +1225,20 @@ default: return "AA";
 }
 default: return "AA";
 }
+case "K":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "7":
+return "M";
+default: return "AA";
+}
+default: return "AA";
+}
+default: return "AA";
+}
 default: return "AA";
 }
 case "U":
@@ -13053,6 +13067,20 @@ default: return 3;
 }
 default: return 3;
 }
+case "K":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "7":
+return 4;
+default: return 3;
+}
+default: return 3;
+}
+default: return 3;
+}
 default: return 3;
 }
 case "U":
@@ -20115,6 +20143,20 @@ case "6":
 return "Whisper of the Oracle";
 case "7":
 return "Whisper of the Oracle";
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
+case "K":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "7":
+return "The Hand that Pulls the Strings";
 default: return "";
 }
 default: return "";
@@ -29653,6 +29695,20 @@ default: return 1;
 }
 default: return 1;
 }
+case "K":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "7":
+return 0;
+default: return 1;
+}
+default: return 1;
+}
+default: return 1;
+}
 default: return 1;
 }
 case "U":
@@ -37319,6 +37375,20 @@ default: return 0;
 }
 default: return 0;
 }
+case "K":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "7":
+return -1;
+default: return 0;
+}
+default: return 0;
+}
+default: return 0;
+}
 default: return 0;
 }
 case "U":
@@ -44271,6 +44341,20 @@ default: return "";
 }
 default: return "";
 }
+case "K":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "7":
+return "Arakni";
+default: return "";
+}
+default: return "";
+}
+default: return "";
+}
 default: return "";
 }
 case "U":
@@ -48756,6 +48840,20 @@ case "1":
 switch($cardID[5]) {
 case "8":
 return "T";
+default: return "C";
+}
+default: return "C";
+}
+default: return "C";
+}
+case "K":
+switch($cardID[3]) {
+case "0":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "7":
+return "M";
 default: return "C";
 }
 default: return "C";
@@ -68992,6 +69090,7 @@ case "UPR189": return "false";
 case "UPR086": return "false";
 case "HVY059": return "true";
 case "MST102": return "false";
+case "ARK007": return "false";
 case "MST192": return "false";
 case "UPR415": return "false";
 case "UPR415": return "false";
