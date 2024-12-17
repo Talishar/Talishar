@@ -1071,9 +1071,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       }
       break;
     case "HVY099":
-      DestroyCharacter($currentPlayer, $cardIndex, true);
-      MZMoveCard($currentPlayer, "MYDISCARD:pitch=1", "MYBANISH,GY,-");
-      MZMoveCard($currentPlayer, "MYDISCARD:pitch=2", "MYBANISH,GY,-");
+      DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "MST029":
     case "MST030":

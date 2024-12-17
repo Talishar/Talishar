@@ -2734,6 +2734,10 @@ function PayAdditionalCosts($cardID, $from)
         MZMoveCard($currentPlayer, "MYDISCARD:pitch=2", "MYBANISH,GY,-");
       }
       break;
+    case "HVY099":
+      MZMoveCard($currentPlayer, "MYDISCARD:pitch=1", "MYBANISH,GY");
+      MZMoveCard($currentPlayer, "MYDISCARD:pitch=2", "MYBANISH,GY");
+      break;
     case "HVY103":
       global $CS_LastDynCost;
       $dynCost = GetClassState($currentPlayer, $CS_LastDynCost);
