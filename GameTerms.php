@@ -117,6 +117,8 @@ function TypeToPlay($phase)
       return "a card from soul";
     case "INPUTCARDNAME":
       return "a card name";
+    case "CHOOSENUMBER":
+      return "a number";
   }
 }
 

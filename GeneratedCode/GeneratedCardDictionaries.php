@@ -4991,6 +4991,8 @@ case "0":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
+case "3":
+return "D";
 case "1":
 return "C";
 case "2":
@@ -5037,6 +5039,12 @@ case "5":
 return "A";
 case "8":
 return "AR";
+default: return "AA";
+}
+case "3":
+switch($cardID[5]) {
+case "6":
+return "DR";
 default: return "AA";
 }
 case "4":
@@ -15769,6 +15777,8 @@ case "0":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
+case "3":
+return -1;
 case "1":
 return -1;
 case "2":
@@ -24377,6 +24387,8 @@ case "0":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
+case "3":
+return "Arakni, Black Widow";
 case "1":
 return "Arakni, Marionette";
 case "2":
@@ -24445,6 +24457,12 @@ case "5":
 return "Spur Locked";
 case "8":
 return "War Cry of Bellona";
+default: return "";
+}
+case "3":
+switch($cardID[5]) {
+case "6":
+return "Lay Low";
 default: return "";
 }
 case "4":
@@ -32965,6 +32983,8 @@ case "0":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
+case "3":
+return 0;
 case "1":
 return 0;
 case "2":
@@ -33002,6 +33022,12 @@ return 2;
 case "5":
 return 3;
 case "8":
+return 2;
+default: return 1;
+}
+case "3":
+switch($cardID[5]) {
+case "6":
 return 2;
 default: return 1;
 }
@@ -40159,6 +40185,8 @@ case "0":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
+case "3":
+return -1;
 case "1":
 return -1;
 case "2":
@@ -46027,6 +46055,8 @@ case "0":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
+case "3":
+return "Chaos,Demi-Hero";
 case "1":
 return "Chaos";
 case "2":
@@ -52178,6 +52208,8 @@ case "0":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
+case "3":
+return "T";
 case "1":
 return "M";
 case "2":
@@ -59008,6 +59040,8 @@ case "0":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
+case "3":
+return "ASSASSIN";
 case "1":
 return "ASSASSIN";
 case "2":
@@ -59074,6 +59108,12 @@ case "6":
 return "WIZARD";
 case "8":
 return "WARRIOR";
+default: return "NONE";
+}
+case "3":
+switch($cardID[5]) {
+case "6":
+return "GENERIC";
 default: return "NONE";
 }
 case "4":
@@ -65734,6 +65774,7 @@ case "TCC011": return "false";
 case "MST070": return "false";
 case "MST067": return "false";
 case "DYN114": return "false";
+case "HNT003": return "false";
 case "DYN113": return "false";
 case "HNT001": return "false";
 case "OUT003": return "false";
@@ -67542,6 +67583,7 @@ case "UPR070": return "false";
 case "UPR071": return "false";
 case "HVY063": return "false";
 case "TCC035": return "false";
+case "HNT236": return "false";
 case "EVO207": return "false";
 case "EVO208": return "false";
 case "EVO209": return "false";

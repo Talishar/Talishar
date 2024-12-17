@@ -1074,9 +1074,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       }
       break;
     case "HVY099":
-      DestroyCharacter($currentPlayer, $cardIndex, true);
-      MZMoveCard($currentPlayer, "MYDISCARD:pitch=1", "MYBANISH,GY,-");
-      MZMoveCard($currentPlayer, "MYDISCARD:pitch=2", "MYBANISH,GY,-");
+      DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "MST029":
     case "MST030":
@@ -1171,8 +1169,8 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
       $preventedDamage -= 1;
       SearchCurrentTurnEffects("OUT174", $player, remove:true);
     }
-    $damage -= $preventedDamage;
   }
+  $damage -= $preventedDamage;
   return $damage > 0 ? $damage : 0;
 }
 

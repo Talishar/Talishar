@@ -39,6 +39,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT015" => 3,
     "HNT102-BUFF" => 2,
     "HNT127" => 1,
+    "HNT236" => -1,
     "HNT258-BUFF" => 2,
     default => 0,
   };
@@ -69,6 +70,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT125" => CardSubType($attackID) == "Dagger",
     "HNT127" => CardSubType($attackID) == "Dagger",
     "HNT167" => DelimStringContains(CardType($attackID), "AA"),
+    "HNT236" => true,
     "HNT249" => true,
     "HNT258" => true,
     default => false,
@@ -125,6 +127,15 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT116":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT117":
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      if (TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer) && CanRevealCards($otherPlayer) && !IsAllyAttacking()) {
+        AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYHAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card from hand, action card will be blocked with, non-actions discarded");
+        AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
+        AddDecisionQueue("PROVOKE", $otherPlayer, "-", 1);
+      }
+      break;
     case "HNT158": case "HNT159": case "HNT160":
       if(IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
         PlayAura("HNT167", $currentPlayer);
@@ -140,6 +151,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT167":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT236":
+      if(!IsAllyAttacking() && CheckMarked($otherPlayer)) {
+        AddCurrentTurnEffectNextAttack($cardID, $otherPlayer);
+      }
+      break;
     case "HNT246":
       DiscardRandom();
       break;
@@ -149,7 +165,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
       return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
     case "HNT248":
-      $maxSeismicCount = count(explode(",", SearchAurasForCard("WTR075", $currentPlayer)));
+      $maxSeismicCount = count(explode(",", SearchAurasForCard("WTR075", $currentPlayer)))+1;
       for($i=0; $i < $maxSeismicCount; ++$i) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:minCost=0;maxCost=".$resourcesPaid."&MYAURAS:minCost=0;maxCost=".$resourcesPaid, 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura with cost " . $resourcesPaid . " or less to destroy", 1);
@@ -174,16 +190,23 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $prevent = SearchArsenal($currentPlayer, subtype:"Arrow", faceUp:true) != "" ? 2 : 1;
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
       return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
+    case "HNT255":
+      AddDecisionQueue("CHOOSENUMBER", $currentPlayer, "1,2,3,4,5,6");
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+      AddDecisionQueue("CHOOSENUMBER", $otherPlayer, "1,2,3,4,5,6");
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "1");
+      AddDecisionQueue("COMPARENUMBERS", $currentPlayer, "-");
+      AddDecisionQueue("SPURLOCKED", $currentPlayer, "-");
+      break;
     case "HNT258":
       if (GetResolvedAbilityType($cardID, "HAND") == "AR") {
         AddCurrentTurnEffect($cardID."-BUFF", $currentPlayer, $from);
       }
       else {
-        //TODO: Code the "TARGET" weapon for the damage prevention.
-        AddCurrentTurnEffect($cardID."-DMG-".$additionalCosts, $currentPlayer, $from);
+        $params = explode("-", $target);
+        $uniqueID = $params[1];
+        AddCurrentTurnEffect($cardID."-DMG,".$additionalCosts.",".$uniqueID, $currentPlayer, $from);
       }
-      return "";
-      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT259":
       MZChooseAndBanish($currentPlayer, "MYHAND", "HAND,-");
