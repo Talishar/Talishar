@@ -301,8 +301,7 @@ function ChaosTransform($characterID, $mainPlayer)
 {
   $char = &GetPlayerCharacter($mainPlayer);
   if ($characterID == "HNT001" || $characterID == "HNT002") {
-    // $roll = GetRandom(1, 6);
-    $roll = 5;
+    $roll = GetRandom(1, 6);
     $transformTarget = match ($roll) {
       1 => "HNT003",
       5 => "HNT007",
