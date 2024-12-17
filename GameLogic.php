@@ -1590,8 +1590,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return FinalizeDamage($player, $damage, $damageThreatened, $params[1], $params[2]);
     case "SETSCOURDQVAR":
       $targetType = 0;
-      $myCount = SearchCount(SearchAura($currentPlayer, "", "", 0, 0));
-      $otherPlayerCount = SearchCount(SearchAura(($currentPlayer == 1 ? 2 : 1), "", "", 0, 0));
+      $myCount = SearchCount(SearchAura($currentPlayer, "", "", 0));
+      $otherPlayerCount = SearchCount(SearchAura(($currentPlayer == 1 ? 2 : 1), "", "", 0));
       if($lastResult > $myCount) {
         $targetType = 1;
       }
