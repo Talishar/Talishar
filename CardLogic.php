@@ -2892,7 +2892,7 @@ function Intimidate($player = "")
 {
   global $currentPlayer, $defPlayer, $CS_HaveIntimidated;
   IncrementClassState($currentPlayer, $CS_HaveIntimidated);
-  if (!ShouldAutotargetOpponent($currentPlayer) && $player == "") {
+  if (!ShouldAutotargetOpponent($currentPlayer)) {
     AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C", 1);
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose hero to intimidate.", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
