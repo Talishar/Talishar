@@ -185,6 +185,7 @@ function GetCardBack($player)
     case 93: return "CBDazzyfizzle4";
     case 94: return "CBDazzyfizzle5";
     case 95: return "CBDazzyfizzle6";
+    case 96: return "CBThaiCardsShop";
     default: return "CardBack";
   }
 }
@@ -548,6 +549,17 @@ function isTeamScowlingFleshBag($userID)
 {
   switch($userID) {
     case "ScowlingFleshBag":
+    case "PvtVoid":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
+function IsTeamThaiCardsShop($userID)
+{
+  switch($userID) {
+    case "terrythai03":
     case "PvtVoid":
       return true;
     default: break;

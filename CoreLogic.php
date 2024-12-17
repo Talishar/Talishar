@@ -172,7 +172,7 @@ function StartTurnAbilities()
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $defCharacter = &GetPlayerCharacter($defPlayer);
   if($mainCharacter[13]) AddCurrentTurnEffect("HNT244", $mainPlayer);  //Marked stays between turns
-  if($defCharacter[13]) AddCurrentTurnEffect("HNT244", $mainPlayer); //Marked stays between turns
+  if($defCharacter[13]) AddCurrentTurnEffect("HNT244", $defPlayer); //Marked stays between turns
   for ($i = count($mainCharacter) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
     CharacterStartTurnAbility($i);
   }
@@ -181,7 +181,7 @@ function StartTurnAbilities()
   ArsenalStartTurnAbilities();
   AuraStartTurnAbilities();
   PermanentStartTurnAbilities();
-  AllyStartTurnAbilities($mainPlayer);
+  AllyStartTurnAbilities($mainPlayer); 
   LandmarkStartTurnAbilities();
 
   AuraBeginningActionPhaseAbilities();

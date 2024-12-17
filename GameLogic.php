@@ -2448,6 +2448,33 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $hand = array_values($hand);
       }
       return $lastResult;
+    case "COMPARENUMBERS":
+      $otherPlayer = $player == 1 ? 2 : 1;
+      WriteLog("Player " . $player . " chose number " . $dqVars[0]);
+      WriteLog("Player " . $otherPlayer . " chose number " . $dqVars[1]);
+      if ($dqVars[0] > $dqVars[1]) return $player;
+      elseif ($dqVars[0] < $dqVars[1]) return $otherPlayer;
+      return "PASS";
+    case "SPURLOCKED":
+      $otherPlayer = $player == 1 ? 2 : 1;
+      if($lastResult == "PASS") WriteLog("🎲 Nothing Happened");
+      if($lastResult == $player) {
+        LoseHealth($dqVars[0], $player);
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:maxCost=" . $dqVars[0], 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZADDZONE", $player, "MYHAND,DECK", 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);  
+      }
+      else {
+        LoseHealth($dqVars[1], $otherPlayer);
+        AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYDECK:maxCost=" . $dqVars[1], 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $otherPlayer, "<-", 1);
+        AddDecisionQueue("MZADDZONE", $otherPlayer, "MYHAND,DECK", 1);
+        AddDecisionQueue("MZREMOVE", $otherPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $otherPlayer, "-", 1);  
+      }
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

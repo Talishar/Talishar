@@ -1168,8 +1168,8 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
       $preventedDamage -= 1;
       SearchCurrentTurnEffects("OUT174", $player, remove:true);
     }
-    $damage -= $preventedDamage;
   }
+  $damage -= $preventedDamage;
   return $damage > 0 ? $damage : 0;
 }
 
