@@ -1894,6 +1894,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "HNT125":
     case "HNT127":
+    case "HNT258-DMG":
       return true;
     //Roguelike
     case "ROGUE018":

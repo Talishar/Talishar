@@ -1076,10 +1076,13 @@ function ResolveCombatDamage($damageDone)
       if (SubtypeContains($combatChain[0], "Sword", $mainPlayer)) IncrementClassState($mainPlayer, $CS_HitsWithSword);
       if (SearchDynamicCurrentTurnEffectsIndex("HNT258-DMG", $defPlayer, lenght:10) != -1) {
         $index = SearchDynamicCurrentTurnEffectsIndex("HNT258-DMG", $defPlayer, lenght:10);
-        $parts = explode("-", $currentTurnEffects[$index]);
-        $amount = (int) end($parts);
-        if($damageDone <= $amount) DealDamageAsync($mainPlayer, $amount, "DAMAGE", "HNT258");
-        RemoveCurrentTurnEffect($index);
+        $params = explode(",", $currentTurnEffects[$index]);
+        $amount = $params[1];
+        $uniqueID = $params[2];
+        if($damageDone <= $amount && $uniqueID == $combatChain[8]) {
+          DealDamageAsync($mainPlayer, $amount, "DAMAGE", "HNT258");
+          RemoveCurrentTurnEffect($index);
+        }
       }
     }
     if (!HitEffectsArePrevented($combatChain[0])) {
@@ -2507,12 +2510,12 @@ function PayAdditionalCosts($cardID, $from)
       FaceDownArsenalBotDeck($currentPlayer);
       break;
     case "ELE116":
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=I;talent=EARTH&MYDISCARD:type=A;talent=EARTH&MYDISCARD:type=AA;talent=EARTH");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose Earth action card or Earth instant card");
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-        break;
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=I;talent=EARTH&MYDISCARD:type=A;talent=EARTH&MYDISCARD:type=AA;talent=EARTH");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose Earth action card or Earth instant card");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
     case "ELE118":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
       AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
@@ -2895,6 +2898,11 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "GETINDICES,", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIBANISHSOUL", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=W&THEIRAURAS:type=W", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target weapon", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       }  
       break;
     default:

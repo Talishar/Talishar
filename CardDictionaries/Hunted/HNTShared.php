@@ -196,11 +196,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffect($cardID."-BUFF", $currentPlayer, $from);
       }
       else {
-        //TODO: Code the "TARGET" weapon for the damage prevention.
-        AddCurrentTurnEffect($cardID."-DMG-".$additionalCosts, $currentPlayer, $from);
+        $params = explode("-", $target);
+        $uniqueID = $params[1];
+        AddCurrentTurnEffect($cardID."-DMG,".$additionalCosts.",".$uniqueID, $currentPlayer, $from);
       }
-      return "";
-      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT259":
       MZChooseAndBanish($currentPlayer, "MYHAND", "HAND,-");
