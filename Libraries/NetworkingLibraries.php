@@ -2965,7 +2965,13 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $combatChainState[$CCS_AttackPlayedFrom] = $from;
       $chainClosed = ProcessAttackTarget();
       $baseAttackSet = CurrentEffectBaseAttackSet();
-      $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
+      if($baseAttackSet != -1) {
+        $attackValue = $baseAttackSet;
+      }
+      else {
+        if(TypeContains( $cardID, "W", $currentPlayer)) $attackValue = GeneratedAttackValue($cardID);
+        else $attackValue = AttackValue($cardID);
+      }
       if (EffectAttackRestricted($cardID, $definedCardType, $from, true)) return;
       $combatChainState[$CCS_LinkBaseAttack] = BaseAttackModifiers($cardID, $attackValue);
       $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
