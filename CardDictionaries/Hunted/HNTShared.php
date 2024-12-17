@@ -83,8 +83,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
-      // $char = &GetPlayerCharacter($currentPlayer);
-      // WriteLog("HERE: " . $char[5]);
       AddCurrentTurnEffect("HNT003", $currentPlayer);
       if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("HNT003-HIT", $currentPlayer);
     case "HNT015":
