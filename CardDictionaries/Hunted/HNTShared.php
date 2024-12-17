@@ -200,12 +200,12 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT258":
       if (GetResolvedAbilityType($cardID, "HAND") == "AR") {
-        AddCurrentTurnEffect($cardID."-BUFF", $currentPlayer, $from);
+        AddCurrentTurnEffect($cardID."-BUFF", $currentPlayer);
       }
       else {
         $params = explode("-", $target);
         $uniqueID = $params[1];
-        AddCurrentTurnEffect($cardID."-DMG,".$additionalCosts.",".$uniqueID, $currentPlayer, $from);
+        AddCurrentTurnEffect($cardID."-DMG,".$additionalCosts.",".$uniqueID, $currentPlayer);
       }
       break;
     case "HNT259":
