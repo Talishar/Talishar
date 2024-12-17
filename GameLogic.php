@@ -97,6 +97,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "HANDCLASS":
           $rv = SearchHand($player, class:$subparam);
+          break;
         case "HANDMINPOWER":
           $rv = SearchHand($player, minAttack: $subparam);
           break;
