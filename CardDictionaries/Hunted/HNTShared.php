@@ -158,7 +158,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
       return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
     case "HNT248":
-      $maxSeismicCount = count(explode(",", SearchAurasForCard("WTR075", $currentPlayer)));
+      $maxSeismicCount = count(explode(",", SearchAurasForCard("WTR075", $currentPlayer)))+1;
       for($i=0; $i < $maxSeismicCount; ++$i) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:minCost=0;maxCost=".$resourcesPaid."&MYAURAS:minCost=0;maxCost=".$resourcesPaid, 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura with cost " . $resourcesPaid . " or less to destroy", 1);
