@@ -1328,7 +1328,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
       case "DYN114":
         if (ContractType($cardID) != "") AddLayer("TRIGGER", $currentPlayer, $characterID);
         break;
-      case "OUT003":
+      case "OUT003": case "HER130":
         if (HasStealth($cardID)) {
           GiveAttackGoAgain();
           $character[$i + 1] = 1;
