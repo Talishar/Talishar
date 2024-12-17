@@ -710,6 +710,7 @@ function IsCardBanned($cardID, $format, $character)
 
   //Ban spoiler cards in non-open-format
   if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") && $set == "HNT") return true; // The Hunted Launch 31st January
+  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") && $set == "ARK") return true; // Arakni Blitz Deck Launch 31st January
   if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") {
     switch ($cardID) { //Special Use Promos
       case "JDG001": case "JDG002": case "JDG003": case "JDG004": case "JDG005": case "JDG006": case "JDG008": case "JDG010": 
