@@ -58,7 +58,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
       return $character[$combatChainState[$CCS_WeaponIndex] + 11] == $id;
     }
   }
-  if ($cardID == "HNT003" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($cardID);
+  if ($cardID == "HNT003" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
   return match ($cardID) {
     "HNT003" => ClassContains($cardID, "ASSASSIN"),
     "HNT015" => true,
@@ -83,6 +83,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
+      // $char = &GetPlayerCharacter($currentPlayer);
+      // WriteLog("HERE: " . $char[5]);
       AddCurrentTurnEffect("HNT003", $currentPlayer);
       if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("HNT003-HIT", $currentPlayer);
     case "HNT015":
@@ -301,7 +303,7 @@ function ChaosTransform($characterID, $mainPlayer)
     };
     WriteLog(CardName($characterID) . " becomes " . CardName($transformTarget));
     //storing the original hero under the transformed hero
-    $char[10] .= ",$characterID";
+    $char[10] = ($char[10] == "-") ? $characterID : $char[10] . ",$characterID";
   }
   else {
     $transformTarget = "";
@@ -318,7 +320,7 @@ function ChaosTransform($characterID, $mainPlayer)
       $transformTarget = "HNT001";
     }
     // removing the subcardded hero
-    $char[10] = substr($subCards, 0, -1);
+    $char[10] = $subCards == "" ? "-" : substr($subCards, 0, -1);
   }
   $char[0] = $transformTarget;
 }
