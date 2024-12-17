@@ -278,7 +278,7 @@ function ChaosTransform($characterID, $mainPlayer)
     };
     WriteLog(CardName($characterID) . " becomes " . CardName($transformTarget));
     //storing the original hero under the transformed hero
-    $char[10] .= "," . $characterID;
+    $char[10] .= ",$characterID";
   }
   else {
     $transformTarget = "";
@@ -288,7 +288,7 @@ function ChaosTransform($characterID, $mainPlayer)
       if ($subCard == "HNT001" || $subCard == "HNT002") {
         $transformTarget = $subCard;
       }
-      else $subCards .= $subCard . ",";
+      else $subCards .= "$subCard,";
     }
     if ($transformTarget == ""){
       WriteLog("Something has gone wrong, please submit a bug report");
