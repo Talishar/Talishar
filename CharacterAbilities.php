@@ -138,8 +138,10 @@ function CharacterStartTurnAbility($index)
   if ($index == 0) $cardID = ShiyanaCharacter($cardID);
   switch ($cardID) {
     case "WTR150":
-      if ($char->numCounters < 3) ++$char->numCounters;
-      $char->Finished();
+      if (!GetCharacterGemState($mainPlayer, $cardID)) {
+        if ($char->numCounters < 3) ++$char->numCounters;
+        $char->Finished();
+      }
       break;
     case "CRU097":
       AddLayer("TRIGGER", $mainPlayer, $char->cardID);
@@ -857,7 +859,9 @@ function EquipPayAdditionalCosts($cardIndex, $from)
   $cardID = ShiyanaCharacter($cardID);
   switch ($cardID) {
     case "WTR150": //Tunic energy counters
-      $character[$cardIndex + 2] -= 3;
+      if (!GetCharacterGemState($currentPlayer, $cardID) || $character[$cardIndex + 2] == 3) {
+        $character[$cardIndex + 2] -= 3;
+      }
       break;
     case "CRU177": //Talishar rust counters
       $character[$cardIndex + 1] = 1;

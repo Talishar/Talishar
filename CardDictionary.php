@@ -1130,7 +1130,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (IsBlockRestricted($cardID, $restriction, $player)) return false;
   }
   if ($phase != "B" && $from == "CHAR" && $character[$index + 1] != "2") return false;
-  if ($phase != "B" && TypeContains($cardID, "E", $player) && GetCharacterGemState($player, $cardID) == 0) return false;
+  if ($phase != "B" && TypeContains($cardID, "E", $player) && (GetCharacterGemState($player, $cardID) == 0 && $cardID != "WTR150")) return false;
   if ($from == "CHAR" && $phase != "B" && $character[$index + 8] == "1") {
     $restriction = "Frozen";
     return false;
@@ -1623,7 +1623,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!RepriseActive()) return false;
       return !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     case "WTR150":
-      return $character[$index + 2] < 3;
+      if ($character[$index + 2] == 3) return false;
+      if (GetCharacterGemState($player, $cardID) && GetClassState($player, $CS_NumCardsPlayed) >= 1) return false;
+      return true;
     case "WTR154":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (CardType($CombatChain->AttackCard()->ID()) != "AA") return true;
@@ -2982,6 +2984,8 @@ function CharacterDefaultActiveState($cardID)
   switch ($cardID) {
     case "WTR117":
       return 1;
+    case "WTR150":
+      return 0;
     case "ARC152":
       return 1;
     case "CRU053":
