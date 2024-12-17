@@ -174,6 +174,14 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $prevent = SearchArsenal($currentPlayer, subtype:"Arrow", faceUp:true) != "" ? 2 : 1;
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
       return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
+    case "HNT255":
+      AddDecisionQueue("CHOOSENUMBER", $currentPlayer, "1,2,3,4,5,6");
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+      AddDecisionQueue("CHOOSENUMBER", $otherPlayer, "1,2,3,4,5,6");
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "1");
+      AddDecisionQueue("COMPARENUMBERS", $currentPlayer, "-");
+      AddDecisionQueue("SPURLOCKED", $currentPlayer, "-");
+      break;
     case "HNT258":
       if (GetResolvedAbilityType($cardID, "HAND") == "AR") {
         AddCurrentTurnEffect($cardID."-BUFF", $currentPlayer, $from);

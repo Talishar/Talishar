@@ -72,7 +72,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 7: //Number input
-      if ($turn[0] == "DYNPITCH") {
+      if ($turn[0] == "DYNPITCH" || $turn[0] == "CHOOSENUMBER") {
         ContinueDecisionQueue($buttonInput);
       } else {
         echo("Number input " . $turn[0] . " Invalid Input<BR>");

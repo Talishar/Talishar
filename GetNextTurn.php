@@ -1061,6 +1061,15 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->popup = CreatePopupAPI("DYNPITCH", [], 0, 1, GetPhaseHelptext(), 1, "");
   }
 
+  if ($turn[0] == "CHOOSENUMBER" && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $options = explode(",", $turn[2]);
+    for ($i = 0; $i < count($options); ++$i) {
+      array_push($playerInputButtons, CreateButtonAPI($playerID, $options[$i], 7, $options[$i], "24px"));
+    }
+    $playerInputPopup->popup = CreatePopupAPI("CHOOSENUMBER", [], 0, 1, GetPhaseHelptext(), 1, "");
+  }
+
   if ($turn[0] == "OK" && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     array_push($playerInputButtons, CreateButtonAPI($playerID, "Ok", 99, "OK", "20px"));
