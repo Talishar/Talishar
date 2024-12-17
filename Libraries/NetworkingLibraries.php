@@ -2126,11 +2126,15 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       break;
     case "HNT258":
       $names = GetAbilityNames($cardID, $index, $from);
-      if ($names != "Ability") {
+      if ($names == "Ability,Attack Reaction") {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the attack reaction or ability");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
         AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
-      } else {
+      } 
+      elseif ($names == "-,Attack Reaction") {
+        AddDecisionQueue("SETABILITYTYPEATTACKREACTION", $currentPlayer, $cardID);
+      }
+      else {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
       }
       break;
@@ -2895,7 +2899,7 @@ function PayAdditionalCosts($cardID, $from)
       }
       break;
     case "HNT258":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I")   
+      if (GetResolvedAbilityType($cardID, $from) == "I")   
       {
         AddDecisionQueue("FINDINDICES", $currentPlayer, "SOULINDICES");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");

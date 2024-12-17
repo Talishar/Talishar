@@ -1710,6 +1710,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), "Ability");
       SetClassState($player, $CS_AbilityIndex, $index);
       return $lastResult;
+    case "SETABILITYTYPEATTACKREACTION":
+      $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), "Attack Reaction");
+      SetClassState($player, $CS_AbilityIndex, $index);
+      return $lastResult;
     case "SETABILITYTYPEACTION":
       $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), "Action");
       SetClassState($player, $CS_AbilityIndex, $index);

@@ -72,7 +72,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT167" => DelimStringContains(CardType($attackID), "AA"),
     "HNT236" => true,
     "HNT249" => true,
-    "HNT258" => true,
+    "HNT258" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
     default => false,
   };
 }
