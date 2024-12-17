@@ -1313,6 +1313,12 @@ function IsOverpowerActive()
   return false;
 }
 
+function CanBlock($cardID)//checks if a block is legal, used for cards that force blocks
+{
+  // TODO;
+  return true;
+}
+
 function IsWagerActive()
 {
   global $combatChainState, $CCS_WagersThisLink;

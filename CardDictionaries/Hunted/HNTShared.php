@@ -75,7 +75,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
 
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed;
+  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT015":
@@ -119,6 +119,15 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MODAL", $currentPlayer, "LONGWHISKER", 1);
     case "HNT116":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT117":
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      if (TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer) & CanRevealCards($otherPlayer)) {
+        AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYHAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card from hand, action card will be blocked with, non-actions discarded");
+        AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
+        AddDecisionQueue("PROVOKE", $otherPlayer, "-", 1);
+      }
       break;
     case "HNT158": case "HNT159": case "HNT160":
       if(IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
