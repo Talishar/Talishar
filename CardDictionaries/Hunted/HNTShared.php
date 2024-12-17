@@ -37,6 +37,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT015" => 3,
     "HNT102-BUFF" => 2,
     "HNT127" => 1,
+    "HNT236" => -1,
     "HNT258-BUFF" => 2,
     default => 0,
   };
@@ -65,6 +66,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT125" => CardSubType($attackID) == "Dagger",
     "HNT127" => CardSubType($attackID) == "Dagger",
     "HNT167" => DelimStringContains(CardType($attackID), "AA"),
+    "HNT236" => true,
     "HNT249" => true,
     "HNT258" => true,
     default => false,
@@ -132,6 +134,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT167":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT236":
+      if(!IsAllyAttacking() && CheckMarked($otherPlayer)) {
+        AddCurrentTurnEffectNextAttack($cardID, $otherPlayer);
+      }
       break;
     case "HNT246":
       DiscardRandom();
