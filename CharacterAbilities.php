@@ -1328,7 +1328,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
       case "DYN114":
         if (ContractType($cardID) != "") AddLayer("TRIGGER", $currentPlayer, $characterID);
         break;
-      case "OUT003": case "HER130":
+      case "OUT003":
         if (HasStealth($cardID)) {
           GiveAttackGoAgain();
           $character[$i + 1] = 1;
@@ -1363,6 +1363,12 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
+      case "HER130":
+        if (HasStealth($cardID)) {
+          GiveAttackGoAgain();
+          $character[$i + 1] = 1;
+        }
+        break;
       case "ROGUE017":
         if (CardType($cardID) == "AA") {
           $deck = &GetDeck($currentPlayer);
@@ -1391,6 +1397,20 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         global $actionPoints;
         if (CardTalent($cardID) == "LIGHTNING") {
           $actionPoints++;
+        }
+        break;
+      default:
+        break;
+    }
+  }
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayerCharacter = &GetPlayerCharacter($otherPlayer);
+  for ($j = 0; $j < count($otherPlayerCharacter); $j += CharacterPieces()) {
+    switch ($otherPlayerCharacter[$j]) {
+      case "HER130":
+        if (HasStealth($cardID)) {
+          GiveAttackGoAgain();
+          $otherPlayerCharacter[$j + 1] = 1;
         }
         break;
       default:
