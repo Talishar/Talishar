@@ -391,6 +391,7 @@ function MainCharacterBeginEndPhaseAbilities()
         if (CheckMarked($defPlayer)) ChaosTransform($characterID, $mainPlayer);
         break;
       case "HNT003":
+      case "HNT007":
         ChaosTransform($characterID, $mainPlayer);
         break;
       default:
@@ -457,6 +458,7 @@ function MainCharacterHitTrigger()
 {
   global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
+  $defPlayer = ($mainPlayer == 1 ? 2 : 1);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     if (TypeContains($mainCharacter[$i], "W", $mainPlayer) || $mainCharacter[$i + 1] != "2") continue;
@@ -523,6 +525,11 @@ function MainCharacterHitTrigger()
       case "AUR005":
         if (IsHeroAttackTarget()) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+        }
+        break;
+      case "HNT007":
+        if (IsHeroAttackTarget() && SubtypeContains($attackID, "Dagger")) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $defPlayer, "MAINCHARHITEFFECT");
         }
         break;
       case "ROGUE016":

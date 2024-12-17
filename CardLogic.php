@@ -1243,6 +1243,10 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       AddDecisionQueue("DEALARCANE", $player, "1" . "-" . "AUR005" . "-" . "TRIGGER", 1);
       AddDecisionQueue("WRITELOG", $player, Cardlink($cardID, $cardID) . " were destroyed", 1);
       break;
+    case "HNT007":
+      WriteLog(CardLink($cardID, $cardID) . "'s venom saps 1 life from " . $target);
+      PlayerLoseHealth($target, 1);
+      break;
     default:
       break;
   }

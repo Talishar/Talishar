@@ -4,6 +4,7 @@ function HNTAbilityType($cardID): string
 {
   return match ($cardID) {
     "HNT003" => "AR",
+    "HNT007" => "AR",
     "HNT054" => "I",
     "HNT055" => "I",
     "HNT167" => "I",
@@ -36,6 +37,7 @@ function HNTEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
     "HNT003" => 3,
+    "HNT007" => 3,
     "HNT015" => 3,
     "HNT102-BUFF" => 2,
     "HNT127" => 1,
@@ -61,6 +63,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
   if ($cardID == "HNT003" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
   return match ($cardID) {
     "HNT003" => ClassContains($cardID, "ASSASSIN"),
+    "HNT007" => CardSubType($attackID) == "Dagger",
     "HNT015" => true,
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
@@ -85,6 +88,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT003":
       AddCurrentTurnEffect("HNT003", $currentPlayer);
       if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("HNT003-HIT", $currentPlayer);
+      break;
+    case "HNT007":
+      AddCurrentTurnEffect("HNT007", $currentPlayer);
+      break;
     case "HNT015":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
@@ -294,9 +301,11 @@ function ChaosTransform($characterID, $mainPlayer)
 {
   $char = &GetPlayerCharacter($mainPlayer);
   if ($characterID == "HNT001" || $characterID == "HNT002") {
-    $roll = GetRandom(1, 1);
+    // $roll = GetRandom(1, 6);
+    $roll = 5;
     $transformTarget = match ($roll) {
       1 => "HNT003",
+      5 => "HNT007",
       default => $characterID,
     };
     WriteLog(CardName($characterID) . " becomes " . CardName($transformTarget));
