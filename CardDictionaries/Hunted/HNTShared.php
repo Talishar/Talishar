@@ -3,6 +3,7 @@
 function HNTAbilityType($cardID): string
 {
   return match ($cardID) {
+    "HNT003" => "AR",
     "HNT054" => "I",
     "HNT055" => "I",
     "HNT167" => "I",
@@ -34,6 +35,7 @@ function HNTAbilityHasGoAgain($cardID): bool
 function HNTEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
+    "HNT003" => 3,
     "HNT015" => 3,
     "HNT102-BUFF" => 2,
     "HNT127" => 1,
@@ -55,7 +57,9 @@ function HNTCombatEffectActive($cardID, $attackID): bool
       return $character[$combatChainState[$CCS_WeaponIndex] + 11] == $id;
     }
   }
+  if ($cardID == "HNT003" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($cardID);
   return match ($cardID) {
+    "HNT003" => ClassContains($cardID, "ASSASSIN"),
     "HNT015" => true,
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
@@ -73,9 +77,12 @@ function HNTCombatEffectActive($cardID, $attackID): bool
 
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed;
+  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
+    case "HNT003":
+      AddCurrentTurnEffect("HNT003", $currentPlayer);
+      if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("HNT003-HIT", $currentPlayer);
     case "HNT015":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
@@ -260,6 +267,35 @@ function ListDracDaggersGraveyard($player) {
   return $weapons;
 }
 
-function ChaosTransform($charterID, $mainPlayer) {
-  WriteLog("End of turn transform not yet implemented");
+function ChaosTransform($characterID, $mainPlayer)
+{
+  $char = &GetPlayerCharacter($mainPlayer);
+  if ($characterID == "HNT001" || $characterID == "HNT002") {
+    $roll = GetRandom(1, 1);
+    $transformTarget = match ($roll) {
+      1 => "HNT003",
+      default => $characterID,
+    };
+    WriteLog(CardName($characterID) . " becomes " . CardName($transformTarget));
+    //storing the original hero under the transformed hero
+    $char[10] .= "," . $characterID;
+  }
+  else {
+    $transformTarget = "";
+    WriteLog(CardName($characterID) . " returns to the brood.");
+    $subCards = "";
+    foreach (explode(",", $char[10]) as $subCard) {
+      if ($subCard == "HNT001" || $subCard == "HNT002") {
+        $transformTarget = $subCard;
+      }
+      else $subCards .= $subCard . ",";
+    }
+    if ($transformTarget == ""){
+      WriteLog("Something has gone wrong, please submit a bug report");
+      $transformTarget = "HNT001";
+    }
+    // removing the subcardded hero
+    $char[10] = substr($subCards, 0, -1);
+  }
+  $char[0] = $transformTarget;
 }

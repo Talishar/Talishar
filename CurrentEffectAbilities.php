@@ -400,6 +400,15 @@ function EffectHitEffect($cardID, $from)
     case "ROS012":
       if (IsHeroAttackTarget()) DealArcane(4, 1, "PLAYCARD", $cardID, false, $mainPlayer);
       return 1;
+    case "HNT003-HIT":
+      if (IsHeroAttackTarget()) {
+        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card to banish", 1);
+        AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
+        AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-", 1);
+      }
+      return 1;
     case "HNT102-MARK":
       $character = &GetPlayerCharacter($mainPlayer);
       if (IsHeroAttackTarget() && $character[$combatChainState[$CCS_WeaponIndex] + 11] == $effectArr[1]) {
