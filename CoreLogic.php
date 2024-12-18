@@ -638,6 +638,7 @@ function CurrentEffectDamageModifiers($player, $source, $type)
 {
   global $currentTurnEffects;
   $modifier = 0;
+  if($type == "ARCANE") return $modifier; //It's already checked upfront for Arcane
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = 0;
     switch ($currentTurnEffects[$i]) {
