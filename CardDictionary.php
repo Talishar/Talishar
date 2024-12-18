@@ -629,8 +629,7 @@ function AbilityCost($cardID)
   else if ($set == "AIO") return AIOAbilityCost($cardID);
   else if ($set == "AJV") return AJVAbilityCost($cardID);
   else if ($set == "HNT") return HNTAbilityCost($cardID);
-  else if ($cardID == "HER117") return 0;
-  return CardCost($cardID);
+  return 0;
 }
 
 function DynamicCost($cardID)

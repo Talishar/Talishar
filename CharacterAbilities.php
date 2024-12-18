@@ -527,9 +527,23 @@ function MainCharacterHitTrigger()
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
+      case "HNT001":
+      case "HNT002":
+        if (IsHeroAttackTarget() && CheckMarked($defPlayer) && HasStealth($attackID)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+        }
+        break;
       case "HNT007":
         if (IsHeroAttackTarget() && SubtypeContains($attackID, "Dagger")) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $defPlayer, "MAINCHARHITEFFECT");
+        }
+        break;
+      case "HNT054":
+      case "HNT055":
+      case "HNT098":
+      case "HNT099":
+        if (IsHeroAttackTarget() && CheckMarked($defPlayer)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID,$attackID, "MAINCHARHITEFFECT");
         }
         break;
       case "ROGUE016":
@@ -552,20 +566,6 @@ function MainCharacterHitTrigger()
         break;
       default:
         break;
-    }
-    $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-    if (CheckMarked($otherPlayer) & IsHeroAttackTarget()) {
-      $characterID = ShiyanaCharacter($mainCharacter[$i], $mainPlayer);
-      switch ($characterID) {
-        case "HNT054":
-        case "HNT055":
-        case "HNT098":
-        case "HNT099":
-          AddLayer("TRIGGER", $mainPlayer, $mainCharacter[0]);
-          break;
-        default:
-          break;
-      }
     }
   }
 }
@@ -801,6 +801,7 @@ function EquipWeapon($player, $card)
   $lastWeapon = 0;
   $replaced = 0;
   $numHands = 0;
+  $uniqueID = GetUniqueId($card, $player);
   //Replace the first destroyed weapon; if none you can't re-equip
   for ($i = CharacterPieces(); $i < count($char) && !$replaced; $i += CharacterPieces()) {
     if (TypeContains($char[$i], "W", $player)) {
@@ -817,7 +818,7 @@ function EquipWeapon($player, $card)
         $char[$i + 8] = 0;
         $char[$i + 9] = CharacterDefaultActiveState($card);
         $char[$i + 10] = "-";
-        $char[$i + 11] = GetUniqueId($card, $player);
+        $char[$i + 11] = $uniqueID;
         $char[$i + 12] = HasCloaked($card, $player);
         $char[$i + 13] = 0;
         $replaced = 1;
@@ -842,6 +843,7 @@ function EquipWeapon($player, $card)
     array_splice($char, $insertIndex + 12, 0, HasCloaked($card, $player));
     array_splice($char, $insertIndex + 13, 0, 0);
   }
+  return $uniqueID;
 }
 
 function ShiyanaCharacter($cardID, $player = "")

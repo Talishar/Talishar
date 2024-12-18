@@ -1927,7 +1927,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $mainChar = &GetPlayerCharacter($mainPlayer);
       if (CheckMarked($defPlayer)) {
         if ($mainChar[0] == "HNT054" || $mainChar[0] == "HNT055" || $mainChar[0] == "HNT098" || $mainChar[0] == "HNT099") {
-          AddLayer("TRIGGER", $mainPlayer, $mainChar[0]);
+          AddLayer("TRIGGER", $mainPlayer, $mainChar[0], $attackID, "MAINCHARHITEFFECT");
         }
         RemoveMark($defPlayer);
       }
