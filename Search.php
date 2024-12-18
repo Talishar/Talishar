@@ -1127,7 +1127,7 @@ function GetMZCardLink($player, $MZ)
   $zoneDS = &GetMZZone($player, $params[0]);
   $index = $params[1];
   if ($index == "") return "";
-  if ($zoneDS[$index] == "TRIGGER") $index += 2;
+  if ($zoneDS[$index] == "TRIGGER" || $zoneDS[$index] == "MELD") $index += 2;
   return CardLink($zoneDS[$index], $zoneDS[$index]);
 }
 
