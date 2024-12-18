@@ -2471,6 +2471,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZADDZONE", $player, "MYHAND,DECK", 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        AddDecisionQueue("REVEALCARDS", $player, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);  
       }
       else {
@@ -2479,6 +2480,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $otherPlayer, "<-", 1);
         AddDecisionQueue("MZADDZONE", $otherPlayer, "MYHAND,DECK", 1);
         AddDecisionQueue("MZREMOVE", $otherPlayer, "-", 1);
+        AddDecisionQueue("REVEALCARDS", $otherPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $otherPlayer, "-", 1);  
       }
       return $lastResult;
