@@ -2105,7 +2105,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
     case "OUT185":
-      MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack(), "MYTOPDECK", may: true);
+      MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack()-1 . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack()-1, "MYTOPDECK", may: true);
       break;
     case "DTD000":
       $deck = new Deck($player);
