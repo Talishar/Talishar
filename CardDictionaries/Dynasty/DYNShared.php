@@ -515,13 +515,11 @@ function DYNHitEffect($cardID, $from, $attackID)
       MZMoveCard($mainPlayer, "MYHAND:subtype=Item;class=MECHANOLOGIST;maxCost=" . $combatChainState[$CCS_NumBoosted], "MYITEMS", may:true);
       break;
     case "DYN115": case "DYN116": if(IsHeroAttackTarget()) AddCurrentTurnEffect($cardID, $defPlayer); break;
-    case "DYN117": if(IsHeroAttackTarget() && ClassContains($attackID, "ASSASSIN", $mainPlayer)) GiveAttackGoAgain(); break;
+    case "DYN117": GiveAttackGoAgain(); break;
     case "DYN118":
-      if(IsHeroAttackTarget()) {
-        $deck = new Deck($defPlayer);
-        if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-        $deck->BanishTop("Source-" . $combatChain[0], banishedBy:$combatChain[0]);
-      }
+      $deck = new Deck($defPlayer);
+      if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
+      $deck->BanishTop("Source-" . $attackID, banishedBy:$attackID);
       break;
     case "DYN119":
       if(IsHeroAttackTarget()) {

@@ -508,7 +508,7 @@ function ProcessLayer($player, $parameter)
 
 function AddOnHitTrigger($cardID): void
 {
-  global $mainPlayer;
+  global $mainPlayer, $combatChain;
   switch ($cardID) {
     case "WTR083":
     case "WTR084":
@@ -719,8 +719,6 @@ function AddOnHitTrigger($cardID): void
     case "DYN109":
     case "DYN115":
     case "DYN116":
-    case "DYN117":
-    case "DYN118":
     case "DYN119":
     case "DYN121":
     case "DYN120":
@@ -896,6 +894,12 @@ function AddOnHitTrigger($cardID): void
       break;
     case "ELE003":
       if (SearchCurrentTurnEffects($cardID, $mainPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
+      break;
+    case "DYN117":
+    case "DYN118":
+      if(IsHeroAttackTarget() && ClassContains($combatChain[0], "ASSASSIN", $mainPlayer)) {
+        AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
+      }
       break;
     case "MST103":
       if (NumAttackReactionsPlayed() > 2 && IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
