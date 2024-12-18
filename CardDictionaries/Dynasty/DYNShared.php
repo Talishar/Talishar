@@ -249,9 +249,10 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN090":
       $numBoosted = $combatChainState[$CCS_NumBoosted];
-      if(IsHeroAttackTarget() && $numBoosted > 0)
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherPlayerHand = GetHand($otherPlayer);
+      if(IsHeroAttackTarget() && $numBoosted > 0 && count($otherPlayerHand) > 0)
       {
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         AddDecisionQueue("PASSPARAMETER", $otherPlayer, $numBoosted, 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
