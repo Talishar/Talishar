@@ -795,6 +795,7 @@ function EquipWeapon($player, $card)
   $lastWeapon = 0;
   $replaced = 0;
   $numHands = 0;
+  $uniqueID = GetUniqueId($card, $player);
   //Replace the first destroyed weapon; if none you can't re-equip
   for ($i = CharacterPieces(); $i < count($char) && !$replaced; $i += CharacterPieces()) {
     if (TypeContains($char[$i], "W", $player)) {
@@ -811,7 +812,7 @@ function EquipWeapon($player, $card)
         $char[$i + 8] = 0;
         $char[$i + 9] = CharacterDefaultActiveState($card);
         $char[$i + 10] = "-";
-        $char[$i + 11] = GetUniqueId($card, $player);
+        $char[$i + 11] = $uniqueID;
         $char[$i + 12] = HasCloaked($card, $player);
         $char[$i + 13] = 0;
         $replaced = 1;
@@ -836,6 +837,7 @@ function EquipWeapon($player, $card)
     array_splice($char, $insertIndex + 12, 0, HasCloaked($card, $player));
     array_splice($char, $insertIndex + 13, 0, 0);
   }
+  return $uniqueID;
 }
 
 function ShiyanaCharacter($cardID, $player = "")
