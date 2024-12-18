@@ -337,6 +337,7 @@ $CS_SkipAllRunechants = 86;
 $CS_FealtyCreated = 87;
 $CS_NumDraconicPlayed = 88;
 $CS_NumSeismicSurgeDestroyed = 89;
+$CS_TunicTicked = 90;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -541,6 +542,7 @@ function ResetMainClassState()
   global $CS_HealthLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrouchingTigerPlayedThisTurn, $CS_NumClashesWon;
   global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CS_NumInstantPlayed;
   global $CS_ActionsPlayed, $CS_NumEarthBanished, $CS_HealthGained, $CS_SkipAllRunechants, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumSeismicSurgeDestroyed;
+  global $CS_TunicTicked;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -631,6 +633,7 @@ function ResetMainClassState()
   $mainClassState[$CS_FealtyCreated] = 0;
   $mainClassState[$CS_NumDraconicPlayed] = 0;
   $mainClassState[$CS_NumSeismicSurgeDestroyed] = 0;
+  $mainClassState[$CS_TunicTicked] = 0;
 }
 
 function ResetCardPlayed($cardID, $from="-")

@@ -129,7 +129,7 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 
 function CharacterStartTurnAbility($index)
 {
-  global $mainPlayer;
+  global $mainPlayer, $CS_TunicTicked;
   $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $char = new Character($mainPlayer, $index);
   $character = GetPlayerCharacter($mainPlayer);
@@ -139,7 +139,10 @@ function CharacterStartTurnAbility($index)
   switch ($cardID) {
     case "WTR150":
       if (!GetCharacterGemState($mainPlayer, $cardID)) {
-        if ($char->numCounters < 3) ++$char->numCounters;
+        if ($char->numCounters < 3) {
+          ++$char->numCounters;
+          IncrementClassState($mainPlayer, $CS_TunicTicked);
+        }
         $char->Finished();
       }
       break;
@@ -862,6 +865,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       if (!GetCharacterGemState($currentPlayer, $cardID) || $character[$cardIndex + 2] == 3) {
         $character[$cardIndex + 2] -= 3;
       }
+      else ++$character[$cardIndex + 2];
       break;
     case "CRU177": //Talishar rust counters
       $character[$cardIndex + 1] = 1;

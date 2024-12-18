@@ -1539,6 +1539,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBaseAttack, $chainLinks, $CS_NumInstantPlayed;
+  global $CS_TunicTicked;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -1624,7 +1625,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     case "WTR150":
       if ($character[$index + 2] == 3) return false;
-      if (GetCharacterGemState($player, $cardID) && GetClassState($player, $CS_NumCardsPlayed) >= 1) return false;
+      if (GetCharacterGemState($player, $cardID) && GetClassState($player, piece: $CS_TunicTicked) == 0) return false;
       return true;
     case "WTR154":
       if (!$CombatChain->HasCurrentLink()) return true;
