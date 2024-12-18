@@ -1625,6 +1625,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     case "WTR150":
       if ($character[$index + 2] == 3) return false;
+      if ($currentPlayer != $mainPlayer) return true; //only tick up on your own turn
       if (GetCharacterGemState($player, $cardID) && GetClassState($player, piece: $CS_TunicTicked) == 0) return false;
       return true;
     case "WTR154":

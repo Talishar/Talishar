@@ -2926,7 +2926,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CS_CharacterIndex, $CS_PlayCCIndex, $CCS_LinkBaseAttack;
   global $CCS_WeaponIndex, $EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
   global $CS_NumDragonAttacks, $CS_NumAttackCards, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
-  global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts;
+  global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CS_TunicTicks;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   if ($additionalCosts == "-" || $additionalCosts == "") $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
@@ -3051,6 +3051,18 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
     $EffectContext = $cardID;
     $playText = "";
+    // if ($cardID == "WTR150" && GetCharacterGemState($currentPlayer, $cardID)) {
+    //   // doing this here so it doesn't make a layer
+    //   WriteLog($additionalCosts);
+    //   $character = &GetPlayerCharacter($currentPlayer);
+    //   $cardIndex = FindCharacterIndex($currentPlayer, $cardID);
+    //   if ($character[$cardIndex + 2] < 3) {
+    //     WriteLog("HERE");
+    //     ++$character[$cardIndex + 2];
+    //     IncrementClassState($currentPlayer, $CS_TunicTicks);
+    //     return;
+    //   }
+    // }
     if (!$chainClosed) {
       if (IsModular($cardID)) $additionalCosts = $uniqueID; //to track which one to remove
       $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);

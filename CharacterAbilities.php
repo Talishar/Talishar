@@ -856,7 +856,7 @@ function ShiyanaCharacter($cardID, $player = "")
 
 function EquipPayAdditionalCosts($cardIndex, $from)
 {
-  global $currentPlayer;
+  global $currentPlayer, $CS_TunicTicks;
   $character = &GetPlayerCharacter($currentPlayer);
   $cardID = $character[$cardIndex];
   $cardID = ShiyanaCharacter($cardID);
@@ -865,7 +865,6 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       if (!GetCharacterGemState($currentPlayer, $cardID) || $character[$cardIndex + 2] == 3) {
         $character[$cardIndex + 2] -= 3;
       }
-      else ++$character[$cardIndex + 2];
       break;
     case "CRU177": //Talishar rust counters
       $character[$cardIndex + 1] = 1;

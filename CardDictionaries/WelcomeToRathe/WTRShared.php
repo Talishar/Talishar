@@ -316,9 +316,6 @@
         if (!GetCharacterGemState($currentPlayer, $cardID) || $character[$cardIndex + 2] == 3) {
           GainResources($currentPlayer, 1);
         }
-        else {
-          $character[$cardIndex + 2] += 1;
-        }
         return "";
       case "WTR151":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIHAND");
