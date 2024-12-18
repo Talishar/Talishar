@@ -729,6 +729,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = new Deck($player);
       $deck->AddTop($lastResult);
       return $lastResult;
+    case "ADDTOPORBOT":
+      $deck = new Deck($player);
+      $card = explode(",", $lastResult)[0];
+      $loc = explode(",", $lastResult)[1];
+      if ($loc == "TOP") $deck->AddTop($card);
+      else $deck->AddBOTTOM($card);
+      return $card;
     case "REMOVEDECK":
       $deck = new Deck($player);
       $deck->Remove($lastResult);
