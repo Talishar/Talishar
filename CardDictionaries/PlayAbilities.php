@@ -374,12 +374,15 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HVY245":
       if ($from == "GY") {
         $character = &GetPlayerCharacter($currentPlayer);
-        EquipWeapon($currentPlayer, "HVY245");
-        $index = FindCharacterIndex($currentPlayer, "HVY245");
-        if ($character[$index + 3] == 0) {
-          ++$character[$index + 3];
-        } else {
-          ++$character[$index + 15];
+        $uniqueID = EquipWeapon($currentPlayer, "HVY245");
+        for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+          if ($character[$i + 11] == $uniqueID) {
+            if ($character[$i + 3] == 0) {
+              ++$character[$i + 3];
+            } else {
+              ++$character[$i + 15];
+            }
+          }
         }
       }
       return "";
