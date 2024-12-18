@@ -1050,7 +1050,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "HNT258":
       $names = "Ability";
       if ($from != "HAND") $names = "-,Attack Reaction";
-      elseif ($currentPlayer == $mainPlayer && count($combatChain) >= 0 && CardNameContains($combatChain[0], "Raydn", $mainPlayer, true)) $names .= ",Attack Reaction";
+      elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && CardNameContains($combatChain[0], "Raydn", $mainPlayer, true)) $names .= ",Attack Reaction";
       return $names;
     default:
       return "";

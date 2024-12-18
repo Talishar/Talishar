@@ -422,6 +422,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
       $hand = &GetHand($player);
       $filteredIndices = "";
+      if (count($hand) <= 0) return "PASS";
       for($i = 0; $i < count($indices); ++$i) {
         $block = BlockValue($hand[$indices[$i]]);
         if($block > -1 && $block <= $dqVars[0]) {
