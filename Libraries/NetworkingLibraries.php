@@ -3051,18 +3051,18 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
     $EffectContext = $cardID;
     $playText = "";
-    // if ($cardID == "WTR150" && GetCharacterGemState($currentPlayer, $cardID)) {
-    //   // doing this here so it doesn't make a layer
-    //   WriteLog($additionalCosts);
-    //   $character = &GetPlayerCharacter($currentPlayer);
-    //   $cardIndex = FindCharacterIndex($currentPlayer, $cardID);
-    //   if ($character[$cardIndex + 2] < 3) {
-    //     WriteLog("HERE");
-    //     ++$character[$cardIndex + 2];
-    //     IncrementClassState($currentPlayer, $CS_TunicTicks);
-    //     return;
-    //   }
-    // }
+    if ($cardID == "WTR150" && GetCharacterGemState($currentPlayer, $cardID)) {
+      // doing this here so it doesn't make a layer
+      WriteLog($additionalCosts);
+      $character = &GetPlayerCharacter($currentPlayer);
+      $cardIndex = FindCharacterIndex($currentPlayer, $cardID);
+      if ($character[$cardIndex + 2] < 3) {
+        WriteLog("HERE");
+        ++$character[$cardIndex + 2];
+        IncrementClassState($currentPlayer, $CS_TunicTicks);
+        return;
+      }
+    }
     if (!$chainClosed) {
       if (IsModular($cardID)) $additionalCosts = $uniqueID; //to track which one to remove
       $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
