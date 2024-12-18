@@ -1168,7 +1168,7 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
 
 function ProcessMainCharacterHitEffect($cardID, $player, $target)
 {
-  global $combatChain, $mainPlayer, $layers;
+  global $combatChain, $mainPlayer, $layers, $CS_FealtyCreated;
   $character = &GetPlayerCharacter($player);
   if (CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   switch ($cardID) {
@@ -1243,6 +1243,17 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       AddDecisionQueue("DEALARCANE", $player, "1" . "-" . "AUR005" . "-" . "TRIGGER", 1);
       AddDecisionQueue("WRITELOG", $player, Cardlink($cardID, $cardID) . " were destroyed", 1);
       break;
+    case "HNT001":
+    case "HNT002": //arakni
+      GiveAttackGoAgain();
+      break;
+    case "HNT054":
+    case "HNT055":
+    case "HNT098":
+    case "HNT099"://Fang and Cindra
+      PlayAura("HNT167", $player);
+      IncrementClassState($player, piece: $CS_FealtyCreated);
+      break;
     default:
       break;
   }
@@ -1296,7 +1307,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
-  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished, $CS_FealtyCreated;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
   global $CS_DamagePrevention, $chainLinks;
   $items = &GetItems($player);
   $auras = &GetAuras($player);
@@ -2650,17 +2661,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "AJV007":
       PlayAura("ELE109", $defPlayer, effectController: $defPlayer);
-      break;
-    case "HNT001":
-    case "HNT002":
-      GiveAttackGoAgain();
-      break;
-    case "HNT054":
-    case "HNT055":
-    case "HNT098":
-    case "HNT099"://Fang and Cindra
-      PlayAura("HNT167", $mainPlayer);
-      IncrementClassState($mainPlayer, $CS_FealtyCreated);
       break;
     case "HNT167":
       DestroyAuraUniqueID($player, $uniqueID);

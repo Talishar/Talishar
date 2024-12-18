@@ -457,6 +457,7 @@ function MainCharacterHitTrigger()
 {
   global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
+  $defPlayer = ($mainPlayer == 1 ? 2: 1);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     if (TypeContains($mainCharacter[$i], "W", $mainPlayer) || $mainCharacter[$i + 1] != "2") continue;
@@ -525,6 +526,20 @@ function MainCharacterHitTrigger()
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
+      case "HNT001":
+      case "HNT002":
+        if (IsHeroAttackTarget() && CheckMarked($defPlayer) && HasStealth($attackID)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+        }
+        break;
+      case "HNT054":
+      case "HNT055":
+      case "HNT098":
+      case "HNT099":
+        if (IsHeroAttackTarget() && CheckMarked($defPlayer)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID,$attackID, "MAINCHARHITEFFECT");
+        }
+        break;
       case "ROGUE016":
         if (CardType($attackID) == "AA") {
           $deck = &GetDeck($mainPlayer);
@@ -545,20 +560,6 @@ function MainCharacterHitTrigger()
         break;
       default:
         break;
-    }
-    $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-    if (CheckMarked($otherPlayer) & IsHeroAttackTarget()) {
-      $characterID = ShiyanaCharacter($mainCharacter[$i], $mainPlayer);
-      switch ($characterID) {
-        case "HNT054":
-        case "HNT055":
-        case "HNT098":
-        case "HNT099":
-          AddLayer("TRIGGER", $mainPlayer, $mainCharacter[0]);
-          break;
-        default:
-          break;
-      }
     }
   }
 }
