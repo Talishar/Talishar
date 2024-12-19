@@ -299,14 +299,16 @@ function MZBounce($player, $lastResult, $allArsenal = true)
       case "MYAURAS":
         $auras = &GetAuras($player);
         $cardID = $auras[$mzIndex[1]];
+        $cardOwner = substr($auras[$mzIndex[1]+9], 0, 5) == "THEIR"? $otherPlayer : $player;
         $lastResult = RemoveAura($player, $mzIndex[1]);
-        AddPlayerHand($cardID, $player, "-");
+        AddPlayerHand($cardID, $cardOwner, "-");
         break;
       case "THEIRAURAS":
         $auras = &GetAuras($otherPlayer);
         $cardID = $auras[$mzIndex[1]];
+        $cardOwner = substr($auras[$mzIndex[1]+9], 0, 5) == "THEIR"? $player : $otherPlayer;
         $lastResult = RemoveAura($otherPlayer, $mzIndex[1]);
-        AddPlayerHand($cardID, $otherPlayer, "-");
+        AddPlayerHand($cardID, $cardOwner, "-");
         break;
       default:
         break;
@@ -478,7 +480,7 @@ function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $
   if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZSETDQVAR", $player, "0", 1);
-  
+
   if ($silent);
   else if ($isReveal) AddDecisionQueue("REVEALCARDS", $player, "-", 1);
   else AddDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
@@ -511,7 +513,7 @@ function MZChooseAndBounce($player, $search, $may = false, $context = "")
   if ($context != "") AddDecisionQueue("SETDQCONTEXT", $player, $context);
   if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  AddDecisionQueue("MZBOUNCE", $player, "-", 1);
+  AddDecisionQueue("MZBOUNCE", $player, "-", 1); //Goes the the Owner's hand
 }
 
 function MZChooseAndBottom($player, $search, $may = false, $context = "")
