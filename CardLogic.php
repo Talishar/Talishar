@@ -67,7 +67,7 @@ function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
 {
   global $currentTurnEffects, $combatChain;
   $card = explode("-", $cardID)[0];
-  if (CardType($card) == "A" && !CanPlayAsInstant($cardID, -1, $from) && count($combatChain) > 0 && IsCombatEffectActive($cardID) && !IsCombatEffectPersistent($cardID) && $from != "PLAY") {
+  if (CardType($card) == "A" && !CanPlayAsInstant($cardID, -1, $from, $uniqueID) && count($combatChain) > 0 && IsCombatEffectActive($cardID) && !IsCombatEffectPersistent($cardID) && $from != "PLAY") {
     AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
     return;
   }
@@ -2672,6 +2672,22 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "HNT246":
       DiscardRandom();
       break;
+    case "HNT253":
+      $arsenal = &GetArsenal($player);
+      for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+        $arsenalCardID = $arsenal[$i];
+        $arsenalCardType = CardType($arsenalCardID);
+        if (DelimStringContains($cardType, "A") && $arsenal[$i + 1] == "DOWN"){
+          AddDecisionQueue("YESNO", $player, "if_you_want_to_turn_your_arsenal_face_up");
+          AddDecisionQueue("NOPASS", $player, "-");
+          AddDecisionQueue("TURNARSENALFACEUP", $player, $i, 1);
+          $arsenalCardUniqueID = $arsenal[$i + 5];
+          AddCurrentTurnEffect($parameter, $player, "ARS", $parameter . "-" . $arsenalCardUniqueID);
+          WriteLog("Trap triggered and grants instant speed to the flipped arsenal card until end of turn.");
+        }
+      }
+      TrapTriggered($parameter);
+    break;
     case "HNT256":
       GainHealth(1, $player);
       break;

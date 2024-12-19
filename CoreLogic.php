@@ -1256,7 +1256,7 @@ function GetBanishModifier($index)
   return "";
 }
 
-function CanPlayAsInstant($cardID, $index = -1, $from = "")
+function CanPlayAsInstant($cardID, $index = -1, $from = "", $uniqueID = "")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
   global $mainPlayer, $CS_PlayedAsInstant, $CS_HealthLost, $CS_NumAddedToSoul;
@@ -1274,6 +1274,9 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
   if ($cardType == "C" || $cardType == "E" || $cardType == "W") {
     if ($index == -1) $index = GetClassState($currentPlayer, $CS_CharacterIndex);
     if (SearchCharacterEffects($currentPlayer, $index, "INSTANT")) return true;
+  }
+  if ($from == "ARS" && DelimStringContains($cardType, "A") && $uniqueID != "") {
+    if (SearchCurrentTurnEffectsForUniqueID("HNT253-" . $uniqueID)) return true; // Chain Reaction granted instant speed
   }
   if ($from == "BANISH") {
     $banish = GetBanish($currentPlayer);
