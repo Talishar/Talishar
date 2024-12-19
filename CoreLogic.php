@@ -1832,7 +1832,8 @@ function CloseCombatChain($chainClosed = "true")
 
   if (count($layers) <= LayerPieces() && isset($layers[0]) && isPriorityStep($layers[0])) $layers = [];//In case there's another combat chain related layer like defense step
   elseif (in_array("DEFENDSTEP", $layers)) PopLayer();
-  if (!in_array("FINALIZECHAINLINK", $layers)) PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
+  if(!$chainClosed) FinalizeChainLink(!$chainClosed);
+  elseif (!in_array("FINALIZECHAINLINK", $layers)) PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
   $combatChainState[$CCS_AttackTarget] = "NA";
