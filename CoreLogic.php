@@ -1048,17 +1048,11 @@ function CombatChainClosedCharacterEffects()
           if ((BlockValue($character[$charIndex]) + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]) <= 0) {
             DestroyCharacter($defPlayer, $charIndex);
           }
-        } 
-        elseif (HasBattleworn($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
-          $character[$charIndex + 4] -= 1;//Add -1 block counter
-        }
+        } else if (HasBattleworn($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) $character[$charIndex + 4] -= 1;//Add -1 block counter
       }
       if (HasGuardwell($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
         $character[$charIndex + 4] -= (BlockValue($character[$charIndex]) + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]);//Add -block value counter
-      } 
-      elseif (HasBladeBreak($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
-        DestroyCharacter($defPlayer, $charIndex);
-      }
+      } else if (HasBladeBreak($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) DestroyCharacter($defPlayer, $charIndex);
       switch ($chainLinks[$i][$j]) {
         case "MON089":
           if (!DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST") && $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] >= 6) {
@@ -1834,10 +1828,11 @@ function AttackDestroyedEffects($attackID)
 function CloseCombatChain($chainClosed = "true")
 {
   global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers;
+
+
   if (count($layers) <= LayerPieces() && isset($layers[0]) && isPriorityStep($layers[0])) $layers = [];//In case there's another combat chain related layer like defense step
   elseif (in_array("DEFENDSTEP", $layers)) PopLayer();
-  if(!$chainClosed) FinalizeChainLink(!$chainClosed);
-  elseif(!in_array("FINALIZECHAINLINK", $layers)) PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
+  if (!in_array("FINALIZECHAINLINK", $layers)) PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
   $combatChainState[$CCS_AttackTarget] = "NA";

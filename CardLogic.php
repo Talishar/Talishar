@@ -2549,7 +2549,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       CleanUpCombatEffects();
       AddPlayerHand($combatChain[0], $mainPlayer, "CC");
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
-      CloseCombatChain(false);
+      CloseCombatChain();
       break;
     case "ROS077":
       WriteLog(CardLink($parameter, $parameter) . " draws a card");
