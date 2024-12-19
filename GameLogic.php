@@ -729,6 +729,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = new Deck($player);
       $deck->AddTop($lastResult);
       return $lastResult;
+    case "ADDTOPORBOT":
+      $deck = new Deck($player);
+      $card = explode(",", $lastResult)[0];
+      $loc = explode(",", $lastResult)[1];
+      if ($loc == "TOP") $deck->AddTop($card);
+      else $deck->AddBOTTOM($card);
+      return $card;
     case "REMOVEDECK":
       $deck = new Deck($player);
       $deck->Remove($lastResult);
@@ -820,6 +827,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
       $hand = &GetHand($player);
       $cards = "";
+      if (count($hand) <= 0) return "PASS";
       for ($i = 0; $i < count($indices); ++$i) {
         if ($cards != "") $cards .= ",";
         $cards .= $hand[$indices[$i]];
@@ -2474,6 +2482,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZADDZONE", $player, "MYHAND,DECK", 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        AddDecisionQueue("REVEALCARDS", $player, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);  
       }
       else {
@@ -2482,6 +2491,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $otherPlayer, "<-", 1);
         AddDecisionQueue("MZADDZONE", $otherPlayer, "MYHAND,DECK", 1);
         AddDecisionQueue("MZREMOVE", $otherPlayer, "-", 1);
+        AddDecisionQueue("REVEALCARDS", $otherPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $otherPlayer, "-", 1);  
       }
       return $lastResult;

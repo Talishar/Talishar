@@ -224,6 +224,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Choose Cardback
   $MyCardBack = GetCardBack($playerID);
   $TheirCardBack = GetCardBack($otherPlayer);
+  $borderColor = 0;
 
   $response->MyPlaymat = (IsColorblindMode($playerID) ? 0 : GetPlaymat($playerID));
   $response->TheirPlaymat = (IsColorblindMode($playerID) ? 0 : GetPlaymat($otherPlayer));

@@ -225,7 +225,7 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
   array_unshift($layers, $player);
   array_unshift($layers, $cardID);
   if ($cardID == "TRIGGER") {
-    $orderableIndex = intval($dqState[8]);
+    $orderableIndex = isset($dqState[8]) ? intval($dqState[8]) : -1;
     if ($orderableIndex == -1) $dqState[8] = 0;
     else $dqState[8] += LayerPieces();
   } else $dqState[8] = -1;//If it's not a trigger, it's not orderable

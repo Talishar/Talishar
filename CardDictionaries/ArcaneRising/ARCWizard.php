@@ -51,10 +51,10 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,ARC119-{0}", 1);
       AddDecisionQueue("ELSE", $currentPlayer, "-");
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-      AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}");
+      AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID)." shows the top of your deck is <1>", 1);
-      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with ".CardLink($cardID, $cardID), 1);
+      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with ". CardLink($cardID, $cardID), 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       return "";
     case "ARC120":

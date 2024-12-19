@@ -151,10 +151,12 @@ function JSONPopup($response, $zone, $zonePieces)
 
 function ChainLinkObject($link)
 {
-  global $chainLinks, $cardSize, $playerID, $mainPlayer, $defPlayer;
+  global $chainLinks, $mainPlayer, $defPlayer;
   $chainLink = new stdClass();
   $chainLink->Cards = array();
-  if(!is_array($chainLinks)) return $chainLink;
+  if (!is_array($chainLinks) || empty($chainLinks[$link])) {
+    return $chainLink;
+  }
   for ($i = 0; $i < count($chainLinks[$link]); $i += ChainLinksPieces()) {
     $card = new stdClass();
     $card->Player = $chainLinks[$link][$i+1];
