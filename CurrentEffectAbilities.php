@@ -409,6 +409,11 @@ function EffectHitEffect($cardID, $from)
         AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-", 1);
       }
       return 1;
+    case "HNT004-HIT":
+      if (IsHeroAttackTarget()) {
+        MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, false);
+      }
+      return 1;
     case "HNT102-MARK":
       $character = &GetPlayerCharacter($mainPlayer);
       if (IsHeroAttackTarget() && $character[$combatChainState[$CCS_WeaponIndex] + 11] == $effectArr[1]) {

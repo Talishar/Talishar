@@ -2194,6 +2194,7 @@ function PayAbilityAdditionalCosts($cardID, $index)
       }
       break;
     case "HNT003":
+    case "HNT004":
     case "HNT007":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDCLASS,ASSASSIN");
       AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);

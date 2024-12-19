@@ -391,6 +391,7 @@ function MainCharacterBeginEndPhaseAbilities()
         if (CheckMarked($defPlayer)) ChaosTransform($characterID, $mainPlayer);
         break;
       case "HNT003":
+      case "HNT004":
       case "HNT007":
         ChaosTransform($characterID, $mainPlayer);
         break;
