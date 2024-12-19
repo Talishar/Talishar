@@ -2241,12 +2241,16 @@ function IsDefenseReactionPlayable($cardID, $from)
   return true;
 }
 
-function IsAction($cardID)
+function IsAction($cardID, $from="")
 {
-  $cardType = CardType($cardID);
-  if (DelimStringContains($cardType, "A") || $cardType == "AA") return true;
-  $abilityType = GetAbilityType($cardID);
-  if ($abilityType == "A" || $abilityType == "AA") return true;
+  if(IsStaticType($cardID, $from)) {
+    $abilityType = GetAbilityType($cardID, from: $from);
+    if ($abilityType == "A" || $abilityType == "AA") return true;
+  }
+  else {
+    $cardType = CardType($cardID, $from);
+    if (DelimStringContains($cardType, "A") || $cardType == "AA") return true;
+  }
   return false;
 }
 

@@ -99,7 +99,7 @@ function EVOAbilityType($cardID, $index = -1, $from = ""): string
     "EVO004", "EVO005" => GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? "A" : "",
     "EVO006" => GetClassState($currentPlayer, $CS_NumCranked) > 0 ? "AA" : "",
     "EVO009" => EvoUpgradeAmount($currentPlayer) >= 1 ? "AA" : "",
-    "EVO071", "EVO075", "EVO089", "EVO088", "EVO087", "EVO083", "EVO082", "EVO081", "EVO077", "EVO072" => $from == "PLAY" ? "I" : "A",
+    "EVO071", "EVO072", "EVO075", "EVO077", "EVO087", "EVO081", "EVO082", "EVO083", "EVO088", "EVO089" => $from == "PLAY" ? "I" : "A",
     "EVO410", "EVO003" => "AA",
     "EVO007", "EVO017", "EVO016", "EVO015", "EVO014", "EVO437", "EVO436", "EVO435", "EVO434", "EVO449", "EVO448", "EVO447", "EVO446", "EVO008" => "I",
     "EVO073", "EVO076", "EVO247", "EVO070" => "A",
