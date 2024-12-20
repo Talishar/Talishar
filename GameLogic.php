@@ -1572,13 +1572,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MODDEFCOUNTER":
       if ($lastResult == "") return $lastResult;
       if (substr($lastResult, 0, 5) == "THEIR") {
-        $index = explode("-", $lastResult)[1];
+        $index = intval(explode("-", $lastResult)[1]); // Ensure $index is an integer
         $player = $player == 1 ? 2 : 1;
       }
       elseif(substr($lastResult, 0, 5) == "MY") {
-        $index = explode("-", $lastResult)[1];
+        $index = intval(explode("-", $lastResult)[1]); // Ensure $index is an integer
       }
-      else $index = $lastResult;
+      else {
+        $index = intval($lastResult); // Ensure $index is an integer
+      }
       $character = &GetPlayerCharacter($player);
       $character[$index + 4] = intval($character[$index + 4]) + $parameter;
       if ($parameter < 0) WriteLog(CardLink($character[$index], $character[$index]) . " gets a -1 counter.");
