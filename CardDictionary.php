@@ -3802,7 +3802,7 @@ function WardAmount($cardID, $player, $index = -1)
     case "MST027":
       return SearchCurrentTurnEffects("MERIDIANWARD", $player) ? 3 : 0;
     case "MST031":
-      return $auras[$index + 3];
+      return isset($auras[$index + 3]) ? $auras[$index + 3] : 0;
     case "MST033":
       return SearchPitchForColor($player, 3) * 3;
     case "MST037":
