@@ -395,6 +395,15 @@ function PlayerTargetedAbility($player, $card, $lastResult)
   }
 }
 
+function filterIndices($indices, $zone, $dqVars, $condition) {
+  $filteredIndices = array_filter($indices, function($index) use ($zone, $dqVars, $condition) {
+      $block = isset($zone[$index]) ? BlockValue($zone[$index]) : -1;
+      $type = CardType($zone[$index]);
+      return $block > -1 && $condition($block, $dqVars) && (DelimStringContains($type, "A") || $type == "AA");
+  });
+  return implode(",", $filteredIndices) ?: "PASS";
+}
+
 function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
   global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex;
@@ -419,36 +428,14 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return "";
     case "PULSEWAVEHARPOONFILTER":
-      $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
-      $hand = &GetHand($player);
-      $filteredIndices = "";
-      if (count($hand) <= 0) return "PASS";
-      for($i = 0; $i < count($indices); ++$i) {
-        $block = BlockValue($hand[$indices[$i]]);
-        if($block > -1 && $block <= $dqVars[0]) {
-          $type = CardType($hand[$indices[$i]]);
-          if(DelimStringContains($type, "A") || $type == "AA") {
-            if ($filteredIndices != "") $filteredIndices .= ",";
-            $filteredIndices .= $indices[$i];
-          }
-        }
-      }
-      return ($filteredIndices != "" ? $filteredIndices : "PASS");
+      $indices = is_array($lastResult) ? $lastResult : explode(",", $lastResult);
+      $hand = GetHand($player);
+      if (empty($hand)) return "PASS";
+      return filterIndices($indices, $hand, $dqVars, function($block, $dqVars) { return $block <= $dqVars[0]; });
     case "PULSEWAVEPROTOCOLFILTER":
-      $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
-      $hand = &GetHand($player);
-      $filteredIndices = "";
-      for($i = 0; $i < count($indices); ++$i) {
-        $block = BlockValue($hand[$indices[$i]]);
-        if($block > -1 && $block < $dqVars[0]) {
-          $type = CardType($hand[$indices[$i]]);
-          if(DelimStringContains($type, "A") || $type == "AA") {
-            if ($filteredIndices != "") $filteredIndices .= ",";
-            $filteredIndices .= $indices[$i];
-          }
-        }
-      }
-      return ($filteredIndices != "" ? $filteredIndices : "PASS");
+      $indices = is_array($lastResult) ? $lastResult : explode(",", $lastResult);
+      $hand = GetHand($player);
+      return filterIndices($indices, $hand, $dqVars, function($block, $dqVars) { return $block < $dqVars[0]; });
     case "SIFT":
       $numCards = SearchCount($lastResult);
       WriteLog("<b>$numCards cards</b> were put at the bottom of the deck.");

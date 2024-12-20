@@ -47,7 +47,9 @@ function PatreonLogin($access_token, $silent=true, $debugMode=false)
     }
     if($include->attributes && isset($include->attributes->patron_status))
     {
-      $activeStatus[$include->relationships->campaign->data->id] = $include->attributes->patron_status;
+      if (isset($include->relationships->campaign)) {
+        $activeStatus[$include->relationships->campaign->data->id] = $include->attributes->patron_status;
+      }  
     }
     if($include->type == "campaign" && (!isset($activeStatus[$include->id]) || $activeStatus[$include->id] == "former_patron")) continue;
 

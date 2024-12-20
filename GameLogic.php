@@ -312,7 +312,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (count($params) < 3) array_push($params, "");
       $mzIndices = "";
       for ($i = 0; $i < count($cards); ++$i) {
-        $index = BanishCardForPlayer($cards[$i], $player, $params[0], $params[1], $params[2]);
+        $index = BanishCardForPlayer($cards[$i], $player, $params[0], isset($params[1]) ? $params[1] : "-", isset($params[2]) ? $params[2] : "");
         if ($mzIndices != "") $mzIndices .= ",";
         $mzIndices .= "BANISH-" . $index;
       }
@@ -827,10 +827,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
       $hand = &GetHand($player);
       $cards = "";
-      if (count($hand) <= 0) return "PASS";
+      if (empty($hand)) return "PASS";
       for ($i = 0; $i < count($indices); ++$i) {
-        if ($cards != "") $cards .= ",";
-        $cards .= $hand[$indices[$i]];
+        if (isset($hand[$indices[$i]])) { 
+          if ($cards != "") $cards .= ",";
+          $cards .= $hand[$indices[$i]];
+        } 
       }
       $revealed = RevealCards($cards, $player);
       return ($revealed ? $cards : "PASS");
@@ -946,13 +948,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ALLCARDTYPEORPASS":
       $cards = explode(",", $lastResult);
       for ($i = 0; $i < count($cards); ++$i) {
-        if (CardType($cards[$i]) != $parameter) return "PASS";
+        if (!TypeContains($cards[$i], $parameter, $player)) return "PASS";
       }
       return $lastResult;
     case "NONECARDTYPEORPASS":
       $cards = explode(",", $lastResult);
       for ($i = 0; $i < count($cards); ++$i) {
-        if (CardType($cards[$i]) == $parameter) return "PASS";
+        if (TypeContains($cards[$i], $parameter, $player)) return "PASS";
       }
       return $lastResult;
     case "NONECARDPITCHORPASS":
@@ -964,7 +966,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ALLCARDSUBTYPEORPASS":
       $cards = explode(",", $lastResult);
       for ($i = 0; $i < count($cards); ++$i) {
-        if (CardSubtype($cards[$i]) != $parameter) return "PASS";
+        if (!SubtypeContains($cards[$i], $parameter, $player)) return "PASS";
       }
       return $lastResult;
     case "ALLCARDTALENTORPASS":
@@ -1572,13 +1574,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MODDEFCOUNTER":
       if ($lastResult == "") return $lastResult;
       if (substr($lastResult, 0, 5) == "THEIR") {
-        $index = explode("-", $lastResult)[1];
+        $index = intval(explode("-", $lastResult)[1]); 
         $player = $player == 1 ? 2 : 1;
       }
       elseif(substr($lastResult, 0, 5) == "MY") {
-        $index = explode("-", $lastResult)[1];
+        $index = intval(explode("-", $lastResult)[1]);
       }
-      else $index = $lastResult;
+      else {
+        $index = intval($lastResult);
+      }
       $character = &GetPlayerCharacter($player);
       $character[$index + 4] = intval($character[$index + 4]) + $parameter;
       if ($parameter < 0) WriteLog(CardLink($character[$index], $character[$index]) . " gets a -1 counter.");
@@ -1894,7 +1898,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $otherPlayer = ($player == 1 ? 2 : 1);
       $params = explode(",", $parameter);
       $removedSteamCounterCount = 0;
-      for ($i = count($lastResultArr); $i >= 0; --$i) {
+      for ($i = count($lastResultArr); $i > 0; --$i) {
         $mzIndex = explode("-", $lastResultArr[$i]);
         switch ($mzIndex[0]) {
           case "THEIRITEMS":
@@ -2064,7 +2068,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "INTIMIDATE":
       if ($parameter != "-") $player = $parameter;
-      else $player = $lastResult == "MYCHAR-0" ? $currentPlayer : $defPlayer;
+      else $player = $lastResult == "MYCHAR-0" ? $defPlayer : $mainPlayer;
       WriteLog("Player {$player} was targeted to intimidate.");
       $hand = &GetHand($player);
       if (count($hand) == 0) return; //Intimidate did nothing because there are no cards in their hand

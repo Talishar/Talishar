@@ -1688,7 +1688,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DiscardHand($target, false);
       break;
     case "ELE226":
-      DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
+      if(count($combatChain) > 0) DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
       break;
     case "EVR018":
       PlayAura("ELE111", $player, effectController: $defPlayer);
@@ -1704,8 +1704,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("YESNO", $player, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($items[$index], $items[$index]) . "_and_keep_it_in_play?", 1);
         AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $player, $index, 1);
       } else {
-        DestroyItemForPlayer($player, $index);
         WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
+        DestroyItemForPlayer($player, $index);
       }
       break;
     case "EVR107":
@@ -2554,7 +2554,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       CleanUpCombatEffects();
       AddPlayerHand($combatChain[0], $mainPlayer, "CC");
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
-      CloseCombatChain();
+      if (SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
+        //only close the chain if removed before the resolution step
+        CloseCombatChain(false);
+      }
       break;
     case "ROS077":
       WriteLog(CardLink($parameter, $parameter) . " draws a card");
@@ -2563,7 +2566,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS079":
     case "ROS080":
     case "ROS081":
-      MZChooseAndBounce($mainPlayer, "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T", may: true, context: "Choose an aura to return to its controller's hand");
+      MZChooseAndBounce($mainPlayer, "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T", may: true, context: "Choose an aura to return to its owner's hand");
       break;
     case "ROS114":
       PummelHit($otherPlayer);

@@ -1227,7 +1227,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
               if($option[0] == "MYDISCARD") $uniqueIDIndex = SearchDiscardForUniqueID($params[1], $currentPlayer);
               else $uniqueIDIndex = SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
             }
-            if($uniqueIDIndex != -1 && $cardID == $source[$uniqueIDIndex]) {
+            if($uniqueIDIndex != -1 && isset($source[$uniqueIDIndex]) && $cardID == $source[$uniqueIDIndex]) {
               $label = "Targeted";
               continue;
             }

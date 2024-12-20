@@ -142,7 +142,6 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   array_push($combatChain, 0);//Defense modifier
   array_push($combatChain, GetUniqueId($cardID, $player));
   array_push($combatChain, $OriginUniqueID);
-
   if ($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility();
   return $index;
@@ -152,6 +151,7 @@ function DefendingTerm($term)
 {
   switch ($term) {
     case "ADDCARDTOCHAINASDEFENDINGCARD": // Pulsewave Harpoon, Pulsewave Protocol, etc.
+    case "PROVOKE":
       return true;
     default:
       return false;
@@ -1832,7 +1832,8 @@ function CloseCombatChain($chainClosed = "true")
 
   if (count($layers) <= LayerPieces() && isset($layers[0]) && isPriorityStep($layers[0])) $layers = [];//In case there's another combat chain related layer like defense step
   elseif (in_array("DEFENDSTEP", $layers)) PopLayer();
-  if (!in_array("FINALIZECHAINLINK", $layers)) PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
+  if(!$chainClosed) FinalizeChainLink(!$chainClosed);
+  elseif (!in_array("FINALIZECHAINLINK", $layers)) PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
   $combatChainState[$CCS_AttackTarget] = "NA";

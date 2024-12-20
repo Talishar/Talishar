@@ -738,7 +738,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "WTR060":
         case "WTR061":
         case "WTR062":
-          if (IsAction($cardID)) {
+          if (IsAction($cardID, $from)) {
             $costModifier += 1;
             $remove = true;
           }

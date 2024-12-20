@@ -2247,12 +2247,16 @@ function IsDefenseReactionPlayable($cardID, $from)
   return true;
 }
 
-function IsAction($cardID)
+function IsAction($cardID, $from="")
 {
-  $cardType = CardType($cardID);
-  if (DelimStringContains($cardType, "A") || $cardType == "AA") return true;
-  $abilityType = GetAbilityType($cardID);
-  if ($abilityType == "A" || $abilityType == "AA") return true;
+  if(IsStaticType($cardID, $from)) {
+    $abilityType = GetAbilityType($cardID, from: $from);
+    if ($abilityType == "A" || $abilityType == "AA") return true;
+  }
+  else {
+    $cardType = CardType($cardID, $from);
+    if (DelimStringContains($cardType, "A") || $cardType == "AA") return true;
+  }
   return false;
 }
 
@@ -3804,7 +3808,7 @@ function WardAmount($cardID, $player, $index = -1)
     case "MST027":
       return SearchCurrentTurnEffects("MERIDIANWARD", $player) ? 3 : 0;
     case "MST031":
-      return $auras[$index + 3];
+      return isset($auras[$index + 3]) ? $auras[$index + 3] : 0;
     case "MST033":
       return SearchPitchForColor($player, 3) * 3;
     case "MST037":
