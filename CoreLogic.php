@@ -142,7 +142,6 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   array_push($combatChain, 0);//Defense modifier
   array_push($combatChain, GetUniqueId($cardID, $player));
   array_push($combatChain, $OriginUniqueID);
-
   if ($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility();
   return $index;
@@ -152,6 +151,7 @@ function DefendingTerm($term)
 {
   switch ($term) {
     case "ADDCARDTOCHAINASDEFENDINGCARD": // Pulsewave Harpoon, Pulsewave Protocol, etc.
+    case "PROVOKE":
       return true;
     default:
       return false;
