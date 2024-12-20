@@ -5,6 +5,7 @@ function HNTAbilityType($cardID): string
   return match ($cardID) {
     "HNT003" => "AR",
     "HNT004" => "AR",
+    "HNT006" => "AR",
     "HNT007" => "AR",
     "HNT054" => "I",
     "HNT055" => "I",
@@ -39,6 +40,7 @@ function HNTEffectAttackModifier($cardID): int
   return match ($cardID) {
     "HNT003" => 3,
     "HNT004" => 3,
+    "HNT006" => 3,
     "HNT007" => 3,
     "HNT015" => 3,
     "HNT102-BUFF" => 2,
@@ -67,6 +69,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
   return match ($cardID) {
     "HNT003" => ClassContains($cardID, "ASSASSIN"),
     "HNT004" => ClassContains($cardID, "ASSASSIN"),
+    "HNT006" => ClassContains($cardID, "ASSASSIN"),
     "HNT007" => CardSubType($attackID) == "Dagger",
     "HNT015" => true,
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
@@ -93,6 +96,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT004":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("$cardID-HIT", $currentPlayer);
+      break;
+    case "HNT006":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (HasStealth($CombatChain->AttackCard()->ID())) GiveAttackGoAgain();
       break;
     case "HNT007":
       AddCurrentTurnEffect("HNT007", $currentPlayer);
@@ -310,6 +317,7 @@ function ChaosTransform($characterID, $mainPlayer)
     $transformTarget = match ($roll) {
       1 => "HNT003",
       2 => "HNT004",
+      4 => "HNT006",
       5 => "HNT007",
       default => $characterID,
     };
