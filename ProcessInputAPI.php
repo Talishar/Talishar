@@ -123,7 +123,7 @@ switch ($mode) {
     $newLayers = [];
     for($i = 0; $i < count($submission->layers); ++$i) {
       for($j = $submission->layers[$i]; $j < $submission->layers[$i] + LayerPieces(); ++$j) {
-        array_push($newLayers, $layers[$j]);
+        if(isset($layers[$j])) array_push($newLayers, $layers[$j]);
       }
     }
     if(count($layers) > count($newLayers)) {
