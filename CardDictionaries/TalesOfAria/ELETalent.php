@@ -22,7 +22,7 @@
       case "ELE107": GainHealth(2, $currentPlayer); return "";
       case "ELE108": GainHealth(1, $currentPlayer); return "";
       case "ELE112":
-        if(isset($layers[0]) && count($combatChain) > 0 || CardType($layers[0]) == "AA" || GetAbilityType($layers[0]) == "AA") AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        if (isset($layers[0]) && (count($combatChain) > 0 || CardType($layers[0]) == "AA" || GetAbilityType($layers[0]) == "AA")) AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         else AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "ELE113":
