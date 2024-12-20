@@ -1683,7 +1683,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DiscardHand($target, false);
       break;
     case "ELE226":
-      DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
+      if(count($combatChain) > 0) DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
       break;
     case "EVR018":
       PlayAura("ELE111", $player, effectController: $defPlayer);
