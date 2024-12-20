@@ -1572,14 +1572,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MODDEFCOUNTER":
       if ($lastResult == "") return $lastResult;
       if (substr($lastResult, 0, 5) == "THEIR") {
-        $index = intval(explode("-", $lastResult)[1]); // Ensure $index is an integer
+        $index = intval(explode("-", $lastResult)[1]); 
         $player = $player == 1 ? 2 : 1;
       }
       elseif(substr($lastResult, 0, 5) == "MY") {
-        $index = intval(explode("-", $lastResult)[1]); // Ensure $index is an integer
+        $index = intval(explode("-", $lastResult)[1]);
       }
       else {
-        $index = intval($lastResult); // Ensure $index is an integer
+        $index = intval($lastResult);
       }
       $character = &GetPlayerCharacter($player);
       $character[$index + 4] = intval($character[$index + 4]) + $parameter;
