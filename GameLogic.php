@@ -946,13 +946,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ALLCARDTYPEORPASS":
       $cards = explode(",", $lastResult);
       for ($i = 0; $i < count($cards); ++$i) {
-        if (CardType($cards[$i]) != $parameter) return "PASS";
+        if (!TypeContains($cards[$i], $parameter, $player)) return "PASS";
       }
       return $lastResult;
     case "NONECARDTYPEORPASS":
       $cards = explode(",", $lastResult);
       for ($i = 0; $i < count($cards); ++$i) {
-        if (CardType($cards[$i]) == $parameter) return "PASS";
+        if (TypeContains($cards[$i], $parameter, $player)) return "PASS";
       }
       return $lastResult;
     case "NONECARDPITCHORPASS":
@@ -964,7 +964,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ALLCARDSUBTYPEORPASS":
       $cards = explode(",", $lastResult);
       for ($i = 0; $i < count($cards); ++$i) {
-        if (CardSubtype($cards[$i]) != $parameter) return "PASS";
+        if (!SubtypeContains($cards[$i], $parameter, $player)) return "PASS";
       }
       return $lastResult;
     case "ALLCARDTALENTORPASS":
