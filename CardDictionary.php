@@ -2198,6 +2198,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!($CombatChain->HasCurrentLink() && ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN"))) return true;
       if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
       return false;
+    case "HNT005":
+      if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
+      return false;
     case "HNT007":
       if (!($CombatChain->HasCurrentLink() && SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger"))) return true;
       if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;

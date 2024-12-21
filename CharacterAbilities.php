@@ -392,6 +392,7 @@ function MainCharacterBeginEndPhaseAbilities()
         break;
       case "HNT003":
       case "HNT004":
+      case "HNT005":
       case "HNT006":
       case "HNT007":
         ChaosTransform($characterID, $mainPlayer);
@@ -733,11 +734,15 @@ function CharacterCostModifier($cardID, $from, $cost)
         $modifier += 1;
         AddLayer("TRIGGER", $currentPlayer, "ELE111", "-", "EQUIP", $char[$i + 11]);
         break;
+      case "HNT005":
+        if (CardNameContains($cardID, "Graphene Chelicera", $currentPlayer)) --$modifier;
+        break;
       case "HNT098":
       case "HNT099": // Fang
         $fealties = SearchAurasForCard("HNT167", $currentPlayer);
         if (SubtypeContains($cardID, "Dagger") && count(explode(",", $fealties)) >= 3) --$modifier;
-      default:
+        break;
+       default:
         break;
     }
   }
