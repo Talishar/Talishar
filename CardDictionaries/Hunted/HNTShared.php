@@ -69,10 +69,10 @@ function HNTCombatEffectActive($cardID, $attackID): bool
   if ($cardID == "HNT003" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
   if ($cardID == "HNT004" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
   return match ($cardID) {
-    "HNT003" => ClassContains($cardID, "ASSASSIN"),
-    "HNT004" => ClassContains($cardID, "ASSASSIN"),
-    "HNT005" => ClassContains($cardID, "ASSASSIN"),
-    "HNT006" => ClassContains($cardID, "ASSASSIN"),
+    "HNT003" => ClassContains($attackID, "ASSASSIN"),
+    "HNT004" => ClassContains($attackID, "ASSASSIN"),
+    "HNT005" => HasStealth($attackID),
+    "HNT006" => ClassContains($attackID, "ASSASSIN"),
     "HNT007" => CardSubType($attackID) == "Dagger",
     "HNT015" => true,
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
@@ -321,6 +321,7 @@ function ChaosTransform($characterID, $mainPlayer)
   $char = &GetPlayerCharacter($mainPlayer);
   if ($characterID == "HNT001" || $characterID == "HNT002") {
     $roll = GetRandom(1, 6);
+    $roll = 5;
     $transformTarget = match ($roll) {
       1 => "HNT003",
       2 => "HNT004",
