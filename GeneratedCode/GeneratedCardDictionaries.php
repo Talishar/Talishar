@@ -4993,8 +4993,18 @@ case "0":
 switch($cardID[5]) {
 case "3":
 return "D";
+case "4":
+return "D";
 case "1":
 return "C";
+case "5":
+return "D";
+case "6":
+return "D";
+case "7":
+return "D";
+case "8":
+return "D";
 case "2":
 return "C";
 default: return "AA";
@@ -15821,7 +15831,17 @@ case "0":
 switch($cardID[5]) {
 case "3":
 return -1;
+case "4":
+return -1;
 case "1":
+return -1;
+case "5":
+return -1;
+case "6":
+return -1;
+case "7":
+return -1;
+case "8":
 return -1;
 case "2":
 return -1;
@@ -24401,8 +24421,18 @@ case "0":
 switch($cardID[5]) {
 case "3":
 return "Arakni, Black Widow";
+case "4":
+return "Arakni, Funnel Web";
 case "1":
 return "Arakni, Marionette";
+case "5":
+return "Arakni, Orb-Weaver";
+case "6":
+return "Arakni, Redback";
+case "7":
+return "Arakni, Tarantula";
+case "8":
+return "Arakni, Trap-Door";
 case "2":
 return "Arakni, Web of Deceit";
 default: return "";
@@ -33003,7 +33033,17 @@ case "0":
 switch($cardID[5]) {
 case "3":
 return 0;
+case "4":
+return 0;
 case "1":
+return 0;
+case "5":
+return 0;
+case "6":
+return 0;
+case "7":
+return 0;
+case "8":
 return 0;
 case "2":
 return 0;
@@ -40247,7 +40287,17 @@ case "0":
 switch($cardID[5]) {
 case "3":
 return -1;
+case "4":
+return -1;
 case "1":
+return -1;
+case "5":
+return -1;
+case "6":
+return -1;
+case "7":
+return -1;
+case "8":
 return -1;
 case "2":
 return -1;
@@ -46087,8 +46137,18 @@ case "0":
 switch($cardID[5]) {
 case "3":
 return "Chaos,Demi-Hero";
+case "4":
+return "Chaos,Demi-Hero";
 case "1":
 return "Chaos";
+case "5":
+return "Chaos,Demi-Hero";
+case "6":
+return "Chaos,Demi-Hero";
+case "7":
+return "Chaos,Demi-Hero";
+case "8":
+return "Chaos,Demi-Hero";
 case "2":
 return "Chaos,Young";
 default: return "";
@@ -52247,8 +52307,18 @@ case "0":
 switch($cardID[5]) {
 case "3":
 return "T";
+case "4":
+return "T";
 case "1":
 return "M";
+case "5":
+return "T";
+case "6":
+return "T";
+case "7":
+return "T";
+case "8":
+return "T";
 case "2":
 return "T";
 default: return "C";
@@ -59085,7 +59155,17 @@ case "0":
 switch($cardID[5]) {
 case "3":
 return "ASSASSIN";
+case "4":
+return "ASSASSIN";
 case "1":
+return "ASSASSIN";
+case "5":
+return "ASSASSIN";
+case "6":
+return "ASSASSIN";
+case "7":
+return "ASSASSIN";
+case "8":
 return "ASSASSIN";
 case "2":
 return "ASSASSIN";
@@ -65825,9 +65905,14 @@ case "MST067": return "false";
 case "DYN114": return "false";
 case "HER130": return "false";
 case "HNT003": return "false";
+case "HNT004": return "false";
 case "DYN113": return "false";
 case "HNT001": return "false";
+case "HNT005": return "false";
+case "HNT006": return "false";
 case "OUT003": return "false";
+case "HNT007": return "false";
+case "HNT008": return "false";
 case "HNT002": return "false";
 case "JDG011": return "true";
 case "MON005": return "true";
