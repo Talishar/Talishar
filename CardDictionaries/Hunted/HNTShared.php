@@ -327,6 +327,7 @@ function ChaosTransform($characterID, $mainPlayer)
       3 => "HNT005",
       4 => "HNT006",
       5 => "HNT007",
+      6 => "HNT008",
       default => $characterID,
     };
     WriteLog(CardName($characterID) . " becomes " . CardName($transformTarget));
@@ -351,4 +352,12 @@ function ChaosTransform($characterID, $mainPlayer)
     $char[10] = $subCards == "" ? "-" : substr($subCards, 0, -1);
   }
   $char[0] = $transformTarget;
+  if ($transformTarget == "HNT008") {
+    AddDecisionQueue("YESNO", $mainPlayer, ":_banish_a_card_to_arakni_trapdoor?");
+    AddDecisionQueue("NOPASS", $mainPlayer, "-");
+    AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+    AddDecisionQueue("TRAPDOOR", $mainPlayer, "-", 1);
+    AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
+  }
 }

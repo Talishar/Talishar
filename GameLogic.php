@@ -2499,6 +2499,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddDecisionQueue("SHUFFLEDECK", $otherPlayer, "-", 1);  
       }
       return $lastResult;
+    case "TRAPDOOR":
+      $deck = &GetDeck($player);
+      $index = explode("-", $lastResult)[1];
+      BanishCardForPlayer($deck[$index], $player, "DECK", "TRAPDOOR");
+      RemoveDeck($player, $index);
+      WriteLog("Player {$player} banishes a card face down");
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

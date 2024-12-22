@@ -395,6 +395,7 @@ function MainCharacterBeginEndPhaseAbilities()
       case "HNT005":
       case "HNT006":
       case "HNT007":
+      case "HNT008":
         ChaosTransform($characterID, $mainPlayer);
         break;
       default:
