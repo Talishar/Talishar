@@ -305,6 +305,9 @@ function logCompletedGameStats()
 	if (!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
 	if (!AreStatsDisabled(2)) SendFabDBResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
 	if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
+	
+	// Sends data to FabInsights DB
+	if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
 
 	mysqli_close($conn);
 }
@@ -392,6 +395,54 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
 
 	curl_close($ch);
 }
+
+function SendFaBInsightsResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID)
+{
+	global $FaBInsightsKey, $gameName, $p2IsAI;
+    // Skip AI games
+    if ($p2IsAI == "1") return;
+
+    // Your Azure Function endpoint URL
+	$url = "https://fab-insights.azurewebsites.net/api/send_results";
+
+    // Prepare the data for the POST request
+    $payloadArr = [];
+    $payloadArr['gameID'] = $gameID;
+    $payloadArr['gameName'] = $gameName;
+    $payloadArr['deck1'] = json_decode(SerializeGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID));
+    $payloadArr['deck2'] = json_decode(SerializeGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID));
+    $payloadArr["format"] = GetCachePiece(intval($gameName), 13);
+
+    // Initialize cURL
+    $ch = curl_init($url);
+
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));  // Send JSON data
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                 // Get the response back
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Content-Type: application/json",  // Specify the content type
+		"x-functions-key: " . $FaBInsightsKey // Add x-functions-key header
+    ]);
+
+	WriteLog("API Key: " . $FaBInsightsKey);
+
+    // Execute the request and get the response
+    $response = curl_exec($ch);
+
+	// Uncomment to log fab-insights stats reporting
+	// $logfile = "./BugReports/FabInsightsStatsLogging.txt";
+	// $logHandler = fopen($logfile, "a");
+	// date_default_timezone_set('America/Chicago');
+	// $logDate = date('m/d/Y h:i:s a');
+	// $logText = "Game log sent to FaBInsights for game $gameName at $logDate. $p1deckbuilderID as $p1Hero with $p1Decklink vs $p2deckbuilderID as $p2Hero with $p2Decklink. API Response: $response";
+	// fwrite($logHandler, $logText . "\r\n");
+	// fclose($logHandler);
+
+    // Close the cURL session
+    curl_close($ch);
+}
+
 
 function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)
 {
