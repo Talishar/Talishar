@@ -538,7 +538,7 @@ function MainCharacterHitTrigger()
         }
         break;
       case "HNT007":
-        if (IsHeroAttackTarget() && SubtypeContains($attackID, "Dagger")) {
+        if (IsHeroAttackTarget() && SubtypeContains($attackID, "Dagger", $mainPlayer)) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $defPlayer, "MAINCHARHITEFFECT");
         }
         break;
