@@ -475,32 +475,7 @@ function FindCurrentTurnEffectIndex($player, $cardID)
 
 function CombineSearches($search1, $search2)
 {
-  if ($search2 == "") return $search1;
-  else if ($search1 == "") return $search2;
-  return $search1 . "," . $search2;
-}
-
-function CombineThreeSearches($search1, $search2, $search3)
-{
-  if ($search1 == "") {
-    if ($search2 == "") {
-      return $search3;
-    } elseif ($search3 = "") {
-      return $search2;
-    } else {
-      return $search2 . "," . $search3;
-    }
-  } else if ($search2 == "") {
-    if ($search3 == "") {
-      return $search1;
-    } else {
-      return $search1 . "," . $search3;
-    }
-  } else if ($search3 == "") {
-    return $search1 . "," . $search2;
-  } else {
-    return $search1 . "," . $search2 . "," . $search3;
-  }
+  return implode(',', array_filter([$search1, $search2]));
 }
 
 function SearchRemoveDuplicates($search)
