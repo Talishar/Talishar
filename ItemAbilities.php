@@ -203,6 +203,7 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
     unset($items[$i]);
   }
   $items = array_values($items);
+  if ($cardID == "EVO073") AddLayer("TRIGGER", $player, $cardID);
   return $cardID;
 }
 

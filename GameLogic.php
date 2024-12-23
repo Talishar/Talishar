@@ -874,6 +874,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDSTASISTURNEFFECT":
       $character = &GetPlayerCharacter($player);
+      WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " can't be activated this turn.");
       $effect = $parameter . $character[$lastResult];
       AddCurrentTurnEffect($effect, $player);
       AddNextTurnEffect($effect, $player);
@@ -881,6 +882,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "EQUIPCANTDEFEND":
       $character = &GetPlayerCharacter($player);
+      WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " can't defend this turn.");
       $effect = $parameter . $character[$lastResult];
       AddCurrentTurnEffect($effect, $player);
       return $lastResult;
