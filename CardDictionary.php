@@ -3554,7 +3554,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
   if ($player == "") $player = $currentPlayer;
   $mod = explode("-", $mod)[0];
-  if ($mod == "TRAPDOOR") return SubtypeContains($cardID, "Trap");
+  if ($mod == "TRAPDOOR") return SubtypeContains($cardID, "Trap", $currentPlayer);
   if ($mod == "INT" || $mod == "FACEDOWN" || $mod == "NTSTONERAIN" || $mod == "STONERAIN") return false;
   if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119" || $mod == "ELE064") return true;
   if ($mod == "MST236" && SearchCurrentTurnEffects("MST236-3", $player) && CardType($cardID) != "E") return true;
