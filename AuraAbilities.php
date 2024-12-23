@@ -1195,7 +1195,7 @@ function AuraPlayAbilities($cardID, $from = "")
 
 function AuraAttackAbilities($attackID)
 {
-  global $CombatChain, $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
+  global $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
   $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {

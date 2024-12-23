@@ -874,11 +874,6 @@ function HasCard($cardID)
   return -1;
 }
 
-function Passed(&$turn, $playerID)
-{
-  return $turn[1 + $playerID];
-}
-
 function PassInput($autopass = true)
 {
   global $turn, $currentPlayer, $mainPlayer;

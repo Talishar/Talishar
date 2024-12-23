@@ -936,24 +936,6 @@ function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = ""
   return $cardIDs;
 }
 
-function GetTheirEquipmentChoices()
-{
-  global $currentPlayer;
-  return GetEquipmentIndices(($currentPlayer == 1 ? 2 : 1));
-}
-
-function FindMyCharacter($cardID)
-{
-  global $currentPlayer;
-  return FindCharacterIndex($currentPlayer, $cardID);
-}
-
-function FindDefCharacter($cardID)
-{
-  global $defPlayer;
-  return FindCharacterIndex($defPlayer, $cardID);
-}
-
 function ChainLinkResolvedEffects()
 {
   global $combatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain, $CCS_GoesWhereAfterLinkResolves, $defPlayer;

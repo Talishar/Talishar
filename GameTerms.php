@@ -1,22 +1,14 @@
 <?php
 
-function PhaseName($phase)
-{
-  switch ($phase) {
-    case "M":
-      return "Main";
-    case "B":
-      return "Block";
-    case "A":
-      return "Attack Reaction";
-    case "D":
-      return "Defense Reaction";
-    case "P":
-      return "Pitch";
-    case "ARS":
-      return "Arsenal";
-  }
-}
+// Removed function PhaseName($phase) as it was not being used. Kept it here for reference for the new developpers.
+/* PhaseName
+    case "M": "Main"
+    case "B": "Block"
+    case "A": "Attack Reaction"
+    case "D": "Defense Reaction"
+    case "P": "Pitch"
+    case "ARS": "Arsenal"
+*/
 
 function TypeToPlay($phase)
 {

@@ -439,18 +439,6 @@ function GetMZCard($player, $MZIndex)
   return $zoneDS[$index];
 }
 
-
-function GetMZUniqueID($player, $MZIndex)
-{
-  $params = explode("-", $MZIndex);
-  if (count($params) < 2) return "";
-  if (substr($params[0], 0, 5) == "THEIR") $player = ($player == 1 ? 2 : 1);
-  $zoneDS = &GetMZZone($player, $params[0]);
-  $index = $params[1];
-  if ($index == "" || !isset($zoneDS[$index])) return "";
-  return $zoneDS[$index];
-}
-
 function MZStartTurnAbility($player, $MZIndex)
 {
   $cardID = GetMZCard($player, $MZIndex);
@@ -514,26 +502,6 @@ function MZChooseAndBounce($player, $search, $may = false, $context = "")
   if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZBOUNCE", $player, "-", 1); //Goes the the Owner's hand
-}
-
-function MZChooseAndBottom($player, $search, $may = false, $context = "")
-{
-  AddDecisionQueue("MULTIZONEINDICES", $player, $search);
-  if ($context != "") AddDecisionQueue("SETDQCONTEXT", $player, $context);
-  if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-  else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  AddDecisionQueue("MZBOTTOM", $player, "-", 1);
-}
-
-function MZMayChooseAndLowerDef($player, $search, $may = false, $context = "")
-{
-  WriteLog("Adding multizone indices DQ.");
-  AddDecisionQueue("MULTIZONEINDICES", $player, $search);
-  if ($context != "") AddDecisionQueue("SETDQCONTEXT", $player, $context);
-  if ($may) WriteLog("Adding MAY choose MZ DQ.");
-  if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-  else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  AddDecisionQueue("MZOP", $player, "LOWERDEF", 1);
 }
 
 function MZLastIndex($player, $zone)

@@ -30,7 +30,6 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
 
 function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false, $uniqueID = "")
 {
-  global $mainPlayer;
   $allies = &GetAllies($player);
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
   if (IsSpecificAllyAttacking($player, $index) || (IsSpecificAllyAttackTarget($player, $index, $uniqueID) && !$fromCombat)) {

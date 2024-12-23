@@ -339,20 +339,6 @@ function SearchDiscardForCard($player, $card1, $card2 = "", $card3 = "")
   return $cardList;
 }
 
-function SearchAlliesForCard($player, $card1, $card2 = "", $card3 = "")
-{
-  $allies = &GetAllies($player);
-  $cardList = "";
-  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
-    $id = $allies[$i];
-    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
-      if ($cardList != "") $cardList = $cardList . ",";
-      $cardList = $cardList . $i;
-    }
-  }
-  return $cardList;
-}
-
 function SearchAlliesActive($player, $card1, $card2 = "", $card3 = "")
 {
   $allies = &GetAllies($player);
@@ -378,18 +364,6 @@ function SearchPermanentsForCard($player, $card)
     }
   }
   return $indices;
-}
-
-function SearchEquipNegCounter(&$character)
-{
-  $equipList = "";
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if (CardType($character[$i]) == "E" && $character[$i + 4] < 0 && $character[$i + 1] != 0) {
-      if ($equipList != "") $equipList = $equipList . ",";
-      $equipList = $equipList . $i;
-    }
-  }
-  return $equipList;
 }
 
 function SearchCharacterAlive($player, $cardID)
@@ -721,19 +695,6 @@ function GetArsenalFaceDownIndices($player)
   return $indices;
 }
 
-function GetArsenalFaceUpIndices($player)
-{
-  $arsenal = &GetArsenal($player);
-  $indices = "";
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    if ($arsenal[$i + 1] == "UP") {
-      if ($indices != "") $indices .= ",";
-      $indices .= $i;
-    }
-  }
-  return $indices;
-}
-
 function GetEquipmentIndices($player, $maxBlock = -1, $minBlock = -1, $onCombatChain = false)
 {
   $character = &GetPlayerCharacter($player);
@@ -958,7 +919,6 @@ function CountAura($cardID, $player)
   return $count;
 }
 
-
 function CountAuraAtkCounters($player)
 {
   $auras = &GetAuras($player);
@@ -992,24 +952,6 @@ function GetCombatChainCardIDIndex($cardID)
   global $combatChain;
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     if ($combatChain[$i] == $cardID) return $i;
-  }
-  return -1;
-}
-
-function GetAuraIndex($cardID, $player)
-{
-  $auras = &GetAuras($player);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if ($auras[$i] == $cardID) return $i;
-  }
-  return -1;
-}
-
-function GetAllyIndex($cardID, $player)
-{
-  $Allies = &GetAllies($player);
-  for ($i = 0; $i < count($Allies); $i += AllyPieces()) {
-    if ($Allies[$i] == $cardID) return $i;
   }
   return -1;
 }
