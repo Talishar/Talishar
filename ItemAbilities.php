@@ -125,12 +125,12 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "EVO075":
     case "EVO076":
     case "EVO077":
-      RemoveItem($currentPlayer, $index);
       if (substr($items[$index + 9], 0, 5) != "THEIR") {
         $deck = new Deck($currentPlayer);
       } else {
         $deck = new Deck($otherPlayer);
       }
+      RemoveItem($currentPlayer, $index);
       $deck->AddBottom($cardID, from: "PLAY");
       break;
     case "EVO087":

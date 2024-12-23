@@ -140,7 +140,7 @@ function SearchInner(
   $cardList = "";
   if (!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
   for ($i = 0; $i < count($array); $i += $count) {
-    if ($zone == "CHAR" && ($array[$i + 1] == 0 || $array[$i + 12] == "DOWN") && !$faceDown) continue;
+    if ($zone == "CHAR" && (isset($array[$i + 1]) && $array[$i + 1] == 0 || isset($array[$i + 12]) && $array[$i + 12] == "DOWN") && !$faceDown) continue;
     if ($zone == "BANISH" && isFaceDownMod($array[$i + 1]) && !$isIntimidated) continue;
     $cardID = $array[$i];
     if (!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
@@ -423,7 +423,7 @@ function SearchCharacterForCard($player, $cardID)
 
 function SearchCharacterAliveSubtype($player, $subtype)
 {
-  global $combatChain, $currentTurnEffects;
+  global $currentTurnEffects;
   $character = &GetPlayerCharacter($player);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
     if ($character[$i + 1] != 0 && subtypecontains($character[$i], $subtype, $player)) {
@@ -443,7 +443,6 @@ function SearchCharacterAliveSubtype($player, $subtype)
 
 function SearchCharacterIndexSubtype($player, $subtype)
 {
-  global $combatChain;
   $character = &GetPlayerCharacter($player);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
     if (SubtypeContains($character[$i], $subtype, $player)) return $i;
@@ -456,7 +455,7 @@ function FindCharacterIndex($player, $cardID)
   $character = &GetPlayerCharacter($player);
   $index = -1;
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i] == $cardID) {
+    if (isset($character[$i]) && $character[$i] == $cardID) {
       if ($character[$i + 1] != 0) return $i;
     }
   }
