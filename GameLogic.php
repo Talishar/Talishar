@@ -2067,8 +2067,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ((CardType($params[0]) == "AA" && (GetResolvedAbilityType($params[0], $params[1]) == "") || GetResolvedAbilityType($params[0], $params[1]) == "AA")) GetTargetOfAttack($params[0]);
       return $lastResult;
     case "INTIMIDATE":
+      $otherPlayer = $player == 1 ? 2 : 1;
       if ($parameter != "-") $player = $parameter;
-      else $player = $lastResult == "MYCHAR-0" ? $defPlayer : $mainPlayer;
+      else $player = $lastResult == "MYCHAR-0" ? $currentPlayer : $otherPlayer;
       WriteLog("Player {$player} was targeted to intimidate.");
       $hand = &GetHand($player);
       if (count($hand) == 0) return; //Intimidate did nothing because there are no cards in their hand
