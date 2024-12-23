@@ -1043,6 +1043,7 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
     case "AAZ004":
     case "DTD229-HIT":
     case "HNT003-HIT":
+    case "HNT004-HIT":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     case "ELE066-HIT":
@@ -1250,6 +1251,10 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
     case "HNT001":
     case "HNT002": //arakni
       GiveAttackGoAgain();
+      break;
+    case "HNT007":
+      WriteLog(CardLink($cardID, $cardID) . "'s venom saps 1 life from " . $target);
+      PlayerLoseHealth($target, 1);
       break;
     case "HNT054":
     case "HNT055":
