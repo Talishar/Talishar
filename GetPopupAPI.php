@@ -95,7 +95,12 @@ switch ($popupType) {
   case "chainLinkPopup":
     $popupIndex = intval(($chainLinkIndex ?? $params[1]));
     $response = ChainLinkObject($popupIndex);
-    $response->TotalDamageDealt = $chainLinkSummary[$popupIndex * ChainLinkSummaryPieces()];
+    $index = $popupIndex * ChainLinkSummaryPieces();
+    if (isset($chainLinkSummary[$index])) {
+        $response->TotalDamageDealt = $chainLinkSummary[$index];
+    } else {
+        $response->TotalDamageDealt = 0;
+    }
     break;
   case "mySettings":
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs;

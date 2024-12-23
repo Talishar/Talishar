@@ -2595,9 +2595,9 @@ function NumChainLinks()
 
 function ClearGameFiles($gameName)
 {
-  unlink("./Games/" . $gameName . "/gamestateBackup.txt");
-  unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
-  unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
+  @unlink("./Games/" . $gameName . "/gamestateBackup.txt");
+  @unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
+  @unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
 }
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")

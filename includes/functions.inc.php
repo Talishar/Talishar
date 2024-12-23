@@ -558,8 +558,8 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$deck["averageCombatValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2);
 	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked + $totalLifeGained + $totalDamagePrevented) / $numTurns, 2);
 
-	if($includeFullLog) $deck["fullLog"] = IsPatron($player) ? implode("<BR>", explode("\r\n", file_get_contents("./Games/" . $gameID . "/fullGamelog.txt"))) : "";
-
+	if($includeFullLog) { $deck["fullLog"] = IsPatron($player) ? implode("<BR>", explode("\r\n", @file_get_contents("./Games/" . $gameID . "/fullGamelog.txt"))) : ""; }
+	
 	return json_encode($deck);
 }
 
