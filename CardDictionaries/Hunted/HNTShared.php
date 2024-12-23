@@ -59,7 +59,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   if ($cardID == "HNT102" & count($dashArr) > 1) {
-    if ($dashArr[1] == "BUFF") return CardSubType($attackID) == "Dagger";
+    if ($dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
     if (DelimStringContains($dashArr[1], "MARK", true)) {
       $id = explode(",", $dashArr[1])[1];
       $character = &GetPlayerCharacter($mainPlayer);
@@ -73,15 +73,15 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT004" => ClassContains($attackID, "ASSASSIN"),
     "HNT005" => HasStealth($attackID),
     "HNT006" => ClassContains($attackID, "ASSASSIN"),
-    "HNT007" => CardSubType($attackID) == "Dagger",
+    "HNT007" => SubtypeContains($attackID, "Dagger", $mainPlayer);
     "HNT015" => true,
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT076" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT116" => true,
-    "HNT125" => CardSubType($attackID) == "Dagger",
-    "HNT127" => CardSubType($attackID) == "Dagger",
+    "HNT125" => SubtypeContains($attackID, "Dagger", $mainPlayer);
+    "HNT127" => SubtypeContains($attackID, "Dagger", $mainPlayer);
     "HNT167" => DelimStringContains(CardType($attackID), "AA"),
     "HNT236" => true,
     "HNT249" => true,
