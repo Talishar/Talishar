@@ -141,7 +141,7 @@ function SearchInner(
   if (!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
   for ($i = 0; $i < count($array); $i += $count) {
     if ($zone == "CHAR" && ($array[$i + 1] == 0 || $array[$i + 12] == "DOWN") && !$faceDown) continue;
-    if ($zone == "BANISH" && ($array[$i + 1] == "INT" || $array[$i + 1] == "FACEDOWN" || $array[$i + 1] == "NTSTONERAIN" || $array[$i + 1] == "STONERAIN" || $array[$i + 1] == "TRAPDOOR") && !$isIntimidated) continue;
+    if ($zone == "BANISH" && isFaceDownMod($array[$i + 1]) && !$isIntimidated) continue;
     $cardID = $array[$i];
     if (!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
       if (($type == "" || DelimStringContains(CardType($cardID, $zone), $type) || ($type == "C" && CardType($cardID) == "D") || ($type == "W" && SubtypeContains($cardID, "Aura") && !IsWeapon($cardID)))

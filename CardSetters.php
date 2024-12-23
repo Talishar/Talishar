@@ -23,7 +23,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   $otherPlayer = $player == 1 ? 2 : 1;
   $character = &GetPlayerCharacter($player);
   $characterID = ShiyanaCharacter($character[0]);
-  AddEvent("BANISH", ($mod == "INT" || $mod == "UZURI" || $mod == "NTSTONERAIN" || $mod == "STONERAIN" || $mod == "TRAPDOOR" ? "CardBack" : $cardID));
+  AddEvent("BANISH", (isFaceDownMod($mod) ? "CardBack" : $cardID));
   //Effects that change the modifier
   if ($characterID == "DTD564" && $character[1] < 3) {
     AddLayer("TRIGGER", $player, $characterID);
@@ -41,7 +41,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     array_push($banish, GetUniqueId($cardID, $player));
   }
   ++$classState[$CS_CardsBanished];
-  if ($mod == "INT" || $mod == "NTSTONERAIN" || $mod == "STONERAIN" || $mod == "TRAPDOOR") return $rv;
+  if (isFaceDownMod($mod)) return $rv;
   //Do additional effects
   if ($cardID == "DTD109" && $from == "HAND" && $mod != "DTD564" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
   if (($mod == "BOOST" || $from == "DECK") 
