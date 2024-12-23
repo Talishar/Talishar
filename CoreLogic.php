@@ -1354,7 +1354,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
   return false;
 }
 
-function ClassOverride($cardID, $player = "")
+function ClassOverride($cardID, $player)
 {
   global $currentTurnEffects;
   $cardClass = "";
@@ -1426,13 +1426,13 @@ function ColorOverride($cardID, $player = "")
   return $pitch;
 }
 
-function ClassContains($cardID, $class, $player = "")
+function ClassContains($cardID, $class, $player)
 {
   $cardClass = ClassOverride($cardID, $player);
   return DelimStringContains($cardClass, $class);
 }
 
-function ColorContains($cardID, $color, $player = "")
+function ColorContains($cardID, $color, $player)
 {
   $cardColor = ColorOverride($cardID, $player);
   return DelimStringContains($cardColor, $color);
