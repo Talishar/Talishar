@@ -425,8 +425,6 @@ function SendFaBInsightsResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
 		"x-functions-key: " . $FaBInsightsKey // Add x-functions-key header
     ]);
 
-	WriteLog("API Key: " . $FaBInsightsKey);
-
     // Execute the request and get the response
     $response = curl_exec($ch);
 
