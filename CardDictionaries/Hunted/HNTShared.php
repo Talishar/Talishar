@@ -353,7 +353,7 @@ function ChaosTransform($characterID, $mainPlayer)
   }
   $char[0] = $transformTarget;
   if ($transformTarget == "HNT008") {
-    AddDecisionQueue("YESNO", $mainPlayer, ":_banish_a_card_to_arakni_trapdoor?");
+    AddDecisionQueue("YESNO", $mainPlayer, ":_banish_a_card_to_".CardLink("HNT008", "HNT008")."?");
     AddDecisionQueue("NOPASS", $mainPlayer, "-");
     AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
