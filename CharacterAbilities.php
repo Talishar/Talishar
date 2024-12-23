@@ -391,6 +391,11 @@ function MainCharacterBeginEndPhaseAbilities()
         if (CheckMarked($defPlayer)) ChaosTransform($characterID, $mainPlayer);
         break;
       case "HNT003":
+      case "HNT004":
+      case "HNT005":
+      case "HNT006":
+      case "HNT007":
+      case "HNT008":
         ChaosTransform($characterID, $mainPlayer);
         break;
       default:
@@ -457,7 +462,7 @@ function MainCharacterHitTrigger()
 {
   global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
-  $defPlayer = ($mainPlayer == 1 ? 2: 1);
+  $defPlayer = ($mainPlayer == 1 ? 2 : 1);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     if (TypeContains($mainCharacter[$i], "W", $mainPlayer) || $mainCharacter[$i + 1] != "2") continue;
@@ -530,6 +535,11 @@ function MainCharacterHitTrigger()
       case "HNT002":
         if (IsHeroAttackTarget() && CheckMarked($defPlayer) && HasStealth($attackID)) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+        }
+        break;
+      case "HNT007":
+        if (IsHeroAttackTarget() && SubtypeContains($attackID, "Dagger", $mainPlayer)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $defPlayer, "MAINCHARHITEFFECT");
         }
         break;
       case "HNT054":
@@ -725,11 +735,15 @@ function CharacterCostModifier($cardID, $from, $cost)
         $modifier += 1;
         AddLayer("TRIGGER", $currentPlayer, "ELE111", "-", "EQUIP", $char[$i + 11]);
         break;
+      case "HNT005":
+        if (CardNameContains($cardID, "Graphene Chelicera", $currentPlayer)) --$modifier;
+        break;
       case "HNT098":
       case "HNT099": // Fang
         $fealties = SearchAurasForCard("HNT167", $currentPlayer);
         if (SubtypeContains($cardID, "Dagger") && count(explode(",", $fealties)) >= 3) --$modifier;
-      default:
+        break;
+       default:
         break;
     }
   }

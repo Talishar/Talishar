@@ -2193,25 +2193,34 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($from == "PLAY") return $myItems[$index + 2] != 2;
       else return false;
     case "HNT003":
-      if (!($CombatChain->HasCurrentLink() & ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN"))) return true;
+    case "HNT004":
+    case "HNT006":
+      if (!($CombatChain->HasCurrentLink() && ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $currentPlayer))) return true;
+      if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
+      return false;
+    case "HNT005":
+      if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
+      return false;
+    case "HNT007":
+      if (!($CombatChain->HasCurrentLink() && SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer))) return true;
       if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
       return false;
     case "HNT015":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (HasStealth($CombatChain->AttackCard()->ID()) && NumCardsBlocking() > 0) return false;
-      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) return false;
+      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) return false;
       return true;
     case "HNT102":
       if (!$CombatChain->HasCurrentLink()) return true;
       // This next line is based on my interpretation of the card. It seems to require you to pick all 3 modes
       // if you have 3 draconic chain links, and you can't pick the first mode without a dagger attack
       // this could change with release notes
-      if (NumDraconicChainLinks() > 2 && !SubtypeContains($CombatChain->CurrentAttack(), "Dagger")) return true;
+      if (NumDraconicChainLinks() > 2 && !SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return true;
       if (NumDraconicChainLinks() > 0) {
         // make sure you have at least one dagger equipped
         $mainCharacter = &GetPlayerCharacter($mainPlayer);
         for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
-          if (SubtypeContains($mainCharacter[$i], "Dagger")) return false;
+          if (SubtypeContains($mainCharacter[$i], "Dagger", $mainPlayer)) return false;
         }
         return true;
       }
@@ -3545,6 +3554,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
   if ($player == "") $player = $currentPlayer;
   $mod = explode("-", $mod)[0];
+  if ($mod == "TRAPDOOR") return SubtypeContains($cardID, "Trap", $currentPlayer);
   if ($mod == "INT" || $mod == "FACEDOWN" || $mod == "NTSTONERAIN" || $mod == "STONERAIN") return false;
   if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119" || $mod == "ELE064") return true;
   if ($mod == "MST236" && SearchCurrentTurnEffects("MST236-3", $player) && CardType($cardID) != "E") return true;
@@ -3635,7 +3645,7 @@ function AbilityPlayableFromBanish($cardID, $mod = "")
 {
   global $currentPlayer, $mainPlayer;
   $mod = explode("-", $mod)[0];
-  if ($mod == "INT" || $mod == "FACEDOWN" || $mod == "NTSTONERAIN" || $mod == "STONERAIN") return false;
+  if ($mod == "INT" || $mod == "FACEDOWN" || $mod == "NTSTONERAIN" || $mod == "STONERAIN" || $mod == "TRAPDOOR") return false;
   switch ($cardID) {
     case "MON192":
       return $currentPlayer == $mainPlayer;
@@ -3650,7 +3660,7 @@ function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "")
   $mod = explode("-", $mod)[0];
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
-  if ($mod == "INT" || $mod == "UZURI" || $mod == "FACEDOWN" || $mod == "NTSTONERAIN" || $mod == "STONERAIN") return false;
+  if ($mod == "INT" || $mod == "UZURI" || $mod == "FACEDOWN" || $mod == "NTSTONERAIN" || $mod == "STONERAIN" || $mod == "TRAPDOOR") return false;
   if (ColorContains($cardID, 3, $otherPlayer) && (SearchCurrentTurnEffects("MST001", $player) || SearchCurrentTurnEffects("MST002", $player))) return true;
   if ($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer" || $mod == "TCCGorgonsGaze") return true;
   else return false;

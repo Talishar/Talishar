@@ -881,6 +881,7 @@ function UnsetTurnBanish()
   UnsetCombatChainBanish();
   ReplaceBanishModifier($defPlayer, "NT", "TT");
   ReplaceBanishModifier($defPlayer, "NTSTONERAIN", "STONERAIN");
+  ReplaceBanishModifier($defPlayer, "TRAPDOOR", "FACEDOWN");
   ReplaceBanishModifier($mainPlayer, "NTFromOtherPlayer", "TTFromOtherPlayer");
 }
 

@@ -1936,12 +1936,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ONHITEFFECT":
       ProcessHitEffect($lastResult, $parameter);
       //handling flick knives and mark
-      $currentChar = &GetPlayerCharacter($currentPlayer);
+      $mainChar = &GetPlayerCharacter($mainPlayer);
       if (CheckMarked($defPlayer)) {
-        if ($currentChar[0] == "HNT054" || $currentChar[0] == "HNT055" || $currentChar[0] == "HNT098" || $currentChar[0] == "HNT099") {
-          AddLayer("TRIGGER", $mainPlayer, $currentChar[0], $attackID, "MAINCHARHITEFFECT");
+        if ($mainChar[0] == "HNT054" || $mainChar[0] == "HNT055" || $mainChar[0] == "HNT098" || $mainChar[0] == "HNT099") {
+          AddLayer("TRIGGER", $mainPlayer, $mainChar[0], $attackID, "MAINCHARHITEFFECT");
         }
         RemoveMark($defPlayer);
+      }
+      if ($mainChar[0] == "HNT007") { //arakni, tarantula
+        AddLayer("TRIGGER", $mainPlayer, $mainChar[0], $defPlayer, "MAINCHARHITEFFECT");
       }
       return $parameter;
     case "AWAKEN":
@@ -2495,6 +2498,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddDecisionQueue("REVEALCARDS", $otherPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $otherPlayer, "-", 1);  
       }
+      return $lastResult;
+    case "TRAPDOOR":
+      $deck = &GetDeck($player);
+      $index = explode("-", $lastResult)[1];
+      BanishCardForPlayer($deck[$index], $player, "DECK", "TRAPDOOR");
+      RemoveDeck($player, $index);
+      WriteLog("Player {$player} banishes a card face down");
       return $lastResult;
     default:
       return "NOTSTATIC";

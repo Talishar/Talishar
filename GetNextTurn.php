@@ -331,7 +331,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // their hand contents
   $theirHandContents = array();
   for ($i=0; $i < count($theirBanish); $i += BanishPieces()) {
-    if (PlayableFromBanish($theirBanish[$i], $theirBanish[$i+1], player:$otherPlayer)) {
+    if (PlayableFromBanish($theirBanish[$i], $theirBanish[$i+1], player:$otherPlayer) && $theirBanish[$i+1] != "TRAPDOOR") {
       array_push($theirHandContents, JSONRenderedCard($theirBanish[$i], borderColor:7));
     }
   }
@@ -391,7 +391,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $cardID = $theirBanish[$i];
     $mod = explode("-", $theirBanish[$i + 1])[0];
     $action = $currentPlayer == $playerID && IsPlayable($theirBanish[$i], $turn[0], "THEIRBANISH", $i) ? 15 : 0;
-    if ($mod == "INT" || $mod == "UZURI" || $mod == "FACEDOWN" || $mod == "NTSTONERAIN" || $mod == "STONERAIN") {
+    if ($mod == "INT" || $mod == "UZURI" || $mod == "FACEDOWN" || $mod == "NTSTONERAIN" || $mod == "STONERAIN" || $mod == "TRAPDOOR") {
       $cardID = "CardBack";
     }
     else $border = CardBorderColor($theirBanish[$i], "BANISH", $action > 0, $mod);
@@ -561,7 +561,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $overlay = 1;
       $border = 0;
     }
-    if (($myBanish[$i + 1] == "INT" || $myBanish[$i + 1] == "NTSTONERAIN" || $myBanish[$i + 1] == "STONERAIN") && $playerID == 3) $cardID = "CardBack";
+    if (($myBanish[$i + 1] == "INT" || $myBanish[$i + 1] == "NTSTONERAIN" || $myBanish[$i + 1] == "STONERAIN" || $myBanish[$i + 1] == "TRAPDOOR") && $playerID == 3) $cardID = "CardBack";
     if ($myBanish[$i + 1] == "INT") $label = "Intimidated";
     array_push($playerBanishArr, JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label));
   }
@@ -1257,7 +1257,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $action = IsPlayable($card, $turn[0], "BANISH", $index, player:$otherPlayer) ? 14 : 0;
         $borderColor = CardBorderColor($card, "BANISH", $action > 0, $mod);
         if($borderColor == 7) $label = "Playable";
-        if ($source[$index + 1] == "INT" || $source[$index + 1] == "FACEDOWN" || $source[$index + 1] == "NTSTONERAIN" || $source[$index + 1] == "STONERAIN") $card = "CardBack";
+        if ($source[$index + 1] == "INT" || $source[$index + 1] == "FACEDOWN" || $source[$index + 1] == "NTSTONERAIN" || $source[$index + 1] == "STONERAIN" || $source[$index + 1] == "TRAPDOOR") $card = "CardBack";
       }
       else if (substr($option[0], 0, 2) == "MY") $borderColor = 1;
       else if (substr($option[0], 0, 5) == "THEIR") $borderColor = 2;
