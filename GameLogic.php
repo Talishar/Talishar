@@ -2419,7 +2419,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       NegateLayer($lastResult);
       return $lastResult;
     case "VERDANCE":
-      DealArcane(1, 3, "ABILITY", $parameter, true);
+      DealArcane(1, 3, "ABILITY", $parameter);
       return $lastResult;
     case "BRUTUS":
       $otherPlayer = $player == 1 ? 2 : 1;
