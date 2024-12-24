@@ -1423,6 +1423,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $otherPlayerCharacter = &GetPlayerCharacter($otherPlayer);
   for ($j = 0; $j < count($otherPlayerCharacter); $j += CharacterPieces()) {
+    if ($otherPlayerCharacter[$j + 1] != 2) continue;
     switch ($otherPlayerCharacter[$j]) {
       case "HER130":
         if (HasStealth($cardID)) {
