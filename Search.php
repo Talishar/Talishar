@@ -449,7 +449,9 @@ function FindCurrentTurnEffectIndex($player, $cardID)
 
 function CombineSearches($search1, $search2)
 {
-  return implode(',', array_filter([$search1, $search2]));
+  if ($search2 == "") return $search1;
+  else if ($search1 == "") return $search2;
+  return $search1 . "," . $search2;
 }
 
 function SearchRemoveDuplicates($search)
