@@ -1026,6 +1026,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if(!CanDamageBePrevented($playerID, $vars[0], "ARCANE", $vars[1])) {
         $caption .= "&nbsp | &nbsp <span style='font-size: 0.8em; color:red;'>**WARNING: THIS DAMAGE IS UNPREVENTABLE**</span><br>";
       }
+      else $caption .= "<br>";
     }
     for ($i = 0; $i < count($options); ++$i) {
       array_push($playerInputButtons, CreateButtonAPI($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i]), "24px"));
