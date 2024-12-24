@@ -694,7 +694,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         include_once "./includes/functions.inc.php";
         $otherPlayer = ($playerID == 1 ? 2 : 1);
         if (!IsGameOver()) PlayerLoseHealth($otherPlayer, GetHealth($otherPlayer));
-        WriteLog("The opponent forfeit due to inactivity.");
+        WriteLog("🚩The opponent forfeit due to inactivity.");
       }
       break;
     case 100010: //Grant badge

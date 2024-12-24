@@ -1399,7 +1399,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
       }
       $combatChainState[$CCS_AttackTargetUID] = $uid;
-      WriteLog(GetMZCardLink($defPlayer, $lastResult) . " was chosen as the attack target");
+      WriteLog("🎯".GetMZCardLink($defPlayer, $lastResult) . " was chosen as the attack target");
       return 1;
     case "STARTTURNABILITIES":
       StartTurnAbilities();
