@@ -1022,9 +1022,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $caption = "";
     if ($turn[0] == "CHOOSEARCANE") {
       $vars = explode("-", $dqVars[0]);
-      $caption .= "Source: " . CardLink($vars[1], $vars[1]) . "&nbsp | &nbspTotal Damage: " . $vars[0] . "&nbsp | &nbsp";
+      $caption .= "Source: " . CardLink($vars[1], $vars[1]) . "&nbsp | &nbspTotal Damage: " . $vars[0];
       if(!CanDamageBePrevented($playerID, $vars[0], "ARCANE", $vars[1])) {
-        $caption .= " <br><span style='font-size: 0.8em; color:red;'>**WARNING: THIS DAMAGE IS UNPREVENTABLE**</span><br>";
+        $caption .= "&nbsp | &nbsp <span style='font-size: 0.8em; color:red;'>**WARNING: THIS DAMAGE IS UNPREVENTABLE**</span><br>";
       }
     }
     for ($i = 0; $i < count($options); ++$i) {

@@ -80,7 +80,7 @@ function TypeToPlay($phase)
     case "MAYMULTICHOOSETEXT":
       return " options";
     case "CHOOSEARCANE":
-      return "an amount to pitch to arcane barrier";
+      return "an amount to pitch to Arcane Barrier:";
     case "MAYCHOOSEARSENAL":
       return "a card from arsenal";
     case "CHOOSEARSENAL":
