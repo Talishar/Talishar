@@ -1780,6 +1780,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $otherPlayer = ($player == 1 ? 2 : 1);
       $params = explode("-", $lastResult);
       if ($params[0] == "MYAURAS") DestroyAura($player, $params[1]);
+      else if($params[0] == "MYCHAR") DestroyAura($player, $params[1], "", "EQUIP");
       else UnfreezeMZ($player, $params[0], $params[1]);
       return "";
     case "SUCCUMBTOWINTER":

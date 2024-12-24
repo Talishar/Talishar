@@ -744,6 +744,20 @@ function SearchAurasForCard($cardID, $player, $selfReferential = true)
   return $indices;
 }
 
+function SearchCharacterForCards($cardID, $player, $selfReferential = true)
+{
+  if (!$selfReferential && SearchCurrentTurnEffects("OUT183", $player)) return "";
+  $char = &GetPlayerCharacter($player);
+  $indices = "";
+  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+    if ($char[$i] == $cardID) {
+      if ($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
+}
+
 function SearchZoneForUniqueID($uniqueID, $player, $zone)
 {
   switch ($zone) {
