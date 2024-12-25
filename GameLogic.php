@@ -1444,6 +1444,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $auras = GetAuras($player);
         $target = "MYAURASUID-" . $auras[$targetArr[1] + 6];
       }
+      if ($targetArr[0] == "THEIRCHAR") {
+        $char = GetPlayerCharacter($otherPlayer);
+        $target = "THEIRCHARUID-" . $char[$targetArr[1] + 11];
+      }
       for ($i = 0; $i < count($layers); $i += LayerPieces()) {
         if ($layers[$i] == $parameter && $layers[$i + 3] == "-") {
           $layers[$i + 3] = $target;
