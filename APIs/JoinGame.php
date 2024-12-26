@@ -199,6 +199,8 @@ if ($decklink != "") {
   $modularSideboard = "";
   $unsupportedCards = "";
   $bannedCard = "";
+  $isDeckBlitzLegal = "";
+  $isDeckCCLegal = "";
   $character = "";
   $head = "";
   $chest = "";
@@ -214,14 +216,33 @@ if ($decklink != "") {
 
   if (is_countable($cards)) {
     for ($i = 0; $i < count($cards); ++$i) {
-        $count = $cards[$i]->{'total'};
-        $numSideboard = (isset($cards[$i]->{'sideboardTotal'}) ? $cards[$i]->{'sideboardTotal'} : 0);
-        $id = getCardId($cards[$i], $isFaBDB, $isFaBMeta, $orderedSets);
-        if ($id == "") continue;
-        processCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards, $format, $character);
-        if (IsCardBanned($id, $format, $character) && $format != "draft") {
-          if ($bannedCard != "") $bannedCard .= ", ";
-          $bannedCard .= CardName($id);
+      $count = $cards[$i]->{'total'};
+      $numSideboard = (isset($cards[$i]->{'sideboardTotal'}) ? $cards[$i]->{'sideboardTotal'} : 0);
+      $id = getCardId($cards[$i], $isFaBDB, $isFaBMeta, $orderedSets);
+      if ($id == "") continue;
+      processCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards, $format, $character);
+
+      if (IsCardBanned($id, $format, $character) && $format != "draft") {
+        if ($bannedCard != "") $bannedCard .= ", ";
+        $bannedCard .= CardName($id);
+      }
+
+      // Track the count of each card ID
+      if (!isset($cardCounts[$id])) {
+        $cardCounts[$id] = 0;
+      }
+      $cardCounts[$id] += $count;
+
+      // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
+      if (($format == "blitz" || $format == "compblitz" || $format == "openformatblitz" || $format == "clash") && $cardCounts[$id] > 2) {
+        if ($isDeckBlitzLegal != "") $isDeckBlitzLegal .= ", ";
+        $isDeckBlitzLegal .= CardName($id) . " (" . PitchValue($id) . ")";
+      }
+
+      // Deck Check to make sure players don't run more than 3 copies of cards in Classic Constructed formats
+      if (($format == "cc" || $format == "compcc" || $format == "openformatcc" || $format == "llcc") && $cardCounts[$id] > 3) {
+        if ($isDeckCCLegal != "") $isDeckCCLegal .= ", ";
+        $isDeckCCLegal .= CardName($id);
       }
     }
     $deckLoaded = true;
@@ -230,6 +251,18 @@ if ($decklink != "") {
   if(!$deckLoaded) {
     $response->error = "⚠️ Error retrieving deck. Decklist link invalid.";
     echo(json_encode($response));
+    exit;
+  }
+
+  if($isDeckBlitzLegal != "") {
+    $response->error = "⚠️ The deck contains extra copies of cards and isn't legal: " . $isDeckBlitzLegal;
+    echo (json_encode($response));
+    exit;
+  }
+
+  if($isDeckCCLegal != "") {
+    $response->error = "⚠️ The deck contains extra copies of cards and isn't legal: " . $isDeckCCLegal;
+    echo (json_encode($response));
     exit;
   }
 
@@ -564,9 +597,9 @@ function IsCardBanned($cardID, $format, $character)
   if ($format == "clash") return !isClashLegal($cardID, $character);
 
   //Ban spoiler cards in non-open-format
-  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") && $set == "HNT") return true; // The Hunted Launch 31st January
-  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") && $set == "ARK") return true; // Arakni Blitz Deck Launch 31st January
-  if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") {
+  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc") && $set == "HNT") return true; // The Hunted Launch 31st January
+  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc") && $set == "ARK") return true; // Arakni Blitz Deck Launch 31st January
+  if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc") {
     switch ($cardID) { //Special Use Promos
       case "JDG001": case "JDG002": case "JDG003": case "JDG004": case "JDG005": case "JDG006": case "JDG008": case "JDG010": 
       case "JDG019": case "JDG024": case "JDG025":
