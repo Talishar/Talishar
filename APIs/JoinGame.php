@@ -191,6 +191,7 @@ if ($decklink != "") {
   $modularSideboard = "";
   $unsupportedCards = "";
   $bannedCard = "";
+  $restrictedCard = "";
   $isDeckBlitzLegal = "";
   $isDeckCCLegal = "";
   $character = "";
@@ -214,11 +215,12 @@ if ($decklink != "") {
       if($id == "" && isset($cards[$i]->{'cardIdentifier'})) {
         $id = $cards[$i]->{'cardIdentifier'};
       }
-      if ($id == "") continue;      ProcessCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards, $format, $character);
+      if ($id == "") continue;   
+      ProcessCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards, $format, $character);
 
       if (IsCardBanned($id, $format, $character) && $format != "draft") {
         if ($bannedCard != "") $bannedCard .= ", ";
-        $bannedCard .= CardName($id);
+        $bannedCard .= CardName($id) . " (" . PitchValue($id) . ")";
       }
 
       // Track the count of each card ID
@@ -226,6 +228,11 @@ if ($decklink != "") {
         $cardCounts[$id] = 0;
       }
       $cardCounts[$id] += $count;
+
+      if(isCardRestricted($id, $format, $cardCounts[$id])) {
+        if ($restrictedCard != "") $restrictedCard .= ", ";
+        $restrictedCard .= CardName($id) . " (" . PitchValue($id) . ")";
+      }
 
       // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
       if (($format == "blitz" || $format == "compblitz" || $format == "openformatblitz" || $format == "clash") && $cardCounts[$id] > 2) {
@@ -280,6 +287,12 @@ if ($decklink != "") {
 
   if ($bannedCard != "") {
     $response->error = "⚠️ The following cards are not legal in this format: " . $bannedCard;
+    echo (json_encode($response));
+    exit;
+  }
+
+  if ($restrictedCard != "") {
+    $response->error = "⚠️ The following cards are restricted to up to 1 copy in this format: " . $restrictedCard;
     echo (json_encode($response));
     exit;
   }
@@ -516,6 +529,18 @@ function IsCardBanned($cardID, $format, $character)
   return false;
 }
 
+function isCardRestricted($cardID, $format, $count) {
+
+  $restrictedCards = [
+    "llcc" => [
+      "WTR043", "ELE005", "ELE006", "UPR139", "DTD230", "OUT056", "OUT057", "OUT058", 
+      "ROS195", "ROS196", "ROS197", 
+    ]
+  ];
+
+  return isset($restrictedCards[$format]) && in_array($cardID, $restrictedCards[$format]) && $count > 1;
+}
+
 function isSpecialUsePromo($cardID) {
   $specialUsePromos = [
       "JDG001", "JDG002", "JDG003", "JDG004", "JDG005", "JDG006", "JDG008", "JDG010",
@@ -528,6 +553,7 @@ function isSpecialUsePromo($cardID) {
 function isBannedInFormat($cardID, $format) {
   if ($format == "compblitz") $format = "blitz";
   if ($format == "compcc") $format = "cc";
+
   $bannedCards = [
       "blitz" => [
           "WTR002", "WTR160", "WTR164", "WTR165", "WTR166", "ARC002", "ARC003", "ARC076", "ARC077",
@@ -551,6 +577,7 @@ function isBannedInFormat($cardID, $format) {
           "EVR121"
       ]
   ];
+
   return isset($bannedCards[$format]) && in_array($cardID, $bannedCards[$format]);
 }
 
