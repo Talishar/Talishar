@@ -510,103 +510,47 @@ function IsCardBanned($cardID, $format, $character)
 
   //Ban spoiler cards in non-open-format
   if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc") && $set == "HNT") return true; // The Hunted Launch 31st January
-  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc") && $set == "ARK") return true; // Arakni Blitz Deck Launch 31st January
-  if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc") {
-    switch ($cardID) { //Special Use Promos
-      case "JDG001": case "JDG002": case "JDG003": case "JDG004": case "JDG005": case "JDG006": case "JDG008": case "JDG010": 
-      case "JDG019": case "JDG024": case "JDG025":
-      case "LSS001": case "LSS002": case "LSS003": case "LSS004": case "LSS005": case "LSS006": case "LSS007": case "LSS008":
-      case "FAB094":
-      case "LGS099":
-      case "HER101":
-        return true;
-    }
-  }
-  switch($format) {
-    case "blitz": case "compblitz":
-      switch($cardID) {
-        case "WTR002": //Rhinar
-        case "WTR160": //Tome of Fyendal
-        case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
-        case "ARC002": //Dash
-        case "ARC003": //Teklo Plasma Pistol
-        case "ARC076": case "ARC077": // Viserai | Nebula Black
-        case "ARC122": //Tome of Aetherwind
-        case "ARC160": // Art of War
-        case "ELE006": // Awakening
-        case "ELE063": //Briar
-        case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
-        case "ELE222": //Rosetta
-        case "ELE223": // Duskblade
-        case "WTR152": // Heartened Cross Strap
-        case "CRU141": // Bloodsheath Skeleta
-        case "CRU174": case "CRU175": case "CRU176": // Snapback
-        case "CRU188": // Cash In
-        case "MON065": //Tome of Divinity
-        case "MON239": // Stubby Hammers
-        case "EVR037": // Mask of the Pouncing Lynx
-        case "UPR089": // Tome of Firebrand
-        case "UPR103": case "EVR120": case "EVR121": // Iyslander | Kraken's Aethervein
-        case "ELE002": case "ELE003": // Oldhim | Winter's Wail
-        case "MON154": case "MON155": // Chane | Galaxxi Black
-        case "ARC114": case "ARC115": case "CRU159": // Kano | Crucible of Aetherweave
-        case "CRU077":// Kassai, Cintari Sellsword
-        case "CRU046": case "CRU050": // Ira, Crimson Haze | Edge of Autumn
-        case "DYN009": //Berserk
-        case "OUT056": case "OUT057": case "OUT058": //Bonds of Ancestry
-        case "MST080": //Orihon of Mystic Tenets
-        case "MON266": case "MON267": case "MON268": //belittle 
-          return true;
-        default: return false;
-      }
-    case "cc": case "compcc":
-      switch($cardID) {
-        case "WTR160": //Tome of Fyendal
-        case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
-        case "ARC122": //Tome of Aetherwind
-        case "ARC160": // Art of War
-        case "ARC170": case "ARC171": case "ARC172": // Plunder Run
-        case "CRU141": // Bloodsheath Skeleta
-        case "CRU188": // Cash In    
-        case "MON001": case "MON003": // Prism Sculptor of Arc Light | Luminaris
-        case "MON065": //Tome of Divinity
-        case "MON153": case "MON155": // Chane, Bound by Shadow | Galaxxi Black
-        case "MON239": // Stubby Hammers
-        case "MON266": case "MON267": case "MON268": // Belittle    
-        case "ELE006": // Awakening
-        case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
-        case "ELE223":  // Duskblade
-        case "ELE115": // Crown of Seeds
-        case "ELE031": case "ELE034": // Lexi, Livewire | Voltaire, Strike Twice
-        case "ELE062": case "ELE222": // Briar, Warden of Thorns | Rosetta Thorn
-        case "ELE001": case "ELE003": // Oldhim, Grandfather of Eternity | Winter's Wail
-        case "EVR017": // Bravo, Star of the Show
-        case "UPR001": case "UPR003": // Dromai, Ash Artist | Storm of Sandikai
-        case "UPR089": // Tome of Firebrand
-        case "UPR102": case "EVR121": // Iyslander, Stormbind | Kraken's Aethervein
-        case "DYN009": //Berserk
-        case "OUT056": case "OUT057": case "OUT058": //Bonds of Ancestry
-        case "MST080": //Orihon of Mystic Tenets
-        case "ARC006": //High Octane
-        case "ROS225": //Count Your Blessings Blue
-          return true;
-        default: return false;
-      }
-    case "commoner":
-      switch($cardID) {
-        case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
-        case "MON266": case "MON267": case "MON268": // Belittle
-        case "MON230": //Aether Ironweave
-          return true;
-        default: return false;
-      }
-    case "llcc":
-      switch($cardID) {
-        case "EVR121": //Kraken's Aethervein
-          return true;
-      }
-    default: return false;
-  }
+  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc") && $set == "ARK") return true; // Arakni Blitz Deck Launch 31st January  
+  if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && isSpecialUsePromo($cardID)) return true;
+  if(isBannedInFormat($cardID, $format)) return true;
+  return false;
+}
+
+function isSpecialUsePromo($cardID) {
+  $specialUsePromos = [
+      "JDG001", "JDG002", "JDG003", "JDG004", "JDG005", "JDG006", "JDG008", "JDG010",
+      "JDG019", "JDG024", "JDG025", "LSS001", "LSS002", "LSS003", "LSS004", "LSS005",
+      "LSS006", "LSS007", "LSS008", "FAB094", "LGS099", "HER101"
+  ];
+  return in_array($cardID, $specialUsePromos);
+}
+
+function isBannedInFormat($cardID, $format) {
+  $bannedCards = [
+      "blitz" => [
+          "WTR002", "WTR160", "WTR164", "WTR165", "WTR166", "ARC002", "ARC003", "ARC076", "ARC077",
+          "ARC122", "ARC160", "ELE006", "ELE063", "ELE186", "ELE187", "ELE188", "ELE222", "ELE223",
+          "WTR152", "CRU141", "CRU174", "CRU175", "CRU176", "CRU188", "MON065", "MON239", "EVR037",
+          "UPR089", "UPR103", "EVR120", "EVR121", "ELE002", "ELE003", "MON154", "MON155", "ARC114",
+          "ARC115", "CRU159", "CRU077", "CRU046", "CRU050", "DYN009", "OUT056", "OUT057", "OUT058",
+          "MST080", "MON266", "MON267", "MON268"
+      ],
+      "cc" => [
+          "WTR160", "WTR164", "WTR165", "WTR166", "ARC122", "ARC160", "ARC170", "ARC171", "ARC172",
+          "CRU141", "CRU188", "MON001", "MON003", "MON065", "MON153", "MON155", "MON239", "MON266",
+          "MON267", "MON268", "ELE006", "ELE186", "ELE187", "ELE188", "ELE223", "ELE115", "ELE031",
+          "ELE034", "ELE062", "ELE222", "ELE001", "ELE003", "EVR017", "UPR001", "UPR003", "UPR089",
+          "UPR102", "EVR121", "DYN009", "OUT056", "OUT057", "OUT058", "MST080", "ARC006", "ROS225"
+      ],
+      "commoner" => [
+          "ELE186", "ELE187", "ELE188", "MON266", "MON267", "MON268", "MON230"
+      ],
+      "llcc" => [
+          "EVR121"
+      ]
+  ];
+
+  return isset($bannedCards[$format]) && in_array($cardID, $bannedCards[$format]);
 }
 
 function ReverseArt($cardID)
