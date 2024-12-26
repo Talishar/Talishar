@@ -390,11 +390,11 @@ function FormatCode($format)
     case "sealed": return 6;
     case "draft": return 7;
     case "llcc": return 8;
-    case "llblitz": return 9;
+    case "llblitz": return 9; //Currently not used
     case "openformatblitz": return 10;
     case "clash": return -1;
     case "openformatllcc": return 11;
-    case "openformatllblitz": return 12;
+    case "openformatllblitz": return 12; //Currently not used
     default: return -1;
   }
 }
@@ -412,11 +412,11 @@ function FormatName($formatCode)
     case 6: return "sealed";
     case 7: return "draft";
     case 8: return "llcc";
-    case 9: return "llblitz";
+    case 9: return "llblitz"; //Currently not used
     case 10: return "openformatblitz";
     case -1: return "clash";
     case 11: return "openformatllcc";
-    case 12: return "openformatllblitz";
+    case 12: return "openformatllblitz"; //Currently not used
     default: return "-";
   }
 }

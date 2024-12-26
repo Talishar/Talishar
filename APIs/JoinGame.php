@@ -21,7 +21,7 @@ if (!function_exists("DelimStringContains")) {
 }
 
 if (!function_exists("SubtypeContains")) {
-  function SubtypeContains($cardID, $subtype, $player="")
+  function SubtypeContains($cardID, $subtype)
   {
     $cardSubtype = CardSubtype($cardID);
     return DelimStringContains($cardSubtype, $subtype);
@@ -29,7 +29,7 @@ if (!function_exists("SubtypeContains")) {
 }
 
 if (!function_exists("TypeContains")) {
-  function TypeContains($cardID, $type, $player="")
+  function TypeContains($cardID, $type)
   {
     $cardType = CardType($cardID);
     return DelimStringContains($cardType, $type);
@@ -114,14 +114,6 @@ if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
 }
 
 $deckLoaded = false;
-if(substr($decklink, 0, 9) == "DRAFTFAB-")
-{
-  $isDraftFaB = true;
-  $deckFile = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
-  ParseDraftFab(substr($decklink, 9), $deckFile);
-  $decklink = "";//Already loaded deck, so don't try to load again
-  $deckLoaded = true;
-}
 
 if ($decklink != "") {
   if ($playerID == 1) $p1DeckLink = $decklink;
@@ -218,9 +210,9 @@ if ($decklink != "") {
     for ($i = 0; $i < count($cards); ++$i) {
       $count = $cards[$i]->{'total'};
       $numSideboard = (isset($cards[$i]->{'sideboardTotal'}) ? $cards[$i]->{'sideboardTotal'} : 0);
-      $id = getCardId($cards[$i], $isFaBDB, $isFaBMeta, $orderedSets);
+      $id = GetCardId($cards[$i], $isFaBDB, $isFaBMeta, $orderedSets);
       if ($id == "") continue;
-      processCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards, $format, $character);
+      ProcessCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards, $format, $character);
 
       if (IsCardBanned($id, $format, $character) && $format != "draft") {
         if ($bannedCard != "") $bannedCard .= ", ";
@@ -421,88 +413,6 @@ echo (json_encode($response));
 
 session_write_close();
 
-
-function ParseDraftFab($deck, $filename)
-{
-  global $character;
-  $character = "DYN001";
-  $deckCards = "";
-  $headSideboard = "";
-  $chestSideboard = "";
-  $armsSideboard = "";
-  $legsSideboard = "";
-  $offhandSideboard = "";
-  $weaponSideboard = "";
-  $sideboardCards = "";
-  $quiverSideboard = "";
-
-  $cards = explode(",", $deck);
-  for ($i = 0; $i < count($cards); ++$i) {
-    $card = explode(":", $cards[$i]);
-    $cardID = $card[0];
-    $quantity = $card[2];
-    $type = CardType($cardID);
-    switch ($type) {
-      case TypeContains($cardID, "T"):
-        break;
-      case TypeContains($cardID, "C"):
-        $character = $cardID;
-        break;
-      case TypeContains($cardID, "W"):
-        if ($weaponSideboard != "") $weaponSideboard .= " ";
-        $weaponSideboard .= $cardID;
-        break;
-      case TypeContains($cardID, "E"):
-        if (SubtypeContains($cardID, "Head")) {
-          if ($headSideboard != "") $headSideboard .= " ";
-          $headSideboard .= $cardID;
-        } else if (SubtypeContains($cardID, "Chest")) {
-          if ($chestSideboard != "") $chestSideboard .= " ";
-          $chestSideboard .= $cardID;
-        } else if (SubtypeContains($cardID, "Arms")) {
-          if ($armsSideboard != "") $armsSideboard .= " ";
-          $armsSideboard .= $cardID;
-        } else if (SubtypeContains($cardID, "Legs")) {
-          if ($legsSideboard != "") $legsSideboard .= " ";
-          $legsSideboard .= $cardID;
-        } else if (SubtypeContains($cardID, "Off-Hand")) {
-          if ($offhandSideboard != "") $offhandSideboard .= " ";
-          $offhandSideboard .= $cardID;
-        } else if (SubtypeContains($cardID, "Quiver")) {
-          if ($quiverSideboard != "") $quiverSideboard .= " ";
-          $quiverSideboard .= $cardID;
-        }
-        break;
-      default:
-        for ($j = 0; $j < $quantity; ++$j) {
-          if ($card[1] == "S") {
-            if ($sideboardCards != "") $sideboardCards .= " ";
-            $sideboardCards .= GetAltCardID($cardID);
-          } else {
-            if ($deckCards != "") $deckCards .= " ";
-            $deckCards .= GetAltCardID($cardID);
-          }
-        }
-        break;
-    }
-  }
-
-
-  $deckFile = fopen($filename, "w");
-  $charString = $character;
-
-  fwrite($deckFile, $charString . "\r\n");
-  fwrite($deckFile, $deckCards . "\r\n");
-  fwrite($deckFile, $headSideboard . "\r\n");
-  fwrite($deckFile, $chestSideboard . "\r\n");
-  fwrite($deckFile, $armsSideboard . "\r\n");
-  fwrite($deckFile, $legsSideboard . "\r\n");
-  fwrite($deckFile, $offhandSideboard . "\r\n");
-  fwrite($deckFile, $weaponSideboard . "\r\n");
-  fwrite($deckFile, $sideboardCards);
-  fclose($deckFile);
-}
-
 function GetAltCardID($cardID)
 {
   switch ($cardID) {
@@ -697,7 +607,6 @@ function IsCardBanned($cardID, $format, $character)
   }
 }
 
-
 function ReverseArt($cardID)
 {
   switch ($cardID) {
@@ -715,7 +624,7 @@ function ReverseArt($cardID)
   }
 }
 
-function getCardId($card, $isFaBDB, $isFaBMeta, $orderedSets) {
+function GetCardId($card, $isFaBDB, $isFaBMeta, $orderedSets) {
   if ($isFaBDB) {
       $printings = $card->{'printings'};
       $printing = $printings[0];
@@ -743,10 +652,10 @@ function getCardId($card, $isFaBDB, $isFaBMeta, $orderedSets) {
   return "";
 }
 
-function processCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modularSideboard, &$unsupportedCards, &$character, &$weapon1, &$weapon2, &$weaponSideboard, &$head, &$headSideboard, &$chest, &$chestSideboard, &$arms, &$armsSideboard, &$legs, &$legsSideboard, &$offhand, &$offhandSideboard, &$quiver, &$quiverSideboard, &$deckCards, &$sideboardCards) {
+function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modularSideboard, &$unsupportedCards, &$character, &$weapon1, &$weapon2, &$weaponSideboard, &$head, &$headSideboard, &$chest, &$chestSideboard, &$arms, &$armsSideboard, &$legs, &$legsSideboard, &$offhand, &$offhandSideboard, &$quiver, &$quiverSideboard, &$deckCards, &$sideboardCards) {
   $id = GetAltCardID($id);
-  $cardType = CardType($id);
-  if ($cardType == "") {
+  $cardName = CardName($id); 
+  if ($cardName == "") {
       if ($unsupportedCards != "") $unsupportedCards .= " ";
       $unsupportedCards .= $id;
       return;
@@ -780,7 +689,7 @@ function processCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modul
       }
   } elseif (TypeContains($id, "E")) {
       ++$totalCards;
-      processEquipment($id, $numMainBoard, $numSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard);
+      ProcessEquipment($id, $numMainBoard, $numSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard);
   } else {
       for ($j = 0; $j < $numMainBoard; ++$j) {
           if ($deckCards != "") $deckCards .= " ";
@@ -794,7 +703,7 @@ function processCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modul
   }
 }
 
-function processEquipment($id, $numMainBoard, $numSideboard, &$head, &$headSideboard, &$chest, &$chestSideboard, &$arms, &$armsSideboard, &$legs, &$legsSideboard, &$offhand, &$offhandSideboard, &$quiver, &$quiverSideboard) {
+function ProcessEquipment($id, $numMainBoard, $numSideboard, &$head, &$headSideboard, &$chest, &$chestSideboard, &$arms, &$armsSideboard, &$legs, &$legsSideboard, &$offhand, &$offhandSideboard, &$quiver, &$quiverSideboard) {
   if (SubtypeContains($id, "Head")) {
       for ($j = 0; $j < $numMainBoard; ++$j) {
           if ($head == "") $head = $id;
