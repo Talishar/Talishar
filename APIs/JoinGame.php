@@ -526,6 +526,8 @@ function isSpecialUsePromo($cardID) {
 }
 
 function isBannedInFormat($cardID, $format) {
+  if ($format == "compblitz") $format = "blitz";
+  if ($format == "compcc") $format = "cc";
   $bannedCards = [
       "blitz" => [
           "WTR002", "WTR160", "WTR164", "WTR165", "WTR166", "ARC002", "ARC003", "ARC076", "ARC077",
@@ -549,7 +551,6 @@ function isBannedInFormat($cardID, $format) {
           "EVR121"
       ]
   ];
-
   return isset($bannedCards[$format]) && in_array($cardID, $bannedCards[$format]);
 }
 
