@@ -415,15 +415,15 @@ function FrozenOffsetMZ($zone)
 function MZIsPlayer($MZIndex)
 {
   $indexArr = explode("-", $MZIndex);
-  if ($indexArr[0] == "MYCHAR" || $indexArr[0] == "THEIRCHAR") return true;
+  if (substr($indexArr[0], 0, 6) == "MYCHAR" || substr($indexArr[0], 0, 9) == "THEIRCHAR") return true;
   return false;
 }
 
 function MZPlayerID($me, $MZIndex)
 {
   $indexArr = explode("-", $MZIndex);
-  if ($indexArr[0] == "MYCHAR") return $me;
-  if ($indexArr[0] == "THEIRCHAR") return ($me == 1 ? 2 : 1);
+  if (substr($indexArr[0], 0, 6) == "MYCHAR") return $me;
+  if (substr($indexArr[0], 0, 9) == "THEIRCHAR") return ($me == 1 ? 2 : 1);
   return -1;
 }
 
