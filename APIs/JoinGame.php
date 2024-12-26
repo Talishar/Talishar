@@ -571,7 +571,7 @@ function isBannedInFormat($cardID, $format) {
           "UPR102", "EVR121", "DYN009", "OUT056", "OUT057", "OUT058", "MST080", "ARC006", "ROS225"
       ],
       "commoner" => [
-          "ELE186", "ELE187", "ELE188", "MON266", "MON267", "MON268", "MON230"
+          "ELE172", "ELE186", "ELE187", "ELE188", "MON266", "MON267", "MON268", "MON230"
       ],
       "llcc" => [
           "EVR121"
