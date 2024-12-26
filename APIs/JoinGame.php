@@ -505,7 +505,7 @@ function isClashLegal($cardID, $character) {
 function IsCardBanned($cardID, $format, $character)
 {
   $set = substr($cardID, 0, 3);
-  if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R") && $cardID != "CRU187") return true;
+  if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R") && CardType($cardID) != "C" && $cardID != "CRU187") return true;
   if ($format == "clash") return !isClashLegal($cardID, $character);
 
   //Ban spoiler cards in non-open-format
