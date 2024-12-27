@@ -609,7 +609,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVOBREAKER");
-      return "Light up the gem when you want the conditional boost effect to trigger";
+      return "";
     case "EVO057":
       if (IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) > 0) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true");

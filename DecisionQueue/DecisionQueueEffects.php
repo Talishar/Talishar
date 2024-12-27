@@ -673,10 +673,13 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       if($lastResult == "PASS") {
         if($dqVars[0] != "-") {
           $char = &GetPlayerCharacter($player);
-          $index = $dqVars[1];
           $hyperdriverArr = explode(",", $dqVars[0]);
-          for($i=0; $i<count($hyperdriverArr); ++$i) CharacterAddSubcard($player, $index, $hyperdriverArr[$i]);
-          AddCurrentTurnEffect($char[$index] . "-" . (count($hyperdriverArr)*2), $player);
+          $index = $hyperdriverArr[0];
+          $count = count($hyperdriverArr);
+          for($i=1; $i<$count; ++$i) {
+            CharacterAddSubcard($player, $index, $hyperdriverArr[$i]);
+          }
+          AddCurrentTurnEffect($char[$index] . "-" . (($count-1)*2), $player);
         }
         return $lastResult;
       }
