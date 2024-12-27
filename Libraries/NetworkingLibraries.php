@@ -2838,8 +2838,10 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
     case "MST232":
-      if(!IsPlayable($cardID, "P", $from)) { // Check if there the cost is still payable at this point. (e.g. it was used to pay for a frostbite)
-        WriteLog("No card(s) in hand pay the cost of " . CardLink($cardID, $cardID) . ". Reverting the gamestate.", 0, true);
+      $myHand = &GetHand($currentPlayer);
+      $myArsenal = &GetArsenal($currentPlayer);
+      if(count($myHand) + count($myArsenal) < 2) {
+        WriteLog("No card in hand/arsenal to pay the cost of " . CardLink($cardID, $cardID) . ". Reverting the gamestate.", highlight:true);
         RevertGamestate();
       }
       MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK", silent: true);
@@ -2869,8 +2871,8 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "ROS019":
     case "ROS020":
-      if(!IsPlayable($cardID, "P", $from)) {
-        WriteLog("No instant card in hand pay the discard cost of " . CardLink($cardID, $cardID) . ". Reverting the gamestate.", 0, true);
+      if(SearchCount(SearchMultiZone($currentPlayer, "MYHAND:type=I")) == 0) {
+        WriteLog("No instant card in hand pay the discard cost of " . CardLink($cardID, $cardID) . ". Reverting the gamestate.", highlight:true);
         RevertGamestate();
       }
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
