@@ -257,43 +257,43 @@ if ($decklink != "") {
   }
 
   if($isDeckBlitzLegal != "") {
-    $response->error = "⚠️ The deck contains extra copies of cards and isn't legal: " . $isDeckBlitzLegal;
+    $response->error = "⚠️ The deck contains extra copies of cards and isn't legal: " . $isDeckBlitzLegal . ".";
     echo (json_encode($response));
     exit;
   }
 
   if($isDeckCCLegal != "") {
-    $response->error = "⚠️ The deck contains extra copies of cards and isn't legal: " . $isDeckCCLegal;
+    $response->error = "⚠️ The deck contains extra copies of cards and isn't legal: " . $isDeckCCLegal . ".";
     echo (json_encode($response));
     exit;
   }
 
   if($unsupportedCards != "") {
-    $response->error = "⚠️ The following cards are not yet supported: " . $unsupportedCards;
+    $response->error = "⚠️ The following cards are not yet supported: " . $unsupportedCards . ".";
     echo (json_encode($response));
     exit;
   }
 
   if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc" || $format == "openformatcc")) {
-    $response->error = "⚠️ Young heroes are not legal in Classic Constructed: Young - " . CardName($character);
+    $response->error = "⚠️ Young heroes are not legal in Classic Constructed: Young - " . CardName($character) . ".";
     echo (json_encode($response));
     exit;
   }
 
   if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz" || $format == "clash" || $format == "openformatblitz")) {
-    $response->error = "⚠️ Adult heroes are not legal in this format: " . CardName($character);
+    $response->error = "⚠️ Adult heroes are not legal in this format: " . CardName($character) . ".";
     echo (json_encode($response));
     exit;
   }
 
   if ($bannedCard != "") {
-    $response->error = "⚠️ The following cards are not legal in this format: " . $bannedCard;
+    $response->error = "⚠️ The following cards are not legal in this format: " . $bannedCard . ".";
     echo (json_encode($response));
     exit;
   }
 
   if ($restrictedCard != "") {
-    $response->error = "⚠️ The following cards are restricted to up to 1 copy in this format: " . $restrictedCard;
+    $response->error = "⚠️ The following cards are restricted to up to 1 copy in this format: " . $restrictedCard . ".";
     echo (json_encode($response));
     exit;
   }
