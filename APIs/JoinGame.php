@@ -220,7 +220,7 @@ if ($decklink != "") {
 
       if (IsCardBanned($id, $format, $character) && $format != "draft") {
         if ($bannedCard != "") $bannedCard .= ", ";
-        $bannedCard .= CardName($id) . " (" . PitchValue($id) . ")";
+        $bannedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
 
       // Track the count of each card ID
@@ -231,14 +231,14 @@ if ($decklink != "") {
 
       if(isCardRestricted($id, $format, $cardCounts[$id])) {
         if ($restrictedCard != "") $restrictedCard .= ", ";
-        $restrictedCard .= CardName($id) . " (" . PitchValue($id) . ")";
+        $restrictedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
 
       if($character != "TCC027" && $id != "TCC048") { //Exclude Brevant and Chivalry
         // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
         if (($format == "blitz" || $format == "compblitz" || $format == "openformatblitz" || $format == "clash") && $cardCounts[$id] > 2) {
           if ($isDeckBlitzLegal != "") $isDeckBlitzLegal .= ", ";
-          $isDeckBlitzLegal .= CardName($id) . " (" . PitchValue($id) . ")";
+          $isDeckBlitzLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
         }
       }
       // Deck Check to make sure players don't run more than 3 copies of cards in Classic Constructed formats
