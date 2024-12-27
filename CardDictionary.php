@@ -1172,11 +1172,11 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
   if (($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index, $pitchRestriction)) return false;
   elseif ($phase == "CHOOSEHANDCANCEL" && $from == "HAND") {
-    $topLayer = $layers[count($layers) - LayerPieces()];
+    $topLayer = $layers[0];
     return match($topLayer) {
       "MON000" => ColorContains($cardID, 2, $currentPlayer),
       "HNT007" => ClassContains($cardID, "ASSASSIN", $currentPlayer),
-      "default" => true
+      default => true
     };
   }
   elseif ($phase == "P") return true;
