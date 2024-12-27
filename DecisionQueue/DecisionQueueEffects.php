@@ -406,7 +406,7 @@ function filterIndices($indices, $zone, $dqVars, $condition) {
 
 function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
-  global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex;
+  global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex, $CS_PowDamageDealt;
   $otherPlayer = ($player == 1) ? 2 : 1;
   $params = explode("-", $card);
   switch($params[0])
@@ -460,7 +460,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "EVENBIGGERTHANTHAT":
       $deck = new Deck($player);
       $modifiedAttack = ModifiedAttackValue($deck->Top(), $player, "DECK", source:"");
-      if($deck->Reveal() && $modifiedAttack > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt)) {
+      if($deck->Reveal() && $modifiedAttack > GetClassState(($player == 1 ? 1 : 2), piece: $CS_PowDamageDealt)) {
         WriteLog(CardLink($params[1], $params[1]) . " draw a card and created a " . CardLink("WTR225", "WTR225") . " token");
         Draw($player);
         PlayAura("WTR225", $player);
