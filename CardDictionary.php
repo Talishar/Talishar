@@ -1095,7 +1095,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
 {
   global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
   global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer;
-  global $CombatChain, $combatChain;
+  global $CombatChain, $combatChain, $layers;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
   $myArsenal = &GetArsenal($player);
@@ -1171,7 +1171,15 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($CombatChain->AttackCard()->ID() == "DYN121" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
   if ($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
   if (($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index, $pitchRestriction)) return false;
-  elseif ($phase == "P" || $phase == "CHOOSEHANDCANCEL" && $from == "HAND") return true;
+  elseif ($phase == "CHOOSEHANDCANCEL" && $from == "HAND") {
+    $topLayer = $layers[count($layers) - LayerPieces()];
+    return match($topLayer) {
+      "MON000" => ColorContains($cardID, 2, $currentPlayer),
+      "HNT007" => ClassContains($cardID, "ASSASSIN", $currentPlayer),
+      "default" => true
+    };
+  }
+  elseif ($phase == "P") return true;
   if ($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
   $isStaticType = IsStaticType($cardType, $from, $cardID);
   if ($isStaticType) $cardType = GetAbilityType($cardID, $index, $from);
