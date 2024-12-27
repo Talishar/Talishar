@@ -2866,7 +2866,7 @@ function PayAdditionalCosts($cardID, $from)
     case "ROS019":
     case "ROS020":
       if(SearchCount(SearchMultiZone($currentPlayer, "MYHAND:type=I")) == 0) {
-        WriteLog("No instant in hand pay the cost of " . CardLink($cardID, $cardID) . ". Reverting the gamestate.", 0, true);
+        WriteLog("No instant card in hand pay the discard cost of " . CardLink($cardID, $cardID) . ". Reverting the gamestate.", 0, true);
         RevertGamestate();
       }
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
