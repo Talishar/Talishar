@@ -234,12 +234,13 @@ if ($decklink != "") {
         $restrictedCard .= CardName($id) . " (" . PitchValue($id) . ")";
       }
 
-      // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
-      if (($format == "blitz" || $format == "compblitz" || $format == "openformatblitz" || $format == "clash") && $cardCounts[$id] > 2) {
-        if ($isDeckBlitzLegal != "") $isDeckBlitzLegal .= ", ";
-        $isDeckBlitzLegal .= CardName($id) . " (" . PitchValue($id) . ")";
+      if($character != "TCC027" && $id != "TCC048") { //Exclude Brevant and Chivalry
+        // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
+        if (($format == "blitz" || $format == "compblitz" || $format == "openformatblitz" || $format == "clash") && $cardCounts[$id] > 2) {
+          if ($isDeckBlitzLegal != "") $isDeckBlitzLegal .= ", ";
+          $isDeckBlitzLegal .= CardName($id) . " (" . PitchValue($id) . ")";
+        }
       }
-
       // Deck Check to make sure players don't run more than 3 copies of cards in Classic Constructed formats
       if (($format == "cc" || $format == "compcc" || $format == "openformatcc" || $format == "llcc") && $cardCounts[$id] > 3) {
         if ($isDeckCCLegal != "") $isDeckCCLegal .= ", ";
