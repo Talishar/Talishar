@@ -584,9 +584,9 @@ function DYNHitEffect($cardID, $from, $attackID)
 
 function IsRoyal($player)
 {
-  if (SearchCurrentTurnEffects("UPR187", $player)) return false;//erase face
   $mainCharacter = &GetPlayerCharacter($player);
   if(SearchCharacterForCard($player, "DYN234")) return true;//crown
+  if (SearchCurrentTurnEffects("UPR187", $player)) return false;//erase face
   switch($mainCharacter[0]) {
     case "DYN001": return true;//emperor
     case "HNT054":
