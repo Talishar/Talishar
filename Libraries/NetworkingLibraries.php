@@ -1723,7 +1723,7 @@ function PlayCardSkipCosts($cardID, $from)
 
 function GetLayerTarget($cardID, $from)
 {
-  global $currentPlayer;
+  global $currentPlayer, $CombatChain;
   switch ($cardID) {
     case "CRU143":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=AA;class=RUNEBLADE");
@@ -1879,6 +1879,10 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
+    case "MST105":
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "COMBATCHAIN");
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID);
       break;
     case "MST134":
     case "MST135":
@@ -2941,7 +2945,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CS_CharacterIndex, $CS_PlayCCIndex, $CCS_LinkBaseAttack;
   global $CCS_WeaponIndex, $EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
   global $CS_NumDragonAttacks, $CS_NumAttackCards, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
-  global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts;
+  global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   if ($additionalCosts == "-" || $additionalCosts == "") $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
@@ -2984,6 +2988,22 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if (!$isBlock && CardType($cardID) == "AR") {
       if (substr($from, 0, 5) == "THEIR") AddGraveyard($cardID, $otherPlayer, $from, $currentPlayer);
       else AddGraveyard($cardID, $currentPlayer, $from, $currentPlayer);
+      if ($target != "-") {
+        $missingTarget = false;
+        switch ($cardID) {
+          case "MST105":
+            
+            $targetUID = explode("-", $target)[1];
+            if ($CombatChain->AttackCard()->UniqueID() != $targetUID) $missingTarget = true;
+            break;
+          default:
+            break;
+        }
+        if ($missingTarget) {
+          WriteLog(CardLink($cardID, $cardID) . " fails to resolve because the target is gone.");
+          return;
+        }
+      }
       if (IsPlayRestricted($cardID, $restriction, $from) && $additionalCosts == "-") {
         WriteLog(CardLink($cardID, $cardID) . " fail to resolve because the target is no longer a legal target.");
         return;

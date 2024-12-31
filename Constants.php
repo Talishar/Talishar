@@ -463,7 +463,7 @@ function ResetCombatChainState()
   $chainLinkSummary = [];
 }
 
-function AttackReplaced($cardID)
+function AttackReplaced($cardID, $player)
 {
   global $combatChainState;
   global $CCS_CurrentAttackGainedGoAgain, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBaseAttack, $combatChain;
@@ -474,6 +474,7 @@ function AttackReplaced($cardID)
   $combatChain[0] = $cardID;
   $combatChain[5] = 0;//Reset Attack modifiers
   $combatChain[6] = 0;//Reset Defense modifiers
+  $combatChain[7] = GetUniqueId($cardID, $player); //new unique id
   CleanUpCombatEffects(true);
 }
 
