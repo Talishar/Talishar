@@ -1447,6 +1447,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $char = GetPlayerCharacter($otherPlayer);
         $target = "THEIRCHARUID-" . $char[$targetArr[1] + 11];
       }
+      if ($targetArr[0] == "COMBATCHAIN") {
+        $char = GetPlayerCharacter($otherPlayer);
+        //right now only support targetting the active chain link
+        $target = "COMBATCHAIN-" . $CombatChain->AttackCard()->UniqueID();
+      }
       for ($i = 0; $i < count($layers); $i += LayerPieces()) {
         if ($layers[$i] == $parameter && $layers[$i + 3] == "-") {
           $layers[$i + 3] = $target;
