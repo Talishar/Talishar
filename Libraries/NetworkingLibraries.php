@@ -2992,7 +2992,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         $missingTarget = false;
         switch ($cardID) {
           case "MST105":
-            
             $targetUID = explode("-", $target)[1];
             if ($CombatChain->AttackCard()->UniqueID() != $targetUID) $missingTarget = true;
             break;
