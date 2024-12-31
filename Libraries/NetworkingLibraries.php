@@ -1512,9 +1512,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       //CR 5.1.3 Declare Costs Begin (CR 2.0)
       $resources[1] = 0;
       if ($playingCard && substr($from, 0, 5) == "THEIR") {
-        if($cardID == "WTR051" || $cardID == "WTR052" || $cardID == "WTR053") $dynCost = "0,4"; //It's cost when played by Nuu
-        else $dynCost = 0; //If you are playing a card without paying its {r} cost, and part of that cost involves X, then you can only choose X=0.
-        SetClassState($currentPlayer, $CS_LastDynCost, $dynCost);
+        if ((SearchCurrentTurnEffects("MST001", $currentPlayer) || SearchCurrentTurnEffects("MST002", $currentPlayer)) && ColorContains($cardID, 3, $otherPlayer)) {
+          if($cardID == "WTR051" || $cardID == "WTR052" || $cardID == "WTR053") $dynCost = "0,4"; //It's cost when played by Nuu
+          else $dynCost = 0; //If you are playing a card without paying its {r} cost, and part of that cost involves X, then you can only choose X=0.
+          SetClassState($currentPlayer, $CS_LastDynCost, $dynCost);
+        }
       } 
       elseif ($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
       else $dynCost = "";

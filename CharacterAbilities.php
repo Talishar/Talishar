@@ -725,7 +725,8 @@ function CharacterCostModifier($cardID, $from, $cost)
         break;
       case "MST001":
       case "MST002":
-        if ($from == "THEIRBANISH" && (SearchCurrentTurnEffects("MST001", $currentPlayer) || SearchCurrentTurnEffects("MST002", $currentPlayer))) $modifier -= $cost;
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        if ($from == "THEIRBANISH" && ColorContains($cardID, 3, $otherPlayer) && (SearchCurrentTurnEffects("MST001", $currentPlayer) || SearchCurrentTurnEffects("MST002", $currentPlayer))) $modifier -= $cost;
         break;
       case "MST025":
       case "MST026":
