@@ -401,7 +401,8 @@ function filterIndices($indices, $zone, $dqVars, $condition) {
       $type = CardType($zone[$index]);
       return $block > -1 && $condition($block, $dqVars) && (DelimStringContains($type, "A") || $type == "AA");
   });
-  return implode(",", $filteredIndices) ?: "PASS";
+  $filteredIndices = implode(",", $filteredIndices);
+  return $filteredIndices == "" ? "PASS" : $filteredIndices;
 }
 
 function SpecificCardLogic($player, $card, $lastResult, $initiator)
