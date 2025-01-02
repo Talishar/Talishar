@@ -30,10 +30,16 @@
         for($i=0; $i<$maxTransform; ++$i) Transform($currentPlayer, "Ash", "UPR042", true, ($i == 0 ? false : true), ($i == 0 ? false : true));
         return "";
       case "UPR039":
+        $targetIndex = explode("-", $target)[1];
+        ResolveTransformPermanent($currentPlayer, $targetIndex, "UPR439");
+        return "";
       case "UPR040":
+        $targetIndex = explode("-", $target)[1];
+        ResolveTransformPermanent($currentPlayer, $targetIndex, "UPR440");
+        return "";
       case "UPR041":
         $targetIndex = explode("-", $target)[1];
-        ResolveTransformPermanent($currentPlayer, $targetIndex, $cardID);
+        ResolveTransformPermanent($currentPlayer, $targetIndex, "UPR441");
         return "";
       case "UPR036": case "UPR037": case "UPR038":
         Transform($currentPlayer, "Ash", "UPR042", target:$target);
