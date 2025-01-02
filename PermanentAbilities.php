@@ -9,7 +9,6 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
   if($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
-  WriteLog("Here playing permanent: $cardID, $subCards");
   for($i = 0; $i < $number; ++$i) {
     array_push($permanents, $cardID);
     array_push($permanents, $from);
