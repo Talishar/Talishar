@@ -3,12 +3,14 @@
   function UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
-    $perms = &GetPermanents($currentPlayer);
+    $permanents = &GetPermanents($currentPlayer);
     $targetIndex = explode("-", $target)[1];
-    $matID = explode(",", $perms[$targetIndex])[0];
-    if ($matID == "UPR439" || $matID == "UPR440" || $matID == "UPR441") {
-      $origMaterial = explode(",", $perms[$targetIndex])[1];
-      ResolveTransformPermanent($currentPlayer, $targetIndex, $origMaterial);
+    $matID = $permanents[$targetIndex];
+    if ($matID == "UPR439" || $matID == "UPR440" || $matID == "UPR441") { //untransform sand cover
+      $origMaterial = explode(",", $permanents[$targetIndex+2])[0];
+      DestroyPermanent($currentPlayer, $targetIndex);
+      $targetIndex = PutPermanentIntoPlay($currentPlayer, $origMaterial);
+      $target = "MYPERM-$targetIndex";
     }
     switch($cardID)
     {
@@ -121,7 +123,7 @@ function UPRIllusionistDealDamageEffect($cardID)
       $index = explode("-", $target);
       if ($into == "UPR439" || $into == "UPR440" || $into == "UPR441") {
         AddDecisionQueue("PASSPARAMETER", $player, $index[1], 1);
-        AddDecisionQueue("TRANSFORMPERMANENT", $player, $into.",".$firstTransform, 1);
+        AddDecisionQueue("TRANSFORMPERMANENT", $player, $into, 1);
       }
       else {
         AddDecisionQueue("PASSPARAMETER", $player, $index[1], 1);

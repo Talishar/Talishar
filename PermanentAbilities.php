@@ -9,6 +9,7 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
   if($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
+  WriteLog("Here playing permanent: $cardID, $subCards");
   for($i = 0; $i < $number; ++$i) {
     array_push($permanents, $cardID);
     array_push($permanents, $from);
@@ -66,7 +67,7 @@ function PermanentBeginEndPhaseEffects()
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
-        $origMaterial = $permanents[$i+2];
+        $origMaterial = explode(",", $permanents[$i+2])[0];
         if ($origMaterial != "-") PutPermanentIntoPlay($mainPlayer, $origMaterial);
         $remove = 1;
         break;
@@ -129,8 +130,8 @@ function PermanentBeginEndPhaseEffects()
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
-        $origMaterial = $permanents[$i+2];
-        if ($origMaterial != "-") PutPermanentIntoPlay($mainPlayer, $origMaterial);
+        $origMaterial = explode(",", $permanents[$i+2])[0];
+        if ($origMaterial != "-") PutPermanentIntoPlay($defPlayer, $origMaterial);
         $remove = 1;
         break;
       default:
