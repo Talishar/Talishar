@@ -29,9 +29,12 @@
         else $maxTransform = 1;
         for($i=0; $i<$maxTransform; ++$i) Transform($currentPlayer, "Ash", "UPR042", true, ($i == 0 ? false : true), ($i == 0 ? false : true));
         return "";
-      case "UPR039": TransformPermanent($currentPlayer, "Ash", "UPR439"); return "";
-      case "UPR040": TransformPermanent($currentPlayer, "Ash", "UPR440"); return "";
-      case "UPR041": TransformPermanent($currentPlayer, "Ash", "UPR441"); return "";
+      case "UPR039":
+      case "UPR040":
+      case "UPR041":
+        $targetIndex = explode("-", $target)[1];
+        ResolveTransformPermanent($currentPlayer, $targetIndex, $cardID);
+        return "";
       case "UPR036": case "UPR037": case "UPR038":
         Transform($currentPlayer, "Ash", "UPR042", target:$target);
         AddDecisionQueue("MZOP", $currentPlayer, "GETUNIQUEID");
@@ -133,15 +136,6 @@ function UPRIllusionistDealDamageEffect($cardID)
   {
     $materialType = RemovePermanent($player, $materialIndex);
     return PlayAlly($into, $player, $materialType, firstTransform: $firstTransform);
-  }
-
-  function TransformPermanent($player, $materialType, $into, $optional=false)
-  {
-    AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType);
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform", 1);
-    if($optional) AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
-    else AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);
-    AddDecisionQueue("TRANSFORMPERMANENT", $player, $into, 1);
   }
 
   function ResolveTransformPermanent($player, $materialIndex, $into)

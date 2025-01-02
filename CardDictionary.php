@@ -190,6 +190,10 @@ function CardSubType($cardID, $uniqueID = -1)
   switch ($cardID) {
     case "ROS027"://Technically false, but helps with Rosetta Limited
       return "Item";
+    case "UPR039":
+    case "UPR040":
+    case "UPR041": //Technically false, but maintains targetted ash as ash
+      return "Ash";
     default:
       break;
   }
