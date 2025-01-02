@@ -3,6 +3,13 @@
   function UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
+    $perms = &GetPermanents($currentPlayer);
+    $targetIndex = explode("-", $target)[1];
+    $matID = explode(",", $perms[$targetIndex])[0];
+    if ($matID == "UPR439" || $matID == "UPR440" || $matID == "UPR441") {
+      $origMaterial = explode(",", $perms[$targetIndex])[1];
+      ResolveTransformPermanent($currentPlayer, $targetIndex, $origMaterial);
+    }
     switch($cardID)
     {
       case "UPR004": Transform($currentPlayer, "Ash", "UPR042", target:$target); return "";
@@ -30,16 +37,13 @@
         for($i=0; $i<$maxTransform; ++$i) Transform($currentPlayer, "Ash", "UPR042", true, ($i == 0 ? false : true), ($i == 0 ? false : true));
         return "";
       case "UPR039":
-        $targetIndex = explode("-", $target)[1];
-        ResolveTransformPermanent($currentPlayer, $targetIndex, "UPR439");
+        Transform($currentPlayer, "Ash", "UPR439", target:$target);
         return "";
       case "UPR040":
-        $targetIndex = explode("-", $target)[1];
-        ResolveTransformPermanent($currentPlayer, $targetIndex, "UPR440");
+        Transform($currentPlayer, "Ash", "UPR440", target:$target);
         return "";
       case "UPR041":
-        $targetIndex = explode("-", $target)[1];
-        ResolveTransformPermanent($currentPlayer, $targetIndex, "UPR441");
+        Transform($currentPlayer, "Ash", "UPR441", target:$target);
         return "";
       case "UPR036": case "UPR037": case "UPR038":
         Transform($currentPlayer, "Ash", "UPR042", target:$target);
@@ -115,8 +119,14 @@ function UPRIllusionistDealDamageEffect($cardID)
   {
     if($target != ""){
       $index = explode("-", $target);
-      AddDecisionQueue("PASSPARAMETER", $player, $index[1], 1);
-      AddDecisionQueue("TRANSFORM", $player, $into.",".$firstTransform, 1);
+      if ($into == "UPR439" || $into == "UPR440" || $into == "UPR441") {
+        AddDecisionQueue("PASSPARAMETER", $player, $index[1], 1);
+        AddDecisionQueue("TRANSFORMPERMANENT", $player, $into.",".$firstTransform, 1);
+      }
+      else {
+        AddDecisionQueue("PASSPARAMETER", $player, $index[1], 1);
+        AddDecisionQueue("TRANSFORM", $player, $into.",".$firstTransform, 1);
+      }
     } else if($materialType == "Ash") {
       AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into), 1);
@@ -146,8 +156,8 @@ function UPRIllusionistDealDamageEffect($cardID)
 
   function ResolveTransformPermanent($player, $materialIndex, $into)
   {
-    RemovePermanent($player, $materialIndex);
-    return PutPermanentIntoPlay($player, $into);
+    $materialType = RemovePermanent($player, $materialIndex);
+    return PutPermanentIntoPlay($player, $into, subCards: $materialType);
   }
 
   function ResolveTransformAura($player, $materialIndex, $into)

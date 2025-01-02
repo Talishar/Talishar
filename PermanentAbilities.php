@@ -1,6 +1,6 @@
 <?php
 
-function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from="-")
+function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from="-", $subCards="-")
 {
   global $EffectContext;
   $permanents = &GetPermanents($player);
@@ -12,6 +12,7 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
   for($i = 0; $i < $number; ++$i) {
     array_push($permanents, $cardID);
     array_push($permanents, $from);
+    array_push($permanents, $subCards);
   }
   return count($permanents) - PermanentPieces();
 }
@@ -65,7 +66,8 @@ function PermanentBeginEndPhaseEffects()
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
-        PutPermanentIntoPlay($mainPlayer, "UPR043");
+        $origMaterial = $permanents[$i+2];
+        if ($origMaterial != "-") PutPermanentIntoPlay($mainPlayer, $origMaterial);
         $remove = 1;
         break;
       case "ROGUE501":
@@ -127,7 +129,8 @@ function PermanentBeginEndPhaseEffects()
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
-        PutPermanentIntoPlay($defPlayer, "UPR043");
+        $origMaterial = $permanents[$i+2];
+        if ($origMaterial != "-") PutPermanentIntoPlay($mainPlayer, $origMaterial);
         $remove = 1;
         break;
       default:
