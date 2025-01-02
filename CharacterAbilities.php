@@ -806,7 +806,6 @@ function EquipEquipment($player, $card, $slot = "")
 
 function EquipWeapon($player, $card)
 {
-  WriteLog("HERE in EquipWeapon: $card");
   $char = &GetPlayerCharacter($player);
   $lastWeapon = 0;
   $replaced = 0;
