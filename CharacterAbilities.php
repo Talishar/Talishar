@@ -811,28 +811,38 @@ function EquipWeapon($player, $card)
   $replaced = 0;
   $numHands = 0;
   $uniqueID = GetUniqueId($card, $player);
-  //Replace the first destroyed weapon; if none you can't re-equip
-  for ($i = CharacterPieces(); $i < count($char) && !$replaced; $i += CharacterPieces()) {
+  for ($i = CharacterPieces(); $i < count($char); $i += CharacterPieces()) {
     if (TypeContains($char[$i], "W", $player)) {
-      $lastWeapon = $i;
-      if ($char[$i + 1] == 0) {
-        $char[$i] = $card;
-        $char[$i + 1] = 2;
-        $char[$i + 2] = 0;
-        $char[$i + 3] = 0;
-        $char[$i + 4] = 0;
-        $char[$i + 5] = 1;
-        $char[$i + 6] = 0;
-        $char[$i + 7] = 0;
-        $char[$i + 8] = 0;
-        $char[$i + 9] = CharacterDefaultActiveState($card);
-        $char[$i + 10] = "-";
-        $char[$i + 11] = $uniqueID;
-        $char[$i + 12] = HasCloaked($card, $player);
-        $char[$i + 13] = 0;
-        $replaced = 1;
-      } else if (Is1H($char[$i])) ++$numHands;
-      else $numHands += 2;
+      if ($char[$i + 1] != 0) {
+        if (Is1H($char[$i])) ++$numHands;
+        else $numHands += 2;
+      }
+    }
+  }
+  //check if you have enough hands to equip it
+  if ((Is1H($card) && $numHands < 2) || (!Is1H($card) && $numHands == 0)){
+    //Replace the first destroyed weapon; if none you can't re-equip
+    for ($i = CharacterPieces(); $i < count($char) && !$replaced; $i += CharacterPieces()) {
+      if (TypeContains($char[$i], "W", $player)) {
+        $lastWeapon = $i;
+        if ($char[$i + 1] == 0) {
+          $char[$i] = $card;
+          $char[$i + 1] = 2;
+          $char[$i + 2] = 0;
+          $char[$i + 3] = 0;
+          $char[$i + 4] = 0;
+          $char[$i + 5] = 1;
+          $char[$i + 6] = 0;
+          $char[$i + 7] = 0;
+          $char[$i + 8] = 0;
+          $char[$i + 9] = CharacterDefaultActiveState($card);
+          $char[$i + 10] = "-";
+          $char[$i + 11] = $uniqueID;
+          $char[$i + 12] = HasCloaked($card, $player);
+          $char[$i + 13] = 0;
+          $replaced = 1;
+        }
+      }
     }
   }
   if ($numHands < 2 && !$replaced) {

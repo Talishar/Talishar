@@ -2004,7 +2004,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($indexToRemove !== false) unset($inventory[$indexToRemove]);
         }
       }
-      if (CardType($parameter) == "W") EquipWeapon($player, $parameter);
+      if (DelimStringContains(CardType($parameter), "W", true)) EquipWeapon($player, $parameter);
       else EquipEquipment($player, $parameter);
       return "";
     case "LISTDRACDAGGERGRAVEYARD":
