@@ -1035,6 +1035,7 @@ function ResolveChainLink()
   if ($target[0] == "THEIRALLY") {
     $index = $target[1];
     $allies = &GetAllies($defPlayer);
+    $totalAttack += CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
     $totalAttack = AllyDamagePrevention($defPlayer, $index, $totalAttack, "COMBAT");
     if ($totalAttack < 0) $totalAttack = 0;
     if ($index < count($allies)) {
