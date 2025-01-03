@@ -1779,6 +1779,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode(",", $parameter);
       return "ALLY-" . ResolveTransform($player, $lastResult, $params[0], $params[1]);
     case "TRANSFORMPERMANENT":
+      $params = explode(",", $parameter);
       return "PERMANENT-" . ResolveTransformPermanent($player, $lastResult, $parameter);
     case "TRANSFORMAURA":
       return "AURA-" . ResolveTransformAura($player, $lastResult, $parameter);

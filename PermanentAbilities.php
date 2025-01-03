@@ -1,6 +1,6 @@
 <?php
 
-function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from="-")
+function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from="-", $subCards="-")
 {
   global $EffectContext;
   $permanents = &GetPermanents($player);
@@ -12,6 +12,7 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
   for($i = 0; $i < $number; ++$i) {
     array_push($permanents, $cardID);
     array_push($permanents, $from);
+    array_push($permanents, $subCards);
   }
   return count($permanents) - PermanentPieces();
 }
@@ -65,7 +66,8 @@ function PermanentBeginEndPhaseEffects()
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
-        PutPermanentIntoPlay($mainPlayer, "UPR043");
+        $origMaterial = explode(",", $permanents[$i+2])[0];
+        if ($origMaterial != "-") PutPermanentIntoPlay($mainPlayer, $origMaterial);
         $remove = 1;
         break;
       case "ROGUE501":
@@ -127,7 +129,8 @@ function PermanentBeginEndPhaseEffects()
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
-        PutPermanentIntoPlay($defPlayer, "UPR043");
+        $origMaterial = explode(",", $permanents[$i+2])[0];
+        if ($origMaterial != "-") PutPermanentIntoPlay($defPlayer, $origMaterial);
         $remove = 1;
         break;
       default:
@@ -144,24 +147,25 @@ function PermanentTakeDamageAbilities($player, $damage, $type, $source)
   $otherPlayer = $player == 1 ? 1 : 2;
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type, $source);
+  $preventedDamage = 0;
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439":
         if ($damage > 0) {
-          if ($preventable) $damage -= 4;
+          if ($preventable) $preventedDamage += 4;
           $remove = 1;
         }
         break;
       case "UPR440":
         if ($damage > 0) {
-          if ($preventable) $damage -= 3;
+          if ($preventable) $preventedDamage += 3;
           $remove = 1;
         }
         break;
       case "UPR441":
         if ($damage > 0) {
-          if ($preventable) $damage -= 2;
+          if ($preventable) $preventedDamage += 2;
           $remove = 1;
         }
         break;
@@ -178,6 +182,11 @@ function PermanentTakeDamageAbilities($player, $damage, $type, $source)
       DestroyPermanent($player, $i);
     }
   }
+  if (SearchCurrentTurnEffects("OUT174", $player) != "" && $preventedDamage > 0) {//vambrace
+    $preventedDamage -= 1;
+    SearchCurrentTurnEffects("OUT174", $player, remove:true);
+  }
+  $damage -= $preventedDamage;
   if ($damage <= 0) $damage = 0;
   return $damage;
 }

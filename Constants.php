@@ -167,9 +167,10 @@ function AllyPieces()
 
 //0 - Card ID
 //1 - Where it's played from
+//2 - Subcards , delimited
 function PermanentPieces()
 {
-  return 2;
+  return 3;
 }
 
 //0 - Card ID/Layer type
